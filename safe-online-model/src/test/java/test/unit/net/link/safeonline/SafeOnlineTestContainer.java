@@ -73,6 +73,8 @@ import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
+import net.link.safeonline.entity.notification.EndpointReferenceEntity;
+import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
@@ -90,6 +92,10 @@ import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
 import net.link.safeonline.model.bean.UserRegistrationManagerBean;
+import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
+import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
+import net.link.safeonline.notification.service.bean.NotificationConsumerServiceBean;
+import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
 import net.link.safeonline.pkix.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;
@@ -148,7 +154,11 @@ public class SafeOnlineTestContainer {
 			DeviceMappingDAOBean.class, DeviceRegistrationServiceBean.class,
 			DeviceRegistrationDAOBean.class, OlasDAOBean.class,
 			ProxyAttributeServiceBean.class, StatisticDAOBean.class,
-			StatisticDataPointDAOBean.class };
+			StatisticDataPointDAOBean.class,
+			NotificationProducerServiceBean.class,
+			NotificationProducerDAOBean.class,
+			NotificationConsumerServiceBean.class,
+			EndpointReferenceDAOBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,
@@ -169,5 +179,7 @@ public class SafeOnlineTestContainer {
 			HistoryEntity.class, SubjectIdentifierEntity.class,
 			UsageAgreementEntity.class, UsageAgreementTextEntity.class,
 			GlobalUsageAgreementEntity.class, OlasEntity.class,
-			StatisticEntity.class, StatisticDataPointEntity.class };
+			StatisticEntity.class, StatisticDataPointEntity.class,
+			EndpointReferenceEntity.class,
+			NotificationProducerSubscriptionEntity.class };
 }

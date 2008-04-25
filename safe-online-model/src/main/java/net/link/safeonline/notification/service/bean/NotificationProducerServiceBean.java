@@ -119,7 +119,11 @@ public class NotificationProducerServiceBean implements
 			MessageHandlerNotFoundException {
 		LOG.debug("send notification for topic: " + topic);
 		NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO
-				.getSubscription(topic);
+				.findSubscription(topic);
+		if (null == subscription) {
+			LOG.debug("no subscriptions found for topic: " + topic);
+			return;
+		}
 		for (EndpointReferenceEntity consumer : subscription.getConsumers()) {
 			MessageHandlerManager.sendMessage(topic, message, consumer);
 		}

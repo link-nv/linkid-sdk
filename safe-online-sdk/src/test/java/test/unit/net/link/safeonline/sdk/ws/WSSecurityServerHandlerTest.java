@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.ws.util;
+package test.unit.net.link.safeonline.sdk.ws;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -33,10 +33,8 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.authentication.service.DeviceAuthenticationService;
-import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.sdk.ws.ServerCrypto;
+import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -74,35 +72,27 @@ public class WSSecurityServerHandlerTest {
 
 	private JndiTestUtils jndiTestUtils;
 
-	private ConfigurationManager mockConfigurationManager;
-
-	private ApplicationAuthenticationService mockApplicationAuthenticationService;
-
-	private DeviceAuthenticationService mockDeviceAuthenticationService;
+	private WSSecurityConfigurationService mockWSSecurityConfigurationService;
 
 	private Object[] mockObjects;
 
 	@Before
 	public void setUp() throws Exception {
-		this.mockConfigurationManager = createMock(ConfigurationManager.class);
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
 		this.jndiTestUtils.bindComponent(
-				"SafeOnline/ConfigurationManagerBean/local",
-				this.mockConfigurationManager);
+				"java:comp/env/wsSecurityConfigurationServiceJndiName",
+				"SafeOnline/WSSecurityConfigurationBean/local");
+
+		this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
+
 		this.jndiTestUtils.bindComponent(
-				"SafeOnline/ApplicationAuthenticationServiceBean/local",
-				this.mockApplicationAuthenticationService);
+				"SafeOnline/WSSecurityConfigurationBean/local",
+				this.mockWSSecurityConfigurationService);
 		this.testedInstance = new WSSecurityServerHandler();
 		this.testedInstance.postConstructCallback();
 
-		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-
-		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
-
-		this.mockObjects = new Object[] { this.mockConfigurationManager,
-				this.mockApplicationAuthenticationService,
-				this.mockDeviceAuthenticationService };
+		this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService };
 	}
 
 	@After
@@ -127,7 +117,7 @@ public class WSSecurityServerHandlerTest {
 
 		// stubs
 		expect(
-				this.mockConfigurationManager
+				this.mockWSSecurityConfigurationService
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
 				Long.MAX_VALUE);
 
@@ -366,7 +356,7 @@ public class WSSecurityServerHandlerTest {
 
 		// stubs
 		expect(
-				this.mockConfigurationManager
+				this.mockWSSecurityConfigurationService
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
 				Long.MAX_VALUE);
 

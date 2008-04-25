@@ -34,8 +34,9 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.config.model.ConfigurationManager;
+import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
@@ -51,14 +52,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class AppAuthWsHandlersTest {
+public class AuthWsHandlersTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(AppAuthWsHandlersTest.class);
+	private static final Log LOG = LogFactory.getLog(AuthWsHandlersTest.class);
 
 	private WebServiceTestUtils webServiceTestUtils;
 
 	private JndiTestUtils jndiTestUtils;
+
+	private WSSecurityConfigurationService mockWSSecurityConfigurationService;
 
 	private ApplicationAuthenticationService mockApplicationAuthenticationService;
 
@@ -68,12 +70,18 @@ public class AppAuthWsHandlersTest {
 
 	private PkiValidator mockPkiValidator;
 
-	private ConfigurationManager mockConfigurationManager;
-
 	@Before
 	public void setUp() throws Exception {
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
+		this.jndiTestUtils.bindComponent(
+				"java:comp/env/wsSecurityConfigurationServiceJndiName",
+				"SafeOnline/WSSecurityConfigurationBean/local");
+
+		this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/WSSecurityConfigurationBean/local",
+				this.mockWSSecurityConfigurationService);
 
 		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
 		this.jndiTestUtils.bindComponent(
@@ -94,11 +102,6 @@ public class AppAuthWsHandlersTest {
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
 
-		this.mockConfigurationManager = createMock(ConfigurationManager.class);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/ConfigurationManagerBean/local",
-				this.mockConfigurationManager);
-
 		this.webServiceTestUtils = new WebServiceTestUtils();
 		TestEndpoint testEndpoint = new TestEndpoint();
 		this.webServiceTestUtils.setUp(testEndpoint);
@@ -111,8 +114,8 @@ public class AppAuthWsHandlersTest {
 		this.jndiTestUtils.tearDown();
 	}
 
-	@WebService(name = "Test", targetNamespace = "urn:test", serviceName = "TestService", endpointInterface = "test.unit.net.link.safeonline.ws.util.AppAuthWsHandlersTest$TestEndpointInterface")
-	@HandlerChain(file = "app-auth-ws-handlers.xml")
+	@WebService(name = "Test", targetNamespace = "urn:test", serviceName = "TestService", endpointInterface = "test.unit.net.link.safeonline.ws.util.AuthWsHandlersTest$TestEndpointInterface")
+	@HandlerChain(file = "auth-ws-handlers.xml")
 	public static class TestEndpoint implements TestEndpointInterface {
 
 		public String echo(String param) {
