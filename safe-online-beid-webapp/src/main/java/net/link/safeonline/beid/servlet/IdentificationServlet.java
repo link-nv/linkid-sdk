@@ -18,6 +18,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Entry-point for identification web application service.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class IdentificationServlet extends HttpServlet {
 
 	private static final Log LOG = LogFactory
@@ -37,5 +43,11 @@ public class IdentificationServlet extends HttpServlet {
 			session.setAttribute("target", targetParameter);
 			response.sendRedirect("identification-pcsc.seam");
 		}
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
 	}
 }

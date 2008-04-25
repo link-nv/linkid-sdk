@@ -51,6 +51,9 @@
 							<excludeArtifactIds>
 								safe-online-keystore
 							</excludeArtifactIds>
+							<excludes>
+								META-INF/maven/**,META-INF/LICENSE.TXT
+							</excludes>
 						</configuration>
 					</execution>
 				</executions>

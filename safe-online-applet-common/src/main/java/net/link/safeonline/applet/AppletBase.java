@@ -235,6 +235,9 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	public boolean addHelpdeskEvent(String message, LogLevelType logLevel)
 			throws IOException {
+		/*
+		 * FIXME: don't mix statement sending with helpdesk event messaging
+		 * 
 		HttpURLConnection httpURLConnection = prepareHelpdeskConnection();
 
 		httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD, "");
@@ -244,6 +247,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 				logLevel.toString());
 
 		return sendHelpdeskStatement(httpURLConnection);
+		*/
+		return true;
 	}
 
 	public boolean clearHelpdesk() throws IOException {

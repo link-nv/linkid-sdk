@@ -56,9 +56,7 @@
 	</context-param>
 	<context-param>
 		<param-name>WsLocation</param-name>
-		<param-value>
-            ${safe-online.host.basename}
-		</param-value>
+		<param-value>${safe-online.host.basename}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>AuthenticationUrl</param-name>
@@ -75,7 +73,7 @@
 	<context-param>
 		<param-name>RegistrationServiceUrl</param-name>
 		<param-value>
-            ${safe-online.host.basename}/olas-beid/regexit
+			${safe-online.host.basename}/olas-beid/regexit
 		</param-value>
 	</context-param>
 	<context-param>
@@ -259,6 +257,36 @@
 	<servlet-mapping>
 		<servlet-name>RemoveExitServlet</servlet-name>
 		<url-pattern>/removeexit</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>IdentificationServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.beid.servlet.IdentificationServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>IdentificationServlet</servlet-name>
+		<url-pattern>/identification</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>IdentificationDataServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.beid.servlet.IdentificationDataServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>IdentificationDataServlet</servlet-name>
+		<url-pattern>/identificationData</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>IdentificationExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.beid.servlet.IdentificationExitServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>IdentificationExitServlet</servlet-name>
+		<url-pattern>/identificationExit</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>5</session-timeout>

@@ -31,7 +31,7 @@ public class BirthDateConvertor implements Convertor<Date> {
 		outer: for (String[] months : MONTHS) {
 			for (int idx = 0; idx < months.length; idx++) {
 				if (months[idx].equals(monthStr)) {
-					month = idx + 1;
+					month = idx;
 					break outer;
 				}
 			}

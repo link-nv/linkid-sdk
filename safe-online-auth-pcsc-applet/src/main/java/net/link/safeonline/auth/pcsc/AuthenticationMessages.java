@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 public class AuthenticationMessages {
 
 	public static enum KEY {
-		START("start"), ERROR("error"), NO_BEID("noBeID");
+		START("start"), ERROR("error"), NO_BEID("noBeID"), DONE("done");
 
 		private final String key;
 
