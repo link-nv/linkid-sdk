@@ -44,4 +44,17 @@ public class DeviceRegistrationEntry {
 	public void setAttribute(List<AttributeDO> attribute) {
 		this.attribute = attribute;
 	}
+
+	public boolean isRegistrable() {
+		return null != this.deviceRegistration.getDevice().getRegistrationURL();
+	}
+
+	public boolean isUpdatable() {
+		return null != this.deviceRegistration.getDevice().getUpdateURL();
+	}
+
+	public boolean isRemovable() {
+		return null != this.deviceRegistration.getDevice().getRemovalURL();
+	}
+
 }

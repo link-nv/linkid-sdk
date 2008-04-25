@@ -28,4 +28,16 @@ public class DeviceEntry {
 	public void setFriendlyName(String friendlyName) {
 		this.friendlyName = friendlyName;
 	}
+
+	public boolean isRegistrable() {
+		return null != this.device.getRegistrationURL();
+	}
+
+	public boolean isUpdatable() {
+		return null != this.device.getUpdateURL();
+	}
+
+	public boolean isRemovable() {
+		return null != this.device.getRemovalURL();
+	}
 }
