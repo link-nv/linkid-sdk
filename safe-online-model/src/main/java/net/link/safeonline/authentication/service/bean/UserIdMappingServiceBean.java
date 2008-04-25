@@ -91,7 +91,9 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 	private String getUserIdFromSubscription(String applicationUserId) {
 		LOG.debug("getUserIdFromSubscription: " + applicationUserId);
 		SubscriptionEntity subscription = this.subscriptionDAO
-				.getSubscription(applicationUserId);
+				.findSubscription(applicationUserId);
+		if (null == subscription)
+			return null;
 		return subscription.getSubject().getUserId();
 	}
 }

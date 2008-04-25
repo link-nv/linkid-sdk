@@ -42,12 +42,15 @@
 				styleClass="submit" />
 		</a4j:form>
 
+		<br />
+
 		<a4j:form id="mobile-confirm-form" ajaxSubmit="true"
 			reRender="mobile-register-form,mobile-confirm-form">
 			<f:subview rendered="#{!empty registration.mobileActivationCode}">
 
-				<h:outputLabel
-					value="#{msgs.activationCode}: #{registration.mobileActivationCode}" />
+				<h:outputLabel for="activationCode" value="#{msgs.activationCode}" />
+				<h:outputLabel id="activationCode"
+					value="#{registration.mobileActivationCode}" />
 				<h:commandButton id="activation-ok"
 					action="#{registration.mobileActivationOk}" value="#{msgs.confirm}"
 					styleClass="submit" />
@@ -60,6 +63,8 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<p>#{msgs.helpRegisterMobile}</p>
+		<p>#{msgs.mobileClientLink} <h:outputLink
+			value="#{registration.mobileClientLink}" target="_blank">#{msgs.clickHere}</h:outputLink></p>
 	</ui:define>
 </ui:composition>
 </body>

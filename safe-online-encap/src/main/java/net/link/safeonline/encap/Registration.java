@@ -21,6 +21,8 @@ public interface Registration {
 
 	String getMobileActivationCode();
 
+	String getMobileClientLink();
+
 	/*
 	 * Actions.
 	 */

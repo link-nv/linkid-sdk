@@ -139,9 +139,8 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		this.queryObject.deleteAll(subject);
 	}
 
-	public SubscriptionEntity getSubscription(String subscriptionUserId) {
+	public SubscriptionEntity findSubscription(String subscriptionUserId) {
 		LOG.debug("get subscriptions for : " + subscriptionUserId);
-		return this.queryObject.getSubscription(subscriptionUserId);
+		return this.queryObject.findSubscription(subscriptionUserId);
 	}
-
 }

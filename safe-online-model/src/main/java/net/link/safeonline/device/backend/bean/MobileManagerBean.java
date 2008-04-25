@@ -24,13 +24,15 @@ import net.link.safeonline.sdk.ws.encap.authentication.EncapAuthenticationClient
 public class MobileManagerBean implements MobileManager {
 
 	@Configurable(name = "Encap Server", group = "Encap")
-	// private String encapServerLocation =
-	// "localhost:8080/safe-online-encap-ws";
-	private String encapServerLocation = "81.246.63.169:9090/mSec2";
+	private String encapServerLocation = "localhost:8080/safe-online-encap-ws";
+	// private String encapServerLocation = "81.246.63.169:9090/mSec2";
 
 	@Configurable(name = "Encap Organisation ID", group = "Encap")
-	// private String encapOrganisationId = "encap";
-	private String encapOrganisationId = "test1";
+	private String encapOrganisationId = "encap";
+	// private String encapOrganisationId = "test1";
+
+	@Configurable(name = "Encap Client Link", group = "Encap")
+	private String encapClientDownloadLink = "http://81.246.63.169:9090/mSec2/test/download.htm";
 
 	/*
 	 * RemoteException are transformed to a MobileException, else they get
@@ -80,6 +82,9 @@ public class MobileManagerBean implements MobileManager {
 		} catch (RemoteException e) {
 			throw new MobileException(e.getMessage());
 		}
+	}
 
+	public String getClientDownloadLink() {
+		return this.encapClientDownloadLink;
 	}
 }

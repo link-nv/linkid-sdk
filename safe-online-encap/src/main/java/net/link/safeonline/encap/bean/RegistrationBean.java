@@ -19,6 +19,7 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.device.backend.MobileManager;
 import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
 import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.encap.Registration;
@@ -59,6 +60,9 @@ public class RegistrationBean implements Registration {
 
 	@EJB
 	private EncapDeviceService encapDeviceService;
+
+	@EJB
+	private MobileManager mobileManager;
 
 	@Remove
 	@Destroy
@@ -144,6 +148,10 @@ public class RegistrationBean implements Registration {
 
 	public String getMobileActivationCode() {
 		return this.mobileActivationCode;
+	}
+
+	public String getMobileClientLink() {
+		return this.mobileManager.getClientDownloadLink();
 	}
 
 }

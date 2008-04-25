@@ -205,28 +205,27 @@ public class SubscriptionEntity implements Serializable {
 
 	public interface QueryInterface {
 		@QueryMethod(QUERY_WHERE_SUBJECT)
-		List<SubscriptionEntity> listSubsciptions(@QueryParam("subject")
-		SubjectEntity subject);
+		List<SubscriptionEntity> listSubsciptions(
+				@QueryParam("subject") SubjectEntity subject);
 
 		@QueryMethod(QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE)
-		long getNumberOfActiveSubscriptions(@QueryParam("application")
-		ApplicationEntity application, @QueryParam("lastLogin")
-		Date lastLogin);
+		long getNumberOfActiveSubscriptions(
+				@QueryParam("application") ApplicationEntity application,
+				@QueryParam("lastLogin") Date lastLogin);
 
 		@QueryMethod(QUERY_COUNT_WHERE_APPLICATION)
-		long getNumberOfSubscriptions(@QueryParam("application")
-		ApplicationEntity application);
+		long getNumberOfSubscriptions(
+				@QueryParam("application") ApplicationEntity application);
 
 		@QueryMethod(QUERY_WHERE_APPLICATION)
-		List<SubscriptionEntity> listSubscriptions(@QueryParam("application")
-		ApplicationEntity application);
+		List<SubscriptionEntity> listSubscriptions(
+				@QueryParam("application") ApplicationEntity application);
 
-		@QueryMethod(QUERY_WHERE_USER_APPLICATION_ID)
-		SubscriptionEntity getSubscription(@QueryParam("subscriptionUserId")
-		String subscriptionUserId);
+		@QueryMethod(value = QUERY_WHERE_USER_APPLICATION_ID, nullable = true)
+		SubscriptionEntity findSubscription(
+				@QueryParam("subscriptionUserId") String subscriptionUserId);
 
 		@UpdateMethod(DELETE_ALL_SUBJECT)
-		void deleteAll(@QueryParam("subject")
-		SubjectEntity subject);
+		void deleteAll(@QueryParam("subject") SubjectEntity subject);
 	}
 }

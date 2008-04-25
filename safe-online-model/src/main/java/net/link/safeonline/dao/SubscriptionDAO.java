@@ -58,5 +58,5 @@ public interface SubscriptionDAO {
 
 	void removeAllSubscriptions(SubjectEntity subject);
 
-	SubscriptionEntity getSubscription(String userApplicationId);
+	SubscriptionEntity findSubscription(String userApplicationId);
 }
