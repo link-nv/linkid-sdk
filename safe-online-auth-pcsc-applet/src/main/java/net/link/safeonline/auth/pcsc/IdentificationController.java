@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -148,13 +149,14 @@ public class IdentificationController implements AppletController {
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Content-Type",
 				"application/x-www-form-urlencoded");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
 		String content = "name="
 				+ URLEncoder.encode(identityFile.getName(), "UTF-8")
 				+ "&firstname="
 				+ URLEncoder.encode(identityFile.getFirstName(), "UTF-8")
 				+ "&dob="
-				+ URLEncoder.encode(identityFile.getBirthDate().toString(),
-						"UTF-8") + "&nationality="
+				+ URLEncoder.encode(formatter.format(identityFile
+						.getBirthDate()), "UTF-8") + "&nationality="
 				+ URLEncoder.encode(identityFile.getNationality(), "UTF-8")
 				+ "&sex="
 				+ URLEncoder.encode(identityFile.getSex().name(), "UTF-8")
