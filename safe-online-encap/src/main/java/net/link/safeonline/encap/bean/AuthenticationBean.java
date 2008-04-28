@@ -105,19 +105,19 @@ public class AuthenticationBean implements Authentication {
 			login(deviceUserId);
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+					FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
 			HelpdeskLogger.add("login: subject not found for " + this.mobile,
 					LogLevelType.ERROR);
 			return null;
 		} catch (MalformedURLException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
 			HelpdeskLogger.add("login: encap webservice not available",
 					LogLevelType.ERROR);
 			return null;
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
 			HelpdeskLogger.add("login: failed to contact encap webservice for "
 					+ this.mobile, LogLevelType.ERROR);
 			return null;
@@ -169,12 +169,18 @@ public class AuthenticationBean implements Authentication {
 			LOG.debug("requestOTP: MalformedURLException thrown: "
 					+ e.getMessage());
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
 			return null;
 		} catch (MobileException e) {
 			LOG.debug("requestOTP: MobileException thrown: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
+			return null;
+		} catch (SubjectNotFoundException e) {
+			HelpdeskLogger.add("login: subject not found for " + this.mobile,
+					LogLevelType.ERROR);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
 			return null;
 		}
 		return "success";

@@ -156,7 +156,11 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 	}
 
 	public String requestOTP(String mobile) throws MalformedURLException,
-			MobileException {
+			MobileException, SubjectNotFoundException {
+		SubjectEntity deviceSubject = this.subjectIdentifierDAO.findSubject(
+				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
+		if (null == deviceSubject)
+			throw new SubjectNotFoundException();
 		return this.mobileManager.requestOTP(mobile);
 	}
 

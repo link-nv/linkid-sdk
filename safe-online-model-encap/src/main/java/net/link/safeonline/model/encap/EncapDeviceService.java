@@ -35,7 +35,7 @@ public interface EncapDeviceService {
 			MalformedURLException, SubjectNotFoundException;
 
 	String requestOTP(String mobile) throws MalformedURLException,
-			MobileException;
+			MobileException, SubjectNotFoundException;
 
 	List<String> getMobiles(String login);
 }

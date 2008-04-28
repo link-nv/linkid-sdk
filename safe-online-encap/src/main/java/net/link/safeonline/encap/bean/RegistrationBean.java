@@ -91,11 +91,11 @@ public class RegistrationBean implements Registration {
 					this.registrationId, this.mobile);
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
 			return null;
 		} catch (MalformedURLException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
 			return null;
 		} catch (MobileRegistrationException e) {
 			this.facesMessages.addFromResourceBundle(
@@ -124,11 +124,11 @@ public class RegistrationBean implements Registration {
 			this.encapDeviceService.remove(this.registrationId, this.mobile);
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
 			return null;
 		} catch (MalformedURLException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
 			return null;
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(

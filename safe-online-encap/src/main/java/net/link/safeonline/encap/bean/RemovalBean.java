@@ -85,7 +85,6 @@ public class RemovalBean implements Removal {
 	@DataModel(MOBILE_ATTRIBUTE_LIST_NAME)
 	List<AttributeDO> mobileAttributes;
 
-	@SuppressWarnings("unused")
 	@DataModelSelection(MOBILE_ATTRIBUTE_LIST_NAME)
 	private AttributeDO selectedMobile;
 
@@ -203,11 +202,11 @@ public class RemovalBean implements Removal {
 					this.selectedMobile.getStringValue());
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRemovalFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
 			return null;
 		} catch (MalformedURLException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRemovalFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
 			return null;
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(

@@ -3,10 +3,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:a4j="http://richfaces.org/a4j"
-	xmlns:rich="http://richfaces.org/rich">
+	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="top_content">
@@ -14,43 +11,36 @@
 	<ui:define name="content">
 		<h2>#{msgs.mobileAuthentication}</h2>
 
-		<f:facet name="aroundInvalidField">
-			<s:span styleClass="error" />
-		</f:facet>
 
 		<a4j:form id="auth-form" ajaxSubmit="true"
 			reRender="auth-form,otp-form">
-			<t:messages globalOnly="true" styleClass="error" />
 			<h:outputLabel for="mobile" value="#{msgs.mobile}" />
-			<s:decorate>
-				<h:inputText id="mobile" value="#{authentication.mobile}"
-					required="true" readonly="#{!empty authentication.challengeId}"
-					styleClass="label" />
-			</s:decorate>
-			<t:message for="mobile" styleClass="error" />
+			<h:inputText id="mobile" value="#{authentication.mobile}"
+				required="true" readonly="#{!empty authentication.challengeId}"
+				styleClass="label" />
 			<h:outputLabel for="generateOTP" value="" />
 			<h:commandButton id="generateOTP" value="#{msgs.mobileRequestOTP}"
 				action="#{authentication.requestOTP}"
 				rendered="#{empty authentication.challengeId}" class="submit" />
+			<h:commandButton action="#{authentication.cancel}" id="cancel"
+				value="#{msgs.cancelaction}" class="submit"
+				rendered="#{empty authentication.challengeId}" />
+			<h:messages styleClass="error"
+				rendered="#{empty authentication.challengeId}" />
 		</a4j:form>
 
 		<h:form id="otp-form">
 			<f:subview rendered="#{!empty authentication.challengeId}">
 				<h:outputLabel for="otp" value="#{msgs.mobileOTP}" />
-				<s:decorate>
-					<h:inputText id="otp" value="#{authentication.mobileOTP}"
-						required="true" styleClass="label" />
-				</s:decorate>
-				<t:message for="otp" styleClass="error" />
+				<h:inputText id="otp" value="#{authentication.mobileOTP}"
+					required="true" styleClass="label" />
 				<h:outputLabel for="login" value="" />
 				<h:commandButton action="#{authentication.login}" id="login"
 					value="#{msgs.loginaction}" class="submit" />
+				<h:commandButton action="#{authentication.cancel}" id="cancel"
+					value="#{msgs.cancelaction}" class="submit" />
+				<h:messages styleClass="error" />
 			</f:subview>
-		</h:form>
-
-		<h:form id="cancel-form">
-			<h:commandButton action="#{authentication.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" class="submit" />
 		</h:form>
 
 	</ui:define>
