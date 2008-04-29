@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -423,7 +424,7 @@ public class Pcsc {
 							+ field.getName() + "\": " + e.getMessage());
 				}
 			} else if (String.class.equals(field.getType())) {
-				fieldValue = new String(value);
+				fieldValue = new String(value, Charset.forName("UTF-8"));
 			} else {
 				fieldValue = value;
 			}
