@@ -122,7 +122,7 @@ public class Pcsc {
 
 	private BufferedImage photo;
 
-	protected Pcsc(CardChannel cardChannel) {
+	public Pcsc(CardChannel cardChannel) {
 		this.cardChannel = cardChannel;
 		try {
 			this.certificateFactory = CertificateFactory.getInstance("X.509");
@@ -419,8 +419,8 @@ public class Pcsc {
 				try {
 					fieldValue = convertor.convert(value);
 				} catch (ConvertorException e) {
-					throw new RuntimeException("convert error on field: "
-							+ field.getName());
+					throw new RuntimeException("convert error on field \""
+							+ field.getName() + "\": " + e.getMessage());
 				}
 			} else if (String.class.equals(field.getType())) {
 				fieldValue = new String(value);

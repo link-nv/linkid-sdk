@@ -7,6 +7,7 @@
 
 package net.link.safeonline.auth.pcsc;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
@@ -23,7 +24,7 @@ public class BirthDateConvertor implements Convertor<Date> {
 
 	@Override
 	public Date convert(byte[] value) throws ConvertorException {
-		String strValue = new String(value);
+		String strValue = new String(value, Charset.forName("UTF-8"));
 		StringTokenizer stringTokenizer = new StringTokenizer(strValue, " .");
 		int day = Integer.parseInt(stringTokenizer.nextToken());
 		String monthStr = stringTokenizer.nextToken();
