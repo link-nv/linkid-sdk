@@ -9,7 +9,6 @@ package net.link.safeonline.beid.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -82,8 +81,7 @@ public class IdentificationExitServlet extends AbstractInjectionServlet {
 		{
 			writer.println("<body onload=\"document.myform.submit();\">");
 			{
-				writer.println("<form name=\"myform\" action=\""
-						+ URLEncoder.encode(this.target, "UTF-8")
+				writer.println("<form name=\"myform\" action=\"" + this.target
 						+ "\" method=\"POST\">");
 				{
 					addField(writer, "name", this.name);
