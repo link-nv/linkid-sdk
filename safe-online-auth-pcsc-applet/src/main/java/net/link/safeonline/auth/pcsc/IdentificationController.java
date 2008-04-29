@@ -25,7 +25,6 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.CardTerminals;
 import javax.smartcardio.TerminalFactory;
-import javax.smartcardio.CardTerminals.State;
 
 import net.link.safeonline.applet.AppletControl;
 import net.link.safeonline.applet.AppletController;
@@ -120,8 +119,22 @@ public class IdentificationController implements AppletController {
 		CardTerminals terminals = factory.terminals();
 		List<CardTerminal> terminalList;
 		try {
-			terminalList = terminals.list(State.CARD_PRESENT);
+			terminalList = terminals.list();
+			if (0 == terminalList.size()) {
+				this.appletView.outputInfoMessage(InfoLevel.ERROR,
+						this.messages.getString(KEY.NO_READER));
+				return null;
+			}
 			for (CardTerminal cardTerminal : terminalList) {
+				if (false == cardTerminal.isCardPresent()) {
+					this.appletView.outputInfoMessage(InfoLevel.NORMAL,
+							this.messages.getString(KEY.NO_CARD));
+					if (false == cardTerminal.waitForCardPresent(0)) {
+						this.appletView.outputInfoMessage(InfoLevel.ERROR,
+								this.messages.getString(KEY.ERROR));
+						return null;
+					}
+				}
 				Card card = cardTerminal.connect("T=0");
 				ATR atr = card.getATR();
 				byte[] atrBytes = atr.getBytes();

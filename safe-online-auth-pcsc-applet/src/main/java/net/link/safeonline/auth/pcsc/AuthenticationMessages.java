@@ -19,7 +19,8 @@ import java.util.ResourceBundle;
 public class AuthenticationMessages {
 
 	public static enum KEY {
-		START("start"), ERROR("error"), NO_BEID("noBeID"), DONE("done");
+		START("start"), ERROR("error"), NO_BEID("noBeID"), DONE("done"), NO_READER(
+				"noReader"), NO_CARD("noCard");
 
 		private final String key;
 
