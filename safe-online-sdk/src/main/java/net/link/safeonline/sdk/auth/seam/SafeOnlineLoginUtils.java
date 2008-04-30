@@ -31,9 +31,9 @@ import org.jboss.seam.log.Log;
 
 /**
  * Utility class for usage within a JBoss Seam JSF based web application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SafeOnlineLoginUtils {
 
@@ -60,27 +60,28 @@ public class SafeOnlineLoginUtils {
 	/**
 	 * Performs a SafeOnline login using the SafeOnline authentication web
 	 * application.
-	 *
+	 * 
 	 * <p>
 	 * The method requires the <code>SafeOnlineAuthenticationServiceUrl</code>
 	 * context parameter defined in web.xml pointing to the location of the
 	 * SafeOnline authentication web application.
 	 * </p>
-	 *
+	 * 
 	 * <p>
 	 * The method also requires the <code>ApplicationName</code> context
 	 * parameter defined in web.xml containing the application name that will be
 	 * communicated towards the SafeOnline authentication web application.
 	 * </p>
-	 *
+	 * 
 	 * @param facesMessages
 	 * @param log
 	 * @param targetPage
 	 *            the page to which the user should be redirected after login.
 	 */
 	@SuppressWarnings("unchecked")
-	public static String login(@SuppressWarnings("unused")
-	FacesMessages facesMessages, Log log, String targetPage) {
+	public static String login(
+			@SuppressWarnings("unused") FacesMessages facesMessages, Log log,
+			String targetPage) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 
