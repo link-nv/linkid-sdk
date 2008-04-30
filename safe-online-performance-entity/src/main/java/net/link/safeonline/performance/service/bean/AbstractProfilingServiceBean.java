@@ -13,7 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <h2>{@link ProfilingServiceBean}<br>
+ * <h2>{@link AbstractProfilingServiceBean}<br>
  * <sub>Abstract class for the entity services.</sub></h2>
  *
  * <p>
@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author mbillemo
  */
-public abstract class ProfilingServiceBean {
+public abstract class AbstractProfilingServiceBean {
 
-	static final Log LOG = LogFactory.getLog(ProfilingServiceBean.class);
+	static final Log LOG = LogFactory.getLog(AbstractProfilingServiceBean.class);
 
 	private static EntityManager defaultEntityManager;
 

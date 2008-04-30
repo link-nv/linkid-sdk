@@ -37,7 +37,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = ExecutionService.BINDING)
-public class ExecutionServiceBean extends ProfilingServiceBean implements
+public class ExecutionServiceBean extends AbstractProfilingServiceBean implements
 		ExecutionService {
 
 	@Resource

@@ -75,7 +75,7 @@ public class ScenarioControllerBean implements ScenarioController {
 	/*
 	 * Timeout values for long running methods (in seconds).
 	 */
-	private static final int CHARTING_TIMEOUT = 5 * 60 * 60; // 5h
+	private static final int CHARTING_TIMEOUT = 10 * 60 * 60; // 24h
 	private static final int SCENARIO_EXECUTION_TIMEOUT = 10 * 60; // 10m
 
 	private static final Log LOG = LogFactory

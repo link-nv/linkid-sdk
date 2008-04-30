@@ -34,7 +34,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = DriverExceptionService.BINDING)
-public class DriverExceptionServiceBean extends ProfilingServiceBean implements
+public class DriverExceptionServiceBean extends AbstractProfilingServiceBean implements
 		DriverExceptionService {
 
 	/**
