@@ -190,7 +190,7 @@ public class SmartCardTest {
 			throw new Exception("driver location is null");
 		}
 		PKCS11 pkcs11 = PKCS11.getInstance(existingDriverLocation
-				.getAbsolutePath(), null, false);
+				.getAbsolutePath(), "C_GetFunctionList", null, false);
 		assertNotNull(pkcs11);
 		try {
 			CK_INFO info = pkcs11.C_GetInfo();

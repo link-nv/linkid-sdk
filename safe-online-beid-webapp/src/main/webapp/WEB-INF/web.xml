@@ -288,6 +288,16 @@
 		<servlet-name>IdentificationExitServlet</servlet-name>
 		<url-pattern>/identificationExit</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>HelpdeskServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.servlet.HelpdeskServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HelpdeskServlet</servlet-name>
+		<url-pattern>/helpdesk</url-pattern>
+	</servlet-mapping>
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>

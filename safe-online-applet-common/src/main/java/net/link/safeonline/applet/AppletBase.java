@@ -235,27 +235,18 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	public boolean addHelpdeskEvent(String message, LogLevelType logLevel)
 			throws IOException {
-		/*
-		 * FIXME: don't mix statement sending with helpdesk event messaging
-		 * 
 		HttpURLConnection httpURLConnection = prepareHelpdeskConnection();
-
 		httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD, "");
 		httpURLConnection.setRequestProperty(
 				HelpdeskCodes.HELPDESK_ADD_MESSAGE, message);
 		httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD_LEVEL,
 				logLevel.toString());
-
 		return sendHelpdeskStatement(httpURLConnection);
-		*/
-		return true;
 	}
 
 	public boolean clearHelpdesk() throws IOException {
 		HttpURLConnection httpURLConnection = prepareHelpdeskConnection();
-
 		httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_CLEAR, "");
-
 		return sendHelpdeskStatement(httpURLConnection);
 	}
 
@@ -277,7 +268,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private HttpURLConnection prepareHelpdeskConnection() throws IOException {
 		URL documentBase = this.getDocumentBase();
-		String servletPath = this.getParameter("ServletPath");
+		String servletPath = this.getParameter("HelpdeskEventPath");
 		URL url = AppletControl.transformUrl(documentBase, servletPath);
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url
 				.openConnection();

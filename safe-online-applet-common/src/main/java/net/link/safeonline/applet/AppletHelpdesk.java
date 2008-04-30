@@ -21,10 +21,16 @@ import net.link.safeonline.shared.helpdesk.LogLevelType;
  */
 public interface AppletHelpdesk {
 
-	public boolean addHelpdeskEvent(String message, LogLevelType logLevel)
+	boolean addHelpdeskEvent(String message, LogLevelType logLevel)
 			throws IOException;
 
-	public boolean clearHelpdesk() throws IOException;
+	boolean clearHelpdesk() throws IOException;
 
-	public Long persistHelpdesk() throws IOException;
+	/**
+	 * Persists the helpdesk context.
+	 * 
+	 * @return the helpdesk Id.
+	 * @throws IOException
+	 */
+	Long persistHelpdesk() throws IOException;
 }
