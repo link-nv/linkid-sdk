@@ -14,22 +14,22 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.usageAgreementVersion}: #{msgs.draft}</h1>
+		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{msgs.draft}</h2>
 	</ui:define>
 	<ui:define name="content">
-
-
 
 		<a4j:form>
 			<rich:panel>
 				<f:facet name="header">
-					<h:outputLabel
+					<h:outputLabel for="text"
 						value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
 				</f:facet>
-				<p><h:inputTextarea value="#{selectedUsageAgreementText.text}"
-					escape="false" cols="100" rows="10" /></p>
+				<h:inputTextarea id="text"
+					value="#{selectedUsageAgreementText.text}" escape="false" cols="75"
+					rows="10" />
 			</rich:panel>
 
+			<h:outputLabel for="save" value="" />
 			<a4j:commandButton value="#{msgs.saveaction}"
 				action="#{globalUsageAgreement.saveText}" id="save"
 				styleClass="submit" />

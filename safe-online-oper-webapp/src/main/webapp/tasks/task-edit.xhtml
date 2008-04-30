@@ -18,25 +18,29 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<h:form>
-			<table class="name_value">
-				<tr>
-					<th>#{msgs.name}:</th>
-					<td>#{selectedTask.name}</td>
-				</tr>
-				<tr>
-					<th>#{msgs.jndiname}:</th>
-					<td>#{selectedTask.jndiName}</td>
-				</tr>
-			</table>
+            <table class="listingTable">
+                <colgroup />
+                <colgroup />
 
-			<h:outputLabel for="scheduling" value="#{msgs.scheduling}" />
-			<h:selectOneMenu id="scheduling"
-				value="#{selectedTask.scheduling.name}">
-				<f:selectItems value="#{selectSchedulingList}" />
-			</h:selectOneMenu>
+                <tbody>
+                    <tr>
+                        <th>#{msgs.name}:</th>
+                        <td>#{selectedTask.name}</td>
+                    </tr>
+                    <tr>
+                        <th>#{msgs.jndiname}:</th>
+                        <td>#{selectedTask.jndiName}</td>
+                    </tr>
+                    <tr>
+                        <th>#{msgs.scheduling}</th>
+                        <td><h:selectOneMenu id="scheduling"
+                            value="#{selectedTask.scheduling.name}">
+                            <f:selectItems value="#{selectSchedulingList}" />
+                        </h:selectOneMenu></td>
+                    </tr>
+                </tbody>
+			</table>
 
 			<h:outputLabel for="saveTask" value="" />
 			<h:commandButton action="#{scheduling.saveTask}" id="saveTask"

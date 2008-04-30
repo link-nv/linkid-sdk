@@ -18,13 +18,21 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h:panelGrid columns="2">
-			<h:outputLabel for="login" value="#{msgs.login}" />
-			<h:outputLabel id="login" value="#{audit_principal.name}" />
+        <table class="listingTable">
+            <colgroup />
+            <colgroup />
 
-			<h:outputLabel for="id" value="#{msgs.id}" />
-			<h:outputLabel id="id" value="#{principal}" />
-		</h:panelGrid>
+            <tbody>
+                <tr>
+                    <th><h:outputLabel for="login" value="#{msgs.login}" /></th>
+                    <td><h:outputLabel id="login" value="#{audit_principal.name}" /></td>
+                </tr>
+                <tr>
+                    <th><h:outputLabel for="id" value="#{msgs.id}" /></th>
+                    <td><h:outputLabel id="id" value="#{principal}" /></td>
+                </tr>
+            </tbody>
+        </table>
 
 		<h:form>
 			<h:commandButton id="back" value="#{msgs.backaction}" action="back"

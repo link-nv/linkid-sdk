@@ -13,20 +13,18 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<a4j:form id="editForm">
-			<rich:tabPanel switchType="client">
-
-				<rich:tab label="#{msgs.description}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				label="#{msgs.description}">
 					<h:inputTextarea value="#{selectedApplication.description}"
 						escape="false" cols="75" rows="10" />
-				</rich:tab>
+            </rich:simpleTogglePanel>
 
-				<rich:tab label="#{msgs.devices}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				label="#{msgs.devices}">
 					<h:outputLabel for="restriction" value="#{msgs.isDeviceRestriction}"/> <h:selectBooleanCheckbox
 						id="restriction" value="#{selectedApplication.deviceRestriction}" />
-					<rich:dataTable value="#{allowedDevices}" var="item">
+					<rich:dataTable value="#{allowedDevices}" var="item" styleClass="inner">
 						<h:column>
 							<f:facet name="header">#{msgs.name}</f:facet>
 							<h:outputText value="#{item.friendlyName}" />
@@ -40,9 +38,7 @@
 							<h:inputText value="#{item.weight}" styleClass="label"/>
 						</h:column>
 					</rich:dataTable>
-
-				</rich:tab>
-			</rich:tabPanel>
+            </rich:simpleTogglePanel>
 
 			<a4j:commandButton id="save" value="#{msgs.saveaction}"
 				action="#{ownerApplication.save}" styleClass="submit" />

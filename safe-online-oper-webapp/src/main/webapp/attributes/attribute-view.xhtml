@@ -19,12 +19,15 @@
 	</ui:define>
 	<ui:define name="content">
 
-
 		<f:subview>
-			<rich:tabPanel id="tabs" switchType="client">
-				<rich:tab id="generic-tab" label="#{msgs.generic}">
-					<table class="listingTable">
-						<tr>
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+                id="generic-tab" label="#{msgs.generic}">
+                <table class="inner listingTable">
+                    <colgroup />
+                    <colgroup />
+
+                    <tbody>
+                        <tr>
 							<td><h:outputText value="#{msgs.name}" /></td>
 							<td><h:outputText value="#{selectedAttributeType.name}" /></td>
 						</tr>
@@ -53,11 +56,17 @@
 							<td><h:outputText
 								value="#{selectedAttributeType.deviceAttribute}" /></td>
 						</tr>
-					</table>
-				</rich:tab>
+                    </tbody>
+                </table>
+            </rich:simpleTogglePanel>
 
-				<rich:tab id="access-control-tab" label="#{msgs.accessControl}">
-					<table class="listingTable">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+                id="access-control-tab" label="#{msgs.accessControl}">
+                <table class="inner listingTable">
+                    <colgroup />
+                    <colgroup />
+
+                    <tbody>
 						<tr>
 							<td><h:outputText value="#{msgs.userVisible}" /></td>
 							<td><h:outputText
@@ -68,74 +77,80 @@
 							<td><h:outputText
 								value="#{selectedAttributeType.userEditable}" /></td>
 						</tr>
-					</table>
-				</rich:tab>
+                    </tbody>
+                </table>
+            </rich:simpleTogglePanel>
 
-				<rich:tab id="compounded-tab" label="#{msgs.compounded}"
-					disabled="#{!selectedAttributeType.compounded}">
-					<h:dataTable id="compounded-members" var="item"
-						value="#{selectedAttributeType.members}" styleClass="listingTable"
-						rowClasses="listingTable_Row1,listingTable_Row2">
-						<h:column>
-							<f:facet name="header">#{msgs.name}</f:facet>
-							<h:outputText value="#{item.member.name}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">#{msgs.required}</f:facet>
-							<h:outputText value="#{item.required}" />
-						</h:column>
-					</h:dataTable>
-				</rich:tab>
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+				id="compounded-tab" label="#{msgs.compounded}"
+                disabled="#{!selectedAttributeType.compounded}">
 
-				<rich:tab id="description-tab" label="#{msgs.description}">
-					<h:form>
-						<h:dataTable id="desc-data" var="item"
-							value="#{attributeTypeDescriptions}" styleClass="listingTable"
-							rowClasses="listingTable_Row1,listingTable_Row2">
-							<h:column>
-								<f:facet name="header">#{msgs.language}</f:facet>
-								<h:commandLink value="#{item.language}"
-									action="#{attributeDesc.edit}" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">#{msgs.name}</f:facet>
-								<h:outputText value="#{item.name}" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">#{msgs.description}</f:facet>
-								<h:outputText value="#{item.description}" />
-							</h:column>
-						</h:dataTable>
-						<rich:spacer height="10" />
-						<h:commandButton action="add" id="add" value="#{msgs.addaction}"
-							styleClass="submit" />
-					</h:form>
-				</rich:tab>
+                <rich:dataTable id="compounded-members" var="item"
+                    value="#{selectedAttributeType.members}" styleClass="inner listingTable"
+                    rowClasses="listingTable_Row1,listingTable_Row2">
+                    <h:column>
+                        <f:facet name="header">#{msgs.name}</f:facet>
+                        <h:outputText value="#{item.member.name}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msgs.required}</f:facet>
+                        <h:outputText value="#{item.required}" />
+                    </h:column>
+                </rich:dataTable>
+            </rich:simpleTogglePanel>
 
-				<rich:tab id="providers-tab" label="#{msgs.attributeProviders}">
-					<h:form>
-						<h:dataTable id="atttrib-prov" var="item"
-							value="#{attributeProviders}" styleClass="listingTable"
-							rowClasses="listingTable_Row1,listingTable_Row2">
-							<h:column>
-								<f:facet name="header">#{msgs.application}</f:facet>
-								<h:outputText value="#{item.applicationName}" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">#{msgs.action}</f:facet>
-								<h:commandLink value="#{msgs.removeaction}"
-									action="#{attributeProvider.removeProvider}" />
-							</h:column>
-						</h:dataTable>
-						<rich:spacer height="10" />
-						<h:commandButton action="add-provider" id="add-provider"
-							value="#{msgs.addaction}"
-							rendered="#{selectedAttributeType.local}" styleClass="submit" />
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+				id="description-tab" label="#{msgs.description}">
 
-						<h:messages styleClass="error" globalOnly="true" />
-					</h:form>
-				</rich:tab>
-			</rich:tabPanel>
+                <h:form>
+                    <rich:dataTable id="desc-data" var="item"
+                        value="#{attributeTypeDescriptions}" styleClass="inner listingTable"
+                        rowClasses="listingTable_Row1,listingTable_Row2">
+                        <h:column>
+                            <f:facet name="header">#{msgs.language}</f:facet>
+                            <h:commandLink value="#{item.language}"
+                                action="#{attributeDesc.edit}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.name}</f:facet>
+                            <h:outputText value="#{item.name}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.description}</f:facet>
+                            <h:outputText value="#{item.description}" />
+                        </h:column>
+                    </rich:dataTable>
+
+                    <rich:spacer height="10" />
+                    <h:commandButton action="add" id="add" value="#{msgs.addaction}"
+                        styleClass="submit" />
+                </h:form>
+            </rich:simpleTogglePanel>
+
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+				id="providers-tab" label="#{msgs.attributeProviders}">
+                <h:form>
+                    <rich:dataTable id="atttrib-prov" var="item"
+                        value="#{attributeProviders}" styleClass="inner listingTable"
+                        rowClasses="listingTable_Row1,listingTable_Row2">
+                        <h:column>
+                            <f:facet name="header">#{msgs.application}</f:facet>
+                            <h:outputText value="#{item.applicationName}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.action}</f:facet>
+                            <h:commandLink value="#{msgs.removeaction}"
+                                action="#{attributeProvider.removeProvider}" />
+                        </h:column>
+                    </rich:dataTable>
+                    <rich:spacer height="10" />
+                    <h:commandButton action="add-provider" id="add-provider"
+                        value="#{msgs.addaction}"
+                        rendered="#{selectedAttributeType.local}" styleClass="submit" />
+
+                    <h:messages styleClass="error" globalOnly="true" />
+                </h:form>
+            </rich:simpleTogglePanel>
 		</f:subview>
 
 		<rich:spacer height="10" />

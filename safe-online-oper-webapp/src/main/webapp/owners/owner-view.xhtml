@@ -17,18 +17,25 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<table class="name_value">
-			<tr>
-				<th><h:outputText value="#{msgs.name}" /></th>
-				<td><h:outputText id="name"
-					value="#{selectedApplicationOwner.entity.name}" /></td>
-			</tr>
-			<tr>
-				<th><h:outputText value="#{msgs.admin}" /></th>
-				<td><h:outputText id="admin"
-					value="#{selectedApplicationOwner.adminName}" /></td>
-			</tr>
+		<table class="listingTable">
+            <colgroup />
+            <colgroup />
+
+            <tbody>
+                <tr>
+                    <th><h:outputText value="#{msgs.name}" /></th>
+                    <td><h:outputText id="name"
+                        value="#{selectedApplicationOwner.entity.name}" /></td>
+                </tr>
+                <tr>
+                    <th><h:outputText value="#{msgs.admin}" /></th>
+                    <td><h:outputText id="admin"
+                        value="#{selectedApplicationOwner.adminName}" /></td>
+                </tr>
+            </tbody>
 		</table>
+
+        <br />
 
 		<a4j:form id="appOwnerForm" ajaxSubmit="true" reRender="app-data">
 			<rich:dataTable id="app-data" var="item" value="#{applicationList}"

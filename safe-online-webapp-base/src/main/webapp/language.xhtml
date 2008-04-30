@@ -8,19 +8,35 @@
 	<ui:define name="content">
 		<h1>#{msgs.chooseLanguage}</h1>
 		<h:form>
-			<table>
-				<tr>
-					<td><h:graphicImage value="/images/langs/en.gif" /></td>
-					<td><h:commandLink id="en" action="#{language.goBack}"
-						value="#{msgs.languageEnglish}"
-						actionListener="#{language.selectLanguage}" /></td>
-				</tr>
-				<tr>
-					<td><h:graphicImage value="/images/langs/nl.gif" /></td>
-					<td><h:commandLink id="nl" action="#{language.goBack}"
-						value="#{msgs.languageDutch}"
-						actionListener="#{language.selectLanguage}" /></td>
-				</tr>
+            <table class="listingTable">
+                <colgroup />
+
+                <tbody>
+                    <tr><th><h:commandLink id="en" action="#{language.goBack}"
+                                actionListener="#{language.selectLanguage}">
+                                <table class="noborders">
+                                    <colgroup />
+                                    <colgroup/>
+
+                                    <tr>
+                                        <td class="right"><h:graphicImage value="/images/langs/en.gif" /></td>
+                                        <td>#{msgs.languageEnglish}</td>
+                                    </tr>
+                                </table>
+                    </h:commandLink></th></tr>
+                    <tr><th><h:commandLink id="nl" action="#{language.goBack}"
+                                actionListener="#{language.selectLanguage}">
+                                <table class="noborders">
+                                    <colgroup />
+                                    <colgroup />
+
+                                    <tr>
+                                        <td class="right"><h:graphicImage value="/images/langs/nl.gif" /></td>
+                                        <td>#{msgs.languageDutch}</td>
+                                    </tr>
+                                </table>
+                    </h:commandLink></th></tr>
+                </tbody>
 			</table>
 		</h:form>
 	</ui:define>

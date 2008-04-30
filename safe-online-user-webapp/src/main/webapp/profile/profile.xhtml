@@ -18,8 +18,17 @@
 	</ui:define>
 	<ui:define name="content">
 
+        <table class="listingTable">
+            <colgroup />
+            <colgroup />
 
-		<p>#{msgs.login}: #{identityBean.username}</p>
+            <tbody>
+                <tr>
+                    <th>#{msgs.login}</th>
+                    <td>#{identityBean.username}</td>
+                </tr>
+            </tbody>
+        </table>
 
 		<f:subview rendered="#{0 == attributeList.rowCount}">
 			<p>#{msgs.profileEmpty}</p>

@@ -15,52 +15,34 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<rich:tabPanel id="usagePanel" switchType="client">
+        <a4j:outputPanel id="usagePanel">
 
-			<rich:tab label="#{msgs.version}: #{msgs.draft}"
-				rendered="#{!empty ownerUsageAgreement.draftUsageAgreement}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+                label="#{msgs.version}: #{msgs.draft}" rendered="#{!empty ownerUsageAgreement.draftUsageAgreement}">
 
 				<a4j:form id="editDraftForm" reRender="usagePanel" ajaxSubmit="true">
-					<h:panelGrid columns="2" border="0">
-						<a4j:commandLink value="#{msgs.releaseaction}"
-							action="#{ownerUsageAgreement.releaseDraft}" />
-						<a4j:commandLink value="#{msgs.removeaction}"
-							action="#{ownerUsageAgreement.removeDraft}" />
-					</h:panelGrid>
+                    <table class="inner listingTable">
+                        <colgroup />
+                        <colgroup />
+
+                        <tbody>
+                            <tr><th colspan="2">#{msgs.actions}</th></tr>
+                            <tr><th><a4j:commandLink value="#{msgs.releaseaction}"
+                                        action="#{ownerUsageAgreement.releaseDraft}" />
+                            </th><th><a4j:commandLink value="#{msgs.removeaction}"
+                                        action="#{ownerUsageAgreement.removeDraft}" />
+                            </th></tr>
+                        </tbody>
+                    </table>
 				</a4j:form>
 
-				<a4j:form id="addDraftLanguageForm">
-					<f:facet name="aroundInvalidField">
-						<s:span styleClass="error" />
-					</f:facet>
-
-					<h:outputLabel for="language" value="#{msgs.language}" />
-
-					<s:decorate>
-						<h:inputText id="language" value="#{ownerUsageAgreement.language}"
-							required="true" styleClass="label" />
-					</s:decorate>
-					<rich:suggestionbox for="language"
-						suggestionAction="#{ownerUsageAgreement.autocompleteLanguage}"
-						var="languageInput" selfRendered="true">
-
-						<h:outputText value="#{languageInput}" />
-
-					</rich:suggestionbox>
-
-					<h:message for="language" styleClass="error" />
-
-					<h:outputLabel for="add" value="" />
-					<h:commandLink id="add" value="#{msgs.addaction}"
-						action="#{ownerUsageAgreement.addText}" />
-
-				</a4j:form>
+                <br />
 
 				<a4j:form id="editDraftTextsForm" reRender="usagePanel"
 					ajaxSubmit="true">
 					<rich:dataTable id="draft-text-data" var="item"
 						value="#{draftUsageAgreementsTexts}" rows="10"
-						styleClass="listingTable"
+						styleClass="inner listingTable"
 						rowClasses="listingTable_Row1,listingTable_Row2">
 						<h:column>
 							<a4j:commandLink id="view-draft-text"
@@ -111,16 +93,70 @@
 						</f:facet>
 					</rich:dataTable>
 				</a4j:form>
-			</rich:tab>
 
-			<rich:tab
+				<a4j:form id="addDraftLanguageForm">
+                    <table class="inner listingTable">
+                        <colgroup />
+                        <colgroup />
+
+                        <tbody>
+                            <tr>
+                                <th><h:outputLabel for="language" value="#{msgs.language}" /></th>
+                                <td><f:facet name="aroundInvalidField">
+                                        <s:span styleClass="error" />
+                                    </f:facet>
+
+                                    <s:decorate>
+                                        <h:inputText id="language" value="#{ownerUsageAgreement.language}"
+                                            required="true" styleClass="label" />
+                                    </s:decorate>
+                                    <rich:suggestionbox for="language"
+                                        suggestionAction="#{ownerUsageAgreement.autocompleteLanguage}"
+                                        var="languageInput" selfRendered="true">
+
+                                        <h:outputText value="#{languageInput}" />
+                                    </rich:suggestionbox>
+
+                                    <h:message for="language" styleClass="error" />
+                                </td><td>
+                                    <h:commandLink id="add" value="#{msgs.addaction}"
+                                        action="#{ownerUsageAgreement.addText}" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+				</a4j:form>
+            </rich:simpleTogglePanel>
+
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				label="#{msgs.version}: #{ownerUsageAgreement.currentUsageAgreement.usageAgreementVersion}"
 				rendered="#{!empty ownerUsageAgreement.currentUsageAgreement}">
+
+				<a4j:form id="editCurrentsForm" reRender="usagePanel" rendered="#{empty ownerUsageAgreement.draftUsageAgreement}"
+					ajaxSubmit="true">
+
+                    <table class="inner listingTable">
+                        <colgroup />
+                        <colgroup />
+
+                        <tbody>
+                            <tr><th colspan="2">#{msgs.actions}</th></tr>
+                            <tr><th><a4j:commandLink  id="edit-agreement" value="#{msgs.editaction}"
+                                        action="#{ownerUsageAgreement.createUsageAgreement}"
+                                        />
+                            </th></tr>
+                        </tbody>
+                    </table>
+                </a4j:form>
+
+                <br />
+ 
 				<a4j:form id="editCurrentForm" reRender="usagePanel"
 					ajaxSubmit="true">
+
 					<rich:dataTable id="current-text-data" var="item"
 						value="#{currentUsageAgreementsTexts}" rows="10"
-						styleClass="listingTable"
+						styleClass="inner listingTable"
 						rowClasses="listingTable_Row1,listingTable_Row2">
 						<h:column>
 							<a4j:commandLink id="edit-current-text"
@@ -165,14 +201,9 @@
 							</rich:datascroller>
 						</f:facet>
 					</rich:dataTable>
-
-					<a4j:commandButton id="edit-agreement" value="#{msgs.editaction}"
-						action="#{ownerUsageAgreement.createUsageAgreement}"
-						rendered="#{empty ownerUsageAgreement.draftUsageAgreement}"
-						styleClass="submit" />
 				</a4j:form>
-			</rich:tab>
-		</rich:tabPanel>
+            </rich:simpleTogglePanel>
+		</a4j:outputPanel>
 
 		<h:form>
 			<h:commandButton id="create-agreement" value="#{msgs.createaction}"

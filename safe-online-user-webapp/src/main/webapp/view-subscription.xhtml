@@ -19,35 +19,46 @@
 	</ui:define>
 	<ui:define name="content">
 
+		<a4j:outputPanel id="subscriptionPanel">
 
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+                label="#{msgs.information}">
+                <table class="inner listingTable">
+                    <colgroup />
+                    <colgroup />
 
-		<rich:tabPanel id="subscriptionPanel" switchType="client">
+                    <tbody>
+                        <tr>
+                            <th><h:outputText value="#{msgs.name}" /></th>
+                            <td><h:outputText
+                                    value="#{selectedSubscription.application.friendlyName}"
+                                    rendered="#{!empty selectedSubscription.application.friendlyName}" />
+                                <h:outputText value="#{selectedSubscription.application.name}"
+                                    rendered="#{empty selectedSubscription.application.friendlyName}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><h:outputText value="#{msgs.userOwner}" /></th>
+                            <td><h:outputText
+                                    value="#{selectedSubscription.subscriptionOwnerType}" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+			</rich:simpleTogglePanel>
 
-			<rich:tab label="#{msgs.information}">
-				<h:panelGrid columns="2" border="0">
-					<h:outputText value="#{msgs.name}" />
-					<h:outputText
-						value="#{selectedSubscription.application.friendlyName}"
-						rendered="#{!empty selectedSubscription.application.friendlyName}" />
-					<h:outputText value="#{selectedSubscription.application.name}"
-						rendered="#{empty selectedSubscription.application.friendlyName}" />
-				</h:panelGrid>
-				<h:panelGrid columns="2" border="0">
-					<h:outputText value="#{msgs.userOwner}" />
-					<h:outputText
-						value="#{selectedSubscription.subscriptionOwnerType}" />
-				</h:panelGrid>
-			</rich:tab>
-
-			<rich:tab label="#{msgs.description}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+			    label="#{msgs.description}">
 				<div class="white_space">#{selectedSubscription.application.description}</div>
-			</rich:tab>
+			</rich:simpleTogglePanel>
 
-			<rich:tab label="#{msgs.confirmedUsageAgreement}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+			    label="#{msgs.confirmedUsageAgreement}">
 				<div class="white_space">#{subscriptions.usageAgreement}</div>
-			</rich:tab>
+			</rich:simpleTogglePanel>
 
-			<rich:tab label="#{msgs.confirmedIdentity}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+			    label="#{msgs.confirmedIdentity}">
 				<ui:repeat id="data" var="item"
 					value="#{confirmedIdentityAttributes}">
 					<h:panelGrid columns="1" border="0">
@@ -57,8 +68,8 @@
 							rendered="#{!empty item.humanReadableName}" />
 					</h:panelGrid>
 				</ui:repeat>
-			</rich:tab>
-		</rich:tabPanel>
+			</rich:simpleTogglePanel>
+		</a4j:outputPanel>
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" action="back"
 				class="submit" />

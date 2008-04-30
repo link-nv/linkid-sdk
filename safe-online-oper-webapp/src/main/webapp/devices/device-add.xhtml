@@ -26,9 +26,8 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<rich:tabPanel id="device-tab-panel" switchType="client">
-
-				<rich:tab id="generic-tab" label="#{msgs.generic}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				id="generic-tab" label="#{msgs.generic}">
 					<h:outputLabel for="name" value="#{msgs.name}" />
 					<s:decorate>
 						<h:inputText id="name" value="#{operDevice.name}" required="true"
@@ -68,10 +67,10 @@
 					<h:inputText id="updateUrl" value="#{operDevice.updateURL}"
 						styleClass="label" />
 					<h:message for="updateUrl" styleClass="error" />
+            </rich:simpleTogglePanel>
 
-				</rich:tab>
-
-				<rich:tab id="attrib-tab" label="#{msgs.attribute}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				id="attrib-tab" label="#{msgs.attribute}">
 
 					<h:outputLabel for="attribute-type" value="#{msgs.deviceAttribute}" />
 					<h:selectOneMenu id="attribute-type"
@@ -85,19 +84,17 @@
 						value="#{operDevice.userAttributeType}" styleClass="label">
 						<f:selectItems value="#{attributeTypes}" />
 					</h:selectOneMenu>
+            </rich:simpleTogglePanel>
 
-				</rich:tab>
-
-				<rich:tab id="certificate-tab" label="#{msgs.certificate}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				id="certificate-tab" label="#{msgs.certificate}">
 					<h:outputLabel for="certificate" value="#{msgs.certificate}" />
 					<s:decorate>
 						<t:inputFileUpload id="certificate"
 							value="#{operDevice.certificate}" />
 					</s:decorate>
 					<h:message for="certificate" styleClass="error" />
-				</rich:tab>
-
-			</rich:tabPanel>
+            </rich:simpleTogglePanel>
 
 			<h:commandButton action="#{operDevice.add}" id="add"
 				value="#{msgs.addaction}" styleClass="submit" />

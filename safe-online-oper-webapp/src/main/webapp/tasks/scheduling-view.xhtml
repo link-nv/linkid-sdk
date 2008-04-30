@@ -20,22 +20,27 @@
 	</ui:define>
 	<ui:define name="content">
 
+        <table class="listingTable">
+            <colgroup />
+            <colgroup />
 
-
-		<table class="name_value">
-			<tr>
-				<th>#{msgs.name}</th>
-				<td>#{selectedScheduling.name}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.cron}</th>
-				<td>#{selectedScheduling.cronExpression}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.last}</th>
-				<td>#{selectedScheduling.fireDate}</td>
-			</tr>
+            <tbody>
+                <tr>
+                    <th>#{msgs.name}</th>
+                    <td>#{selectedScheduling.name}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.cron}</th>
+                    <td>#{selectedScheduling.cronExpression}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.last}</th>
+                    <td>#{selectedScheduling.fireDate}</td>
+                </tr>
+            </tbody>
 		</table>
+
+        <br />
 
 		<a4j:form id="taskForm" ajaxSubmit="true" reRender="task-data">
 			<rich:dataTable id="task-data" var="item" value="#{taskList}"

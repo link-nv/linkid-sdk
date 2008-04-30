@@ -19,15 +19,13 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<f:facet name="aroundInvalidField">
 			<s:span styleClass="error" />
 		</f:facet>
 
 		<h:form>
 			<ui:repeat id="group-data" var="group" value="#{configGroupList}">
-				<h3><h:outputText value="#{group.name}" /></h3>
+				<h2><h:outputText value="#{group.name}" /></h2>
 				<ui:repeat id="config-data" var="item" value="#{group.configItems}">
 					<h:outputLabel for="value" value="#{item.name}" />
 

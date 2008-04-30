@@ -20,37 +20,45 @@
 	</ui:define>
 	<ui:define name="content">
 
+        <table class="inner listingTable">
+            <colgroup />
+            <colgroup />
 
-		<table>
-			<tr>
-				<th>#{msgs.miscSubject}:</th>
-				<td>#{selectedTrustPoint.pk.subjectName}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.miscIssuer}:</th>
-				<td>#{selectedTrustPoint.issuerName}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.miscVersion}:</th>
-				<td>#{selectedTrustPoint.certificate.version}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.miscNotBefore}:</th>
-				<td>#{selectedTrustPoint.certificate.notBefore}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.miscNotAfter}:</th>
-				<td>#{selectedTrustPoint.certificate.notAfter}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.miscSerialNumber}:</th>
-				<td>#{selectedTrustPoint.certificate.serialNumber}</td>
-			</tr>
+            <tbody>
+                <tr>
+                    <th>#{msgs.miscSubject}:</th>
+                    <td>#{selectedTrustPoint.pk.subjectName}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscIssuer}:</th>
+                    <td>#{selectedTrustPoint.issuerName}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscVersion}:</th>
+                    <td>#{selectedTrustPoint.certificate.version}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscNotBefore}:</th>
+                    <td>#{selectedTrustPoint.certificate.notBefore}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscNotAfter}:</th>
+                    <td>#{selectedTrustPoint.certificate.notAfter}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscSerialNumber}:</th>
+                    <td>#{selectedTrustPoint.certificate.serialNumber}</td>
+                </tr>
+                <tr>
+                    <th colspan="2">#{msgs.certificate}</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="white_space">
+                        <h:outputText value="#{selectedTrustPoint.certificate}" />
+                    </td>
+                </tr>
+            </tbody>
 		</table>
-
-		<pre>
-		<h:outputText value="#{selectedTrustPoint.certificate}" />
-		</pre>
 
 		<h:form>
 			<h:commandButton action="#{trustPoint.removeTrustPoint}" id="remove"

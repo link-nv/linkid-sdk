@@ -21,8 +21,9 @@
 	<ui:define name="content">
 
 		<h:form enctype="multipart/form-data">
-			<rich:tabPanel id="tabs" switchType="client">
-				<rich:tab id="generic-tab" label="#{msgs.generic}">
+
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				id="generic-tab" label="#{msgs.generic}">
 					<h:outputLabel for="node" value="#{msgs.location}" />
 
 					<h:selectOneMenu id="node" value="#{operDevice.node}"
@@ -60,10 +61,10 @@
 							styleClass="label" />
 						<h:message for="updateUrl" styleClass="error" />
 					</s:decorate>
+			</rich:simpleTogglePanel>
 
-				</rich:tab>
-
-				<rich:tab id="attrib-tab" label="#{msgs.attribute}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				id="attrib-tab" label="#{msgs.attribute}">
 
 					<h:outputLabel for="attribute-type" value="#{msgs.deviceAttribute}" />
 					<h:selectOneMenu id="attribute-type"
@@ -77,19 +78,17 @@
 						value="#{operDevice.userAttributeType}" styleClass="label">
 						<f:selectItems value="#{attributeTypes}" />
 					</h:selectOneMenu>
+			</rich:simpleTogglePanel>
 
-				</rich:tab>
-
-				<rich:tab id="cert-tab" label="#{msgs.certificate}">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				id="cert-tab" label="#{msgs.certificate}">
 
 					<h:outputLabel for="certificate" value="#{msgs.certificate}" />
 					<s:decorate>
 						<t:inputFileUpload id="certificate"
 							value="#{operDevice.certificate}" />
 					</s:decorate>
-
-				</rich:tab>
-			</rich:tabPanel>
+			</rich:simpleTogglePanel>
 
 			<t:messages styleClass="error" globalOnly="true" />
 

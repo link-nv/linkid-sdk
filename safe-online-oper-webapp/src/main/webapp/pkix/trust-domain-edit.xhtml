@@ -19,21 +19,24 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<h:form>
-			<h:panelGrid columns="1">
-				<h:panelGroup>
-					<h:outputText value="#{msgs.operatorPerformOCSPCheck}" />
-					<h:selectBooleanCheckbox id="performOcspCheck"
-						value="#{editTrustDomain.performOcspCheck}" />
-				</h:panelGroup>
-				<h:panelGroup>
-					<h:outputText value="#{msgs.operatorOCSPCacheTimeout} (ms)" />
-					<h:inputText id="ocspCacheTimeOutMillis"
-						value="#{editTrustDomain.ocspCacheTimeOutMillis}" required="true" />
-				</h:panelGroup>
-			</h:panelGrid>
+            <table class="inner listingTable">
+                <colgroup />
+                <colgroup />
+
+                <tbody>
+                    <tr>
+                        <th><h:outputText value="#{msgs.operatorPerformOCSPCheck}" /></th>
+                        <td><h:selectBooleanCheckbox id="performOcspCheck"
+                                value="#{editTrustDomain.performOcspCheck}" /></td>
+                    </tr>
+                    <tr>
+                        <th><h:outputText value="#{msgs.operatorOCSPCacheTimeout} (ms)" /></th>
+                        <td><h:inputText id="ocspCacheTimeOutMillis"
+                                value="#{editTrustDomain.ocspCacheTimeOutMillis}" required="true" /></td>
+                    </tr>
+                </tbody>
+            </table>
 
 			<h:commandButton action="#{editTrustDomain.save}" id="save"
 				value="#{msgs.saveaction}" styleClass="submit" />

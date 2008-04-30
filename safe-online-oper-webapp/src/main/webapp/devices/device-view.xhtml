@@ -21,10 +21,13 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<rich:tabPanel id="tabs" switchType="client">
+        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			id="generic-tab" label="#{msgs.generic}">
+            <table class="inner listingTable">
+                <colgroup />
+                <colgroup />
 
-			<rich:tab id="generic-tab" label="#{msgs.generic}">
-				<table class="name_value">
+                <tbody>
 					<tr>
 						<th><h:outputText for="name" value="#{msgs.name}" /></th>
 						<td><h:outputText id="name" value="#{selectedDevice.name}" /></td>
@@ -62,90 +65,120 @@
 						<td><h:outputText id="updateUrl"
 							value="#{selectedDevice.updateURL}" /></td>
 					</tr>
-				</table>
-			</rich:tab>
+                </tbody>
+            </table>
+        </rich:simpleTogglePanel>
 
-			<rich:tab id="description-tab" label="#{msgs.description}">
-				<h:form id="descrform">
-					<h:dataTable id="desc-data" var="item"
-						value="#{deviceDescriptions}" styleClass="listingTable"
-						rowClasses="listingTable_Row1,listingTable_Row2">
-						<h:column>
-							<f:facet name="header">#{msgs.language}</f:facet>
-							<h:commandLink value="#{item.language}"
-								action="#{deviceDesc.edit}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">#{msgs.description}</f:facet>
-							<h:outputText value="#{item.description}" />
-						</h:column>
-					</h:dataTable>
-					<rich:spacer height="10" />
-					<h:commandButton action="add-descr" id="add-descr"
-						value="#{msgs.addaction}" styleClass="submit" />
-				</h:form>
-			</rich:tab>
+        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+			id="description-tab" label="#{msgs.description}">
+            <h:form id="descrform">
+                <rich:dataTable id="desc-data" var="item"
+                    value="#{deviceDescriptions}" styleClass="inner listingTable"
+                    rowClasses="listingTable_Row1,listingTable_Row2">
+                    <h:column>
+                        <f:facet name="header">#{msgs.language}</f:facet>
+                        <h:commandLink value="#{item.language}"
+                            action="#{deviceDesc.edit}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msgs.description}</f:facet>
+                        <h:outputText value="#{item.description}" />
+                    </h:column>
+                </rich:dataTable>
 
-			<rich:tab id="properties-tab" label="#{msgs.properties}">
-				<h:form id="propertiesform">
-					<h:dataTable id="prop-data" var="item" value="#{deviceProperties}"
-						styleClass="listingTable"
-						rowClasses="listingTable_Row1,listingTable_Row2">
-						<h:column>
-							<f:facet name="header">#{msgs.name}</f:facet>
-							<h:commandLink value="#{item.name}" action="#{deviceProp.edit}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">#{msgs.value}</f:facet>
-							<h:outputText value="#{item.value}" />
-						</h:column>
-					</h:dataTable>
-					<rich:spacer height="10" />
-					<h:commandButton action="add-prop" id="add-prop"
-						value="#{msgs.addaction}" styleClass="submit" />
-				</h:form>
-			</rich:tab>
+                <rich:spacer height="10" />
+                <h:commandButton action="add-descr" id="add-descr"
+                    value="#{msgs.addaction}" styleClass="submit" />
+            </h:form>
+        </rich:simpleTogglePanel>
 
-			<rich:tab id="attribute-tab" label="#{msgs.deviceAttribute}">
-				<h:outputText id="attribute-name"
-					value="#{selectedDevice.attributeType.name}" />
+        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+			id="properties-tab" label="#{msgs.properties}">
+            <h:form id="propertiesform">
+                <rich:dataTable id="prop-data" var="item" value="#{deviceProperties}"
+                    styleClass="inner listingTable"
+                    rowClasses="listingTable_Row1,listingTable_Row2">
+                    <h:column>
+                        <f:facet name="header">#{msgs.name}</f:facet>
+                        <h:commandLink value="#{item.name}" action="#{deviceProp.edit}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msgs.value}</f:facet>
+                        <h:outputText value="#{item.value}" />
+                    </h:column>
+                </rich:dataTable>
 
-				<h:dataTable id="compounded-members" var="item"
-					value="#{selectedDevice.attributeType.members}"
-					rendered="#{selectedDevice.attributeType.compounded}"
-					styleClass="listingTable"
-					rowClasses="listingTable_Row1,listingTable_Row2">
-					<h:column>
-						<f:facet name="header">#{msgs.memberAttributes}</f:facet>
-						<h:outputText value="#{item.member.name}" />
-					</h:column>
-				</h:dataTable>
-			</rich:tab>
+                <rich:spacer height="10" />
+                <h:commandButton action="add-prop" id="add-prop"
+                    value="#{msgs.addaction}" styleClass="submit" />
+            </h:form>
+        </rich:simpleTogglePanel>
 
-			<rich:tab id="user-attribute-tab" label="#{msgs.deviceUserAttribute}">
-				<h:outputText id="user-attribute-name"
-					value="#{selectedDevice.userAttributeType.name}" />
+        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+			id="attribute-tab" label="#{msgs.deviceAttribute}">
 
-				<h:dataTable id="user-compounded-members" var="item"
-					value="#{selectedDevice.userAttributeType.members}"
-					rendered="#{selectedDevice.userAttributeType.compounded}"
-					styleClass="listingTable"
-					rowClasses="listingTable_Row1,listingTable_Row2">
-					<h:column>
-						<f:facet name="header">#{msgs.memberAttributes}</f:facet>
-						<h:outputText value="#{item.member.name}" />
-					</h:column>
-				</h:dataTable>
-			</rich:tab>
+            <table class="inner listingTable">
+                <colgroup />
+                <colgroup />
 
-			<rich:tab id="certificate-tab" label="#{msgs.certificate}">
-				<pre><h:outputText value="#{selectedDevice.certificate}"
-					rendered="#{!empty selectedDevice.certificate}" /></pre>
-				<p><h:outputText value="#{msgs.noCertificate}"
-					rendered="#{empty selectedDevice.certificate}" /></p>
-			</rich:tab>
+                <thead>
+                    <tr><th>#{msgs.deviceAttribute}</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><h:outputText id="attribute-name"
+                            value="#{selectedDevice.attributeType.name}" />
+                    </td></tr>
+                </tbody>
+            </table>
 
-		</rich:tabPanel>
+            <rich:dataTable id="compounded-members" var="item"
+                value="#{selectedDevice.attributeType.members}"
+                rendered="#{selectedDevice.attributeType.compounded}"
+                styleClass="inner listingTable"
+                rowClasses="listingTable_Row1,listingTable_Row2">
+                <h:column>
+                    <f:facet name="header">#{msgs.memberAttributes}</f:facet>
+                    <h:outputText value="#{item.member.name}" />
+                </h:column>
+            </rich:dataTable>
+        </rich:simpleTogglePanel>
+
+        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+			id="user-attribute-tab" label="#{msgs.deviceUserAttribute}">
+
+            <table class="inner listingTable">
+                <colgroup />
+                <colgroup />
+
+                <thead>
+                    <tr><th>#{msgs.deviceUserAttribute}</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><h:outputText id="user-attribute-name"
+                                value="#{selectedDevice.userAttributeType.name}" />
+                    </td></tr>
+                </tbody>
+            </table>
+
+            <h:dataTable id="user-compounded-members" var="item"
+                value="#{selectedDevice.userAttributeType.members}"
+                rendered="#{selectedDevice.userAttributeType.compounded}"
+                styleClass="inner listingTable"
+                rowClasses="listingTable_Row1,listingTable_Row2">
+                <h:column>
+                    <f:facet name="header">#{msgs.memberAttributes}</f:facet>
+                    <h:outputText value="#{item.member.name}" />
+                </h:column>
+            </h:dataTable>
+        </rich:simpleTogglePanel>
+
+        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+			id="certificate-tab" label="#{msgs.certificate}">
+            <div class="white_space"><h:outputText value="#{selectedDevice.certificate}"
+                rendered="#{!empty selectedDevice.certificate}" /></div>
+            <p><h:outputText value="#{msgs.noCertificate}"
+                rendered="#{empty selectedDevice.certificate}" /></p>
+        </rich:simpleTogglePanel>
 
 		<rich:spacer height="10" />
 

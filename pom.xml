@@ -719,7 +719,7 @@
 		<itext.version>1.4.8</itext.version>
 	</properties>
     
-    <!-- ALL MODULES ENABLED BY DEFAULT -->
+    <!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
 	<modules>
 		<module>safe-online-container</module>
 		<module>safe-online-sdk</module>
