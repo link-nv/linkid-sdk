@@ -15,7 +15,6 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 
-
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;

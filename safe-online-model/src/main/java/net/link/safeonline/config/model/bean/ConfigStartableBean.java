@@ -7,15 +7,13 @@
 
 package net.link.safeonline.config.model.bean;
 
+import static net.link.safeonline.common.Configurable.defaultGroup;
+
 import java.lang.reflect.Field;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.LocalBinding;
 
 import net.link.safeonline.Startable;
 import net.link.safeonline.common.Configurable;
@@ -26,7 +24,9 @@ import net.link.safeonline.config.model.ConfigurableScanner;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
-import static net.link.safeonline.common.Configurable.defaultGroup;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "ConfigStartableBean")
@@ -46,6 +46,7 @@ public class ConfigStartableBean implements ConfigStartable {
 
 	public void postStart() {
 		LOG.debug("Starting configuration");
+
 		ConfigurableScanner scanner = new ConfigurableScanner(
 				"config.properties");
 		for (Class<?> classObject : scanner.getClasses()) {

@@ -24,7 +24,6 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.data.ws.DataServiceConstants;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
-
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
 import oasis.names.tc.saml._2_0.assertion.SubjectType;

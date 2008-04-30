@@ -35,6 +35,7 @@ import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
+import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceRegistrationEntity;
@@ -114,6 +115,9 @@ public class DevicesBean implements Devices {
 
 	@EJB
 	private NodeAuthenticationService nodeAuthenticationService;
+
+	@EJB
+	private ProxyAttributeService proxyAttributeService;
 
 	@In
 	Context sessionContext;
@@ -313,13 +317,37 @@ public class DevicesBean implements Devices {
 			List<DeviceRegistrationEntity> registeredDevices = this.deviceRegistrationService
 					.listDeviceRegistrations(subject, device);
 			for (DeviceRegistrationEntity registeredDevice : registeredDevices) {
-				LOG.debug("add registered device: " + deviceDescription);
-				this.deviceRegistrations.add(new DeviceRegistrationEntry(
-						registeredDevice, deviceDescription,
-						listRegisteredDeviceAttributes(registeredDevice)));
+				// first check if this one is valid, i.e. retrieve the device
+				// attribute and if failing remove this registration
+				if (checkDeviceRegistration(registeredDevice)) {
+					LOG.debug("add registered device: " + deviceDescription);
+					this.deviceRegistrations.add(new DeviceRegistrationEntry(
+							registeredDevice, deviceDescription,
+							listRegisteredDeviceAttributes(registeredDevice)));
+				}
 			}
 		}
 		return this.deviceRegistrations;
+	}
+
+	private boolean checkDeviceRegistration(
+			DeviceRegistrationEntity registeredDevice) {
+		try {
+			if (null == this.proxyAttributeService.findDeviceAttributeValue(
+					registeredDevice.getId(), registeredDevice.getDevice()
+							.getAttributeType().getName())) {
+				this.deviceRegistrationService
+						.removeDeviceRegistration(registeredDevice.getId());
+				return false;
+			}
+		} catch (AttributeTypeNotFoundException e) {
+			LOG.debug("AttributeTypeNotFoundException: " + e.getMessage());
+			return false;
+		} catch (PermissionDeniedException e) {
+			LOG.debug("permission denied: " + e.getMessage());
+			return false;
+		}
+		return true;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

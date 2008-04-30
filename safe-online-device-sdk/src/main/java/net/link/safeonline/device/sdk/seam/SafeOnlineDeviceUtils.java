@@ -61,8 +61,9 @@ public class SafeOnlineDeviceUtils {
 	 *            the landing page of the device issuer
 	 */
 	@SuppressWarnings("unchecked")
-	public static String authenticate(@SuppressWarnings("unused")
-	FacesMessages facesMessages, Log log, String landingUrl, String device) {
+	public static String authenticate(
+			@SuppressWarnings("unused") FacesMessages facesMessages, Log log,
+			String landingUrl, String device) {
 		log.debug("redirecting to #0", landingUrl);
 
 		FacesContext context = FacesContext.getCurrentInstance();
