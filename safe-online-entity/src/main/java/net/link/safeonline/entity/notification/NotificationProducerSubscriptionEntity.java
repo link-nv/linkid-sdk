@@ -7,15 +7,22 @@
 
 package net.link.safeonline.entity.notification;
 
+import static net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity.QUERY_LIST_ALL;
+
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -29,9 +36,12 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 @Entity
 @Table(name = "prod_subscr")
+@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM NotificationProducerSubscriptionEntity s") })
 public class NotificationProducerSubscriptionEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String QUERY_LIST_ALL = "not.sub.list.all";
 
 	private String topic;
 
@@ -87,5 +97,10 @@ public class NotificationProducerSubscriptionEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.topic).toHashCode();
+	}
+
+	public interface QueryInterface {
+		@QueryMethod(value = QUERY_LIST_ALL)
+		List<NotificationProducerSubscriptionEntity> listTopics();
 	}
 }

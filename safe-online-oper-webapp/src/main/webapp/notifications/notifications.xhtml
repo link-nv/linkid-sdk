@@ -15,40 +15,29 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.operatorOlasNodes}</h1>
+		<h1>#{msgs.operatorNotifications}</h1>
 	</ui:define>
 	<ui:define name="content">
 
 
 
-		<a4j:form id="olasNodesForm" ajaxSubmit="true" reRender="nodes-data">
-			<rich:dataTable id="nodes-data" var="item"
-				value="#{operOlasNodeList}" rows="10" styleClass="listingTable"
+		<a4j:form id="topicForm" ajaxSubmit="true" reRender="nodes-data">
+			<rich:dataTable id="topic-data" var="item" value="#{operTopicList}"
+				rows="10" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">#{msgs.name}</f:facet>
-					<a4j:commandLink value="#{item.name}" action="#{operNode.view}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.hostname}</f:facet>
-					<h:outputText value="#{item.hostname}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.port}</f:facet>
-					<h:outputText value="#{item.port}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.sslPort}</f:facet>
-					<h:outputText value="#{item.sslPort}" />
+					<f:facet name="header">#{msgs.operatorNotificationTopic}</f:facet>
+					<a4j:commandLink value="#{item.topic}"
+						action="#{operNotification.view}" />
 				</h:column>
 				<h:column>
 					<f:facet name="header">#{msgs.action}</f:facet>
-					<a4j:commandLink value="#{msgs.removeaction}"
-						action="#{operNode.remove}" />
+					<a4j:commandLink value="#{msgs.viewaction}"
+						action="#{operNotification.view}" />
 				</h:column>
 				<f:facet name="footer">
-					<rich:datascroller for="nodes-data" pageIndexVar="pageIndex"
+					<rich:datascroller for="topic-data" pageIndexVar="pageIndex"
 						pagesVar="pages" fastControls="hide">
 						<f:facet name="first">
 							<h:graphicImage value="/images/icons/control_start.png" />
@@ -82,9 +71,6 @@
 			</rich:dataTable>
 
 			<rich:messages styleClass="error" />
-
-			<a4j:commandButton value="#{msgs.addaction}" id="add"
-				action="add-node" styleClass="submit" />
 		</a4j:form>
 
 	</ui:define>
@@ -99,8 +85,6 @@
 					value="#{msgs.authorization}" /></li>
 				<li><h:commandLink action="/usage/usage-agreements.seam"
 					value="#{msgs.usageAgreementOLAS}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}"</li>
 			</ul>
 		</h:form>
 	</ui:define>

@@ -7,6 +7,8 @@
 
 package net.link.safeonline.notification.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
@@ -35,5 +37,13 @@ public interface EndpointReferenceDAO {
 
 	EndpointReferenceEntity getEndpointReference(String address,
 			DeviceEntity device) throws EndpointReferenceNotFoundException;
+
+	List<EndpointReferenceEntity> listEndpoints();
+
+	List<EndpointReferenceEntity> listEndpoints(DeviceEntity device);
+
+	List<EndpointReferenceEntity> listEndpoints(ApplicationEntity application);
+
+	void remove(EndpointReferenceEntity endpoint);
 
 }

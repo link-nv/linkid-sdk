@@ -92,7 +92,7 @@ public class NotificationProducerServiceBean implements
 	public void unsubscribe(String topic, String address,
 			X509Certificate certificate) throws SubscriptionNotFoundException,
 			PermissionDeniedException, EndpointReferenceNotFoundException {
-		LOG.debug("subscribe");
+		LOG.debug("unsubscribe");
 		NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO
 				.getSubscription(topic);
 		ApplicationEntity application = this.applicationDAO

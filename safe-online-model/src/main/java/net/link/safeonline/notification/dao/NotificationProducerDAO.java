@@ -7,6 +7,8 @@
 
 package net.link.safeonline.notification.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -21,4 +23,6 @@ public interface NotificationProducerDAO {
 
 	NotificationProducerSubscriptionEntity getSubscription(String topic)
 			throws SubscriptionNotFoundException;
+
+	List<NotificationProducerSubscriptionEntity> listTopics();
 }

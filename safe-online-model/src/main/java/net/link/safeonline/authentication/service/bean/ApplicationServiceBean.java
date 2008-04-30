@@ -59,10 +59,12 @@ import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.model.ApplicationOwnerManager;
 import net.link.safeonline.model.Applications;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.notification.dao.EndpointReferenceDAO;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.SubjectService;
@@ -119,6 +121,9 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@EJB
 	private AllowedDeviceDAO allowedDeviceDAO;
+
+	@EJB
+	private EndpointReferenceDAO endpointReferenceDAO;
 
 	@EJB
 	private ApplicationIdentityManager applicationIdentityService;
@@ -242,6 +247,13 @@ public class ApplicationServiceBean implements ApplicationService,
 		for (ApplicationIdentityEntity applicationIdentity : applicationIdentities)
 			this.applicationIdentityDAO
 					.removeApplicationIdentity(applicationIdentity);
+
+		// remove all device notification subscriptions
+		List<EndpointReferenceEntity> endpoints = this.endpointReferenceDAO
+				.listEndpoints(application);
+		for (EndpointReferenceEntity endpoint : endpoints) {
+			this.endpointReferenceDAO.remove(endpoint);
+		}
 
 		this.attributeProviderDAO.removeAttributeProviders(application);
 

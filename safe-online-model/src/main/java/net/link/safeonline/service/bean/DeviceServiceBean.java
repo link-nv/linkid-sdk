@@ -54,7 +54,9 @@ import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.model.Devices;
+import net.link.safeonline.notification.dao.EndpointReferenceDAO;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.ApplicationOwnerAccessControlInterceptor;
@@ -94,6 +96,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
 	@EJB
 	private OlasDAO olasDAO;
+
+	@EJB
+	private EndpointReferenceDAO endpointReferenceDAO;
 
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.USER_ROLE })
 	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
@@ -232,6 +237,13 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 		}
 
 		checkDeviceRegistrations(device);
+
+		// remove all device notification subscriptions
+		List<EndpointReferenceEntity> endpoints = this.endpointReferenceDAO
+				.listEndpoints(device);
+		for (EndpointReferenceEntity endpoint : endpoints) {
+			this.endpointReferenceDAO.remove(endpoint);
+		}
 
 		// remove all device descriptions
 		List<DeviceDescriptionEntity> deviceDescriptions = this.deviceDAO

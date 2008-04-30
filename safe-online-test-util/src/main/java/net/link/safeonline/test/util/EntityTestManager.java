@@ -230,9 +230,9 @@ public class EntityTestManager {
 		private static final Log interceptorLOG = LogFactory
 				.getLog(TransactionMethodInterceptor.class);
 
-		public Object intercept(@SuppressWarnings("unused")
-		Object obj, Method method, Object[] args, @SuppressWarnings("unused")
-		MethodProxy proxy) throws Throwable {
+		public Object intercept(@SuppressWarnings("unused") Object obj,
+				Method method, Object[] args,
+				@SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
 
 			EntityManager entityManager = this.entityManagerFactory
 					.createEntityManager();

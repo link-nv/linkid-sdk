@@ -3,7 +3,6 @@
   "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
   "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
 <faces-config>
-
 	<application>
 		<message-bundle>messages.webapp</message-bundle>
 		<locale-config>
@@ -12,13 +11,10 @@
 		</locale-config>
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 	</application>
-
 	<lifecycle>
-		<phase-listener>
-			org.jboss.seam.jsf.SeamPhaseListener
+		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
 		</phase-listener>
 	</lifecycle>
-
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>login-success</from-outcome>
@@ -31,7 +27,6 @@
 	</navigation-rule>
 
 	<!-- Begin applications navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/applications/applications.xhtml</from-view-id>
 		<navigation-case>
@@ -43,7 +38,6 @@
 			<to-view-id>/applications/application-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/applications/application-add.xhtml</from-view-id>
 		<navigation-case>
@@ -55,11 +49,8 @@
 			<to-view-id>/applications/applications.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/applications/application-view.xhtml
-		</from-view-id>
+		<from-view-id> /applications/application-view.xhtml </from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
 			<to-view-id>/applications/applications.seam</to-view-id>
@@ -69,11 +60,8 @@
 			<to-view-id>/applications/application-edit.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/applications/application-edit.xhtml
-		</from-view-id>
+		<from-view-id> /applications/application-edit.xhtml </from-view-id>
 		<navigation-case>
 			<from-action>cancel</from-action>
 			<to-view-id>/applications/application-view.seam</to-view-id>
@@ -85,7 +73,6 @@
 	</navigation-rule>
 
 	<!-- End applications navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/owners/owners.xhtml</from-view-id>
 		<navigation-case>
@@ -101,7 +88,6 @@
 			<to-view-id>/owners/owner-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/owners/owner-add.xhtml</from-view-id>
 		<navigation-case>
@@ -113,7 +99,6 @@
 			<to-view-id>/owners/owners.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/owners/owner-view.xhtml</from-view-id>
 		<navigation-case>
@@ -122,7 +107,6 @@
 		</navigation-case>
 	</navigation-rule>
 	<!-- Begin PKIX navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/pkix/pkix.xhtml</from-view-id>
 		<navigation-case>
@@ -142,7 +126,6 @@
 			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/pkix/trust-domain-add.xhtml</from-view-id>
 		<navigation-case>
@@ -154,7 +137,6 @@
 			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/pkix/trust-domain.xhtml</from-view-id>
 		<navigation-case>
@@ -178,7 +160,6 @@
 			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/pkix/trust-domain-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -190,7 +171,6 @@
 			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/pkix/trust-point-add.xhtml</from-view-id>
 		<navigation-case>
@@ -202,7 +182,6 @@
 			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/pkix/trust-point-view.xhtml</from-view-id>
 		<navigation-case>
@@ -218,7 +197,6 @@
 	<!-- End PKIX navigation rules -->
 
 	<!-- Begin tasks navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/tasks/tasks.xhtml</from-view-id>
 		<navigation-case>
@@ -238,7 +216,6 @@
 			<to-view-id>/tasks/schedulings.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/tasks/task-view.xhtml</from-view-id>
 		<navigation-case>
@@ -266,7 +243,6 @@
 			<to-view-id>/tasks/task-edit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/tasks/task-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -278,7 +254,6 @@
 			<to-view-id>/tasks/task-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/tasks/schedulings.xhtml</from-view-id>
 		<navigation-case>
@@ -294,7 +269,6 @@
 			<to-view-id>/tasks/scheduling-add.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/tasks/scheduling-view.xhtml</from-view-id>
 		<navigation-case>
@@ -318,7 +292,6 @@
 			<to-view-id>/tasks/scheduling-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/tasks/scheduling-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -330,7 +303,6 @@
 			<to-view-id>/tasks/scheduling-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/tasks/scheduling-add.xhtml</from-view-id>
 		<navigation-case>
@@ -342,7 +314,6 @@
 			<to-view-id>/tasks/schedulings.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/tasks/task-history.xhtml</from-view-id>
 		<navigation-case>
@@ -358,7 +329,6 @@
 	<!-- End tasks navigation rules -->
 
 	<!-- Begin attributes navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/attributes/attributes.xhtml</from-view-id>
 		<navigation-case>
@@ -374,7 +344,6 @@
 			<to-view-id>/attributes/attribute-remove.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/attributes/attribute-remove.xhtml</from-view-id>
 		<navigation-case>
@@ -386,7 +355,6 @@
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/attributes/attribute-view.xhtml</from-view-id>
 		<navigation-case>
@@ -395,31 +363,23 @@
 		</navigation-case>
 		<navigation-case>
 			<from-action>add</from-action>
-			<to-view-id>
-				/attributes/attribute-desc-add.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-desc-add.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>edit</from-outcome>
-			<to-view-id>
-				/attributes/attribute-desc-edit.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-desc-edit.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>add-provider</from-action>
-			<to-view-id>
-				/attributes/attribute-provider-add.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-provider-add.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>provider-removed</from-outcome>
 			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/attributes/attribute-provider-add.xhtml
+		<from-view-id> /attributes/attribute-provider-add.xhtml 
 		</from-view-id>
 		<navigation-case>
 			<from-outcome>cancel</from-outcome>
@@ -430,11 +390,8 @@
 			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/attributes/attribute-desc-edit.xhtml
-		</from-view-id>
+		<from-view-id> /attributes/attribute-desc-edit.xhtml </from-view-id>
 		<navigation-case>
 			<from-outcome>cancel</from-outcome>
 			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
@@ -448,11 +405,8 @@
 			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/attributes/attribute-desc-add.xhtml
-		</from-view-id>
+		<from-view-id> /attributes/attribute-desc-add.xhtml </from-view-id>
 		<navigation-case>
 			<from-action>cancel</from-action>
 			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
@@ -462,37 +416,27 @@
 			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/attributes/attribute-add.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>singleValued</from-outcome>
-			<to-view-id>
-				/attributes/attribute-add-type.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-add-type.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>multiValued</from-outcome>
-			<to-view-id>
-				/attributes/attribute-add-type.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-add-type.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>compounded</from-outcome>
-			<to-view-id>
-				/attributes/attribute-add-members.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-add-members.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>canceled</from-outcome>
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/attributes/attribute-add-type.xhtml
-		</from-view-id>
+		<from-view-id> /attributes/attribute-add-type.xhtml </from-view-id>
 		<navigation-case>
 			<from-outcome>next</from-outcome>
 			<to-view-id>/attributes/attribute-add-ac.xhtml</to-view-id>
@@ -506,14 +450,11 @@
 			<to-view-id>/attributes/attribute-add.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/attributes/attribute-add-ac.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>previous</from-action>
-			<to-view-id>
-				/attributes/attribute-add-type.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-add-type.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>canceled</from-outcome>
@@ -524,16 +465,11 @@
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/attributes/attribute-add-members.xhtml
-		</from-view-id>
+		<from-view-id> /attributes/attribute-add-members.xhtml </from-view-id>
 		<navigation-case>
 			<from-outcome>next</from-outcome>
-			<to-view-id>
-				/attributes/attribute-add-members-ac.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-add-members-ac.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>canceled</from-outcome>
@@ -544,16 +480,12 @@
 			<to-view-id>/attributes/attribute-add.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/attributes/attribute-add-members-ac.xhtml
+		<from-view-id> /attributes/attribute-add-members-ac.xhtml 
 		</from-view-id>
 		<navigation-case>
 			<from-outcome>next</from-outcome>
-			<to-view-id>
-				/attributes/attribute-add-comp-ac.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-add-comp-ac.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>canceled</from-outcome>
@@ -561,16 +493,11 @@
 		</navigation-case>
 		<navigation-case>
 			<from-action>previous</from-action>
-			<to-view-id>
-				/attributes/attribute-add-members.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-add-members.xhtml </to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/attributes/attribute-add-comp-ac.xhtml
-		</from-view-id>
+		<from-view-id> /attributes/attribute-add-comp-ac.xhtml </from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
@@ -581,16 +508,13 @@
 		</navigation-case>
 		<navigation-case>
 			<from-action>previous</from-action>
-			<to-view-id>
-				/attributes/attribute-add-members.xhtml
-			</to-view-id>
+			<to-view-id> /attributes/attribute-add-members.xhtml </to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<!-- End attributes navigation rules -->
 
 	<!-- Begin configuration navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/configuration.xhtml</from-view-id>
 		<navigation-case>
@@ -606,7 +530,6 @@
 	<!-- End configuration navigation rules  -->
 
 	<!-- Begin authorization navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/authorization/main.xhtml</from-view-id>
 		<navigation-case>
@@ -614,7 +537,6 @@
 			<to-view-id>/authorization/roles.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/authorization/roles.xhtml</from-view-id>
 		<navigation-case>
@@ -630,7 +552,6 @@
 	<!-- End authorization navigation rules -->
 
 	<!-- Begin audit navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/audit/audit.xhtml</from-view-id>
 		<navigation-case>
@@ -658,7 +579,6 @@
 			<to-view-id>/audit/audit-view-user.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/audit/audit-view.xhtml</from-view-id>
 		<navigation-case>
@@ -670,7 +590,6 @@
 			<to-view-id>/audit/principal-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-resource.xhtml</from-view-id>
 		<navigation-case>
@@ -678,7 +597,6 @@
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-security.xhtml</from-view-id>
 		<navigation-case>
@@ -690,7 +608,6 @@
 			<to-view-id>/audit/principal-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-time.xhtml</from-view-id>
 		<navigation-case>
@@ -702,7 +619,6 @@
 			<to-view-id>/audit/principal-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-user.xhtml</from-view-id>
 		<navigation-case>
@@ -714,7 +630,6 @@
 			<to-view-id>/audit/principal-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-audit.xhtml</from-view-id>
 		<navigation-case>
@@ -722,7 +637,6 @@
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/audit/principal-view.xhtml</from-view-id>
 		<navigation-case>
@@ -738,22 +652,15 @@
 		<from-view-id>/usage/usage-agreements.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>edittext</from-outcome>
-			<to-view-id>
-				/usage/usage-agreement-text-edit.seam
-			</to-view-id>
+			<to-view-id> /usage/usage-agreement-text-edit.seam </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>viewtext</from-outcome>
-			<to-view-id>
-				/usage/usage-agreement-text-view.seam
-			</to-view-id>
+			<to-view-id> /usage/usage-agreement-text-view.seam </to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/usage/usage-agreement-text-edit.xhtml
-		</from-view-id>
+		<from-view-id> /usage/usage-agreement-text-edit.xhtml </from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
 			<to-view-id>/usage/usage-agreements.seam</to-view-id>
@@ -763,11 +670,8 @@
 			<to-view-id>/usage/usage-agreements.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/usage/usage-agreement-text-view.xhtml
-		</from-view-id>
+		<from-view-id> /usage/usage-agreement-text-view.xhtml </from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
 			<to-view-id>/usage/usage-agreements.seam</to-view-id>
@@ -777,7 +681,6 @@
 	<!-- End usage agreement navigation rules -->
 
 	<!-- Begin device navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/devices/devices.xhtml</from-view-id>
 		<navigation-case>
@@ -789,7 +692,6 @@
 			<to-view-id>/devices/device-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/device-add.xhtml</from-view-id>
 		<navigation-case>
@@ -801,7 +703,6 @@
 			<to-view-id>/devices/devices.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/device-view.xhtml</from-view-id>
 		<navigation-case>
@@ -829,7 +730,6 @@
 			<to-view-id>/devices/device-edit.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/device-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -841,7 +741,6 @@
 			<to-view-id>/devices/device-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/device-desc-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -857,7 +756,6 @@
 			<to-view-id>/devices/device-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/device-desc-add.xhtml</from-view-id>
 		<navigation-case>
@@ -869,7 +767,6 @@
 			<to-view-id>/devices/device-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/device-prop-add.xhtml</from-view-id>
 		<navigation-case>
@@ -881,7 +778,6 @@
 			<to-view-id>/devices/device-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/device-prop-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -912,7 +808,6 @@
 			<to-view-id>/devices/class-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/class-add.xhtml</from-view-id>
 		<navigation-case>
@@ -924,7 +819,6 @@
 			<to-view-id>/devices/classes.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/class-view.xhtml</from-view-id>
 		<navigation-case>
@@ -944,7 +838,6 @@
 			<to-view-id>/devices/class-edit.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/class-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -956,7 +849,6 @@
 			<to-view-id>/devices/class-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/class-desc-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -972,7 +864,6 @@
 			<to-view-id>/devices/class-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/devices/class-desc-add.xhtml</from-view-id>
 		<navigation-case>
@@ -988,7 +879,6 @@
 	<!-- End device class navigation rules -->
 
 	<!-- Begin Olas nodes navigation rules -->
-
 	<navigation-rule>
 		<from-view-id>/nodes/nodes.xhtml</from-view-id>
 		<navigation-case>
@@ -1000,7 +890,6 @@
 			<to-view-id>/nodes/node-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/nodes/node-add.xhtml</from-view-id>
 		<navigation-case>
@@ -1012,7 +901,6 @@
 			<to-view-id>/nodes/nodes.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/nodes/node-view.xhtml</from-view-id>
 		<navigation-case>
@@ -1024,7 +912,6 @@
 			<to-view-id>/nodes/node-edit.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/nodes/node-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -1039,5 +926,40 @@
 
 	<!-- End Olas nodes navigation rules -->
 
+	<!-- Begin Olas notification navigation rules -->
+	<navigation-rule>
+		<from-view-id>/notifications/notifications.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>view</from-outcome>
+			<to-view-id>/notifications/notification-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/notifications/notification-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/notifications/notifications.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>add</from-outcome>
+			<to-view-id>/notifications/notification-add.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/notifications/notification-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/notifications/notification-view.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/notifications/notification-view.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/notifications/notification-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 
+	<!-- End Olas notification navigation rules -->
 </faces-config>

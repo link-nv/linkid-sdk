@@ -4,9 +4,9 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -15,45 +15,52 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.operatorEditTrustDomain}: #{selectedTrustDomain.name}</h1>
+		<h1>#{msgs.operatorAddNotificationSubscription}</h1>
 	</ui:define>
 	<ui:define name="content">
 
 
-
 		<h:form>
-			<h:panelGrid columns="1">
-				<h:panelGroup>
-					<h:outputText value="#{msgs.operatorPerformOCSPCheck}" />
-					<h:selectBooleanCheckbox id="performOcspCheck"
-						value="#{editTrustDomain.performOcspCheck}" />
-				</h:panelGroup>
-				<h:panelGroup>
-					<h:outputText value="#{msgs.operatorOCSPCacheTimeout} (ms)" />
-					<h:inputText id="ocspCacheTimeOutMillis"
-						value="#{editTrustDomain.ocspCacheTimeOutMillis}" required="true" />
-				</h:panelGroup>
-			</h:panelGrid>
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
 
-			<h:commandButton action="#{editTrustDomain.save}" id="save"
-				value="#{msgs.saveaction}" styleClass="submit" />
-			<h:commandButton action="#{editTrustDomain.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" styleClass="submit" />
+			<h:outputLabel for="location" value="#{msgs.location}" />
+			<s:decorate>
+				<h:inputText id="location" value="#{operNotification.address}"
+					required="true" styleClass="label" />
+			</s:decorate>
+			<h:message for="location" styleClass="error" />
+
+			<h:outputLabel for="consumer" value="#{msgs.consumer}" />
+
+			<h:selectOneMenu id="consumer" value="#{operNotification.consumer}"
+				styleClass="label">
+				<f:selectItems value="#{consumers}" />
+			</h:selectOneMenu>
+
+			<h:messages styleClass="error" globalOnly="true" />
+
+			<br />
+
+			<h:commandButton action="#{operNotification.addSubscription}"
+				id="add" value="#{msgs.addaction}" styleClass="submit" />
+			<h:commandButton action="cancel" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 		</h:form>
 	</ui:define>
+
 	<ui:define name="sidebar">
 		<h:form>
 			<ul class="sidemenu">
-				<li><h:commandLink action="/nodes/nodes.seam"
-					value="#{msgs.operatorOlasNodes}" /></li>
 				<li><h:commandLink action="/configuration.seam"
 					value="#{msgs.operatorGeneralConfiguration}" /></li>
+				<li><h:commandLink action="/pkix/pkix.seam"
+					value="#{msgs.PKIX}" /></li>
 				<li><h:commandLink action="/authorization/main.seam"
 					value="#{msgs.authorization}" /></li>
 				<li><h:commandLink action="/usage/usage-agreements.seam"
 					value="#{msgs.usageAgreementOLAS}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}"</li>
 			</ul>
 		</h:form>
 	</ui:define>
