@@ -10,9 +10,7 @@
 		</copyright>
 		<date>19/12/2007</date>
 		<abstract>
-			<para>
-				This document contains the SDK manual for the OLAS
-				product.
+			<para> This document contains the SDK manual for the OLAS product.
 			</para>
 		</abstract>
 		<releaseinfo>1.0.0</releaseinfo>
@@ -23,168 +21,132 @@
 				<firstname>Frank</firstname>
 				<surname>Cornelis</surname>
 			</author>
+			<author>
+				<firstname>Wim</firstname>
+				<surname>Vandenhaute</surname>
+			</author>
 		</authorgroup>
 	</bookinfo>
-
 	<chapter id="introduction">
 		<title>Introduction</title>
 		<abstract>
-			<para>
-				This chapter will bring a short overview of the services
-				offered by OLAS.
-			</para>
+			<para> This chapter will bring a short overview of the services
+				offered by OLAS.</para>
 		</abstract>
-		<para>
-			OLAS is an authentication, signature and user data exchange
-			service. It allows 3th party web applications to
-			authenticate users, involve users in transactions and obtain
-			user identity data. It brings to users a central identity
-			management.
-		</para>
+		<para> OLAS is an authentication, signature and user data exchange
+			service. It allows 3th party web applications to authenticate users,
+			involve users in transactions and obtain user identity data. It
+			brings to users a central identity management.</para>
 		<para>
 			OLAS offers several services to applications:
 			<orderedlist>
 				<listitem>
-					<para>
-						Authentication service: if an application calls
-						this service the user is authenticated by OLAS
-						using one of his configured devices. Upon
-						success the application is informed and can
-						grant access to the user.
-					</para>
-					<para>
-						The implementation is according to the OASIS
-						SAML version 2.0 Web SSO profile with HTTP POST
-						binding.
-					</para>
+					<para> Authentication service: if an application calls this service
+						the user is authenticated by OLAS using one of his configured
+						devices. Upon success the application is informed and can grant
+						access to the user.</para>
+					<para> The implementation is according to the OASIS SAML version
+						2.0 Web SSO profile with HTTP POST binding.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Attribute service: an application can query the
-						user’s attributes and use their values in its
-						business processes. Attributes can only be read
-						if the user has given explicit permission to do
-						so.
-					</para>
-					<para>
-						The implementation is according to the OASIS
-						SAML version 2.0 Attribute Query profile with
-						SOAP binding.
-					</para>
+					<para> Attribute service: an application can query the user’s
+						attributes and use their values in its business processes.
+						Attributes can only be read if the user has given explicit
+						permission to do so.</para>
+					<para> The implementation is according to the OASIS SAML version
+						2.0 Attribute Query profile with SOAP binding.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Data service: an application can push attributes
-						to the user’s profile. These attributes could
-						then be used by other applications (if allowed
-						by the user and the providing application).
-					</para>
-					<para>
-						The implementation is according to the Liberty
-						Alliance ID-WSF Data Service Template version
-						2.1 specification.
-					</para>
+					<para> Data service: an application can push attributes to the
+						user’s profile. These attributes could then be used by other
+						applications (if allowed by the user and the providing
+						application).</para>
+					<para> The implementation is according to the Liberty Alliance
+						ID-WSF Data Service Template version 2.1 specification.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Name Identifier Mapping service: via this
-						service an application can perform a mapping
-						from a username to the user identifier. Of
-						course this service is only available for an
-						application after explicit authorization has
-						been given by the operator.
-					</para>
-					<para>
-						The implementation is according to the OASIS
-						SAML version 2.0 Name Identifier Mapping profile
-						with SOAP binding.
-					</para>
+					<para> Name Identifier Mapping service: via this service an
+						application can perform a mapping from a username to the user
+						identifier. Of course this service is only available for an
+						application after explicit authorization has been given by the
+						operator.</para>
+					<para> The implementation is according to the OASIS SAML version
+						2.0 Name Identifier Mapping profile with SOAP binding.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Security Token Service: via this service an
-						application can validate an authentication token
-						that has been received from the authentication
-						web application.
-					</para>
-					<para>
-						The implementation is according to the OASIS
-						WS-Trust 1.3 specification.
-					</para>
+					<para> Security Token Service: via this service an application can
+						validate an authentication token that has been received from the
+						authentication web application.</para>
+					<para> The implementation is according to the OASIS WS-Trust 1.3
+						specification.</para>
+				</listitem>
+				<listitem>
+					<para> Notification Service: via this service an application or
+						device issuer can subscribe to a list of topics on which it wants
+						to receive notifications from. In order to receive those
+						notifications a consumer web service needs to be setup. This is
+						explained further on.</para>
+					<para>The implementation is according to the OASIS
+						WS-Notification 1.3 specification.</para>
 				</listitem>
 			</orderedlist>
-			The SafeOnline SDK contains Java components to ease the
-			communication with the OLAS services. Besides client
-			components for these web service you'll also find various
-			components in this SDK to ease integration of the SafeOnline
-			authentication mechanism within servlet container based web
-			applications.
+			The SafeOnline SDK contains Java components to ease the communication
+			with the OLAS services. Besides client components for these web
+			services you'll also find various components in this SDK to ease
+			integration of the SafeOnline authentication mechanism within servlet
+			container based web applications.
 		</para>
 		<section>
 			<title>Concepts</title>
 			<para>
-				Some key concepts will be elaborated on to provide a
-				good understanding of the different SDK components.
+				Some key concepts will be elaborated on to provide a good
+				understanding of the different SDK components.
 				<variablelist>
 					<varlistentry>
 						<term>Application</term>
 						<listitem>
-							<para>
-								The entity that invokes operations on
-								the OLAS web services and OLAS
-								authentication web application. Every
-								application is trusted by the OLAS
-								services via an X509 certificate and
-								corresponding private key.
-							</para>
+							<para> The entity that invokes operations on the OLAS web
+								services and OLAS authentication web application. Every
+								application is trusted by the OLAS services via an X509
+								certificate and corresponding private key.</para>
 						</listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>Operator</term>
 						<listitem>
-							<para>
-								The entity that manages the OLAS
-								services and defines the trust
-								relationship and access control towards
-								applications.
+							<para> The entity that manages the OLAS services and defines the
+								trust relationship and access control towards applications.
 							</para>
 						</listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>Application Owner</term>
 						<listitem>
-							<para>
-								Every application is owned by an
-								application owner. The application owner
-								can manage its application via the OLAS
-								application owner web application.
-							</para>
+							<para> Every application is owned by an application owner. The
+								application owner can manage its application via the OLAS
+								application owner web application.</para>
 						</listitem>
 					</varlistentry>
 				</variablelist>
 				The SDK itself is bundled in the file
 				<code>safe-online-sdk-1.0.jar</code>
-				. All the other JAR files are required dependencies. As
-				web service software stack we're using the Sun JAX-WS
-				2.1 RI.
+				. All the other JAR files are required dependencies. As web service
+				software stack we're using the Sun JAX-WS 2.1 RI.
 			</para>
 		</section>
 		<section>
 			<title>Attributes</title>
-			<para>
-				Every subject (i.e. user) has different attributes. An
-				attribute is composed of a name and a value. For
-				example: the attribute with name 'Age' has value '18'.
-				Different types of attributes are possible. We define
-				the following attribute categories:
-			</para>
+			<para> Every subject (i.e. user) has different attributes. An
+				attribute is composed of a name and a value. For example: the
+				attribute with name 'Age' has value '18'. Different types of
+				attributes are possible. We define the following attribute
+				categories:</para>
 			<section>
 				<title>Single-valued Attributes</title>
 				<para>
-					A single-valued attribute is, as the name suggests,
-					an attribute with only one single value attached to
-					it. This value of the attribute is of a certain
-					type. Supported types are:
+					A single-valued attribute is, as the name suggests, an attribute
+					with only one single value attached to it. This value of the
+					attribute is of a certain type. Supported types are:
 					<itemizedlist>
 						<listitem>
 							<para>String</para>
@@ -202,63 +164,52 @@
 							<para>Date</para>
 						</listitem>
 					</itemizedlist>
-					An example of a single-valued attribute is 'Age'
-					with value '18'.
+					An example of a single-valued attribute is 'Age' with value '18'.
 				</para>
 			</section>
 			<section>
 				<title>Multi-valued Attributes</title>
-				<para>
-					A multi-valued attribute is an attribute where the
-					attribute value is a collection of primitive values.
-					An example is the 'GSM' attribute with values '1234'
-					and '5678'.
-				</para>
+				<para> A multi-valued attribute is an attribute where the attribute
+					value is a collection of primitive values. An example is the 'GSM'
+					attribute with values '1234' and '5678'.</para>
 			</section>
 			<section>
 				<title>Compounded Attributes</title>
 				<para>
-					A compounded attribute is an attribute that is
-					composed of other attributes. These other attributes
-					are called the member attributes of the compounded
-					attribute. A compounded attribute only really makes
-					sense if the member attributes are multi-valued. The
-					following picture highlights the principal behind
-					compounded attributes.
+					A compounded attribute is an attribute that is composed of other
+					attributes. These other attributes are called the member attributes
+					of the compounded attribute. A compounded attribute only really
+					makes sense if the member attributes are multi-valued. The
+					following picture highlights the principal behind compounded
+					attributes.
 					<mediaobject>
 						<imageobject>
-							<imagedata format="SVG"
-								fileref="compounded-attribute.svg" scale="50" scalefit="1" />
+							<imagedata format="SVG" fileref="compounded-attribute.svg"
+								scale="50" scalefit="1" />
 						</imageobject>
 						<caption>The attribute matrix.</caption>
 					</mediaobject>
-					The operator can define new attribute types within
-					the OLAS system. Every subject can have values for
-					these attributes. A multi-valued attribute is simply
-					a grouping of attribute values over the horizontal
-					axis. A compounded attribute is defined as a
-					grouping of attribute values over the vertical axis.
+					The operator can define new attribute types within the OLAS system.
+					Every subject can have values for these attributes. A multi-valued
+					attribute is simply a grouping of attribute values over the
+					horizontal axis. A compounded attribute is defined as a grouping of
+					attribute values over the vertical axis.
 				</para>
 			</section>
 		</section>
 		<section>
 			<title>Application Identity</title>
+			<para> Every application can define its own application identity. An
+				application identity is a set of attribute types over which the
+				application wants access for a given subscribed subject. The
+				application identity is managed by the OLAS operator and has a
+				version which allows it to evolve over time. Before a user can log
+				in into an application, he has to confirm usage of the attributes as
+				defined in the current application identity.</para>
 			<para>
-				Every application can define its own application
-				identity. An application identity is a set of attribute
-				types over which the application wants access for a
-				given subscribed subject. The application identity is
-				managed by the OLAS operator and has a version which
-				allows it to evolve over time. Before a user can log in
-				into an application, he has to confirm usage of the
-				attributes as defined in the current application
-				identity.
-			</para>
-			<para>
-				The SDK provides a unique way of defining an identity
-				card in Java 5 that matches the application identity as
-				defined within the OLAS service. An example of this is
-				given below.
+				The SDK provides a unique way of defining an identity card in Java 5
+				that matches the application identity as defined within the OLAS
+				service. An example of this is given below.
 				<programlisting><![CDATA[@IdentityCard
 public static class MyIdentityCard {
 	private String name;
@@ -308,53 +259,44 @@ public static class MyCompounded {
 	}
 }]]></programlisting>
 			</para>
-			<para>
-				Thus a developer can define identity cards as classes in
-				Java 5 that correspond with the OLAS application
-				identity. These classes will be recognized by the
-				different SDK component for retrieving attribute values.
-			</para>
+			<para> Thus a developer can define identity cards as classes in Java
+				5 that correspond with the OLAS application identity. These classes
+				will be recognized by the different SDK component for retrieving
+				attribute values.</para>
 		</section>
 	</chapter>
-
 	<chapter id="ws">
 		<title>Web Services</title>
 		<abstract>
-			<para>
-				This chapter describes the web services that OLAS offers
-				towards applications. We're also demonstrating how to
-				use the SDK client components to invoke operations on
-				the different web services.
-			</para>
+			<para> This chapter describes the web services that OLAS offers
+				towards applications. We're also demonstrating how to use the SDK
+				client components to invoke operations on the different web
+				services.</para>
 		</abstract>
 		<para>
-			A web service definition is composed out of a WSDL and a set
-			of XSD files. For every web service you'll find the web
-			service definition files in the file:
+			A web service definition is composed out of a WSDL and a set of XSD
+			files. For every web service you'll find the web service definition
+			files in the file:
 			<code>safe-online-xxx-ws-1.0.jar</code>
-			. This file also contains the JAX-WS 2.1 stub classes and
-			the corresponding JAXB 2 annotated Java classes for XML
-			binding.
+			. This file also contains the JAX-WS 2.1 stub classes and the
+			corresponding JAXB 2 annotated Java classes for XML binding.
 		</para>
-		<para>
-			Every OLAS web service is secured via server-side SSL and a
-			client-side WS-Security signature on the SOAP message body.
-			The WS-Security signature is according to OASIS Web Services
-			Security: SOAP Message Security 1.0 Standard 200401, March
-			2004.
-		</para>
+		<para> Every OLAS web service is secured via server-side SSL and a
+			client-side WS-Security signature on the SOAP message body. The
+			WS-Security signature is according to OASIS Web Services Security:
+			SOAP Message Security 1.0 Standard 200401, March 2004.</para>
 		<para>
 			The request SOAP messages are to be signed with the X509v3
 			application certificate. The certificate must be attached as
 			<code>BinarySecurityToken</code>
 			within the
 			<code>Security</code>
-			SOAP header element according to 6.3 Binary Security Tokens.
-			The WS-Security SOAP header should also contain a
+			SOAP header element according to 6.3 Binary Security Tokens. The
+			WS-Security SOAP header should also contain a
 			<code>Timestamp</code>
 			according to section 10 - Security Timestamps of the OASIS
-			WS-Security 1.0 specification. The WS-Security signature
-			should sign both the SOAP body and the WS-Security
+			WS-Security 1.0 specification. The WS-Security signature should sign
+			both the SOAP body and the WS-Security
 			<code>Timestamp</code>
 			element. The
 			<code>KeyInfo</code>
@@ -362,18 +304,16 @@ public static class MyCompounded {
 			<code>SecurityTokenReference</code>
 			according to 7.2 - Direct References.
 		</para>
+		<para> Since .NET 3.0 WCF web service clients do not sign the SOAP
+			body per default when using SSL (since in this case the integrity has
+			already been provided by the transport layer) we've foreseen the
+			option within OLAS to disable the verification of the SOAP Body
+			digestion by the WS-Security signature. This can be configured per
+			application by the OLAS operator.</para>
 		<para>
-			Since .NET 3.0 WCF web service clients do not sign the SOAP
-			body per default when using SSL (since in this case the
-			integrity has already been provided by the transport layer)
-			we've foreseen the option within OLAS to disable the
-			verification of the SOAP Body digestion by the WS-Security
-			signature. This can be configured per application by the
-			OLAS operator.
-		</para>
-		<para>
-			An example SOAP message with WS-Security header is given in
-			the following example (we removed the namespace declaration attributes for readability).
+			An example SOAP message with WS-Security header is given in the
+			following example (we removed the namespace declaration attributes
+			for readability).
 			<programlisting><![CDATA[<soap:Envelope>
 	<soap:Header>
 		<wsse:Security soap:mustUnderstand="1">
@@ -433,15 +373,13 @@ public static class MyCompounded {
 		<para>
 			The response SOAP messages will contain an unsigned
 			<code>Timestamp</code>
-			WS-Security SOAP header. This was done for compatibility
-			with .NET.
+			WS-Security SOAP header. This was done for compatibility with .NET.
 		</para>
 		<para>
-			Basically every web service comes with a corresponding SDK
-			client component. These client components will take care of
-			the correct creation of the WS-Security signatures. For
-			example, the Name Identifier Mapping web service can be
-			accessed via the
+			Basically every web service comes with a corresponding SDK client
+			component. These client components will take care of the correct
+			creation of the WS-Security signatures. For example, the Name
+			Identifier Mapping web service can be accessed via the
 			<code>NameIdentifierMappingClient</code>
 			SDK component. Every web service client component has a main
 			constructor that requires the following parameters:
@@ -450,8 +388,7 @@ public static class MyCompounded {
 					<term>location</term>
 					<listitem>
 						<para>
-							The location of the OLAS web service. This
-							is composed out of
+							The location of the OLAS web service. This is composed out of
 							<code>host:port</code>
 							information.
 						</para>
@@ -460,154 +397,175 @@ public static class MyCompounded {
 				<varlistentry>
 					<term>certificate</term>
 					<listitem>
-						<para>
-							The client X509 certificate that will be
-							used during the creation of the WS-Security
-							signature.
-						</para>
+						<para> The client X509 certificate that will be used during the
+							creation of the WS-Security signature.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term>private key</term>
 					<listitem>
-						<para>
-							The private key that corresponds with the
-							client X509 certificate. This key will be
-							used for creating the WS-Security signature.
-						</para>
+						<para> The private key that corresponds with the client X509
+							certificate. This key will be used for creating the WS-Security
+							signature.</para>
 					</listitem>
 				</varlistentry>
 			</variablelist>
 		</para>
-		<para>
-			The exact operations exposed by the different SDK web
-			service client components can be found within the Javadoc
-			documentation that comes with the SDK package.
-		</para>
+		<para> The exact operations exposed by the different SDK web service
+			client components can be found within the Javadoc documentation that
+			comes with the SDK package.</para>
+		<section>
+			<title>Notification consumer service</title>
+			<para> To be able to receive certain notifications of OLAS events, an
+				application ( or device issuer ) needs to subscribe to the OLAS
+				Notification web service and setup a Notification consumer
+				webservice which OLAS uses to send to. The notification service is
+				implemented according to the OASIS WS-Notification 1.3
+				specification.</para>
+			<para>
+				In order to subscribe and unsubscribe for certain topic one can use
+				the provided SDK clients (
+				<code>NotificationProducerClient.subscribe
+				</code>
+				and
+				<code>NotificationSubscriptionManagerClient.unsubscribe
+				</code>
+				). Or an operator can manually add or remove subscriptions using the
+				OLAS operator pages.
+			</para>
+			<para>
+				To implement the notification consumer webservice, you can extend
+				the abstract web service implementation from
+				<code>safe-online-notification-consumer-ws-abstract-impl
+				</code>
+				. The WSDL file for the consumer service can be found in
+				<code>safe-online-notification-consumer-ws-1.0.jar
+				</code>
+				.
+			</para>
+			<para>
+				A notification message allways has the following format:
+				<orderedlist>
+					<listitem>
+						Topic
+					</listitem>
+					<listitem>
+						Destination : The destination for who this notification is
+						destined. This if one consumer web service is intended for
+						multiple applications. It will contain the applications name as
+						known to OLAS.
+					</listitem>
+					<listitem>
+						Message : A list of strings representing the actual message
+						related to this topic.
+					</listitem>
+				</orderedlist>
+			</para>
+			<para>
+				The list of topics and their message formats are as follows:
+				<orderedlist>
+					<listitem>
+						<code>urn:net:lin-k:safe-online:topic:user:remove
+						</code>
+						<para> Message = { User Id }</para>
+					</listitem>
+				</orderedlist>
+			</para>
+		</section>
 	</chapter>
-
 	<chapter id="auth-webapp">
 		<title>Authentication Web Application</title>
 		<abstract>
-			<para>
-				This chapter will give an overview of the functionality
-				provided by the OLAS authentication web application.
-			</para>
+			<para> This chapter will give an overview of the functionality
+				provided by the OLAS authentication web application.</para>
 		</abstract>
 		<para>
-			The OLAS authentication web application is used to
-			authentication users via a web interface. In more detail the
-			OLAS authentication web application allows you to:
+			The OLAS authentication web application is used to authentication
+			users via a web interface. In more detail the OLAS authentication web
+			application allows you to:
 			<itemizedlist>
 				<listitem>
-					<para>
-						Register new users. A new user is also required
-						to directly register an initial authentication
-						device.
-					</para>
+					<para> Register new users. A new user is also required to directly
+						register an initial authentication device.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Authenticate existing users via a device
-						required by the requesting application.
-					</para>
+					<para> Authenticate existing users via a device required by the
+						requesting application.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Register new authentication devices if an
-						application requires to do so.
-					</para>
+					<para> Register new authentication devices if an application
+						requires to do so.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Subscribe a user to an application if he hasn't
-						done that yet.
-					</para>
+					<para> Subscribe a user to an application if he hasn't done that
+						yet.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Let the user confirm the usage of the identity
-						attributes required by the requesting
-						application.
-					</para>
+					<para> Let the user confirm the usage of the identity attributes
+						required by the requesting application.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Let the user fill in missing identity attributes
-						as required by the requesting application.
-					</para>
+					<para> Let the user fill in missing identity attributes as required
+						by the requesting application.</para>
 				</listitem>
 				<listitem>
-					<para>
-						Generate an authentication token according to
-						the authentication protocol used by the
-						requesting application.
-					</para>
+					<para> Generate an authentication token according to the
+						authentication protocol used by the requesting application.</para>
 				</listitem>
 			</itemizedlist>
 			The OLAS authentication web application supports different
-			authentication protocol that can be used by the applications
-			to initiate a new user authentication process. The most
-			important authentication protocol is the SAML version 2.0
-			Web SSO profile with HTTP POST binding.
+			authentication protocol that can be used by the applications to
+			initiate a new user authentication process. The most important
+			authentication protocol is the SAML version 2.0 Web SSO profile with
+			HTTP POST binding.
 		</para>
 		<para>
-			There are different ways of initiating a new user
-			authentication process from within an application, depending
-			on the type of application. We can make a distinction
-			between the following types of web applications:
+			There are different ways of initiating a new user authentication
+			process from within an application, depending on the type of
+			application. We can make a distinction between the following types of
+			web applications:
 			<orderedlist>
 				<listitem>
-					<para>
-						Web resource based web applications like
-						servlet-based or JSP web application. This type
-						of web application will probably use a servlet
-						filter to initiate the user authentication
-						process when the user wants to access a certain
-						web page that requires authentication.
-					</para>
+					<para> Web resource based web applications like servlet-based or
+						JSP web application. This type of web application will probably
+						use a servlet filter to initiate the user authentication process
+						when the user wants to access a certain web page that requires
+						authentication.</para>
 				</listitem>
 				<listitem>
-					<para>
-						MVC based web application. For example: JSF/Seam
-						based web application. This type of web
-						application will probably directly initiate the
-						authentication process via an explicit user
-						action like pressing a login button on a form.
-					</para>
+					<para> MVC based web application. For example: JSF/Seam based web
+						application. This type of web application will probably directly
+						initiate the authentication process via an explicit user action
+						like pressing a login button on a form.</para>
 				</listitem>
 			</orderedlist>
 			This has been depicted in the following figure.
 			<mediaobject>
 				<imageobject>
-					<imagedata format="SVG"
-						fileref="webapp-integration.svg" scale="50" scalefit="1" />
+					<imagedata format="SVG" fileref="webapp-integration.svg"
+						scale="50" scalefit="1" />
 				</imageobject>
-				<caption>
-					The different ways of integrating into a web
-					application.
+				<caption> The different ways of integrating into a web application.
 				</caption>
 			</mediaobject>
-			For these types of web application the OLAS SDK offers
-			utility classes to initiate and of course also finalize a
-			user authentication process.
+			For these types of web application the OLAS SDK offers utility
+			classes to initiate and of course also finalize a user authentication
+			process.
 		</para>
 		<section>
 			<title>Authentication Filter</title>
 			<para>
-				When you decide to handle the authentication process
-				invocation via servlet filters you can use the following
-				SDK servlet filter components:
+				When you decide to handle the authentication process invocation via
+				servlet filters you can use the following SDK servlet filter
+				components:
 				<variablelist>
 					<varlistentry>
 						<term>
 							<code>AuthenticationFilter</code>
 						</term>
 						<listitem>
-							<para>
-								This filter can be used to initiate the
-								authentication process.
-							</para>
+							<para> This filter can be used to initiate the authentication
+								process.</para>
 						</listitem>
 					</varlistentry>
 					<varlistentry>
@@ -615,22 +573,18 @@ public static class MyCompounded {
 							<code>LoginFilter</code>
 						</term>
 						<listitem>
-							<para>
-								This filter can be used to finalize an
-								authentication process.
-							</para>
+							<para> This filter can be used to finalize an authentication
+								process.</para>
 						</listitem>
 					</varlistentry>
 				</variablelist>
-				Both of these servlet filters should be configured via
-				the
+				Both of these servlet filters should be configured via the
 				<code>web.xml</code>
-				servlet web application deployment descriptor.
-				Configuration parameters of these filters are described
-				within the Javadoc API documentation of the OLAS SDK.
-				Below you'll find an example of how to configure the
-				OLAS SDK filters to secure a certain section of a web
-				application.
+				servlet web application deployment descriptor. Configuration
+				parameters of these filters are described within the Javadoc API
+				documentation of the OLAS SDK. Below you'll find an example of how
+				to configure the OLAS SDK filters to secure a certain section of a
+				web application.
 				<programlisting><![CDATA[<filter>
 	<filter-name>LoginFilter</filter-name>
 	<filter-class>
@@ -688,56 +642,50 @@ public static class MyCompounded {
 				<code>AuthenticationFilter</code>
 				. If the
 				<code>AuthenticationFilter</code>
-				would be first then the user will always be redirected
-				to the authentication web application and never be able
-				to actually login into the web application.
+				would be first then the user will always be redirected to the
+				authentication web application and never be able to actually login
+				into the web application.
 			</para>
 		</section>
 		<section>
 			<title>Explicit Authentication</title>
 			<para>
-				Direct invocation of the authentication protocol handler
-				is also possible. An example of this is given by
+				Direct invocation of the authentication protocol handler is also
+				possible. An example of this is given by
 				<code>SafeOnlineLoginUtils</code>
-				that can be used on Seam/JSF-based web applications.
-				Notice that in this case the usage of the
+				that can be used on Seam/JSF-based web applications. Notice that in
+				this case the usage of the
 				<code>LoginFilter</code>
-				is still required to be able to process the
-				authentication response as received from the OLAS
-				authentication web application.
+				is still required to be able to process the authentication response
+				as received from the OLAS authentication web application.
 			</para>
 		</section>
 		<section>
 			<title>Landing Page</title>
 			<para>
-				The advantage of using a landing page to go back from
-				the authentication web application to your web
-				application is that in that way you can prevent a
-				browser security warning when your web application in
-				not running over SSL. For example, the warning that
+				The advantage of using a landing page to go back from the
+				authentication web application to your web application is that in
+				that way you can prevent a browser security warning when your web
+				application in not running over SSL. For example, the warning that
 				Firefox gives looks like:
-				<quote>
-					Although this page is encrypted, the information you
-					have entered is to be sent over an unencrypted
-					connection and could easily be read by a third
-					party. Are you sure you want to continue sending
-					this information?
-				</quote>
+				<quote> Although this page is encrypted, the information you have
+					entered is to be sent over an unencrypted connection and could
+					easily be read by a third party. Are you sure you want to continue
+					sending this information?</quote>
 				This can be prevented by using a landing page where the
-				authentication web application can land on with its
-				authentication response token. The idea is to have the
-				local landing page over SSL. That way the browser can do
-				a smooth and secure transfer of the authentication
-				response token from the authentication web application
-				back to your web application. After successful login the
-				landing page will redirect to the original target page,
-				which can run over a non-SSL connection.
+				authentication web application can land on with its authentication
+				response token. The idea is to have the local landing page over SSL.
+				That way the browser can do a smooth and secure transfer of the
+				authentication response token from the authentication web
+				application back to your web application. After successful login the
+				landing page will redirect to the original target page, which can
+				run over a non-SSL connection.
 			</para>
 			<para>
-				The OLAS SDK comes with a landing page component
-				implemented as a servlet. This means that it can easily
-				be integrated into your existing JavaEE web application.
-				Below you find a configuration example of
+				The OLAS SDK comes with a landing page component implemented as a
+				servlet. This means that it can easily be integrated into your
+				existing JavaEE web application. Below you find a configuration
+				example of
 				<code>web.xml</code>
 				for the landing page component.
 				<programlisting><![CDATA[<context-param>
