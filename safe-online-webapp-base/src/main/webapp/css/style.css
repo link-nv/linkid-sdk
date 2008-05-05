@@ -457,7 +457,7 @@ input,select,textarea {
 input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label
 	{
 	color: #333;
-	margin: 3px 0 5px 0;
+	margin: 4px 0 15px 0;
     vertical-align: bottom;
 	background: #fff;
 	width: 300px;

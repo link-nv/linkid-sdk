@@ -43,13 +43,12 @@
                                     value="#{selectedSubscription.subscriptionOwnerType}" />
                             </td>
                         </tr>
+                        <tr>
+                            <th><h:outputText value="#{msgs.description}" /></th>
+                            <td class="white_space">#{selectedSubscription.application.description}</td>
+                        </tr>
                     </tbody>
                 </table>
-			</rich:simpleTogglePanel>
-
-            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			    label="#{msgs.description}">
-				<div class="white_space">#{selectedSubscription.application.description}</div>
 			</rich:simpleTogglePanel>
 
             <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"

@@ -43,7 +43,7 @@ shopt -s extglob
 
 # Variables for global internal operation.
 export bobber=(     '.' 'o' 'O' 'o' )
-export spinner=(    '-' '\'  '|' '/' )
+export spinner=(    '-' '\' '|' '/' ) #'
 export crosser=(    '+' 'x' '+' 'x' )
 export runner=(     '> >'           \
                     '>> '           \
@@ -51,33 +51,32 @@ export runner=(     '> >'           \
                     ' >>'           )
 
 # Variables for terminal requests.
-tput sgr0 vs 2>/dev/null && _TERM_=$TERM || _TERM_=vt100
-export hide=$(      tput -T$_TERM_ vi       )
-export show=$(      tput -T$_TERM_ vs       )
-export back=$(      tput -T$_TERM_ kbs      )
-export save=$(      tput -T$_TERM_ sc       )
-export load=$(      tput -T$_TERM_ rc       )
-export bold=$(      tput -T$_TERM_ bold     )
-export reset=$(     tput -T$_TERM_ sgr0     )
-#export blink=$(    tput -T$_TERM_ blink    )
-export italic=$(    tput -T$_TERM_ sitm     )
-export red=$(       tput -T$_TERM_ setaf 1  )
-export green=$(     tput -T$_TERM_ setaf 2  )
-export yellow=$(    tput -T$_TERM_ setaf 3  )
-export blue=$(      tput -T$_TERM_ setaf 4  )
-export magenta=$(   tput -T$_TERM_ setaf 5  )
-export cyan=$(      tput -T$_TERM_ setaf 6  )
-export grey=$(      tput -T$_TERM_ setaf 7  )
-export default=$(   tput -T$_TERM_ op       )
-export eed=$(       tput -T$_TERM_ ed       )
-export eel=$(       tput -T$_TERM_ el       )
-export ebl=$(       tput -T$_TERM_ el1      )
-export ewl=$(       tput -T$_TERM_ el       \
-                    tput -T$_TERM_ el1      )
-export draw=$(      tput -T$_TERM_ enacs    \
-                    tput -T$_TERM_ smacs    \
-                    tput -T$_TERM_ acsc     \
-                    tput -T$_TERM_ rmacs    )
+export hide=$(      tput vi       2>/dev/null )
+export show=$(      tput vs       2>/dev/null )
+export back=$(      tput kbs      2>/dev/null )
+export save=$(      tput sc       2>/dev/null )
+export load=$(      tput rc       2>/dev/null )
+export bold=$(      tput bold     2>/dev/null )
+export reset=$(     tput sgr0     2>/dev/null )
+#export blink=$(    tput blink    2>/dev/null )
+export italic=$(    tput sitm     2>/dev/null )
+export red=$(       tput setaf 1  2>/dev/null )
+export green=$(     tput setaf 2  2>/dev/null )
+export yellow=$(    tput setaf 3  2>/dev/null )
+export blue=$(      tput setaf 4  2>/dev/null )
+export magenta=$(   tput setaf 5  2>/dev/null )
+export cyan=$(      tput setaf 6  2>/dev/null )
+export grey=$(      tput setaf 7  2>/dev/null )
+export default=$(   tput op       2>/dev/null )
+export eed=$(       tput ed       2>/dev/null )
+export eel=$(       tput el       2>/dev/null )
+export ebl=$(       tput el1      2>/dev/null )
+export ewl=$(       tput el       2>/dev/null ;
+                    tput el1      2>/dev/null )
+export draw=$(      tput enacs    2>/dev/null ;
+                    tput smacs    2>/dev/null ;
+                    tput acsc     2>/dev/null ;
+                    tput rmacs    2>/dev/null )
 
 # Monochrome terminals don't need these.
 [[ $TERM = *-m ]] && {
@@ -683,6 +682,47 @@ function showHelp {
     done | column -t -s $'\t' \
          | sed -r "s/^(    [^ ]*)/$bold$green\1$reset/"             >&$fd
     echo                                                            >&$fd
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ Shorten ___________________________________________________________|
+#
+#       shorten path [prefix]...
+#
+# Shorten an absolute path for pretty printing by cutting
+# off PWD and replacing HOME by ~.
+#
+#   path    The path string to shorten.
+#   prefix  Prefix strings that must be cut off the beginning.
+#           Only the first prefix string matched will be cut off.
+#
+function shorten {
+
+    # Check usage.
+    (( $# < 1 )) || getArgs -q :h "$@" && {
+        emit -y 'Please provide the path to shorten.'
+        return 1
+    }
+
+    # Parse the options.
+    local prefix
+    local path=$1; shift
+
+    # Shorten the path.
+    path=${path/#$PWD\//}
+    path=${path/#$HOME/'~'}
+
+    # Cut off prefix.
+    for prefix; do
+        [[ $path = $prefix* ]] && {
+            path=${path#$prefix}
+            break
+        }
+    done
+
+    echo "$path"
 } # _____________________________________________________________________
 
 

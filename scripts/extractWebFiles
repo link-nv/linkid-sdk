@@ -2,10 +2,20 @@
 source "${0%/*}"/bashlib
 
 [[ $1 = -R ]] && { reverse=1; shift; }
+[[ $1 = -a ]] && { apply=1; shift; }
 
 base="${2:-${0%/*}/..}"
-distribution="${1:-$base/safe-online-base-distribution}"
+distribution=$1
+
+[[ ! $distribution ]] && {
+    distribution=$(cd "$base/safe-online-base-distribution/target/"*"/jboss/server/default/deploy/../../../../"; echo "$PWD")
+}
 base="$base/work"
+
+[[ ! -d $distribution/jboss/server/default/tmp ]] && {
+    emit -r "Invalid distribution path or distribution not deployed: '$distribution'"
+    exit 1
+}
 
 [[ -x $(type -P readlink 2>/dev/null) ]] && {
     base=$(readlink -m "$base")
@@ -19,8 +29,10 @@ function extractCss {
 
     [[ -e $css ]] && \
     mkdir -p "$base/css"                        || return
-    (( reverse )) || \
-        { mv "$css" "$base/css/"                || return; }
+    (( reverse )) || {
+        mv "$css" "$base/css/" && \
+        cp "$base/css/${css##*/}"{,~}           || return
+    }
 
     for file in "${css[@]}"; do
         ln -f "$base/css/style.css" "$file"     || return
@@ -48,9 +60,9 @@ function extractStuff {
         extractHtml
 }
 
-if (( ! reverse )); then
+if (( ! reverse && ! apply )); then
     [[ -e $base ]] && {
-        emit -Y "You already have work files at '${base#$PWD/}'.  Perhaps you meant to use -R?"
+        emit -Y "You already have work files at '$(shorten "$base")'.  Perhaps you meant to use -R?"
         emit -Y "Continuing will delete all these files and replace them by the current server's files."
         echo; ask -!yN "Continue?" || exit
     }
@@ -61,12 +73,37 @@ if (( ! reverse )); then
 fi
 
 if (( reverse )); then
-    emit "Linking CSS and XHTML files from '${base#$PWD/}' to '${distribution#$PWD/}'" --
+    emit "Linking CSS and XHTML files from '$(shorten "$base")' to '$(shorten "$distribution")'" --
+elif (( apply )); then
+    emit "Applying CSS and XHTML files from '$(shorten "$base")' to repository" --
 else
-    emit "Linking CSS and XHTML files from '${distribution#$PWD/}' to '${base#$PWD/}'" --
+    emit "Linking CSS and XHTML files from '$(shorten "$distribution")' to '$(shorten "$base")'" --
 fi
 
-    cd "$distribution/target/"*"/jboss/server/default/tmp/deploy/"*"SafeOnline.ear-contents/" && \
+if (( apply )); then
+    find "$base" -name '*.xhtml' -o -name '*.css' -print0 | while read -d '' file; do
+        [[ -e $file~ ]] || {
+            emit -y "Backup of '$(shorten "$file" "$base")' not found."
+            continue
+        }
+
+        if ! diff -q "$file"{,~} >/dev/null; then
+            dest="${0%/*}/../${file/-1.0-SNAPSHOT-exp.war//src/main/webapp}"
+            if ! [[ -e $dest ]]; then
+                dest=( "${0%/*}/../"*"/src/main/webapp/${file#$base/}" )
+
+                if (( ! ${#dest[@]} || ${#dest[@]} > 1 )) || [[ ! -e $dest ]]; then
+                    emit -y "Source of '$(shorten "$file" "$base")' not found."
+                    continue
+                fi
+            fi
+
+            cp "$file" "$dest"
+        fi
+    done
+else
+    cd "$distribution/jboss/server/default/tmp/deploy/"*"SafeOnline.ear-contents/" && \
         extractStuff
+fi
 
 emit -$?
