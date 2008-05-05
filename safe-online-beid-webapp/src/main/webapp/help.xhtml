@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template-root.xhtml">
+	<ui:define name="content">
+		<h1>#{msgs.help}</h1>
+		<p>#{msgs.helpInfo} <b>id = #{helpdesk.id}</b>.</p>
+
+		<p>#{msgs.helpContact} :</p>
+
+		<h:panelGrid columns="2">
+			<h:outputText value="#{msgs.phone}" />
+			<h:outputText value="#{helpdesk.phone}" />
+			<h:outputText value="#{msgs.email}" />
+			<h:outputText value="#{helpdesk.email}" />
+		</h:panelGrid>
+
+		<p><h:outputLink
+			value="#{facesContext.externalContext.requestContextPath}/redirect.seam">#{msgs.helpLinkToMain}</h:outputLink></p>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>
