@@ -20,6 +20,8 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.RoleNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.oper.Authorization;
@@ -153,13 +155,21 @@ public class AuthorizationBean implements Authorization {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<String> autocompleteUser(Object event) {
 		String userPrefix = event.toString();
+		if (userPrefix.length() < 3) {
+			return null;
+		}
 		this.log.debug("auto-complete user: #0", userPrefix);
-		List<String> allUsers = this.authorizationManagerService.getUsers();
-		List<String> filteredUsers = new LinkedList<String>();
-		for (String currentUser : allUsers) {
-			if (currentUser.startsWith(userPrefix)) {
-				filteredUsers.add(currentUser);
-			}
+		List<String> filteredUsers;
+		try {
+			filteredUsers = this.authorizationManagerService
+					.getUsers(userPrefix);
+		} catch (AttributeTypeNotFoundException e) {
+			this.log.debug("login attribute type not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorAttributeTypeNotFoundSpecific",
+					SafeOnlineConstants.LOGIN_ATTRIBTUE);
+			return null;
 		}
 		return filteredUsers;
 	}

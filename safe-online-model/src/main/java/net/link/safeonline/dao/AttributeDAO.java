@@ -135,6 +135,16 @@ public interface AttributeDAO {
 			AttributeTypeEntity attributeType);
 
 	/**
+	 * Gives back all attributes of the given attribute type which string value
+	 * starts with the specified prefix.
+	 * 
+	 * @param prefix
+	 * @param attributeType
+	 */
+	List<AttributeEntity> listAttributes(String prefix,
+			AttributeTypeEntity attributeType);
+
+	/**
 	 * Removes all the attributes of the given subject.
 	 * 
 	 * @param subject

@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.RoleNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
@@ -45,8 +46,11 @@ public interface AuthorizationManagerService {
 			throws SubjectNotFoundException, RoleNotFoundException;
 
 	/**
-	 * Gives back a list of all available user logins.
+	 * Gives back a list of available user logins starting with a specified
+	 * prefix.
 	 * 
+	 * @param prefix
+	 * @throws AttributeTypeNotFoundException
 	 */
-	List<String> getUsers();
+	List<String> getUsers(String prefix) throws AttributeTypeNotFoundException;
 }

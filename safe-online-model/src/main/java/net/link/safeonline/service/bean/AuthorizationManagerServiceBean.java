@@ -20,6 +20,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.RoleNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.common.SafeOnlineRoles;
@@ -179,8 +180,9 @@ public class AuthorizationManagerServiceBean implements
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<String> getUsers() {
-		List<String> users = this.subjectService.listUsers();
+	public List<String> getUsers(String prefix)
+			throws AttributeTypeNotFoundException {
+		List<String> users = this.subjectService.listUsers(prefix);
 		return users;
 	}
 }

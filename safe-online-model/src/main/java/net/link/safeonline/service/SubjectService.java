@@ -89,10 +89,13 @@ public interface SubjectService {
 	String getExceptionSubjectLogin(String userId);
 
 	/**
-	 * Returns list of users' login names.
+	 * Returns list of users' login names starting with the specified prefix.
+	 * 
+	 * @param prefix
+	 * @throws AttributeTypeNotFoundException
 	 * 
 	 */
-	List<String> listUsers();
+	List<String> listUsers(String prefix) throws AttributeTypeNotFoundException;
 
 	/**
 	 * Adds a 'device subject'. This is used at the moment by the external

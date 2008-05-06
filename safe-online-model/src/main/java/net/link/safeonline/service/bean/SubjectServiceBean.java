@@ -130,12 +130,16 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
 		return subject;
 	}
 
-	public List<String> listUsers() {
+	public List<String> listUsers(String prefix)
+			throws AttributeTypeNotFoundException {
 		List<String> userList = new LinkedList<String>();
-		List<String> userIdList = this.subjectDAO.listUsers();
-		for (String userId : userIdList) {
-			String user = this.getSubjectLogin(userId);
-			userList.add(user);
+
+		AttributeTypeEntity loginAttributeType = this.attributeTypeDAO
+				.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
+		List<AttributeEntity> loginAttributes = this.attributeDAO
+				.listAttributes(prefix, loginAttributeType);
+		for (AttributeEntity loginAttribute : loginAttributes) {
+			userList.add(loginAttribute.getStringValue());
 		}
 		return userList;
 	}

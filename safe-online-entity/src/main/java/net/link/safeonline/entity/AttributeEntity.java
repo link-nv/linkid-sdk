@@ -11,6 +11,7 @@ import static net.link.safeonline.entity.AttributeEntity.ATTRIBUTE_TYPE_PARAM;
 import static net.link.safeonline.entity.AttributeEntity.DELETE_WHERE_ATTRIBUTE_TYPE;
 import static net.link.safeonline.entity.AttributeEntity.DELETE_WHERE_SUBJECT;
 import static net.link.safeonline.entity.AttributeEntity.MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
+import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_VISIBLE;
@@ -70,6 +71,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 				+ " AND attribute.attributeType = :"
 				+ ATTRIBUTE_TYPE_PARAM
 				+ " ORDER BY attribute.attributeIndex"),
+		@NamedQuery(name = QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE, query = "SELECT attribute FROM AttributeEntity AS attribute "
+				+ "WHERE SUBSTRING(attribute.stringValue,1,LENGTH(:prefix)) = :prefix"
+				+ " AND attribute.attributeType = :"
+				+ ATTRIBUTE_TYPE_PARAM
+				+ " ORDER BY attribute.stringValue"),
 		@NamedQuery(name = MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT MAX(attribute.attributeIndex) FROM AttributeEntity AS attribute "
 				+ "WHERE attribute.subject = :"
 				+ SUBJECT_PARAM
@@ -87,6 +93,8 @@ public class AttributeEntity implements Serializable {
 	public static final String QUERY_WHERE_SUBJECT_AND_VISIBLE = "attr.subject.visi";
 
 	public static final String QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "attr.subject.at";
+
+	public static final String QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE = "attr.pre.at";
 
 	public static final String MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "max.id.subject.at";
 
@@ -360,30 +368,33 @@ public class AttributeEntity implements Serializable {
 
 	public interface QueryInterface {
 		@QueryMethod(QUERY_WHERE_SUBJECT)
-		List<AttributeEntity> listAttributes(@QueryParam(SUBJECT_PARAM)
-		SubjectEntity subject);
+		List<AttributeEntity> listAttributes(
+				@QueryParam(SUBJECT_PARAM) SubjectEntity subject);
 
 		@QueryMethod(QUERY_WHERE_SUBJECT_AND_VISIBLE)
-		List<AttributeEntity> listVisibleAttributes(@QueryParam(SUBJECT_PARAM)
-		SubjectEntity subject);
+		List<AttributeEntity> listVisibleAttributes(
+				@QueryParam(SUBJECT_PARAM) SubjectEntity subject);
 
 		@QueryMethod(QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
-		List<AttributeEntity> listAttributes(@QueryParam(SUBJECT_PARAM)
-		SubjectEntity subject, @QueryParam(ATTRIBUTE_TYPE_PARAM)
-		AttributeTypeEntity attributeType);
+		List<AttributeEntity> listAttributes(
+				@QueryParam(SUBJECT_PARAM) SubjectEntity subject,
+				@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+
+		@QueryMethod(QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE)
+		List<AttributeEntity> listAttributes(
+				@QueryParam("prefix") String prefix,
+				@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
 
 		@QueryMethod(MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
 		List<Long> listMaxIdWhereSubjectAndAttributeType(
-				@QueryParam(SUBJECT_PARAM)
-				SubjectEntity subject, @QueryParam(ATTRIBUTE_TYPE_PARAM)
-				AttributeTypeEntity attributeType);
+				@QueryParam(SUBJECT_PARAM) SubjectEntity subject,
+				@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
 
 		@UpdateMethod(DELETE_WHERE_SUBJECT)
-		void deleteAttributes(@QueryParam(SUBJECT_PARAM)
-		SubjectEntity subject);
+		void deleteAttributes(@QueryParam(SUBJECT_PARAM) SubjectEntity subject);
 
 		@UpdateMethod(DELETE_WHERE_ATTRIBUTE_TYPE)
-		int deleteAttributes(@QueryParam(ATTRIBUTE_TYPE_PARAM)
-		AttributeTypeEntity attributeType);
+		int deleteAttributes(
+				@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
 	}
 }
