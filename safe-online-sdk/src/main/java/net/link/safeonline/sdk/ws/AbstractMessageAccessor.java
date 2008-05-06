@@ -24,9 +24,9 @@ import org.w3c.dom.Document;
 /**
  * Abstract base implementation of the message accessor interface. Used by the
  * different web service client components.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public abstract class AbstractMessageAccessor implements MessageAccessor {
 
@@ -57,7 +57,7 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 	/**
 	 * Registers the SOAP handler that this instance manages on the given JAX-WS
 	 * port component.
-	 *
+	 * 
 	 * @param port
 	 */
 	protected void registerMessageLoggerHandler(Object port) {
@@ -84,6 +84,11 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 		if (!(port instanceof BindingProvider))
 			throw new IllegalArgumentException(
 					"Can only retrieve result HTTP headers from a JAX-WS proxy object.");
+
+		if (null == ((BindingProvider) port).getResponseContext().get(
+				MessageContext.HTTP_RESPONSE_HEADERS)) {
+			return;
+		}
 
 		this.responseHeaders = (Map<String, List<String>>) ((BindingProvider) port)
 				.getResponseContext().get(MessageContext.HTTP_RESPONSE_HEADERS);

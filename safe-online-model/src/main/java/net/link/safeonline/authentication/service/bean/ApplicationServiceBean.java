@@ -328,7 +328,7 @@ public class ApplicationServiceBean implements ApplicationService,
 		 * possible that the login cannot logon because JAAS is caching the old
 		 * roles that did not include the 'owner' role yet.
 		 */
-		SecurityManagerUtils.flushCredentialCache(adminLogin,
+		SecurityManagerUtils.flushCredentialCache(adminSubject.getUserId(),
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}
 
@@ -368,7 +368,7 @@ public class ApplicationServiceBean implements ApplicationService,
 		 * Flush the credential cache as the owner role is no longer for this
 		 * login.
 		 */
-		SecurityManagerUtils.flushCredentialCache(adminLogin,
+		SecurityManagerUtils.flushCredentialCache(adminSubject.getUserId(),
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}
 

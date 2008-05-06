@@ -17,19 +17,6 @@ import javax.naming.InitialContext;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 
-import net.link.safeonline.authentication.service.ApplicationService;
-import net.link.safeonline.authentication.service.AttributeProviderManagerService;
-import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
-import net.link.safeonline.authentication.service.CredentialService;
-import net.link.safeonline.authentication.service.IdentityService;
-import net.link.safeonline.authentication.service.SubscriptionService;
-import net.link.safeonline.authentication.service.UserRegistrationService;
-import net.link.safeonline.pkix.service.PkiService;
-import net.link.safeonline.service.AttributeTypeService;
-import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.util.ee.EjbUtils;
-
 import org.jboss.security.auth.callback.UsernamePasswordHandler;
 
 /**
@@ -98,83 +85,5 @@ public class IntegrationTestUtils {
 		configWriter.close();
 		System.setProperty("java.security.auth.login.config", tmpConfigFile
 				.getAbsolutePath());
-	}
-
-	public static AttributeProviderManagerService getAttributeProviderManagerService(
-			InitialContext initialContext) {
-		final AttributeProviderManagerService attributeProviderManagerService = EjbUtils
-				.getEJB(
-						initialContext,
-						"SafeOnline/AttributeProviderManagerServiceBean/remote",
-						AttributeProviderManagerService.class);
-		return attributeProviderManagerService;
-	}
-
-	public static UserRegistrationService getUserRegistrationService(
-			InitialContext initialContext) {
-		final UserRegistrationService userRegistrationService = EjbUtils
-				.getEJB(initialContext,
-						"SafeOnline/UserRegistrationServiceBean/remote",
-						UserRegistrationService.class);
-		return userRegistrationService;
-	}
-
-	public static AttributeTypeService getAttributeTypeService(
-			InitialContext initialContext) {
-		final AttributeTypeService attributeTypeService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/AttributeTypeServiceBean/remote",
-				AttributeTypeService.class);
-		return attributeTypeService;
-	}
-
-	public static ApplicationService getApplicationService(
-			InitialContext initialContext) {
-		final ApplicationService applicationService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/ApplicationServiceBean/remote",
-				ApplicationService.class);
-		return applicationService;
-	}
-
-	public static IdentityService getIdentityService(
-			InitialContext initialContext) {
-		IdentityService identityService = EjbUtils.getEJB(initialContext,
-				"SafeOnline/IdentityServiceBean/remote", IdentityService.class);
-		return identityService;
-	}
-
-	public static SubjectService getSubjectService(InitialContext initialContext) {
-		SubjectService subjectService = EjbUtils.getEJB(initialContext,
-				"SafeOnline/SubjectServiceBean/remote", SubjectService.class);
-		return subjectService;
-	}
-
-	public static SubscriptionService getSubscriptionService(
-			InitialContext initialContext) {
-		final SubscriptionService subscriptionService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/SubscriptionServiceBean/remote",
-				SubscriptionService.class);
-		return subscriptionService;
-	}
-
-	public static CredentialService getCredentialService(
-			InitialContext initialContext) {
-		final CredentialService credentialService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/CredentialServiceBean/remote",
-				CredentialService.class);
-		return credentialService;
-	}
-
-	public static PkiService getPkiService(InitialContext initialContext) {
-		final PkiService pkiService = EjbUtils.getEJB(initialContext,
-				"SafeOnline/PkiServiceBean/remote", PkiService.class);
-		return pkiService;
-	}
-
-	public static AuthenticationService getAuthenticationService(
-			InitialContext initialContext) {
-		AuthenticationService authenticationService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/AuthenticationServiceBean/remote",
-				AuthenticationServiceRemote.class);
-		return authenticationService;
 	}
 }

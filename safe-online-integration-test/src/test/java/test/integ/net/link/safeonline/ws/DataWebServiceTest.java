@@ -17,6 +17,7 @@ import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplication
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeProviderManagerService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeTypeService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getPasswordDeviceService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getPkiService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubjectService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubscriptionService;
@@ -42,9 +43,11 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.auth.saml2.DomUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
@@ -71,15 +74,16 @@ import org.w3c.dom.Document;
 
 import test.integ.net.link.safeonline.IntegrationTestUtils;
 
+
 /**
  * Integration tests for the SafeOnline Data Web Service.
- *
+ * 
  * <p>
  * We implemented the integration tests using the JUnit unit test framework.
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class DataWebServiceTest {
 
@@ -95,7 +99,7 @@ public class DataWebServiceTest {
 		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
 				"CN=Test");
 
-		this.dataClient = new DataClientImpl("localhost:8443",
+		this.dataClient = new DataClientImpl("https://localhost:8443",
 				this.certificate, keyPair.getPrivate());
 	}
 
@@ -110,17 +114,18 @@ public class DataWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
 		String adminUserId = subjectService.getSubjectFromUserName("admin")
 				.getUserId();
 
@@ -152,13 +157,13 @@ public class DataWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
 		// operate & verify
 		try {
-			this.dataClient.getAttributeValue(userId,
+			this.dataClient.getAttributeValue(loginSubject.getUserId(),
 					SafeOnlineConstants.NAME_ATTRIBUTE, String.class);
 			fail();
 		} catch (RequestDeniedException e) {
@@ -171,14 +176,14 @@ public class DataWebServiceTest {
 		attributeProviderManagerService.addAttributeProvider(
 				testApplicationName, SafeOnlineConstants.NAME_ATTRIBUTE);
 
-		Attribute<String> result = this.dataClient.getAttributeValue(userId,
-				SafeOnlineConstants.NAME_ATTRIBUTE, String.class);
+		Attribute<String> result = this.dataClient.getAttributeValue(
+				loginSubject.getUserId(), SafeOnlineConstants.NAME_ATTRIBUTE,
+				String.class);
 		LOG.debug("result: " + result);
-		assertNotNull(result);
-		assertNull(result.getValue());
+		assertNull(result);
 
 		this.dataClient.setCaptureMessages(true);
-		this.dataClient.setAttributeValue(userId,
+		this.dataClient.createAttribute(loginSubject.getUserId(),
 				SafeOnlineConstants.NAME_ATTRIBUTE, testName);
 
 		/*
@@ -191,16 +196,16 @@ public class DataWebServiceTest {
 		LOG.debug("INBOUND message: "
 				+ DomUtils.domToString(this.dataClient.getInboundMessage()));
 
-		result = this.dataClient.getAttributeValue(userId,
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
 				SafeOnlineConstants.NAME_ATTRIBUTE, String.class);
 		LOG.debug("result: " + result);
 		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.getName());
 		assertEquals(testName, result.getValue());
 
 		// check if we can set a string attribute to null
-		this.dataClient.setAttributeValue(userId,
+		this.dataClient.setAttributeValue(loginSubject.getUserId(),
 				SafeOnlineConstants.NAME_ATTRIBUTE, null);
-		result = this.dataClient.getAttributeValue(userId,
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
 				SafeOnlineConstants.NAME_ATTRIBUTE, String.class);
 		assertNull(result.getValue());
 	}
@@ -216,17 +221,18 @@ public class DataWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
 		String adminUserId = subjectService.getSubjectFromUserName("admin")
 				.getUserId();
 
@@ -274,7 +280,7 @@ public class DataWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
@@ -286,14 +292,14 @@ public class DataWebServiceTest {
 
 		this.dataClient.setCaptureMessages(true);
 		Attribute<CompoundedTestClass[]> result = this.dataClient
-				.getAttributeValue(userId, TEST_COMP_NAME,
+				.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME,
 						CompoundedTestClass[].class);
 		LOG.debug("result message: "
 				+ DomUtils.domToString(this.dataClient.getInboundMessage()));
 		assertNull(result);
 
 		// operate: add 2 compounded attribute records
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		AttributeDO compAttribute = new AttributeDO(TEST_COMP_NAME,
 				DatatypeType.COMPOUNDED, true, -1, null, null, true, true,
 				null, null);
@@ -316,8 +322,8 @@ public class DataWebServiceTest {
 		identityService.addAttribute(attributes);
 
 		this.dataClient.setCaptureMessages(true);
-		result = this.dataClient.getAttributeValue(userId, TEST_COMP_NAME,
-				CompoundedTestClass[].class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				TEST_COMP_NAME, CompoundedTestClass[].class);
 		LOG.debug("result message: "
 				+ DomUtils.domToString(this.dataClient.getInboundMessage()));
 
@@ -338,7 +344,8 @@ public class DataWebServiceTest {
 		newValue.setMember0("hello world");
 		this.dataClient.setCaptureMessages(true);
 		try {
-			this.dataClient.setAttributeValue(userId, TEST_COMP_NAME, newValue);
+			this.dataClient.setAttributeValue(loginSubject.getUserId(),
+					TEST_COMP_NAME, newValue);
 		} finally {
 			LOG.debug("request message: "
 					+ DomTestUtils.domToString(this.dataClient
@@ -346,8 +353,8 @@ public class DataWebServiceTest {
 		}
 
 		// verify
-		result = this.dataClient.getAttributeValue(userId, TEST_COMP_NAME,
-				CompoundedTestClass[].class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				TEST_COMP_NAME, CompoundedTestClass[].class);
 		assertEquals("hello world", result.getValue()[1].getMember0());
 		assertFalse(result.getValue()[1].isMember1());
 		assertNotNull(result.getValue()[1].getId());
@@ -356,16 +363,16 @@ public class DataWebServiceTest {
 		CompoundedTestClass newCompoundAttribute = new CompoundedTestClass();
 		newCompoundAttribute.setMember0("foobar");
 		newCompoundAttribute.setMember1(true);
-		this.dataClient.createAttribute(userId, TEST_COMP_NAME,
-				newCompoundAttribute);
+		this.dataClient.createAttribute(loginSubject.getUserId(),
+				TEST_COMP_NAME, newCompoundAttribute);
 
-		result = this.dataClient.getAttributeValue(userId, TEST_COMP_NAME,
-				CompoundedTestClass[].class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				TEST_COMP_NAME, CompoundedTestClass[].class);
 		assertEquals(3, result.getValue().length);
 
 		// check that the SDK can also retrieve compound attributes via maps.
-		Attribute<Map[]> mapResult = this.dataClient.getAttributeValue(userId,
-				TEST_COMP_NAME, Map[].class);
+		Attribute<Map[]> mapResult = this.dataClient.getAttributeValue(
+				loginSubject.getUserId(), TEST_COMP_NAME, Map[].class);
 		assertEquals(3, mapResult.getValue().length);
 
 		assertEquals("foobar", result.getValue()[2].getMember0());
@@ -377,11 +384,11 @@ public class DataWebServiceTest {
 				.getId());
 
 		// operate: remove a compounded attribute record
-		this.dataClient.removeAttribute(userId, new Attribute(TEST_COMP_NAME,
-				result.getValue()[1]));
+		this.dataClient.removeAttribute(loginSubject.getUserId(),
+				new Attribute(TEST_COMP_NAME, result.getValue()[1]));
 		// verify
-		result = this.dataClient.getAttributeValue(userId, TEST_COMP_NAME,
-				CompoundedTestClass[].class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				TEST_COMP_NAME, CompoundedTestClass[].class);
 		assertEquals(2, result.getValue().length);
 	}
 
@@ -395,17 +402,18 @@ public class DataWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
 		String adminUserId = subjectService.getSubjectFromUserName("admin")
 				.getUserId();
 
@@ -437,7 +445,7 @@ public class DataWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
@@ -447,43 +455,40 @@ public class DataWebServiceTest {
 		attributeProviderManagerService.addAttributeProvider(
 				testApplicationName, attributeName);
 
-		Attribute<Boolean> result = this.dataClient.getAttributeValue(userId,
-				attributeName, Boolean.class);
-		LOG.debug("result: " + result.getValue());
-		/*
-		 * Because of the identity confirmation the system created an empty
-		 * attribute.
-		 */
-		assertNotNull(result);
-		assertNull(result.getValue());
+		Attribute<Boolean> result = this.dataClient.getAttributeValue(
+				loginSubject.getUserId(), attributeName, Boolean.class);
+		assertNull(result);
 
 		try {
-			this.dataClient.setAttributeValue(userId, attributeName,
-					"test-value");
+			this.dataClient.createAttribute(loginSubject.getUserId(),
+					attributeName, "test-value");
 			fail();
-		} catch (IllegalArgumentException e) {
+		} catch (RuntimeException e) {
 			// expected: Boolean is required, not a String.
 		}
 
 		// set boolean attribute value to true + verify
-		this.dataClient.setAttributeValue(userId, attributeName, Boolean.TRUE);
+		this.dataClient.createAttribute(loginSubject.getUserId(),
+				attributeName, Boolean.TRUE);
 
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				Boolean.class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, Boolean.class);
 		LOG.debug("result: " + result.getValue());
 		assertEquals(attributeName, result.getName());
 		assertEquals(Boolean.TRUE, result.getValue());
 
 		// operate & verify: setting boolean attribute to false
-		this.dataClient.setAttributeValue(userId, attributeName, Boolean.FALSE);
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				Boolean.class);
+		this.dataClient.setAttributeValue(loginSubject.getUserId(),
+				attributeName, Boolean.FALSE);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, Boolean.class);
 		assertEquals(Boolean.FALSE, result.getValue());
 
 		// operate & verify: setting boolean attribute to null
-		this.dataClient.setAttributeValue(userId, attributeName, null);
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				Boolean.class);
+		this.dataClient.setAttributeValue(loginSubject.getUserId(),
+				attributeName, null);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, Boolean.class);
 		assertNull(result.getValue());
 	}
 
@@ -497,17 +502,18 @@ public class DataWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
 		String adminUserId = subjectService.getSubjectFromUserName("admin")
 				.getUserId();
 
@@ -539,7 +545,7 @@ public class DataWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
@@ -549,38 +555,34 @@ public class DataWebServiceTest {
 		attributeProviderManagerService.addAttributeProvider(
 				testApplicationName, attributeName);
 
-		Attribute<Date> result = this.dataClient.getAttributeValue(userId,
-				attributeName, Date.class);
-		LOG.debug("result date value: " + result.getValue());
-		/*
-		 * Because of the identity confirmation the system created an empty
-		 * attribute.
-		 */
-		assertNotNull(result);
-		assertNull(result.getValue());
+		Attribute<Date> result = this.dataClient.getAttributeValue(loginSubject
+				.getUserId(), attributeName, Date.class);
+		assertNull(result);
 
 		try {
-			this.dataClient.setAttributeValue(userId, attributeName,
-					"test-value");
+			this.dataClient.createAttribute(loginSubject.getUserId(),
+					attributeName, "test-value");
 			fail();
-		} catch (IllegalArgumentException e) {
+		} catch (RuntimeException e) {
 			// expected: Date is required, not a String.
 		}
 
 		// set date attribute value + verify
 		Date testDate = new DateMidnight().toDate();
-		this.dataClient.setAttributeValue(userId, attributeName, testDate);
+		this.dataClient.createAttribute(loginSubject.getUserId(),
+				attributeName, testDate);
 
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				Date.class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, Date.class);
 		LOG.debug("result: " + result.getValue());
 		assertEquals(attributeName, result.getName());
 		assertEquals(testDate, result.getValue());
 
 		// operate & verify: setting date attribute to null
-		this.dataClient.setAttributeValue(userId, attributeName, null);
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				Date.class);
+		this.dataClient.setAttributeValue(loginSubject.getUserId(),
+				attributeName, null);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, Date.class);
 		LOG.debug("result value: " + result.getValue());
 		assertNull(result.getValue());
 	}
@@ -595,6 +597,7 @@ public class DataWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = "application-"
 				+ UUID.randomUUID().toString();
@@ -602,11 +605,11 @@ public class DataWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
 		String adminUserId = subjectService.getSubjectFromUserName("admin")
 				.getUserId();
 
@@ -646,7 +649,7 @@ public class DataWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
@@ -656,32 +659,30 @@ public class DataWebServiceTest {
 		attributeProviderManagerService.addAttributeProvider(
 				testApplicationName, attributeName);
 
-		Attribute<String[]> result = this.dataClient.getAttributeValue(userId,
-				attributeName, String[].class);
-		LOG.debug("result: " + result.getValue());
-		assertNotNull(result);
-		assertNull(result.getValue());
+		Attribute<String[]> result = this.dataClient.getAttributeValue(
+				loginSubject.getUserId(), attributeName, String[].class);
+		assertNull(result);
 
 		try {
-			this.dataClient.setAttributeValue(userId, attributeName,
-					Boolean.TRUE);
+			this.dataClient.createAttribute(loginSubject.getUserId(),
+					attributeName, Boolean.TRUE);
 			fail();
-		} catch (IllegalArgumentException e) {
+		} catch (RuntimeException e) {
 			// expected: String is required, not a Boolean.
 		}
 
 		// set attribute value & verify
 		String attributeValue1 = "test-attribute-value-1";
-		this.dataClient.setAttributeValue(userId, attributeName,
-				new String[] { attributeValue1 });
+		this.dataClient.createAttribute(loginSubject.getUserId(),
+				attributeName, new String[] { attributeValue1 });
 
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				String[].class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, String[].class);
 		LOG.debug("result: " + result.getValue());
 		assertEquals(attributeName, result.getName());
 		assertEquals(attributeValue1, result.getValue()[0]);
 
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		AttributeDO attribute2 = new AttributeDO(attributeName,
 				DatatypeType.STRING);
 		String attributeValue2 = "test-attribute-value-2";
@@ -689,8 +690,8 @@ public class DataWebServiceTest {
 		identityService.addAttribute(Collections.singletonList(attribute2));
 
 		this.dataClient.setCaptureMessages(true);
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				String[].class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, String[].class);
 		// assertNotNull(result.getValue());
 		LOG.debug("result: " + result.getValue());
 		Document resultMessage = this.dataClient.getInboundMessage();
@@ -715,17 +716,18 @@ public class DataWebServiceTest {
 		IntegrationTestUtils.setupLoginConfig();
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
 		String adminUserId = subjectService.getSubjectFromUserName("admin")
 				.getUserId();
 
@@ -761,47 +763,50 @@ public class DataWebServiceTest {
 		attributeProviderManagerService.addAttributeProvider(
 				testApplicationName, attributeName);
 
-		Attribute<Boolean> result = this.dataClient.getAttributeValue(userId,
-				attributeName, Boolean.class);
+		Attribute<Boolean> result = this.dataClient.getAttributeValue(
+				loginSubject.getUserId(), attributeName, Boolean.class);
 		assertNull(result);
 
 		try {
-			this.dataClient.setAttributeValue(userId, attributeName,
-					Boolean.TRUE);
+			this.dataClient.setAttributeValue(loginSubject.getUserId(),
+					attributeName, Boolean.TRUE);
 			fail();
 		} catch (AttributeNotFoundException e) {
 			// expected
 		}
 
 		// operate
-		this.dataClient.createAttribute(userId, attributeName, Boolean.TRUE);
+		this.dataClient.createAttribute(loginSubject.getUserId(),
+				attributeName, Boolean.TRUE);
 
 		// verify
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				Boolean.class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, Boolean.class);
 		assertNotNull(result);
 		assertTrue(result.getValue());
 
 		// operate: set value to FALSE
-		this.dataClient.setAttributeValue(userId, attributeName, Boolean.FALSE);
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				Boolean.class);
+		this.dataClient.setAttributeValue(loginSubject.getUserId(),
+				attributeName, Boolean.FALSE);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, Boolean.class);
 		assertNotNull(result);
 		assertFalse(result.getValue());
 
 		// operate: set value to NULL
-		this.dataClient.setAttributeValue(userId, attributeName, null);
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				Boolean.class);
+		this.dataClient.setAttributeValue(loginSubject.getUserId(),
+				attributeName, null);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, Boolean.class);
 		assertNotNull(result);
 		assertNull(result.getValue());
 
 		// operate: remove the attribute
-		this.dataClient.removeAttribute(userId, result);
+		this.dataClient.removeAttribute(loginSubject.getUserId(), result);
 
 		// verify that the attribute no longer exists
-		result = this.dataClient.getAttributeValue(userId, attributeName,
-				Boolean.class);
+		result = this.dataClient.getAttributeValue(loginSubject.getUserId(),
+				attributeName, Boolean.class);
 		assertNull(result);
 	}
 

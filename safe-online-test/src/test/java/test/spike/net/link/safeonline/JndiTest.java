@@ -15,12 +15,12 @@ import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import test.integ.net.link.safeonline.IntegrationTestUtils;
-
-import junit.framework.TestCase;
 
 public class JndiTest extends TestCase {
 

@@ -108,10 +108,10 @@ public class IdentityServiceBean implements IdentityService,
 	private ApplicationIdentityDAO applicationIdentityDAO;
 
 	@EJB
-	AttributeTypeDescriptionDecorator attributeTypeDescriptionDecorator;
+	private AttributeTypeDescriptionDecorator attributeTypeDescriptionDecorator;
 
 	@EJB
-	ProxyAttributeService proxyAttributeService;
+	private ProxyAttributeService proxyAttributeService;
 
 	private AttributeManagerLWBean attributeManager;
 

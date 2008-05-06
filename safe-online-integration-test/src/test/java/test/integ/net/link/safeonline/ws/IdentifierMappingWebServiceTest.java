@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getPasswordDeviceService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getPkiService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubjectService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubscriptionService;
@@ -33,7 +34,9 @@ import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.IdScopeType;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
@@ -49,6 +52,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import test.integ.net.link.safeonline.IntegrationTestUtils;
+
 
 /**
  * Integration test for SafeOnline Identifier Mapping Web Service.
@@ -84,13 +88,16 @@ public class IdentifierMappingWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
@@ -127,21 +134,18 @@ public class IdentifierMappingWebServiceTest {
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
 
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
-
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
 		// operate & verify
 		NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl(
-				"localhost:8443", this.certificate, this.privateKey);
+				"https://localhost:8443", this.certificate, this.privateKey);
 		client.setCaptureMessages(true);
 		String resultUserId = client.getUserId(login);
 		LOG.debug("userId: " + resultUserId);
 		assertNotNull(resultUserId);
-		assertEquals(userId, resultUserId);
+		assertEquals(loginSubject.getUserId(), resultUserId);
 		LOG.debug("client outbound message: "
 				+ DomTestUtils.domToString(client.getOutboundMessage()));
 		File tmpFile = File.createTempFile("idmapping-outbound-", ".xml");
@@ -164,13 +168,16 @@ public class IdentifierMappingWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
@@ -207,16 +214,13 @@ public class IdentifierMappingWebServiceTest {
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
 
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
-
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
 		// operate & verify
 		NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl(
-				"localhost:8443", this.certificate, this.privateKey);
+				"https://localhost:8443", this.certificate, this.privateKey);
 		try {
 			client.getUserId(login);
 			fail();

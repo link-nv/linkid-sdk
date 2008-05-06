@@ -16,7 +16,7 @@ import org.junit.Test;
 public class PcscTest {
 
 	private static final Log LOG = LogFactory.getLog(PcscTest.class);
-
+	
 	@Test
 	public void testReadIdentityFile() throws Exception {
 		TerminalFactory terminalFactory = TerminalFactory.getDefault();

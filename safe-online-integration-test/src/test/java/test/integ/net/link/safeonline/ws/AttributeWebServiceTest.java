@@ -12,10 +12,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeTypeService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getPasswordDeviceService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getPkiService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubjectService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubscriptionService;
@@ -39,11 +39,12 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.service.PkiService;
-import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.ws.annotation.Compound;
 import net.link.safeonline.sdk.ws.annotation.CompoundMember;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -68,6 +69,7 @@ import org.w3c.dom.Element;
 
 import test.integ.net.link.safeonline.IntegrationTestUtils;
 
+
 /**
  * Integration tests for SafeOnline attribute web service.
  * 
@@ -89,8 +91,9 @@ public class AttributeWebServiceTest {
 		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
 				"CN=Test");
 
-		this.attributeClient = new AttributeClientImpl("localhost:8443",
-				this.certificate, keyPair.getPrivate());
+		this.attributeClient = new AttributeClientImpl(
+				"https://localhost:8443", this.certificate, keyPair
+						.getPrivate());
 	}
 
 	@Test
@@ -103,6 +106,8 @@ public class AttributeWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+		SubjectService subjectService = getSubjectService(initialContext);
 
 		String testName = "test-name-" + UUID.randomUUID().toString();
 		String testApplicationName = UUID.randomUUID().toString();
@@ -113,14 +118,12 @@ public class AttributeWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "pwd-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
-
-		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		// operate: save name attribute
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		AttributeDO attribute = new AttributeDO(
 				SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING);
 		attribute.setEditable(true);
@@ -169,13 +172,13 @@ public class AttributeWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
 		// operate: retrieve name attribute via web service
-		String result = this.attributeClient.getAttributeValue(userId,
-				SafeOnlineConstants.NAME_ATTRIBUTE, String.class);
+		String result = this.attributeClient.getAttributeValue(loginSubject
+				.getUserId(), SafeOnlineConstants.NAME_ATTRIBUTE, String.class);
 
 		// verify
 		LOG.debug("result attribute value: " + result);
@@ -184,10 +187,10 @@ public class AttributeWebServiceTest {
 
 		// operate: retrieve all accessible attributes.
 		Map<String, Object> resultAttributes = this.attributeClient
-				.getAttributeValues(userId);
+				.getAttributeValues(loginSubject.getUserId());
 
 		// verify
-		assertEquals(2, resultAttributes.size());
+		assertEquals(1, resultAttributes.size());
 		LOG.info("resultAttributes: " + resultAttributes);
 		result = (String) resultAttributes
 				.get(SafeOnlineConstants.NAME_ATTRIBUTE);
@@ -195,20 +198,21 @@ public class AttributeWebServiceTest {
 		assertNull(resultAttributes.get(testAttributeName));
 
 		// operate: set attribute
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		AttributeDO attributeDO = new AttributeDO(testAttributeName,
 				DatatypeType.STRING);
 		attributeDO.setStringValue(testAttributeValue);
 		attributeDO.setEditable(true);
 		identityService.saveAttribute(attributeDO);
 
-		String resultValue = this.attributeClient.getAttributeValue(userId,
-				testAttributeName, String.class);
+		String resultValue = this.attributeClient.getAttributeValue(
+				loginSubject.getUserId(), testAttributeName, String.class);
 		assertEquals(testAttributeValue, resultValue);
 
 		// operate: retrieve all attributes
 		this.attributeClient.setCaptureMessages(true);
-		resultAttributes = this.attributeClient.getAttributeValues(userId);
+		resultAttributes = this.attributeClient.getAttributeValues(loginSubject
+				.getUserId());
 		LOG.debug("outbound message: "
 				+ DomTestUtils.domToString(this.attributeClient
 						.getOutboundMessage()));
@@ -228,6 +232,7 @@ public class AttributeWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
@@ -236,11 +241,11 @@ public class AttributeWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "pwd-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
 		String adminUserId = subjectService.getSubjectFromUserName("admin")
 				.getUserId();
 
@@ -271,14 +276,14 @@ public class AttributeWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
 		// operate: retrieve attribute via web service
 		this.attributeClient.setCaptureMessages(true);
-		String result = this.attributeClient.getAttributeValue(userId,
-				testAttributeName, String.class);
+		String result = this.attributeClient.getAttributeValue(loginSubject
+				.getUserId(), testAttributeName, String.class);
 
 		// verify
 		LOG.debug("result message: "
@@ -286,21 +291,6 @@ public class AttributeWebServiceTest {
 						.getInboundMessage()));
 		LOG.debug("result attribute value: " + result);
 		assertNull(result);
-
-		// operate: remove attribute
-		AttributeDO attribute = new AttributeDO(testAttributeName,
-				DatatypeType.STRING, true, -1, null, null, true, true, null,
-				null);
-		identityService.removeAttribute(attribute);
-
-		// operate: retrieve the missing attribute via attrib web service
-		try {
-			this.attributeClient.getAttributeValue(userId, testAttributeName,
-					String.class);
-			fail();
-		} catch (AttributeNotFoundException e) {
-			// expected
-		}
 	}
 
 	@Test
@@ -313,6 +303,7 @@ public class AttributeWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
@@ -321,11 +312,11 @@ public class AttributeWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "pwd-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
 		String adminUserId = subjectService.getSubjectFromUserName("admin")
 				.getUserId();
 
@@ -338,7 +329,7 @@ public class AttributeWebServiceTest {
 		attributeTypeService.add(attributeType);
 
 		// operate: add multivalued attributes
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		String attributeValue1 = "value 1";
 		AttributeDO attribute1 = new AttributeDO(testAttributeName,
 				DatatypeType.STRING, true, -1, null, null, true, true,
@@ -371,14 +362,14 @@ public class AttributeWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
 		// operate: retrieve name attribute via web service
 		this.attributeClient.setCaptureMessages(true);
-		String[] result = this.attributeClient.getAttributeValue(userId,
-				testAttributeName, String[].class);
+		String[] result = this.attributeClient.getAttributeValue(loginSubject
+				.getUserId(), testAttributeName, String[].class);
 
 		// verify
 		Document resultDocument = this.attributeClient.getInboundMessage();
@@ -418,17 +409,18 @@ public class AttributeWebServiceTest {
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
 		String testApplicationName = UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "pwd-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectService subjectService = getSubjectService(initialContext);
-		String userId = subjectService.getSubjectFromUserName(login)
-				.getUserId();
 		String adminUserId = subjectService.getSubjectFromUserName("admin")
 				.getUserId();
 
@@ -462,7 +454,7 @@ public class AttributeWebServiceTest {
 		}
 
 		// operate: add multivalued attributes
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		AttributeDO compAttribute = new AttributeDO(TEST_COMP_NAME,
 				DatatypeType.COMPOUNDED, true, -1, null, null, true, true,
 				null, null);
@@ -504,7 +496,7 @@ public class AttributeWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(userId, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
@@ -512,7 +504,8 @@ public class AttributeWebServiceTest {
 
 		this.attributeClient.setCaptureMessages(true);
 		CompoundedTestClass[] result = this.attributeClient.getAttributeValue(
-				userId, TEST_COMP_NAME, CompoundedTestClass[].class);
+				loginSubject.getUserId(), TEST_COMP_NAME,
+				CompoundedTestClass[].class);
 
 		// verify
 		Document resultDocument = this.attributeClient.getInboundMessage();
@@ -547,7 +540,7 @@ public class AttributeWebServiceTest {
 
 		// operate: retrieve identity
 		IdentityCardTestClass identityCard = this.attributeClient.getIdentity(
-				userId, IdentityCardTestClass.class);
+				loginSubject.getUserId(), IdentityCardTestClass.class);
 
 		// verify
 		assertNotNull(identityCard);

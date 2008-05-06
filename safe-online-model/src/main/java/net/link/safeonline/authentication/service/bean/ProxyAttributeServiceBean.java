@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
+import net.link.safeonline.authentication.service.ProxyAttributeServiceRemote;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceRegistrationDAO;
@@ -33,7 +34,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @Stateless
-public class ProxyAttributeServiceBean implements ProxyAttributeService {
+public class ProxyAttributeServiceBean implements ProxyAttributeService,
+		ProxyAttributeServiceRemote {
 
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;

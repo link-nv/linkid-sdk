@@ -15,6 +15,8 @@ import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplication
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAuthenticationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getCredentialService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getPasswordDeviceService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getProxyAttributeService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubjectService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubscriptionService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getUserRegistrationService;
@@ -35,15 +37,16 @@ import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -166,7 +169,6 @@ public class AuthenticationTest {
 
 	@Test
 	public void testAddApplication() throws Exception {
-
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();
 
@@ -176,14 +178,15 @@ public class AuthenticationTest {
 
 		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
+		final PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+
 		final SubjectService subjectService = getSubjectService(initialContext);
 
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
-
-		SubjectEntity loginSubject = subjectService
-				.findSubjectFromUserName(login);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectEntity adminSubject = subjectService
 				.findSubjectFromUserName("admin");
@@ -192,8 +195,7 @@ public class AuthenticationTest {
 				"admin");
 
 		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
-		applicationService.registerApplicationOwner(appOwnerName, loginSubject
-				.getUserId());
+		applicationService.registerApplicationOwner(appOwnerName, login);
 
 		final String applicationName = "application-"
 				+ UUID.randomUUID().toString();
@@ -222,14 +224,16 @@ public class AuthenticationTest {
 
 		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
+		final PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+
 		final SubjectService subjectService = getSubjectService(initialContext);
 
 		String ownerLogin = "login-" + UUID.randomUUID().toString();
 		String ownerPassword = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(ownerLogin, ownerPassword);
+		SubjectEntity ownerSubject = userRegistrationService
+				.registerUser(ownerLogin);
+		passwordDeviceService.register(ownerSubject, ownerPassword);
 
-		SubjectEntity ownerSubject = subjectService
-				.findSubjectFromUserName(ownerLogin);
 		SubjectEntity adminSubject = subjectService
 				.findSubjectFromUserName("admin");
 
@@ -239,8 +243,7 @@ public class AuthenticationTest {
 				+ UUID.randomUUID().toString();
 
 		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
-		applicationService.registerApplicationOwner(appOwnerName, ownerSubject
-				.getUserId());
+		applicationService.registerApplicationOwner(appOwnerName, ownerLogin);
 
 		applicationService.addApplication(applicationName, null, appOwnerName,
 				null, false, IdScopeType.USER, null, null, null, null, null,
@@ -249,15 +252,15 @@ public class AuthenticationTest {
 		String userLogin = "login-" + UUID.randomUUID().toString();
 		final String userPassword = "secret";
 
-		userRegistrationService.registerUser(userLogin, userPassword);
-
-		SubjectEntity userSubject = subjectService
-				.findSubjectFromUserName(userLogin);
+		SubjectEntity userSubject = userRegistrationService
+				.registerUser(userLogin);
+		passwordDeviceService.register(userSubject, userPassword);
 
 		final String userName = "name-" + UUID.randomUUID().toString();
 
-		final IdentityService identityService = EjbUtils.getEJB(initialContext,
-				"SafeOnline/IdentityServiceBean/remote", IdentityService.class);
+		final IdentityService identityService = getIdentityService(initialContext);
+
+		final ProxyAttributeService proxyAttributeService = getProxyAttributeService(initialContext);
 
 		IntegrationTestUtils.login(userSubject.getUserId(), userPassword);
 
@@ -270,8 +273,9 @@ public class AuthenticationTest {
 		 * skip the saveAttribute operation.
 		 */
 		identityService.saveAttribute(attribute);
-		String resultName = identityService
-				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
+		String resultName = (String) proxyAttributeService
+				.findDeviceAttributeValue(userSubject.getUserId(),
+						SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(userName, resultName);
 
 		final CredentialService credentialService = getCredentialService(initialContext);
@@ -281,8 +285,8 @@ public class AuthenticationTest {
 		credentialService.changePassword(userPassword, newPassword);
 
 		IntegrationTestUtils.login(userSubject.getUserId(), newPassword);
-		resultName = identityService
-				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
+		resultName = (String) proxyAttributeService.findDeviceAttributeValue(
+				userSubject.getUserId(), SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(userName, resultName);
 
 		final SubscriptionService subscriptionService = getSubscriptionService(initialContext);
@@ -314,14 +318,15 @@ public class AuthenticationTest {
 
 		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
+		final PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+
 		final SubjectService subjectService = getSubjectService(initialContext);
 
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
-
-		SubjectEntity loginSubject = subjectService
-				.findSubjectFromUserName(login);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectEntity adminSubject = subjectService
 				.findSubjectFromUserName("admin");
@@ -330,8 +335,7 @@ public class AuthenticationTest {
 
 		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
-		applicationService.registerApplicationOwner(appOwnerName, loginSubject
-				.getUserId());
+		applicationService.registerApplicationOwner(appOwnerName, login);
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, null, appOwnerName,
@@ -344,8 +348,7 @@ public class AuthenticationTest {
 
 		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		try {
-			applicationService.registerApplicationOwner(appOwnerName,
-					loginSubject.getUserId());
+			applicationService.registerApplicationOwner(appOwnerName, login);
 			fail();
 		} catch (ExistingApplicationOwnerException e) {
 			// expected
@@ -362,15 +365,17 @@ public class AuthenticationTest {
 
 		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
+		final PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+
 		final SubjectService subjectService = getSubjectService(initialContext);
 
 		// operate: register application owner admin user
 		String ownerLogin = "owner-login-" + UUID.randomUUID().toString();
 		String ownerPassword = "owner-password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(ownerLogin, ownerPassword);
+		SubjectEntity ownerSubject = userRegistrationService
+				.registerUser(ownerLogin);
+		passwordDeviceService.register(ownerSubject, ownerPassword);
 
-		SubjectEntity ownerSubject = subjectService
-				.findSubjectFromUserName(ownerLogin);
 		SubjectEntity adminSubject = subjectService
 				.findSubjectFromUserName("admin");
 
@@ -380,7 +385,7 @@ public class AuthenticationTest {
 				+ UUID.randomUUID().toString();
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.registerApplicationOwner(applicationOwnerName,
-				ownerSubject.getUserId());
+				ownerLogin);
 
 		// operate: create application
 		String applicationName = "application-" + UUID.randomUUID().toString();
@@ -416,15 +421,16 @@ public class AuthenticationTest {
 
 		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
+		final PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+
 		final SubjectService subjectService = getSubjectService(initialContext);
 
 		// operate: register a new user
-		String login = "login-" + UUID.randomUUID().toString();
+		String login = "problem-login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
-
-		SubjectEntity loginSubject = subjectService
-				.findSubjectFromUserName(login);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		SubjectEntity adminSubject = subjectService
 				.findSubjectFromUserName("admin");
@@ -438,51 +444,11 @@ public class AuthenticationTest {
 		ApplicationService applicationService = getApplicationService(initialContext);
 		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		String applicationOwner = "owner-" + UUID.randomUUID().toString();
-		applicationService.registerApplicationOwner(applicationOwner,
-				loginSubject.getUserId());
+		applicationService.registerApplicationOwner(applicationOwner, login);
 
 		// operate: get owned applications
 		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		applicationService.getOwnedApplications();
-	}
-
-	@Test
-	public void testUserCannotRetrieveThePasswordAttribute() throws Exception {
-		// setup
-		InitialContext initialContext = IntegrationTestUtils
-				.getInitialContext();
-		IntegrationTestUtils.setupLoginConfig();
-
-		// operate: register a new user
-		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
-		String login = "login-" + UUID.randomUUID().toString();
-		String password = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
-
-		IdentityService identityService = getIdentityService(initialContext);
-
-		// operate: cannot retrieve password attributes
-		try {
-			identityService
-					.findAttributeValue(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE);
-			fail();
-		} catch (PermissionDeniedException e) {
-			// expected
-		}
-		try {
-			identityService
-					.findAttributeValue(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE);
-			fail();
-		} catch (PermissionDeniedException e) {
-			// expected
-		}
-		try {
-			identityService
-					.findAttributeValue(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
-			fail();
-		} catch (PermissionDeniedException e) {
-			// expected
-		}
 	}
 
 	@Test
@@ -494,9 +460,13 @@ public class AuthenticationTest {
 
 		// operate: register a new user
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password);
+		SubjectEntity loginSubject = userRegistrationService
+				.registerUser(login);
+		passwordDeviceService.register(loginSubject, password);
 
 		IdentityService identityService = getIdentityService(initialContext);
 
@@ -546,7 +516,8 @@ public class AuthenticationTest {
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();
 		IntegrationTestUtils.setupLoginConfig();
-		final IdentityService identityService = getIdentityService(initialContext);
+
+		final ProxyAttributeService proxyAttributeService = getProxyAttributeService(initialContext);
 
 		final SubjectService subjectService = getSubjectService(initialContext);
 
@@ -556,8 +527,8 @@ public class AuthenticationTest {
 		// operate
 		IntegrationTestUtils.login(userSubject.getUserId(), "secret");
 
-		String result = identityService
-				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
+		String result = (String) proxyAttributeService.findAttributeValue(
+				userSubject.getUserId(), SafeOnlineConstants.NAME_ATTRIBUTE);
 
 		// verify
 		LOG.debug("result: " + result);
