@@ -106,6 +106,16 @@
 				</para>
 			</section>
 			<section>
+				<title>Sun JDK 1.6</title>
+				<para>
+					OLAS is known to run without any problems on the Sun
+					JDK 1.6.0_06. This JVM can be downloaded from:
+					<programlisting>
+						http://java.sun.com/
+					</programlisting>
+				</para>
+			</section>
+			<section>
 				<title>BEA JRockit 5.0</title>
 				<para>
 					OLAS is known to run without any problems on BEA
@@ -127,8 +137,8 @@
 			<section>
 				<title>JBoss Application Server</title>
 				<para>
-					OLAS uses JBoss AS 4.2 as application server. This
-					application server can be downloaded from:
+					OLAS uses JBoss AS 4.2.2.GA as application server.
+					This application server can be downloaded from:
 					<programlisting>
 						http://labs.jboss.com/jbossas/downloads/
 					</programlisting>
@@ -159,10 +169,13 @@
 					being able to use OLAS with a MySQL database one has
 					to create an account on the DBMS. The following
 					MySQL script can be used to create such an account.
-					<programlisting>&mysql-create-account;</programlisting>
-					After creating a MySQL account one needs to create an OLAS
-					database. This can be done via the following script.
-					<programlisting>&mysql-create-database;</programlisting>
+					<programlisting>&mysql-create-account;
+					</programlisting>
+					After creating a MySQL account one needs to create
+					an OLAS database. This can be done via the following
+					script.
+					<programlisting>&mysql-create-database;
+					</programlisting>
 					Correct configuration of the MySQL database can be
 					easily verified via the OLAS CLI.
 				</para>
@@ -175,10 +188,13 @@
 					database one has to create an account on the DBMS.
 					The following PostgreSQL script can be used to
 					create such an account.
-					<programlisting>&postgresql-create-account;</programlisting>
-					After creating a PostgreSQL account one needs to create an OLAS
-					database. This can be done via the following script.
-					<programlisting>&postgresql-create-database;</programlisting>
+					<programlisting>&postgresql-create-account;
+					</programlisting>
+					After creating a PostgreSQL account one needs to
+					create an OLAS database. This can be done via the
+					following script.
+					<programlisting>&postgresql-create-database;
+					</programlisting>
 					Correct configuration of the PostgreSQL database can
 					be easily verified via the OLAS CLI.
 				</para>
@@ -186,15 +202,19 @@
 			<section>
 				<title>Oracle</title>
 				<para>
-				OLAS has explicit support for Oracle Database 11g Release 1 (11.1). 
-				Before being able to use OLAS with an Oracle database one has to 
-				create an account on the DBMS.
-				The following Oracle script can be used to create such an account.
-				<programlisting>&oracle-create-account;</programlisting>
-				After creating an Oracle account one needs to create an OLAS database.
-				This can be done by the Oracle supplied program <![CDATA[dbca]]>.
-				Be sure to take as Oracle System Identifier: <![CDATA[safeonline]]>.
-				Correct configuration of the Oracle database can be easily verified via the OLAS CLI. 
+					OLAS has explicit support for Oracle Database 11g
+					Release 1 (11.1). Before being able to use OLAS with
+					an Oracle database one has to create an account on
+					the DBMS. The following Oracle script can be used to
+					create such an account.
+					<programlisting>&oracle-create-account;
+					</programlisting>
+					After creating an Oracle account one needs to create
+					an OLAS database. This can be done by the Oracle
+					supplied program
+					<![CDATA[dbca]]>. Be sure to take as Oracle System Identifier:
+					<![CDATA[safeonline]]>. Correct configuration of the Oracle database can
+					be easily verified via the OLAS CLI.
 				</para>
 			</section>
 		</section>
@@ -317,13 +337,18 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 				<itemizedlist>
 					<listitem>
 						<para>
-							Inclusion of the Sun JAX-WS 2.1 RI web
+							Inclusion of the Sun JAX-WS 2.1.3 RI web
 							service runtime.
 						</para>
 					</listitem>
 					<listitem>
 						<para>
 							Inclusion of the JBoss Seam runtime.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Inclusion of required 3th party JARs.
 						</para>
 					</listitem>
 					<listitem>
@@ -518,13 +543,13 @@ unitName=SafeOnlineEntityManager
 				<code>service=Identity</code>
 			</para>
 		</section>
-		<section>			
+		<section>
 			<title>OLAS Authentication Identity Keystore</title>
 			<para>
-				OLAS also needs an authentication certificate of itself which
-				will be used to authentication against other OLAS nodes.
-				Per default	the OLAS EAR comes bundled with a test keystore
-				under
+				OLAS also needs an authentication certificate of itself
+				which will be used to authentication against other OLAS
+				nodes. Per default the OLAS EAR comes bundled with a
+				test keystore under
 				<code>
 					$JBOSS_HOME/server/default/deploy/SafeOnline.ear/safe-online-service.sar/safe-online-node-keystore.jar
 				</code>
@@ -579,11 +604,12 @@ unitName=SafeOnlineEntityManager
 			Deploy the OLAS service via:
 			<programlisting><![CDATA[cd jboss/bin
 ./run.sh -b 0.0.0.0]]></programlisting>
-	This will start the JBoss AS and will also deploy the OLAS JavaEE application.
-	Check the JBoss console output during startup for exceptions.
-</para>
+			This will start the JBoss AS and will also deploy the OLAS
+			JavaEE application. Check the JBoss console output during
+			startup for exceptions.
+		</para>
 	</chapter>
-	
+
 	<chapter id="post-deployment-configuration">
 		<title>Post-deployment Configuration</title>
 		<para>
