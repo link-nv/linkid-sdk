@@ -305,6 +305,7 @@ public class AddAttributeBean implements AddAttribute {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String membersNext() {
 		this.log.debug("members next");
+		memberAccessControlAttributesFactory();
 		return "next";
 	}
 
