@@ -9,7 +9,6 @@ package net.link.safeonline.auth.pcsc;
 
 public class NullPcscSignerLogger implements PcscSignerLogger {
 
-	@Override
 	public void log(String message) {
 		// empty
 	}

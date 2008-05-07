@@ -45,7 +45,7 @@ import org.jfree.data.time.TimeSeriesCollection;
  * scenarios that were executed in a time frame of one period expressed in
  * <code>scenarios/second</code>.<br>
  * <br>
- * The period is defined in the constructor ({@link #AbstractMovingAverageChart(long)}).
+ * The period is defined in the constructor ({@link #AbstractMovingAverageChart(String, String, long)}).
  * </p>
  *
  * <p>

@@ -57,7 +57,7 @@ public class SafeOnlineDeviceUtils {
 	 * 
 	 * @param facesMessages
 	 * @param log
-	 * @param deviceLandingPage
+	 * @param landingUrl
 	 *            the landing page of the device issuer
 	 */
 	@SuppressWarnings("unchecked")

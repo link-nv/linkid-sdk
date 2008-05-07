@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * <br>
  * Implementing drivers need to declare methods specific to their functionality
  * in which they should call {@link #report(MessageAccessor)} once they have
- * completed their task; or {@link #report(Exception)} if an error occurred
+ * completed their task; or {@link #report(Throwable)} if an error occurred
  * during the work they were doing. <br>
  * <br>
  * The profiling data will be gathered by this class and can later be retrieved

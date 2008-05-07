@@ -83,7 +83,7 @@ public class ScenarioRemoting {
 		return new InitialContext(environment);
 	}
 
-	public static void shutdown(Thread thread) {
+	public static void shutdown(@SuppressWarnings("unused") Thread thread) {
 
 		// TODO
 	}
@@ -193,7 +193,7 @@ public class ScenarioRemoting {
 	}
 
 	/**
-	 * @see Agent#getStats()
+	 * @see Agent#getCharts(Date)
 	 */
 	public ScenarioExecution getCharts(Address agent, Date startTime) {
 

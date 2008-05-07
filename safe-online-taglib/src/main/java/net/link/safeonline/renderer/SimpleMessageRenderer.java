@@ -24,13 +24,14 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
 
 	public SimpleMessageRenderer() {
 
-		omRenderer = new OutputMessageRenderer();
+		this.omRenderer = new OutputMessageRenderer();
 
 	}
 
 	// ---------------------------------------------------------- Public Methods
 
-	public void encodeBegin(FacesContext context, UIComponent component)
+	@Override
+    public void encodeBegin(FacesContext context, UIComponent component)
 			throws IOException {
 
 		if (context == null) {
@@ -46,13 +47,14 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
 							"component"));
 		}
 		if (component instanceof UIOutput) {
-			omRenderer.encodeBegin(context, component);
+			this.omRenderer.encodeBegin(context, component);
 			return;
 		}
 
 	}
 
-	public void encodeChildren(FacesContext context, UIComponent component)
+	@Override
+    public void encodeChildren(FacesContext context, UIComponent component)
 			throws IOException {
 
 		if (context == null) {
@@ -68,13 +70,14 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
 							"component"));
 		}
 		if (component instanceof UIOutput) {
-			omRenderer.encodeChildren(context, component);
+		    this.omRenderer.encodeChildren(context, component);
 			return;
 		}
 
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public void encodeEnd(FacesContext context, UIComponent component)
 			throws IOException {
 
@@ -96,7 +99,7 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
 		}
 
 		if (component instanceof UIOutput) {
-			omRenderer.encodeEnd(context, component);
+		    this.omRenderer.encodeEnd(context, component);
 			return;
 		}
 		if (logger.isLoggable(Level.FINER)) {

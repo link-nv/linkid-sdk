@@ -24,18 +24,16 @@ public class SimpleMessagesRenderer extends MessagesRenderer {
 		FacesMessage curMessage = null;
 		ResponseWriter writer = null;
 
-		if (context == null) {
-			throw new NullPointerException(MessageUtils
+		if (context == null)
+            throw new NullPointerException(MessageUtils
 					.getExceptionMessageString(
 							MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID,
 							"context"));
-		}
-		if (component == null) {
-			throw new NullPointerException(MessageUtils
+		if (component == null)
+            throw new NullPointerException(MessageUtils
 					.getExceptionMessageString(
 							MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID,
 							"component"));
-		}
 
 		if (logger.isLoggable(Level.FINER)) {
 			logger.log(Level.FINER, "End encoding component "
@@ -51,27 +49,26 @@ public class SimpleMessagesRenderer extends MessagesRenderer {
 			return;
 		}
 		writer = context.getResponseWriter();
-		assert (writer != null);
+		assert writer != null;
 
 		// String clientId = ((UIMessages) component).getFor();
-		String clientId = null; // PENDING - "for" is actually gone now
+		String clientId = null; // FIXME? PENDING - "for" is actually gone now
 		// if no clientId was included
-		if (clientId == null) {
+		// if (clientId == null) {
 			// and the author explicitly only wants global messages
 			if (((UIMessages) component).isGlobalOnly()) {
 				// make it so only global messages get displayed.
 				clientId = "";
 			}
-		}
+		// }
 
 		// "for" attribute optional for Messages
 		messageIter = getMessageIter(context, clientId, component);
 
-		assert (messageIter != null);
+		assert messageIter != null;
 
-		if (!messageIter.hasNext()) {
-			return;
-		}
+		if (!messageIter.hasNext())
+            return;
 
 		boolean showSummary = ((UIMessages) component).isShowSummary();
 		boolean showDetail = ((UIMessages) component).isShowDetail();
@@ -85,10 +82,10 @@ public class SimpleMessagesRenderer extends MessagesRenderer {
 
 			// make sure we have a non-null value for summary and
 			// detail.
-			summary = (null != (summary = curMessage.getSummary())) ? summary
+			summary = null != (summary = curMessage.getSummary()) ? summary
 					: "";
 			// Default to summary if we have no detail
-			detail = (null != (detail = curMessage.getDetail())) ? detail
+			detail = null != (detail = curMessage.getDetail()) ? detail
 					: summary;
 
 			// Done intializing local variables. Move on to rendering.

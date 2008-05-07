@@ -23,7 +23,6 @@ import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.authentication.service.AuthenticationService;
@@ -102,7 +101,7 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * HTTP session. Later on we could limit the usage of this method to certain
 	 * states on the authentication service. It is clear that this method should
 	 * not be used to finalize the authentication service via
-	 * {@link AuthenticationService#commitAuthentication(String)} or
+	 * {@link AuthenticationService#commitAuthentication(String, Set)} or
 	 * {@link AuthenticationService#abort()}. These operations should be
 	 * performed via this authentication service manager class.
 	 * 
@@ -134,7 +133,6 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * @throws UsageAgreementAcceptationRequiredException
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
-	 * @throws SubjectNotFoundException
 	 */
 	public static void commitAuthentication(HttpSession session,
 			String applicationId) throws SubscriptionNotFoundException,

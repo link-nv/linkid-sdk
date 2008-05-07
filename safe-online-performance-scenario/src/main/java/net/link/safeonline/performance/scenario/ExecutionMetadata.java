@@ -28,13 +28,13 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
  * <p>
  * This object can be used by the agent for making a scenario execution request
  * to the {@link ScenarioControllerBean}. In this case, use
- * {@link #createRequest(String, Integer, Integer, Date, Long, String)} to
+ * {@link #createRequest(String, Integer, Integer, Date, Long, String, Boolean)} to
  * obtain the object. Only the fields required for making a request will be
  * filled in, the others will remain <code>null</code>.<br>
  * <br>
  * This object can also be used by the scenario to describe a previously
  * completed scenario execution on request of the agent. In this case, use
- * {@link #createResponse(Integer, String, String, Integer, Integer, Date, Long, String, Double)}.
+ * {@link #createResponse(String, String, Integer, Integer, Date, Long, String, Boolean, Double)}.
  * All available fields can be set providing the agent with as much information
  * about the result of the execution as available.
  * </p>

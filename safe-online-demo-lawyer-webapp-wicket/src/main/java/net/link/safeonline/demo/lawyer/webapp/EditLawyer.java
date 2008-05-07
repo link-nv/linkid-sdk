@@ -39,7 +39,8 @@ public class EditLawyer extends Layout {
 			add(new CheckBox("isAdmin"));
 		}
 
-		public final void onSubmit() {
+		@Override
+        public final void onSubmit() {
 			// Get the lawyer from the form
 			// Lawyer lawyer = (Lawyer) getModelObject();
 

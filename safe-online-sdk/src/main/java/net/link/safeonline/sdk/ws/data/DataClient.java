@@ -27,7 +27,7 @@ public interface DataClient extends MessageAccessor {
 
 	/**
 	 * Sets the value of an attribute. Please notice that the attribute should
-	 * already be defined via: {@link #createAttribute(String, String)}. The
+	 * already be defined via: {@link #createAttribute(String, String, Object)}. The
 	 * attribute value can be of type {@link String} or {@link Boolean}.
 	 * 
 	 * @param userId
@@ -38,7 +38,7 @@ public interface DataClient extends MessageAccessor {
 	 *             SSL was not setup correctly.
 	 * @throws AttributeNotFoundException
 	 *             in case the attribute entity did not exist.
-	 * @see #createAttribute(String, String)
+	 * @see #createAttribute(String, String, Object)
 	 */
 	void setAttributeValue(String userId, String attributeName,
 			Object attributeValue) throws ConnectException,

@@ -19,7 +19,8 @@ public class UserMain extends Page {
 		super(PAGE_NAME);
 	}
 
-	public AuthFirstTime loginFirstTime() {
+	@Override
+    public AuthFirstTime loginFirstTime() {
 		clickLink("login");
 		waitForRedirect(AuthFirstTime.PAGE_NAME);
 		return new AuthFirstTime();

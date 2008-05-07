@@ -14,7 +14,7 @@ public class RoleSession extends WebSession {
 	}
 
 	public User getUser() {
-		return user;
+		return this.user;
 	}
 
 	public void setUser(User user) {

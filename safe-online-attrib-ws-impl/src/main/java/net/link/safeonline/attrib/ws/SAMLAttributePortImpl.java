@@ -76,7 +76,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * <p>
  * SafeOnline extensions: we communicate the multivalued property of an
- * attribute via the {@link AttributeServiceConstants#MULTIVALUED_ATTRIBUTE} XML
+ * attribute via the AttributeServiceConstants#MULTIVALUED_ATTRIBUTE XML
  * attribute on the SAML XML "Attribute" element.
  * </p>
  * 

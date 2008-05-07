@@ -13,7 +13,7 @@ public final class SearchFormInputModel implements Serializable {
 	}
 
 	public String getSafeonlineId() {
-		return safeonlineId;
+		return this.safeonlineId;
 	}
 
 	public void setSafeonlineId(String safeonlineId) {

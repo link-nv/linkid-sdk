@@ -80,13 +80,6 @@ public class AuthnResponseFactory {
 
 	/**
 	 * Creates an unsigned authentication response.
-	 * 
-	 * @param inResponseTo
-	 * @param applicationName
-	 * @param issuerName
-	 * @param subjectName
-	 * @param samlAuthnContextClass
-	 * @param target
 	 */
 	public static Response createAuthResponse(String inResponseTo,
 			String applicationName, String issuerName, String subjectName,

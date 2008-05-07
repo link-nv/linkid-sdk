@@ -15,7 +15,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.LoginManager;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.service.SubjectService;
@@ -63,10 +62,6 @@ public class AbstractLoginBean {
 
 	/**
 	 * Login the given user.
-	 * 
-	 * @param username
-	 * @param inputAuthenticationDevice
-	 * @throws DeviceNotFoundException
 	 */
 	protected void login(String inputUsername, String inputAuthenticationDevice) {
 		this.log.debug("login using: " + inputUsername + " via device: "

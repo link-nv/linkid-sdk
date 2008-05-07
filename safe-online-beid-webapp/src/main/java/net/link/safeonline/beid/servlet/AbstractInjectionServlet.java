@@ -53,11 +53,11 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		injectRequestParameters(request);
-		injectSessionAttributes(request, session);
+		injectSessionAttributes(session);
 		InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
 				response);
 		invoke(request, responseWrapper);
-		outjectSessionAttributes(request, session);
+		outjectSessionAttributes(session);
 		responseWrapper.commit();
 	}
 
@@ -122,8 +122,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 		}
 	}
 
-	private void injectSessionAttributes(HttpServletRequest request,
-			HttpSession session) throws ServletException {
+	private void injectSessionAttributes(HttpSession session) throws ServletException {
 		Field[] fields = this.getClass().getDeclaredFields();
 		for (Field field : fields) {
 			In inAnnotation = field.getAnnotation(In.class);
@@ -154,8 +153,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 		}
 	}
 
-	private void outjectSessionAttributes(HttpServletRequest request,
-			HttpSession session) throws ServletException {
+	private void outjectSessionAttributes(HttpSession session) throws ServletException {
 		Field[] fields = this.getClass().getDeclaredFields();
 		for (Field field : fields) {
 			Out outAnnotation = field.getAnnotation(Out.class);

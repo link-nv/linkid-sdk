@@ -39,7 +39,8 @@ public class FindLawyer extends Layout {
 		/**
 		 * Show the resulting valid edit
 		 */
-		public final void onSubmit() {
+		@Override
+        public final void onSubmit() {
 			// Construct a copy of the edited comment
 			SearchFormInputModel model = (SearchFormInputModel) getModelObject();
 			String safeonlineId = model.getSafeonlineId();

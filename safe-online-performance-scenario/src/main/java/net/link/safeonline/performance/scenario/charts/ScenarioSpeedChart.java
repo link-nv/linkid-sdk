@@ -27,7 +27,7 @@ package net.link.safeonline.performance.scenario.charts;
  * scenarios that were executed in a time frame of one period expressed in
  * <code>scenarios/second</code>.<br>
  * <br>
- * The period is defined in the constructor ({@link #AbstractMovingAverageChart(long)}).
+ * The period is defined in the constructor ({@link #ScenarioSpeedChart(long)}).
  * </p>
  *
  * <p>

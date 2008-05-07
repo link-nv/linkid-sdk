@@ -17,7 +17,7 @@ public class User implements Serializable {
 	}
 
 	public List<String> getRoles() {
-		return roles;
+		return this.roles;
 	}
 
 	public void setRoles(List<String> roles) {
@@ -25,21 +25,21 @@ public class User implements Serializable {
 	}
 
 	public String getUsername() {
-		return username;
+		return this.username; 
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
-	public boolean hasOneOf(List<String> roles) {
-		if (roles == null)
+	public boolean hasOneOf(List<String> roleList) {
+		if (roleList == null)
 			return true;
-		if (roles.size() == 0)
+		if (roleList.size() == 0)
 			return true;
 
 		for (String hasRole : this.roles) {
-			for (String needRole : roles) {
+			for (String needRole : roleList) {
 				if (hasRole.equals(needRole)) {
 					return true;
 				}
@@ -49,7 +49,7 @@ public class User implements Serializable {
 	}
 
 	public boolean has(String role) {
-		for (String hasRole : roles) {
+		for (String hasRole : this.roles) {
 			if (hasRole.equals(role)) {
 				return true;
 			}

@@ -19,7 +19,7 @@ public class Lawyer implements Serializable {
 	private boolean isAdmin;
 
 	public String getBar() {
-		return bar;
+		return this.bar;
 	}
 
 	public void setBar(String bar) {
@@ -27,7 +27,7 @@ public class Lawyer implements Serializable {
 	}
 
 	public boolean isAdmin() {
-		return isAdmin;
+		return this.isAdmin;
 	}
 
 	public void setAdmin(boolean isAdmin) {
@@ -35,7 +35,7 @@ public class Lawyer implements Serializable {
 	}
 
 	public boolean isLawyer() {
-		return isLawyer;
+		return this.isLawyer;
 	}
 
 	public void setLawyer(boolean isLawyer) {
@@ -43,7 +43,7 @@ public class Lawyer implements Serializable {
 	}
 
 	public boolean isSuspended() {
-		return isSuspended;
+		return this.isSuspended;
 	}
 
 	public void setSuspended(boolean isSuspended) {
@@ -51,7 +51,7 @@ public class Lawyer implements Serializable {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -59,7 +59,7 @@ public class Lawyer implements Serializable {
 	}
 
 	public String getSafeonlineId() {
-		return safeonlineId;
+		return this.safeonlineId;
 	}
 
 	public void setSafeonlineId(String safeonlineId) {

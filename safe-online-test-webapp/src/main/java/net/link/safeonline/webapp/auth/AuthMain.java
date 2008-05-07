@@ -33,7 +33,7 @@ public class AuthMain extends Page {
 	 * <ul>
 	 * <li> Password device: {@link AuthUserNamePassword}</li>
 	 * <li> BeID device : null, this can have the need for manual intervention,
-	 * you need to use {@link PageUtils.waitForRedirect}}</li>
+	 * you need to use {@link PageUtils#waitForRedirect(net.link.safeonline.webapp.AcceptanceTestManager, String)}}</li>
 	 * <li> Encap device: </li>
 	 * </ul>
 	 */

@@ -14,7 +14,7 @@ public class LawyerSession extends RoleSession {
 	}
 
 	public Lawyer getLawyer() {
-		return lawyer;
+		return this.lawyer;
 	}
 
 	public void setLawyer(Lawyer lawyer) {

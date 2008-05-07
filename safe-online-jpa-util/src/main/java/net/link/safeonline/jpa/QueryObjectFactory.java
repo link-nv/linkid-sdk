@@ -12,6 +12,10 @@ import java.lang.reflect.Proxy;
 
 import javax.persistence.EntityManager;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
+
 /**
  * Factory for query objects.
  * 

@@ -53,7 +53,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 
 	private ResourceBundle messages;
 
-	private void setupLogging(SmartCard smartCard) {
+	private void setupLogging() {
 		Log log = this.appletView.getLog();
 		SmartCardImpl.setLog(log);
 	}
@@ -64,7 +64,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 		this.appletView.outputDetailMessage("Loading smart card component...");
 		SmartCard smartCard = SmartCardFactory.newInstance();
 
-		setupLogging(smartCard);
+		setupLogging();
 
 		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 		List<SmartCardConfig> smartCardConfigs = configFactory
@@ -297,11 +297,11 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 		}
 	}
 
-	public void init(AppletView appletView, RuntimeContext runtimeContext,
-			StatementProvider statementProvider) {
-		this.appletView = appletView;
-		this.runtimeContext = runtimeContext;
-		this.statementProvider = statementProvider;
+	public void init(AppletView newAppletView, RuntimeContext newRuntimeContext,
+			StatementProvider newStatementProvider) {
+		this.appletView = newAppletView;
+		this.runtimeContext = newRuntimeContext;
+		this.statementProvider = newStatementProvider;
 		Locale locale = this.runtimeContext.getLocale();
 		this.messages = ResourceBundle.getBundle(
 				"net.link.safeonline.applet.ControlMessages", locale);

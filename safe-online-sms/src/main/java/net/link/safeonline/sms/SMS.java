@@ -89,7 +89,7 @@ public class SMS {
 	 * converts a telephone number to the format needed in sms encoding
 	 * communication
 	 * 
-	 * @param telnr
+	 * @param telnummer
 	 */
 	public static byte[] telToBytes(String telnummer) {
 		String telnr = strip(telnummer);
@@ -120,7 +120,7 @@ public class SMS {
 	 */
 	public static byte[] msgToBytes(String message) throws Exception {
 
-		// convert the characters to their ascii value
+		// convert the characters to their ASCII value
 		byte[] orig = message.getBytes("US-ASCII");
 
 		// reserve space for the encoded message

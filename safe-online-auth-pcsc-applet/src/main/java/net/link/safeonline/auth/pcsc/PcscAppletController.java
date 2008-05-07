@@ -53,11 +53,11 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 
 	private AuthenticationMessages messages;
 
-	public void init(AppletView appletView, RuntimeContext runtimeContext,
-			StatementProvider statementProvider) {
-		this.appletView = appletView;
-		this.runtimeContext = runtimeContext;
-		this.statementProvider = statementProvider;
+	public void init(AppletView newAppletView, RuntimeContext newRuntimeContext,
+			StatementProvider newStatementProvider) {
+		this.appletView = newAppletView;
+		this.runtimeContext = newRuntimeContext;
+		this.statementProvider = newStatementProvider;
 
 		Locale locale = this.runtimeContext.getLocale();
 		this.messages = new AuthenticationMessages(locale);
@@ -211,7 +211,6 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 		}
 	}
 
-	@Override
 	public void log(String message) {
 		this.appletView.outputDetailMessage(message);
 	}

@@ -24,11 +24,7 @@ import net.link.safeonline.entity.SubjectEntity;
  * devices for another account. It stores all the authentication devices that
  * have been authenticated with.
  * 
- * The implementation is stateful so explicit cleanup is required. Use
- * {@link #cleanup()} to reset all authentication devices.
- * 
  * @author wvdhaute
- * 
  */
 @Local
 public interface ReAuthenticationService {

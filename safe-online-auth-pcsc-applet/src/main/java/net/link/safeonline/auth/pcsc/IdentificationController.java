@@ -50,10 +50,10 @@ public class IdentificationController implements AppletController {
 
 	private AuthenticationMessages messages;
 
-	public void init(AppletView appletView, RuntimeContext runtimeContext,
+	public void init(AppletView newAppletView, RuntimeContext newRuntimeContext,
 			StatementProvider statementProvider) {
-		this.appletView = appletView;
-		this.runtimeContext = runtimeContext;
+		this.appletView = newAppletView;
+		this.runtimeContext = newRuntimeContext;
 
 		Locale locale = this.runtimeContext.getLocale();
 		this.messages = new AuthenticationMessages(locale);

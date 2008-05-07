@@ -247,7 +247,7 @@ public class OlasEntity implements Serializable {
 	 * the application certificate since this method keeps the certificate
 	 * identifier in sync with the certificate.
 	 * 
-	 * @param certificate
+	 * @param authnCertificate
 	 */
 	@Transient
 	public void setAuthnCertificate(X509Certificate authnCertificate) {
@@ -276,7 +276,7 @@ public class OlasEntity implements Serializable {
 	 * directly. Use {@link #setAuthnCertificate(X509Certificate)} instead. This
 	 * method should only be used by JPA.
 	 * 
-	 * @param encodedAuthnCert
+	 * @param encodedSigningCert
 	 */
 	public void setEncodedSigningCert(byte[] encodedSigningCert) {
 		this.encodedSigningCert = encodedSigningCert;
@@ -325,7 +325,7 @@ public class OlasEntity implements Serializable {
 	 * the application certificate since this method keeps the certificate
 	 * identifier in sync with the certificate.
 	 * 
-	 * @param certificate
+	 * @param signingCertificate
 	 */
 	@Transient
 	public void setSigningCertificate(X509Certificate signingCertificate) {

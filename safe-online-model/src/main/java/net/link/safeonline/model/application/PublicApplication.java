@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.net.URL;
 
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.service.PublicApplicationService;
 
 /**
  * <h2>{@link PublicApplication} - An {@link ApplicationEntity} stub containing

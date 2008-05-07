@@ -1,11 +1,9 @@
 package net.link.safeonline.demo.lawyer.webapp;
 
-import wicket.ISessionFactory;
 import wicket.Session;
 import wicket.protocol.http.WebApplication;
 
-public class LawyerApplication extends WebApplication implements
-		ISessionFactory {
+public class LawyerApplication extends WebApplication {
 
 	public static String SafeOnlineAuthenticationServiceUrl;
 	
@@ -20,7 +18,7 @@ public class LawyerApplication extends WebApplication implements
 	}
 
 	@Override
-	public Class getHomePage() {
+	public Class<?> getHomePage() {
 		return HomePage.class;
 	}
 
