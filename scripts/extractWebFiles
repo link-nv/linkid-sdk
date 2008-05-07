@@ -91,7 +91,6 @@ if (( apply )); then
 
         if ! diff -q "$file"{,~} >/dev/null; then
             dest="$repo/${file/-1.0-SNAPSHOT-exp.war//src/main/webapp}"
-            echo "$dest"
             if ! [[ -e $dest ]]; then
                 dest=( "$repo/"*"/src/main/webapp/${file#$base/}" )
 

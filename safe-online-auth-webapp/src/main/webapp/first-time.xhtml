@@ -11,13 +11,31 @@
 	
 	<ui:define name="content">
 
-		<p>#{msgs.firstVisitMsg}:</p>
-
 		<h:form id="_first-time">
-			<h:commandButton action="new" id="new" value="#{msgs.newUser}"
-				styleClass="submit" />
-			<h:commandButton action="existing" id="existing"
-				value="#{msgs.existingUser}" styleClass="submit" />
+            <table class="listingTable">
+                <colgroup />
+                <colgroup />
+
+                <thead>
+                    <tr>
+                        <th>#{msgs.firstVisitMsg}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>
+                            <h:commandLink action="new" id="new"
+                                value="#{msgs.newUser}" styleClass="padded" />
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            <h:commandLink action="existing" id="existing"
+                                value="#{msgs.existingUser}" styleClass="padded" />
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">

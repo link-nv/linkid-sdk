@@ -538,6 +538,9 @@ table colgroup {
 .right {
     text-align: right;
 }
+.padded {
+    padding: 7px !important;
+}
 .inner {
     width: 500px;
     margin: auto;
