@@ -219,8 +219,13 @@ public class BeIdPkiProvider implements PkiProvider {
 		AttributeEntity deviceUserAttribute = this.attributeDAO.findAttribute(
 				deviceUserAttributeType, subject);
 		if (null == deviceUserAttribute) {
-			deviceUserAttribute = this.attributeDAO.getAttribute(
-					BeIdConstants.NRN_ATTRIBUTE, subject);
+			AttributeEntity givenNameAttribute = this.attributeDAO
+					.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE, subject);
+			AttributeEntity surNameAttribute = this.attributeDAO.getAttribute(
+					BeIdConstants.SURNAME_ATTRIBUTE, subject);
+			this.attributeDAO.addAttribute(deviceUserAttributeType, subject,
+					surNameAttribute.getStringValue() + ", "
+							+ givenNameAttribute.getStringValue());
 		}
 	}
 

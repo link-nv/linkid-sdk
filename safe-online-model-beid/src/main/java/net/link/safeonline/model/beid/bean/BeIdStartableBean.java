@@ -106,6 +106,12 @@ public class BeIdStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				beidDeviceAttributeType, "nl", "BeID", null));
 
+		AttributeTypeEntity beidDeviceUserAttributeType = new AttributeTypeEntity(
+				BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, DatatypeType.STRING,
+				true, false, true);
+		beidDeviceUserAttributeType.setMultivalued(true);
+		this.attributeTypes.add(beidDeviceUserAttributeType);
+
 		X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
 		this.trustedCertificates.put(certificate,
@@ -117,7 +123,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 		this.devices.add(new Device(SafeOnlineConstants.BEID_DEVICE_ID,
 				SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName,
 				"/olas-beid/auth", "/olas-beid/reg", "/olas-beid/remove", null,
-				certificate, beidDeviceAttributeType, nrnAttributeType));
+				certificate, beidDeviceAttributeType,
+				beidDeviceUserAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
 		this.deviceDescriptions.add(new DeviceDescription(
