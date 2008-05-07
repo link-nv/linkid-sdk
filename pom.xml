@@ -368,6 +368,8 @@
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>80</safe-online.host.port>
 				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
+                <safe-online.jboss.host.port>80</safe-online.jboss.host.port>
+                <safe-online.jboss.host.port.ssl>443</safe-online.jboss.host.port.ssl>
 			</properties>
 			<modules>
 				<module>safe-online-root-webapp</module>
@@ -402,6 +404,8 @@
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>80</safe-online.host.port>
 				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
+                <safe-online.jboss.host.port>80</safe-online.jboss.host.port>
+                <safe-online.jboss.host.port.ssl>443</safe-online.jboss.host.port.ssl>
 			</properties>
 			<modules>
 				<module>safe-online-root-webapp</module>
@@ -437,6 +441,8 @@
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>80</safe-online.host.port>
 				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
+                <safe-online.jboss.host.port>80</safe-online.jboss.host.port>
+                <safe-online.jboss.host.port.ssl>443</safe-online.jboss.host.port.ssl>
 			</properties>
 			<modules>
 				<module>safe-online-root-webapp</module>
@@ -687,7 +693,7 @@
 		<velocity.version>1.5</velocity.version>
 		<xercesImpl.version>2.8.1</xercesImpl.version>
 		<rxtx.version>2.1.7</rxtx.version>
-		<maven-eclipse-plugin.version>2.4</maven-eclipse-plugin.version>
+		<maven-eclipse-plugin.version>2.5.1</maven-eclipse-plugin.version>
 		<commons-net.version>1.4.1</commons-net.version>
 		<netbeans-freeform-maven-plugin.version> 2.1-SNAPSHOT 
 		</netbeans-freeform-maven-plugin.version>

@@ -10,7 +10,6 @@ package net.link.safeonline.performance.drivers;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
@@ -47,9 +46,6 @@ public class IdMappingDriver extends ProfileDriver {
 	 * @param username
 	 *            The username that the application wishes to know the ID for.
 	 * @return The ID of the user with the given username.
-	 * @throws DriverException
-	 *             Any exception that occurred during the request will be
-	 *             wrapped into this one.
 	 */
 	public String getUserId(PrivateKeyEntry applicationKey, String username) {
 

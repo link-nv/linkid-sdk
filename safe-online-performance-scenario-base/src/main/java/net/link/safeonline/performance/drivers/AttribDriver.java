@@ -11,7 +11,6 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 
-import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
@@ -53,9 +52,6 @@ public class AttribDriver extends ProfileDriver {
 	 *            The ID of the user whose attributes are being requested.
 	 * @return A map of attributes belonging to the user containing all
 	 *         attributes the application has access to.
-	 * @throws DriverException
-	 *             Any exception that occurred during the request will be
-	 *             wrapped into this one.
 	 */
 	public Map<String, Object> getAttributes(PrivateKeyEntry applicationKey,
 			String userId) {

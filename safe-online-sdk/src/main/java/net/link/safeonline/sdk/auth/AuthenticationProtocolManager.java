@@ -160,8 +160,6 @@ public class AuthenticationProtocolManager {
 	 * @param applicationName
 	 * @param applicationKeyPair
 	 * @param applicationCertificate
-	 * @param configParams
-	 *            the optional protocol handler configuration parameters.
 	 * @param httpRequest
 	 * @throws ServletException
 	 */
@@ -226,7 +224,6 @@ public class AuthenticationProtocolManager {
 	 * <code>null</code> will be returned.
 	 * 
 	 * @param httpRequest
-	 * @throws ServletException
 	 */
 	public static AuthenticationProtocolHandler findAuthenticationProtocolHandler(
 			HttpServletRequest httpRequest) {

@@ -10,7 +10,6 @@ package net.link.safeonline.authentication.service;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
@@ -53,7 +52,6 @@ public interface CredentialService {
 	 * @param password
 	 * @throws DeviceNotFoundException
 	 * @throws PermissionDeniedException
-	 * @throws LastDeviceException
 	 * @throws SubjectNotFoundException
 	 */
 	void removePassword(String password) throws DeviceNotFoundException,

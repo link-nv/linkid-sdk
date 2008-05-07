@@ -47,9 +47,6 @@ public class AuthenticationMessages {
 
 	/**
 	 * Gives back the message for the given key.
-	 * 
-	 * @param key
-	 * @return
 	 */
 	public String getString(KEY key) {
 		return this.messages.getString(key.getKey());

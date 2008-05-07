@@ -48,7 +48,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Attribute JPA Entity. Sits as many-to-many between
  * {@link AttributeTypeEntity} and {@link SubjectEntity}. Multi-valued
- * attributes are implemented via the {@link #attributeIndex} field.
+ * attributes are implemented via {@link #getAttributeIndex()}.
  * 
  * @author fcorneli
  * 

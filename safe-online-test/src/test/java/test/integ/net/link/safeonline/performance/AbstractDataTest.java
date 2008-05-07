@@ -16,11 +16,11 @@ import net.link.safeonline.performance.service.DriverProfileService;
 import net.link.safeonline.performance.service.ExecutionService;
 import net.link.safeonline.performance.service.ProfileDataService;
 import net.link.safeonline.performance.service.ScenarioTimingService;
+import net.link.safeonline.performance.service.bean.AbstractProfilingServiceBean;
 import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
 import net.link.safeonline.performance.service.bean.DriverProfileServiceBean;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 import net.link.safeonline.performance.service.bean.ProfileDataServiceBean;
-import net.link.safeonline.performance.service.bean.ProfilingServiceBean;
 import net.link.safeonline.performance.service.bean.ScenarioTimingServiceBean;
 import net.link.safeonline.test.util.EntityTestManager;
 
@@ -68,7 +68,7 @@ public abstract class AbstractDataTest {
 			this.entityTestManager.setUp(this.entities);
 
 			this.em = this.entityTestManager.getEntityManager();
-			ProfilingServiceBean.setDefaultEntityManager(this.em);
+			AbstractProfilingServiceBean.setDefaultEntityManager(this.em);
 
 			this.executionService = new ExecutionServiceBean();
 			this.profileDataService = new ProfileDataServiceBean();
@@ -101,8 +101,9 @@ public abstract class AbstractDataTest {
 	@Override
 	protected void finalize() throws Throwable {
 
-		if (this.entityTestManager.getEntityManager() != null)
-			this.entityTestManager.tearDown();
+		if (this.entityTestManager.getEntityManager() != null) {
+            this.entityTestManager.tearDown();
+        }
 	}
 
 	protected void configure() {

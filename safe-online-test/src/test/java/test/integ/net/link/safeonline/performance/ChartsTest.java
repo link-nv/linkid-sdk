@@ -129,12 +129,15 @@ public class ChartsTest extends AbstractDataTest {
 		errorCharts = new ArrayList<Chart>();
 		timingCharts = new ArrayList<Chart>();
 		for (Chart chart : charts) {
-			if (chart.isDataProcessed())
-				dataCharts.add(chart);
-			if (chart.isErrorProcessed())
-				errorCharts.add(chart);
-			if (chart.isTimingProcessed())
-				timingCharts.add(chart);
+			if (chart.isDataProcessed()) {
+                dataCharts.add(chart);
+            }
+			if (chart.isErrorProcessed()) {
+                errorCharts.add(chart);
+            }
+			if (chart.isTimingProcessed()) {
+                timingCharts.add(chart);
+            }
 		}
 
 		// Retrieve scenario timings recorded during the execution.
@@ -146,18 +149,21 @@ public class ChartsTest extends AbstractDataTest {
 
 			// Let the charts process the timings.
 			for (ScenarioTimingEntity timing : scenarioTimings) {
-				for (Chart chart : timingCharts)
-					try {
+				for (Chart chart : timingCharts) {
+                    try {
 						chart.processTiming(timing);
 					} catch (Exception e) {
 						this.LOG.error("Charting Timing Failed:", e);
 					}
+                }
 
 				// Show timing completion percentage.
-				if (++i % Math.max(1, t / 100) == 0)
-					this.LOG.debug("timing: " + 100 * i / t + "% ..");
-				if (this.datalimit != null && i > this.datalimit)
-					break;
+				if (++i % Math.max(1, t / 100) == 0) {
+                    this.LOG.debug("timing: " + 100 * i / t + "% ..");
+                }
+				if (this.datalimit != null && i > this.datalimit) {
+                    break;
+                }
 			}
 		}
 
@@ -172,19 +178,23 @@ public class ChartsTest extends AbstractDataTest {
 			List<ProfileDataEntity> profileData = null;
 			List<DriverExceptionEntity> profileErrors = null;
 			if (this.datalimit == null) {
-				if (!dataCharts.isEmpty())
-					profileData = this.profileDataService.getProfileData(
+				if (!dataCharts.isEmpty()) {
+                    profileData = this.profileDataService.getProfileData(
 							profile, DATA_POINTS);
-				if (!errorCharts.isEmpty())
-					profileErrors = this.driverExceptionService
+                }
+				if (!errorCharts.isEmpty()) {
+                    profileErrors = this.driverExceptionService
 							.getProfileErrors(profile, DATA_POINTS);
+                }
 			} else {
-				if (!dataCharts.isEmpty())
-					profileData = this.profileDataService
+				if (!dataCharts.isEmpty()) {
+                    profileData = this.profileDataService
 							.getAllProfileData(profile);
-				if (!errorCharts.isEmpty())
-					profileErrors = this.driverExceptionService
+                }
+				if (!errorCharts.isEmpty()) {
+                    profileErrors = this.driverExceptionService
 							.getAllProfileErrors(profile);
+                }
 			}
 
 			if (profileData != null) {
@@ -192,20 +202,23 @@ public class ChartsTest extends AbstractDataTest {
 
 				// Let the charts process the data.
 				for (ProfileDataEntity data : profileData) {
-					for (Chart chart : dataCharts)
-						try {
+					for (Chart chart : dataCharts) {
+                        try {
 							chart.processData(data);
 						} catch (Exception e) {
 							this.LOG.error("Charting Data Failed:", e);
 						}
+                    }
 
 					// Show data completion percentage.
-					if (++j % Math.max(1, u / 100) == 0)
-						this.LOG.debug("data  : " + 100 * i / t + "%, 0%, "
+					if (++j % Math.max(1, u / 100) == 0) {
+                        this.LOG.debug("data  : " + 100 * i / t + "%, 0%, "
 								+ 100 * j / u
 								+ "% ..");
-					if (this.datalimit != null && j > this.datalimit)
-						break;
+                    }
+					if (this.datalimit != null && j > this.datalimit) {
+                        break;
+                    }
 				}
 			}
 
@@ -214,28 +227,33 @@ public class ChartsTest extends AbstractDataTest {
 
 				// Let the charts process the errors.
 				for (DriverExceptionEntity error : profileErrors) {
-					for (Chart chart : errorCharts)
-						try {
+					for (Chart chart : errorCharts) {
+                        try {
 							chart.processError(error);
 						} catch (Exception e) {
 							this.LOG.error("Charting Error Failed:", e);
 						}
+                    }
 
 					// Show data completion percentage.
-					if (++j % Math.max(1, u / 100) == 0)
-						this.LOG.debug("errors: " + 100 * i / t + "%, 50%, "
+					if (++j % Math.max(1, u / 100) == 0) {
+                        this.LOG.debug("errors: " + 100 * i / t + "%, 50%, "
 								+ 100 * j / u
 								+ "% ..");
-					if (this.datalimit != null && j > this.datalimit)
-						break;
+                    }
+					if (this.datalimit != null && j > this.datalimit) {
+                        break;
+                    }
 				}
 			}
 
 			// Show profile completion percentage.
-			if (++i % Math.max(1, t / 100) == 0)
-				this.LOG.debug(100 * i / t + "%, 100% ..");
-			if (this.datalimit != null && i > this.datalimit)
-				break;
+			if (++i % Math.max(1, t / 100) == 0) {
+                this.LOG.debug(100 * i / t + "%, 100% ..");
+            }
+			if (this.datalimit != null && i > this.datalimit) {
+                break;
+            }
 		}
 
 		// Post-process all charts.
@@ -244,18 +262,20 @@ public class ChartsTest extends AbstractDataTest {
 		for (Chart chart : charts) {
 			chart.postProcess();
 
-			if (++i % Math.max(1, t / 100) == 0)
-				this.LOG.debug("postp : " + 100 * i / t + "% ..");
+			if (++i % Math.max(1, t / 100) == 0) {
+                this.LOG.debug("postp : " + 100 * i / t + "% ..");
+            }
 		}
 
 		// Render all charts to images.
 		Map<String, byte[][]> images = new LinkedHashMap<String, byte[][]>();
 		for (Chart chart : charts) {
 			byte[][] image = chart.render(DATA_POINTS);
-			if (image != null)
-				images.put(chart.getTitle(), image);
-			else
-				this.LOG.warn("Chart " + chart.getTitle() + " had no data.");
+			if (image != null) {
+                images.put(chart.getTitle(), image);
+            } else {
+                this.LOG.warn("Chart " + chart.getTitle() + " had no data.");
+            }
 		}
 
 		return images;

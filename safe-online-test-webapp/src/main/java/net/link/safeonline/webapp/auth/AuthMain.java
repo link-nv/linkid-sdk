@@ -36,8 +36,6 @@ public class AuthMain extends Page {
 	 * you need to use {@link PageUtils.waitForRedirect}}</li>
 	 * <li> Encap device: </li>
 	 * </ul>
-	 * 
-	 * @return
 	 */
 	public Page next() {
 		clickButtonAndWait("next");

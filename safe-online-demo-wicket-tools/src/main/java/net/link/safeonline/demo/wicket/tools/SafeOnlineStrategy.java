@@ -16,9 +16,9 @@ import wicket.authorization.IAuthorizationStrategy;
 
 public class SafeOnlineStrategy implements IAuthorizationStrategy {
 
-	private Class loginPageClass = null;
+	private Class<?> loginPageClass = null;
 
-	public SafeOnlineStrategy(Class loginPageClass) {
+	public SafeOnlineStrategy(Class<?> loginPageClass) {
 		this.loginPageClass = loginPageClass;
 	}
 

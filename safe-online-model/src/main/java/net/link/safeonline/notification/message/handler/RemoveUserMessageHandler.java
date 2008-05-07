@@ -10,6 +10,7 @@ package net.link.safeonline.notification.message.handler;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -31,7 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Message handler for topic: {@link SafeOnlineConstants#TOPIC_REMOVE_USER)
+ * Message handler for topic: {@link SafeOnlineConstants#TOPIC_REMOVE_USER}
  * 
  * @author wvdhaute
  * 

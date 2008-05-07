@@ -7,7 +7,6 @@
 
 package net.link.safeonline.authentication.service;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
 import javax.ejb.Local;
@@ -31,8 +30,8 @@ import net.link.safeonline.entity.DeviceEntity;
  * application to authenticate users. The bean behind this interface is
  * stateful. This means that a certain method invocation pattern must be
  * respected. First the methods {@link #authenticate(String, String)} or
- * {@link #authenticate(String, byte[])} must be invoked. Afterwards the
- * {@link #commitAuthentication(String)} method must be invoked. In case the
+ * {@link #authenticate(String, String)} must be invoked. Afterwards the
+ * {@link #commitAuthentication(String, Set)} method must be invoked. In case the
  * authentication process needs to be aborted one should invoke {@link #abort()}.
  * 
  * @author fcorneli
@@ -68,7 +67,6 @@ public interface AuthenticationService {
 	 * @throws SubjectNotFoundException
 	 * @throws DeviceNotFoundException
 	 *             in case the user did not configure the password device.
-	 * @throws NoSuchAlgorithmException
 	 */
 	boolean authenticate(String login, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException;
@@ -106,7 +104,6 @@ public interface AuthenticationService {
 	 * 
 	 * @param password
 	 * @throws DeviceNotFoundException
-	 * @throws PermissionDeniedException
 	 */
 	void setPassword(String login, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException;
@@ -119,7 +116,7 @@ public interface AuthenticationService {
 	/**
 	 * Gives back the user Id of the user that we're trying to authenticate.
 	 * Calling this method in only valid after a call to
-	 * {@link #authenticate(String, byte[])}.
+	 * {@link #authenticate(String, String)}.
 	 * 
 	 */
 	String getUserId();
@@ -127,7 +124,7 @@ public interface AuthenticationService {
 	/**
 	 * Gives back the username of the user that we're trying to authenticate.
 	 * Calling this method in only valid after a call to
-	 * {@link #authenticate(String, byte[])}.
+	 * {@link #authenticate(String, String)}.
 	 * 
 	 */
 	String getUsername();

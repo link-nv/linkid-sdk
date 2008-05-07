@@ -22,7 +22,6 @@ public interface UsageAgreementManager {
 	 * updated version during his next authentication.
 	 * 
 	 * @param application
-	 * @throws UsageAgreementNotFoundException
 	 */
 	void updateUsageAgreement(ApplicationEntity application);
 

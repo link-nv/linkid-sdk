@@ -25,6 +25,29 @@
 			</plugin>
 		</plugins>
 	</build>
+    <profiles>
+		<profile>
+			<id>MacOSX</id>
+			<activation>
+				<os>
+					<name>mac os x</name>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-eclipse-plugin</artifactId>
+						<configuration>
+							<classpathContainers>
+								<classpathContainer><![CDATA[org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.6]]></classpathContainer>
+							</classpathContainers>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+    </profiles>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

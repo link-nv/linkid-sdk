@@ -30,10 +30,10 @@ import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 import net.link.safeonline.performance.service.DriverExceptionService;
 import net.link.safeonline.performance.service.ExecutionService;
 import net.link.safeonline.performance.service.ProfileDataService;
+import net.link.safeonline.performance.service.bean.AbstractProfilingServiceBean;
 import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 import net.link.safeonline.performance.service.bean.ProfileDataServiceBean;
-import net.link.safeonline.performance.service.bean.ProfilingServiceBean;
 import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;
@@ -102,7 +102,8 @@ public class PerformanceDriverTest {
 					MeasurementEntity.class, ProfileDataEntity.class,
 					ScenarioTimingEntity.class);
 
-			ProfilingServiceBean.setDefaultEntityManager(this.entityTestManager
+			AbstractProfilingServiceBean
+                    .setDefaultEntityManager(this.entityTestManager
 					.getEntityManager());
 
 			this.executionService = new ExecutionServiceBean();
@@ -129,8 +130,9 @@ public class PerformanceDriverTest {
 	@After
 	public void tearDown() throws Exception {
 
-		if (this.entityTestManager.getEntityManager() != null)
-			this.entityTestManager.tearDown();
+		if (this.entityTestManager.getEntityManager() != null) {
+            this.entityTestManager.tearDown();
+        }
 	}
 
 	@Test
@@ -221,9 +223,10 @@ public class PerformanceDriverTest {
 		List<DriverExceptionEntity> errors = this.driverExceptionService
 				.getAllProfileErrors(profile);
 		for (DriverExceptionEntity error : errors)
-			if (error != null)
-				System.err.format("At %s the following occured:\n\t%s\n",
+			if (error != null) {
+                System.err.format("At %s the following occured:\n\t%s\n",
 						new Date(error.getOccurredTime()), error.getMessage());
+            }
 
 		assertTrue("Errors detected.  See stderr.", isEmptyOrOnlyNulls(errors));
 		assertFalse("No profiling data gathered.",

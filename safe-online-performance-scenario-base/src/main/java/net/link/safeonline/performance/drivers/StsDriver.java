@@ -9,7 +9,6 @@ package net.link.safeonline.performance.drivers;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
@@ -46,9 +45,6 @@ public class StsDriver extends ProfileDriver {
 	 *            application's authority.
 	 * @param token
 	 *            The SAML token that needs to be validated.
-	 * @throws DriverException
-	 *             Any exception that occurred during the request will be
-	 *             wrapped into this one.
 	 */
 	public void validate(PrivateKeyEntry applicationKey, Element token) {
 
