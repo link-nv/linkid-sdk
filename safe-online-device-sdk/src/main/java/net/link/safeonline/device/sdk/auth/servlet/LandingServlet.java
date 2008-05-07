@@ -25,9 +25,14 @@ import net.link.safeonline.device.sdk.auth.saml2.Saml2Handler;
 import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
 import net.link.safeonline.sdk.KeyStoreUtils;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class LandingServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final Log LOG = LogFactory.getLog(LandingServlet.class);
 
 	private String authenticationUrl;
 
@@ -110,7 +115,7 @@ public class LandingServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
+		LOG.debug("doPost");
 		Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
 		handler.init(this.configParams, this.applicationCertificate,
 				this.applicationKeyPair);

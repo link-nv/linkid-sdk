@@ -29,6 +29,8 @@ import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
@@ -39,6 +41,8 @@ import org.opensaml.xml.ConfigurationException;
 public class Saml2Handler implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final Log LOG = LogFactory.getLog(Saml2Handler.class);
 
 	private HttpSession session;
 
@@ -82,10 +86,9 @@ public class Saml2Handler implements Serializable {
 	public static Saml2Handler getSaml2Handler(HttpServletRequest request) {
 		Saml2Handler instance = (Saml2Handler) request.getSession()
 				.getAttribute(SAML2_HANDLER);
-
-		if (null == instance)
+		if (null == instance) {
 			instance = new Saml2Handler(request);
-
+		}
 		return instance;
 	}
 
@@ -125,9 +128,11 @@ public class Saml2Handler implements Serializable {
 			// empty
 		}
 
-		if (null == application)
+		if (null == application) {
 			throw new AuthenticationInitializationException(
 					"No target application was specified");
+		}
+		LOG.debug("application: " + application);
 
 		String nodeName = samlAuthnRequest.getIssuer().getValue();
 
@@ -143,8 +148,9 @@ public class Saml2Handler implements Serializable {
 			devices = new HashSet<String>();
 			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
 				devices.add(authnContextClassRef.getAuthnContextClassRef());
-		} else
+		} else {
 			devices = null;
+		}
 
 		this.session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
 		this.session.setAttribute(TARGET_URL, assertionConsumerService);

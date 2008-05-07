@@ -20,7 +20,9 @@ public class AuthenticationMessages {
 
 	public static enum KEY {
 		START("start"), ERROR("error"), NO_BEID("noBeID"), DONE("done"), NO_READER(
-				"noReader"), NO_CARD("noCard");
+				"noReader"), NO_CARD("noCard"), SENDING("sending"), PERMISSION_DENIED(
+				"permissionDenied"), NOT_SUBSCRIBED("notSubscribed"), EID_NOT_REGISTERED(
+				"eidNotRegistered");
 
 		private final String key;
 

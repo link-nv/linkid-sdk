@@ -7,6 +7,11 @@
 
 package net.link.safeonline.auth.pcsc;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +31,7 @@ import net.link.safeonline.applet.InfoLevel;
 import net.link.safeonline.applet.RuntimeContext;
 import net.link.safeonline.applet.StatementProvider;
 import net.link.safeonline.auth.pcsc.AuthenticationMessages.KEY;
+import net.link.safeonline.shared.SharedConstants;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.IdentityProvider;
 
@@ -69,10 +75,97 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 			Signer signer = new PcscSigner(channel, this);
 			IdentityProvider identityProvider = new PcscIdentityProvider(
 					channel);
-			this.statementProvider.createStatement(signer, identityProvider);
-			// TODO: send the statement
+			byte[] statement = this.statementProvider.createStatement(signer,
+					identityProvider);
+			try {
+				sendStatement(statement);
+			} catch (IOException e) {
+				this.appletView.outputDetailMessage("IO error: "
+						+ e.getMessage());
+				this.appletView.outputInfoMessage(InfoLevel.ERROR,
+						this.messages.getString(KEY.ERROR));
+			}
+		} catch (Exception e) {
+			this.appletView.outputDetailMessage("error: " + e.getMessage());
+			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+					.getString(KEY.ERROR));
 		} finally {
 			closeCard(card);
+		}
+	}
+
+	private boolean sendStatement(byte[] statement) throws IOException {
+		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
+				.getString(KEY.SENDING));
+		this.appletView.outputDetailMessage("Sending statement...");
+		URL documentBase = this.runtimeContext.getDocumentBase();
+		this.appletView.outputDetailMessage("document base: " + documentBase);
+		String servletPath = this.runtimeContext.getParameter("ServletPath");
+		URL url = transformUrl(documentBase, servletPath);
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url
+				.openConnection();
+
+		httpURLConnection.setRequestMethod("POST");
+		httpURLConnection.setAllowUserInteraction(false);
+		httpURLConnection.setRequestProperty("Content-type",
+				"application/octet-stream");
+		httpURLConnection.setDoOutput(true);
+		OutputStream outputStream = httpURLConnection.getOutputStream();
+		outputStream.write(statement);
+		outputStream.close();
+
+		httpURLConnection.connect();
+
+		httpURLConnection.disconnect();
+
+		int responseCode = httpURLConnection.getResponseCode();
+		if (200 == responseCode) {
+			this.appletView
+					.outputDetailMessage("Statement successfully transmitted.");
+			return true;
+		}
+		String safeOnlineResultCode = httpURLConnection
+				.getHeaderField(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER);
+		if (SharedConstants.PERMISSION_DENIED_ERROR
+				.equals(safeOnlineResultCode)) {
+			this.appletView
+					.outputDetailMessage("PERMISSION DENIED. YOUR EID MIGHT BE IN USE BY ANOTHER USER");
+			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+					.getString(KEY.PERMISSION_DENIED));
+			return false;
+		}
+		if (SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR
+				.equals(safeOnlineResultCode)) {
+			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+					.getString(KEY.NOT_SUBSCRIBED));
+			return false;
+		}
+		if (SharedConstants.SUBJECT_NOT_FOUND_ERROR
+				.equals(safeOnlineResultCode)) {
+			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+					.getString(KEY.EID_NOT_REGISTERED));
+			return false;
+		}
+		throw new IOException("Response code: " + responseCode);
+	}
+
+	public static URL transformUrl(URL documentBase, String targetPath) {
+		if (targetPath.startsWith("http://")
+				|| targetPath.startsWith("https://"))
+			try {
+				return new URL(targetPath);
+			} catch (MalformedURLException e) {
+				throw new RuntimeException("URL error: " + e.getMessage());
+			}
+
+		String documentBaseStr = documentBase.toString();
+		int idx = documentBaseStr.lastIndexOf("/");
+		String identityUrlStr = documentBaseStr.substring(0, idx + 1)
+				+ targetPath;
+		try {
+			return new URL(identityUrlStr);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("URL error: " + e.getMessage());
 		}
 	}
 
@@ -94,6 +187,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 		try {
 			terminalList = terminals.list(State.CARD_PRESENT);
 			for (CardTerminal cardTerminal : terminalList) {
+				this.appletView.outputDetailMessage("trying card terminal: "
+						+ cardTerminal.getName());
 				Card card = cardTerminal.connect("T=0");
 				ATR atr = card.getATR();
 				byte[] atrBytes = atr.getBytes();
@@ -101,6 +196,7 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 						&& false == Arrays.equals(BEID_ATR_10, atrBytes)) {
 					continue;
 				}
+				this.appletView.outputDetailMessage("BeID card found.");
 				return card;
 			}
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
