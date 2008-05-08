@@ -72,7 +72,7 @@ public class ApplicationLogoServlet extends HttpServlet {
 
 		String applicationName = request.getParameter("applicationName");
 		if (null == applicationName)
-			return;
+            throw new IllegalArgumentException("The application name must be provided.");
 
 		try {
 			PublicApplication application = this.publicApplicationService

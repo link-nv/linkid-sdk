@@ -61,7 +61,12 @@ function extractStuff {
         extractHtml
 }
 
-if (( ! reverse && ! apply )); then
+if (( apply )); then
+    [[ ! -e $base ]] && {
+        emit -R "No work files present at '$(shorten "$base")'.  Cannot apply."
+        exit 1
+    }
+elif (( ! reverse )); then
     [[ -e $base ]] && {
         emit -Y "You already have work files at '$(shorten "$base")'.  Perhaps you meant to use -R?"
         emit -Y "Continuing will delete all these files and replace them by the current server's files."
