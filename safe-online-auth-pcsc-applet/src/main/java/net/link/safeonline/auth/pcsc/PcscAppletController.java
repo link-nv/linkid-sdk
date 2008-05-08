@@ -53,7 +53,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 
 	private AuthenticationMessages messages;
 
-	public void init(AppletView newAppletView, RuntimeContext newRuntimeContext,
+	public void init(AppletView newAppletView,
+			RuntimeContext newRuntimeContext,
 			StatementProvider newStatementProvider) {
 		this.appletView = newAppletView;
 		this.runtimeContext = newRuntimeContext;
@@ -87,11 +88,30 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 			}
 		} catch (Exception e) {
 			this.appletView.outputDetailMessage("error: " + e.getMessage());
+			this.appletView.outputDetailMessage("error type: "
+					+ e.getClass().getName());
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString(KEY.ERROR));
 		} finally {
 			closeCard(card);
 		}
+		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
+				.getString(KEY.DONE));
+		this.appletView.outputDetailMessage("Done.");
+
+		showDocument("TargetPath");
+	}
+
+	private void showDocument(String runtimeParameter) {
+		URL documentBase = this.runtimeContext.getDocumentBase();
+		String path = this.runtimeContext.getParameter(runtimeParameter);
+		if (null == path) {
+			this.appletView.outputDetailMessage("runtime parameter not set: "
+					+ runtimeParameter);
+			return;
+		}
+		URL url = transformUrl(documentBase, path);
+		this.runtimeContext.showDocument(url);
 	}
 
 	private boolean sendStatement(byte[] statement) throws IOException {

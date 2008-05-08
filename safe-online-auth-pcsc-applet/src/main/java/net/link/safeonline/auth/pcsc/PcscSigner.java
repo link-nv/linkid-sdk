@@ -13,6 +13,7 @@ import java.security.cert.X509Certificate;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.swing.Box;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -36,8 +37,8 @@ public class PcscSigner extends Pcsc implements Signer {
 		try {
 			return this.getAuthenticationCertificate();
 		} catch (Exception e) {
-			this.logger.log("error: " + e.getMessage());
-			throw new RuntimeException("error");
+			this.logger.log("getCert error: " + e.getMessage());
+			throw new RuntimeException("getCert error");
 		}
 	}
 
@@ -52,9 +53,11 @@ public class PcscSigner extends Pcsc implements Signer {
 		passwordPanel.add(Box.createHorizontalStrut(5));
 		passwordPanel.add(passwordField);
 
-		int result = JOptionPane.showOptionDialog(null, passwordPanel, "PIN",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-				null, null, null);
+		JOptionPane optionPane = new JOptionPane(passwordPanel,
+				JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+		JDialog dialog = optionPane.createDialog("PIN");
+		dialog.setVisible(true);
+		int result = (Integer) optionPane.getValue();
 		if (result == JOptionPane.OK_OPTION) {
 			char[] pin = passwordField.getPassword();
 			return pin;
@@ -66,6 +69,7 @@ public class PcscSigner extends Pcsc implements Signer {
 		String pin = new String(getPin());
 		byte[] signatureValue;
 		try {
+			this.logger.log("signing...");
 			signatureValue = super.sign(data, pin);
 		} catch (CardException e) {
 			this.logger.log("card error: " + e.getMessage());
@@ -73,6 +77,9 @@ public class PcscSigner extends Pcsc implements Signer {
 		} catch (IOException e) {
 			this.logger.log("IO error: " + e.getMessage());
 			throw new RuntimeException("IO error: " + e.getMessage(), e);
+		} catch (Exception e) {
+			this.logger.log("sign error: " + e.getMessage());
+			throw new RuntimeException("sign error: " + e.getMessage(), e);
 		}
 		return signatureValue;
 	}
