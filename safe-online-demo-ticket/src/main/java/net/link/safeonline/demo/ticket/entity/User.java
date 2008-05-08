@@ -7,6 +7,8 @@
 
 package net.link.safeonline.demo.ticket.entity;
 
+import static net.link.safeonline.demo.ticket.entity.User.QUERY_WHERE_NRN;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +23,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
-
-import static net.link.safeonline.demo.ticket.entity.User.QUERY_WHERE_NRN;
 
 @Entity
 @Table(name = "demo_ticket_user")

@@ -8,9 +8,6 @@
 package net.link.safeonline.auth.bean;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -19,7 +16,6 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
@@ -36,7 +32,6 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -162,24 +157,4 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	public String getUsername() {
 		return this.subjectService.getSubjectLogin(this.username);
 	}
-
-	@Factory("allDevices")
-	public List<SelectItem> allDevicesFactory() {
-		this.log.debug("all devices factory");
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		List<SelectItem> allDevices = new LinkedList<SelectItem>();
-
-		List<DeviceEntity> devices = this.devicePolicyService.getDevices();
-
-		for (DeviceEntity deviceEntity : devices) {
-			String deviceName = this.devicePolicyService.getDeviceDescription(
-					deviceEntity.getName(), viewLocale);
-			SelectItem allDevice = new SelectItem(deviceEntity.getName(),
-					deviceName);
-			allDevices.add(allDevice);
-		}
-		return allDevices;
-	}
-
 }

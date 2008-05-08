@@ -7,6 +7,8 @@
 
 package net.link.safeonline.demo.payment.entity;
 
+import static net.link.safeonline.demo.payment.entity.PaymentEntity.QUERY_WHERE_OWNER;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,8 +22,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
-
-import static net.link.safeonline.demo.payment.entity.PaymentEntity.QUERY_WHERE_OWNER;
 
 @Entity
 @Table(name = "demo_payment")

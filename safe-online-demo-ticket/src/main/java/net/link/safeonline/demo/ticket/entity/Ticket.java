@@ -7,6 +7,8 @@
 
 package net.link.safeonline.demo.ticket.entity;
 
+import static net.link.safeonline.demo.ticket.entity.Ticket.QUERY_WHERE_OWNER;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,8 +23,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
-
-import static net.link.safeonline.demo.ticket.entity.Ticket.QUERY_WHERE_OWNER;
 
 @Entity
 @Table(name = "demo_ticket")

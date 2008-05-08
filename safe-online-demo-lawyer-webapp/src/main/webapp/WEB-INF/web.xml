@@ -1,192 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
-
 	<display-name>SafeOnline Demo Lawyer Web Application</display-name>
-
 	<listener>
-		<listener-class>
-			org.jboss.seam.servlet.SeamListener
+		<listener-class> org.jboss.seam.servlet.SeamListener </listener-class>
+	</listener>
+	<listener>
+		<listener-class> com.sun.faces.config.ConfigureListener 
 		</listener-class>
 	</listener>
-
-	<listener>
-		<listener-class>
-			com.sun.faces.config.ConfigureListener
-		</listener-class>
-	</listener>
-
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
-		<param-value>
-			${safe-online.host.basename}/olas-auth
-		</param-value>
+		<param-value> ${safe-online.host.basename}/olas-auth </param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>ApplicationName</param-name>
 		<param-value>demo-lawyer</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>AuthenticationProtocol</param-name>
 		<param-value>SAML2_BROWSER_POST</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>KeyStoreResource</param-name>
 		<param-value>safe-online-demo-lawyer-keystore.jks</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>KeyStoreType</param-name>
 		<param-value>jks</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>KeyStorePassword</param-name>
 		<param-value>secret</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value>${safe-online.host.basename}</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
 		<param-value>.xhtml</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>facelets.DEVELOPMENT</param-name>
 		<param-value>${debug.mode}</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>org.jboss.seam.core.init.debug</param-name>
 		<param-value>${debug.mode}</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>LandingPage</param-name>
-		<param-value>
-			${safe-online.host.basename}/demo-lawyer/authlogin
+		<param-value> ${safe-online.host.basename}/demo-lawyer/authlogin 
 		</param-value>
 	</context-param>
-
 	<filter>
 		<filter-name>LoginFilter</filter-name>
-		<filter-class>
-			net.link.safeonline.sdk.auth.filter.LoginFilter
+		<filter-class> net.link.safeonline.sdk.auth.filter.LoginFilter 
 		</filter-class>
 	</filter>
-
 	<filter>
-		<filter-name>Seam Exception Filter</filter-name>
-		<filter-class>
-			org.jboss.seam.servlet.SeamExceptionFilter
-		</filter-class>
+		<filter-name>Seam Filter</filter-name>
+		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
 	</filter>
-
-	<filter>
-		<filter-name>Seam Redirect Filter</filter-name>
-		<filter-class>
-			org.jboss.seam.servlet.SeamRedirectFilter
-		</filter-class>
-	</filter>
-
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
-		<filter-class>
-			net.link.safeonline.sdk.auth.filter.JAASLoginFilter
+		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
 		</filter-class>
 		<init-param>
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
 		</init-param>
 	</filter>
-
 	<filter>
 		<filter-name>ContainerLoginFilter</filter-name>
 		<filter-class>
-			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter
+			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter 
 		</filter-class>
 	</filter>
-
 	<filter-mapping>
-		<filter-name>Seam Exception Filter</filter-name>
+		<filter-name>Seam Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>Seam Redirect Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
 	<filter-mapping>
 		<filter-name>LoginFilter</filter-name>
 		<url-pattern>/login</url-pattern>
 	</filter-mapping>
-
 	<filter-mapping>
 		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
 	<filter-mapping>
 		<filter-name>ContainerLoginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.demo.lawyer.servlet.LoginServlet
+		<servlet-class> net.link.safeonline.demo.lawyer.servlet.LoginServlet 
 		</servlet-class>
 		<init-param>
 			<param-name>WsLocation</param-name>
 			<param-value>${safe-online.host.basename}</param-value>
 		</init-param>
 	</servlet>
-
 	<servlet>
 		<servlet-name>AuthLoginServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.sdk.auth.servlet.LoginServlet
+		<servlet-class> net.link.safeonline.sdk.auth.servlet.LoginServlet 
 		</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>AuthLoginServlet</servlet-name>
 		<url-pattern>/authlogin</url-pattern>
 	</servlet-mapping>
-
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.seam</url-pattern>
 	</servlet-mapping>
-
 	<servlet-mapping>
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
-
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>
-
 </web-app>

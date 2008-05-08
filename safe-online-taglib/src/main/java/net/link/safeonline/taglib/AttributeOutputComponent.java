@@ -67,7 +67,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			String value = attribute.getStringValue();
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				value = "[" + noValueStr + "]";
@@ -84,7 +84,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			Boolean value = attribute.getBooleanValue();
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				response.write("[" + noValueStr + "]");
@@ -102,7 +102,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			Integer value = attribute.getIntegerValue();
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				response.write("[" + noValueStr + "]");
@@ -120,7 +120,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			Double value = attribute.getDoubleValue();
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				response.write("[" + noValueStr + "]");
@@ -138,7 +138,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			Date value = attribute.getDateValue();
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				response.write("[" + noValueStr + "]");

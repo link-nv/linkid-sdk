@@ -54,7 +54,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
-import org.jboss.seam.core.FacesMessages;
+import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("operDevice")
@@ -170,7 +170,7 @@ public class DeviceBean implements Device {
 		}
 	}
 
-	@Factory("nodes")
+	@Factory("deviceNodes")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<SelectItem> nodeFactory() {
 		List<OlasEntity> nodeList = this.nodeService.listNodes();

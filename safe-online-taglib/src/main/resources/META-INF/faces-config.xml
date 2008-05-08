@@ -3,72 +3,57 @@
   "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
   "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
 <faces-config xmlns="http://java.sun.com/JSF/Configuration">
-
 	<component>
-		<component-type>
-			net.link.component.attributeOutput
-		</component-type>
-		<component-class>
-			net.link.safeonline.taglib.AttributeOutputComponent
+		<component-type> net.link.component.attributeOutput </component-type>
+		<component-class> net.link.safeonline.taglib.AttributeOutputComponent 
 		</component-class>
 	</component>
-
 	<component>
-		<component-type>
-			net.link.component.attributeNameOutput
+		<component-type> net.link.component.attributeNameOutput 
 		</component-type>
 		<component-class>
-			net.link.safeonline.taglib.AttributeNameOutputComponent
+			net.link.safeonline.taglib.AttributeNameOutputComponent 
 		</component-class>
 	</component>
-
 	<component>
-		<component-type>
-			net.link.component.attributeInput
-		</component-type>
-		<component-class>
-			net.link.safeonline.taglib.AttributeInputComponent
+		<component-type> net.link.component.attributeInput </component-type>
+		<component-class> net.link.safeonline.taglib.AttributeInputComponent 
 		</component-class>
 	</component>
-
 	<validator>
 		<validator-id>net.link.validator.attribute</validator-id>
-		<validator-class>
-			net.link.safeonline.taglib.AttributeValidator
+		<validator-class> net.link.safeonline.taglib.AttributeValidator 
 		</validator-class>
 	</validator>
-
+	<validator>
+		<validator-id>net.link.validator.validateEqual</validator-id>
+		<validator-class>net.link.safeonline.taglib.EqualValidator</validator-class>
+	</validator>
 	<render-kit>
 		<renderer>
 			<component-family>javax.faces.SelectOne</component-family>
 			<renderer-type>javax.faces.Radio</renderer-type>
 			<renderer-class>
-				net.link.safeonline.renderer.NoTablesRadioButtonRenderer
+				net.link.safeonline.renderer.NoTablesRadioButtonRenderer 
 			</renderer-class>
 		</renderer>
 		<renderer>
 			<component-family>javax.faces.Messages</component-family>
 			<renderer-type>javax.faces.Messages</renderer-type>
-			<renderer-class>
-				net.link.safeonline.renderer.SimpleMessagesRenderer
+			<renderer-class> net.link.safeonline.renderer.SimpleMessagesRenderer 
 			</renderer-class>
 		</renderer>
 		<renderer>
 			<component-family>javax.faces.Message</component-family>
 			<renderer-type>javax.faces.Message</renderer-type>
-			<renderer-class>
-				net.link.safeonline.renderer.SimpleMessageRenderer
+			<renderer-class> net.link.safeonline.renderer.SimpleMessageRenderer 
 			</renderer-class>
 		</renderer>
 	</render-kit>
-
 	<converter>
-		<converter-id>
-			net.link.safeonline.converter.AttributeTypeConverter
+		<converter-id> net.link.safeonline.converter.AttributeTypeConverter 
 		</converter-id>
-		<converter-class>
-			net.link.safeonline.converter.AttributeTypeConverter
+		<converter-class> net.link.safeonline.converter.AttributeTypeConverter 
 		</converter-class>
 	</converter>
-
 </faces-config>

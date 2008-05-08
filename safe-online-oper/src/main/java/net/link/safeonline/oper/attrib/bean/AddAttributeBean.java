@@ -42,7 +42,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.core.FacesMessages;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -124,7 +124,7 @@ public class AddAttributeBean implements AddAttribute {
 		return datatypes;
 	}
 
-	@Factory("nodes")
+	@Factory("attributeNodes")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<SelectItem> nodeFactory() {
 		List<OlasEntity> nodeList = this.nodeService.listNodes();

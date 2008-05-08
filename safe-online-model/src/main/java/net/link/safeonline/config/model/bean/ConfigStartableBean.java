@@ -20,7 +20,7 @@ import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.dao.ConfigGroupDAO;
 import net.link.safeonline.config.dao.ConfigItemDAO;
 import net.link.safeonline.config.model.ConfigStartable;
-import net.link.safeonline.config.model.ConfigurableScanner;
+import net.link.safeonline.config.model.ConfigurationDeploymentStrategy;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
@@ -47,9 +47,11 @@ public class ConfigStartableBean implements ConfigStartable {
 	public void postStart() {
 		LOG.debug("Starting configuration");
 
-		ConfigurableScanner scanner = new ConfigurableScanner(
-				"config.properties");
-		for (Class<?> classObject : scanner.getClasses()) {
+		ConfigurationDeploymentStrategy configurationDeploymentStrategy = new ConfigurationDeploymentStrategy();
+		configurationDeploymentStrategy.scan();
+
+		for (Class<?> classObject : configurationDeploymentStrategy
+				.getScannedConfigurationClasses()) {
 			LOG.debug("found configurable class: " + classObject.getName());
 			configure(classObject);
 		}

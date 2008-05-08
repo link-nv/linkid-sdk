@@ -26,75 +26,74 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				id="generic-tab" label="#{msgs.generic}">
-					<h:outputLabel for="name" value="#{msgs.name}" />
-					<s:decorate>
-						<h:inputText id="name" value="#{operDevice.name}" required="true"
-							styleClass="label" />
-					</s:decorate>* <h:message for="name" styleClass="error" />
-					<h:outputLabel for="deviceClass" value="#{msgs.deviceClass}" />
-					<s:decorate>
-						<h:selectOneMenu id="deviceClass"
-							value="#{operDevice.deviceClass}" required="true"
-							styleClass="label">
-							<f:selectItems value="#{deviceClasses}" />
-						</h:selectOneMenu>
-					</s:decorate>* <h:message for="deviceClass" styleClass="error" />
-
-					<h:outputLabel for="node" value="#{msgs.location}" />
-
-					<h:selectOneMenu id="node" value="#{operDevice.node}"
-						styleClass="label">
-						<f:selectItems value="#{nodes}" />
+				<h:outputLabel for="name" value="#{msgs.name}" />
+				<s:decorate>
+					<h:inputText id="name" value="#{operDevice.name}" required="true"
+						styleClass="label" />
+				</s:decorate>* <h:message for="name" styleClass="error" />
+				<h:outputLabel for="deviceClass" value="#{msgs.deviceClass}" />
+				<s:decorate>
+					<h:selectOneMenu id="deviceClass" value="#{operDevice.deviceClass}"
+						required="true" styleClass="label">
+						<f:selectItems value="#{deviceClasses}" />
 					</h:selectOneMenu>
+				</s:decorate>* <h:message for="deviceClass" styleClass="error" />
+
+				<h:outputLabel for="node" value="#{msgs.location}" />
+
+				<h:selectOneMenu id="node" value="#{operDevice.node}"
+					styleClass="label">
+					<f:selectItems value="#{deviceNodes}" />
+				</h:selectOneMenu>
 
 
-					<h:outputLabel for="authUrl" value="#{msgs.authenticationUrl}" />
-					<s:decorate>
-						<h:inputText id="authUrl" value="#{operDevice.authenticationURL}"
-							required="true" styleClass="label" />
-					</s:decorate>*<h:message for="authUrl" styleClass="error" />
-					<h:outputLabel for="regUrl" value="#{msgs.registrationUrl}" />
-					<h:inputText id="regUrl" value="#{operDevice.registrationURL}"
-						styleClass="label" />
-					<h:message for="regUrl" styleClass="error" />
-					<h:outputLabel for="remUrl" value="#{msgs.removalUrl}" />
-					<h:inputText id="remUrl" value="#{operDevice.removalURL}"
-						styleClass="label" />
-					<h:message for="remUrl" styleClass="error" />
-					<h:outputLabel for="updateUrl" value="#{msgs.updateUrl}" />
-					<h:inputText id="updateUrl" value="#{operDevice.updateURL}"
-						styleClass="label" />
-					<h:message for="updateUrl" styleClass="error" />
-            </rich:simpleTogglePanel>
+				<h:outputLabel for="authUrl" value="#{msgs.authenticationUrl}" />
+				<s:decorate>
+					<h:inputText id="authUrl" value="#{operDevice.authenticationURL}"
+						required="true" styleClass="label" />
+				</s:decorate>*<h:message for="authUrl" styleClass="error" />
+				<h:outputLabel for="regUrl" value="#{msgs.registrationUrl}" />
+				<h:inputText id="regUrl" value="#{operDevice.registrationURL}"
+					styleClass="label" />
+				<h:message for="regUrl" styleClass="error" />
+				<h:outputLabel for="remUrl" value="#{msgs.removalUrl}" />
+				<h:inputText id="remUrl" value="#{operDevice.removalURL}"
+					styleClass="label" />
+				<h:message for="remUrl" styleClass="error" />
+				<h:outputLabel for="updateUrl" value="#{msgs.updateUrl}" />
+				<h:inputText id="updateUrl" value="#{operDevice.updateURL}"
+					styleClass="label" />
+				<h:message for="updateUrl" styleClass="error" />
+			</rich:simpleTogglePanel>
 
-            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				id="attrib-tab" label="#{msgs.attribute}">
 
-					<h:outputLabel for="attribute-type" value="#{msgs.deviceAttribute}" />
-					<h:selectOneMenu id="attribute-type"
-						value="#{operDevice.attributeType}" styleClass="label">
-						<f:selectItems value="#{attributeTypes}" />
-					</h:selectOneMenu>
+				<h:outputLabel for="attribute-type" value="#{msgs.deviceAttribute}" />
+				<h:selectOneMenu id="attribute-type"
+					value="#{operDevice.attributeType}" styleClass="label">
+					<f:selectItems value="#{attributeTypes}" />
+				</h:selectOneMenu>
 
-					<h:outputLabel for="user-attribute-type"
-						value="#{msgs.deviceUserAttribute}" />
-					<h:selectOneMenu id="user-attribute-type"
-						value="#{operDevice.userAttributeType}" styleClass="label">
-						<f:selectItems value="#{attributeTypes}" />
-					</h:selectOneMenu>
-            </rich:simpleTogglePanel>
+				<h:outputLabel for="user-attribute-type"
+					value="#{msgs.deviceUserAttribute}" />
+				<h:selectOneMenu id="user-attribute-type"
+					value="#{operDevice.userAttributeType}" styleClass="label">
+					<f:selectItems value="#{attributeTypes}" />
+				</h:selectOneMenu>
+			</rich:simpleTogglePanel>
 
-            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				id="certificate-tab" label="#{msgs.certificate}">
-					<h:outputLabel for="certificate" value="#{msgs.certificate}" />
-					<s:decorate>
-						<t:inputFileUpload id="certificate"
-							value="#{operDevice.certificate}" />
-					</s:decorate>
-					<h:message for="certificate" styleClass="error" />
-            </rich:simpleTogglePanel>
+				<h:outputLabel for="certificate" value="#{msgs.certificate}" />
+				<s:decorate>
+					<t:inputFileUpload id="certificate"
+						value="#{operDevice.certificate}" />
+				</s:decorate>
+				<h:message for="certificate" styleClass="error" />
+			</rich:simpleTogglePanel>
 
 			<h:commandButton action="#{operDevice.add}" id="add"
 				value="#{msgs.addaction}" styleClass="submit" />

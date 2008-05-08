@@ -43,8 +43,8 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.core.ResourceBundle;
+import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("audit")

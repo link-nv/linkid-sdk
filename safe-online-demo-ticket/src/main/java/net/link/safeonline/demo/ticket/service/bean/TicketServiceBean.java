@@ -14,15 +14,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.LocalBinding;
-import org.joda.time.DateTime;
-
 import net.link.safeonline.demo.ticket.entity.Ticket;
 import net.link.safeonline.demo.ticket.entity.User;
 import net.link.safeonline.demo.ticket.entity.Ticket.Site;
 import net.link.safeonline.demo.ticket.service.TicketService;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
+import org.joda.time.DateTime;
 
 @Stateless
 @LocalBinding(jndiBinding = TicketService.LOCAL_BINDING)

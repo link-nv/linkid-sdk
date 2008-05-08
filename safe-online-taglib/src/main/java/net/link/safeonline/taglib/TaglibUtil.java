@@ -12,11 +12,11 @@ import java.util.ResourceBundle;
 
 import javax.faces.context.FacesContext;
 
-public class AttributeComponentUtil {
+public class TaglibUtil {
 
 	public static final String RESOURCE_BASE = "net.link.safeonline.taglib.Messages";
 
-	private AttributeComponentUtil() {
+	private TaglibUtil() {
 		// empty
 	}
 

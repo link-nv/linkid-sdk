@@ -506,7 +506,7 @@ public class AttributeInputComponent extends UIInput {
 			String clientId = inputComponent.getClientId(context);
 			ResponseWriter responseWriter = context.getResponseWriter();
 
-			ResourceBundle messages = AttributeComponentUtil
+			ResourceBundle messages = TaglibUtil
 					.getResourceBundle(context);
 
 			String trueId = clientId + NamingContainer.SEPARATOR_CHAR + "true";

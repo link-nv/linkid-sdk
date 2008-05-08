@@ -55,7 +55,7 @@ public class AttributeValidator implements Validator {
 		DatatypeType type = attribute.getType();
 		TypeValidator typeValidator = typeValidators.get(type);
 		if (null == typeValidator) {
-			ResourceBundle messages = AttributeComponentUtil
+			ResourceBundle messages = TaglibUtil
 					.getResourceBundle(context);
 			FacesMessage facesMessage = new FacesMessage(messages
 					.getString("unsupportedType"));
@@ -78,7 +78,7 @@ public class AttributeValidator implements Validator {
 				throws ValidatorException {
 			String value = attribute.getStringValue();
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				FacesMessage facesMessage = new FacesMessage(messages
 						.getString("stringNull"));
@@ -99,7 +99,7 @@ public class AttributeValidator implements Validator {
 				throws ValidatorException {
 			Boolean value = attribute.getBooleanValue();
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				FacesMessage facesMessage = new FacesMessage(messages
 						.getString("booleanNull"));
@@ -117,7 +117,7 @@ public class AttributeValidator implements Validator {
 			Integer value = attribute.getIntegerValue();
 			LOG.debug(" - value = " + value);
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				FacesMessage facesMessage = new FacesMessage(messages
 						.getString("integerNull"));
@@ -133,7 +133,7 @@ public class AttributeValidator implements Validator {
 				throws ValidatorException {
 			Double value = attribute.getDoubleValue();
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				FacesMessage facesMessage = new FacesMessage(messages
 						.getString("doubleNull"));
@@ -149,7 +149,7 @@ public class AttributeValidator implements Validator {
 				throws ValidatorException {
 			Date value = attribute.getDateValue();
 			if (null == value) {
-				ResourceBundle messages = AttributeComponentUtil
+				ResourceBundle messages = TaglibUtil
 						.getResourceBundle(context);
 				FacesMessage facesMessage = new FacesMessage(messages
 						.getString("dateNull"));
