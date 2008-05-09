@@ -180,8 +180,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 	public void testResponseHandling() throws Exception {
 		// setup
 		HttpClient httpClient = new HttpClient();
-		PostMethod postMethod = new PostMethod(this.responseServletTestManager
-				.getServletLocation());
+		String servletLocation = this.responseServletTestManager
+				.getServletLocation();
+		PostMethod postMethod = new PostMethod(servletLocation);
 
 		InputStream xmlInputStream = Saml2BrowserPostAuthenticationProtocolHandlerTest.class
 				.getResourceAsStream("/test-saml-response.xml");
@@ -191,6 +192,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 				xmlInputString);
 		xmlInputString = replaceAll("replaceWithCurrentPlusValidityTime", now
 				.plusMinutes(10).toString(), xmlInputString);
+		xmlInputString = replaceAll("replaceWithDestination", servletLocation,
+				xmlInputString);
 		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
 		IOUtils.copy(IOUtils.toInputStream(xmlInputString), byteOutputStream);
 		byte[] samlResponse = byteOutputStream.toByteArray();

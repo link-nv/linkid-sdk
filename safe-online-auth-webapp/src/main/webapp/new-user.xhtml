@@ -38,15 +38,13 @@
 			</s:decorate>
 			<br />
 
-			<a4j:log>
-				<a4j:region>
-					<h:outputLabel for="image" value="" />
-					<a4j:commandLink id="refresh" immediate="true"
-						value="#{msgs.refreshCaptcha}" reRender="image" />
-					<h:graphicImage id="image" styleClass="label"
-						value="#{accountRegistration.captchaURL}" />
-				</a4j:region>
-			</a4j:log>
+			<a4j:region>
+				<h:outputLabel for="image" value="" />
+				<h:graphicImage id="image" styleClass="label"
+					value="#{accountRegistration.captchaURL}" />
+				<a4j:commandLink id="refresh" immediate="true"
+					value="#{msgs.refreshCaptcha}" reRender="image" />
+			</a4j:region>
 
 			<h:messages globalOnly="true" styleClass="error" />
 			<h:outputLabel for="register" value="" />
