@@ -203,6 +203,10 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		this.captcha = captcha;
 	}
 
+	public String getCaptchaURL() {
+		return "/captcha?cacheid=" + (Math.random() * 1000000);
+	}
+
 	@Factory("allDevicesReg")
 	public List<SelectItem> allDevicesFactory() {
 		this.log.debug("all devices factory");

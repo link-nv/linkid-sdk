@@ -27,11 +27,11 @@
 
 			<h:panelGrid columns="5" border="0" style="border: 1px solid black;">
 				<f:verbatim>#{msgs.lookupHelpId}</f:verbatim>
-				<s:decorate>
+				<s:decorate id="decorateSearchId">
 					<h:inputText value="#{helpdeskLog.searchId}" id="searchId"
 						validator="#{helpdeskLog.validateId}" required="true" />
 				</s:decorate>
-				<rich:suggestionbox for="searchId"
+				<rich:suggestionbox for="decorateSearchId:searchId"
 					suggestionAction="#{helpdeskLog.autocomplete}" var="searchIdInput">
 					<h:column>
 						<h:outputText value="#{searchIdInput}" />

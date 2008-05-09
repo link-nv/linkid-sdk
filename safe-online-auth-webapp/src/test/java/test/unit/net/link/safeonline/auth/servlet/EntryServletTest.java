@@ -214,8 +214,9 @@ public class EntryServletTest {
 	public void saml2AuthenticationProtocol() throws Exception {
 		// setup
 		HttpClient httpClient = new HttpClient();
-		PostMethod postMethod = new PostMethod(this.entryServletTestManager
-				.getServletLocation());
+		String servletLocation = this.entryServletTestManager
+				.getServletLocation();
+		PostMethod postMethod = new PostMethod(servletLocation);
 
 		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate applicationCert = PkiTestUtils
@@ -225,7 +226,7 @@ public class EntryServletTest {
 		String assertionConsumerService = "http://test.assertion.consumer.service";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
 				applicationName, applicationName, applicationKeyPair,
-				assertionConsumerService, null, null, null);
+				assertionConsumerService, servletLocation, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 
@@ -273,8 +274,9 @@ public class EntryServletTest {
 
 		// setup
 		HttpClient httpClient = new HttpClient();
-		PostMethod postMethod = new PostMethod(this.entryServletTestManager
-				.getServletLocation());
+		String servletLocation = this.entryServletTestManager
+				.getServletLocation();
+		PostMethod postMethod = new PostMethod(servletLocation);
 
 		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate applicationCert = PkiTestUtils
@@ -286,7 +288,7 @@ public class EntryServletTest {
 		devices.add(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
 				applicationName, applicationName, applicationKeyPair,
-				assertionConsumerService, null, null, devices);
+				assertionConsumerService, servletLocation, null, devices);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 
@@ -352,14 +354,15 @@ public class EntryServletTest {
 	public void saml2AuthenticationProtocolWrongSignatureKey() throws Exception {
 		// setup
 		HttpClient httpClient = new HttpClient();
-		PostMethod postMethod = new PostMethod(this.entryServletTestManager
-				.getServletLocation());
+		String servletLocation = this.entryServletTestManager
+				.getServletLocation();
+		PostMethod postMethod = new PostMethod(servletLocation);
 
 		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
 		String applicationName = "test-application-id";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
 				applicationName, applicationName, applicationKeyPair, null,
-				null, null, null);
+				servletLocation, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 
@@ -414,8 +417,9 @@ public class EntryServletTest {
 			throws Exception {
 		// setup
 		HttpClient httpClient = new HttpClient();
-		PostMethod postMethod = new PostMethod(this.entryServletTestManager
-				.getServletLocation());
+		String servletLocation = this.entryServletTestManager
+				.getServletLocation();
+		PostMethod postMethod = new PostMethod(servletLocation);
 
 		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate applicationCert = PkiTestUtils
@@ -424,7 +428,7 @@ public class EntryServletTest {
 		String applicationName = "test-application-id";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
 				applicationName, applicationName, applicationKeyPair, null,
-				null, null, null);
+				servletLocation, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 

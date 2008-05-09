@@ -177,15 +177,15 @@
 			<artifactId>wss4j</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>opensaml</groupId>
+			<groupId>org.opensaml</groupId>
 			<artifactId>opensaml</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>opensaml</groupId>
+			<groupId>org.opensaml</groupId>
 			<artifactId>xmltooling</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>opensaml</groupId>
+			<groupId>org.opensaml</groupId>
 			<artifactId>openws</artifactId>
 		</dependency>
 		<dependency>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -13,23 +12,18 @@
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Authentication Web Application</name>
-	<description>
-		SafeOnline Authentication Web Application.
-	</description>
+	<description> SafeOnline Authentication Web Application. </description>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<dependentWarExcludes>
-						WEB-INF/web.xml,index.jsp
+					<dependentWarExcludes> WEB-INF/web.xml,index.jsp 
 					</dependentWarExcludes>
 					<webResources>
 						<resource>
-							<directory>
-								${basedir}/src/main/webapp/WEB-INF
-							</directory>
+							<directory> ${basedir}/src/main/webapp/WEB-INF </directory>
 							<targetPath>WEB-INF</targetPath>
 							<filtering>true</filtering>
 						</resource>
@@ -104,17 +98,17 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>opensaml</groupId>
+			<groupId>org.opensaml</groupId>
 			<artifactId>opensaml</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>opensaml</groupId>
+			<groupId>org.opensaml</groupId>
 			<artifactId>xmltooling</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>opensaml</groupId>
+			<groupId>org.opensaml</groupId>
 			<artifactId>openws</artifactId>
 			<scope>provided</scope>
 		</dependency>

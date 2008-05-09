@@ -40,6 +40,7 @@ import org.opensaml.xml.security.SecurityHelper;
 import org.opensaml.xml.security.credential.BasicCredential;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureConstants;
+import org.opensaml.xml.signature.SignatureException;
 import org.opensaml.xml.signature.Signer;
 import org.opensaml.xml.signature.impl.SignatureBuilder;
 import org.w3c.dom.Element;
@@ -216,7 +217,12 @@ public class AuthnRequestFactory {
 		}
 
 		// sign after marshaling of course
-		Signer.signObject(signature);
+		try {
+			Signer.signObject(signature);
+		} catch (SignatureException e) {
+			throw new RuntimeException("opensaml2 signing error: "
+					+ e.getMessage(), e);
+		}
 
 		String result;
 		try {
@@ -230,8 +236,7 @@ public class AuthnRequestFactory {
 
 	@SuppressWarnings("unchecked")
 	private static <Type extends SAMLObject> Type buildXMLObject(
-			@SuppressWarnings("unused")
-			Class<Type> clazz, QName objectQName) {
+			@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
 		XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory()
 				.getBuilder(objectQName);
 		if (builder == null) {

@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib">
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template-auth.xhtml">
 	<ui:define name="top_content">
@@ -37,8 +38,16 @@
 			</s:decorate>
 			<br />
 
-			<h:outputLabel for="image" value="" />
-			<h:graphicImage id="image" styleClass="label" value="/captcha" />
+			<a4j:log>
+				<a4j:region>
+					<h:outputLabel for="image" value="" />
+					<a4j:commandLink id="refresh" immediate="true"
+						value="#{msgs.refreshCaptcha}" reRender="image" />
+					<h:graphicImage id="image" styleClass="label"
+						value="#{accountRegistration.captchaURL}" />
+				</a4j:region>
+			</a4j:log>
+
 			<h:messages globalOnly="true" styleClass="error" />
 			<h:outputLabel for="register" value="" />
 			<h:commandButton action="#{accountRegistration.loginNext}"

@@ -37,6 +37,8 @@ public interface AccountRegistration {
 
 	void setCaptcha(String captcha);
 
+	String getCaptchaURL();
+
 	/*
 	 * Factories
 	 */

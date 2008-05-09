@@ -80,7 +80,7 @@ public class AuthnResponseUtil {
 		BasicSAMLMessageContext messageContext = new BasicSAMLMessageContext();
 		messageContext
 				.setOutboundMessageTransport(new HttpServletResponseAdapter(
-						httpResponse));
+						httpResponse, true));
 		messageContext.setOutboundSAMLMessage(responseMessage);
 
 		AssertionConsumerService assertionConsumerService = AuthnResponseFactory

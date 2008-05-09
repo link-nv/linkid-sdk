@@ -28,11 +28,11 @@
 
 			<h:outputLabel for="user" value="#{msgs.user}" />
 
-			<s:decorate>
+			<s:decorate id="decorateUser">
 				<h:inputText id="user" value="#{authorizationManager.user}"
 					required="true" styleClass="label" />
 			</s:decorate>
-			<rich:suggestionbox for="user"
+			<rich:suggestionbox for="decorateUser:user"
 				suggestionAction="#{authorizationManager.autocompleteUser}"
 				var="searchUserNameInput" selfRendered="true">
 				<h:column>
