@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -28,38 +29,59 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-java-version-applet </artifactId>
-									<destFileName> java-version-applet.jar </destFileName>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-java-version-applet
+									</artifactId>
+									<destFileName>
+										java-version-applet.jar
+									</destFileName>
 									<outputDirectory>
-										${project.build.directory}/${project.build.finalName} 
+										${project.build.directory}/${project.build.finalName}
 									</outputDirectory>
 								</artifactItem>
 								<artifactItem>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth-applet-package </artifactId>
-									<destFileName> safe-online-auth-applet-package.jar 
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-applet-package
+									</artifactId>
+									<destFileName>
+										safe-online-auth-applet-package.jar
 									</destFileName>
 									<outputDirectory>
-										${project.build.directory}/${project.build.finalName} 
+										${project.build.directory}/${project.build.finalName}
 									</outputDirectory>
 								</artifactItem>
 								<artifactItem>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-identity-applet-package </artifactId>
-									<destFileName> safe-online-identity-applet-package.jar 
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-identity-applet-package
+									</artifactId>
+									<destFileName>
+										safe-online-identity-applet-package.jar
 									</destFileName>
 									<outputDirectory>
-										${project.build.directory}/${project.build.finalName} 
+										${project.build.directory}/${project.build.finalName}
 									</outputDirectory>
 								</artifactItem>
 								<artifactItem>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth-pcsc-applet-package </artifactId>
-									<destFileName> safe-online-auth-pcsc-applet-package.jar 
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-pcsc-applet-package
+									</artifactId>
+									<destFileName>
+										safe-online-auth-pcsc-applet-package.jar
 									</destFileName>
 									<outputDirectory>
-										${project.build.directory}/${project.build.finalName} 
+										${project.build.directory}/${project.build.finalName}
 									</outputDirectory>
 								</artifactItem>
 							</artifactItems>
@@ -71,11 +93,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<dependentWarExcludes> WEB-INF/web.xml,index.jsp 
+					<dependentWarExcludes>
+						WEB-INF/web.xml,index.jsp
 					</dependentWarExcludes>
 					<webResources>
 						<resource>
-							<directory> ${basedir}/src/main/webapp/WEB-INF </directory>
+							<directory>
+								${basedir}/src/main/webapp/WEB-INF
+							</directory>
 							<targetPath>WEB-INF</targetPath>
 							<filtering>true</filtering>
 						</resource>
@@ -153,7 +178,9 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId> safe-online-auth-pcsc-applet-package </artifactId>
+			<artifactId>
+				safe-online-auth-pcsc-applet-package
+			</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>

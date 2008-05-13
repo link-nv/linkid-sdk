@@ -786,8 +786,6 @@
 		<module>safe-online-helpdesk-keystore</module>
 		<module>safe-online-oper-keystore</module>
 		<module>safe-online-owner-keystore</module>
-		<module>safe-online-reg-applet</module>
-		<module>safe-online-reg-applet-package</module>
 		<module>safe-online-cli</module>
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-idmapping-ws</module>

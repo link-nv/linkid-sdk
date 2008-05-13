@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +33,10 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(JavaVersionServlet.class);
+
+	public static final String TARGET_SESSION_ATTRIBUTE = JavaVersionServlet.class
+			.getName()
+			+ ".target";
 
 	public static final String JAVA_VERSION_REG_EXPR = "^1\\.(5|6).*";
 
@@ -115,7 +120,14 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 			response.sendRedirect("./java-version.seam");
 			return;
 		}
-		response.sendRedirect("./beid-applet.seam");
+
+		HttpSession session = request.getSession();
+		String target = (String) session.getAttribute(TARGET_SESSION_ATTRIBUTE);
+		if (null == target) {
+			target = "./beid-applet.seam";
+		}
+		LOG.debug("redirecting to target: " + target);
+		response.sendRedirect(target);
 	}
 
 	private boolean checkJavaVersion() throws ServletException {
