@@ -87,7 +87,7 @@ public class NotificationSubscriptionManagerClientImpl extends
 
 	public void unsubscribe(String topic, String address)
 			throws SubscriptionNotFoundException, RequestDeniedException {
-		LOG.debug("subscribe");
+		LOG.debug("unsubscribe");
 		UnsubscribeRequest request = new UnsubscribeRequest();
 
 		W3CEndpointReference endpoint = getEndpointReference(address);

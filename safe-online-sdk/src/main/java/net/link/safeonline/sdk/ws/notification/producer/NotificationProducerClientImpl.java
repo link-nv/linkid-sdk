@@ -62,6 +62,8 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor
 		this.port = service.getNotificationProducerPort();
 		setEndpointAddress(location);
 
+		LOG.debug("endpoint: " + location);
+
 		registerMessageLoggerHandler(this.port);
 		WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
 				clientPrivateKey);
@@ -83,7 +85,7 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor
 
 	public void subscribe(String topic, String address)
 			throws SubscriptionFailedException {
-		LOG.debug("subscribe");
+		LOG.debug("subscribe " + address + " to " + topic);
 		SubscribeRequest request = new SubscribeRequest();
 
 		W3CEndpointReference endpoint = getEndpointReference(address);

@@ -120,16 +120,15 @@ public class DeviceMappingEntity implements Serializable {
 
 	public interface QueryInterface {
 		@QueryMethod(value = QUERY_SUBJECT_DEVICE, nullable = true)
-		DeviceMappingEntity getDeviceMapping(@QueryParam("subject")
-		SubjectEntity subject, @QueryParam("device")
-		DeviceEntity device);
+		DeviceMappingEntity findDeviceMapping(
+				@QueryParam("subject") SubjectEntity subject,
+				@QueryParam("device") DeviceEntity device);
 
 		@QueryMethod(QUERY_LIST_SUBJECT)
-		List<DeviceMappingEntity> listDeviceMappings(@QueryParam("subject")
-		SubjectEntity subject);
+		List<DeviceMappingEntity> listDeviceMappings(
+				@QueryParam("subject") SubjectEntity subject);
 
 		@UpdateMethod(DELETE_ALL_SUBJECT)
-		void deleteAll(@QueryParam("subject")
-		SubjectEntity subject);
+		void deleteAll(@QueryParam("subject") SubjectEntity subject);
 	}
 }

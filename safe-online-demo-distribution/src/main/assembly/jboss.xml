@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<assembly xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
 	<formats>
 		<format>zip</format>
@@ -8,7 +7,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>
-				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss
+				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss 
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
@@ -17,7 +16,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss
+				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss 
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
@@ -28,21 +27,15 @@
 	</fileSets>
 	<files>
 		<file>
-			<source>
-				target/files/safe-online-deploy-1.0-SNAPSHOT.ear
-			</source>
-			<outputDirectory>
-				jboss/server/default/deploy
-			</outputDirectory>
+			<source> target/files/safe-online-deploy-1.0-SNAPSHOT.ear </source>
+			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnline.ear</destName>
 		</file>
 		<file>
-			<source>
-				target/files/safe-online-demo-deploy-1.0-SNAPSHOT.ear
+			<source> target/files/safe-online-demo-deploy-1.0-SNAPSHOT.ear 
 			</source>
-			<outputDirectory>
-				jboss/server/default/deploy
-			</outputDirectory>
+			<outputDirectory> jboss/server/default/deploy </outputDirectory>
+			<destName>SafeOnlineDemo.ear</destName>
 		</file>
 	</files>
 </assembly>

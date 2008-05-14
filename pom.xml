@@ -579,8 +579,8 @@
 		<jaxb-api.version>2.1</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
 		<saaj-impl.version>1.3</saaj-impl.version>
-		<jaxws-tools.version>2.1.3</jaxws-tools.version>
-		<jaxws-rt.version>2.1.3</jaxws-rt.version>
+		<jaxws-tools.version>2.1.4</jaxws-tools.version>
+		<jaxws-rt.version>2.1.4</jaxws-rt.version>
 		<jaxws-api.version>2.1-safeonline</jaxws-api.version>
 		<commons-logging-api.version>1.1</commons-logging-api.version>
 		<jboss.version>4.2.2.GA</jboss.version>
@@ -1144,6 +1144,13 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</repository>
+		<repository>
+			<id>wss4j154</id>
+			<name>WSS4J 1.5.4</name>
+			<url>http://people.apache.org/~fadushin/stage/wss4j/1.5.4/maven/</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>true</enabled></snapshots>
 		</repository>
 	</repositories>
 	

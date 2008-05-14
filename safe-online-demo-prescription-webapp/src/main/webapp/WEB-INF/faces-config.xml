@@ -3,7 +3,6 @@
   "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
   "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
 <faces-config>
-
 	<application>
 		<message-bundle>messages.webapp</message-bundle>
 		<locale-config>
@@ -12,17 +11,11 @@
 			<supported-locale>nl</supported-locale>
 		</locale-config>
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
-		<view-handler>
-			org.jboss.seam.ui.facelet.SeamFaceletViewHandler
-		</view-handler>
 	</application>
-
 	<lifecycle>
-		<phase-listener>
-			org.jboss.seam.jsf.SeamPhaseListener
+		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
 		</phase-listener>
 	</lifecycle>
-
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>logout-success</from-outcome>
@@ -30,7 +23,6 @@
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/admin.xhtml</from-view-id>
 		<navigation-case>
@@ -38,7 +30,6 @@
 			<to-view-id>/search.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/search.xhtml</from-view-id>
 		<navigation-case>
@@ -50,7 +41,6 @@
 			<to-view-id>/admin.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/search-result.xhtml</from-view-id>
 		<navigation-case>
@@ -62,7 +52,6 @@
 			<to-view-id>/search-result.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/prescription-new.xhtml</from-view-id>
 		<navigation-case>
@@ -70,7 +59,6 @@
 			<to-view-id>/care-provider.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/prescription-authenticated.xhtml</from-view-id>
 		<navigation-case>
@@ -78,7 +66,6 @@
 			<to-view-id>/care-provider.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/prescription-fill.xhtml</from-view-id>
 		<navigation-case>
@@ -86,11 +73,8 @@
 			<to-view-id>/pharmacist.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/prescription-fill-authenticated.xhtml
-		</from-view-id>
+		<from-view-id> /prescription-fill-authenticated.xhtml </from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
 			<to-view-id>/prescription-fill.xhtml</to-view-id>
@@ -100,23 +84,17 @@
 			<to-view-id>/prescription-fill-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/prescription-fill-view.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>
-				/prescription-fill-authenticated.xhtml
-			</to-view-id>
+			<to-view-id> /prescription-fill-authenticated.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>filled</from-outcome>
-			<to-view-id>
-				/prescription-fill-authenticated.xhtml
-			</to-view-id>
+			<to-view-id> /prescription-fill-authenticated.xhtml </to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/roles.xhtml</from-view-id>
 		<navigation-case>
@@ -135,7 +113,6 @@
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/patient.xhtml</from-view-id>
 		<navigation-case>
@@ -143,7 +120,6 @@
 			<to-view-id>/prescription-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/prescription-view.xhtml</from-view-id>
 		<navigation-case>
@@ -151,5 +127,4 @@
 			<to-view-id>/patient.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 </faces-config>

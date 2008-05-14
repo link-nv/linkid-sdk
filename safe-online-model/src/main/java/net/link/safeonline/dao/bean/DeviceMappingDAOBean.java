@@ -60,7 +60,7 @@ public class DeviceMappingDAOBean implements DeviceMappingDAO {
 	public DeviceMappingEntity findDeviceMapping(SubjectEntity subject,
 			DeviceEntity device) {
 
-		return this.queryObject.getDeviceMapping(subject, device);
+		return this.queryObject.findDeviceMapping(subject, device);
 	}
 
 	public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject) {
