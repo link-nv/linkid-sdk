@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2008 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.device.sdk.reg.servlet;
 
 import java.io.FileInputStream;
@@ -115,15 +122,24 @@ public class LandingServlet extends HttpServlet {
 		doPost(request, response);
 	}
 
+	/**
+	 * The 'source' request parameter is used to find out to who the
+	 * communication should be directed. This can be 'user' for the user web
+	 * application or 'auth' for the authentication web application.
+	 */
+	public static final String SOURCE_REQUEST_PARAMETER = "source";
+
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		String source = request.getParameter("source");
-		if (null == source)
+		String source = request.getParameter(SOURCE_REQUEST_PARAMETER);
+		if (null == source) {
 			throw new ServletException("Missing source parameter");
+		}
 		String node = request.getParameter("node");
-		if (null == node)
+		if (null == node) {
 			throw new ServletException("Missing node parameter");
+		}
 		DeviceManager.setServiceUrls(request.getSession(), node, source);
 
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler

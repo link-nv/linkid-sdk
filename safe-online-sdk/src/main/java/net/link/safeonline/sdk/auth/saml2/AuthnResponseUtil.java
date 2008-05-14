@@ -86,6 +86,7 @@ public class AuthnResponseUtil {
 		AssertionConsumerService assertionConsumerService = AuthnResponseFactory
 				.buildXMLObject(AssertionConsumerService.class,
 						AssertionConsumerService.DEFAULT_ELEMENT_NAME);
+		LOG.debug("consumer URL: " + consumerUrl);
 		assertionConsumerService.setLocation(consumerUrl);
 		messageContext.setPeerEntityEndpoint(assertionConsumerService);
 

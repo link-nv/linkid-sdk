@@ -154,6 +154,7 @@ public class Saml2Handler implements Serializable {
 
 		this.session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
 		this.session.setAttribute(TARGET_URL, assertionConsumerService);
+		this.session.setAttribute("applicationId", application);
 
 		AuthenticationContext authenticationContext = AuthenticationContext
 				.getAuthenticationContext(request.getSession());

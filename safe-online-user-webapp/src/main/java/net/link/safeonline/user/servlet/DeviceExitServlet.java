@@ -101,6 +101,7 @@ public class DeviceExitServlet extends HttpServlet {
 
 	private void handleLanding(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
+		LOG.debug("handle landing");
 		try {
 			updateRegisteredDevices(request);
 		} catch (SubjectNotFoundException e) {

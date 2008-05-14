@@ -23,7 +23,8 @@ import org.jboss.seam.annotations.web.RequestParameter;
 
 /**
  * Servlet that receives the java version data from the JavaVersionApplet applet
- * and processes it.
+ * and processes it. Depending on target session attributes being set this
+ * servlet will redirect to different locations.
  * 
  * @author fcorneli
  * 
@@ -38,9 +39,25 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 			.getName()
 			+ ".target";
 
+	public static final String TARGET15_SESSION_ATTRIBUTE = JavaVersionServlet.class
+			.getName()
+			+ ".target15";
+
+	public static final String TARGET16_SESSION_ATTRIBUTE = JavaVersionServlet.class
+			.getName()
+			+ ".target16";
+
 	public static final String JAVA_VERSION_REG_EXPR = "^1\\.(5|6).*";
 
 	public static final String JAVA_1_5_VERSION_REG_EXPR = "^1\\.5.*";
+
+	public static void setJava15Target(String target, HttpSession session) {
+		session.setAttribute(TARGET15_SESSION_ATTRIBUTE, target);
+	}
+
+	public static void setJava16Target(String target, HttpSession session) {
+		session.setAttribute(TARGET16_SESSION_ATTRIBUTE, target);
+	}
 
 	@RequestParameter("appName")
 	private String appName;
@@ -75,6 +92,9 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 	@RequestParameter("javaVendor")
 	private String javaVendor;
 
+	@RequestParameter("hasPkcs11")
+	private String hasPkcs11;
+
 	@SuppressWarnings("unused")
 	@Out(value = "platform", scope = ScopeType.SESSION)
 	private PLATFORM platform;
@@ -108,6 +128,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 		LOG.debug("app version: " + this.appVersion);
 		LOG.debug("app minor version: " + this.appMinorVersion);
 		LOG.debug("app code name: " + this.appCodeName);
+		LOG.debug("has PKCS11: " + this.hasPkcs11);
 		if (false == checkPlatform()) {
 			response.sendRedirect("./unsupported-platform.seam");
 			return;
@@ -122,6 +143,28 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 		}
 
 		HttpSession session = request.getSession();
+		switch (this.sessionJavaVersion) {
+		case JAVA_1_5:
+			String target15 = (String) session
+					.getAttribute(TARGET15_SESSION_ATTRIBUTE);
+			if (null != target15) {
+				LOG.debug("redirecting to target: " + target15);
+				response.sendRedirect(target15);
+				return;
+			}
+			break;
+		case JAVA_1_6:
+			String target16 = (String) session
+					.getAttribute(TARGET16_SESSION_ATTRIBUTE);
+			if (null != target16) {
+				LOG.debug("redirecting to target: " + target16);
+				response.sendRedirect(target16);
+				return;
+			}
+			break;
+		default:
+		}
+
 		String target = (String) session.getAttribute(TARGET_SESSION_ATTRIBUTE);
 		if (null == target) {
 			target = "./beid-applet.seam";

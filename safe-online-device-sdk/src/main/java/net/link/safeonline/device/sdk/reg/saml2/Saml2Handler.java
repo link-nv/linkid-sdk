@@ -27,6 +27,8 @@ import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
@@ -35,6 +37,8 @@ import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.ConfigurationException;
 
 public class Saml2Handler implements Serializable {
+
+	private static final Log LOG = LogFactory.getLog(Saml2Handler.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -157,11 +161,13 @@ public class Saml2Handler implements Serializable {
 		String registrationId = protocolContext.getRegistrationId();
 		String applicationId = protocolContext.getApplication();
 		String target = (String) this.session.getAttribute(TARGET_URL);
+		LOG.debug("target: " + target);
 		String inResponseTo = (String) this.session
 				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
-		if (null == inResponseTo)
+		if (null == inResponseTo) {
 			throw new RegistrationFinalizationException(
 					"missing IN_RESPONSE_TO session attribute");
+		}
 
 		String issuerName = protocolContext.getIssuer();
 		PrivateKey privateKey = this.applicationKeyPair.getPrivate();
@@ -177,10 +183,11 @@ public class Saml2Handler implements Serializable {
 		 * registration procedure so an extra assertion containing this
 		 * registration ID is required.
 		 */
-		if (null != protocolContext.getRegistrationId())
+		if (null != protocolContext.getRegistrationId()) {
 			AuthnResponseFactory.addAssertion(responseMessage, inResponseTo,
 					applicationId, registrationId, issuerName,
 					registeredDevice, validity, target);
+		}
 
 		try {
 			AuthnResponseUtil.sendAuthnResponse(responseMessage, target,

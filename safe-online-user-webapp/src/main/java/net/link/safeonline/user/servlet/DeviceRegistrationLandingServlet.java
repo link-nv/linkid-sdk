@@ -121,6 +121,7 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 
 	private void handleLanding(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
+		LOG.debug("handle landing");
 		Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 		KeyPair keyPair = new KeyPair(identityServiceClient.getPublicKey(),

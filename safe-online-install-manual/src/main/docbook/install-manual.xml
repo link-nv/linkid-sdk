@@ -171,6 +171,22 @@
 					MySQL script can be used to create such an account.
 					<programlisting>&mysql-create-account;
 					</programlisting>
+				</para>
+				<para>
+					This will create an account with name
+					<constant>safeonline</constant>
+					and password
+					<code>safeonline</code>
+					.
+				</para>
+				<para>
+					The first time that you use MySQL it might be
+					required to set a root password. Do this via:
+					<command>
+						mysqladmin -u root password 'secret'
+					</command>
+				</para>
+				<para>
 					After creating a MySQL account one needs to create
 					an OLAS database. This can be done via the following
 					script.

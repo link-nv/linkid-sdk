@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <!-- PROJECT METADATA -->
+	<!-- PROJECT METADATA -->
 	<name>SafeOnline</name>
 	<url>http://buildserver/site/safe-online</url>
 	<inceptionYear>2006</inceptionYear>
@@ -16,7 +17,7 @@
 		<url>http://www.lin-k.net</url>
 	</organization>
 
-    <!-- DEVELOPERS -->
+	<!-- DEVELOPERS -->
 	<developers>
 		<developer>
 			<id>fcorneli</id>
@@ -74,15 +75,15 @@
 			</properties>
 		</developer>
 	</developers>
-	
+
 	<!-- CODE ACCESS -->
 	<scm>
 		<url>http://buildserver/svn/products/safe-online/trunk/</url>
 		<connection>
-			scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/trunk 
+			scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/trunk
 		</connection>
 		<developerConnection>
-			scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/trunk 
+			scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/trunk
 		</developerConnection>
 	</scm>
 	<mailingLists>
@@ -91,8 +92,8 @@
 			<post>safeonline-dev@lin-k.net</post>
 		</mailingList>
 	</mailingLists>
-    
-    <!-- DISTRIBUTION AND DEPLOYMENT -->
+
+	<!-- DISTRIBUTION AND DEPLOYMENT -->
 	<distributionManagement>
 		<repository>
 			<id>buildserver-release-repository</id>
@@ -111,7 +112,7 @@
 	<reporting>
 		<outputDirectory>target/site</outputDirectory>
 	</reporting>
-	
+
 	<!-- COMPILATION PROFILES -->
 	<profiles>
 		<!--  PROFILE USED DURING DEVELOPMENT -->
@@ -133,8 +134,8 @@
 				<module>safe-online-model-demo</module>
 			</modules>
 		</profile>
-	
-	   <!-- PROFILE TO USE ON BUILDSERVER DEPLOYMENT -->
+
+		<!-- PROFILE TO USE ON BUILDSERVER DEPLOYMENT -->
 		<profile>
 			<id>env-buildserver</id>
 			<activation>
@@ -144,9 +145,15 @@
 				</property>
 			</activation>
 			<properties>
-				<defaultCronExpression> 0 0 3 * * ? </defaultCronExpression>
-				<safe-online.node.name> olas-buildserver </safe-online.node.name>
-				<safe-online.host.name> buildserver </safe-online.host.name>
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
+				<safe-online.node.name>
+					olas-buildserver
+				</safe-online.node.name>
+				<safe-online.host.name>
+					buildserver
+				</safe-online.host.name>
 			</properties>
 			<modules>
 				<module>safe-online-model-demo</module>
@@ -176,15 +183,17 @@
 				<module>safe-online-demo-mandate</module>
 				<module>safe-online-demo-mandate-webapp</module>
 				<module>safe-online-demo-mandate-service</module>
-				<module>safe-online-demo-notification-consumer-ws-impl</module>
+				<module>
+					safe-online-demo-notification-consumer-ws-impl
+				</module>
 				<module>safe-online-demo-ws-runtime</module>
 				<module>safe-online-demo-ws-model</module>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-demo-distribution</module>
 			</modules>
 		</profile>
-        
-        <!-- PROFILE FOR WEBAPP TESTING -->
+
+		<!-- PROFILE FOR WEBAPP TESTING -->
 		<profile>
 			<id>env-test</id>
 			<activation>
@@ -195,10 +204,14 @@
 			</activation>
 			<properties>
 				<safe-online.host.name>localhost</safe-online.host.name>
-				<defaultCronExpression> 0 0 3 * * ? </defaultCronExpression>
-				<safe-online.host.protocol> http </safe-online.host.protocol>
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
+				<safe-online.host.protocol>
+					http
+				</safe-online.host.protocol>
 				<safe-online.host.basename>
-					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
+					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port}
 				</safe-online.host.basename>
 			</properties>
 			<modules>
@@ -233,13 +246,15 @@
 				<module>safe-online-demo-mandate-service</module>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-demo-distribution</module>
-				<module>safe-online-demo-notification-consumer-ws-impl</module>
+				<module>
+					safe-online-demo-notification-consumer-ws-impl
+				</module>
 				<module>safe-online-demo-ws-runtime</module>
 				<module>safe-online-demo-ws-model</module>
 			</modules>
 		</profile>
-        
-        <!--  PROFILE FOR BUILDING THE DEMOS -->
+
+		<!--  PROFILE FOR BUILDING THE DEMOS -->
 		<profile>
 			<id>env-demo</id>
 			<activation>
@@ -249,7 +264,9 @@
 				</property>
 			</activation>
 			<properties>
-				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
+				<defaultCronExpression>
+					0 0 0 1 1 1
+				</defaultCronExpression>
 			</properties>
 			<modules>
 				<module>safe-online-model-demo</module>
@@ -279,14 +296,16 @@
 				<module>safe-online-demo-mandate</module>
 				<module>safe-online-demo-mandate-webapp</module>
 				<module>safe-online-demo-mandate-service</module>
-				<module>safe-online-demo-notification-consumer-ws-impl</module>
+				<module>
+					safe-online-demo-notification-consumer-ws-impl
+				</module>
 				<module>safe-online-demo-ws-runtime</module>
 				<module>safe-online-demo-ws-model</module>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-demo-distribution</module>
 			</modules>
 		</profile>
-		
+
 		<!-- PROFILE FOR BUILDING REMOTE DEVICES -->
 		<profile>
 			<id>env-device</id>
@@ -298,16 +317,22 @@
 			</activation>
 			<properties>
 				<safe-online.host.name>localhost</safe-online.host.name>
-				<defaultCronExpression> 0 0/5 * * * ? </defaultCronExpression>
-				<safe-online.node.name> olas-buildserver </safe-online.node.name>
-				<safe-online.host.name> buildserver </safe-online.host.name>
+				<defaultCronExpression>
+					0 0/5 * * * ?
+				</defaultCronExpression>
+				<safe-online.node.name>
+					olas-buildserver
+				</safe-online.node.name>
+				<safe-online.host.name>
+					buildserver
+				</safe-online.host.name>
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
 			</modules>
 		</profile>
-        
-        <!-- PROFILE FOR BUILDING THE SDK PACKAGE -->
+
+		<!-- PROFILE FOR BUILDING THE SDK PACKAGE -->
 		<profile>
 			<id>env-sdk</id>
 			<activation>
@@ -318,15 +343,17 @@
 			</activation>
 			<properties>
 				<safe-online.host.name>localhost</safe-online.host.name>
-				<defaultCronExpression> 0 0/5 * * * ? </defaultCronExpression>
+				<defaultCronExpression>
+					0 0/5 * * * ?
+				</defaultCronExpression>
 			</properties>
 			<modules>
 				<module>safe-online-sdk-manual</module>
 				<module>safe-online-sdk-package</module>
 			</modules>
 		</profile>
-        
-        <!-- PROFILE FOR BUILDING THE DEVICE SDK PACKAGE -->
+
+		<!-- PROFILE FOR BUILDING THE DEVICE SDK PACKAGE -->
 		<profile>
 			<id>env-device-sdk</id>
 			<activation>
@@ -337,7 +364,9 @@
 			</activation>
 			<properties>
 				<safe-online.host.name>localhost</safe-online.host.name>
-				<defaultCronExpression> 0 0/5 * * * ? </defaultCronExpression>
+				<defaultCronExpression>
+					0 0/5 * * * ?
+				</defaultCronExpression>
 			</properties>
 			<modules>
 				<module>safe-online-sdk-manual</module>
@@ -345,8 +374,8 @@
 				<module>safe-online-device-sdk-manual</module>
 			</modules>
 		</profile>
-        
-        <!-- PROFILE FOR BUILDING A PILOT VERSION THAT USES A MYSQL DBMS -->
+
+		<!-- PROFILE FOR BUILDING A PILOT VERSION THAT USES A MYSQL DBMS -->
 		<profile>
 			<id>env-local-pilot-mysql</id>
 			<activation>
@@ -356,20 +385,31 @@
 				</property>
 			</activation>
 			<properties>
-				<defaultCronExpression> 0 0 3 * * ? </defaultCronExpression>
-				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
+				<safe-online.data.source.uri>
+					jdbc:mysql://localhost:3306/safeonline
 				</safe-online.data.source.uri>
-				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
+				<safe-online.dialect>
+					org.hibernate.dialect.MySQLDialect
 				</safe-online.dialect>
-				<safe-online.hibernate.hbm2ddl.auto> validate 
+				<safe-online.hibernate.hbm2ddl.auto>
+					validate
 				</safe-online.hibernate.hbm2ddl.auto>
 				<debug.mode>false</debug.mode>
 				<safe-online.show.sql>false</safe-online.show.sql>
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>80</safe-online.host.port>
-				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
-				<safe-online.jboss.host.port>80</safe-online.jboss.host.port>
-				<safe-online.jboss.host.port.ssl>443</safe-online.jboss.host.port.ssl>
+				<safe-online.host.port.ssl>
+					443
+				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					80
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					443
+				</safe-online.jboss.host.port.ssl>
 			</properties>
 			<modules>
 				<module>safe-online-root-webapp</module>
@@ -380,8 +420,8 @@
 				<module>safe-online-pilot-mysql-distribution</module>
 			</modules>
 		</profile>
-        
-        <!-- PROFILE FOR BUILDING A PILOT VERSION THAT USES A POSTGRES DBMS -->
+
+		<!-- PROFILE FOR BUILDING A PILOT VERSION THAT USES A POSTGRES DBMS -->
 		<profile>
 			<id>env-local-pilot-postgres</id>
 			<activation>
@@ -391,21 +431,31 @@
 				</property>
 			</activation>
 			<properties>
-				<defaultCronExpression> 0 0 3 * * ? </defaultCronExpression>
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
 				<safe-online.data.source.uri>
-					jdbc:postgresql://localhost:5432/safeonline 
+					jdbc:postgresql://localhost:5432/safeonline
 				</safe-online.data.source.uri>
-				<safe-online.dialect> org.hibernate.dialect.PostgreSQLDialect 
+				<safe-online.dialect>
+					org.hibernate.dialect.PostgreSQLDialect
 				</safe-online.dialect>
-				<safe-online.hibernate.hbm2ddl.auto> validate 
+				<safe-online.hibernate.hbm2ddl.auto>
+					validate
 				</safe-online.hibernate.hbm2ddl.auto>
 				<debug.mode>false</debug.mode>
 				<safe-online.show.sql>false</safe-online.show.sql>
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>80</safe-online.host.port>
-				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
-				<safe-online.jboss.host.port>80</safe-online.jboss.host.port>
-				<safe-online.jboss.host.port.ssl>443</safe-online.jboss.host.port.ssl>
+				<safe-online.host.port.ssl>
+					443
+				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					80
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					443
+				</safe-online.jboss.host.port.ssl>
 			</properties>
 			<modules>
 				<module>safe-online-root-webapp</module>
@@ -417,7 +467,7 @@
 			</modules>
 		</profile>
 
-        <!-- PROFILE FOR BUILDING A PILOT VERSION THAT USES AN ORACLE DBMS -->
+		<!-- PROFILE FOR BUILDING A PILOT VERSION THAT USES AN ORACLE DBMS -->
 		<profile>
 			<id>env-local-pilot-oracle</id>
 			<activation>
@@ -427,22 +477,31 @@
 				</property>
 			</activation>
 			<properties>
-				<defaultCronExpression> 0 0 3 * * ? </defaultCronExpression>
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
 				<safe-online.data.source.uri>
-					jdbc:oracle:thin:@localhost:1521:safeonline 
+					jdbc:oracle:thin:@localhost:1521:safeonline
 				</safe-online.data.source.uri>
 				<safe-online.dialect>
-					net.link.safeonline.hibernate.dialect.Oracle11Dialect 
+					net.link.safeonline.hibernate.dialect.Oracle11Dialect
 				</safe-online.dialect>
-				<safe-online.hibernate.hbm2ddl.auto> validate 
+				<safe-online.hibernate.hbm2ddl.auto>
+					validate
 				</safe-online.hibernate.hbm2ddl.auto>
 				<debug.mode>false</debug.mode>
 				<safe-online.show.sql>false</safe-online.show.sql>
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>80</safe-online.host.port>
-				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
-				<safe-online.jboss.host.port>80</safe-online.jboss.host.port>
-				<safe-online.jboss.host.port.ssl>443</safe-online.jboss.host.port.ssl>
+				<safe-online.host.port.ssl>
+					443
+				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					80
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					443
+				</safe-online.jboss.host.port.ssl>
 			</properties>
 			<modules>
 				<module>safe-online-root-webapp</module>
@@ -453,7 +512,7 @@
 				<module>safe-online-pilot-oracle-distribution</module>
 			</modules>
 		</profile>
-		
+
 		<!-- PROFILE FOR BUILDING THE PERFORMANCE TESTING TOOLSET -->
 		<profile>
 			<id>env-performance</id>
@@ -465,31 +524,40 @@
 			</activation>
 			<properties>
 				<safe-online.data.source.uri>
-					jdbc:mysql://sebeco-dev-13:3306/safeonline 
+					jdbc:mysql://sebeco-dev-13:3306/safeonline
 				</safe-online.data.source.uri>
-				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
+				<safe-online.dialect>
+					org.hibernate.dialect.MySQLDialect
 				</safe-online.dialect>
-				<safe-online.host.name> sebeco-dev-10 </safe-online.host.name>
-				<safe-online.host.protocol> http </safe-online.host.protocol>
+				<safe-online.host.name>
+					sebeco-dev-10
+				</safe-online.host.name>
+				<safe-online.host.protocol>
+					http
+				</safe-online.host.protocol>
 				<safe-online.host.basename>
-					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
+					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port}
 				</safe-online.host.basename>
 				<safe-online.profiling.agent.data.source.uri>
-					jdbc:mysql://localhost:3306/safeonline 
+					jdbc:mysql://localhost:3306/safeonline
 				</safe-online.profiling.agent.data.source.uri>
-				<safe-online.profiling.group> net.lin-k.safe-online.performance 
+				<safe-online.profiling.group>
+					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
-				<safe-online.profiling.agent.show.sql> false 
+				<safe-online.profiling.agent.show.sql>
+					false
 				</safe-online.profiling.agent.show.sql>
 				<safe-online.profiling.agent.dialect>
-					org.hibernate.dialect.MySQLDialect 
+					org.hibernate.dialect.MySQLDialect
 				</safe-online.profiling.agent.dialect>
-				<safe-online.profiling.agent.hibernate.hbm2ddl.auto> update 
+				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>
+					update
 				</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
-				<safe-online.profiling.agent.data.source> DefaultDS 
+				<safe-online.profiling.agent.data.source>
+					DefaultDS
 				</safe-online.profiling.agent.data.source>
 				<safe-online.profiling.initial_hosts>
-					sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800] 
+					sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]
 				</safe-online.profiling.initial_hosts>
 				<safe-online.profiling.filter><![CDATA[-->
                     <filter>
@@ -545,15 +613,17 @@
 			</modules>
 		</profile>
 	</profiles>
-    
-    <!-- DEFAULT PROPERTIES -->
+
+	<!-- DEFAULT PROPERTIES -->
 	<properties>
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
-		<safe-online.dialect> org.hibernate.dialect.HSQLDialect 
+		<safe-online.dialect>
+			org.hibernate.dialect.HSQLDialect
 		</safe-online.dialect>
-		<safe-online.hibernate.hbm2ddl.auto> create-drop 
+		<safe-online.hibernate.hbm2ddl.auto>
+			create-drop
 		</safe-online.hibernate.hbm2ddl.auto>
 		<safe-online.show.sql>false</safe-online.show.sql>
 		<debug.mode>false</debug.mode>
@@ -562,14 +632,16 @@
 		<safe-online.host.port>8080</safe-online.host.port>
 		<safe-online.host.port.ssl>8443</safe-online.host.port.ssl>
 		<safe-online.jboss.host.port>8080</safe-online.jboss.host.port>
-		<safe-online.jboss.host.port.ssl> 8443 
+		<safe-online.jboss.host.port.ssl>
+			8443
 		</safe-online.jboss.host.port.ssl>
 		<safe-online.host.basename>
-			${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port.ssl} 
+			${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port.ssl}
 		</safe-online.host.basename>
-        
-        <!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
-		<jboss-packaging-maven-plugin.version> 2.0-SNAPSHOT 
+
+		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
+		<jboss-packaging-maven-plugin.version>
+			2.0-SNAPSHOT
 		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
 		<junit.version>4.4</junit.version>
@@ -594,15 +666,20 @@
 		<easymock.version>2.3</easymock.version>
 		<maven-ear-plugin.version>2.3.1</maven-ear-plugin.version>
 		<commons-io.version>1.3.1</commons-io.version>
-		<hibernate-entitymanager.version> 3.3.1.ga 
+		<hibernate-entitymanager.version>
+			3.3.1.ga
 		</hibernate-entitymanager.version>
-		<hibernate-annotations.version> 3.3.1.GA 
+		<hibernate-annotations.version>
+			3.3.1.GA
 		</hibernate-annotations.version>
 		<hibernate.version>3.2.4.sp1</hibernate.version>
 		<hibernate-tools.version>3.2.0.beta9a</hibernate-tools.version>
-		<hibernate-commons-annotations.version> 3.0.0.ga 
+		<hibernate-commons-annotations.version>
+			3.0.0.ga
 		</hibernate-commons-annotations.version>
-		<hibernate-validator.version> 3.0.0.GA </hibernate-validator.version>
+		<hibernate-validator.version>
+			3.0.0.GA
+		</hibernate-validator.version>
 		<derby.version>10.3.1.4</derby.version>
 		<servlet-api.version>2.4</servlet-api.version>
 		<shiftone-oocjndi.version>1.2</shiftone-oocjndi.version>
@@ -614,7 +691,7 @@
 		<jboss-seam-ui.version>2.1.0.A1</jboss-seam-ui.version>
 		<jboss-seam-debug.version>2.1.0.A1</jboss-seam-debug.version>
 		<standard.version>1.1.2</standard.version>
-        <!-- facelets 1.1.13 and 1.1.14 contains a rendering bug -->
+		<!-- facelets 1.1.13 and 1.1.14 contains a rendering bug -->
 		<jsf-facelets.version>1.1.12</jsf-facelets.version>
 		<el-api.version>1.0</el-api.version>
 		<el-impl.version>1.0</el-impl.version>
@@ -626,14 +703,19 @@
 		<tomahawk.version>1.1.6</tomahawk.version>
 		<tomahawk-facelets.version>1.0</tomahawk-facelets.version>
 		<myfaces-api.version>1.1.4</myfaces-api.version>
-		<jboss-sar-maven-plugin.version> 2.0-SNAPSHOT 
+		<jboss-sar-maven-plugin.version>
+			2.0-SNAPSHOT
 		</jboss-sar-maven-plugin.version>
-		<maven-surefire-plugin.version> 2.3 </maven-surefire-plugin.version>
-		<easymockclassextension.version> 2.2.2 
+		<maven-surefire-plugin.version>
+			2.3
+		</maven-surefire-plugin.version>
+		<easymockclassextension.version>
+			2.2.2
 		</easymockclassextension.version>
 		<catalina.version>5.5.15</catalina.version>
-        <!-- http://jira.codehaus.org/browse/MWAR-18 -->
-		<maven-war-plugin.version> 2.0.3-safe-online 
+		<!-- http://jira.codehaus.org/browse/MWAR-18 -->
+		<maven-war-plugin.version>
+			2.0.3-safe-online
 		</maven-war-plugin.version>
 		<concurrent.version>1.3.4</concurrent.version>
 		<opensaml.version>2.1.0</opensaml.version>
@@ -644,26 +726,30 @@
 		<cargo-maven2-plugin.version>0.3.1</cargo-maven2-plugin.version>
 		<xalan.version>2.7.0</xalan.version>
 		<antlr.version>2.7.7</antlr.version>
-        <!-- ajax4jsf requires commons-collections 3.1, not 3.2 -->
+		<!-- ajax4jsf requires commons-collections 3.1, not 3.2 -->
 		<commons-collections.version>3.1</commons-collections.version>
 		<commons-digester.version>1.6</commons-digester.version>
-        <!-- ajax4jsf requires commons-beanutils 1.6, not 1.7.0 -->
+		<!-- ajax4jsf requires commons-beanutils 1.6, not 1.7.0 -->
 		<commons-beanutils.version>1.6</commons-beanutils.version>
 		<commons-el.version>1.0</commons-el.version>
 		<xml-apis.version>1.0.b2</xml-apis.version>
 		<junit-addons.version>1.4</junit-addons.version>
 		<joda-time.version>1.5.1</joda-time.version>
 		<bouncycastle.version>138</bouncycastle.version>
-		<jetty-servlet-tester.version> 6.1.7 </jetty-servlet-tester.version>
+		<jetty-servlet-tester.version>
+			6.1.7
+		</jetty-servlet-tester.version>
 		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<jetty.version>6.1.7</jetty.version>
 		<trinidad-api.version>1.2.1</trinidad-api.version>
 		<trinidad-impl.version>1.2.1</trinidad-impl.version>
 		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>
 		<maven-jar-plugin.version>2.1</maven-jar-plugin.version>
-		<maven-assembly-plugin.version> 2.2-beta-1 
+		<maven-assembly-plugin.version>
+			2.2-beta-1
 		</maven-assembly-plugin.version>
-		<maven-dependency-plugin.version> 2.0 
+		<maven-dependency-plugin.version>
+			2.0
 		</maven-dependency-plugin.version>
 		<http.version>20070405</http.version>
 		<maven-antrun-plugin.version>1.1</maven-antrun-plugin.version>
@@ -678,7 +764,9 @@
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>
 		<wicket.version>1.2.5</wicket.version>
-		<maven-compiler-plugin.version> 2.0.2 </maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>
+			2.0.2
+		</maven-compiler-plugin.version>
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
 		<javassist.version>3.0</javassist.version>
@@ -693,9 +781,12 @@
 		<velocity.version>1.5</velocity.version>
 		<xercesImpl.version>2.8.1</xercesImpl.version>
 		<rxtx.version>2.1.7</rxtx.version>
-		<maven-eclipse-plugin.version>2.5.1</maven-eclipse-plugin.version>
+		<maven-eclipse-plugin.version>
+			2.5.1
+		</maven-eclipse-plugin.version>
 		<commons-net.version>1.4.1</commons-net.version>
-		<netbeans-freeform-maven-plugin.version> 2.1-SNAPSHOT 
+		<netbeans-freeform-maven-plugin.version>
+			2.1-SNAPSHOT
 		</netbeans-freeform-maven-plugin.version>
 		<javafxrt.version>1531</javafxrt.version>
 		<swing-layout.version>1.0.2</swing-layout.version>
@@ -703,15 +794,20 @@
 		<swing-worker.version>1.1</swing-worker.version>
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
 		<jcaptcha-all.version>1.0-RC6</jcaptcha-all.version>
-		<mysql-connector-java.version> 5.1.5 </mysql-connector-java.version>
+		<mysql-connector-java.version>
+			5.1.5
+		</mysql-connector-java.version>
 		<postgresql.version>8.2-504.jdbc3</postgresql.version>
 		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
-		<maven-jdocbook-plugin.version> 2.0.1-15795 
+		<maven-jdocbook-plugin.version>
+			2.0.1-15795
 		</maven-jdocbook-plugin.version>
 		<maven-javadoc-plugin.version>2.3</maven-javadoc-plugin.version>
 		<axis.version>1.4</axis.version>
 		<axis-jaxrpc.version>1.3</axis-jaxrpc.version>
-		<axistools-maven-plugin.version> 1.1 </axistools-maven-plugin.version>
+		<axistools-maven-plugin.version>
+			1.1
+		</axistools-maven-plugin.version>
 		<jgoodies-forms.version>1.1.0</jgoodies-forms.version>
 		<jgoodies-looks.version>2.1.4</jgoodies-looks.version>
 		<jtidy.version>r8-20060801</jtidy.version>
@@ -719,13 +815,16 @@
 		<xml-maven-plugin.version>1.0-beta-2</xml-maven-plugin.version>
 		<slf4j.version>1.4.3</slf4j.version>
 		<slf4j-log4j12.version>1.4.3</slf4j-log4j12.version>
-		<jboss-jsfunit-core.version> 1.0-beta-1 </jboss-jsfunit-core.version>
-		<jboss-jsfunit-richfaces.version> 1.0-beta-1 
+		<jboss-jsfunit-core.version>
+			1.0-beta-1
+		</jboss-jsfunit-core.version>
+		<jboss-jsfunit-richfaces.version>
+			1.0-beta-1
 		</jboss-jsfunit-richfaces.version>
 		<itext.version>1.4.8</itext.version>
 	</properties>
-    
-    <!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
+
+	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
 	<modules>
 		<module>safe-online-container</module>
 		<module>safe-online-sdk</module>
@@ -806,18 +905,25 @@
 		<module>safe-online-ping-ws-impl</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet</module>
+		<module>safe-online-java-version-applet-package</module>
 		<module>safe-online-node-keystore</module>
 		<module>safe-online-auth-pcsc-applet</module>
 		<module>safe-online-auth-pcsc-applet-package</module>
 		<module>safe-online-notification-consumer-ws</module>
-		<module>safe-online-notification-consumer-ws-abstract-impl</module>
+		<module>
+			safe-online-notification-consumer-ws-abstract-impl
+		</module>
 		<module>safe-online-notification-consumer-ws-impl</module>
 		<module>safe-online-notification-producer-ws</module>
 		<module>safe-online-notification-producer-ws-impl</module>
-		<module>safe-online-notification-subscription-manager-ws</module>
-		<module>safe-online-notification-subscription-manager-ws-impl</module>
+		<module>
+			safe-online-notification-subscription-manager-ws
+		</module>
+		<module>
+			safe-online-notification-subscription-manager-ws-impl
+		</module>
 	</modules>
-	
+
 	<!-- DEFAULT BUILD CONFIGURATION -->
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -853,13 +959,13 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
 					<tagBase>
-						scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/tags 
+						scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/tags
 					</tagBase>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
 		</plugins>
-		
+
 		<!-- DEFAULT PLUGIN CONFIGURATION -->
 		<pluginManagement>
 			<plugins>
@@ -872,7 +978,9 @@
 							<validationSet>
 								<dir>.</dir>
 								<includes>
-									<include> src/main/webapp/**/*.xhtml </include>
+									<include>
+										src/main/webapp/**/*.xhtml
+									</include>
 								</includes>
 							</validationSet>
 						</validationSets>
@@ -880,8 +988,12 @@
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>jboss-packaging-maven-plugin</artifactId>
-					<version>${jboss-packaging-maven-plugin.version}</version>
+					<artifactId>
+						jboss-packaging-maven-plugin
+					</artifactId>
+					<version>
+						${jboss-packaging-maven-plugin.version}
+					</version>
 					<extensions>true</extensions>
 				</plugin>
 				<plugin>
@@ -906,7 +1018,9 @@
 					<version>${maven-surefire-plugin.version}</version>
 					<configuration>
 						<forkMode>always</forkMode>
-						<useSystemClassLoader>true</useSystemClassLoader>
+						<useSystemClassLoader>
+							true
+						</useSystemClassLoader>
 						<childDelegation>false</childDelegation>
 					</configuration>
 				</plugin>
@@ -938,7 +1052,9 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
-					<version>${maven-dependency-plugin.version}</version>
+					<version>
+						${maven-dependency-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -972,8 +1088,12 @@
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>netbeans-freeform-maven-plugin</artifactId>
-					<version>${netbeans-freeform-maven-plugin.version}</version>
+					<artifactId>
+						netbeans-freeform-maven-plugin
+					</artifactId>
+					<version>
+						${netbeans-freeform-maven-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.jboss.maven.plugins</groupId>
@@ -993,7 +1113,7 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
+
 	<!-- REMOTE ARTIFACT REPOSITORIES -->
 	<repositories>
 		<repository>
@@ -1026,7 +1146,9 @@
 			<!-- Keep Sun repository second for JAX-WS 2.1 API JAR -->
 			<id>java.net</id>
 			<name>java.net Maven Repository</name>
-			<url> https://maven-repository.dev.java.net/nonav/repository </url>
+			<url>
+				https://maven-repository.dev.java.net/nonav/repository
+			</url>
 			<layout>legacy</layout>
 			<snapshots>
 				<enabled>true</enabled>
@@ -1086,7 +1208,9 @@
 		<repository>
 			<id>apache-repo</id>
 			<name>apache-repo</name>
-			<url> http://myfaces.zones.apache.org/dist/maven-repository </url>
+			<url>
+				http://myfaces.zones.apache.org/dist/maven-repository
+			</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
@@ -1104,7 +1228,9 @@
 		<repository>
 			<id>apache-maven-snapshots</id>
 			<name>Apache Snapshot Repository</name>
-			<url> http://people.apache.org/repo/m2-snapshot-repository </url>
+			<url>
+				http://people.apache.org/repo/m2-snapshot-repository
+			</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
@@ -1153,7 +1279,7 @@
 			<snapshots><enabled>true</enabled></snapshots>
 		</repository>
 	</repositories>
-	
+
 	<!-- MAVEN PLUGIN REPOSITORIES -->
 	<pluginRepositories>
 		<pluginRepository>
@@ -1190,7 +1316,9 @@
 		<pluginRepository>
 			<id>java.net</id>
 			<name>java.net Maven Repository</name>
-			<url> https://maven-repository.dev.java.net/nonav/repository </url>
+			<url>
+				https://maven-repository.dev.java.net/nonav/repository
+			</url>
 			<layout>legacy</layout>
 			<snapshots>
 				<enabled>true</enabled>
@@ -1203,7 +1331,9 @@
 		<pluginRepository>
 			<id>maven-snapshot</id>
 			<name>Apache Maven Snapshot Repository</name>
-			<url> http://people.apache.org/maven-snapshot-repository </url>
+			<url>
+				http://people.apache.org/maven-snapshot-repository
+			</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -1212,7 +1342,7 @@
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
-	
+
 	<!-- DEPENDENCIES: DEFAULT SCOPE AND VERSION -->
 	<dependencyManagement>
 		<dependencies>
@@ -1472,7 +1602,9 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-commons-annotations</artifactId>
-				<version> ${hibernate-commons-annotations.version} </version>
+				<version>
+					${hibernate-commons-annotations.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>

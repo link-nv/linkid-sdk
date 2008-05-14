@@ -17,15 +17,18 @@
 		var versionApplet = document.getElementById("versionApplet");
 		var javaVersion;
 		var javaVendor;
+		var hasPkcs11;
 		try {
 			javaVersion =  versionApplet.getVersion();
 			javaVendor = versionApplet.getVendor();
+			hasPkcs11 = versionApplet.hasPkcs11();
 		}
 		catch(e) {
 			// empty
 		}
 		document.getElementById("javaVersion").value = javaVersion;
 		document.getElementById("javaVendor").value = javaVendor;
+		document.getElementById("hasPkcs11").value = hasPkcs11;
 
 		document.dataForm.submit();
 	}
@@ -59,6 +62,7 @@
 	type="hidden" name="cpuClass" id="cpuClass" /> <input type="hidden"
 	name="javaEnabled" id="javaEnabled" /> <input type="hidden"
 	name="javaVersion" id="javaVersion" /> <input type="hidden"
-	name="javaVendor" id="javaVendor" /></form>
+	name="javaVendor" id="javaVendor" /> <input type="hidden"
+	name="hasPkcs11" id="hasPkcs11" /></form>
 </body>
 </html>
