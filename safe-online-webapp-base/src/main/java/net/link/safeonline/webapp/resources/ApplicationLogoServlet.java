@@ -40,64 +40,72 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ApplicationLogoServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
-	private static final Log LOG = LogFactory
-			.getLog(ApplicationLogoServlet.class);
+    private static final long        serialVersionUID = 1L;
+    private static final Log         LOG              = LogFactory
+                                                              .getLog(ApplicationLogoServlet.class);
 
-	private PublicApplicationService publicApplicationService;
+    private PublicApplicationService publicApplicationService;
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public void init(ServletConfig config) throws ServletException {
 
-		super.init(config);
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-		loadDependencies();
-	}
+        super.init(config);
 
-	private void loadDependencies() {
-		this.publicApplicationService = EjbUtils.getEJB(
-				"SafeOnline/PublicApplicationServiceBean/local",
-				PublicApplicationService.class);
-	}
+        loadDependencies();
+    }
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+    private void loadDependencies() {
 
-		String applicationName = request.getParameter("applicationName");
-		if (null == applicationName)
-            throw new IllegalArgumentException("The application name must be provided.");
+        this.publicApplicationService = EjbUtils.getEJB(
+                PublicApplicationService.JNDI_BINDING,
+                PublicApplicationService.class);
+    }
 
-		try {
-			PublicApplication application = this.publicApplicationService
-					.getPublicApplication(applicationName);
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-			byte[] logo = application.getLogo();
-			if (null == logo)
-				return;
+        String applicationName = request.getParameter("applicationName");
+        if (null == applicationName) {
+            throw new IllegalArgumentException(
+                    "The application name must be provided.");
+        }
 
-			MagicMatch magic = Magic.getMagicMatch(logo);
-			if (!magic.getMimeType().startsWith("image/"))
-				throw new IllegalStateException(
-						"Not allowed to load non-image data out of the application URL field.");
+        try {
+            PublicApplication application = this.publicApplicationService
+                    .getPublicApplication(applicationName);
 
-			response.setContentType(magic.getMimeType());
-			response.getOutputStream().write(logo);
-			response.flushBuffer();
-		}
+            byte[] logo = application.getLogo();
+            if (null == logo)
+                return;
 
-		catch (ApplicationNotFoundException e) {
-			LOG.error("Couldn't resolve application name: " + applicationName,
-					e);
-		} catch (MagicParseException e) {
-		} catch (MagicMatchNotFoundException e) {
-		} catch (MagicException e) {
-		}
-	}
+            MagicMatch magic = Magic.getMagicMatch(logo);
+            if (!magic.getMimeType().startsWith("image/")) {
+                throw new IllegalStateException(
+                        "Not allowed to load non-image data out of the application URL field.");
+            }
+
+            response.setContentType(magic.getMimeType());
+            response.getOutputStream().write(logo);
+        }
+
+        catch (ApplicationNotFoundException e) {
+            LOG.error("Couldn't resolve application name: " + applicationName,
+                    e);
+        } catch (MagicParseException e) {
+        } catch (MagicMatchNotFoundException e) {
+        } catch (MagicException e) {
+        }
+
+        finally {
+            response.flushBuffer();
+        }
+    }
 }

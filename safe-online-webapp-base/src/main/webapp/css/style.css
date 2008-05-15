@@ -15,9 +15,8 @@ body {
 	margin: 0;
 	padding: 0;
 	text-align: center;
-	background: #333 url(../images/fade.gif) repeat-x top center;
+	background: url(../images/fade.gif) repeat-x top center;
 	font: 14px/ 21px "Trebuchet MS", Verdana, Arial;
-	color: #333;
 }
 
 img.text {
@@ -41,7 +40,6 @@ h1 {
 h2 {
     margin: 14px 0;
 	font: 21px/ 28px "Trebuchet MS", Verdana, Arial;
-	color: #81aa00;
 }
 
 h3 {
@@ -61,12 +59,10 @@ br {
 
 a {
 	text-decoration: none;
-	color: #81aa00;
 }
 
 a:hover {
-	color: #333;
-	border-bottom: 1px dotted #8EB61D;
+	border-bottom: 1px dotted black;
 }
 
 #header {
@@ -77,10 +73,6 @@ a:hover {
 	width: 950px;
 	display: block;
 	border: none;
-}
-
-#header a {
-	color: #fff;
 }
 
 #header_top {
@@ -139,18 +131,15 @@ a:hover {
 	height: 21px;
 	text-decoration: none;
 	font-weight: bold;
-	color: #fff;
 }
 
 #header ul.menu li.selected a {
 	padding: 10px 7px 4px 7px;
-	color: #333;
 }
 
 #header ul.menu li a:hover {
 	text-decoration: none;
 	border: none;
-	color: #333;
 	font-weight: bold;
 }
 
@@ -206,17 +195,11 @@ ul.submenu li a {
 	text-decoration: none;
 	text-align: left;
 	font-weight: bold;
-	color: #333;
-}
-
-ul.submenu li.selected a {
-	color: #77a511;
 }
 
 ul.submenu li a:hover {
 	text-decoration: none;
 	border: none;
-	color: #333;
 	font-weight: bold;
 }
 
@@ -252,7 +235,6 @@ ul.timeline>li {
 }
 
 ul.timeline li.active {
-	color: #81aa00;
 	background: url(../images/timeline_current.gif) top center no-repeat;
 }
 
@@ -275,7 +257,6 @@ ul.timeline li.end {
 	padding-top: 50px;
 	height: 50px;
 	background: url(../images/footer.gif) left top;
-	color: #CCC;
 	width: 100%;
 	display: block;
 	clear: both;
@@ -287,7 +268,6 @@ ul.timeline li.end {
 	width: 100%;
 	display: block;
 	text-align: center;
-	background: #fff;
 }
 
 /* for understanding browsers */
@@ -311,7 +291,6 @@ ul.timeline li.end {
 	padding: 0;
 	float: right;
 	width: 300px;
-	background: #E8E7E7;
 	text-align: left;
 	display: block;
 }
@@ -351,7 +330,7 @@ ul.sidemenu {
 	list-style: none;
 	padding: 0;
 	margin: 14px 0 14px 0;
-	border-top: 1px dotted #333;
+	border-top: 1px dotted black;
 	display: block;
 	clear: both;
 	float: left;
@@ -364,7 +343,7 @@ ul.sidemenu li {
 	display: block;
 	width: 100%;
 	height: 41px;
-	border-bottom: 1px dotted #333;
+	border-bottom: 1px dotted black;
 }
 
 ul.sidemenu li a {
@@ -375,18 +354,13 @@ ul.sidemenu li a {
 	display: block;
 	padding: 10px;
 	padding-left: 30px;
-	color: #81aa00;
 }
 
 ul.sidemenu li a:hover {
-	color: #333;
-	background-color: #81aa00;
 	border: none;
 }
 
 ul.sidemenu li.active a {
-	color: #333;
-	background-color: #81aa00;
 	border: none;
 }
 
@@ -445,21 +419,17 @@ label[for] {
 }
 
 input,select,textarea {
-	color: #333;
 	margin: 0;
 	padding: 0;
 	margin-right: 5px;
-	background: #fff;
 	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana,
 		sans-serif;
 }
 
 input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label
 	{
-	color: #333;
 	margin: 4px 0 15px 0;
     vertical-align: bottom;
-	background: #fff;
 	width: 300px;
 	border: 0;
 	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana,
@@ -467,7 +437,7 @@ input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label
 }
 
 input.label,textarea.label {
-	border-bottom: 1px dotted #333;
+	border-bottom: 1px dotted black;
 }
 input.label[name],select.label[name],textarea.label[name],input.radio[name],.af_inputFile[class],img.label[src] {
     float: left;
@@ -479,9 +449,6 @@ input.radio {
 
 input.label:hover,.so-input-text:hover, input.label:focus {
 	border-bottom-style: solid;
-}
-input.label:active {
-    border-color: #888;
 }
 
 img.label {
@@ -502,14 +469,13 @@ input.submit {
 	font-size: 12px;
 	font-weight: bold;
 	text-align: center;
-    color: #fff;
 	display: inline;
 	float: left;
 }
 
 textarea {
 	border: 0;
-	border-left: 1px dotted #81aa00;
+	border-left: 1px dotted black;
 }
 
 table, .fullwidth {
@@ -545,8 +511,15 @@ table colgroup {
     width: 500px;
     margin: auto;
 }
+.centered {
+    display: block;
+    float: none;
+
+    margin-left: auto;
+    margin-right: auto;
+}
 table tbody, table tfoot {
-    border: 0 solid #E8E7E7 !important;
+    border: 0 solid black !important;
     border-width: 0 2px 2px 0 !important;
 }
 .noborder, .noborder tbody {
@@ -568,17 +541,11 @@ table.listingTable tbody, table.rich-table tbody {
 }
 
 table.listingTable tbody tr, table.rich-table tbody tr {
-	background: #fff;
 	margin: 0;
 	padding: 0;
 }
 
-table.listingTable tbody tr:hover, table.rich-table tbody tr:hover {
-	background: #f9f9f9;
-}
-
 table.listingTable tfoot tr, table.rich-table tfoot tr {
-	background: #E8E7E7;
 	padding: 0;
 	float: none;
 	margin: 0;
@@ -624,12 +591,12 @@ div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr 
 
 table tr.rich-table-row, table tr.rich-table-firstrow, table tr.rich-table-footer,
 table.listingTable tbody tr {
-    border: 1px solid #E8E7E7 !important;
+    border: 1px solid black !important;
     border-style: solid solid none;
 }
 
 table.listingTable, table.rich-table {
-    border-bottom: 1px solid #E8E7E7;
+    border-bottom: 1px solid black;
 }
 
 /* Make links in tables easier to click. */
@@ -648,16 +615,6 @@ table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table t
     border:none;
     text-decoration: underline;
 }
-
-/*
-table tbody tr.listingTable_Row1 {
-	background: #fff
-}
-
-table tbody tr.listingTable_Row2 {
-	background: #fcfcfc;
-}
-*/
 
 .rich-datascr-button   
 	    , .rich-datascr-ctrls-separator        , .rich-datascr-act        ,
@@ -713,7 +670,7 @@ table tbody tr.listingTable_Row2 {
 	padding: 10px;
 	height: 200px;
 	overflow: auto;
-	border: 1px solid #9f9f9f;
+	border: 1px solid black;
 }
 
 .so-nameoutput {

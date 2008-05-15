@@ -18,7 +18,8 @@ public class EncapWebServiceTest {
 
 	private static final String ENCAP_LOCATION = "81.246.63.169:9090/mSec2";
 
-	private static final String TELENOR_MOBILE = "95874644";
+	@SuppressWarnings("unused")
+    private static final String TELENOR_MOBILE = "95874644";
 
 	@Test
 	public void testActivationWebService() throws Exception {

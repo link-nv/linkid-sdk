@@ -41,6 +41,7 @@ import net.link.safeonline.util.performance.ProfileData;
  *
  * @author mbillemo
  */
+@SuppressWarnings("unused")
 public class PlayTest extends AbstractDataTest {
 
 	private static final int DATA_POINTS = 800;
@@ -68,7 +69,7 @@ public class PlayTest extends AbstractDataTest {
 		DriverProfileEntity profile = this.executionService.getProfiles(
 				execution.getStartTime()).iterator().next();
 
-		long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
 		long dataDuration = (Long) this.em.createNamedQuery(
 				ProfileDataEntity.getExecutionDuration).setParameter("profile",
 				profile).getSingleResult();
@@ -152,9 +153,10 @@ public class PlayTest extends AbstractDataTest {
 			profileDataEntity.getMeasurements().add(measurement);
 			if (measurement.getMeasurement().equals(
 					ProfileData.REQUEST_DELTA_TIME)) {
-				if (timing.getAgentDuration() < measurement.getDuration())
-					System.err.print("  req (" + measurement.getDuration()
+				if (timing.getAgentDuration() < measurement.getDuration()) {
+                    System.err.print("  req (" + measurement.getDuration()
 							+ ") > agent (" + timing.getAgentDuration() + ")!");
+                }
 
 				break;
 			}

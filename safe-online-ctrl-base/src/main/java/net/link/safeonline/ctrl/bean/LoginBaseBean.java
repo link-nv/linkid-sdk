@@ -18,13 +18,13 @@ import net.link.safeonline.ctrl.LoginBase;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.service.SubjectService;
 
-import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.web.Session;
 
 public class LoginBaseBean implements LoginBase {
 
@@ -74,7 +74,7 @@ public class LoginBaseBean implements LoginBase {
 		this.log.debug("logout");
 		this.sessionContext.set("login-processing", null);
 		this.sessionContext.set("username", null);
-		Seam.invalidateSession();
+		Session.instance().invalidate();
 		return "logout-success";
 	}
 
@@ -88,7 +88,7 @@ public class LoginBaseBean implements LoginBase {
 	public boolean isLoggedIn() {
 		this.log.debug("is logged in");
 		String username = (String) this.sessionContext.get("username");
-		return (null != username);
+		return null != username;
 	}
 
 	@Remove

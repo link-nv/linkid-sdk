@@ -6,40 +6,48 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <f:view contentType="text/html">
 	<head>
-	<f:loadBundle basename="messages.webapp" var="msgs" />
-	<link rel="stylesheet" type="text/css"
-		href="#{facesContext.externalContext.requestContextPath}/css/style.css" />
-	<title><ui:insert name="title">#{initParam['CommercialName']}</ui:insert></title>
+        <f:loadBundle basename="messages.webapp" var="msgs" />
+        <link rel="stylesheet" type="text/css"
+            href="#{facesContext.externalContext.requestContextPath}/css/style.css" />
+        <link rel="stylesheet" type="text/css"
+            href="#{facesContext.externalContext.requestContextPath}/theme.css?applicationName=#{initParam['ApplicationName']}" />
+
+        <title><ui:insert name="title">#{initParam['CommercialName']}</ui:insert></title>
 	</head>
 
 	<body>
-	<div id="header">
-	<div id="header_top"><h:form>
-		<span> <h:graphicImage
-			value="/images/langs/#{facesContext.viewRoot.locale.language}.gif" />
-		<h:commandLink action="#{language.entry}"
-			value="#{msgs.chooseLanguage}" /></span>
-		<ui:insert name="logout">
-			<f:subview rendered="#{username != null}">
-				<h:outputText value=" | " />
-				<h:commandLink id="logout" action="#{login.logout}"
-					value="#{msgs.logout}" />
-			</f:subview>
-		</ui:insert>
-	</h:form></div>
+        <div id="header">
+            <div id="header_top"><h:form>
+                <span>
+                    <h:graphicImage value="/images/langs/#{facesContext.viewRoot.locale.language}.gif" />
+                    <h:commandLink action="#{language.entry}" value="#{msgs.chooseLanguage}" />
+                </span>
 
-	<f:subview rendered="#{username != null}">
-		<ui:insert name="topnav" />
-	</f:subview></div>
+                <ui:insert name="logout">
+                    <f:subview rendered="#{username != null}">
+                        <h:outputText value=" | " />
+                        <h:commandLink id="logout" action="#{login.logout}"
+                            value="#{msgs.logout}" />
+                    </f:subview>
+                </ui:insert>
+            </h:form></div>
 
-	<div id="main">
-	<div id="main_content"><ui:insert name="top_content" /> <ui:insert
-		name="sidebox" /> <ui:insert name="content">Welcome to #{initParam['CommercialName']}.</ui:insert>
-	</div>
-	<hr class="float_fix" />
-	</div>
+            <f:subview rendered="#{username != null}">
+                <ui:insert name="topnav" />
+            </f:subview>
+        </div>
 
-	<div id="footer">Copyright 2006-2008 - Lin.k NV</div>
+        <div id="main">
+            <div id="main_content">
+                <ui:insert name="top_content" />
+                <ui:insert name="sidebox" />
+                <ui:insert name="content">Welcome to #{initParam['CommercialName']}.</ui:insert>
+            </div>
+
+            <hr class="float_fix" />
+        </div>
+
+        <div id="footer">Copyright 2006-2008 - Lin.k NV</div>
 	</body>
 </f:view>
 </html>

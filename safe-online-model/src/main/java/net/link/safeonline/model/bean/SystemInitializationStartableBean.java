@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.bean;
 
+import java.awt.Color;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -70,22 +71,27 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		// TODO: Fill in the correct Home URL and Logo URL.
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
-				"The SafeOnline User Web Application.", null, null, null,
+				"The SafeOnline User Web Application.", null, null, Color
+                        .decode("#004d75"),
 				false, false, userCert, false, IdScopeType.USER));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				"owner", "The SafeOnline Operator Web Application.", null,
-				null, null, false, false, operCert, false, IdScopeType.USER));
+				null, Color.decode("#2c0075"), false, false, operCert, false,
+                IdScopeType.USER));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
 				"owner", "The SafeOnline Application Owner Web Application.",
-				null, null, null, false, false, ownerCert, false,
+				null, null, Color.decode("#001975"), false, false, ownerCert,
+                false,
 				IdScopeType.USER));
 		this.registeredApplications
 				.add(new Application(
 						SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
 						"owner", "The SafeOnline Helpdesk Web Application.",
-						null, null, null, false, false, helpdeskCert, false,
+						null,
+                null, Color.decode("#006f73"), false, false, helpdeskCert,
+                false,
 						IdScopeType.USER));
 
 		this.trustedCertificates.put(userCert,

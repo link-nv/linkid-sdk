@@ -21,13 +21,16 @@ import net.link.safeonline.model.application.PublicApplication;
 @Local
 public interface PublicApplicationService {
 
-	/**
-	 * Gives back a stub for an application that contains the application's data
-	 * that's available to the public.
-	 * 
-	 * @param applicationName
-	 * @throws ApplicationNotFoundException
-	 */
-	public PublicApplication getPublicApplication(String applicationName)
-			throws ApplicationNotFoundException;
+    public final String JNDI_BINDING = "SafeOnline/PublicApplicationServiceBean/local";
+
+
+    /**
+     * Gives back a stub for an application that contains the application's data
+     * that's available to the public.
+     * 
+     * @param applicationName
+     * @throws ApplicationNotFoundException
+     */
+    public PublicApplication getPublicApplication(String applicationName)
+            throws ApplicationNotFoundException;
 }

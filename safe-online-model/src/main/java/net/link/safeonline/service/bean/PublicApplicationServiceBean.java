@@ -15,10 +15,12 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.service.PublicApplicationService;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 /**
- * <h2>{@link PublicApplicationServiceBean} - Service for
- * {@link PublicApplication}.</h2>
- *
+ * <h2>{@link PublicApplicationServiceBean} - Service for {@link
+ * PublicApplication}.</h2>
+ * 
  * <p>
  * Provides access to attributes of the given application that are publicly
  * available.
@@ -30,16 +32,18 @@ import net.link.safeonline.service.PublicApplicationService;
  * @author mbillemo
  */
 @Stateless
+@LocalBinding(jndiBinding = PublicApplicationService.JNDI_BINDING)
 public class PublicApplicationServiceBean implements PublicApplicationService {
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO applicationDAO;
 
-	@PermitAll
-	public PublicApplication getPublicApplication(String applicationName)
-			throws ApplicationNotFoundException {
 
-		return new PublicApplication(this.applicationDAO
-				.getApplication(applicationName));
-	}
+    @PermitAll
+    public PublicApplication getPublicApplication(String applicationName)
+            throws ApplicationNotFoundException {
+
+        return new PublicApplication(this.applicationDAO
+                .getApplication(applicationName));
+    }
 }

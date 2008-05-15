@@ -7,8 +7,9 @@
 	<display-name>SafeOnline Web Application Base</display-name>
 
 	<description>
-		This web.xml should not be used as is since it's not doing
-		anything useful.
+        This web.xml should not be used.
+
+        Anything in here will be overridden by the webapp that overlays webapp-base.
 	</description>
 
 </web-app>

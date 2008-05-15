@@ -1,0 +1,171 @@
+/* -*- coding: utf-8; mode: css; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:filetype=css:et:sw=4:ts=4:sts=4
+ *
+ *          SafeOnline Application-Specific Coloring.
+ *          -----------------------------------------
+ */
+
+
+
+/* White
+ * ----- */
+#header a,
+#header ul.menu li a,
+input.submit {
+
+    color:              white;
+}
+
+
+#main,
+    input,
+    select,
+    textarea,
+    img.label,
+    .af_inputFile,
+table.listingTable  tbody tr,
+table.rich-table    tbody tr {
+
+    background-color:   white;
+}
+
+
+
+/* Nearly White
+ * ------------ */
+table.listingTable  tbody tr:hover,
+table.rich-table    tbody tr:hover {
+    
+    background-color:   #f9f9f9;
+}
+
+
+
+/* Bright Grey
+ * ----------- */
+#box,
+table.listingTable  tfoot tr,
+table.rich-table    tfoot tr {
+
+    background-color:   #E8E7E7;
+}
+
+
+table tbody,
+table tfoot,
+    table.listingTable,
+    table.listingTable  tbody tr,
+table.rich-table,
+table tr.rich-table-row,
+table tr.rich-table-firstrow,
+table tr.rich-table-footer {
+
+    border-color:       #E8E7E7 !important;
+}
+
+
+
+/* Grey
+ * ---- */
+#footer {
+
+    color:              #CCC;
+}
+
+
+
+/* Dark Grey
+ * --------- */
+input.label:active,
+.usage_agreement {
+
+    border-color:       #888;
+}
+
+
+
+/* Darker Grey
+ * ----------- */
+body {
+	background-color:   #333;
+}
+
+
+body,
+#header ul.menu li a:hover,
+#header ul.menu li.selected a,
+    a:hover,
+    ul.submenu  li a,
+    ul.submenu  li a:hover,
+    ul.sidemenu li a:hover,
+    ul.sidemenu li.active a,
+input,
+select,
+textarea,
+img.label,
+input.radio,
+.af_inputFile {
+
+    color:              #333;
+}
+
+
+ul.sidemenu,
+input.label,
+textarea.label {
+
+    border-color:       #333;
+}
+
+
+
+/* Darker Themed
+ * ------------ */
+ul.submenu li.selected a {
+
+    color:              $darker;
+}
+
+
+
+/* Themed
+ * ----- */
+h2,
+a,
+ul.timeline li.active,
+ul.sidemenu li a {
+
+    color:              $bright;
+}
+
+
+textarea {
+
+    border-color:       $bright;
+}
+
+
+
+/* Lighter Themed
+ * ------------- */
+ul.sidemenu li a:hover,
+ul.sidemenu li.active a {
+	background-color:   $brighter;
+}
+
+
+a:hover {
+
+    border-color:       $brighter;
+}
+
+
+
+/*
+table tbody tr.listingTable_Row1 {
+    background:         #fff
+}
+
+table tbody tr.listingTable_Row2 {
+    background:         #fcfcfc;
+}
+*/

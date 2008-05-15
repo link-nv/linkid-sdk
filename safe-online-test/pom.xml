@@ -173,17 +173,17 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>opensaml</groupId>
+			<groupId>org.opensaml</groupId>
 			<artifactId>opensaml</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>opensaml</groupId>
+			<groupId>org.opensaml</groupId>
 			<artifactId>xmltooling</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>opensaml</groupId>
+			<groupId>org.opensaml</groupId>
 			<artifactId>openws</artifactId>
 			<scope>test</scope>
 		</dependency>

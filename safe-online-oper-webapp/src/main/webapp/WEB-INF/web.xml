@@ -186,6 +186,16 @@
 		<servlet-name>Seam Resource Servlet</servlet-name>
 		<url-pattern>/seam/resource/*</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>Style Servlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.webapp.resources.ApplicationStyleServlet 
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Style Servlet</servlet-name>
+		<url-pattern>/theme.css</url-pattern>
+	</servlet-mapping>
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>
