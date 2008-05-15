@@ -47,16 +47,46 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 			.getName()
 			+ ".target16";
 
+	public static final String PKCS11_TARGET_SESSION_ATTRIBUTE = JavaVersionServlet.class
+			.getName()
+			+ ".pkcs11target";
+
 	public static final String JAVA_VERSION_REG_EXPR = "^1\\.(5|6).*";
 
 	public static final String JAVA_1_5_VERSION_REG_EXPR = "^1\\.5.*";
 
-	public static void setJava15Target(String target, HttpSession session) {
+	/**
+	 * Sets the target in case no PKCS#11 drivers were detected but Java 1.5
+	 * runtime is present.
+	 * 
+	 * @param target
+	 * @param session
+	 */
+	public static void setJava15NoPkcs11Target(String target,
+			HttpSession session) {
 		session.setAttribute(TARGET15_SESSION_ATTRIBUTE, target);
 	}
 
-	public static void setJava16Target(String target, HttpSession session) {
+	/**
+	 * Sets the target in case no PKCS#11 drivers were detected but Java 1.6
+	 * runtime is present.
+	 * 
+	 * @param target
+	 * @param session
+	 */
+	public static void setJava16NoPkcs11Target(String target,
+			HttpSession session) {
 		session.setAttribute(TARGET16_SESSION_ATTRIBUTE, target);
+	}
+
+	/**
+	 * Sets the target in case PKCS#11 drivers were detected.
+	 * 
+	 * @param target
+	 * @param session
+	 */
+	public static void setPkcs11Target(String target, HttpSession session) {
+		session.setAttribute(PKCS11_TARGET_SESSION_ATTRIBUTE, target);
 	}
 
 	@RequestParameter("appName")
@@ -143,6 +173,20 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 		}
 
 		HttpSession session = request.getSession();
+		if ("true".equals(this.hasPkcs11)) {
+			String pkcs11target = (String) session
+					.getAttribute(PKCS11_TARGET_SESSION_ATTRIBUTE);
+			if (null != pkcs11target) {
+				LOG.debug("redirect to target: " + pkcs11target);
+				response.sendRedirect(pkcs11target);
+				return;
+			}
+		}
+
+		/*
+		 * Else no PKCS#11 driver available.
+		 */
+
 		switch (this.sessionJavaVersion) {
 		case JAVA_1_5:
 			String target15 = (String) session

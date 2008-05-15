@@ -24,11 +24,11 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class RegisterServlet extends HttpServlet {
+public class RemoveServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(RegisterServlet.class);
+	private static final Log LOG = LogFactory.getLog(RemoveServlet.class);
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -40,10 +40,10 @@ public class RegisterServlet extends HttpServlet {
 			HttpServletResponse resp) throws IOException {
 		LOG.debug("prepareJavaVersionCheck");
 		HttpSession session = req.getSession();
-		JavaVersionServlet.setPkcs11Target("register-beid.seam", session);
+		JavaVersionServlet.setPkcs11Target("remove-beid.seam", session);
 		JavaVersionServlet.setJava15NoPkcs11Target("missing-middleware.seam",
 				session);
-		JavaVersionServlet.setJava16NoPkcs11Target("register-beid-pcsc.seam",
+		JavaVersionServlet.setJava16NoPkcs11Target("remove-beid-pcsc.seam",
 				session);
 		LOG
 				.debug("redirecting to beid.html for Java runtime version checking...");

@@ -71,7 +71,7 @@
 	</context-param>
 	<context-param>
 		<param-name>RemovalUrl</param-name>
-		<param-value>remove-beid.seam</param-value>
+		<param-value>removeService</param-value>
 	</context-param>
 	<context-param>
 		<param-name>RegistrationServiceUrl</param-name>
@@ -293,9 +293,19 @@
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
 	<servlet>
+		<servlet-name>RemoveServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.beid.servlet.RemoveServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RemoveServlet</servlet-name>
+		<url-pattern>/removeService</url-pattern>
+	</servlet-mapping>
+	<servlet>
 		<servlet-name>Style Servlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationStyleServlet 
+			net.link.safeonline.webapp.resources.ApplicationStyleServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
