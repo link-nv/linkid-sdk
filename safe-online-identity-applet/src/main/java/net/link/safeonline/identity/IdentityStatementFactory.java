@@ -35,6 +35,9 @@ public class IdentityStatementFactory {
 	 */
 	public static byte[] createIdentityStatement(String user, Signer signer,
 			IdentityProvider identityProvider) {
+		if (null == user) {
+			throw new IllegalArgumentException("user should not be null");
+		}
 		IdentityStatement identityStatement = new IdentityStatement(user,
 				identityProvider, signer);
 		byte[] identityStatementData = identityStatement.generateStatement();

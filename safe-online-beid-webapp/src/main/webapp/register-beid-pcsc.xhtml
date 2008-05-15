@@ -13,13 +13,14 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<applet name="RegistrationApplet"
-			code="net.link.safeonline.auth.pcsc.RegistrationApplet.class"
+		<applet name="IdentityApplet"
+			code="net.link.safeonline.auth.pcsc.IdentityApplet.class"
 			archive="safe-online-auth-pcsc-applet-package.jar" width="450"
 			height="200">
 			<param name="ServletPath" value="identity" />
 			<param name="TargetPath" value="#{SafeOnlineDeviceExitServiceUrl}" />
 			<param name="HelpdeskEventPath" value="helpdesk" />
+			<param name="User" value="#{registrationId}" />
 			<param name="HelpPath"
 				value="./help.seam?location=register-beid-pcsc.seam" />
 			<param name="SessionId"

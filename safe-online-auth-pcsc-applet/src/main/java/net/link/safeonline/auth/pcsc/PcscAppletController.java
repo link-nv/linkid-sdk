@@ -23,7 +23,6 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.CardTerminals;
 import javax.smartcardio.TerminalFactory;
-import javax.smartcardio.CardTerminals.State;
 
 import net.link.safeonline.applet.AppletController;
 import net.link.safeonline.applet.AppletView;
@@ -85,6 +84,7 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 						+ e.getMessage());
 				this.appletView.outputInfoMessage(InfoLevel.ERROR,
 						this.messages.getString(KEY.ERROR));
+				return;
 			}
 		} catch (Exception e) {
 			this.appletView.outputDetailMessage("error: " + e.getMessage());
@@ -92,6 +92,18 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 					+ e.getClass().getName());
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString(KEY.ERROR));
+			StackTraceElement[] stackTraceElements = e.getStackTrace();
+			for (StackTraceElement stackTraceElement : stackTraceElements) {
+				this.appletView.outputDetailMessage(stackTraceElement
+						.getClassName()
+						+ "."
+						+ stackTraceElement.getMethodName()
+						+ "("
+						+ stackTraceElement.getFileName()
+						+ ":"
+						+ stackTraceElement.getLineNumber() + ")");
+			}
+			return;
 		} finally {
 			closeCard(card);
 		}
@@ -205,10 +217,22 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 		CardTerminals terminals = factory.terminals();
 		List<CardTerminal> terminalList;
 		try {
-			terminalList = terminals.list(State.CARD_PRESENT);
+			terminalList = terminals.list();
+			if (0 == terminalList.size()) {
+				this.appletView.outputInfoMessage(InfoLevel.ERROR,
+						this.messages.getString(KEY.NO_READER));
+				return null;
+			}
 			for (CardTerminal cardTerminal : terminalList) {
-				this.appletView.outputDetailMessage("trying card terminal: "
-						+ cardTerminal.getName());
+				if (false == cardTerminal.isCardPresent()) {
+					this.appletView.outputInfoMessage(InfoLevel.NORMAL,
+							this.messages.getString(KEY.NO_CARD));
+					if (false == cardTerminal.waitForCardPresent(0)) {
+						this.appletView.outputInfoMessage(InfoLevel.ERROR,
+								this.messages.getString(KEY.ERROR));
+						return null;
+					}
+				}
 				Card card = cardTerminal.connect("T=0");
 				ATR atr = card.getATR();
 				byte[] atrBytes = atr.getBytes();
@@ -216,7 +240,6 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 						&& false == Arrays.equals(BEID_ATR_10, atrBytes)) {
 					continue;
 				}
-				this.appletView.outputDetailMessage("BeID card found.");
 				return card;
 			}
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
