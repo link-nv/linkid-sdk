@@ -24,15 +24,17 @@
 			</f:facet>
 
 			<h2>#{msgs.device}: #{selectedDevice.name}</h2>
+
 			<h:outputLabel for="language" value="#{msgs.language}" />
 			<s:decorate>
 				<h:inputText id="language" value="#{deviceDesc.language}"
 					required="true" styleClass="label" />
-			</s:decorate>*<h:message for="language" styleClass="error" />
+            </s:decorate>
+            <h:message for="language" styleClass="error" />
+
 			<h:outputLabel for="description" value="#{msgs.description}" />
 			<h:inputText id="description" value="#{deviceDesc.description}"
 				styleClass="label" />
-
 
 			<h:messages styleClass="error" globalOnly="true" />
 

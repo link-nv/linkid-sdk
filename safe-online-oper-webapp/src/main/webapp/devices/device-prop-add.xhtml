@@ -29,12 +29,12 @@
 			<s:decorate>
 				<h:inputText id="name" value="#{deviceProp.name}" required="true"
 					styleClass="label" />
-			</s:decorate>*<h:message for="name" styleClass="error" />
+            </s:decorate>
+            <h:message for="name" styleClass="error" />
 
 			<h:outputLabel for="value" value="#{msgs.value}" />
 			<h:inputText id="value" value="#{deviceProp.value}"
 				styleClass="label" />
-
 
 			<h:messages styleClass="error" globalOnly="true" />
 
