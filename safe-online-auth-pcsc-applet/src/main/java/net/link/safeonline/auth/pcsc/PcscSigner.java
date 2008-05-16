@@ -12,11 +12,6 @@ import java.security.cert.X509Certificate;
 
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
-import javax.swing.Box;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
 
 import net.link.safeonline.shared.Signer;
 
@@ -42,31 +37,13 @@ public class PcscSigner extends Pcsc implements Signer {
 		}
 	}
 
-	private char[] getPin() {
-		JLabel promptLabel = new JLabel("PIN:");
-
-		JPasswordField passwordField = new JPasswordField(8);
-		passwordField.setEchoChar('*');
-
-		Box passwordPanel = Box.createHorizontalBox();
-		passwordPanel.add(promptLabel);
-		passwordPanel.add(Box.createHorizontalStrut(5));
-		passwordPanel.add(passwordField);
-
-		JOptionPane optionPane = new JOptionPane(passwordPanel,
-				JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-		JDialog dialog = optionPane.createDialog("PIN");
-		dialog.setVisible(true);
-		int result = (Integer) optionPane.getValue();
-		if (result == JOptionPane.OK_OPTION) {
-			char[] pin = passwordField.getPassword();
-			return pin;
-		}
-		return null;
-	}
-
 	public byte[] sign(byte[] data) {
-		String pin = new String(getPin());
+		PinDialog pinDialog = new PinDialog();
+		String pin = pinDialog.getPin();
+		if (null == pin) {
+			this.logger.log("PIN canceled");
+			throw new RuntimeException("PIN canceled");
+		}
 		byte[] signatureValue;
 		try {
 			this.logger.log("signing...");
