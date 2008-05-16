@@ -73,8 +73,8 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         this.registeredApplications.add(new Application(
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
                 "The SafeOnline User Web Application.", null,
-                getLogo("/logo.jpg"), Color.decode("#004d75"), false, false,
-                userCert, false, IdScopeType.USER));
+                getLogo("/logo.jpg"), null, false, false, userCert, false,
+                IdScopeType.USER));
         this.registeredApplications.add(new Application(
                 SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
                 "owner", "The SafeOnline Operator Web Application.", null,
