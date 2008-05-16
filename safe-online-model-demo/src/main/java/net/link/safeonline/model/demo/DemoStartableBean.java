@@ -196,6 +196,13 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, mandateAdmin,
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+
+		/*
+		 * WS-Notification subscriptions
+		 */
+		configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER,
+				demoMandateCertificate);
+
 	}
 
 	private void configTicketDemo() {
@@ -243,6 +250,13 @@ public class DemoStartableBean extends AbstractInitBean {
 						+ DEMO_TICKET_APPLICATION_NAME + "\n\n"
 						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
 		this.usageAgreements.add(usageAgreement);
+
+		/*
+		 * WS-Notification subscriptions
+		 */
+		configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER,
+				demoTicketCertificate);
+
 	}
 
 	private void configPaymentDemo() {
@@ -346,6 +360,13 @@ public class DemoStartableBean extends AbstractInitBean {
 						+ DEMO_PAYMENT_APPLICATION_NAME + "\n\n"
 						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
 		this.usageAgreements.add(usageAgreement);
+
+		/*
+		 * WS-Notification subscriptions
+		 */
+		configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER,
+				demoPaymentCertificate);
+
 	}
 
 	private void configPrescriptionDemo() {
@@ -639,6 +660,23 @@ public class DemoStartableBean extends AbstractInitBean {
 				SubscriptionOwnerType.APPLICATION, "mbillemo",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
+	}
+
+	private void configSubscription(String topic, X509Certificate certificate) {
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String protocol = properties.getString("olas.host.protocol");
+		String hostname = properties.getString("olas.host.name");
+		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
+		int hostportssl = Integer.parseInt(properties
+				.getString("olas.host.port.ssl"));
+		String address = protocol + "://" + hostname + ":";
+		if (protocol.equals("http"))
+			address += hostport;
+		else
+			address += hostportssl;
+		address += "/safe-online-demo-ws/consumer";
+		this.notificationSubcriptions.add(new NotificationSubscription(topic,
+				address, certificate));
 	}
 
 	private void configureNode() {

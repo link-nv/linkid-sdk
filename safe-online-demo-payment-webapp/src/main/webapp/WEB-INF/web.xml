@@ -15,11 +15,6 @@
 			net.link.safeonline.demo.payment.listener.PaymentSessionListener 
 		</listener-class>
 	</listener>
-	<listener>
-		<listener-class>
-			net.link.safeonline.demo.payment.listener.StartupServletContextListener 
-		</listener-class>
-	</listener>
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 		<param-value> ${safe-online.host.basename}/olas-auth/ </param-value>

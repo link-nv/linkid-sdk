@@ -10,11 +10,6 @@
 		<listener-class> com.sun.faces.config.ConfigureListener 
 		</listener-class>
 	</listener>
-	<listener>
-		<listener-class>
-			net.link.safeonline.demo.ticket.listener.StartupServletContextListener 
-		</listener-class>
-	</listener>
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 		<param-value> ${safe-online.host.basename}/olas-auth/ </param-value>
