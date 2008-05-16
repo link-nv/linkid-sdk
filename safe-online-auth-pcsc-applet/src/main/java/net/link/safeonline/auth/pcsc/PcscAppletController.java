@@ -214,6 +214,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 
 	private Card openCard() {
 		TerminalFactory factory = TerminalFactory.getDefault();
+		this.appletView.outputDetailMessage("terminal factory type: "
+				+ factory.getType());
 		CardTerminals terminals = factory.terminals();
 		List<CardTerminal> terminalList;
 		try {
@@ -224,6 +226,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 				return null;
 			}
 			for (CardTerminal cardTerminal : terminalList) {
+				this.appletView.outputDetailMessage("trying card terminal: "
+						+ cardTerminal.getName());
 				if (false == cardTerminal.isCardPresent()) {
 					this.appletView.outputInfoMessage(InfoLevel.NORMAL,
 							this.messages.getString(KEY.NO_CARD));
