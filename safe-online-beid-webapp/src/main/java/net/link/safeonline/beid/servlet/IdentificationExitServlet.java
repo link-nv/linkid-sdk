@@ -62,6 +62,9 @@ public class IdentificationExitServlet extends AbstractInjectionServlet {
 	@In(value = IdentificationDataServlet.HOUSE_NR_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
 	private String houseNr;
 
+	@In(value = IdentificationDataServlet.HASHED_NATIONAL_NUMBER_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	private String hashedNationalNumber;
+
 	@Override
 	protected void invoke(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -75,6 +78,7 @@ public class IdentificationExitServlet extends AbstractInjectionServlet {
 		LOG.debug("city: " + this.city);
 		LOG.debug("zip: " + this.zip);
 		LOG.debug("dob: " + this.dob);
+		LOG.debug("hashed national number: " + this.hashedNationalNumber);
 
 		PrintWriter writer = response.getWriter();
 		writer.println("<html>");
@@ -93,6 +97,7 @@ public class IdentificationExitServlet extends AbstractInjectionServlet {
 					addField(writer, "city", this.city);
 					addField(writer, "zip", this.zip);
 					addField(writer, "dob", this.dob);
+					addField(writer, "hnnr", this.hashedNationalNumber);
 				}
 				writer.println("</form>");
 			}

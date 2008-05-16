@@ -50,7 +50,8 @@ public class IdentificationController implements AppletController {
 
 	private AuthenticationMessages messages;
 
-	public void init(AppletView newAppletView, RuntimeContext newRuntimeContext,
+	public void init(AppletView newAppletView,
+			RuntimeContext newRuntimeContext,
 			StatementProvider statementProvider) {
 		this.appletView = newAppletView;
 		this.runtimeContext = newRuntimeContext;
@@ -177,7 +178,9 @@ public class IdentificationController implements AppletController {
 				+ URLEncoder.encode(addressFile.getStreetAndNumber(), "UTF-8")
 				+ "&city="
 				+ URLEncoder.encode(addressFile.getMunicipality(), "UTF-8")
-				+ "&zip=" + URLEncoder.encode(addressFile.getZip(), "UTF-8");
+				+ "&zip=" + URLEncoder.encode(addressFile.getZip(), "UTF-8")
+				+ "&nnr="
+				+ URLEncoder.encode(identityFile.getNationalNumber(), "UTF-8");
 		connection.setRequestProperty("Content-length", Integer
 				.toString(content.getBytes().length));
 		connection.setDoOutput(true);

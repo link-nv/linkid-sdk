@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.ScopeType;
@@ -90,6 +91,16 @@ public class IdentificationDataServlet extends AbstractInjectionServlet {
 	@Out(value = ZIP_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
 	private String zip;
 
+	@RequestParameter("nnr")
+	private String nationalNumber;
+
+	public static final String HASHED_NATIONAL_NUMBER_SESSION_ATTRIBUTE = "id-hash-nnr";
+
+	@Out(value = HASHED_NATIONAL_NUMBER_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	private String hashedNationalNumber;
+
+	private static final String NATIONAL_NUMBER_SEED = "00cd4de51be6d556f98f40a1a69f7bcbd4fb75c1";
+
 	@Override
 	protected void invoke(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -101,6 +112,10 @@ public class IdentificationDataServlet extends AbstractInjectionServlet {
 		LOG.debug("street: " + this.street);
 		LOG.debug("city: " + this.city);
 		LOG.debug("zip: " + this.zip);
+
+		this.hashedNationalNumber = DigestUtils.shaHex(this.nationalNumber
+				+ NATIONAL_NUMBER_SEED);
+		LOG.debug("hashed national number: " + this.hashedNationalNumber);
 
 		int digitIdx = getFirstDigitIndex(this.street);
 		this.outStreet = this.street.substring(0, digitIdx).trim();
