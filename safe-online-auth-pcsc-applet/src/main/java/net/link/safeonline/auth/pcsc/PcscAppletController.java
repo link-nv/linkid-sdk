@@ -78,7 +78,10 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 			byte[] statement = this.statementProvider.createStatement(signer,
 					identityProvider);
 			try {
-				sendStatement(statement);
+				boolean result = sendStatement(statement);
+				if (false == result) {
+					return;
+				}
 			} catch (IOException e) {
 				this.appletView.outputDetailMessage("IO error: "
 						+ e.getMessage());
@@ -176,6 +179,10 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 				.equals(safeOnlineResultCode)) {
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString(KEY.EID_NOT_REGISTERED));
+			this.appletView.outputDetailMessage(this.messages
+					.getString(KEY.EID_NOT_REGISTERED));
+			this.appletView
+					.outputDetailMessage("Please login with another authentication device first.");
 			return false;
 		}
 		throw new IOException("Response code: " + responseCode);
@@ -223,6 +230,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 			if (0 == terminalList.size()) {
 				this.appletView.outputInfoMessage(InfoLevel.ERROR,
 						this.messages.getString(KEY.NO_READER));
+				this.appletView
+						.outputDetailMessage("No card reader available or missing card reader driver.");
 				return null;
 			}
 			for (CardTerminal cardTerminal : terminalList) {
