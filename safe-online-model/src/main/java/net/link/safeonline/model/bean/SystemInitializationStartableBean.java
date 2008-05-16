@@ -44,205 +44,207 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Stateless
 @Local(Startable.class)
 @LocalBinding(jndiBinding = Startable.JNDI_PREFIX
-		+ "SystemInitializationStartableBean")
+        + "SystemInitializationStartableBean")
 public class SystemInitializationStartableBean extends AbstractInitBean {
 
-	public SystemInitializationStartableBean() {
-		configureNode();
-		configureAttributeTypes();
-		configureDevices();
+    public SystemInitializationStartableBean() {
 
-		this.authorizedUsers.put("admin", new AuthenticationDevice("admin",
-				null, null));
-		this.authorizedUsers.put("owner", new AuthenticationDevice("secret",
-				null, null));
+        configureNode();
+        configureAttributeTypes();
+        configureDevices();
 
-		this.applicationOwnersAndLogin.put("owner", "owner");
+        this.authorizedUsers.put("admin", new AuthenticationDevice("admin",
+                null, null));
+        this.authorizedUsers.put("owner", new AuthenticationDevice("secret",
+                null, null));
 
-		X509Certificate userCert = (X509Certificate) UserKeyStoreUtils
-				.getPrivateKeyEntry().getCertificate();
-		X509Certificate operCert = (X509Certificate) OperKeyStoreUtils
-				.getPrivateKeyEntry().getCertificate();
-		X509Certificate ownerCert = (X509Certificate) OwnerKeyStoreUtils
-				.getPrivateKeyEntry().getCertificate();
-		X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils
-				.getPrivateKeyEntry().getCertificate();
+        this.applicationOwnersAndLogin.put("owner", "owner");
 
-		// TODO: Fill in the correct Home URL and Logo URL.
-		this.registeredApplications.add(new Application(
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
-				"The SafeOnline User Web Application.", null, null, Color
-                        .decode("#004d75"),
-				false, false, userCert, false, IdScopeType.USER));
-		this.registeredApplications.add(new Application(
-				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-				"owner", "The SafeOnline Operator Web Application.", null,
-				null, Color.decode("#2c0075"), false, false, operCert, false,
-                IdScopeType.USER));
-		this.registeredApplications.add(new Application(
-				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
-				"owner", "The SafeOnline Application Owner Web Application.",
-				null, null, Color.decode("#001975"), false, false, ownerCert,
-                false,
-				IdScopeType.USER));
-		this.registeredApplications
-				.add(new Application(
-						SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
-						"owner", "The SafeOnline Helpdesk Web Application.",
-						null,
-                null, Color.decode("#006f73"), false, false, helpdeskCert,
-                false,
-						IdScopeType.USER));
+        X509Certificate userCert = (X509Certificate) UserKeyStoreUtils
+                .getPrivateKeyEntry().getCertificate();
+        X509Certificate operCert = (X509Certificate) OperKeyStoreUtils
+                .getPrivateKeyEntry().getCertificate();
+        X509Certificate ownerCert = (X509Certificate) OwnerKeyStoreUtils
+                .getPrivateKeyEntry().getCertificate();
+        X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils
+                .getPrivateKeyEntry().getCertificate();
 
-		this.trustedCertificates.put(userCert,
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-		this.trustedCertificates.put(operCert,
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-		this.trustedCertificates.put(ownerCert,
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-		this.trustedCertificates.put(helpdeskCert,
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        // TODO: Fill in the correct Home URL and Logo URL.
+        this.registeredApplications.add(new Application(
+                SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
+                "The SafeOnline User Web Application.", null,
+                getLogo("/logo.jpg"), Color.decode("#004d75"), false, false,
+                userCert, false, IdScopeType.USER));
+        this.registeredApplications.add(new Application(
+                SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
+                "owner", "The SafeOnline Operator Web Application.", null,
+                getLogo("/logo.jpg"), Color.decode("#2c0075"), false, false,
+                operCert, false, IdScopeType.USER));
+        this.registeredApplications.add(new Application(
+                SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
+                "owner", "The SafeOnline Application Owner Web Application.",
+                null, getLogo("/logo.jpg"), Color.decode("#001975"), false,
+                false, ownerCert, false, IdScopeType.USER));
+        this.registeredApplications.add(new Application(
+                SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
+                "owner", "The SafeOnline Helpdesk Web Application.", null,
+                getLogo("/logo.jpg"), Color.decode("#006f73"), false, false,
+                helpdeskCert, false, IdScopeType.USER));
 
-		this.subscriptions.add(new Subscription(
-				SubscriptionOwnerType.APPLICATION, "admin",
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-		this.subscriptions.add(new Subscription(
-				SubscriptionOwnerType.APPLICATION, "admin",
-				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME));
-		this.subscriptions.add(new Subscription(
-				SubscriptionOwnerType.APPLICATION, "admin",
-				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME));
+        this.trustedCertificates.put(userCert,
+                SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        this.trustedCertificates.put(operCert,
+                SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        this.trustedCertificates.put(ownerCert,
+                SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        this.trustedCertificates.put(helpdeskCert,
+                SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 
-		this.subscriptions.add(new Subscription(
-				SubscriptionOwnerType.APPLICATION, "owner",
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-		this.subscriptions.add(new Subscription(
-				SubscriptionOwnerType.APPLICATION, "owner",
-				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
-	}
+        this.subscriptions.add(new Subscription(
+                SubscriptionOwnerType.APPLICATION, "admin",
+                SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(
+                SubscriptionOwnerType.APPLICATION, "admin",
+                SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(
+                SubscriptionOwnerType.APPLICATION, "admin",
+                SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME));
 
-	private void configureNode() {
-		ResourceBundle properties = ResourceBundle.getBundle("config");
-		String nodeName = properties.getString("olas.node.name");
-		String protocol = properties.getString("olas.host.protocol");
-		String hostname = properties.getString("olas.host.name");
-		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-		int hostportssl = Integer.parseInt(properties
-				.getString("olas.host.port.ssl"));
+        this.subscriptions.add(new Subscription(
+                SubscriptionOwnerType.APPLICATION, "owner",
+                SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(
+                SubscriptionOwnerType.APPLICATION, "owner",
+                SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
+    }
 
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-		this.node = new Node(nodeName, protocol, hostname, hostport,
-				hostportssl, authIdentityServiceClient.getCertificate(),
-				identityServiceClient.getCertificate());
-		this.trustedCertificates.put(
-				authIdentityServiceClient.getCertificate(),
-				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
-		this.trustedCertificates.put(identityServiceClient.getCertificate(),
-				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
-	}
+    private void configureNode() {
 
-	private void configureAttributeTypes() {
-		AttributeTypeEntity nameAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING, true,
-				true);
-		this.attributeTypes.add(nameAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				nameAttributeType, Locale.ENGLISH.getLanguage(), "Name", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				nameAttributeType, "nl", "Naam", null));
+        ResourceBundle properties = ResourceBundle.getBundle("config");
+        String nodeName = properties.getString("olas.node.name");
+        String protocol = properties.getString("olas.host.protocol");
+        String hostname = properties.getString("olas.host.name");
+        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
+        int hostportssl = Integer.parseInt(properties
+                .getString("olas.host.port.ssl"));
 
-		AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.LOGIN, false,
-				false);
-		this.attributeTypes.add(loginAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				loginAttributeType, Locale.ENGLISH.getLanguage(), "Login name",
-				null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				loginAttributeType, "nl", "Login naam", null));
-	}
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        this.node = new Node(nodeName, protocol, hostname, hostport,
+                hostportssl, authIdentityServiceClient.getCertificate(),
+                identityServiceClient.getCertificate());
+        this.trustedCertificates.put(
+                authIdentityServiceClient.getCertificate(),
+                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        this.trustedCertificates.put(identityServiceClient.getCertificate(),
+                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+    }
 
-	private void configureDevices() {
-		this.deviceClasses.add(new DeviceClass(
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS));
-		this.deviceClasses.add(new DeviceClass(
-				SafeOnlineConstants.MOBILE_DEVICE_CLASS,
-				SafeOnlineConstants.MOBILE_DEVICE_AUTH_CONTEXT_CLASS));
-		this.deviceClasses.add(new DeviceClass(
-				SafeOnlineConstants.PKI_DEVICE_CLASS,
-				SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
+    private void configureAttributeTypes() {
 
-		configurePasswordDevice();
-	}
+        AttributeTypeEntity nameAttributeType = new AttributeTypeEntity(
+                SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING, true,
+                true);
+        this.attributeTypes.add(nameAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                nameAttributeType, Locale.ENGLISH.getLanguage(), "Name", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                nameAttributeType, "nl", "Naam", null));
 
-	private void configurePasswordDevice() {
-		AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
-				DatatypeType.STRING, false, false);
-		AttributeTypeEntity passwordSeedAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
-				DatatypeType.STRING, false, false);
-		AttributeTypeEntity passwordAlgorithmAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
-				DatatypeType.STRING, false, false);
-		this.attributeTypes.add(passwordHashAttributeType);
-		this.attributeTypes.add(passwordSeedAttributeType);
-		this.attributeTypes.add(passwordAlgorithmAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordHashAttributeType, Locale.ENGLISH.getLanguage(),
-				"Password hash", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordSeedAttributeType, Locale.ENGLISH.getLanguage(),
-				"Password hash seed", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
-				"Password hash algorithm", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordHashAttributeType, "nl", "Wachtwoord hash", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordSeedAttributeType, "nl", "Wachtwoord hash seed", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordAlgorithmAttributeType, "nl",
-				"Wachtwoord hash algoritme", null));
+        AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(
+                SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.LOGIN, false,
+                false);
+        this.attributeTypes.add(loginAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                loginAttributeType, Locale.ENGLISH.getLanguage(), "Login name",
+                null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                loginAttributeType, "nl", "Login naam", null));
+    }
 
-		AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE,
-				DatatypeType.COMPOUNDED, false, false);
-		passwordDeviceAttributeType.setMultivalued(true);
-		passwordDeviceAttributeType.setDeviceAttribute(true);
-		passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0,
-				true);
-		passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1,
-				true);
-		passwordDeviceAttributeType.addMember(passwordAlgorithmAttributeType,
-				2, true);
-		this.attributeTypes.add(passwordDeviceAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordDeviceAttributeType, Locale.ENGLISH.getLanguage(),
-				"Password", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordDeviceAttributeType, "nl", "Wachtwoord", null));
+    private void configureDevices() {
 
-		this.devices.add(new Device(
-				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS, null,
-				"password/username-password.seam",
-				"password/register-password.seam",
-				"password/remove-password.seam",
-				"password/register-password.seam", null,
-				passwordDeviceAttributeType, null));
-		this.deviceDescriptions.add(new DeviceDescription(
-				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, "nl",
-				"Paswoord"));
-		this.deviceDescriptions.add(new DeviceDescription(
-				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, Locale.ENGLISH
-						.getLanguage(), "Password"));
-	}
+        this.deviceClasses.add(new DeviceClass(
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS));
+        this.deviceClasses.add(new DeviceClass(
+                SafeOnlineConstants.MOBILE_DEVICE_CLASS,
+                SafeOnlineConstants.MOBILE_DEVICE_AUTH_CONTEXT_CLASS));
+        this.deviceClasses.add(new DeviceClass(
+                SafeOnlineConstants.PKI_DEVICE_CLASS,
+                SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
 
-	@Override
-	public int getPriority() {
-		return Startable.PRIORITY_BOOTSTRAP;
-	}
+        configurePasswordDevice();
+    }
+
+    private void configurePasswordDevice() {
+
+        AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(
+                SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
+                DatatypeType.STRING, false, false);
+        AttributeTypeEntity passwordSeedAttributeType = new AttributeTypeEntity(
+                SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
+                DatatypeType.STRING, false, false);
+        AttributeTypeEntity passwordAlgorithmAttributeType = new AttributeTypeEntity(
+                SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
+                DatatypeType.STRING, false, false);
+        this.attributeTypes.add(passwordHashAttributeType);
+        this.attributeTypes.add(passwordSeedAttributeType);
+        this.attributeTypes.add(passwordAlgorithmAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                passwordHashAttributeType, Locale.ENGLISH.getLanguage(),
+                "Password hash", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                passwordSeedAttributeType, Locale.ENGLISH.getLanguage(),
+                "Password hash seed", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                passwordAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
+                "Password hash algorithm", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                passwordHashAttributeType, "nl", "Wachtwoord hash", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                passwordSeedAttributeType, "nl", "Wachtwoord hash seed", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                passwordAlgorithmAttributeType, "nl",
+                "Wachtwoord hash algoritme", null));
+
+        AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(
+                SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE,
+                DatatypeType.COMPOUNDED, false, false);
+        passwordDeviceAttributeType.setMultivalued(true);
+        passwordDeviceAttributeType.setDeviceAttribute(true);
+        passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0,
+                true);
+        passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1,
+                true);
+        passwordDeviceAttributeType.addMember(passwordAlgorithmAttributeType,
+                2, true);
+        this.attributeTypes.add(passwordDeviceAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                passwordDeviceAttributeType, Locale.ENGLISH.getLanguage(),
+                "Password", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+                passwordDeviceAttributeType, "nl", "Wachtwoord", null));
+
+        this.devices.add(new Device(
+                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, null,
+                "password/username-password.seam",
+                "password/register-password.seam",
+                "password/remove-password.seam",
+                "password/register-password.seam", null,
+                passwordDeviceAttributeType, null));
+        this.deviceDescriptions.add(new DeviceDescription(
+                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, "nl",
+                "Paswoord"));
+        this.deviceDescriptions.add(new DeviceDescription(
+                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, Locale.ENGLISH
+                        .getLanguage(), "Password"));
+    }
+
+    @Override
+    public int getPriority() {
+
+        return Startable.PRIORITY_BOOTSTRAP;
+    }
 }
