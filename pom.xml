@@ -822,6 +822,7 @@
 			1.0-beta-1
 		</jboss-jsfunit-richfaces.version>
 		<itext.version>1.4.8</itext.version>
+		<keytool-maven-plugin.version>1.0</keytool-maven-plugin.version>
 	</properties>
 
 	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
@@ -995,6 +996,11 @@
 						${jboss-packaging-maven-plugin.version}
 					</version>
 					<extensions>true</extensions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>keytool-maven-plugin</artifactId>
+					<version>${keytool-maven-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -1311,6 +1317,17 @@
 			</snapshots>
 			<releases>
 				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>codehaus</id>
+			<name>Codehaus Maven Plugin Repository</name>
+			<url>http://repository.codehaus.org/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
 			</releases>
 		</pluginRepository>
 		<pluginRepository>
