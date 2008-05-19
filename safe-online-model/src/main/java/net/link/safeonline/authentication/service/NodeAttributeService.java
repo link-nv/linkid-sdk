@@ -35,14 +35,14 @@ public interface NodeAttributeService {
 	 * In case of a multivalued compounded an array of Maps will be returned.
 	 * </p>
 	 * 
-	 * @param subjectLogin
+	 * @param subjectId
 	 * @param attributeName
 	 * @throws AttributeNotFoundException
 	 * @throws PermissionDeniedException
 	 * @throws SubjectNotFoundException
 	 * @throws AttributeTypeNotFoundException
 	 */
-	Object getAttributeValue(String subjectLogin, String attributeName)
+	Object getAttributeValue(String subjectId, String attributeName)
 			throws AttributeNotFoundException, PermissionDeniedException,
 			SubjectNotFoundException, AttributeTypeNotFoundException;
 }

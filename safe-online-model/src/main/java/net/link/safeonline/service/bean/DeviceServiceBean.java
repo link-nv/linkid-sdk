@@ -36,7 +36,6 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.DeviceMappingDAO;
-import net.link.safeonline.dao.DeviceRegistrationDAO;
 import net.link.safeonline.dao.OlasDAO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -51,7 +50,6 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
@@ -84,9 +82,6 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
 	@EJB
 	private DeviceMappingDAO deviceMappingDAO;
-
-	@EJB
-	private DeviceRegistrationDAO deviceRegistrationDAO;
 
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
@@ -236,7 +231,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 			}
 		}
 
-		checkDeviceRegistrations(device);
+		checkDeviceMappings(device);
 
 		// remove all device notification subscriptions
 		List<EndpointReferenceEntity> endpoints = this.endpointReferenceDAO
@@ -260,11 +255,11 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 		this.deviceDAO.removeDevice(name);
 	}
 
-	private void checkDeviceRegistrations(DeviceEntity device)
+	private void checkDeviceMappings(DeviceEntity device)
 			throws PermissionDeniedException {
-		List<DeviceRegistrationEntity> deviceRegistrations = this.deviceRegistrationDAO
-				.listRegisteredDevices(device);
-		if (!deviceRegistrations.isEmpty())
+		List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO
+				.listDeviceMappings(device);
+		if (!deviceMappings.isEmpty())
 			throw new PermissionDeniedException(
 					"Device still has device registrations",
 					"errorPermissionDeviceHasRegistrations");

@@ -17,14 +17,16 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.DeviceSubjectDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.notification.message.MessageHandler;
-import net.link.safeonline.service.DeviceRegistrationService;
+import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -32,7 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Message handler for topic: {@link SafeOnlineConstants#TOPIC_REMOVE_USER}
+ * Message handler for topic: {@link SafeOnlineConstants#TOPIC_REMOVE_USER}.
  * 
  * @author wvdhaute
  * 
@@ -44,7 +46,7 @@ public class RemoveUserMessageHandler implements MessageHandler {
 
 	private UserIdMappingService userIdMappingService;
 
-	private DeviceRegistrationService deviceRegistrationService;
+	private DeviceMappingService deviceMappingService;
 
 	private SubjectService subjectService;
 
@@ -54,13 +56,15 @@ public class RemoveUserMessageHandler implements MessageHandler {
 
 	private SubjectDAO subjectDAO;
 
+	private DeviceSubjectDAO deviceSubjectDAO;
+
 	public void init() {
 		this.userIdMappingService = EjbUtils.getEJB(
 				"SafeOnline/UserIdMappingServiceBean/local",
 				UserIdMappingService.class);
-		this.deviceRegistrationService = EjbUtils.getEJB(
-				"SafeOnline/DeviceRegistrationServiceBean/local",
-				DeviceRegistrationService.class);
+		this.deviceMappingService = EjbUtils.getEJB(
+				"SafeOnline/DeviceMappingServiceBean/local",
+				DeviceMappingService.class);
 		this.subjectService = EjbUtils.getEJB(
 				"SafeOnline/SubjectServiceBean/local", SubjectService.class);
 		this.attributeDAO = EjbUtils.getEJB(
@@ -70,20 +74,25 @@ public class RemoveUserMessageHandler implements MessageHandler {
 				SubjectIdentifierDAO.class);
 		this.subjectDAO = EjbUtils.getEJB("SafeOnline/SubjectDAOBean/local",
 				SubjectDAO.class);
+		this.deviceSubjectDAO = EjbUtils
+				.getEJB("SafeOnline/DeviceSubjectDAOBean/local",
+						DeviceSubjectDAO.class);
 	}
 
 	public void handleMessage(String destination, List<String> message) {
 		String id = message.get(0);
-		DeviceRegistrationEntity deviceRegistration = this.deviceRegistrationService
-				.getDeviceRegistration(id);
-		LOG.debug("remove device registration for " + id + " (device="
-				+ deviceRegistration.getDevice().getName() + ")");
-		SubjectEntity deviceSubject = this.subjectService
-				.findSubject(deviceRegistration.getId());
+		LOG.debug("remove device user: " + id);
+		DeviceSubjectEntity deviceSubject = this.subjectService
+				.findDeviceSubject(id);
 		if (null != deviceSubject) {
-			this.attributeDAO.removeAttributes(deviceSubject);
-			this.subjectIdentifierDAO.removeSubjectIdentifiers(deviceSubject);
-			this.subjectDAO.removeSubject(deviceSubject);
+			for (SubjectEntity deviceRegistration : deviceSubject
+					.getRegistrations()) {
+				this.attributeDAO.removeAttributes(deviceRegistration);
+				this.subjectIdentifierDAO
+						.removeSubjectIdentifiers(deviceRegistration);
+				this.subjectDAO.removeSubject(deviceRegistration);
+			}
+			this.deviceSubjectDAO.removeSubject(deviceSubject);
 		}
 	}
 
@@ -108,20 +117,16 @@ public class RemoveUserMessageHandler implements MessageHandler {
 			DeviceEntity device) {
 		List<String> returnMessage = new LinkedList<String>();
 		String userId = message.get(0);
-		List<DeviceRegistrationEntity> deviceRegistrations;
+		DeviceMappingEntity deviceMapping;
 		try {
-			deviceRegistrations = this.deviceRegistrationService
-					.listDeviceRegistrations(userId, device.getName());
+			deviceMapping = this.deviceMappingService.getDeviceMapping(userId,
+					device.getName());
 		} catch (SubjectNotFoundException e) {
 			return null;
 		} catch (DeviceNotFoundException e) {
 			return null;
 		}
-		if (0 == deviceRegistrations.size())
-			return null;
-		for (DeviceRegistrationEntity deviceRegistration : deviceRegistrations) {
-			returnMessage.add(deviceRegistration.getId());
-		}
+		returnMessage.add(deviceMapping.getId());
 		return returnMessage;
 	}
 

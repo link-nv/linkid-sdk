@@ -63,7 +63,8 @@ public interface IdentityService {
 			throws AttributeTypeNotFoundException;
 
 	/**
-	 * List the user visible attributes for the given device.
+	 * List the user visible attributes for the given device for all
+	 * registrations.
 	 * 
 	 * @param deviceId
 	 * @param locale
@@ -71,7 +72,7 @@ public interface IdentityService {
 	 * @throws PermissionDeniedException
 	 * 
 	 */
-	List<AttributeDO> listAttributes(String deviceId,
+	List<List<AttributeDO>> listAttributes(String deviceId,
 			AttributeTypeEntity attributeType, Locale locale)
 			throws PermissionDeniedException, AttributeTypeNotFoundException;
 

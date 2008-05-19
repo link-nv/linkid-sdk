@@ -26,7 +26,7 @@ import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
-import net.link.safeonline.dao.bean.DeviceRegistrationDAOBean;
+import net.link.safeonline.dao.bean.DeviceSubjectDAOBean;
 import net.link.safeonline.dao.bean.OlasDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
@@ -49,7 +49,6 @@ import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
@@ -58,6 +57,7 @@ import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -77,7 +77,6 @@ import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;
-import net.link.safeonline.service.bean.DeviceRegistrationServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
@@ -111,10 +110,10 @@ public class DemoStartableBeanTest {
 			PasswordManagerBean.class, SubjectServiceBean.class,
 			SubjectIdentifierDAOBean.class, IdGeneratorBean.class,
 			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class,
-			OlasDAOBean.class, DeviceRegistrationServiceBean.class,
-			DeviceRegistrationDAOBean.class, DevicePolicyServiceBean.class,
+			OlasDAOBean.class, DevicePolicyServiceBean.class,
 			DevicesBean.class, NotificationProducerServiceBean.class,
-			NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class };
+			NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class,
+			DeviceSubjectDAOBean.class };
 
 	@Before
 	public void setUp() throws Exception {
@@ -131,7 +130,7 @@ public class DemoStartableBeanTest {
 				AttributeTypeDescriptionEntity.class,
 				AttributeProviderEntity.class, DeviceEntity.class,
 				DeviceClassEntity.class, DeviceMappingEntity.class,
-				DeviceRegistrationEntity.class, DeviceDescriptionEntity.class,
+				DeviceSubjectEntity.class, DeviceDescriptionEntity.class,
 				DevicePropertyEntity.class, DeviceClassDescriptionEntity.class,
 				AllowedDeviceEntity.class,
 				CompoundedAttributeTypeMemberEntity.class,
@@ -151,8 +150,8 @@ public class DemoStartableBeanTest {
 		jmxTestUtils.registerActionHandler(
 				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
 				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						return authCertificate;
 					}
 				});
@@ -165,8 +164,8 @@ public class DemoStartableBeanTest {
 		jmxTestUtils.registerActionHandler(
 				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
 				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						return certificate;
 					}
 				});

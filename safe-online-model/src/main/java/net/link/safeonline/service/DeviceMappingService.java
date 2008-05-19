@@ -7,11 +7,14 @@
 
 package net.link.safeonline.service;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.entity.SubjectEntity;
 
 /**
  * <h2>{@link DeviceMappingService} - Service for device mapping registration.</h2>
@@ -35,4 +38,6 @@ public interface DeviceMappingService {
 			throws SubjectNotFoundException, DeviceNotFoundException;
 
 	public DeviceMappingEntity getDeviceMapping(String id);
+
+	public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject);
 }

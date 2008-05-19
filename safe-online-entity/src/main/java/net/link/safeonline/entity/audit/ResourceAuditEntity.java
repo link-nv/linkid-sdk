@@ -78,6 +78,10 @@ public class ResourceAuditEntity implements Serializable {
 
 	private Date eventDate;
 
+	public ResourceAuditEntity() {
+		// empty
+	}
+
 	public ResourceAuditEntity(AuditContextEntity auditContext,
 			ResourceNameType resourceName, ResourceLevelType resourceLevel,
 			String sourceComponent, String message) {
@@ -153,22 +157,19 @@ public class ResourceAuditEntity implements Serializable {
 
 	public interface QueryInterface {
 		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
-		void deleteRecords(@QueryParam("contextId")
-		Long contextId);
+		void deleteRecords(@QueryParam("contextId") Long contextId);
 
 		@QueryMethod(QUERY_ALL)
 		List<ResourceAuditEntity> listRecords();
 
 		@QueryMethod(QUERY_WHERE_CONTEXTID)
-		List<ResourceAuditEntity> listRecords(@QueryParam("contextId")
-		Long id);
+		List<ResourceAuditEntity> listRecords(@QueryParam("contextId") Long id);
 
 		@QueryMethod(COUNT_WHERE_CONTEXTID)
-		long countRecords(@QueryParam("contextId")
-		long id);
+		long countRecords(@QueryParam("contextId") long id);
 
 		@QueryMethod(QUERY_WHERE_AGELIMIT)
-		List<ResourceAuditEntity> listRecordsSince(@QueryParam("ageLimit")
-		Date ageLimit);
+		List<ResourceAuditEntity> listRecordsSince(
+				@QueryParam("ageLimit") Date ageLimit);
 	}
 }

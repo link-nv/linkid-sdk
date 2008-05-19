@@ -38,9 +38,9 @@
 
 		<h2>#{msgs.registeredDevices}</h2>
 
-		<a4j:form id="registeredDevicesForm">
-			<rich:dataTable id="deviceRegistrationsTable"
-				value="#{deviceRegistrations}" var="item">
+		<a4j:form id="deviceMappingsForm">
+			<rich:dataTable id="deviceMappingsTable" value="#{deviceMappings}"
+				var="item">
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:outputText value="#{item.friendlyName}" />

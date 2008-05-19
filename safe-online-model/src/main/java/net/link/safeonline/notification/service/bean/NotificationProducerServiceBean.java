@@ -12,7 +12,10 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
+import net.link.safeonline.audit.AuditContextManager;
+import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -20,6 +23,8 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.audit.ResourceLevelType;
+import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.notification.dao.EndpointReferenceDAO;
@@ -27,6 +32,7 @@ import net.link.safeonline.notification.dao.NotificationProducerDAO;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.notification.message.MessageHandlerManager;
 import net.link.safeonline.notification.service.NotificationProducerService;
+import net.link.safeonline.sdk.ws.exception.SafeOnlineClientTransportException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,8 +44,12 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
+@Interceptors( { AuditContextManager.class })
 public class NotificationProducerServiceBean implements
 		NotificationProducerService {
+
+	private static final Log LOG = LogFactory
+			.getLog(NotificationProducerServiceBean.class);
 
 	@EJB
 	private NotificationProducerDAO notificationProducerDAO;
@@ -53,8 +63,8 @@ public class NotificationProducerServiceBean implements
 	@EJB
 	private EndpointReferenceDAO endpointReferenceDAO;
 
-	private static final Log LOG = LogFactory
-			.getLog(NotificationProducerServiceBean.class);
+	@EJB
+	private ResourceAuditLogger resourceAuditLogger;
 
 	public void subscribe(String topic, String address,
 			X509Certificate certificate) throws PermissionDeniedException {
@@ -125,7 +135,16 @@ public class NotificationProducerServiceBean implements
 			return;
 		}
 		for (EndpointReferenceEntity consumer : subscription.getConsumers()) {
-			MessageHandlerManager.sendMessage(topic, message, consumer);
+			try {
+				MessageHandlerManager.sendMessage(topic, message, consumer);
+			} catch (SafeOnlineClientTransportException e) {
+				LOG.debug("Failed to send messsage for topic " + topic
+						+ " to consumer: " + e.getLocation());
+				this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS,
+						ResourceLevelType.RESOURCE_UNAVAILABLE,
+						e.getLocation(),
+						"Failed to send notification for topic " + topic);
+			}
 		}
 	}
 }

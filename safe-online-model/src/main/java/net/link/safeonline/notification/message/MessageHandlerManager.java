@@ -15,6 +15,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.notification.message.handler.RemoveUserMessageHandler;
+import net.link.safeonline.sdk.ws.exception.SafeOnlineClientTransportException;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClient;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClientImpl;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
@@ -59,7 +60,8 @@ public class MessageHandlerManager {
 
 	public static void sendMessage(String topic, List<String> message,
 			EndpointReferenceEntity consumer)
-			throws MessageHandlerNotFoundException {
+			throws MessageHandlerNotFoundException,
+			SafeOnlineClientTransportException {
 		MessageHandler messageHandler = messageHandlerMap.get(topic);
 		if (null == messageHandler)
 			throw new MessageHandlerNotFoundException(topic);

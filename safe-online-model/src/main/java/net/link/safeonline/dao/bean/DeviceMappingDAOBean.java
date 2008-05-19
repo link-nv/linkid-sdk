@@ -75,4 +75,9 @@ public class DeviceMappingDAOBean implements DeviceMappingDAO {
 	public void removeDeviceMappings(SubjectEntity subject) {
 		this.queryObject.deleteAll(subject);
 	}
+
+	public List<DeviceMappingEntity> listDeviceMappings(DeviceEntity device) {
+
+		return this.queryObject.listDeviceMappings(device);
+	}
 }

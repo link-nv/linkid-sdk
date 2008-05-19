@@ -14,6 +14,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 
 /**
  * Service bean that manages the mapping of the subject's userId with the login
@@ -98,12 +99,53 @@ public interface SubjectService {
 	List<String> listUsers(String prefix) throws AttributeTypeNotFoundException;
 
 	/**
-	 * Adds a 'device subject'. This is used at the moment by the external
-	 * device webapps for their user-device mapping. Does NOT create a login
-	 * attribute nor add a login-userId identifier mapping.
+	 * Adds a 'device subject'. This is used by external device issuers. The
+	 * userId matches the device mapping ID returned by OLAS. Does NOT create a
+	 * login attribute nor add a login-userId identifier mapping.
 	 * 
 	 * @param userId
 	 * @return the subject.
 	 */
-	SubjectEntity addDeviceSubject(String userId);
+	DeviceSubjectEntity addDeviceSubject(String userId);
+
+	/**
+	 * Adds a device registration subject. This subject represent a specific
+	 * device registration. This is used by external device issuers. No login
+	 * attribute nor identifier mapping will be created.
+	 * 
+	 * @return
+	 */
+	SubjectEntity addDeviceRegistration();
+
+	/**
+	 * Finds the device subject for a given user ID. Returns <code>null</code>
+	 * if the entity could not be found. This is used by external device
+	 * issuers.
+	 * 
+	 * @param deviceUserId
+	 * @return the subject or <code>null</code> if the subject was not found.
+	 */
+	DeviceSubjectEntity findDeviceSubject(String deviceUserId);
+
+	/**
+	 * Gives back the device subject for a given device registration.
+	 * 
+	 * @param deviceRegistration
+	 * @return the subject.
+	 * @exception SubjectNotFoundException
+	 * 
+	 */
+	DeviceSubjectEntity getDeviceSubject(SubjectEntity deviceRegistration)
+			throws SubjectNotFoundException;
+
+	/**
+	 * Gives back the device subject for a given user ID.
+	 * 
+	 * @param deviceUserId
+	 * @return the subject
+	 * @exception SubjectNotFoundException
+	 */
+	DeviceSubjectEntity getDeviceSubject(String deviceUserId)
+			throws SubjectNotFoundException;
+
 }

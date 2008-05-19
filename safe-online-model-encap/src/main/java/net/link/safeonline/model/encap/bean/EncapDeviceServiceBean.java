@@ -34,6 +34,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.model.encap.EncapDeviceServiceRemote;
 import net.link.safeonline.service.SubjectService;
@@ -66,30 +67,29 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 	public String authenticate(String mobile, String challengeId,
 			String mobileOTP) throws MalformedURLException, MobileException,
 			SubjectNotFoundException, MobileAuthenticationException {
-		SubjectEntity deviceSubject = this.subjectIdentifierDAO.findSubject(
-				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
-		if (null == deviceSubject)
+		SubjectEntity deviceRegistration = this.subjectIdentifierDAO
+				.findSubject(SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN,
+						mobile);
+		if (null == deviceRegistration)
 			throw new SubjectNotFoundException();
+		DeviceSubjectEntity deviceSubject = this.subjectService
+				.getDeviceSubject(deviceRegistration);
 
 		boolean result = this.mobileManager.verifyOTP(challengeId, mobileOTP);
 		if (false == result) {
-			this.historyDAO.addHistoryEntry(new Date(), deviceSubject,
+			this.historyDAO.addHistoryEntry(new Date(), deviceRegistration,
 					HistoryEventType.LOGIN_INCORRECT_MOBILE_TOKEN, null, null);
 			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, deviceSubject.getUserId(),
+					SecurityThreatType.DECEPTION, deviceSubject.getId(),
 					"incorrect mobile token");
 			throw new MobileAuthenticationException();
 		}
-		return deviceSubject.getUserId();
+		return deviceSubject.getId();
 	}
 
 	public String register(String deviceUserId, String mobile)
 			throws MobileException, MalformedURLException,
 			MobileRegistrationException, ArgumentIntegrityException {
-		SubjectEntity deviceSubject = this.subjectService
-				.findSubject(deviceUserId);
-		if (null == deviceSubject)
-			deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
 
 		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
 				.findSubject(SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN,
@@ -98,15 +98,24 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 			throw new ArgumentIntegrityException();
 		}
 
+		DeviceSubjectEntity deviceSubject = this.subjectService
+				.findDeviceSubject(deviceUserId);
+		if (null == deviceSubject) {
+			deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
+		}
+		SubjectEntity deviceRegistration = this.subjectService
+				.addDeviceRegistration();
+		deviceSubject.getRegistrations().add(deviceRegistration);
+
 		String activationCode = this.mobileManager.activate(mobile,
-				deviceSubject);
+				deviceRegistration);
 		if (null == activationCode)
 			throw new MobileRegistrationException();
-		setMobile(deviceSubject, mobile);
+		setMobile(deviceRegistration, mobile);
 
 		this.subjectIdentifierDAO.addSubjectIdentifier(
 				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile,
-				deviceSubject);
+				deviceRegistration);
 		return activationCode;
 	}
 
@@ -128,10 +137,13 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 	public void remove(String deviceUserId, String mobile)
 			throws MobileException, MalformedURLException,
 			SubjectNotFoundException {
-		SubjectEntity deviceSubject = this.subjectService
-				.findSubject(deviceUserId);
-		if (null == deviceSubject)
-			throw new MobileException("device user not found");
+		DeviceSubjectEntity deviceSubject = this.subjectService
+				.getDeviceSubject(deviceUserId);
+		SubjectEntity deviceRegistration = this.subjectIdentifierDAO
+				.findSubject(SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN,
+						mobile);
+		if (null == deviceRegistration)
+			throw new MobileException("device registration not found");
 
 		AttributeTypeEntity mobileAttributeType;
 		try {
@@ -140,15 +152,16 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}
-		this.subjectIdentifierDAO.removeSubjectIdentifier(deviceSubject,
+		this.subjectIdentifierDAO.removeSubjectIdentifier(deviceRegistration,
 				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
 		List<AttributeEntity> mobileAttributes = this.attributeDAO
-				.listAttributes(deviceSubject, mobileAttributeType);
+				.listAttributes(deviceRegistration, mobileAttributeType);
 		for (AttributeEntity mobileAttribute : mobileAttributes) {
 			if (mobileAttribute.getStringValue().equals(mobile))
 				this.attributeDAO.removeAttribute(mobileAttribute);
 		}
 		this.mobileManager.remove(mobile);
+		deviceSubject.getRegistrations().remove(deviceRegistration);
 	}
 
 	public void update(SubjectEntity subject, String oldMobile, String newMobile) {
@@ -157,14 +170,16 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 
 	public String requestOTP(String mobile) throws MalformedURLException,
 			MobileException, SubjectNotFoundException {
-		SubjectEntity deviceSubject = this.subjectIdentifierDAO.findSubject(
-				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
-		if (null == deviceSubject)
+		SubjectEntity deviceRegistration = this.subjectIdentifierDAO
+				.findSubject(SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN,
+						mobile);
+		if (null == deviceRegistration)
 			throw new SubjectNotFoundException();
 		return this.mobileManager.requestOTP(mobile);
 	}
 
-	public List<String> getMobiles(String login) {
+	public List<AttributeEntity> getMobiles(String deviceUserId)
+			throws SubjectNotFoundException {
 		AttributeTypeEntity mobileAttributeType;
 		try {
 			mobileAttributeType = this.attributeTypeDAO
@@ -172,13 +187,14 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}
-		List<String> mobileList = new LinkedList<String>();
-		SubjectEntity subject = this.subjectService
-				.findSubjectFromUserName(login);
-		List<AttributeEntity> mobileAttributes = this.attributeDAO
-				.listAttributes(subject, mobileAttributeType);
-		for (AttributeEntity mobileAttribute : mobileAttributes)
-			mobileList.add(mobileAttribute.getStringValue());
+		List<AttributeEntity> mobileList = new LinkedList<AttributeEntity>();
+		DeviceSubjectEntity deviceSubject = this.subjectService
+				.getDeviceSubject(deviceUserId);
+		for (SubjectEntity deviceRegistration : deviceSubject
+				.getRegistrations()) {
+			mobileList.addAll(this.attributeDAO.listAttributes(
+					deviceRegistration, mobileAttributeType));
+		}
 		return mobileList;
 	}
 }

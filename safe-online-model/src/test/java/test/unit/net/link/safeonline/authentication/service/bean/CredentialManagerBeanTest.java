@@ -29,6 +29,7 @@ import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.bean.CredentialManagerBean;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.identity.IdentityStatementFactory;
 import net.link.safeonline.pkix.model.PkiProvider;
@@ -138,8 +139,14 @@ public class CredentialManagerBeanTest extends TestCase {
 				"test-trust-domain", true);
 		String identifierDomain = "test-identifier-domain";
 		String identifier = "test-identifier";
-		String login = "test-subject-login";
-		SubjectEntity subject = new SubjectEntity(login);
+
+		String deviceMappingId = UUID.randomUUID().toString();
+		String deviceRegistrationId = UUID.randomUUID().toString();
+		DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
+				deviceMappingId);
+		SubjectEntity deviceRegistration = new SubjectEntity(
+				deviceRegistrationId);
+		deviceSubject.getRegistrations().add(deviceRegistration);
 
 		byte[] authenticationStatementData = AuthenticationStatementFactory
 				.createAuthenticationStatement(sessionId, applicationId,
@@ -161,7 +168,9 @@ public class CredentialManagerBeanTest extends TestCase {
 				.andStubReturn(identifier);
 		expect(
 				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
-						identifier)).andStubReturn(subject);
+						identifier)).andStubReturn(deviceRegistration);
+		expect(this.mockSubjectService.getDeviceSubject(deviceRegistration))
+				.andReturn(deviceSubject);
 
 		// prepare
 		replay(this.mockObjects);
@@ -199,11 +208,16 @@ public class CredentialManagerBeanTest extends TestCase {
 
 	public void testMergeIdentityStatement() throws Exception {
 		// setup
-		String deviceId = UUID.randomUUID().toString();
-		SubjectEntity deviceSubject = new SubjectEntity(deviceId);
+		String deviceMappingId = UUID.randomUUID().toString();
+		String deviceRegistrationId = UUID.randomUUID().toString();
+		DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
+				deviceMappingId);
+		SubjectEntity deviceRegistration = new SubjectEntity(
+				deviceRegistrationId);
+		deviceSubject.getRegistrations().add(deviceRegistration);
 
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(deviceId, this.signer,
+				.createIdentityStatement(deviceMappingId, this.signer,
 						this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
@@ -242,10 +256,10 @@ public class CredentialManagerBeanTest extends TestCase {
 		expect(
 				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
 						identifier)).andStubReturn(null);
-		this.mockPkiProvider.storeAdditionalAttributes(deviceSubject,
+		this.mockPkiProvider.storeAdditionalAttributes(deviceRegistration,
 				this.certificate);
-		this.mockPkiProvider.storeDeviceAttribute(deviceSubject);
-		this.mockPkiProvider.storeDeviceUserAttribute(deviceSubject);
+		this.mockPkiProvider.storeDeviceAttribute(deviceRegistration);
+		this.mockPkiProvider.storeDeviceUserAttribute(deviceRegistration);
 
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
 		expect(this.mockAttributeTypeDAO.getAttributeType(surnameAttribute))
@@ -254,25 +268,29 @@ public class CredentialManagerBeanTest extends TestCase {
 		expect(this.mockAttributeTypeDAO.getAttributeType(givenNameAttribute))
 				.andStubReturn(givenNameAttributeType);
 
-		expect(this.mockSubjectService.findSubject(deviceId)).andReturn(null);
-		expect(this.mockSubjectService.addDeviceSubject(deviceId)).andReturn(
-				deviceSubject);
+		expect(this.mockSubjectService.findDeviceSubject(deviceMappingId))
+				.andReturn(null);
+		expect(this.mockSubjectService.addDeviceSubject(deviceMappingId))
+				.andReturn(deviceSubject);
+		expect(this.mockSubjectService.addDeviceRegistration()).andReturn(
+				deviceRegistration);
 
 		// expectations
 		this.mockAttributeDAO.addOrUpdateAttribute(surnameAttributeType,
-				deviceSubject, 0, this.identityProvider.getSurname());
+				deviceRegistration, 0, this.identityProvider.getSurname());
 		this.mockAttributeDAO.addOrUpdateAttribute(givenNameAttributeType,
-				deviceSubject, 0, this.identityProvider.getGivenName());
+				deviceRegistration, 0, this.identityProvider.getGivenName());
 		this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain,
-				identifier, deviceSubject);
+				identifier, deviceRegistration);
 		this.mockSubjectIdentifierDAO.removeOtherSubjectIdentifiers(
-				identifierDomain, identifier, deviceSubject);
+				identifierDomain, identifier, deviceRegistration);
 
 		// prepare
 		replay(this.mockObjects);
 
 		// operate
-		this.testedInstance.mergeIdentityStatement(deviceId, identityStatement);
+		this.testedInstance.mergeIdentityStatement(deviceMappingId,
+				identityStatement);
 
 		// verify
 		verify(this.mockObjects);
@@ -281,11 +299,16 @@ public class CredentialManagerBeanTest extends TestCase {
 	public void testMergeIdentityStatementFailsIfAnotherSubjectAlreadyRegisteredTheCert()
 			throws Exception {
 		// setup
-		String deviceId = UUID.randomUUID().toString();
-		SubjectEntity deviceSubject = new SubjectEntity(deviceId);
+		String deviceMappingId = UUID.randomUUID().toString();
+		String deviceRegistrationId = UUID.randomUUID().toString();
+		DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
+				deviceMappingId);
+		SubjectEntity deviceRegistration = new SubjectEntity(
+				deviceRegistrationId);
+		deviceSubject.getRegistrations().add(deviceRegistration);
 
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(deviceId, this.signer,
+				.createIdentityStatement(deviceMappingId, this.signer,
 						this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
@@ -326,16 +349,19 @@ public class CredentialManagerBeanTest extends TestCase {
 				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
 						identifier)).andStubReturn(anotherSubject);
 
-		expect(this.mockSubjectService.findSubject(deviceId)).andReturn(null);
-		expect(this.mockSubjectService.addDeviceSubject(deviceId)).andReturn(
-				deviceSubject);
+		expect(this.mockSubjectService.findDeviceSubject(deviceMappingId))
+				.andReturn(null);
+		expect(this.mockSubjectService.addDeviceSubject(deviceMappingId))
+				.andReturn(deviceSubject);
+		expect(this.mockSubjectService.addDeviceRegistration()).andReturn(
+				deviceRegistration);
 
 		// prepare
 		replay(this.mockObjects);
 
 		// operate & verify
 		try {
-			this.testedInstance.mergeIdentityStatement(deviceId,
+			this.testedInstance.mergeIdentityStatement(deviceMappingId,
 					identityStatement);
 			fail();
 		} catch (PermissionDeniedException e) {

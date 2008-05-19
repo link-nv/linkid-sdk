@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -13,8 +12,7 @@
 	<packaging>ear</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Demo Deploy</name>
-	<description>
-		SafeOnline Deployable Demo Application Package
+	<description> SafeOnline Deployable Demo Application Package 
 	</description>
 	<build>
 		<finalName>SafeOnlineDemo</finalName>
@@ -27,244 +25,158 @@
 					<modules>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-ws-common
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-ws-common </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-attrib-ws
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-attrib-ws </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-data-ws</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-idmapping-ws
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-idmapping-ws </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-j2ee-util
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-ping-ws </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId> safe-online-j2ee-util </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-sdk</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-util
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-demo-util </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-ticket-keystore
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-demo-ticket-keystore </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-payment-keystore
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-demo-payment-keystore </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-lawyer-keystore
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-demo-lawyer-keystore </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-mandate-keystore
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-demo-mandate-keystore </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-webapp
-							</artifactId>
+							<artifactId> safe-online-demo-webapp </artifactId>
 							<contextRoot>/demo</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-remote-service
-							</artifactId>
+							<artifactId> safe-online-demo-remote-service </artifactId>
 						</sarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-ticket
-							</artifactId>
+							<artifactId> safe-online-demo-ticket </artifactId>
 						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-ticket-webapp
-							</artifactId>
+							<artifactId> safe-online-demo-ticket-webapp </artifactId>
 							<contextRoot>/demo-ticket</contextRoot>
 						</webModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-payment
-							</artifactId>
+							<artifactId> safe-online-demo-payment </artifactId>
 						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-payment-webapp
-							</artifactId>
+							<artifactId> safe-online-demo-payment-webapp </artifactId>
 							<contextRoot>/demo-payment</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-payment-service
-							</artifactId>
+							<artifactId> safe-online-demo-payment-service </artifactId>
 						</sarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-lawyer
-							</artifactId>
+							<artifactId> safe-online-demo-lawyer </artifactId>
 						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-lawyer-webapp
-							</artifactId>
+							<artifactId> safe-online-demo-lawyer-webapp </artifactId>
 							<contextRoot>/demo-lawyer</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-lawyer-service
-							</artifactId>
+							<artifactId> safe-online-demo-lawyer-service </artifactId>
 						</sarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-prescription
-							</artifactId>
+							<artifactId> safe-online-demo-prescription </artifactId>
 						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-prescription-webapp
-							</artifactId>
-							<contextRoot>
-								/demo-prescription
-							</contextRoot>
+							<artifactId> safe-online-demo-prescription-webapp </artifactId>
+							<contextRoot> /demo-prescription </contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-prescription-service
-							</artifactId>
+							<artifactId> safe-online-demo-prescription-service </artifactId>
 						</sarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-mandate
-							</artifactId>
+							<artifactId> safe-online-demo-mandate </artifactId>
 						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-mandate-webapp
-							</artifactId>
+							<artifactId> safe-online-demo-mandate-webapp </artifactId>
 							<contextRoot>/demo-mandate</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-mandate-service
-							</artifactId>
+							<artifactId> safe-online-demo-mandate-service </artifactId>
 						</sarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-notification-consumer-ws
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-notification-consumer-ws </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-notification-consumer-ws-abstract-impl
+							<artifactId> safe-online-notification-consumer-ws-abstract-impl 
 							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-notification-producer-ws
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
+							<artifactId> safe-online-notification-producer-ws </artifactId>
+							<includeInApplicationXml> true </includeInApplicationXml>
 						</jarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-ws-model
-							</artifactId>
+							<artifactId> safe-online-demo-ws-model </artifactId>
 						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-ws-runtime
-							</artifactId>
-							<contextRoot>
-								/safe-online-demo-ws
-							</contextRoot>
+							<artifactId> safe-online-demo-ws-runtime </artifactId>
+							<contextRoot> /safe-online-demo-ws </contextRoot>
 						</webModule>
 					</modules>
 					<jboss>
@@ -394,9 +306,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>
-				safe-online-demo-prescription-keystore
-			</artifactId>
+			<artifactId> safe-online-demo-prescription-keystore </artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -408,18 +318,14 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>
-				safe-online-demo-prescription-webapp
-			</artifactId>
+			<artifactId> safe-online-demo-prescription-webapp </artifactId>
 			<type>war</type>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>
-				safe-online-demo-prescription-service
-			</artifactId>
+			<artifactId> safe-online-demo-prescription-service </artifactId>
 			<type>sar</type>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
@@ -488,17 +394,19 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>
-				safe-online-notification-consumer-ws
-			</artifactId>
+			<artifactId>safe-online-ping-ws</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>
-				safe-online-notification-producer-ws
-			</artifactId>
+			<artifactId> safe-online-notification-consumer-ws </artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId> safe-online-notification-producer-ws </artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>

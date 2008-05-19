@@ -12,8 +12,6 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.xml.ws.BindingProvider;
-import javax.xml.ws.wsaddressing.W3CEndpointReference;
-import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 
 import net.lin_k.safe_online.notification.consumer.NotificationConsumerPort;
 import net.lin_k.safe_online.notification.consumer.NotificationConsumerService;
@@ -24,10 +22,13 @@ import net.link.safeonline.notification.consumer.ws.NotificationConsumerServiceF
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.exception.SafeOnlineClientTransportException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
+
+import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation of the WS-Notification consumer interface. This class is using
@@ -78,19 +79,10 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
 	}
 
-	private W3CEndpointReference getEndpointReference(String address) {
-		W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
-		builder.address(address);
-		return builder.build();
-	}
-
 	public void sendNotification(String topic, String destination,
-			List<String> message) {
+			List<String> message) throws SafeOnlineClientTransportException {
 		LOG.debug("send notification to " + this.location + " for topic: "
 				+ topic + " (destination=" + destination + ")");
-
-		// TODO: wrong, should be the producer's EP, not the consumers ...
-		W3CEndpointReference endpoint = getEndpointReference(this.location);
 
 		TopicExpressionType topicExpression = new TopicExpressionType();
 		topicExpression.setDialect(TOPIC_DIALECT_SIMPLE);
@@ -98,7 +90,6 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor
 
 		Notify notifications = new Notify();
 		NotificationMessageHolderType notification = new NotificationMessageHolderType();
-		notification.setProducerReference(endpoint);
 		notification.setTopic(topicExpression);
 		Message notificationMessage = new Message();
 		notificationMessage.getContent().addAll(message);
@@ -108,6 +99,11 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor
 
 		SafeOnlineTrustManager.configureSsl();
 
-		this.port.notify(notifications);
+		try {
+			this.port.notify(notifications);
+		} catch (ClientTransportException e) {
+			LOG.debug("Failed to send notification");
+			throw new SafeOnlineClientTransportException(this.location);
+		}
 	}
 }

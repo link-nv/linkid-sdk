@@ -43,7 +43,8 @@ import org.opensaml.xml.ConfigurationException;
 /**
  * Implementation class for the SAML2 browser POST authentication protocol. This
  * class is used to send out a SAML2 authentication request to an external
- * device provider. And receive a SAML2 reponse from that device provider.
+ * device provider. And receive a SAML2 reponse from that device provider which
+ * should contain the device mapping id.
  * 
  * <p>
  * Optional configuration parameters:

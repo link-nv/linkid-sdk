@@ -21,8 +21,6 @@ public class ProtocolContext implements Serializable {
 
 	private String mappingId;
 
-	private String registrationId;
-
 	private String application;
 
 	private String issuer;
@@ -36,7 +34,6 @@ public class ProtocolContext implements Serializable {
 	private ProtocolContext(HttpSession session) {
 		this.session = session;
 		this.session.setAttribute(PROTOCOL_CONTEXT, this);
-		this.registrationId = null;
 	}
 
 	public static ProtocolContext getProtocolContext(HttpSession session) {
@@ -62,14 +59,6 @@ public class ProtocolContext implements Serializable {
 
 	public void setMappingId(String mappingId) {
 		this.mappingId = mappingId;
-	}
-
-	public String getRegistrationId() {
-		return this.registrationId;
-	}
-
-	public void setRegistrationId(String registrationId) {
-		this.registrationId = registrationId;
 	}
 
 	public String getApplication() {

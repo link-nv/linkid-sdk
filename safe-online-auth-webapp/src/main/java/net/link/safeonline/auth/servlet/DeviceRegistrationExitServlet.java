@@ -28,15 +28,16 @@ import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
-import net.link.safeonline.service.DeviceRegistrationService;
+import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 /**
  * Device registration exit page.
  * 
  * This is the servlet to which to external device provider returns after
- * registration has finished. It redirects to the login servlet.
+ * registration has finished. It redirects to the login servlet after first
+ * polling if registration was successfull.
  * 
  * @author wvdhaute
  * 
@@ -53,7 +54,7 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 
 	private DeviceDAO deviceDAO;
 
-	private DeviceRegistrationService deviceRegistrationService;
+	private DeviceMappingService deviceMappingService;
 
 	private ProxyAttributeService proxyAttributeService;
 
@@ -69,9 +70,9 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 	private void loadDependencies() {
 		this.deviceDAO = EjbUtils.getEJB("SafeOnline/DeviceDAOBean/local",
 				DeviceDAO.class);
-		this.deviceRegistrationService = EjbUtils.getEJB(
-				"SafeOnline/DeviceRegistrationServiceBean/local",
-				DeviceRegistrationService.class);
+		this.deviceMappingService = EjbUtils.getEJB(
+				"SafeOnline/DeviceMappingServiceBean/local",
+				DeviceMappingService.class);
 		this.proxyAttributeService = EjbUtils.getEJB(
 				"SafeOnline/ProxyAttributeServiceBean/local",
 				ProxyAttributeService.class);
@@ -110,9 +111,9 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 			redirectToDeviceErrorPage(request, response, "errorDeviceNotFound");
 			return;
 		}
-		DeviceRegistrationEntity registeredDevice = this.deviceRegistrationService
-				.getDeviceRegistration(protocolContext.getRegistrationId());
-		if (null == registeredDevice) {
+		DeviceMappingEntity deviceMapping = this.deviceMappingService
+				.getDeviceMapping(protocolContext.getMappingId());
+		if (null == deviceMapping) {
 			redirectToDeviceErrorPage(request, response,
 					"errorDeviceRegistrationNotFound");
 			return;
@@ -122,9 +123,8 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 		Object deviceAttribute;
 		try {
 			deviceAttribute = this.proxyAttributeService
-					.findDeviceAttributeValue(protocolContext
-							.getRegistrationId(), device.getAttributeType()
-							.getName());
+					.findDeviceAttributeValue(protocolContext.getMappingId(),
+							device.getAttributeType().getName());
 		} catch (PermissionDeniedException e) {
 			redirectToDeviceErrorPage(request, response,
 					"errorPermissionDenied");
@@ -144,7 +144,7 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 		AuthenticationService authenticationService = AuthenticationServiceManager
 				.getAuthenticationService(request.getSession());
 		try {
-			authenticationService.authenticate(registeredDevice.getSubject()
+			authenticationService.authenticate(deviceMapping.getSubject()
 					.getUserId(), device);
 		} catch (SubjectNotFoundException e) {
 			redirectToDeviceErrorPage(request, response, "errorSubjectNotFound");

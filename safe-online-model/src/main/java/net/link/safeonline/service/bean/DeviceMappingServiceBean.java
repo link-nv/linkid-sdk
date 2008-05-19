@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.service.bean;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -68,6 +70,13 @@ public class DeviceMappingServiceBean implements DeviceMappingService {
 	public DeviceMappingEntity getDeviceMapping(String id) {
 		LOG.debug("get device mapping: " + id);
 		return this.deviceMappingDAO.findDeviceMapping(id);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject) {
+		return this.deviceMappingDAO.listDeviceMappings(subject);
 	}
 
 }

@@ -9,7 +9,6 @@ package test.unit.net.link.safeonline.authentication.service.bean;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -21,23 +20,21 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
-import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.backend.PasswordManager;
 import net.link.safeonline.device.backend.bean.PasswordManagerBean;
 import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
-import net.link.safeonline.service.DeviceRegistrationService;
+import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.service.bean.DeviceRegistrationServiceBean;
+import net.link.safeonline.service.bean.DeviceMappingServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
@@ -70,8 +67,8 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		jmxTestUtils.registerActionHandler(
 				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
 				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						return authCertificate;
 					}
 				});
@@ -84,8 +81,8 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		jmxTestUtils.registerActionHandler(
 				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
 				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						return certificate;
 					}
 				});
@@ -141,33 +138,34 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 				entityManager);
 		AttributeEntity loginAttribute = attributeDAO.getAttribute(
 				loginAttributeType, resultSubject);
-		DeviceDAO deviceDAO = EJBTestUtils.newInstance(DeviceDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		DeviceEntity device = deviceDAO
-				.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-		DeviceRegistrationService deviceRegistrationService = EJBTestUtils
-				.newInstance(DeviceRegistrationServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		List<DeviceRegistrationEntity> deviceRegistrations = deviceRegistrationService
-				.listDeviceRegistrations(resultSubject, device);
-
-		assertEquals(1, deviceRegistrations.size());
-
-		SubjectEntity deviceSubject = subjectService
-				.getSubject(deviceRegistrations.get(0).getId());
-
 		assertEquals(testLogin, loginAttribute.getValue());
+
+		DeviceMappingService deviceMappingService = EJBTestUtils.newInstance(
+				DeviceMappingServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
+		DeviceMappingEntity deviceMapping = deviceMappingService
+				.getDeviceMapping(resultSubject.getUserId(),
+						SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+		assertNotNull(deviceMapping);
+
+		DeviceSubjectEntity deviceSubject = subjectService
+				.getDeviceSubject(deviceMapping.getId());
+		assertNotNull(deviceSubject);
+		assertEquals(1, deviceSubject.getRegistrations().size());
+
+		SubjectEntity deviceRegistration = deviceSubject.getRegistrations()
+				.get(0);
 
 		PasswordManager passwordManager = EJBTestUtils.newInstance(
 				PasswordManagerBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		boolean isPasswordConfigured = passwordManager
-				.isPasswordConfigured(deviceSubject);
+				.isPasswordConfigured(deviceRegistration);
 		assertTrue(isPasswordConfigured);
 
 		boolean isPasswordCorrect = passwordManager.validatePassword(
-				deviceSubject, testPassword);
+				deviceRegistration, testPassword);
 
 		assertTrue(isPasswordCorrect);
 

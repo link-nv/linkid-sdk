@@ -56,5 +56,5 @@ public interface Devices {
 	 */
 	List<DeviceEntry> devicesFactory();
 
-	List<DeviceRegistrationEntry> deviceRegistrationsFactory();
+	List<DeviceMappingEntry> deviceRegistrationsFactory();
 }

@@ -18,10 +18,10 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.UserRegistrationManager;
-import net.link.safeonline.service.DeviceRegistrationService;
+import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 
 /**
@@ -43,7 +43,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	private UserRegistrationManager userRegistrationManager;
 
 	@EJB
-	private DeviceRegistrationService deviceRegistrationService;
+	private DeviceMappingService deviceMappingService;
 
 	@EJB
 	private ProxyAttributeService proxyAttributeService;
@@ -57,17 +57,18 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 			return this.userRegistrationManager.registerUser(login);
 
 		// Subject already exists, check for attached registered devices
-		List<DeviceRegistrationEntity> deviceRegistrations = this.deviceRegistrationService
-				.listDeviceRegistrations(subject);
-		if (deviceRegistrations.isEmpty())
+		List<DeviceMappingEntity> deviceMappings = this.deviceMappingService
+				.listDeviceMappings(subject);
+		if (deviceMappings.isEmpty())
 			return subject;
 
-		// For each registered device, poll device issuer if registration
+		// For each device mapping, poll device issuer if registration
 		// actually completed
-		for (DeviceRegistrationEntity deviceRegistration : deviceRegistrations) {
+		for (DeviceMappingEntity deviceMapping : deviceMappings) {
 			Object deviceAttribute = this.proxyAttributeService
-					.findAttributeValue(subject.getUserId(), deviceRegistration
-							.getDevice().getAttributeType().getName());
+					.findDeviceAttributeValue(deviceMapping.getId(),
+							deviceMapping.getDevice().getAttributeType()
+									.getName());
 			if (null != deviceAttribute)
 				throw new ExistingUserException();
 		}

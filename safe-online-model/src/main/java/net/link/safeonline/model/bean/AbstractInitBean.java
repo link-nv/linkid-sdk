@@ -63,9 +63,9 @@ import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -73,6 +73,7 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementPK;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
@@ -80,7 +81,7 @@ import net.link.safeonline.model.UsageAgreementManager;
 import net.link.safeonline.notification.service.NotificationProducerService;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
-import net.link.safeonline.service.DeviceRegistrationService;
+import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
@@ -518,7 +519,7 @@ public abstract class AbstractInitBean implements Startable {
 	private PasswordManager passwordManager;
 
 	@EJB
-	private DeviceRegistrationService deviceRegistrationService;
+	private DeviceMappingService deviceMappingService;
 
 	private void initApplicationTrustPoints() {
 		for (Map.Entry<X509Certificate, String> certificateEntry : this.trustedCertificates
@@ -746,15 +747,19 @@ public abstract class AbstractInitBean implements Startable {
 				continue;
 			subject = this.subjectService.addSubject(login);
 
-			DeviceRegistrationEntity deviceRegistrationEntity = this.deviceRegistrationService
-					.registerDevice(subject.getUserId(),
+			DeviceMappingEntity deviceMapping = this.deviceMappingService
+					.getDeviceMapping(subject.getUserId(),
 							SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-			SubjectEntity deviceSubject = this.subjectService
-					.addDeviceSubject(deviceRegistrationEntity.getId());
+			DeviceSubjectEntity deviceSubject = this.subjectService
+					.addDeviceSubject(deviceMapping.getId());
+			SubjectEntity deviceRegistration = this.subjectService
+					.addDeviceRegistration();
+			deviceSubject.getRegistrations().add(deviceRegistration);
+
 			AuthenticationDevice device = authorizedUser.getValue();
 			String password = device.password;
 			try {
-				this.passwordManager.setPassword(deviceSubject, password);
+				this.passwordManager.setPassword(deviceRegistration, password);
 			} catch (PermissionDeniedException e) {
 				throw new EJBException("could not set password");
 			}

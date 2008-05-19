@@ -34,6 +34,7 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
@@ -97,12 +98,14 @@ public class CredentialManagerBean implements CredentialManager {
 
 		String identifierDomainName = pkiProvider.getIdentifierDomainName();
 		String identifier = pkiProvider.getSubjectIdentifier(certificate);
-		SubjectEntity deviceSubject = this.subjectIdentifierDAO.findSubject(
-				identifierDomainName, identifier);
-		if (null == deviceSubject) {
+		SubjectEntity deviceRegistration = this.subjectIdentifierDAO
+				.findSubject(identifierDomainName, identifier);
+		if (null == deviceRegistration) {
 			throw new SubjectNotFoundException();
 		}
-		return deviceSubject.getUserId();
+		DeviceSubjectEntity deviceSubject = this.subjectService
+				.getDeviceSubject(deviceRegistration);
+		return deviceSubject.getId();
 
 	}
 
@@ -151,10 +154,17 @@ public class CredentialManagerBean implements CredentialManager {
 		/*
 		 * Create new device subject
 		 */
-		SubjectEntity deviceSubject = this.subjectService
-				.findSubject(deviceUserId);
+		DeviceSubjectEntity deviceSubject = this.subjectService
+				.findDeviceSubject(deviceUserId);
 		if (null == deviceSubject)
 			deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
+
+		/*
+		 * Create new device registration subject
+		 */
+		SubjectEntity deviceRegistration = this.subjectService
+				.addDeviceRegistration();
+		deviceSubject.getRegistrations().add(deviceRegistration);
 
 		String domain = pkiProvider.getIdentifierDomainName();
 		String identifier = pkiProvider.getSubjectIdentifier(certificate);
@@ -166,8 +176,8 @@ public class CredentialManagerBean implements CredentialManager {
 			 * system.
 			 */
 			this.subjectIdentifierDAO.addSubjectIdentifier(domain, identifier,
-					deviceSubject);
-		} else if (false == deviceSubject.equals(existingMappedSubject)) {
+					deviceRegistration);
+		} else if (false == deviceRegistration.equals(existingMappedSubject)) {
 			/*
 			 * The certificate is already linked to another user.
 			 */
@@ -182,7 +192,7 @@ public class CredentialManagerBean implements CredentialManager {
 		 * This is for example the case for BeID identity cards.
 		 */
 		this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain,
-				identifier, deviceSubject);
+				identifier, deviceRegistration);
 
 		/*
 		 * Store some additional attributes retrieved from the identity
@@ -192,15 +202,15 @@ public class CredentialManagerBean implements CredentialManager {
 		String givenName = identityStatement.getGivenName();
 
 		setOrUpdateAttribute(IdentityStatementAttributes.SURNAME,
-				deviceSubject, surname, pkiProvider);
+				deviceRegistration, surname, pkiProvider);
 		setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME,
-				deviceSubject, givenName, pkiProvider);
+				deviceRegistration, givenName, pkiProvider);
 
-		pkiProvider.storeAdditionalAttributes(deviceSubject, certificate);
+		pkiProvider.storeAdditionalAttributes(deviceRegistration, certificate);
 
-		pkiProvider.storeDeviceAttribute(deviceSubject);
+		pkiProvider.storeDeviceAttribute(deviceRegistration);
 
-		pkiProvider.storeDeviceUserAttribute(deviceSubject);
+		pkiProvider.storeDeviceUserAttribute(deviceRegistration);
 	}
 
 	private void setOrUpdateAttribute(
@@ -219,8 +229,8 @@ public class CredentialManagerBean implements CredentialManager {
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException,
 			SubjectNotFoundException, DeviceNotFoundException {
-		SubjectEntity deviceSubject = this.subjectService
-				.getSubject(deviceUserId);
+		DeviceSubjectEntity deviceSubject = this.subjectService
+				.getDeviceSubject(deviceUserId);
 
 		/*
 		 * First check integrity of the received identity statement.
@@ -263,21 +273,23 @@ public class CredentialManagerBean implements CredentialManager {
 		String identifier = pkiProvider.getSubjectIdentifier(certificate);
 		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
 				.findSubject(domain, identifier);
-		if (deviceSubject.equals(existingMappedSubject)) {
-			this.subjectIdentifierDAO.removeSubjectIdentifier(deviceSubject,
-					domain, identifier);
+		if (deviceSubject.getRegistrations().contains(existingMappedSubject)) {
+			this.subjectIdentifierDAO.removeSubjectIdentifier(
+					existingMappedSubject, domain, identifier);
+			deviceSubject.getRegistrations().remove(existingMappedSubject);
 		}
 
-		removeAttribute(IdentityStatementAttributes.SURNAME, deviceSubject,
-				pkiProvider);
-		removeAttribute(IdentityStatementAttributes.GIVEN_NAME, deviceSubject,
-				pkiProvider);
+		removeAttribute(IdentityStatementAttributes.SURNAME,
+				existingMappedSubject, pkiProvider);
+		removeAttribute(IdentityStatementAttributes.GIVEN_NAME,
+				existingMappedSubject, pkiProvider);
 
-		pkiProvider.removeAdditionalAttributes(deviceSubject, certificate);
+		pkiProvider.removeAdditionalAttributes(existingMappedSubject,
+				certificate);
 
-		pkiProvider.removeDeviceAttribute(deviceSubject);
+		pkiProvider.removeDeviceAttribute(existingMappedSubject);
 
-		pkiProvider.removeDeviceUserAttribute(deviceSubject);
+		pkiProvider.removeDeviceUserAttribute(existingMappedSubject);
 	}
 
 	private void removeAttribute(

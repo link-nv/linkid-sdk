@@ -9,30 +9,26 @@
 <mapping class="net.link.safeonline.entity.pkix.TrustDomainEntity" />
 <mapping class="net.link.safeonline.entity.pkix.TrustPointEntity" />
 <mapping class="net.link.safeonline.entity.SubjectIdentifierEntity" />
-<mapping
-	class="net.link.safeonline.entity.pkix.CachedOcspResponseEntity" />
+<mapping class="net.link.safeonline.entity.pkix.CachedOcspResponseEntity" />
 <mapping class="net.link.safeonline.entity.tasks.TaskEntity" />
 <mapping class="net.link.safeonline.entity.tasks.SchedulingEntity" />
 <mapping class="net.link.safeonline.entity.tasks.TaskHistoryEntity" />
 <mapping class="net.link.safeonline.entity.ApplicationIdentityEntity" />
-<mapping
-	class="net.link.safeonline.entity.ApplicationIdentityAttributeEntity" />
+<mapping class="net.link.safeonline.entity.ApplicationIdentityAttributeEntity" />
 <mapping class="net.link.safeonline.entity.config.ConfigGroupEntity" />
 <mapping class="net.link.safeonline.entity.config.ConfigItemEntity" />
 <mapping class="net.link.safeonline.entity.StatisticEntity" />
 <mapping class="net.link.safeonline.entity.StatisticDataPointEntity" />
 <mapping class="net.link.safeonline.entity.AttributeProviderEntity" />
-<mapping
-	class="net.link.safeonline.entity.AttributeTypeDescriptionEntity" />
+<mapping class="net.link.safeonline.entity.AttributeTypeDescriptionEntity" />
 <mapping class="net.link.safeonline.entity.DeviceEntity" />
 <mapping class="net.link.safeonline.entity.DevicePropertyEntity" />
 <mapping class="net.link.safeonline.entity.DeviceDescriptionEntity" />
 <mapping class="net.link.safeonline.entity.AllowedDeviceEntity" />
 <mapping class="net.link.safeonline.entity.DeviceClassEntity" />
-<mapping
-	class="net.link.safeonline.entity.DeviceClassDescriptionEntity" />
+<mapping class="net.link.safeonline.entity.DeviceClassDescriptionEntity" />
 <mapping class="net.link.safeonline.entity.DeviceMappingEntity" />
-<mapping class="net.link.safeonline.entity.DeviceRegistrationEntity" />
+<mapping class="net.link.safeonline.entity.device.DeviceSubjectEntity" />
 <mapping class="net.link.safeonline.entity.audit.AuditContextEntity" />
 <mapping class="net.link.safeonline.entity.audit.AuditAuditEntity" />
 <mapping class="net.link.safeonline.entity.audit.AccessAuditEntity" />
@@ -40,10 +36,8 @@
 <mapping class="net.link.safeonline.entity.audit.ResourceAuditEntity" />
 <mapping
 	class="net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity" />
-<mapping
-	class="net.link.safeonline.entity.helpdesk.HelpdeskContextEntity" />
-<mapping
-	class="net.link.safeonline.entity.helpdesk.HelpdeskEventEntity" />
+<mapping class="net.link.safeonline.entity.helpdesk.HelpdeskContextEntity" />
+<mapping class="net.link.safeonline.entity.helpdesk.HelpdeskEventEntity" />
 <mapping class="net.link.safeonline.entity.MetadataEntity" />
 <mapping class="net.link.safeonline.entity.UsageAgreementEntity" />
 <mapping class="net.link.safeonline.entity.UsageAgreementTextEntity" />

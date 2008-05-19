@@ -2,7 +2,6 @@ package net.link.safeonline.device.sdk.remove.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,6 +15,14 @@ import net.link.safeonline.device.sdk.reg.saml2.Saml2BrowserPostHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * This servlet handles the response sent out by OLAS to the remote device
+ * issuer. The response should contain the UUID mapping this device to the OLAS
+ * subject. After that it will redirect to the RemovalUrl.
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class ExitServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -26,7 +33,6 @@ public class ExitServlet extends HttpServlet {
 
 	public static final String REMOVAL_URL_INIT_PARAM = "RemovalUrl";
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -57,25 +63,17 @@ public class ExitServlet extends HttpServlet {
 		if (null == saml2BrowserPostHandler) {
 			/*
 			 * The landing page can only be used for finalizing an ongoing
-			 * registration process. If no protocol handler is active then
-			 * something must be going wrong here.
+			 * removal process. If no protocol handler is active then something
+			 * must be going wrong here.
 			 */
 			String msg = "no protocol handler active";
 			LOG.error(msg);
 			writeErrorPage(msg, response);
 			return;
 		}
-		List<String> ids = saml2BrowserPostHandler.handleResponse(request,
+		String deviceUserId = saml2BrowserPostHandler.handleResponse(request,
 				response);
-		if (ids.size() != 1 && ids.size() != 2) {
-			String msg = "protocol handler could not finalize";
-			LOG.error(msg);
-			writeErrorPage(msg, response);
-			return;
-		}
-		request.getSession().setAttribute("userId", ids.get(0));
-		if (ids.size() == 2)
-			request.getSession().setAttribute("registrationId", ids.get(1));
+		request.getSession().setAttribute("userId", deviceUserId);
 
 		response.sendRedirect(this.removalUrl);
 	}

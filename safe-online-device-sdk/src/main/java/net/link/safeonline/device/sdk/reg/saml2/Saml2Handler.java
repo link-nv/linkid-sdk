@@ -36,6 +36,28 @@ import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.ConfigurationException;
 
+/**
+ * Saml2 Handler used by OLAS to validate incoming SAML requests from remote
+ * device issuers who want to register/update or remove a device. And to send
+ * out a SAML2 response to the remote device issuer.
+ * 
+ * The incoming SAML request contains:
+ * <ul>
+ * <li>Application name: The remote device webapp's name</li>
+ * <li>Device name: The name of the registrating device as known to OLAS
+ * <li></li>
+ * </ul>
+ * 
+ * The outgoing SAML response contains:
+ * <ul>
+ * <li>Device mapping ID: The id mapping the registrating device to the
+ * registrating OLAS subject. This ID should be used by the remote device issuer
+ * to identify the OLAS subject.</li>
+ * </ul>
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class Saml2Handler implements Serializable {
 
 	private static final Log LOG = LogFactory.getLog(Saml2Handler.class);
@@ -120,7 +142,8 @@ public class Saml2Handler implements Serializable {
 					.getAudienceRestrictions().get(0).getAudiences().get(0)
 					.getAudienceURI();
 		} catch (Exception e) {
-			// empty
+			throw new RegistrationInitializationException(
+					"No target application was specified");
 		}
 
 		if (null == application)
@@ -150,7 +173,6 @@ public class Saml2Handler implements Serializable {
 		protocolContext.setApplication(application);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void finalize(HttpServletRequest request,
 			HttpServletResponse response)
 			throws RegistrationFinalizationException {
@@ -158,7 +180,6 @@ public class Saml2Handler implements Serializable {
 				.getProtocolContext(request.getSession());
 		String registeredDevice = protocolContext.getDeviceName();
 		String mappingId = protocolContext.getMappingId();
-		String registrationId = protocolContext.getRegistrationId();
 		String applicationId = protocolContext.getApplication();
 		String target = (String) this.session.getAttribute(TARGET_URL);
 		LOG.debug("target: " + target);
@@ -177,17 +198,6 @@ public class Saml2Handler implements Serializable {
 		Response responseMessage = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationId, issuerName, mappingId,
 				registeredDevice, validity, target);
-
-		/**
-		 * If registration ID is set, this response is part of a device
-		 * registration procedure so an extra assertion containing this
-		 * registration ID is required.
-		 */
-		if (null != protocolContext.getRegistrationId()) {
-			AuthnResponseFactory.addAssertion(responseMessage, inResponseTo,
-					applicationId, registrationId, issuerName,
-					registeredDevice, validity, target);
-		}
 
 		try {
 			AuthnResponseUtil.sendAuthnResponse(responseMessage, target,

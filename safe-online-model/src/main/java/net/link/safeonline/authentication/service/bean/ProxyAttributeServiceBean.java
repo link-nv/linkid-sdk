@@ -17,13 +17,14 @@ import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.ProxyAttributeServiceRemote;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.DeviceRegistrationDAO;
+import net.link.safeonline.dao.DeviceMappingDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
@@ -37,6 +38,9 @@ import org.apache.commons.logging.LogFactory;
 public class ProxyAttributeServiceBean implements ProxyAttributeService,
 		ProxyAttributeServiceRemote {
 
+	private static final Log LOG = LogFactory
+			.getLog(ProxyAttributeServiceBean.class);
+
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
 
@@ -47,24 +51,36 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
 	private SubjectService subjectService;
 
 	@EJB
-	private DeviceRegistrationDAO registeredDeviceDAO;
+	private DeviceMappingDAO deviceMappingDAO;
 
-	private static final Log LOG = LogFactory
-			.getLog(ProxyAttributeServiceBean.class);
-
-	public Object findDeviceAttributeValue(String deviceUserId,
+	public Object findDeviceAttributeValue(String deviceMappingId,
 			String attributeName) throws AttributeTypeNotFoundException,
 			PermissionDeniedException {
 
 		LOG.debug("find device attribute " + attributeName + " for "
-				+ deviceUserId);
+				+ deviceMappingId);
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeName);
 
-		if (isLocalAttribute(attributeType))
-			return findLocalAttribute(deviceUserId, attributeType);
+		if (attributeType.isLocal()) {
+			DeviceSubjectEntity deviceSubject = this.subjectService
+					.findDeviceSubject(deviceMappingId);
+			if (null == deviceSubject)
+				return null;
+			Object[] deviceRegistrationAttributes = new Object[deviceSubject
+					.getRegistrations().size()];
+			int idx = 0;
+			for (SubjectEntity deviceRegistration : deviceSubject
+					.getRegistrations()) {
+				Object deviceRegistrationAttribute = findLocalAttribute(
+						deviceRegistration.getUserId(), attributeType);
+				deviceRegistrationAttributes[idx] = deviceRegistrationAttribute;
+				idx++;
+			}
+			return deviceRegistrationAttributes;
+		}
 
-		return findRemoteAttribute(deviceUserId, attributeType);
+		return findRemoteAttribute(deviceMappingId, attributeType);
 
 	}
 
@@ -80,28 +96,37 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
 		if (null == subject)
 			return null;
 
-		String subjectId = userId;
-		if (attributeType.isDeviceAttribute())
-			subjectId = getDeviceId(subject, attributeType);
+		if (attributeType.isDeviceAttribute()) {
+			return findDeviceAttributeValue(
+					getDeviceId(subject, attributeType), attributeName);
+		}
 
 		if (attributeType.isLocal())
-			return findLocalAttribute(subjectId, attributeType);
+			return findLocalAttribute(userId, attributeType);
 
-		return findRemoteAttribute(subjectId, attributeType);
+		return findRemoteAttribute(userId, attributeType);
 	}
 
+	/**
+	 * Returns the device mapping id for this device attribute type and
+	 * specified subject.
+	 * 
+	 * @param subject
+	 * @param attributeType
+	 * @return device mapping ID
+	 */
 	private String getDeviceId(SubjectEntity subject,
 			AttributeTypeEntity attributeType) {
 
-		List<DeviceRegistrationEntity> registeredDevices = this.registeredDeviceDAO
-				.listRegisteredDevices(subject);
+		List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO
+				.listDeviceMappings(subject);
 
-		for (DeviceRegistrationEntity registeredDevice : registeredDevices) {
-			AttributeTypeEntity deviceAttributeType = registeredDevice
-					.getDevice().getAttributeType();
+		for (DeviceMappingEntity deviceMapping : deviceMappings) {
+			AttributeTypeEntity deviceAttributeType = deviceMapping.getDevice()
+					.getAttributeType();
 
 			if (deviceAttributeType.getName().equals(attributeType.getName()))
-				return registeredDevice.getId();
+				return deviceMapping.getId();
 
 			if (deviceAttributeType.isCompounded()) {
 				List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType
@@ -109,27 +134,21 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
 				for (CompoundedAttributeTypeMemberEntity member : members)
 					if (member.getMember().getName().equals(
 							attributeType.getName()))
-						return registeredDevice.getId();
+						return deviceMapping.getId();
 			}
 		}
 
 		return subject.getUserId();
 	}
 
-	private boolean isLocalAttribute(AttributeTypeEntity attributeType) {
-
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-
-		if (null == attributeType.getLocation())
-			return true;
-
-		if (authIdentityServiceClient.getCertificate().equals(
-				attributeType.getLocation().getAuthnCertificate()))
-			return true;
-
-		return false;
-	}
-
+	/**
+	 * Find local attribute. Subject ID can refer to a regular OLAS subject or
+	 * an OLAS device registration subject.
+	 * 
+	 * @param subjectId
+	 * @param attributeType
+	 * @return attribute value
+	 */
 	private Object findLocalAttribute(String subjectId,
 			AttributeTypeEntity attributeType) {
 
@@ -158,6 +177,14 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
 		return getValue(nonEmptyAttributes, attributeType, subject);
 	}
 
+	/**
+	 * Find remote attribute. Subject ID can refer to a regular OLAS subject or
+	 * an OLAS device registration subject.
+	 * 
+	 * @param subjectId
+	 * @param attributeType
+	 * @return attribute value
+	 */
 	private Object findRemoteAttribute(String subjectId,
 			AttributeTypeEntity attributeType) throws PermissionDeniedException {
 

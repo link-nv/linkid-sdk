@@ -965,15 +965,21 @@ public class IdentityServiceBean implements IdentityService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<AttributeDO> listAttributes(@NonEmptyString String deviceId,
+	public List<List<AttributeDO>> listAttributes(
+			@NonEmptyString String deviceMappingId,
 			@NotNull AttributeTypeEntity attributeType, Locale locale)
 			throws PermissionDeniedException, AttributeTypeNotFoundException {
-		LOG.debug("list attributes for device: " + deviceId);
-		Object value = this.proxyAttributeService.findDeviceAttributeValue(
-				deviceId, attributeType.getName());
-		if (null == value)
-			return new LinkedList<AttributeDO>();
-		return convertAttribute(value, attributeType, locale);
+		LOG.debug("list attributes for device: " + deviceMappingId);
+		Object[] values = (Object[]) this.proxyAttributeService
+				.findDeviceAttributeValue(deviceMappingId, attributeType
+						.getName());
+		if (null == values)
+			return new LinkedList<List<AttributeDO>>();
+		List<List<AttributeDO>> attributes = new LinkedList<List<AttributeDO>>();
+		for (Object value : values) {
+			attributes.add(convertAttribute(value, attributeType, locale));
+		}
+		return attributes;
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)

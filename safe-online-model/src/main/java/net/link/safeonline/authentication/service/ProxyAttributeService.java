@@ -15,19 +15,19 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 public interface ProxyAttributeService {
 
 	/**
-	 * Fetches a device attribute from the specified device user ID.
+	 * Fetches the device attributes for all registrations associated with the
+	 * specified device mapping ID.
 	 * 
-	 * @param deviceUserId
+	 * @param deviceMappingId
 	 * @param attributeName
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
 	 */
-	Object findDeviceAttributeValue(String deviceUserId, String attributeName)
+	Object findDeviceAttributeValue(String deviceMappingId, String attributeName)
 			throws AttributeTypeNotFoundException, PermissionDeniedException;
 
 	/**
-	 * Fetches an attribute from the specified subject ID. This can be either a
-	 * device or a subject attribute.
+	 * Fetches an attribute from the specified subject ID.
 	 * 
 	 * @param userId
 	 * @param attributeName

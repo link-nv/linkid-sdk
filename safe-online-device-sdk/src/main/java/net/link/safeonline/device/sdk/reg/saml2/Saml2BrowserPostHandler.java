@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -139,10 +138,10 @@ public class Saml2BrowserPostHandler implements Serializable {
 		this.wsLocation = inConfigParams.get("WsLocation");
 	}
 
-	public void authnRequest(@SuppressWarnings("unused")
-	HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			String targetUrl, String device) throws IOException,
-			ServletException {
+	public void authnRequest(
+			@SuppressWarnings("unused") HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, String targetUrl, String device)
+			throws IOException, ServletException {
 		LOG.debug("target url: " + targetUrl);
 		Set<String> devices = new HashSet<String>();
 		if (null != device)
@@ -167,11 +166,16 @@ public class Saml2BrowserPostHandler implements Serializable {
 				templateResourceName, httpResponse);
 	}
 
-	public List<String> handleResponse(HttpServletRequest httpRequest,
-			@SuppressWarnings("unused")
+	/**
+	 * Handles the SAML response received from OLAS. Returns the UUID mapping
+	 * the OLAS subject to this device.
+	 * 
+	 * @param httpRequest
+	 * @param httpResponse
+	 * @throws ServletException
+	 */
+	public String handleResponse(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) throws ServletException {
-		List<String> subjectNames = new LinkedList<String>();
-
 		DateTime now = new DateTime();
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
@@ -181,30 +185,27 @@ public class Saml2BrowserPostHandler implements Serializable {
 		if (null == samlResponse)
 			return null;
 
-		for (Assertion assertion : samlResponse.getAssertions()) {
-			List<AuthnStatement> authStatements = assertion
-					.getAuthnStatements();
-			if (authStatements.isEmpty())
-				throw new ServletException("missing authentication statement");
+		Assertion assertion = samlResponse.getAssertions().get(0);
+		List<AuthnStatement> authStatements = assertion.getAuthnStatements();
+		if (authStatements.isEmpty())
+			throw new ServletException("missing authentication statement");
 
-			AuthnStatement authStatement = authStatements.get(0);
-			if (null == authStatement.getAuthnContext())
-				throw new ServletException(
-						"missing authentication context in authentication statement");
+		AuthnStatement authStatement = authStatements.get(0);
+		if (null == authStatement.getAuthnContext())
+			throw new ServletException(
+					"missing authentication context in authentication statement");
 
-			AuthnContextClassRef authnContextClassRef = authStatement
-					.getAuthnContext().getAuthnContextClassRef();
-			this.authenticationDevice = authnContextClassRef
-					.getAuthnContextClassRef();
-			LOG.debug("authentication device: " + this.authenticationDevice);
+		AuthnContextClassRef authnContextClassRef = authStatement
+				.getAuthnContext().getAuthnContextClassRef();
+		this.authenticationDevice = authnContextClassRef
+				.getAuthnContextClassRef();
+		LOG.debug("authentication device: " + this.authenticationDevice);
 
-			Subject subject = assertion.getSubject();
-			NameID subjectName = subject.getNameID();
-			String subjectNameValue = subjectName.getValue();
-			LOG.debug("subject name value: " + subjectNameValue);
-			subjectNames.add(subjectNameValue);
-		}
-		return subjectNames;
+		Subject subject = assertion.getSubject();
+		NameID subjectName = subject.getNameID();
+		String subjectNameValue = subjectName.getValue();
+		LOG.debug("subject name value: " + subjectNameValue);
+		return subjectNameValue;
 	}
 
 	public String getAuthenticationDevice() {

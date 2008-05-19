@@ -29,7 +29,7 @@ import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.DeviceMappingDAOBean;
-import net.link.safeonline.dao.bean.DeviceRegistrationDAOBean;
+import net.link.safeonline.dao.bean.DeviceSubjectDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.OlasDAOBean;
 import net.link.safeonline.dao.bean.StatisticDAOBean;
@@ -58,7 +58,6 @@ import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.OlasEntity;
@@ -71,6 +70,7 @@ import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
@@ -104,7 +104,6 @@ import net.link.safeonline.pkix.model.bean.OcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.PkiProviderManagerBean;
 import net.link.safeonline.pkix.model.bean.PkiValidatorBean;
 import net.link.safeonline.service.bean.DeviceMappingServiceBean;
-import net.link.safeonline.service.bean.DeviceRegistrationServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
@@ -151,14 +150,13 @@ public class SafeOnlineTestContainer {
 			MobileManagerBean.class, SecurityAuditLoggerBean.class,
 			DevicePolicyServiceBean.class, DevicesBean.class,
 			AccountServiceBean.class, DeviceMappingServiceBean.class,
-			DeviceMappingDAOBean.class, DeviceRegistrationServiceBean.class,
-			DeviceRegistrationDAOBean.class, OlasDAOBean.class,
+			DeviceMappingDAOBean.class, OlasDAOBean.class,
 			ProxyAttributeServiceBean.class, StatisticDAOBean.class,
 			StatisticDataPointDAOBean.class,
 			NotificationProducerServiceBean.class,
 			NotificationProducerDAOBean.class,
 			NotificationConsumerServiceBean.class,
-			EndpointReferenceDAOBean.class };
+			EndpointReferenceDAOBean.class, DeviceSubjectDAOBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,
@@ -173,7 +171,7 @@ public class SafeOnlineTestContainer {
 			AllowedDeviceEntity.class, DeviceClassEntity.class,
 			DeviceDescriptionEntity.class, DeviceClassDescriptionEntity.class,
 			DevicePropertyEntity.class, DeviceMappingEntity.class,
-			DeviceRegistrationEntity.class,
+			DeviceSubjectEntity.class,
 			CompoundedAttributeTypeMemberEntity.class,
 			HelpdeskContextEntity.class, HelpdeskEventEntity.class,
 			HistoryEntity.class, SubjectIdentifierEntity.class,

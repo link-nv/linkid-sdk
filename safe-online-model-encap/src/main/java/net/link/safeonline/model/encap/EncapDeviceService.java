@@ -16,6 +16,7 @@ import net.link.safeonline.authentication.exception.MobileAuthenticationExceptio
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
 @Local
@@ -37,5 +38,6 @@ public interface EncapDeviceService {
 	String requestOTP(String mobile) throws MalformedURLException,
 			MobileException, SubjectNotFoundException;
 
-	List<String> getMobiles(String login);
+	List<AttributeEntity> getMobiles(String login)
+			throws SubjectNotFoundException;
 }

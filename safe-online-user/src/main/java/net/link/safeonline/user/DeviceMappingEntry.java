@@ -3,30 +3,29 @@ package net.link.safeonline.user;
 import java.util.List;
 
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 
-public class DeviceRegistrationEntry {
+public class DeviceMappingEntry {
 
-	private DeviceRegistrationEntity deviceRegistration;
+	private DeviceMappingEntity deviceMapping;
 
 	private String friendlyName;
 
 	private List<AttributeDO> attribute;
 
-	public DeviceRegistrationEntry(DeviceRegistrationEntity deviceRegistration,
+	public DeviceMappingEntry(DeviceMappingEntity deviceMapping,
 			String friendlyName, List<AttributeDO> attribute) {
-		this.deviceRegistration = deviceRegistration;
+		this.deviceMapping = deviceMapping;
 		this.friendlyName = friendlyName;
 		this.attribute = attribute;
 	}
 
-	public DeviceRegistrationEntity getDeviceRegistration() {
-		return this.deviceRegistration;
+	public DeviceMappingEntity getDeviceMapping() {
+		return this.deviceMapping;
 	}
 
-	public void setDeviceRegistration(
-			DeviceRegistrationEntity deviceRegistration) {
-		this.deviceRegistration = deviceRegistration;
+	public void setDeviceMapping(DeviceMappingEntity deviceMapping) {
+		this.deviceMapping = deviceMapping;
 	}
 
 	public String getFriendlyName() {
@@ -46,15 +45,15 @@ public class DeviceRegistrationEntry {
 	}
 
 	public boolean isRegistrable() {
-		return null != this.deviceRegistration.getDevice().getRegistrationURL();
+		return null != this.deviceMapping.getDevice().getRegistrationURL();
 	}
 
 	public boolean isUpdatable() {
-		return null != this.deviceRegistration.getDevice().getUpdateURL();
+		return null != this.deviceMapping.getDevice().getUpdateURL();
 	}
 
 	public boolean isRemovable() {
-		return null != this.deviceRegistration.getDevice().getRemovalURL();
+		return null != this.deviceMapping.getDevice().getRemovalURL();
 	}
 
 }

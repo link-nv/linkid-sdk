@@ -41,9 +41,10 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Device registration landing page.
  * 
- * This landing page handles the SAML requests sent out by an external device
- * provider, and sends back a response containing the UUID for the registering
- * subject. This landing is used for the updating and removal operation.
+ * This landing servlet handles the SAML requests sent out by an external device
+ * provider, and sends back a response containing the UUID for the registrating
+ * OLAS subject for this device. This landing is used for the updating and
+ * removal operation.
  * 
  * @author wvdhaute
  * 
@@ -146,10 +147,6 @@ public class DeviceLandingServlet extends HttpServlet {
 				.getProtocolContext(request.getSession());
 		String deviceName = protocolContext.getDeviceName();
 		String userId = (String) request.getSession().getAttribute("username");
-		String registrationId = null;
-		if (null != request.getSession().getAttribute("registrationId"))
-			registrationId = (String) request.getSession().getAttribute(
-					"registrationId");
 		try {
 			LOG
 					.debug("get device mapping for " + deviceName + " for "
@@ -159,7 +156,6 @@ public class DeviceLandingServlet extends HttpServlet {
 			LOG.debug("device mapping id: " + deviceMapping.getId());
 
 			protocolContext.setMappingId(deviceMapping.getId());
-			protocolContext.setRegistrationId(registrationId);
 			protocolContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
 			protocolContext.setIssuer(nodeName);

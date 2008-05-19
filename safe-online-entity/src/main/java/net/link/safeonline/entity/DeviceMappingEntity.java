@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.DeviceMappingEntity.DELETE_ALL_SUBJECT;
+import static net.link.safeonline.entity.DeviceMappingEntity.QUERY_LIST_DEVICE;
 import static net.link.safeonline.entity.DeviceMappingEntity.QUERY_LIST_SUBJECT;
 import static net.link.safeonline.entity.DeviceMappingEntity.QUERY_SUBJECT_DEVICE;
 
@@ -38,6 +39,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
 		@NamedQuery(name = QUERY_LIST_SUBJECT, query = "SELECT d "
 				+ "FROM DeviceMappingEntity AS d "
 				+ "WHERE d.subject = :subject"),
+		@NamedQuery(name = QUERY_LIST_DEVICE, query = "SELECT d "
+				+ "FROM DeviceMappingEntity AS d " + "WHERE d.device = :device"),
 		@NamedQuery(name = QUERY_SUBJECT_DEVICE, query = "SELECT d "
 				+ "FROM DeviceMappingEntity AS d "
 				+ "WHERE d.subject = :subject AND d.device = :device"),
@@ -48,6 +51,8 @@ public class DeviceMappingEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_LIST_SUBJECT = "dev.map.sub";
+
+	public static final String QUERY_LIST_DEVICE = "dev.map.dev";
 
 	public static final String QUERY_SUBJECT_DEVICE = "dev.map.subdev";
 
@@ -130,5 +135,9 @@ public class DeviceMappingEntity implements Serializable {
 
 		@UpdateMethod(DELETE_ALL_SUBJECT)
 		void deleteAll(@QueryParam("subject") SubjectEntity subject);
+
+		@QueryMethod(QUERY_LIST_DEVICE)
+		List<DeviceMappingEntity> listDeviceMappings(
+				@QueryParam("device") DeviceEntity device);
 	}
 }

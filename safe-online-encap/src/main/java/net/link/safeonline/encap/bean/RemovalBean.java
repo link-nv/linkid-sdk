@@ -37,6 +37,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.service.SubjectService;
 
@@ -55,6 +56,9 @@ import org.jboss.seam.log.Log;
 @Name("removal")
 @LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "RemovalBean/local")
 public class RemovalBean implements Removal {
+
+	// TODO: list all SubjectEntity's associated with the
+	// DeviceSubjectEntity(userId), remove using the SubjectEntity-id
 
 	private static final String MOBILE_ATTRIBUTE_LIST_NAME = "mobileAttributes";
 
@@ -80,7 +84,7 @@ public class RemovalBean implements Removal {
 	FacesMessages facesMessages;
 
 	@In
-	private String registrationId;
+	private String userId;
 
 	@DataModel(MOBILE_ATTRIBUTE_LIST_NAME)
 	List<AttributeDO> mobileAttributes;
@@ -139,8 +143,20 @@ public class RemovalBean implements Removal {
 		deviceAttributeTypes.add(device.getAttributeType());
 		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 
-		SubjectEntity deviceSubject = this.subjectService
-				.getSubject(this.registrationId);
+		DeviceSubjectEntity deviceSubject = this.subjectService
+				.getDeviceSubject(this.userId);
+		for (SubjectEntity deviceRegistration : deviceSubject
+				.getRegistrations()) {
+			List<AttributeDO> mobileAttribute = listAttributes(
+					deviceRegistration, deviceAttributeTypes, locale);
+			attributes.addAll(mobileAttribute);
+		}
+		return attributes;
+	}
+
+	private List<AttributeDO> listAttributes(SubjectEntity deviceRegistration,
+			List<AttributeTypeEntity> deviceAttributeTypes, Locale locale) {
+		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 
 		String language;
 		if (null == locale) {
@@ -173,7 +189,7 @@ public class RemovalBean implements Removal {
 				}
 			}
 			List<AttributeEntity> attributeList = this.attributeDAO
-					.listAttributes(deviceSubject, attributeType);
+					.listAttributes(deviceRegistration, attributeType);
 			for (AttributeEntity attribute : attributeList) {
 				String stringValue;
 				Boolean booleanValue;
@@ -198,8 +214,8 @@ public class RemovalBean implements Removal {
 
 	public String mobileRemove() {
 		try {
-			this.encapDeviceService.remove(this.registrationId,
-					this.selectedMobile.getStringValue());
+			this.encapDeviceService.remove(this.userId, this.selectedMobile
+					.getStringValue());
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");

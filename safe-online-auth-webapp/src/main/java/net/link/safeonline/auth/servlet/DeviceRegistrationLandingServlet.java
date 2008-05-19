@@ -31,9 +31,7 @@ import net.link.safeonline.device.sdk.exception.RegistrationFinalizationExceptio
 import net.link.safeonline.device.sdk.exception.RegistrationInitializationException;
 import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
 import net.link.safeonline.entity.DeviceMappingEntity;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.service.DeviceMappingService;
-import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
@@ -62,8 +60,6 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 
 	private DeviceMappingService deviceMappingService;
 
-	private DeviceRegistrationService deviceRegistrationService;
-
 	private SamlAuthorityService samlAuthorityService;
 
 	private NodeAuthenticationService nodeAuthenticationService;
@@ -87,9 +83,6 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 		this.deviceMappingService = EjbUtils.getEJB(
 				"SafeOnline/DeviceMappingServiceBean/local",
 				DeviceMappingService.class);
-		this.deviceRegistrationService = EjbUtils.getEJB(
-				"SafeOnline/DeviceRegistrationServiceBean/local",
-				DeviceRegistrationService.class);
 		this.samlAuthorityService = EjbUtils.getEJB(
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				SamlAuthorityService.class);
@@ -159,13 +152,8 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 			DeviceMappingEntity deviceMapping = this.deviceMappingService
 					.getDeviceMapping(userId, deviceName);
 			LOG.debug("device mapping id: " + deviceMapping.getId());
-			LOG.debug("register device " + deviceName + " for " + userId);
-			DeviceRegistrationEntity registeredDevice = this.deviceRegistrationService
-					.registerDevice(userId, deviceName);
-			LOG.debug("registered device id: " + registeredDevice.getId());
 
 			protocolContext.setMappingId(deviceMapping.getId());
-			protocolContext.setRegistrationId(registeredDevice.getId());
 			protocolContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
 			protocolContext.setIssuer(nodeName);

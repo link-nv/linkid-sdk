@@ -26,8 +26,8 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceRegistrationEntity;
-import net.link.safeonline.service.DeviceRegistrationService;
+import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -50,7 +50,7 @@ public class DeviceLandingServlet extends HttpServlet {
 
 	private DeviceDAO deviceDAO;
 
-	private DeviceRegistrationService deviceRegistrationService;
+	private DeviceMappingService deviceMappingService;
 
 	private String deviceErrorUrl;
 
@@ -74,9 +74,9 @@ public class DeviceLandingServlet extends HttpServlet {
 	private void loadDependencies() {
 		this.deviceDAO = EjbUtils.getEJB("SafeOnline/DeviceDAOBean/local",
 				DeviceDAO.class);
-		this.deviceRegistrationService = EjbUtils.getEJB(
-				"SafeOnline/DeviceRegistrationServiceBean/local",
-				DeviceRegistrationService.class);
+		this.deviceMappingService = EjbUtils.getEJB(
+				"SafeOnline/DeviceMappingServiceBean/local",
+				DeviceMappingService.class);
 	}
 
 	@Override
@@ -126,9 +126,9 @@ public class DeviceLandingServlet extends HttpServlet {
 			return;
 		}
 
-		DeviceRegistrationEntity registeredDevice = this.deviceRegistrationService
-				.getDeviceRegistration(deviceUserId);
-		if (null == registeredDevice) {
+		DeviceMappingEntity deviceMapping = this.deviceMappingService
+				.getDeviceMapping(deviceUserId);
+		if (null == deviceMapping) {
 			redirectToDeviceErrorPage(request, response,
 					"errorDeviceRegistrationNotFound");
 			return;
@@ -137,12 +137,12 @@ public class DeviceLandingServlet extends HttpServlet {
 		/*
 		 * Authenticate
 		 */
-		LoginManager.login(request.getSession(), registeredDevice.getSubject()
+		LoginManager.login(request.getSession(), deviceMapping.getSubject()
 				.getUserId(), device);
 		AuthenticationService authenticationService = AuthenticationServiceManager
 				.getAuthenticationService(request.getSession());
 		try {
-			authenticationService.authenticate(registeredDevice.getSubject()
+			authenticationService.authenticate(deviceMapping.getSubject()
 					.getUserId(), device);
 		} catch (SubjectNotFoundException e) {
 			redirectToDeviceErrorPage(request, response, "errorSubjectNotFound");
