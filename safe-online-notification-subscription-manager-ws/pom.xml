@@ -50,7 +50,7 @@
 								</wsimport>
 							</tasks>
 							<sourceRoot>
-								${project.build.directory}/generated-sources/main/java 
+								${project.build.directory}/generated-sources/main/java
 							</sourceRoot>
 						</configuration>
 					</execution>
