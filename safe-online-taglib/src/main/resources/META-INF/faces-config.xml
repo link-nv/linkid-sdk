@@ -56,4 +56,9 @@
 		<converter-class> net.link.safeonline.converter.AttributeTypeConverter 
 		</converter-class>
 	</converter>
+	<lifecycle>
+		<phase-listener>
+			net.link.safeonline.listener.CacheControlPhaseListener
+		</phase-listener>
+	</lifecycle>
 </faces-config>
