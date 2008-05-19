@@ -851,15 +851,57 @@
 	<!-- DEFAULT BUILD CONFIGURATION -->
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                     <exclude>**/*.bmp</exclude>
+                     <exclude>**/*.jpg</exclude>
+                     <exclude>**/*.jpeg</exclude>
+                     <exclude>**/*.gif</exclude>
+                     <exclude>**/*.png</exclude>
+                     <exclude>**/*.crt</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                     <include>**/*.bmp</include>
+                     <include>**/*.jpg</include>
+                     <include>**/*.jpeg</include>
+                     <include>**/*.gif</include>
+                     <include>**/*.png</include>
+                     <include>**/*.crt</include>
+                </includes>
+            </resource>
+        </resources>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<testResources>
 			<testResource>
-				<directory>src/test/resources</directory>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                     <exclude>**/*.bmp</exclude>
+                     <exclude>**/*.jpg</exclude>
+                     <exclude>**/*.jpeg</exclude>
+                     <exclude>**/*.gif</exclude>
+                     <exclude>**/*.png</exclude>
+                     <exclude>**/*.crt</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                     <include>**/*.bmp</include>
+                     <include>**/*.jpg</include>
+                     <include>**/*.jpeg</include>
+                     <include>**/*.gif</include>
+                     <include>**/*.png</include>
+                     <include>**/*.crt</include>
+                </includes>
 			</testResource>
 		</testResources>
 		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>

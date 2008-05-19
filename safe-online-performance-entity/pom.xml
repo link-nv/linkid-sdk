@@ -18,12 +18,6 @@
         <artifactId>jboss-maven-plugin</artifactId>
       </plugin>
     </plugins>
-    <resources>
-        <resource>
-          <directory>${basedir}/src/main/resources</directory>
-          <filtering>true</filtering>
-        </resource>
-    </resources>
   </build>
   <dependencies>
     <dependency>

@@ -17,12 +17,6 @@
 		The SafeOnline SQL Data Definition Language.
 	</description>
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
