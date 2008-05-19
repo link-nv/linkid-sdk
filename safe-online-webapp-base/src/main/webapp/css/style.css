@@ -69,7 +69,7 @@ a:hover {
 	margin: 0 auto;
 	padding: 0;
 	height: 150px;
-	background: url(../images/header.gif) left top;
+	background: url(../images/header.gif) no-repeat left top;
 	width: 950px;
 	display: block;
 	border: none;

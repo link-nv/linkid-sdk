@@ -6,6 +6,20 @@
 
 
 
+
+/* White
+ * ----- */
+input,
+select,
+textarea,
+img.label,
+.af_inputFile {
+
+    background-color:   transparent;
+}
+
+
+
 /* White
  * ----- */
 #header a,
@@ -17,11 +31,6 @@ input.submit {
 
 
 #main,
-    input,
-    select,
-    textarea,
-    img.label,
-    .af_inputFile,
 table.listingTable  tbody tr,
 table.rich-table    tbody tr {
 

@@ -7,6 +7,7 @@
 package net.link.safeonline.webapp.resources;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -43,6 +44,7 @@ public class ApplicationLogoServlet extends HttpServlet {
     private static final long        serialVersionUID = 1L;
     private static final Log         LOG              = LogFactory
                                                               .getLog(ApplicationLogoServlet.class);
+    private static final String      SPACER           = "/spacer.gif";
 
     private PublicApplicationService publicApplicationService;
 
@@ -72,11 +74,11 @@ public class ApplicationLogoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
 
+        boolean logoWritten = false;
         String applicationName = request.getParameter("applicationName");
-        if (null == applicationName) {
+        if (null == applicationName)
             throw new IllegalArgumentException(
                     "The application name must be provided.");
-        }
 
         try {
             PublicApplication application = this.publicApplicationService
@@ -87,17 +89,17 @@ public class ApplicationLogoServlet extends HttpServlet {
                 return;
 
             MagicMatch magic = Magic.getMagicMatch(logo);
-            if (!magic.getMimeType().startsWith("image/")) {
+            if (!magic.getMimeType().startsWith("image/"))
                 throw new IllegalStateException(
                         "Not allowed to load non-image data out of the application URL field.");
-            }
 
             response.setContentType(magic.getMimeType());
             response.getOutputStream().write(logo);
+            logoWritten = false;
         }
 
         catch (ApplicationNotFoundException e) {
-            LOG.error("Couldn't resolve application name: " + applicationName,
+            LOG.debug("Couldn't resolve application name: " + applicationName,
                     e);
         } catch (MagicParseException e) {
         } catch (MagicMatchNotFoundException e) {
@@ -105,6 +107,18 @@ public class ApplicationLogoServlet extends HttpServlet {
         }
 
         finally {
+            if (!logoWritten) {
+                response.setContentType("image/gif");
+
+                int read;
+                byte[] buf = new byte[42];
+                InputStream spacerUrl = ClassLoader
+                        .getSystemResourceAsStream(SPACER);
+                while ((read = spacerUrl.read(buf)) > -1) {
+                    response.getOutputStream().write(buf, 0, read);
+                }
+            }
+                
             response.flushBuffer();
         }
     }

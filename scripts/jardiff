@@ -25,27 +25,6 @@
 source "${0%/*}/bashlib"                                                      #
 
 
-# A function that recursively extracts all Java Archives it encounters.
-#  - Only extract archives that also exist in the other root.
-function extractAll {
-    
-    otherPWD=${PWD#$workdir/}
-    [[ $otherPWD = old* ]] \
-        && otherPWD=$workdir/${otherPWD/old/new} \
-        || otherPWD=$workdir/${otherPWD/new/old}
-
-    while read -d ''; do
-        archive=${REPLY#./}
-
-        mkdir "_${archive//\//_}" || continue
-        cd "_${archive//\//_}"
-
-        [[ -f "$otherPWD/$archive" ]] \
-            && unzip -qq "../$archive"
-        cd ..
-    done < <(find . \( -type d -name '_*' -prune \) -o -name '*.?ar' -print0)
-}
-
 # Configuration.
 workdir=$(mktemp -d)
 trap 'rm -rf "$workdir"' EXIT
@@ -57,7 +36,8 @@ new=$2; [[ $new = /* ]] || new=$PWD/$new
 
 
 # Recursively extract all archives within the old and new archives.
-"${0%/*}"/jarextract
+"${0%/*}"/jarextract "$old" "old" "$workdir"
+"${0%/*}"/jarextract "$new" "new" "$workdir"
 
 # Enumerate the files and their file sizes.
 emit "Recording comparison heuristics" --

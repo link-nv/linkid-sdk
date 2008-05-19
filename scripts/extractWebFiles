@@ -4,9 +4,11 @@ source "${0%/*}"/bashlib
 [[ $1 = -R ]] && { reverse=1; shift; }
 [[ $1 = -a ]] && { apply=1; shift; }
 
-repo="$PWD/${0%/*}/.."
+#repo="$PWD/${0%/*}/.."
+repo=( "$PWD/${0%/*}/../../"{safe-online,dodentocht} )
 base="${2:-$repo}"
 distribution=$1
+webapps=( SafeOnline dodentocht )
 
 [[ ! $distribution ]] && {
     distribution=$(cd "$base/safe-online-base-distribution/target/"*"/jboss/server/default/deploy/../../../../"; echo "$PWD")
@@ -29,29 +31,29 @@ function extractCss {
     css=( *'/css/style.css' )
 
     [[ -e $css ]] && \
-    mkdir -p "$base/css"                        || return
+    mkdir -p "$base/$webapp/css"                    || return
     (( reverse )) || {
-        mv "$css" "$base/css/" && \
-        cp "$base/css/${css##*/}"{,~}           || return
+        mv "$css" "$base/$webapp/css/" && \
+        cp "$base/$webapp/css/${css##*/}"{,~}       || return
     }
 
     for file in "${css[@]}"; do
-        ln -f "$base/css/style.css" "$file"     || return
-        touch "$file"                           || return
+        ln -f "$base/$webapp/css/style.css" "$file" && \
+        touch "$file"                               || return
     done
 }
 
 function extractHtml {
     while read file; do
-        mkdir -p "$base/${file%/*}"             || return
+        mkdir -p "$base/$webapp/${file%/*}"         || return
         (( reverse )) || {
-            mv "$file" "$base/$file" && \
-            cp "$base/$file"{,~}                || return
+            mv "$file" "$base/$webapp/$file" && \
+            cp "$base/$webapp/$file"{,~}            || return
         }
 
-        [[ -e "$base/$file" ]] && \
-            { ln -f "$base/$file" "$file"       || return; }
-        touch "$file"                           || return
+        [[ -e "$base/$webapp/$file" ]] && \
+            { ln -f "$base/$webapp/$file" "$file"   || return; }
+        touch "$file"                               || return
     done < <(find . -name '*.xhtml')
 }
 
@@ -70,7 +72,7 @@ elif (( ! reverse )); then
     [[ -e $base ]] && {
         emit -Y "You already have work files at '$(shorten "$base")'.  Perhaps you meant to use -R?"
         emit -Y "Continuing will delete all these files and replace them by the current server's files."
-        echo; ask -!yN "Continue?" || exit
+        echo; ask -y!N "Continue?" || exit
     }
 
     emit "Cleaning up '$base'" --
@@ -81,36 +83,45 @@ fi
 if (( reverse )); then
     emit "Linking CSS and XHTML files from '$(shorten "$base")' to '$(shorten "$distribution")'" --
 elif (( apply )); then
-    emit "Applying CSS and XHTML files from '$(shorten "$base")' to repository" --
+: #    emit "Applying CSS and XHTML files from '$(shorten "$base")' to repository" --
 else
     emit "Linking CSS and XHTML files from '$(shorten "$distribution")' to '$(shorten "$base")'" --
 fi
 
 if (( apply )); then
-    cd "$base"
-    find . '(' -name '*.xhtml' -o -name '*.css' ')' -print0 | while read -d '' file; do
-        [[ -e $file~ ]] || {
-            emit -y "Backup of '$(shorten "$file" "$base")' not found."
-            continue
-        }
+    for w in "${!webapps[@]}"; do
+        webapp=${webapps[w]}
+        cd "$base/$webapp"
 
-        if ! diff -q "$file"{,~} >/dev/null; then
-            dest="$repo/${file/-1.0-SNAPSHOT-exp.war//src/main/webapp}"
-            if ! [[ -e $dest ]]; then
-                dest=( "$repo/"*"/src/main/webapp/${file#$base/}" )
+        find . '(' -name '*.xhtml' -o -name '*.css' ')' -print0 | while read -d '' file; do
+            [[ -e $file~ ]] || {
+                emit -y "Backup of '$(shorten "$file")' not found."
+                continue
+            }
 
-                if (( ! ${#dest[@]} || ${#dest[@]} > 1 )) || [[ ! -e $dest ]]; then
-                    emit -y "Source of '$(shorten "$file" "$base")' not found."
-                    continue
+            if ! diff -q "$file"{,~} >/dev/null; then
+                dest="${repo[w]}/${file/-1.0-SNAPSHOT-exp.war//src/main/webapp}"
+
+                if ! [[ -e $dest ]]; then
+                    dest=( "${repo[w]}/"*"/src/main/webapp/${file/*-1.0-SNAPSHOT-exp.war/}" )
+
+                    if (( ! ${#dest[@]} || ${#dest[@]} > 1 )) || [[ ! -e $dest ]]; then
+                        emit -y "Source of '$(shorten "$file")' not found."
+                        continue
+                    fi
                 fi
-            fi
 
-            cp "$file" "$dest"
-        fi
+                echo cp "$file" "$dest"
+            fi
+        done
     done
 else
-    cd "$distribution/jboss/server/default/tmp/deploy/"*"SafeOnline.ear-contents/" && \
-        extractStuff
+    for webapp in "${webapps[@]}"; do
+        mkdir -p "$base/$webapp" || continue
+
+        cd "$distribution/jboss/server/default/tmp/deploy/"*"$webapp.ear-contents/" && \
+            extractStuff
+    done
 fi
 
-emit -$?
+(( apply )) || emit -$?

@@ -112,9 +112,10 @@ public class ApplicationStyleServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException, IOException {
 
         String applicationName = request.getParameter("applicationName");
-        if (null == applicationName)
+        if (null == applicationName) {
             throw new IllegalArgumentException(
                     "The application name must be provided.");
+        }
 
         // Figure out the base color for the style.
         Color baseColor = Color.decode("#5a7500"); // Default: Green.
@@ -128,7 +129,7 @@ public class ApplicationStyleServlet extends HttpServlet {
         }
 
         catch (ApplicationNotFoundException e) {
-            LOG.warn(
+            LOG.debug(
                     "Couldn't resolve application name (falling back to default color): "
                             + applicationName, e);
         }
