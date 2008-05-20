@@ -66,7 +66,13 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 	public void run() {
 		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
 				.getString(KEY.START));
-		Card card = openCard();
+		Card card;
+		try {
+			card = openCard();
+		} catch (NoReaderException e) {
+			showPath("missing-reader.seam");
+			return;
+		}
 		if (null == card) {
 			return;
 		}
@@ -115,6 +121,12 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 		this.appletView.outputDetailMessage("Done.");
 
 		showDocument("TargetPath");
+	}
+
+	private void showPath(String path) {
+		URL documentBase = this.runtimeContext.getDocumentBase();
+		URL url = transformUrl(documentBase, path);
+		this.runtimeContext.showDocument(url);
 	}
 
 	private void showDocument(String runtimeParameter) {
@@ -219,7 +231,7 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 		}
 	}
 
-	private Card openCard() {
+	private Card openCard() throws NoReaderException {
 		TerminalFactory factory = TerminalFactory.getDefault();
 		this.appletView.outputDetailMessage("terminal factory type: "
 				+ factory.getType());
@@ -232,7 +244,7 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 						this.messages.getString(KEY.NO_READER));
 				this.appletView
 						.outputDetailMessage("No card reader available or missing card reader driver.");
-				return null;
+				throw new NoReaderException();
 			}
 			for (CardTerminal cardTerminal : terminalList) {
 				this.appletView.outputDetailMessage("trying card terminal: "
