@@ -11,7 +11,8 @@
 		<div id="box"><h:graphicImage value="/images/box_top.gif"
 			border="0" />
         <div id="box_content">
-            <img src="logo?applicationName=#{applicationId}" class="centered" />
+            <img class="centered"
+                src="#{facesContext.externalContext.requestContextPath}/logo?applicationName=#{applicationId}" />
 
             <ui:insert name="sidebar" />
         </div>
