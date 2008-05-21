@@ -119,14 +119,14 @@ public class Saml2Handler implements Serializable {
 			throw new AuthenticationInitializationException(
 					"missing AssertionConsumerServiceURL");
 
-		String application = null;
-		try {
-			application = samlAuthnRequest.getConditions()
-					.getAudienceRestrictions().get(0).getAudiences().get(0)
-					.getAudienceURI();
-		} catch (Exception e) {
-			// empty
-		}
+		if (samlAuthnRequest.getConditions().getAudienceRestrictions()
+				.isEmpty())
+			throw new AuthenticationInitializationException(
+					"missing audience restriction");
+
+		String application = samlAuthnRequest.getConditions()
+				.getAudienceRestrictions().get(0).getAudiences().get(0)
+				.getAudienceURI();
 
 		if (null == application) {
 			throw new AuthenticationInitializationException(
