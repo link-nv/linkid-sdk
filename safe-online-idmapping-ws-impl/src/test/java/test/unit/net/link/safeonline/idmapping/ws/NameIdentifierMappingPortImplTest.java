@@ -25,6 +25,7 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
+import net.link.safeonline.authentication.service.DeviceIdentifierMappingService;
 import net.link.safeonline.authentication.service.IdentifierMappingService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingConstants;
@@ -72,6 +73,8 @@ public class NameIdentifierMappingPortImplTest {
 
 	private IdentifierMappingService mockIdentifierMappingService;
 
+	private DeviceIdentifierMappingService mockDeviceIdentifierMappingService;
+
 	private Object[] mockObjects;
 
 	private X509Certificate certificate;
@@ -93,12 +96,14 @@ public class NameIdentifierMappingPortImplTest {
 		this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.mockIdentifierMappingService = createMock(IdentifierMappingService.class);
+		this.mockDeviceIdentifierMappingService = createMock(DeviceIdentifierMappingService.class);
 
 		this.mockObjects = new Object[] {
 				this.mockWSSecurityConfigurationService,
 				this.mockApplicationAuthenticationService,
 				this.mockDeviceAuthenticationService, this.mockPkiValidator,
-				this.mockIdentifierMappingService };
+				this.mockIdentifierMappingService,
+				this.mockDeviceIdentifierMappingService };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/WSSecurityConfigurationBean/local",
@@ -117,6 +122,9 @@ public class NameIdentifierMappingPortImplTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/IdentifierMappingServiceBean/local",
 				this.mockIdentifierMappingService);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/DeviceIdentifierMappingServiceBean/local",
+				this.mockDeviceIdentifierMappingService);
 
 		this.webServiceTestUtils = new WebServiceTestUtils();
 		NameIdentifierMappingPort wsPort = new NameIdentifierMappingPortImpl();
