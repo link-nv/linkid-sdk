@@ -787,6 +787,7 @@
 		<module>safe-online-shared</module>
 		<module>safe-online-model-beid</module>
 		<module>safe-online-model-encap</module>
+		<module>safe-online-model-digipass</module>
 		<module>safe-online-identity-applet-package</module>
 		<module>safe-online-auth-applet</module>
 		<module>safe-online-auth-applet-package</module>
@@ -830,6 +831,9 @@
 		<module>safe-online-beid</module>
 		<module>safe-online-beid-keystore</module>
 		<module>safe-online-beid-webapp</module>
+		<module>safe-online-digipass</module>
+		<module>safe-online-digipass-keystore</module>
+		<module>safe-online-digipass-webapp</module>
 		<module>safe-online-ping-ws</module>
 		<module>safe-online-ping-ws-impl</module>
 		<module>safe-online-device-sdk</module>
@@ -851,57 +855,57 @@
 	<!-- DEFAULT BUILD CONFIGURATION -->
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                     <exclude>**/*.bmp</exclude>
-                     <exclude>**/*.jpg</exclude>
-                     <exclude>**/*.jpeg</exclude>
-                     <exclude>**/*.gif</exclude>
-                     <exclude>**/*.png</exclude>
-                     <exclude>**/*.crt</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                     <include>**/*.bmp</include>
-                     <include>**/*.jpg</include>
-                     <include>**/*.jpeg</include>
-                     <include>**/*.gif</include>
-                     <include>**/*.png</include>
-                     <include>**/*.crt</include>
-                </includes>
-            </resource>
-        </resources>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.bmp</exclude>
+					<exclude>**/*.jpg</exclude>
+					<exclude>**/*.jpeg</exclude>
+					<exclude>**/*.gif</exclude>
+					<exclude>**/*.png</exclude>
+					<exclude>**/*.crt</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*.bmp</include>
+					<include>**/*.jpg</include>
+					<include>**/*.jpeg</include>
+					<include>**/*.gif</include>
+					<include>**/*.png</include>
+					<include>**/*.crt</include>
+				</includes>
+			</resource>
+		</resources>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<testResources>
 			<testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                     <exclude>**/*.bmp</exclude>
-                     <exclude>**/*.jpg</exclude>
-                     <exclude>**/*.jpeg</exclude>
-                     <exclude>**/*.gif</exclude>
-                     <exclude>**/*.png</exclude>
-                     <exclude>**/*.crt</exclude>
-                </excludes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                     <include>**/*.bmp</include>
-                     <include>**/*.jpg</include>
-                     <include>**/*.jpeg</include>
-                     <include>**/*.gif</include>
-                     <include>**/*.png</include>
-                     <include>**/*.crt</include>
-                </includes>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*.bmp</exclude>
+					<exclude>**/*.jpg</exclude>
+					<exclude>**/*.jpeg</exclude>
+					<exclude>**/*.gif</exclude>
+					<exclude>**/*.png</exclude>
+					<exclude>**/*.crt</exclude>
+				</excludes>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*.bmp</include>
+					<include>**/*.jpg</include>
+					<include>**/*.jpeg</include>
+					<include>**/*.gif</include>
+					<include>**/*.png</include>
+					<include>**/*.crt</include>
+				</includes>
 			</testResource>
 		</testResources>
 		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
@@ -935,7 +939,7 @@
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
 					<buildOutputDirectory>${project.build.outputDirectory}/eclipse</buildOutputDirectory>
-					<projectNameTemplate>[artifactId]-[version]</projectNameTemplate>
+					<projectNameTemplate>[artifactId]</projectNameTemplate>
 					<wtpmanifest>true</wtpmanifest>
 					<wtpapplicationxml>true</wtpapplicationxml>
 					<wtpversion>2.0</wtpversion>

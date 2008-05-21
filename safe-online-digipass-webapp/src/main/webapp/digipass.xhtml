@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="top_content">
+	</ui:define>
+	<ui:define name="content">
+		<h2>#{msgs.digipassAuthentication}</h2>
+
+		<h:form id="auth-form">
+			<h:outputLabel for="loginName" value="#{msgs.login}" />
+			<h:inputText id="loginName"
+				value="#{digipassAuthentication.loginName}" required="true"
+				styleClass="label" />
+			<h:outputLabel for="otp" value="#{msgs.digipassToken}" />
+			<h:inputText id="otp" value="#{digipassAuthentication.token}"
+				required="true" styleClass="label" />
+			<h:outputLabel for="login" value="" />
+			<h:commandButton action="#{digipassAuthentication.login}" id="login"
+				value="#{msgs.loginaction}" class="submit" />
+			<h:commandButton action="#{digipassAuthentication.cancel}"
+				id="cancel" value="#{msgs.cancelaction}" class="submit" />
+			<h:messages styleClass="error" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpDigipassAuthentication}</p>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

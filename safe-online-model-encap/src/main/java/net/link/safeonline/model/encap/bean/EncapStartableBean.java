@@ -40,8 +40,8 @@ public class EncapStartableBean extends AbstractInitBean {
 		configureNode();
 
 		AttributeTypeEntity encapAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.MOBILE_ENCAP_ATTRIBUTE,
-				DatatypeType.STRING, true, false, true);
+				EncapConstants.MOBILE_ENCAP_ATTRIBUTE, DatatypeType.STRING,
+				true, false, true);
 		encapAttributeType.setMultivalued(true);
 		this.attributeTypes.add(encapAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
@@ -56,15 +56,15 @@ public class EncapStartableBean extends AbstractInitBean {
 		ResourceBundle properties = ResourceBundle.getBundle("config");
 		String nodeName = properties.getString("olas.node.name");
 
-		this.devices.add(new Device(SafeOnlineConstants.ENCAP_DEVICE_ID,
+		this.devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID,
 				SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName,
 				"/olas-encap/auth", "/olas-encap/reg", "/olas-encap/remove",
 				null, certificate, encapAttributeType, encapAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
-				SafeOnlineConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
+				EncapConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
 		this.deviceDescriptions.add(new DeviceDescription(
-				SafeOnlineConstants.ENCAP_DEVICE_ID, Locale.ENGLISH
-						.getLanguage(), "Mobile"));
+				EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(),
+				"Mobile"));
 		this.trustedCertificates.put(certificate,
 				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 		/*

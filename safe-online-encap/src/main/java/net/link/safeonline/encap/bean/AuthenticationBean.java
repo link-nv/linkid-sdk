@@ -18,7 +18,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -142,9 +141,10 @@ public class AuthenticationBean implements Authentication {
 		authenticationContext.setUserId(deviceUserId);
 		authenticationContext.setValidity(this.samlAuthorityService
 				.getAuthnAssertionValidity());
-		authenticationContext.setIssuer(SafeOnlineConstants.ENCAP_DEVICE_ID);
 		authenticationContext
-				.setUsedDevice(SafeOnlineConstants.ENCAP_DEVICE_ID);
+				.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+		authenticationContext
+				.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
 
 		String redirectUrl = "authenticationexit";
 		LOG.debug("redirecting to: " + redirectUrl);

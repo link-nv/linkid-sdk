@@ -39,6 +39,12 @@ public class SafeOnlineConstants {
 	public static final String SAFE_ONLINE_NODE_SECURITY_DOMAIN = "safe-online-node";
 
 	/**
+	 * The JBoss AS security domain for the SafeOnline components that need to
+	 * be accessible by other devices.
+	 */
+	public static final String SAFE_ONLINE_DEVICE_SECURITY_DOMAIN = "safe-online-device";
+
+	/**
 	 * The PKI trust domain name for the SafeOnline application owner
 	 * applications.
 	 */
@@ -77,10 +83,6 @@ public class SafeOnlineConstants {
 	 */
 	public static final String USERNAME_PASSWORD_DEVICE_ID = "password";
 
-	public static final String BEID_DEVICE_ID = "beid";
-
-	public static final String ENCAP_DEVICE_ID = "encap";
-
 	/**
 	 * Device classes
 	 */
@@ -90,16 +92,15 @@ public class SafeOnlineConstants {
 
 	public static final String MOBILE_DEVICE_CLASS = "Mobile";
 
-	public static final String MOBILE_DEVICE_AUTH_CONTEXT_CLASS = "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract";
+	public static final String MOBILE_DEVICE_AUTH_CONTEXT_CLASS = "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileTwoFactorContract";
 
 	public static final String PKI_DEVICE_CLASS = "PKI";
 
 	public static final String PKI_DEVICE_AUTH_CONTEXT_CLASS = "urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI";
 
-	/**
-	 * External device identifier domains
-	 */
-	public static final String ENCAP_IDENTIFIER_DOMAIN = "encap";
+	public static final String DIGIPASS_DEVICE_CLASS = "Digipass";
+
+	public static final String DIGIPASS_DEVICE_AUTH_CONTEXT_CLASS = "urn:oasis:names:tc:SAML:2.0:ac:classes:Unspecified";
 
 	/**
 	 * The login attribute name and login service provider domain
@@ -107,11 +108,6 @@ public class SafeOnlineConstants {
 	public static final String LOGIN_ATTRIBTUE = "urn:net:lin-k:safe-online:attribute:login";
 
 	public static final String LOGIN_IDENTIFIER_DOMAIN = "login";
-
-	/**
-	 * Mobile device attributes
-	 */
-	public static final String MOBILE_ENCAP_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:mobile:encap";
 
 	/**
 	 * Notification topics

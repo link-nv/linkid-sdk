@@ -36,4 +36,6 @@ public interface Device {
 	 * Factories.
 	 */
 	List<SelectItem> applicationDevicesFactory();
+
+	List<SelectItem> allDevicesFactory();
 }

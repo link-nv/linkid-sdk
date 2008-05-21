@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="top_content">
+	</ui:define>
+	<ui:define name="content">
+		<h2>#{msgs.digipassRegister}</h2>
+
+		<h:form id="digipass-register-form">
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+			<h:outputLabel for="login" value="#{msgs.login}" />
+			<s:decorate>
+				<h:inputText id="login" value="#{digipassRegistration.loginName}"
+					required="true" styleClass="label">
+				</h:inputText>
+			</s:decorate>
+			<h:message for="login" styleClass="error" />
+
+			<h:outputLabel for="serialNumber" value="#{msgs.miscSerialNumber}" />
+			<s:decorate>
+				<h:inputText id="serialNumber"
+					value="#{digipassRegistration.serialNumber}" required="true"
+					styleClass="label">
+					<f:validateLength minimum="10" maximum="10" />
+				</h:inputText>
+			</s:decorate>
+			<h:message for="serialNumber" styleClass="error" />
+			<h:outputLabel for="register" value="" />
+			<h:commandButton action="#{digipassRegistration.register}"
+				id="register" value="#{msgs.register}" styleClass="submit" />
+			<h:commandButton action="cancel" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+			<h:messages globalOnly="true" styleClass="error" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpRegisterDigipass}</p>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

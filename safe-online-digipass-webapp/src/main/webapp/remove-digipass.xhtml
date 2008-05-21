@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="top_content">
+	</ui:define>
+	<ui:define name="content">
+		<h2>#{msgs.digipassRegister}</h2>
+
+		<a4j:form id="digipassGetForm" ajaxSubmit="true"
+			reRender="digipassListForm">
+			<h:outputLabel for="login" value="#{msgs.login}" />
+			<s:decorate>
+				<h:inputText id="login" value="#{digipassRemoval.loginName}"
+					required="true" styleClass="label">
+				</h:inputText>
+			</s:decorate>
+			<h:message for="login" styleClass="error" />
+			<h:outputLabel for="getRegistrations" value="" />
+			<h:commandButton action="#{digipassRemoval.getRegistrations}"
+				id="getRegistrations" value="#{msgs.viewaction}" styleClass="submit" />
+			<h:commandButton action="cancel" id="cancel"
+				value="#{msgs.cancelaction}" styleClass="submit" />
+			<rich:messages styleClass="error" />
+		</a4j:form>
+
+		<h:form id="digipassListForm">
+			<f:subview rendered="#{!empty digipassRemoval.loginName}">
+				<h:dataTable id="digipass-data" var="item"
+					value="#{digipassAttributes}" preserveDataModel="false"
+					styleClass="listingTable"
+					rowClasses="listingTable_Row1,listingTable_Row2">
+					<h:column>
+						<f:facet name="header">#{msgs.digipass}</f:facet>
+						<so:outputAttribute value="#{item}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{msgs.action}</f:facet>
+						<a4j:commandLink id="digipassremove" value="#{msgs.removeaction}"
+							action="#{digipassRemoval.remove}" />
+					</h:column>
+				</h:dataTable>
+			</f:subview>
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpMobileRemove}</p>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

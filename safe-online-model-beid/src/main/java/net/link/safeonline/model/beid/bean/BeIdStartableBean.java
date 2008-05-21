@@ -120,16 +120,16 @@ public class BeIdStartableBean extends AbstractInitBean {
 		ResourceBundle properties = ResourceBundle.getBundle("config");
 		String nodeName = properties.getString("olas.node.name");
 
-		this.devices.add(new Device(SafeOnlineConstants.BEID_DEVICE_ID,
+		this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID,
 				SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName,
 				"/olas-beid/auth", "/olas-beid/reg", "/olas-beid/remove", null,
 				certificate, beidDeviceAttributeType,
 				beidDeviceUserAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
-				SafeOnlineConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
+				BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
 		this.deviceDescriptions.add(new DeviceDescription(
-				SafeOnlineConstants.BEID_DEVICE_ID, Locale.ENGLISH
-						.getLanguage(), "Belgian eID"));
+				BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(),
+				"Belgian eID"));
 
 		/*
 		 * WS-Notification subscriptions

@@ -19,7 +19,6 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.security.auth.x500.X500Principal;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
@@ -192,7 +191,7 @@ public class BeIdPkiProvider implements PkiProvider {
 	public void storeDeviceAttribute(SubjectEntity subject)
 			throws DeviceNotFoundException, AttributeNotFoundException {
 		DeviceEntity device = this.deviceDAO
-				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+				.getDevice(BeIdConstants.BEID_DEVICE_ID);
 		AttributeTypeEntity deviceAttributeType = device.getAttributeType();
 		AttributeEntity deviceAttribute = this.attributeDAO.findAttribute(
 				deviceAttributeType, subject);
@@ -213,7 +212,7 @@ public class BeIdPkiProvider implements PkiProvider {
 	public void storeDeviceUserAttribute(SubjectEntity subject)
 			throws DeviceNotFoundException, AttributeNotFoundException {
 		DeviceEntity device = this.deviceDAO
-				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+				.getDevice(BeIdConstants.BEID_DEVICE_ID);
 		AttributeTypeEntity deviceUserAttributeType = device
 				.getUserAttributeType();
 		AttributeEntity deviceUserAttribute = this.attributeDAO.findAttribute(
@@ -232,7 +231,7 @@ public class BeIdPkiProvider implements PkiProvider {
 	public void removeDeviceAttribute(SubjectEntity subject)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO
-				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+				.getDevice(BeIdConstants.BEID_DEVICE_ID);
 		AttributeTypeEntity deviceAttributeType = device.getAttributeType();
 		removeAttribute(deviceAttributeType.getName(), subject);
 	}
@@ -240,7 +239,7 @@ public class BeIdPkiProvider implements PkiProvider {
 	public void removeDeviceUserAttribute(SubjectEntity subject)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO
-				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+				.getDevice(BeIdConstants.BEID_DEVICE_ID);
 		AttributeTypeEntity deviceUserAttributeType = device
 				.getUserAttributeType();
 		removeAttribute(deviceUserAttributeType.getName(), subject);

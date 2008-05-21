@@ -12,6 +12,7 @@ import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.jws.HandlerChain;
@@ -19,14 +20,20 @@ import javax.jws.WebService;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.WebServiceContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.DeviceIdentifierMappingService;
 import net.link.safeonline.authentication.service.IdentifierMappingService;
 import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
 import net.link.safeonline.ws.common.SamlpTopLevelErrorCode;
+import net.link.safeonline.ws.util.CertificateDomainException;
+import net.link.safeonline.ws.util.CertificateValidatorHandler;
+import net.link.safeonline.ws.util.CertificateValidatorHandler.CertificateDomain;
 import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.protocol.NameIDMappingRequestType;
@@ -58,8 +65,14 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 	private static final Log LOG = LogFactory
 			.getLog(NameIdentifierMappingPortImpl.class);
 
+	@Resource
+	private WebServiceContext context;
+
 	@EJB(mappedName = "SafeOnline/IdentifierMappingServiceBean/local")
 	private IdentifierMappingService identifierMappingService;
+
+	@EJB(mappedName = "SafeOnline/DeviceIdentifierMappingServiceBean/local")
+	private DeviceIdentifierMappingService deviceIdentifierMappingService;
 
 	public NameIDMappingResponseType nameIdentifierMappingQuery(
 			NameIDMappingRequestType request) {
@@ -97,9 +110,29 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 		}
 		LOG.debug("username: " + username);
 
+		CertificateDomain certificateDomain;
+		try {
+			certificateDomain = CertificateValidatorHandler
+					.getCertificateDomain(this.context);
+		} catch (CertificateDomainException e) {
+			LOG.debug("certificate domain exception: " + e.getMessage());
+			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+			return response;
+		}
+
 		String userId;
 		try {
-			userId = this.identifierMappingService.getUserId(username);
+			if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+				userId = this.identifierMappingService.getUserId(username);
+			} else if (certificateDomain.equals(CertificateDomain.DEVICE)) {
+				userId = this.deviceIdentifierMappingService
+						.getDeviceMappingId(username);
+			} else {
+				LOG.debug("security domain not supported: "
+						+ certificateDomain.toString());
+				NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+				return response;
+			}
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied: " + e.getMessage());
 			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
@@ -109,11 +142,15 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
 			return response;
 		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found: " + username);
+			LOG.debug("application not found");
 			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
 			return response;
 		} catch (SubjectNotFoundException e) {
 			LOG.debug("subject not found: " + username);
+			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+			return response;
+		} catch (DeviceNotFoundException e) {
+			LOG.debug("device not found");
 			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
 			return response;
 		}

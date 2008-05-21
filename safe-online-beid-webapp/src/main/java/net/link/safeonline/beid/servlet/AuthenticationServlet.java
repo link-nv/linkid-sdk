@@ -15,13 +15,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
 import net.link.safeonline.device.sdk.AuthenticationContext;
+import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
@@ -88,9 +88,8 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 			authenticationContext.setUserId(deviceUserId);
 			authenticationContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
-			authenticationContext.setIssuer(SafeOnlineConstants.BEID_DEVICE_ID);
-			authenticationContext
-					.setUsedDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+			authenticationContext.setIssuer(BeIdConstants.BEID_DEVICE_ID);
+			authenticationContext.setUsedDevice(BeIdConstants.BEID_DEVICE_ID);
 
 		} catch (DecodingException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

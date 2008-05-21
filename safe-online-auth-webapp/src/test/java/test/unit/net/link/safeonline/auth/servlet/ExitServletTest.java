@@ -38,6 +38,7 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
@@ -102,8 +103,8 @@ public class ExitServletTest {
 		this.jmxTestUtils.registerActionHandler(
 				IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
 				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						LOG.debug("returning private key");
 						return keyPair.getPrivate();
 					}
@@ -111,8 +112,8 @@ public class ExitServletTest {
 		this.jmxTestUtils.registerActionHandler(
 				IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey",
 				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						LOG.debug("returning public key");
 						return keyPair.getPublic();
 					}
@@ -164,7 +165,7 @@ public class ExitServletTest {
 		DeviceClassEntity deviceClass = new DeviceClassEntity(
 				SafeOnlineConstants.PKI_DEVICE_CLASS,
 				SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
-		this.device = new DeviceEntity(SafeOnlineConstants.BEID_DEVICE_ID,
+		this.device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID,
 				deviceClass, null, null, null, null, null, null);
 
 		initialSessionAttributes.put(

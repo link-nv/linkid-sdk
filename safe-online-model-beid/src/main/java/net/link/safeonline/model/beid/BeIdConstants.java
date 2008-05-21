@@ -15,6 +15,8 @@ public class BeIdConstants {
 		// empty
 	}
 
+	public static final String BEID_DEVICE_ID = "beid";
+
 	public static final String SURNAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:beid:surname";
 
 	public static final String GIVENNAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:beid:givenName";

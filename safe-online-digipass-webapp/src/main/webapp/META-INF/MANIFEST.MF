@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: safe-online-saml-authn-context.jar safe-online-webapp-base
+ .jar safe-online-webapp-common.jar
+

@@ -19,7 +19,6 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -56,9 +55,6 @@ import org.jboss.seam.log.Log;
 @Name("removal")
 @LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "RemovalBean/local")
 public class RemovalBean implements Removal {
-
-	// TODO: list all SubjectEntity's associated with the
-	// DeviceSubjectEntity(userId), remove using the SubjectEntity-id
 
 	private static final String MOBILE_ATTRIBUTE_LIST_NAME = "mobileAttributes";
 
@@ -120,7 +116,8 @@ public class RemovalBean implements Removal {
 		Locale locale = getViewLocale();
 		try {
 			this.mobileAttributes = listAttributes(
-					SafeOnlineConstants.ENCAP_DEVICE_ID, locale);
+					net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID,
+					locale);
 		} catch (DeviceNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
