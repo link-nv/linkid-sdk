@@ -18,7 +18,8 @@
 
 		<h:form id="_new-user-device">
 			<h:selectOneRadio id="device" value="#{accountRegistration.device}"
-				layout="pageDirection" required="true" styleClass="radio">
+				layout="pageDirection" required="true"
+				requiredMessage="#{msgs.errorDeviceSelection}" styleClass="radio">
 				<f:selectItems value="#{allDevicesReg}" />
 			</h:selectOneRadio>
 

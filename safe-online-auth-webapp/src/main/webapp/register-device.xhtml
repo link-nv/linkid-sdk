@@ -16,7 +16,8 @@
 
 		<h:form id="_register-device">
 			<h:selectOneRadio value="#{deviceRegistration.device}"
-				required="true" styleClass="radio">
+				required="true" requiredMessage="#{msgs.errorDeviceSelection}"
+				styleClass="radio">
 				<f:selectItems value="#{allDevices}" />
 			</h:selectOneRadio>
 

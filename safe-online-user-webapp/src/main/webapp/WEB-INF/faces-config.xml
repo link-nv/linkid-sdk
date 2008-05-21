@@ -1,11 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE faces-config PUBLIC
-  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
-  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
-<faces-config>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+	version="1.2">
 	<application>
-		<message-bundle>messages.webapp</message-bundle>
+		<resource-bundle>
+			<base-name>messages.webapp</base-name>
+			<var>msgs</var>
+		</resource-bundle>
 		<locale-config>
 			<default-locale>en</default-locale>
 			<supported-locale>en</supported-locale>
@@ -13,13 +15,10 @@
 		</locale-config>
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 	</application>
-
 	<lifecycle>
-		<phase-listener>
-			org.jboss.seam.jsf.SeamPhaseListener
+		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
 		</phase-listener>
 	</lifecycle>
-
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>login-success</from-outcome>
@@ -30,11 +29,10 @@
 			<to-view-id>/main.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>profile</from-action>
+			<from-outcome>profile</from-outcome>
 			<to-view-id>/profile/profile.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/profile/profile.xhtml</from-view-id>
 		<navigation-case>
@@ -50,7 +48,6 @@
 			<to-view-id>/profile/attribute-add.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/profile/attribute-add.xhtml</from-view-id>
 		<navigation-case>
@@ -58,11 +55,10 @@
 			<to-view-id>/profile/profile.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/profile/profile.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/profile/attribute-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -70,11 +66,10 @@
 			<to-view-id>/profile/profile.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/profile/profile.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/register.xhtml</from-view-id>
 		<navigation-case>
@@ -82,7 +77,6 @@
 			<to-view-id>/register-complete.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/applications.xhtml</from-view-id>
 		<navigation-case>
@@ -94,55 +88,43 @@
 			<to-view-id>/applications.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/view-subscription.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/applications.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/view-application.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/applications.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/device/password/register-password.xhtml
+		<from-view-id> /device/password/register-password.xhtml 
 		</from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>
-				/device/password/confirm-password.xhtml
-			</to-view-id>
+			<to-view-id> /device/password/confirm-password.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/device/devices.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/device/password/confirm-password.xhtml
-		</from-view-id>
+		<from-view-id> /device/password/confirm-password.xhtml </from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/device/devices.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>
-			/device/password/remove-password.xhtml
-		</from-view-id>
+		<from-view-id> /device/password/remove-password.xhtml </from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/device/devices.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -150,21 +132,18 @@
 			<to-view-id>/device/devices.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/account.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>remove</from-action>
+			<from-outcome>remove</from-outcome>
 			<to-view-id>/remove.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/remove.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/account.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 </faces-config>

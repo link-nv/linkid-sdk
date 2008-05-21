@@ -1,37 +1,35 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE faces-config PUBLIC
-  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
-  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
-<faces-config>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+	version="1.2">
 	<application>
-		<message-bundle>messages.webapp</message-bundle>
+		<resource-bundle>
+			<base-name>messages.webapp</base-name>
+			<var>msgs</var>
+		</resource-bundle>
 		<locale-config>
 			<default-locale>en</default-locale>
 			<supported-locale>en</supported-locale>
 			<supported-locale>nl</supported-locale>
 		</locale-config>
-		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+		<view-handler>com.sun.facelets.FaceletViewHandler 
+		</view-handler>
 	</application>
-
 	<lifecycle>
-		<phase-listener>
-			org.jboss.seam.jsf.SeamPhaseListener
-		</phase-listener>
+		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener</phase-listener>
 	</lifecycle>
-
 	<navigation-rule>
 		<from-view-id>/first-time.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>new</from-action>
+			<from-outcome>new</from-outcome>
 			<to-view-id>/new-user.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>existing</from-action>
+			<from-outcome>existing</from-outcome>
 			<to-view-id>/main.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/new-user.xhtml</from-view-id>
 		<navigation-case>
@@ -39,75 +37,81 @@
 			<to-view-id>/new-user-device.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
-		<from-view-id>/identity-confirmation.xhtml</from-view-id>
+		<from-view-id>/identity-confirmation.xhtml 
+		</from-view-id>
 		<navigation-case>
-			<from-action>reject</from-action>
-			<to-view-id>/identity-rejection.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>missing-attributes</from-outcome>
-			<to-view-id>/missing-attributes.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/password/username-password.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>back</from-action>
-			<to-view-id>/main.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/password/register-password.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/subscription.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>reject</from-action>
-			<to-view-id>/subscription-rejection.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>confirmation-required</from-outcome>
-			<to-view-id>/identity-confirmation.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>missing-attributes</from-outcome>
-			<to-view-id>/missing-attributes.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/global-confirmation.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>reject</from-action>
-			<to-view-id>
-				/global-confirmation-rejection.xhtml
+			<from-outcome>reject</from-outcome>
+			<to-view-id>/identity-rejection.xhtml 
 			</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-outcome>subscription-required</from-outcome>
-			<to-view-id>/subscription.xhtml</to-view-id>
+			<from-outcome>missing-attributes</from-outcome>
+			<to-view-id>/missing-attributes.xhtml 
+			</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/password/username-password.xhtml 
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/main.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-outcome>confirmation-required</from-outcome>
-			<to-view-id>/identity-confirmation.xhtml</to-view-id>
+			<from-outcome>help</from-outcome>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/password/register-password.xhtml 
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>help</from-outcome>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/subscription.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>reject</from-outcome>
+			<to-view-id>/subscription-rejection.xhtml 
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>confirmation-required 
+			</from-outcome>
+			<to-view-id>/identity-confirmation.xhtml 
+			</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>missing-attributes</from-outcome>
-			<to-view-id>/missing-attributes.xhtml</to-view-id>
+			<to-view-id>/missing-attributes.xhtml 
+			</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
+	<navigation-rule>
+		<from-view-id>/global-confirmation.xhtml 
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>reject</from-outcome>
+			<to-view-id> /global-confirmation-rejection.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>subscription-required 
+			</from-outcome>
+			<to-view-id>/subscription.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>confirmation-required 
+			</from-outcome>
+			<to-view-id>/identity-confirmation.xhtml 
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>missing-attributes</from-outcome>
+			<to-view-id>/missing-attributes.xhtml 
+			</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 </faces-config>

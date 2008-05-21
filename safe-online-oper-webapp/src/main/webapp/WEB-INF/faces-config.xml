@@ -1,10 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE faces-config PUBLIC
-  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
-  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
-<faces-config>
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+	version="1.2">
 	<application>
-		<message-bundle>messages.webapp</message-bundle>
+		<resource-bundle>
+			<base-name>messages.webapp</base-name>
+			<var>msgs</var>
+		</resource-bundle>
 		<locale-config>
 			<default-locale>en</default-locale>
 			<supported-locale>nl</supported-locale>
@@ -45,14 +48,14 @@
 			<to-view-id>/applications/applications.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/applications/applications.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id> /applications/application-view.xhtml </from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/applications/applications.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -63,7 +66,7 @@
 	<navigation-rule>
 		<from-view-id> /applications/application-edit.xhtml </from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/applications/application-view.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -95,14 +98,14 @@
 			<to-view-id>/owners/owners.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/owners/owners.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/owners/owner-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/owners/owners.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -110,7 +113,7 @@
 	<navigation-rule>
 		<from-view-id>/pkix/pkix.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>add</from-action>
+			<from-outcome>add</from-outcome>
 			<to-view-id>/pkix/trust-domain-add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -133,18 +136,18 @@
 			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/pkix/trust-domain.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>add</from-action>
+			<from-outcome>add</from-outcome>
 			<to-view-id>/pkix/trust-point-add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -174,7 +177,7 @@
 	<navigation-rule>
 		<from-view-id>/pkix/trust-point-add.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -185,7 +188,7 @@
 	<navigation-rule>
 		<from-view-id>/pkix/trust-point-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -332,7 +335,7 @@
 	<navigation-rule>
 		<from-view-id>/attributes/attributes.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>add</from-action>
+			<from-outcome>add</from-outcome>
 			<to-view-id>/attributes/attribute-add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -347,7 +350,7 @@
 	<navigation-rule>
 		<from-view-id>/attributes/attribute-remove.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -358,11 +361,11 @@
 	<navigation-rule>
 		<from-view-id>/attributes/attribute-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>add</from-action>
+			<from-outcome>add</from-outcome>
 			<to-view-id> /attributes/attribute-desc-add.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -370,7 +373,7 @@
 			<to-view-id> /attributes/attribute-desc-edit.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>add-provider</from-action>
+			<from-outcome>add-provider</from-outcome>
 			<to-view-id> /attributes/attribute-provider-add.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -408,7 +411,7 @@
 	<navigation-rule>
 		<from-view-id> /attributes/attribute-desc-add.xhtml </from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -446,14 +449,14 @@
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>previous</from-action>
+			<from-outcome>previous</from-outcome>
 			<to-view-id>/attributes/attribute-add.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/attributes/attribute-add-ac.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>previous</from-action>
+			<from-outcome>previous</from-outcome>
 			<to-view-id> /attributes/attribute-add-type.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -476,7 +479,7 @@
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>previous</from-action>
+			<from-outcome>previous</from-outcome>
 			<to-view-id>/attributes/attribute-add.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -492,7 +495,7 @@
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>previous</from-action>
+			<from-outcome>previous</from-outcome>
 			<to-view-id> /attributes/attribute-add-members.xhtml </to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -507,7 +510,7 @@
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>previous</from-action>
+			<from-outcome>previous</from-outcome>
 			<to-view-id> /attributes/attribute-add-members.xhtml </to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -522,7 +525,7 @@
 			<to-view-id>/overview.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/overview.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -582,7 +585,7 @@
 	<navigation-rule>
 		<from-view-id>/audit/audit-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -593,14 +596,14 @@
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-resource.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-security.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -611,7 +614,7 @@
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-time.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -622,7 +625,7 @@
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-user.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -633,14 +636,14 @@
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-audit.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/audit/principal-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -662,7 +665,7 @@
 	<navigation-rule>
 		<from-view-id> /usage/usage-agreement-text-edit.xhtml </from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/usage/usage-agreements.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -673,7 +676,7 @@
 	<navigation-rule>
 		<from-view-id> /usage/usage-agreement-text-view.xhtml </from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/usage/usage-agreements.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -699,22 +702,22 @@
 			<to-view-id>/devices/devices.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/devices/devices.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/devices/device-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/devices/devices.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>add-descr</from-action>
+			<from-outcome>add-descr</from-outcome>
 			<to-view-id>/devices/device-desc-add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>add-prop</from-action>
+			<from-outcome>add-prop</from-outcome>
 			<to-view-id>/devices/device-prop-add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -733,7 +736,7 @@
 	<navigation-rule>
 		<from-view-id>/devices/device-edit.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/devices/device-view.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -759,7 +762,7 @@
 	<navigation-rule>
 		<from-view-id>/devices/device-desc-add.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/devices/device-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -770,7 +773,7 @@
 	<navigation-rule>
 		<from-view-id>/devices/device-prop-add.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/devices/device-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -815,18 +818,18 @@
 			<to-view-id>/devices/classes.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/devices/classes.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/devices/class-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/devices/classes.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>add-descr</from-action>
+			<from-outcome>add-descr</from-outcome>
 			<to-view-id>/devices/class-desc-add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -841,7 +844,7 @@
 	<navigation-rule>
 		<from-view-id>/devices/class-edit.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/devices/class-view.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -867,7 +870,7 @@
 	<navigation-rule>
 		<from-view-id>/devices/class-desc-add.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/devices/class-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -897,14 +900,14 @@
 			<to-view-id>/nodes/nodes.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/nodes/nodes.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/nodes/node-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/nodes/nodes.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -915,7 +918,7 @@
 	<navigation-rule>
 		<from-view-id>/nodes/node-edit.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/nodes/node-view.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -937,7 +940,7 @@
 	<navigation-rule>
 		<from-view-id>/notifications/notification-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/notifications/notifications.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -948,7 +951,7 @@
 	<navigation-rule>
 		<from-view-id>/notifications/notification-add.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/notifications/notification-view.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -956,7 +959,7 @@
 			<to-view-id>/notifications/notification-view.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>cancel</from-outcome>
 			<to-view-id>/notifications/notification-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>

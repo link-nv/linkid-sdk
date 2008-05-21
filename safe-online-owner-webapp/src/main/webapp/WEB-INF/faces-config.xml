@@ -1,24 +1,23 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE faces-config PUBLIC
-  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
-  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
-<faces-config>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+	version="1.2">
 	<application>
-		<message-bundle>messages.webapp</message-bundle>
+		<resource-bundle>
+			<base-name>messages.webapp</base-name>
+			<var>msgs</var>
+		</resource-bundle>
 		<locale-config>
 			<default-locale>en</default-locale>
 			<supported-locale>nl</supported-locale>
 		</locale-config>
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 	</application>
-
 	<lifecycle>
-		<phase-listener>
-			org.jboss.seam.jsf.SeamPhaseListener
+		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
 		</phase-listener>
 	</lifecycle>
-
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>login-success</from-outcome>
@@ -29,7 +28,6 @@
 			<to-view-id>/main.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/applications.xhtml</from-view-id>
 		<navigation-case>
@@ -49,7 +47,6 @@
 			<to-view-id>/usage-agreements.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/application-view.xhtml</from-view-id>
 		<navigation-case>
@@ -65,7 +62,6 @@
 			<to-view-id>/usage-agreement-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/application-edit.xhtml</from-view-id>
 		<navigation-case>
@@ -77,11 +73,10 @@
 			<to-view-id>/applications.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/stats.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -89,15 +84,13 @@
 			<to-view-id>/stat-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/stat-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/stats.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/usage-agreement-view.xhtml</from-view-id>
 		<navigation-case>
@@ -105,19 +98,17 @@
 			<to-view-id>/usage-agreement-text-view.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/application-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/usage-agreement-text-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/usage-agreement-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/usage-agreements.xhtml</from-view-id>
 		<navigation-case>
@@ -129,15 +120,14 @@
 			<to-view-id>/usage-agreement-text-view.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/usage-agreement-text-edit.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/usage-agreements.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>

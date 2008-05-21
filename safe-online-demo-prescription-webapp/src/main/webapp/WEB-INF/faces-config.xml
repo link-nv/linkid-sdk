@@ -1,10 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE faces-config PUBLIC
-  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
-  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
-<faces-config>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+	version="1.2">
 	<application>
-		<message-bundle>messages.webapp</message-bundle>
+		<resource-bundle>
+			<base-name>messages.webapp</base-name>
+			<var>msgs</var>
+		</resource-bundle>
 		<locale-config>
 			<default-locale>en</default-locale>
 			<supported-locale>en</supported-locale>
@@ -26,7 +29,7 @@
 	<navigation-rule>
 		<from-view-id>/admin.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>search</from-action>
+			<from-outcome>search</from-outcome>
 			<to-view-id>/search.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -37,14 +40,14 @@
 			<to-view-id>/search-result.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/admin.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/search-result.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/search.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -55,7 +58,7 @@
 	<navigation-rule>
 		<from-view-id>/prescription-new.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/care-provider.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -69,14 +72,14 @@
 	<navigation-rule>
 		<from-view-id>/prescription-fill.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/pharmacist.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id> /prescription-fill-authenticated.xhtml </from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/prescription-fill.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -87,7 +90,7 @@
 	<navigation-rule>
 		<from-view-id>/prescription-fill-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id> /prescription-fill-authenticated.xhtml </to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -123,7 +126,7 @@
 	<navigation-rule>
 		<from-view-id>/prescription-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/patient.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>

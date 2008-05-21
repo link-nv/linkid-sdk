@@ -1,11 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE faces-config PUBLIC
-  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
-  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
-<faces-config>
-
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+	version="1.2">
 	<application>
-		<message-bundle>messages.webapp</message-bundle>
+		<resource-bundle>
+			<base-name>messages.webapp</base-name>
+			<var>msgs</var>
+		</resource-bundle>
 		<locale-config>
 			<default-locale>en</default-locale>
 			<supported-locale>en</supported-locale>
@@ -13,13 +15,10 @@
 		</locale-config>
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 	</application>
-
 	<lifecycle>
-		<phase-listener>
-			org.jboss.seam.jsf.SeamPhaseListener
+		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
 		</phase-listener>
 	</lifecycle>
-
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>logout-success</from-outcome>
@@ -27,15 +26,15 @@
 			<redirect />
 		</navigation-case>
 		<navigation-case>
-			<from-action>add</from-action>
+			<from-outcome>add</from-outcome>
 			<to-view-id>/add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>overview</from-action>
+			<from-outcome>overview</from-outcome>
 			<to-view-id>/overview.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>list</from-action>
+			<from-outcome>list</from-outcome>
 			<to-view-id>/list.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -47,7 +46,6 @@
 			<to-view-id>/pay.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 	<navigation-rule>
 		<from-view-id>/add.xhtml</from-view-id>
 		<navigation-case>
@@ -55,5 +53,4 @@
 			<to-view-id>/checkout.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 </faces-config>
