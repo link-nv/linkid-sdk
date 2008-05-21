@@ -40,6 +40,8 @@
 		<param-value>OLAS</param-value>
 	</context-param>
 	<context-param>
+		<description>Point of return for remote device issuers when
+			authenticating</description>
 		<param-name> SafeOnlineDeviceAuthenticationServiceUrl </param-name>
 		<param-value> ${safe-online.host.basename}/olas-auth/device/auth 
 		</param-value>
@@ -225,7 +227,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Style Servlet</servlet-name>
-        <url-pattern>/theme.css</url-pattern>
+		<url-pattern>/theme.css</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>5</session-timeout>

@@ -63,7 +63,7 @@ public class LandingServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		this.registrationServiceUrl = getInitParameter(config,
+		this.registrationServiceUrl = getServletInitParameter(config,
 				REGISTRATION_SERVICE_URL_INIT_PARAM);
 		this.applicationName = getInitParameter(config,
 				APPLICATION_NAME_INIT_PARAM);
@@ -180,4 +180,12 @@ public class LandingServlet extends HttpServlet {
 		return initParamValue;
 	}
 
+	private String getServletInitParameter(ServletConfig config,
+			String initParamName) throws UnavailableException {
+		String initParamValue = config.getInitParameter(initParamName);
+		if (null == initParamValue)
+			throw new UnavailableException("missing init parameter: "
+					+ initParamName);
+		return initParamValue;
+	}
 }

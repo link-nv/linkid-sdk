@@ -36,13 +36,12 @@ public class ExitServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		this.updateUrl = getInitParameter(config, UPDATE_URL_INIT_PARAM);
+		this.updateUrl = getServletInitParameter(config, UPDATE_URL_INIT_PARAM);
 	}
 
-	private String getInitParameter(ServletConfig config, String initParamName)
-			throws UnavailableException {
-		String initParamValue = config.getServletContext().getInitParameter(
-				initParamName);
+	private String getServletInitParameter(ServletConfig config,
+			String initParamName) throws UnavailableException {
+		String initParamValue = config.getInitParameter(initParamName);
 		if (null == initParamValue)
 			throw new UnavailableException("missing init parameter: "
 					+ initParamName);

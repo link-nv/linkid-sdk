@@ -54,10 +54,6 @@
 		<param-name>WsLocation</param-name>
 		<param-value> ${safe-online.host.basename} </param-value>
 	</context-param>
-	<context-param>
-		<param-name>AuthenticationUrl</param-name>
-		<param-value>digipass.seam</param-value>
-	</context-param>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
@@ -106,6 +102,10 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.auth.servlet.LandingServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>AuthenticationUrl</param-name>
+			<param-value>digipass.seam</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LandingServlet</servlet-name>

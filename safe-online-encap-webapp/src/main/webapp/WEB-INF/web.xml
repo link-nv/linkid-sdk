@@ -54,28 +54,6 @@
 		<param-name>WsLocation</param-name>
 		<param-value> ${safe-online.host.basename} </param-value>
 	</context-param>
-	<context-param>
-		<param-name>AuthenticationUrl</param-name>
-		<param-value>mobile.seam</param-value>
-	</context-param>
-	<context-param>
-		<param-name>RegistrationUrl</param-name>
-		<param-value>register-mobile.seam</param-value>
-	</context-param>
-	<context-param>
-		<param-name>RemovalUrl</param-name>
-		<param-value>remove-mobile.seam</param-value>
-	</context-param>
-	<context-param>
-		<param-name>RegistrationServiceUrl</param-name>
-		<param-value> ${safe-online.host.basename}/olas-encap/regexit 
-		</param-value>
-	</context-param>
-	<context-param>
-		<param-name>RemovalServiceUrl</param-name>
-		<param-value> ${safe-online.host.basename}/olas-encap/removeexit 
-		</param-value>
-	</context-param>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
@@ -124,6 +102,10 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.auth.servlet.LandingServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>AuthenticationUrl</param-name>
+			<param-value>mobile.seam</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LandingServlet</servlet-name>
@@ -144,6 +126,11 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.reg.servlet.LandingServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>RegistrationServiceUrl</param-name>
+			<param-value> ${safe-online.host.basename}/olas-encap/regexit 
+			</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RegLandingServlet</servlet-name>
@@ -153,6 +140,10 @@
 		<servlet-name>RegExitServlet</servlet-name>
 		<servlet-class> net.link.safeonline.device.sdk.reg.servlet.ExitServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>RegistrationUrl</param-name>
+			<param-value>register-mobile.seam</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RegExitServlet</servlet-name>
@@ -163,6 +154,11 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.remove.servlet.LandingServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>RemovalServiceUrl</param-name>
+			<param-value> ${safe-online.host.basename}/olas-encap/removeexit 
+			</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RemoveLandingServlet</servlet-name>
@@ -173,6 +169,10 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.remove.servlet.ExitServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>RemovalUrl</param-name>
+			<param-value>remove-mobile.seam</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RemoveExitServlet</servlet-name>

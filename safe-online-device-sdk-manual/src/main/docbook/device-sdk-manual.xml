@@ -126,11 +126,6 @@
 	</context-param>
 
 	<context-param>
-		<param-name>AuthenticationUrl</param-name>
-		<param-value>mobile.seam</param-value>
-	</context-param>
-	
-	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value>https://olas.host.name:8443</param-value
 	</context-param>
@@ -140,6 +135,10 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.auth.servlet.LandingServlet
 		</servlet-class>
+		<init-param>
+			<param-name>AuthenticationUrl</param-name>
+			<param-value>mobile.seam</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -267,20 +266,8 @@
 	</context-param>
 
 	<context-param>
-		<param-name>RegistrationUrl</param-name>
-		<param-value>register-device.xhtml</param-value>
-	</context-param>
-
-	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value>https://olas.host.name:8443</param-value
-	</context-param>
-	
-	<context-param>
-		<param-name>RegistrationServiceUrl</param-name>
-		<param-value>
-			https://olas.host.name:8443/path/regexit
-		</param-value>
 	</context-param>
 	
 	<servlet>
@@ -288,6 +275,12 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.reg.servlet.LandingServlet
 		</servlet-class>
+		<init-param>
+			<param-name>RegistrationServiceUrl</param-name>
+			<param-value>
+				https://olas.host.name:8443/path/regexit
+			</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -300,6 +293,10 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.reg.servlet.ExitServlet
 		</servlet-class>
+		<init-param>
+			<param-name>RegistrationUrl</param-name>
+			<param-value>register-device.xhtml</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -391,20 +388,8 @@
 	</context-param>
 
 	<context-param>
-		<param-name>RemovalUrl</param-name>
-		<param-value>remove-device.xhtml</param-value>
-	</context-param>
-
-	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value>https://olas.host.name:8443</param-value
-	</context-param>
-	
-	<context-param>
-		<param-name>RemovalServiceUrl</param-name>
-		<param-value>
-			https://olas.host.name:8443/path/removeexit
-		</param-value>
 	</context-param>
 	
 	<servlet>
@@ -412,6 +397,12 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.remove.servlet.LandingServlet
 		</servlet-class>
+		<init-param>
+			<param-name>RemovalServiceUrl</param-name>
+			<param-value>
+				https://olas.host.name:8443/path/removeexit
+			</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -424,6 +415,10 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.remove.servlet.ExitServlet
 		</servlet-class>
+		<init-param>
+			<param-name>RemovalUrl</param-name>
+			<param-value>remove-device.xhtml</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -515,20 +510,8 @@
 	</context-param>
 
 	<context-param>
-		<param-name>UpdateUrl</param-name>
-		<param-value>update-device.xhtml</param-value>
-	</context-param>
-
-	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value>https://olas.host.name:8443</param-value
-	</context-param>
-	
-	<context-param>
-		<param-name>UpdateServiceUrl</param-name>
-		<param-value>
-			https://olas.host.name:8443/path/updateexit
-		</param-value>
 	</context-param>
 	
 	<servlet>
@@ -536,6 +519,12 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.update.servlet.LandingServlet
 		</servlet-class>
+		<init-param>
+			<param-name>UpdateServiceUrl</param-name>
+			<param-value>
+				https://olas.host.name:8443/path/updateexit
+			</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -548,6 +537,10 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.update.servlet.ExitServlet
 		</servlet-class>
+		<init-param>
+			<param-name>UpdateUrl</param-name>
+			<param-value>update-device.xhtml</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>

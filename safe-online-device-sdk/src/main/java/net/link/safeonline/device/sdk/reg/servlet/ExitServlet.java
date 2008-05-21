@@ -42,8 +42,7 @@ public class ExitServlet extends HttpServlet {
 
 	private String getInitParameter(ServletConfig config, String initParamName)
 			throws UnavailableException {
-		String initParamValue = config.getServletContext().getInitParameter(
-				initParamName);
+		String initParamValue = config.getInitParameter(initParamName);
 		if (null == initParamValue)
 			throw new UnavailableException("missing init parameter: "
 					+ initParamName);
