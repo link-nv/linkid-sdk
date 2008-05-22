@@ -135,7 +135,7 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
-	 * This device attribute holds all information this gives returns to olas.
+	 * This device attribute holds all the information returned to OLAS.
 	 * 
 	 */
 	@ManyToOne
@@ -149,7 +149,7 @@ public class DeviceEntity implements Serializable {
 
 	/**
 	 * This device attribute holds the information for a user to recognize his
-	 * device.
+	 * device registration.
 	 * 
 	 */
 	@ManyToOne

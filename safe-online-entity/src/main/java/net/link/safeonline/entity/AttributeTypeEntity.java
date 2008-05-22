@@ -308,6 +308,10 @@ public class AttributeTypeEntity implements Serializable {
 		this.descriptions = descriptions;
 	}
 
+	/**
+	 * Returns the OLAS node which holds the attribute values of this type.
+	 * 
+	 */
 	@ManyToOne
 	public OlasEntity getLocation() {
 		return this.location;
@@ -336,37 +340,37 @@ public class AttributeTypeEntity implements Serializable {
 		List<AttributeTypeEntity> listAttributeTypes();
 
 		@QueryMethod(QUERY_WHERE_NODE)
-		List<AttributeTypeEntity> listAttributeTypes(@QueryParam("location")
-		OlasEntity node);
+		List<AttributeTypeEntity> listAttributeTypes(
+				@QueryParam("location") OlasEntity node);
 
 		@QueryMethod(QUERY_CATEGORIZE_STRING)
-		Query createQueryCategorizeString(@QueryParam("application")
-		ApplicationEntity application, @QueryParam("attributeType")
-		AttributeTypeEntity attributeType);
+		Query createQueryCategorizeString(
+				@QueryParam("application") ApplicationEntity application,
+				@QueryParam("attributeType") AttributeTypeEntity attributeType);
 
 		@QueryMethod(QUERY_CATEGORIZE_STRING)
-		Query createQueryCategorizeLogin(@QueryParam("application")
-		ApplicationEntity application, @QueryParam("attributeType")
-		AttributeTypeEntity attributeType);
+		Query createQueryCategorizeLogin(
+				@QueryParam("application") ApplicationEntity application,
+				@QueryParam("attributeType") AttributeTypeEntity attributeType);
 
 		@QueryMethod(QUERY_CATEGORIZE_BOOLEAN)
-		Query createQueryCategorizeBoolean(@QueryParam("application")
-		ApplicationEntity application, @QueryParam("attributeType")
-		AttributeTypeEntity attributeType);
+		Query createQueryCategorizeBoolean(
+				@QueryParam("application") ApplicationEntity application,
+				@QueryParam("attributeType") AttributeTypeEntity attributeType);
 
 		@QueryMethod(QUERY_CATEGORIZE_INTEGER)
-		Query createQueryCategorizeInteger(@QueryParam("application")
-		ApplicationEntity application, @QueryParam("attributeType")
-		AttributeTypeEntity attributeType);
+		Query createQueryCategorizeInteger(
+				@QueryParam("application") ApplicationEntity application,
+				@QueryParam("attributeType") AttributeTypeEntity attributeType);
 
 		@QueryMethod(QUERY_CATEGORIZE_DOUBLE)
-		Query createQueryCategorizeDouble(@QueryParam("application")
-		ApplicationEntity application, @QueryParam("attributeType")
-		AttributeTypeEntity attributeType);
+		Query createQueryCategorizeDouble(
+				@QueryParam("application") ApplicationEntity application,
+				@QueryParam("attributeType") AttributeTypeEntity attributeType);
 
 		@QueryMethod(QUERY_CATEGORIZE_DATE)
-		Query createQueryCategorizeDate(@QueryParam("application")
-		ApplicationEntity application, @QueryParam("attributeType")
-		AttributeTypeEntity attributeType);
+		Query createQueryCategorizeDate(
+				@QueryParam("application") ApplicationEntity application,
+				@QueryParam("attributeType") AttributeTypeEntity attributeType);
 	}
 }

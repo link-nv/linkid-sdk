@@ -39,6 +39,21 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.IndexColumn;
 
+/**
+ * This entity represents an OLAS node in the OLAS network.
+ * 
+ * An OLAS node has an authentication certificate used to authenticate against
+ * other OLAS node when using its web services.
+ * 
+ * An OLAS node also has a signing certificate used for signing SAML tokens
+ * issued from this node.
+ * 
+ * This entity is for example used by remote attributes to identify the location
+ * of the actual attribute in the OLAS network.
+ * 
+ * @author wvdhaute
+ * 
+ */
 @Entity
 @Table(name = "olas_entity")
 @NamedQueries( {
@@ -159,7 +174,7 @@ public class OlasEntity implements Serializable {
 	}
 
 	/**
-	 * Gives back the location of this Olas node ( using default protocol )
+	 * Gives back the location of this OLAS node ( using default protocol )
 	 */
 	@Transient
 	public String getLocation() {
@@ -168,7 +183,7 @@ public class OlasEntity implements Serializable {
 	}
 
 	/**
-	 * Gives back the location of this Olas node ( using HTTP protocol - no SSL )
+	 * Gives back the location of this OLAS node ( using HTTP protocol - no SSL )
 	 */
 	@Transient
 	public String getHTTPLocation() {
@@ -176,7 +191,7 @@ public class OlasEntity implements Serializable {
 	}
 
 	/**
-	 * Gives back the location of this Olas node ( using HTTPS protocol - SSL )
+	 * Gives back the location of this OLAS node ( using HTTPS protocol - SSL )
 	 */
 	@Transient
 	public String getHTTPSLocation() {
@@ -185,7 +200,8 @@ public class OlasEntity implements Serializable {
 
 	/**
 	 * Gives back the encoded node authentication certificate. This is used for
-	 * olas nodes to use other olas nodes' webservices.
+	 * OLAS nodes to authenticate against OLAS nodes when using its web
+	 * services.
 	 * 
 	 */
 	@Lob
