@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.entity.OlasEntity;
 
 /**
  * Interface for node authentication service.
@@ -55,4 +56,13 @@ public interface NodeAuthenticationService {
 	 */
 	X509Certificate getSigningCertificate(String nodeName)
 			throws NodeNotFoundException;
+
+	/**
+	 * Gives back the node entity given the node name.
+	 * 
+	 * @param nodeName
+	 * @return the OLAS node entity
+	 * @throws NodeNotFoundException
+	 */
+	OlasEntity getNode(String nodeName) throws NodeNotFoundException;
 }

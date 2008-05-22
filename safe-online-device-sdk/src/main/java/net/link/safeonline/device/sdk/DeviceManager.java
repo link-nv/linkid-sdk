@@ -11,7 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.dao.OlasDAO;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -35,30 +35,29 @@ public class DeviceManager {
 		// empty
 	}
 
-	public static void setAuthServiceUrls(HttpSession session, String nodeName)
-			throws ServletException {
-		OlasDAO olasDAO = EjbUtils.getEJB("SafeOnline/OlasDAOBean/local",
-				OlasDAO.class);
+	private static OlasEntity getNode(String nodeName) throws ServletException {
+		NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(
+				"SafeOnline/NodeAuthenticationServiceBean/local",
+				NodeAuthenticationService.class);
 		OlasEntity node;
 		try {
-			node = olasDAO.getNode(nodeName);
+			node = nodeAuthenticationService.getNode(nodeName);
 		} catch (NodeNotFoundException e) {
 			throw new ServletException("Unknown Olas Node");
 		}
+		return node;
+	}
+
+	public static void setAuthServiceUrls(HttpSession session, String nodeName)
+			throws ServletException {
+		OlasEntity node = getNode(nodeName);
 		session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
 				node.getLocation() + "/olas-auth/main.seam");
 	}
 
 	public static void setServiceUrls(HttpSession session, String nodeName,
 			String source) throws ServletException {
-		OlasDAO olasDAO = EjbUtils.getEJB("SafeOnline/OlasDAOBean/local",
-				OlasDAO.class);
-		OlasEntity node;
-		try {
-			node = olasDAO.getNode(nodeName);
-		} catch (NodeNotFoundException e) {
-			throw new ServletException("Unknown Olas Node");
-		}
+		OlasEntity node = getNode(nodeName);
 
 		session.setAttribute(SAFE_ONLINE_DEVICE_WS_LOCATION, node.getLocation()
 				.replaceFirst(".*://", ""));

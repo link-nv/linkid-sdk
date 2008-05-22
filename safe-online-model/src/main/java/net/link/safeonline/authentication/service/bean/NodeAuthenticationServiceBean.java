@@ -59,4 +59,8 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
 		X509Certificate signingCertificate = node.getSigningCertificate();
 		return signingCertificate;
 	}
+
+	public OlasEntity getNode(String nodeName) throws NodeNotFoundException {
+		return this.olasDAO.getNode(nodeName);
+	}
 }
