@@ -14,7 +14,7 @@
 
 		<h:form id="digipass-register-form">
 			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
+				<s:span styleClass="" />
 			</f:facet>
 			<h:outputLabel for="login" value="#{msgs.login}" />
 			<s:decorate>
@@ -29,10 +29,11 @@
 				<h:inputText id="serialNumber"
 					value="#{digipassRegistration.serialNumber}" required="true"
 					styleClass="label">
-					<f:validateLength minimum="10" maximum="10" />
+					<f:validateLength minimum="8" maximum="12" />
 				</h:inputText>
 			</s:decorate>
 			<h:message for="serialNumber" styleClass="error" />
+
 			<h:outputLabel for="register" value="" />
 			<h:commandButton action="#{digipassRegistration.register}"
 				id="register" value="#{msgs.register}" styleClass="submit" />

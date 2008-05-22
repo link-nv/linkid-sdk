@@ -27,7 +27,7 @@
 			<h:commandButton action="#{digipassRemoval.getRegistrations}"
 				id="getRegistrations" value="#{msgs.viewaction}" styleClass="submit" />
 			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" styleClass="submit" />
+				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 			<rich:messages styleClass="error" />
 		</a4j:form>
 
@@ -52,7 +52,7 @@
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<p>#{msgs.helpDigipassRemove}</p>
+		<p>#{msgs.helpRemoveDigipass}</p>
 	</ui:define>
 </ui:composition>
 </body>
