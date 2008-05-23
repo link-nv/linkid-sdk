@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.service.PublicApplicationService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -83,7 +82,9 @@ public class ApplicationLogoServlet extends HttpServlet {
 
         try {
             PublicApplication application = this.publicApplicationService
-                    .getPublicApplication(applicationName);
+                    .findPublicApplication(applicationName);
+            if (application == null)
+                return;
 
             byte[] logo = application.getLogo();
             if (null == logo)
@@ -100,10 +101,7 @@ public class ApplicationLogoServlet extends HttpServlet {
             logoWritten = true;
         }
 
-        catch (ApplicationNotFoundException e) {
-            LOG.debug("Couldn't resolve application name: " + applicationName,
-                    e);
-        } catch (MagicParseException e) {
+        catch (MagicParseException e) {
         } catch (MagicMatchNotFoundException e) {
         } catch (MagicException e) {
         }
