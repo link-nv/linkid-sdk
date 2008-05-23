@@ -17,7 +17,7 @@ emit "Converting JAR dependencies on safe-online projects to source dependencies
 
             echo "$line"
         done < "$pp" > "$pp~"
-        mv -f "$pp~" "$pp"
+        #mv -f "$pp~" "$pp"
     done
 emit -$?
 

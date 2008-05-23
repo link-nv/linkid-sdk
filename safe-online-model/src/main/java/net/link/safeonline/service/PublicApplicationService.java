@@ -9,7 +9,6 @@ package net.link.safeonline.service;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.model.application.PublicApplication;
 
 /**
@@ -29,8 +28,6 @@ public interface PublicApplicationService {
      * that's available to the public.
      * 
      * @param applicationName
-     * @throws ApplicationNotFoundException
      */
-    public PublicApplication getPublicApplication(String applicationName)
-            throws ApplicationNotFoundException;
+    public PublicApplication findPublicApplication(String applicationName);
 }

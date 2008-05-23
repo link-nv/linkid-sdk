@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.service.PublicApplicationService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -118,20 +117,12 @@ public class ApplicationStyleServlet extends HttpServlet {
         }
 
         // Figure out the base color for the style.
+        PublicApplication application = this.publicApplicationService
+                .findPublicApplication(applicationName);
+
         Color baseColor = Color.decode("#5a7500"); // Default: Green.
-        try {
-            PublicApplication application = this.publicApplicationService
-                    .getPublicApplication(applicationName);
-
-            if (application.getColor() != null) {
-                baseColor = application.getColor();
-            }
-        }
-
-        catch (ApplicationNotFoundException e) {
-            LOG.debug(
-                    "Couldn't resolve application name (falling back to default color): "
-                            + applicationName, e);
+        if (application != null && application.getColor() != null) {
+            baseColor = application.getColor();
         }
 
         // Merge the velocity style template with the color attributes.

@@ -10,7 +10,6 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.service.PublicApplicationService;
@@ -18,8 +17,8 @@ import net.link.safeonline.service.PublicApplicationService;
 import org.jboss.annotation.ejb.LocalBinding;
 
 /**
- * <h2>{@link PublicApplicationServiceBean} - Service for {@link
- * PublicApplication}.</h2>
+ * <h2>{@link PublicApplicationServiceBean} - Service for
+ * {@link PublicApplication}.</h2>
  * 
  * <p>
  * Provides access to attributes of the given application that are publicly
@@ -39,11 +38,13 @@ public class PublicApplicationServiceBean implements PublicApplicationService {
     private ApplicationDAO applicationDAO;
 
 
+    /**
+     * {@inheritDoc}
+     */
     @PermitAll
-    public PublicApplication getPublicApplication(String applicationName)
-            throws ApplicationNotFoundException {
+    public PublicApplication findPublicApplication(String applicationName) {
 
         return new PublicApplication(this.applicationDAO
-                .getApplication(applicationName));
+                .findApplication(applicationName));
     }
 }
