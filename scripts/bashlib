@@ -319,6 +319,9 @@ function spinner {
                 "$style$color${graphics[i++ % 4]}$reset" \
                 "$textstyle$textcolor$text"                         >&$fd
         sleep .25 # Four iterations make one second.
+
+        # Cancel when parent disappears.
+        kill -0 $$ >/dev/null || { done="${red}aborted"; break; }
     done
 
     # Get rid of the spinner traps.

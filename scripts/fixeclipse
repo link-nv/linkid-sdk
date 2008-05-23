@@ -7,6 +7,18 @@ cd "$(readlink -f "${0%/*}/..")"
 p=${PWD##*/}
 emit "Converting JAR dependencies on safe-online projects to source dependencies" --
     sed -i ${nonGnuSed:+''} '/-client/ ! { /M2_REPO.*\/'"$p"'\// { s,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; } }' */.classpath
+    for pp in */.classpath; do
+        IFS=$'\n' src=($(grep -F 'kind="src"' "$pp" | cut -d'"' -f4)); unset IFS
+        while read -r; do
+            line=$REPLY
+
+            [[ $line = *'-client'* ]] && \
+                line=$(sed '/'"$p"'/ { s,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/ }' <<< "$line")
+
+            echo "$line"
+        done < "$pp" > "$pp~"
+        mv -f "$pp~" "$pp"
+    done
 emit -$?
 
 emit "Setting up project-specific configurations" --

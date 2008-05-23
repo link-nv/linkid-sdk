@@ -8,7 +8,11 @@ source "${0%/*}"/bashlib
 repo=( "$PWD/${0%/*}/../../"{safe-online,dodentocht} )
 base="${2:-$repo}"
 distribution=$1
-webapps=( SafeOnline dodentocht )
+
+shift 2
+(( $# )) && \
+    webapps=("$@") || \
+    webapps=( SafeOnline dodentocht )
 
 [[ ! $distribution ]] && {
     distribution=$(cd "$base/safe-online-base-distribution/target/"*"/jboss/server/default/deploy/../../../../"; echo "$PWD")
@@ -81,11 +85,11 @@ elif (( ! reverse )); then
 fi
 
 if (( reverse )); then
-    emit "Linking CSS and XHTML files from '$(shorten "$base")' to '$(shorten "$distribution")'" --
+: #    emit "Linking CSS and XHTML files from '$(shorten "$base")' to '$(shorten "$distribution")'" --
 elif (( apply )); then
 : #    emit "Applying CSS and XHTML files from '$(shorten "$base")' to repository" --
 else
-    emit "Linking CSS and XHTML files from '$(shorten "$distribution")' to '$(shorten "$base")'" --
+: #    emit "Linking CSS and XHTML files from '$(shorten "$distribution")' to '$(shorten "$base")'" --
 fi
 
 if (( apply )); then
@@ -124,4 +128,4 @@ else
     done
 fi
 
-(( apply )) || emit -$?
+# (( apply )) || emit -$?

@@ -44,7 +44,7 @@ public class ApplicationLogoServlet extends HttpServlet {
     private static final long        serialVersionUID = 1L;
     private static final Log         LOG              = LogFactory
                                                               .getLog(ApplicationLogoServlet.class);
-    private static final String      SPACER           = "/spacer.gif";
+    private static final String      SPACER           = "spacer.gif";
 
     private PublicApplicationService publicApplicationService;
 
@@ -76,9 +76,10 @@ public class ApplicationLogoServlet extends HttpServlet {
 
         boolean logoWritten = false;
         String applicationName = request.getParameter("applicationName");
-        if (null == applicationName)
+        if (null == applicationName) {
             throw new IllegalArgumentException(
                     "The application name must be provided.");
+        }
 
         try {
             PublicApplication application = this.publicApplicationService
@@ -89,13 +90,14 @@ public class ApplicationLogoServlet extends HttpServlet {
                 return;
 
             MagicMatch magic = Magic.getMagicMatch(logo);
-            if (!magic.getMimeType().startsWith("image/"))
+            if (!magic.getMimeType().startsWith("image/")) {
                 throw new IllegalStateException(
                         "Not allowed to load non-image data out of the application URL field.");
+            }
 
             response.setContentType(magic.getMimeType());
             response.getOutputStream().write(logo);
-            logoWritten = false;
+            logoWritten = true;
         }
 
         catch (ApplicationNotFoundException e) {
@@ -114,11 +116,15 @@ public class ApplicationLogoServlet extends HttpServlet {
                 byte[] buf = new byte[42];
                 InputStream spacerUrl = ClassLoader
                         .getSystemResourceAsStream(SPACER);
-                while ((read = spacerUrl.read(buf)) > -1) {
-                    response.getOutputStream().write(buf, 0, read);
+                if (spacerUrl == null) {
+                    LOG.warn("Spacer not found!");
+                } else {
+                    while ((read = spacerUrl.read(buf)) > -1) {
+                        response.getOutputStream().write(buf, 0, read);
+                    }
                 }
             }
-                
+
             response.flushBuffer();
         }
     }

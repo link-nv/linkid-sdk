@@ -20,62 +20,88 @@
 	</ui:define>
 	<ui:define name="content">
 
-
 		<h:form enctype="multipart/form-data">
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<rich:tabPanel switchType="client">
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				label="#{msgs.generic}">
+                <table class="inner listingTable">
+                    <colgroup />
+                    <colgroup />
 
-				<rich:tab label="#{msgs.generic}">
+                    <tbody>
+                        <tr>
+                            <th><h:outputLabel for="name" value="#{msgs.name}" /></th>
+                            <td>
+                                <s:decorate>
+                                    <h:inputText id="name" value="#{operNode.name}" required="true"
+                                        styleClass="label" />
+                                </s:decorate>
+                                <h:message for="name" styleClass="error" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><h:outputLabel for="hostname" value="#{msgs.hostname}" /></th>
+                            <td>
+                                <s:decorate>
+                                    <h:inputText id="hostname" value="#{operNode.hostname}"
+                                        styleClass="label" />
+                                </s:decorate>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><h:outputLabel for="port" value="#{msgs.port}" /></th>
+                            <td>
+                                <s:decorate>
+                                    <h:inputText id="port" value="#{operNode.port}" styleClass="label" />
+                                </s:decorate>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><h:outputLabel for="sslPort" value="#{msgs.sslPort}" /></th>
+                            <td>
+                                <s:decorate>
+                                    <h:inputText id="sslPort" value="#{operNode.sslPort}"
+                                        styleClass="label" />
+                                </s:decorate>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </rich:simpleTogglePanel>
 
-					<h:outputLabel for="name" value="#{msgs.name}" />
-					<s:decorate>
-						<h:inputText id="name" value="#{operNode.name}" required="true"
-							styleClass="label" />
-					</s:decorate>
-					<h:message for="name" styleClass="error" />
+            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				label="#{msgs.certificate}">
+                <table class="inner listingTable">
+                    <colgroup />
+                    <colgroup />
 
-					<h:outputLabel for="hostname" value="#{msgs.hostname}" />
-					<s:decorate>
-						<h:inputText id="hostname" value="#{operNode.hostname}"
-							styleClass="label" />
-					</s:decorate>
-
-					<h:outputLabel for="port" value="#{msgs.port}" />
-					<s:decorate>
-						<h:inputText id="port" value="#{operNode.port}" styleClass="label" />
-					</s:decorate>
-
-					<h:outputLabel for="sslPort" value="#{msgs.sslPort}" />
-					<s:decorate>
-						<h:inputText id="sslPort" value="#{operNode.sslPort}"
-							styleClass="label" />
-					</s:decorate>
-
-				</rich:tab>
-
-				<rich:tab label="#{msgs.certificate}">
-
-					<h:outputLabel for="authnCertificate"
-						value="#{msgs.authenticationCertificate}" />
-					<s:decorate>
-						<t:inputFileUpload id="authnCertificate"
-							value="#{operNode.authnUpFile}" />
-					</s:decorate>
-					<h:message for="authnCertificate" styleClass="error" />
-
-					<h:outputLabel for="signingCertificate"
-						value="#{msgs.signingCertificate}" />
-					<s:decorate>
-						<t:inputFileUpload id="signingCertificate"
-							value="#{operNode.signingUpFile}" />
-					</s:decorate>
-					<h:message for="signingCertificate" styleClass="error" />
-
-				</rich:tab>
-			</rich:tabPanel>
+                    <tbody>
+                        <tr>
+                            <th><h:outputLabel for="authnCertificate" value="#{msgs.authenticationCertificate}" /></th>
+                            <td>
+                                <s:decorate>
+                                    <t:inputFileUpload id="authnCertificate"
+                                        value="#{operNode.authnUpFile}" />
+                                </s:decorate>
+                                <h:message for="authnCertificate" styleClass="error" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><h:outputLabel for="signingCertificate" value="#{msgs.signingCertificate}" /></th>
+                            <td>
+                                <s:decorate>
+                                    <t:inputFileUpload id="signingCertificate"
+                                        value="#{operNode.signingUpFile}" />
+                                </s:decorate>
+                                <h:message for="signingCertificate" styleClass="error" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </rich:simpleTogglePanel>
 
 			<t:messages styleClass="error" globalOnly="true" />
 
