@@ -11,6 +11,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.service.PublicApplicationService;
 
@@ -44,7 +45,11 @@ public class PublicApplicationServiceBean implements PublicApplicationService {
     @PermitAll
     public PublicApplication findPublicApplication(String applicationName) {
 
-        return new PublicApplication(this.applicationDAO
-                .findApplication(applicationName));
+        ApplicationEntity application = this.applicationDAO
+                .findApplication(applicationName);
+        if (application == null)
+            return null;
+
+        return new PublicApplication(application);
     }
 }

@@ -32,7 +32,7 @@ public class PinDialog extends JDialog implements ActionListener,
 
 	private static final long serialVersionUID = 1L;
 
-	private JPasswordField passwordField;
+	protected JPasswordField  passwordField;
 
 	private JButton okButton;
 
@@ -89,16 +89,14 @@ public class PinDialog extends JDialog implements ActionListener,
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
-		if (false == this.okClicked) {
-			return null;
-		}
+		if (false == this.okClicked)
+            return null;
 		String pin = new String(this.passwordField.getPassword());
 		return pin;
 	}
 
 	private boolean okClicked;
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (this.okButton == source) {
@@ -109,21 +107,17 @@ public class PinDialog extends JDialog implements ActionListener,
 		}
 	}
 
-	@Override
 	public void changedUpdate(DocumentEvent e) {
 	}
 
-	@Override
 	public void insertUpdate(DocumentEvent e) {
 		this.okButton.setEnabled(this.passwordField.getPassword().length == 4);
 	}
 
-	@Override
 	public void removeUpdate(DocumentEvent e) {
 		this.okButton.setEnabled(this.passwordField.getPassword().length == 4);
 	}
 
-	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			if (this.passwordField.getPassword().length == 4) {
@@ -133,11 +127,9 @@ public class PinDialog extends JDialog implements ActionListener,
 		}
 	}
 
-	@Override
 	public void keyReleased(KeyEvent e) {
 	}
 
-	@Override
 	public void keyTyped(KeyEvent e) {
 	}
 }
