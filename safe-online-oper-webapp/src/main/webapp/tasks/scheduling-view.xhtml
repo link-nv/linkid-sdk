@@ -20,27 +20,27 @@
 	</ui:define>
 	<ui:define name="content">
 
-        <table class="listingTable">
-            <colgroup />
-            <colgroup />
+		<table class="listingTable">
+			<colgroup />
+			<colgroup />
 
-            <tbody>
-                <tr>
-                    <th>#{msgs.name}</th>
-                    <td>#{selectedScheduling.name}</td>
-                </tr>
-                <tr>
-                    <th>#{msgs.cron}</th>
-                    <td>#{selectedScheduling.cronExpression}</td>
-                </tr>
-                <tr>
-                    <th>#{msgs.last}</th>
-                    <td>#{selectedScheduling.fireDate}</td>
-                </tr>
-            </tbody>
+			<tbody>
+				<tr>
+					<th>#{msgs.name}</th>
+					<td>#{selectedScheduling.name}</td>
+				</tr>
+				<tr>
+					<th>#{msgs.cron}</th>
+					<td>#{selectedScheduling.cronExpression}</td>
+				</tr>
+				<tr>
+					<th>#{msgs.last}</th>
+					<td>#{selectedScheduling.fireDate}</td>
+				</tr>
+			</tbody>
 		</table>
 
-        <br />
+		<br />
 
 		<a4j:form id="taskForm" ajaxSubmit="true" reRender="task-data">
 			<rich:dataTable id="task-data" var="item" value="#{taskList}"
@@ -96,13 +96,15 @@
 		<h:form>
 			<ul class="sidemenu">
 				<li><h:commandLink action="#{scheduling.performScheduling}"
-				id="performscheduling" value="#{msgs.performschedulingaction}"
-				immediate="true" /></li>
+					id="performscheduling" value="#{msgs.performschedulingaction}"
+					immediate="true" /></li>
 				<li><h:commandLink action="#{scheduling.editSchedulingView}"
-				id="editscheduling" value="#{msgs.editschedulingaction}"
-				immediate="true" /></li>
+					id="editscheduling" value="#{msgs.editschedulingaction}"
+					immediate="true" /></li>
 				<li><h:commandLink action="/audit/audit.seam"
 					value="#{msgs.audit}" /></li>
+				<li><h:commandLink action="/user/main.seam"
+					value="#{msgs.operatorUserManagement}" /></li>
 			</ul>
 		</h:form>
 	</ui:define>

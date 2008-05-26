@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+<body>
+<ui:composition template="/WEB-INF/template-root.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="maintenance" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.operatorUserManagement}</h1>
+	</ui:define>
+	<ui:define name="content">
+
+		<p>#{msgs.user}: #{userManager.user}</p>
+
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			label="#{msgs.generic}">
+
+			<h:form>
+				<h:selectManyCheckbox id="roles" layout="pageDirection"
+					value="#{userManager.roles}">
+					<f:selectItems value="#{availableRoles}" />
+				</h:selectManyCheckbox>
+
+				<h:messages styleClass="error" />
+
+				<h:commandButton value="#{msgs.saveaction}" id="save"
+					action="#{userManager.save}" styleClass="submit" />
+				<h:outputLabel id="sep" value="" />
+			</h:form>
+
+		</rich:simpleTogglePanel>
+
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			label="#{msgs.attributes}" opened="false">
+
+			<h:dataTable id="data" var="item"
+				value="#{userManager.attributeList}" preserveDataModel="false"
+				styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+
+				<h:column>
+					<f:facet name="header">#{msgs.name}</f:facet>
+					<so:outputAttributeName value="#{item}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.value}</f:facet>
+					<so:outputAttribute value="#{item}" />
+				</h:column>
+			</h:dataTable>
+
+		</rich:simpleTogglePanel>
+
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			label="#{msgs.subscriptions}" opened="false">
+			<a4j:form id="subscriptionForm" ajaxSubmit="true"
+				reRender="subscription_data">
+				<rich:dataTable id="subscription_data" var="item"
+					value="#{userManager.subscriptionList}" rows="10"
+					styleClass="listingTable"
+					rowClasses="listingTable_Row1,listingTable_Row2"
+					columnClasses="listingTable_ColumnTop,listingTable_Column">
+					<h:column>
+						<f:facet name="header">
+						#{msgs.applications}
+					</f:facet>
+						<h:outputText id="friendlyName"
+							value="#{item.application.friendlyName}"
+							rendered="#{!empty item.application.friendlyName}" />
+						<h:outputText id="name" value="#{item.application.name}"
+							rendered="#{empty item.application.friendlyName}" />
+					</h:column>
+					<f:facet name="footer">
+						<rich:datascroller for="subscription_data"
+							pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
+							<f:facet name="first">
+								<h:graphicImage value="/images/icons/control_start.png" />
+							</f:facet>
+							<f:facet name="first_disabled">
+								<h:graphicImage value="/images/icons/control_start.png" />
+							</f:facet>
+							<f:facet name="previous">
+								<h:graphicImage value="/images/icons/control_rewind.png" />
+							</f:facet>
+							<f:facet name="previous_disabled">
+								<h:graphicImage value="/images/icons/control_rewind.png" />
+							</f:facet>
+							<f:facet name="pages">
+								<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+							</f:facet>
+							<f:facet name="next">
+								<h:graphicImage value="/images/icons/control_fastforward.png" />
+							</f:facet>
+							<f:facet name="next_disabled">
+								<h:graphicImage value="/images/icons/control_fastforward.png" />
+							</f:facet>
+							<f:facet name="last">
+								<h:graphicImage value="/images/icons/control_end.png" />
+							</f:facet>
+							<f:facet name="last_disabled">
+								<h:graphicImage value="/images/icons/control_end.png" />
+							</f:facet>
+						</rich:datascroller>
+					</f:facet>
+				</rich:dataTable>
+			</a4j:form>
+
+		</rich:simpleTogglePanel>
+
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			label="#{msgs.registeredDevices}" opened="false">
+
+			<rich:dataTable id="registereddevices_data"
+				value="#{userManager.deviceRegistrationList}" var="item">
+				<h:column>
+					<f:facet name="header">#{msgs.name}</f:facet>
+					<h:outputText value="#{item.friendlyName}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.information}</f:facet>
+					<ui:repeat id="attributes" var="attribute"
+						value="#{item.attribute}">
+						<so:outputAttribute value="#{attribute}" />
+					</ui:repeat>
+				</h:column>
+			</rich:dataTable>
+
+		</rich:simpleTogglePanel>
+
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			label="#{msgs.history}" opened="false">
+			<a4j:form id="historyForm" ajaxSubmit="true" reRender="history_data">
+				<rich:dataTable id="history_data" var="item"
+					value="#{userManager.historyList}" rows="10"
+					styleClass="listingTable"
+					rowClasses="listingTable_Row1,listingTable_Row2"
+					columnClasses="listingTable_ColumnTop,listingTable_Column">
+					<h:column>
+						<f:facet name="header">#{msgs.when}</f:facet>
+						<h:outputText value="#{item.when}">
+							<f:convertDateTime type="both" timeStyle="medium"
+								dateStyle="short" />
+						</h:outputText>
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">#{msgs.event}</f:facet>#{item.message}
+				</h:column>
+					<f:facet name="footer">
+						<rich:datascroller for="history_data" pageIndexVar="pageIndex"
+							pagesVar="pages" fastControls="hide">
+							<f:facet name="first">
+								<h:graphicImage value="/images/icons/control_start.png" />
+							</f:facet>
+							<f:facet name="first_disabled">
+								<h:graphicImage value="/images/icons/control_start.png" />
+							</f:facet>
+							<f:facet name="previous">
+								<h:graphicImage value="/images/icons/control_rewind.png" />
+							</f:facet>
+							<f:facet name="previous_disabled">
+								<h:graphicImage value="/images/icons/control_rewind.png" />
+							</f:facet>
+							<f:facet name="pages">
+								<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+							</f:facet>
+							<f:facet name="next">
+								<h:graphicImage value="/images/icons/control_fastforward.png" />
+							</f:facet>
+							<f:facet name="next_disabled">
+								<h:graphicImage value="/images/icons/control_fastforward.png" />
+							</f:facet>
+							<f:facet name="last">
+								<h:graphicImage value="/images/icons/control_end.png" />
+							</f:facet>
+							<f:facet name="last_disabled">
+								<h:graphicImage value="/images/icons/control_end.png" />
+							</f:facet>
+						</rich:datascroller>
+					</f:facet>
+
+				</rich:dataTable>
+			</a4j:form>
+		</rich:simpleTogglePanel>
+
+		<h:form id="actionForm">
+			<h:commandButton id="remove" value="#{msgs.removeaction}"
+				action="#{userManager.remove}" styleClass="submit" />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

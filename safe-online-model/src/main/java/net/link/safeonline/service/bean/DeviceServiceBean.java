@@ -8,7 +8,9 @@
 package net.link.safeonline.service.bean;
 
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -30,6 +32,8 @@ import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -37,6 +41,8 @@ import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.DeviceMappingDAO;
 import net.link.safeonline.dao.OlasDAO;
+import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.data.DeviceMappingDO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
@@ -52,14 +58,17 @@ import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.model.Devices;
 import net.link.safeonline.notification.dao.EndpointReferenceDAO;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.ApplicationOwnerAccessControlInterceptor;
+import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.DeviceService;
 import net.link.safeonline.service.DeviceServiceRemote;
+import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -95,6 +104,15 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	@EJB
 	private EndpointReferenceDAO endpointReferenceDAO;
 
+	@EJB
+	private SubjectService subjectService;
+
+	@EJB
+	private DeviceMappingService deviceMappingService;
+
+	@EJB
+	private IdentityService identityService;
+
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.USER_ROLE })
 	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
 	public List<AllowedDeviceEntity> listAllowedDevices(
@@ -117,11 +135,6 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<DeviceClassEntity> listDeviceClasses() {
 		return this.deviceClassDAO.listDeviceClasses();
-	}
-
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<DeviceMappingEntity> listRegisteredDevices(SubjectEntity subject) {
-		return this.deviceMappingDAO.listDeviceMappings(subject);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -460,4 +473,58 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 			throws DeviceClassNotFoundException {
 		return this.deviceClassDAO.getDeviceClass(deviceClassName);
 	}
+
+	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
+	public List<DeviceMappingDO> getDeviceRegistrations(SubjectEntity subject,
+			Locale locale) throws SubjectNotFoundException,
+			DeviceNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
+		List<DeviceMappingDO> deviceMappings = new LinkedList<DeviceMappingDO>();
+		List<DeviceEntity> deviceList = this.deviceDAO.listDevices();
+		for (DeviceEntity device : deviceList) {
+			LOG.debug("device: " + device.getName());
+			String deviceDescription = device.getName();
+			DeviceDescriptionEntity deviceDescriptionEntity = this.deviceDAO
+					.findDescription(new DeviceDescriptionPK(device.getName(),
+							locale.getLanguage()));
+			if (null != deviceDescriptionEntity) {
+				deviceDescription = deviceDescriptionEntity.getDescription();
+			}
+			LOG.debug("device description: " + deviceDescription);
+			DeviceMappingEntity deviceMapping = this.deviceMappingService
+					.getDeviceMapping(subject.getUserId(), device.getName());
+			List<List<AttributeDO>> registrationAttributes = listRegistrations(
+					deviceMapping, locale);
+			for (List<AttributeDO> registrationAttribute : registrationAttributes) {
+				deviceMappings.add(new DeviceMappingDO(deviceMapping,
+						deviceDescription, registrationAttribute));
+			}
+		}
+		return deviceMappings;
+	}
+
+	private List<List<AttributeDO>> listRegistrations(
+			DeviceMappingEntity deviceMapping, Locale locale)
+			throws PermissionDeniedException, AttributeTypeNotFoundException {
+		List<List<AttributeDO>> registeredDeviceAttributes;
+
+		if (null == deviceMapping.getDevice().getUserAttributeType()) {
+			DeviceSubjectEntity deviceSubject = this.subjectService
+					.findDeviceSubject(deviceMapping.getId());
+			if (null != deviceSubject
+					&& deviceSubject.getRegistrations().size() > 0) {
+				List<List<AttributeDO>> localRegistration = new LinkedList<List<AttributeDO>>();
+				localRegistration.add(new LinkedList<AttributeDO>());
+				return localRegistration;
+			}
+			return new LinkedList<List<AttributeDO>>();
+		}
+		LOG.debug("get device registration attributes: "
+				+ deviceMapping.getDevice().getUserAttributeType().getName());
+		registeredDeviceAttributes = this.identityService.listAttributes(
+				deviceMapping.getId(), deviceMapping.getDevice()
+						.getUserAttributeType(), locale);
+		return registeredDeviceAttributes;
+	}
+
 }

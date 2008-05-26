@@ -14,6 +14,7 @@ import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_IN
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_STRING;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_ALL;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_NODE;
+import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_VISIBLE;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ import org.hibernate.annotations.IndexColumn;
 @NamedQueries( {
 		@NamedQuery(name = QUERY_WHERE_ALL, query = "FROM AttributeTypeEntity"),
 		@NamedQuery(name = QUERY_WHERE_NODE, query = "FROM AttributeTypeEntity a WHERE a.location = :location"),
+		@NamedQuery(name = QUERY_WHERE_VISIBLE, query = "FROM AttributeTypeEntity a WHERE a.userVisible = true"),
 		@NamedQuery(name = QUERY_CATEGORIZE_STRING, query = "SELECT a.stringValue, COUNT(a.stringValue) "
 				+ "FROM AttributeEntity a, SubscriptionEntity s, "
 				+ "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
@@ -112,6 +114,8 @@ public class AttributeTypeEntity implements Serializable {
 	public static final String QUERY_WHERE_ALL = "at.all";
 
 	public static final String QUERY_WHERE_NODE = "at.node";
+
+	public static final String QUERY_WHERE_VISIBLE = "at.visible";
 
 	public static final String QUERY_CATEGORIZE_STRING = "at.cat.string";
 
@@ -343,6 +347,9 @@ public class AttributeTypeEntity implements Serializable {
 		List<AttributeTypeEntity> listAttributeTypes(
 				@QueryParam("location") OlasEntity node);
 
+		@QueryMethod(QUERY_WHERE_VISIBLE)
+		List<AttributeTypeEntity> listVisibleAttributeTypes();
+
 		@QueryMethod(QUERY_CATEGORIZE_STRING)
 		Query createQueryCategorizeString(
 				@QueryParam("application") ApplicationEntity application,
@@ -372,5 +379,6 @@ public class AttributeTypeEntity implements Serializable {
 		Query createQueryCategorizeDate(
 				@QueryParam("application") ApplicationEntity application,
 				@QueryParam("attributeType") AttributeTypeEntity attributeType);
+
 	}
 }

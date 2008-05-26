@@ -88,6 +88,12 @@ public class IdentityBean implements Identity {
 					FacesMessage.SEVERITY_ERROR,
 					"errorAttributeTypeNotFoundSpecific", e.getMessage());
 			this.attributeList = new LinkedList<AttributeDO>();
+		} catch (PermissionDeniedException e) {
+			LOG.error("permission denied: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied", e
+							.getMessage());
+			this.attributeList = new LinkedList<AttributeDO>();
 		}
 	}
 

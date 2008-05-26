@@ -134,6 +134,11 @@ public class IdentityServiceBean implements IdentityService,
 		return result;
 	}
 
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public List<HistoryEntity> listHistory(SubjectEntity subject) {
+		return this.historyDAO.getHistory(subject);
+	}
+
 	/**
 	 * Gives back the attribute type for the given attribute name, but only if
 	 * the user is allowed to edit attributes of the attribute type.
@@ -280,8 +285,157 @@ public class IdentityServiceBean implements IdentityService,
 				HistoryEventType.ATTRIBUTE_CHANGE, attributeName, null);
 	}
 
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public List<AttributeDO> listAttributes(@NotNull SubjectEntity subject,
+			Locale locale) throws PermissionDeniedException,
+			AttributeTypeNotFoundException {
+		LOG.debug("get attributes for " + subject.getUserId());
+
+		List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO
+				.listAttributeTypes();
+		return listAttributes(subject, attributeTypes, locale);
+	}
+
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public List<AttributeDO> listAttributes(Locale locale)
+			throws AttributeTypeNotFoundException, PermissionDeniedException {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		LOG.debug("get attributes for " + subject.getUserId());
+
+		List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO
+				.listVisibleAttributeTypes();
+		return listAttributes(subject, attributeTypes, locale);
+	}
+
+	/**
+	 * Returns list of attribute data objects given the subject and the list of
+	 * attribute types.
+	 */
+	private List<AttributeDO> listAttributes(SubjectEntity subject,
+			List<AttributeTypeEntity> attributeTypes, Locale locale)
+			throws PermissionDeniedException, AttributeTypeNotFoundException {
+		List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
+		for (AttributeTypeEntity attributeType : attributeTypes) {
+			// get these with their parent, skip
+			if (attributeType.isCompoundMember())
+				continue;
+			LOG.debug("find attribute value for type: "
+					+ attributeType.getName());
+			Object value = this.proxyAttributeService.findAttributeValue(
+					subject.getUserId(), attributeType.getName());
+			// user does not own an attribute of this type, next !
+			if (null == value)
+				continue;
+
+			if (attributeType.isDeviceAttribute()) {
+				// in case of a device attribute, we'll get a list of values, 1
+				// for each device registration
+				Object[] values = (Object[]) value;
+				for (Object deviceValue : values) {
+					addValueToView(deviceValue, attributeType, attributesView,
+							locale);
+				}
+			} else {
+				addValueToView(value, attributeType, attributesView, locale);
+			}
+		}
+		return attributesView;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void addValueToView(Object value,
+			AttributeTypeEntity attributeType,
+			List<AttributeDO> attributesView, Locale locale) {
+		LOG.debug("add attribute " + attributeType.getName() + " to view");
+		if (!attributeType.isMultivalued()) {
+			// single-valued
+			attributesView
+					.add(getAttributeView(attributeType, value, 0, locale));
+		} else if (!attributeType.isCompounded()) {
+			// multi-valued but NOT compounded
+			int idx = 0;
+			for (Object attributeValue : (Object[]) value) {
+				attributesView.add(getAttributeView(attributeType,
+						attributeValue, idx, locale));
+				idx++;
+			}
+		} else {
+			// compounded
+			int idx = 0;
+			Map<String, Object>[] memberMaps = (Map<String, Object>[]) value;
+			for (Map<String, Object> memberMap : memberMaps) {
+				// first add an attribute view for the parent attribute
+				// type
+				LOG.debug("add compounded attribute: "
+						+ attributeType.getName());
+				attributesView.add(getAttributeView(attributeType, null, idx,
+						locale));
+				for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType
+						.getMembers()) {
+					LOG.debug("add compounded member attribute: "
+							+ memberAttributeType.getMember().getName());
+					attributesView.add(getAttributeView(memberAttributeType
+							.getMember(), memberMap.get(memberAttributeType
+							.getMember().getName()), idx, locale));
+				}
+				idx++;
+			}
+
+		}
+	}
+
+	/**
+	 * Returns an attribute view for the given attribute value. value must be a
+	 * single attribute at this point, not a multi-valued or compounded
+	 * attribute, or null in case of a compounded parent attribute !
+	 */
+	private AttributeDO getAttributeView(AttributeTypeEntity attributeType,
+			Object value, int idx, Locale locale) {
+		LOG.debug("get attribute view for type: " + attributeType.getName()
+				+ " with value: " + value);
+		String humanReadableName = null;
+		String description = null;
+		AttributeTypeDescriptionEntity attributeTypeDescription = findAttributeTypeDescription(
+				attributeType, locale);
+		if (null != attributeTypeDescription) {
+			humanReadableName = attributeTypeDescription.getName();
+			description = attributeTypeDescription.getDescription();
+		}
+		AttributeDO attributeView = new AttributeDO(attributeType.getName(),
+				attributeType.getType(), attributeType.isMultivalued(), idx,
+				humanReadableName, description, attributeType.isUserEditable(),
+				false, null, null);
+
+		attributeView.setCompounded(attributeType.isCompounded());
+		attributeView.setMember(attributeType.isCompoundMember());
+		/*
+		 * We mark compounded attribute members as non-editable when queries via
+		 * the listAttributes method to ease visualization.
+		 */
+		if (attributeType.isCompoundMember()) {
+			attributeView.setEditable(false);
+		}
+
+		if (null != value) {
+			attributeView.setValue(value);
+		}
+		return attributeView;
+	}
+
+	private AttributeTypeDescriptionEntity findAttributeTypeDescription(
+			AttributeTypeEntity attributeType, Locale locale) {
+		if (null == locale)
+			return null;
+		String language = locale.getLanguage();
+		LOG.debug("trying language: " + language);
+		AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+				.findDescription(new AttributeTypeDescriptionPK(attributeType
+						.getName(), language));
+		return attributeTypeDescription;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public List<AttributeDO> listAttributes2(Locale locale)
 			throws AttributeTypeNotFoundException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		LOG.debug("get attributes for " + subject.getUserId());

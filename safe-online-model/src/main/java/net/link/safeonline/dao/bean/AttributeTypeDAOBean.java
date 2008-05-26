@@ -94,6 +94,13 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		return attributeTypes;
 	}
 
+	public List<AttributeTypeEntity> listVisibleAttributeTypes() {
+		LOG.debug("get user visible attribute types");
+		List<AttributeTypeEntity> attributeTypes = this.queryObject
+				.listVisibleAttributeTypes();
+		return attributeTypes;
+	}
+
 	public AttributeTypeEntity getAttributeType(String name)
 			throws AttributeTypeNotFoundException {
 		LOG.debug("get attribute type: " + name);

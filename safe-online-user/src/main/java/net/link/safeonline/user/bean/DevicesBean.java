@@ -36,15 +36,14 @@ import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.data.DeviceMappingDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.service.DeviceMappingService;
-import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.service.DeviceService;
 import net.link.safeonline.user.DeviceEntry;
-import net.link.safeonline.user.DeviceMappingEntry;
 import net.link.safeonline.user.Devices;
 import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
@@ -87,10 +86,10 @@ public class DevicesBean implements Devices {
 	private DeviceEntry selectedDevice;
 
 	@DataModel(DEVICE_MAPPINGS_LIST_NAME)
-	List<DeviceMappingEntry> deviceMappings;
+	List<DeviceMappingDO> deviceMappings;
 
 	@DataModelSelection(DEVICE_MAPPINGS_LIST_NAME)
-	private DeviceMappingEntry selectedDeviceMapping;
+	private DeviceMappingDO selectedDeviceMapping;
 
 	@PostConstruct
 	public void postConstructCallback() {
@@ -104,6 +103,9 @@ public class DevicesBean implements Devices {
 	private DeviceMappingService deviceMapppingService;
 
 	@EJB
+	private DeviceService deviceService;
+
+	@EJB
 	private CredentialService credentialService;
 
 	@EJB
@@ -114,9 +116,6 @@ public class DevicesBean implements Devices {
 
 	@EJB
 	private NodeAuthenticationService nodeAuthenticationService;
-
-	@EJB
-	private SubjectService subjectService;
 
 	@In
 	Context sessionContext;
@@ -268,79 +267,35 @@ public class DevicesBean implements Devices {
 		return viewLocale;
 	}
 
-	private List<List<AttributeDO>> listRegistrations(
-			DeviceMappingEntity deviceMapping) {
+	@RolesAllowed(UserConstants.USER_ROLE)
+	@Factory(DEVICE_MAPPINGS_LIST_NAME)
+	public List<DeviceMappingDO> deviceRegistrationsFactory() {
 		Locale locale = getViewLocale();
-		List<List<AttributeDO>> registeredDeviceAttributes;
+		LOG.debug("device registrations factory");
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		try {
-			if (null == deviceMapping.getDevice().getUserAttributeType()) {
-				DeviceSubjectEntity deviceSubject = this.subjectService
-						.findDeviceSubject(deviceMapping.getId());
-				if (null != deviceSubject
-						&& deviceSubject.getRegistrations().size() > 0) {
-					List<List<AttributeDO>> localRegistration = new LinkedList<List<AttributeDO>>();
-					localRegistration.add(new LinkedList<AttributeDO>());
-					return localRegistration;
-				}
-				return new LinkedList<List<AttributeDO>>();
-			}
-			LOG.debug("get device registration attributes: "
-					+ deviceMapping.getDevice().getUserAttributeType()
-							.getName());
-			registeredDeviceAttributes = this.identityService.listAttributes(
-					deviceMapping.getId(), deviceMapping.getDevice()
-							.getUserAttributeType(), locale);
+			return this.deviceService.getDeviceRegistrations(subject, locale);
+		} catch (SubjectNotFoundException e) {
+			LOG.debug("Subject not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			return null;
+		} catch (DeviceNotFoundException e) {
+			LOG.debug("Device not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
 		} catch (PermissionDeniedException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			LOG.error("permission denied: " + e.getMessage());
-			return new LinkedList<List<AttributeDO>>();
+			return null;
 		} catch (AttributeTypeNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			LOG.error("attribute type not found");
-			return new LinkedList<List<AttributeDO>>();
+			return null;
 		}
-		return registeredDeviceAttributes;
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	@Factory(DEVICE_MAPPINGS_LIST_NAME)
-	public List<DeviceMappingEntry> deviceRegistrationsFactory() {
-		Locale locale = getViewLocale();
-		LOG.debug("device registrations factory");
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		LOG.debug("subject: " + subject.getUserId());
-
-		this.deviceMappings = new LinkedList<DeviceMappingEntry>();
-		List<DeviceEntity> deviceList = this.devicePolicyService.getDevices();
-		for (DeviceEntity device : deviceList) {
-			LOG.debug("device: " + device.getName());
-			String deviceDescription = this.devicePolicyService
-					.getDeviceDescription(device.getName(), locale);
-			LOG.debug("device description: " + deviceDescription);
-			DeviceMappingEntity deviceMapping;
-			try {
-				deviceMapping = this.deviceMapppingService.getDeviceMapping(
-						subject.getUserId(), device.getName());
-			} catch (SubjectNotFoundException e) {
-				LOG.debug("Subject not found: " + subject.getUserId());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-				return null;
-			} catch (DeviceNotFoundException e) {
-				LOG.debug("Device not found: " + device.getName());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-				return null;
-			}
-			List<List<AttributeDO>> registrationAttributes = listRegistrations(deviceMapping);
-			for (List<AttributeDO> registrationAttribute : registrationAttributes) {
-				this.deviceMappings.add(new DeviceMappingEntry(deviceMapping,
-						deviceDescription, registrationAttribute));
-			}
-		}
-		return this.deviceMappings;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

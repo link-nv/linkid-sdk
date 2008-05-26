@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.user;
+package net.link.safeonline.ctrl;
 
 import java.text.MessageFormat;
 import java.util.Locale;

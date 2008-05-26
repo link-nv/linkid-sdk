@@ -5,15 +5,20 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.oper;
+package net.link.safeonline.oper.user;
 
 import java.util.List;
 
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.ctrl.HistoryMessage;
+import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.data.DeviceMappingDO;
+import net.link.safeonline.entity.SubscriptionEntity;
+
 @Local
-public interface Authorization {
+public interface UserManagement {
 
 	/*
 	 * Accessors.
@@ -26,14 +31,26 @@ public interface Authorization {
 
 	void setRoles(List<String> roles);
 
+	List<HistoryMessage> getHistoryList();
+
+	List<SubscriptionEntity> getSubscriptionList();
+
+	List<DeviceMappingDO> getDeviceRegistrationList();
+
+	List<AttributeDO> getAttributeList();
+
 	/*
 	 * Actions.
 	 */
 	String search();
 
-	String cancel();
-
 	String save();
+
+	String remove();
+
+	String removeConfirm();
+
+	String removeCancel();
 
 	/*
 	 * Richfaces.

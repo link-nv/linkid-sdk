@@ -67,8 +67,23 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			String value = attribute.getStringValue();
 			if (null == value) {
-				ResourceBundle messages = TaglibUtil
-						.getResourceBundle(context);
+				ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+				String noValueStr = messages.getString("noValue");
+				value = "[" + noValueStr + "]";
+			}
+			response.write(value);
+		}
+	}
+
+	@SupportedType(DatatypeType.LOGIN)
+	public static class LoginAttributeValueEncoder implements
+			AttributeValueEncoder {
+
+		public void encode(AttributeDO attribute, ResponseWriter response,
+				FacesContext context) throws IOException {
+			String value = attribute.getStringValue();
+			if (null == value) {
+				ResourceBundle messages = TaglibUtil.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				value = "[" + noValueStr + "]";
 			}
@@ -84,8 +99,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			Boolean value = attribute.getBooleanValue();
 			if (null == value) {
-				ResourceBundle messages = TaglibUtil
-						.getResourceBundle(context);
+				ResourceBundle messages = TaglibUtil.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				response.write("[" + noValueStr + "]");
 				return;
@@ -102,8 +116,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			Integer value = attribute.getIntegerValue();
 			if (null == value) {
-				ResourceBundle messages = TaglibUtil
-						.getResourceBundle(context);
+				ResourceBundle messages = TaglibUtil.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				response.write("[" + noValueStr + "]");
 				return;
@@ -120,8 +133,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			Double value = attribute.getDoubleValue();
 			if (null == value) {
-				ResourceBundle messages = TaglibUtil
-						.getResourceBundle(context);
+				ResourceBundle messages = TaglibUtil.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				response.write("[" + noValueStr + "]");
 				return;
@@ -138,8 +150,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			Date value = attribute.getDateValue();
 			if (null == value) {
-				ResourceBundle messages = TaglibUtil
-						.getResourceBundle(context);
+				ResourceBundle messages = TaglibUtil.getResourceBundle(context);
 				String noValueStr = messages.getString("noValue");
 				response.write("[" + noValueStr + "]");
 				return;
@@ -152,10 +163,9 @@ public class AttributeOutputComponent extends UIOutput {
 	public static class CompoundedAttributeValueEncoder implements
 			AttributeValueEncoder {
 
-		public void encode(@SuppressWarnings("unused")
-		AttributeDO attribute, @SuppressWarnings("unused")
-		ResponseWriter response, @SuppressWarnings("unused")
-		FacesContext context) {
+		public void encode(@SuppressWarnings("unused") AttributeDO attribute,
+				@SuppressWarnings("unused") ResponseWriter response,
+				@SuppressWarnings("unused") FacesContext context) {
 			// empty
 		}
 	}
@@ -168,6 +178,7 @@ public class AttributeOutputComponent extends UIOutput {
 		 * component over here.
 		 */
 		registerAttributeValueEncoder(StringAttributeValueEncoder.class);
+		registerAttributeValueEncoder(LoginAttributeValueEncoder.class);
 		registerAttributeValueEncoder(BooleanAttributeValueEncoder.class);
 		registerAttributeValueEncoder(CompoundedAttributeValueEncoder.class);
 		registerAttributeValueEncoder(IntegerAttributeValueEncoder.class);

@@ -14,7 +14,9 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 
 /**
@@ -32,6 +34,17 @@ public interface SubscriptionService {
 	 * 
 	 */
 	List<SubscriptionEntity> listSubscriptions();
+
+	/**
+	 * Gives back a list of all application subscriptions for the specified
+	 * user.
+	 * 
+	 * @param subject
+	 * @return list of application subscriptions.
+	 * @throws SubjectNotFoundException
+	 */
+	List<SubscriptionEntity> listSubscriptions(SubjectEntity subject)
+			throws SubjectNotFoundException;
 
 	/**
 	 * Subscribe the caller user to the given application.

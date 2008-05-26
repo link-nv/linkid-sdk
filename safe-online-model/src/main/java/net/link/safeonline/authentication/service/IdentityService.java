@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEntity;
+import net.link.safeonline.entity.SubjectEntity;
 
 /**
  * Interface of service component to access the identity data of a caller
@@ -41,6 +42,14 @@ public interface IdentityService {
 	List<HistoryEntity> listHistory();
 
 	/**
+	 * Gives back the authentication history of the specified user.
+	 * 
+	 * @param subject
+	 * @return a list of history entries.
+	 */
+	List<HistoryEntity> listHistory(SubjectEntity subject);
+
+	/**
 	 * Saves an (new) attribute value for the current user.
 	 * 
 	 * @throws PermissionDeniedException
@@ -58,9 +67,24 @@ public interface IdentityService {
 	 *            the optional locale that should be used to i18n the response.
 	 * 
 	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
 	 */
 	List<AttributeDO> listAttributes(Locale locale)
-			throws AttributeTypeNotFoundException;
+			throws AttributeTypeNotFoundException, PermissionDeniedException;
+
+	/**
+	 * Gives back a list of all attribute for the specified user. Also
+	 * attributes marked as not visible will be returned.
+	 * 
+	 * @param subject
+	 * @param locale
+	 *            the optional locale that should be used to i18n the response
+	 * 
+	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
+	 */
+	List<AttributeDO> listAttributes(SubjectEntity subject, Locale locale)
+			throws PermissionDeniedException, AttributeTypeNotFoundException;
 
 	/**
 	 * List the user visible attributes for the given device for all

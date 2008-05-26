@@ -42,6 +42,13 @@ public interface AttributeTypeDAO {
 	List<AttributeTypeEntity> listAttributeTypes();
 
 	/**
+	 * List all attribute types that are marked user visible.
+	 * 
+	 * @return
+	 */
+	List<AttributeTypeEntity> listVisibleAttributeTypes();
+
+	/**
 	 * Lists all attribute types on the specified olas node.
 	 * 
 	 * @param node
@@ -102,4 +109,5 @@ public interface AttributeTypeDAO {
 	 * @param parentAttributeType
 	 */
 	void removeMemberEntries(AttributeTypeEntity parentAttributeType);
+
 }

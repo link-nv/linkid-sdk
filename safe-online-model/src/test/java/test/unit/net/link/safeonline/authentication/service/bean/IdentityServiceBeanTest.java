@@ -1038,6 +1038,7 @@ public class IdentityServiceBeanTest {
 		requiredAttributeType.setType(DatatypeType.STRING);
 		requiredAttributeType.setUserVisible(true);
 		requiredAttributeType.setUserEditable(true);
+		requiredAttributeType.setMultivalued(true);
 		attributeTypeService.add(requiredAttributeType);
 
 		AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity();
@@ -1047,6 +1048,7 @@ public class IdentityServiceBeanTest {
 		optionalAttributeType.setType(DatatypeType.STRING);
 		optionalAttributeType.setUserVisible(true);
 		optionalAttributeType.setUserEditable(true);
+		optionalAttributeType.setMultivalued(true);
 		attributeTypeService.add(optionalAttributeType);
 
 		refreshTransaction(entityManager);
@@ -1058,6 +1060,7 @@ public class IdentityServiceBeanTest {
 		compoundedAttributeType.setType(DatatypeType.COMPOUNDED);
 		compoundedAttributeType.setUserEditable(true);
 		compoundedAttributeType.setUserVisible(true);
+		compoundedAttributeType.setMultivalued(true);
 		compoundedAttributeType.addMember(requiredAttributeType, 0, true);
 		compoundedAttributeType.addMember(optionalAttributeType, 1, false);
 		attributeTypeService.add(compoundedAttributeType);
@@ -1067,10 +1070,16 @@ public class IdentityServiceBeanTest {
 				IdentityServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				userSubject.getUserId(), SafeOnlineRoles.USER_ROLE);
+		AttributeDO compoundedAttribute = new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 0,
+				null, null, true, true, null, null);
+		compoundedAttribute.setCompounded(true);
+		identityService.saveAttribute(compoundedAttribute);
+
 		String requiredAttributeValue = "test-attribute-value-"
 				+ UUID.randomUUID().toString();
 		AttributeDO requiredAttribute = new AttributeDO(requiredAttributeName,
-				DatatypeType.STRING, false, 0, null, null, true, false,
+				DatatypeType.STRING, true, 0, null, null, true, false,
 				requiredAttributeValue, null);
 		identityService.saveAttribute(requiredAttribute);
 

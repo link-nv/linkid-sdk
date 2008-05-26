@@ -16,10 +16,10 @@ import javax.ejb.Stateless;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.ctrl.HistoryMessage;
+import net.link.safeonline.ctrl.HistoryMessageManager;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.user.History;
-import net.link.safeonline.user.HistoryMessage;
-import net.link.safeonline.user.HistoryMessageManager;
 import net.link.safeonline.user.UserConstants;
 
 import org.jboss.annotation.ejb.LocalBinding;

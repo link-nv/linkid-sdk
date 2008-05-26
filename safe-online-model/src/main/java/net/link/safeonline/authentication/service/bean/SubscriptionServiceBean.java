@@ -22,6 +22,7 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.SubscriptionServiceRemote;
@@ -76,6 +77,12 @@ public class SubscriptionServiceBean implements SubscriptionService,
 		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
 				.listSubsciptions(subject);
 		return subscriptions;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public List<SubscriptionEntity> listSubscriptions(SubjectEntity subject)
+			throws SubjectNotFoundException {
+		return this.subscriptionDAO.listSubsciptions(subject);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)

@@ -34,6 +34,17 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface DeviceMappingService {
 
+	/**
+	 * Get or create if not existing a device mapping for the specified user and
+	 * device. This device mapping will be used to communicate with the external
+	 * device issuer.
+	 * 
+	 * @param userId
+	 * @param deviceName
+	 * @return the device mapping
+	 * @throws SubjectNotFoundException
+	 * @throws DeviceNotFoundException
+	 */
 	public DeviceMappingEntity getDeviceMapping(String userId, String deviceName)
 			throws SubjectNotFoundException, DeviceNotFoundException;
 

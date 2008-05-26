@@ -56,12 +56,12 @@ public class DeviceMappingServiceBean implements DeviceMappingService {
 		SubjectEntity subject = this.subjectService.getSubject(userId);
 		DeviceEntity device = this.devicePolicyService.getDevice(deviceName);
 
-		DeviceMappingEntity registeredDevice = this.deviceMappingDAO
+		DeviceMappingEntity deviceMapping = this.deviceMappingDAO
 				.findDeviceMapping(subject, device);
-		if (null == registeredDevice)
-			registeredDevice = this.deviceMappingDAO.addDeviceMapping(subject,
+		if (null == deviceMapping)
+			deviceMapping = this.deviceMappingDAO.addDeviceMapping(subject,
 					device);
-		return registeredDevice;
+		return deviceMapping;
 	}
 
 	/**

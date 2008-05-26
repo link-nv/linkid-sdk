@@ -532,28 +532,6 @@
 
 	<!-- End configuration navigation rules  -->
 
-	<!-- Begin authorization navigation rules -->
-	<navigation-rule>
-		<from-view-id>/authorization/main.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>found</from-outcome>
-			<to-view-id>/authorization/roles.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<from-view-id>/authorization/roles.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>saved</from-outcome>
-			<to-view-id>/authorization/main.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>cancel</from-outcome>
-			<to-view-id>/authorization/main.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<!-- End authorization navigation rules -->
-
 	<!-- Begin audit navigation rules -->
 	<navigation-rule>
 		<from-view-id>/audit/audit.xhtml</from-view-id>
@@ -965,4 +943,37 @@
 	</navigation-rule>
 
 	<!-- End Olas notification navigation rules -->
+	
+	<!-- Begin User Management navigation rules -->
+	<navigation-rule>
+		<from-view-id>/user/main.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>found</from-outcome>
+			<to-view-id>/user/view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/user/view.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/user/main.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/user/main.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>remove</from-outcome>
+			<to-view-id>/user/remove.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/user/remove.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/user/main.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<!-- End User Management navigation rules -->
 </faces-config>

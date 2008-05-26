@@ -1,11 +1,10 @@
-package net.link.safeonline.user;
+package net.link.safeonline.data;
 
 import java.util.List;
 
-import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DeviceMappingEntity;
 
-public class DeviceMappingEntry {
+public class DeviceMappingDO {
 
 	private DeviceMappingEntity deviceMapping;
 
@@ -13,7 +12,7 @@ public class DeviceMappingEntry {
 
 	private List<AttributeDO> attribute;
 
-	public DeviceMappingEntry(DeviceMappingEntity deviceMapping,
+	public DeviceMappingDO(DeviceMappingEntity deviceMapping,
 			String friendlyName, List<AttributeDO> attribute) {
 		this.deviceMapping = deviceMapping;
 		this.friendlyName = friendlyName;

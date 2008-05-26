@@ -10,18 +10,16 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
+			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.authorization}</h1>
+		<h1>#{msgs.operatorUserManagement}</h1>
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<f:facet name="aroundInvalidField">
-			<s:span styleClass="error" />
+			<s:span styleClass="" />
 		</f:facet>
 
 		<h:form>
@@ -29,11 +27,11 @@
 			<h:outputLabel for="user" value="#{msgs.user}" />
 
 			<s:decorate id="decorateUser">
-				<h:inputText id="user" value="#{authorizationManager.user}"
-					required="true" styleClass="label" />
+				<h:inputText id="user" value="#{userManager.user}" required="true"
+					styleClass="label" />
 			</s:decorate>
 			<rich:suggestionbox for="decorateUser:user"
-				suggestionAction="#{authorizationManager.autocompleteUser}"
+				suggestionAction="#{userManager.autocompleteUser}"
 				var="searchUserNameInput" selfRendered="true">
 				<h:column>
 					<h:outputText value="#{searchUserNameInput}" />
@@ -47,7 +45,7 @@
 
 			<h:outputLabel for="search" value="" />
 			<h:commandButton value="#{msgs.searchAction}" id="search"
-				action="#{authorizationManager.search}" styleClass="submit" />
+				action="#{userManager.search}" styleClass="submit" />
 		</h:form>
 
 	</ui:define>
@@ -55,16 +53,10 @@
 	<ui:define name="sidebar">
 		<h:form>
 			<ul class="sidemenu">
-				<li><h:commandLink action="/nodes/nodes.seam"
-					value="#{msgs.operatorOlasNodes}" /></li>
-				<li><h:commandLink action="/configuration.seam"
-					value="#{msgs.operatorGeneralConfiguration}" /></li>
-				<li><h:commandLink action="/pkix/pkix.seam"
-					value="#{msgs.PKIX}" /></li>
-				<li><h:commandLink action="/usage/usage-agreements.seam"
-					value="#{msgs.usageAgreementOLAS}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}" /></li>
+				<li><h:commandLink action="/audit/audit.seam"
+					value="#{msgs.audit}" /></li>
+				<li><h:commandLink action="/tasks/tasks.seam"
+					value="#{msgs.operatorTasks}" /></li>
 			</ul>
 		</h:form>
 	</ui:define>

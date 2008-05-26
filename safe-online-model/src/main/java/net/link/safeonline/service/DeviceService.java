@@ -1,6 +1,7 @@
 package net.link.safeonline.service;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.Local;
 
@@ -17,13 +18,14 @@ import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.data.DeviceMappingDO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceClassDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
@@ -39,8 +41,6 @@ public interface DeviceService {
 			List<AllowedDeviceEntity> allowedDeviceList);
 
 	List<DeviceClassEntity> listDeviceClasses();
-
-	List<DeviceMappingEntity> listRegisteredDevices(SubjectEntity subject);
 
 	List<DeviceDescriptionEntity> listDeviceDescriptions(String deviceName)
 			throws DeviceNotFoundException;
@@ -123,4 +123,21 @@ public interface DeviceService {
 
 	void updateUserAttributeType(String deviceName, String userAttributeType)
 			throws DeviceNotFoundException, AttributeTypeNotFoundException;
+
+	/**
+	 * Returns the list of device registrations for the specified subject.
+	 * 
+	 * @param subject
+	 * @param locale
+	 * @return list of device registration data objects.
+	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws DeviceNotFoundException
+	 * @throws SubjectNotFoundException
+	 */
+	List<DeviceMappingDO> getDeviceRegistrations(SubjectEntity subject,
+			Locale locale) throws SubjectNotFoundException,
+			DeviceNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException;
+
 }

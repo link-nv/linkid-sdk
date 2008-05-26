@@ -11,12 +11,17 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
 @Local
 public interface AccountService {
 
 	void removeAccount() throws SubscriptionNotFoundException,
+			MessageHandlerNotFoundException;
+
+	void removeAccount(SubjectEntity subject)
+			throws SubscriptionNotFoundException,
 			MessageHandlerNotFoundException;
 
 	/**
