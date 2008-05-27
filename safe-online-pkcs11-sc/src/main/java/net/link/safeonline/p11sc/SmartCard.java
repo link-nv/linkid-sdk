@@ -31,9 +31,10 @@ public interface SmartCard {
 	 * 
 	 * @throws SmartCardNotFoundException
 	 * @throws NoPkcs11LibraryException
+	 * @throws MissingSmartCardReaderException
 	 */
 	void open(String smartCardAlias) throws SmartCardNotFoundException,
-			NoPkcs11LibraryException;
+			NoPkcs11LibraryException, MissingSmartCardReaderException;
 
 	/**
 	 * Close the connection towards the smart card device.

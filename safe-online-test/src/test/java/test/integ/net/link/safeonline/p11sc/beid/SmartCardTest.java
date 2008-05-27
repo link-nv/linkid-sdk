@@ -54,9 +54,11 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 import sun.security.pkcs11.SunPKCS11;
+import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
 import sun.security.pkcs11.wrapper.CK_INFO;
 import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
+import sun.security.pkcs11.wrapper.PKCS11Constants;
 import sun.security.pkcs11.wrapper.PKCS11Exception;
 import be.belgium.eid.BEID_Address;
 import be.belgium.eid.BEID_Certif_Check;
@@ -205,7 +207,7 @@ public class SmartCardTest {
 
 			}
 		} finally {
-			pkcs11.C_Finalize(null);
+			// pkcs11.C_Finalize(null);
 		}
 	}
 
@@ -351,6 +353,31 @@ public class SmartCardTest {
 		oStatus = eidlib.BEID_FlushCache();
 
 		oStatus = eidlib.BEID_Exit();
+	}
+
+	private static final long CKR_TOKEN_NOT_PRESENT = 0x000000E0;
+
+	@Test
+	public void testNoBeIDCard() throws Exception {
+		JOptionPane.showMessageDialog(null,
+				"Reader driver active, card removed.");
+		String pkcs11Library = "/usr/local/lib/libbeidpkcs11.so";
+		CK_C_INITIALIZE_ARGS ck_c_initialize_args = new CK_C_INITIALIZE_ARGS();
+		PKCS11 pkcs11 = PKCS11.getInstance(pkcs11Library, "C_GetFunctionList",
+				ck_c_initialize_args, false);
+
+		long[] slotIds = pkcs11.C_GetSlotList(false);
+		LOG.debug("# slot Ids: " + slotIds.length);
+		for (int slotIdIdx = 0; slotIdIdx < slotIds.length; slotIdIdx++) {
+			long slotId = slotIds[slotIdIdx];
+			LOG.debug("slot Id: " + slotId);
+			CK_SLOT_INFO slotInfo = pkcs11.C_GetSlotInfo(slotId);
+			LOG.debug("slot description: "
+					+ new String(slotInfo.slotDescription));
+			LOG
+					.debug("token present: "
+							+ (0 != (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)));
+		}
 	}
 
 	@Test

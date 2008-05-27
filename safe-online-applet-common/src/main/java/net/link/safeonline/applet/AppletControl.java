@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import net.link.safeonline.p11sc.MissingSmartCardReaderException;
 import net.link.safeonline.p11sc.NoPkcs11LibraryException;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
@@ -90,11 +91,17 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 			this.appletView.outputDetailMessage("no PKCS#11 library found");
 			showDocument("NoPkcs11Path");
 			return;
+		} catch (MissingSmartCardReaderException e) {
+			this.appletView.outputDetailMessage("missing smart card reader");
+			showPath("missing-reader.seam");
+			return;
 		} catch (SmartCardNotFoundException e) {
 			this.appletView.outputDetailMessage("smart card not found");
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString("smartCardNotFound"));
-			//showPath("missing-reader.seam");
+			/*
+			 * TODO: retry somehow? is difficult via pkcs11
+			 */
 			return;
 		} catch (Exception e) {
 			this.appletView

@@ -38,6 +38,7 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.TextOutputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
+import net.link.safeonline.p11sc.MissingSmartCardReaderException;
 import net.link.safeonline.p11sc.NoPkcs11LibraryException;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
@@ -137,7 +138,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 	}
 
 	public void open(String smartCardAlias) throws SmartCardNotFoundException,
-			NoPkcs11LibraryException {
+			NoPkcs11LibraryException, MissingSmartCardReaderException {
 		SmartCardConfig smartCardConfig = getSmartCardConfig(smartCardAlias);
 
 		String osName = System.getProperty("os.name");
@@ -367,7 +368,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 	}
 
 	private long getBestEffortSlotIdx(File pkcs11LibraryFile)
-			throws SmartCardNotFoundException {
+			throws SmartCardNotFoundException, MissingSmartCardReaderException {
 		String pkcs11Library = pkcs11LibraryFile.getAbsolutePath();
 		try {
 			Method[] methods = PKCS11.class.getMethods();
@@ -431,8 +432,12 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 			} catch (InterruptedException e) {
 				throw new RuntimeException("could not sleep");
 			}
-			long[] slotIds = pkcs11.C_GetSlotList(true);
+			long[] slotIds = pkcs11.C_GetSlotList(false);
 			LOG.debug("number of PKCS11 slots: " + slotIds.length);
+			if (0 == slotIds.length) {
+				LOG.debug("missing smart card reader!");
+				throw new MissingSmartCardReaderException();
+			}
 			for (int currSlotIdx = 0; currSlotIdx < slotIds.length; currSlotIdx++) {
 				LOG.debug("slot idx: " + currSlotIdx);
 				long slotId = slotIds[currSlotIdx];
