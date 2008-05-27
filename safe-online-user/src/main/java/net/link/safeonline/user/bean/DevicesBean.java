@@ -274,7 +274,8 @@ public class DevicesBean implements Devices {
 		LOG.debug("device registrations factory");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		try {
-			return this.deviceService.getDeviceRegistrations(subject, locale);
+			this.deviceMappings = this.deviceService.getDeviceRegistrations(
+					subject, locale);
 		} catch (SubjectNotFoundException e) {
 			LOG.debug("Subject not found.");
 			this.facesMessages.addFromResourceBundle(
@@ -296,6 +297,7 @@ public class DevicesBean implements Devices {
 			LOG.error("attribute type not found");
 			return null;
 		}
+		return this.deviceMappings;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
