@@ -94,6 +94,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 			this.appletView.outputDetailMessage("smart card not found");
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString("smartCardNotFound"));
+			showPath("missing-reader.seam");
 			return;
 		} catch (Exception e) {
 			this.appletView
@@ -186,6 +187,12 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 		this.appletView.outputDetailMessage("Done.");
 
 		showDocument("TargetPath");
+	}
+
+	private void showPath(String path) {
+		URL documentBase = this.runtimeContext.getDocumentBase();
+		URL url = transformUrl(documentBase, path);
+		this.runtimeContext.showDocument(url);
 	}
 
 	private void showDocument(String runtimeParameter) {
@@ -297,7 +304,8 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 		}
 	}
 
-	public void init(AppletView newAppletView, RuntimeContext newRuntimeContext,
+	public void init(AppletView newAppletView,
+			RuntimeContext newRuntimeContext,
 			StatementProvider newStatementProvider) {
 		this.appletView = newAppletView;
 		this.runtimeContext = newRuntimeContext;
