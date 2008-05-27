@@ -938,7 +938,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
-					<buildOutputDirectory>${project.build.outputDirectory}/eclipse</buildOutputDirectory>
+					<buildOutputDirectory>${project.build.directory}/eclipse</buildOutputDirectory>
 					<projectNameTemplate>[artifactId]</projectNameTemplate>
 					<wtpmanifest>true</wtpmanifest>
 					<wtpapplicationxml>true</wtpapplicationxml>
