@@ -1,8 +1,21 @@
-* :focus {
-	outline-color: invert;
-	outline-style: none;
-	outline-width: 0pt;
-}
+/** 
+ *
+ * OLAS CSS Style:
+ *      Element Positioning
+ *      Background Images, Borders
+ *      Greyscale Coloring Only
+ *
+ * @author mbillemo
+ *
+ * Copyright 2006-2008 - Lin.k NV
+ *
+ */
+
+
+
+/* ==================================================================
+ * Section: Basic HTML
+ */
 
 html {
 	padding: 0;
@@ -10,7 +23,6 @@ html {
 	height: 100%;
 	width: 100%;
 }
-
 body {
 	margin: 0;
 	padding: 0;
@@ -18,82 +30,68 @@ body {
 	background: url(../images/fade.gif) repeat-x top center;
 	font: 14px/ 21px "Trebuchet MS", Verdana, Arial;
 }
-
-img.text {
-	float: left;
-	display: inline;
-	margin: 0 25px 25px 0;
-	clear: left;
-}
-
-h1,h2,h3,h4,h5,h6 {
+p,h1,h2,h3,h4,h5,h6,br {
 	margin: 0;
 	padding: 0;
 	clear: left;
 }
-
 h1 {
 	font: 28px/ 42px "Trebuchet MS", Verdana, Arial;
 	margin-bottom: 21px;
 }
-
 h2 {
     margin: 14px 0;
 	font: 21px/ 28px "Trebuchet MS", Verdana, Arial;
 }
-
-h3 {
-	clear: left;
-}
-
 p {
-	margin: 0;
-	padding: 0;
 	margin-top: 14px;
 	padding-bottom: 7px;
 }
-
-br {
-	clear: left;
-}
-
 a {
 	text-decoration: none;
 }
-
 a:hover {
 	border-bottom: 1px dotted black;
 }
 
-#header {
+
+
+/* ==================================================================
+ * Section: Base Elements
+ */
+
+/*********************************************** HEADER CONTAINER **/
+#_header {
 	margin: 0 auto;
 	padding: 0;
 	height: 150px;
 	background: url(../images/header.gif) no-repeat left top;
-	width: 950px;
+	width: 1000px;
 	display: block;
 	border: none;
 }
 
-#header_top {
+/********************************************************* HEADER **/
+#header {
 	margin: 0;
-	padding: 25px 25px 0px 25px;
+	padding: 25px 0 0;
 	width: 900px;
 	display: block;
 	height: 115px;
 	text-align: right;
 }
-#header_top[id] {
+#header[id] {
     height: 90px;
 }
-#header_top form img {
+#header form img {
     border: 1px solid transparent;
     margin-right: 5px;
 }
-#header_top span:hover img {
+#header span:hover img {
     border: 1px solid white;
 }
 
+/**************************************************** HEADER MENU **/
 #header ul.menu {
 	margin: 0;
 	padding: 0;
@@ -143,66 +141,98 @@ a:hover {
 	font-weight: bold;
 }
 
-ul.submenu {
-	padding-left: 0;
-	padding-right: 0;
-	padding-top: 0;
-	margin-left: 0;
-	margin-bottom: 25px;
-	margin-right: 0;
-	margin-top: 25px;
-	background-repeat: repeat-x;
-	background-image: url(../images/sub_back.gif);
-	float: left;
+/********************************************** CONTENT CONTAINER **/
+#_content {
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
 	display: block;
-	width: 575px;
-	height: 25px;
-	list-style: none;
+	text-align: center;
 }
 
-ul.submenu li {
+/******************************************************** CONTENT **/
+#content {
+	margin: 0 auto;
+	padding: 25px 0;
+	width: 900px;
+	min-height: 350px;
+	height: auto;
+	display: block;
+	text-align: left;
+}
+* html #content {
+	height: 350px;
+}
+
+/********************************************************* FOOTER **/
+#footer {
+	margin: 0 auto;
+	padding: 0;
+	padding-top: 50px;
+	height: 50px;
+	background: url(../images/footer.gif) left top;
+	width: 100%;
+	display: block;
+	clear: both;
+}
+
+/********************************************* SIDE BOX CONTAINER **/
+#_sidebox {
 	margin: 0;
 	padding: 0;
-	float: left;
-	display: inline;
-	width: 100px;
-	height: 25px;
-	background: url(../images/subtab.gif) top right;
-}
-
-ul.submenu li img {
-	display: inline;
-	float: left;
-	padding: 2px 5px 0px 5px;
-	margin: 0;
-	border: 0;
-}
-
-ul.submenu li:hover {
-	background: url(../images/subtab_hover.gif);
-}
-
-ul.submenu li.selected {
-	background: url(../images/subtab_active.gif);
-}
-
-ul.submenu li a {
-	margin: 0;
-	padding: 2px;
-	display: block;
-	width: 96px;
-	height: 21px;
-	text-decoration: none;
+	float: right;
+	width: 300px;
 	text-align: left;
-	font-weight: bold;
+	display: block;
 }
 
-ul.submenu li a:hover {
+/******************************************************* SIDE BOX **/
+#sidebox {
+    margin: 0 10%;
+    width: 100%;
+	padding: 0;
+	margin-top: -11px;
+}
+#sidebox[id] {
+    width: 80%;
+}
+
+/****************************************************** SIDE MENU **/
+#sidebox ul {
+	list-style: none;
+	padding: 0;
+	margin: 14px 0 14px 0;
+	border-top: 1px dotted black;
+	display: block;
+	clear: both;
+	float: left;
+	width: 100%;
+}
+#sidebox ul li {
+	margin: 0;
+	padding: 0;
+	display: block;
+	width: 100%;
+	height: 41px;
+	border-bottom: 1px dotted black;
+}
+#sidebox ul li a {
+	background: url(../images/icons/bullet_go.gif) no-repeat;
+	background-position: 10px 12px;
 	text-decoration: none;
+	height: 21px;
+	display: block;
+	padding: 10px;
+	padding-left: 30px;
+}
+#sidebox ul li a:hover {
 	border: none;
-	font-weight: bold;
+}
+#sidebox ul li.active a {
+	border: none;
 }
 
+/******************************************************* TIMELINE **/
 ul.timeline {
 	padding: 0;
     margin: 0;
@@ -215,7 +245,6 @@ ul.timeline {
 ul.timeline[class] {
     height: 35px;
 }
-
 ul.timeline li {
 	margin: 0 auto;
 	padding: 0;
@@ -237,13 +266,11 @@ ul.timeline>li {
 ul.timeline li.active {
 	background: url(../images/timeline_current.gif) top center no-repeat;
 }
-
 ul.timeline li.start {
 	width: 50px;
     height: 100%;
 	background: url(../images/timeline_fade_in.gif) top right repeat-y;
 }
-
 ul.timeline li.end {
     width: 50px;
     height: 100%;
@@ -251,119 +278,13 @@ ul.timeline li.end {
 	background: url(../images/timeline_fade_out.gif) top left repeat-y;
 }
 
-#footer {
-	margin: 0 auto;
-	padding: 0;
-	padding-top: 50px;
-	height: 50px;
-	background: url(../images/footer.gif) left top;
-	width: 100%;
-	display: block;
-	clear: both;
-}
 
-#main {
-	margin: 0 auto;
-	padding: 0;
-	width: 100%;
-	display: block;
-	text-align: center;
-}
 
-/* for understanding browsers */
-#main_content {
-	margin: 0 auto;
-	padding: 25px;
-	width: 900px;
-	min-height: 350px;
-	height: auto;
-	display: block;
-	text-align: left;
-}
+/* ==================================================================
+ * Section: Classes
+ */
 
-/* for Internet Explorer */
-* html #main_content {
-	height: 350px;
-}
-
-#box {
-	margin: 0;
-	padding: 0;
-	float: right;
-	width: 300px;
-	text-align: left;
-	display: block;
-}
-
-#box_content {
-    margin: 0 10%;
-    width: 100%;
-	padding: 0;
-	margin-top: -11px;
-}
-
-#box_content[id] {
-    width: 80%;
-}
-
-div.zesde {
-	margin: 0 auto;
-	padding: 12px;
-	padding-right: 13px;
-	display: inline;
-	float: left;
-	width: 125px;
-}
-
-div.zesde:hover {
-	background: url(../images/fade.gif) top center repeat-x;
-}
-
-hr.float_fix {
-	display: block;
-	clear: both;
-	margin: 0;
-	visibility: hidden;
-}
-
-ul.sidemenu {
-	list-style: none;
-	padding: 0;
-	margin: 14px 0 14px 0;
-	border-top: 1px dotted black;
-	display: block;
-	clear: both;
-	float: left;
-	width: 100%;
-}
-
-ul.sidemenu li {
-	margin: 0;
-	padding: 0;
-	display: block;
-	width: 100%;
-	height: 41px;
-	border-bottom: 1px dotted black;
-}
-
-ul.sidemenu li a {
-	background: url(../images/icons/bullet_go.gif) no-repeat;
-	background-position: 10px 12px;
-	text-decoration: none;
-	height: 21px;
-	display: block;
-	padding: 10px;
-	padding-left: 30px;
-}
-
-ul.sidemenu li a:hover {
-	border: none;
-}
-
-ul.sidemenu li.active a {
-	border: none;
-}
-
+/************************************************* ERROR MESSAGES **/
 span.error {
 	clear: left;
 	display: block;
@@ -378,11 +299,9 @@ span.error {
 	margin: 0;
 	margin-left: 150px;
 }
-
 span.error input {
 	clear: none;
 }
-
 span.error_message {
 	clear: left;
 	display: block;
@@ -397,27 +316,77 @@ span.error_message {
 	margin: 0;
 	margin-left: 150px;
 }
-
 .error_field {
 	color: red !important;
 }
-/* FORMS AND ELEMENTS*/
+
+/************************************************ UTILITY CLASSES **/
+hr.float_fix {
+	display: block;
+	clear: both;
+	margin: 0;
+	visibility: hidden;
+}
+.right {
+    text-align: right;
+}
+.padded {
+    padding: 7px !important;
+}
+.inner {
+    width: 500px;
+    margin: auto;
+}
+.center {
+    float: none;
+    text-align: center;
+}
+.noborders, .noborders * {
+    border: none !important;
+}
+
+/************************************************* USAGE AGREEMENT **/
+.usage_agreement {
+	width: 550px;
+	padding: 10px;
+	height: 200px;
+	overflow: auto;
+	border: 1px solid black;
+}
+
+/********************************************* SAFE ONLINE TAGLIB **/
+.so-input-text {
+}
+.so-nameoutput {
+}
+.so-nameoutput-compounded {
+	font-weight: bold;
+}
+.so-nameoutput-member {
+	font-style: italic;
+	margin-left: 15px;
+}
+
+/* ==================================================================
+ * Section: Forms
+ */
+
 label {
 	padding: 0 25px 0 0;
 	background: url(../images/icons/16-arrow-down.gif) no-repeat;
 	background-position: 5px 6px;
-	width: 125px;
+	width: 150px;
 	text-align: right;
 	vertical-align: top;
     /* Prevent labels with no content from collapsing. */
     border-bottom: 1px solid transparent;
+    float: left;
 }
 label[for] {
+	width: 125px;  /* padding counts toward width in non-IE browsers */
     display: block;
-    float: left;
     clear: left;
 }
-
 input,select,textarea {
 	margin: 0;
 	padding: 0;
@@ -425,7 +394,6 @@ input,select,textarea {
 	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana,
 		sans-serif;
 }
-
 input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label
 	{
 	margin: 4px 0 15px 0;
@@ -435,30 +403,24 @@ input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label
 	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana,
 		sans-serif;
 }
-
 input.label,textarea.label {
 	border-bottom: 1px dotted black;
 }
-input.label[name],select.label[name],textarea.label[name],input.radio[name],.af_inputFile[class],img.label[src] {
+input.label[name],input.submit[name],select.label[name],textarea.label[name],input.radio[name],.af_inputFile[class],img.label[src] {
     float: left;
 }
-
 input.radio {
 	width: auto;
 }
-
 input.label:hover,.so-input-text:hover, input.label:focus {
 	border-bottom-style: solid;
 }
-
 img.label {
 	width: auto;
 }
-
 select.label, select.label:hover {
 	border: none;
 }
-
 input.submit {
 	margin: 15px 25px 7px 0;
 	width: 125px;
@@ -470,13 +432,17 @@ input.submit {
 	font-weight: bold;
 	text-align: center;
 	display: inline;
-	float: left;
 }
-
 textarea {
 	border: 0;
 	border-left: 1px dotted black;
 }
+
+
+
+/* ==================================================================
+ * Section: Tables
+ */
 
 table, .fullwidth {
     width: 575px;
@@ -491,41 +457,16 @@ table {
 	padding: 0;
 }
 table table {
-    auto;
+    margin: auto;
 }
 
 table colgroup {
     width: inherit;
 }
-
-.noborders, .noborders * {
-    border: none !important;
-}
-.right {
-    text-align: right;
-}
-.padded {
-    padding: 7px !important;
-}
-.inner {
-    width: 500px;
-    margin: auto;
-}
-.centered {
-    display: block;
-    float: none;
-
-    margin-left: auto;
-    margin-right: auto;
-}
 table tbody, table tfoot {
     border: 0 solid black !important;
     border-width: 0 2px 2px 0 !important;
 }
-.noborder, .noborder tbody {
-    border:none !important;
-}
-
 table.listingTable td,
 table.scroller td {
     /* Tables with thead/tbody don't like to get wide */
@@ -535,28 +476,13 @@ table.scroller td {
 table.rich-table td {
     width: auto;
 }
-
-table.listingTable tbody, table.rich-table tbody {
-	padding: 5px;
+table.listingTable, table.rich-table {
+    border-bottom: 1px solid black;
 }
-
-table.listingTable tbody tr, table.rich-table tbody tr {
-	margin: 0;
-	padding: 0;
+table.rich-table tr, table.listingTable tbody tr {
+    border: 1px solid black !important;
+    border-style: solid solid none !important;
 }
-
-table.listingTable tfoot tr, table.rich-table tfoot tr {
-	padding: 0;
-	float: none;
-	margin: 0;
-}
-
-table.listingTable tbody tr td, table.rich-table tbody tr td {
-	margin: 0;
-	padding: 5px;
-	border: none;
-}
-
 table.rich-table thead tr th, table.rich-table thead tr td, table.styled thead tr td,
 table.listingTable thead tr th, table.listingTable thead tr td {
 	margin: 0;
@@ -565,16 +491,30 @@ table.listingTable thead tr th, table.listingTable thead tr td {
 	text-align: left;
 	font-weight: bold;
 }
-
-div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr table tbody tr:hover
-	{
+table.listingTable tbody, table.rich-table tbody {
+	padding: 5px;
+}
+table.listingTable tbody tr, table.rich-table tbody tr {
+	margin: 0;
+	padding: 0;
+}
+table.listingTable tbody tr td, table.rich-table tbody tr td {
+	margin: 0;
+	padding: 5px;
+	border: none;
+}
+table.listingTable tfoot tr, table.rich-table tfoot tr {
+	padding: 0;
+	float: none;
+	margin: 0;
+}
+div.dr-dscr table, div.dr-dscr table tbody tr td, div.dr-dscr table tbody tr:hover {
 	border: none;
 	background: none;
 	margin: 0;
 	padding: 5px;
 	text-align: center;
 }
-
 .listingTable, .listingTable_Row1, .listingTable_Row2,
 .rich-table, .rich-table-caption,
 .rich-table-header, .rich-table-header-continue, .rich-table-subheader,
@@ -588,17 +528,6 @@ div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr 
 	background-color: inherit;
 	color: inherit;
 }
-
-table tr.rich-table-row, table tr.rich-table-firstrow, table tr.rich-table-footer,
-table.listingTable tbody tr {
-    border: 1px solid black !important;
-    border-style: solid solid none;
-}
-
-table.listingTable, table.rich-table {
-    border-bottom: 1px solid black;
-}
-
 /* Make links in tables easier to click. */
 table.listingTable td a, table.listingTable th a, table.rich-table td a {
     display:block;
@@ -615,7 +544,6 @@ table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table t
     border:none;
     text-decoration: underline;
 }
-
 .rich-datascr-button   
 	    , .rich-datascr-ctrls-separator        , .rich-datascr-act        ,
 	.rich-datascr-inact	       , .rich-datascr-button-dsbld {
@@ -625,13 +553,11 @@ table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table t
 	color: inherit;
 	border-style: none;
 }
-
 .rich-datascr {
 	width: 250px;
 	margin-left: auto;
 	margin-right: auto;
 }
-
 .rich-dtascroller-table {
 	text-align: center;
 	width: 100%;
@@ -640,7 +566,6 @@ table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table t
 .rich-dtascroller-table td {
     width: 20% !important;
 }
-
 .rich-tabpanel-content, .rich-tabpanel, .rich-panel-header, .rich-panel-body {
     width: auto;
 	overflow: auto;
@@ -650,11 +575,9 @@ table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table t
 .rich-panel {
     width: 575px;
 }
-
 .rich-tabpanel-content {
 	height: 200px;
 }
-
 .usage_agreement,.white_space {
 	white-space: pre-wrap; /* css-3 */
 	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
@@ -664,37 +587,24 @@ table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table t
 	height: inherit;
     font-family: fixed;
 }
-
-.usage_agreement {
-	width: 550px;
-	padding: 10px;
-	height: 200px;
-	overflow: auto;
-	border: 1px solid black;
-}
-
-.so-nameoutput {
-	
-}
-
-.so-nameoutput-compounded {
-	font-weight: bold;
-}
-
-.so-nameoutput-member {
-	font-style: italic;
-	margin-left: 15px;
-}
-
-.so-input-text {
-	
-}
-
 table.name_value {
 	height: inherit;
 }
-
 table.name_value th {
 	text-align: right;
 	padding-right: 5px;
 }
+
+
+
+/* ==================================================================
+ * Section: Debugging
+ *
+ * <Debug Toggle>
+ * Replace dot by star to enable debug:     ./
+
+* {
+	border: 1px solid red !important;
+}
+
+/* <End Debug Toggle>                       */

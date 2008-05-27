@@ -713,9 +713,12 @@ function shorten {
     local prefix
     local path=$1; shift
 
-    # Shorten the path.
-    path=${path/#$PWD\//}
-    path=${path/#$HOME/'~'}
+    # Dot-directories.
+    path=$(sed 's,\(^\|/\)./,\1,g; s,\(^\|/\)[^/]*/../,\1,g' <<< "$path")
+
+    # Replace special paths.
+    #path=${path/#$PWD\//}
+    #path=${path/#$HOME/'~'}
 
     # Cut off prefix.
     for prefix; do

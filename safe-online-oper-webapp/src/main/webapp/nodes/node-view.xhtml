@@ -19,79 +19,77 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			label="#{msgs.generic}">
+        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+            label="#{msgs.generic}">
 
-			<table class="inner listingTable">
-				<colgroup />
-				<colgroup />
+            <table class="inner listingTable">
+                <colgroup />
+                <colgroup />
 
-				<tbody>
-					<tr>
-						<th>#{msgs.name}</th>
-						<td>#{selectedNode.name}</td>
-					</tr>
-					<tr>
-						<th>#{msgs.hostname}</th>
-						<td>#{selectedNode.hostname}</td>
-					</tr>
-					<tr>
-						<th>#{msgs.port}</th>
-						<td>#{selectedNode.port}</td>
-					</tr>
-					<tr>
-						<th>#{msgs.sslPort}</th>
-						<td>#{selectedNode.sslPort}</td>
-					</tr>
-				</tbody>
-			</table>
-		</rich:simpleTogglePanel>
+                <tbody>
+                    <tr>
+                        <th>#{msgs.name}</th>
+                        <td>#{selectedNode.name}</td>
+                    </tr>
+                    <tr>
+                        <th>#{msgs.hostname}</th>
+                        <td>#{selectedNode.hostname}</td>
+                    </tr>
+                    <tr>
+                        <th>#{msgs.port}</th>
+                        <td>#{selectedNode.port}</td>
+                    </tr>
+                    <tr>
+                        <th>#{msgs.sslPort}</th>
+                        <td>#{selectedNode.sslPort}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </rich:simpleTogglePanel>
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			opened="false" label="#{msgs.authenticationCertificate}">
+        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+            label="#{msgs.authenticationCertificate}">
 
-			<table class="inner listingTable">
-				<colgroup />
+            <table class="inner listingTable">
+                <colgroup />
 
-				<thead>
-					<tr>
-						<th><h:outputText value="#{msgs.certificate}" /></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td class="white_space"><h:outputText
-							value="#{selectedNode.authnCertificate}"
-							rendered="#{!empty selectedNode.authnCertificate}" /> <h:outputText
-							value="#{msgs.noCertificate}"
-							rendered="#{empty selectedNode.authnCertificate}" /></td>
-					</tr>
-				</tbody>
-			</table>
-		</rich:simpleTogglePanel>
+                <thead>
+                    <tr><th><h:outputText value="#{msgs.certificate}" /></th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="white_space">
+                            <h:outputText
+                                value="#{selectedNode.authnCertificate}"
+                                rendered="#{!empty selectedNode.authnCertificate}" />
+                            <h:outputText
+                                value="#{msgs.noCertificate}"
+                                rendered="#{empty selectedNode.authnCertificate}" />
+                    </td></tr>
+                </tbody>
+            </table>
+        </rich:simpleTogglePanel>
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			opened="false" label="#{msgs.signingCertificate}">
+        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
+            label="#{msgs.signingCertificate}">
 
-			<table class="inner listingTable">
-				<colgroup />
+            <table class="inner listingTable">
+                <colgroup />
 
-				<thead>
-					<tr>
-						<th><h:outputText value="#{msgs.certificate}" /></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td class="white_space"><h:outputText
-							value="#{selectedNode.signingCertificate}"
-							rendered="#{!empty selectedNode.signingCertificate}" /> <h:outputText
-							value="#{msgs.noCertificate}"
-							rendered="#{empty selectedNode.signingCertificate}" /></td>
-					</tr>
-				</tbody>
-			</table>
-		</rich:simpleTogglePanel>
+                <thead>
+                    <tr><th><h:outputText value="#{msgs.certificate}" /></th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="white_space">
+                            <h:outputText
+                                value="#{selectedNode.signingCertificate}"
+                                rendered="#{!empty selectedNode.signingCertificate}" />
+                            <h:outputText
+                                value="#{msgs.noCertificate}"
+                                rendered="#{empty selectedNode.signingCertificate}" />
+                    </td></tr>
+                </tbody>
+            </table>
+        </rich:simpleTogglePanel>
 
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" id="back" action="back"
@@ -103,7 +101,7 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
-			<ul class="sidemenu">
+			<ul>
 				<li><h:commandLink action="/configuration.seam"
 					value="#{msgs.operatorGeneralConfiguration}" /></li>
 				<li><h:commandLink action="/pkix/pkix.seam"

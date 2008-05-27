@@ -8,11 +8,12 @@
 	</ui:define>
 
 	<ui:define name="sidebox">
-		<div id="box"><h:graphicImage value="/images/box_top.gif"
+		<div id="_sidebox"><h:graphicImage value="/images/box_top.gif"
 			border="0" />
-        <div id="box_content">
-            <img class="centered"
-                src="#{facesContext.externalContext.requestContextPath}/logo?applicationName=#{applicationId}" />
+        <div id="sidebox">
+            <div class="center">
+                <img src="#{facesContext.externalContext.requestContextPath}/logo?applicationName=#{applicationId}" />
+            </div>
 
             <ui:insert name="sidebar" />
         </div>

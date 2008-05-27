@@ -25,15 +25,16 @@
 			</f:facet>
 
 			<table>
-				<tbody>
-					<tr>
-						<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
-						<td><s:decorate>
-							<h:inputText id="name" value="#{newTrustDomain.name}"
-								required="true" />
-						</s:decorate> <h:message for="name" styleClass="error" /></td>
-					</tr>
-				</tbody>
+                <tbody>
+                    <tr>
+                        <td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
+                        <td><s:decorate>
+                            <h:inputText id="name" value="#{newTrustDomain.name}"
+                                required="true" />
+                        </s:decorate>
+                        <h:message for="name" styleClass="error" /></td>
+                    </tr>
+                </tbody>
 			</table>
 
 			<h:panelGrid columns="1">
@@ -57,7 +58,7 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
-			<ul class="sidemenu">
+			<ul>
 				<li><h:commandLink action="/nodes/nodes.seam"
 					value="#{msgs.operatorOlasNodes}" /></li>
 				<li><h:commandLink action="/configuration.seam"

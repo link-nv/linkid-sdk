@@ -21,7 +21,6 @@ import net.link.safeonline.user.UserConstants;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
-import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -29,6 +28,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.web.Session;
 
 @Stateful
 @Name("actions")
@@ -69,7 +69,7 @@ public class ActionsBean implements Actions {
 		}
 		this.sessionContext.set("login-processing", null);
 		this.sessionContext.set("username", null);
-		Seam.invalidateSession();
+		Session.instance().invalidate();
 		return "logout-success";
 	}
 }

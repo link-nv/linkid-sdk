@@ -36,7 +36,7 @@ public class ConnectionMenuAction extends AbstractMenuAction {
 				+ jdbcDriverFile.getAbsolutePath() + "\"");
 		URL jdbcDriverUrl;
 		try {
-			jdbcDriverUrl = jdbcDriverFile.toURL();
+			jdbcDriverUrl = jdbcDriverFile.toURI().toURL();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("URL error: " + e.getMessage(), e);
 		}
@@ -114,9 +114,8 @@ public class ConnectionMenuAction extends AbstractMenuAction {
 			System.out.print("Give the JDBC driver JAR location: ");
 			String driverLocation = Keyboard.getString();
 			File driverFile = new File(driverLocation);
-			if (true == driverFile.exists()) {
-				return driverFile;
-			}
+			if (true == driverFile.exists())
+                return driverFile;
 			System.out.println("File not found. Try again.");
 		}
 	}

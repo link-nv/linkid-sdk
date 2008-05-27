@@ -13,7 +13,7 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
-			<ul class="sidemenu">
+			<ul>
 				<c:choose>
 					<c:when test="#{username == null}">
 						<li><h:commandLink action="#{login.login}" id="login"

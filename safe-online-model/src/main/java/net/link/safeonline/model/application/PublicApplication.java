@@ -24,7 +24,7 @@ import net.link.safeonline.service.PublicApplicationService;
  * <i>Dec 7, 2007</i>
  * </p>
  * 
- * @see PublicApplicationService#getPublicApplication(String)
+ * @see PublicApplicationService#findPublicApplication(String)
  * 
  * @author mbillemo
  */

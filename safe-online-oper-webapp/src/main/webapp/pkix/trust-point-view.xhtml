@@ -20,43 +20,44 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<table class="inner listingTable">
-			<colgroup />
-			<colgroup />
+        <table class="inner listingTable">
+            <colgroup />
+            <colgroup />
 
-			<tbody>
-				<tr>
-					<th>#{msgs.miscSubject}:</th>
-					<td>#{selectedTrustPoint.pk.subjectName}</td>
-				</tr>
-				<tr>
-					<th>#{msgs.miscIssuer}:</th>
-					<td>#{selectedTrustPoint.issuerName}</td>
-				</tr>
-				<tr>
-					<th>#{msgs.miscVersion}:</th>
-					<td>#{selectedTrustPoint.certificate.version}</td>
-				</tr>
-				<tr>
-					<th>#{msgs.miscNotBefore}:</th>
-					<td>#{selectedTrustPoint.certificate.notBefore}</td>
-				</tr>
-				<tr>
-					<th>#{msgs.miscNotAfter}:</th>
-					<td>#{selectedTrustPoint.certificate.notAfter}</td>
-				</tr>
-				<tr>
-					<th>#{msgs.miscSerialNumber}:</th>
-					<td>#{selectedTrustPoint.certificate.serialNumber}</td>
-				</tr>
-				<tr>
-					<th colspan="2">#{msgs.certificate}</th>
-				</tr>
-				<tr>
-					<td colspan="2" class="white_space"><h:outputText
-						value="#{selectedTrustPoint.certificate}" /></td>
-				</tr>
-			</tbody>
+            <tbody>
+                <tr>
+                    <th>#{msgs.miscSubject}:</th>
+                    <td>#{selectedTrustPoint.pk.subjectName}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscIssuer}:</th>
+                    <td>#{selectedTrustPoint.issuerName}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscVersion}:</th>
+                    <td>#{selectedTrustPoint.certificate.version}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscNotBefore}:</th>
+                    <td>#{selectedTrustPoint.certificate.notBefore}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscNotAfter}:</th>
+                    <td>#{selectedTrustPoint.certificate.notAfter}</td>
+                </tr>
+                <tr>
+                    <th>#{msgs.miscSerialNumber}:</th>
+                    <td>#{selectedTrustPoint.certificate.serialNumber}</td>
+                </tr>
+                <tr>
+                    <th colspan="2">#{msgs.certificate}</th>
+                </tr>
+                <tr>
+                    <td colspan="2" class="white_space">
+                        <h:outputText value="#{selectedTrustPoint.certificate}" />
+                    </td>
+                </tr>
+            </tbody>
 		</table>
 
 		<h:form>
@@ -69,7 +70,7 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
-			<ul class="sidemenu">
+			<ul>
 				<li><h:commandLink action="/nodes/nodes.seam"
 					value="#{msgs.operatorOlasNodes}" /></li>
 				<li><h:commandLink action="/configuration.seam"

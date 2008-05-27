@@ -1,8 +1,17 @@
 #!/bin/bash
 source "${0%/*}"/bashlib
 
-[[ $1 = -R ]] && { reverse=1; shift; }
-[[ $1 = -a ]] && { apply=1; shift; }
+while [[ $1 = -* ]]; do
+    case $1 in
+        -L) nolink=1    ;;
+        -R) reverse=1   ;;
+        -a) apply=1     ;;
+        -f) force=1     ;;
+        *)  break       ;;
+    esac
+
+    shift
+done
 
 base="${2:-${0%/*}/..}"
 distribution=$1
@@ -46,8 +55,10 @@ function extractCss {
     }
 
     for file in "${css[@]}"; do
-        ln -f "$base/$webapp/css/style.css" "$file" && \
-        touch "$file"                               || return
+        (( ! nolink )) \
+            && ln -f "$base/$webapp/css/style.css" "$file" \
+            || cp -f "$base/$webapp/css/style.css" "$file" \
+            && touch "$file"                        || return
     done
 }
 
@@ -60,7 +71,12 @@ function extractHtml {
         }
 
         [[ -e "$base/$webapp/$file" ]] && \
-            { ln -f "$base/$webapp/$file" "$file"   || return; }
+            { (( ! nolink )) \
+                && ln -f "$base/$webapp/$file" "$file" \
+                || cp -f "$base/$webapp/$file" "$file" \
+              || return
+            }
+
         touch "$file"                               || return
     done < <(find . -name '*.xhtml')
 }
@@ -107,16 +123,30 @@ if (( apply )); then
                 continue
             }
 
-            if ! diff -q "$file"{,~} >/dev/null; then
-                dest="${repos[w]}/${file/-1.0-SNAPSHOT-exp.war//src/main/webapp}"
+            if (( force )) || ! diff -q "$file"{,~} >/dev/null; then
+                ddest="${repos[w]}/${file/-1.0-SNAPSHOT-exp.war//src/main/webapp}"
 
-                if ! [[ -e $dest ]]; then
-                    dest=( "${repos[w]}/"*"/src/main/webapp/${file/*-1.0-SNAPSHOT-exp.war/}" )
+                if ! [[ -e $ddest ]]; then
+                    adest=( "${repos[w]}/"*"/src/main/webapp/${file/*-1.0-SNAPSHOT-exp.war/}" )
+                    for ad in ${!adest[@]}; do
+                        for exclude in $excludes; do
+                            [[ ${adest[ad]} = *$exclude* ]] && unset adest[ad]
+                        done
+                    done
+                    adest=("${adest[@]}")
 
-                    if (( ! ${#dest[@]} || ${#dest[@]} > 1 )) || [[ ! -e $dest ]]; then
-                        emit -y "Source of '$(shorten "$file")' not found."
+                    if (( ! ${#adest[@]} || ${#adest[@]} > 1 )) || [[ ! -e $adest ]]; then
+                        emit -y "Source of '$(shorten "$file")' not found.  Tried:"
+                        for dest in "$ddest" "${adest[@]}"; do
+                            emit -y "  - '$dest'"
+                        done
+
                         continue
                     fi
+
+                    dest=$adest
+                else
+                    dest=$ddest
                 fi
 
                 cp "$file" "$dest"

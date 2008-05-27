@@ -58,7 +58,7 @@ public class IdentityServiceTest {
 				password, password);
 		String resourceName = "test-keystore-resource-name";
 		this.testClassLoader.addResource(resourceName, tmpPkcs12KeyStore
-				.toURL());
+                .toURI().toURL());
 
 		// operate
 		IdentityServiceMBean testedInstance = new IdentityService();

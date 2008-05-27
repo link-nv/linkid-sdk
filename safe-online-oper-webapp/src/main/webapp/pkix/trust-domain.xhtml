@@ -22,37 +22,38 @@
 
 			<h2>#{msgs.miscProperties}</h2>
 
-			<table class="listingTable">
-				<colgroup />
-				<colgroup />
+            <table class="listingTable">
+                <colgroup />
+                <colgroup />
 
-				<tbody>
-					<tr>
-						<th>#{msgs.operatorPerformOCSPCheck}:</th>
-						<td>#{selectedTrustDomain.performOcspCheck}</td>
-					</tr>
-					<tr>
-						<th>#{msgs.operatorOCSPCacheTimeout} (ms):</th>
-						<td>#{selectedTrustDomain.ocspCacheTimeOutMillis}</td>
-					</tr>
-				</tbody>
+                <tbody>
+                    <tr>
+                        <th>#{msgs.operatorPerformOCSPCheck}:</th>
+                        <td>#{selectedTrustDomain.performOcspCheck}</td>
+                    </tr>
+                    <tr>
+                        <th>#{msgs.operatorOCSPCacheTimeout} (ms):</th>
+                        <td>#{selectedTrustDomain.ocspCacheTimeOutMillis}</td>
+                    </tr>
+                </tbody>
 			</table>
 
 			<h2>#{msgs.miscContent}</h2>
 
-			<div class="noborders"><t:tree2 value="#{trustPoint.treeModel}"
-				var="node" clientSideToggle="false">
-				<f:facet name="root">
-					<h:outputText value="#{node.description}" />
-				</f:facet>
-				<f:facet name="node">
-					<h:panelGroup>
-						<h:commandLink action="#{trustPoint.view}">#{node.description}</h:commandLink>
-						<br />(SN: #{node.serialNumber})<br />
-						<br />
-					</h:panelGroup>
-				</f:facet>
-			</t:tree2></div>
+            <div class="noborders">
+                <t:tree2 value="#{trustPoint.treeModel}" var="node"
+                    clientSideToggle="false">
+                    <f:facet name="root">
+                        <h:outputText value="#{node.description}" />
+                    </f:facet>
+                    <f:facet name="node">
+                        <h:panelGroup>
+                            <h:commandLink action="#{trustPoint.view}">#{node.description}</h:commandLink>
+                            <br />(SN: #{node.serialNumber})<br /><br />
+                        </h:panelGroup>
+                    </f:facet>
+                </t:tree2>
+            </div>
 
 			<h:commandButton action="add" id="add" value="#{msgs.addaction}"
 				styleClass="submit" />
@@ -68,7 +69,7 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
-			<ul class="sidemenu">
+			<ul>
 				<li><h:commandLink action="/nodes/nodes.seam"
 					value="#{msgs.operatorOlasNodes}" /></li>
 				<li><h:commandLink action="/configuration.seam"

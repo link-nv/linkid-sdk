@@ -19,28 +19,28 @@
 	<ui:define name="content">
 
 		<h:form>
-			<table class="listingTable">
-				<colgroup />
-				<colgroup />
+            <table class="listingTable">
+                <colgroup />
+                <colgroup />
 
-				<tbody>
-					<tr>
-						<th>#{msgs.name}:</th>
-						<td>#{selectedTask.name}</td>
-					</tr>
-					<tr>
-						<th>#{msgs.jndiname}:</th>
-						<td>#{selectedTask.jndiName}</td>
-					</tr>
-					<tr>
-						<th>#{msgs.scheduling}:</th>
-						<td><h:commandLink value="#{selectedTask.scheduling.name}"
-							action="#{scheduling.schedulingView}" /></td>
-					</tr>
-				</tbody>
-			</table>
+                <tbody>
+                    <tr>
+                        <th>#{msgs.name}:</th>
+                        <td>#{selectedTask.name}</td>
+                    </tr>
+                    <tr>
+                        <th>#{msgs.jndiname}:</th>
+                        <td>#{selectedTask.jndiName}</td>
+                    </tr>
+                    <tr>
+                        <th>#{msgs.scheduling}:</th>
+                        <td><h:commandLink value="#{selectedTask.scheduling.name}"
+                            action="#{scheduling.schedulingView}" /></td>
+                    </tr>
+                </tbody>
+            </table>
 
-			<br />
+            <br />
 
 			<h:commandButton action="#{scheduling.taskListView}" id="back"
 				value="#{msgs.backaction}" immediate="true" styleClass="submit" />
@@ -50,7 +50,7 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
-			<ul class="sidemenu">
+			<ul>
 				<li><h:commandLink action="#{scheduling.taskHistoryView}"
 					id="taskhistoryview" value="#{msgs.taskhistoryaction}"
 					immediate="true" /></li>

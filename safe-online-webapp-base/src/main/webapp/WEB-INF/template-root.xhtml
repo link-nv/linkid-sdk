@@ -15,8 +15,8 @@
 	</head>
 
 	<body>
-	<div id="header">
-	<div id="header_top"><h:form>
+	<div id="_header">
+	<div id="header"><h:form>
 		<span> <h:graphicImage
 			value="/images/langs/#{facesContext.viewRoot.locale.language}.gif" />
 		<h:commandLink action="#{language.entry}"
@@ -35,8 +35,8 @@
 		<ui:insert name="topnav" />
 	</f:subview></div>
 
-	<div id="main">
-	<div id="main_content"><ui:insert name="top_content" /> <ui:insert
+	<div id="_content">
+	<div id="content"><ui:insert name="top_content" /> <ui:insert
 		name="sidebox" /> <ui:insert name="content">Welcome to #{initParam['CommercialName']}.</ui:insert>
 	</div>
 

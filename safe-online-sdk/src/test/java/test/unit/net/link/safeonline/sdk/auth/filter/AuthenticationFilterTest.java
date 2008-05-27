@@ -118,7 +118,8 @@ public class AuthenticationFilterTest {
 				"secret", "secret");
 
 		String p12ResourceName = "p12-resource-name.p12";
-		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURL());
+		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI()
+                .toURL());
 
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
 		filterInitParameters.put(
@@ -166,7 +167,8 @@ public class AuthenticationFilterTest {
 				"secret", "secret");
 
 		String p12ResourceName = "p12-resource-name.p12";
-		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURL());
+		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI()
+                .toURL());
 
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
 		filterInitParameters.put(

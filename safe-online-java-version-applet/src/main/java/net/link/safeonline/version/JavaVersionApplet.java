@@ -31,9 +31,9 @@ public class JavaVersionApplet extends Applet {
 	private boolean hasPkcs11;
 
 	public static class PlatformDrivers {
-		private final String platform;
+		final String platform;
 
-		private final List driverLocations;
+		final List   driverLocations;
 
 		public PlatformDrivers(String platform, List driverLocations) {
 			this.platform = platform;
@@ -41,33 +41,33 @@ public class JavaVersionApplet extends Applet {
 		}
 	}
 
-	private static final List platformDrivers = new LinkedList();
+	private static final List platformsDrivers = new LinkedList();
 
 	static {
 		List linuxDrivers = new LinkedList();
 		linuxDrivers.add("/usr/local/lib/libbeidpkcs11.so");
 		linuxDrivers.add("/usr/lib/libbeidpkcs11.so");
 		linuxDrivers.add("/usr/lib/opensc-pkcs11.so");
-		platformDrivers.add(new PlatformDrivers("Linux", linuxDrivers));
+		platformsDrivers.add(new PlatformDrivers("Linux", linuxDrivers));
 
 		List windowsDrivers = new LinkedList();
 		windowsDrivers.add("C:\\WINDOWS\\system32\\beidpkcs11.dll");
 		windowsDrivers
 				.add("C:\\WINDOWS\\system32\\Belgium Identity Card PKCS11.dll");
-		platformDrivers.add(new PlatformDrivers("Windows XP", windowsDrivers));
+		platformsDrivers.add(new PlatformDrivers("Windows XP", windowsDrivers));
 
 		List macDrivers = new LinkedList();
 		macDrivers
 				.add("/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.2.1.0.dylib");
 		macDrivers.add("/Library/OpenSC/lib/opensc-pkcs11.so");
-		platformDrivers.add(new PlatformDrivers("Mac OS X", macDrivers));
+		platformsDrivers.add(new PlatformDrivers("Mac OS X", macDrivers));
 	}
 
 	public void init() {
 		super.init();
 		String osName = System.getProperty("os.name");
-		Iterator platformIterator = platformDrivers.iterator();
-		boolean hasPkcs11 = false;
+		Iterator platformIterator = platformsDrivers.iterator();
+		this.hasPkcs11 = false;
 		while (platformIterator.hasNext()) {
 			PlatformDrivers platformDrivers = (PlatformDrivers) platformIterator
 					.next();
@@ -78,12 +78,11 @@ public class JavaVersionApplet extends Applet {
 					String driverLocation = (String) driverIterator.next();
 					File driverPath = new File(driverLocation);
 					if (driverPath.exists()) {
-						hasPkcs11 = true;
+						this.hasPkcs11 = true;
 					}
 				}
 			}
 		}
-		this.hasPkcs11 = hasPkcs11;
 	}
 
 	public JavaVersionApplet() {
