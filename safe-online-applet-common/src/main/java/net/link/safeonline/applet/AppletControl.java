@@ -94,7 +94,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 			this.appletView.outputDetailMessage("smart card not found");
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString("smartCardNotFound"));
-			showPath("missing-reader.seam");
+			//showPath("missing-reader.seam");
 			return;
 		} catch (Exception e) {
 			this.appletView
