@@ -36,6 +36,10 @@
 			<from-outcome>next</from-outcome>
 			<to-view-id>/new-user-device.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>existing</from-outcome>
+			<to-view-id>/main.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/identity-confirmation.xhtml 

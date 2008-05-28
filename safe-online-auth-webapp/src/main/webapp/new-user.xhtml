@@ -40,8 +40,8 @@
 
 			<a4j:region>
 				<h:outputLabel for="image" />
-                <h:graphicImage id="image" styleClass="label"
-                    value="#{accountRegistration.captchaURL}" />
+				<h:graphicImage id="image" styleClass="label"
+					value="#{accountRegistration.captchaURL}" />
 			</a4j:region>
 
 			<h:messages globalOnly="true" styleClass="error" />
@@ -53,18 +53,14 @@
 	<ui:define name="sidebar">
 		<h:form>
 			<ul>
-				<li>
-                    <h:commandLink action="existing" id="existing"
-                        value="#{msgs.existingUser}" />
-			    </li>
-				<li>
-                    <a4j:commandLink id="refresh" immediate="true"
-                        value="#{msgs.refreshCaptcha}" reRender="image" />
-			    </li>
+				<li><h:commandLink action="existing" id="existing"
+					value="#{msgs.existingUser}" /></li>
+				<li><a4j:commandLink id="refresh" immediate="true"
+					value="#{msgs.refreshCaptcha}" reRender="image" /></li>
 			</ul>
 		</h:form>
 
-        <p>#{msgs.helpNewUser}</p>
+		<p>#{msgs.helpNewUser}</p>
 	</ui:define>
 </ui:composition>
 </body>
