@@ -33,6 +33,16 @@ public class PcscTest {
 	}
 
 	@Test
+	public void testSisCard() throws Exception {
+		TerminalFactory terminalFactory = TerminalFactory.getDefault();
+		CardTerminals cardTerminals = terminalFactory.terminals();
+		CardTerminal cardTerminal = cardTerminals.list().get(0);
+		Card card = cardTerminal.connect("*");
+		CardChannel channel = card.getBasicChannel();
+	}
+
+	
+	@Test
 	public void testSign() throws Exception {
 		TerminalFactory terminalFactory = TerminalFactory.getDefault();
 		CardTerminals cardTerminals = terminalFactory.terminals();

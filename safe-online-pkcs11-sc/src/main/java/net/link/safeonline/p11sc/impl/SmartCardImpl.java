@@ -47,6 +47,7 @@ import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardInteraction;
 import net.link.safeonline.p11sc.SmartCardNotFoundException;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
+import net.link.safeonline.p11sc.UnsupportedSmartCardException;
 import net.link.safeonline.p11sc.impl.SmartCardMessages.KEY;
 import net.link.safeonline.p11sc.spi.IdentityDataCollector;
 import net.link.safeonline.p11sc.spi.IdentityDataExtractor;
@@ -156,7 +157,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 	}
 
 	public void open(String smartCardAlias) throws SmartCardNotFoundException,
-			NoPkcs11LibraryException, MissingSmartCardReaderException {
+			NoPkcs11LibraryException, MissingSmartCardReaderException,
+			UnsupportedSmartCardException {
 		SmartCardConfig smartCardConfig = getSmartCardConfig(smartCardAlias);
 
 		String osName = System.getProperty("os.name");
@@ -386,7 +388,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 	}
 
 	private long getBestEffortSlotIdx(File pkcs11LibraryFile)
-			throws SmartCardNotFoundException, MissingSmartCardReaderException {
+			throws SmartCardNotFoundException, MissingSmartCardReaderException,
+			UnsupportedSmartCardException {
 		String pkcs11Library = pkcs11LibraryFile.getAbsolutePath();
 		try {
 			Method[] methods = PKCS11.class.getMethods();
@@ -466,7 +469,6 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 				LOG.debug("manufacturer: "
 						+ new String(slotInfo.manufacturerID));
 				while (0 == (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)) {
-					LOG.debug("waiting...");
 					String msg = this.messages.getString(KEY.NO_CARD);
 					this.interaction.output(msg);
 					try {
@@ -477,11 +479,17 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 					slotInfo = pkcs11.C_GetSlotInfo(slotId);
 				}
 				CK_TOKEN_INFO tokenInfo = pkcs11.C_GetTokenInfo(slotId);
-				LOG.debug("token label: " + new String(tokenInfo.label));
+				String tokenLabel = new String(tokenInfo.label);
+				LOG.debug("token label: " + tokenLabel);
 				LOG.debug("token model: " + new String(tokenInfo.model));
 				LOG.debug("manufacturer Id: "
 						+ new String(tokenInfo.manufacturerID));
+				LOG.debug("serial number: "
+						+ new String(tokenInfo.serialNumber));
 				LOG.debug("Card found in slot Idx: " + currSlotIdx);
+				if (false == "BELPIC".equals(tokenLabel.trim())) {
+					throw new UnsupportedSmartCardException();
+				}
 				return currSlotIdx;
 			}
 			throw new SmartCardNotFoundException();

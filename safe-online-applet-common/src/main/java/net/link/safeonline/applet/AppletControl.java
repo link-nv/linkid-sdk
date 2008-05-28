@@ -31,6 +31,7 @@ import net.link.safeonline.p11sc.SmartCardFactory;
 import net.link.safeonline.p11sc.SmartCardInteraction;
 import net.link.safeonline.p11sc.SmartCardNotFoundException;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
+import net.link.safeonline.p11sc.UnsupportedSmartCardException;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 import net.link.safeonline.p11sc.impl.SmartCardImpl;
 import net.link.safeonline.shared.SharedConstants;
@@ -104,6 +105,11 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 			/*
 			 * TODO: retry somehow? is difficult via pkcs11
 			 */
+			return;
+		} catch (UnsupportedSmartCardException e) {
+			this.appletView.outputDetailMessage("unsupported smart card");
+			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+					.getString("noBeID"));
 			return;
 		} catch (Exception e) {
 			this.appletView
