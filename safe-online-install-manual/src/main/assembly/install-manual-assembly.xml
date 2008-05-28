@@ -8,7 +8,7 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<files>
 		<file>
-			<source>target/docbook/pdf/install-manual.pdf</source>
+			<source>target/docbook/publish/en-US/pdf/install-manual.pdf</source>
 		</file>
 	</files>
 </assembly>
