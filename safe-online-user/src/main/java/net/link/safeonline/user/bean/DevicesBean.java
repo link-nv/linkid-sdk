@@ -370,7 +370,7 @@ public class DevicesBean implements Devices {
 		Locale locale = getViewLocale();
 		boolean registeredDeviceExists = false;
 		for (DeviceMappingEntity mapping : mappings) {
-			List<List<AttributeDO>> deviceAttribute;
+			List<AttributeDO> deviceAttribute;
 			try {
 				deviceAttribute = this.identityService.listAttributes(mapping
 						.getId(), mapping.getDevice().getAttributeType(),

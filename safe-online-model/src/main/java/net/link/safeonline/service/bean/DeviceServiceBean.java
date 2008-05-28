@@ -10,6 +10,7 @@ package net.link.safeonline.service.bean;
 import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 
 import javax.annotation.security.RolesAllowed;
@@ -493,31 +494,50 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 			LOG.debug("device description: " + deviceDescription);
 			DeviceMappingEntity deviceMapping = this.deviceMappingService
 					.getDeviceMapping(subject.getUserId(), device.getName());
-			List<List<AttributeDO>> registrationAttributes = listRegistrations(
+			List<AttributeDO> registrationAttributes = listRegistrations(
 					deviceMapping, locale);
-			for (List<AttributeDO> registrationAttribute : registrationAttributes) {
-				deviceMappings.add(new DeviceMappingDO(deviceMapping,
-						deviceDescription, registrationAttribute));
+			ListIterator<AttributeDO> iter = registrationAttributes
+					.listIterator();
+			while (iter.hasNext()) {
+				List<AttributeDO> registrationAttributeView = new LinkedList<AttributeDO>();
+				AttributeDO registrationAttribute = iter.next();
+				if (registrationAttribute.isCompounded()) {
+					registrationAttributeView.add(registrationAttribute);
+					while (iter.hasNext()) {
+						AttributeDO memberAttribute = iter.next();
+						if (memberAttribute.isMember()) {
+							registrationAttributeView.add(memberAttribute);
+						} else {
+							iter.previous();
+							break;
+						}
+					}
+				} else {
+					registrationAttributeView.add(registrationAttribute);
+					deviceMappings.add(new DeviceMappingDO(deviceMapping,
+							deviceDescription, registrationAttributeView));
+
+				}
 			}
+
 		}
 		return deviceMappings;
 	}
 
-	private List<List<AttributeDO>> listRegistrations(
+	private List<AttributeDO> listRegistrations(
 			DeviceMappingEntity deviceMapping, Locale locale)
 			throws PermissionDeniedException, AttributeTypeNotFoundException {
-		List<List<AttributeDO>> registeredDeviceAttributes;
+		List<AttributeDO> registeredDeviceAttributes;
 
 		if (null == deviceMapping.getDevice().getUserAttributeType()) {
 			DeviceSubjectEntity deviceSubject = this.subjectService
 					.findDeviceSubject(deviceMapping.getId());
 			if (null != deviceSubject
 					&& deviceSubject.getRegistrations().size() > 0) {
-				List<List<AttributeDO>> localRegistration = new LinkedList<List<AttributeDO>>();
-				localRegistration.add(new LinkedList<AttributeDO>());
+				List<AttributeDO> localRegistration = new LinkedList<AttributeDO>();
 				return localRegistration;
 			}
-			return new LinkedList<List<AttributeDO>>();
+			return new LinkedList<AttributeDO>();
 		}
 		LOG.debug("get device registration attributes: "
 				+ deviceMapping.getDevice().getUserAttributeType().getName());

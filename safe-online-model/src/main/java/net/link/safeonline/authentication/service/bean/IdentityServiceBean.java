@@ -327,17 +327,16 @@ public class IdentityServiceBean implements IdentityService,
 			if (null == value)
 				continue;
 
-			if (attributeType.isDeviceAttribute()) {
-				// in case of a device attribute, we'll get a list of values, 1
-				// for each device registration
-				Object[] values = (Object[]) value;
-				for (Object deviceValue : values) {
-					addValueToView(deviceValue, attributeType, attributesView,
-							locale);
-				}
-			} else {
-				addValueToView(value, attributeType, attributesView, locale);
-			}
+			addValueToView(value, attributeType, attributesView, locale);
+
+			/*
+			 * if (attributeType.isDeviceAttribute()) { // in case of a device
+			 * attribute, we'll get a list of values, 1 // for each device
+			 * registration Object[] values = (Object[]) value; for (Object
+			 * deviceValue : values) { addValueToView(deviceValue,
+			 * attributeType, attributesView, locale); } } else {
+			 * addValueToView(value, attributeType, attributesView, locale); }
+			 */
 		}
 		return attributesView;
 	}
@@ -362,8 +361,8 @@ public class IdentityServiceBean implements IdentityService,
 		} else {
 			// compounded
 			int idx = 0;
-			Map<String, Object>[] memberMaps = (Map<String, Object>[]) value;
-			for (Map<String, Object> memberMap : memberMaps) {
+			for (Object attributeValue : (Object[]) value) {
+				Map<String, Object> memberMap = (Map<String, Object>) attributeValue;
 				// first add an attribute view for the parent attribute
 				// type
 				LOG.debug("add compounded attribute: "
@@ -380,7 +379,6 @@ public class IdentityServiceBean implements IdentityService,
 				}
 				idx++;
 			}
-
 		}
 	}
 
@@ -1119,21 +1117,16 @@ public class IdentityServiceBean implements IdentityService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<List<AttributeDO>> listAttributes(
+	public List<AttributeDO> listAttributes(
 			@NonEmptyString String deviceMappingId,
 			@NotNull AttributeTypeEntity attributeType, Locale locale)
 			throws PermissionDeniedException, AttributeTypeNotFoundException {
 		LOG.debug("list attributes for device: " + deviceMappingId);
-		Object[] values = (Object[]) this.proxyAttributeService
-				.findDeviceAttributeValue(deviceMappingId, attributeType
-						.getName());
-		if (null == values)
-			return new LinkedList<List<AttributeDO>>();
-		List<List<AttributeDO>> attributes = new LinkedList<List<AttributeDO>>();
-		for (Object value : values) {
-			attributes.add(convertAttribute(value, attributeType, locale));
-		}
-		return attributes;
+		Object value = this.proxyAttributeService.findDeviceAttributeValue(
+				deviceMappingId, attributeType.getName());
+		if (null == value)
+			return new LinkedList<AttributeDO>();
+		return convertAttribute(value, attributeType, locale);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)

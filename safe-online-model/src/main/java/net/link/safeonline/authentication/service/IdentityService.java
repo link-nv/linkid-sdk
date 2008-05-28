@@ -96,7 +96,7 @@ public interface IdentityService {
 	 * @throws PermissionDeniedException
 	 * 
 	 */
-	List<List<AttributeDO>> listAttributes(String deviceId,
+	List<AttributeDO> listAttributes(String deviceId,
 			AttributeTypeEntity attributeType, Locale locale)
 			throws PermissionDeniedException, AttributeTypeNotFoundException;
 

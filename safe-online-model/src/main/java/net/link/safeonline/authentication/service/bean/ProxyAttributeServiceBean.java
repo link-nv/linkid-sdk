@@ -72,9 +72,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
 			int idx = 0;
 			for (SubjectEntity deviceRegistration : deviceSubject
 					.getRegistrations()) {
-				Object deviceRegistrationAttribute = findLocalAttribute(
+				Object[] deviceRegistrationAttribute = (Object[]) findLocalAttribute(
 						deviceRegistration.getUserId(), attributeType);
-				deviceRegistrationAttributes[idx] = deviceRegistrationAttribute;
+				deviceRegistrationAttributes[idx] = deviceRegistrationAttribute[0];
 				idx++;
 			}
 			return deviceRegistrationAttributes;
