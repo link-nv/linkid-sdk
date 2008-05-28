@@ -384,7 +384,9 @@ public class DevicesBean implements Devices {
 						+ mapping.getDevice().getAttributeType());
 				return false;
 			}
-			if (0 != deviceAttribute.size() && registeredDeviceExists) {
+			if (null == deviceAttribute) {
+				continue;
+			} else if (0 != deviceAttribute.size() && registeredDeviceExists) {
 				return true;
 			} else if (0 != deviceAttribute.size()) {
 				registeredDeviceExists = true;

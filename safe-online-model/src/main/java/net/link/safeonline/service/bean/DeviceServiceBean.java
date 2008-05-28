@@ -496,6 +496,13 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 					.getDeviceMapping(subject.getUserId(), device.getName());
 			List<AttributeDO> registrationAttributes = listRegistrations(
 					deviceMapping, locale);
+			if (null == registrationAttributes)
+				continue;
+			if (registrationAttributes.isEmpty()) {
+				// no user attribute for this device
+				deviceMappings.add(new DeviceMappingDO(deviceMapping,
+						deviceDescription, null));
+			}
 			ListIterator<AttributeDO> iter = registrationAttributes
 					.listIterator();
 			while (iter.hasNext()) {
@@ -514,10 +521,10 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 					}
 				} else {
 					registrationAttributeView.add(registrationAttribute);
-					deviceMappings.add(new DeviceMappingDO(deviceMapping,
-							deviceDescription, registrationAttributeView));
 
 				}
+				deviceMappings.add(new DeviceMappingDO(deviceMapping,
+						deviceDescription, registrationAttributeView));
 			}
 
 		}
@@ -537,14 +544,17 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 				List<AttributeDO> localRegistration = new LinkedList<AttributeDO>();
 				return localRegistration;
 			}
-			return new LinkedList<AttributeDO>();
+			return null;
 		}
 		LOG.debug("get device registration attributes: "
 				+ deviceMapping.getDevice().getUserAttributeType().getName());
 		registeredDeviceAttributes = this.identityService.listAttributes(
 				deviceMapping.getId(), deviceMapping.getDevice()
 						.getUserAttributeType(), locale);
+		if (null == registeredDeviceAttributes)
+			return null;
+		if (registeredDeviceAttributes.isEmpty())
+			return null;
 		return registeredDeviceAttributes;
 	}
-
 }

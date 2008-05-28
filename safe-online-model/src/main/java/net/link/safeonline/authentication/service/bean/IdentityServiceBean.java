@@ -1092,14 +1092,15 @@ public class IdentityServiceBean implements IdentityService,
 			throws AttributeTypeNotFoundException {
 		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 		if (attributeType.isCompounded()) {
-			Map<String, Object>[] compoundedAttributesMap = (Map<String, Object>[]) value;
-			for (int idx = 0; idx < compoundedAttributesMap.length; idx++) {
-				for (String memberAttributeTypeName : compoundedAttributesMap[idx]
+			Object[] attributeValues = (Object[]) value;
+			for (int idx = 0; idx < attributeValues.length; idx++) {
+				Map<String, Object> compoundedAttributesMap = (Map<String, Object>) attributeValues[idx];
+				for (String memberAttributeTypeName : compoundedAttributesMap
 						.keySet()) {
 					AttributeTypeEntity memberAttributeType = this.attributeTypeDAO
 							.getAttributeType(memberAttributeTypeName);
 					attributes.add(convertSingleAttribute(
-							compoundedAttributesMap[idx]
+							compoundedAttributesMap
 									.get(memberAttributeTypeName), idx,
 							memberAttributeType, locale));
 				}
@@ -1125,7 +1126,7 @@ public class IdentityServiceBean implements IdentityService,
 		Object value = this.proxyAttributeService.findDeviceAttributeValue(
 				deviceMappingId, attributeType.getName());
 		if (null == value)
-			return new LinkedList<AttributeDO>();
+			return null;
 		return convertAttribute(value, attributeType, locale);
 	}
 
