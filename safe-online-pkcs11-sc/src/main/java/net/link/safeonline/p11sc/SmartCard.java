@@ -18,9 +18,19 @@ public interface SmartCard {
 	 * Initializes the smart card Java component. The argument is a list of
 	 * smart card configs since this component is designed to support multiple
 	 * smart cards.
+	 * 
+	 * @param smartCardConfigs
+	 * @param smartCardInteraction
+	 *            the optional smart card interaction object.
 	 */
-	void init(List<SmartCardConfig> smartCardConfigs);
+	void init(List<SmartCardConfig> smartCardConfigs,
+			SmartCardInteraction smartCardInteraction);
 
+	/**
+	 * Sets the smart card PIN callback.
+	 * 
+	 * @param smartCardPinCallback
+	 */
 	void setSmartCardPinCallback(SmartCardPinCallback smartCardPinCallback);
 
 	/**

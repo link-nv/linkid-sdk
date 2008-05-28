@@ -77,7 +77,7 @@ public class SmartCardTest {
 		SmartCard smartCard = SmartCardFactory.newInstance();
 		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 
-		smartCard.init(configFactory.getSmartCardConfigs());
+		smartCard.init(configFactory.getSmartCardConfigs(), null);
 
 		// operate
 		smartCard.open("beid");
@@ -108,7 +108,7 @@ public class SmartCardTest {
 		SmartCard smartCard = SmartCardFactory.newInstance();
 		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 
-		smartCard.init(configFactory.getSmartCardConfigs());
+		smartCard.init(configFactory.getSmartCardConfigs(), null);
 
 		// operate
 		smartCard.open("beid");
@@ -216,7 +216,7 @@ public class SmartCardTest {
 		SmartCard smartCard = SmartCardFactory.newInstance();
 
 		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
-		smartCard.init(configFactory.getSmartCardConfigs());
+		smartCard.init(configFactory.getSmartCardConfigs(), null);
 
 		LOG.debug("Connecting to smart card...");
 		smartCard.open("beid");
@@ -242,7 +242,7 @@ public class SmartCardTest {
 		SmartCard smartCard = SmartCardFactory.newInstance();
 
 		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
-		smartCard.init(configFactory.getSmartCardConfigs());
+		smartCard.init(configFactory.getSmartCardConfigs(), null);
 		smartCard.setSmartCardPinCallback(new SmartCardPinCallback() {
 
 			public char[] getPin() {
@@ -377,6 +377,11 @@ public class SmartCardTest {
 			LOG
 					.debug("token present: "
 							+ (0 != (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)));
+			while (0 == (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)) {
+				LOG.debug("waiting...");
+				Thread.sleep(1000);
+				slotInfo = pkcs11.C_GetSlotInfo(slotId);
+			}
 		}
 	}
 

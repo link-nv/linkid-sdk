@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
+import net.link.safeonline.p11sc.SmartCardInteraction;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
 
 public class SoftwareSmartCard implements SmartCard {
@@ -78,7 +79,7 @@ public class SoftwareSmartCard implements SmartCard {
 	}
 
 	public void init(@SuppressWarnings("unused")
-	List<SmartCardConfig> smartCardConfigs) {
+	List<SmartCardConfig> smartCardConfigs, SmartCardInteraction smartCardInteraction) {
 	}
 
 	public boolean isOpen() {

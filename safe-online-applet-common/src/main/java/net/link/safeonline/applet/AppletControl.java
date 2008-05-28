@@ -28,6 +28,7 @@ import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
+import net.link.safeonline.p11sc.SmartCardInteraction;
 import net.link.safeonline.p11sc.SmartCardNotFoundException;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
@@ -44,7 +45,8 @@ import sun.security.pkcs11.wrapper.PKCS11Exception;
  * @author fcorneli
  * 
  */
-public class AppletControl implements AppletController, SmartCardPinCallback {
+public class AppletControl implements AppletController, SmartCardPinCallback,
+		SmartCardInteraction {
 
 	private AppletView appletView;
 
@@ -70,7 +72,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 		List<SmartCardConfig> smartCardConfigs = configFactory
 				.getSmartCardConfigs();
-		smartCard.init(smartCardConfigs);
+		smartCard.init(smartCardConfigs, this);
 		for (SmartCardConfig smartCardConfig : smartCardConfigs)
 			this.appletView
 					.outputDetailMessage("smart card config available for: "
@@ -320,5 +322,14 @@ public class AppletControl implements AppletController, SmartCardPinCallback {
 		Locale locale = this.runtimeContext.getLocale();
 		this.messages = ResourceBundle.getBundle(
 				"net.link.safeonline.applet.ControlMessages", locale);
+	}
+
+	public Locale getLocale() {
+		Locale locale = this.runtimeContext.getLocale();
+		return locale;
+	}
+
+	public void output(String message) {
+		this.appletView.outputInfoMessage(InfoLevel.NORMAL, message);
 	}
 }

@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.security.auth.callback.Callback;
@@ -40,10 +41,13 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 
 import net.link.safeonline.p11sc.MissingSmartCardReaderException;
 import net.link.safeonline.p11sc.NoPkcs11LibraryException;
+import net.link.safeonline.p11sc.NullSmartCardInteraction;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
+import net.link.safeonline.p11sc.SmartCardInteraction;
 import net.link.safeonline.p11sc.SmartCardNotFoundException;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
+import net.link.safeonline.p11sc.impl.SmartCardMessages.KEY;
 import net.link.safeonline.p11sc.spi.IdentityDataCollector;
 import net.link.safeonline.p11sc.spi.IdentityDataExtractor;
 
@@ -116,8 +120,22 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		return this.signaturePrivateKey;
 	}
 
-	public void init(List<SmartCardConfig> newSmartCardConfigs) {
+	private SmartCardInteraction interaction;
+
+	private SmartCardMessages messages;
+
+	public void init(List<SmartCardConfig> newSmartCardConfigs,
+			SmartCardInteraction smartCardInteraction) {
 		this.smartCardConfigs = newSmartCardConfigs;
+
+		if (null != smartCardInteraction) {
+			this.interaction = smartCardInteraction;
+		} else {
+			this.interaction = new NullSmartCardInteraction();
+		}
+
+		Locale locale = this.interaction.getLocale();
+		this.messages = new SmartCardMessages(locale);
 	}
 
 	public boolean isOpen() {
@@ -447,15 +465,24 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 						+ new String(slotInfo.slotDescription));
 				LOG.debug("manufacturer: "
 						+ new String(slotInfo.manufacturerID));
-				if ((slotInfo.flags & PKCS11Constants.CKF_TOKEN_PRESENT) != 0) {
-					CK_TOKEN_INFO tokenInfo = pkcs11.C_GetTokenInfo(slotId);
-					LOG.debug("token label: " + new String(tokenInfo.label));
-					LOG.debug("token model: " + new String(tokenInfo.model));
-					LOG.debug("manufacturer Id: "
-							+ new String(tokenInfo.manufacturerID));
-					LOG.debug("Card found in slot Idx: " + currSlotIdx);
-					return currSlotIdx;
+				while (0 == (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)) {
+					LOG.debug("waiting...");
+					String msg = this.messages.getString(KEY.NO_CARD);
+					this.interaction.output(msg);
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						LOG.debug("error sleeping: " + e.getMessage());
+					}
+					slotInfo = pkcs11.C_GetSlotInfo(slotId);
 				}
+				CK_TOKEN_INFO tokenInfo = pkcs11.C_GetTokenInfo(slotId);
+				LOG.debug("token label: " + new String(tokenInfo.label));
+				LOG.debug("token model: " + new String(tokenInfo.model));
+				LOG.debug("manufacturer Id: "
+						+ new String(tokenInfo.manufacturerID));
+				LOG.debug("Card found in slot Idx: " + currSlotIdx);
+				return currSlotIdx;
 			}
 			throw new SmartCardNotFoundException();
 			/*
