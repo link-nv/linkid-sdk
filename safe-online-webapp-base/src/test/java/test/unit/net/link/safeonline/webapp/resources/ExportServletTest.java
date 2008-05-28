@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.owner.webapp;
+package test.unit.net.link.safeonline.webapp.resources;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -15,17 +15,17 @@ import static org.easymock.EasyMock.verify;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
-import net.link.safeonline.owner.webapp.ChartServlet;
 import net.link.safeonline.service.StatisticService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
+import net.link.safeonline.webapp.resources.ExportServlet;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -33,15 +33,12 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.joda.time.DateTime;
 
-public class ChartServletTest extends TestCase {
+public class ExportServletTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(ChartServletTest.class);
-
-	private ChartServlet testedInstance;
+	private static final Log LOG = LogFactory.getLog(ExportServletTest.class);
 
 	private ServletTestManager servletTestManager;
 
@@ -57,8 +54,6 @@ public class ChartServletTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		this.testedInstance = new ChartServlet();
-
 		this.mockStatisticService = createMock(StatisticService.class);
 
 		this.jndiTestUtils = new JndiTestUtils();
@@ -68,7 +63,7 @@ public class ChartServletTest extends TestCase {
 				this.mockStatisticService);
 
 		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(ChartServlet.class);
+		this.servletTestManager.setUp(ExportServlet.class);
 		this.servletLocation = this.servletTestManager.createSocketConnector();
 
 		this.mockObjects = new Object[] { this.mockStatisticService };
@@ -82,35 +77,6 @@ public class ChartServletTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testChartGeneration() throws Exception {
-		// setup
-		StatisticEntity statistic = new StatisticEntity("Test Stat", "domain",
-				null, new Date());
-		Random generator = new Random();
-		StatisticDataPointEntity dp = new StatisticDataPointEntity("Cat A",
-				statistic, new Date(), generator.nextInt(),
-				generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-		dp = new StatisticDataPointEntity("Cat B", statistic, new Date(),
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-		dp = new StatisticDataPointEntity("Cat C", statistic, new Date(),
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-		dp = new StatisticDataPointEntity("Cat D", statistic, new Date(),
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-
-		// operate
-		JFreeChart chart = this.testedInstance.defaultChart(statistic);
-
-		// verify
-		File file = File.createTempFile("tempchart-", ".png");
-		FileOutputStream out = new FileOutputStream(file);
-		out.write(ChartUtilities.encodeAsPNG(chart
-				.createBufferedImage(800, 600)));
-	}
-
 	public void testDoGet() throws Exception {
 		// setup
 		HttpClient httpClient = new HttpClient();
@@ -122,20 +88,25 @@ public class ChartServletTest extends TestCase {
 				new NameValuePair("chartname", testChartName),
 				new NameValuePair("domain", testDomain),
 				new NameValuePair("applicationname", testApplicationName) });
+		ApplicationEntity application = new ApplicationEntity(
+				testApplicationName, null, null, null, null, null, null, null);
 		StatisticEntity statistic = new StatisticEntity();
 		statistic.setName("test-statistic-name");
+		statistic.setApplication(application);
+		statistic.setCreationTime(new Date());
 		statistic.getStatisticDataPoints().add(
 				new StatisticDataPointEntity("test-data-point", statistic,
 						new Date(), 1, 2, 3));
 		statistic.getStatisticDataPoints().add(
 				new StatisticDataPointEntity("test-data-point", statistic,
 						new DateTime().plusDays(1).toDate(), 4, 5, 6));
+		HSSFWorkbook workbook = new HSSFWorkbook();
 
 		// stubs
 		expect(
-				this.mockStatisticService.getStatistic(testChartName,
+				this.mockStatisticService.exportStatistic(testChartName,
 						testDomain, testApplicationName)).andStubReturn(
-				statistic);
+				workbook);
 
 		// prepare
 		replay(this.mockObjects);
@@ -150,11 +121,11 @@ public class ChartServletTest extends TestCase {
 		String resultContentType = getMethod.getResponseHeader("Content-Type")
 				.getValue();
 		LOG.debug("result content-type: " + resultContentType);
-		assertEquals("image/png", resultContentType);
+		assertEquals("application/vnd.ms-excel", resultContentType);
 		LOG.debug("result content length: "
 				+ getMethod.getResponseContentLength());
 
-		File tmpFile = File.createTempFile("result-image-", ".png");
+		File tmpFile = File.createTempFile("result-export-", ".xls");
 		FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
 		IOUtils.copy(getMethod.getResponseBodyAsStream(), fileOutputStream);
 		fileOutputStream.close();

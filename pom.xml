@@ -751,6 +751,7 @@
 		</jboss-jsfunit-richfaces.version>
 		<itext.version>1.4.8</itext.version>
 		<keytool-maven-plugin.version>1.0</keytool-maven-plugin.version>
+		<poi.version>3.0.2-FINAL</poi.version>
 	</properties>
 
 	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
@@ -2026,6 +2027,11 @@
 				<groupId>com.lowagie</groupId>
 				<artifactId>itext</artifactId>
 				<version>${itext.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${poi.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

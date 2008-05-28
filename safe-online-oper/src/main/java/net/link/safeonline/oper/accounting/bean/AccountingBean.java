@@ -5,12 +5,13 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.owner.bean;
+package net.link.safeonline.oper.accounting.bean;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
@@ -20,89 +21,122 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticEntity;
-import net.link.safeonline.owner.Charts;
-import net.link.safeonline.owner.OwnerConstants;
+import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.oper.accounting.Accounting;
 import net.link.safeonline.service.StatisticService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.log.Log;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 @Stateful
-@Name("chart")
-@LocalBinding(jndiBinding = OwnerConstants.JNDI_PREFIX + "ChartsBean/local")
-@SecurityDomain(OwnerConstants.SAFE_ONLINE_OWNER_SECURITY_DOMAIN)
-public class ChartsBean implements Charts {
+@Name("operAccounting")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
+		+ "AccountingBean/local")
+@SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+public class AccountingBean implements Accounting {
 
-	private static final Log LOG = LogFactory.getLog(ChartsBean.class);
+	public static final String ACCOUNTING_APPLICATION_LIST_NAME = "accountingApplications";
 
-	@EJB
-	private StatisticService statisticService;
+	public static final String ACCOUNTING_STAT_LIST_NAME = "accountingStats";
+
+	@Logger
+	private Log log;
 
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	@In(value = "selectedApplication")
+	@EJB
+	private ApplicationService applicationService;
+
+	@EJB
+	private StatisticService statisticService;
+
+	@DataModel(ACCOUNTING_APPLICATION_LIST_NAME)
+	private List<ApplicationEntity> applicationList;
+
+	@DataModelSelection(ACCOUNTING_APPLICATION_LIST_NAME)
+	@Out(value = "selectedApplication", required = false, scope = ScopeType.SESSION)
+	@In(required = false)
 	private ApplicationEntity selectedApplication;
 
-	@SuppressWarnings("unused")
-	@Out(value = "chartURL", required = false)
-	private String chartURL;
-
-	public static final String STAT_LIST_NAME = "statList";
-
-	@SuppressWarnings("unused")
-	@DataModel(STAT_LIST_NAME)
+	@DataModel(ACCOUNTING_STAT_LIST_NAME)
 	private List<StatisticEntity> statList;
 
-	@DataModelSelection(STAT_LIST_NAME)
+	@DataModelSelection(ACCOUNTING_STAT_LIST_NAME)
 	@Out(value = "selectedStat", required = false)
 	private StatisticEntity selectedStat;
+
+	@Out(value = "chartURL", required = false)
+	private String chartURL;
 
 	@Remove
 	@Destroy
 	public void destroyCallback() {
+		this.log.debug("destroy: " + this);
 	}
 
-	@Factory(STAT_LIST_NAME)
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
+	@PostConstruct
+	public void postConstructCallback() {
+		this.log.debug("postConstruct: " + this);
+	}
+
+	@Factory(ACCOUNTING_APPLICATION_LIST_NAME)
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void applicationListFactory() {
+		this.log.debug("application list factory");
+		this.applicationList = this.applicationService.listApplications();
+	}
+
+	@Factory(ACCOUNTING_STAT_LIST_NAME)
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void statListFactory() {
-		LOG.debug("selectedApplication: " + this.selectedApplication);
+		this.log.debug("selectedApplication: " + this.selectedApplication);
 		try {
 			this.statList = this.statisticService
 					.getStatistics(this.selectedApplication);
 		} catch (PermissionDeniedException e) {
-			LOG.error("permission denied: " + e.getMessage());
+			this.log.error("permission denied: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			this.statList = new LinkedList<StatisticEntity>();
 		}
 	}
 
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public String view() {
+		this.log.debug("view accounting information for application: "
+				+ this.selectedApplication.getName());
+		return "view";
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public String viewStat() {
 		this.chartURL = "view.chart?chartname=" + this.selectedStat.getName()
 				+ "&domain=" + this.selectedStat.getDomain()
 				+ "&applicationname=" + this.selectedApplication.getName();
 		return "viewstat";
+
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public String export() {
 		DateTime dt = new DateTime();
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
@@ -117,14 +151,14 @@ public class ChartsBean implements Charts {
 		try {
 			externalContext.redirect(exportURL);
 		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
+			this.log.debug("IO error: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");
 		}
 		return null;
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public String exportStat() {
 		DateTime dt = new DateTime();
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
@@ -142,11 +176,10 @@ public class ChartsBean implements Charts {
 		try {
 			externalContext.redirect(exportURL);
 		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
+			this.log.debug("IO error: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");
 		}
 		return null;
 	}
-
 }

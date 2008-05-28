@@ -124,6 +124,10 @@
 		<servlet-name>Chart Servlet</servlet-name>
 	</filter-mapping>
 	<filter-mapping>
+		<filter-name>Login Filter</filter-name>
+		<servlet-name>Export Servlet</servlet-name>
+	</filter-mapping>
+	<filter-mapping>
 		<filter-name>SafeOnlineLoginFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
@@ -138,13 +142,21 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>Chart Servlet</servlet-name>
-		<servlet-class> net.link.safeonline.owner.webapp.ChartServlet 
+		<servlet-class> net.link.safeonline.webapp.resources.ChartServlet 
 		</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Chart Servlet</servlet-name>
 		<url-pattern>*.chart</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Export Servlet</servlet-name>
+		<servlet-class>net.link.safeonline.webapp.resources.ExportServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Export Servlet</servlet-name>
+		<url-pattern>*.xls</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>

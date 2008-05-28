@@ -11,10 +11,14 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.StatisticNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticEntity;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.jfree.chart.JFreeChart;
 
 @Local
 public interface StatisticService {
@@ -26,4 +30,13 @@ public interface StatisticService {
 	public List<StatisticEntity> getStatistics(ApplicationEntity application)
 			throws PermissionDeniedException;
 
+	public JFreeChart getChart(String statisticName, String statisticDomain,
+			String applicationName) throws StatisticNotFoundException;
+
+	public HSSFWorkbook exportStatistic(String statisticName,
+			String statisticDomain, String applicationName)
+			throws StatisticNotFoundException;
+
+	public HSSFWorkbook exportStatistics(String applicationName)
+			throws ApplicationNotFoundException, StatisticNotFoundException;
 }

@@ -5,21 +5,22 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.owner;
+package net.link.safeonline.oper.accounting;
 
 import javax.ejb.Local;
 
 @Local
-public interface Charts {
+public interface Accounting {
 
 	/*
-	 * Factories
+	 * Accessors.
 	 */
-	void statListFactory();
 
 	/*
 	 * Actions.
 	 */
+	String view();
+
 	String viewStat();
 
 	String export();
@@ -30,4 +31,13 @@ public interface Charts {
 	 * Lifecycle.
 	 */
 	void destroyCallback();
+
+	void postConstructCallback();
+
+	/*
+	 * Factories.
+	 */
+	void applicationListFactory();
+
+	void statListFactory();
 }

@@ -26,6 +26,12 @@
 					<f:facet name="header">#{msgs.lastUpdate}</f:facet>
 					#{item.creationTime}
 				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.action}</f:facet>
+					<a4j:commandLink value="#{msgs.export}"
+						action="#{chart.exportStat}" />
+				</h:column>
+
 				<f:facet name="footer">
 					<rich:datascroller for="stat-data" pageIndexVar="pageIndex"
 						pagesVar="pages" fastControls="hide">
@@ -63,6 +69,8 @@
 			<h:messages styleClass="error" />
 
 			<a4j:commandButton value="#{msgs.backaction}" action="back"
+				styleClass="submit" />
+			<a4j:commandButton value="#{msgs.exportAll}" action="#{chart.export}"
 				styleClass="submit" />
 
 		</a4j:form>
