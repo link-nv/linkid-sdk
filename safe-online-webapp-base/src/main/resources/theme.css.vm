@@ -1,14 +1,20 @@
-/* -*- coding: utf-8; mode: css; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:filetype=css:et:sw=4:ts=4:sts=4
+/** -*- coding: utf-8; mode: css; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:filetype=css:et:sw=4:ts=4:sts=4
  *
- *          SafeOnline Application-Specific Coloring.
- *          -----------------------------------------
+ * OLAS CSS Style:
+ *      Color Scheme (Application Specific)
+ *
+ * @author mbillemo
+ *
+ * Copyright 2006-2008 - Lin.k NV
+ *
  */
 
 
 
+/* ==================================================================
+ * Transparent
+ * ----------- */
 
-/* White
- * ----- */
 input,
 select,
 textarea,
@@ -20,8 +26,10 @@ img.label,
 
 
 
-/* White
+/* ==================================================================
+ * White
  * ----- */
+
 #header a,
 #header ul.menu li a,
 input.submit {
@@ -30,7 +38,7 @@ input.submit {
 }
 
 
-#main,
+#_content,
 table.listingTable  tbody tr,
 table.rich-table    tbody tr {
 
@@ -39,8 +47,10 @@ table.rich-table    tbody tr {
 
 
 
-/* Nearly White
+/* ==================================================================
+ * Nearly White
  * ------------ */
+
 table.listingTable  tbody tr:hover,
 table.rich-table    tbody tr:hover {
     
@@ -49,9 +59,11 @@ table.rich-table    tbody tr:hover {
 
 
 
-/* Bright Grey
+/* ==================================================================
+ * Bright Grey
  * ----------- */
-#box,
+
+#_sidebox,
 table.listingTable  tfoot tr,
 table.rich-table    tfoot tr {
 
@@ -73,8 +85,10 @@ table tr.rich-table-footer {
 
 
 
-/* Grey
+/* ==================================================================
+ * Grey
  * ---- */
+
 #footer {
 
     color:              #CCC;
@@ -82,8 +96,10 @@ table tr.rich-table-footer {
 
 
 
-/* Dark Grey
+/* ==================================================================
+ * Dark Grey
  * --------- */
+
 input.label:active,
 .usage_agreement {
 
@@ -92,8 +108,10 @@ input.label:active,
 
 
 
-/* Darker Grey
+/* ==================================================================
+ * Darker Grey
  * ----------- */
+
 body {
 	background-color:   #333;
 }
@@ -103,10 +121,8 @@ body,
 #header ul.menu li a:hover,
 #header ul.menu li.selected a,
     a:hover,
-    ul.submenu  li a,
-    ul.submenu  li a:hover,
-    ul.sidemenu li a:hover,
-    ul.sidemenu li.active a,
+    #sidebox li a:hover,
+    #sidebox li.active a,
 input,
 select,
 textarea,
@@ -118,7 +134,7 @@ input.radio,
 }
 
 
-ul.sidemenu,
+#sidebox ul,
 input.label,
 textarea.label {
 
@@ -127,8 +143,10 @@ textarea.label {
 
 
 
-/* Darker Themed
+/* ==================================================================
+ * Darker Themed
  * ------------ */
+
 ul.submenu li.selected a {
 
     color:              $darker;
@@ -136,12 +154,14 @@ ul.submenu li.selected a {
 
 
 
-/* Themed
+/* ==================================================================
+ * Themed
  * ----- */
+
 h2,
 a,
 ul.timeline li.active,
-ul.sidemenu li a {
+#sidebox li a {
 
     color:              $bright;
 }
@@ -154,10 +174,12 @@ textarea {
 
 
 
-/* Lighter Themed
+/* ==================================================================
+ * Lighter Themed
  * ------------- */
-ul.sidemenu li a:hover,
-ul.sidemenu li.active a {
+
+#sidebox li a:hover,
+#sidebox li.active a {
 	background-color:   $brighter;
 }
 
@@ -169,7 +191,7 @@ a:hover {
 
 
 
-/*
+/* ==================================================================
 table tbody tr.listingTable_Row1 {
     background:         #fff
 }
