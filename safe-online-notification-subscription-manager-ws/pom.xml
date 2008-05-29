@@ -11,10 +11,8 @@
 	<artifactId>safe-online-notification-subscription-manager-ws</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline Notification Subscription Manager Web
-		Service Definition</name>
-	<description> Contains WSDL for the SafeOnline Notification
-		Subscription Manager Web Service. </description>
+	<name>SafeOnline Notification Subscription Manager Web Service Definition</name>
+	<description> Contains WSDL for the SafeOnline Notification Subscription Manager Web Service. </description>
 	<build>
 		<plugins>
 			<plugin>
