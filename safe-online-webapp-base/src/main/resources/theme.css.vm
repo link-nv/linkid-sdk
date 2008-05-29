@@ -30,8 +30,8 @@ img.label,
  * White
  * ----- */
 
-#header a,
-#header ul.menu li a,
+#-header a,
+#-header ul.menu li a,
 input.submit {
 
     color:              white;
@@ -71,11 +71,15 @@ table.rich-table    tfoot tr {
 }
 
 
-table.listingTable,
 table.rich-table tbody tr th, table.rich-table tbody tr td,
 table.listingTable tbody tr th, table.listingTable tbody tr td {
 
     border-color:       #E8E7E7 !important;
+}
+table.listingTable, table.rich-table {
+
+    border-top-color:   #E8E7E7;
+    border-left-color:  #E8E7E7;
 }
 
 
@@ -87,6 +91,11 @@ table.listingTable tbody tr th, table.listingTable tbody tr td {
 #footer {
 
     color:              #CCC;
+}
+table.listingTable, table.rich-table {
+
+    border-right-color: #CCC;
+    border-bottom-color:#CCC;
 }
 
 
