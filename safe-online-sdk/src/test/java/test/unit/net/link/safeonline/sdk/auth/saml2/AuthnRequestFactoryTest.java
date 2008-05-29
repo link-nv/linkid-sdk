@@ -14,6 +14,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.security.KeyPair;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
@@ -55,12 +57,15 @@ public class AuthnRequestFactoryTest {
 		String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
 		Challenge<String> challenge = new Challenge<String>();
 		String destinationURL = "https://test.idp.com/entry";
+		String device = "device";
 
 		// operate
 		long begin = System.currentTimeMillis();
+		Set<String> devices = new HashSet<String>();
+		devices.add(device);
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
 				applicationName, keyPair, assertionConsumerServiceURL,
-				destinationURL, challenge, null);
+				destinationURL, challenge, devices);
 		long end = System.currentTimeMillis();
 
 		// verify

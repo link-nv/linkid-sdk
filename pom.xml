@@ -982,6 +982,11 @@
 					<artifactId>jboss-sar-maven-plugin</artifactId>
 					<version>${jboss-sar-maven-plugin.version}</version>
 					<extensions>true</extensions>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -992,6 +997,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-ear-plugin</artifactId>
 					<version>${maven-ear-plugin.version}</version>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -1007,6 +1017,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${maven-war-plugin.version}</version>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.cargo</groupId>
@@ -1022,6 +1037,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>${maven-jar-plugin.version}</version>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -1042,6 +1062,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-ejb-plugin</artifactId>
 					<version>${maven-ejb-plugin.version}</version>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
