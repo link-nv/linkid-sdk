@@ -55,10 +55,13 @@ function extractCss {
     }
 
     for file in "${css[@]}"; do
-        (( ! nolink )) \
-            && ln -f "$base/$webapp/css/style.css" "$file" \
-            || cp -f "$base/$webapp/css/style.css" "$file" \
-            && touch "$file"                        || return
+        if (( nolink )); then
+            cp -f "$base/$webapp/css/style.css" "$file"
+        else
+            ln -f "$base/$webapp/css/style.css" "$file"
+        fi
+
+        (( ! $? )) && touch "$file"                 || return
     done
 }
 
@@ -70,12 +73,15 @@ function extractHtml {
             cp "$base/$webapp/$file"{,~}            || return
         }
 
-        [[ -e "$base/$webapp/$file" ]] && \
-            { (( ! nolink )) \
-                && ln -f "$base/$webapp/$file" "$file" \
-                || cp -f "$base/$webapp/$file" "$file" \
-              || return
-            }
+        [[ -e "$base/$webapp/$file" ]] && {
+            if (( nolink )); then
+                cp -f "$base/$webapp/$file" "$file"
+            else
+                ln -f "$base/$webapp/$file" "$file"
+            fi
+
+            (( ! $? )) || return
+        }
 
         touch "$file"                               || return
     done < <(find . -name '*.xhtml')

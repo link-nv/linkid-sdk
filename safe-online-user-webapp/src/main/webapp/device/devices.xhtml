@@ -59,6 +59,7 @@
 						value="#{msgs.deviceRemove}" rendered="#{item.removable}" />
 				</h:column>
 				<h:column>
+					<f:facet name="header"><so:nbsp /></f:facet>
 					<h:commandLink action="#{devicesBean.updateDevice}" id="update"
 						value="#{msgs.deviceUpdate}" rendered="#{item.updatable}" />
 				</h:column>

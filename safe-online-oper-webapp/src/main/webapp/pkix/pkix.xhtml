@@ -5,6 +5,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:rich="http://richfaces.org/rich"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
@@ -19,7 +20,7 @@
 	<ui:define name="content">
 
 		<h:form>
-			<t:dataTable id="pkix-data" var="item" value="#{trustDomainList}"
+			<rich:dataTable id="pkix-data" var="item" value="#{trustDomainList}"
 				rows="10" preserveDataModel="false" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
@@ -32,16 +33,40 @@
 					<h:commandLink value="#{msgs.removeaction}"
 						action="#{trustDomain.removeTrustDomain}" />
 				</h:column>
-			</t:dataTable>
 
-			<t:dataScroller for="pkix-data" fastStep="10"
-				pageCountVar="pageCount" pageIndexVar="pageIndex"
-				styleClass="scroller" paginator="true" paginatorMaxPages="9">
-				<f:facet name="first">#{msgs.first}</f:facet>
-				<f:facet name="last">#{msgs.last}</f:facet>
-				<f:facet name="previous">#{msgs.previous}</f:facet>
-				<f:facet name="next">#{msgs.next}</f:facet>
-			</t:dataScroller>
+                <f:facet name="footer">
+                    <rich:datascroller for="pkix-data" pageIndexVar="pageIndex"
+                        pagesVar="pages" fastControls="hide">
+                        <f:facet name="first">
+                            <h:graphicImage value="/images/icons/control_start.png" />
+                        </f:facet>
+                        <f:facet name="first_disabled">
+                            <h:graphicImage value="/images/icons/control_start.png" />
+                        </f:facet>
+                        <f:facet name="previous">
+                            <h:graphicImage value="/images/icons/control_rewind.png" />
+                        </f:facet>
+                        <f:facet name="previous_disabled">
+                            <h:graphicImage value="/images/icons/control_rewind.png" />
+                        </f:facet>
+                        <f:facet name="pages">
+                            <h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+                        </f:facet>
+                        <f:facet name="next">
+                            <h:graphicImage value="/images/icons/control_fastforward.png" />
+                        </f:facet>
+                        <f:facet name="next_disabled">
+                            <h:graphicImage value="/images/icons/control_fastforward.png" />
+                        </f:facet>
+                        <f:facet name="last">
+                            <h:graphicImage value="/images/icons/control_end.png" />
+                        </f:facet>
+                        <f:facet name="last_disabled">
+                            <h:graphicImage value="/images/icons/control_end.png" />
+                        </f:facet>
+                    </rich:datascroller>
+                </f:facet>
+			</rich:dataTable>
 
 			<h:messages styleClass="error" />
 

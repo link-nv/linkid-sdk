@@ -38,7 +38,7 @@ input.submit {
 }
 
 
-#_content,
+#-content,
 table.listingTable  tbody tr,
 table.rich-table    tbody tr {
 
@@ -54,7 +54,7 @@ table.rich-table    tbody tr {
 table.listingTable  tbody tr:hover,
 table.rich-table    tbody tr:hover {
     
-    background-color:   #f9f9f9;
+    background-color:   #f0f0f0;
 }
 
 
@@ -63,7 +63,7 @@ table.rich-table    tbody tr:hover {
  * Bright Grey
  * ----------- */
 
-#_sidebox,
+#-sidebox,
 table.listingTable  tfoot tr,
 table.rich-table    tfoot tr {
 
@@ -71,14 +71,9 @@ table.rich-table    tfoot tr {
 }
 
 
-table tbody,
-table tfoot,
-    table.listingTable,
-    table.listingTable  tbody tr,
-table.rich-table,
-table tr.rich-table-row,
-table tr.rich-table-firstrow,
-table tr.rich-table-footer {
+table.listingTable,
+table.rich-table tbody tr th, table.rich-table tbody tr td,
+table.listingTable tbody tr th, table.listingTable tbody tr td {
 
     border-color:       #E8E7E7 !important;
 }
@@ -113,13 +108,14 @@ input.label:active,
  * ----------- */
 
 body {
+
 	background-color:   #333;
 }
 
 
 body,
-#header ul.menu li a:hover,
-#header ul.menu li.selected a,
+#-header ul.menu li a:hover,
+#-header ul.menu li.selected a,
     a:hover,
     #sidebox li a:hover,
     #sidebox li.active a,

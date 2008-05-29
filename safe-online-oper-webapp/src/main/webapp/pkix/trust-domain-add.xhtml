@@ -24,31 +24,37 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<table>
+            <table class="inner listingTable">
+                <colgroup />
+                <colgroup />
+
                 <tbody>
                     <tr>
-                        <td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
-                        <td><s:decorate>
-                            <h:inputText id="name" value="#{newTrustDomain.name}"
-                                required="true" />
-                        </s:decorate>
-                        <h:message for="name" styleClass="error" /></td>
+                        <th><h:outputLabel for="name" value="#{msgs.name}" /></th>
+                        <td>
+                            <s:decorate>
+                                <h:inputText id="name" value="#{newTrustDomain.name}"
+                                    required="true" />
+                            </s:decorate>
+                            <h:message for="name" styleClass="error" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th><h:outputText value="#{msgs.operatorPerformOCSPCheck}" /></th>
+                        <td><h:selectBooleanCheckbox id="performOcspCheck"
+                                value="#{newTrustDomain.performOcspCheck}" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th><h:outputText value="#{msgs.operatorOCSPCacheTimeout} (ms)" /></th>
+                        <td><h:inputText id="ocspCacheTimeOutMillis"
+                                value="#{newTrustDomain.ocspCacheTimeOutMillis}" required="true" />
+                        </td>
                     </tr>
                 </tbody>
 			</table>
-
-			<h:panelGrid columns="1">
-				<h:panelGroup>
-					<h:outputText value="#{msgs.operatorPerformOCSPCheck}" />
-					<h:selectBooleanCheckbox id="performOcspCheck"
-						value="#{newTrustDomain.performOcspCheck}" />
-				</h:panelGroup>
-				<h:panelGroup>
-					<h:outputText value="#{msgs.operatorOCSPCacheTimeout} (ms)" />
-					<h:inputText id="ocspCacheTimeOutMillis"
-						value="#{newTrustDomain.ocspCacheTimeOutMillis}" required="true" />
-				</h:panelGroup>
-			</h:panelGrid>
 
 			<h:commandButton action="#{trustDomain.add}" id="add"
 				value="#{msgs.addaction}" styleClass="submit" />

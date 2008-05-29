@@ -1,4 +1,4 @@
-/** 
+/** -*- coding: utf-8; mode: css; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:filetype=css:et:sw=4:ts=4:sts=4
  *
  * OLAS CSS Style:
  *      Element Positioning
@@ -18,40 +18,45 @@
  */
 
 html {
-	padding: 0;
-	margin: 0;
-	height: 100%;
-	width: 100%;
+	width:              100%;
+	height:             100%;
+	margin:             0;
+	padding:            0;
 }
 body {
-	margin: 0;
-	padding: 0;
-	text-align: center;
-	background: url(../images/fade.gif) repeat-x top center;
-	font: 14px/ 21px "Trebuchet MS", Verdana, Arial;
+	margin:             0;
+	padding:            0;
+	
+    background:         url('../images/fade.gif') repeat-x top center;
+
+	font:               14px/ 21px "Trebuchet MS", Verdana, Arial;
+	text-align:         center;
 }
-p,h1,h2,h3,h4,h5,h6,br {
-	margin: 0;
-	padding: 0;
-	clear: left;
+p, h1, h2, h3, h4, h5, h6, br {
+	margin:             0;
+	padding:            0;
+
+	clear:              left;
 }
 h1 {
-	font: 28px/ 42px "Trebuchet MS", Verdana, Arial;
-	margin-bottom: 21px;
+	margin-bottom:      21px;
+
+	font:               28px/ 42px "Trebuchet MS", Verdana, Arial;
 }
 h2 {
-    margin: 14px 0;
-	font: 21px/ 28px "Trebuchet MS", Verdana, Arial;
+    margin:             14px 0;
+
+	font:               21px/ 28px "Trebuchet MS", Verdana, Arial;
 }
 p {
-	margin-top: 14px;
-	padding-bottom: 7px;
+	margin-top:         14px;
+	padding-bottom:     7px;
 }
 a {
-	text-decoration: none;
+	text-decoration:    none;
 }
 a:hover {
-	border-bottom: 1px dotted black;
+	border-bottom:      1px dotted black;
 }
 
 
@@ -61,221 +66,260 @@ a:hover {
  */
 
 /*********************************************** HEADER CONTAINER **/
-#_header {
-	margin: 0 auto;
-	padding: 0;
-	height: 150px;
-	background: url(../images/header.gif) no-repeat left top;
-	width: 1000px;
-	display: block;
-	border: none;
+#-header {
+	display:            block;
+
+    width:              1000px;
+	height:             150px;
+	margin:             0 auto;
+	padding:            0;
+
+	background:         url('../images/header.gif') no-repeat left top;
+
+	border:             none;
 }
 
 /********************************************************* HEADER **/
 #header {
-	margin: 0;
-	padding: 25px 0 0;
-	width: 900px;
-	display: block;
-	height: 115px;
-	text-align: right;
+	display:            block;
+
+	width:              900px;
+	height:             115px;
+	margin:             0;
+	padding:            25px 0 0;
+
+	text-align:         right;
 }
 #header[id] {
-    height: 90px;
+    height:             90px;
 }
 #header form img {
-    border: 1px solid transparent;
-    margin-right: 5px;
+    margin-right:       5px;
+
+    border:             1px solid transparent;
 }
 #header span:hover img {
-    border: 1px solid white;
+    border:             1px solid white;
 }
 
 /**************************************************** HEADER MENU **/
-#header ul.menu {
-	margin: 0;
-	padding: 0;
-	padding-right: 25px;
-	float: right;
-	display: block;
-	width: 750px;
-	height: 35px;
-	list-style: none;
+#-header ul.menu {
+	display:            block;
+	float:              right;
+
+	width:              750px;
+	height:             35px;
+	margin:             0;
+	padding:            0;
+	padding-right:      25px;
+
+	list-style:         none;
 }
 
-#header ul.menu li {
-	margin: 0;
-	padding: 0;
-	float: left;
-	display: inline;
-	width: 150px;
-	height: 35px;
-	background: url(../images/tab_unselected.gif) top right;
+#-header ul.menu li {
+	display:            inline;
+	float:              left;
+
+	width:              150px;
+	height:             35px;
+	margin:             0;
+	padding:            0;
+
+	background:         url('../images/tab_unselected.gif') top right;
 }
 
-#header ul.menu li:hover {
-	background: url(../images/tab_hover.gif);
+#-header ul.menu li:hover {
+	background:         url('../images/tab_hover.gif');
 }
 
-#header ul.menu li.selected {
-	background: url(../images/tab_selected.gif);
+#-header ul.menu li.selected {
+	background:         url('../images/tab_selected.gif');
 }
 
-#header ul.menu li a {
-	margin: 0;
-	padding: 7px;
-	display: block;
-	width: 136px;
-	height: 21px;
-	text-decoration: none;
-	font-weight: bold;
+#-header ul.menu li a {
+	display:            block;
+
+	width:              136px;
+	height:             21px;
+	margin:             0;
+	padding:            7px;
+
+	font-weight:        bold;
+	text-decoration:    none;
 }
 
-#header ul.menu li.selected a {
-	padding: 10px 7px 4px 7px;
+#-header ul.menu li.selected a {
+	padding:            10px 7px 4px 7px;
 }
 
-#header ul.menu li a:hover {
-	text-decoration: none;
-	border: none;
-	font-weight: bold;
+#-header ul.menu li a:hover {
+	border:             none;
+
+	font-weight:        bold;
+	text-decoration:    none;
 }
 
 /********************************************** CONTENT CONTAINER **/
-#_content {
-	margin: 0 auto;
-	padding: 0;
-	width: 100%;
-	display: block;
-	text-align: center;
+#-content {
+	display:            block;
+
+	width:              100%;
+	margin:             0 auto;
+	padding:            0;
+
+	text-align:         center;
 }
 
 /******************************************************** CONTENT **/
 #content {
-	margin: 0 auto;
-	padding: 25px 0;
-	width: 900px;
-	min-height: 350px;
-	height: auto;
-	display: block;
-	text-align: left;
+	display:            block;
+
+	width:              900px;
+	height:             auto;
+	min-height:         350px;
+	margin:             0 auto;
+	padding:            25px 0;
+
+	text-align:         left;
 }
 * html #content {
-	height: 350px;
+	height:             350px;
 }
 
 /********************************************************* FOOTER **/
 #footer {
-	margin: 0 auto;
-	padding: 0;
-	padding-top: 50px;
-	height: 50px;
-	background: url(../images/footer.gif) left top;
-	width: 100%;
-	display: block;
-	clear: both;
+	display:            block;
+	clear:              both;
+
+	width:              100%;
+	height:             50px;
+	margin:             0 auto;
+	padding:            0;
+	padding-top:        50px;
+
+	background:         url('../images/footer.gif') left top;
 }
 
 /********************************************* SIDE BOX CONTAINER **/
-#_sidebox {
-	margin: 0;
-	padding: 0;
-	float: right;
-	width: 300px;
-	text-align: left;
-	display: block;
+#-sidebox {
+	display:            block;
+	float:              right;
+
+	width:              300px;
+	margin:             0;
+	padding:            0;
+
+	text-align:         left;
 }
 
 /******************************************************* SIDE BOX **/
 #sidebox {
-    margin: 0 10%;
-    width: 100%;
-	padding: 0;
-	margin-top: -11px;
+    width:              100%;
+    margin:             0 10%;
+	margin-top:         -11px;
+	padding:            0;
 }
 #sidebox[id] {
-    width: 80%;
+    width:              80%;
 }
 
 /****************************************************** SIDE MENU **/
 #sidebox ul {
-	list-style: none;
-	padding: 0;
-	margin: 14px 0 14px 0;
-	border-top: 1px dotted black;
-	display: block;
-	clear: both;
-	float: left;
-	width: 100%;
+	display:            block;
+	float:              left;
+	clear:              both;
+
+	width:              100%;
+	margin:             14px 0 14px 0;
+	padding:            0;
+
+	border-top:         1px dotted black;
+
+	list-style:         none;
 }
 #sidebox ul li {
-	margin: 0;
-	padding: 0;
-	display: block;
-	width: 100%;
-	height: 41px;
-	border-bottom: 1px dotted black;
+	display:            block;
+
+	width:              100%;
+	height:             41px;
+	margin:             0;
+	padding:            0;
+
+	border-bottom:      1px dotted black;
 }
 #sidebox ul li a {
-	background: url(../images/icons/bullet_go.gif) no-repeat;
-	background-position: 10px 12px;
-	text-decoration: none;
-	height: 21px;
-	display: block;
-	padding: 10px;
-	padding-left: 30px;
+	display:            block;
+
+	height:             21px;
+	padding:            10px;
+	padding-left:       30px;
+
+	background:         url('../images/icons/bullet_go.gif') no-repeat;
+	background-position:10px 12px;
+
+	text-decoration:    none;
 }
 #sidebox ul li a:hover {
-	border: none;
+	border:             none;
 }
 #sidebox ul li.active a {
-	border: none;
+	border:             none;
 }
 
 /******************************************************* TIMELINE **/
 ul.timeline {
-	padding: 0;
-    margin: 0;
-	background: url(../images/timeline.gif) top left repeat;
-	display: block;
-	height: 70px;
-	list-style: none;
-	text-align: center;
+	display:            block;
+
+	height:             70px;
+    margin:             0;
+	padding:            0;
+
+	background:         url('../images/timeline.gif') top left repeat;
+
+	list-style:         none;
+
+	text-align:         center;
 }
 ul.timeline[class] {
-    height: 35px;
+    height:             35px;
 }
 ul.timeline li {
-	margin: 0 auto;
-	padding: 0;
-	padding-top: 35px;
-	padding-left: 5px;
-	padding-right: 5px;
-	display: inline;
-	float: left;
-	text-align: center;
-	width: 100px;
-	height: 70px;
-	background: url(../images/timeline_other.gif) top center no-repeat;
-	font: 10px/ 15px "Trebuchet MS", Verdana, Arial;
+	display:            inline;
+	float:              left;
+
+	width:              100px;
+	height:             70px;
+	margin:             0 auto;
+	padding:            0;
+	padding-top:        35px;
+	padding-left:       5px;
+	padding-right:      5px;
+
+	background:         url('../images/timeline_other.gif') top center no-repeat;
+
+	font:               10px/ 15px "Trebuchet MS", Verdana, Arial;
+	text-align:         center;
 }
 ul.timeline>li {
-    height: 35px;
+    height:             35px;
 }
 
 ul.timeline li.active {
-	background: url(../images/timeline_current.gif) top center no-repeat;
+	background:         url('../images/timeline_current.gif') top center no-repeat;
 }
 ul.timeline li.start {
-	width: 50px;
-    height: 100%;
-	background: url(../images/timeline_fade_in.gif) top right repeat-y;
+	width:              50px;
+    height:             100%;
+
+	background:         url('../images/timeline_fade_in.gif') top right repeat-y;
 }
 ul.timeline li.end {
-    width: 50px;
-    height: 100%;
-	float: right;
-	background: url(../images/timeline_fade_out.gif) top left repeat-y;
+	float:              right;
+
+    width:              50px;
+    height:             100%;
+
+	background:         url('../images/timeline_fade_out.gif') top left repeat-y;
 }
 
 
@@ -286,72 +330,86 @@ ul.timeline li.end {
 
 /************************************************* ERROR MESSAGES **/
 span.error {
-	clear: left;
-	display: block;
-	background: pink;
-	background-image: url(../images/icons/exclamation.png);
-	background-repeat: no-repeat;
-	background-position: 5px 5px;
-	padding: 3px;
-	padding-left: 25px;
-	width: 273px;
-	border: 1px solid red;
-	margin: 0;
-	margin-left: 150px;
+	display:            block;
+	clear:              left;
+
+	width:              273px;
+	margin:             0;
+	margin-left:        150px;
+	padding:            3px;
+	padding-left:       25px;
+
+	border:             1px solid red;
+	background:         pink url('../images/icons/exclamation.png') no-repeat 5px 5px;
 }
 span.error input {
-	clear: none;
+	clear:              none;
 }
 span.error_message {
-	clear: left;
-	display: block;
-	background: pink;
-	background-image: url(../images/icons/exclamation.png);
-	background-repeat: no-repeat;
-	background-position: 5px 5px;
-	padding: 3px;
-	padding-left: 25px;
-	width: 80%;
-	border: 1px solid red;
-	margin: 0;
-	margin-left: 150px;
+	display:            block;
+	clear:              left;
+
+	width:              80%;
+	margin:             0;
+	margin-left:        150px;
+	padding:            3px;
+	padding-left:       25px;
+
+	border:             1px solid red;
+	background:         pink url('../images/icons/exclamation.png') no-repeat 5px 5px;
 }
 .error_field {
-	color: red !important;
+	color:              red !important;
 }
 
 /************************************************ UTILITY CLASSES **/
 hr.float_fix {
-	display: block;
-	clear: both;
-	margin: 0;
-	visibility: hidden;
+	visibility:         hidden;
+
+	display:            block;
+	clear:              both;
+
+	margin:             0;
 }
 .right {
-    text-align: right;
+    text-align:         right;
 }
 .padded {
-    padding: 7px !important;
+    padding:            7px !important;
 }
 .inner {
-    width: 500px;
-    margin: auto;
+    width:              500px;
+    margin-left:        27px;                       /* auto margin doesn't center in IE. */
 }
 .center {
-    float: none;
-    text-align: center;
+    float:              none;
+
+    text-align:         center;
 }
 .noborders, .noborders * {
-    border: none !important;
+    border:             none !important;
+}
+.rich-panel {
+    width:              575px;
 }
 
 /************************************************* USAGE AGREEMENT **/
 .usage_agreement {
-	width: 550px;
-	padding: 10px;
-	height: 200px;
-	overflow: auto;
-	border: 1px solid black;
+	width:              550px;
+	height:             200px;
+	padding:            10px;
+	overflow:           auto;
+
+	border:             1px solid black;
+}
+.usage_agreement, .white_space {
+    font-family:        fixed;
+
+	white-space:        pre-wrap;                   /* css-3 */
+	white-space:        -moz-pre-wrap !important;   /* Mozilla, since 1999 */
+	white-space:        -pre-wrap;                  /* Opera 4-6 */
+	white-space:        -o-pre-wrap;                /* Opera 7 */
+	word-wrap:          break-word;
 }
 
 /********************************************* SAFE ONLINE TAGLIB **/
@@ -360,11 +418,12 @@ hr.float_fix {
 .so-nameoutput {
 }
 .so-nameoutput-compounded {
-	font-weight: bold;
+	font-weight:        bold;
 }
 .so-nameoutput-member {
-	font-style: italic;
-	margin-left: 15px;
+	margin-left:        15px;
+
+	font-style:         italic;
 }
 
 /* ==================================================================
@@ -372,70 +431,73 @@ hr.float_fix {
  */
 
 label {
-	padding: 0 25px 0 0;
-	background: url(../images/icons/16-arrow-down.gif) no-repeat;
-	background-position: 5px 6px;
-	width: 150px;
-	text-align: right;
-	vertical-align: top;
-    /* Prevent labels with no content from collapsing. */
-    border-bottom: 1px solid transparent;
-    float: left;
+    float:              left;
+
+	width:              150px;
+	padding:            0 25px 0 0;
+
+    border-bottom:      1px solid transparent;      /* Prevent empty label collapsing. */
+	background:         url('../images/icons/16-arrow-down.gif') no-repeat 5px 6px;
+
+	text-align:         right;
+	vertical-align:     top;
 }
 label[for] {
-	width: 125px;  /* padding counts toward width in non-IE browsers */
-    display: block;
-    clear: left;
+    display:            block;
+    clear:              left;
+
+	width:              125px;                      /* Non-IE box-model */
 }
 input,select,textarea {
-	margin: 0;
-	padding: 0;
-	margin-right: 5px;
-	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana,
-		sans-serif;
+	margin:             0;
+	margin-right:       5px;
+	padding:            0;
+
+	font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
 }
-input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label
-	{
-	margin: 4px 0 15px 0;
-    vertical-align: bottom;
-	width: 300px;
-	border: 0;
-	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana,
-		sans-serif;
+input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label {
+	width:              300px;
+	margin:             4px 0 15px 0;
+
+	border:             0;
+
+	font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
+    vertical-align:     bottom;
 }
 input.label,textarea.label {
-	border-bottom: 1px dotted black;
+	border-bottom:      1px dotted black;
 }
 input.label[name],input.submit[name],select.label[name],textarea.label[name],input.radio[name],.af_inputFile[class],img.label[src] {
-    float: left;
+    float:              left;
 }
 input.radio {
-	width: auto;
+	width:              auto;
 }
 input.label:hover,.so-input-text:hover, input.label:focus {
-	border-bottom-style: solid;
+	border-bottom-style:solid;
 }
 img.label {
-	width: auto;
+	width:              auto;
 }
 select.label, select.label:hover {
-	border: none;
+	border:             none;
 }
 input.submit {
-	margin: 15px 25px 7px 0;
-	width: 125px;
-	height: 25px;
-	background: url(../images/button.jpg) no-repeat;
-	border: none;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	font-weight: bold;
-	text-align: center;
-	display: inline;
+	display:            inline;
+
+	width:              125px;
+	height:             25px;
+	margin:             15px 25px 7px 0;
+
+	border:             none;
+	background:         url('../images/button.jpg') no-repeat;
+
+	font-family:        bold 12px Verdana, Arial, Helvetica, sans-serif;
+	text-align:         center;
 }
 textarea {
-	border: 0;
-	border-left: 1px dotted black;
+	border:             0;
+	border-left:        1px dotted black;
 }
 
 
@@ -444,155 +506,88 @@ textarea {
  * Section: Tables
  */
 
+/*table.rich-table td {
+    width:              auto;
+}*/
 table, .fullwidth {
-    width: 575px;
+    width:              575px;
 }
 table {
-	border: none;
-    border-collapse: collapse;
-	margin: 0;
-	clear: left;
-	float: none;
-	display: block;
-	padding: 0;
-}
-table table {
-    margin: auto;
-}
+	float:              none;
+	clear:              left;
 
+	margin:             0;
+	padding:            0;
+
+    border:             0 solid black;
+    border-width:       0 2px 2px 1px;
+    border-collapse:    collapse;
+}
+table, tr, td, th {
+	font-family:        "Trebuchet MS", Verdana, Arial !important;
+    font-size:          14px !important;
+}
 table colgroup {
-    width: inherit;
+    width:              inherit;
 }
-table tbody, table tfoot {
-    border: 0 solid black !important;
-    border-width: 0 2px 2px 0 !important;
-}
-table.listingTable td,
-table.scroller td {
-    /* Tables with thead/tbody don't like to get wide */
-    /* Forced column size will act as a maximum size but distribute available width in a balanced manner. */
-    /* width: 575px !important; */
-}
-table.rich-table td {
-    width: auto;
-}
-table.listingTable, table.rich-table {
-    border-bottom: 1px solid black;
-}
-table.rich-table tr, table.listingTable tbody tr {
-    border: 1px solid black !important;
-    border-style: solid solid none !important;
-}
-table.rich-table thead tr th, table.rich-table thead tr td, table.styled thead tr td,
+table.rich-table thead tr th, table.rich-table thead tr td,
 table.listingTable thead tr th, table.listingTable thead tr td {
-	margin: 0;
-	padding: 5px;
-	border: none;
-	text-align: left;
-	font-weight: bold;
+	margin:             0;
+	padding:            5px;
+
+	border:             none;
+
+	font-weight:        bold;
+	text-align:         left;
 }
-table.listingTable tbody, table.rich-table tbody {
-	padding: 5px;
-}
-table.listingTable tbody tr, table.rich-table tbody tr {
-	margin: 0;
-	padding: 0;
-}
-table.listingTable tbody tr td, table.rich-table tbody tr td {
-	margin: 0;
-	padding: 5px;
-	border: none;
+table.rich-table tbody tr th, table.rich-table tbody tr td,
+table.listingTable tbody tr th, table.listingTable tbody tr td {
+	margin:             0;
+	padding:            5px;
+
+	border:             1px solid black;
+    border-style:       solid none none;
 }
 table.listingTable tfoot tr, table.rich-table tfoot tr {
-	padding: 0;
-	float: none;
-	margin: 0;
+	float:              none;
+
+	padding:            0;
+	margin:             0;
 }
-div.dr-dscr table, div.dr-dscr table tbody tr td, div.dr-dscr table tbody tr:hover {
-	border: none;
-	background: none;
-	margin: 0;
-	padding: 5px;
-	text-align: center;
+div.dr-dscr {
+    width:              100%;
+
+    text-align:         center;
 }
-.listingTable, .listingTable_Row1, .listingTable_Row2,
-.rich-table, .rich-table-caption,
-.rich-table-header, .rich-table-header-continue, .rich-table-subheader,
-.rich-table-headercell, .rich-table-subheadercell, .rich-table-cell,
-.rich-table-footer, .rich-table-footer-continue, .rich-table-subfooter,
-.rich-table-footercell, .rich-table-subfootercell,
-.rich-table-row, .rich-table-firstrow {
-    border: none;
-	font-family: inherit;
-	font-size: inherit;
-	background-color: inherit;
-	color: inherit;
+div.dr-dscr table {
+    width:              auto;
+    margin:             auto;
+}
+div.dr-dscr * {
+	margin:             0;
+	padding:            5px;
+
+	border:             none;
+	background:         none;
 }
 /* Make links in tables easier to click. */
 table.listingTable td a, table.listingTable th a, table.rich-table td a {
-    display:block;
-    padding-bottom: 1px;
-    width: inherit;
-    height: inherit;
+    display:            block;
+
+    width:              inherit;
+    height:             inherit;
+    padding-bottom:     1px;
 }
 a.noblock {
-    display: inline;
-    width: auto;
-    height: auto;
+    display:            inline;
+
+    width:              auto;
+    height:             auto;
 }
 table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table td a:hover {
-    border:none;
-    text-decoration: underline;
-}
-.rich-datascr-button   
-	    , .rich-datascr-ctrls-separator        , .rich-datascr-act        ,
-	.rich-datascr-inact	       , .rich-datascr-button-dsbld {
-	font-family: inherit;
-	font-size: inherit;
-	background-color: inherit;
-	color: inherit;
-	border-style: none;
-}
-.rich-datascr {
-	width: 250px;
-	margin-left: auto;
-	margin-right: auto;
-}
-.rich-dtascroller-table {
-	text-align: center;
-	width: 100%;
-}
+    border:             none;
 
-.rich-dtascroller-table td {
-    width: 20% !important;
-}
-.rich-tabpanel-content, .rich-tabpanel, .rich-panel-header, .rich-panel-body {
-    width: auto;
-	overflow: auto;
-	font-family: inherit;
-	font-size: inherit;
-}
-.rich-panel {
-    width: 575px;
-}
-.rich-tabpanel-content {
-	height: 200px;
-}
-.usage_agreement,.white_space {
-	white-space: pre-wrap; /* css-3 */
-	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
-	white-space: -pre-wrap; /* Opera 4-6 */
-	white-space: -o-pre-wrap; /* Opera 7 */
-	word-wrap: break-word;
-	height: inherit;
-    font-family: fixed;
-}
-table.name_value {
-	height: inherit;
-}
-table.name_value th {
-	text-align: right;
-	padding-right: 5px;
+    text-decoration:    underline;
 }
 
 
@@ -604,7 +599,7 @@ table.name_value th {
  * Replace dot by star to enable debug:     ./
 
 * {
-	border: 1px solid red !important;
+	border:             1px solid red !important;
 }
 
 /* <End Debug Toggle>                       */
