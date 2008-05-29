@@ -214,7 +214,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.trustedCertificates.put(demoTicketCertificate,
 				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 		this.registeredApplications.add(new Application(
-				DEMO_TICKET_APPLICATION_NAME, "owner", null, null, getLogo("/eticket-small.png"),
+				DEMO_TICKET_APPLICATION_NAME, "owner", null, null, getLogo(),
 				null, true, true, demoTicketCertificate, false,
 				IdScopeType.SUBSCRIPTION));
 
@@ -277,7 +277,7 @@ public class DemoStartableBean extends AbstractInitBean {
 				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 
 		this.registeredApplications.add(new Application(
-				DEMO_PAYMENT_APPLICATION_NAME, "owner", null, null, getLogo("/ebank-small.png"),
+				DEMO_PAYMENT_APPLICATION_NAME, "owner", null, null, getLogo(),
 				null, true, true, demoPaymentCertificate, true,
 				IdScopeType.SUBSCRIPTION));
 
