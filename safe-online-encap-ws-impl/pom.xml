@@ -12,9 +12,7 @@
 	<artifactId>safe-online-encap-ws-impl</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>
-		SafeOnline Encap Dummy Web Services Implementation
-	</name>
+	<name>SafeOnline Encap Dummy Web Services Implementation</name>
 	<description>
 		Contains the SafeOnline Encap Dummy Web Services
 		Implementation.

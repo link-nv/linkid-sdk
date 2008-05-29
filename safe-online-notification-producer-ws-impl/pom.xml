@@ -11,8 +11,7 @@
 	<artifactId>safe-online-notification-producer-ws-impl</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline Notification Producer Web Service
-		Implementation</name>
+	<name>SafeOnline Notification Producer Web Service Implementation</name>
 	<description> Contains the Notification Producer Web Service
 		Implementation. </description>
 	<dependencies>

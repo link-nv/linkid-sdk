@@ -14,10 +14,7 @@
 	</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>
-		SafeOnline Notification Consumer Web Service Abstract
-		Implementation
-	</name>
+	<name>SafeOnline Notification Consumer Web Service Abstract Implementation</name>
 	<description>
 		Contains the Notification Consumer Attribute Web Service
 		Abstract Implementation.

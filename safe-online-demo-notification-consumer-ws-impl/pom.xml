@@ -14,9 +14,7 @@
 	</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>
-		SafeOnline Demo Notification Consumer Web Service Implementation
-	</name>
+	<name>SafeOnline Demo Notification Consumer Web Service Implementation</name>
 	<description>
 		Contains the Notification Consumer Web Service Implementation
 		for the Demos.

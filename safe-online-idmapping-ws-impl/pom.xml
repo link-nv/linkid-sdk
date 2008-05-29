@@ -12,9 +12,7 @@
 	<artifactId>safe-online-idmapping-ws-impl</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>
-		SafeOnline Identifier Mapping Web Service Implementation
-	</name>
+	<name>SafeOnline Identifier Mapping Web Service Implementation</name>
 	<description>
 		Contains the SafeOnline Identifier Mapping Web Service
 		Implementation.
