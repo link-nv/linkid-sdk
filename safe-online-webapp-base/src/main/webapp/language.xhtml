@@ -8,34 +8,27 @@
 	<ui:define name="content">
 		<h1>#{msgs.chooseLanguage}</h1>
 		<h:form>
-            <table class="listingTable">
+            <table class="center listingTable">
                 <colgroup />
 
                 <tbody>
-                    <tr><th><h:commandLink id="en" action="#{language.goBack}"
+                    <tr>
+                        <td>
+                            <h:commandLink id="en" action="#{language.goBack}" class="padded"
                                 actionListener="#{language.selectLanguage}">
-                                <table class="noborders">
-                                    <colgroup />
-                                    <colgroup/>
-
-                                    <tr>
-                                        <td class="right"><h:graphicImage value="/images/langs/en.gif" /></td>
-                                        <td>#{msgs.languageEnglish}</td>
-                                    </tr>
-                                </table>
-                    </h:commandLink></th></tr>
-                    <tr><th><h:commandLink id="nl" action="#{language.goBack}"
+                                <h:graphicImage value="/images/langs/en.gif" />
+                                #{msgs.languageEnglish}
+                            </h:commandLink>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            <h:commandLink id="nl" action="#{language.goBack}" class="padded"
                                 actionListener="#{language.selectLanguage}">
-                                <table class="noborders">
-                                    <colgroup />
-                                    <colgroup />
-
-                                    <tr>
-                                        <td class="right"><h:graphicImage value="/images/langs/nl.gif" /></td>
-                                        <td>#{msgs.languageDutch}</td>
-                                    </tr>
-                                </table>
-                    </h:commandLink></th></tr>
+                                <h:graphicImage value="/images/langs/nl.gif" />
+                                #{msgs.languageDutch}
+                            </h:commandLink>
+                        </td>
+                    </tr>
                 </tbody>
 			</table>
 		</h:form>
