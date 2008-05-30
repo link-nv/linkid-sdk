@@ -38,7 +38,7 @@ public class PcscTest {
 		CardTerminals cardTerminals = terminalFactory.terminals();
 		CardTerminal cardTerminal = cardTerminals.list().get(0);
 		Card card = cardTerminal.connect("*");
-		CardChannel channel = card.getBasicChannel();
+		card.getBasicChannel();
 	}
 
 	

@@ -69,7 +69,8 @@ public class AccountingBean implements Accounting {
 	@EJB
 	private StatisticService statisticService;
 
-	@DataModel(ACCOUNTING_APPLICATION_LIST_NAME)
+	@SuppressWarnings("unused")
+    @DataModel(ACCOUNTING_APPLICATION_LIST_NAME)
 	private List<ApplicationEntity> applicationList;
 
 	@DataModelSelection(ACCOUNTING_APPLICATION_LIST_NAME)
@@ -77,14 +78,16 @@ public class AccountingBean implements Accounting {
 	@In(required = false)
 	private ApplicationEntity selectedApplication;
 
-	@DataModel(ACCOUNTING_STAT_LIST_NAME)
+	@SuppressWarnings("unused")
+    @DataModel(ACCOUNTING_STAT_LIST_NAME)
 	private List<StatisticEntity> statList;
 
 	@DataModelSelection(ACCOUNTING_STAT_LIST_NAME)
 	@Out(value = "selectedStat", required = false)
 	private StatisticEntity selectedStat;
 
-	@Out(value = "chartURL", required = false)
+	@SuppressWarnings("unused")
+    @Out(value = "chartURL", required = false)
 	private String chartURL;
 
 	@Remove

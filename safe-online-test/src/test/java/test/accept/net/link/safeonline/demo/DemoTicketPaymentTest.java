@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.webapp.AcceptanceTestManager;
 import net.link.safeonline.webapp.PageUtils;
 import net.link.safeonline.webapp.WebappConstants;
@@ -124,7 +124,7 @@ public class DemoTicketPaymentTest extends TestCase {
 		demoTicketMain.open();
 
 		AuthMain authMain = demoTicketMain.login();
-		authMain.selectDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+		authMain.selectDevice(BeIdConstants.BEID_DEVICE_ID);
 		authMain.next();
 		PageUtils.waitForRedirect(this.acceptanceTestManager,
 				AuthSubscription.PAGE_NAME);
@@ -147,7 +147,7 @@ public class DemoTicketPaymentTest extends TestCase {
 
 		// subscribe demo-payment
 		authMain = demoPaymentEntry.confirm();
-		authMain.selectDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+		authMain.selectDevice(BeIdConstants.BEID_DEVICE_ID);
 		authMain.next();
 		PageUtils.waitForRedirect(this.acceptanceTestManager,
 				AuthSubscription.PAGE_NAME);

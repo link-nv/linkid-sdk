@@ -13,12 +13,12 @@ import net.link.safeonline.demo.mandate.MandateLogon;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
-import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.web.Session;
 
 @Stateful
 @Name("mandateLogon")
@@ -34,15 +34,14 @@ public class MandateLogonBean extends AbstractMandateDataClientBean implements
 
 	public String login() {
 		this.log.debug("login");
-		String result = SafeOnlineLoginUtils.login(this.facesMessages,
-				this.log, "login");
+		String result = SafeOnlineLoginUtils.login(this.log, "login");
 		return result;
 	}
 
 	public String logout() {
 		this.log.debug("logout");
 		this.sessionContext.set("username", null);
-		Seam.invalidateSession();
+		Session.getInstance().invalidate();
 		return "logout-success";
 	}
 

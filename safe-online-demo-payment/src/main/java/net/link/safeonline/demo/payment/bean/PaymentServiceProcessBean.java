@@ -25,12 +25,12 @@ import net.link.safeonline.demo.payment.entity.UserEntity;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
-import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.web.Session;
 
 @Stateful
 @Name("paymentServiceProcess")
@@ -81,8 +81,7 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
 
 	public String authenticate() {
 		this.log.debug("authenticate");
-		String result = SafeOnlineLoginUtils.login(this.facesMessages,
-				this.log, "cards.seam");
+		String result = SafeOnlineLoginUtils.login(this.log, "cards.seam");
 		return result;
 	}
 
@@ -124,7 +123,7 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
 		this.log.debug("done. redirect to #0", this.target);
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		Seam.invalidateSession();
+        Session.getInstance().invalidate();
 		try {
 			externalContext.redirect(this.target);
 		} catch (IOException e) {

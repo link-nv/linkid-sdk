@@ -8,16 +8,22 @@ p=${PWD##*/}
 emit "Converting JAR dependencies on safe-online projects to source dependencies" --
     sed -i ${nonGnuSed:+''} '/-client/ ! { /M2_REPO.*\/'"$p"'\// { s,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; } }' */.classpath
     for pp in */.classpath; do
-        IFS=$'\n' src=($(grep -F 'kind="src"' "$pp" | cut -d'"' -f4)); unset IFS
+        IFS=$'\n' srcs=($(grep -F 'kind="src"' "$pp" | cut -d'"' -f4)); unset IFS
         while read -r; do
             line=$REPLY
 
-            [[ $line = *'-client'* ]] && \
+            if [[ $line = *'-client'* ]]; then
+                curSrc=$(sed '/'"$p"'/ { s,.*M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/.*,/\1, }' <<< "$line")
+                for src in "${srcs[@]}"; do
+                    [[ $src = $curSrc ]] && continue 2
+                done
+
                 line=$(sed '/'"$p"'/ { s,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/ }' <<< "$line")
+            fi
 
             echo "$line"
-        done < "$pp" > "$pp~"
-        #mv -f "$pp~" "$pp"
+        done <<< "$(<"$pp")" > "$pp~"
+        mv -f "$pp~" "$pp"
     done
 emit -$?
 

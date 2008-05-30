@@ -26,7 +26,6 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
 /**
@@ -82,14 +81,12 @@ public class SafeOnlineLoginUtils {
 	 * 
 	 * TODO: document all context parameters
 	 * 
-	 * @param facesMessages
 	 * @param log
 	 * @param targetPage
 	 *            the page to which the user should be redirected after login.
 	 */
 	@SuppressWarnings("unchecked")
-	public static String login(FacesMessages facesMessages, Log log,
-			String targetPage) {
+	public static String login(Log log, String targetPage) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 
@@ -121,7 +118,7 @@ public class SafeOnlineLoginUtils {
 		X509Certificate certificate;
 		if (null != keyStoreResource || null != keyStoreFile) {
 			if (null != keyStoreResource && null != keyStoreFile)
-				throw new RuntimeException(
+                throw new RuntimeException(
 						"both KeyStoreResource and KeyStoreFile are defined");
 			String keyStorePassword = getInitParameter(externalContext,
 					KEY_STORE_PASSWORD_INIT_PARAM);
@@ -133,15 +130,16 @@ public class SafeOnlineLoginUtils {
 						.getContextClassLoader().getResourceAsStream(
 								keyStoreResource);
 				if (null == keyStoreInputStream)
-					throw new RuntimeException("resource not found: "
+                    throw new RuntimeException("resource not found: "
 							+ keyStoreResource);
-			} else
-				try {
+			} else {
+                try {
 					keyStoreInputStream = new FileInputStream(keyStoreFile);
 				} catch (FileNotFoundException e) {
 					throw new RuntimeException("file not found: "
 							+ keyStoreFile);
 				}
+            }
 			PrivateKeyEntry privateKeyEntry = KeyStoreUtils
 					.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
 							keyStorePassword, keyStorePassword);
@@ -210,7 +208,7 @@ public class SafeOnlineLoginUtils {
 			String parameterName) {
 		String initParameter = context.getInitParameter(parameterName);
 		if (null == initParameter)
-			throw new RuntimeException("missing context-param in web.xml: "
+            throw new RuntimeException("missing context-param in web.xml: "
 					+ parameterName);
 		return initParameter;
 	}
@@ -218,8 +216,9 @@ public class SafeOnlineLoginUtils {
 	private static String getInitParameter(ExternalContext context,
 			String parameterName, String defaultValue) {
 		String initParameter = context.getInitParameter(parameterName);
-		if (null == initParameter)
-			initParameter = defaultValue;
+		if (null == initParameter) {
+            initParameter = defaultValue;
+        }
 		return initParameter;
 	}
 }

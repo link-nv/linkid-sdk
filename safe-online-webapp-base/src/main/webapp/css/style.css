@@ -66,7 +66,7 @@ a:hover {
  */
 
 /*********************************************** HEADER CONTAINER **/
-#-header {
+#c-header {
 	display:            block;
 
     width:              1000px;
@@ -103,7 +103,7 @@ a:hover {
 }
 
 /**************************************************** HEADER MENU **/
-#-header ul.menu {
+#c-header ul.menu {
 	display:            block;
 	float:              right;
 
@@ -116,7 +116,7 @@ a:hover {
 	list-style:         none;
 }
 
-#-header ul.menu li {
+#c-header ul.menu li {
 	display:            inline;
 	float:              left;
 
@@ -128,15 +128,15 @@ a:hover {
 	background:         url('../images/tab_unselected.gif') top right;
 }
 
-#-header ul.menu li:hover {
+#c-header ul.menu li:hover {
 	background:         url('../images/tab_hover.gif');
 }
 
-#-header ul.menu li.selected {
+#c-header ul.menu li.selected {
 	background:         url('../images/tab_selected.gif');
 }
 
-#-header ul.menu li a {
+#c-header ul.menu li a {
 	display:            block;
 
 	width:              136px;
@@ -148,11 +148,11 @@ a:hover {
 	text-decoration:    none;
 }
 
-#-header ul.menu li.selected a {
+#c-header ul.menu li.selected a {
 	padding:            10px 7px 4px 7px;
 }
 
-#-header ul.menu li a:hover {
+#c-header ul.menu li a:hover {
 	border:             none;
 
 	font-weight:        bold;
@@ -160,7 +160,7 @@ a:hover {
 }
 
 /********************************************** CONTENT CONTAINER **/
-#-content {
+#c-content {
 	display:            block;
 
 	width:              100%;
@@ -201,7 +201,7 @@ a:hover {
 }
 
 /********************************************* SIDE BOX CONTAINER **/
-#-sidebox {
+#c-sidebox {
 	display:            block;
 	float:              right;
 

@@ -29,7 +29,7 @@ public class SmartCardMessages {
 		public String getKey() {
 			return this.key;
 		}
-	};
+	}
 
 	private ResourceBundle messages;
 

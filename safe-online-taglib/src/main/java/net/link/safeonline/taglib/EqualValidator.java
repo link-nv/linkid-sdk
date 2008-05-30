@@ -28,10 +28,9 @@ public class EqualValidator implements Validator {
 
         String text = (String) input.getValue();
 
-        if (text == null) {
-            if (confirm == null)
-                return;
-        } else if (text.equals(confirm))
+        if (text == null || confirm == null)
+            return;
+        else if (text.equals(confirm))
             return;
 
         ResourceBundle messages = TaglibUtil.getResourceBundle(context);

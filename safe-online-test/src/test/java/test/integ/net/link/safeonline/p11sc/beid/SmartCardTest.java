@@ -188,9 +188,8 @@ public class SmartCardTest {
 		}
 		assertNotNull(existingDriverLocation);
 		LOG.debug("existing driver location: " + existingDriverLocation);
-		if (null == existingDriverLocation) {
-			throw new Exception("driver location is null");
-		}
+		if (null == existingDriverLocation)
+            throw new Exception("driver location is null");
 		PKCS11 pkcs11 = PKCS11.getInstance(existingDriverLocation
 				.getAbsolutePath(), "C_GetFunctionList", null, false);
 		assertNotNull(pkcs11);
@@ -331,9 +330,8 @@ public class SmartCardTest {
 
 		oStatus = eidlib.BEID_Init(null, 0, 0, CardHandle);
 
-		if (0 != oStatus.getGeneral()) {
-			return;
-		}
+		if (0 != oStatus.getGeneral())
+            return;
 
 		BEID_Certif_Check certCheck = new BEID_Certif_Check();
 		BEID_ID_Data identityData = new BEID_ID_Data();
@@ -355,7 +353,8 @@ public class SmartCardTest {
 		oStatus = eidlib.BEID_Exit();
 	}
 
-	private static final long CKR_TOKEN_NOT_PRESENT = 0x000000E0;
+	@SuppressWarnings("unused")
+    private static final long CKR_TOKEN_NOT_PRESENT = 0x000000E0;
 
 	@Test
 	public void testNoBeIDCard() throws Exception {
@@ -368,8 +367,7 @@ public class SmartCardTest {
 
 		long[] slotIds = pkcs11.C_GetSlotList(false);
 		LOG.debug("# slot Ids: " + slotIds.length);
-		for (int slotIdIdx = 0; slotIdIdx < slotIds.length; slotIdIdx++) {
-			long slotId = slotIds[slotIdIdx];
+		for (long slotId : slotIds) {
 			LOG.debug("slot Id: " + slotId);
 			CK_SLOT_INFO slotInfo = pkcs11.C_GetSlotInfo(slotId);
 			LOG.debug("slot description: "
@@ -403,14 +401,12 @@ public class SmartCardTest {
 
 		SunPKCS11 provider = (SunPKCS11) Security.getProvider("SunPKCS11-"
 				+ name);
-		if (null != provider) {
-			throw new RuntimeException("Smart Card provider already active");
-		}
+		if (null != provider)
+            throw new RuntimeException("Smart Card provider already active");
 		resetPKCS11Driver();
 		provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
-		if (-1 == Security.addProvider(provider)) {
-			throw new RuntimeException("could not add the security provider");
-		}
+		if (-1 == Security.addProvider(provider))
+            throw new RuntimeException("could not add the security provider");
 		String providerName = provider.getName();
 
 		CallbackHandler callbackHandler = new TestCallbackHandler();
@@ -442,9 +438,8 @@ public class SmartCardTest {
 		// resetPKCS11Driver();
 
 		provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
-		if (-1 == Security.addProvider(provider)) {
-			throw new RuntimeException("could not add the security provider");
-		}
+		if (-1 == Security.addProvider(provider))
+            throw new RuntimeException("could not add the security provider");
 
 		// provider.login(null, callbackHandler);
 
@@ -472,10 +467,9 @@ public class SmartCardTest {
 				Security.removeProvider(providerName);
 				resetPKCS11Driver();
 				provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
-				if (-1 == Security.addProvider(provider)) {
-					throw new RuntimeException(
+				if (-1 == Security.addProvider(provider))
+                    throw new RuntimeException(
 							"could not add the security provider");
-				}
 				builder = KeyStore.Builder.newInstance("PKCS11", provider,
 						protectionParameter);
 
@@ -535,10 +529,9 @@ public class SmartCardTest {
 					PasswordCallback passwordCallback = (PasswordCallback) callback;
 					HandlerLOG.debug("password required");
 					char[] pin = getPin();
-					if (null == pin) {
-						throw new UnsupportedCallbackException(callback,
+					if (null == pin)
+                        throw new UnsupportedCallbackException(callback,
 								"User canceled PIN input.");
-					}
 					passwordCallback.setPassword(pin);
 				}
 			}
