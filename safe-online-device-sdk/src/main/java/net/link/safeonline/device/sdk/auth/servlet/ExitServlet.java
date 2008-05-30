@@ -32,6 +32,8 @@ public class ExitServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
+		// TODO: getSaml2Handler should not construct a new handler in case one
+		// is not present on the session.
 		try {
 			handler.finalizeAuthentication(request, response);
 		} catch (AuthenticationFinalizationException e) {

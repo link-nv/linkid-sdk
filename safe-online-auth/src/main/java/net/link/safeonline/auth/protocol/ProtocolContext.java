@@ -41,7 +41,8 @@ public class ProtocolContext {
 	 * @param target
 	 *            the target URL to which to send the authentication response.
 	 * @param requiredDevices
-	 *            the optional set of required devices.
+	 *            the optional set of required devices for this authentication
+	 *            session.
 	 */
 	public ProtocolContext(String applicationId, String target,
 			Set<DeviceEntity> requiredDevices) {

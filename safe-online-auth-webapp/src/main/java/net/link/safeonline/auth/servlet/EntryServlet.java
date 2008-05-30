@@ -53,6 +53,8 @@ import org.apache.commons.logging.LogFactory;
  * authentication protocol error is encountered.</li>
  * </ul>
  * 
+ * TODO: rename to AuthnEntryServlet
+ * 
  * @author fcorneli
  * 
  */

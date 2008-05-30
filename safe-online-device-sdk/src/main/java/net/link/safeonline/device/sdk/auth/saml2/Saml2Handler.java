@@ -175,10 +175,11 @@ public class Saml2Handler implements Serializable {
 		String target = (String) this.session.getAttribute(TARGET_URL);
 		String inResponseTo = (String) this.session
 				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
-		if (null == inResponseTo)
+		if (null == inResponseTo) {
 			throw new AuthenticationFinalizationException(
 					"missing IN_RESPONSE_TO session attribute");
-
+		}
+		
 		String issuerName = authenticationContext.getIssuer();
 		PrivateKey privateKey = this.applicationKeyPair.getPrivate();
 		PublicKey publicKey = this.applicationKeyPair.getPublic();

@@ -64,6 +64,8 @@ import org.apache.commons.logging.LogFactory;
  * SAML2_BROWSER_POST. Defaults to: SIMPLE_PLAIN_URL
  * </p>
  * 
+ * TODO: remove references to simple plain url
+ * 
  * <p>
  * The optional keystore resource name <code>KeyStoreResource</code> init
  * parameter. The key pair within this keystore can be used by the

@@ -73,6 +73,15 @@ public class SafeOnlineLoginUtils {
 	 * communicated towards the SafeOnline authentication web application.
 	 * </p>
 	 * 
+	 * <p>
+	 * The method also requires the <code>AuthenticationProtocol</code>
+	 * context parameter defined in web.xml containing the authentication
+	 * protocol used between the application and the OLAS authentication web
+	 * application.
+	 * </p>
+	 * 
+	 * TODO: document all context parameters
+	 * 
 	 * @param facesMessages
 	 * @param log
 	 * @param targetPage

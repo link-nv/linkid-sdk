@@ -208,6 +208,7 @@ public class DeviceEntity implements Serializable {
 	/**
 	 * Returns the full URL for authentication of this device.
 	 * 
+	 * TODO: naming consistent URL - path
 	 */
 	@Transient
 	public String getAuthenticationPath() {

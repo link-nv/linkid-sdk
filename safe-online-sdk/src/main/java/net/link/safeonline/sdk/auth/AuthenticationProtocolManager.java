@@ -115,12 +115,12 @@ public class AuthenticationProtocolManager {
 				.getInitParameter(LANDING_PAGE_INIT_PARAM);
 		if (null != landingPage) {
 			LOG.debug("using landing page: " + landingPage);
+			storeTarget(target, request);
 			protocolHandler.initiateAuthentication(request, response,
 					landingPage);
-			storeTarget(target, request);
 		} else {
-			protocolHandler.initiateAuthentication(request, response, target);
 			clearTarget(request);
+			protocolHandler.initiateAuthentication(request, response, target);
 		}
 	}
 

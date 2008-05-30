@@ -82,12 +82,7 @@ public class DeviceBean implements Device {
 
 	public String next() {
 		this.log.debug("next: " + this.deviceSelection);
-		if (null == this.deviceSelection) {
-			this.log.debug("Please make a selection.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorMakeSelection");
-			return null;
-		}
+
 		String authenticationPath;
 		try {
 			authenticationPath = this.devicePolicyService
@@ -101,9 +96,10 @@ public class DeviceBean implements Device {
 		}
 
 		if (!this.deviceSelection
-				.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
+				.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
 			return SafeOnlineDeviceUtils.authenticate(this.facesMessages,
 					this.log, authenticationPath, this.deviceSelection);
+		}
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();

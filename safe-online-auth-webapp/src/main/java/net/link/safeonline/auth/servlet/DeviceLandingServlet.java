@@ -95,6 +95,7 @@ public class DeviceLandingServlet extends HttpServlet {
 			HttpServletResponse response) throws IOException, ServletException {
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.getSaml2BrowserPostHandler(request);
+		// XXX: findSaml2BrowserPostHandler instead of getSaml2BrowserPostHandler
 		if (null == saml2BrowserPostHandler) {
 			/*
 			 * The landing page can only be used for finalizing an ongoing

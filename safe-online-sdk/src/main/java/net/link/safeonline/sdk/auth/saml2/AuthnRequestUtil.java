@@ -116,8 +116,9 @@ public class AuthnRequestUtil {
 			String stsWsLocation, X509Certificate applicationCertificate,
 			PrivateKey applicationPrivateKey) throws ServletException {
 		String encodedSamlRequest = request.getParameter("SAMLRequest");
-		if (null == encodedSamlRequest)
+		if (null == encodedSamlRequest) {
 			throw new ServletException("no SAML request found");
+		}
 
 		byte[] decodedSamlResponse;
 		try {

@@ -101,6 +101,7 @@ public class ProtocolHandlerManager {
 			try {
 				protocolContext = protocolHandler.handleRequest(request);
 			} catch (ProtocolException e) {
+				// TODO: yield audit event
 				String protocolName = protocolHandler.getName();
 				e.setProtocolName(protocolName);
 				throw e;
