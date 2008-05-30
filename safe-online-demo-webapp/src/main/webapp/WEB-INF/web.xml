@@ -8,9 +8,8 @@
 		<param-value>OLAS Test Web Application</param-value>
 	</context-param>
 	<filter>
-		<filter-name>AuthenticationFilter</filter-name>
-		<filter-class>
-			net.link.safeonline.sdk.auth.filter.AuthenticationFilter 
+		<filter-name>AuthnRequestFilter</filter-name>
+		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnRequestFilter 
 		</filter-class>
 		<init-param>
 			<param-name>AuthenticationServiceUrl</param-name>
@@ -39,16 +38,16 @@
 		</init-param>
 	</filter>
 	<filter>
-		<filter-name>LoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.LoginFilter 
+		<filter-name>AuthnResponseFilter</filter-name>
+		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnResponseFilter 
 		</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>LoginFilter</filter-name>
+		<filter-name>AuthnResponseFilter</filter-name>
 		<url-pattern>/secure2/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>AuthenticationFilter</filter-name>
+		<filter-name>AuthnRequestFilter</filter-name>
 		<url-pattern>/secure2/*</url-pattern>
 	</filter-mapping>
 	<security-constraint>

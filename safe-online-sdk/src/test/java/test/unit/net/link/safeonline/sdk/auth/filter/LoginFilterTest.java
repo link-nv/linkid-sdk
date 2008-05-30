@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
-import net.link.safeonline.sdk.auth.filter.LoginFilter;
+import net.link.safeonline.sdk.auth.filter.AuthnResponseFilter;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -53,7 +53,7 @@ public class LoginFilterTest {
 				AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
 				this.mockProtocolHandler);
 		this.servletTestManager.setUp(LoginTestServlet.class,
-				LoginFilter.class, null, initialSessionAttributes);
+				AuthnResponseFilter.class, null, initialSessionAttributes);
 	}
 
 	public static class LoginTestServlet extends HttpServlet {

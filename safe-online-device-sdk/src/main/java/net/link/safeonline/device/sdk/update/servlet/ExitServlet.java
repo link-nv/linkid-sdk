@@ -58,7 +58,7 @@ public class ExitServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
-				.getSaml2BrowserPostHandler(request);
+				.findSaml2BrowserPostHandler(request);
 		if (null == saml2BrowserPostHandler) {
 			/*
 			 * The landing page can only be used for finalizing an ongoing

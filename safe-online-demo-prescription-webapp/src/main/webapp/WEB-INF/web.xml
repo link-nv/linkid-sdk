@@ -62,8 +62,8 @@
 		</param-value>
 	</context-param>
 	<filter>
-		<filter-name>LoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.LoginFilter 
+		<filter-name>AuthnResponseFilter</filter-name>
+		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnResponseFilter 
 		</filter-class>
 	</filter>
 	<filter>
@@ -87,7 +87,7 @@
 	</filter>
 	<filter>
 		<filter-name>PatientAuthenticationFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.LoginFilter 
+		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnResponseFilter 
 		</filter-class>
 		<init-param>
 			<param-name>UsernameSessionParameter</param-name>
@@ -107,7 +107,7 @@
 		<url-pattern>/prescription-fill-authenticated.seam</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>LoginFilter</filter-name>
+		<filter-name>AuthnResponseFilter</filter-name>
 		<url-pattern>/login</url-pattern>
 	</filter-mapping>
 	<filter-mapping>

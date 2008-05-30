@@ -292,6 +292,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			}
 		}
 
+		// TODO: clean up these 2 checks, done before by previous checks
 		ApplicationEntity application = this.applicationDAO
 				.findApplication(applicationId);
 		if (null == application) {

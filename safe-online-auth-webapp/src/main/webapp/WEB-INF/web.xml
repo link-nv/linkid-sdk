@@ -42,7 +42,7 @@
 	<context-param>
 		<description>Point of return for remote device issuers when
 			authenticating</description>
-		<param-name> SafeOnlineDeviceAuthenticationServiceUrl </param-name>
+		<param-name>DeviceAuthenticationServiceUrl</param-name>
 		<param-value> ${safe-online.host.basename}/olas-auth/device/auth 
 		</param-value>
 	</context-param>
@@ -117,8 +117,8 @@
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>EntryServlet</servlet-name>
-		<servlet-class> net.link.safeonline.auth.servlet.EntryServlet 
+		<servlet-name>AuthnEntryServlet</servlet-name>
+		<servlet-class> net.link.safeonline.auth.servlet.AuthnEntryServlet 
 		</servlet-class>
 		<init-param>
 			<param-name>StartUrl</param-name>
@@ -138,7 +138,7 @@
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>EntryServlet</servlet-name>
+		<servlet-name>AuthnEntryServlet</servlet-name>
 		<url-pattern>/entry</url-pattern>
 	</servlet-mapping>
 	<servlet>

@@ -80,6 +80,7 @@ public class LoginServlet extends HttpServlet {
 		response.sendRedirect(target);
 	}
 
+	// XXX: remove this by a custom jsf error page ( XPlanner: id=16262 )
 	private void writeErrorPage(String message, HttpServletResponse response)
 			throws IOException {
 		response.setContentType("text/html");

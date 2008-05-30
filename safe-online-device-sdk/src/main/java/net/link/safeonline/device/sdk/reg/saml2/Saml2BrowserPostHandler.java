@@ -119,9 +119,16 @@ public class Saml2BrowserPostHandler implements Serializable {
 				.getSession().getAttribute(SAML2_BROWSER_POST_HANDLER);
 
 		if (null == instance) {
-            instance = new Saml2BrowserPostHandler(request);
-        }
+			instance = new Saml2BrowserPostHandler(request);
+		}
 
+		return instance;
+	}
+
+	public static Saml2BrowserPostHandler findSaml2BrowserPostHandler(
+			HttpServletRequest request) {
+		Saml2BrowserPostHandler instance = (Saml2BrowserPostHandler) request
+				.getSession().getAttribute(SAML2_BROWSER_POST_HANDLER);
 		return instance;
 	}
 
@@ -146,8 +153,8 @@ public class Saml2BrowserPostHandler implements Serializable {
 		LOG.debug("target url: " + targetUrl);
 		Set<String> devices = new HashSet<String>();
 		if (null != device) {
-            devices.add(device);
-        }
+			devices.add(device);
+		}
 		String samlRequestToken = AuthnRequestFactory
 				.createAuthnRequest(device, this.applicationName,
 						this.applicationKeyPair, this.registrationServiceUrl,
@@ -159,11 +166,11 @@ public class Saml2BrowserPostHandler implements Serializable {
 		String templateResourceName;
 		if (this.configParams
 				.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
-            templateResourceName = this.configParams
+			templateResourceName = this.configParams
 					.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
-        } else {
-            templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
-        }
+		} else {
+			templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+		}
 
 		AuthnRequestUtil.sendAuthnRequest(targetUrl, encodedSamlRequestToken,
 				templateResourceName, httpResponse);
@@ -178,8 +185,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 	 * @throws ServletException
 	 */
 	public String handleResponse(HttpServletRequest httpRequest,
-			@SuppressWarnings("unused") HttpServletResponse httpResponse)
-            throws ServletException {
+			HttpServletResponse httpResponse) throws ServletException {
 		DateTime now = new DateTime();
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
@@ -192,14 +198,14 @@ public class Saml2BrowserPostHandler implements Serializable {
 		Assertion assertion = samlResponse.getAssertions().get(0);
 		List<AuthnStatement> authStatements = assertion.getAuthnStatements();
 		if (authStatements.isEmpty()) {
-            throw new ServletException("missing authentication statement");
-        }
+			throw new ServletException("missing authentication statement");
+		}
 
 		AuthnStatement authStatement = authStatements.get(0);
 		if (null == authStatement.getAuthnContext()) {
-            throw new ServletException(
+			throw new ServletException(
 					"missing authentication context in authentication statement");
-        }
+		}
 
 		AuthnContextClassRef authnContextClassRef = authStatement
 				.getAuthnContext().getAuthnContextClassRef();

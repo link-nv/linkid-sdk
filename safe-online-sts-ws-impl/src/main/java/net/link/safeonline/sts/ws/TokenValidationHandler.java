@@ -118,6 +118,8 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 
 		Boolean result;
 		try {
+			// XXX: replace getSigningCert with findSigningCert, dont let it
+			// throw an exception ...
 			XMLSignature xmlSignature = new XMLSignature(tokenSignatureElement,
 					null);
 			LOG.debug("checking token signature");

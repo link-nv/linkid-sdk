@@ -60,8 +60,8 @@
 		</param-value>
 	</context-param>
 	<filter>
-		<filter-name>LoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.LoginFilter 
+		<filter-name>AuthnResponseFilter</filter-name>
+		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnResponseFilter 
 		</filter-class>
 	</filter>
 	<filter>
@@ -88,7 +88,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>LoginFilter</filter-name>
+		<filter-name>AuthnResponseFilter</filter-name>
 		<url-pattern>/login</url-pattern>
 	</filter-mapping>
 	<filter-mapping>

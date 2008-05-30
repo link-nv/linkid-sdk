@@ -27,7 +27,7 @@ import java.util.Set;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.protocol.SimpleProtocolHandler;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
-import net.link.safeonline.auth.servlet.EntryServlet;
+import net.link.safeonline.auth.servlet.AuthnEntryServlet;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -112,7 +112,7 @@ public class EntryServletTest {
 		initParams.put("FirstTimeUrl", this.firstTimeUrl);
 		initParams.put("UnsupportedProtocolUrl", this.unsupportedProtocolUrl);
 		initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
-		this.entryServletTestManager.setUp(EntryServlet.class, initParams);
+		this.entryServletTestManager.setUp(AuthnEntryServlet.class, initParams);
 
 		this.mockObjects = new Object[] {
 				this.mockApplicationAuthenticationService,

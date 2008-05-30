@@ -100,8 +100,8 @@
 		</init-param>
 	</filter>
 	<filter>
-		<filter-name>SafeOnlineLoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.LoginFilter 
+		<filter-name>AuthnResponseFilter</filter-name>
+		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnResponseFilter 
 		</filter-class>
 	</filter>
 	<filter>
@@ -130,7 +130,7 @@
 		<servlet-name>Faces Servlet</servlet-name>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>SafeOnlineLoginFilter</filter-name>
+		<filter-name>AuthnResponseFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 	<filter-mapping>

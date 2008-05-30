@@ -31,9 +31,9 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class LoginFilter implements Filter {
+public class AuthnResponseFilter implements Filter {
 
-	private static final Log LOG = LogFactory.getLog(LoginFilter.class);
+	private static final Log LOG = LogFactory.getLog(AuthnResponseFilter.class);
 
 	public static final String USERNAME_SESSION_PARAMETER = "UsernameSessionParameter";
 

@@ -58,9 +58,9 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class EntryServlet extends HttpServlet {
+public class AuthnEntryServlet extends HttpServlet {
 
-	private static final Log LOG = LogFactory.getLog(EntryServlet.class);
+	private static final Log LOG = LogFactory.getLog(AuthnEntryServlet.class);
 
 	private static final long serialVersionUID = 1L;
 

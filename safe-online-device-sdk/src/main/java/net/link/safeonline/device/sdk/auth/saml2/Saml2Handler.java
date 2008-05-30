@@ -92,6 +92,12 @@ public class Saml2Handler implements Serializable {
 		return instance;
 	}
 
+	public static Saml2Handler findSaml2Handler(HttpServletRequest request) {
+		Saml2Handler instance = (Saml2Handler) request.getSession()
+				.getAttribute(SAML2_HANDLER);
+		return instance;
+	}
+
 	public void init(Map<String, String> configParams,
 			X509Certificate newApplicationCertificate,
 			KeyPair newApplicationKeyPair) {
@@ -163,7 +169,6 @@ public class Saml2Handler implements Serializable {
 		authenticationContext.setNodeName(nodeName);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void finalizeAuthentication(HttpServletRequest request,
 			HttpServletResponse response)
 			throws AuthenticationFinalizationException {
@@ -179,7 +184,7 @@ public class Saml2Handler implements Serializable {
 			throw new AuthenticationFinalizationException(
 					"missing IN_RESPONSE_TO session attribute");
 		}
-		
+
 		String issuerName = authenticationContext.getIssuer();
 		PrivateKey privateKey = this.applicationKeyPair.getPrivate();
 		PublicKey publicKey = this.applicationKeyPair.getPublic();

@@ -125,6 +125,13 @@ public class Saml2BrowserPostHandler implements Serializable {
 		return instance;
 	}
 
+	public static Saml2BrowserPostHandler findSaml2BrowserPostHandler(
+			HttpServletRequest request) {
+		Saml2BrowserPostHandler instance = (Saml2BrowserPostHandler) request
+				.getSession().getAttribute(SAML2_BROWSER_POST_HANDLER);
+		return instance;
+	}
+
 	public void init(String inAuthnServiceUrl, String inIssuerName,
 			String inApplicationName, KeyPair inApplicationKeyPair,
 			Map<String, String> inConfigParams) {
@@ -135,6 +142,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 		this.applicationKeyPair = inApplicationKeyPair;
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
+		// XXX: should not continue when wsLocation is not specified
 		this.wsLocation = inConfigParams.get("wsLocation");
 	}
 

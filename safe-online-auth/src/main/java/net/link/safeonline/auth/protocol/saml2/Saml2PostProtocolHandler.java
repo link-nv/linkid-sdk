@@ -235,7 +235,6 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 				devices);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void authnResponse(HttpSession session,
 			HttpServletResponse authnResponse) throws ProtocolException {
 		PrivateKey privateKey = this.identityServiceClient.getPrivateKey();

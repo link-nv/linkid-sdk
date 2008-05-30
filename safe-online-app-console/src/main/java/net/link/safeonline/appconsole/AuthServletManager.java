@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
-import net.link.safeonline.sdk.auth.filter.AuthenticationFilter;
+import net.link.safeonline.sdk.auth.filter.AuthnRequestFilter;
 import net.link.safeonline.sdk.auth.filter.LogFilter;
-import net.link.safeonline.sdk.auth.filter.LoginFilter;
+import net.link.safeonline.sdk.auth.filter.AuthnResponseFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
@@ -85,30 +85,30 @@ public class AuthServletManager extends Observable {
 
 		this.context.addFilter(LogFilter.class, "/", Handler.DEFAULT);
 
-		this.context.addFilter(LoginFilter.class, "/", Handler.DEFAULT);
+		this.context.addFilter(AuthnResponseFilter.class, "/", Handler.DEFAULT);
 
 		FilterHolder authenticationFilterHoldder = this.context.addFilter(
-				AuthenticationFilter.class, "/", Handler.DEFAULT);
+				AuthnRequestFilter.class, "/", Handler.DEFAULT);
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
 		filterInitParameters.put(
-				AuthenticationFilter.AUTH_SERVICE_URL_INIT_PARAM, "http://"
+				AuthnRequestFilter.AUTH_SERVICE_URL_INIT_PARAM, "http://"
 						+ ApplicationConsoleManager.getInstance().getLocation()
 						+ ":8080/olas-auth");
 		filterInitParameters.put(
-				AuthenticationFilter.APPLICATION_NAME_INIT_PARAM,
+				AuthnRequestFilter.APPLICATION_NAME_INIT_PARAM,
 				applicationName);
 		filterInitParameters.put(
-				AuthenticationFilter.AUTHN_PROTOCOL_INIT_PARAM, protocol);
+				AuthnRequestFilter.AUTHN_PROTOCOL_INIT_PARAM, protocol);
 		if (protocol.equals(AuthenticationProtocol.SAML2_BROWSER_POST
 				.toString())) {
 			filterInitParameters.put(
-					AuthenticationFilter.KEYSTORE_FILE_INIT_PARAM,
+					AuthnRequestFilter.KEYSTORE_FILE_INIT_PARAM,
 					ApplicationConsoleManager.getInstance().getKeyStorePath());
 			filterInitParameters.put(
-					AuthenticationFilter.KEYSTORE_TYPE_INIT_PARAM,
+					AuthnRequestFilter.KEYSTORE_TYPE_INIT_PARAM,
 					ApplicationConsoleManager.getInstance().getKeyStoreType());
 			filterInitParameters.put(
-					AuthenticationFilter.KEY_STORE_PASSWORD_INIT_PARAM,
+					AuthnRequestFilter.KEY_STORE_PASSWORD_INIT_PARAM,
 					ApplicationConsoleManager.getInstance()
 							.getKeyStorePassword());
 		}

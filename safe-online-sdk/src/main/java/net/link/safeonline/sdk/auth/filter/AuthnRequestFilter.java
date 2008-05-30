@@ -36,11 +36,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * SafeOnline Authentication Filter. This filter can be used by servlet
+ * SafeOnline Authentication Request Filter. This filter can be used by servlet
  * container based web applications for authentication via SafeOnline. This
  * filter initiates the authentication request towards the SafeOnline
  * authentication web application. The handling of the authentication response
- * is done via the {@link LoginFilter}.
+ * is done via the {@link AuthnResponseFilter}.
  * 
  * <p>
  * The configuration of this filter should be managed via the
@@ -48,8 +48,8 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * <p>
- * The init parameter <code>SafeOnlineAuthenticationServiceUrl</code> should
- * point to the SafeOnline Authentication Web Application entry point.
+ * The init parameter <code>AuthenticationServiceUrl</code> should point to
+ * the Authentication Web Application entry point.
  * </p>
  * 
  * <p>
@@ -89,12 +89,11 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * @author fcorneli
- * @see LoginFilter
+ * @see AuthnResponseFilter
  */
-public class AuthenticationFilter implements Filter {
+public class AuthnRequestFilter implements Filter {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthenticationFilter.class);
+	private static final Log LOG = LogFactory.getLog(AuthnRequestFilter.class);
 
 	public static final String AUTH_SERVICE_URL_INIT_PARAM = "AuthenticationServiceUrl";
 

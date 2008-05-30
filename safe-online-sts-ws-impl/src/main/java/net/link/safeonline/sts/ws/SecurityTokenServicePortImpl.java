@@ -257,6 +257,12 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 		AuthnContextClassRef authnContextClassRef = authnStatement
 				.getAuthnContext().getAuthnContextClassRef();
 		String authnDevice = authnContextClassRef.getAuthnContextClassRef();
+		if (null == authnDevice) {
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"authentication device cannot be null");
+			return response;
+		}
 		LOG.debug("authentication device: " + authnDevice);
 		return null;
 

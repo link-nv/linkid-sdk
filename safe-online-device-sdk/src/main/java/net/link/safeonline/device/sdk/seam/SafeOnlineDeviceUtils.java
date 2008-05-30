@@ -36,7 +36,7 @@ import org.jboss.seam.log.Log;
  */
 public class SafeOnlineDeviceUtils {
 
-	public static final String SAFE_ONLINE_DEVICE_AUTH_SERVICE_URL_INIT_PARAM = "SafeOnlineDeviceAuthenticationServiceUrl";
+	public static final String DEVICE_AUTH_SERVICE_URL_INIT_PARAM = "DeviceAuthenticationServiceUrl";
 
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 
@@ -48,11 +48,10 @@ public class SafeOnlineDeviceUtils {
 	 * Redirects to the specified Device issuer authentication page
 	 * 
 	 * <p>
-	 * The method requires the
-	 * <code>SafeOnlineDeviceAuthenticationServiceUrl</code> context parameter
-	 * defined in web.xml pointing to the location of the SafeOnline
-	 * authentication web application location the Device issuer should return
-	 * to.
+	 * The method requires the <code>DeviceAuthenticationServiceUrl</code>
+	 * context parameter defined in web.xml pointing to the location of the
+	 * SafeOnline authentication web application location the Device issuer
+	 * should return to.
 	 * </p>
 	 * 
 	 * @param facesMessages
@@ -61,16 +60,15 @@ public class SafeOnlineDeviceUtils {
 	 *            the landing page of the device issuer
 	 */
 	@SuppressWarnings("unchecked")
-	public static String authenticate(
-			@SuppressWarnings("unused") FacesMessages facesMessages, Log log,
+	public static String authenticate(FacesMessages facesMessages, Log log,
 			String landingUrl, String device) {
 		log.debug("redirecting to #0", landingUrl);
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 
-		String safeOnlineAuthenticationServiceUrl = getInitParameter(
-				externalContext, SAFE_ONLINE_DEVICE_AUTH_SERVICE_URL_INIT_PARAM);
+		String authenticationServiceUrl = getInitParameter(
+				externalContext, DEVICE_AUTH_SERVICE_URL_INIT_PARAM);
 
 		String applicationName = getInitParameter(externalContext,
 				APPLICATION_NAME_INIT_PARAM);
@@ -109,7 +107,7 @@ public class SafeOnlineDeviceUtils {
 
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.getSaml2BrowserPostHandler(httpServletRequest);
-		saml2BrowserPostHandler.init(safeOnlineAuthenticationServiceUrl,
+		saml2BrowserPostHandler.init(authenticationServiceUrl,
 				nodeName, applicationName, keyPair, configParams);
 
 		try {

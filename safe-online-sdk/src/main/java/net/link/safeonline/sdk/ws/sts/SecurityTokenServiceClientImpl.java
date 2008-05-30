@@ -78,6 +78,9 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
 		LOG.debug("invoke");
 		RequestSecurityTokenType request = new RequestSecurityTokenType();
 		ObjectFactory objectFactory = new ObjectFactory();
+		// TODO: change to something specific indicating the trust domain ( app,
+		// dev, node ) ->
+		// http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#node ...
 		JAXBElement<String> requestType = objectFactory
 				.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate");
 		request.getAny().add(requestType);
