@@ -37,7 +37,7 @@ import org.jboss.seam.log.Log;
  */
 public class SafeOnlineLoginUtils {
 
-	public static final String SAFE_ONLINE_AUTH_SERVICE_URL_INIT_PARAM = "SafeOnlineAuthenticationServiceUrl";
+	public static final String AUTH_SERVICE_URL_INIT_PARAM = "AuthenticationServiceUrl";
 
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 
@@ -62,9 +62,9 @@ public class SafeOnlineLoginUtils {
 	 * application.
 	 * 
 	 * <p>
-	 * The method requires the <code>SafeOnlineAuthenticationServiceUrl</code>
-	 * context parameter defined in web.xml pointing to the location of the
-	 * SafeOnline authentication web application.
+	 * The method requires the <code>AuthenticationServiceUrl</code> context
+	 * parameter defined in web.xml pointing to the location of the SafeOnline
+	 * authentication web application.
 	 * </p>
 	 * 
 	 * <p>
@@ -79,15 +79,14 @@ public class SafeOnlineLoginUtils {
 	 *            the page to which the user should be redirected after login.
 	 */
 	@SuppressWarnings("unchecked")
-	public static String login(
-			@SuppressWarnings("unused") FacesMessages facesMessages, Log log,
+	public static String login(FacesMessages facesMessages, Log log,
 			String targetPage) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 
-		String safeOnlineAuthenticationServiceUrl = getInitParameter(
-				externalContext, SAFE_ONLINE_AUTH_SERVICE_URL_INIT_PARAM);
-		log.debug("redirecting to #0", safeOnlineAuthenticationServiceUrl);
+		String authenticationServiceUrl = getInitParameter(externalContext,
+				AUTH_SERVICE_URL_INIT_PARAM);
+		log.debug("redirecting to #0", authenticationServiceUrl);
 
 		String applicationName = getInitParameter(externalContext,
 				APPLICATION_NAME_INIT_PARAM);
@@ -163,7 +162,7 @@ public class SafeOnlineLoginUtils {
 
 		try {
 			AuthenticationProtocolManager.createAuthenticationProtocolHandler(
-					authenticationProtocol, safeOnlineAuthenticationServiceUrl,
+					authenticationProtocol, authenticationServiceUrl,
 					applicationName, keyPair, certificate, configParams,
 					httpServletRequest);
 		} catch (ServletException e) {

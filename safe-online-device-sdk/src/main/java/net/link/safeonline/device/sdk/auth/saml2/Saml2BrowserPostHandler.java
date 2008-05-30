@@ -135,7 +135,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 		this.applicationKeyPair = inApplicationKeyPair;
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
-		this.wsLocation = inConfigParams.get("WsLocation");
+		this.wsLocation = inConfigParams.get("wsLocation");
 	}
 
 	public void authnRequest(

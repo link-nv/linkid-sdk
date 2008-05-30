@@ -46,7 +46,7 @@ public class Saml2Handler implements Serializable {
 
 	private HttpSession session;
 
-	private String wsLocation;
+	private String stsWsLocation;
 
 	private KeyPair applicationKeyPair;
 
@@ -95,7 +95,7 @@ public class Saml2Handler implements Serializable {
 	public void init(Map<String, String> configParams,
 			X509Certificate newApplicationCertificate,
 			KeyPair newApplicationKeyPair) {
-		this.wsLocation = configParams.get("WsLocation");
+		this.stsWsLocation = configParams.get("StsWsLocation");
 		this.applicationCertificate = newApplicationCertificate;
 		this.applicationKeyPair = newApplicationKeyPair;
 	}
@@ -106,7 +106,7 @@ public class Saml2Handler implements Serializable {
 		AuthnRequest samlAuthnRequest;
 		try {
 			samlAuthnRequest = AuthnRequestUtil.validateAuthnRequest(request,
-					this.wsLocation, this.applicationCertificate,
+					this.stsWsLocation, this.applicationCertificate,
 					this.applicationKeyPair.getPrivate());
 		} catch (ServletException e) {
 			throw new AuthenticationInitializationException(e.getMessage());

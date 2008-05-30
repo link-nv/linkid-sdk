@@ -126,7 +126,7 @@
 	</context-param>
 
 	<context-param>
-		<param-name>WsLocation</param-name>
+		<param-name>StsWsLocation</param-name>
 		<param-value>https://olas.host.name:8443</param-value
 	</context-param>
 
@@ -266,7 +266,7 @@
 	</context-param>
 
 	<context-param>
-		<param-name>WsLocation</param-name>
+		<param-name>StsWsLocation</param-name>
 		<param-value>https://olas.host.name:8443</param-value
 	</context-param>
 	
@@ -388,7 +388,7 @@
 	</context-param>
 
 	<context-param>
-		<param-name>WsLocation</param-name>
+		<param-name>StsWsLocation</param-name>
 		<param-value>https://olas.host.name:8443</param-value
 	</context-param>
 	
@@ -510,7 +510,7 @@
 	</context-param>
 
 	<context-param>
-		<param-name>WsLocation</param-name>
+		<param-name>StsWsLocation</param-name>
 		<param-value>https://olas.host.name:8443</param-value
 	</context-param>
 	

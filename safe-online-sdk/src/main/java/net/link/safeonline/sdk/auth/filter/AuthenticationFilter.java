@@ -94,7 +94,7 @@ public class AuthenticationFilter implements Filter {
 	private static final Log LOG = LogFactory
 			.getLog(AuthenticationFilter.class);
 
-	public static final String AUTH_SERVICE_URL_INIT_PARAM = "SafeOnlineAuthenticationServiceUrl";
+	public static final String AUTH_SERVICE_URL_INIT_PARAM = "AuthenticationServiceUrl";
 
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 
@@ -110,7 +110,7 @@ public class AuthenticationFilter implements Filter {
 
 	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SIMPLE_PLAIN_URL;
 
-	private String safeOnlineAuthenticationServiceUrl;
+	private String authenticationServiceUrl;
 
 	private String applicationName;
 
@@ -125,7 +125,7 @@ public class AuthenticationFilter implements Filter {
 	@SuppressWarnings("unchecked")
 	public void init(FilterConfig config) throws ServletException {
 		LOG.debug("init");
-		this.safeOnlineAuthenticationServiceUrl = getInitParameter(config,
+		this.authenticationServiceUrl = getInitParameter(config,
 				AUTH_SERVICE_URL_INIT_PARAM);
 		this.applicationName = getInitParameter(config,
 				APPLICATION_NAME_INIT_PARAM);
@@ -221,10 +221,9 @@ public class AuthenticationFilter implements Filter {
 			HttpServletResponse httpResponse) throws IOException,
 			ServletException {
 		AuthenticationProtocolManager.createAuthenticationProtocolHandler(
-				this.authenticationProtocol,
-				this.safeOnlineAuthenticationServiceUrl, this.applicationName,
-				this.applicationKeyPair, this.applicationCertificate,
-				this.configParams, httpRequest);
+				this.authenticationProtocol, this.authenticationServiceUrl,
+				this.applicationName, this.applicationKeyPair,
+				this.applicationCertificate, this.configParams, httpRequest);
 		AuthenticationProtocolManager.initiateAuthentication(httpRequest,
 				httpResponse);
 	}

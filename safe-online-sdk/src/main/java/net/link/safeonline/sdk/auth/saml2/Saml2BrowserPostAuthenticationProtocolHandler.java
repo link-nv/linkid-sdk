@@ -114,7 +114,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 			X509Certificate inApplicationCertificate,
 			Map<String, String> inConfigParams) {
 		LOG.debug("init");
-		this.authnServiceUrl = inAuthnServiceUrl + "/entry";
+		this.authnServiceUrl = inAuthnServiceUrl;
 		this.applicationName = inApplicationName;
 		this.applicationKeyPair = inApplicationKeyPair;
 		this.applicationCertificate = inApplicationCertificate;
