@@ -26,7 +26,7 @@
 			label="#{msgs.generic}">
 
 			<h:form>
-				<h:selectManyCheckbox id="roles" layout="pageDirection"
+				<h:selectManyCheckbox id="roles" layout="pageDirection" styleClass="inner listingTable"
 					value="#{userManager.roles}">
 					<f:selectItems value="#{availableRoles}" />
 				</h:selectManyCheckbox>
@@ -45,7 +45,7 @@
 
 			<h:dataTable id="data" var="item"
 				value="#{userManager.attributeList}" preserveDataModel="false"
-				styleClass="listingTable"
+				styleClass="inner listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
@@ -67,7 +67,7 @@
 				reRender="subscription_data">
 				<rich:dataTable id="subscription_data" var="item"
 					value="#{userManager.subscriptionList}" rows="10"
-					styleClass="listingTable"
+					styleClass="inner listingTable"
 					rowClasses="listingTable_Row1,listingTable_Row2"
 					columnClasses="listingTable_ColumnTop,listingTable_Column">
 					<h:column>
@@ -120,7 +120,7 @@
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			label="#{msgs.registeredDevices}" opened="false">
 
-			<rich:dataTable id="registereddevices_data"
+			<rich:dataTable id="registereddevices_data" styleClass="inner"
 				value="#{userManager.deviceRegistrationList}" var="item">
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
@@ -142,7 +142,7 @@
 			<a4j:form id="historyForm" ajaxSubmit="true" reRender="history_data">
 				<rich:dataTable id="history_data" var="item"
 					value="#{userManager.historyList}" rows="10"
-					styleClass="listingTable"
+					styleClass="inner listingTable"
 					rowClasses="listingTable_Row1,listingTable_Row2"
 					columnClasses="listingTable_ColumnTop,listingTable_Column">
 					<h:column>

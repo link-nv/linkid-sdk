@@ -65,8 +65,8 @@ table.rich-table    tbody tr:hover {
  * ----------- */
 
 #c-sidebox,
-table.listingTable  tfoot tr,
-table.rich-table    tfoot tr {
+table.listingTable  tfoot tr, table.listingTable  thead tr,
+table.rich-table    tfoot tr, table.rich-table    thead tr {
 
     background-color:   #E8E7E7;
 }

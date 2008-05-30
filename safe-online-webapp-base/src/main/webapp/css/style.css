@@ -418,7 +418,7 @@ hr.float_fix {
 .so-nameoutput {
 }
 .so-nameoutput-compounded {
-	font-weight:        bold;
+	/*font-weight:        bold;                     /* Easily confused with header cells */
 }
 .so-nameoutput-member {
 	margin-left:        15px;
@@ -448,6 +448,12 @@ label[for] {
 	width:              125px;                      /* Non-IE box-model */
 
     border-bottom:      1px solid transparent;      /* Prevent empty label collapsing. */
+}
+table label {
+    float:              none;
+    display:            inline !important;
+
+	text-align:         left;
 }
 input,select,textarea {
 	margin:             0;
