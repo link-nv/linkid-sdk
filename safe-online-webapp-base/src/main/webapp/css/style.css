@@ -18,45 +18,45 @@
  */
 
 html {
-	width:              100%;
-	height:             100%;
-	margin:             0;
-	padding:            0;
+    width:              100%;
+    height:             100%;
+    margin:             0;
+    padding:            0;
 }
 body {
-	margin:             0;
-	padding:            0;
-	
+    margin:             0;
+    padding:            0;
+    
     background:         url('../images/fade.gif') repeat-x top center;
 
-	font:               14px/ 21px "Trebuchet MS", Verdana, Arial;
-	text-align:         center;
+    font:               14px/ 21px "Trebuchet MS", Verdana, Arial;
+    text-align:         center;
 }
 p, h1, h2, h3, h4, h5, h6, br {
-	margin:             0;
-	padding:            0;
+    margin:             0;
+    padding:            0;
 
-	clear:              left;
+    clear:              left;
 }
 h1 {
-	margin-bottom:      21px;
+    margin-bottom:      21px;
 
-	font:               28px/ 42px "Trebuchet MS", Verdana, Arial;
+    font:               28px/ 42px "Trebuchet MS", Verdana, Arial;
 }
 h2 {
     margin:             14px 0;
 
-	font:               21px/ 28px "Trebuchet MS", Verdana, Arial;
+    font:               21px/ 28px "Trebuchet MS", Verdana, Arial;
 }
 p {
-	margin-top:         14px;
-	padding-bottom:     7px;
+    margin-top:         14px;
+    padding-bottom:     7px;
 }
 a {
-	text-decoration:    none;
+    text-decoration:    none;
 }
 a:hover {
-	border-bottom:      1px dotted black;
+    border-bottom:      1px dotted black;
 }
 
 
@@ -67,28 +67,28 @@ a:hover {
 
 /*********************************************** HEADER CONTAINER **/
 #c-header {
-	display:            block;
+    display:            block;
 
     width:              1000px;
-	height:             150px;
-	margin:             0 auto;
-	padding:            0;
+    height:             150px;
+    margin:             0 auto;
+    padding:            0;
 
-	background:         url('../images/header.gif') no-repeat left top;
+    background:         url('../images/header.gif') no-repeat left top;
 
-	border:             none;
+    border:             none;
 }
 
 /********************************************************* HEADER **/
 #header {
-	display:            block;
+    display:            block;
 
-	width:              900px;
-	height:             115px;
-	margin:             0;
-	padding:            25px 0 0;
+    width:              900px;
+    height:             115px;
+    margin:             0;
+    padding:            25px 0 0;
 
-	text-align:         right;
+    text-align:         right;
 }
 #header[id] {
     height:             90px;
@@ -104,120 +104,120 @@ a:hover {
 
 /**************************************************** HEADER MENU **/
 #c-header ul.menu {
-	display:            block;
-	float:              right;
+    display:            block;
+    float:              right;
 
-	width:              750px;
-	height:             35px;
-	margin:             0;
-	padding:            0;
-	padding-right:      25px;
+    width:              750px;
+    height:             35px;
+    margin:             0;
+    padding:            0;
+    padding-right:      25px;
 
-	list-style:         none;
+    list-style:         none;
 }
 
 #c-header ul.menu li {
-	display:            inline;
-	float:              left;
+    display:            inline;
+    float:              left;
 
-	width:              150px;
-	height:             35px;
-	margin:             0;
-	padding:            0;
+    width:              150px;
+    height:             35px;
+    margin:             0;
+    padding:            0;
 
-	background:         url('../images/tab_unselected.gif') top right;
+    background:         url('../images/tab_unselected.gif') top right;
 }
 
 #c-header ul.menu li:hover {
-	background:         url('../images/tab_hover.gif');
+    background:         url('../images/tab_hover.gif');
 }
 
 #c-header ul.menu li.selected {
-	background:         url('../images/tab_selected.gif');
+    background:         url('../images/tab_selected.gif');
 }
 
 #c-header ul.menu li a {
-	display:            block;
+    display:            block;
 
-	width:              136px;
-	height:             21px;
-	margin:             0;
-	padding:            7px;
+    width:              136px;
+    height:             21px;
+    margin:             0;
+    padding:            7px;
 
-	font-weight:        bold;
-	text-decoration:    none;
+    font-weight:        bold;
+    text-decoration:    none;
 }
 
 #c-header ul.menu li.selected a {
-	padding:            10px 7px 4px 7px;
+    padding:            10px 7px 4px 7px;
 }
 
 #c-header ul.menu li a:hover {
-	border:             none;
+    border:             none;
 
-	font-weight:        bold;
-	text-decoration:    none;
+    font-weight:        bold;
+    text-decoration:    none;
 }
 
 /********************************************** CONTENT CONTAINER **/
 #c-content {
-	display:            block;
+    display:            block;
 
-	width:              100%;
-	margin:             0 auto;
-	padding:            0;
+    width:              100%;
+    margin:             0 auto;
+    padding:            0;
 
-	text-align:         center;
+    text-align:         center;
 }
 
 /******************************************************** CONTENT **/
 #content {
-	display:            block;
+    display:            block;
 
-	width:              900px;
-	height:             auto;
-	min-height:         350px;
-	margin:             0 auto;
-	padding:            25px 0;
+    width:              900px;
+    height:             auto;
+    min-height:         350px;
+    margin:             0 auto;
+    padding:            25px 0;
 
-	text-align:         left;
+    text-align:         left;
 }
 * html #content {
-	height:             350px;
+    height:             350px;
 }
 
 /********************************************************* FOOTER **/
 #footer {
-	display:            block;
-	clear:              both;
+    display:            block;
+    clear:              both;
 
-	width:              100%;
-	height:             50px;
-	margin:             0 auto;
-	padding:            0;
-	padding-top:        50px;
+    width:              100%;
+    height:             50px;
+    margin:             0 auto;
+    padding:            0;
+    padding-top:        50px;
 
-	background:         url('../images/footer.gif') left top;
+    background:         url('../images/footer.gif') left top;
 }
 
 /********************************************* SIDE BOX CONTAINER **/
 #c-sidebox {
-	display:            block;
-	float:              right;
+    display:            block;
+    float:              right;
 
-	width:              300px;
-	margin:             0;
-	padding:            0;
+    width:              300px;
+    margin:             0;
+    padding:            0;
 
-	text-align:         left;
+    text-align:         left;
 }
 
 /******************************************************* SIDE BOX **/
 #sidebox {
     width:              100%;
     margin:             0 10%;
-	margin-top:         -11px;
-	padding:            0;
+    margin-top:         -11px;
+    padding:            0;
 }
 #sidebox[id] {
     width:              80%;
@@ -225,101 +225,101 @@ a:hover {
 
 /****************************************************** SIDE MENU **/
 #sidebox ul {
-	display:            block;
-	float:              left;
-	clear:              both;
+    display:            block;
+    float:              left;
+    clear:              both;
 
-	width:              100%;
-	margin:             14px 0 14px 0;
-	padding:            0;
+    width:              100%;
+    margin:             14px 0 14px 0;
+    padding:            0;
 
-	border-top:         1px dotted black;
+    border-top:         1px dotted black;
 
-	list-style:         none;
+    list-style:         none;
 }
 #sidebox ul li {
-	display:            block;
+    display:            block;
 
-	width:              100%;
-	height:             41px;
-	margin:             0;
-	padding:            0;
+    width:              100%;
+    height:             41px;
+    margin:             0;
+    padding:            0;
 
-	border-bottom:      1px dotted black;
+    border-bottom:      1px dotted black;
 }
 #sidebox ul li a {
-	display:            block;
+    display:            block;
 
-	height:             21px;
-	padding:            10px;
-	padding-left:       30px;
+    height:             21px;
+    padding:            10px;
+    padding-left:       30px;
 
-	background:         url('../images/icons/bullet_go.gif') no-repeat;
-	background-position:10px 12px;
+    background:         url('../images/icons/bullet_go.gif') no-repeat;
+    background-position:10px 12px;
 
-	text-decoration:    none;
+    text-decoration:    none;
 }
 #sidebox ul li a:hover {
-	border:             none;
+    border:             none;
 }
 #sidebox ul li.active a {
-	border:             none;
+    border:             none;
 }
 
 /******************************************************* TIMELINE **/
 ul.timeline {
-	display:            block;
+    display:            block;
 
-	height:             70px;
+    height:             70px;
     margin:             0;
-	padding:            0;
+    padding:            0;
 
-	background:         url('../images/timeline.gif') top left repeat;
+    background:         url('../images/timeline.gif') top left repeat;
 
-	list-style:         none;
+    list-style:         none;
 
-	text-align:         center;
+    text-align:         center;
 }
 ul.timeline[class] {
     height:             35px;
 }
 ul.timeline li {
-	display:            inline;
-	float:              left;
+    display:            inline;
+    float:              left;
 
-	width:              100px;
-	height:             70px;
-	margin:             0 auto;
-	padding:            0;
-	padding-top:        35px;
-	padding-left:       5px;
-	padding-right:      5px;
+    width:              100px;
+    height:             70px;
+    margin:             0 auto;
+    padding:            0;
+    padding-top:        35px;
+    padding-left:       5px;
+    padding-right:      5px;
 
-	background:         url('../images/timeline_other.gif') top center no-repeat;
+    background:         url('../images/timeline_other.gif') top center no-repeat;
 
-	font:               10px/ 15px "Trebuchet MS", Verdana, Arial;
-	text-align:         center;
+    font:               10px/ 15px "Trebuchet MS", Verdana, Arial;
+    text-align:         center;
 }
 ul.timeline>li {
     height:             35px;
 }
 
 ul.timeline li.active {
-	background:         url('../images/timeline_current.gif') top center no-repeat;
+    background:         url('../images/timeline_current.gif') top center no-repeat;
 }
 ul.timeline li.start {
-	width:              50px;
+    width:              50px;
     height:             100%;
 
-	background:         url('../images/timeline_fade_in.gif') top right repeat-y;
+    background:         url('../images/timeline_fade_in.gif') top right repeat-y;
 }
 ul.timeline li.end {
-	float:              right;
+    float:              right;
 
     width:              50px;
     height:             100%;
 
-	background:         url('../images/timeline_fade_out.gif') top left repeat-y;
+    background:         url('../images/timeline_fade_out.gif') top left repeat-y;
 }
 
 
@@ -330,46 +330,46 @@ ul.timeline li.end {
 
 /************************************************* ERROR MESSAGES **/
 span.error {
-	display:            block;
-	clear:              left;
+    display:            block;
+    clear:              left;
 
-	width:              273px;
-	margin:             0;
-	margin-left:        150px;
-	padding:            3px;
-	padding-left:       25px;
+    width:              273px;
+    margin:             0;
+    margin-left:        150px;
+    padding:            3px;
+    padding-left:       25px;
 
-	border:             1px solid red;
-	background:         pink url('../images/icons/exclamation.png') no-repeat 5px 5px;
+    border:             1px solid red;
+    background:         pink url('../images/icons/exclamation.png') no-repeat 5px 5px;
 }
 span.error input {
-	clear:              none;
+    clear:              none;
 }
 span.error_message {
-	display:            block;
-	clear:              left;
+    display:            block;
+    clear:              left;
 
-	width:              80%;
-	margin:             0;
-	margin-left:        150px;
-	padding:            3px;
-	padding-left:       25px;
+    width:              80%;
+    margin:             0;
+    margin-left:        150px;
+    padding:            3px;
+    padding-left:       25px;
 
-	border:             1px solid red;
-	background:         pink url('../images/icons/exclamation.png') no-repeat 5px 5px;
+    border:             1px solid red;
+    background:         pink url('../images/icons/exclamation.png') no-repeat 5px 5px;
 }
 .error_field {
-	color:              red !important;
+    color:              red !important;
 }
 
 /************************************************ UTILITY CLASSES **/
 hr.float_fix {
-	visibility:         hidden;
+    visibility:         hidden;
 
-	display:            block;
-	clear:              both;
+    display:            block;
+    clear:              both;
 
-	margin:             0;
+    margin:             0;
 }
 .right {
     text-align:         right;
@@ -395,21 +395,21 @@ hr.float_fix {
 
 /************************************************* USAGE AGREEMENT **/
 .usage_agreement {
-	width:              550px;
-	height:             200px;
-	padding:            10px;
-	overflow:           auto;
+    width:              550px;
+    height:             200px;
+    padding:            10px;
+    overflow:           auto;
 
-	border:             1px solid black;
+    border:             1px solid black;
 }
 .usage_agreement, .white_space {
     font-family:        fixed;
 
-	white-space:        pre-wrap;                   /* css-3 */
-	white-space:        -moz-pre-wrap !important;   /* Mozilla, since 1999 */
-	white-space:        -pre-wrap;                  /* Opera 4-6 */
-	white-space:        -o-pre-wrap;                /* Opera 7 */
-	word-wrap:          break-word;
+    white-space:        pre-wrap;                   /* css-3 */
+    white-space:        -moz-pre-wrap !important;   /* Mozilla, since 1999 */
+    white-space:        -pre-wrap;                  /* Opera 4-6 */
+    white-space:        -o-pre-wrap;                /* Opera 7 */
+    word-wrap:          break-word;
 }
 
 /********************************************* SAFE ONLINE TAGLIB **/
@@ -418,12 +418,12 @@ hr.float_fix {
 .so-nameoutput {
 }
 .so-nameoutput-compounded {
-	/*font-weight:        bold;                     /* Easily confused with header cells */
+    /*font-weight:        bold;                     /* Easily confused with header cells */
 }
 .so-nameoutput-member {
-	margin-left:        15px;
+    margin-left:        15px;
 
-	font-style:         italic;
+    font-style:         italic;
 }
 
 /* ==================================================================
@@ -433,19 +433,19 @@ hr.float_fix {
 label {
     float:              left;
 
-	width:              150px;
-	padding:            0 25px 0 0;
+    width:              150px;
+    padding:            0 25px 0 0;
 
-	background:         url('../images/icons/16-arrow-down.gif') no-repeat 5px 6px;
+    background:         url('../images/icons/16-arrow-down.gif') no-repeat 5px 6px;
 
-	text-align:         right;
-	vertical-align:     top;
+    text-align:         right;
+    vertical-align:     top;
 }
 label[for] {
     display:            block;
     clear:              left;
 
-	width:              125px;                      /* Non-IE box-model */
+    width:              125px;                      /* Non-IE box-model */
 
     border-bottom:      1px solid transparent;      /* Prevent empty label collapsing. */
 }
@@ -453,58 +453,58 @@ table label {
     float:              none;
     display:            inline !important;
 
-	text-align:         left;
+    text-align:         left;
 }
 input,select,textarea {
-	margin:             0;
-	margin-right:       5px;
-	padding:            0;
+    margin:             0;
+    margin-right:       5px;
+    padding:            0;
 
-	font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
+    font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
 }
 input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label {
-	width:              300px;
-	margin:             4px 0 15px 0;
+    width:              300px;
+    margin:             4px 0 15px 0;
 
-	border:             0;
+    border:             0;
 
-	font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
+    font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
     vertical-align:     bottom;
 }
 input.label,textarea.label {
-	border-bottom:      1px dotted black;
+    border-bottom:      1px dotted black;
 }
 input.label[name],input.submit[name],select.label[name],textarea.label[name],input.radio[name],.af_inputFile[class],img.label[src] {
     float:              left;
 }
 input.radio {
-	width:              auto;
+    width:              auto;
 }
 input.label:hover,.so-input-text:hover, input.label:focus {
-	border-bottom-style:solid;
+    border-bottom-style:solid;
 }
 img.label {
-	width:              auto;
+    width:              auto;
 }
 select.label, select.label:hover {
-	border:             none;
+    border:             none;
 }
 input.submit {
-	display:            inline;
+    display:            inline;
 
-	width:              125px;
-	height:             25px;
-	margin:             15px 25px 7px 0;
+    width:              125px;
+    height:             25px;
+    margin:             15px 25px 7px 0;
 
-	border:             none;
-	background:         url('../images/button.jpg') no-repeat;
+    border:             none;
+    background:         url('../images/button.jpg') no-repeat;
 
-	font-family:        bold 12px Verdana, Arial, Helvetica, sans-serif;
-	text-align:         center;
+    font-family:        bold 12px Verdana, Arial, Helvetica, sans-serif;
+    text-align:         center;
 }
 textarea {
-	border:             0;
-	border-left:        1px dotted black;
+    border:             0;
+    border-left:        1px dotted black;
 }
 
 
@@ -520,18 +520,18 @@ table, .fullwidth {
     width:              575px;
 }
 table {
-	float:              none;
-	clear:              left;
+    float:              none;
+    clear:              left;
 
-	margin:             0;
-	padding:            0;
+    margin:             0;
+    padding:            0;
 
     border:             0 solid black;
     border-width:       0 2px 2px 1px;
     border-collapse:    collapse;
 }
 table, tr, td, th {
-	font-family:        "Trebuchet MS", Verdana, Arial !important;
+    font-family:        "Trebuchet MS", Verdana, Arial !important;
     font-size:          14px !important;
 }
 table colgroup {
@@ -539,27 +539,27 @@ table colgroup {
 }
 table.rich-table thead tr th, table.rich-table thead tr td,
 table.listingTable thead tr th, table.listingTable thead tr td {
-	margin:             0;
-	padding:            5px;
+    margin:             0;
+    padding:            5px;
 
-	border:             none;
+    border:             none;
 
-	font-weight:        bold;
-	text-align:         left;
+    font-weight:        bold;
+    text-align:         left;
 }
 table.rich-table tbody tr th, table.rich-table tbody tr td,
 table.listingTable tbody tr th, table.listingTable tbody tr td {
-	margin:             0;
-	padding:            5px;
+    margin:             0;
+    padding:            5px;
 
-	border:             1px solid black;
+    border:             1px solid black;
     border-style:       solid none none;
 }
 table.listingTable tfoot tr, table.rich-table tfoot tr {
-	float:              none;
+    float:              none;
 
-	padding:            0;
-	margin:             0;
+    padding:            0;
+    margin:             0;
 }
 div.dr-dscr {
     width:              100%;
@@ -571,11 +571,11 @@ div.dr-dscr table {
     margin:             auto;
 }
 div.dr-dscr * {
-	margin:             0;
-	padding:            5px;
+    margin:             0;
+    padding:            5px;
 
-	border:             none;
-	background:         none;
+    border:             none;
+    background:         none;
 }
 /* Make links in tables easier to click. */
 table.listingTable td a, table.listingTable th a, table.rich-table td a {
@@ -606,7 +606,7 @@ table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table t
  * Replace dot by star to enable debug:     ./
 
 * {
-	border:             1px solid red !important;
+    border:             1px solid red !important;
 }
 
 /* <End Debug Toggle>                       */
