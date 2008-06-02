@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://www.w3.org/2005/08/addressing/ws-addr.xsd"
+            uri="../resources/ws-addr.xsd" />
+    <system systemId="http://docs.oasis-open.org/wsrf/bf-2.xsd"
+            uri="../resources/bf-2.xsd" />
+    <system systemId="http://docs.oasis-open.org/wsn/t-1.xsd"
+            uri="../resources/t-1.xsd" />
+    <system systemId="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd"
+            uri="../resources/xmldsig-core-schema.xsd" />
+    <system systemId="http://www.w3.org/TR/2002/REC-xmlenc-core-20021210/xenc-schema.xsd"
+            uri="../resources/xenc-schema.xsd" />
+    <system systemId="http://www.w3.org/2001/xml.xsd"
+            uri="../resources/xml.xsd" />
+    <system systemId="http://www.oasis-open.org/committees/download.php/3408/oasis-sstc-saml-schema-protocol-1.1.xsd"
+            uri="../resources/oasis-sstc-saml-schema-protocol-1.1.xsd" />
+    <system systemId="http://www.w3.org/2001/XMLSchema.dtd"
+            uri="../resources/XMLSchema.dtd" />
+    <system systemId="http://www.w3.org/2001/datatypes.dtd"
+            uri="../resources/datatypes.dtd" />
+</catalog>

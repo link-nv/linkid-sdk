@@ -40,7 +40,8 @@
 									destdir="${project.build.directory}/generated-classes/jaxws"
 									verbose="true"
 									wsdl="${basedir}/src/main/resources/notification-subscription-manager.wsdl"
-									sourcedestdir="${project.build.directory}/generated-sources/main/java">
+									sourcedestdir="${project.build.directory}/generated-sources/main/java"
+									catalog="${basedir}/src/main/jaxb/catalog.xml">
 									<produces
 										dir="${project.build.directory}/generated-sources/main/java">
 										<include name="**/*.java" />

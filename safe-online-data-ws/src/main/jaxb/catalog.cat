@@ -1,6 +1,0 @@
-SYSTEM "http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" "../resources/xmldsig-core-schema.xsd"
-SYSTEM "http://www.w3.org/TR/2002/REC-xmlenc-core-20021210/xenc-schema.xsd" "../resources/xenc-schema.xsd"
-SYSTEM "http://www.w3.org/2001/xml.xsd" "../resources/xml.xsd"
-SYSTEM "http://www.oasis-open.org/committees/download.php/3408/oasis-sstc-saml-schema-protocol-1.1.xsd" "../resources/oasis-sstc-saml-schema-protocol-1.1.xsd"
-SYSTEM "http://www.w3.org/2001/XMLSchema.dtd" "../resources/XMLSchema.dtd"
-SYSTEM "http://www.w3.org/2001/datatypes.dtd" "../resources/datatypes.dtd"

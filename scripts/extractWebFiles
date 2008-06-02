@@ -111,11 +111,11 @@ elif (( ! reverse )); then
 fi
 
 if (( reverse )); then
-: #    emit "Linking CSS and XHTML files from '$(shorten "$base")' to '$(shorten "$distribution")'" --
+    emit "Linking CSS and XHTML files from '$(shorten "$base")' to '$(shorten "$distribution")'" --
 elif (( apply )); then
-: #    emit "Applying CSS and XHTML files from '$(shorten "$base")' to repository" --
+    emit "Applying CSS and XHTML files from '$(shorten "$base")' to repository" --
 else
-: #    emit "Linking CSS and XHTML files from '$(shorten "$distribution")' to '$(shorten "$base")'" --
+    emit "Linking CSS and XHTML files from '$(shorten "$distribution")' to '$(shorten "$base")'" --
 fi
 
 if (( apply )); then
@@ -166,4 +166,4 @@ else
     done
 fi
 
-# (( apply )) || emit -$?
+emit -$?

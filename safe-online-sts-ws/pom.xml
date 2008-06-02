@@ -55,14 +55,6 @@
 										dir="${project.build.directory}/generated-sources/main/java">
 										<include name="**/*.java" />
 									</produces>
-									<xmlcatalog>
-										<entity
-											publicid="-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN"
-											location="${basedir}/src/main/resources/catalog.dtd" />
-										<entity
-											publicId="http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd"
-											location="${basedir}/src/main/resources/catalog.dtd" />
-									</xmlcatalog>
 								</wsimport>
 							</tasks>
 							<sourceRoot>

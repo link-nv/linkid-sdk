@@ -49,7 +49,8 @@
 									destdir="${project.build.directory}/generated-classes/jaxws"
 									verbose="true"
 									wsdl="${basedir}/src/main/resources/saml-protocol-2.0.wsdl"
-									sourcedestdir="${project.build.directory}/generated-sources/main/java">
+									sourcedestdir="${project.build.directory}/generated-sources/main/java"
+									catalog="${basedir}/src/main/jaxb/catalog.xml">
 									<produces
 										dir="${project.build.directory}/generated-sources/main/java">
 										<include name="**/*.java" />

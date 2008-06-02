@@ -45,7 +45,8 @@
 								<mkdir
 									dir="${project.build.directory}/generated-sources/xjc" />
 								<xjc
-									destdir="${project.build.directory}/generated-sources/xjc">
+									destdir="${project.build.directory}/generated-sources/xjc"
+									catalog="${basedir}/src/main/jaxb/catalog.xml">
 									<schema
 										dir="${basedir}/src/main/resources"
 										includes="saml-schema-authn-context-2.0.xsd" />

@@ -30,8 +30,8 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<taskdef
-									classname="com.sun.tools.ws.ant.WsImport" name="wsimport">
+								<taskdef name="wsimport"
+									classname="com.sun.tools.ws.ant.WsImport">
 									<classpath>
 										<path
 											refid="maven.compile.classpath" />
@@ -56,7 +56,7 @@
 									dir="${project.build.directory}/generated-sources/xjc" />
 								<xjc
 									destdir="${project.build.directory}/generated-sources/xjc"
-									catalog="${basedir}/src/main/jaxb/catalog.cat">
+									catalog="${basedir}/src/main/jaxb/catalog.xml">
 									<schema
 										dir="${basedir}/src/main/resources"
 										includes="liberty-idwsf-soap-binding-v2.0.xsd" />
@@ -69,7 +69,7 @@
 									verbose="true"
 									wsdl="${basedir}/src/main/resources/liberty-idwsf-dst-ref-v2.1-link.wsdl"
 									sourcedestdir="${project.build.directory}/generated-sources/xjc"
-									catalog="${basedir}/src/main/jaxb/catalog.cat">
+									catalog="${basedir}/src/main/jaxb/catalog.xml">
 								</wsimport>
 							</tasks>
 							<sourceRoot>
