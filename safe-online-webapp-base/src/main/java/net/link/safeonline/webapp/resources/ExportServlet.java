@@ -10,44 +10,31 @@ package net.link.safeonline.webapp.resources;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.ServletConfig;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.StatisticNotFoundException;
 import net.link.safeonline.service.StatisticService;
-import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-public class ExportServlet extends HttpServlet {
+public class ExportServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(ExportServlet.class);
 
+	@EJB(mappedName = "SafeOnline/StatisticServiceBean/local")
 	private StatisticService statisticService;
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-
-		loadDependencies();
-	}
-
-	private void loadDependencies() {
-		this.statisticService = EjbUtils
-				.getEJB("SafeOnline/StatisticServiceBean/local",
-						StatisticService.class);
-	}
-
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void invoke(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		response.setContentType("application/vnd.ms-excel");

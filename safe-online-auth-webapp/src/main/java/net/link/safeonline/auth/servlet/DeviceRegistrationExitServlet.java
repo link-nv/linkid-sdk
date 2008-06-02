@@ -10,14 +10,13 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.servlet.ServletConfig;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.annotation.Init;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
@@ -30,7 +29,7 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.service.DeviceMappingService;
-import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.servlet.AbstractInjectionServlet;
 
 /**
  * Device registration exit page.
@@ -42,66 +41,29 @@ import net.link.safeonline.util.ee.EjbUtils;
  * @author wvdhaute
  * 
  */
-public class DeviceRegistrationExitServlet extends HttpServlet {
+public class DeviceRegistrationExitServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String RESOURCE_BASE = "messages.webapp";
 
-	public static final String DEVICE_ERROR_URL = "DeviceErrorUrl";
-
 	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
+	@EJB(mappedName = "SafeOnline/DeviceDAOBean/local")
 	private DeviceDAO deviceDAO;
 
+	@EJB(mappedName = "SafeOnline/DeviceMappingServiceBean/local")
 	private DeviceMappingService deviceMappingService;
 
+	@EJB(mappedName = "SafeOnline/ProxyAttributeServiceBean/local")
 	private ProxyAttributeService proxyAttributeService;
 
+	@Init(name = "DeviceErrorUrl")
 	private String deviceErrorUrl;
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		loadDependencies();
-		this.deviceErrorUrl = getInitParameter(config, DEVICE_ERROR_URL);
-	}
-
-	private void loadDependencies() {
-		this.deviceDAO = EjbUtils.getEJB("SafeOnline/DeviceDAOBean/local",
-				DeviceDAO.class);
-		this.deviceMappingService = EjbUtils.getEJB(
-				"SafeOnline/DeviceMappingServiceBean/local",
-				DeviceMappingService.class);
-		this.proxyAttributeService = EjbUtils.getEJB(
-				"SafeOnline/ProxyAttributeServiceBean/local",
-				ProxyAttributeService.class);
-	}
-
-	public String getInitParameter(ServletConfig config,
-			String initParameterName) throws UnavailableException {
-		String paramValue = config.getInitParameter(initParameterName);
-		if (null == paramValue) {
-			throw new UnavailableException("missing init parameter: "
-					+ initParameterName);
-		}
-		return paramValue;
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request,
+	protected void invoke(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	private void handleLanding(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(request.getSession());
 		DeviceEntity device;

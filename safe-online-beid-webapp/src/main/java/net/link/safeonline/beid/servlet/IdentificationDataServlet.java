@@ -13,6 +13,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.servlet.AbstractInjectionServlet;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,11 +73,9 @@ public class IdentificationDataServlet extends AbstractInjectionServlet {
 
 	public static final String HOUSE_NR_SESSION_ATTRIBUTE = "id-housenr";
 
-	@SuppressWarnings("unused")
 	@Out(value = STREET_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
 	private String outStreet;
 
-	@SuppressWarnings("unused")
 	@Out(value = HOUSE_NR_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
 	private String houseNumber;
 

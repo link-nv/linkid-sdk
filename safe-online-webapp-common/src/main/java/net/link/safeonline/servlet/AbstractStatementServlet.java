@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -29,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * @see HelpdeskServlet
  * 
  */
-public abstract class AbstractStatementServlet extends HttpServlet {
+public abstract class AbstractStatementServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,7 +40,7 @@ public abstract class AbstractStatementServlet extends HttpServlet {
 			throws ServletException, IOException;
 
 	@Override
-	protected void doPost(HttpServletRequest request,
+	protected void invoke(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doPost");
 		String contentType = request.getContentType();

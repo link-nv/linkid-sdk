@@ -11,14 +11,13 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.servlet.ServletConfig;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.annotation.Init;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -28,8 +27,8 @@ import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.service.DeviceMappingService;
+import net.link.safeonline.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.EjbUtils;
 
 /**
  * Device landing servlet. Landing page to finalize the authentication process
@@ -38,61 +37,26 @@ import net.link.safeonline.util.ee.EjbUtils;
  * @author wvdhaute
  * 
  */
-public class DeviceLandingServlet extends HttpServlet {
+public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String RESOURCE_BASE = "messages.webapp";
 
-	public static final String DEVICE_ERROR_URL = "DeviceErrorUrl";
-
 	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
+	@EJB(mappedName = "SafeOnline/DeviceDAOBean/local")
 	private DeviceDAO deviceDAO;
 
+	@EJB(mappedName = "SafeOnline/DeviceMappingServiceBean/local")
 	private DeviceMappingService deviceMappingService;
 
+	@Init(name = "DeviceErrorUrl")
 	private String deviceErrorUrl;
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		loadDependencies();
-		this.deviceErrorUrl = getInitParameter(config, DEVICE_ERROR_URL);
-	}
-
-	public String getInitParameter(ServletConfig config,
-			String initParameterName) throws UnavailableException {
-		String paramValue = config.getInitParameter(initParameterName);
-		if (null == paramValue) {
-			throw new UnavailableException("missing init parameter: "
-					+ initParameterName);
-		}
-		return paramValue;
-	}
-
-	private void loadDependencies() {
-		this.deviceDAO = EjbUtils.getEJB("SafeOnline/DeviceDAOBean/local",
-				DeviceDAO.class);
-		this.deviceMappingService = EjbUtils.getEJB(
-				"SafeOnline/DeviceMappingServiceBean/local",
-				DeviceMappingService.class);
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request,
+	protected void invoke(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	private void handleLanding(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ServletException {
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.findSaml2BrowserPostHandler(request);
 		if (null == saml2BrowserPostHandler) {

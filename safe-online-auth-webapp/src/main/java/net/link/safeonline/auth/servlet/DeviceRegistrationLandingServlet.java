@@ -8,14 +8,9 @@ package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
 import java.security.KeyPair;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.servlet.ServletConfig;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,8 +27,8 @@ import net.link.safeonline.device.sdk.exception.RegistrationInitializationExcept
 import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.service.DeviceMappingService;
+import net.link.safeonline.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
@@ -49,72 +44,26 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class DeviceRegistrationLandingServlet extends HttpServlet {
+public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory
 			.getLog(DeviceRegistrationLandingServlet.class);
 
-	private Map<String, String> configParams;
-
+	@EJB(mappedName = "SafeOnline/DeviceMappingServiceBean/local")
 	private DeviceMappingService deviceMappingService;
 
+	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
 	private SamlAuthorityService samlAuthorityService;
 
+	@EJB(mappedName = "SafeOnline/NodeAuthenticationServiceBean/local")
 	private NodeAuthenticationService nodeAuthenticationService;
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		loadDependencies();
-		this.configParams = new HashMap<String, String>();
-		Enumeration<String> initParamsEnum = config.getServletContext()
-				.getInitParameterNames();
-		while (initParamsEnum.hasMoreElements()) {
-			String paramName = initParamsEnum.nextElement();
-			String paramValue = getInitParameter(config, paramName);
-			this.configParams.put(paramName, paramValue);
-		}
-	}
-
-	private void loadDependencies() {
-		this.deviceMappingService = EjbUtils.getEJB(
-				"SafeOnline/DeviceMappingServiceBean/local",
-				DeviceMappingService.class);
-		this.samlAuthorityService = EjbUtils.getEJB(
-				"SafeOnline/SamlAuthorityServiceBean/local",
-				SamlAuthorityService.class);
-		this.nodeAuthenticationService = EjbUtils.getEJB(
-				"SafeOnline/NodeAuthenticationServiceBean/local",
-				NodeAuthenticationService.class);
-	}
-
-	private String getInitParameter(ServletConfig config, String initParamName)
-			throws UnavailableException {
-		String initParamValue = config.getServletContext().getInitParameter(
-				initParamName);
-		if (null == initParamValue)
-			throw new UnavailableException("missing init parameter: "
-					+ initParamName);
-		return initParamValue;
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request,
+	protected void invoke(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
 
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	private void handleLanding(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
 		Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 		KeyPair keyPair = new KeyPair(identityServiceClient.getPublicKey(),

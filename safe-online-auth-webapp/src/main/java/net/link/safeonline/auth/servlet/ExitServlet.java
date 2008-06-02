@@ -9,17 +9,16 @@ package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.annotation.Init;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
+import net.link.safeonline.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,44 +51,22 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class ExitServlet extends HttpServlet {
+public class ExitServlet extends AbstractInjectionServlet {
 
 	private static final Log LOG = LogFactory.getLog(ExitServlet.class);
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String PROTOCOL_ERROR_URL = "ProtocolErrorUrl";
-
 	public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
 
 	public static final String PROTOCOL_NAME_ATTRIBUTE = "protocolName";
 
+	@Init(name = "ProtocolErrorUrl")
 	private String protocolErrorUrl;
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		this.protocolErrorUrl = getInitParameter(config, PROTOCOL_ERROR_URL);
-	}
-
-	public String getInitParameter(ServletConfig config,
-			String initParameterName) throws UnavailableException {
-		String paramValue = config.getInitParameter(initParameterName);
-		if (null == paramValue) {
-			throw new UnavailableException("missing init parameter: "
-					+ initParameterName);
-		}
-		return paramValue;
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request,
+	protected void invoke(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		handleInvocation(request, response);
-	}
-
-	private void handleInvocation(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ServletException {
 		LOG.debug("handleInvocation");
 		HttpSession session = request.getSession();
 

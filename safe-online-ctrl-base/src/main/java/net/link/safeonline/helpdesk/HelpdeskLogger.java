@@ -14,9 +14,11 @@ import java.util.Vector;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.ctrl.ControlBaseConstants;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.service.SubjectService;
@@ -29,6 +31,8 @@ import org.apache.commons.logging.LogFactory;
 public class HelpdeskLogger {
 
 	private static final Log LOG = LogFactory.getLog(HelpdeskLogger.class);
+
+	private static final int HELPDESK_CONTEXT_LIMIT = 50;
 
 	private static final String UNKNOWN_USER = "unknown";
 
@@ -99,9 +103,19 @@ public class HelpdeskLogger {
 
 	private static void add(HttpSession session, String message,
 			String principal, LogLevelType logLevel) {
+		List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
+		if (helpdeskContext.size() >= HELPDESK_CONTEXT_LIMIT) {
+			SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(
+					"SafeOnline/SecurityAuditLoggerBean/local",
+					SecurityAuditLogger.class);
+			securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION,
+					principal, message);
+			LOG.debug("helpdesk context max size exceeded !");
+			return;
+		}
+
 		HelpdeskEventEntity helpdeskEvent = new HelpdeskEventEntity(message,
 				principal, logLevel);
-		List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
 		helpdeskContext.add(helpdeskEvent);
 		session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
 				helpdeskContext);

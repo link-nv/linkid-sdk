@@ -11,9 +11,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.ServletConfig;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -31,8 +30,8 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.servlet.AbstractInjectionServlet;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,43 +46,26 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class LoginServlet extends HttpServlet {
+public class LoginServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(LoginServlet.class);
 
+	@EJB(mappedName = "SafeOnline/IdentityServiceBean/local")
 	private IdentityService identityService;
 
+	@EJB(mappedName = "SafeOnline/SubscriptionServiceBean/local")
 	private SubscriptionService subscriptionService;
 
+	@EJB(mappedName = "SafeOnline/DevicePolicyServiceBean/local")
 	private DevicePolicyService devicePolicyService;
 
+	@EJB(mappedName = "SafeOnline/UsageAgreementServiceBean/local")
 	private UsageAgreementService usageAgreementService;
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-
-		loadDependencies();
-	}
-
-	private void loadDependencies() {
-		this.identityService = EjbUtils.getEJB(
-				"SafeOnline/IdentityServiceBean/local", IdentityService.class);
-		this.subscriptionService = EjbUtils.getEJB(
-				"SafeOnline/SubscriptionServiceBean/local",
-				SubscriptionService.class);
-		this.devicePolicyService = EjbUtils.getEJB(
-				"SafeOnline/DevicePolicyServiceBean/local",
-				DevicePolicyService.class);
-		this.usageAgreementService = EjbUtils.getEJB(
-				"SafeOnline/UsageAgreementServiceBean/local",
-				UsageAgreementService.class);
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request,
+	protected void invoke(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doGet");
 		HttpSession session = request.getSession();

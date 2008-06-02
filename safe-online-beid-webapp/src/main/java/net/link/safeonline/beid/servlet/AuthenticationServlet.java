@@ -10,7 +10,7 @@ package net.link.safeonline.beid.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletConfig;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,7 +26,6 @@ import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;
-import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,24 +44,11 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 	private static final Log LOG = LogFactory
 			.getLog(AuthenticationServlet.class);
 
+	@EJB(mappedName = "SafeOnline/BeIdDeviceServiceBean/local")
 	private BeIdDeviceService beIdDeviceService;
 
+	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
 	private SamlAuthorityService samlAuthorityService;
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		loadDependencies();
-	}
-
-	private void loadDependencies() {
-		this.beIdDeviceService = EjbUtils.getEJB(
-				"SafeOnline/BeIdDeviceServiceBean/local",
-				BeIdDeviceService.class);
-		this.samlAuthorityService = EjbUtils.getEJB(
-				"SafeOnline/SamlAuthorityServiceBean/local",
-				SamlAuthorityService.class);
-	}
 
 	@Override
 	protected void processStatement(byte[] statementData, HttpSession session,
@@ -83,7 +69,7 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 				writer.println("Authentication failed");
 				return;
 			}
-			
+
 			// TODO: do something with applicationId
 
 			AuthenticationContext authenticationContext = AuthenticationContext

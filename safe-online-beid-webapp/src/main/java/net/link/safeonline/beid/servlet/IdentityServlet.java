@@ -10,8 +10,7 @@ package net.link.safeonline.beid.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
+import javax.ejb.EJB;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -24,7 +23,6 @@ import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;
-import net.link.safeonline.util.ee.EjbUtils;
 
 /**
  * The identity servlet implementation. This servlet receives its data from the
@@ -37,15 +35,8 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 	private static final long serialVersionUID = 1L;
 
+	@EJB(mappedName = "SafeOnline/BeIdDeviceServiceBean/local")
 	private BeIdDeviceService beIdDeviceService;
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		this.beIdDeviceService = EjbUtils.getEJB(
-				"SafeOnline/BeIdDeviceServiceBean/local",
-				BeIdDeviceService.class);
-	}
 
 	@Override
 	protected void processStatement(byte[] statementData, HttpSession session,

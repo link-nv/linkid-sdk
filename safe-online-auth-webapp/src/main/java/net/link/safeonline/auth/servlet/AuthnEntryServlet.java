@@ -9,23 +9,19 @@ package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.annotation.Init;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.link.safeonline.servlet.AbstractInjectionServlet;
 
 /**
  * Generic entry point for the authentication web application. This servlet will
@@ -53,73 +49,32 @@ import org.apache.commons.logging.LogFactory;
  * authentication protocol error is encountered.</li>
  * </ul>
  * 
- * TODO: rename to AuthnEntryServlet
- * 
  * @author fcorneli
  * 
  */
-public class AuthnEntryServlet extends HttpServlet {
-
-	private static final Log LOG = LogFactory.getLog(AuthnEntryServlet.class);
+public class AuthnEntryServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	public static final String START_URL_INIT_PARAM = "StartUrl";
-
-	public static final String FIRST_TIME_URL_INIT_PARAM = "FirstTimeUrl";
-
-	public static final String UNSUPPORTED_PROTOCOL_URL_INIT_PARAM = "UnsupportedProtocolUrl";
-
-	public static final String PROTOCOL_ERROR_URL = "ProtocolErrorUrl";
 
 	public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
 
 	public static final String PROTOCOL_NAME_ATTRIBUTE = "protocolName";
 
+	@Init(name = "StartUrl")
 	private String startUrl;
 
+	@Init(name = "FirstTimeUrl")
 	private String firstTimeUrl;
 
+	@Init(name = "UnsupportedProtocolUrl")
 	private String unsupportedProtocolUrl;
 
+	@Init(name = "ProtocolErrorUrl")
 	private String protocolErrorUrl;
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		this.startUrl = getInitParameter(config, START_URL_INIT_PARAM);
-		this.firstTimeUrl = getInitParameter(config, FIRST_TIME_URL_INIT_PARAM);
-		this.unsupportedProtocolUrl = getInitParameter(config,
-				UNSUPPORTED_PROTOCOL_URL_INIT_PARAM);
-		this.protocolErrorUrl = getInitParameter(config, PROTOCOL_ERROR_URL);
-	}
-
-	public String getInitParameter(ServletConfig config,
-			String initParameterName) throws UnavailableException {
-		String paramValue = config.getInitParameter(initParameterName);
-		if (null == paramValue) {
-			throw new UnavailableException("missing init parameter: "
-					+ initParameterName);
-		}
-		return paramValue;
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		LOG.debug("GET entry");
-		handleInvocation(request, response);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		LOG.debug("POST entry");
-		handleInvocation(request, response);
-	}
-
-	private void handleInvocation(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	protected void invoke(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		ProtocolContext protocolContext;
 		try {
 			protocolContext = ProtocolHandlerManager.handleRequest(request);

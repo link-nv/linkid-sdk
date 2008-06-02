@@ -11,15 +11,15 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Properties;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.service.PublicApplicationService;
-import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,120 +45,109 @@ import org.apache.velocity.runtime.log.Log4JLogChute;
  * 
  * @author mbillemo
  */
-public class ApplicationStyleServlet extends HttpServlet {
+public class ApplicationStyleServlet extends AbstractInjectionServlet {
 
-    /* Velocity Context Variables */
-    private static final String      BRIGHTER         = "brighter";
-    private static final String      BRIGHT           = "bright";
-    private static final String      DARKER           = "darker";
+	/* Velocity Context Variables */
+	private static final String BRIGHTER = "brighter";
+	private static final String BRIGHT = "bright";
+	private static final String DARKER = "darker";
 
-    /* To convert base into theme colors: */
-    private static final int         BRIGHTER_OFFSET  = 29;
-    private static final double      BRIGHTER_FACTOR  = 1.39;
-    private static final int         BRIGHT_OFFSET    = 0;
-    private static final double      BRIGHT_FACTOR    = 1.45;
-    private static final int         DARKER_OFFSET    = 17;
-    private static final double      DARKER_FACTOR    = 1.26;
+	/* To convert base into theme colors: */
+	private static final int BRIGHTER_OFFSET = 29;
+	private static final double BRIGHTER_FACTOR = 1.39;
+	private static final int BRIGHT_OFFSET = 0;
+	private static final double BRIGHT_FACTOR = 1.45;
+	private static final int DARKER_OFFSET = 17;
+	private static final double DARKER_FACTOR = 1.26;
 
-    private static final long        serialVersionUID = 1L;
-    private static final Log         LOG              = LogFactory
-                                                              .getLog(ApplicationStyleServlet.class);
+	private static final long serialVersionUID = 1L;
+	private static final Log LOG = LogFactory
+			.getLog(ApplicationStyleServlet.class);
 
-    private PublicApplicationService publicApplicationService;
-    private VelocityEngine           velocity;
+	@EJB(mappedName = PublicApplicationService.JNDI_BINDING)
+	private PublicApplicationService publicApplicationService;
+	private VelocityEngine velocity;
 
+	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	public void init(ServletConfig config) throws ServletException {
 
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		Properties velocityProperties = new Properties();
+		velocityProperties.put("resource.loader", "class");
+		velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
+				Log4JLogChute.class.getName());
+		velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER,
+				getClass().getName());
+		velocityProperties
+				.put("class.resource.loader.class",
+						"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
-        super.init(config);
+		this.velocity = new VelocityEngine();
+		try {
+			this.velocity.init(velocityProperties);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
+	}
 
-        try {
-            loadDependencies();
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
-    }
+	/**
+	 * @{inheritDoc
+	 */
+	@Override
+	protected void invoke(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String applicationName = request.getParameter("applicationName");
+		if (null == applicationName) {
+			throw new IllegalArgumentException(
+					"The application name must be provided.");
+		}
 
-    private void loadDependencies() throws Exception {
+		// Figure out the base color for the style.
+		PublicApplication application = this.publicApplicationService
+				.findPublicApplication(applicationName);
 
-        this.publicApplicationService = EjbUtils.getEJB(
-                PublicApplicationService.JNDI_BINDING,
-                PublicApplicationService.class);
+		Color baseColor = Color.decode("#5a7500"); // Default: Green.
+		if (application != null && application.getColor() != null) {
+			baseColor = application.getColor();
+		}
 
-        Properties velocityProperties = new Properties();
-        velocityProperties.put("resource.loader", "class");
-        velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-                Log4JLogChute.class.getName());
-        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER,
-                getClass().getName());
-        velocityProperties
-                .put("class.resource.loader.class",
-                        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		// Merge the velocity style template with the color attributes.
+		OutputStreamWriter responseWriter = new OutputStreamWriter(response
+				.getOutputStream());
+		try {
+			VelocityContext velocityContext = new VelocityContext();
+			velocityContext.put(DARKER, getThemedColor(baseColor,
+					DARKER_FACTOR, DARKER_OFFSET));
+			velocityContext.put(BRIGHT, getThemedColor(baseColor,
+					BRIGHT_FACTOR, BRIGHT_OFFSET));
+			velocityContext.put(BRIGHTER, getThemedColor(baseColor,
+					BRIGHTER_FACTOR, BRIGHTER_OFFSET));
 
-        this.velocity = new VelocityEngine();
-        this.velocity.init(velocityProperties);
-    }
+			response.setContentType("text/css");
+			this.velocity.mergeTemplate("theme.css.vm", velocityContext,
+					responseWriter);
+		}
 
-    /**
-     * @{inheritDoc
-     */
-    @Override
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+		catch (Exception e) {
+			LOG.error("Velocity Failed:", e);
+			throw new ServletException(e);
+		}
 
-        String applicationName = request.getParameter("applicationName");
-        if (null == applicationName) {
-            throw new IllegalArgumentException(
-                    "The application name must be provided.");
-        }
+		finally {
+			responseWriter.flush();
+			response.flushBuffer();
+		}
+	}
 
-        // Figure out the base color for the style.
-        PublicApplication application = this.publicApplicationService
-                .findPublicApplication(applicationName);
+	private String getThemedColor(Color base, double factor, int offset) {
 
-        Color baseColor = Color.decode("#5a7500"); // Default: Green.
-        if (application != null && application.getColor() != null) {
-            baseColor = application.getColor();
-        }
+		int red = (int) (base.getRed() * factor + offset);
+		int green = (int) (base.getGreen() * factor + offset);
+		int blue = (int) (base.getBlue() * factor + offset);
 
-        // Merge the velocity style template with the color attributes.
-        OutputStreamWriter responseWriter = new OutputStreamWriter(response
-                .getOutputStream());
-        try {
-            VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put(DARKER, getThemedColor(baseColor,
-                    DARKER_FACTOR, DARKER_OFFSET));
-            velocityContext.put(BRIGHT, getThemedColor(baseColor,
-                    BRIGHT_FACTOR, BRIGHT_OFFSET));
-            velocityContext.put(BRIGHTER, getThemedColor(baseColor,
-                    BRIGHTER_FACTOR, BRIGHTER_OFFSET));
-
-            response.setContentType("text/css");
-            this.velocity.mergeTemplate("theme.css.vm", velocityContext,
-                    responseWriter);
-        }
-
-        catch (Exception e) {
-            LOG.error("Velocity Failed:", e);
-            throw new ServletException(e);
-        }
-
-        finally {
-            responseWriter.flush();
-            response.flushBuffer();
-        }
-    }
-
-    private String getThemedColor(Color base, double factor, int offset) {
-
-        int red = (int) (base.getRed() * factor + offset);
-        int green = (int) (base.getGreen() * factor + offset);
-        int blue = (int) (base.getBlue() * factor + offset);
-
-        return String.format("#%02x%02x%02x", red, green, blue);
-    }
+		return String.format("#%02x%02x%02x", red, green, blue);
+	}
 }
