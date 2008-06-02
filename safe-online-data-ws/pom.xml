@@ -75,8 +75,8 @@
 									sourcedestdir="${project.build.directory}/generated-sources/xjc"
 									catalog="${basedir}/src/main/jaxb/catalog.xml">
 									<produces
-										dir="${project.build.directory}/generated-sources/xjc">
-                                        <include name="**/*.java" />
+										dir="${project.build.directory}/generated-classes/jaxws">
+                                        <include name="**/*.class" />
 									</produces>
 								</wsimport>
 							</tasks>
