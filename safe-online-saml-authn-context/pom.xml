@@ -57,6 +57,10 @@
 										dir="${basedir}/src/main/resources"
 										includes="saml-schema-authn-context-smartcardpki-2.0.xsd" />
 									<arg value="-debug" />
+									<produces
+										dir="${project.build.directory}/generated-sources/xjc">
+                                        <include name="**/*.java" />
+									</produces>
 								</xjc>
 							</tasks>
 							<sourceRoot>
