@@ -8,7 +8,6 @@
 package test.unit.net.link.safeonline.sdk.auth.filter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -75,38 +74,6 @@ public class AuthenticationFilterTest {
 	}
 
 	@Test
-	public void performSimpleAuthnRequest() throws Exception {
-		// setup
-		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put(
-				AuthnRequestFilter.AUTH_SERVICE_URL_INIT_PARAM,
-				"http://authn.service");
-		filterInitParameters.put(
-				AuthnRequestFilter.APPLICATION_NAME_INIT_PARAM,
-				"application-id");
-		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-		this.servletTestManager.setUp(TestServlet.class,
-				AuthnRequestFilter.class, filterInitParameters,
-				initialSessionAttributes);
-
-		GetMethod getMethod = new GetMethod(this.servletTestManager
-				.getServletLocation());
-		getMethod.setFollowRedirects(false);
-		HttpClient httpClient = new HttpClient();
-
-		// operate
-		int statusCode = httpClient.executeMethod(getMethod);
-
-		// verify
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
-		String location = getMethod.getResponseHeader("Location").getValue();
-		assertNotNull(location);
-		LOG.debug("result Location: " + location);
-		assertTrue(location.startsWith("http://authn.service"));
-	}
-
-	@Test
 	public void performSaml2AuthnRequest() throws Exception {
 		// setup
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -119,7 +86,7 @@ public class AuthenticationFilterTest {
 
 		String p12ResourceName = "p12-resource-name.p12";
 		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI()
-                .toURL());
+				.toURL());
 
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
 		filterInitParameters.put(
@@ -128,8 +95,7 @@ public class AuthenticationFilterTest {
 		filterInitParameters.put(
 				AuthnRequestFilter.APPLICATION_NAME_INIT_PARAM,
 				"application-id");
-		filterInitParameters.put(
-				AuthnRequestFilter.AUTHN_PROTOCOL_INIT_PARAM,
+		filterInitParameters.put(AuthnRequestFilter.AUTHN_PROTOCOL_INIT_PARAM,
 				"SAML2_BROWSER_POST");
 		filterInitParameters.put(
 				AuthnRequestFilter.KEYSTORE_RESOURCE_INIT_PARAM,
@@ -168,7 +134,7 @@ public class AuthenticationFilterTest {
 
 		String p12ResourceName = "p12-resource-name.p12";
 		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI()
-                .toURL());
+				.toURL());
 
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
 		filterInitParameters.put(
@@ -177,8 +143,7 @@ public class AuthenticationFilterTest {
 		filterInitParameters.put(
 				AuthnRequestFilter.APPLICATION_NAME_INIT_PARAM,
 				"application-id");
-		filterInitParameters.put(
-				AuthnRequestFilter.AUTHN_PROTOCOL_INIT_PARAM,
+		filterInitParameters.put(AuthnRequestFilter.AUTHN_PROTOCOL_INIT_PARAM,
 				"SAML2_BROWSER_POST");
 		filterInitParameters.put(
 				AuthnRequestFilter.KEYSTORE_RESOURCE_INIT_PARAM,
