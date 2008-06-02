@@ -149,36 +149,6 @@ public class EntryServletTest {
 	}
 
 	@Test
-	public void simpleAuthenticationProtocol() throws Exception {
-		// setup
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.entryServletTestManager
-				.getServletLocation());
-		getMethod.setFollowRedirects(false);
-		String applicationId = "test-application-id";
-		String target = "http://test.target";
-		getMethod.setQueryString(new NameValuePair[] {
-				new NameValuePair("application", applicationId),
-				new NameValuePair("target", target) });
-
-		// operate
-		int statusCode = httpClient.executeMethod(getMethod);
-
-		// verify
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
-		String location = getMethod.getResponseHeader("Location").getValue();
-		LOG.debug("location: " + location);
-		assertTrue(location.endsWith(this.firstTimeUrl));
-		String resultApplicationId = (String) this.entryServletTestManager
-				.getSessionAttribute("applicationId");
-		assertEquals(applicationId, resultApplicationId);
-		String resultTarget = (String) this.entryServletTestManager
-				.getSessionAttribute("target");
-		assertEquals(target, resultTarget);
-	}
-
-	@Test
 	public void saml2AuthenticationProtocol() throws Exception {
 		// setup
 		HttpClient httpClient = new HttpClient();
