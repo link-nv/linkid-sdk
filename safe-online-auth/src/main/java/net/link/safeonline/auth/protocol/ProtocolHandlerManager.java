@@ -56,7 +56,6 @@ public class ProtocolHandlerManager {
 	private static final Map<String, ProtocolHandler> protocolHandlerMap = new HashMap<String, ProtocolHandler>();
 
 	static {
-		registerProtocolHandler(SimpleProtocolHandler.class);
 		registerProtocolHandler(Saml2PostProtocolHandler.class);
 	}
 

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.auth.protocol.SimpleProtocolHandler;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.AuthnEntryServlet;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
@@ -177,37 +176,6 @@ public class EntryServletTest {
 		String resultTarget = (String) this.entryServletTestManager
 				.getSessionAttribute("target");
 		assertEquals(target, resultTarget);
-	}
-
-	@Test
-	public void simpleAuthenticationProtocolHasMissingTarget() throws Exception {
-		// setup
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.entryServletTestManager
-				.getServletLocation());
-		getMethod.setFollowRedirects(false);
-		String applicationId = "test-application-id";
-		getMethod.setQueryString(new NameValuePair[] { new NameValuePair(
-				"application", applicationId) });
-
-		// operate
-		int statusCode = httpClient.executeMethod(getMethod);
-
-		// verify
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
-		String location = getMethod.getResponseHeader("Location").getValue();
-		LOG.debug("location: " + location);
-		assertTrue(location.endsWith(this.protocolErrorUrl));
-
-		String resultProtocolErrorMessage = (String) this.entryServletTestManager
-				.getSessionAttribute("protocolErrorMessage");
-		assertNotNull(resultProtocolErrorMessage);
-		assertTrue(resultProtocolErrorMessage.indexOf("target") != -1);
-		String resultProtocolName = (String) this.entryServletTestManager
-				.getSessionAttribute("protocolName");
-		assertNotNull(resultProtocolName);
-		assertEquals(SimpleProtocolHandler.NAME, resultProtocolName);
 	}
 
 	@Test

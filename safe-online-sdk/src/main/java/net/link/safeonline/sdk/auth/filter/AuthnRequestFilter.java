@@ -60,11 +60,9 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  * The optional init parameter <code>AuthenticationProtocol</code> should
  * contain the name of the protocol used between the SafeOnline authentication
- * web application and this service provider. This can be: SIMPLE_PLAIN_URL or
- * SAML2_BROWSER_POST. Defaults to: SIMPLE_PLAIN_URL
+ * web application and this service provider. This can be: SAML2_BROWSER_POST.
+ * Defaults to: SAML2_BROWSER_POST
  * </p>
- * 
- * TODO: remove references to simple plain url
  * 
  * <p>
  * The optional keystore resource name <code>KeyStoreResource</code> init
@@ -109,7 +107,7 @@ public class AuthnRequestFilter implements Filter {
 
 	public static final String KEYSTORE_TYPE_INIT_PARAM = "KeyStoreType";
 
-	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SIMPLE_PLAIN_URL;
+	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
 
 	private String authenticationServiceUrl;
 

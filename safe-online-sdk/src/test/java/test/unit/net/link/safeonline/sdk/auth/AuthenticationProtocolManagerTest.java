@@ -68,32 +68,6 @@ public class AuthenticationProtocolManagerTest {
 	}
 
 	@Test
-	public void simpleProtocolHandler() throws Exception {
-		// expectations
-		expect(
-				this.mockHttpSession
-						.getAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE))
-				.andReturn(null);
-		this.mockHttpSession.setAttribute(
-				eq(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE),
-				anyObject());
-
-		// prepare
-		replay(this.mockObjects);
-
-		// operate
-		AuthenticationProtocolHandler simpleAuthenticationProtocolHandler = AuthenticationProtocolManager
-				.createAuthenticationProtocolHandler(
-						AuthenticationProtocol.SIMPLE_PLAIN_URL,
-						"http://authn.service", "app-name", null, null, null,
-						this.mockHttpServletRequest);
-
-		// verify
-		verify(this.mockObjects);
-		assertNotNull(simpleAuthenticationProtocolHandler);
-	}
-
-	@Test
 	public void saml2ProtocolHandler() throws Exception {
 		// expectations
 		expect(

@@ -50,7 +50,7 @@ public class SafeOnlineLoginUtils {
 
 	public static final String KEY_STORE_PASSWORD_INIT_PARAM = "KeyStorePassword";
 
-	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SIMPLE_PLAIN_URL;
+	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
 
 	private SafeOnlineLoginUtils() {
 		// empty
@@ -76,10 +76,33 @@ public class SafeOnlineLoginUtils {
 	 * The method also requires the <code>AuthenticationProtocol</code>
 	 * context parameter defined in web.xml containing the authentication
 	 * protocol used between the application and the OLAS authentication web
-	 * application.
+	 * application. This can be: SAML2_BROWSER_POST. Defaults to:
+	 * SAML2_BROWSER_POST
+	 * </p> *
+	 * <p>
+	 * The optional keystore resource name <code>KeyStoreResource</code>
+	 * context parameter. The key pair within this keystore can be used by the
+	 * authentication protocol handler to digitally sign the authentication
+	 * request.
 	 * </p>
 	 * 
-	 * TODO: document all context parameters
+	 * <p>
+	 * The optional keystore file name <code>KeyStoreFile</code> context
+	 * parameter. The key pair within this keystore can be used by the
+	 * authentication protocol handler to digitally sign the authentication
+	 * request.
+	 * </p>
+	 * 
+	 * <p>
+	 * The optional <code>KeyStoreType</code> key store type context
+	 * parameter. Accepted values are: <code>pkcs12</code> and
+	 * <code>jks</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * The optional <code>KeyStorePassword</code> context parameter contains
+	 * the password to unlock the keystore and key entry.
+	 * </p>
 	 * 
 	 * @param log
 	 * @param targetPage
@@ -118,7 +141,7 @@ public class SafeOnlineLoginUtils {
 		X509Certificate certificate;
 		if (null != keyStoreResource || null != keyStoreFile) {
 			if (null != keyStoreResource && null != keyStoreFile)
-                throw new RuntimeException(
+				throw new RuntimeException(
 						"both KeyStoreResource and KeyStoreFile are defined");
 			String keyStorePassword = getInitParameter(externalContext,
 					KEY_STORE_PASSWORD_INIT_PARAM);
@@ -130,16 +153,16 @@ public class SafeOnlineLoginUtils {
 						.getContextClassLoader().getResourceAsStream(
 								keyStoreResource);
 				if (null == keyStoreInputStream)
-                    throw new RuntimeException("resource not found: "
+					throw new RuntimeException("resource not found: "
 							+ keyStoreResource);
 			} else {
-                try {
+				try {
 					keyStoreInputStream = new FileInputStream(keyStoreFile);
 				} catch (FileNotFoundException e) {
 					throw new RuntimeException("file not found: "
 							+ keyStoreFile);
 				}
-            }
+			}
 			PrivateKeyEntry privateKeyEntry = KeyStoreUtils
 					.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
 							keyStorePassword, keyStorePassword);
@@ -208,7 +231,7 @@ public class SafeOnlineLoginUtils {
 			String parameterName) {
 		String initParameter = context.getInitParameter(parameterName);
 		if (null == initParameter)
-            throw new RuntimeException("missing context-param in web.xml: "
+			throw new RuntimeException("missing context-param in web.xml: "
 					+ parameterName);
 		return initParameter;
 	}
@@ -217,8 +240,8 @@ public class SafeOnlineLoginUtils {
 			String parameterName, String defaultValue) {
 		String initParameter = context.getInitParameter(parameterName);
 		if (null == initParameter) {
-            initParameter = defaultValue;
-        }
+			initParameter = defaultValue;
+		}
 		return initParameter;
 	}
 }

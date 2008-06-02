@@ -8,7 +8,6 @@
 package test.unit.net.link.safeonline.sdk.auth;
 
 import static org.junit.Assert.assertEquals;
-
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 
 import org.apache.commons.logging.Log;
@@ -22,11 +21,8 @@ public class AuthenticationProtocolTest {
 
 	@Test
 	public void literals() throws Exception {
-		LOG.debug(AuthenticationProtocol.SIMPLE_PLAIN_URL);
 		LOG.debug(AuthenticationProtocol.SAML2_BROWSER_POST);
 
-		assertEquals("SIMPLE_PLAIN_URL",
-				AuthenticationProtocol.SIMPLE_PLAIN_URL.name());
 		assertEquals("SAML2_BROWSER_POST",
 				AuthenticationProtocol.SAML2_BROWSER_POST.name());
 	}

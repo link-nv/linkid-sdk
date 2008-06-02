@@ -17,7 +17,7 @@ import javax.servlet.UnavailableException;
  */
 public enum AuthenticationProtocol {
 
-	SIMPLE_PLAIN_URL, SAML2_BROWSER_POST;
+	SAML2_BROWSER_POST;
 
 	public static AuthenticationProtocol toAuthenticationProtocol(String value)
 			throws UnavailableException {

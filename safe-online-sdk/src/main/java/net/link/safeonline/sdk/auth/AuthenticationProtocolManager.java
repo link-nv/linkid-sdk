@@ -55,7 +55,6 @@ public class AuthenticationProtocolManager {
 	}
 
 	static {
-		registerProtocolHandler(SimplePlainUrlAuthenticationProtocolHandler.class);
 		registerProtocolHandler(Saml2BrowserPostAuthenticationProtocolHandler.class);
 	}
 
