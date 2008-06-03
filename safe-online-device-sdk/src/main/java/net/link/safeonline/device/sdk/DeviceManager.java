@@ -86,8 +86,9 @@ public class DeviceManager {
 									+ "/olas/device/registrationlanding");
 			session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
 					node.getHTTPLocation() + "/olas/device/exit");
-		} else
+		} else {
 			throw new ServletException("Unknown source");
+		}
 
 	}
 

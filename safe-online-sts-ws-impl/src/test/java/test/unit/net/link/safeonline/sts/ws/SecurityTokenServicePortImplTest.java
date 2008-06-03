@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
@@ -164,7 +165,8 @@ public class SecurityTokenServicePortImplTest {
 		this.mockObjects = new Object[] {
 				this.mockWSSecurityConfigurationService,
 				this.mockApplicationAuthenticationService,
-				this.mockDeviceAuthenticationService, this.mockPkiValidator };
+				this.mockDeviceAuthenticationService,
+				this.mockNodeAuthenticationService, this.mockPkiValidator };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/WSSecurityConfigurationBean/local",
@@ -186,18 +188,28 @@ public class SecurityTokenServicePortImplTest {
 		SecurityTokenServicePort port = new SecurityTokenServicePortImpl();
 		this.webServiceTestUtils.setUp(port);
 
-		String testApplicationName = "test-application-name";
+		String testNodeName = "test-node-name";
 		expect(
 				this.mockWSSecurityConfigurationService
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
 				Long.MAX_VALUE);
 		expect(
-				this.mockPkiValidator.validateCertificate("applications",
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andStubReturn(false);
+		expect(
+				this.mockPkiValidator.validateCertificate(
+						SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
+						this.certificate)).andStubReturn(false);
+		expect(
+				this.mockPkiValidator.validateCertificate(
+						SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
 						this.certificate)).andStubReturn(true);
 		expect(
-				this.mockApplicationAuthenticationService
+				this.mockNodeAuthenticationService
 						.authenticate(this.certificate)).andStubReturn(
-				testApplicationName);
+				testNodeName);
 		expect(
 				this.mockWSSecurityConfigurationService
 						.skipMessageIntegrityCheck(this.certificate))
@@ -233,6 +245,7 @@ public class SecurityTokenServicePortImplTest {
 	@Test
 	public void testWS() throws Exception {
 		// setup
+		String testIssuer = "test-issuer";
 		SecurityTokenService service = SecurityTokenServiceFactory
 				.newInstance();
 		SecurityTokenServicePort port = service.getSecurityTokenServicePort();
@@ -248,6 +261,11 @@ public class SecurityTokenServicePortImplTest {
 
 		bindingProvider.getBinding().setHandlerChain(handlers);
 
+		expect(
+				this.mockNodeAuthenticationService
+						.getSigningCertificate(testIssuer)).andStubReturn(
+				this.certificate);
+
 		// prepare
 		replay(this.mockObjects);
 
@@ -255,7 +273,7 @@ public class SecurityTokenServicePortImplTest {
 		ObjectFactory objectFactory = new ObjectFactory();
 		JAXBElement<String> requestType = objectFactory
 				.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#"
-						+ TrustDomainType.APPLICATION.getName());
+						+ TrustDomainType.NODE);
 		RequestSecurityTokenType request = new RequestSecurityTokenType();
 		request.getAny().add(requestType);
 		JAXBElement<String> tokenType = objectFactory
@@ -264,7 +282,7 @@ public class SecurityTokenServicePortImplTest {
 		ValidateTargetType validateTarget = new ValidateTargetType();
 
 		Element responseToken = createAuthResponse("test-in-response-to",
-				"test-issuer", "test-subject", 60);
+				testIssuer, "test-subject", 60);
 		validateTarget.setAny(responseToken);
 		request.getAny()
 				.add(objectFactory.createValidateTarget(validateTarget));

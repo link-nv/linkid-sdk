@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -152,10 +152,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 			HttpServletResponse httpResponse, String targetUrl, String device)
 			throws IOException, ServletException {
 		LOG.debug("target url: " + targetUrl);
-		Set<String> devices = new HashSet<String>();
-		if (null != device) {
-			devices.add(device);
-		}
+		Set<String> devices = Collections.singleton(device);
 		String samlRequestToken = AuthnRequestFactory
 				.createAuthnRequest(device, this.applicationName,
 						this.applicationKeyPair, this.registrationServiceUrl,
