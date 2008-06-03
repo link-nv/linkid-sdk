@@ -94,25 +94,25 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 	public String getAuthenticationURL(String deviceName)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		return device.getAuthenticationPath();
+		return device.getAuthenticationURL();
 	}
 
 	public String getRegistrationURL(String deviceName)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		return device.getRegistrationPath();
+		return device.getRegistrationURL();
 	}
 
 	public String getRemovalURL(String deviceName)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		return device.getRemovalPath();
+		return device.getRemovalURL();
 	}
 
 	public String getUpdateURL(String deviceName)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		return device.getUpdatePath();
+		return device.getUpdateURL();
 	}
 
 	public List<DeviceEntity> listDevices(String authenticationContextClass) {

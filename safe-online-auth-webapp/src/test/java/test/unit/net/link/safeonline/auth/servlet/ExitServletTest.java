@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ import net.link.safeonline.auth.servlet.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.ExitServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.dao.HistoryDAO;
@@ -46,6 +48,7 @@ import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.codec.binary.Base64;
@@ -93,9 +96,12 @@ public class ExitServletTest {
 
 	private PublicKey publicKey;
 
+	private X509Certificate authCertificate;
+
 	@Before
 	public void setUp() throws Exception {
 		this.jmxTestUtils = new JmxTestUtils();
+
 		this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
 		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -119,10 +125,24 @@ public class ExitServletTest {
 					}
 				});
 
+		this.jmxTestUtils
+				.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+
+		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+		this.authCertificate = PkiTestUtils.generateSelfSignedCertificate(
+				authKeyPair, "CN=test");
+		this.jmxTestUtils.registerActionHandler(
+				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
+				"getCertificate", new MBeanActionHandler() {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
+						LOG.debug("returning certificate");
+						return authCertificate;
+					}
+				});
+
 		this.jndiTestUtils = new JndiTestUtils();
 		SamlAuthorityService mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-		expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(
-				"test-issuer-name");
 		expect(mockSamlAuthorityService.getAuthnAssertionValidity())
 				.andStubReturn(60 * 10);
 		this.mockAuthenticationService = createMock(AuthenticationService.class);
@@ -137,9 +157,16 @@ public class ExitServletTest {
 						"test-application-id", "test-user-name"))
 				.andStubReturn("0");
 		DevicePolicyService mockDevicePolicyServiceBean = createMock(DevicePolicyService.class);
+		NodeAuthenticationService mockNodeAuthenticationServiceBean = createMock(NodeAuthenticationService.class);
+		expect(
+				mockNodeAuthenticationServiceBean
+						.authenticate(this.authCertificate)).andReturn(
+				"test-node-name");
+
 		this.mockObjects = new Object[] { mockSamlAuthorityService,
 				this.mockAuthenticationService, mockSubjectService,
-				mockUserIdMappingServiceBean, mockDevicePolicyServiceBean };
+				mockUserIdMappingServiceBean, mockDevicePolicyServiceBean,
+				mockNodeAuthenticationServiceBean };
 		this.jndiTestUtils.setUp();
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",
@@ -156,6 +183,9 @@ public class ExitServletTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/DevicePolicyServiceBean/local",
 				mockDevicePolicyServiceBean);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/NodeAuthenticationServiceBean/local",
+				mockNodeAuthenticationServiceBean);
 
 		this.exitServletTestManager = new ServletTestManager();
 		Map<String, String> servletInitParams = new HashMap<String, String>();

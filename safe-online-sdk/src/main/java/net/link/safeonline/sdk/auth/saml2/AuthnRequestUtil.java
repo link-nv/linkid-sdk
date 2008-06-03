@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
+import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -114,7 +115,8 @@ public class AuthnRequestUtil {
 	 */
 	public static AuthnRequest validateAuthnRequest(HttpServletRequest request,
 			String stsWsLocation, X509Certificate applicationCertificate,
-			PrivateKey applicationPrivateKey) throws ServletException {
+			PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
+			throws ServletException {
 		String encodedSamlRequest = request.getParameter("SAMLRequest");
 		if (null == encodedSamlRequest) {
 			throw new ServletException("no SAML request found");
@@ -137,7 +139,7 @@ public class AuthnRequestUtil {
 		SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(
 				stsWsLocation, applicationCertificate, applicationPrivateKey);
 		try {
-			stsClient.validate(samlElement);
+			stsClient.validate(samlElement, trustDomain);
 		} catch (RuntimeException e) {
 			throw new ServletException(e.getMessage());
 		}

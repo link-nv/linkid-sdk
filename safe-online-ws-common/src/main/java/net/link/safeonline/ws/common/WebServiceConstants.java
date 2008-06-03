@@ -35,4 +35,6 @@ public class WebServiceConstants {
 
 	public static final String TOPIC_DIALECT_SIMPLE = "http://docs.oasis-open.org/wsn/t-1/TopicExpression/Simple";
 
+	public static final String WS_TRUST_REQUEST_TYPE = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/";
+
 }

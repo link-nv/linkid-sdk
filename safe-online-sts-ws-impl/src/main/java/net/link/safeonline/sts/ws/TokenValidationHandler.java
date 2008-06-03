@@ -8,7 +8,6 @@
 package net.link.safeonline.sts.ws;
 
 import java.io.StringWriter;
-import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.Set;
 
@@ -38,8 +37,9 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
+import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.util.ee.EjbUtils;
-import net.link.safeonline.util.ee.IdentityServiceClient;
+import net.link.safeonline.ws.common.WebServiceConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,8 +66,6 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 			.getName()
 			+ ".Validity";
 
-	private PublicKey publicKey;
-
 	@PostConstruct
 	public void postConstructCallback() {
 		LOG.debug("post construct");
@@ -75,8 +73,6 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 				.setProperty(
 						"com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace",
 						"true");
-		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-		this.publicKey = identityServiceClient.getPublicKey();
 	}
 
 	public Set<QName> getHeaders() {
@@ -116,16 +112,38 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 		String issuerName = issuerElement.getTextContent();
 		LOG.debug("issuer name: " + issuerName);
 
+		Element requestTypeElement = findRequestTypeElement(soapPart);
+		if (null == requestTypeElement) {
+			LOG.debug("No request type specified in token ...");
+			throw createSOAPFaultException(
+					"No request type specified in token",
+					"InvalidSecurityToken");
+		}
+		String requestType = requestTypeElement.getTextContent();
+		LOG.debug("request type: " + issuerName);
+		if (false == requestType
+				.startsWith(WebServiceConstants.WS_TRUST_REQUEST_TYPE
+						+ "Validate")) {
+			LOG.debug("Only supporting the validation binding");
+			throw createSOAPFaultException(
+					"Only supporting the validation binding",
+					"InvalidSecurityToken");
+		}
+
+		String[] requestTypeParts = requestType.split("#");
+		TrustDomainType trustDomain;
+		if (requestTypeParts.length == 1) {
+			trustDomain = TrustDomainType.APPLICATION;
+		} else {
+			trustDomain = TrustDomainType.valueOf(requestTypeParts[1]);
+		}
+
 		Boolean result;
 		try {
-			// XXX: replace getSigningCert with findSigningCert, dont let it
-			// throw an exception ...
 			XMLSignature xmlSignature = new XMLSignature(tokenSignatureElement,
 					null);
 			LOG.debug("checking token signature");
-			result = xmlSignature.checkSignatureValue(this.publicKey);
-			if (false == result) {
-				// Can come from another olas node ...
+			if (trustDomain == TrustDomainType.NODE) {
 				NodeAuthenticationService nodeAuthenticationService = EjbUtils
 						.getEJB(
 								"SafeOnline/NodeAuthenticationServiceBean/local",
@@ -137,26 +155,30 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 					result = xmlSignature
 							.checkSignatureValue(nodeSigningCertificate);
 				} catch (NodeNotFoundException e) {
+					LOG.debug("unknown token issuer: " + issuerName);
+					throw createSOAPFaultException("unknown token issuer: "
+							+ issuerName, "InvalidSecurityToken");
 				}
-				if (false == result) {
-					// Can also come from a device provider ...
-					DeviceAuthenticationService deviceAuthenticationService = EjbUtils
-							.getEJB(
-									"SafeOnline/DeviceAuthenticationServiceBean/local",
-									DeviceAuthenticationService.class);
-					try {
-						X509Certificate deviceCertificate = deviceAuthenticationService
-								.getCertificate(issuerName);
-						result = xmlSignature
-								.checkSignatureValue(deviceCertificate);
-					} catch (DeviceNotFoundException e) {
-						LOG.debug("unknown token issuer: " + issuerName);
-						throw createSOAPFaultException("unknown token issuer: "
-								+ issuerName, "InvalidSecurityToken");
-					}
+			} else if (trustDomain == TrustDomainType.DEVICE) {
+				DeviceAuthenticationService deviceAuthenticationService = EjbUtils
+						.getEJB(
+								"SafeOnline/DeviceAuthenticationServiceBean/local",
+								DeviceAuthenticationService.class);
+				try {
+					X509Certificate deviceCertificate = deviceAuthenticationService
+							.getCertificate(issuerName);
+					result = xmlSignature
+							.checkSignatureValue(deviceCertificate);
+				} catch (DeviceNotFoundException e) {
+					LOG.debug("unknown token issuer: " + issuerName);
+					throw createSOAPFaultException("unknown token issuer: "
+							+ issuerName, "InvalidSecurityToken");
 				}
+			} else {
+				LOG.debug("unknown token issuer: " + issuerName);
+				throw createSOAPFaultException("unknown token issuer: "
+						+ issuerName, "InvalidSecurityToken");
 			}
-
 		} catch (XMLSecurityException e) {
 			LOG.error("XML signature error: " + e.getMessage(), e);
 			throw createSOAPFaultException("XML signature error",
@@ -232,6 +254,35 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 								document,
 								"/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:AuthnRequest/saml:Issuer",
 								nsElement);
+			return issuerElement;
+		} catch (TransformerException e) {
+			throw new RuntimeException("XPath error: " + e.getMessage());
+		}
+	}
+
+	private Element findRequestTypeElement(Document document) {
+		Element nsElement = document.createElement("nsElement");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
+				"http://schemas.xmlsoap.org/soap/envelope/");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
+				"http://www.w3.org/2000/09/xmldsig#");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp",
+				"urn:oasis:names:tc:SAML:2.0:protocol");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml",
+				"urn:oasis:names:tc:SAML:2.0:assertion");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wst",
+				"http://docs.oasis-open.org/ws-sx/ws-trust/200512/");
+		try {
+			LOG.debug("document: " + domToString(document));
+		} catch (TransformerException e1) {
+			LOG.debug("transformer exception");
+		}
+		try {
+			Element issuerElement = (Element) XPathAPI
+					.selectSingleNode(
+							document,
+							"/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:RequestType",
+							nsElement);
 			return issuerElement;
 		} catch (TransformerException e) {
 			throw new RuntimeException("XPath error: " + e.getMessage());

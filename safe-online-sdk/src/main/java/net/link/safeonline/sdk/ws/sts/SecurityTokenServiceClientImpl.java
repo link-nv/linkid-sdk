@@ -19,6 +19,7 @@ import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
+import net.link.safeonline.ws.common.WebServiceConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -74,15 +75,13 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
 				location + "/safe-online-ws/sts");
 	}
 
-	public void validate(Element token) {
+	public void validate(Element token, TrustDomainType trustDomain) {
 		LOG.debug("invoke");
 		RequestSecurityTokenType request = new RequestSecurityTokenType();
 		ObjectFactory objectFactory = new ObjectFactory();
-		// TODO: change to something specific indicating the trust domain ( app,
-		// dev, node ) ->
-		// http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#node ...
 		JAXBElement<String> requestType = objectFactory
-				.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate");
+				.createRequestType(WebServiceConstants.WS_TRUST_REQUEST_TYPE
+						+ "Validate#" + trustDomain);
 		request.getAny().add(requestType);
 
 		JAXBElement<String> tokenType = objectFactory

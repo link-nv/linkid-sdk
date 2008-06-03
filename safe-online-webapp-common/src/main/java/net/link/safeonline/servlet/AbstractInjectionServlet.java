@@ -64,6 +64,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		initInitParameters(config);
 		initContextParameters(config);
+		injectEjbs();
 	}
 
 	@Override
@@ -83,7 +84,6 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		injectRequestParameters(request);
 		injectSessionAttributes(session);
-		injectEjbs();
 		InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
 				response);
 		invoke(request, responseWrapper);

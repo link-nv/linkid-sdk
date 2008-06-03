@@ -26,6 +26,7 @@ import net.link.safeonline.device.sdk.exception.RegistrationInitializationExcept
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
+import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -124,7 +125,8 @@ public class Saml2Handler implements Serializable {
 		AuthnRequest samlAuthnRequest;
 		try {
 			samlAuthnRequest = AuthnRequestUtil.validateAuthnRequest(request,
-					this.wsLocation, authCertificate, authKeyPair.getPrivate());
+					this.wsLocation, authCertificate, authKeyPair.getPrivate(),
+					TrustDomainType.DEVICE);
 		} catch (ServletException e) {
 			throw new RegistrationInitializationException(e.getMessage());
 		}

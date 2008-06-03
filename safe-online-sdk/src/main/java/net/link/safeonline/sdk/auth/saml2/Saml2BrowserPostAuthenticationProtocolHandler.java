@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.SupportedAuthenticationProtocol;
+import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -191,7 +192,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
 				httpRequest, this.challenge.getValue(), this.applicationName,
 				this.wsLocation, this.applicationCertificate,
-				this.applicationKeyPair.getPrivate());
+				this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
 		if (null == samlResponse)
 			return null;
 

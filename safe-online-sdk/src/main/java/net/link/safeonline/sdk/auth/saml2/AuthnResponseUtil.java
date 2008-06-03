@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
+import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -145,7 +146,8 @@ public class AuthnResponseUtil {
 			HttpServletRequest httpRequest, String expectedInResponseTo,
 			String applicationName, String wsLocation,
 			X509Certificate applicationCertificate,
-			PrivateKey applicationPrivateKey) throws ServletException {
+			PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
+			throws ServletException {
 		if (false == "POST".equals(httpRequest.getMethod()))
 			return null;
 		LOG.debug("POST response");
@@ -202,7 +204,7 @@ public class AuthnResponseUtil {
 			Element samlElement = samlDocument.getDocumentElement();
 			SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(
 					wsLocation, applicationCertificate, applicationPrivateKey);
-			stsClient.validate(samlElement);
+			stsClient.validate(samlElement, trustDomain);
 		}
 
 		List<Assertion> assertions = samlResponse.getAssertions();

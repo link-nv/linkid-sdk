@@ -285,9 +285,9 @@ public class DeviceBean implements Device {
 	public String edit() {
 		LOG.debug("edit device: " + this.selectedDevice.getName());
 
-		this.authenticationURL = this.selectedDevice.getAuthenticationURL();
-		this.registrationURL = this.selectedDevice.getRegistrationURL();
-		this.removalURL = this.selectedDevice.getRemovalURL();
+		this.authenticationURL = this.selectedDevice.getAuthenticationPath();
+		this.registrationURL = this.selectedDevice.getRegistrationPath();
+		this.removalURL = this.selectedDevice.getRemovalPath();
 		if (null != this.selectedDevice.getAttributeType())
 			this.attributeType = this.selectedDevice.getAttributeType()
 					.getName();

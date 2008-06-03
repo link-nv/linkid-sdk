@@ -44,15 +44,15 @@ public class DeviceMappingDO {
 	}
 
 	public boolean isRegistrable() {
-		return null != this.deviceMapping.getDevice().getRegistrationURL();
+		return null != this.deviceMapping.getDevice().getRegistrationPath();
 	}
 
 	public boolean isUpdatable() {
-		return null != this.deviceMapping.getDevice().getUpdateURL();
+		return null != this.deviceMapping.getDevice().getUpdatePath();
 	}
 
 	public boolean isRemovable() {
-		return null != this.deviceMapping.getDevice().getRemovalURL();
+		return null != this.deviceMapping.getDevice().getRemovalPath();
 	}
 
 }

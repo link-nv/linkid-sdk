@@ -37,14 +37,14 @@ public class DeviceEntry {
 	}
 
 	public boolean isRegistrable() {
-		return null != this.device.getRegistrationURL();
+		return null != this.device.getRegistrationPath();
 	}
 
 	public boolean isUpdatable() {
-		return null != this.device.getUpdateURL();
+		return null != this.device.getUpdatePath();
 	}
 
 	public boolean isRemovable() {
-		return null != this.device.getRemovalURL();
+		return null != this.device.getRemovalPath();
 	}
 }

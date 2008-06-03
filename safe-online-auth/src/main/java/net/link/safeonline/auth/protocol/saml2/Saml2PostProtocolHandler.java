@@ -25,8 +25,10 @@ import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -34,6 +36,7 @@ import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.SamlRequestSecurityPolicyResolver;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -73,6 +76,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 	private final IdentityServiceClient identityServiceClient;
 
+	private final AuthIdentityServiceClient authIdentityServiceClient;
+
 	private final SamlAuthorityService samlAuthorityService;
 
 	static {
@@ -94,6 +99,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 	public Saml2PostProtocolHandler() {
 		this.identityServiceClient = new IdentityServiceClient();
+		this.authIdentityServiceClient = new AuthIdentityServiceClient();
 		this.samlAuthorityService = EjbUtils.getEJB(
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				SamlAuthorityService.class);
@@ -246,8 +252,20 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		LOG.debug("target URL: " + target);
 		LOG.debug("application: " + applicationId);
 
+		NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(
+				"SafeOnline/NodeAuthenticationServiceBean/local",
+				NodeAuthenticationService.class);
+		String nodeName;
+		try {
+			nodeName = nodeAuthenticationService
+					.authenticate(this.authIdentityServiceClient
+							.getCertificate());
+		} catch (NodeNotFoundException e) {
+			throw new ProtocolException("unknown node");
+		}
+
 		String authnContextClass = getAuthnContextClass(session);
-		String issuerName = this.samlAuthorityService.getIssuerName();
+		String issuerName = nodeName;
 		int validity = this.samlAuthorityService.getAuthnAssertionValidity();
 		String inResponseTo = (String) session
 				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);

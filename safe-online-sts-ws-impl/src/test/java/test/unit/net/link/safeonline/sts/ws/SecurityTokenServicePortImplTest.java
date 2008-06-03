@@ -33,6 +33,7 @@ import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
+import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
 import net.link.safeonline.sts.ws.SecurityTokenServicePortImpl;
@@ -253,7 +254,8 @@ public class SecurityTokenServicePortImplTest {
 		// operate
 		ObjectFactory objectFactory = new ObjectFactory();
 		JAXBElement<String> requestType = objectFactory
-				.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate");
+				.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#"
+						+ TrustDomainType.APPLICATION.getName());
 		RequestSecurityTokenType request = new RequestSecurityTokenType();
 		request.getAny().add(requestType);
 		JAXBElement<String> tokenType = objectFactory

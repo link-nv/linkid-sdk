@@ -350,28 +350,28 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	public void updateAuthenticationUrl(String deviceName,
 			String authenticationURL) throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		device.setAuthenticationURL(authenticationURL);
+		device.setAuthenticationPath(authenticationURL);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void updateRegistrationUrl(String deviceName, String registrationURL)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		device.setRegistrationURL(registrationURL);
+		device.setRegistrationPath(registrationURL);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void updateRemovalUrl(String deviceName, String removalURL)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		device.setRemovalURL(removalURL);
+		device.setRemovalPath(removalURL);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void updateUpdateUrl(String deviceName, String updateURL)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		device.setUpdateURL(updateURL);
+		device.setUpdatePath(updateURL);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

@@ -26,6 +26,7 @@ import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
+import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -180,7 +181,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
 				httpRequest, this.challenge.getValue(), this.applicationName,
-				this.wsLocation, certificate, privateKey);
+				this.wsLocation, certificate, privateKey, TrustDomainType.NODE);
 		if (null == samlResponse)
 			return null;
 

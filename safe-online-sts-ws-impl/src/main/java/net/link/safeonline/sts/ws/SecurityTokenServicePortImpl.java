@@ -95,8 +95,8 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 		if (null == requestType) {
 			throw new RuntimeException("RequestType is required");
 		}
-		if (false == "http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate"
-				.equals(requestType)) {
+		if (false == requestType
+				.startsWith("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate")) {
 			throw new RuntimeException("only supporting the validation binding");
 		}
 		if (null != tokenType

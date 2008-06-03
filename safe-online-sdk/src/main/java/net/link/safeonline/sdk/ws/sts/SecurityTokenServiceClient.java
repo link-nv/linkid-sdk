@@ -22,6 +22,7 @@ public interface SecurityTokenServiceClient extends MessageAccessor {
 	 * Validate the given (SAML) token.
 	 * 
 	 * @param token
+	 * @param trustDomain
 	 */
-	void validate(Element token);
+	void validate(Element token, TrustDomainType trustDomain);
 }

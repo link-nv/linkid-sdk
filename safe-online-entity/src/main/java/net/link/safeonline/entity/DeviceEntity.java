@@ -75,13 +75,13 @@ public class DeviceEntity implements Serializable {
 
 	private OlasEntity location;
 
-	private String authenticationURL;
+	private String authenticationPath;
 
-	private String registrationURL;
+	private String registrationPath;
 
-	private String removalURL;
+	private String removalPath;
 
-	private String updateURL;
+	private String updatePath;
 
 	private byte[] encodedCert;
 
@@ -102,16 +102,16 @@ public class DeviceEntity implements Serializable {
 	}
 
 	public DeviceEntity(String name, DeviceClassEntity deviceClass,
-			OlasEntity location, String authenticationURL,
-			String registrationURL, String removalURL, String updateURL,
+			OlasEntity location, String authenticationPath,
+			String registrationPath, String removalPath, String updatePath,
 			X509Certificate certificate) {
 		this.name = name;
 		this.deviceClass = deviceClass;
 		this.location = location;
-		this.authenticationURL = authenticationURL;
-		this.registrationURL = registrationURL;
-		this.removalURL = removalURL;
-		this.updateURL = updateURL;
+		this.authenticationPath = authenticationPath;
+		this.registrationPath = registrationPath;
+		this.removalPath = removalPath;
+		this.updatePath = updatePath;
 		this.properties = new HashMap<String, DevicePropertyEntity>();
 		this.descriptions = new HashMap<String, DeviceDescriptionEntity>();
 		if (null != certificate) {
@@ -197,36 +197,35 @@ public class DeviceEntity implements Serializable {
 	 * Retrieve the local URL for authentication of this device.
 	 * 
 	 */
-	public String getAuthenticationURL() {
-		return this.authenticationURL;
+	public String getAuthenticationPath() {
+		return this.authenticationPath;
 	}
 
-	public void setAuthenticationURL(String authenticationURL) {
-		this.authenticationURL = authenticationURL;
+	public void setAuthenticationPath(String authenticationPath) {
+		this.authenticationPath = authenticationPath;
 	}
 
 	/**
 	 * Returns the full URL for authentication of this device.
 	 * 
-	 * TODO: naming consistent URL - path
 	 */
 	@Transient
-	public String getAuthenticationPath() {
+	public String getAuthenticationURL() {
 		if (null == this.location)
-			return this.authenticationURL;
-		return this.location.getLocation() + "/" + this.authenticationURL;
+			return this.authenticationPath;
+		return this.location.getLocation() + "/" + this.authenticationPath;
 	}
 
 	/**
 	 * Retrieves the local URL for registration of this device.
 	 * 
 	 */
-	public String getRegistrationURL() {
-		return this.registrationURL;
+	public String getRegistrationPath() {
+		return this.registrationPath;
 	}
 
-	public void setRegistrationURL(String registrationURL) {
-		this.registrationURL = registrationURL;
+	public void setRegistrationPath(String registrationPath) {
+		this.registrationPath = registrationPath;
 	}
 
 	/**
@@ -234,22 +233,22 @@ public class DeviceEntity implements Serializable {
 	 * 
 	 */
 	@Transient
-	public String getRegistrationPath() {
+	public String getRegistrationURL() {
 		if (null == this.location)
-			return this.registrationURL;
-		return this.location.getLocation() + "/" + this.registrationURL;
+			return this.registrationPath;
+		return this.location.getLocation() + "/" + this.registrationPath;
 	}
 
 	/**
 	 * Retrieves the local URL for removal of this device.
 	 * 
 	 */
-	public String getRemovalURL() {
-		return this.removalURL;
+	public String getRemovalPath() {
+		return this.removalPath;
 	}
 
-	public void setRemovalURL(String removalURL) {
-		this.removalURL = removalURL;
+	public void setRemovalPath(String removalPath) {
+		this.removalPath = removalPath;
 	}
 
 	/**
@@ -257,22 +256,22 @@ public class DeviceEntity implements Serializable {
 	 * 
 	 */
 	@Transient
-	public String getRemovalPath() {
+	public String getRemovalURL() {
 		if (null == this.location)
-			return this.removalURL;
-		return this.location.getLocation() + "/" + this.removalURL;
+			return this.removalPath;
+		return this.location.getLocation() + "/" + this.removalPath;
 	}
 
 	/**
 	 * Retrieves the URL for updating of this device.
 	 * 
 	 */
-	public String getUpdateURL() {
-		return this.updateURL;
+	public String getUpdatePath() {
+		return this.updatePath;
 	}
 
-	public void setUpdateURL(String updateURL) {
-		this.updateURL = updateURL;
+	public void setUpdatePath(String updatePath) {
+		this.updatePath = updatePath;
 	}
 
 	/**
@@ -280,10 +279,10 @@ public class DeviceEntity implements Serializable {
 	 * 
 	 */
 	@Transient
-	public String getUpdatePath() {
+	public String getUpdateURL() {
 		if (null == this.location)
-			return this.updateURL;
-		return this.location.getLocation() + "/" + this.updateURL;
+			return this.updatePath;
+		return this.location.getLocation() + "/" + this.updatePath;
 	}
 
 	/**
