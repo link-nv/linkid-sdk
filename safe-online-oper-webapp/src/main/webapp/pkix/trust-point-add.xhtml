@@ -19,22 +19,22 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<h:form enctype="multipart/form-data">
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<h:panelGrid columns="1">
-				<h:panelGroup>
-					<s:decorate>
-						<t:inputFileUpload id="fileupload" label="#{msgs.certificate}:"
-							value="#{trustPoint.upFile}" />
-					</s:decorate>
-					<h:message for="fileupload" styleClass="error" />
-				</h:panelGroup>
-			</h:panelGrid>
+            <table class="listingTable">
+                <tr>
+                    <th>
+                        <s:decorate>
+                            <t:inputFileUpload id="fileupload" label="#{msgs.certificate}:"
+                                value="#{trustPoint.upFile}" />
+                        </s:decorate>
+                        <h:message for="fileupload" styleClass="error" />
+                    </th>
+                </tr>
+            </table>
 
 			<h:commandButton action="#{trustPoint.add}" id="add"
 				value="#{msgs.addaction}" styleClass="submit" />

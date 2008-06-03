@@ -11,12 +11,11 @@
 	</ui:define>
 	<ui:define name="content">
 		<h2>#{msgs.registerANewDevice}</h2>
-		<h3>#{msgs.mobile}</h3>
 
 		<a4j:form id="mobile-register-form" ajaxSubmit="true"
 			reRender="mobile-register-form,mobile-confirm-form">
 			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
+				<s:span />
 			</f:facet>
 			<h:outputLabel for="mobile" value="#{msgs.mobile}" />
 			<s:decorate>
