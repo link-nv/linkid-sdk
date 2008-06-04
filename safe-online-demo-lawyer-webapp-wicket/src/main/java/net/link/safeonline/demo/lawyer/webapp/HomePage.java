@@ -1,8 +1,8 @@
 package net.link.safeonline.demo.lawyer.webapp;
 
 import net.link.safeonline.demo.wicket.tools.RolesAllowed;
-import wicket.markup.html.basic.Label;
-import wicket.markup.html.link.PageLink;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.PageLink;
 
 @RolesAllowed("baradmin")
 public class HomePage extends Layout {

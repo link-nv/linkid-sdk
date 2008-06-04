@@ -1,7 +1,8 @@
 package net.link.safeonline.demo.lawyer.webapp;
 
 import net.link.safeonline.demo.wicket.tools.RoleSession;
-import wicket.protocol.http.WebApplication;
+
+import org.apache.wicket.Request;
 
 public class LawyerSession extends RoleSession {
 
@@ -9,8 +10,9 @@ public class LawyerSession extends RoleSession {
 
 	private Lawyer lawyer;
 
-	public LawyerSession(WebApplication application) {
-		super(application);
+	public LawyerSession(Request request) {
+
+        super(request);
 	}
 
 	public Lawyer getLawyer() {

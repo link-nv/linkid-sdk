@@ -1,7 +1,7 @@
 package net.link.safeonline.demo.lawyer.webapp;
 
 import net.link.safeonline.demo.wicket.tools.RolesAllowed;
-import wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.Label;
 
 @RolesAllowed
 public class ViewProfile extends Layout {

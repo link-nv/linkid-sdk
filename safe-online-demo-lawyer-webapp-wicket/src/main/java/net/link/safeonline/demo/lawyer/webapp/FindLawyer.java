@@ -1,11 +1,11 @@
 package net.link.safeonline.demo.lawyer.webapp;
 
 import net.link.safeonline.demo.wicket.tools.RolesAllowed;
-import wicket.markup.html.basic.Label;
-import wicket.markup.html.form.Form;
-import wicket.markup.html.form.RequiredTextField;
-import wicket.markup.html.panel.FeedbackPanel;
-import wicket.model.CompoundPropertyModel;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 
 @RolesAllowed("baradmin")
 public class FindLawyer extends Layout {

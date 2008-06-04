@@ -2,15 +2,15 @@ package net.link.safeonline.demo.lawyer.webapp;
 
 import java.net.URLEncoder;
 
-import wicket.markup.html.basic.Label;
-import wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.ExternalLink;
 
 public class LoginPage extends Layout {
 
 	private static final long serialVersionUID = 1L;
 
 	public LoginPage() {
-		String target = this.getWebRequestCycle().getWebRequest()
+		String target = getWebRequestCycle().getWebRequest()
 				.getHttpServletRequest().getRequestURL().toString();
 		String redirectUrl;
 		try {

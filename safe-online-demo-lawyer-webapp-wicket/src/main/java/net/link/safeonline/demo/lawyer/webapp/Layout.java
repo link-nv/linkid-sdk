@@ -1,9 +1,9 @@
 package net.link.safeonline.demo.lawyer.webapp;
 
-import wicket.markup.html.WebPage;
-import wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 
-public class Layout extends WebPage {
+public class Layout extends WebPage<Object> {
 
 	private static final long serialVersionUID = 1L;
 

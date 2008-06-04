@@ -1,7 +1,10 @@
 package net.link.safeonline.demo.lawyer.webapp;
 
-import wicket.Session;
-import wicket.protocol.http.WebApplication;
+import org.apache.wicket.Page;
+import org.apache.wicket.Request;
+import org.apache.wicket.Response;
+import org.apache.wicket.Session;
+import org.apache.wicket.protocol.http.WebApplication;
 
 public class LawyerApplication extends WebApplication {
 
@@ -11,20 +14,31 @@ public class LawyerApplication extends WebApplication {
 	
 	@Override
 	protected void init() {
-		setSessionFactory(this);
+		
+	    // setSessionFactory(this);
 		getSecuritySettings().setAuthorizationStrategy(new LawyerStrategy());
-		SafeOnlineAuthenticationServiceUrl = getWicketServlet().getInitParameter("SafeOnlineAuthenticationServiceUrl");
-		ApplicationName = getWicketServlet().getInitParameter("ApplicationName");
+		SafeOnlineAuthenticationServiceUrl = getServletContext()
+                .getInitParameter("SafeOnlineAuthenticationServiceUrl");
+        ApplicationName = getServletContext().getInitParameter(
+                "ApplicationName");
 	}
 
+	/**
+     * {@inheritDoc}
+     */
 	@Override
-	public Class<?> getHomePage() {
-		return HomePage.class;
+	public Class<? extends Page<?>> getHomePage() {
+
+        return HomePage.class;
 	}
 
+	/**
+     * {@inheritDoc}
+     */
 	@Override
-	public Session newSession() {
-		return new LawyerSession(this);
+	public Session newSession(Request request, Response response) {
+
+        return new LawyerSession(request);
 	}
 
 }

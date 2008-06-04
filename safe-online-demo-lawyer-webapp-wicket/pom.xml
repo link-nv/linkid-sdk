@@ -27,15 +27,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>wicket</groupId>
+			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>wicket</groupId>
+			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-extensions</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k</groupId>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-wicket-tools</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
