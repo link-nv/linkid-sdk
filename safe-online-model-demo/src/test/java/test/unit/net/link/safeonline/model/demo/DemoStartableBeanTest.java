@@ -14,6 +14,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
+import net.link.safeonline.audit.bean.ResourceAuditLoggerBean;
+import net.link.safeonline.audit.dao.bean.AccessAuditDAOBean;
+import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
+import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
+import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
+import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
@@ -26,6 +32,7 @@ import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
+import net.link.safeonline.dao.bean.DeviceMappingDAOBean;
 import net.link.safeonline.dao.bean.DeviceSubjectDAOBean;
 import net.link.safeonline.dao.bean.OlasDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
@@ -77,6 +84,7 @@ import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;
+import net.link.safeonline.service.bean.DeviceMappingServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
@@ -111,6 +119,10 @@ public class DemoStartableBeanTest {
 			SubjectIdentifierDAOBean.class, IdGeneratorBean.class,
 			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class,
 			OlasDAOBean.class, DevicePolicyServiceBean.class,
+			DeviceMappingServiceBean.class, DeviceMappingDAOBean.class,
+			ResourceAuditLoggerBean.class, AuditAuditDAOBean.class,
+			AuditContextDAOBean.class, AccessAuditDAOBean.class,
+			SecurityAuditDAOBean.class, ResourceAuditDAOBean.class,
 			DevicesBean.class, NotificationProducerServiceBean.class,
 			NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class,
 			DeviceSubjectDAOBean.class };
