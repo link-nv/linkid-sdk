@@ -174,10 +174,10 @@
 
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
 			id="certificate-tab" label="#{msgs.certificate}">
-            <div class="white_space"><h:outputText value="#{selectedDevice.certificate}"
-                rendered="#{!empty selectedDevice.certificate}" /></div>
-            <p><h:outputText value="#{msgs.noCertificate}"
-                rendered="#{empty selectedDevice.certificate}" /></p>
+            <h:outputText value="#{selectedDevice.certificate}" styleClass="white_space"
+                rendered="#{!empty selectedDevice.certificate}" />
+            <h:outputText value="#{msgs.noCertificate}"
+                rendered="#{empty selectedDevice.certificate}" />
         </rich:simpleTogglePanel>
 
 		<rich:spacer height="10" />

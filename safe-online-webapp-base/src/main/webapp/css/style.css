@@ -398,11 +398,13 @@ hr.float_fix {
     width:              550px;
     height:             200px;
     padding:            10px;
-    overflow:           auto;
 
     border:             1px solid black;
 }
 .usage_agreement, .white_space {
+    display:            block;
+    overflow:           auto;
+
     font-family:        fixed;
 
     white-space:        pre-wrap;                   /* css-3 */

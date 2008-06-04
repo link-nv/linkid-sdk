@@ -57,8 +57,8 @@
                     <tr><th><h:outputText value="#{msgs.certificate}" /></th></tr>
                 </thead>
                 <tbody>
-                    <tr><td class="white_space">
-                            <h:outputText
+                    <tr><td>
+                            <h:outputText styleClass="white_space"
                                 value="#{selectedNode.authnCertificate}"
                                 rendered="#{!empty selectedNode.authnCertificate}" />
                             <h:outputText
@@ -79,8 +79,8 @@
                     <tr><th><h:outputText value="#{msgs.certificate}" /></th></tr>
                 </thead>
                 <tbody>
-                    <tr><td class="white_space">
-                            <h:outputText
+                    <tr><td>
+                            <h:outputText styleClass="white_space"
                                 value="#{selectedNode.signingCertificate}"
                                 rendered="#{!empty selectedNode.signingCertificate}" />
                             <h:outputText
