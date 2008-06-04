@@ -40,8 +40,8 @@ public abstract class AbstractStatementServlet extends AbstractInjectionServlet 
 			throws ServletException, IOException;
 
 	@Override
-	protected void invoke(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void invokePost(HttpServletRequest request,
+			HttpServletResponse response) throws IOException, ServletException {
 		LOG.debug("doPost");
 		String contentType = request.getContentType();
 		if (false == "application/octet-stream".equals(contentType)) {

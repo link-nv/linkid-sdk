@@ -97,7 +97,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
 	 * @{inheritDoc
 	 */
 	@Override
-	protected void invoke(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String applicationName = request.getParameter("applicationName");
 		if (null == applicationName) {

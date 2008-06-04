@@ -55,7 +55,18 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 	private String deviceErrorUrl;
 
 	@Override
-	protected void invoke(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		handleLanding(request, response);
+	}
+
+	@Override
+	protected void invokePost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		handleLanding(request, response);
+	}
+
+	private void handleLanding(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.findSaml2BrowserPostHandler(request);

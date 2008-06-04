@@ -65,7 +65,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 	private UsageAgreementService usageAgreementService;
 
 	@Override
-	protected void invoke(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doGet");
 		HttpSession session = request.getSession();

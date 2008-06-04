@@ -34,8 +34,8 @@ public class ExportServlet extends AbstractInjectionServlet {
 	private StatisticService statisticService;
 
 	@Override
-	public void invoke(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void invokeGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("application/vnd.ms-excel");
 		OutputStream out = response.getOutputStream();

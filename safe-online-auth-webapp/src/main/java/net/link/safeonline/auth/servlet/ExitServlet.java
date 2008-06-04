@@ -65,7 +65,7 @@ public class ExitServlet extends AbstractInjectionServlet {
 	private String protocolErrorUrl;
 
 	@Override
-	protected void invoke(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("handleInvocation");
 		HttpSession session = request.getSession();

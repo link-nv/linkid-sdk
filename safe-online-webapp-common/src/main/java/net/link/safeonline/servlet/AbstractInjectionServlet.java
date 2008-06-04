@@ -70,23 +70,35 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 	@Override
 	protected final void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		doInvocation(request, response);
+		doGetInvocation(request, response);
 	}
 
 	@Override
 	protected final void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		doInvocation(request, response);
+		doPostInvocation(request, response);
 	}
 
-	private void doInvocation(HttpServletRequest request,
+	private void doGetInvocation(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		injectRequestParameters(request);
 		injectSessionAttributes(session);
 		InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
 				response);
-		invoke(request, responseWrapper);
+		invokeGet(request, responseWrapper);
+		outjectSessionAttributes(session);
+		responseWrapper.commit();
+	}
+
+	private void doPostInvocation(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		injectRequestParameters(request);
+		injectSessionAttributes(session);
+		InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
+				response);
+		invokePost(request, responseWrapper);
 		outjectSessionAttributes(session);
 		responseWrapper.commit();
 	}
@@ -122,8 +134,15 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 		}
 	}
 
-	protected abstract void invoke(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException;
+	protected void invokeGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		super.doGet(request, response);
+	}
+
+	protected void invokePost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		super.doPost(request, response);
+	}
 
 	private void injectRequestParameters(HttpServletRequest request)
 			throws ServletException {

@@ -51,7 +51,7 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
 	 * @{inheritDoc
 	 */
 	@Override
-	protected void invoke(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
 		boolean logoWritten = false;

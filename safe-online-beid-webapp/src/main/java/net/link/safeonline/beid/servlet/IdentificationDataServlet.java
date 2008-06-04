@@ -102,8 +102,19 @@ public class IdentificationDataServlet extends AbstractInjectionServlet {
 	private static final String NATIONAL_NUMBER_SEED = "00cd4de51be6d556f98f40a1a69f7bcbd4fb75c1";
 
 	@Override
-	protected void invoke(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		invoke(request, response);
+	}
+
+	@Override
+	protected void invokePost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		invoke(request, response);
+	}
+
+	private void invoke(@SuppressWarnings("unused") HttpServletRequest request,
+			@SuppressWarnings("unused") HttpServletResponse response) {
 		LOG.debug("name: " + this.name);
 		LOG.debug("first name: " + this.firstName);
 		LOG.debug("dob: " + this.dob);

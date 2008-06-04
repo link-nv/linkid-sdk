@@ -62,8 +62,19 @@ public class DeviceRegistrationExitServlet extends AbstractInjectionServlet {
 	private String deviceErrorUrl;
 
 	@Override
-	protected void invoke(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		handleLanding(request, response);
+	}
+
+	@Override
+	protected void invokePost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		handleLanding(request, response);
+	}
+
+	private void handleLanding(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(request.getSession());
 		DeviceEntity device;

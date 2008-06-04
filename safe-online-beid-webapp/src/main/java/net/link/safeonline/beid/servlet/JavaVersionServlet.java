@@ -146,8 +146,19 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 	private JAVA_VERSION sessionJavaVersion;
 
 	@Override
-	protected void invoke(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		invoke(request, response);
+	}
+
+	@Override
+	protected void invokePost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		invoke(request, response);
+	}
+
+	private void invoke(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
 		LOG.debug("doPost");
 		LOG.debug("platform: " + this.platformRequestParameter);
 		LOG.debug("java enabled: " + this.javaEnabled);

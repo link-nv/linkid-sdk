@@ -68,8 +68,19 @@ public class IdentificationExitServlet extends AbstractInjectionServlet {
 	private String hashedNationalNumber;
 
 	@Override
-	protected void invoke(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		invoke(request, response);
+	}
+
+	@Override
+	protected void invokePost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		invoke(request, response);
+	}
+
+	private void invoke(@SuppressWarnings("unused") HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
 		LOG.debug("target: " + this.target);
 		LOG.debug("name: " + this.name);
 		LOG.debug("first name: " + this.firstname);

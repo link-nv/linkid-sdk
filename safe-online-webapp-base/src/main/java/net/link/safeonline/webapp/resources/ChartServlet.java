@@ -34,8 +34,14 @@ public class ChartServlet extends AbstractInjectionServlet {
 	private StatisticService statisticService;
 
 	@Override
-	public void invoke(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void invokePost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		return;
+	}
+
+	@Override
+	public void invokeGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("image/png");
 		OutputStream out = response.getOutputStream();
