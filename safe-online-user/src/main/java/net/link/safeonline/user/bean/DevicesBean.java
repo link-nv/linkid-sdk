@@ -33,15 +33,11 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.data.DeviceMappingDO;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
-import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.DeviceService;
 import net.link.safeonline.user.DeviceEntry;
 import net.link.safeonline.user.Devices;
@@ -100,16 +96,10 @@ public class DevicesBean implements Devices {
 	private SubjectManager subjectManager;
 
 	@EJB
-	private DeviceMappingService deviceMapppingService;
-
-	@EJB
 	private DeviceService deviceService;
 
 	@EJB
 	private CredentialService credentialService;
-
-	@EJB
-	private IdentityService identityService;
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
@@ -352,8 +342,7 @@ public class DevicesBean implements Devices {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String removeDevice() {
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		if (!deviceRemovalAllowed(subject)) {
+		if (!deviceRemovalAllowed()) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
@@ -364,35 +353,10 @@ public class DevicesBean implements Devices {
 				.getDevice().getName());
 	}
 
-	private boolean deviceRemovalAllowed(SubjectEntity subject) {
-		List<DeviceMappingEntity> mappings = this.deviceMapppingService
-				.listDeviceMappings(subject);
-		Locale locale = getViewLocale();
-		boolean registeredDeviceExists = false;
-		for (DeviceMappingEntity mapping : mappings) {
-			List<AttributeDO> deviceAttribute;
-			try {
-				deviceAttribute = this.identityService.listAttributes(mapping
-						.getId(), mapping.getDevice().getAttributeType(),
-						locale);
-			} catch (PermissionDeniedException e) {
-				LOG.debug("Permission denied retrieve device attribute: "
-						+ e.getMessage());
-				return false;
-			} catch (AttributeTypeNotFoundException e) {
-				LOG.debug("Attribute type not found: "
-						+ mapping.getDevice().getAttributeType());
-				return false;
-			}
-			if (null == deviceAttribute) {
-				continue;
-			} else if (0 != deviceAttribute.size() && registeredDeviceExists) {
-				return true;
-			} else if (0 != deviceAttribute.size()) {
-				registeredDeviceExists = true;
-			}
-		}
-		return false;
+	private boolean deviceRemovalAllowed() {
+		if (this.deviceMappings.size() == 1)
+			return false;
+		return true;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
