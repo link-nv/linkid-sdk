@@ -9,7 +9,7 @@
 	<servlet>
 		<servlet-name>lawyerapp</servlet-name>
 		<servlet-class>
-			wicket.protocol.http.WicketServlet
+			org.apache.wicket.protocol.http.WicketServlet
 		</servlet-class>
 		<init-param>
 			<param-name>applicationClassName</param-name>
