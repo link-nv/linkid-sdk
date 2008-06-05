@@ -40,6 +40,8 @@ public class WebServiceTestUtils {
 
 	private int port;
 
+	private String context = "/test";
+
 	public void setUp(Object webServicePort) throws Exception {
 		this.endpoint = Endpoint.create(webServicePort);
 
@@ -51,13 +53,32 @@ public class WebServiceTestUtils {
 		this.httpServer.setExecutor(this.executorService);
 		this.httpServer.start();
 
-		HttpContext httpContext = this.httpServer.createContext("/test");
+		HttpContext httpContext = this.httpServer.createContext(this.context);
+		this.endpoint.publish(httpContext);
+	}
+
+	public void setUp(Object webServicePort, String context) throws Exception {
+		this.endpoint = Endpoint.create(webServicePort);
+
+		this.httpServer = HttpServer.create();
+		this.port = getFreePort();
+		LOG.debug("using port: " + this.port);
+		this.httpServer.bind(new InetSocketAddress(this.port), 1);
+		this.executorService = Executors.newFixedThreadPool(1);
+		this.httpServer.setExecutor(this.executorService);
+		this.httpServer.start();
+
+		HttpContext httpContext = this.httpServer.createContext(context);
 		this.endpoint.publish(httpContext);
 	}
 
 	public String getEndpointAddress() {
-		String endpointAddress = "http://localhost:" + this.port + "/test";
+		String endpointAddress = "http://localhost:" + this.port + this.context;
 		return endpointAddress;
+	}
+
+	public String getLocation() {
+		return "http://localhost:" + this.port;
 	}
 
 	public void tearDown() throws Exception {

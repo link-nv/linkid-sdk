@@ -9,9 +9,7 @@ package net.link.safeonline.sdk.auth.filter;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -20,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.sdk.servlet.AbstractInjectionFilter;
+import net.link.safeonline.sdk.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,13 +31,12 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class AuthnResponseFilter implements Filter {
+public class AuthnResponseFilter extends AbstractInjectionFilter {
 
 	private static final Log LOG = LogFactory.getLog(AuthnResponseFilter.class);
 
-	public static final String USERNAME_SESSION_PARAMETER = "UsernameSessionParameter";
-
-	String sessionParameter;
+	@Init(name = "UsernameSessionParameter", defaultValue = LoginManager.USERNAME_SESSION_ATTRIBUTE)
+	private String sessionParameter;
 
 	public void destroy() {
 		LOG.debug("destroy");
@@ -87,14 +86,5 @@ public class AuthnResponseFilter implements Filter {
 		LOG
 				.debug("authentication process busy, but will not finalize right now");
 		chain.doFilter(request, response);
-	}
-
-	public void init(FilterConfig config) {
-		LOG.debug("init");
-		this.sessionParameter = config
-				.getInitParameter(USERNAME_SESSION_PARAMETER);
-		if (this.sessionParameter == null) {
-			this.sessionParameter = LoginManager.USERNAME_SESSION_ATTRIBUTE;
-		}
 	}
 }

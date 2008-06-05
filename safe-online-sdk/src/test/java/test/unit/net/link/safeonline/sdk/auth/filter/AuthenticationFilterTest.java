@@ -89,19 +89,14 @@ public class AuthenticationFilterTest {
 				.toURL());
 
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put(
-				AuthnRequestFilter.AUTH_SERVICE_URL_INIT_PARAM,
+		filterInitParameters.put("AuthenticationServiceUrl",
 				"http://authn.service");
-		filterInitParameters.put(
-				AuthnRequestFilter.APPLICATION_NAME_INIT_PARAM,
-				"application-id");
-		filterInitParameters.put(AuthnRequestFilter.AUTHN_PROTOCOL_INIT_PARAM,
-				"SAML2_BROWSER_POST");
-		filterInitParameters.put(
-				AuthnRequestFilter.KEYSTORE_RESOURCE_INIT_PARAM,
-				p12ResourceName);
-		filterInitParameters.put(
-				AuthnRequestFilter.KEY_STORE_PASSWORD_INIT_PARAM, "secret");
+		filterInitParameters.put("ApplicationName", "application-id");
+		filterInitParameters
+				.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
+		filterInitParameters.put("KeyStoreResource", p12ResourceName);
+		filterInitParameters.put("KeyStorePassword", "secret");
+		filterInitParameters.put("WsLocation", "https://ws.location");
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		this.servletTestManager.setUp(TestServlet.class,
 				AuthnRequestFilter.class, filterInitParameters,
@@ -137,21 +132,16 @@ public class AuthenticationFilterTest {
 				.toURL());
 
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put(
-				AuthnRequestFilter.AUTH_SERVICE_URL_INIT_PARAM,
+		filterInitParameters.put("AuthenticationServiceUrl",
 				"http://authn.service");
-		filterInitParameters.put(
-				AuthnRequestFilter.APPLICATION_NAME_INIT_PARAM,
-				"application-id");
-		filterInitParameters.put(AuthnRequestFilter.AUTHN_PROTOCOL_INIT_PARAM,
-				"SAML2_BROWSER_POST");
-		filterInitParameters.put(
-				AuthnRequestFilter.KEYSTORE_RESOURCE_INIT_PARAM,
-				p12ResourceName);
-		filterInitParameters.put(
-				AuthnRequestFilter.KEY_STORE_PASSWORD_INIT_PARAM, "secret");
+		filterInitParameters.put("ApplicationName", "application-id");
+		filterInitParameters
+				.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
+		filterInitParameters.put("KeyStoreResource", p12ResourceName);
+		filterInitParameters.put("KeyStorePassword", "secret");
 		filterInitParameters.put("Saml2BrowserPostTemplate",
 				"test-saml2-post-binding.vm");
+		filterInitParameters.put("WsLocation", "https://ws.location");
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		this.servletTestManager.setUp(TestServlet.class,
 				AuthnRequestFilter.class, filterInitParameters,

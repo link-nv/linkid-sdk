@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,11 +83,13 @@ public class AuthenticationProtocolManagerTest {
 		replay(this.mockObjects);
 
 		// operate
+		Map<String, String> configParams = Collections.singletonMap(
+				"WsLocation", "https://ws.location");
 		AuthenticationProtocolHandler saml2AuthenticationProtocolHandler = AuthenticationProtocolManager
 				.createAuthenticationProtocolHandler(
 						AuthenticationProtocol.SAML2_BROWSER_POST,
 						"http://authn.service", "application-id", null, null,
-						null, this.mockHttpServletRequest);
+						configParams, this.mockHttpServletRequest);
 
 		// verify
 		verify(this.mockObjects);

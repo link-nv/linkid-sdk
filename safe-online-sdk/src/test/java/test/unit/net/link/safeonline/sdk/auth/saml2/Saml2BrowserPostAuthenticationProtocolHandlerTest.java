@@ -19,7 +19,13 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.security.KeyPair;
+import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.Map;
 
+import javax.jws.HandlerChain;
+import javax.jws.WebService;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +37,12 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.sdk.auth.saml2.Saml2BrowserPostAuthenticationProtocolHandler;
+import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
+import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
+import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
+import net.link.safeonline.test.util.WebServiceTestUtils;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
@@ -43,10 +53,16 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.easymock.EasyMock;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.ObjectFactory;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenResponseType;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenType;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 
 public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
@@ -57,24 +73,91 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
 	private ServletTestManager responseServletTestManager;
 
+	private WebServiceTestUtils webServiceTestUtils;
+
+	private JndiTestUtils jndiTestUtils;
+
 	@Before
 	public void setUp() throws Exception {
+		this.jndiTestUtils = new JndiTestUtils();
+		this.jndiTestUtils.setUp();
+		this.jndiTestUtils.bindComponent(
+				"java:comp/env/wsSecurityConfigurationServiceJndiName",
+				"SafeOnline/WSSecurityConfigurationBean/local");
+
+		WSSecurityConfigurationService mockWSSecurityConfigurationService = EasyMock
+				.createMock(WSSecurityConfigurationService.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/WSSecurityConfigurationBean/local",
+				mockWSSecurityConfigurationService);
+		EasyMock.expect(
+				mockWSSecurityConfigurationService
+						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
+				Long.MAX_VALUE);
+		EasyMock.replay(mockWSSecurityConfigurationService);
+
+		this.webServiceTestUtils = new WebServiceTestUtils();
+		SecurityTokenServicePort port = new SecurityTokenServicePortImpl();
+		this.webServiceTestUtils.setUp(port, "/safe-online-ws/sts");
+
 		this.requestServletTestManager = new ServletTestManager();
-		this.requestServletTestManager.setUp(SamlRequestTestServlet.class);
+		this.requestServletTestManager.setUp(SamlRequestTestServlet.class,
+				Collections.singletonMap("WsLocation", this.webServiceTestUtils
+						.getLocation()));
 
 		this.responseServletTestManager = new ServletTestManager();
-		this.responseServletTestManager.setUp(SamlResponseTestServlet.class);
+		this.responseServletTestManager.setUp(SamlResponseTestServlet.class,
+				Collections.singletonMap("WsLocation", this.webServiceTestUtils
+						.getLocation()));
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		this.jndiTestUtils.tearDown();
+		this.webServiceTestUtils.tearDown();
 		this.requestServletTestManager.tearDown();
 		this.responseServletTestManager.tearDown();
+	}
+
+	@WebService(endpointInterface = "org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort")
+	@HandlerChain(file = "test-sts-ws-handlers.xml")
+	public static class SecurityTokenServicePortImpl implements
+			SecurityTokenServicePort {
+
+		public RequestSecurityTokenResponseType requestSecurityToken(
+				RequestSecurityTokenType request) {
+			return createResponse(SecurityTokenServiceConstants.STATUS_VALID,
+					"test-token", null);
+		}
+
+		private RequestSecurityTokenResponseType createResponse(
+				String statusCode, String tokenType, String reason) {
+			ObjectFactory objectFactory = new ObjectFactory();
+			RequestSecurityTokenResponseType response = new RequestSecurityTokenResponseType();
+			StatusType status = objectFactory.createStatusType();
+			status.setCode(statusCode);
+			if (null != reason) {
+				status.setReason(reason);
+			}
+			if (null != tokenType) {
+				response.getAny().add(objectFactory.createTokenType(tokenType));
+			}
+			response.getAny().add(objectFactory.createStatus(status));
+			return response;
+		}
+
 	}
 
 	public static class SamlRequestTestServlet extends HttpServlet {
 
 		private static final long serialVersionUID = 1L;
+
+		private String wsLocation;
+
+		@Override
+		public void init(ServletConfig config) {
+			this.wsLocation = config.getInitParameter("WsLocation");
+		}
 
 		@Override
 		protected void doGet(HttpServletRequest request,
@@ -86,11 +169,14 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 			} catch (Exception e) {
 				throw new ServletException("could not generate RSA key pair");
 			}
+
+			Map<String, String> configParams = Collections.singletonMap(
+					"WsLocation", this.wsLocation);
 			AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
 					.createAuthenticationProtocolHandler(
 							AuthenticationProtocol.SAML2_BROWSER_POST,
 							"http://test.authn.service", "test-application",
-							keyPair, null, null, request);
+							keyPair, null, configParams, request);
 			authenticationProtocolHandler.initiateAuthentication(request,
 					response, "http://target");
 		}
@@ -103,24 +189,39 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 		private static final Log srtLOG = LogFactory
 				.getLog(SamlResponseTestServlet.class);
 
+		private String wsLocation;
+
+		@Override
+		public void init(ServletConfig config) {
+			this.wsLocation = config.getInitParameter("WsLocation");
+		}
+
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void doPost(HttpServletRequest request,
 				HttpServletResponse response) throws ServletException,
 				IOException {
-			srtLOG.debug("doGet");
+			srtLOG.debug("doPost");
 			KeyPair keyPair;
 			try {
 				keyPair = PkiTestUtils.generateKeyPair();
 			} catch (Exception e) {
 				throw new ServletException("could not generate RSA key pair");
 			}
-
+			X509Certificate certificate;
+			try {
+				certificate = PkiTestUtils.generateSelfSignedCertificate(
+						keyPair, "CN=TestApplication");
+			} catch (Exception e) {
+				throw new ServletException("could not generate certificate");
+			}
+			Map<String, String> configParams = Collections.singletonMap(
+					"WsLocation", this.wsLocation);
 			AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
 					.createAuthenticationProtocolHandler(
 							AuthenticationProtocol.SAML2_BROWSER_POST,
 							"http://test.authn.service", "test-application",
-							keyPair, null, null, request);
+							keyPair, certificate, configParams, request);
 			Saml2BrowserPostAuthenticationProtocolHandler saml2Handler = (Saml2BrowserPostAuthenticationProtocolHandler) authenticationProtocolHandler;
 			try {
 				Field challengeField = Saml2BrowserPostAuthenticationProtocolHandler.class

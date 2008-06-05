@@ -19,8 +19,8 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.filter.AuthnRequestFilter;
-import net.link.safeonline.sdk.auth.filter.LogFilter;
 import net.link.safeonline.sdk.auth.filter.AuthnResponseFilter;
+import net.link.safeonline.sdk.auth.filter.LogFilter;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
@@ -90,25 +90,18 @@ public class AuthServletManager extends Observable {
 		FilterHolder authenticationFilterHoldder = this.context.addFilter(
 				AuthnRequestFilter.class, "/", Handler.DEFAULT);
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put(
-				AuthnRequestFilter.AUTH_SERVICE_URL_INIT_PARAM, "http://"
-						+ ApplicationConsoleManager.getInstance().getLocation()
-						+ ":8080/olas-auth");
-		filterInitParameters.put(
-				AuthnRequestFilter.APPLICATION_NAME_INIT_PARAM,
-				applicationName);
-		filterInitParameters.put(
-				AuthnRequestFilter.AUTHN_PROTOCOL_INIT_PARAM, protocol);
+		filterInitParameters.put("AuthenticationServiceUrl", "http://"
+				+ ApplicationConsoleManager.getInstance().getLocation()
+				+ ":8080/olas-auth");
+		filterInitParameters.put("ApplicationName", applicationName);
+		filterInitParameters.put("AuthenticationProtocol", protocol);
 		if (protocol.equals(AuthenticationProtocol.SAML2_BROWSER_POST
 				.toString())) {
-			filterInitParameters.put(
-					AuthnRequestFilter.KEYSTORE_FILE_INIT_PARAM,
-					ApplicationConsoleManager.getInstance().getKeyStorePath());
-			filterInitParameters.put(
-					AuthnRequestFilter.KEYSTORE_TYPE_INIT_PARAM,
-					ApplicationConsoleManager.getInstance().getKeyStoreType());
-			filterInitParameters.put(
-					AuthnRequestFilter.KEY_STORE_PASSWORD_INIT_PARAM,
+			filterInitParameters.put("KeyStoreFile", ApplicationConsoleManager
+					.getInstance().getKeyStorePath());
+			filterInitParameters.put("KeyStoreType", ApplicationConsoleManager
+					.getInstance().getKeyStoreType());
+			filterInitParameters.put("KeyStorePassword",
 					ApplicationConsoleManager.getInstance()
 							.getKeyStorePassword());
 		}
