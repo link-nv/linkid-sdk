@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.beid.servlet.JavaVersionServlet.JAVA_VERSION;
-import net.link.safeonline.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

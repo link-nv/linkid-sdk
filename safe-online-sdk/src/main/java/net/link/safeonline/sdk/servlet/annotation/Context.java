@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.annotation;
+package net.link.safeonline.sdk.servlet.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -13,9 +13,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.servlet.UnavailableException;
+
 /**
- * Specifies that the field should be resolved from the servlet init parameter
- * list.
+ * Specifies that the field should be resolved from the servlet context
+ * parameter list.
  * 
  * @author wvdhaute
  * 
@@ -23,12 +25,12 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Init {
+public @interface Context {
 
 	public String NOT_SPECIFIED = "Not Specified";
 
 	/**
-	 * The name of the init parameter.
+	 * The name of the context parameter.
 	 * 
 	 */
 	String name();
@@ -37,4 +39,10 @@ public @interface Init {
 	 * Optional default value if missing.
 	 */
 	String defaultValue() default NOT_SPECIFIED;
+
+	/**
+	 * If not optional {@link UnavailableException} will be thrown during
+	 * servlet initialization.
+	 */
+	boolean optional() default false;
 }

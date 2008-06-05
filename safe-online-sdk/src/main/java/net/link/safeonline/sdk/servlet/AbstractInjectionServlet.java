@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.servlet;
+package net.link.safeonline.sdk.servlet;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -24,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.annotation.Context;
-import net.link.safeonline.annotation.Init;
+import net.link.safeonline.sdk.servlet.annotation.Context;
+import net.link.safeonline.sdk.servlet.annotation.Init;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -225,9 +224,11 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 			try {
 				field.set(this, ejbRef);
 			} catch (IllegalArgumentException e) {
-				throw new EJBException("illegal argument: " + e.getMessage(), e);
+				throw new ServletException("illegal argument: "
+						+ e.getMessage(), e);
 			} catch (IllegalAccessException e) {
-				throw new EJBException("illegal access: " + e.getMessage(), e);
+				throw new ServletException("illegal access: " + e.getMessage(),
+						e);
 			}
 		}
 	}
@@ -246,12 +247,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 			}
 			LOG.debug("init: " + name);
 			String defaultValue = initAnnotation.defaultValue();
+			boolean optional = initAnnotation.optional();
 
 			String value = config.getInitParameter(name);
 			if (null == value) {
-				if (Init.NOT_SPECIFIED == defaultValue) {
+				if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional) {
 					throw new UnavailableException("missing init parameter: "
 							+ name);
+				}
+				if (Init.NOT_SPECIFIED.equals(defaultValue)) {
+					defaultValue = null;
 				}
 				value = defaultValue;
 			}
@@ -259,9 +264,11 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 			try {
 				field.set(this, value);
 			} catch (IllegalArgumentException e) {
-				throw new EJBException("illegal argument: " + e.getMessage(), e);
+				throw new ServletException("illegal argument: "
+						+ e.getMessage(), e);
 			} catch (IllegalAccessException e) {
-				throw new EJBException("illegal access: " + e.getMessage(), e);
+				throw new ServletException("illegal access: " + e.getMessage(),
+						e);
 			}
 		}
 	}
@@ -281,12 +288,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 			}
 			LOG.debug("init: " + name);
 			String defaultValue = contextAnnotation.defaultValue();
+			boolean optional = contextAnnotation.optional();
 
 			String value = config.getServletContext().getInitParameter(name);
 			if (null == value) {
-				if (Context.NOT_SPECIFIED == defaultValue) {
+				if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional) {
 					throw new UnavailableException("missing init parameter: "
 							+ name);
+				}
+				if (Context.NOT_SPECIFIED.equals(defaultValue)) {
+					defaultValue = null;
 				}
 				value = defaultValue;
 			}
@@ -294,9 +305,11 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 			try {
 				field.set(this, value);
 			} catch (IllegalArgumentException e) {
-				throw new EJBException("illegal argument: " + e.getMessage(), e);
+				throw new ServletException("illegal argument: "
+						+ e.getMessage(), e);
 			} catch (IllegalAccessException e) {
-				throw new EJBException("illegal access: " + e.getMessage(), e);
+				throw new ServletException("illegal access: " + e.getMessage(),
+						e);
 			}
 		}
 		this.configParams = new HashMap<String, String>();

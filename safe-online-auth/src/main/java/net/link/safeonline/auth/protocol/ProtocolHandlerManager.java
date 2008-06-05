@@ -16,12 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -100,9 +102,14 @@ public class ProtocolHandlerManager {
 			try {
 				protocolContext = protocolHandler.handleRequest(request);
 			} catch (ProtocolException e) {
-				// TODO: yield audit event
 				String protocolName = protocolHandler.getName();
 				e.setProtocolName(protocolName);
+				SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(
+						"SafeOnline/SecurityAuditLoggerBean/local",
+						SecurityAuditLogger.class);
+				securityAuditLogger.addSecurityAudit(
+						SecurityThreatType.DECEPTION, "Protocol: "
+								+ protocolName + " : " + e.getMessage());
 				throw e;
 			}
 			if (null != protocolContext) {

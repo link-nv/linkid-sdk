@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.device.sdk.DeviceManager;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
+import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
@@ -50,8 +51,8 @@ public class SafeOnlineDeviceUtils {
 	 * <p>
 	 * The method requires the <code>DeviceAuthenticationServiceUrl</code>
 	 * context parameter defined in web.xml pointing to the location of the
-	 * SafeOnline authentication web application location the Device issuer
-	 * should return to.
+	 * authentication web application location the Device issuer should return
+	 * to.
 	 * </p>
 	 * 
 	 * @param facesMessages
@@ -67,8 +68,8 @@ public class SafeOnlineDeviceUtils {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 
-		String authenticationServiceUrl = getInitParameter(
-				externalContext, DEVICE_AUTH_SERVICE_URL_INIT_PARAM);
+		String authenticationServiceUrl = getInitParameter(externalContext,
+				DEVICE_AUTH_SERVICE_URL_INIT_PARAM);
 
 		String applicationName = getInitParameter(externalContext,
 				APPLICATION_NAME_INIT_PARAM);
@@ -107,8 +108,12 @@ public class SafeOnlineDeviceUtils {
 
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.getSaml2BrowserPostHandler(httpServletRequest);
-		saml2BrowserPostHandler.init(authenticationServiceUrl,
-				nodeName, applicationName, keyPair, configParams);
+		try {
+			saml2BrowserPostHandler.init(authenticationServiceUrl, nodeName,
+					applicationName, keyPair, configParams);
+		} catch (AuthenticationInitializationException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 
 		try {
 			saml2BrowserPostHandler.authnRequest(httpServletRequest,

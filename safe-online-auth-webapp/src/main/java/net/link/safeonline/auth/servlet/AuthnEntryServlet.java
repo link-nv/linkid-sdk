@@ -15,13 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.annotation.Init;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
-import net.link.safeonline.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.annotation.Init;
 
 /**
  * Generic entry point for the authentication web application. This servlet will

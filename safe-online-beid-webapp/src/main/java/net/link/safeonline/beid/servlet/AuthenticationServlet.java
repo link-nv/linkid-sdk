@@ -63,12 +63,6 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 			authenticationStatement = new AuthenticationStatement(statementData);
 			String deviceUserId = this.beIdDeviceService.authenticate(
 					sessionId, authenticationStatement);
-			if (null == deviceUserId) {
-				// XXX: deviceUserId can never be null
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				writer.println("Authentication failed");
-				return;
-			}
 
 			// TODO: do something with applicationId
 

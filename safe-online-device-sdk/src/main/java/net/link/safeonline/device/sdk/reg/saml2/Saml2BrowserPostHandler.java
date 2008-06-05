@@ -105,7 +105,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 	private Challenge<String> challenge;
 
-	private String wsLocation;
+	private String stsWsLocation;
 
 	private String authenticationDevice;
 
@@ -136,7 +136,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 	public void init(String inRegistrationServiceUrl, String inApplicationName,
 			KeyPair inApplicationKeyPair,
 			X509Certificate inApplicationCertificate,
-			Map<String, String> inConfigParams) {
+			Map<String, String> inConfigParams) throws ServletException {
 		LOG.debug("init");
 		this.registrationServiceUrl = inRegistrationServiceUrl;
 		this.applicationName = inApplicationName;
@@ -144,7 +144,11 @@ public class Saml2BrowserPostHandler implements Serializable {
 		this.applicationCertificate = inApplicationCertificate;
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
-		this.wsLocation = inConfigParams.get("WsLocation");
+		this.stsWsLocation = inConfigParams.get("StsWsLocation");
+		if (null == this.stsWsLocation) {
+			throw new ServletException(
+					"Missing initialization parameter \"StsWsLocation\"");
+		}
 	}
 
 	public void authnRequest(
@@ -188,8 +192,8 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
 				httpRequest, this.challenge.getValue(), this.applicationName,
-				this.wsLocation, this.applicationCertificate,
-				this.applicationKeyPair.getPrivate(), TrustDomainType.DEVICE);
+				this.stsWsLocation, this.applicationCertificate,
+				this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
 		if (null == samlResponse)
 			return null;
 

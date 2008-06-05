@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
@@ -106,7 +107,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 	private Challenge<String> challenge;
 
-	private String wsLocation;
+	private String stsWsLocation;
 
 	private String authenticationDevice;
 
@@ -135,7 +136,8 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 	public void init(String inAuthnServiceUrl, String inIssuerName,
 			String inApplicationName, KeyPair inApplicationKeyPair,
-			Map<String, String> inConfigParams) {
+			Map<String, String> inConfigParams)
+			throws AuthenticationInitializationException {
 		LOG.debug("init");
 		this.authnServiceUrl = inAuthnServiceUrl;
 		this.issuerName = inIssuerName;
@@ -143,8 +145,11 @@ public class Saml2BrowserPostHandler implements Serializable {
 		this.applicationKeyPair = inApplicationKeyPair;
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
-		// XXX: should not continue when wsLocation is not specified
-		this.wsLocation = inConfigParams.get("wsLocation");
+		this.stsWsLocation = inConfigParams.get("WsLocation");
+		if (null == this.stsWsLocation) {
+			throw new AuthenticationInitializationException(
+					"Initialization param \"WsLocation\" not specified.");
+		}
 	}
 
 	public void authnRequest(
@@ -181,7 +186,8 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
 				httpRequest, this.challenge.getValue(), this.applicationName,
-				this.wsLocation, certificate, privateKey, TrustDomainType.NODE);
+				this.stsWsLocation, certificate, privateKey,
+				TrustDomainType.DEVICE);
 		if (null == samlResponse)
 			return null;
 

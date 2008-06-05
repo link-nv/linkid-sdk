@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.StatisticNotFoundException;
+import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.service.StatisticService;
-import net.link.safeonline.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

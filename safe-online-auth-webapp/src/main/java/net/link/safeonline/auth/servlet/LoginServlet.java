@@ -30,7 +30,7 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
-import net.link.safeonline.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.apache.commons.logging.Log;

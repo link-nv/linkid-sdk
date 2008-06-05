@@ -98,7 +98,9 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
 		RequestSecurityTokenResponseType response;
 		try {
 			response = this.port.requestSecurityToken(request);
+			LOG.debug("response: " + response);
 		} catch (Exception e) {
+			LOG.debug("exception: " + e.getMessage());
 			throw retrieveHeadersFromException(e);
 		} finally {
 			retrieveHeadersFromPort(this.port);

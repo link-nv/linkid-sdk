@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
@@ -34,6 +35,8 @@ public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(LoginServlet.class);
+
+	public static final String ERROR_MESSAGE_ATTRIBUTE = "errorMessage";
 
 	@Override
 	protected void doGet(HttpServletRequest request,
@@ -78,6 +81,14 @@ public class LoginServlet extends HttpServlet {
 		String target = AuthenticationProtocolManager.getTarget(request);
 		LOG.debug("target: " + target);
 		response.sendRedirect(target);
+	}
+
+	private void redirectToErrorPage(HttpServletRequest request,
+			HttpServletResponse response, String errorMessage)
+			throws IOException {
+		HttpSession session = request.getSession();
+		session.setAttribute(ERROR_MESSAGE_ATTRIBUTE, errorMessage);
+		// response.sendRedirect(this.protocolErrorUrl);
 	}
 
 	// XXX: remove this by a custom jsf error page ( XPlanner: id=16262 )

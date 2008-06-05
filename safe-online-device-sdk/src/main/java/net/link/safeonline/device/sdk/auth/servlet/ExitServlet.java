@@ -9,9 +9,7 @@ package net.link.safeonline.device.sdk.auth.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,16 +21,6 @@ import net.link.safeonline.device.sdk.exception.AuthenticationFinalizationExcept
 public class ExitServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	public String getInitParameter(ServletConfig config,
-			String initParameterName) throws UnavailableException {
-		String paramValue = config.getInitParameter(initParameterName);
-		if (null == paramValue) {
-			throw new UnavailableException("missing init parameter: "
-					+ initParameterName);
-		}
-		return paramValue;
-	}
 
 	@Override
 	protected void doGet(HttpServletRequest request,

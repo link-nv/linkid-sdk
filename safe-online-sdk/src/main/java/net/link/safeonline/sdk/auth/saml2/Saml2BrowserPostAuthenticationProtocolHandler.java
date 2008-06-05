@@ -121,8 +121,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		this.applicationCertificate = inApplicationCertificate;
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
-		// XXX: should not continue when wsLocation is not specified
 		this.wsLocation = inConfigParams.get("WsLocation");
+		if (null == this.wsLocation) {
+			throw new RuntimeException(
+					"Initialization param \"WsLocation\" not specified.");
+		}
 	}
 
 	@SuppressWarnings("unchecked")

@@ -26,8 +26,8 @@ import net.link.safeonline.device.sdk.exception.RegistrationFinalizationExceptio
 import net.link.safeonline.device.sdk.exception.RegistrationInitializationException;
 import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.service.DeviceMappingService;
-import net.link.safeonline.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 

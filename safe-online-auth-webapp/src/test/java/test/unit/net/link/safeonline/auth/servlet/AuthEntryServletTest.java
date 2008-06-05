@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.AuthnEntryServlet;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
@@ -52,9 +53,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class EntryServletTest {
+public class AuthEntryServletTest {
 
-	private static final Log LOG = LogFactory.getLog(EntryServletTest.class);
+	private static final Log LOG = LogFactory
+			.getLog(AuthEntryServletTest.class);
 
 	private ServletTestManager entryServletTestManager;
 
@@ -313,6 +315,11 @@ public class EntryServletTest {
 				.generateSelfSignedCertificate(foobarKeyPair,
 						"CN=TestApplication");
 
+		SecurityAuditLogger mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/SecurityAuditLoggerBean/local",
+				mockSecurityAuditLogger);
+
 		// expectations
 		expect(
 				this.mockApplicationAuthenticationService
@@ -373,6 +380,11 @@ public class EntryServletTest {
 		NameValuePair[] data = { new NameValuePair("SAMLRequest",
 				encodedSamlAuthnRequest) };
 		postMethod.setRequestBody(data);
+
+		SecurityAuditLogger mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/SecurityAuditLoggerBean/local",
+				mockSecurityAuditLogger);
 
 		// expectations
 		expect(

@@ -137,14 +137,14 @@ public class AuthnResponseUtil {
 	 * @param httpRequest
 	 * @param expectedInResponseTo
 	 * @param applicationName
-	 * @param wsLocation
+	 * @param stsWsLocation
 	 * @param applicationCertificate
 	 * @param applicationPrivateKey
 	 * @throws ServletException
 	 */
 	public static Response validateResponse(DateTime now,
 			HttpServletRequest httpRequest, String expectedInResponseTo,
-			String applicationName, String wsLocation,
+			String applicationName, String stsWsLocation,
 			X509Certificate applicationCertificate,
 			PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
 			throws ServletException {
@@ -187,25 +187,23 @@ public class AuthnResponseUtil {
 			throw new ServletException("SAML message not an response message");
 		Response samlResponse = (Response) samlMessage;
 
-		if (null != wsLocation) {
-			byte[] decodedSamlResponse;
-			try {
-				decodedSamlResponse = Base64.decode(encodedSamlResponse);
-			} catch (Base64DecodingException e) {
-				throw new ServletException("BASE64 decoding error");
-			}
-			Document samlDocument;
-			try {
-				samlDocument = DomUtils.parseDocument(new String(
-						decodedSamlResponse));
-			} catch (Exception e) {
-				throw new ServletException("DOM parsing error");
-			}
-			Element samlElement = samlDocument.getDocumentElement();
-			SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(
-					wsLocation, applicationCertificate, applicationPrivateKey);
-			stsClient.validate(samlElement, trustDomain);
+		byte[] decodedSamlResponse;
+		try {
+			decodedSamlResponse = Base64.decode(encodedSamlResponse);
+		} catch (Base64DecodingException e) {
+			throw new ServletException("BASE64 decoding error");
 		}
+		Document samlDocument;
+		try {
+			samlDocument = DomUtils.parseDocument(new String(
+					decodedSamlResponse));
+		} catch (Exception e) {
+			throw new ServletException("DOM parsing error");
+		}
+		Element samlElement = samlDocument.getDocumentElement();
+		SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(
+				stsWsLocation, applicationCertificate, applicationPrivateKey);
+		stsClient.validate(samlElement, trustDomain);
 
 		List<Assertion> assertions = samlResponse.getAssertions();
 		if (assertions.isEmpty())

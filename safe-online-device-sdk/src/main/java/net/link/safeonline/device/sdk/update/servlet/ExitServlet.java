@@ -3,14 +3,13 @@ package net.link.safeonline.device.sdk.update.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.device.sdk.reg.saml2.Saml2BrowserPostHandler;
+import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,39 +22,17 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class ExitServlet extends HttpServlet {
+public class ExitServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(ExitServlet.class);
 
+	@Init(name = "UpdateUrl")
 	private String updateUrl;
 
-	public static final String UPDATE_URL_INIT_PARAM = "UpdateUrl";
-
 	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		this.updateUrl = getServletInitParameter(config, UPDATE_URL_INIT_PARAM);
-	}
-
-	private String getServletInitParameter(ServletConfig config,
-			String initParamName) throws UnavailableException {
-		String initParamValue = config.getInitParameter(initParamName);
-		if (null == initParamValue)
-			throw new UnavailableException("missing init parameter: "
-					+ initParamName);
-		return initParamValue;
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		doPost(request, response);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest request,
+	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.findSaml2BrowserPostHandler(request);
