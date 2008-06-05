@@ -12,7 +12,6 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -31,7 +30,6 @@ import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
@@ -67,7 +65,7 @@ public class Saml2Handler implements Serializable {
 
 	private HttpSession session;
 
-	private String wsLocation;
+	private String stsWsLocation;
 
 	private KeyPair applicationKeyPair;
 
@@ -114,7 +112,7 @@ public class Saml2Handler implements Serializable {
 
 	public void init(Map<String, String> configParams,
 			KeyPair newApplicationKeyPair) {
-		this.wsLocation = configParams.get("WsLocation");
+		this.stsWsLocation = configParams.get("WsLocation");
 		this.applicationKeyPair = newApplicationKeyPair;
 	}
 
@@ -125,8 +123,8 @@ public class Saml2Handler implements Serializable {
 		AuthnRequest samlAuthnRequest;
 		try {
 			samlAuthnRequest = AuthnRequestUtil.validateAuthnRequest(request,
-					this.wsLocation, authCertificate, authKeyPair.getPrivate(),
-					TrustDomainType.DEVICE);
+					this.stsWsLocation, authCertificate, authKeyPair
+							.getPrivate(), TrustDomainType.DEVICE);
 		} catch (ServletException e) {
 			throw new RegistrationInitializationException(e.getMessage());
 		}
@@ -138,15 +136,21 @@ public class Saml2Handler implements Serializable {
 			throw new RegistrationInitializationException(
 					"missing AssertionConsumerServiceURL");
 
-		String application = null;
-		try {
-			application = samlAuthnRequest.getConditions()
-					.getAudienceRestrictions().get(0).getAudiences().get(0)
-					.getAudienceURI();
-		} catch (Exception e) {
+		if (samlAuthnRequest.getConditions().getAudienceRestrictions()
+				.isEmpty()) {
 			throw new RegistrationInitializationException(
-					"No target application was specified");
+					"No audience restriction was specified.");
 		}
+
+		if (samlAuthnRequest.getConditions().getAudienceRestrictions().get(0)
+				.getAudiences().isEmpty()) {
+			throw new RegistrationInitializationException(
+					"No audience specified in audience restriction");
+		}
+
+		String application = samlAuthnRequest.getConditions()
+				.getAudienceRestrictions().get(0).getAudiences().get(0)
+				.getAudienceURI();
 
 		if (null == application)
 			throw new RegistrationInitializationException(
@@ -156,14 +160,21 @@ public class Saml2Handler implements Serializable {
 
 		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
 				.getRequestedAuthnContext();
-		String registeredDevice = null;
+		if (null == requestedAuthnContext) {
+			throw new RegistrationInitializationException(
+					"No device authentication context was specified.");
+		}
 
-		if (null != requestedAuthnContext) {
-			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
-					.getAuthnContextClassRefs();
-			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
-				registeredDevice = authnContextClassRef
-						.getAuthnContextClassRef();
+		if (requestedAuthnContext.getAuthnContextClassRefs().size() != 1) {
+			throw new RegistrationInitializationException(
+					"Only 1 authentication context reference allowed.");
+		}
+
+		String registeredDevice = requestedAuthnContext
+				.getAuthnContextClassRefs().get(0).getAuthnContextClassRef();
+		if (null == registeredDevice) {
+			throw new RegistrationInitializationException(
+					"No device authentication context reference was specified.");
 		}
 
 		this.session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);

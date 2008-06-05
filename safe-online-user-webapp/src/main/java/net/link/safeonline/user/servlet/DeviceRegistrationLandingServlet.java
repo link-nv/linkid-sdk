@@ -60,19 +60,8 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 	private NodeAuthenticationService nodeAuthenticationService;
 
 	@Override
-	protected void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	@Override
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	private void handleLanding(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
 		LOG.debug("handle landing");
 		Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
