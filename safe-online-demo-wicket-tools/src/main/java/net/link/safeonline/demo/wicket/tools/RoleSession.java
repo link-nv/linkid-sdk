@@ -1,7 +1,7 @@
 package net.link.safeonline.demo.wicket.tools;
 
-import wicket.protocol.http.WebApplication;
-import wicket.protocol.http.WebSession;
+import org.apache.wicket.Request;
+import org.apache.wicket.protocol.http.WebSession;
 
 public class RoleSession extends WebSession {
 
@@ -9,8 +9,9 @@ public class RoleSession extends WebSession {
 
 	private User user;
 
-	public RoleSession(WebApplication application) {
-		super(application);
+	public RoleSession(Request request) {
+
+        super(request);
 	}
 
 	public User getUser() {

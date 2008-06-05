@@ -8,21 +8,22 @@ import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import wicket.Component;
-import wicket.RestartResponseAtInterceptPageException;
-import wicket.Session;
-import wicket.authorization.Action;
-import wicket.authorization.IAuthorizationStrategy;
+import org.apache.wicket.Component;
+import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authorization.IAuthorizationStrategy;
 
 public class SafeOnlineStrategy implements IAuthorizationStrategy {
 
-	private Class<?> loginPageClass = null;
+	private Class<? extends Page<?>> loginPageClass = null;
 
-	public SafeOnlineStrategy(Class<?> loginPageClass) {
+	public SafeOnlineStrategy(Class<? extends Page<?>> loginPageClass) {
 		this.loginPageClass = loginPageClass;
 	}
 
-	public boolean isActionAuthorized(Component arg0, Action arg1) {
+	public boolean isActionAuthorized(Component<?> arg0, Action arg1) {
 		return true;
 	}
 
@@ -46,9 +47,9 @@ public class SafeOnlineStrategy implements IAuthorizationStrategy {
 		HttpSession session = httpServletRequest.getSession();
 		String username = (String) session.getAttribute("username");
 		if (username == null) {
-			throw new RestartResponseAtInterceptPageException(
+            throw new RestartResponseAtInterceptPageException(
 					this.loginPageClass);
-		}
+        }
 
 		// find user in session
 		User user = getUser();
@@ -60,9 +61,8 @@ public class SafeOnlineStrategy implements IAuthorizationStrategy {
 
 		// check if roles match
 		List<String> needRoles = Arrays.asList(roles.value());
-		if (!user.hasOneOf(needRoles)) {
-			return false;
-		}
+		if (!user.hasOneOf(needRoles))
+            return false;
 		return true;
 	}
 
