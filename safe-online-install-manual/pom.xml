@@ -18,10 +18,26 @@
 			<plugin>
 				<groupId>org.jboss.maven.plugins</groupId>
 				<artifactId>maven-jdocbook-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.jboss</groupId>
+						<artifactId>jbossorg-docbook-xslt</artifactId>
+						<version>1.0.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.jboss</groupId>
+						<artifactId>jbossorg-jdocbook-style</artifactId>
+						<version>1.0.0</version>
+						<type>jdocbook-style</type>
+					</dependency>
+				</dependencies>
 				<configuration>
 					<formats>
 						<format>
 							<formatName>pdf</formatName>
+							<stylesheetResource>
+								classpath:/xslt/org/jboss/main-pdf.xsl
+							</stylesheetResource>
 						</format>
 					</formats>
 					<sourceDocumentName>
