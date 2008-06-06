@@ -294,6 +294,7 @@
 				<module>safe-online-demo-lawyer</module>
 				<module>safe-online-demo-lawyer-webapp</module>
 				<module>safe-online-demo-lawyer-service</module>
+				<module>safe-online-demo-wicket-tools</module>
 				<module>safe-online-demo-cinema-webapp</module>
 				<module>safe-online-demo-prescription-keystore</module>
 				<module>safe-online-demo-util</module>
@@ -947,6 +948,31 @@
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+                <configuration>
+                    <catalogs>
+                        <catalog>src/main/catalog/catalog.xml</catalog>
+                    </catalogs>
+                    <validationSets>
+                        <validationSet>
+                            <dir>.</dir>
+                            <includes>
+                                <include> src/main/webapp/**/*.xhtml </include>
+                            </includes>
+                        </validationSet>
+                    </validationSets>
+                </configuration>
+                 <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 
 		<!-- DEFAULT PLUGIN CONFIGURATION -->
@@ -956,16 +982,6 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>xml-maven-plugin</artifactId>
 					<version>${xml-maven-plugin.version}</version>
-					<configuration>
-						<validationSets>
-							<validationSet>
-								<dir>.</dir>
-								<includes>
-									<include> src/main/webapp/**/*.xhtml </include>
-								</includes>
-							</validationSet>
-						</validationSets>
-					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>

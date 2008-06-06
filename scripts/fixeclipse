@@ -27,19 +27,26 @@ emit "Converting JAR dependencies on safe-online projects to source dependencies
     done
 emit -$?
 
-emit "Setting up project-specific configurations" --
+emit -o "Setting up project-specific configurations" --
+    echo "$save"
+
+    result=0
     for p in */.settings; do
+        echo -n "$load${p%/*} .."
+
         cp scripts/org.eclipse.* "$p" \
-        && sed -i ${nonGnuSved:+''} 's/safe-online-projectname/'"${p%%/*}"'/' "$p/org.eclipse.wst.common.component" \
-        || break
+            && sed -i ${nonGnuSved:+''} 's/safe-online-projectname/'"${p%%/*}"'/' "$p/org.eclipse.wst.common.component" \
+                || { result=$?; break; }
 
         # Special configuration for projects with generated sources.
         [[ -e ${p%%/*}/target/generated-sources ]] && {
             for f in scripts/ws~org.eclipse.*; do
-                cp "$f" "$p/${f#'scripts/ws~'}" || break 2
+                cp "$f" "$p/${f#'scripts/ws~'}" || { result=$?; break 2; }
             done
         }
 
         true
     done
+
+    echo
 emit -$?
