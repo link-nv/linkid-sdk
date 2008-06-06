@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class LoginServlet extends HttpServlet {
+public class LoginServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -39,19 +39,8 @@ public class LoginServlet extends HttpServlet {
 	public static final String ERROR_MESSAGE_ATTRIBUTE = "errorMessage";
 
 	@Override
-	protected void doGet(HttpServletRequest request,
+	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	private void handleLanding(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ServletException {
 		AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
 				.findAuthenticationProtocolHandler(request);
 		if (null == protocolHandler) {

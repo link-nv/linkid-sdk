@@ -14,10 +14,10 @@ import java.security.cert.X509Certificate;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.io.IOUtils;
@@ -34,7 +34,7 @@ import org.bouncycastle.openssl.PEMWriter;
  * @author fcorneli
  * 
  */
-public class PkiServlet extends HttpServlet {
+public class PkiServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,7 @@ public class PkiServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest request,
+	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doGet");
 		X509Certificate certificate = this.client.getCertificate();

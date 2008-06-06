@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,12 +48,19 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
 	@EJB(mappedName = PublicApplicationService.JNDI_BINDING)
 	private PublicApplicationService publicApplicationService;
 
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		this.securityCheck = false;
+	}
+
 	/**
 	 * @{inheritDoc
 	 */
 	@Override
 	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		this.securityCheck = false;
 
 		boolean logoWritten = false;
 		String applicationName = request.getParameter("applicationName");

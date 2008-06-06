@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,15 +35,14 @@ public class ChartServlet extends AbstractInjectionServlet {
 	private StatisticService statisticService;
 
 	@Override
-	public void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		return;
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		this.securityCheck = false;
 	}
 
 	@Override
 	public void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
 		response.setContentType("image/png");
 		OutputStream out = response.getOutputStream();
 

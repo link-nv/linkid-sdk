@@ -25,6 +25,10 @@ public class ProtocolContext implements Serializable {
 
 	private String issuer;
 
+	private String inResponseTo;
+
+	private String targetUrl;
+
 	private int validity;
 
 	public static final String PROTOCOL_CONTEXT = ProtocolContext.class
@@ -75,6 +79,22 @@ public class ProtocolContext implements Serializable {
 
 	public void setIssuer(String issuer) {
 		this.issuer = issuer;
+	}
+
+	public String getInResponseTo() {
+		return this.inResponseTo;
+	}
+
+	public void setInResponseTo(String inResponseTo) {
+		this.inResponseTo = inResponseTo;
+	}
+
+	public String getTargetUrl() {
+		return this.targetUrl;
+	}
+
+	public void setTargetUrl(String targetUrl) {
+		this.targetUrl = targetUrl;
 	}
 
 	public int getValidity() {

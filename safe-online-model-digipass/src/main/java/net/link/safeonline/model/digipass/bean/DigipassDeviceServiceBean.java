@@ -284,7 +284,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
 	private NameIdentifierMappingClient getIDMappingClient() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		String location = externalContext.getInitParameter("WsLocation");
+		String location = externalContext.getInitParameter("StsWsLocation");
 		PrivateKeyEntry privateKeyEntry = DigipassKeyStoreUtils
 				.getPrivateKeyEntry();
 		X509Certificate certificate = (X509Certificate) privateKeyEntry

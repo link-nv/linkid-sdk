@@ -59,6 +59,14 @@
 		<param-value> ${safe-online.host.basename}/olas-owner/login 
 		</param-value>
 	</context-param>
+	<context-param>
+		<param-name>WsLocation</param-name>
+		<param-value>${safe-online.host.basename}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>Protocol</param-name>
+		<param-value>${safe-online.host.protocol}</param-value>
+	</context-param>
 	<filter>
 		<filter-name>ExceptionFilter</filter-name>
 		<filter-class> net.link.safeonline.webapp.filter.ExceptionFilter 

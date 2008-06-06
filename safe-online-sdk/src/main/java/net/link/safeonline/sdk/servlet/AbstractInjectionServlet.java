@@ -45,6 +45,10 @@ import org.jboss.seam.annotations.web.RequestParameter;
  * {@link UnavailableException} will be thrown.
  * <li>Injects servlet context parameters. If no defaultValue is specified, an
  * {@link UnavailableException} will be thrown.
+ * <li>Default checks if the servlet is accessed with a secure connection. If
+ * context parameter <code>Protocol</code> is <code>http</code> or
+ * <code>securityCheck</code> is set to <code>false</code> this check will
+ * be ommitted.
  * </ul>
  * 
  * @author fcorneli
@@ -58,6 +62,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected Map<String, String> configParams;
+
+	protected boolean securityCheck = true;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -81,6 +87,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 	private void doGetInvocation(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
+		securityCheck(request);
 		injectRequestParameters(request);
 		injectSessionAttributes(session);
 		InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
@@ -93,6 +100,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 	private void doPostInvocation(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
+		securityCheck(request);
 		injectRequestParameters(request);
 		injectSessionAttributes(session);
 		InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
@@ -141,6 +149,35 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		super.doPost(request, response);
+	}
+
+	private void securityCheck(HttpServletRequest request)
+			throws ServletException {
+		if (!this.securityCheck) {
+			return;
+		}
+
+		String protocol = this.configParams.get("Protocol");
+		if (null != protocol && protocol.equals("http")) {
+			return;
+		}
+
+		if (!request.isSecure()) {
+			throw new ServletException("Secure connection is required.");
+		}
+		// TODO: more restrictive checks on cipher suite and key size
+		String cyphersuite = (String) request
+				.getAttribute("javax.servlet.request.cipher_suite");
+		if (null == cyphersuite) {
+			throw new ServletException(
+					"Secure connection is required: No cipher suite found.");
+		}
+		Integer keySize = (Integer) request
+				.getAttribute("javax.servlet.request.key_size");
+		if (null == keySize) {
+			throw new ServletException(
+					"Secure connection is required: No key size found.");
+		}
 	}
 
 	private void injectRequestParameters(HttpServletRequest request)

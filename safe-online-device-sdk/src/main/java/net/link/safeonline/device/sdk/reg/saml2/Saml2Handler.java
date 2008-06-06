@@ -72,13 +72,6 @@ public class Saml2Handler implements Serializable {
 	public static final String SAML2_HANDLER = Saml2Handler.class.getName()
 			+ ".SAML2_HANDLER";
 
-	public static final String IN_RESPONSE_TO_ATTRIBUTE = Saml2Handler.class
-			.getName()
-			+ ".IN_RESPONSE_TO";
-
-	public static final String TARGET_URL = Saml2Handler.class.getName()
-			+ ".TARGET_URL";
-
 	static {
 		/*
 		 * Next is because Sun loves to endorse crippled versions of Xerces.
@@ -183,30 +176,27 @@ public class Saml2Handler implements Serializable {
 					"No device authentication context reference was specified.");
 		}
 
-		this.session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
-		this.session.setAttribute(TARGET_URL, assertionConsumerService);
-
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(request.getSession());
 		protocolContext.setDeviceName(registeredDevice);
 		protocolContext.setApplication(application);
+		protocolContext.setInResponseTo(samlAuthnRequestId);
+		protocolContext.setTargetUrl(assertionConsumerService);
 	}
 
 	public void finalize(HttpServletRequest request,
-			HttpServletResponse response)
-			throws DeviceFinalizationException {
+			HttpServletResponse response) throws DeviceFinalizationException {
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(request.getSession());
 		String registeredDevice = protocolContext.getDeviceName();
 		String mappingId = protocolContext.getMappingId();
 		String applicationId = protocolContext.getApplication();
-		String target = (String) this.session.getAttribute(TARGET_URL);
+		String target = protocolContext.getTargetUrl();
 		LOG.debug("target: " + target);
-		String inResponseTo = (String) this.session
-				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
+		String inResponseTo = protocolContext.getInResponseTo();
 		if (null == inResponseTo) {
 			throw new DeviceFinalizationException(
-					"missing IN_RESPONSE_TO session attribute");
+					"missing IN_RESPONSE_TO attribute");
 		}
 
 		String issuerName = protocolContext.getIssuer();

@@ -13,6 +13,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.StringReader;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,6 +38,8 @@ public class PkiServletTest {
 
 	private static final Log LOG = LogFactory.getLog(PkiServletTest.class);
 
+	private String protocol = "http";
+
 	private ServletTestManager servletTestManager;
 
 	private JmxTestUtils jmxTestUtils;
@@ -58,7 +62,9 @@ public class PkiServletTest {
 				actionHandler);
 
 		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(PkiServlet.class);
+		Map<String, String> servletInitParams = Collections.singletonMap(
+				"Protocol", this.protocol);
+		this.servletTestManager.setUp(PkiServlet.class, servletInitParams);
 	}
 
 	@After

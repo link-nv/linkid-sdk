@@ -63,6 +63,10 @@
 		<param-name>WsLocation</param-name>
 		<param-value>${safe-online.host.basename}</param-value>
 	</context-param>
+	<context-param>
+		<param-name>Protocol</param-name>
+		<param-value>${safe-online.host.protocol}</param-value>
+	</context-param>
 	<filter>
 		<filter-name>Seam Filter</filter-name>
 		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>

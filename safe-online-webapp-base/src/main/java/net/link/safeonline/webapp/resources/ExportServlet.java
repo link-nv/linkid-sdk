@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,12 @@ public class ExportServlet extends AbstractInjectionServlet {
 
 	@EJB(mappedName = "SafeOnline/StatisticServiceBean/local")
 	private StatisticService statisticService;
+
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		this.securityCheck = false;
+	}
 
 	@Override
 	public void invokeGet(HttpServletRequest request,

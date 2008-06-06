@@ -68,6 +68,8 @@ public class AuthEntryServletTest {
 
 	private String protocolErrorUrl = "protocol-error";
 
+	private String protocol = "http";
+
 	private JndiTestUtils jndiTestUtils;
 
 	private ApplicationAuthenticationService mockApplicationAuthenticationService;
@@ -113,6 +115,7 @@ public class AuthEntryServletTest {
 		initParams.put("FirstTimeUrl", this.firstTimeUrl);
 		initParams.put("UnsupportedProtocolUrl", this.unsupportedProtocolUrl);
 		initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
+		initParams.put("Protocol", this.protocol);
 		this.entryServletTestManager.setUp(AuthnEntryServlet.class, initParams);
 
 		this.mockObjects = new Object[] {

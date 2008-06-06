@@ -64,6 +64,10 @@
 		<param-value>${safe-online.host.basename}</param-value>
 	</context-param>
 	<context-param>
+		<param-name>Protocol</param-name>
+		<param-value>${safe-online.host.protocol}</param-value>
+	</context-param>
+	<context-param>
 		<param-name>LandingPage</param-name>
 		<param-value> ${safe-online.host.basename}/olas/login </param-value>
 	</context-param>
