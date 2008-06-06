@@ -22,8 +22,8 @@ import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ErrorPage;
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.exception.RegistrationFinalizationException;
-import net.link.safeonline.device.sdk.exception.RegistrationInitializationException;
+import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
+import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
 import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
@@ -61,19 +61,9 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 	private NodeAuthenticationService nodeAuthenticationService;
 
 	@Override
-	protected void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	@Override
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	private void handleLanding(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+		LOG.debug("doPost");
 		Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 		KeyPair keyPair = new KeyPair(identityServiceClient.getPublicKey(),
@@ -95,7 +85,7 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 		try {
 			handler.initialize(request, authIdentityServiceClient
 					.getCertificate(), authKeyPair);
-		} catch (RegistrationInitializationException e) {
+		} catch (DeviceInitializationException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;
 		}
@@ -126,7 +116,7 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
 		try {
 			handler.finalize(request, response);
-		} catch (RegistrationFinalizationException e) {
+		} catch (DeviceFinalizationException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;
 		}

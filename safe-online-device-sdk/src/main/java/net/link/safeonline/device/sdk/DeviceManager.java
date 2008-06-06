@@ -25,8 +25,6 @@ public class DeviceManager {
 
 	private static final String SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE = "SafeOnlineDeviceLandingServiceUrl";
 
-	private static final String SAFE_ONLINE_DEVICE_REGISTRATION_LANDING_SERVICE_URL_ATTRIBUTE = "SafeOnlineDeviceRegistrationLandingServiceUrl";
-
 	private static final String SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE = "SafeOnlineDeviceExitServiceUrl";
 
 	private static final String SAFE_ONLINE_DEVICE_WS_LOCATION = "SafeOnlineDeviceWsLocation";
@@ -67,11 +65,6 @@ public class DeviceManager {
 					SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE, node
 							.getLocation()
 							+ "/olas-auth/device/landing");
-			session
-					.setAttribute(
-							SAFE_ONLINE_DEVICE_REGISTRATION_LANDING_SERVICE_URL_ATTRIBUTE,
-							node.getLocation()
-									+ "/olas-auth/device/registrationlanding");
 			session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
 					node.getLocation() + "/olas-auth/device/exit");
 		} else if (source.equals("user")) {
@@ -79,11 +72,6 @@ public class DeviceManager {
 					SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE, node
 							.getLocation()
 							+ "/olas/device/landing");
-			session
-					.setAttribute(
-							SAFE_ONLINE_DEVICE_REGISTRATION_LANDING_SERVICE_URL_ATTRIBUTE,
-							node.getLocation()
-									+ "/olas/device/registrationlanding");
 			session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
 					node.getHTTPLocation() + "/olas/device/exit");
 		} else {
@@ -96,12 +84,6 @@ public class DeviceManager {
 			HttpSession session) {
 		return (String) session
 				.getAttribute(SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE);
-	}
-
-	public static String getSafeOnlineDeviceRegistrationLandingServiceUrl(
-			HttpSession session) {
-		return (String) session
-				.getAttribute(SAFE_ONLINE_DEVICE_REGISTRATION_LANDING_SERVICE_URL_ATTRIBUTE);
 	}
 
 	public static String getSafeOnlineDeviceExitServiceUrl(HttpSession session) {

@@ -6,13 +6,13 @@
  */
 package net.link.safeonline.device.sdk.exception;
 
-public class RegistrationInitializationException extends Exception {
+public class DeviceFinalizationException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
 	private String message;
 
-	public RegistrationInitializationException(String message) {
+	public DeviceFinalizationException(String message) {
 		this.message = message;
 	}
 

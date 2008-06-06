@@ -20,8 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.exception.RegistrationFinalizationException;
-import net.link.safeonline.device.sdk.exception.RegistrationInitializationException;
+import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
+import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
@@ -118,7 +118,7 @@ public class Saml2Handler implements Serializable {
 
 	public void initialize(HttpServletRequest request,
 			X509Certificate authCertificate, KeyPair authKeyPair)
-			throws RegistrationInitializationException {
+			throws DeviceInitializationException {
 
 		AuthnRequest samlAuthnRequest;
 		try {
@@ -126,25 +126,31 @@ public class Saml2Handler implements Serializable {
 					this.stsWsLocation, authCertificate, authKeyPair
 							.getPrivate(), TrustDomainType.DEVICE);
 		} catch (ServletException e) {
-			throw new RegistrationInitializationException(e.getMessage());
+			throw new DeviceInitializationException(e.getMessage());
 		}
 
 		String assertionConsumerService = samlAuthnRequest
 				.getAssertionConsumerServiceURL();
 
-		if (null == assertionConsumerService)
-			throw new RegistrationInitializationException(
+		if (null == assertionConsumerService) {
+			throw new DeviceInitializationException(
 					"missing AssertionConsumerServiceURL");
+		}
+
+		String destination = samlAuthnRequest.getDestination();
+		if (null == destination) {
+			throw new DeviceInitializationException("missing Destination");
+		}
 
 		if (samlAuthnRequest.getConditions().getAudienceRestrictions()
 				.isEmpty()) {
-			throw new RegistrationInitializationException(
+			throw new DeviceInitializationException(
 					"No audience restriction was specified.");
 		}
 
 		if (samlAuthnRequest.getConditions().getAudienceRestrictions().get(0)
 				.getAudiences().isEmpty()) {
-			throw new RegistrationInitializationException(
+			throw new DeviceInitializationException(
 					"No audience specified in audience restriction");
 		}
 
@@ -153,7 +159,7 @@ public class Saml2Handler implements Serializable {
 				.getAudienceURI();
 
 		if (null == application)
-			throw new RegistrationInitializationException(
+			throw new DeviceInitializationException(
 					"No target application was specified");
 
 		String samlAuthnRequestId = samlAuthnRequest.getID();
@@ -161,19 +167,19 @@ public class Saml2Handler implements Serializable {
 		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
 				.getRequestedAuthnContext();
 		if (null == requestedAuthnContext) {
-			throw new RegistrationInitializationException(
+			throw new DeviceInitializationException(
 					"No device authentication context was specified.");
 		}
 
 		if (requestedAuthnContext.getAuthnContextClassRefs().size() != 1) {
-			throw new RegistrationInitializationException(
+			throw new DeviceInitializationException(
 					"Only 1 authentication context reference allowed.");
 		}
 
 		String registeredDevice = requestedAuthnContext
 				.getAuthnContextClassRefs().get(0).getAuthnContextClassRef();
 		if (null == registeredDevice) {
-			throw new RegistrationInitializationException(
+			throw new DeviceInitializationException(
 					"No device authentication context reference was specified.");
 		}
 
@@ -188,7 +194,7 @@ public class Saml2Handler implements Serializable {
 
 	public void finalize(HttpServletRequest request,
 			HttpServletResponse response)
-			throws RegistrationFinalizationException {
+			throws DeviceFinalizationException {
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(request.getSession());
 		String registeredDevice = protocolContext.getDeviceName();
@@ -199,7 +205,7 @@ public class Saml2Handler implements Serializable {
 		String inResponseTo = (String) this.session
 				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
 		if (null == inResponseTo) {
-			throw new RegistrationFinalizationException(
+			throw new DeviceFinalizationException(
 					"missing IN_RESPONSE_TO session attribute");
 		}
 
@@ -216,7 +222,7 @@ public class Saml2Handler implements Serializable {
 			AuthnResponseUtil.sendAuthnResponse(responseMessage, target,
 					publicKey, privateKey, response);
 		} catch (ServletException e) {
-			throw new RegistrationFinalizationException(e.getMessage());
+			throw new DeviceFinalizationException(e.getMessage());
 		}
 	}
 
