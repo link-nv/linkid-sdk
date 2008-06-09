@@ -28,7 +28,11 @@
 		<!--<init-param>
 			<param-name>configuration</param-name>
 			<param-value>DEPLOYMENT</param-value>
-			</init-param>-->
+        </init-param>-->
+        <context-param>
+            <param-name>configuration</param-name>
+            <param-value>development</param-value>
+        </context-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 

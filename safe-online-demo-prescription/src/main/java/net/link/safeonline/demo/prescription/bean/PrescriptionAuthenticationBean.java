@@ -28,7 +28,7 @@ public class PrescriptionAuthenticationBean implements
 
 	public String authenticate(String target) {
 		this.log.debug("authentication for target: #0", target);
-		String result = SafeOnlineLoginUtils.login(this.log, target);
+		String result = SafeOnlineLoginUtils.login(target);
 		return result;
 	}
 }

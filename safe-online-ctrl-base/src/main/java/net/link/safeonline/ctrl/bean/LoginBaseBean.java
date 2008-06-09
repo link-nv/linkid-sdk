@@ -66,7 +66,7 @@ public class LoginBaseBean implements LoginBase {
 		 * filter to help in detecting an application level session timeout.
 		 */
 		this.sessionContext.set("login-processing", "true");
-		return SafeOnlineLoginUtils.login(this.log, "overview.seam");
+		return SafeOnlineLoginUtils.login("overview.seam");
 	}
 
 	public String logout() {

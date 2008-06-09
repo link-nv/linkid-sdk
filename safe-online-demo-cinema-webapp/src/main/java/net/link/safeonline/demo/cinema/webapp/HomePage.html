@@ -3,14 +3,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
-<head></head>
-<body>
-<wicket:extend>
-	<span wicket:id="navigation"></span>
-	<div id="content">
-		Welcome to the bar admin page. From here you can <a wicket:id="listLink" href=#>list cinemas</a>, 
-		or <a wicket:id="editLink">edit a cinema</a>.
-	</div>
-</wicket:extend>
-</body>
+
+    <body>
+
+        <wicket:extend>
+                <p>Welcome to the Cinema Demo.  Please begin by selecting either your theater or the film you would like to watch.</p>
+
+                <form wicket:id="films">
+                </form>
+
+                <form wicket:id="theaters">
+                </form>
+            </div>
+        </wicket:extend>
+
+    </body>
 </html>

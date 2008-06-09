@@ -34,7 +34,7 @@ public class LawyerLogonBean extends AbstractLawyerDataClientBean implements
 
 	public String login() {
 		this.log.debug("login");
-		String result = SafeOnlineLoginUtils.login(this.log, "login");
+		String result = SafeOnlineLoginUtils.login("login");
 		return result;
 	}
 

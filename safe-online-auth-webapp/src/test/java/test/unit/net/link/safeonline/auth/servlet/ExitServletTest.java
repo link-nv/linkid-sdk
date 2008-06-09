@@ -98,7 +98,7 @@ public class ExitServletTest {
 
 	private PublicKey publicKey;
 
-	private X509Certificate authCertificate;
+	X509Certificate authCertificate;
 
 	@Before
 	public void setUp() throws Exception {
@@ -139,7 +139,7 @@ public class ExitServletTest {
 					public Object invoke(
 							@SuppressWarnings("unused") Object[] arguments) {
 						LOG.debug("returning certificate");
-						return authCertificate;
+						return ExitServletTest.this.authCertificate;
 					}
 				});
 

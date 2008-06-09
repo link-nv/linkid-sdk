@@ -81,7 +81,7 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
 
 	public String authenticate() {
 		this.log.debug("authenticate");
-		String result = SafeOnlineLoginUtils.login(this.log, "cards.seam");
+		String result = SafeOnlineLoginUtils.login("cards.seam");
 		return result;
 	}
 

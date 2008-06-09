@@ -5,10 +5,12 @@ import org.apache.wicket.markup.html.basic.Label;
 
 public class Layout extends WebPage<Object> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public Layout() {
-		add(new Label("pageTitle", "Laywer Demo App"));
-	}
+
+    public Layout() {
+
+        add(new Label<String>("pageTitle", "Laywer Demo App"));
+    }
 
 }

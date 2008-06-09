@@ -145,7 +145,8 @@ function emit {
     local cmd=0
 
     # Parse the options.
-    for arg in $(getArgs dbwgyrDBWGYRn "$@"); do
+    spinArgs=()
+    for arg in $(getArgs odbwgyrDBWGYRn "$@"); do
         case ${arg%% } in
             d) style=$dim           ;;
             b) style=$bold          ;;
@@ -160,10 +161,10 @@ function emit {
             Y) textcolor=$yellow    ;;
             R) textcolor=$red       ;;
             n) eol=                 ;;
+            o) spinArgs+=("-$arg")  ;;
         esac
     done
-    shift $(getArgs -c dbwgyrDBWGYRn "$@")
-    spinArgs=()
+    shift $(getArgs -c odbwgyrDBWGYRn "$@")
     while [[ $1 = +* ]]; do
         spinArgs+=("-${1#+}")
         shift
@@ -212,7 +213,7 @@ function emit {
         local font=$reset$textstyle$textcolor
         text=$font${text//$reset/$font}
         
-        echo -ne "\r $reset$style$color* $text"                      >&$fd
+        echo -ne "\r$reset $style$color* $text"                      >&$fd
     fi
 } # _____________________________________________________________________
 
@@ -258,6 +259,7 @@ function spinner {
     local color=$green
     local textstyle=
     local textcolor=
+    local output=0
     unset spinPid
 
     # Any remaining options are the exit status of an existing spinner.
@@ -275,6 +277,7 @@ function spinner {
                 c) graphics=( "${crosser[@]}" ) ;;
                 r) graphics=( "${runner[@]}" )  ;;
                 s) graphics=( "${spinner[@]}" ) ;;
+                o) output=1                     ;;
             esac
         elif [[ $pid ]]; then
             [[ $arg = 0 ]] \
@@ -311,29 +314,45 @@ function spinner {
     # Figure out what FD to use for our messages.
     [[ -t 1 ]]; local fd=$(( $? + 1 ))
 
+    # Make reset codes restore the initial font.
+    local font=$reset$textstyle$textcolor
+    text=$font${text//$reset/$font}
+
+    # Spinner initial status.
+    echo -n $'\r'"$save$eel$reset $style$color* $text"              >&$fd
+    (( output )) && echo                                            >&$fd
+
     # Render the spinner.
-    echo -ne "\r$save"                                              >&$fd
     local i=0
     while true; do
-        echo -n "$load$eel$reset" \
-                "$style$color${graphics[i++ % 4]}$reset" \
-                "$textstyle$textcolor$text"                         >&$fd
+        if (( output ))
+        then echo -n $'\r'                                          >&$fd
+        else echo -n "$load"                                        >&$fd
+        fi
+
+        echo -n "$eel$reset $style$color${graphics[i++ % 4]} "      >&$fd
+
+        if (( output ))
+        then echo -n "$reset$bold$blue-$reset "                     >&$fd
+        else echo -n "$text"                                        >&$fd
+        fi
+
         sleep .25 # Four iterations make one second.
 
-        # Cancel when parent disappears.
+        # Cancel when calling script disappears.
         kill -0 $$ >/dev/null || { done="${red}aborted"; break; }
     done
 
     # Get rid of the spinner traps.
     trap - USR1 USR2; (( monitor )) && set -m
 
-    # Make reset codes restore the initial font.
-    local font=$reset$textstyle$textcolor
-    text=$font${text//$reset/$font}
-
     # Spinner final status.
-    echo "$load$eel" \
-         "$reset$style$color* $text $bold$done$font."               >&$fd
+    if (( output ))
+    then echo -n $'\r'; text=                                       >&$fd
+    else echo -n "$load"                                            >&$fd
+    fi
+
+    echo "$eel$reset $style$color* $text${text:+ }$bold$done$font." >&$fd
 } # _____________________________________________________________________
 
 
@@ -714,11 +733,11 @@ function shorten {
     local path=$1; shift
 
     # Dot-directories.
-    path=$(sed 's,\(^\|/\)./,\1,g; s,\(^\|/\)[^/]*/../,\1,g' <<< "$path")
+    path=$(sed 's,///*,/,g; s,\(^\|/\)\./,\1,g; s,\(^\|/\)[^/]*/\.\./,\1,g' <<< "$path")
 
     # Replace special paths.
-    #path=${path/#$PWD\//}
-    #path=${path/#$HOME/'~'}
+    path=${path/#$PWD\//}
+    path=${path/#$HOME/'~'}
 
     # Cut off prefix.
     for prefix; do
@@ -1002,13 +1021,13 @@ function stackTrace {
     # Search through the map.
     local arg=0
     for i in ${!FUNCNAME[@]}; do
-        if (( i )); then
+        #if (( i )); then
 
             # Print this execution stack's location.
             echo -n "$reset  $bold-$reset $green"
-            [[ ${BASH_SOURCE[i]} ]] \
-                && echo -n "${BASH_SOURCE[i]}$reset:$green$bold${BASH_LINENO[i]}" \
-                || echo -n "${bold}Interactive Shell"
+            [[ ${BASH_SOURCE[i+1]} ]] \
+                && echo -n "${BASH_SOURCE[i+1]}$reset:$green$bold${BASH_LINENO[i]}" \
+                || echo -n "${bold}Prompt"
             echo -n "$reset :"$'\t'"$bold${FUNCNAME[i]}("
 
             # Print this execution stack's positional parameters.
@@ -1021,7 +1040,7 @@ function stackTrace {
 
             # Print the end of this execution stack's line.
             echo ")$reset"
-        fi
+        #fi
     done
     echo
 

@@ -13,10 +13,13 @@ import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +29,6 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 
-import org.jboss.seam.log.Log;
-
 /**
  * Utility class for usage within a JBoss Seam JSF based web application.
  * 
@@ -36,212 +37,280 @@ import org.jboss.seam.log.Log;
  */
 public class SafeOnlineLoginUtils {
 
-	public static final String AUTH_SERVICE_URL_INIT_PARAM = "AuthenticationServiceUrl";
+    public static final String                 AUTH_SERVICE_URL_INIT_PARAM   = "AuthenticationServiceUrl";
+    public static final String                 APPLICATION_NAME_INIT_PARAM   = "ApplicationName";
+    public static final String                 AUTHN_PROTOCOL_INIT_PARAM     = "AuthenticationProtocol";
+    public static final String                 KEY_STORE_RESOURCE_INIT_PARAM = "KeyStoreResource";
+    public static final String                 KEY_STORE_FILE_INIT_PARAM     = "KeyStoreFile";
+    public static final String                 KEY_STORE_TYPE_INIT_PARAM     = "KeyStoreType";
+    public static final String                 KEY_STORE_PASSWORD_INIT_PARAM = "KeyStorePassword";
 
-	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
+    public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL        = AuthenticationProtocol.SAML2_BROWSER_POST;
 
-	public static final String AUTHN_PROTOCOL_INIT_PARAM = "AuthenticationProtocol";
 
-	public static final String KEY_STORE_RESOURCE_INIT_PARAM = "KeyStoreResource";
+    private SafeOnlineLoginUtils() {
 
-	public static final String KEY_STORE_FILE_INIT_PARAM = "KeyStoreFile";
+        // empty
+    }
 
-	public static final String KEY_STORE_TYPE_INIT_PARAM = "KeyStoreType";
+    /**
+     * Performs a SafeOnline login using the SafeOnline authentication web
+     * application.
+     * 
+     * <b>Note: This method is ONLY for logging in from an application that uses
+     * the JSF framework.</b>
+     * 
+     * <p>
+     * The method requires the <code>AuthenticationServiceUrl</code> context
+     * parameter defined in <code>web.xml</code> pointing to the location of the
+     * SafeOnline authentication web application.
+     * </p>
+     * 
+     * <p>
+     * The method also requires the <code>ApplicationName</code> context
+     * parameter defined in <code>web.xml</code> containing the application name
+     * that will be communicated towards the SafeOnline authentication web
+     * application.
+     * </p>
+     * 
+     * <p>
+     * The method also requires the <code>AuthenticationProtocol</code> context
+     * parameter defined in <code>web.xml</code> containing the authentication
+     * protocol used between the application and the OLAS authentication web
+     * application. This can be: SAML2_BROWSER_POST. Defaults to:
+     * SAML2_BROWSER_POST
+     * </p>
+     * 
+     * <p>
+     * The optional keystore resource name <code>KeyStoreResource</code> context
+     * parameter. The key pair within this keystore can be used by the
+     * authentication protocol handler to digitally sign the authentication
+     * request.
+     * </p>
+     * 
+     * <p>
+     * The optional keystore file name <code>KeyStoreFile</code> context
+     * parameter. The key pair within this keystore can be used by the
+     * authentication protocol handler to digitally sign the authentication
+     * request.
+     * </p>
+     * 
+     * <p>
+     * The optional <code>KeyStoreType</code> key store type context parameter.
+     * Accepted values are: <code>pkcs12</code> and <code>jks</code>.
+     * </p>
+     * 
+     * <p>
+     * The optional <code>KeyStorePassword</code> context parameter contains the
+     * password to unlock the keystore and key entry.
+     * </p>
+     * 
+     * @param log
+     * @param targetPage
+     *            the page to which the user should be redirected after login.
+     */
+    @SuppressWarnings("unchecked")
+    public static String login(String targetPage) {
 
-	public static final String KEY_STORE_PASSWORD_INIT_PARAM = "KeyStorePassword";
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
 
-	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
+        try {
+            return login(externalContext.getInitParameterMap(), targetPage,
+                    (HttpServletRequest) externalContext.getRequest(),
+                    (HttpServletResponse) externalContext.getResponse());
+        }
 
-	private SafeOnlineLoginUtils() {
-		// empty
-	}
+        finally {
+            /*
+             * Signal the JavaServer Faces implementation that the HTTP response
+             * for this request has already been generated (such as an HTTP
+             * redirect), and that the request processing lifecycle should be
+             * terminated as soon as the current phase is completed.
+             */
+            context.responseComplete();
+        }
+    }
 
-	/**
-	 * Performs a SafeOnline login using the SafeOnline authentication web
-	 * application.
-	 * 
-	 * <p>
-	 * The method requires the <code>AuthenticationServiceUrl</code> context
-	 * parameter defined in web.xml pointing to the location of the SafeOnline
-	 * authentication web application.
-	 * </p>
-	 * 
-	 * <p>
-	 * The method also requires the <code>ApplicationName</code> context
-	 * parameter defined in web.xml containing the application name that will be
-	 * communicated towards the SafeOnline authentication web application.
-	 * </p>
-	 * 
-	 * <p>
-	 * The method also requires the <code>AuthenticationProtocol</code>
-	 * context parameter defined in web.xml containing the authentication
-	 * protocol used between the application and the OLAS authentication web
-	 * application. This can be: SAML2_BROWSER_POST. Defaults to:
-	 * SAML2_BROWSER_POST
-	 * </p> *
-	 * <p>
-	 * The optional keystore resource name <code>KeyStoreResource</code>
-	 * context parameter. The key pair within this keystore can be used by the
-	 * authentication protocol handler to digitally sign the authentication
-	 * request.
-	 * </p>
-	 * 
-	 * <p>
-	 * The optional keystore file name <code>KeyStoreFile</code> context
-	 * parameter. The key pair within this keystore can be used by the
-	 * authentication protocol handler to digitally sign the authentication
-	 * request.
-	 * </p>
-	 * 
-	 * <p>
-	 * The optional <code>KeyStoreType</code> key store type context
-	 * parameter. Accepted values are: <code>pkcs12</code> and
-	 * <code>jks</code>.
-	 * </p>
-	 * 
-	 * <p>
-	 * The optional <code>KeyStorePassword</code> context parameter contains
-	 * the password to unlock the keystore and key entry.
-	 * </p>
-	 * 
-	 * @param log
-	 * @param targetPage
-	 *            the page to which the user should be redirected after login.
-	 */
-	@SuppressWarnings("unchecked")
-	public static String login(Log log, String targetPage) {
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
+    /**
+     * Performs a SafeOnline login using the SafeOnline authentication web
+     * application.
+     * 
+     * <b>Note: This is a general purpose method that should work for any web
+     * application framework.</b>
+     * 
+     * @see #login(String) For details about the init parameters that should be
+     *      configured in the application's <code>web.xml</code>.
+     * 
+     * @param targetPage
+     *            the page to which the user should be redirected after login.
+     * @param request
+     *            The {@link HttpServletRequest} object from the servlet making
+     *            the login request.
+     * @param response
+     *            The {@link HttpServletResponse} object from the servlet making
+     *            the login request.
+     */
+    public static String login(String targetPage,
+            HttpServletRequest request, HttpServletResponse response) {
 
-		String authenticationServiceUrl = getInitParameter(externalContext,
-				AUTH_SERVICE_URL_INIT_PARAM);
-		log.debug("redirecting to #0", authenticationServiceUrl);
+        Map<String, String> config = new HashMap<String, String>();
+        ServletContext context = request.getSession().getServletContext();
 
-		String applicationName = getInitParameter(externalContext,
-				APPLICATION_NAME_INIT_PARAM);
+        @SuppressWarnings("unchecked")
+        Enumeration<String> names = context.getInitParameterNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            config.put(name, context.getInitParameter(name));
+        }
 
-		String authenticationProtocolString = getInitParameter(externalContext,
-				AUTHN_PROTOCOL_INIT_PARAM, DEFAULT_AUTHN_PROTOCOL.name());
-		AuthenticationProtocol authenticationProtocol;
-		try {
-			authenticationProtocol = AuthenticationProtocol
-					.toAuthenticationProtocol(authenticationProtocolString);
-		} catch (UnavailableException e) {
-			throw new RuntimeException(
-					"could not parse authentication protocol: "
-							+ authenticationProtocolString);
-		}
-		log.debug("authentication protocol: #0", authenticationProtocol);
+        return login(config, targetPage, request, response);
+    }
 
-		String keyStoreResource = externalContext
-				.getInitParameter(KEY_STORE_RESOURCE_INIT_PARAM);
-		String keyStoreFile = externalContext
-				.getInitParameter(KEY_STORE_FILE_INIT_PARAM);
-		KeyPair keyPair;
-		X509Certificate certificate;
-		if (null != keyStoreResource || null != keyStoreFile) {
-			if (null != keyStoreResource && null != keyStoreFile)
-				throw new RuntimeException(
-						"both KeyStoreResource and KeyStoreFile are defined");
-			String keyStorePassword = getInitParameter(externalContext,
-					KEY_STORE_PASSWORD_INIT_PARAM);
-			String keyStoreType = getInitParameter(externalContext,
-					KEY_STORE_TYPE_INIT_PARAM);
-			InputStream keyStoreInputStream;
-			if (null != keyStoreResource) {
-				keyStoreInputStream = Thread.currentThread()
-						.getContextClassLoader().getResourceAsStream(
-								keyStoreResource);
-				if (null == keyStoreInputStream)
-					throw new RuntimeException("resource not found: "
-							+ keyStoreResource);
-			} else {
-				try {
-					keyStoreInputStream = new FileInputStream(keyStoreFile);
-				} catch (FileNotFoundException e) {
-					throw new RuntimeException("file not found: "
-							+ keyStoreFile);
-				}
-			}
-			PrivateKeyEntry privateKeyEntry = KeyStoreUtils
-					.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
-							keyStorePassword, keyStorePassword);
-			keyPair = new KeyPair(privateKeyEntry.getCertificate()
-					.getPublicKey(), privateKeyEntry.getPrivateKey());
-			certificate = (X509Certificate) privateKeyEntry.getCertificate();
-		} else {
-			keyPair = null;
-			certificate = null;
-		}
+    private static String login(Map<String, String> config, String targetPage,
+            HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
-		HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext
-				.getRequest();
-		HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
-				.getResponse();
-		String requestUrl = httpServletRequest.getRequestURL().toString();
-		String targetUrl = getTargetUrl(requestUrl, targetPage);
-		/*
-		 * Next is required to preserve the session if the browser does not
-		 * support cookies.
-		 */
-		targetUrl = httpServletResponse.encodeRedirectURL(targetUrl);
-		log.debug("target url: #0", targetUrl);
+        /* Initialize parameters from web.xml */
+        String authenticationServiceUrl = getInitParameter(config,
+                AUTH_SERVICE_URL_INIT_PARAM);
+        String applicationName = getInitParameter(config,
+                APPLICATION_NAME_INIT_PARAM);
+        String authenticationProtocolString = getInitParameter(config,
+                AUTHN_PROTOCOL_INIT_PARAM, DEFAULT_AUTHN_PROTOCOL.name());
+        String keyStoreResource = getInitParameter(config,
+                KEY_STORE_RESOURCE_INIT_PARAM, null);
+        String keyStoreFile = getInitParameter(config,
+                KEY_STORE_FILE_INIT_PARAM, null);
+        String keyStorePassword = getInitParameter(config,
+                KEY_STORE_PASSWORD_INIT_PARAM, null);
+        String keyStoreType = getInitParameter(config,
+                KEY_STORE_TYPE_INIT_PARAM, null);
+        // log.debug("redirecting to #0", authenticationServiceUrl);
 
-		Map<String, String> configParams = externalContext
-				.getInitParameterMap();
+        /* Figure out what protocol to use. */
+        AuthenticationProtocol authenticationProtocol = null;
+        try {
+            authenticationProtocol = AuthenticationProtocol
+                    .toAuthenticationProtocol(authenticationProtocolString);
+        } catch (UnavailableException e) {
+            throw new RuntimeException(
+                    "could not parse authentication protocol: "
+                            + authenticationProtocolString);
+        }
+        // log.debug("authentication protocol: #0", authenticationProtocol);
 
-		try {
-			AuthenticationProtocolManager.createAuthenticationProtocolHandler(
-					authenticationProtocol, authenticationServiceUrl,
-					applicationName, keyPair, certificate, configParams,
-					httpServletRequest);
-		} catch (ServletException e) {
-			throw new RuntimeException(
-					"could not init authentication protocol handler: "
-							+ authenticationProtocol + "; original message: "
-							+ e.getMessage(), e);
-		}
-		try {
-			AuthenticationProtocolManager.initiateAuthentication(
-					httpServletRequest, httpServletResponse, targetUrl);
-		} catch (Exception e) {
-			throw new RuntimeException("could not initiate authentication: "
-					+ e.getMessage(), e);
-		}
+        /* Load key data if provided. */
+        KeyPair keyPair = null;
+        X509Certificate certificate = null;
+        PrivateKeyEntry privateKeyEntry = getApplicationKey(keyStoreFile,
+                keyStoreResource, keyStoreType, keyStorePassword);
+        if (privateKeyEntry != null) {
+            keyPair = new KeyPair(privateKeyEntry.getCertificate()
+                    .getPublicKey(), privateKeyEntry.getPrivateKey());
+            certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        }
 
-		/*
-		 * Signal the JavaServer Faces implementation that the HTTP response for
-		 * this request has already been generated (such as an HTTP redirect),
-		 * and that the request processing lifecycle should be terminated as
-		 * soon as the current phase is completed.
-		 */
-		context.responseComplete();
+        /*
+         * Convert our target URL to an absolute URL and use encodeRedirectURL
+         * to add parameters to it that should help preserve the session upon
+         * return from SafeOnline auth should the browser not support cookies.
+         */
+        String requestUrl = httpRequest.getRequestURL().toString();
+        String targetUrl = getTargetUrl(requestUrl, targetPage);
+        targetUrl = httpResponse.encodeRedirectURL(targetUrl);
+        // log.debug("target url: #0", targetUrl);
 
-		return null;
-	}
+        /* Initialize and execute the authentication protocol. */
+        try {
+            AuthenticationProtocolManager.createAuthenticationProtocolHandler(
+                    authenticationProtocol, authenticationServiceUrl,
+                    applicationName, keyPair, certificate, config, httpRequest);
+            // log.debug("initialized protocol");
+        } catch (ServletException e) {
+            throw new RuntimeException(
+                    "could not init authentication protocol handler: "
+                            + authenticationProtocol + "; original message: "
+                            + e.getMessage(), e);
+        }
+        try {
+            AuthenticationProtocolManager.initiateAuthentication(httpRequest,
+                    httpResponse, targetUrl);
+            // log.debug("executed protocol");
+        } catch (Exception e) {
+            throw new RuntimeException("could not initiate authentication: "
+                    + e.getMessage(), e);
+        }
 
-	public static String getTargetUrl(String requestUrl, String targetPage) {
-		int lastSlashIdx = requestUrl.lastIndexOf("/");
-		String prefix = requestUrl.substring(0, lastSlashIdx);
-		String targetUrl = prefix + "/" + targetPage;
-		return targetUrl;
-	}
+        return null;
+    }
 
-	private static String getInitParameter(ExternalContext context,
-			String parameterName) {
-		String initParameter = context.getInitParameter(parameterName);
-		if (null == initParameter)
-			throw new RuntimeException("missing context-param in web.xml: "
-					+ parameterName);
-		return initParameter;
-	}
+    /**
+     * Load the application key from the given key store file OR resource (at
+     * least one must be <code>null</code>).
+     * 
+     * @param keyStorePassword
+     * @param keyStoreType
+     */
+    private static PrivateKeyEntry getApplicationKey(String keyStoreFile,
+            String keyStoreResource, String keyStoreType,
+            String keyStorePassword) {
 
-	private static String getInitParameter(ExternalContext context,
-			String parameterName, String defaultValue) {
-		String initParameter = context.getInitParameter(parameterName);
-		if (null == initParameter) {
-			initParameter = defaultValue;
-		}
-		return initParameter;
-	}
+        if (null == keyStoreResource && null == keyStoreFile)
+            return null;
+
+        /* Can't have both resource and file defined. */
+        if (null != keyStoreResource && null != keyStoreFile) {
+            throw new RuntimeException(
+                    "both KeyStoreResource and KeyStoreFile are defined");
+        }
+
+        InputStream keyStoreInputStream;
+        if (null != keyStoreResource) {
+            keyStoreInputStream = Thread.currentThread()
+                    .getContextClassLoader().getResourceAsStream(
+                            keyStoreResource);
+            if (null == keyStoreInputStream) {
+                throw new RuntimeException("resource not found: "
+                        + keyStoreResource);
+            }
+        } else {
+            try {
+                keyStoreInputStream = new FileInputStream(keyStoreFile);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException("file not found: " + keyStoreFile);
+            }
+        }
+
+        return KeyStoreUtils.loadPrivateKeyEntry(keyStoreType,
+                keyStoreInputStream, keyStorePassword, keyStorePassword);
+    }
+
+    public static String getTargetUrl(String requestUrl, String targetPage) {
+
+        int lastSlash = requestUrl.lastIndexOf("/");
+        String prefix = requestUrl.substring(0, lastSlash);
+        String targetUrl = prefix + "/" + targetPage;
+
+        return targetUrl;
+    }
+
+    private static String getInitParameter(Map<String, String> config,
+            String parameterName) {
+
+        if (!config.containsKey(parameterName)) {
+            throw new RuntimeException("missing context-param in web.xml: "
+                    + parameterName);
+        }
+
+        return config.get(parameterName);
+    }
+
+    private static String getInitParameter(Map<String, String> config,
+            String parameterName, String defaultValue) {
+
+        if (config.containsKey(parameterName))
+            return config.get(parameterName);
+
+        return defaultValue;
+    }
 }

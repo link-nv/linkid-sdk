@@ -42,7 +42,7 @@ public class TicketLogonBean extends AbstractTicketDataClientBean implements
 	public String login() {
 		this.log.debug("login");
 
-		return SafeOnlineLoginUtils.login(this.log, "overview.seam");
+		return SafeOnlineLoginUtils.login("overview.seam");
 	}
 
 	public String logout() {
