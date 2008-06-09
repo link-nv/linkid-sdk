@@ -38,7 +38,7 @@
 				<exclude>server/default/lib/scheduler-plugin-example.jar</exclude>
 				<exclude>server/default/deploy/uuid-key-generator.sar/**</exclude>
 				<exclude>server/default/lib/autonumber-plugin.jar</exclude>
-				<!--exclude>server/default/conf/xmdesc/JNDIView-xmbean.xml</exclude-->
+				<exclude>server/default/conf/xmdesc/JNDIView-xmbean.xml</exclude>
 				<exclude>server/default/conf/props/*.properties</exclude>
 				<exclude>readme.html</exclude>
 				<exclude>bin/*.sh</exclude>

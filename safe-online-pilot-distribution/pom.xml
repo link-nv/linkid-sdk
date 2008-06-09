@@ -124,6 +124,7 @@
                     </goals>
                     <configuration>
                       <patches>
+                        <patch>disable_services.patch</patch>
                         <patch>make_headless.patch</patch>
                         <patch>no_jmx_debug_urandom.patch</patch>
                       </patches>
