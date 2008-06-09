@@ -149,6 +149,7 @@ public class AuthnResponseUtil {
 		LOG.debug("SAMLResponse parameter found");
 		LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
 
+		// TODO: check the applicationName for real !! AudienceRestrictionRule ?
 		SamlResponseMessageContext messageContext = new SamlResponseMessageContext(
 				expectedInResponseTo, applicationName);
 		messageContext

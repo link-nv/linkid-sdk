@@ -217,4 +217,12 @@ public class Saml2BrowserPostHandler implements Serializable {
 	public String getAuthenticationDevice() {
 		return this.authenticationDevice;
 	}
+
+	public Challenge<String> getChallenge() {
+		return this.challenge;
+	}
+
+	public String getApplicationName() {
+		return this.applicationName;
+	}
 }

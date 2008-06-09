@@ -16,6 +16,7 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.dao.OlasDAO;
 import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,5 +63,11 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
 
 	public OlasEntity getNode(String nodeName) throws NodeNotFoundException {
 		return this.olasDAO.getNode(nodeName);
+	}
+
+	public OlasEntity getNode() throws NodeNotFoundException {
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		return this.getNode(this.authenticate(authIdentityServiceClient
+				.getCertificate()));
 	}
 }

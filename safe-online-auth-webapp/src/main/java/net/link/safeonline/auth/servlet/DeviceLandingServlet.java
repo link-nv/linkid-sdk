@@ -11,24 +11,19 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
-import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.sdk.servlet.annotation.Init;
-import net.link.safeonline.service.DeviceMappingService;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 /**
  * Device landing servlet. Landing page to finalize the authentication process
@@ -44,12 +39,6 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 	public static final String RESOURCE_BASE = "messages.webapp";
 
 	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
-
-	@EJB(mappedName = "SafeOnline/DeviceDAOBean/local")
-	private DeviceDAO deviceDAO;
-
-	@EJB(mappedName = "SafeOnline/DeviceMappingServiceBean/local")
-	private DeviceMappingService deviceMappingService;
 
 	@Init(name = "DeviceErrorUrl")
 	private String deviceErrorUrl;
@@ -81,48 +70,28 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 			return;
 		}
 
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-
-		String deviceUserId = saml2BrowserPostHandler.handleResponse(request,
-				authIdentityServiceClient.getCertificate(),
-				authIdentityServiceClient.getPrivateKey());
-		if (null == deviceUserId) {
+		/*
+		 * Authenticate
+		 */
+		AuthenticationService authenticationService = AuthenticationServiceManager
+				.getAuthenticationService(request.getSession());
+		DeviceMappingEntity deviceMapping;
+		try {
+			deviceMapping = authenticationService.authenticate(request,
+					saml2BrowserPostHandler.getChallenge(),
+					saml2BrowserPostHandler.getApplicationName());
+		} catch (NodeNotFoundException e) {
 			redirectToDeviceErrorPage(request, response,
 					"errorProtocolHandlerFinalization");
 			return;
-		}
-		String deviceName = saml2BrowserPostHandler.getAuthenticationDevice();
-
-		DeviceEntity device;
-		try {
-			device = this.deviceDAO.getDevice(deviceName);
-		} catch (DeviceNotFoundException e) {
-			redirectToDeviceErrorPage(request, response, "errorDeviceNotFound");
-			return;
-		}
-
-		DeviceMappingEntity deviceMapping = this.deviceMappingService
-				.getDeviceMapping(deviceUserId);
-		if (null == deviceMapping) {
+		} catch (DeviceMappingNotFoundException e) {
 			redirectToDeviceErrorPage(request, response,
 					"errorDeviceRegistrationNotFound");
 			return;
 		}
-
-		/*
-		 * Authenticate
-		 */
 		LoginManager.login(request.getSession(), deviceMapping.getSubject()
-				.getUserId(), device);
-		AuthenticationService authenticationService = AuthenticationServiceManager
-				.getAuthenticationService(request.getSession());
-		try {
-			authenticationService.authenticate(deviceMapping.getSubject()
-					.getUserId(), device);
-		} catch (SubjectNotFoundException e) {
-			redirectToDeviceErrorPage(request, response, "errorSubjectNotFound");
-			return;
-		}
+				.getUserId(), deviceMapping.getDevice());
+
 		response.sendRedirect("../login");
 	}
 

@@ -65,4 +65,12 @@ public interface NodeAuthenticationService {
 	 * @throws NodeNotFoundException
 	 */
 	OlasEntity getNode(String nodeName) throws NodeNotFoundException;
+
+	/**
+	 * Gives back the node entity at this location.
+	 * 
+	 * @return
+	 * @throws NodeNotFoundException
+	 */
+	OlasEntity getNode() throws NodeNotFoundException;
 }

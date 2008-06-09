@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.DeviceMappingEntity;
@@ -48,7 +49,8 @@ public interface DeviceMappingService {
 	public DeviceMappingEntity getDeviceMapping(String userId, String deviceName)
 			throws SubjectNotFoundException, DeviceNotFoundException;
 
-	public DeviceMappingEntity getDeviceMapping(String id);
+	public DeviceMappingEntity getDeviceMapping(String id)
+			throws DeviceMappingNotFoundException;
 
 	public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject);
 }

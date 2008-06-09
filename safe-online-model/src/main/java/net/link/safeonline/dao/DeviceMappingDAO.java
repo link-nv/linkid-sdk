@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -26,6 +27,9 @@ public interface DeviceMappingDAO {
 			DeviceEntity device);
 
 	public DeviceMappingEntity findDeviceMapping(String id);
+
+	public DeviceMappingEntity getDeviceMapping(String id)
+			throws DeviceMappingNotFoundException;
 
 	public void removeDeviceMappings(SubjectEntity subject);
 

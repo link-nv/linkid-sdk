@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -84,9 +85,11 @@ public class DeviceRegistrationExitServlet extends AbstractInjectionServlet {
 			redirectToDeviceErrorPage(request, response, "errorDeviceNotFound");
 			return;
 		}
-		DeviceMappingEntity deviceMapping = this.deviceMappingService
-				.getDeviceMapping(protocolContext.getMappingId());
-		if (null == deviceMapping) {
+		DeviceMappingEntity deviceMapping;
+		try {
+			deviceMapping = this.deviceMappingService
+					.getDeviceMapping(protocolContext.getMappingId());
+		} catch (DeviceMappingNotFoundException e1) {
 			redirectToDeviceErrorPage(request, response,
 					"errorDeviceRegistrationNotFound");
 			return;

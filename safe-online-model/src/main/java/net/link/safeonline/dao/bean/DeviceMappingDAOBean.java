@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.dao.DeviceMappingDAO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
@@ -59,7 +60,6 @@ public class DeviceMappingDAOBean implements DeviceMappingDAO {
 
 	public DeviceMappingEntity findDeviceMapping(SubjectEntity subject,
 			DeviceEntity device) {
-
 		return this.queryObject.findDeviceMapping(subject, device);
 	}
 
@@ -70,6 +70,15 @@ public class DeviceMappingDAOBean implements DeviceMappingDAO {
 
 	public DeviceMappingEntity findDeviceMapping(String id) {
 		return this.entityManager.find(DeviceMappingEntity.class, id);
+	}
+
+	public DeviceMappingEntity getDeviceMapping(String id)
+			throws DeviceMappingNotFoundException {
+		DeviceMappingEntity deviceMapping = this.findDeviceMapping(id);
+		if (null == deviceMapping) {
+			throw new DeviceMappingNotFoundException();
+		}
+		return deviceMapping;
 	}
 
 	public void removeDeviceMappings(SubjectEntity subject) {

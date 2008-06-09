@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
@@ -66,10 +67,12 @@ public class DeviceMappingServiceBean implements DeviceMappingService {
 
 	/**
 	 * {@inheritDoc}
+	 * 
 	 */
-	public DeviceMappingEntity getDeviceMapping(String id) {
+	public DeviceMappingEntity getDeviceMapping(String id)
+			throws DeviceMappingNotFoundException {
 		LOG.debug("get device mapping: " + id);
-		return this.deviceMappingDAO.findDeviceMapping(id);
+		return this.deviceMappingDAO.getDeviceMapping(id);
 	}
 
 	/**

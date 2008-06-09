@@ -22,6 +22,8 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
@@ -29,11 +31,13 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -43,6 +47,7 @@ import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.DeviceDAO;
@@ -53,18 +58,32 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
+import net.link.safeonline.sdk.auth.saml2.Challenge;
+import net.link.safeonline.sdk.ws.sts.TrustDomainType;
+import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml2.core.AuthnStatement;
+import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.Subject;
 
 /**
  * Implementation of authentication service interface. This component does not
@@ -126,10 +145,16 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private DevicePolicyService devicePolicyService;
 
 	@EJB
+	private DeviceMappingService deviceMappingService;
+
+	@EJB
 	private UsageAgreementService usageAgreementService;
 
 	@EJB
 	private PasswordDeviceService passwordDeviceService;
+
+	@EJB
+	private NodeAuthenticationService nodeAuthenticationService;
 
 	public boolean authenticate(@NonEmptyString String userId,
 			@NotNull DeviceEntity device) throws SubjectNotFoundException {
@@ -141,6 +166,58 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.authenticationDevice = device;
 		this.expectedApplicationId = null;
 		return true;
+	}
+
+	public DeviceMappingEntity authenticate(
+			@NotNull HttpServletRequest request, Challenge<String> challenge,
+			@NotNull String applicationName) throws NodeNotFoundException,
+			ServletException, DeviceMappingNotFoundException {
+		DateTime now = new DateTime();
+
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		OlasEntity node = this.nodeAuthenticationService.getNode();
+
+		Response samlResponse = AuthnResponseUtil.validateResponse(now,
+				request, challenge.getValue(), applicationName, node
+						.getLocation(), authIdentityServiceClient
+						.getCertificate(), authIdentityServiceClient
+						.getPrivateKey(), TrustDomainType.DEVICE);
+		if (null == samlResponse)
+			return null;
+
+		Assertion assertion = samlResponse.getAssertions().get(0);
+		List<AuthnStatement> authStatements = assertion.getAuthnStatements();
+		if (authStatements.isEmpty())
+			throw new ServletException("missing authentication statement");
+
+		AuthnStatement authStatement = authStatements.get(0);
+		if (null == authStatement.getAuthnContext())
+			throw new ServletException(
+					"missing authentication context in authentication statement");
+
+		AuthnContextClassRef authnContextClassRef = authStatement
+				.getAuthnContext().getAuthnContextClassRef();
+		String authenticatedDevice = authnContextClassRef
+				.getAuthnContextClassRef();
+		LOG.debug("authenticated device: " + authenticatedDevice);
+
+		Subject subject = assertion.getSubject();
+		NameID subjectName = subject.getNameID();
+		String subjectNameValue = subjectName.getValue();
+		LOG.debug("subject name value: " + subjectNameValue);
+
+		DeviceMappingEntity deviceMapping = this.deviceMappingService
+				.getDeviceMapping(subjectNameValue);
+
+		/*
+		 * Safe the state in this stateful session bean.
+		 */
+		this.authenticationState = USER_AUTHENTICATED;
+		this.authenticatedSubject = deviceMapping.getSubject();
+		this.authenticationDevice = deviceMapping.getDevice();
+		this.expectedApplicationId = null;
+
+		return deviceMapping;
 	}
 
 	public boolean authenticate(@NonEmptyString String login,
