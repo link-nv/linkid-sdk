@@ -10,7 +10,6 @@ package net.link.safeonline.sdk.auth.saml2;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Properties;
@@ -74,7 +73,6 @@ public class AuthnResponseUtil {
 	 */
 	public static void sendAuthnResponse(String encodedSamlResponseToken,
 			String templateResourceName, String consumerUrl,
-			PublicKey publicKey, PrivateKey privateKey,
 			HttpServletResponse httpResponse) throws ServletException,
 			IOException {
 		/*

@@ -289,8 +289,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 		try {
 			AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken,
-					templateResourceName, target, publicKey, privateKey,
-					authnResponse);
+					templateResourceName, target, authnResponse);
 		} catch (ServletException e) {
 			throw new ProtocolException(e.getMessage());
 		} catch (IOException e) {

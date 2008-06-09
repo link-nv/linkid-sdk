@@ -10,8 +10,6 @@ package net.link.safeonline.device.sdk.auth.saml2;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.List;
@@ -196,8 +194,6 @@ public class Saml2Handler implements Serializable {
 		}
 
 		String issuerName = authenticationContext.getIssuer();
-		PrivateKey privateKey = this.applicationKeyPair.getPrivate();
-		PublicKey publicKey = this.applicationKeyPair.getPublic();
 		int validity = authenticationContext.getValidity();
 
 		String samlResponseToken = AuthnResponseFactory.createAuthResponse(
@@ -211,8 +207,7 @@ public class Saml2Handler implements Serializable {
 
 		try {
 			AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken,
-					templateResourceName, target, publicKey, privateKey,
-					response);
+					templateResourceName, target, response);
 		} catch (ServletException e) {
 			throw new AuthenticationFinalizationException(e.getMessage());
 		} catch (IOException e) {
