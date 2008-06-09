@@ -15,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,10 +47,14 @@ public class LoginServletTest {
 
 	private static final Log LOG = LogFactory.getLog(LoginServletTest.class);
 
+	private String protocol = "http";
+
 	@Before
 	public void setUp() throws Exception {
 		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(LoginServlet.class);
+		Map<String, String> servletInitParams = Collections.singletonMap(
+				"Protocol", this.protocol);
+		this.servletTestManager.setUp(LoginServlet.class, servletInitParams);
 	}
 
 	@After

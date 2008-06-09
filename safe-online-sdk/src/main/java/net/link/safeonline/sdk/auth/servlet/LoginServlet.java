@@ -39,8 +39,20 @@ public class LoginServlet extends AbstractInjectionServlet {
 	public static final String ERROR_MESSAGE_ATTRIBUTE = "errorMessage";
 
 	@Override
+	protected void invokeGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		handleLanding(request, response);
+	}
+
+	@Override
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		handleLanding(request, response);
+	}
+
+	private void handleLanding(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
 		AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
 				.findAuthenticationProtocolHandler(request);
 		if (null == protocolHandler) {

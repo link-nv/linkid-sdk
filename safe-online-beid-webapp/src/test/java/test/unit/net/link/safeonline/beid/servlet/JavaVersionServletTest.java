@@ -12,6 +12,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +34,8 @@ public class JavaVersionServletTest {
 	private static final Log LOG = LogFactory
 			.getLog(JavaVersionServletTest.class);
 
+	private String protocol = "http";
+
 	private ServletTestManager servletTestManager;
 
 	private String location;
@@ -39,7 +43,10 @@ public class JavaVersionServletTest {
 	@Before
 	public void setUp() throws Exception {
 		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(JavaVersionServlet.class);
+		Map<String, String> servletInitParams = Collections.singletonMap(
+				"Protocol", this.protocol);
+		this.servletTestManager.setUp(JavaVersionServlet.class,
+				servletInitParams);
 		this.location = this.servletTestManager.getServletLocation();
 	}
 

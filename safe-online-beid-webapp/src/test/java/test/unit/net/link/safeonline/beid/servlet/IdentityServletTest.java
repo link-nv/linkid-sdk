@@ -15,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,6 +42,8 @@ public class IdentityServletTest {
 
 	private static final Log LOG = LogFactory.getLog(IdentityServletTest.class);
 
+	private String protocol = "http";
+
 	private String location;
 
 	private HttpClient httpClient;
@@ -61,7 +65,9 @@ public class IdentityServletTest {
 				this.mockBeIdDeviceServiceBean);
 
 		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(IdentityServlet.class);
+		Map<String, String> servletInitParams = Collections.singletonMap(
+				"Protocol", this.protocol);
+		this.servletTestManager.setUp(IdentityServlet.class, servletInitParams);
 		this.location = this.servletTestManager.getServletLocation();
 
 		this.httpClient = new HttpClient();
