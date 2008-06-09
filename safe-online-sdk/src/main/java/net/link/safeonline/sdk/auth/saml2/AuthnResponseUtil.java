@@ -7,6 +7,8 @@
 
 package net.link.safeonline.sdk.auth.saml2;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -23,6 +25,8 @@ import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.Log4JLogChute;
@@ -30,23 +34,16 @@ import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.common.SAMLObject;
-import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
-import org.opensaml.saml2.binding.encoding.HTTPPostEncoder;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Subject;
-import org.opensaml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.ws.message.encoder.MessageEncodingException;
 import org.opensaml.ws.security.SecurityPolicyException;
 import org.opensaml.ws.security.SecurityPolicyResolver;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
-import org.opensaml.ws.transport.http.HttpServletResponseAdapter;
 import org.opensaml.xml.security.SecurityException;
-import org.opensaml.xml.security.SecurityHelper;
-import org.opensaml.xml.security.credential.BasicCredential;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -67,35 +64,24 @@ public class AuthnResponseUtil {
 	/**
 	 * Sends out a SAML reponse message to the specified consumer URL.
 	 * 
-	 * @param responseMessage
+	 * @param encodedSamlResponseToken
 	 * @param consumerUrl
 	 * @param publicKey
 	 * @param privateKey
 	 * @param httpResponse
 	 * @throws ServletException
+	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
-	public static void sendAuthnResponse(Response responseMessage,
-			String consumerUrl, PublicKey publicKey, PrivateKey privateKey,
-			HttpServletResponse httpResponse) throws ServletException {
-		BasicSAMLMessageContext messageContext = new BasicSAMLMessageContext();
-		messageContext
-				.setOutboundMessageTransport(new HttpServletResponseAdapter(
-						httpResponse, true));
-		messageContext.setOutboundSAMLMessage(responseMessage);
-
-		AssertionConsumerService assertionConsumerService = AuthnResponseFactory
-				.buildXMLObject(AssertionConsumerService.class,
-						AssertionConsumerService.DEFAULT_ELEMENT_NAME);
-		LOG.debug("consumer URL: " + consumerUrl);
-		assertionConsumerService.setLocation(consumerUrl);
-		messageContext.setPeerEntityEndpoint(assertionConsumerService);
-
-		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
-				publicKey, privateKey);
-		messageContext
-				.setOutboundSAMLMessageSigningCredential(signingCredential);
-
+	public static void sendAuthnResponse(String encodedSamlResponseToken,
+			String templateResourceName, String consumerUrl,
+			PublicKey publicKey, PrivateKey privateKey,
+			HttpServletResponse httpResponse) throws ServletException,
+			IOException {
+		/*
+		 * We could use the opensaml2 HTTPPostEncoderBuilder here to construct
+		 * the HTTP response. But this code is just too complex in usage. It's
+		 * easier to do all these things ourselves.
+		 */
 		Properties velocityProperties = new Properties();
 		velocityProperties.put("resource.loader", "class");
 		velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
@@ -112,22 +98,28 @@ public class AuthnResponseUtil {
 		} catch (Exception e) {
 			throw new ServletException("could not initialize velocity engine");
 		}
+		VelocityContext velocityContext = new VelocityContext();
+		velocityContext.put("action", consumerUrl);
+		velocityContext.put("SAMLResponse", encodedSamlResponseToken);
 
-		HTTPPostEncoder postEncoder = new HTTPPostEncoder(velocityEngine,
-				"/templates/saml2-post-binding.vm");
+		Template template;
 		try {
-			postEncoder.encode(messageContext);
-		} catch (MessageEncodingException e) {
-			throw new ServletException("message encoding error: "
-					+ e.getMessage());
+			template = velocityEngine.getTemplate(templateResourceName);
+		} catch (Exception e) {
+			throw new ServletException("Velocity template error: "
+					+ e.getMessage(), e);
 		}
+
+		httpResponse.setContentType("text/html");
+		PrintWriter out = httpResponse.getWriter();
+		template.merge(velocityContext, out);
 	}
 
 	/**
 	 * Validates a SAML response in the specified HTTP request. Checks:
 	 * <ul>
 	 * <li>response ID</li>
-	 * <li>response validated with optional STS WS location</li>
+	 * <li>response validated with STS WS location</li>
 	 * <li>at least 1 assertion present</li>
 	 * <li>assertion subject</li>
 	 * <li>assertion conditions notOnOrAfter and notBefore

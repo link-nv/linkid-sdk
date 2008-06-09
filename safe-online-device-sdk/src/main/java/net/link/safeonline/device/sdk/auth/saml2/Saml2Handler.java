@@ -7,6 +7,7 @@
 
 package net.link.safeonline.device.sdk.auth.saml2;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -32,11 +33,11 @@ import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.utils.Base64;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.RequestedAuthnContext;
-import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.ConfigurationException;
 
 public class Saml2Handler implements Serializable {
@@ -44,6 +45,8 @@ public class Saml2Handler implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(Saml2Handler.class);
+
+	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/saml2-post-binding.vm";
 
 	private HttpSession session;
 
@@ -101,10 +104,15 @@ public class Saml2Handler implements Serializable {
 
 	public void init(Map<String, String> configParams,
 			X509Certificate newApplicationCertificate,
-			KeyPair newApplicationKeyPair) {
+			KeyPair newApplicationKeyPair)
+			throws AuthenticationInitializationException {
 		this.stsWsLocation = configParams.get("StsWsLocation");
 		this.applicationCertificate = newApplicationCertificate;
 		this.applicationKeyPair = newApplicationKeyPair;
+		if (null == this.stsWsLocation) {
+			throw new AuthenticationInitializationException(
+					"Missing STS WS Location ( \"StsWsLocation\" )");
+		}
 	}
 
 	public void initAuthentication(HttpServletRequest request)
@@ -159,6 +167,7 @@ public class Saml2Handler implements Serializable {
 			devices = null;
 		}
 
+		// TODO: why dont we put this in the AuthenticationContext ...
 		this.session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
 		this.session.setAttribute(TARGET_URL, assertionConsumerService);
 		this.session.setAttribute("applicationId", application);
@@ -191,13 +200,22 @@ public class Saml2Handler implements Serializable {
 		PublicKey publicKey = this.applicationKeyPair.getPublic();
 		int validity = authenticationContext.getValidity();
 
-		Response responseMessage = AuthnResponseFactory.createAuthResponse(
+		String samlResponseToken = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationId, issuerName, userId, usedDevice,
-				validity, target);
+				this.applicationKeyPair, validity, target);
+
+		String encodedSamlResponseToken = Base64.encode(samlResponseToken
+				.getBytes());
+
+		String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+
 		try {
-			AuthnResponseUtil.sendAuthnResponse(responseMessage, target,
-					publicKey, privateKey, response);
+			AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken,
+					templateResourceName, target, publicKey, privateKey,
+					response);
 		} catch (ServletException e) {
+			throw new AuthenticationFinalizationException(e.getMessage());
+		} catch (IOException e) {
 			throw new AuthenticationFinalizationException(e.getMessage());
 		}
 	}

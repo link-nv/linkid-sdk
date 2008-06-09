@@ -101,10 +101,10 @@ public class LandingServlet extends AbstractInjectionServlet {
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doPost");
-		Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
-		handler.init(this.configParams, this.applicationCertificate,
-				this.applicationKeyPair);
 		try {
+			Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
+			handler.init(this.configParams, this.applicationCertificate,
+					this.applicationKeyPair);
 			handler.initAuthentication(request);
 		} catch (AuthenticationInitializationException e) {
 			ErrorPage.errorPage(e.getMessage(), response);

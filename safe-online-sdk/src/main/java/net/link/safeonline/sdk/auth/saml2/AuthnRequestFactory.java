@@ -86,7 +86,7 @@ public class AuthnRequestFactory {
 	 * 
 	 * @param issuerName
 	 * @param applicationName
-	 * @param applicationKeyPair
+	 * @param signerKeyPair
 	 * @param assertionConsumerServiceURL
 	 *            the optional location of the assertion consumer service. This
 	 *            location can be used by the IdP to send back the SAML response
@@ -99,12 +99,12 @@ public class AuthnRequestFactory {
 	 *            the optional list of allowed authentication devices.
 	 */
 	public static String createAuthnRequest(String issuerName,
-			String applicationName, KeyPair applicationKeyPair,
+			String applicationName, KeyPair signerKeyPair,
 			String assertionConsumerServiceURL, String destinationURL,
 			Challenge<String> challenge, Set<String> devices) {
-		if (null == applicationKeyPair) {
+		if (null == signerKeyPair) {
 			throw new IllegalArgumentException(
-					"application key pair should not be null");
+					"signer key pair should not be null");
 		}
 		if (null == applicationName) {
 			throw new IllegalArgumentException(
@@ -190,7 +190,7 @@ public class AuthnRequestFactory {
 		Signature signature = signatureBuilder.buildObject();
 		signature
 				.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-		String algorithm = applicationKeyPair.getPrivate().getAlgorithm();
+		String algorithm = signerKeyPair.getPrivate().getAlgorithm();
 		if ("RSA".equals(algorithm)) {
 			signature
 					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
@@ -199,9 +199,8 @@ public class AuthnRequestFactory {
 					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
 		}
 		request.setSignature(signature);
-		BasicCredential signingCredential = SecurityHelper
-				.getSimpleCredential(applicationKeyPair.getPublic(),
-						applicationKeyPair.getPrivate());
+		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
+				signerKeyPair.getPublic(), signerKeyPair.getPrivate());
 		signature.setSigningCredential(signingCredential);
 
 		// marshalling

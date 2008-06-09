@@ -7,6 +7,8 @@
 
 package net.link.safeonline.auth.protocol.saml2;
 
+import java.io.IOException;
+import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -42,6 +44,7 @@ import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.utils.Base64;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
@@ -50,7 +53,6 @@ import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.RequestedAuthnContext;
-import org.opensaml.saml2.core.Response;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
 import org.opensaml.ws.security.SecurityPolicyException;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
@@ -73,6 +75,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			.getLog(Saml2PostProtocolHandler.class);
 
 	public static final String NAME = "SAML v2 Browser POST Authentication Protocol";
+
+	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/saml2-post-binding.vm";
 
 	private final IdentityServiceClient identityServiceClient;
 
@@ -245,6 +249,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			HttpServletResponse authnResponse) throws ProtocolException {
 		PrivateKey privateKey = this.identityServiceClient.getPrivateKey();
 		PublicKey publicKey = this.identityServiceClient.getPublicKey();
+		KeyPair keyPair = new KeyPair(publicKey, privateKey);
 		String userId = LoginManager.getUsername(session);
 		String target = LoginManager.getTarget(session);
 		String applicationId = LoginManager.getApplication(session);
@@ -273,13 +278,22 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			throw new ProtocolException(
 					"missing IN_RESPONSE_TO session attribute");
 		}
-		Response responseMessage = AuthnResponseFactory.createAuthResponse(
+		String samlResponseToken = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationId, issuerName, userId,
-				authnContextClass, validity, target);
+				authnContextClass, keyPair, validity, target);
+
+		String encodedSamlResponseToken = Base64.encode(samlResponseToken
+				.getBytes());
+
+		String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+
 		try {
-			AuthnResponseUtil.sendAuthnResponse(responseMessage, target,
-					publicKey, privateKey, authnResponse);
+			AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken,
+					templateResourceName, target, publicKey, privateKey,
+					authnResponse);
 		} catch (ServletException e) {
+			throw new ProtocolException(e.getMessage());
+		} catch (IOException e) {
 			throw new ProtocolException(e.getMessage());
 		}
 	}

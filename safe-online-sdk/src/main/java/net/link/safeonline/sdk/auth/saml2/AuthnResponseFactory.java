@@ -7,16 +7,17 @@
 
 package net.link.safeonline.sdk.auth.saml2;
 
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthenticatorBaseType;
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthenticatorTransportProtocolType;
@@ -48,7 +49,19 @@ import org.opensaml.saml2.core.SubjectConfirmationData;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObjectBuilder;
+import org.opensaml.xml.XMLObjectBuilderFactory;
+import org.opensaml.xml.io.Marshaller;
+import org.opensaml.xml.io.MarshallerFactory;
+import org.opensaml.xml.io.MarshallingException;
+import org.opensaml.xml.security.SecurityHelper;
+import org.opensaml.xml.security.credential.BasicCredential;
+import org.opensaml.xml.signature.Signature;
+import org.opensaml.xml.signature.SignatureConstants;
+import org.opensaml.xml.signature.SignatureException;
+import org.opensaml.xml.signature.Signer;
+import org.opensaml.xml.signature.impl.SignatureBuilder;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Factory for SAML2 authentication responses.
@@ -79,11 +92,27 @@ public class AuthnResponseFactory {
 	}
 
 	/**
-	 * Creates an unsigned authentication response.
+	 * Creates a signed authentication response.
 	 */
-	public static Response createAuthResponse(String inResponseTo,
+	public static String createAuthResponse(String inResponseTo,
 			String applicationName, String issuerName, String subjectName,
-			String samlName, int validity, String target) {
+			String samlName, KeyPair signerKeyPair, int validity, String target) {
+		if (null == signerKeyPair) {
+			throw new IllegalArgumentException(
+					"signer key pair should not be null");
+		}
+		if (null == applicationName) {
+			throw new IllegalArgumentException(
+					"application name should not be null");
+		}
+		if (null == issuerName) {
+			throw new IllegalArgumentException("issuer name should not be null");
+		}
+		if (null == subjectName) {
+			throw new IllegalArgumentException(
+					"subject name should not be null");
+		}
+
 		Response response = buildXMLObject(Response.class,
 				Response.DEFAULT_ELEMENT_NAME);
 
@@ -106,6 +135,8 @@ public class AuthnResponseFactory {
 		responseIssuer.setValue(issuerName);
 		response.setIssuer(responseIssuer);
 
+		response.setDestination(target);
+
 		Status status = buildXMLObject(Status.class,
 				Status.DEFAULT_ELEMENT_NAME);
 		StatusCode statusCode = buildXMLObject(StatusCode.class,
@@ -117,7 +148,54 @@ public class AuthnResponseFactory {
 		addAssertion(response, inResponseTo, applicationName, subjectName,
 				issuerName, samlName, validity, target);
 
-		return response;
+		XMLObjectBuilderFactory builderFactory = Configuration
+				.getBuilderFactory();
+		SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
+				.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+		Signature signature = signatureBuilder.buildObject();
+		signature
+				.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+		String algorithm = signerKeyPair.getPrivate().getAlgorithm();
+		if ("RSA".equals(algorithm)) {
+			signature
+					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
+		} else if ("DSA".equals(algorithm)) {
+			signature
+					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
+		}
+		response.setSignature(signature);
+		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
+				signerKeyPair.getPublic(), signerKeyPair.getPrivate());
+		signature.setSigningCredential(signingCredential);
+
+		// marshalling
+		MarshallerFactory marshallerFactory = Configuration
+				.getMarshallerFactory();
+		Marshaller marshaller = marshallerFactory.getMarshaller(response);
+		Element requestElement;
+		try {
+			requestElement = marshaller.marshall(response);
+		} catch (MarshallingException e) {
+			throw new RuntimeException("opensaml2 marshalling error: "
+					+ e.getMessage(), e);
+		}
+
+		// sign after marshaling of course
+		try {
+			Signer.signObject(signature);
+		} catch (SignatureException e) {
+			throw new RuntimeException("opensaml2 signing error: "
+					+ e.getMessage(), e);
+		}
+
+		String result;
+		try {
+			result = DomUtils.domToString(requestElement);
+		} catch (TransformerException e) {
+			throw new RuntimeException(
+					"DOM to string error: " + e.getMessage(), e);
+		}
+		return result;
 	}
 
 	/**
@@ -241,7 +319,7 @@ public class AuthnResponseFactory {
 
 		try {
 			JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-			Marshaller marshaller = context.createMarshaller();
+			javax.xml.bind.Marshaller marshaller = context.createMarshaller();
 			marshaller
 					.marshal(
 							objectFactory
@@ -255,8 +333,7 @@ public class AuthnResponseFactory {
 
 	@SuppressWarnings("unchecked")
 	public static <Type extends SAMLObject> Type buildXMLObject(
-			@SuppressWarnings("unused")
-			Class<Type> clazz, QName objectQName) {
+			@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
 		XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory()
 				.getBuilder(objectQName);
 		if (builder == null) {

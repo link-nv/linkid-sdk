@@ -7,6 +7,7 @@
 
 package net.link.safeonline.device.sdk.reg.saml2;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -29,10 +30,10 @@ import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.utils.Base64;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.RequestedAuthnContext;
-import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.ConfigurationException;
 
 /**
@@ -59,9 +60,11 @@ import org.opensaml.xml.ConfigurationException;
  */
 public class Saml2Handler implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	private static final Log LOG = LogFactory.getLog(Saml2Handler.class);
 
-	private static final long serialVersionUID = 1L;
+	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/saml2-post-binding.vm";
 
 	private HttpSession session;
 
@@ -204,14 +207,22 @@ public class Saml2Handler implements Serializable {
 		PublicKey publicKey = this.applicationKeyPair.getPublic();
 		int validity = protocolContext.getValidity();
 
-		Response responseMessage = AuthnResponseFactory.createAuthResponse(
+		String samlResponseToken = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationId, issuerName, mappingId,
-				registeredDevice, validity, target);
+				registeredDevice, this.applicationKeyPair, validity, target);
+
+		String encodedSamlResponseToken = Base64.encode(samlResponseToken
+				.getBytes());
+
+		String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
 		try {
-			AuthnResponseUtil.sendAuthnResponse(responseMessage, target,
-					publicKey, privateKey, response);
+			AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken,
+					templateResourceName, target, publicKey, privateKey,
+					response);
 		} catch (ServletException e) {
+			throw new DeviceFinalizationException(e.getMessage());
+		} catch (IOException e) {
 			throw new DeviceFinalizationException(e.getMessage());
 		}
 	}
