@@ -1140,7 +1140,7 @@
 				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 			<releases>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</releases>
 		</repository>
 		<repository>
@@ -1153,6 +1153,7 @@
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1162,11 +1163,11 @@
 			<url> https://maven-repository.dev.java.net/nonav/repository </url>
 			<layout>legacy</layout>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1174,11 +1175,11 @@
 			<name>java.net Maven2 Repository</name>
 			<url>http://download.java.net/maven/2</url>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1187,10 +1188,10 @@
 			<url>http://repo1.maven.org/maven2</url>
 			<snapshots>
 				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1198,11 +1199,11 @@
 			<name>Codehaus Maven Repository</name>
 			<url>http://snapshots.repository.codehaus.org/</url>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
-				<enabled>false</enabled>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1210,11 +1211,11 @@
 			<name>Codehaus Mule Maven Repository</name>
 			<url>http://dist.codehaus.org/mule/dependencies/maven2</url>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1222,11 +1223,11 @@
 			<name>apache-repo</name>
 			<url> http://myfaces.zones.apache.org/dist/maven-repository </url>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1234,72 +1235,72 @@
 			<name>JBoss Maven2 Repository</name>
 			<url>http://repository.jboss.com/maven2</url>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
 			<id>apache-maven-snapshots</id>
 			<name>Apache Snapshot Repository</name>
 			<url> http://people.apache.org/repo/m2-snapshot-repository </url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
 		</repository>
 		<repository>
 			<id>jboss-snapshots</id>
 			<name>JBoss Snapshots Maven2 Repository</name>
 			<url>http://snapshots.jboss.org/maven2</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
 		</repository>
 		<repository>
 			<id>openqa</id>
 			<name>OpenQA Repository</name>
 			<url>http://maven.openqa.org</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
-			</snapshots>
+			</releases>
 		</repository>
 		<repository>
 			<id>opensaml</id>
 			<name>OpenSAML Repository</name>
 			<url>http://shibboleth.internet2.edu/downloads/maven2/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
-			</snapshots>
+			</releases>
 		</repository>
 		<repository>
 			<id>wss4j154</id>
 			<name>WSS4J 1.5.4</name>
 			<url>http://people.apache.org/~fadushin/stage/wss4j/1.5.4/maven/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
-			</snapshots>
+			</releases>
 		</repository>
 	</repositories>
 
@@ -1311,19 +1312,24 @@
 			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
 			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</releases>
 		</pluginRepository>
 		<pluginRepository>
 			<id>central</id>
 			<name>Maven Plugin Repository</name>
 			<url>http://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
 			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
 		</pluginRepository>
 		<pluginRepository>
 			<id>codehaus</id>
@@ -1331,6 +1337,7 @@
 			<url>http://snapshots.repository.codehaus.org/</url>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>false</enabled>
@@ -1345,6 +1352,7 @@
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</pluginRepository>
 		<pluginRepository>
@@ -1354,6 +1362,7 @@
 			<layout>legacy</layout>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
@@ -1366,6 +1375,7 @@
 			<url> http://people.apache.org/maven-snapshot-repository </url>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>false</enabled>
@@ -1375,6 +1385,9 @@
 			<id>jboss</id>
 			<name>JBoss Maven2 Repository</name>
 			<url>http://repository.jboss.com/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
