@@ -72,5 +72,5 @@ public interface NodeAuthenticationService {
 	 * @return
 	 * @throws NodeNotFoundException
 	 */
-	OlasEntity getNode() throws NodeNotFoundException;
+	OlasEntity getLocalNode() throws NodeNotFoundException;
 }

@@ -65,7 +65,7 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
 		return this.olasDAO.getNode(nodeName);
 	}
 
-	public OlasEntity getNode() throws NodeNotFoundException {
+	public OlasEntity getLocalNode() throws NodeNotFoundException {
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 		return this.getNode(this.authenticate(authIdentityServiceClient
 				.getCertificate()));

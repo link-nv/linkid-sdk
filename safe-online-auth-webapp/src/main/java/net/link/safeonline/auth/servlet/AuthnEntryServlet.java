@@ -108,8 +108,6 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 		LoginManager.setTarget(session, protocolContext.getTarget());
 		LoginManager.setRequiredDevices(session, protocolContext
 				.getRequiredDevices());
-		LoginManager
-				.setInResponseTo(session, protocolContext.getInResponseTo());
 
 		/*
 		 * create new helpdesk volatile context

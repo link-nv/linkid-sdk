@@ -18,6 +18,7 @@ import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
+import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.sdk.servlet.annotation.Init;
 
@@ -72,7 +73,9 @@ public class ExitServlet extends AbstractInjectionServlet {
 		HttpSession session = request.getSession();
 
 		try {
-			AuthenticationServiceManager.commitAuthentication(session);
+			AuthenticationService authenticationService = AuthenticationServiceManager
+					.getAuthenticationService(session);
+			authenticationService.commitAuthentication();
 		} catch (SafeOnlineException e) {
 			throw new ServletException(
 					"error committing the authentication process");

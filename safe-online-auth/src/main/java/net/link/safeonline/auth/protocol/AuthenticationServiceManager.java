@@ -7,24 +7,16 @@
 
 package net.link.safeonline.auth.protocol;
 
-import java.util.Set;
-
 import javax.ejb.NoSuchEJBException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DevicePolicyException;
-import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
-import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
-import net.link.safeonline.authentication.exception.MissingAttributeException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -99,7 +91,7 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * HTTP session. Later on we could limit the usage of this method to certain
 	 * states on the authentication service. It is clear that this method should
 	 * not be used to finalize the authentication service via
-	 * {@link AuthenticationService#commitAuthentication(String, Set)} or
+	 * {@link AuthenticationService#finalizeAuthentication()} or
 	 * {@link AuthenticationService#abort()}. These operations should be
 	 * performed via this authentication service manager class.
 	 * 
@@ -113,35 +105,36 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 			throw new IllegalStateException(
 					"authentication service instance not present");
 		}
+		if (authenticationService.getAuthenticationState().equals(
+				AuthenticationState.COMMITTED)) {
+			throw new IllegalStateException(
+					"authentication process is already committed, cannot use the authentication service directly anymore.");
+		}
 		return authenticationService;
 	}
 
 	/**
-	 * Commits the authentication.
+	 * Finalizes the authentication process.
+	 * 
+	 * This method will return an encoded SAML response token which should be
+	 * communicated to the application the user is authenticating for.
 	 * 
 	 * @param session
-	 * @throws SubscriptionNotFoundException
+	 * @throws NodeNotFoundException
 	 * @throws ApplicationNotFoundException
-	 * @throws MissingAttributeException
-	 * @throws IdentityConfirmationRequiredException
-	 * @throws ApplicationIdentityNotFoundException
-	 * @throws EmptyDevicePolicyException
-	 * @throws DevicePolicyException
-	 * @throws UsageAgreementAcceptationRequiredException
-	 * @throws AttributeTypeNotFoundException
-	 * @throws PermissionDeniedException
+	 * @throws SubscriptionNotFoundException
 	 */
-	public static void commitAuthentication(HttpSession session)
-			throws SubscriptionNotFoundException, ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException,
-			IdentityConfirmationRequiredException, MissingAttributeException,
-			EmptyDevicePolicyException, DevicePolicyException,
-			UsageAgreementAcceptationRequiredException,
-			PermissionDeniedException, AttributeTypeNotFoundException {
-
-		AuthenticationService authenticationService = getAuthenticationService(session);
+	public static String finalizeAuthentication(HttpSession session)
+			throws NodeNotFoundException, SubscriptionNotFoundException,
+			ApplicationNotFoundException {
+		AuthenticationService authenticationService = (AuthenticationService) session
+				.getAttribute(AUTH_SERVICE_ATTRIBUTE);
+		if (null == authenticationService) {
+			throw new IllegalStateException(
+					"authentication service instance not present");
+		}
 		try {
-			authenticationService.commitAuthentication();
+			return authenticationService.finalizeAuthentication();
 		} finally {
 			/*
 			 * No matter what happens, we don't want the sessionDestroyed method
@@ -157,7 +150,12 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * @param session
 	 */
 	public static void abort(HttpSession session) {
-		AuthenticationService authenticationService = getAuthenticationService(session);
+		AuthenticationService authenticationService = (AuthenticationService) session
+				.getAttribute(AUTH_SERVICE_ATTRIBUTE);
+		if (null == authenticationService) {
+			throw new IllegalStateException(
+					"authentication service instance not present");
+		}
 		try {
 			authenticationService.abort();
 		} finally {

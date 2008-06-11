@@ -29,5 +29,10 @@ public enum AuthenticationState {
 	 * This state marks that the user has been authenticated via some
 	 * authentication device.
 	 */
-	USER_AUTHENTICATED
+	USER_AUTHENTICATED,
+	/**
+	 * This state marks that the user authentication has been committed to the
+	 * core.
+	 */
+	COMMITTED
 }

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import static net.link.safeonline.authentication.service.AuthenticationState.COMMITTED;
 import static net.link.safeonline.authentication.service.AuthenticationState.INIT;
 import static net.link.safeonline.authentication.service.AuthenticationState.INITIALIZED;
 import static net.link.safeonline.authentication.service.AuthenticationState.USER_AUTHENTICATED;
@@ -14,6 +15,9 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
 
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashSet;
@@ -53,7 +57,9 @@ import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
@@ -72,18 +78,21 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnContextClassRef;
@@ -181,6 +190,12 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private PkiValidator pkiValidator;
 
+	@EJB
+	private SamlAuthorityService samlAuthorityService;
+
+	@EJB
+	private UserIdMappingService userIdMappingService;
+
 	public boolean authenticate(@NonEmptyString String userId,
 			@NotNull DeviceEntity device) throws SubjectNotFoundException {
 		LOG.debug("authenticate: " + userId + " device=" + device.getName());
@@ -272,13 +287,17 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	}
 
 	public DeviceMappingEntity authenticate(
-			@NotNull HttpServletRequest request, Challenge<String> challenge)
-			throws NodeNotFoundException, ServletException,
-			DeviceMappingNotFoundException {
+			@NotNull HttpServletRequest request,
+			@NotNull Challenge<String> challenge) throws NodeNotFoundException,
+			ServletException, DeviceMappingNotFoundException {
+		if (this.authenticationState != INITIALIZED) {
+			throw new IllegalStateException("call initialize first");
+		}
+
 		DateTime now = new DateTime();
 
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		OlasEntity node = this.nodeAuthenticationService.getNode();
+		OlasEntity node = this.nodeAuthenticationService.getLocalNode();
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
 				request, challenge.getValue(), this.expectedApplicationId, node
@@ -343,6 +362,37 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		 * Communicate that the authentication process can continue.
 		 */
 		return true;
+	}
+
+	@Remove
+	public String finalizeAuthentication() throws NodeNotFoundException,
+			SubscriptionNotFoundException, ApplicationNotFoundException {
+		LOG.debug("finalize authentication");
+		if (this.authenticationState != COMMITTED) {
+			throw new IllegalStateException("call commit first");
+		}
+
+		OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+
+		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+		PrivateKey privateKey = identityServiceClient.getPrivateKey();
+		PublicKey publicKey = identityServiceClient.getPublicKey();
+		KeyPair keyPair = new KeyPair(publicKey, privateKey);
+
+		int validity = this.samlAuthorityService.getAuthnAssertionValidity();
+
+		String userId = this.userIdMappingService.getApplicationUserId(
+				this.expectedApplicationId, getUserId());
+
+		String samlResponseToken = AuthnResponseFactory.createAuthResponse(
+				this.expectedChallengeId, this.expectedApplicationId, node
+						.getName(), userId, this.authenticationDevice
+						.getAuthenticationContextClass(), keyPair, validity,
+				this.expectedTarget);
+
+		String encodedSamlResponseToken = Base64.encode(samlResponseToken
+				.getBytes());
+		return encodedSamlResponseToken;
 	}
 
 	private void addHistoryEntry(SubjectEntity subject, HistoryEventType event,
@@ -438,7 +488,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			throw new UsageAgreementAcceptationRequiredException();
 	}
 
-	@Remove
 	public void commitAuthentication() throws ApplicationNotFoundException,
 			SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
@@ -485,11 +534,18 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 		this.subscriptionDAO.loggedIn(subscription);
 		this.addLoginTick(application);
+
+		/*
+		 * Safe the state in this stateful session bean.
+		 */
+		this.authenticationState = COMMITTED;
+
 	}
 
 	public String getUserId() {
 		LOG.debug("getUserId");
-		if (this.authenticationState != USER_AUTHENTICATED) {
+		if (this.authenticationState != USER_AUTHENTICATED
+				&& this.authenticationState != COMMITTED) {
 			throw new IllegalStateException("call authenticate first");
 		}
 		String userId = this.authenticatedSubject.getUserId();
@@ -538,4 +594,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		}
 		return this.requiredDevicePolicy;
 	}
+
+	public AuthenticationState getAuthenticationState() {
+		return this.authenticationState;
+	}
+
 }

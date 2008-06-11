@@ -32,16 +32,11 @@ import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.ExitServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.authentication.service.UserIdMappingService;
-import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.model.beid.BeIdConstants;
-import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -144,50 +139,14 @@ public class ExitServletTest {
 				});
 
 		this.jndiTestUtils = new JndiTestUtils();
-		SamlAuthorityService mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-		expect(mockSamlAuthorityService.getAuthnAssertionValidity())
-				.andStubReturn(60 * 10);
-		this.mockAuthenticationService = createMock(AuthenticationService.class);
-		SubjectManager mockSubjectManager = createMock(SubjectManager.class);
-		SubjectService mockSubjectService = createMock(SubjectService.class);
-		expect(mockSubjectService.getSubjectLogin("test-user-name"))
-				.andStubReturn("test-user-name");
-		HistoryDAO mockHistoryDAO = createMock(HistoryDAO.class);
-		UserIdMappingService mockUserIdMappingServiceBean = createMock(UserIdMappingService.class);
-		expect(
-				mockUserIdMappingServiceBean.getApplicationUserId(
-						"test-application-id", "test-user-name"))
-				.andStubReturn("0");
-		DevicePolicyService mockDevicePolicyServiceBean = createMock(DevicePolicyService.class);
-		NodeAuthenticationService mockNodeAuthenticationServiceBean = createMock(NodeAuthenticationService.class);
-		expect(
-				mockNodeAuthenticationServiceBean
-						.authenticate(this.authCertificate)).andReturn(
-				"test-node-name");
+		int validity = 60 * 10;
 
-		this.mockObjects = new Object[] { mockSamlAuthorityService,
-				this.mockAuthenticationService, mockSubjectService,
-				mockUserIdMappingServiceBean, mockDevicePolicyServiceBean,
-				mockNodeAuthenticationServiceBean };
+		this.mockAuthenticationService = createMock(AuthenticationService.class);
+		expect(this.mockAuthenticationService.getAuthenticationState())
+				.andStubReturn(AuthenticationState.USER_AUTHENTICATED);
+
+		this.mockObjects = new Object[] { this.mockAuthenticationService };
 		this.jndiTestUtils.setUp();
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/SamlAuthorityServiceBean/local",
-				mockSamlAuthorityService);
-		this.jndiTestUtils.bindComponent("SafeOnline/SubjectManagerBean/local",
-				mockSubjectManager);
-		this.jndiTestUtils.bindComponent("SafeOnline/SubjectServiceBean/local",
-				mockSubjectService);
-		this.jndiTestUtils.bindComponent("SafeOnline/HistoryDAOBean/local",
-				mockHistoryDAO);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/UserIdMappingServiceBean/local",
-				mockUserIdMappingServiceBean);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/DevicePolicyServiceBean/local",
-				mockDevicePolicyServiceBean);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/NodeAuthenticationServiceBean/local",
-				mockNodeAuthenticationServiceBean);
 
 		this.exitServletTestManager = new ServletTestManager();
 		Map<String, String> servletInitParams = new HashMap<String, String>();
@@ -215,11 +174,19 @@ public class ExitServletTest {
 				this.mockAuthenticationService);
 		initialSessionAttributes.put(
 				LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, this.device);
-		initialSessionAttributes.put(LoginManager.IN_RESPONSE_TO_ATTRIBUTE,
-				this.inResponseTo);
 
 		this.exitServletTestManager.setUp(ExitServlet.class, servletInitParams,
 				null, null, initialSessionAttributes);
+
+		String samlResponseToken = AuthnResponseFactory.createAuthResponse(
+				this.inResponseTo, this.applicationId, this.applicationId,
+				this.username, this.device.getAuthenticationContextClass(),
+				keyPair, validity, this.target);
+		String encodedSamlResponseToken = org.apache.xml.security.utils.Base64
+				.encode(samlResponseToken.getBytes());
+		expect(this.mockAuthenticationService.finalizeAuthentication())
+				.andStubReturn(encodedSamlResponseToken);
+
 	}
 
 	@After

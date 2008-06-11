@@ -163,6 +163,21 @@ public interface AuthenticationService {
 			ApplicationNotFoundException, TrustDomainNotFoundException;
 
 	/**
+	 * Finalizes an authentication process by constructing an encoded SAML
+	 * response to be sent to the application.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #commitAuthentication()}.
+	 * 
+	 * @throws NodeNotFoundException
+	 * @throws ApplicationNotFoundException
+	 * @throws SubscriptionNotFoundException
+	 * 
+	 */
+	String finalizeAuthentication() throws NodeNotFoundException,
+			SubscriptionNotFoundException, ApplicationNotFoundException;
+
+	/**
 	 * Gives back the application we are authenticating for.
 	 * 
 	 * Calling this method is only valid after a call to
@@ -193,4 +208,10 @@ public interface AuthenticationService {
 	 * {@link #initialize(AuthnRequest)}.
 	 */
 	Set<DeviceEntity> getRequiredDevicePolicy();
+
+	/**
+	 * Gives back the current authentication state.
+	 * 
+	 */
+	AuthenticationState getAuthenticationState();
 }

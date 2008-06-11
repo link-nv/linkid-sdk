@@ -74,7 +74,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 				.getPublicKey(), authIdentityServiceClient.getPrivateKey());
 		OlasEntity node;
 		try {
-			node = this.nodeAuthenticationService.getNode();
+			node = this.nodeAuthenticationService.getLocalNode();
 		} catch (NodeNotFoundException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;

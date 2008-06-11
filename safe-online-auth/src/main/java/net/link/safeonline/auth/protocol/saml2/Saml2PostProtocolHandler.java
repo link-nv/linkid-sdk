@@ -8,9 +8,6 @@
 package net.link.safeonline.auth.protocol.saml2;
 
 import java.io.IOException;
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,21 +22,14 @@ import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.SamlRequestSecurityPolicyResolver;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.EjbUtils;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xml.security.utils.Base64;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
@@ -67,12 +57,6 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/saml2-post-binding.vm";
 
-	private final IdentityServiceClient identityServiceClient;
-
-	private final AuthIdentityServiceClient authIdentityServiceClient;
-
-	private final SamlAuthorityService samlAuthorityService;
-
 	static {
 		System
 				.setProperty(
@@ -84,14 +68,6 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			throw new RuntimeException(
 					"could not bootstrap the OpenSAML2 library");
 		}
-	}
-
-	public Saml2PostProtocolHandler() {
-		this.identityServiceClient = new IdentityServiceClient();
-		this.authIdentityServiceClient = new AuthIdentityServiceClient();
-		this.samlAuthorityService = EjbUtils.getEJB(
-				"SafeOnline/SamlAuthorityServiceBean/local",
-				SamlAuthorityService.class);
 	}
 
 	public String getName() {
@@ -165,39 +141,22 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 	public void authnResponse(HttpSession session,
 			HttpServletResponse authnResponse) throws ProtocolException {
-		PrivateKey privateKey = this.identityServiceClient.getPrivateKey();
-		PublicKey publicKey = this.identityServiceClient.getPublicKey();
-		KeyPair keyPair = new KeyPair(publicKey, privateKey);
-		String userId = LoginManager.getUsername(session);
+
 		String target = LoginManager.getTarget(session);
-		String applicationId = LoginManager.getApplication(session);
-		String inResponseTo = LoginManager.getInResponseTo(session);
-		LOG.debug("user Id: " + userId);
-		LOG.debug("target URL: " + target);
-		LOG.debug("application: " + applicationId);
 
-		NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(
-				"SafeOnline/NodeAuthenticationServiceBean/local",
-				NodeAuthenticationService.class);
-		String nodeName;
+		String encodedSamlResponseToken;
 		try {
-			nodeName = nodeAuthenticationService
-					.authenticate(this.authIdentityServiceClient
-							.getCertificate());
+			encodedSamlResponseToken = AuthenticationServiceManager
+					.finalizeAuthentication(session);
 		} catch (NodeNotFoundException e) {
-			throw new ProtocolException("unknown node");
+			throw new ProtocolException("Node not found: " + e.getMessage());
+		} catch (SubscriptionNotFoundException e) {
+			throw new ProtocolException("Subscription not found: "
+					+ e.getMessage());
+		} catch (ApplicationNotFoundException e) {
+			throw new ProtocolException("Application not found: "
+					+ e.getMessage());
 		}
-
-		String authnContextClass = getAuthnContextClass(session);
-		String issuerName = nodeName;
-		int validity = this.samlAuthorityService.getAuthnAssertionValidity();
-
-		String samlResponseToken = AuthnResponseFactory.createAuthResponse(
-				inResponseTo, applicationId, issuerName, userId,
-				authnContextClass, keyPair, validity, target);
-
-		String encodedSamlResponseToken = Base64.encode(samlResponseToken
-				.getBytes());
 
 		String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
@@ -209,10 +168,5 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		} catch (IOException e) {
 			throw new ProtocolException(e.getMessage());
 		}
-	}
-
-	private String getAuthnContextClass(HttpSession session) {
-		DeviceEntity device = LoginManager.getAuthenticationDevice(session);
-		return device.getAuthenticationContextClass();
 	}
 }

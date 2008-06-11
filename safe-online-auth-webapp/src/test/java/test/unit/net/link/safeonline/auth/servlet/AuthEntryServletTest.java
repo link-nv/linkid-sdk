@@ -23,6 +23,7 @@ import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.AuthnEntryServlet;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.pkix.model.PkiValidator;
@@ -182,6 +183,8 @@ public class AuthEntryServletTest {
 		// expectations
 		this.mockAuthenticationService.initialize((AuthnRequest) EasyMock
 				.anyObject());
+		expect(this.mockAuthenticationService.getAuthenticationState())
+				.andStubReturn(AuthenticationState.INIT);
 		expect(this.mockAuthenticationService.getExpectedApplicationId())
 				.andStubReturn(applicationName);
 		expect(this.mockAuthenticationService.getExpectedTarget())
