@@ -35,16 +35,21 @@
 		<param-value>secret</param-value>
 	</context-param>
 	<context-param>
+		<param-name>LandingPage</param-name>
+		<param-value> ${safe-online.host.basename}/demo-ticket/login 
+		</param-value>
+	</context-param>
+	<context-param>
+		<param-name>WsLocation</param-name>
+		<param-value>${safe-online.host.basename}</param-value>
+	</context-param>
+	<context-param>
 		<param-name>DemoHostName</param-name>
 		<param-value>${safe-online.host.name}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>DemoHostPort</param-name>
 		<param-value>${safe-online.host.port}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>WsLocation</param-name>
-		<param-value>${safe-online.host.basename}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
@@ -61,11 +66,6 @@
 	<context-param>
 		<param-name>org.jboss.seam.core.init.debug</param-name>
 		<param-value>${debug.mode}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>LandingPage</param-name>
-		<param-value> ${safe-online.host.basename}/demo-ticket/login 
-		</param-value>
 	</context-param>
 	<filter>
 		<filter-name>AuthnResponseFilter</filter-name>

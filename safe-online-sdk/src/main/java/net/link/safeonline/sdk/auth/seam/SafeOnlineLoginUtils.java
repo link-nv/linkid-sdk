@@ -29,6 +29,9 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Utility class for usage within a JBoss Seam JSF based web application.
  * 
@@ -36,6 +39,9 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
  * 
  */
 public class SafeOnlineLoginUtils {
+
+    private static final Log                   LOG                           = LogFactory
+                                                                                     .getLog(SafeOnlineLoginUtils.class);
 
     public static final String                 AUTH_SERVICE_URL_INIT_PARAM   = "AuthenticationServiceUrl";
     public static final String                 APPLICATION_NAME_INIT_PARAM   = "ApplicationName";
@@ -105,7 +111,6 @@ public class SafeOnlineLoginUtils {
      * password to unlock the keystore and key entry.
      * </p>
      * 
-     * @param log
      * @param targetPage
      *            the page to which the user should be redirected after login.
      */
@@ -151,8 +156,8 @@ public class SafeOnlineLoginUtils {
      *            The {@link HttpServletResponse} object from the servlet making
      *            the login request.
      */
-    public static String login(String targetPage,
-            HttpServletRequest request, HttpServletResponse response) {
+    public static String login(String targetPage, HttpServletRequest request,
+            HttpServletResponse response) {
 
         Map<String, String> config = new HashMap<String, String>();
         ServletContext context = request.getSession().getServletContext();
@@ -185,7 +190,7 @@ public class SafeOnlineLoginUtils {
                 KEY_STORE_PASSWORD_INIT_PARAM, null);
         String keyStoreType = getInitParameter(config,
                 KEY_STORE_TYPE_INIT_PARAM, null);
-        // log.debug("redirecting to #0", authenticationServiceUrl);
+        LOG.debug("redirecting to: " + authenticationServiceUrl);
 
         /* Figure out what protocol to use. */
         AuthenticationProtocol authenticationProtocol = null;
@@ -197,7 +202,7 @@ public class SafeOnlineLoginUtils {
                     "could not parse authentication protocol: "
                             + authenticationProtocolString);
         }
-        // log.debug("authentication protocol: #0", authenticationProtocol);
+        LOG.debug("authentication protocol: " + authenticationProtocol);
 
         /* Load key data if provided. */
         KeyPair keyPair = null;
@@ -218,14 +223,14 @@ public class SafeOnlineLoginUtils {
         String requestUrl = httpRequest.getRequestURL().toString();
         String targetUrl = getTargetUrl(requestUrl, targetPage);
         targetUrl = httpResponse.encodeRedirectURL(targetUrl);
-        // log.debug("target url: #0", targetUrl);
+        LOG.debug("target url: " + targetUrl);
 
         /* Initialize and execute the authentication protocol. */
         try {
             AuthenticationProtocolManager.createAuthenticationProtocolHandler(
                     authenticationProtocol, authenticationServiceUrl,
                     applicationName, keyPair, certificate, config, httpRequest);
-            // log.debug("initialized protocol");
+            LOG.debug("initialized protocol");
         } catch (ServletException e) {
             throw new RuntimeException(
                     "could not init authentication protocol handler: "
@@ -235,7 +240,7 @@ public class SafeOnlineLoginUtils {
         try {
             AuthenticationProtocolManager.initiateAuthentication(httpRequest,
                     httpResponse, targetUrl);
-            // log.debug("executed protocol");
+            LOG.debug("executed protocol");
         } catch (Exception e) {
             throw new RuntimeException("could not initiate authentication: "
                     + e.getMessage(), e);
@@ -286,6 +291,9 @@ public class SafeOnlineLoginUtils {
     }
 
     public static String getTargetUrl(String requestUrl, String targetPage) {
+
+        if (targetPage.matches("^https?://.*"))
+            return targetPage;
 
         int lastSlash = requestUrl.lastIndexOf("/");
         String prefix = requestUrl.substring(0, lastSlash);

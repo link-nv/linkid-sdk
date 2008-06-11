@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
@@ -84,13 +83,13 @@ public class LoginServlet extends AbstractInjectionServlet {
 		response.sendRedirect(target);
 	}
 
-	private void redirectToErrorPage(HttpServletRequest request,
-			HttpServletResponse response, String errorMessage)
-			throws IOException {
-		HttpSession session = request.getSession();
-		session.setAttribute(ERROR_MESSAGE_ATTRIBUTE, errorMessage);
-		// response.sendRedirect(this.protocolErrorUrl);
-	}
+    // private void redirectToErrorPage(HttpServletRequest request,
+    // HttpServletResponse response, String errorMessage)
+    // throws IOException {
+    // HttpSession session = request.getSession();
+    // session.setAttribute(ERROR_MESSAGE_ATTRIBUTE, errorMessage);
+    // // response.sendRedirect(this.protocolErrorUrl);
+    // }
 
 	// XXX: remove this by a custom jsf error page ( XPlanner: id=16262 )
 	private void writeErrorPage(String message, HttpServletResponse response)

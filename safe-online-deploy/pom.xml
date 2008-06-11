@@ -114,6 +114,11 @@
 								</jarModule>
 								<jarModule>
 									<groupId> net.lin-k.safe-online </groupId>
+									<artifactId> safe-online-demo-cinema-keystore </artifactId>
+									<includeInApplicationXml> true </includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId> net.lin-k.safe-online </groupId>
 									<artifactId> safe-online-demo-payment-keystore </artifactId>
 									<includeInApplicationXml> true </includeInApplicationXml>
 								</jarModule>
@@ -448,6 +453,11 @@
 								<jarModule>
 									<groupId> net.lin-k.safe-online </groupId>
 									<artifactId> safe-online-demo-ticket-keystore </artifactId>
+									<includeInApplicationXml> true </includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId> net.lin-k.safe-online </groupId>
+									<artifactId> safe-online-demo-cinema-keystore </artifactId>
 									<includeInApplicationXml> true </includeInApplicationXml>
 								</jarModule>
 								<jarModule>
@@ -1426,6 +1436,12 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket-keystore</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-cinema-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>

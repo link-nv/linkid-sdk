@@ -46,8 +46,8 @@ base="$base/work"
 
 function extractCss {
     css=( *'/css/style.css' )
+    [[ -e $css ]]                                   || return 0
 
-    [[ -e $css ]] && \
     mkdir -p "$base/$webapp/css"                    || return
     (( reverse )) || {
         mv "$css" "$base/$webapp/css/" && \
@@ -84,7 +84,7 @@ function extractHtml {
         }
 
         touch "$file"                               || return
-    done < <(find . -name '*.xhtml')
+    done < <(find . -name '*.xhtml' -o -name '*.html')
 }
 
 function extractStuff {
@@ -161,7 +161,7 @@ if (( apply )); then
     done
 else
     for webapp in "${webapps[@]}"; do
-        cd "$distribution/jboss/server/default/tmp/deploy/"*"$webapp.ear-contents/"*"/css/../.." && \
+        cd "$distribution/jboss/server/default/tmp/deploy/"*"$webapp.ear-contents/"*"/META-INF/../.." && \
             extractStuff
     done
 fi

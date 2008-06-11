@@ -294,6 +294,8 @@
 				<module>safe-online-demo-lawyer</module>
 				<module>safe-online-demo-lawyer-webapp</module>
 				<module>safe-online-demo-lawyer-service</module>
+				<module>safe-online-demo-wicket-tools</module>
+				<module>safe-online-demo-cinema-webapp</module>
 				<module>safe-online-demo-prescription-keystore</module>
 				<module>safe-online-demo-util</module>
 				<module>safe-online-demo-prescription</module>
@@ -1139,7 +1141,6 @@
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1148,11 +1149,10 @@
 			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1163,11 +1163,10 @@
 			<layout>legacy</layout>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1176,11 +1175,10 @@
 			<url>http://download.java.net/maven/2</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1189,10 +1187,10 @@
 			<url>http://repo1.maven.org/maven2</url>
 			<snapshots>
 				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1201,7 +1199,7 @@
 			<url>http://snapshots.repository.codehaus.org/</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>false</enabled>
@@ -1211,27 +1209,36 @@
 			<id>codehaus-mule</id>
 			<name>Codehaus Mule Maven Repository</name>
 			<url>http://dist.codehaus.org/mule/dependencies/maven2</url>
-			<releases>
+			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
 			</releases>
 		</repository>
 		<repository>
 			<id>apache-repo</id>
 			<name>apache-repo</name>
 			<url> http://myfaces.zones.apache.org/dist/maven-repository </url>
-			<releases>
+			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
 			</releases>
 		</repository>
 		<repository>
 			<id>jboss</id>
 			<name>JBoss Maven2 Repository</name>
 			<url>http://repository.jboss.com/maven2</url>
-			<releases>
+			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
 			</releases>
 		</repository>
 		<repository>
@@ -1243,6 +1250,7 @@
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
 		<repository>
@@ -1254,6 +1262,7 @@
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
 		<repository>
@@ -1265,6 +1274,7 @@
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
 		<repository>
@@ -1276,6 +1286,7 @@
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
 		<repository>
@@ -1287,6 +1298,7 @@
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
 	</repositories>

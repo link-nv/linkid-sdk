@@ -17,14 +17,6 @@
 				net.link.safeonline.demo.cinema.webapp.CinemaApplication
 			</param-value>
 		</init-param>
-		<init-param>
-			<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
-			<param-value>${auth.webapp.location}</param-value>
-		</init-param>
-		<init-param>
-			<param-name>ApplicationName</param-name>
-			<param-value>safe-online-demo-cinema</param-value>
-		</init-param>
 		<!--<init-param>
 			<param-name>configuration</param-name>
 			<param-value>DEPLOYMENT</param-value>
@@ -36,16 +28,62 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+	<context-param>
+		<param-name>AuthenticationServiceUrl</param-name>
+		<param-value>${safe-online.host.basename}/olas-auth/entry</param-value>
+	</context-param>
+	<context-param>
+		<param-name>ApplicationName</param-name>
+        <param-value>demo-cinema</param-value>
+	</context-param>
+	<context-param>
+		<param-name>AuthenticationProtocol</param-name>
+		<param-value>SAML2_BROWSER_POST</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStoreResource</param-name>
+		<param-value>safe-online-demo-cinema-keystore.jks</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+	<context-param>
+		<param-name>LandingPage</param-name>
+		<param-value> ${safe-online.host.basename}/demo-cinema/login 
+		</param-value>
+	</context-param>
+	<context-param>
+		<param-name>WsLocation</param-name>
+		<param-value>${safe-online.host.basename}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>DemoHostName</param-name>
+		<param-value>${safe-online.host.name}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>DemoHostPort</param-name>
+		<param-value>${safe-online.host.port}</param-value>
+	</context-param>
+
+	<servlet>
+		<servlet-name>AuthLoginServlet</servlet-name>
+		<servlet-class> net.link.safeonline.sdk.auth.servlet.LoginServlet 
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AuthLoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>cinemaapp</servlet-name>
 		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
 
-	<filter>
-		<filter-name>LoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.LoginFilter 
-		</filter-class>
-	</filter>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
@@ -61,10 +99,16 @@
 			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter 
 		</filter-class>
 	</filter>
+	<filter>
+		<filter-name>AuthnResponseFilter</filter-name>
+		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnResponseFilter 
+		</filter-class>
+	</filter>
 	<filter-mapping>
-		<filter-name>LoginFilter</filter-name>
-		<url-pattern>/login</url-pattern>
+		<filter-name>AuthnResponseFilter</filter-name>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
+
 	<filter-mapping>
 		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -74,14 +118,14 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<!--filter>
-		<filter-name>LoginFilter</filter-name>
+		<filter-name>AuthnResponseFilter</filter-name>
 		<filter-class>
-			net.link.safeonline.sdk.auth.filter.LoginFilter
+			net.link.safeonline.sdk.auth.filter.AuthnResponseFilter
 		</filter-class>
 	</filter>
 
 	<filter-mapping>
-		<filter-name>LoginFilter</filter-name>
+		<filter-name>AuthnResponseFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping-->
 
