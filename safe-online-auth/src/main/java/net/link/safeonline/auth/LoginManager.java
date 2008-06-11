@@ -31,13 +31,13 @@ public class LoginManager {
 
 	public static final String USERNAME_ATTRIBUTE = "username";
 
-	public static final String AUTHENTICATION_DEVICE_ATTRIBUTE = "authenticationDevice";
+	public static final String AUTHENTICATION_DEVICE_ATTRIBUTE = "LoginManager.authenticationDevice";
 
-	public static final String REQUIRED_DEVICES_ATTRIBUTE = "requiredDevices";
+	public static final String REQUIRED_DEVICES_ATTRIBUTE = "LoginManager.requiredDevices";
 
-	public static final String TARGET_ATTRIBUTE = "target";
+	public static final String TARGET_ATTRIBUTE = "LoginManager.target";
 
-	public static final String APPLICATION_ID_ATTRIBUTE = "applicationId";
+	public static final String APPLICATION_ID_ATTRIBUTE = "LoginManager.applicationId";
 
 	private LoginManager() {
 		// empty

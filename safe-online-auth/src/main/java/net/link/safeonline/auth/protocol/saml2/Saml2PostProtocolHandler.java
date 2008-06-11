@@ -134,7 +134,6 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 		return new ProtocolContext(authenticationService
 				.getExpectedApplicationId(), authenticationService
-				.getExpectedChallengeId(), authenticationService
 				.getExpectedTarget(), authenticationService
 				.getRequiredDevicePolicy());
 	}

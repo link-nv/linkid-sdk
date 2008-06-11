@@ -23,8 +23,6 @@ public class ProtocolContext {
 
 	private final String applicationId;
 
-	private final String inResponseTo;
-
 	private final String target;
 
 	private final Set<DeviceEntity> requiredDevices;
@@ -42,20 +40,15 @@ public class ProtocolContext {
 	 *            the optional set of required devices for this authentication
 	 *            session.
 	 */
-	public ProtocolContext(String applicationId, String inResponseTo,
-			String target, Set<DeviceEntity> requiredDevices) {
+	public ProtocolContext(String applicationId, String target,
+			Set<DeviceEntity> requiredDevices) {
 		this.applicationId = applicationId;
-		this.inResponseTo = inResponseTo;
 		this.target = target;
 		this.requiredDevices = requiredDevices;
 	}
 
 	public String getApplicationId() {
 		return this.applicationId;
-	}
-
-	public String getInResponseTo() {
-		return this.inResponseTo;
 	}
 
 	public String getTarget() {

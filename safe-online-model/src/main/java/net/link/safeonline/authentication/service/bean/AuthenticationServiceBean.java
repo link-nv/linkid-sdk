@@ -10,6 +10,7 @@ package net.link.safeonline.authentication.service.bean;
 import static net.link.safeonline.authentication.service.AuthenticationState.COMMITTED;
 import static net.link.safeonline.authentication.service.AuthenticationState.INIT;
 import static net.link.safeonline.authentication.service.AuthenticationState.INITIALIZED;
+import static net.link.safeonline.authentication.service.AuthenticationState.REDIRECTED;
 import static net.link.safeonline.authentication.service.AuthenticationState.USER_AUTHENTICATED;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
@@ -19,6 +20,7 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +80,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
@@ -130,6 +133,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private String expectedApplicationId;
 
 	private String expectedChallengeId;
+
+	private String expectedDeviceChallengeId;
 
 	private String expectedTarget;
 
@@ -286,12 +291,44 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	}
 
-	public DeviceMappingEntity authenticate(
-			@NotNull HttpServletRequest request,
-			@NotNull Challenge<String> challenge) throws NodeNotFoundException,
-			ServletException, DeviceMappingNotFoundException {
+	public String redirectAuthentication(String authenticationServiceUrl,
+			String targetUrl, String device) throws NodeNotFoundException {
 		if (this.authenticationState != INITIALIZED) {
 			throw new IllegalStateException("call initialize first");
+		}
+
+		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+		PrivateKey privateKey = identityServiceClient.getPrivateKey();
+		PublicKey publicKey = identityServiceClient.getPublicKey();
+		KeyPair keyPair = new KeyPair(publicKey, privateKey);
+
+		OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+
+		Set<String> devices = Collections.singleton(device);
+
+		Challenge<String> challenge = new Challenge<String>();
+
+		String samlRequestToken = AuthnRequestFactory.createAuthnRequest(node
+				.getName(), this.expectedApplicationId, keyPair,
+				authenticationServiceUrl, targetUrl, challenge, devices);
+
+		String encodedSamlRequestToken = Base64.encode(samlRequestToken
+				.getBytes());
+
+		/*
+		 * Safe the state in this stateful session bean.
+		 */
+		this.authenticationState = REDIRECTED;
+		this.expectedDeviceChallengeId = challenge.getValue();
+
+		return encodedSamlRequestToken;
+	}
+
+	public DeviceMappingEntity authenticate(@NotNull HttpServletRequest request)
+			throws NodeNotFoundException, ServletException,
+			DeviceMappingNotFoundException {
+		if (this.authenticationState != REDIRECTED) {
+			throw new IllegalStateException("call redirect first");
 		}
 
 		DateTime now = new DateTime();
@@ -300,10 +337,11 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		OlasEntity node = this.nodeAuthenticationService.getLocalNode();
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
-				request, challenge.getValue(), this.expectedApplicationId, node
-						.getLocation(), authIdentityServiceClient
-						.getCertificate(), authIdentityServiceClient
-						.getPrivateKey(), TrustDomainType.DEVICE);
+				request, this.expectedDeviceChallengeId,
+				this.expectedApplicationId, node.getLocation(),
+				authIdentityServiceClient.getCertificate(),
+				authIdentityServiceClient.getPrivateKey(),
+				TrustDomainType.DEVICE);
 		if (null == samlResponse)
 			return null;
 
@@ -572,13 +610,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			throw new IllegalStateException("call initialize first");
 		}
 		return this.expectedApplicationId;
-	}
-
-	public String getExpectedChallengeId() {
-		if (this.authenticationState == INIT) {
-			throw new IllegalStateException("call initialize first");
-		}
-		return this.expectedChallengeId;
 	}
 
 	public String getExpectedTarget() {

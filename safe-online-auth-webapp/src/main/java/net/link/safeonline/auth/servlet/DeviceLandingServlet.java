@@ -21,7 +21,6 @@ import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.sdk.servlet.annotation.Init;
@@ -58,19 +57,6 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 	private void handleLanding(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
-				.findSaml2BrowserPostHandler(request);
-		if (null == saml2BrowserPostHandler) {
-			/*
-			 * The landing page can only be used for finalizing an ongoing
-			 * authentication process. If no protocol handler is active then
-			 * something must be going wrong here.
-			 */
-			redirectToDeviceErrorPage(request, response,
-					"errorNoProtocolHandlerActive");
-			return;
-		}
-
 		/*
 		 * Authenticate
 		 */
@@ -78,8 +64,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 				.getAuthenticationService(request.getSession());
 		DeviceMappingEntity deviceMapping;
 		try {
-			deviceMapping = authenticationService.authenticate(request,
-					saml2BrowserPostHandler.getChallenge());
+			deviceMapping = authenticationService.authenticate(request);
 		} catch (NodeNotFoundException e) {
 			redirectToDeviceErrorPage(request, response,
 					"errorProtocolHandlerFinalization");

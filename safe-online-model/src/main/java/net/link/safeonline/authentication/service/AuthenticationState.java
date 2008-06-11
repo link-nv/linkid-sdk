@@ -26,6 +26,11 @@ public enum AuthenticationState {
 	 */
 	INITIALIZED,
 	/**
+	 * This state marks that the user has been redirected to an external device
+	 * issuer to authenticate remotely.
+	 */
+	REDIRECTED,
+	/**
 	 * This state marks that the user has been authenticated via some
 	 * authentication device.
 	 */

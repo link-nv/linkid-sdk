@@ -10,6 +10,8 @@ package net.link.safeonline.auth.servlet;
 import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 
+import net.link.safeonline.auth.LoginManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,7 +22,7 @@ public class LoginSessionListener implements HttpSessionAttributeListener {
 
 	public void attributeAdded(HttpSessionBindingEvent event) {
 		String attributeName = event.getName();
-		if ("username".equals(attributeName)) {
+		if (LoginManager.USERNAME_ATTRIBUTE.equals(attributeName)) {
 			String username = (String) event.getValue();
 			LOG.debug("attribute username added: " + username);
 		}
@@ -28,7 +30,7 @@ public class LoginSessionListener implements HttpSessionAttributeListener {
 
 	public void attributeRemoved(HttpSessionBindingEvent event) {
 		String attributeName = event.getName();
-		if ("username".equals(attributeName)) {
+		if (LoginManager.USERNAME_ATTRIBUTE.equals(attributeName)) {
 			String username = (String) event.getValue();
 			LOG.debug("attribute username removed: " + username);
 		}
@@ -36,7 +38,7 @@ public class LoginSessionListener implements HttpSessionAttributeListener {
 
 	public void attributeReplaced(HttpSessionBindingEvent event) {
 		String attributeName = event.getName();
-		if ("username".equals(attributeName)) {
+		if (LoginManager.USERNAME_ATTRIBUTE.equals(attributeName)) {
 			String username = (String) event.getValue();
 			LOG.debug("attribute username replaced: " + username);
 		}

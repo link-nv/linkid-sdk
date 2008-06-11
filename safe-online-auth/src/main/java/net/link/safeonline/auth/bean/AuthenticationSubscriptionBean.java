@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationSubscription;
 import net.link.safeonline.auth.AuthenticationUtils;
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -47,7 +48,7 @@ public class AuthenticationSubscriptionBean implements
 	@Logger
 	private Log log;
 
-	@In(value = "applicationId", required = true)
+	@In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
 	private String applicationId;
 
 	@EJB

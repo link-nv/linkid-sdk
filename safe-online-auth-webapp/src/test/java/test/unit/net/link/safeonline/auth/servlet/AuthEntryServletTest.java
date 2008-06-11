@@ -17,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.AuthnEntryServlet;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
@@ -169,7 +169,6 @@ public class AuthEntryServletTest {
 		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
 		String applicationName = "test-application-id";
 		String assertionConsumerService = "http://test.assertion.consumer.service";
-		String challengeId = UUID.randomUUID().toString();
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
 				applicationName, applicationName, applicationKeyPair,
 				assertionConsumerService, servletLocation, null, null);
@@ -189,8 +188,6 @@ public class AuthEntryServletTest {
 				.andStubReturn(applicationName);
 		expect(this.mockAuthenticationService.getExpectedTarget())
 				.andStubReturn(assertionConsumerService);
-		expect(this.mockAuthenticationService.getExpectedChallengeId())
-				.andStubReturn(challengeId);
 		expect(this.mockAuthenticationService.getRequiredDevicePolicy())
 				.andStubReturn(null);
 
@@ -209,10 +206,10 @@ public class AuthEntryServletTest {
 		LOG.debug("location: " + location);
 		assertTrue(location.endsWith(this.firstTimeUrl));
 		String resultApplicationId = (String) this.entryServletTestManager
-				.getSessionAttribute("applicationId");
+				.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
 		assertEquals(applicationName, resultApplicationId);
 		String target = (String) this.entryServletTestManager
-				.getSessionAttribute("target");
+				.getSessionAttribute(LoginManager.TARGET_ATTRIBUTE);
 		assertEquals(assertionConsumerService, target);
 	}
 }

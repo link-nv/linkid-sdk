@@ -23,13 +23,13 @@ import javax.faces.model.SelectItem;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
+import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.Device;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
 import net.link.safeonline.entity.DeviceEntity;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -97,8 +97,9 @@ public class DeviceBean implements Device {
 
 		if (!this.deviceSelection
 				.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-			return SafeOnlineDeviceUtils.authenticate(this.facesMessages,
-					this.log, authenticationPath, this.deviceSelection);
+			return AuthenticationUtils.redirectAuthentication(
+					this.facesMessages, authenticationPath,
+					this.deviceSelection);
 		}
 
 		FacesContext context = FacesContext.getCurrentInstance();

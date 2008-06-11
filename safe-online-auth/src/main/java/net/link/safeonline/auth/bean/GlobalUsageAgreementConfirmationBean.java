@@ -11,6 +11,7 @@ import javax.faces.context.FacesContext;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.GlobalUsageAgreementConfirmation;
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -39,7 +40,7 @@ public class GlobalUsageAgreementConfirmationBean implements
 	@Logger
 	private Log log;
 
-	@In(value = "applicationId", required = true)
+	@In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
 	private String applicationId;
 
 	@EJB

@@ -31,7 +31,6 @@ import net.link.safeonline.authentication.exception.UsageAgreementAcceptationReq
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
-import net.link.safeonline.sdk.auth.saml2.Challenge;
 
 import org.opensaml.saml2.core.AuthnRequest;
 
@@ -85,6 +84,9 @@ public interface AuthenticationService {
 	/**
 	 * Commits the authentication.
 	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #authenticate(HttpServletRequest)}.
+	 * 
 	 * @throws SubscriptionNotFoundException
 	 *             in case the subject is not subscribed to the application.
 	 * @throws ApplicationNotFoundException
@@ -131,7 +133,7 @@ public interface AuthenticationService {
 
 	/**
 	 * Gives back the username of the user that we're trying to authenticate.
-	 * Calling this method in only valid after a call to
+	 * Calling this method is only valid after a call to
 	 * {@link #authenticate(String, String)}.
 	 * 
 	 */
@@ -140,13 +142,17 @@ public interface AuthenticationService {
 	/**
 	 * Authenticates a user for a certain application. The method is used by the
 	 * device landing servlet. The actual device authentication is done by an
-	 * external device provider in this case.
+	 * external device provider in this case. We validate the return SAML
+	 * response message.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #redirectAuthentication(String, String, String)}.
 	 * 
 	 * Returns the device mapping entity for the authenticated device and user.
 	 */
-	DeviceMappingEntity authenticate(HttpServletRequest request,
-			Challenge<String> challenge) throws NodeNotFoundException,
-			ServletException, DeviceMappingNotFoundException;
+	DeviceMappingEntity authenticate(HttpServletRequest request)
+			throws NodeNotFoundException, ServletException,
+			DeviceMappingNotFoundException;
 
 	/**
 	 * Initializes an authentication process. Validates the incoming
@@ -161,6 +167,21 @@ public interface AuthenticationService {
 	void initialize(AuthnRequest samlAuthnRequest)
 			throws AuthenticationInitializationException,
 			ApplicationNotFoundException, TrustDomainNotFoundException;
+
+	/**
+	 * Constructs a signed and encoded SAML authentication request for the
+	 * requested external device issuer.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #initialize(AuthnRequest)}.
+	 * 
+	 * @param authenticationServiceUrl
+	 * @param encodedLandingUrl
+	 * @param device
+	 * @throws NodeNotFoundException
+	 */
+	String redirectAuthentication(String authenticationServiceUrl,
+			String targetUrl, String device) throws NodeNotFoundException;
 
 	/**
 	 * Finalizes an authentication process by constructing an encoded SAML
@@ -184,14 +205,6 @@ public interface AuthenticationService {
 	 * {@link #initialize(AuthnRequest)}.
 	 */
 	String getExpectedApplicationId();
-
-	/**
-	 * Gives back the challenge ID of the initial authentication request.
-	 * 
-	 * Calling this method is only valid after a call to
-	 * {@link #initialize(AuthnRequest)}.
-	 */
-	String getExpectedChallengeId();
 
 	/**
 	 * Gives back the target to which to send the final authentication response.
