@@ -11,30 +11,25 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.cert.X509Certificate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
-import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.SamlRequestSecurityPolicyResolver;
@@ -49,18 +44,12 @@ import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
-import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
 import org.opensaml.ws.security.SecurityPolicyException;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.security.SecurityException;
-import org.opensaml.xml.security.x509.BasicX509Credential;
-import org.opensaml.xml.signature.SignatureValidator;
-import org.opensaml.xml.validation.ValidationException;
 
 /**
  * Server-side protocol handler for the SAML2 Browser POST authentication
@@ -96,10 +85,6 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 					"could not bootstrap the OpenSAML2 library");
 		}
 	}
-
-	public static final String IN_RESPONSE_TO_ATTRIBUTE = Saml2PostProtocolHandler.class
-			.getName()
-			+ ".IN_RESPONSE_TO";
 
 	public Saml2PostProtocolHandler() {
 		this.identityServiceClient = new IdentityServiceClient();
@@ -154,95 +139,28 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 					"SAML message not an authentication request message");
 		}
 		AuthnRequest samlAuthnRequest = (AuthnRequest) samlMessage;
-		Issuer issuer = samlAuthnRequest.getIssuer();
-		String issuerName = issuer.getValue();
-		LOG.debug("issuer name: " + issuerName);
 
-		ApplicationAuthenticationService applicationAuthenticationService = EjbUtils
-				.getEJB(
-						"SafeOnline/ApplicationAuthenticationServiceBean/local",
-						ApplicationAuthenticationService.class);
-
-		X509Certificate certificate;
+		AuthenticationService authenticationService = AuthenticationServiceManager
+				.getAuthenticationService(authnRequest.getSession());
 		try {
-			certificate = applicationAuthenticationService
-					.getCertificate(issuerName);
-		} catch (ApplicationNotFoundException e) {
-			throw new ProtocolException("application not found: " + issuerName);
-		}
-
-		PkiValidator pkiValidator = EjbUtils.getEJB(
-				"SafeOnline/PkiValidatorBean/local", PkiValidator.class);
-
-		boolean certificateValid;
-		try {
-			certificateValid = pkiValidator.validateCertificate(
-					SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-					certificate);
+			authenticationService.initialize(samlAuthnRequest);
 		} catch (TrustDomainNotFoundException e) {
-			throw new ProtocolException("trust domain error");
-		}
-
-		if (false == certificateValid) {
-			throw new ProtocolException("certificate was not found to be valid");
-		}
-
-		BasicX509Credential basicX509Credential = new BasicX509Credential();
-		basicX509Credential.setPublicKey(certificate.getPublicKey());
-		SignatureValidator signatureValidator = new SignatureValidator(
-				basicX509Credential);
-		try {
-			signatureValidator.validate(samlAuthnRequest.getSignature());
-		} catch (ValidationException e) {
-			throw new ProtocolException("signature validation error: "
+			LOG.debug("trust domain not found: " + e.getMessage());
+			throw new ProtocolException("Trust domain not found");
+		} catch (AuthenticationInitializationException e) {
+			LOG.debug("authentication intialization error: " + e.getMessage());
+			throw new ProtocolException("authentication intialization error: "
 					+ e.getMessage());
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found: " + e.getMessage());
+			throw new ProtocolException("application not found");
 		}
 
-		String assertionConsumerService = samlAuthnRequest
-				.getAssertionConsumerServiceURL();
-		if (null == assertionConsumerService) {
-			LOG.debug("missing AssertionConsumerServiceURL");
-			throw new ProtocolException("missing AssertionConsumerServiceURL");
-		}
-
-		String samlAuthnRequestId = samlAuthnRequest.getID();
-		LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
-		HttpSession session = authnRequest.getSession();
-		session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
-
-		DevicePolicyService devicePolicyService = EjbUtils.getEJB(
-				"SafeOnline/DevicePolicyServiceBean/local",
-				DevicePolicyService.class);
-
-		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
-				.getRequestedAuthnContext();
-		Set<DeviceEntity> devices;
-		if (null != requestedAuthnContext) {
-			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
-					.getAuthnContextClassRefs();
-			devices = new HashSet<DeviceEntity>();
-			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs) {
-				String authnContextClassRefValue = authnContextClassRef
-						.getAuthnContextClassRef();
-				LOG.debug("authentication context class reference: "
-						+ authnContextClassRefValue);
-				List<DeviceEntity> authnDevices = devicePolicyService
-						.listDevices(authnContextClassRefValue);
-				if (null == authnDevices || authnDevices.size() == 0) {
-					LOG.error("AuthnContextClassRef not supported: "
-							+ authnContextClassRefValue);
-					throw new ProtocolException(
-							"AuthnContextClassRef not supported: "
-									+ authnContextClassRefValue);
-				}
-				devices.addAll(authnDevices);
-			}
-		} else {
-			devices = null;
-		}
-
-		return new ProtocolContext(issuerName, assertionConsumerService,
-				devices);
+		return new ProtocolContext(authenticationService
+				.getExpectedApplicationId(), authenticationService
+				.getExpectedChallengeId(), authenticationService
+				.getExpectedTarget(), authenticationService
+				.getRequiredDevicePolicy());
 	}
 
 	public void authnResponse(HttpSession session,
@@ -253,6 +171,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		String userId = LoginManager.getUsername(session);
 		String target = LoginManager.getTarget(session);
 		String applicationId = LoginManager.getApplication(session);
+		String inResponseTo = LoginManager.getInResponseTo(session);
 		LOG.debug("user Id: " + userId);
 		LOG.debug("target URL: " + target);
 		LOG.debug("application: " + applicationId);
@@ -272,12 +191,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		String authnContextClass = getAuthnContextClass(session);
 		String issuerName = nodeName;
 		int validity = this.samlAuthorityService.getAuthnAssertionValidity();
-		String inResponseTo = (String) session
-				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
-		if (null == inResponseTo) {
-			throw new ProtocolException(
-					"missing IN_RESPONSE_TO session attribute");
-		}
+
 		String samlResponseToken = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationId, issuerName, userId,
 				authnContextClass, keyPair, validity, target);

@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -128,12 +127,10 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	public String passwordNext() {
 		this.log.debug("passwordNext");
 		try {
-			DeviceEntity passwordDevice = this.deviceDAO
-					.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 			this.authenticationService
 					.setPassword(this.username, this.password);
 			this.authenticationService.authenticate(this.username,
-					passwordDevice);
+					this.password);
 		} catch (DeviceNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");

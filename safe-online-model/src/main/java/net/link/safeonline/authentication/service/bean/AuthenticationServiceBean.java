@@ -8,12 +8,15 @@
 package net.link.safeonline.authentication.service.bean;
 
 import static net.link.safeonline.authentication.service.AuthenticationState.INIT;
+import static net.link.safeonline.authentication.service.AuthenticationState.INITIALIZED;
 import static net.link.safeonline.authentication.service.AuthenticationState.USER_AUTHENTICATED;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
 
+import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +34,7 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
@@ -42,6 +46,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
+import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.AuthenticationState;
@@ -65,6 +70,8 @@ import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
@@ -80,10 +87,16 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.AuthnStatement;
+import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Subject;
+import org.opensaml.xml.security.x509.BasicX509Credential;
+import org.opensaml.xml.signature.SignatureValidator;
+import org.opensaml.xml.validation.ValidationException;
 
 /**
  * Implementation of authentication service interface. This component does not
@@ -106,6 +119,12 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private DeviceEntity authenticationDevice;
 
 	private String expectedApplicationId;
+
+	private String expectedChallengeId;
+
+	private String expectedTarget;
+
+	private Set<DeviceEntity> requiredDevicePolicy;
 
 	private AuthenticationState authenticationState;
 
@@ -156,6 +175,12 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private NodeAuthenticationService nodeAuthenticationService;
 
+	@EJB
+	private ApplicationAuthenticationService applicationAuthenticationService;
+
+	@EJB
+	private PkiValidator pkiValidator;
+
 	public boolean authenticate(@NonEmptyString String userId,
 			@NotNull DeviceEntity device) throws SubjectNotFoundException {
 		LOG.debug("authenticate: " + userId + " device=" + device.getName());
@@ -168,17 +193,95 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return true;
 	}
 
+	public void initialize(@NotNull AuthnRequest samlAuthnRequest)
+			throws AuthenticationInitializationException,
+			ApplicationNotFoundException, TrustDomainNotFoundException {
+		Issuer issuer = samlAuthnRequest.getIssuer();
+		String issuerName = issuer.getValue();
+		LOG.debug("issuer: " + issuerName);
+
+		X509Certificate certificate = this.applicationAuthenticationService
+				.getCertificate(issuerName);
+
+		boolean certificateValid = this.pkiValidator.validateCertificate(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				certificate);
+
+		if (false == certificateValid) {
+			throw new AuthenticationInitializationException(
+					"certificate was not found to be valid");
+		}
+
+		BasicX509Credential basicX509Credential = new BasicX509Credential();
+		basicX509Credential.setPublicKey(certificate.getPublicKey());
+		SignatureValidator signatureValidator = new SignatureValidator(
+				basicX509Credential);
+		try {
+			signatureValidator.validate(samlAuthnRequest.getSignature());
+		} catch (ValidationException e) {
+			throw new AuthenticationInitializationException(
+					"signature validation error: " + e.getMessage());
+		}
+
+		String assertionConsumerService = samlAuthnRequest
+				.getAssertionConsumerServiceURL();
+		if (null == assertionConsumerService) {
+			LOG.debug("missing AssertionConsumerServiceURL");
+			throw new AuthenticationInitializationException(
+					"missing AssertionConsumerServiceURL");
+		}
+
+		String samlAuthnRequestId = samlAuthnRequest.getID();
+		LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
+
+		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
+				.getRequestedAuthnContext();
+		Set<DeviceEntity> devices;
+		if (null != requestedAuthnContext) {
+			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
+					.getAuthnContextClassRefs();
+			devices = new HashSet<DeviceEntity>();
+			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs) {
+				String authnContextClassRefValue = authnContextClassRef
+						.getAuthnContextClassRef();
+				LOG.debug("authentication context class reference: "
+						+ authnContextClassRefValue);
+				List<DeviceEntity> authnDevices = this.devicePolicyService
+						.listDevices(authnContextClassRefValue);
+				if (null == authnDevices || authnDevices.size() == 0) {
+					LOG.error("AuthnContextClassRef not supported: "
+							+ authnContextClassRefValue);
+					throw new AuthenticationInitializationException(
+							"AuthnContextClassRef not supported: "
+									+ authnContextClassRefValue);
+				}
+				devices.addAll(authnDevices);
+			}
+		} else {
+			devices = null;
+		}
+		/*
+		 * Safe the state in this stateful session bean.
+		 */
+		this.authenticationState = INITIALIZED;
+		this.expectedApplicationId = issuerName;
+		this.requiredDevicePolicy = devices;
+		this.expectedTarget = assertionConsumerService;
+		this.expectedChallengeId = samlAuthnRequestId;
+
+	}
+
 	public DeviceMappingEntity authenticate(
-			@NotNull HttpServletRequest request, Challenge<String> challenge,
-			@NotNull String applicationName) throws NodeNotFoundException,
-			ServletException, DeviceMappingNotFoundException {
+			@NotNull HttpServletRequest request, Challenge<String> challenge)
+			throws NodeNotFoundException, ServletException,
+			DeviceMappingNotFoundException {
 		DateTime now = new DateTime();
 
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 		OlasEntity node = this.nodeAuthenticationService.getNode();
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
-				request, challenge.getValue(), applicationName, node
+				request, challenge.getValue(), this.expectedApplicationId, node
 						.getLocation(), authIdentityServiceClient
 						.getCertificate(), authIdentityServiceClient
 						.getPrivateKey(), TrustDomainType.DEVICE);
@@ -215,7 +318,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = deviceMapping.getSubject();
 		this.authenticationDevice = deviceMapping.getDevice();
-		this.expectedApplicationId = null;
 
 		return deviceMapping;
 	}
@@ -236,7 +338,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = subject;
 		this.authenticationDevice = device;
-		this.expectedApplicationId = null;
 
 		/*
 		 * Communicate that the authentication process can continue.
@@ -268,44 +369,45 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.authenticatedSubject = null;
 		this.authenticationDevice = null;
 		this.expectedApplicationId = null;
+		this.expectedChallengeId = null;
+		this.requiredDevicePolicy = null;
+		this.expectedTarget = null;
 	}
 
 	private void checkStateBeforeCommit() {
-		if (INIT == this.authenticationState) {
-			throw new IllegalStateException("bean is still in INIT state");
+		if (this.authenticationState != USER_AUTHENTICATED) {
+			throw new IllegalStateException("bean is not in the correct state");
 		}
 	}
 
-	private void checkRequiredIdentity(String applicationId)
-			throws SubscriptionNotFoundException, ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException,
+	private void checkRequiredIdentity() throws SubscriptionNotFoundException,
+			ApplicationNotFoundException, ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException {
 		boolean confirmationRequired = this.identityService
-				.isConfirmationRequired(applicationId);
+				.isConfirmationRequired(this.expectedApplicationId);
 		if (true == confirmationRequired) {
 			throw new IdentityConfirmationRequiredException();
 		}
 	}
 
-	private void checkRequiredMissingAttributes(String applicationId)
+	private void checkRequiredMissingAttributes()
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, MissingAttributeException,
 			PermissionDeniedException, AttributeTypeNotFoundException {
 		boolean hasMissingAttributes = this.identityService
-				.hasMissingAttributes(applicationId);
+				.hasMissingAttributes(this.expectedApplicationId);
 		if (true == hasMissingAttributes) {
 			throw new MissingAttributeException();
 		}
 	}
 
-	private void checkDevicePolicy(String applicationId,
-			Set<DeviceEntity> requiredDevicePolicy)
-			throws ApplicationNotFoundException, EmptyDevicePolicyException,
-			DevicePolicyException {
+	private void checkDevicePolicy() throws ApplicationNotFoundException,
+			EmptyDevicePolicyException, DevicePolicyException {
 		LOG.debug("authenticationDevice: "
 				+ this.authenticationDevice.getName());
 		List<DeviceEntity> devicePolicy = this.devicePolicyService
-				.getDevicePolicy(applicationId, requiredDevicePolicy);
+				.getDevicePolicy(this.expectedApplicationId,
+						this.requiredDevicePolicy);
 		boolean found = false;
 		for (DeviceEntity device : devicePolicy) {
 			LOG.debug("devicePolicy: " + device.getName());
@@ -318,12 +420,12 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			throw new DevicePolicyException();
 	}
 
-	private void checkRequiredUsageAgreement(String applicationId)
+	private void checkRequiredUsageAgreement()
 			throws ApplicationNotFoundException,
 			UsageAgreementAcceptationRequiredException,
 			SubscriptionNotFoundException {
 		boolean requiresUsageAgreementAcceptation = this.usageAgreementService
-				.requiresUsageAgreementAcceptation(applicationId);
+				.requiresUsageAgreementAcceptation(this.expectedApplicationId);
 		if (true == requiresUsageAgreementAcceptation)
 			throw new UsageAgreementAcceptationRequiredException();
 	}
@@ -337,44 +439,34 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	}
 
 	@Remove
-	public void commitAuthentication(@NonEmptyString String applicationId,
-			Set<DeviceEntity> requiredDevicePolicy)
-			throws ApplicationNotFoundException, SubscriptionNotFoundException,
+	public void commitAuthentication() throws ApplicationNotFoundException,
+			SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
 			EmptyDevicePolicyException, DevicePolicyException,
 			UsageAgreementAcceptationRequiredException,
 			PermissionDeniedException, AttributeTypeNotFoundException {
-		LOG.debug("commitAuthentication for application: " + applicationId);
+		LOG.debug("commitAuthentication for application: "
+				+ this.expectedApplicationId);
 
 		checkStateBeforeCommit();
 
-		checkRequiredIdentity(applicationId);
+		checkRequiredIdentity();
 
-		checkRequiredMissingAttributes(applicationId);
+		checkRequiredMissingAttributes();
 
-		checkDevicePolicy(applicationId, requiredDevicePolicy);
+		checkDevicePolicy();
 
 		checkRequiredGlobalUsageAgreement();
 
-		checkRequiredUsageAgreement(applicationId);
-
-		if (null != this.expectedApplicationId) {
-			/*
-			 * In that case the applicationId must match. The expected
-			 * application Id can be provided by authentication statements.
-			 */
-			if (false == this.expectedApplicationId.equals(applicationId)) {
-				throw new IllegalStateException("ApplicationId does not match");
-			}
-		}
+		checkRequiredUsageAgreement();
 
 		ApplicationEntity application = this.applicationDAO
-				.findApplication(applicationId);
+				.findApplication(this.expectedApplicationId);
 		if (null == application) {
 			addHistoryEntry(this.authenticatedSubject,
 					HistoryEventType.LOGIN_APPLICATION_NOT_FOUND,
-					applicationId, null);
+					this.expectedApplicationId, null);
 			throw new ApplicationNotFoundException();
 		}
 
@@ -382,13 +474,13 @@ public class AuthenticationServiceBean implements AuthenticationService,
 				.findSubscription(this.authenticatedSubject, application);
 		if (null == subscription) {
 			addHistoryEntry(this.authenticatedSubject,
-					HistoryEventType.SUBSCRIPTION_NOT_FOUND, applicationId,
-					null);
+					HistoryEventType.SUBSCRIPTION_NOT_FOUND,
+					this.expectedApplicationId, null);
 			throw new SubscriptionNotFoundException();
 		}
 
 		addHistoryEntry(this.authenticatedSubject,
-				HistoryEventType.LOGIN_SUCCESS, applicationId,
+				HistoryEventType.LOGIN_SUCCESS, this.expectedApplicationId,
 				this.authenticationDevice.getName());
 
 		this.subscriptionDAO.loggedIn(subscription);
@@ -397,7 +489,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	public String getUserId() {
 		LOG.debug("getUserId");
-		if (INIT == this.authenticationState) {
+		if (this.authenticationState != USER_AUTHENTICATED) {
 			throw new IllegalStateException("call authenticate first");
 		}
 		String userId = this.authenticatedSubject.getUserId();
@@ -417,5 +509,33 @@ public class AuthenticationServiceBean implements AuthenticationService,
 				.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 
 		this.authenticationDevice = device;
+	}
+
+	public String getExpectedApplicationId() {
+		if (this.authenticationState == INIT) {
+			throw new IllegalStateException("call initialize first");
+		}
+		return this.expectedApplicationId;
+	}
+
+	public String getExpectedChallengeId() {
+		if (this.authenticationState == INIT) {
+			throw new IllegalStateException("call initialize first");
+		}
+		return this.expectedChallengeId;
+	}
+
+	public String getExpectedTarget() {
+		if (this.authenticationState == INIT) {
+			throw new IllegalStateException("call initialize first");
+		}
+		return this.expectedTarget;
+	}
+
+	public Set<DeviceEntity> getRequiredDevicePolicy() {
+		if (this.authenticationState == INIT) {
+			throw new IllegalStateException("call initialize first");
+		}
+		return this.requiredDevicePolicy;
 	}
 }

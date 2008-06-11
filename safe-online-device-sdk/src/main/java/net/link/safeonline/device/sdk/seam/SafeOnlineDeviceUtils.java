@@ -21,7 +21,6 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.device.sdk.DeviceManager;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
-import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
@@ -108,12 +107,8 @@ public class SafeOnlineDeviceUtils {
 
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.getSaml2BrowserPostHandler(httpServletRequest);
-		try {
-			saml2BrowserPostHandler.init(authenticationServiceUrl, nodeName,
-					applicationName, keyPair, configParams);
-		} catch (AuthenticationInitializationException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
+		saml2BrowserPostHandler.init(authenticationServiceUrl, nodeName,
+				applicationName, keyPair, configParams);
 
 		try {
 			saml2BrowserPostHandler.authnRequest(httpServletRequest,

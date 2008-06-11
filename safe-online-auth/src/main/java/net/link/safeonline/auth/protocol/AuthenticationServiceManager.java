@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.servlet;
+package net.link.safeonline.auth.protocol;
 
 import java.util.Set;
 
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -26,7 +25,6 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -119,10 +117,9 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	}
 
 	/**
-	 * Commits the authentication for the given application.
+	 * Commits the authentication.
 	 * 
 	 * @param session
-	 * @param applicationId
 	 * @throws SubscriptionNotFoundException
 	 * @throws ApplicationNotFoundException
 	 * @throws MissingAttributeException
@@ -134,21 +131,17 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
 	 */
-	public static void commitAuthentication(HttpSession session,
-			String applicationId) throws SubscriptionNotFoundException,
-			ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+	public static void commitAuthentication(HttpSession session)
+			throws SubscriptionNotFoundException, ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
 			EmptyDevicePolicyException, DevicePolicyException,
 			UsageAgreementAcceptationRequiredException,
 			PermissionDeniedException, AttributeTypeNotFoundException {
 
-		Set<DeviceEntity> requiredDevices = LoginManager
-				.getRequiredDevices(session);
-
 		AuthenticationService authenticationService = getAuthenticationService(session);
 		try {
-			authenticationService.commitAuthentication(applicationId,
-					requiredDevices);
+			authenticationService.commitAuthentication();
 		} finally {
 			/*
 			 * No matter what happens, we don't want the sessionDestroyed method

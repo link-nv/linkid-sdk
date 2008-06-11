@@ -39,6 +39,8 @@ public class LoginManager {
 
 	public static final String APPLICATION_ID_ATTRIBUTE = "applicationId";
 
+	public static final String IN_RESPONSE_TO_ATTRIBUTE = "inResponseTo";
+
 	private LoginManager() {
 		// empty
 	}
@@ -178,4 +180,22 @@ public class LoginManager {
 		}
 		return target;
 	}
+
+	public static String getInResponseTo(HttpSession session) {
+		String inResponseTo = (String) session
+				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
+		if (null == inResponseTo) {
+			throw new IllegalStateException(IN_RESPONSE_TO_ATTRIBUTE
+					+ " session attribute not present");
+		}
+		return inResponseTo;
+	}
+
+	public static void setInResponseTo(HttpSession session, String inResponseTo) {
+		if (null == inResponseTo) {
+			throw new IllegalArgumentException("inResponseTo is null");
+		}
+		session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, inResponseTo);
+	}
+
 }

@@ -21,6 +21,11 @@ public enum AuthenticationState {
 	 */
 	INIT,
 	/**
+	 * The initialized state. At this point we have received an authentication
+	 * request for a certain application, containing a possible device policy.
+	 */
+	INITIALIZED,
+	/**
 	 * This state marks that the user has been authenticated via some
 	 * authentication device.
 	 */

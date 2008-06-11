@@ -12,7 +12,7 @@
 	</listener>
 	<listener>
 		<listener-class>
-			net.link.safeonline.auth.servlet.AuthenticationServiceManager 
+			net.link.safeonline.auth.protocol.AuthenticationServiceManager 
 		</listener-class>
 	</listener>
 	<listener>

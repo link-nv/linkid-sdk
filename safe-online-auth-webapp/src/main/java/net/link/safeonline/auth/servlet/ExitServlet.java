@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
@@ -70,15 +71,8 @@ public class ExitServlet extends AbstractInjectionServlet {
 		LOG.debug("handleInvocation");
 		HttpSession session = request.getSession();
 
-		String application = (String) session.getAttribute("applicationId");
-		if (null == application) {
-			throw new ServletException(
-					"no applicationId session attribute found");
-		}
-
 		try {
-			AuthenticationServiceManager.commitAuthentication(session,
-					application);
+			AuthenticationServiceManager.commitAuthentication(session);
 		} catch (SafeOnlineException e) {
 			throw new ServletException(
 					"error committing the authentication process");

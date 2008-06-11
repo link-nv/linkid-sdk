@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
@@ -78,8 +79,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 		DeviceMappingEntity deviceMapping;
 		try {
 			deviceMapping = authenticationService.authenticate(request,
-					saml2BrowserPostHandler.getChallenge(),
-					saml2BrowserPostHandler.getApplicationName());
+					saml2BrowserPostHandler.getChallenge());
 		} catch (NodeNotFoundException e) {
 			redirectToDeviceErrorPage(request, response,
 					"errorProtocolHandlerFinalization");

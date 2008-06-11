@@ -25,6 +25,7 @@ import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
 import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
@@ -71,10 +72,9 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 		KeyPair authKeyPair = new KeyPair(authIdentityServiceClient
 				.getPublicKey(), authIdentityServiceClient.getPrivateKey());
-		String nodeName;
+		OlasEntity node;
 		try {
-			nodeName = this.nodeAuthenticationService
-					.authenticate(authIdentityServiceClient.getCertificate());
+			node = this.nodeAuthenticationService.getNode();
 		} catch (NodeNotFoundException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;
@@ -106,7 +106,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 			protocolContext.setMappingId(deviceMapping.getId());
 			protocolContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
-			protocolContext.setIssuer(nodeName);
+			protocolContext.setIssuer(node.getName());
 		} catch (SubjectNotFoundException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;

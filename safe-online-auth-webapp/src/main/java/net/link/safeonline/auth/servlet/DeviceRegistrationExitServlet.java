@@ -17,14 +17,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
@@ -37,7 +38,7 @@ import net.link.safeonline.service.DeviceMappingService;
  * 
  * This is the servlet to which to external device provider returns after
  * registration has finished. It redirects to the login servlet after first
- * polling if registration was successfull.
+ * polling if registration was successful.
  * 
  * @author wvdhaute
  * 
@@ -50,8 +51,8 @@ public class DeviceRegistrationExitServlet extends AbstractInjectionServlet {
 
 	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-	@EJB(mappedName = "SafeOnline/DeviceDAOBean/local")
-	private DeviceDAO deviceDAO;
+	@EJB(mappedName = "SafeOnline/DevicePolicyServiceBean/local")
+	private DevicePolicyService devicePolicyService;
 
 	@EJB(mappedName = "SafeOnline/DeviceMappingServiceBean/local")
 	private DeviceMappingService deviceMappingService;
@@ -80,7 +81,8 @@ public class DeviceRegistrationExitServlet extends AbstractInjectionServlet {
 				.getProtocolContext(request.getSession());
 		DeviceEntity device;
 		try {
-			device = this.deviceDAO.getDevice(protocolContext.getDeviceName());
+			device = this.devicePolicyService.getDevice(protocolContext
+					.getDeviceName());
 		} catch (DeviceNotFoundException e) {
 			redirectToDeviceErrorPage(request, response, "errorDeviceNotFound");
 			return;

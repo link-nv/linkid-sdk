@@ -35,9 +35,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoginFilterTest {
+public class AuthnResponseFilterTest {
 
-	private static final Log LOG = LogFactory.getLog(LoginFilterTest.class);
+	private static final Log LOG = LogFactory.getLog(AuthnResponseFilterTest.class);
 
 	private ServletTestManager servletTestManager;
 

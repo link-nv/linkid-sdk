@@ -10,10 +10,7 @@ package net.link.safeonline.device.sdk.auth.saml2;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,31 +19,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
-import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
-import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.AuthnContextClassRef;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.Response;
-import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.ConfigurationException;
 
 /**
  * Implementation class for the SAML2 browser POST authentication protocol. This
  * class is used to send out a SAML2 authentication request to an external
- * device provider. And receive a SAML2 reponse from that device provider which
- * should contain the device mapping id.
+ * device provider.
  * 
  * <p>
  * Optional configuration parameters:
@@ -54,9 +40,6 @@ import org.opensaml.xml.ConfigurationException;
  * <ul>
  * <li><code>Saml2BrowserPostTemplate</code>: contains the path to the
  * custom SAML2 Browser POST template resource.</li>
- * <li><code>WsLocation</code>: contains the location of the OLAS web
- * services. If present this handler will use the STS web service for SAML
- * authentication token validation.</li>
  * </ul>
  * 
  * @author wvdhaute
@@ -107,10 +90,6 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 	private Challenge<String> challenge;
 
-	private String stsWsLocation;
-
-	private String authenticationDevice;
-
 	private Saml2BrowserPostHandler(HttpServletRequest request) {
 		this.session = request.getSession();
 		this.session.setAttribute(SAML2_BROWSER_POST_HANDLER, this);
@@ -136,8 +115,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 	public void init(String inAuthnServiceUrl, String inIssuerName,
 			String inApplicationName, KeyPair inApplicationKeyPair,
-			Map<String, String> inConfigParams)
-			throws AuthenticationInitializationException {
+			Map<String, String> inConfigParams) {
 		LOG.debug("init");
 		this.authnServiceUrl = inAuthnServiceUrl;
 		this.issuerName = inIssuerName;
@@ -145,11 +123,6 @@ public class Saml2BrowserPostHandler implements Serializable {
 		this.applicationKeyPair = inApplicationKeyPair;
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
-		this.stsWsLocation = inConfigParams.get("WsLocation");
-		if (null == this.stsWsLocation) {
-			throw new AuthenticationInitializationException(
-					"Initialization param \"WsLocation\" not specified.");
-		}
 	}
 
 	public void authnRequest(
@@ -178,51 +151,7 @@ public class Saml2BrowserPostHandler implements Serializable {
 				templateResourceName, httpResponse);
 	}
 
-	public String handleResponse(HttpServletRequest httpRequest,
-			X509Certificate certificate, PrivateKey privateKey)
-			throws ServletException {
-
-		DateTime now = new DateTime();
-
-		Response samlResponse = AuthnResponseUtil.validateResponse(now,
-				httpRequest, this.challenge.getValue(), this.applicationName,
-				this.stsWsLocation, certificate, privateKey,
-				TrustDomainType.DEVICE);
-		if (null == samlResponse)
-			return null;
-
-		Assertion assertion = samlResponse.getAssertions().get(0);
-		List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-		if (authStatements.isEmpty())
-			throw new ServletException("missing authentication statement");
-
-		AuthnStatement authStatement = authStatements.get(0);
-		if (null == authStatement.getAuthnContext())
-			throw new ServletException(
-					"missing authentication context in authentication statement");
-
-		AuthnContextClassRef authnContextClassRef = authStatement
-				.getAuthnContext().getAuthnContextClassRef();
-		this.authenticationDevice = authnContextClassRef
-				.getAuthnContextClassRef();
-		LOG.debug("authentication device: " + this.authenticationDevice);
-
-		Subject subject = assertion.getSubject();
-		NameID subjectName = subject.getNameID();
-		String subjectNameValue = subjectName.getValue();
-		LOG.debug("subject name value: " + subjectNameValue);
-		return subjectNameValue;
-	}
-
-	public String getAuthenticationDevice() {
-		return this.authenticationDevice;
-	}
-
 	public Challenge<String> getChallenge() {
 		return this.challenge;
-	}
-
-	public String getApplicationName() {
-		return this.applicationName;
 	}
 }

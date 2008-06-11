@@ -35,10 +35,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AuthenticationFilterTest {
+public class AuthnRequestFilterTest {
 
 	private static final Log LOG = LogFactory
-			.getLog(AuthenticationFilterTest.class);
+			.getLog(AuthnRequestFilterTest.class);
 
 	private ServletTestManager servletTestManager;
 

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
@@ -29,7 +30,10 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
+
+import org.opensaml.saml2.core.AuthnRequest;
 
 /**
  * Authentication service interface. This service allows the authentication web
@@ -79,10 +83,8 @@ public interface AuthenticationService {
 			throws SubjectNotFoundException, DeviceNotFoundException;
 
 	/**
-	 * Commits the authentication for the given application.
+	 * Commits the authentication.
 	 * 
-	 * @param applicationId
-	 * @param requiredDevicePolicy
 	 * @throws SubscriptionNotFoundException
 	 *             in case the subject is not subscribed to the application.
 	 * @throws ApplicationNotFoundException
@@ -96,9 +98,8 @@ public interface AuthenticationService {
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
 	 */
-	void commitAuthentication(String applicationId,
-			Set<DeviceEntity> requiredDevicePolicy)
-			throws ApplicationNotFoundException, SubscriptionNotFoundException,
+	void commitAuthentication() throws ApplicationNotFoundException,
+			SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
 			EmptyDevicePolicyException, DevicePolicyException,
@@ -144,8 +145,52 @@ public interface AuthenticationService {
 	 * Returns the device mapping entity for the authenticated device and user.
 	 */
 	DeviceMappingEntity authenticate(HttpServletRequest request,
-			Challenge<String> challenge, String applicationName)
-			throws NodeNotFoundException, ServletException,
-			DeviceMappingNotFoundException;
+			Challenge<String> challenge) throws NodeNotFoundException,
+			ServletException, DeviceMappingNotFoundException;
 
+	/**
+	 * Initializes an authentication process. Validates the incoming
+	 * authentication request and stores the application, device policy and
+	 * assertion consumer service.
+	 * 
+	 * @param samlAuthnRequest
+	 * @throws AuthenticationInitializationException
+	 * @throws ApplicationNotFoundException
+	 * @throws TrustDomainNotFoundException
+	 */
+	void initialize(AuthnRequest samlAuthnRequest)
+			throws AuthenticationInitializationException,
+			ApplicationNotFoundException, TrustDomainNotFoundException;
+
+	/**
+	 * Gives back the application we are authenticating for.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #initialize(AuthnRequest)}.
+	 */
+	String getExpectedApplicationId();
+
+	/**
+	 * Gives back the challenge ID of the initial authentication request.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #initialize(AuthnRequest)}.
+	 */
+	String getExpectedChallengeId();
+
+	/**
+	 * Gives back the target to which to send the final authentication response.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #initialize(AuthnRequest)}.
+	 */
+	String getExpectedTarget();
+
+	/**
+	 * Gives back the required device policy.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #initialize(AuthnRequest)}.
+	 */
+	Set<DeviceEntity> getRequiredDevicePolicy();
 }

@@ -13,8 +13,21 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.security.KeyPair;
+import java.security.cert.X509Certificate;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
+import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.DeviceDAO;
@@ -31,10 +44,23 @@ import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
+import net.link.safeonline.sdk.auth.saml2.DomUtils;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
+import net.link.safeonline.test.util.PkiTestUtils;
 
-public class AuthenticationServiceBeanTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.xml.Configuration;
+import org.opensaml.xml.io.Unmarshaller;
+import org.opensaml.xml.io.UnmarshallerFactory;
+import org.w3c.dom.Document;
+
+public class AuthenticationServiceBeanTest {
 
 	private AuthenticationServiceBean testedInstance;
 
@@ -56,10 +82,14 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 	private DeviceDAO mockDeviceDAO;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	private ApplicationAuthenticationService mockApplicationAuthenticationService;
 
+	private PkiValidator mockPkiValidator;
+
+	private DevicePolicyService mockDevicePolicyService;
+
+	@Before
+	public void setUp() throws Exception {
 		this.testedInstance = new AuthenticationServiceBean();
 
 		this.mockSubjectService = createMock(SubjectService.class);
@@ -88,16 +118,32 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		this.mockDeviceDAO = createMock(DeviceDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockDeviceDAO);
 
+		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+		EJBTestUtils.inject(this.testedInstance,
+				this.mockApplicationAuthenticationService);
+
+		this.mockPkiValidator = createMock(PkiValidator.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockPkiValidator);
+
+		this.mockDevicePolicyService = createMock(DevicePolicyService.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockDevicePolicyService);
+
 		EJBTestUtils.init(this.testedInstance);
 
 		this.mockObjects = new Object[] { this.mockSubjectService,
 				this.mockPasswordDeviceService, this.mockApplicationDAO,
 				this.mockSubscriptionDAO, this.mockHistoryDAO,
 				this.mockStatisticDAO, this.mockStatisticDataPointDAO,
-				this.mockDeviceDAO };
+				this.mockDeviceDAO, this.mockApplicationAuthenticationService,
+				this.mockPkiValidator, this.mockDevicePolicyService };
 	}
 
-	public void testAuthenticate() throws Exception {
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void authenticate() throws Exception {
 		// setup
 		String applicationName = "test-application";
 		String login = "test-login";
@@ -155,5 +201,206 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		// verify
 		verify(this.mockObjects);
 		assertTrue(result);
+	}
+
+	@Test
+	public void initialize() throws Exception {
+		// setup
+		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate applicationCert = PkiTestUtils
+				.generateSelfSignedCertificate(applicationKeyPair,
+						"CN=TestApplication");
+		String applicationName = "test-application-id";
+		String assertionConsumerService = "http://test.assertion.consumer.service";
+		String destinationUrl = "http://test.destination.url";
+
+		String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(
+				applicationName, applicationName, applicationKeyPair,
+				assertionConsumerService, destinationUrl, null, null);
+		AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
+
+		// expectations
+		expect(
+				this.mockApplicationAuthenticationService
+						.getCertificate(applicationName)).andReturn(
+				applicationCert);
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								applicationCert)).andReturn(true);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		this.testedInstance.initialize(authnRequest);
+
+		// verify
+		verify(this.mockObjects);
+
+		String resultApplicationId = this.testedInstance
+				.getExpectedApplicationId();
+		assertEquals(applicationName, resultApplicationId);
+		String target = this.testedInstance.getExpectedTarget();
+		assertEquals(assertionConsumerService, target);
+	}
+
+	@Test
+	public void initializeSaml2RequestedAuthnContextSetsRequiredDevices()
+			throws Exception {
+		// setup
+		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate applicationCert = PkiTestUtils
+				.generateSelfSignedCertificate(applicationKeyPair,
+						"CN=TestApplication");
+		String applicationName = "test-application-id";
+		String assertionConsumerService = "http://test.assertion.consumer.service";
+		String destinationUrl = "http://test.destination.url";
+		Set<String> devices = new HashSet<String>();
+		devices.add(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+
+		String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(
+				applicationName, applicationName, applicationKeyPair,
+				assertionConsumerService, destinationUrl, null, devices);
+		AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
+
+		// expectations
+		expect(
+				this.mockApplicationAuthenticationService
+						.getCertificate(applicationName)).andReturn(
+				applicationCert);
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								applicationCert)).andReturn(true);
+
+		List<DeviceEntity> authnDevices = new LinkedList<DeviceEntity>();
+		DeviceEntity passwordDevice = new DeviceEntity(
+				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
+				new DeviceClassEntity(
+						SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+						SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
+				null, null, null, null, null, null);
+		authnDevices.add(passwordDevice);
+		expect(
+				this.mockDevicePolicyService
+						.listDevices(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS))
+				.andReturn(authnDevices);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		this.testedInstance.initialize(authnRequest);
+
+		// verify
+		verify(this.mockObjects);
+
+		String resultApplicationId = this.testedInstance
+				.getExpectedApplicationId();
+		assertEquals(applicationName, resultApplicationId);
+		String target = this.testedInstance.getExpectedTarget();
+		assertEquals(assertionConsumerService, target);
+		Set<DeviceEntity> resultRequiredDevices = this.testedInstance
+				.getRequiredDevicePolicy();
+		assertNotNull(resultRequiredDevices);
+		assertTrue(resultRequiredDevices.contains(passwordDevice));
+	}
+
+	@Test
+	public void initializeSaml2AuthenticationProtocolWrongSignatureKey()
+			throws Exception {
+		// setup
+		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+		String applicationName = "test-application-id";
+		String assertionConsumerService = "http://test.assertion.consumer.service";
+		String destinationUrl = "http://test.destination.url";
+
+		KeyPair foobarKeyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate foobarCert = PkiTestUtils
+				.generateSelfSignedCertificate(foobarKeyPair,
+						"CN=TestApplication");
+
+		String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(
+				applicationName, applicationName, applicationKeyPair,
+				assertionConsumerService, destinationUrl, null, null);
+		AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
+
+		// expectations
+		expect(
+				this.mockApplicationAuthenticationService
+						.getCertificate(applicationName)).andReturn(foobarCert);
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								foobarCert)).andReturn(true);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		try {
+			this.testedInstance.initialize(authnRequest);
+		} catch (AuthenticationInitializationException e) {
+			// expected
+			return;
+		}
+		junit.framework.Assert.fail();
+	}
+
+	@Test
+	public void intializeSaml2AuthenticationProtocolNotTrustedApplication()
+			throws Exception {
+		// setup
+		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate applicationCert = PkiTestUtils
+				.generateSelfSignedCertificate(applicationKeyPair,
+						"CN=TestApplication");
+		String applicationName = "test-application-id";
+		String assertionConsumerService = "http://test.assertion.consumer.service";
+		String destinationUrl = "http://test.destination.url";
+
+		String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(
+				applicationName, applicationName, applicationKeyPair,
+				assertionConsumerService, destinationUrl, null, null);
+		AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
+
+		// expectations
+		expect(
+				this.mockApplicationAuthenticationService
+						.getCertificate(applicationName)).andReturn(
+				applicationCert);
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								applicationCert)).andReturn(false);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		try {
+			this.testedInstance.initialize(authnRequest);
+		} catch (AuthenticationInitializationException e) {
+			// expected
+			return;
+		}
+		junit.framework.Assert.fail();
+	}
+
+	private AuthnRequest getAuthnRequest(String encodedAuthnRequest)
+			throws Exception {
+		Document doc = DomUtils.parseDocument(encodedAuthnRequest);
+		UnmarshallerFactory unmarshallerFactory = Configuration
+				.getUnmarshallerFactory();
+		Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(doc
+				.getDocumentElement());
+		AuthnRequest authnRequest = (AuthnRequest) unmarshaller.unmarshall(doc
+				.getDocumentElement());
+		return authnRequest;
 	}
 }

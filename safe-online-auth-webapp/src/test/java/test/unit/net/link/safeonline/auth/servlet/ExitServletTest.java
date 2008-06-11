@@ -27,9 +27,9 @@ import javax.xml.XMLConstants;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
-import net.link.safeonline.auth.servlet.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.ExitServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
@@ -215,8 +215,7 @@ public class ExitServletTest {
 				this.mockAuthenticationService);
 		initialSessionAttributes.put(
 				LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, this.device);
-		initialSessionAttributes.put(
-				Saml2PostProtocolHandler.IN_RESPONSE_TO_ATTRIBUTE,
+		initialSessionAttributes.put(LoginManager.IN_RESPONSE_TO_ATTRIBUTE,
 				this.inResponseTo);
 
 		this.exitServletTestManager.setUp(ExitServlet.class, servletInitParams,
@@ -239,8 +238,7 @@ public class ExitServletTest {
 		getMethod.setFollowRedirects(false);
 
 		// expectations
-		this.mockAuthenticationService.commitAuthentication(this.applicationId,
-				null);
+		this.mockAuthenticationService.commitAuthentication();
 
 		// prepare
 		replay(this.mockObjects);
