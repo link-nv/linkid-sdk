@@ -123,7 +123,7 @@ export draw=$(      tput enacs    2>/dev/null ;
 # in front of the message.  Capitalized options affect the message text
 # displayed.
 #
-function emit {
+emit() {
 
    # Check usage.
     (( ! $# )) || getArgs -q :h "$@" && {
@@ -244,7 +244,7 @@ function emit {
 # recently backgrounded process is used.  The 'spinPid' variable is unset upon
 # each call to 'spinner' and reset to the PID of the spinner if one is created.
 #
-function spinner {
+spinner() {
 
     # Check usage.
     (( ! $# )) || getArgs -q :h "$@" && {
@@ -381,7 +381,7 @@ function spinner {
 # If no option is marked as valid, the given reply is echoed and an exit
 # code of 0 is returned.
 #
-function ask {
+ask() {
    
    # Check usage.
     (( ! $# )) || getArgs -q :h "$@" && {
@@ -453,7 +453,7 @@ function ask {
 #
 # When no arguments are given, lines will be read from standard input.
 #
-function trim {
+trim() {
    
     # Initialize the vars.
     local lines
@@ -487,7 +487,7 @@ function trim {
 # This implementation requires the necessary permissions to send signals
 # to the PID(s) provided.
 #
-function swait {
+swait() {
 
     # Check usage.
     (( ! $# )) || getArgs -q :h "$@" && {
@@ -520,7 +520,7 @@ function swait {
 #   -w  If we cannot kill the process with any signal, wait for it to end
 #       before returning.
 #
-function skill {
+skill() {
 
     # Check usage.
     (( ! $# )) || getArgs -q :h "$@" && {
@@ -606,7 +606,7 @@ function skill {
 # After the operation, OPTARGS is set the the index of the last argument
 # that has been parsed by getArgs.  Ready for you to use shift $OPTARGS.
 #
-function getArgs {
+getArgs() {
 
     # Check usage.
     (( ! $# )) && {
@@ -669,7 +669,7 @@ function getArgs {
 #
 #   description A description of the effect of the preceding option.
 #
-function showHelp {
+showHelp() {
 
     # Check usage.
     (( $# < 3 )) || getArgs -q :h "$@" && {
@@ -709,6 +709,48 @@ function showHelp {
 
 
 #  ______________________________________________________________________
+# |__ Quote _____________________________________________________________|
+#
+#       quote [-e] [argument...]
+#
+# Output a single string where all arguments are quoted
+# such that the string is safe to be passed as shell
+# command arguments as though given arguments had been
+# passed.
+#
+# When no arguments are passed; no output is generated.
+#
+#   -e      Use backslashes rather than single quotes.
+#
+quote() {
+
+    # Initialize the defaults.
+    local arg escape=0 first=1
+
+    # Parse the options.
+    while [[ $1 = -* ]]; do
+        case $1 in
+            -e) escape=1    ;;
+        esac
+        shift
+    done
+
+    # Print out each argument, quoting it properly.
+    for arg; do
+        (( ! first )) && printf ' ' || first=0
+
+        if (( escape )); then
+            printf "%q"     "$arg"
+        else
+            printf "'%s'"   "${arg//"'"/"\\'"}"
+        fi
+    done
+} # _____________________________________________________________________
+
+
+
+
+#  ______________________________________________________________________
 # |__ Shorten ___________________________________________________________|
 #
 #       shorten path [prefix]...
@@ -720,7 +762,7 @@ function showHelp {
 #   prefix  Prefix strings that must be cut off the beginning.
 #           Only the first prefix string matched will be cut off.
 #
-function shorten {
+shorten() {
 
     # Check usage.
     (( $# < 1 )) || getArgs -q :h "$@" && {
@@ -762,7 +804,7 @@ function shorten {
 #   element The element to search the array for.
 #   array   This is a list of elements to search through.
 #
-function inArray {
+inArray() {
 
     # Check usage.
     (( $# < 2 )) || getArgs -q :h "$@" && {
@@ -800,7 +842,7 @@ function inArray {
 # When no value and no key is specified, all known keys for the given map are
 # returned.
 #
-function map {
+map() {
     # Parse the options.
     local quiet=
     [[ $1 = -q ]] && { quiet=1; shift; }
@@ -855,7 +897,7 @@ function map {
 # Returns the index of the map with the given name.
 # For internal use only.
 #
-function _findMapNameIndex {
+_findMapNameIndex() {
 
     # Parse arguments.
     local quiet=0
@@ -887,7 +929,7 @@ function _findMapNameIndex {
 # Returns the index of the given key in the map with the given index.
 # For internal use only.
 #
-function _findMapKeyIndex {
+_findMapKeyIndex() {
 
     # Parse arguments.
     local quiet=0
@@ -933,7 +975,7 @@ function _findMapKeyIndex {
 #   -n      Use newlines as an output separator between keys and values.
 #   -0      Use NULL-bytes as an output separator between keys and values.
 #
-function _depricated_map {
+_depricated_map() {
 
     # Check usage.
     (( $# < 2 )) || getArgs -q :h "$@" && {
@@ -987,7 +1029,7 @@ function _depricated_map {
 # output for a function, you should have a hideDebug on as its first line
 # and hideDebug off as its last.
 #
-function hideDebug {
+hideDebug() {
 
     if [[ $1 = on ]]; then
         : -- HIDING DEBUG OUTPUT ..
@@ -1008,7 +1050,7 @@ function hideDebug {
 # Retrieve a mapping of a key from the given map or modify the given map by
 # assigning a new value for the given key if stdin is not the terminal.
 #
-function stackTrace {
+stackTrace() {
 
     # Some general debug information.
     echo -e "\t$bold$BASH$reset v$bold$BASH_VERSION$reset"
