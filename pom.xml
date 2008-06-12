@@ -115,21 +115,29 @@
 
 	<!-- COMPILATION PROFILES -->
 	<profiles>
-		<!--  PROFILE USED DURING DEVELOPMENT -->
+
+		<!-- Demo initializations without demo webapps -->
 		<profile>
-			<id>env-dev</id>
+			<id>demo-core</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 				<property>
-					<name>env</name>
-					<value>dev</value>
+					<name>profile-set</name>
+					<value>development</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>demonstration</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>integrationtest</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>hudson</value>
 				</property>
 			</activation>
-			<properties>
-				<debug.mode>true</debug.mode>
-				<safe-online.show.sql>true</safe-online.show.sql>
-				<safe-online.host.name>localhost</safe-online.host.name>
-			</properties>
 			<modules>
 				<module>safe-online-model-demo</module>
 				<module>safe-online-demo-keystore</module>
@@ -141,11 +149,207 @@
 				<module>safe-online-demo-cinema-keystore</module>
 			</modules>
 		</profile>
+
+		<!-- This requires the demo-core to be active -->
 		<profile>
-			<id>env-hudson</id>
+			<id>demo-webapps</id>
 			<activation>
 				<property>
-					<name>env</name>
+					<name>profile-set</name>
+					<value>demonstration</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>integrationtest</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>hudson</value>
+				</property>
+			</activation>
+			<modules>
+				<module>safe-online-demo-webapp</module>
+				<module>safe-online-demo-service</module>
+				<module>safe-online-demo-remote-service</module>
+				<module>safe-online-demo-deploy</module>
+				<module>safe-online-demo-applet</module>
+				<module>safe-online-demo-ticket-webapp</module>
+				<module>safe-online-demo-ticket</module>
+				<module>safe-online-demo-payment</module>
+				<module>safe-online-demo-payment-service</module>
+				<module>safe-online-demo-payment-webapp</module>
+				<module>safe-online-demo-lawyer</module>
+				<module>safe-online-demo-lawyer-webapp</module>
+				<module>safe-online-demo-lawyer-service</module>
+				<module>safe-online-demo-wicket-tools</module>
+				<module>safe-online-demo-cinema-keystore</module>
+				<module>safe-online-demo-cinema-webapp</module>
+				<module>safe-online-demo-util</module>
+				<module>safe-online-demo-prescription</module>
+				<module>safe-online-demo-prescription-webapp</module>
+				<module>safe-online-demo-prescription-service</module>
+				<module>safe-online-demo-mandate</module>
+				<module>safe-online-demo-mandate-webapp</module>
+				<module>safe-online-demo-mandate-service</module>
+				<module>
+					safe-online-demo-notification-consumer-ws-impl
+				</module>
+				<module>safe-online-demo-ws-runtime</module>
+				<module>safe-online-demo-ws-model</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>demo-distribution</id>
+			<activation>
+				<property>
+					<name>profile-set</name>
+					<value>demonstration</value>
+				</property>
+			</activation>
+			<modules>
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-demo-distribution</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>pilot-core</id>
+			<activation>
+				<property>
+					<name>profile-set</name>
+					<value>pilot-mysql</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>pilot-postgres</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>pilot-oracle</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>hudson</value>
+				</property>
+			</activation>
+			<properties>
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
+				<safe-online.hibernate.hbm2ddl.auto>
+					validate
+				</safe-online.hibernate.hbm2ddl.auto>
+				<debug.mode>false</debug.mode>
+				<safe-online.show.sql>false</safe-online.show.sql>
+				<safe-online.host.name>localhost</safe-online.host.name>
+				<safe-online.host.port>80</safe-online.host.port>
+				<safe-online.host.port.ssl>
+					443
+				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					80
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					443
+				</safe-online.jboss.host.port.ssl>
+			</properties>
+			<modules>
+				<module>safe-online-root-webapp</module>
+				<module>safe-online-install-manual</module>
+				<module>safe-online-maintenance-manual</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>pilot-mysql</id>
+			<activation>
+				<property>
+					<name>profile-set</name>
+					<value>pilot-mysql</value>
+				</property>
+			</activation>
+			<properties>
+				<safe-online.data.source.uri>
+					jdbc:mysql://localhost:3306/safeonline
+				</safe-online.data.source.uri>
+				<safe-online.dialect>
+					org.hibernate.dialect.MySQLDialect
+				</safe-online.dialect>
+			</properties>
+			<modules>
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-pilot-distribution</module>
+				<module>safe-online-pilot-mysql-distribution</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>pilot-postgres</id>
+			<activation>
+				<property>
+					<name>profile-set</name>
+					<value>pilot-postgres</value>
+				</property>
+			</activation>
+			<properties>
+				<safe-online.data.source.uri>
+					jdbc:postgresql://localhost:5432/safeonline
+				</safe-online.data.source.uri>
+				<safe-online.dialect>
+					org.hibernate.dialect.PostgreSQLDialect
+				</safe-online.dialect>
+			</properties>
+			<modules>
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-pilot-distribution</module>
+				<module>safe-online-pilot-postgres-distribution</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>pilot-oracle</id>
+			<activation>
+				<property>
+					<name>profile-set</name>
+					<value>pilot-oracle</value>
+				</property>
+			</activation>
+			<properties>
+				<safe-online.data.source.uri>
+					jdbc:oracle:thin:@localhost:1521:safeonline
+				</safe-online.data.source.uri>
+				<safe-online.dialect>
+					net.link.safeonline.hibernate.dialect.Oracle11Dialect
+				</safe-online.dialect>
+			</properties>
+			<modules>
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-pilot-distribution</module>
+				<module>safe-online-pilot-oracle-distribution</module>
+			</modules>
+		</profile>
+
+		<!--  PROFILE USED DURING DEVELOPMENT -->
+		<profile>
+			<id>development</id>
+			<activation>
+				<property>
+					<name>profile-set</name>
+					<value>development</value>
+				</property>
+			</activation>
+			<properties>
+				<debug.mode>true</debug.mode>
+				<safe-online.show.sql>true</safe-online.show.sql>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>hudson</id>
+			<activation>
+				<property>
+					<name>profile-set</name>
 					<value>hudson</value>
 				</property>
 			</activation>
@@ -168,15 +372,18 @@
 
 		<!-- PROFILE FOR WEBAPP TESTING -->
 		<profile>
-			<id>env-test</id>
+			<id>test</id>
 			<activation>
 				<property>
-					<name>env</name>
+					<name>profile-set</name>
 					<value>test</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>hudson</value>
 				</property>
 			</activation>
 			<properties>
-				<safe-online.host.name>localhost</safe-online.host.name>
 				<defaultCronExpression>
 					0 0 3 * * ?
 				</defaultCronExpression>
@@ -190,51 +397,16 @@
 			<modules>
 				<module>safe-online-test-webapp</module>
 				<module>safe-online-test</module>
-				<module>safe-online-model-demo</module>
-				<module>safe-online-demo-webapp</module>
-				<module>safe-online-demo-service</module>
-				<module>safe-online-demo-remote-service</module>
-				<module>safe-online-demo-deploy</module>
-				<module>safe-online-demo-applet</module>
-				<module>safe-online-demo-keystore</module>
-				<module>safe-online-demo-ticket-webapp</module>
-				<module>safe-online-demo-ticket</module>
-				<module>safe-online-demo-ticket-keystore</module>
-				<module>safe-online-demo-payment-keystore</module>
-				<module>safe-online-demo-payment</module>
-				<module>safe-online-demo-payment-service</module>
-				<module>safe-online-demo-payment-webapp</module>
-				<module>safe-online-demo-lawyer-keystore</module>
-				<module>safe-online-demo-lawyer</module>
-				<module>safe-online-demo-lawyer-webapp</module>
-				<module>safe-online-demo-lawyer-service</module>
-				<module>safe-online-demo-prescription-keystore</module>
-				<module>safe-online-demo-util</module>
-				<module>safe-online-demo-prescription</module>
-				<module>safe-online-demo-prescription-webapp</module>
-				<module>safe-online-demo-prescription-service</module>
-				<module>safe-online-demo-mandate-keystore</module>
-				<module>safe-online-demo-mandate</module>
-				<module>safe-online-demo-mandate-webapp</module>
-				<module>safe-online-demo-mandate-service</module>
-				<module>safe-online-demo-cinema-keystore</module>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-demo-distribution</module>
-				<module>
-					safe-online-demo-notification-consumer-ws-impl
-				</module>
-				<module>safe-online-demo-ws-runtime</module>
-				<module>safe-online-demo-ws-model</module>
 			</modules>
 		</profile>
 
 		<!--  PROFILE FOR BUILDING THE DEMOS -->
 		<profile>
-			<id>env-demo</id>
+			<id>demonstration</id>
 			<activation>
 				<property>
-					<name>env</name>
-					<value>demo</value>
+					<name>profile-set</name>
+					<value>demonstration</value>
 				</property>
 			</activation>
 			<properties>
@@ -242,61 +414,18 @@
 					0 0 0 1 1 1
 				</defaultCronExpression>
 			</properties>
-			<modules>
-				<module>safe-online-model-demo</module>
-				<module>safe-online-demo-webapp</module>
-				<module>safe-online-demo-service</module>
-				<module>safe-online-demo-remote-service</module>
-				<module>safe-online-demo-deploy</module>
-				<module>safe-online-demo-applet</module>
-				<module>safe-online-demo-keystore</module>
-				<module>safe-online-demo-ticket-webapp</module>
-				<module>safe-online-demo-ticket</module>
-				<module>safe-online-demo-ticket-keystore</module>
-				<module>safe-online-demo-payment-keystore</module>
-				<module>safe-online-demo-payment</module>
-				<module>safe-online-demo-payment-service</module>
-				<module>safe-online-demo-payment-webapp</module>
-				<module>safe-online-demo-lawyer-keystore</module>
-				<module>safe-online-demo-lawyer</module>
-				<module>safe-online-demo-lawyer-webapp</module>
-				<module>safe-online-demo-lawyer-service</module>
-				<module>safe-online-demo-wicket-tools</module>
-				<module>safe-online-demo-cinema-keystore</module>
-				<module>safe-online-demo-cinema-webapp</module>
-				<module>safe-online-demo-prescription-keystore</module>
-				<module>safe-online-demo-util</module>
-				<module>safe-online-demo-prescription</module>
-				<module>safe-online-demo-prescription-webapp</module>
-				<module>safe-online-demo-prescription-service</module>
-				<module>safe-online-demo-mandate-keystore</module>
-				<module>safe-online-demo-mandate</module>
-				<module>safe-online-demo-mandate-webapp</module>
-				<module>safe-online-demo-mandate-service</module>
-				<module>
-					safe-online-demo-notification-consumer-ws-impl
-				</module>
-				<module>safe-online-demo-ws-runtime</module>
-				<module>safe-online-demo-ws-model</module>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-demo-distribution</module>
-			</modules>
 		</profile>
 
 		<!-- PROFILE FOR BUILDING REMOTE DEVICES -->
 		<profile>
-			<id>env-device</id>
+			<id>remote-device</id>
 			<activation>
 				<property>
-					<name>env</name>
-					<value>device</value>
+					<name>profile-set</name>
+					<value>remotedevice-test</value>
 				</property>
 			</activation>
 			<properties>
-				<safe-online.host.name>localhost</safe-online.host.name>
-				<defaultCronExpression>
-					0 0/5 * * * ?
-				</defaultCronExpression>
 				<safe-online.node.name>
 					olas-buildserver
 				</safe-online.node.name>
@@ -311,32 +440,15 @@
 
 		<!-- PROFILE FOR BUILDING THE SDK PACKAGE -->
 		<profile>
-			<id>env-sdk</id>
+			<id>sdk</id>
 			<activation>
 				<property>
-					<name>env</name>
+					<name>profile-set</name>
 					<value>sdk</value>
 				</property>
-			</activation>
-			<properties>
-				<safe-online.host.name>localhost</safe-online.host.name>
-				<defaultCronExpression>
-					0 0/5 * * * ?
-				</defaultCronExpression>
-			</properties>
-			<modules>
-				<module>safe-online-sdk-manual</module>
-				<module>safe-online-sdk-package</module>
-			</modules>
-		</profile>
-
-		<!-- PROFILE FOR BUILDING THE DEVICE SDK PACKAGE -->
-		<profile>
-			<id>env-device-sdk</id>
-			<activation>
 				<property>
-					<name>env</name>
-					<value>device-sdk</value>
+					<name>profile-set</name>
+					<value>hudson</value>
 				</property>
 			</activation>
 			<properties>
@@ -352,151 +464,17 @@
 			</modules>
 		</profile>
 
-		<!-- PROFILE FOR BUILDING A PILOT VERSION THAT USES A MYSQL DBMS -->
-		<profile>
-			<id>env-local-pilot-mysql</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>local-pilot-mysql</value>
-				</property>
-			</activation>
-			<properties>
-				<defaultCronExpression>
-					0 0 3 * * ?
-				</defaultCronExpression>
-				<safe-online.data.source.uri>
-					jdbc:mysql://localhost:3306/safeonline
-				</safe-online.data.source.uri>
-				<safe-online.dialect>
-					org.hibernate.dialect.MySQLDialect
-				</safe-online.dialect>
-				<safe-online.hibernate.hbm2ddl.auto>
-					validate
-				</safe-online.hibernate.hbm2ddl.auto>
-				<debug.mode>false</debug.mode>
-				<safe-online.show.sql>false</safe-online.show.sql>
-				<safe-online.host.name>localhost</safe-online.host.name>
-				<safe-online.host.port>80</safe-online.host.port>
-				<safe-online.host.port.ssl>
-					443
-				</safe-online.host.port.ssl>
-				<safe-online.jboss.host.port>
-					80
-				</safe-online.jboss.host.port>
-				<safe-online.jboss.host.port.ssl>
-					443
-				</safe-online.jboss.host.port.ssl>
-			</properties>
-			<modules>
-				<module>safe-online-root-webapp</module>
-				<module>safe-online-install-manual</module>
-				<module>safe-online-maintenance-manual</module>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-pilot-distribution</module>
-				<module>safe-online-pilot-mysql-distribution</module>
-			</modules>
-		</profile>
-
-		<!-- PROFILE FOR BUILDING A PILOT VERSION THAT USES A POSTGRES DBMS -->
-		<profile>
-			<id>env-local-pilot-postgres</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>local-pilot-postgres</value>
-				</property>
-			</activation>
-			<properties>
-				<defaultCronExpression>
-					0 0 3 * * ?
-				</defaultCronExpression>
-				<safe-online.data.source.uri>
-					jdbc:postgresql://localhost:5432/safeonline
-				</safe-online.data.source.uri>
-				<safe-online.dialect>
-					org.hibernate.dialect.PostgreSQLDialect
-				</safe-online.dialect>
-				<safe-online.hibernate.hbm2ddl.auto>
-					validate
-				</safe-online.hibernate.hbm2ddl.auto>
-				<debug.mode>false</debug.mode>
-				<safe-online.show.sql>false</safe-online.show.sql>
-				<safe-online.host.name>localhost</safe-online.host.name>
-				<safe-online.host.port>80</safe-online.host.port>
-				<safe-online.host.port.ssl>
-					443
-				</safe-online.host.port.ssl>
-				<safe-online.jboss.host.port>
-					80
-				</safe-online.jboss.host.port>
-				<safe-online.jboss.host.port.ssl>
-					443
-				</safe-online.jboss.host.port.ssl>
-			</properties>
-			<modules>
-				<module>safe-online-root-webapp</module>
-				<module>safe-online-install-manual</module>
-				<module>safe-online-maintenance-manual</module>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-pilot-distribution</module>
-				<module>safe-online-pilot-postgres-distribution</module>
-			</modules>
-		</profile>
-
-		<!-- PROFILE FOR BUILDING A PILOT VERSION THAT USES AN ORACLE DBMS -->
-		<profile>
-			<id>env-local-pilot-oracle</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>local-pilot-oracle</value>
-				</property>
-			</activation>
-			<properties>
-				<defaultCronExpression>
-					0 0 3 * * ?
-				</defaultCronExpression>
-				<safe-online.data.source.uri>
-					jdbc:oracle:thin:@localhost:1521:safeonline
-				</safe-online.data.source.uri>
-				<safe-online.dialect>
-					net.link.safeonline.hibernate.dialect.Oracle11Dialect
-				</safe-online.dialect>
-				<safe-online.hibernate.hbm2ddl.auto>
-					validate
-				</safe-online.hibernate.hbm2ddl.auto>
-				<debug.mode>false</debug.mode>
-				<safe-online.show.sql>false</safe-online.show.sql>
-				<safe-online.host.name>localhost</safe-online.host.name>
-				<safe-online.host.port>80</safe-online.host.port>
-				<safe-online.host.port.ssl>
-					443
-				</safe-online.host.port.ssl>
-				<safe-online.jboss.host.port>
-					80
-				</safe-online.jboss.host.port>
-				<safe-online.jboss.host.port.ssl>
-					443
-				</safe-online.jboss.host.port.ssl>
-			</properties>
-			<modules>
-				<module>safe-online-root-webapp</module>
-				<module>safe-online-install-manual</module>
-				<module>safe-online-maintenance-manual</module>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-pilot-distribution</module>
-				<module>safe-online-pilot-oracle-distribution</module>
-			</modules>
-		</profile>
-
 		<!-- PROFILE FOR BUILDING THE PERFORMANCE TESTING TOOLSET -->
 		<profile>
-			<id>env-performance</id>
+			<id>performance</id>
 			<activation>
 				<property>
-					<name>env</name>
+					<name>profile-set</name>
 					<value>performance</value>
+				</property>
+				<property>
+					<name>profile-set</name>
+					<value>hudson</value>
 				</property>
 			</activation>
 			<properties>
@@ -585,6 +563,18 @@
 				<module>safe-online-performance-console-base</module>
 				<module>safe-online-performance-console-swing</module>
 				<module>safe-online-performance-console-package</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>performance-distribution</id>
+			<activation>
+				<property>
+					<name>profile-set</name>
+					<value>performance</value>
+				</property>
+			</activation>
+			<modules>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-performance-distribution</module>
 			</modules>
@@ -605,6 +595,7 @@
 		<safe-online.show.sql>false</safe-online.show.sql>
 		<debug.mode>false</debug.mode>
 		<safe-online.node.name>olas</safe-online.node.name>
+		<safe-online.host.name>localhost</safe-online.host.name>
 		<safe-online.host.protocol>https</safe-online.host.protocol>
 		<safe-online.host.port>8080</safe-online.host.port>
 		<safe-online.host.port.ssl>8443</safe-online.host.port.ssl>
@@ -972,9 +963,9 @@
 			<plugin>
 				<inherited>false</inherited>
 				<artifactId>maven-clean-plugin</artifactId>
-				
+
 				<!-- Don't clean parent directory's target directory: it contains cache data
-					 such as eclipse:eclipse -DdownloadSources=true repository statuses.  -->
+					such as eclipse:eclipse -DdownloadSources=true repository statuses.  -->
 				<configuration>
 					<skip>true</skip>
 				</configuration>
