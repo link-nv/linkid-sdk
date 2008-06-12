@@ -34,9 +34,8 @@ emit -o "Setting up project-specific configurations" --
     for p in */.settings; do
         echo -n "$load${p%/*} ..$eel"
 
-        cp scripts/org.eclipse.* "$p" \
-            && sed -i ${nonGnuSved:+''} 's/safe-online-projectname/'"${p%%/*}"'/' "$p/org.eclipse.wst.common.component" \
-                || { result=$?; break; }
+        cp scripts/org.eclipse.jdt.* "$p" \
+            || { result=$?; break; }
 
         # Special configuration for projects with generated sources.
         [[ -e ${p%%/*}/target/generated-sources ]] && {

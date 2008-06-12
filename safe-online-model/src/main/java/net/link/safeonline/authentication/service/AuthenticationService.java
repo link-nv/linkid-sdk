@@ -40,9 +40,9 @@ import org.opensaml.saml2.core.AuthnRequest;
  * stateful. This means that a certain method invocation pattern must be
  * respected. First the methods {@link #authenticate(String, String)} or
  * {@link #authenticate(String, String)} must be invoked. Afterwards the
- * {@link #commitAuthentication(String, Set)} method must be invoked. In case
- * the authentication process needs to be aborted one should invoke
- * {@link #abort()}.
+ * {@link #commitAuthentication()} method must be invoked. In case the
+ * authentication process needs to be aborted one should invoke {@link #abort()}
+ * .
  * 
  * @author fcorneli
  */

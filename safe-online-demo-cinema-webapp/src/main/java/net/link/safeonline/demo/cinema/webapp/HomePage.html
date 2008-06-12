@@ -10,10 +10,43 @@
             <p>Welcome to the Cinema Demo.  Please begin by selecting either your theater or the film you would like to watch.</p>
 
             <form wicket:id="films">
+                <table>
+                    <caption>Available Films</caption>
+
+                    <tbody wicket:id="list">
+                        <tr>
+                            <th>
+                                <span wicket:id="name" />
+                            </th>
+                            <td>
+                                <span />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <span wicket:id="description" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </form>
 
-            <form wicket:id="theaters">
-            </form>
+            <!--form wicket:id="theaters">
+                <table>
+                    <caption>Available Theaters</caption>
+
+                    <tbody wicket:id="list">
+                        <tr>
+                            <th>
+                                <span wicket:id="name" />
+                            </th>
+                            <td>
+                                <span wicket:id="city" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form-->
         </wicket:extend>
 
     </body>
