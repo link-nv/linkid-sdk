@@ -15,18 +15,15 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
-import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
 import net.link.safeonline.digipass.Authentication;
 import net.link.safeonline.digipass.DigipassConstants;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
-import net.link.safeonline.model.digipass.DigipassException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.apache.commons.logging.Log;
@@ -47,6 +44,9 @@ public class AuthenticationBean implements Authentication {
 
 	@In(create = true)
 	FacesMessages facesMessages;
+
+	@In(value = AuthenticationContext.AUTHENTICATION_CONTEXT)
+	AuthenticationContext authenticationContext;
 
 	@EJB
 	private DigipassDeviceService digipassDeviceService;
@@ -104,33 +104,34 @@ public class AuthenticationBean implements Authentication {
 					"Failed to contact OLAS to retrieve device mapping for "
 							+ this.loginName, LogLevelType.ERROR);
 			return null;
-		} catch (DigipassException e) {
-			this.facesMessages
-					.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
-							"digipassAuthenticationFailed");
-			HelpdeskLogger.add("No session was active", LogLevelType.ERROR);
-			return null;
 		}
 		HelpdeskLogger.clear();
 		destroyCallback();
 		return null;
 	}
 
-	private void login(String deviceUserId) throws DigipassException {
+	private void login(String deviceUserId) {
+		this.authenticationContext.setUserId(deviceUserId);
+		this.authenticationContext.setValidity(this.samlAuthorityService
+				.getAuthnAssertionValidity());
+		this.authenticationContext
+				.setIssuer(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
+		this.authenticationContext
+				.setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
+
+		exit();
+	}
+
+	public String cancel() {
+		this.authenticationContext
+				.setIssuer(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
+		exit();
+		return null;
+	}
+
+	private void exit() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
-		HttpSession session = (HttpSession) externalContext.getSession(false);
-		if (null == session)
-			throw new DigipassException("No HttpSession active");
-		AuthenticationContext authenticationContext = AuthenticationContext
-				.getAuthenticationContext(session);
-		authenticationContext.setUserId(deviceUserId);
-		authenticationContext.setValidity(this.samlAuthorityService
-				.getAuthnAssertionValidity());
-		authenticationContext
-				.setIssuer(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
-		authenticationContext
-				.setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
 
 		String redirectUrl = "authenticationexit";
 		LOG.debug("redirecting to: " + redirectUrl);
@@ -142,18 +143,6 @@ public class AuthenticationBean implements Authentication {
 					FacesMessage.SEVERITY_ERROR, "errorIO");
 			return;
 		}
-
-	}
-
-	public String cancel() {
-		try {
-			SafeOnlineDeviceUtils.deviceExit();
-		} catch (IOException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return null;
-		}
-		return null;
 	}
 
 	@PostConstruct

@@ -39,7 +39,7 @@ public class SafeOnlineDeviceUtils {
 
 		externalContext
 				.redirect(DeviceManager
-						.getSafeOnlineDeviceExitServiceUrl((HttpSession) externalContext
+						.getDeviceExitServiceUrl((HttpSession) externalContext
 								.getSession(true)));
 	}
 }

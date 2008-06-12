@@ -112,7 +112,7 @@ public class LandingServlet extends AbstractInjectionServlet {
 				this.applicationName, this.applicationKeyPair,
 				this.applicationCertificate, this.configParams);
 		String targetUrl = DeviceManager
-				.getSafeOnlineDeviceLandingServiceUrl(request.getSession());
+				.getDeviceLandingServiceUrl(request.getSession());
 
 		saml2BrowserPostHandler.authnRequest(request, response, targetUrl,
 				this.deviceName);

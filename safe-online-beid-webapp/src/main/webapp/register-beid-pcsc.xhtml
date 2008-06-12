@@ -18,7 +18,7 @@
 			archive="safe-online-auth-pcsc-applet-package.jar" width="450"
 			height="200">
 			<param name="ServletPath" value="identity" />
-			<param name="TargetPath" value="#{SafeOnlineDeviceExitServiceUrl}" />
+			<param name="TargetPath" value="#{DeviceExitServiceUrl}" />
 			<param name="HelpdeskEventPath" value="helpdesk" />
 			<param name="User" value="#{userId}" />
 			<param name="HelpPath"
@@ -28,7 +28,7 @@
 			<param name="ApplicationId" value="${applicationId}" />
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
-		
+
 		<p><a href="#{SafeOnlineDeviceExitServiceUrl}">#{msgs.cancelaction}</a></p>
 	</ui:define>
 

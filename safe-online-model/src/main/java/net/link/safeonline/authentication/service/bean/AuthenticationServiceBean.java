@@ -105,6 +105,7 @@ import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.SignatureValidator;
@@ -327,6 +328,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	public DeviceMappingEntity authenticate(@NotNull HttpServletRequest request)
 			throws NodeNotFoundException, ServletException,
 			DeviceMappingNotFoundException {
+		LOG.debug("authenticate");
 		if (this.authenticationState != REDIRECTED) {
 			throw new IllegalStateException("call redirect first");
 		}
@@ -345,10 +347,20 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		if (null == samlResponse)
 			return null;
 
+		if (samlResponse.getStatus().getStatusCode().getValue().equals(
+				StatusCode.AUTHN_FAILED_URI)) {
+			/*
+			 * Authentication failed, reset the state
+			 */
+			this.authenticationState = INITIALIZED;
+			return null;
+		}
+
 		Assertion assertion = samlResponse.getAssertions().get(0);
 		List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-		if (authStatements.isEmpty())
+		if (authStatements.isEmpty()) {
 			throw new ServletException("missing authentication statement");
+		}
 
 		AuthnStatement authStatement = authStatements.get(0);
 		if (null == authStatement.getAuthnContext())
@@ -460,6 +472,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.expectedChallengeId = null;
 		this.requiredDevicePolicy = null;
 		this.expectedTarget = null;
+		this.authenticationState = INIT;
 	}
 
 	private void checkStateBeforeCommit() {

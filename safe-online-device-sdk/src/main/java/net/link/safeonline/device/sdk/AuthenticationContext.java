@@ -16,7 +16,11 @@ public class AuthenticationContext implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private HttpSession session;
+	public static final String AUTHENTICATION_CONTEXT = "AuthenticationContext";
+
+	private String inResponseTo;
+
+	private String targetUrl;
 
 	private Set<String> wantedDevices;
 
@@ -32,21 +36,13 @@ public class AuthenticationContext implements Serializable {
 
 	private int validity;
 
-	public static final String AUTHENTICATION_CONTEXT = AuthenticationContext.class
-			.getName()
-			+ ".AUTHENTICATION_CONTEXT";
-
-	private AuthenticationContext(HttpSession session) {
-		this.session = session;
-		this.session.setAttribute(AUTHENTICATION_CONTEXT, this);
-	}
-
 	public static AuthenticationContext getAuthenticationContext(
 			HttpSession session) {
 		AuthenticationContext instance = (AuthenticationContext) session
 				.getAttribute(AUTHENTICATION_CONTEXT);
 		if (null == instance) {
-			instance = new AuthenticationContext(session);
+			instance = new AuthenticationContext();
+			session.setAttribute(AUTHENTICATION_CONTEXT, instance);
 		}
 		return instance;
 	}
@@ -105,5 +101,21 @@ public class AuthenticationContext implements Serializable {
 
 	public void setValidity(int validity) {
 		this.validity = validity;
+	}
+
+	public String getInResponseTo() {
+		return this.inResponseTo;
+	}
+
+	public void setInResponseTo(String inResponseTo) {
+		this.inResponseTo = inResponseTo;
+	}
+
+	public String getTargetUrl() {
+		return this.targetUrl;
+	}
+
+	public void setTargetUrl(String targetUrl) {
+		this.targetUrl = targetUrl;
 	}
 }

@@ -57,13 +57,6 @@ public class Saml2Handler implements Serializable {
 	public static final String SAML2_HANDLER = Saml2Handler.class.getName()
 			+ ".SAML2_HANDLER";
 
-	public static final String IN_RESPONSE_TO_ATTRIBUTE = Saml2Handler.class
-			.getName()
-			+ ".IN_RESPONSE_TO";
-
-	public static final String TARGET_URL = Saml2Handler.class.getName()
-			+ ".TARGET_URL";
-
 	static {
 		/*
 		 * Next is because Sun loves to endorse crippled versions of Xerces.
@@ -165,9 +158,6 @@ public class Saml2Handler implements Serializable {
 			devices = null;
 		}
 
-		// TODO: why dont we put this in the AuthenticationContext ...
-		this.session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
-		this.session.setAttribute(TARGET_URL, assertionConsumerService);
 		this.session.setAttribute("applicationId", application);
 
 		AuthenticationContext authenticationContext = AuthenticationContext
@@ -175,6 +165,8 @@ public class Saml2Handler implements Serializable {
 		authenticationContext.setWantedDevices(devices);
 		authenticationContext.setApplication(application);
 		authenticationContext.setNodeName(nodeName);
+		authenticationContext.setInResponseTo(samlAuthnRequestId);
+		authenticationContext.setTargetUrl(assertionConsumerService);
 	}
 
 	public void finalizeAuthentication(HttpServletRequest request,
@@ -185,9 +177,8 @@ public class Saml2Handler implements Serializable {
 		String usedDevice = authenticationContext.getUsedDevice();
 		String userId = authenticationContext.getUserId();
 		String applicationId = authenticationContext.getApplication();
-		String target = (String) this.session.getAttribute(TARGET_URL);
-		String inResponseTo = (String) this.session
-				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
+		String target = authenticationContext.getTargetUrl();
+		String inResponseTo = authenticationContext.getInResponseTo();
 		if (null == inResponseTo) {
 			throw new AuthenticationFinalizationException(
 					"missing IN_RESPONSE_TO session attribute");
@@ -196,9 +187,22 @@ public class Saml2Handler implements Serializable {
 		String issuerName = authenticationContext.getIssuer();
 		int validity = authenticationContext.getValidity();
 
-		String samlResponseToken = AuthnResponseFactory.createAuthResponse(
-				inResponseTo, applicationId, issuerName, userId, usedDevice,
-				this.applicationKeyPair, validity, target);
+		String samlResponseToken;
+		if (null == userId || null == usedDevice) {
+			/*
+			 * Authentication must have failed
+			 */
+			samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(
+					inResponseTo, applicationId, issuerName,
+					this.applicationKeyPair, target);
+		} else {
+			/*
+			 * Authentication was successful
+			 */
+			samlResponseToken = AuthnResponseFactory.createAuthResponse(
+					inResponseTo, applicationId, issuerName, userId,
+					usedDevice, this.applicationKeyPair, validity, target);
+		}
 
 		String encodedSamlResponseToken = Base64.encode(samlResponseToken
 				.getBytes());

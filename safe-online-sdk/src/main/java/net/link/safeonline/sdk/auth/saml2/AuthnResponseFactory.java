@@ -148,54 +148,60 @@ public class AuthnResponseFactory {
 		addAssertion(response, inResponseTo, applicationName, subjectName,
 				issuerName, samlName, validity, target);
 
-		XMLObjectBuilderFactory builderFactory = Configuration
-				.getBuilderFactory();
-		SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
-				.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
-		Signature signature = signatureBuilder.buildObject();
-		signature
-				.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-		String algorithm = signerKeyPair.getPrivate().getAlgorithm();
-		if ("RSA".equals(algorithm)) {
-			signature
-					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
-		} else if ("DSA".equals(algorithm)) {
-			signature
-					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
-		}
-		response.setSignature(signature);
-		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
-				signerKeyPair.getPublic(), signerKeyPair.getPrivate());
-		signature.setSigningCredential(signingCredential);
+		return signAuthnResponse(response, signerKeyPair);
+	}
 
-		// marshalling
-		MarshallerFactory marshallerFactory = Configuration
-				.getMarshallerFactory();
-		Marshaller marshaller = marshallerFactory.getMarshaller(response);
-		Element requestElement;
+	/**
+	 * Creates a signed authentication response with status failed.
+	 */
+	public static String createAuthResponseFailed(String inResponseTo,
+			String applicationName, String issuerName, KeyPair signerKeyPair,
+			String target) {
+		if (null == signerKeyPair) {
+			throw new IllegalArgumentException(
+					"signer key pair should not be null");
+		}
+		if (null == applicationName) {
+			throw new IllegalArgumentException(
+					"application name should not be null");
+		}
+		if (null == issuerName) {
+			throw new IllegalArgumentException("issuer name should not be null");
+		}
+
+		Response response = buildXMLObject(Response.class,
+				Response.DEFAULT_ELEMENT_NAME);
+
+		DateTime now = new DateTime();
+
+		SecureRandomIdentifierGenerator idGenerator;
 		try {
-			requestElement = marshaller.marshall(response);
-		} catch (MarshallingException e) {
-			throw new RuntimeException("opensaml2 marshalling error: "
+			idGenerator = new SecureRandomIdentifierGenerator();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("secure random init error: "
 					+ e.getMessage(), e);
 		}
+		response.setID(idGenerator.generateIdentifier());
+		response.setVersion(SAMLVersion.VERSION_20);
+		response.setInResponseTo(inResponseTo);
+		response.setIssueInstant(now);
 
-		// sign after marshaling of course
-		try {
-			Signer.signObject(signature);
-		} catch (SignatureException e) {
-			throw new RuntimeException("opensaml2 signing error: "
-					+ e.getMessage(), e);
-		}
+		Issuer responseIssuer = buildXMLObject(Issuer.class,
+				Issuer.DEFAULT_ELEMENT_NAME);
+		responseIssuer.setValue(issuerName);
+		response.setIssuer(responseIssuer);
 
-		String result;
-		try {
-			result = DomUtils.domToString(requestElement);
-		} catch (TransformerException e) {
-			throw new RuntimeException(
-					"DOM to string error: " + e.getMessage(), e);
-		}
-		return result;
+		response.setDestination(target);
+
+		Status status = buildXMLObject(Status.class,
+				Status.DEFAULT_ELEMENT_NAME);
+		StatusCode statusCode = buildXMLObject(StatusCode.class,
+				StatusCode.DEFAULT_ELEMENT_NAME);
+		statusCode.setValue(StatusCode.AUTHN_FAILED_URI);
+		status.setStatusCode(statusCode);
+		response.setStatus(status);
+
+		return signAuthnResponse(response, signerKeyPair);
 	}
 
 	/**
@@ -204,7 +210,7 @@ public class AuthnResponseFactory {
 	 * @param response
 	 * @param subjectName
 	 */
-	public static void addAssertion(Response response, String inResponseTo,
+	private static void addAssertion(Response response, String inResponseTo,
 			String applicationName, String subjectName, String issuerName,
 			String samlName, int validity, String target) {
 
@@ -286,6 +292,61 @@ public class AuthnResponseFactory {
 				AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
 		authnContext.setAuthnContextClassRef(authnContextClassRef);
 		authnContextClassRef.setAuthnContextClassRef(samlName);
+	}
+
+	/**
+	 * Sign the unsigned authentication response.
+	 */
+	private static String signAuthnResponse(Response response,
+			KeyPair signerKeyPair) {
+		XMLObjectBuilderFactory builderFactory = Configuration
+				.getBuilderFactory();
+		SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
+				.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+		Signature signature = signatureBuilder.buildObject();
+		signature
+				.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+		String algorithm = signerKeyPair.getPrivate().getAlgorithm();
+		if ("RSA".equals(algorithm)) {
+			signature
+					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
+		} else if ("DSA".equals(algorithm)) {
+			signature
+					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
+		}
+		response.setSignature(signature);
+		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
+				signerKeyPair.getPublic(), signerKeyPair.getPrivate());
+		signature.setSigningCredential(signingCredential);
+
+		// marshalling
+		MarshallerFactory marshallerFactory = Configuration
+				.getMarshallerFactory();
+		Marshaller marshaller = marshallerFactory.getMarshaller(response);
+		Element requestElement;
+		try {
+			requestElement = marshaller.marshall(response);
+		} catch (MarshallingException e) {
+			throw new RuntimeException("opensaml2 marshalling error: "
+					+ e.getMessage(), e);
+		}
+
+		// sign after marshaling of course
+		try {
+			Signer.signObject(signature);
+		} catch (SignatureException e) {
+			throw new RuntimeException("opensaml2 signing error: "
+					+ e.getMessage(), e);
+		}
+
+		String result;
+		try {
+			result = DomUtils.domToString(requestElement);
+		} catch (TransformerException e) {
+			throw new RuntimeException(
+					"DOM to string error: " + e.getMessage(), e);
+		}
+		return result;
 	}
 
 	@SuppressWarnings("unused")

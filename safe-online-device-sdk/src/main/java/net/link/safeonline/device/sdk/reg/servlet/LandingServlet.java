@@ -32,6 +32,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.annotations.web.RequestParameter;
 
+/**
+ * Landing servlet where OLAS initially redirects to for device registration,
+ * updating, removal.
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class LandingServlet extends AbstractInjectionServlet {
 
 	private static final Log LOG = LogFactory.getLog(LandingServlet.class);
@@ -125,7 +132,7 @@ public class LandingServlet extends AbstractInjectionServlet {
 				this.applicationName, this.applicationKeyPair,
 				this.applicationCertificate, this.configParams);
 		String targetUrl = DeviceManager
-				.getSafeOnlineDeviceLandingServiceUrl(request.getSession());
+				.getDeviceLandingServiceUrl(request.getSession());
 
 		saml2BrowserPostHandler.authnRequest(request, response, targetUrl,
 				this.deviceName);

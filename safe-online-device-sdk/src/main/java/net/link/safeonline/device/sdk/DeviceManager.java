@@ -23,11 +23,18 @@ import net.link.safeonline.util.ee.EjbUtils;
  */
 public class DeviceManager {
 
-	private static final String SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE = "SafeOnlineDeviceLandingServiceUrl";
+	/**
+	 * Url to which a remote device issuer should send the initial
+	 * authentication request to when registrating, updating or removing a
+	 * device.
+	 */
+	private static final String DEVICE_LANDING_SERVICE_URL_ATTRIBUTE = "DeviceLandingServiceUrl";
 
-	private static final String SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE = "SafeOnlineDeviceExitServiceUrl";
-
-	private static final String SAFE_ONLINE_DEVICE_WS_LOCATION = "SafeOnlineDeviceWsLocation";
+	/**
+	 * Url to which a remote device issuer should redirect after completing the
+	 * registration, update or removal.
+	 */
+	private static final String DEVICE_EXIT_SERVICE_URL_ATTRIBUTE = "DeviceExitServiceUrl";
 
 	private DeviceManager() {
 		// empty
@@ -49,49 +56,41 @@ public class DeviceManager {
 	public static void setAuthServiceUrls(HttpSession session, String nodeName)
 			throws ServletException {
 		OlasEntity node = getNode(nodeName);
-		session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
-				node.getLocation() + "/olas-auth/main.seam");
+		session.setAttribute(DEVICE_EXIT_SERVICE_URL_ATTRIBUTE, node
+				.getLocation()
+				+ "/olas-auth/main.seam");
 	}
 
 	public static void setServiceUrls(HttpSession session, String nodeName,
 			String source) throws ServletException {
 		OlasEntity node = getNode(nodeName);
 
-		session.setAttribute(SAFE_ONLINE_DEVICE_WS_LOCATION, node.getLocation()
-				.replaceFirst(".*://", ""));
-
 		if (source.equals("auth")) {
-			session.setAttribute(
-					SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE, node
-							.getLocation()
-							+ "/olas-auth/device/landing");
-			session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
-					node.getLocation() + "/olas-auth/device/exit");
+			session.setAttribute(DEVICE_LANDING_SERVICE_URL_ATTRIBUTE, node
+					.getLocation()
+					+ "/olas-auth/device/landing");
+			session.setAttribute(DEVICE_EXIT_SERVICE_URL_ATTRIBUTE, node
+					.getLocation()
+					+ "/olas-auth/device/exit");
 		} else if (source.equals("user")) {
-			session.setAttribute(
-					SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE, node
-							.getLocation()
-							+ "/olas/device/landing");
-			session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
-					node.getHTTPLocation() + "/olas/device/exit");
+			session.setAttribute(DEVICE_LANDING_SERVICE_URL_ATTRIBUTE, node
+					.getLocation()
+					+ "/olas/device/landing");
+			session.setAttribute(DEVICE_EXIT_SERVICE_URL_ATTRIBUTE, node
+					.getHTTPLocation()
+					+ "/olas/device/exit");
 		} else {
 			throw new ServletException("Unknown source");
 		}
 
 	}
 
-	public static String getSafeOnlineDeviceLandingServiceUrl(
-			HttpSession session) {
+	public static String getDeviceLandingServiceUrl(HttpSession session) {
 		return (String) session
-				.getAttribute(SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE);
+				.getAttribute(DEVICE_LANDING_SERVICE_URL_ATTRIBUTE);
 	}
 
-	public static String getSafeOnlineDeviceExitServiceUrl(HttpSession session) {
-		return (String) session
-				.getAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE);
-	}
-
-	public static String getWsLocation(HttpSession session) {
-		return (String) session.getAttribute(SAFE_ONLINE_DEVICE_WS_LOCATION);
+	public static String getDeviceExitServiceUrl(HttpSession session) {
+		return (String) session.getAttribute(DEVICE_EXIT_SERVICE_URL_ATTRIBUTE);
 	}
 }

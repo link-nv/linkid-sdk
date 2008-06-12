@@ -207,7 +207,12 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 
 		String samlStatusCode = samlResponse.getStatus().getStatusCode()
 				.getValue();
-		if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
+		if (samlStatusCode.equals(StatusCode.AUTHN_FAILED_URI)) {
+			/**
+			 * Authentication failed but response was valid.
+			 */
+			return null;
+		} else if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
 			LOG.debug("SAML status code: " + samlStatusCode);
 			RequestSecurityTokenResponseType response = createResponse(
 					SecurityTokenServiceConstants.STATUS_INVALID,

@@ -74,10 +74,17 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 					"errorDeviceRegistrationNotFound");
 			return;
 		}
-		LoginManager.login(request.getSession(), deviceMapping.getSubject()
-				.getUserId(), deviceMapping.getDevice());
+		/**
+		 * Authentication failed, redirect to start page
+		 */
+		if (null == deviceMapping) {
+			response.sendRedirect("../main.seam");
+		} else {
+			LoginManager.login(request.getSession(), deviceMapping.getSubject()
+					.getUserId(), deviceMapping.getDevice());
 
-		response.sendRedirect("../login");
+			response.sendRedirect("../login");
+		}
 	}
 
 	private void redirectToDeviceErrorPage(HttpServletRequest request,

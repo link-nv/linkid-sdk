@@ -37,6 +37,7 @@ import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
 import org.opensaml.ws.security.SecurityPolicyException;
@@ -195,6 +196,14 @@ public class AuthnResponseUtil {
 		SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(
 				stsWsLocation, applicationCertificate, applicationPrivateKey);
 		stsClient.validate(samlElement, trustDomain);
+
+		if (samlResponse.getStatus().getStatusCode().getValue().equals(
+				StatusCode.AUTHN_FAILED_URI)) {
+			/**
+			 * Authentication failed but response ok.
+			 */
+			return samlResponse;
+		}
 
 		List<Assertion> assertions = samlResponse.getAssertions();
 		if (assertions.isEmpty())

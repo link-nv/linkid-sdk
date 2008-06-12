@@ -47,7 +47,7 @@ public class RedirectBean implements Redirect {
 		HttpSession session = (HttpSession) facesContext.getExternalContext()
 				.getSession(true);
 		this.redirectUrl = DeviceManager
-				.getSafeOnlineDeviceExitServiceUrl(session);
+				.getDeviceExitServiceUrl(session);
 		try {
 			facesContext.getExternalContext().redirect(this.redirectUrl);
 		} catch (IOException e) {

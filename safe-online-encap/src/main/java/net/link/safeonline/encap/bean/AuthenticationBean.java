@@ -16,14 +16,12 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
-import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
 import net.link.safeonline.encap.Authentication;
 import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -50,6 +48,9 @@ public class AuthenticationBean implements Authentication {
 
 	@In(create = true)
 	FacesMessages facesMessages;
+
+	@In(value = AuthenticationContext.AUTHENTICATION_CONTEXT)
+	AuthenticationContext authenticationContext;
 
 	@EJB
 	private EncapDeviceService encapDeviceService;
@@ -130,33 +131,16 @@ public class AuthenticationBean implements Authentication {
 		return null;
 	}
 
-	private void login(String deviceUserId) throws MobileException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = facesContext.getExternalContext();
-		HttpSession session = (HttpSession) externalContext.getSession(false);
-		if (null == session)
-			throw new MobileException("No HttpSession active");
-		AuthenticationContext authenticationContext = AuthenticationContext
-				.getAuthenticationContext(session);
-		authenticationContext.setUserId(deviceUserId);
-		authenticationContext.setValidity(this.samlAuthorityService
+	private void login(String deviceUserId) {
+		this.authenticationContext.setUserId(deviceUserId);
+		this.authenticationContext.setValidity(this.samlAuthorityService
 				.getAuthnAssertionValidity());
-		authenticationContext
+		this.authenticationContext
 				.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
-		authenticationContext
+		this.authenticationContext
 				.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
 
-		String redirectUrl = "authenticationexit";
-		LOG.debug("redirecting to: " + redirectUrl);
-		try {
-			externalContext.redirect(redirectUrl);
-		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return;
-		}
-
+		exit();
 	}
 
 	@Begin
@@ -187,14 +171,26 @@ public class AuthenticationBean implements Authentication {
 	}
 
 	public String cancel() {
+		this.authenticationContext
+				.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+		exit();
+		return null;
+	}
+
+	private void exit() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = facesContext.getExternalContext();
+
+		String redirectUrl = "authenticationexit";
+		LOG.debug("redirecting to: " + redirectUrl);
 		try {
-			SafeOnlineDeviceUtils.deviceExit();
+			externalContext.redirect(redirectUrl);
 		} catch (IOException e) {
+			LOG.debug("IO error: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return null;
+			return;
 		}
-		return null;
 	}
 
 	@PostConstruct

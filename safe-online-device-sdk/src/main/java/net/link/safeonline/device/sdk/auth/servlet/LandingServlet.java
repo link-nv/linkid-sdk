@@ -21,8 +21,6 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.device.sdk.AuthenticationContext;
-import net.link.safeonline.device.sdk.DeviceManager;
 import net.link.safeonline.device.sdk.ErrorPage;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2Handler;
 import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
@@ -110,10 +108,6 @@ public class LandingServlet extends AbstractInjectionServlet {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;
 		}
-		AuthenticationContext authenticationContext = AuthenticationContext
-				.getAuthenticationContext(request.getSession());
-		DeviceManager.setAuthServiceUrls(request.getSession(),
-				authenticationContext.getNodeName());
 		response.sendRedirect(this.authenticationUrl);
 	}
 }
