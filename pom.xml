@@ -378,10 +378,6 @@
 					<name>profile-set</name>
 					<value>test</value>
 				</property>
-				<property>
-					<name>profile-set</name>
-					<value>hudson</value>
-				</property>
 			</activation>
 			<properties>
 				<defaultCronExpression>
