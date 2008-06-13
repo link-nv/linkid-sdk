@@ -171,8 +171,6 @@ public class AuthenticationBean implements Authentication {
 	}
 
 	public String cancel() {
-		this.authenticationContext
-				.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
 		exit();
 		return null;
 	}

@@ -71,7 +71,6 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 			authenticationContext.setUserId(deviceUserId);
 			authenticationContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
-			authenticationContext.setIssuer(BeIdConstants.BEID_DEVICE_ID);
 			authenticationContext.setUsedDevice(BeIdConstants.BEID_DEVICE_ID);
 
 		} catch (DecodingException e) {

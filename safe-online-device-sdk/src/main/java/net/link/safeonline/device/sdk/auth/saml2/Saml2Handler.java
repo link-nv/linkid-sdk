@@ -38,6 +38,18 @@ import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.xml.ConfigurationException;
 
+/**
+ * SAML handler used by remote device issuers to handle an incoming SAML
+ * authentication request and store the retrieved information on the session
+ * into {@link AuthenticationContext}.
+ * 
+ * After authenticating it will post a SAML authentication response containing
+ * the necessary assertions or a SAML authentication response telling the
+ * authentication has failed.
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class Saml2Handler implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -49,6 +61,8 @@ public class Saml2Handler implements Serializable {
 	private HttpSession session;
 
 	private String stsWsLocation;
+
+	private String issuer;
 
 	private KeyPair applicationKeyPair;
 
@@ -98,6 +112,7 @@ public class Saml2Handler implements Serializable {
 			KeyPair newApplicationKeyPair)
 			throws AuthenticationInitializationException {
 		this.stsWsLocation = configParams.get("StsWsLocation");
+		this.issuer = configParams.get("DeviceName");
 		this.applicationCertificate = newApplicationCertificate;
 		this.applicationKeyPair = newApplicationKeyPair;
 		if (null == this.stsWsLocation) {
@@ -167,6 +182,7 @@ public class Saml2Handler implements Serializable {
 		authenticationContext.setNodeName(nodeName);
 		authenticationContext.setInResponseTo(samlAuthnRequestId);
 		authenticationContext.setTargetUrl(assertionConsumerService);
+		authenticationContext.setIssuer(this.issuer);
 	}
 
 	public void finalizeAuthentication(HttpServletRequest request,
