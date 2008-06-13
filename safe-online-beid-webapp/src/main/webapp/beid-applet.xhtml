@@ -28,7 +28,10 @@
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
 
-		<p><a href="#{beidAuthentication.cancel}">#{msgs.cancelaction}</a></p>
+		<h:form>
+			<h:commandButton action="#{beidAuthentication.cancel}" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" class="submit" />
+		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

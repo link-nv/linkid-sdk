@@ -14,6 +14,7 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.beid.Authentication;
 import net.link.safeonline.beid.BeidConstants;
@@ -38,9 +39,6 @@ public class AuthenticationBean implements Authentication {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	@In(value = AuthenticationContext.AUTHENTICATION_CONTEXT)
-	AuthenticationContext authenticationContext;
-
 	@Remove
 	@Destroy
 	public void destroyCallback() {
@@ -50,6 +48,14 @@ public class AuthenticationBean implements Authentication {
 	public String cancel() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
+
+		HttpSession httpSession = (HttpSession) externalContext
+				.getSession(true);
+
+		AuthenticationContext authenticationContext = AuthenticationContext
+				.getAuthenticationContext(httpSession);
+		authenticationContext
+				.setIssuer(net.link.safeonline.model.beid.BeIdConstants.BEID_DEVICE_ID);
 
 		String redirectUrl = "authenticationexit";
 		LOG.debug("redirecting to: " + redirectUrl);
