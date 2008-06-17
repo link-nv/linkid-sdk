@@ -138,20 +138,23 @@
 		<url-pattern>/authenticationexit</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<description>Entry point for registration service.</description>
-		<servlet-name>RegLandingServlet</servlet-name>
+		<description>Entry point for device operation service.</description>
+		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class>
 			net.link.safeonline.device.sdk.reg.servlet.LandingServlet 
 		</servlet-class>
 		<init-param>
-			<param-name>RegistrationServiceUrl</param-name>
-			<param-value> ${safe-online.host.basename}/olas-beid/regexit 
-			</param-value>
+			<param-name>RegistrationUrl</param-name>
+			<param-value>register</param-value>
+		</init-param>
+		<init-param>
+			<param-name>RemovalUrl</param-name>
+			<param-value>removeService</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>RegLandingServlet</servlet-name>
-		<url-pattern>/reg</url-pattern>
+		<servlet-name>DeviceLandingServlet</servlet-name>
+		<url-pattern>/device</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentityServlet</servlet-name>
@@ -163,17 +166,13 @@
 		<url-pattern>/identity</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>RegExitServlet</servlet-name>
+		<servlet-name>DeviceExitServlet</servlet-name>
 		<servlet-class> net.link.safeonline.device.sdk.reg.servlet.ExitServlet 
 		</servlet-class>
-		<init-param>
-			<param-name>RegistrationUrl</param-name>
-			<param-value>register</param-value>
-		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>RegExitServlet</servlet-name>
-		<url-pattern>/regexit</url-pattern>
+		<servlet-name>DeviceExitServlet</servlet-name>
+		<url-pattern>/deviceexit</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>JavaVersionServlet</servlet-name>
@@ -194,21 +193,6 @@
 		<url-pattern>/no-pkcs11</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>RemoveLandingServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.device.sdk.remove.servlet.LandingServlet 
-		</servlet-class>
-		<init-param>
-			<param-name>RemovalServiceUrl</param-name>
-			<param-value> ${safe-online.host.basename}/olas-beid/removeexit 
-			</param-value>
-		</init-param>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>RemoveLandingServlet</servlet-name>
-		<url-pattern>/remove</url-pattern>
-	</servlet-mapping>
-	<servlet>
 		<servlet-name>IdentityRemoveServlet</servlet-name>
 		<servlet-class> net.link.safeonline.beid.servlet.IdentityRemoveServlet 
 		</servlet-class>
@@ -216,20 +200,6 @@
 	<servlet-mapping>
 		<servlet-name>IdentityRemoveServlet</servlet-name>
 		<url-pattern>/identityremove</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>RemoveExitServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.device.sdk.remove.servlet.ExitServlet 
-		</servlet-class>
-		<init-param>
-			<param-name>RemovalUrl</param-name>
-			<param-value>removeService</param-value>
-		</init-param>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>RemoveExitServlet</servlet-name>
-		<url-pattern>/removeexit</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentificationServlet</servlet-name>

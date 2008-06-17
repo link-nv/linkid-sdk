@@ -84,6 +84,7 @@ import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
+import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
@@ -202,18 +203,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private UserIdMappingService userIdMappingService;
 
-	public boolean authenticate(@NonEmptyString String userId,
-			@NotNull DeviceEntity device) throws SubjectNotFoundException {
-		LOG.debug("authenticate: " + userId + " device=" + device.getName());
-		SubjectEntity subject = this.subjectService.getSubject(userId);
-
-		this.authenticationState = USER_AUTHENTICATED;
-		this.authenticatedSubject = subject;
-		this.authenticationDevice = device;
-		this.expectedApplicationId = null;
-		return true;
-	}
-
 	public void initialize(@NotNull AuthnRequest samlAuthnRequest)
 			throws AuthenticationInitializationException,
 			ApplicationNotFoundException, TrustDomainNotFoundException {
@@ -292,9 +281,16 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	}
 
-	public String redirectAuthentication(String authenticationServiceUrl,
-			String targetUrl, String device) throws NodeNotFoundException {
-		if (this.authenticationState != INITIALIZED) {
+	public String redirectAuthentication(
+			@NonEmptyString String authenticationServiceUrl,
+			@NonEmptyString String targetUrl, @NonEmptyString String device)
+			throws NodeNotFoundException {
+		/*
+		 * Also allow redirected state in case the user manually goes back to
+		 * olas-auth
+		 */
+		if (this.authenticationState != INITIALIZED
+				&& this.authenticationState != REDIRECTED) {
 			throw new IllegalStateException("call initialize first");
 		}
 
@@ -312,6 +308,52 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		String samlRequestToken = AuthnRequestFactory.createAuthnRequest(node
 				.getName(), this.expectedApplicationId, keyPair,
 				authenticationServiceUrl, targetUrl, challenge, devices);
+
+		String encodedSamlRequestToken = Base64.encode(samlRequestToken
+				.getBytes());
+
+		/*
+		 * Safe the state in this stateful session bean.
+		 */
+		this.authenticationState = REDIRECTED;
+		this.expectedDeviceChallengeId = challenge.getValue();
+
+		return encodedSamlRequestToken;
+	}
+
+	public String redirectRegistration(
+			@NonEmptyString String registrationServiceUrl,
+			@NonEmptyString String targetUrl, @NonEmptyString String device,
+			@NonEmptyString String username) throws NodeNotFoundException,
+			SubjectNotFoundException, DeviceNotFoundException {
+		/*
+		 * Also allow redirected state in case the user manually goes back to
+		 * olas-auth
+		 */
+		if (this.authenticationState != INITIALIZED
+				&& this.authenticationState != USER_AUTHENTICATED
+				&& this.authenticationState != REDIRECTED) {
+			throw new IllegalStateException(
+					"call initialize or authenticate first");
+		}
+
+		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+		PrivateKey privateKey = identityServiceClient.getPrivateKey();
+		PublicKey publicKey = identityServiceClient.getPublicKey();
+		KeyPair keyPair = new KeyPair(publicKey, privateKey);
+
+		OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+
+		Challenge<String> challenge = new Challenge<String>();
+
+		DeviceMappingEntity deviceMapping = this.deviceMappingService
+				.getDeviceMapping(username, device);
+
+		String samlRequestToken = AuthnRequestFactory
+				.createDeviceOperationAuthnRequest(node.getName(),
+						deviceMapping.getId(), keyPair, registrationServiceUrl,
+						targetUrl, DeviceOperationType.REGISTER, challenge,
+						device);
 
 		String encodedSamlRequestToken = Base64.encode(samlRequestToken
 				.getBytes());
@@ -352,7 +394,11 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			/*
 			 * Authentication failed, reset the state
 			 */
-			this.authenticationState = INITIALIZED;
+			if (null == this.authenticatedSubject) {
+				this.authenticationState = INITIALIZED;
+			} else {
+				this.authenticationState = USER_AUTHENTICATED;
+			}
 			return null;
 		}
 
@@ -387,6 +433,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = deviceMapping.getSubject();
 		this.authenticationDevice = deviceMapping.getDevice();
+		this.expectedDeviceChallengeId = null;
 
 		return deviceMapping;
 	}
@@ -412,6 +459,83 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		 * Communicate that the authentication process can continue.
 		 */
 		return true;
+	}
+
+	public DeviceMappingEntity register(@NotNull HttpServletRequest request)
+			throws NodeNotFoundException, ServletException,
+			DeviceMappingNotFoundException {
+		LOG.debug("register");
+		if (this.authenticationState != REDIRECTED) {
+			throw new IllegalStateException("call redirect first");
+		}
+
+		DateTime now = new DateTime();
+
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+
+		Response samlResponse = AuthnResponseUtil.validateResponse(now,
+				request, this.expectedDeviceChallengeId, null, node
+						.getLocation(), authIdentityServiceClient
+						.getCertificate(), authIdentityServiceClient
+						.getPrivateKey(), TrustDomainType.DEVICE);
+		if (null == samlResponse)
+			return null;
+
+		if (samlResponse.getStatus().getStatusCode().getValue().equals(
+				StatusCode.AUTHN_FAILED_URI)) {
+			/*
+			 * Registration failed, reset the state
+			 */
+			this.authenticationState = INITIALIZED;
+			this.expectedDeviceChallengeId = null;
+			return null;
+		} else if (samlResponse.getStatus().getStatusCode().getValue().equals(
+				StatusCode.REQUEST_UNSUPPORTED_URI)) {
+			/*
+			 * Registration not supported by this device, reset the state
+			 */
+			this.authenticationState = INITIALIZED;
+			this.expectedDeviceChallengeId = null;
+			return null;
+		}
+
+		Assertion assertion = samlResponse.getAssertions().get(0);
+		List<AuthnStatement> authStatements = assertion.getAuthnStatements();
+		if (authStatements.isEmpty()) {
+			throw new ServletException("missing authentication statement");
+		}
+
+		AuthnStatement authStatement = authStatements.get(0);
+		if (null == authStatement.getAuthnContext())
+			throw new ServletException(
+					"missing authentication context in authentication statement");
+
+		AuthnContextClassRef authnContextClassRef = authStatement
+				.getAuthnContext().getAuthnContextClassRef();
+		String authenticatedDevice = authnContextClassRef
+				.getAuthnContextClassRef();
+		LOG.debug("authenticated device: " + authenticatedDevice);
+
+		Subject subject = assertion.getSubject();
+		NameID subjectName = subject.getNameID();
+		String subjectNameValue = subjectName.getValue();
+		LOG.debug("subject name value: " + subjectNameValue);
+
+		/**
+		 * Check if this device mapping truly exists.
+		 */
+		DeviceMappingEntity deviceMapping = this.deviceMappingService
+				.getDeviceMapping(subjectNameValue);
+
+		/*
+		 * Safe the state in this stateful session bean.
+		 */
+		this.authenticationState = USER_AUTHENTICATED;
+		this.authenticatedSubject = deviceMapping.getSubject();
+		this.authenticationDevice = deviceMapping.getDevice();
+
+		return deviceMapping;
 	}
 
 	@Remove

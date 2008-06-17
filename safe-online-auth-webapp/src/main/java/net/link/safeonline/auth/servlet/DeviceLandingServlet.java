@@ -44,18 +44,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 	private String deviceErrorUrl;
 
 	@Override
-	protected void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	@Override
 	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
-
-	private void handleLanding(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		/*
 		 * Authenticate
@@ -74,12 +63,15 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 					"errorDeviceRegistrationNotFound");
 			return;
 		}
-		/**
-		 * Authentication failed, redirect to start page
-		 */
 		if (null == deviceMapping) {
+			/*
+			 * Authentication failed, redirect to start page
+			 */
 			response.sendRedirect("../main.seam");
 		} else {
+			/*
+			 * Authentication success, redirect to login servlet
+			 */
 			LoginManager.login(request.getSession(), deviceMapping.getSubject()
 					.getUserId(), deviceMapping.getDevice());
 

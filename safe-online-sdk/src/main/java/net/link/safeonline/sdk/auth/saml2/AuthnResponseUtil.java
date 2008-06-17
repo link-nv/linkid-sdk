@@ -61,15 +61,15 @@ public class AuthnResponseUtil {
 		// empty
 	}
 
-    /**
-     * Sends out a SAML response message to the specified consumer URL.
-     * 
-     * @param encodedSamlResponseToken
-     * @param consumerUrl
-     * @param httpResponse
-     * @throws ServletException
-     * @throws IOException
-     */
+	/**
+	 * Sends out a SAML response message to the specified consumer URL.
+	 * 
+	 * @param encodedSamlResponseToken
+	 * @param consumerUrl
+	 * @param httpResponse
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	public static void sendAuthnResponse(String encodedSamlResponseToken,
 			String templateResourceName, String consumerUrl,
 			HttpServletResponse httpResponse) throws ServletException,
@@ -149,6 +149,7 @@ public class AuthnResponseUtil {
 		LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
 
 		// TODO: check the applicationName for real !! AudienceRestrictionRule ?
+		// applicationName can also be device operation !
 		SamlResponseMessageContext messageContext = new SamlResponseMessageContext(
 				expectedInResponseTo, applicationName);
 		messageContext
@@ -174,8 +175,8 @@ public class AuthnResponseUtil {
 
 		SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
 		if (false == samlMessage instanceof Response) {
-            throw new ServletException("SAML message not an response message");
-        }
+			throw new ServletException("SAML message not an response message");
+		}
 		Response samlResponse = (Response) samlMessage;
 
 		byte[] decodedSamlResponse;
@@ -206,8 +207,8 @@ public class AuthnResponseUtil {
 
 		List<Assertion> assertions = samlResponse.getAssertions();
 		if (assertions.isEmpty()) {
-            throw new ServletException("missing Assertion");
-        }
+			throw new ServletException("missing Assertion");
+		}
 
 		for (Assertion assertion : assertions) {
 			Conditions conditions = assertion.getConditions();
@@ -219,13 +220,13 @@ public class AuthnResponseUtil {
 			LOG.debug("notOnOrAfter : " + notOnOrAfter.toString());
 
 			if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
-                throw new ServletException("invalid SAML message timeframe");
-            }
+				throw new ServletException("invalid SAML message timeframe");
+			}
 
 			Subject subject = assertion.getSubject();
 			if (null == subject) {
-                throw new ServletException("missing Assertion Subject");
-            }
+				throw new ServletException("missing Assertion Subject");
+			}
 		}
 		return samlResponse;
 	}

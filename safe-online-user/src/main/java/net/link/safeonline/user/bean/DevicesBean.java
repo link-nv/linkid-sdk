@@ -26,23 +26,23 @@ import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.data.DeviceMappingDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.service.DeviceService;
 import net.link.safeonline.user.DeviceEntry;
+import net.link.safeonline.user.DeviceOperationUtils;
 import net.link.safeonline.user.Devices;
 import net.link.safeonline.user.UserConstants;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -103,9 +103,6 @@ public class DevicesBean implements Devices {
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
-
-	@EJB
-	private NodeAuthenticationService nodeAuthenticationService;
 
 	@In
 	Context sessionContext;
@@ -307,6 +304,8 @@ public class DevicesBean implements Devices {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String register() {
 		LOG.debug("register device: " + this.selectedDevice.getFriendlyName());
+		String userId = this.subjectManager.getCallerSubject().getUserId();
+
 		String registrationURL;
 		try {
 			registrationURL = this.devicePolicyService
@@ -319,24 +318,22 @@ public class DevicesBean implements Devices {
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
-		try {
-			registrationURL += "?source=user&node=" + getNodeName();
-		} catch (NodeNotFoundException e) {
-			LOG.debug("node not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
+		if (this.selectedDevice.getDevice().getName().equals(
+				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = context.getExternalContext();
+			try {
+				externalContext.redirect(registrationURL);
+			} catch (IOException e) {
+				LOG.debug("IO error: " + e.getMessage());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorIO");
+			}
 			return null;
 		}
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		try {
-			externalContext.redirect(registrationURL);
-		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-		}
+		DeviceOperationUtils.redirect(this.facesMessages, registrationURL,
+				DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
+						.getName(), userId);
 		return null;
 	}
 
@@ -366,6 +363,8 @@ public class DevicesBean implements Devices {
 	}
 
 	private String redirectRemove(String deviceName) {
+		String userId = this.subjectManager.getCallerSubject().getUserId();
+
 		String removalURL;
 		try {
 			removalURL = this.devicePolicyService.getRemovalURL(deviceName);
@@ -375,26 +374,21 @@ public class DevicesBean implements Devices {
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
-		try {
-			removalURL += "?source=user&node=" + getNodeName();
-		} catch (NodeNotFoundException e) {
-			LOG.debug("node not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
+		if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = context.getExternalContext();
+			try {
+				externalContext.redirect(removalURL);
+			} catch (IOException e) {
+				LOG.debug("IO error: " + e.getMessage());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorIO");
+			}
 			return null;
 		}
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		try {
-			externalContext.redirect(removalURL);
-		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-		}
+		DeviceOperationUtils.redirect(this.facesMessages, removalURL,
+				DeviceOperationType.REMOVE, deviceName, userId);
 		return null;
-
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
@@ -413,6 +407,8 @@ public class DevicesBean implements Devices {
 	}
 
 	private String redirectUpdate(String deviceName) {
+		String userId = this.subjectManager.getCallerSubject().getUserId();
+
 		String updateURL;
 		try {
 			updateURL = this.devicePolicyService.getUpdateURL(deviceName);
@@ -422,32 +418,21 @@ public class DevicesBean implements Devices {
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
-		try {
-			updateURL += "?source=user&node=" + getNodeName();
-		} catch (NodeNotFoundException e) {
-			LOG.debug("node not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
+		if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = context.getExternalContext();
+			try {
+				externalContext.redirect(updateURL);
+			} catch (IOException e) {
+				LOG.debug("IO error: " + e.getMessage());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorIO");
+			}
 			return null;
 		}
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		try {
-			externalContext.redirect(updateURL);
-		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-		}
+		DeviceOperationUtils.redirect(this.facesMessages, updateURL,
+				DeviceOperationType.UPDATE, deviceName, userId);
 		return null;
-
-	}
-
-	private String getNodeName() throws NodeNotFoundException {
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		return this.nodeAuthenticationService
-				.authenticate(authIdentityServiceClient.getCertificate());
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

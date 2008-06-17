@@ -209,8 +209,7 @@ public class Saml2Handler implements Serializable {
 			 * Authentication must have failed
 			 */
 			samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(
-					inResponseTo, applicationId, issuerName,
-					this.applicationKeyPair, target);
+					inResponseTo, issuerName, this.applicationKeyPair, target);
 		} else {
 			/*
 			 * Authentication was successful

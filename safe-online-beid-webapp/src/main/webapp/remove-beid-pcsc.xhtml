@@ -18,7 +18,7 @@
 			archive="safe-online-auth-pcsc-applet-package.jar" width="450"
 			height="200">
 			<param name="ServletPath" value="identityremove" />
-			<param name="TargetPath" value="#{DeviceExitServiceUrl}" />
+			<param name="TargetPath" value="deviceexit" />
 			<param name="HelpdeskEventPath" value="helpdesk" />
 			<param name="HelpPath"
 				value="./help.seam?location=remove-beid-pcsc.seam" />
@@ -28,8 +28,8 @@
 			<param name="ApplicationId" value="${applicationId}" />
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
-		
-		<p><a href="#{SafeOnlineDeviceExitServiceUrl}">#{msgs.cancelaction}</a></p>
+
+		<p><a href="deviceexit">#{msgs.cancelaction}</a></p>
 	</ui:define>
 
 	<ui:define name="sidebar">

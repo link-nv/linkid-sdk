@@ -20,6 +20,11 @@
 		<param-value>${safe-online.host.basename}/olas-auth/entry</param-value>
 	</context-param>
 	<context-param>
+		<description>Point of return for the remote device operations.</description>
+		<param-name>DeviceServiceUrl</param-name>
+		<param-value>${safe-online.host.basename}/olas/device/landing</param-value>
+	</context-param>
+	<context-param>
 		<param-name>ApplicationName</param-name>
 		<param-value>olas-user</param-value>
 	</context-param>
@@ -154,6 +159,10 @@
 		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/device/landing</url-pattern>
+	</filter-mapping>
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -176,11 +185,6 @@
 		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class> net.link.safeonline.user.servlet.DeviceLandingServlet 
 		</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class> net.link.safeonline.user.servlet.DeviceExitServlet 
-		</servlet-class>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
 			<param-value>device-error.seam</param-value>
@@ -189,10 +193,6 @@
 	<servlet-mapping>
 		<servlet-name>DeviceLandingServlet</servlet-name>
 		<url-pattern>/device/landing</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>DeviceExitServlet</servlet-name>
-		<url-pattern>/device/exit</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>

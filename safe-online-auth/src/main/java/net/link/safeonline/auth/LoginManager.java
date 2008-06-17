@@ -29,7 +29,7 @@ public class LoginManager {
 
 	private static final Log LOG = LogFactory.getLog(LoginManager.class);
 
-	public static final String USERNAME_ATTRIBUTE = "username";
+	public static final String USERID_ATTRIBUTE = "username";
 
 	public static final String AUTHENTICATION_DEVICE_ATTRIBUTE = "LoginManager.authenticationDevice";
 
@@ -51,7 +51,7 @@ public class LoginManager {
 		if (null == device) {
 			throw new IllegalArgumentException("device is null");
 		}
-		session.setAttribute(USERNAME_ATTRIBUTE, username);
+		session.setAttribute(USERID_ATTRIBUTE, username);
 		setAuthenticationDevice(session, device);
 	}
 
@@ -77,7 +77,7 @@ public class LoginManager {
 
 	public static void setUsername(HttpSession session, String username) {
 		LOG.debug("set username: " + username);
-		session.setAttribute(USERNAME_ATTRIBUTE, username);
+		session.setAttribute(USERID_ATTRIBUTE, username);
 	}
 
 	public static String getUsername(HttpSession session) {
@@ -110,7 +110,7 @@ public class LoginManager {
 	}
 
 	public static String findUsername(HttpSession session) {
-		String username = (String) session.getAttribute(USERNAME_ATTRIBUTE);
+		String username = (String) session.getAttribute(USERID_ATTRIBUTE);
 		return username;
 	}
 

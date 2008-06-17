@@ -21,19 +21,18 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationConstants;
+import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
-import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.ScopeType;
@@ -59,9 +58,6 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
-
-	@EJB
-	private NodeAuthenticationService nodeAuthenticationService;
 
 	@Logger
 	private Log log;
@@ -158,30 +154,22 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
-		try {
-			registrationURL += "?source=auth&node=" + getNodeName();
-		} catch (NodeNotFoundException e) {
-			this.log.debug("node not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
-		}
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		try {
-			externalContext.redirect(registrationURL);
-		} catch (IOException e) {
-			this.log.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
+		if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = context.getExternalContext();
+			try {
+				externalContext.redirect(registrationURL);
+			} catch (IOException e) {
+				this.log.debug("IO error: " + e.getMessage());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorIO");
+			}
+			return null;
 		}
+		AuthenticationUtils.redirect(this.facesMessages, registrationURL,
+				this.device, this.username);
 		return null;
-	}
-
-	private String getNodeName() throws NodeNotFoundException {
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		return this.nodeAuthenticationService
-				.authenticate(authIdentityServiceClient.getCertificate());
 	}
 
 	public String getDevice() {

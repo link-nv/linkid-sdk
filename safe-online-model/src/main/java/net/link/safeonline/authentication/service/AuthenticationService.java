@@ -38,30 +38,16 @@ import org.opensaml.saml2.core.AuthnRequest;
  * Authentication service interface. This service allows the authentication web
  * application to authenticate users. The bean behind this interface is
  * stateful. This means that a certain method invocation pattern must be
- * respected. First the methods {@link #authenticate(String, String)} or
- * {@link #authenticate(String, String)} must be invoked. Afterwards the
- * {@link #commitAuthentication()} method must be invoked. In case the
- * authentication process needs to be aborted one should invoke {@link #abort()}
- * .
+ * respected. First the method {@link #initialize(AuthnRequest)} must be
+ * invoked. Then the method {@link #authenticate(HttpServletRequest)} must be
+ * invoked. After this the method {@link #commitAuthentication()} must be
+ * invoked and finally {@link #finalizeAuthentication()}. In case the
+ * authentication process needs to be aborted one should invoke {@link #abort()}.
  * 
  * @author fcorneli
  */
 @Local
 public interface AuthenticationService {
-
-	/**
-	 * Authenticates a user for a certain application. The method is used by the
-	 * device landing servlet. The actual device authentication is done by an
-	 * external device provider in this case.
-	 * 
-	 * @param userId
-	 * @param authenticationDevice
-	 * @return <code>true</code> if the user was authenticated correctly,
-	 *         <code>false</code> otherwise.
-	 * @throws SubjectNotFoundException
-	 */
-	boolean authenticate(String userId, DeviceEntity authenticationDevice)
-			throws SubjectNotFoundException;
 
 	/**
 	 * Authenticates a user for a certain application. This method is used by
@@ -227,4 +213,43 @@ public interface AuthenticationService {
 	 * 
 	 */
 	AuthenticationState getAuthenticationState();
+
+	/**
+	 * Constructs a signed and encoded SAML authentication request for the
+	 * requested external device issuer.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #initialize(AuthnRequest)}.
+	 * 
+	 * @param registrationServiceUrl
+	 * @param targetUrl
+	 * @param device
+	 * @param userId
+	 *            OLAS user ID
+	 * @throws NodeNotFoundException
+	 * @throws DeviceNotFoundException
+	 * @throws SubjectNotFoundException
+	 */
+	String redirectRegistration(String registrationServiceUrl,
+			String targetUrl, String device, String userId)
+			throws NodeNotFoundException, SubjectNotFoundException,
+			DeviceNotFoundException;
+
+	/**
+	 * Finalizes a remote device registration for a user. The method is used by
+	 * the device registration landing servlet. The device registration was done
+	 * by an external device provider in this case. We validate the return SAML
+	 * response message.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #redirectRegistration(String, String, String, String)}.
+	 * 
+	 * @throws DeviceMappingNotFoundException
+	 * @throws ServletException
+	 * @throws NodeNotFoundException
+	 * 
+	 */
+	DeviceMappingEntity register(HttpServletRequest request)
+			throws NodeNotFoundException, ServletException,
+			DeviceMappingNotFoundException;
 }

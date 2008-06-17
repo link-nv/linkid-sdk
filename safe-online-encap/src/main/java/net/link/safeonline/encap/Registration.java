@@ -26,13 +26,13 @@ public interface Registration {
 	/*
 	 * Actions.
 	 */
-	String mobileRegister();
+	String mobileCancel();
 
 	String mobileActivationOk();
 
 	String mobileActivationCancel();
 
-	String mobileExit();
+	String mobileRegister();
 
 	/*
 	 * Factories

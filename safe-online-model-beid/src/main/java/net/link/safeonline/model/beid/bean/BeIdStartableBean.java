@@ -122,8 +122,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 		this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID,
 				SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName,
-				"/olas-beid/auth", "/olas-beid/reg", "/olas-beid/remove", null,
-				certificate, beidDeviceAttributeType,
+				"/olas-beid/auth", "/olas-beid/device", "/olas-beid/device",
+				null, certificate, beidDeviceAttributeType,
 				beidDeviceUserAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
 				BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));

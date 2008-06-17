@@ -163,7 +163,7 @@ public class ExitServletTest {
 		initialSessionAttributes.put(
 				ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE,
 				Saml2PostProtocolHandler.class.getName());
-		initialSessionAttributes.put(LoginManager.USERNAME_ATTRIBUTE,
+		initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE,
 				this.username);
 		initialSessionAttributes
 				.put(LoginManager.TARGET_ATTRIBUTE, this.target);

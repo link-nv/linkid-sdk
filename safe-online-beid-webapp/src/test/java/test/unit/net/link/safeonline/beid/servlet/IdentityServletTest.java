@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.beid.servlet.IdentityServlet;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -50,6 +51,8 @@ public class IdentityServletTest {
 
 	private BeIdDeviceService mockBeIdDeviceServiceBean;
 
+	private SamlAuthorityService mockSamlAuthorityService;
+
 	private ServletTestManager servletTestManager;
 
 	private JndiTestUtils jndiTestUtils;
@@ -63,6 +66,11 @@ public class IdentityServletTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/BeIdDeviceServiceBean/local",
 				this.mockBeIdDeviceServiceBean);
+
+		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/SamlAuthorityServiceBean/local",
+				this.mockSamlAuthorityService);
 
 		this.servletTestManager = new ServletTestManager();
 		Map<String, String> servletInitParams = Collections.singletonMap(
@@ -116,6 +124,9 @@ public class IdentityServletTest {
 		// expectations
 		this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(),
 				EasyMock.aryEq("test-message".getBytes()));
+		EasyMock.expect(
+				this.mockSamlAuthorityService.getAuthnAssertionValidity())
+				.andStubReturn(Integer.MAX_VALUE);
 
 		// prepare
 		replay(this.mockBeIdDeviceServiceBean);
@@ -150,6 +161,9 @@ public class IdentityServletTest {
 		// expectations
 		this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(),
 				EasyMock.aryEq("test-message".getBytes()));
+		EasyMock.expect(
+				this.mockSamlAuthorityService.getAuthnAssertionValidity())
+				.andStubReturn(Integer.MAX_VALUE);
 
 		// prepare
 		replay(this.mockBeIdDeviceServiceBean);

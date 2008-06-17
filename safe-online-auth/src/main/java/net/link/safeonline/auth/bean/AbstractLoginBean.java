@@ -44,7 +44,7 @@ public class AbstractLoginBean {
 	@EJB
 	DeviceDAO deviceDAO;
 
-	@Out(value = LoginManager.USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
+	@Out(value = LoginManager.USERID_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@In(required = false, scope = ScopeType.SESSION)
 	protected String username;
 

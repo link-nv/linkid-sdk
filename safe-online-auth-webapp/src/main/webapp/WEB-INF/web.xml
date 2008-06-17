@@ -47,6 +47,13 @@
 		</param-value>
 	</context-param>
 	<context-param>
+		<description>Point of return for remote device issuers when
+			registrating</description>
+		<param-name>DeviceRegistrationServiceUrl</param-name>
+		<param-value> ${safe-online.host.basename}/olas-auth/device/reg 
+		</param-value>
+	</context-param>
+	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value> ${safe-online.host.basename} </param-value>
 	</context-param>
@@ -185,24 +192,14 @@
 		<servlet-class>
 			net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet 
 		</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
-		<url-pattern>/device/landing</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>DeviceRegistrationExitServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.auth.servlet.DeviceRegistrationExitServlet 
-		</servlet-class>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
 			<param-value>../device-error.seam</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>DeviceRegistrationExitServlet</servlet-name>
-		<url-pattern>/device/exit</url-pattern>
+		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
+		<url-pattern>/device/reg</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>PkiServlet</servlet-name>

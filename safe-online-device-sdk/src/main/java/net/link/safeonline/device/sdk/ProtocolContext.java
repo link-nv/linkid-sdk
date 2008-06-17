@@ -11,15 +11,17 @@ import java.io.Serializable;
 
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
+
 public class ProtocolContext implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private HttpSession session;
+	private String wantedDevice;
 
-	private String deviceName;
+	private String subject;
 
-	private String mappingId;
+	private DeviceOperationType deviceOperation;
 
 	private String application;
 
@@ -29,40 +31,49 @@ public class ProtocolContext implements Serializable {
 
 	private String targetUrl;
 
+	private String nodeName;
+
 	private int validity;
 
-	public static final String PROTOCOL_CONTEXT = ProtocolContext.class
-			.getName()
-			+ ".LOGIN_MANAGER";
+	private boolean success = false;
 
-	private ProtocolContext(HttpSession session) {
-		this.session = session;
-		this.session.setAttribute(PROTOCOL_CONTEXT, this);
+	public static final String PROTOCOL_CONTEXT = "ProtocolContext";
+
+	private ProtocolContext() {
 	}
 
 	public static ProtocolContext getProtocolContext(HttpSession session) {
 		ProtocolContext instance = (ProtocolContext) session
 				.getAttribute(PROTOCOL_CONTEXT);
 		if (null == instance) {
-			instance = new ProtocolContext(session);
+			instance = new ProtocolContext();
+			session.setAttribute(PROTOCOL_CONTEXT, instance);
 		}
 		return instance;
 	}
 
-	public String getDeviceName() {
-		return this.deviceName;
+	public static void removeProtocolContext(HttpSession session) {
+		ProtocolContext instance = (ProtocolContext) session
+				.getAttribute(PROTOCOL_CONTEXT);
+		if (null != instance) {
+			session.removeAttribute(PROTOCOL_CONTEXT);
+		}
 	}
 
-	public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
+	public String getSubject() {
+		return this.subject;
 	}
 
-	public String getMappingId() {
-		return this.mappingId;
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 
-	public void setMappingId(String mappingId) {
-		this.mappingId = mappingId;
+	public String getWantedDevice() {
+		return this.wantedDevice;
+	}
+
+	public void setWantedDevice(String wantedDevice) {
+		this.wantedDevice = wantedDevice;
 	}
 
 	public String getApplication() {
@@ -97,11 +108,35 @@ public class ProtocolContext implements Serializable {
 		this.targetUrl = targetUrl;
 	}
 
+	public String getNodeName() {
+		return this.nodeName;
+	}
+
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
+
 	public int getValidity() {
 		return this.validity;
 	}
 
 	public void setValidity(int validity) {
 		this.validity = validity;
+	}
+
+	public void setDeviceOperation(DeviceOperationType deviceOperation) {
+		this.deviceOperation = deviceOperation;
+	}
+
+	public DeviceOperationType getDeviceOperation() {
+		return this.deviceOperation;
+	}
+
+	public boolean getSuccess() {
+		return this.success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
 	}
 }

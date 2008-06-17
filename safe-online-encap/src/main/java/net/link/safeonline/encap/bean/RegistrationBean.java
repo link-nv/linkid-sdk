@@ -14,13 +14,16 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.backend.MobileManager;
-import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.encap.Registration;
 import net.link.safeonline.model.encap.EncapDeviceService;
@@ -56,6 +59,9 @@ public class RegistrationBean implements Registration {
 	@In
 	private String userId;
 
+	@In(value = ProtocolContext.PROTOCOL_CONTEXT)
+	private ProtocolContext protocolContext;
+
 	private String mobileActivationCode;
 
 	@EJB
@@ -63,6 +69,9 @@ public class RegistrationBean implements Registration {
 
 	@EJB
 	private MobileManager mobileManager;
+
+	@EJB
+	private SamlAuthorityService samlAuthorityService;
 
 	@Remove
 	@Destroy
@@ -72,15 +81,24 @@ public class RegistrationBean implements Registration {
 		this.mobileActivationCode = null;
 	}
 
-	public String mobileExit() {
+	public String mobileCancel() {
+		this.protocolContext.setSuccess(false);
+		exit();
+		return null;
+	}
+
+	private void exit() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = facesContext.getExternalContext();
 		try {
-			SafeOnlineDeviceUtils.deviceExit();
+			externalContext.redirect("./deviceexit");
 		} catch (IOException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return null;
+			return;
 		}
-		return null;
+		this.protocolContext.setValidity(this.samlAuthorityService
+				.getAuthnAssertionValidity());
 	}
 
 	@Begin
@@ -113,7 +131,9 @@ public class RegistrationBean implements Registration {
 	public String mobileActivationOk() {
 		this.log.debug("mobile activation ok: " + this.mobile);
 		this.mobileActivationCode = null;
-		return mobileExit();
+		this.protocolContext.setSuccess(true);
+		exit();
+		return null;
 	}
 
 	@End
@@ -135,7 +155,9 @@ public class RegistrationBean implements Registration {
 					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return null;
 		}
-		return mobileExit();
+		this.protocolContext.setSuccess(false);
+		exit();
+		return null;
 	}
 
 	public String getMobile() {

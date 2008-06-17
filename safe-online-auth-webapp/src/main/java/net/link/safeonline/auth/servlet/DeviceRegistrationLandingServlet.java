@@ -7,29 +7,23 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
-import java.security.KeyPair;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
+import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.device.sdk.ErrorPage;
-import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
-import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
-import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
+import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
-import net.link.safeonline.service.DeviceMappingService;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
+import net.link.safeonline.sdk.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,9 +31,8 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Device registration landing page.
  * 
- * This landing page handles the SAML requests sent out by an external device
- * provider, and sends back a response containing the UUID for the registering
- * subject.
+ * This landing page handles the SAML response returned by the remote device
+ * issuer to notify the success of the registration.
  * 
  * @author wvdhaute
  * 
@@ -51,74 +44,65 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 	private static final Log LOG = LogFactory
 			.getLog(DeviceRegistrationLandingServlet.class);
 
-	@EJB(mappedName = "SafeOnline/DeviceMappingServiceBean/local")
-	private DeviceMappingService deviceMappingService;
+	public static final String RESOURCE_BASE = "messages.webapp";
 
-	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
-	private SamlAuthorityService samlAuthorityService;
+	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-	@EJB(mappedName = "SafeOnline/NodeAuthenticationServiceBean/local")
-	private NodeAuthenticationService nodeAuthenticationService;
+	@Init(name = "DeviceErrorUrl")
+	private String deviceErrorUrl;
 
 	@Override
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doPost");
-		Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
-		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-		KeyPair keyPair = new KeyPair(identityServiceClient.getPublicKey(),
-				identityServiceClient.getPrivateKey());
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		KeyPair authKeyPair = new KeyPair(authIdentityServiceClient
-				.getPublicKey(), authIdentityServiceClient.getPrivateKey());
-		String nodeName;
+
+		AuthenticationService authenticationService = AuthenticationServiceManager
+				.getAuthenticationService(request.getSession());
+		DeviceMappingEntity deviceMapping;
 		try {
-			nodeName = this.nodeAuthenticationService
-					.authenticate(authIdentityServiceClient.getCertificate());
+			deviceMapping = authenticationService.register(request);
 		} catch (NodeNotFoundException e) {
-			ErrorPage.errorPage(e.getMessage(), response);
+			redirectToDeviceErrorPage(request, response,
+					"errorProtocolHandlerFinalization");
+			return;
+		} catch (DeviceMappingNotFoundException e) {
+			redirectToDeviceErrorPage(request, response,
+					"errorDeviceRegistrationNotFound");
 			return;
 		}
+		if (null == deviceMapping) {
+			/*
+			 * Registration failed, redirect to register-device or
+			 * new-user-device
+			 */
+			if (authenticationService.getAuthenticationState().equals(
+					AuthenticationState.USER_AUTHENTICATED)) {
+				response.sendRedirect("../register-device.seam");
+			} else {
+				response.sendRedirect("../new-user-device.seam");
+			}
 
-		handler.init(this.configParams, keyPair);
-
-		try {
-			handler.initialize(request, authIdentityServiceClient
-					.getCertificate(), authKeyPair);
-		} catch (DeviceInitializationException e) {
-			ErrorPage.errorPage(e.getMessage(), response);
-			return;
+		} else {
+			/*
+			 * Registration ok, redirect to login servlet
+			 */
+			LoginManager.relogin(request.getSession(), deviceMapping
+					.getDevice());
+			response.sendRedirect("../login");
 		}
+	}
 
-		ProtocolContext protocolContext = ProtocolContext
-				.getProtocolContext(request.getSession());
-		String deviceName = protocolContext.getDeviceName();
-		String userId = LoginManager.getUsername(request.getSession());
-		try {
-			LOG
-					.debug("get device mapping for " + deviceName + " for "
-							+ userId);
-			DeviceMappingEntity deviceMapping = this.deviceMappingService
-					.getDeviceMapping(userId, deviceName);
-			LOG.debug("device mapping id: " + deviceMapping.getId());
-
-			protocolContext.setMappingId(deviceMapping.getId());
-			protocolContext.setValidity(this.samlAuthorityService
-					.getAuthnAssertionValidity());
-			protocolContext.setIssuer(nodeName);
-		} catch (SubjectNotFoundException e) {
-			ErrorPage.errorPage(e.getMessage(), response);
-			return;
-		} catch (DeviceNotFoundException e) {
-			ErrorPage.errorPage(e.getMessage(), response);
-			return;
-		}
-
-		try {
-			handler.finalize(request, response);
-		} catch (DeviceFinalizationException e) {
-			ErrorPage.errorPage(e.getMessage(), response);
-			return;
-		}
+	private void redirectToDeviceErrorPage(HttpServletRequest request,
+			HttpServletResponse response, String errorMessage)
+			throws IOException {
+		HttpSession session = request.getSession();
+		Locale locale = request.getLocale();
+		ResourceBundle resourceBundle = ResourceBundle.getBundle(RESOURCE_BASE,
+				locale);
+		String errorMessageString = resourceBundle.getString(errorMessage);
+		session
+				.setAttribute(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+						errorMessageString);
+		response.sendRedirect(this.deviceErrorUrl);
 	}
 }

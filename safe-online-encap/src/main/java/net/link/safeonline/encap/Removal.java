@@ -24,7 +24,7 @@ public interface Removal {
 	 */
 	String mobileRemove();
 
-	String mobileExit();
+	String mobileCancel();
 
 	/*
 	 * Factories

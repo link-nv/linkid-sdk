@@ -93,17 +93,17 @@ public class AuthnResponseFactory {
 
 	/**
 	 * Creates a signed authentication response.
+	 * 
+	 * @param audienceName
+	 *            This can be or the application name authenticated for, or the
+	 *            device operation executed
 	 */
 	public static String createAuthResponse(String inResponseTo,
-			String applicationName, String issuerName, String subjectName,
+			String audienceName, String issuerName, String subjectName,
 			String samlName, KeyPair signerKeyPair, int validity, String target) {
 		if (null == signerKeyPair) {
 			throw new IllegalArgumentException(
 					"signer key pair should not be null");
-		}
-		if (null == applicationName) {
-			throw new IllegalArgumentException(
-					"application name should not be null");
 		}
 		if (null == issuerName) {
 			throw new IllegalArgumentException("issuer name should not be null");
@@ -111,6 +111,10 @@ public class AuthnResponseFactory {
 		if (null == subjectName) {
 			throw new IllegalArgumentException(
 					"subject name should not be null");
+		}
+		if (null == audienceName) {
+			throw new IllegalArgumentException(
+					"audience name should not be null");
 		}
 
 		Response response = buildXMLObject(Response.class,
@@ -145,7 +149,7 @@ public class AuthnResponseFactory {
 		status.setStatusCode(statusCode);
 		response.setStatus(status);
 
-		addAssertion(response, inResponseTo, applicationName, subjectName,
+		addAssertion(response, inResponseTo, audienceName, subjectName,
 				issuerName, samlName, validity, target);
 
 		return signAuthnResponse(response, signerKeyPair);
@@ -155,15 +159,10 @@ public class AuthnResponseFactory {
 	 * Creates a signed authentication response with status failed.
 	 */
 	public static String createAuthResponseFailed(String inResponseTo,
-			String applicationName, String issuerName, KeyPair signerKeyPair,
-			String target) {
+			String issuerName, KeyPair signerKeyPair, String target) {
 		if (null == signerKeyPair) {
 			throw new IllegalArgumentException(
 					"signer key pair should not be null");
-		}
-		if (null == applicationName) {
-			throw new IllegalArgumentException(
-					"application name should not be null");
 		}
 		if (null == issuerName) {
 			throw new IllegalArgumentException("issuer name should not be null");
@@ -205,13 +204,64 @@ public class AuthnResponseFactory {
 	}
 
 	/**
+	 * Creates a signed authentication response with status unsupported.
+	 */
+	public static String createAuthResponseUnsupported(String inResponseTo,
+			String issuerName, KeyPair signerKeyPair, String target) {
+		if (null == signerKeyPair) {
+			throw new IllegalArgumentException(
+					"signer key pair should not be null");
+		}
+		if (null == issuerName) {
+			throw new IllegalArgumentException("issuer name should not be null");
+		}
+
+		Response response = buildXMLObject(Response.class,
+				Response.DEFAULT_ELEMENT_NAME);
+
+		DateTime now = new DateTime();
+
+		SecureRandomIdentifierGenerator idGenerator;
+		try {
+			idGenerator = new SecureRandomIdentifierGenerator();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("secure random init error: "
+					+ e.getMessage(), e);
+		}
+		response.setID(idGenerator.generateIdentifier());
+		response.setVersion(SAMLVersion.VERSION_20);
+		response.setInResponseTo(inResponseTo);
+		response.setIssueInstant(now);
+
+		Issuer responseIssuer = buildXMLObject(Issuer.class,
+				Issuer.DEFAULT_ELEMENT_NAME);
+		responseIssuer.setValue(issuerName);
+		response.setIssuer(responseIssuer);
+
+		response.setDestination(target);
+
+		Status status = buildXMLObject(Status.class,
+				Status.DEFAULT_ELEMENT_NAME);
+		StatusCode statusCode = buildXMLObject(StatusCode.class,
+				StatusCode.DEFAULT_ELEMENT_NAME);
+		statusCode.setValue(StatusCode.REQUEST_UNSUPPORTED_URI);
+		status.setStatusCode(statusCode);
+		response.setStatus(status);
+
+		return signAuthnResponse(response, signerKeyPair);
+	}
+
+	/**
 	 * Adds an assertion to the unsigned response.
 	 * 
 	 * @param response
 	 * @param subjectName
+	 * @param audienceName
+	 *            This can be or the application name authenticated for, or the
+	 *            device operation executed
 	 */
 	private static void addAssertion(Response response, String inResponseTo,
-			String applicationName, String subjectName, String issuerName,
+			String audienceName, String subjectName, String issuerName,
 			String samlName, int validity, String target) {
 
 		DateTime now = new DateTime();
@@ -260,7 +310,7 @@ public class AuthnResponseFactory {
 		Audience audience = buildXMLObject(Audience.class,
 				Audience.DEFAULT_ELEMENT_NAME);
 		audiences.add(audience);
-		audience.setAudienceURI(applicationName);
+		audience.setAudienceURI(audienceName);
 		assertion.setConditions(conditions);
 
 		List<SubjectConfirmation> subjectConfirmations = subject

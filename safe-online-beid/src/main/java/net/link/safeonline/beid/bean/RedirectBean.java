@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.beid.BeidConstants;
 import net.link.safeonline.beid.Redirect;
-import net.link.safeonline.device.sdk.DeviceManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,8 +45,8 @@ public class RedirectBean implements Redirect {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) facesContext.getExternalContext()
 				.getSession(true);
-		this.redirectUrl = DeviceManager
-				.getDeviceExitServiceUrl(session);
+		// this.redirectUrl = DeviceManager
+		// .getDeviceExitServiceUrl(session);
 		try {
 			facesContext.getExternalContext().redirect(this.redirectUrl);
 		} catch (IOException e) {

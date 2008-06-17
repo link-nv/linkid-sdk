@@ -1,23 +1,19 @@
 package net.link.safeonline.device.sdk.reg.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.device.sdk.reg.saml2.Saml2BrowserPostHandler;
+import net.link.safeonline.device.sdk.ErrorPage;
+import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
+import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
-import net.link.safeonline.sdk.servlet.annotation.Init;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
- * This servlet handles the response sent out by OLAS to the remote device
- * issuer. The response should contain the UUID mapping this device to the OLAS
- * subject. After that it will redirect to the RegistrationUrl.
+ * This servlet returns a saml authentication response from device issuer to
+ * OLAS, notifying the status of the device operation.
  * 
  * @author wvdhaute
  * 
@@ -26,55 +22,36 @@ public class ExitServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(ExitServlet.class);
-
-	@Init(name = "RegistrationUrl")
-	private String registrationUrl;
-
 	@Override
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("doPost");
-		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
-				.findSaml2BrowserPostHandler(request);
-		if (null == saml2BrowserPostHandler) {
-			/*
-			 * The landing page can only be used for finalizing an ongoing
-			 * registration process. If no protocol handler is active then
-			 * something must be going wrong here.
-			 */
-			String msg = "no protocol handler active";
-			LOG.error(msg);
-			writeErrorPage(msg, response);
-			return;
-		}
-		String deviceUserId = saml2BrowserPostHandler.handleResponse(request,
-				response);
-		request.getSession().setAttribute("userId", deviceUserId);
-
-		response.sendRedirect(this.registrationUrl);
+		invoke(request, response);
 	}
 
-	private void writeErrorPage(String message, HttpServletResponse response)
+	@Override
+	protected void invokeGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		invoke(request, response);
+	}
+
+	private void invoke(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
-		response.setContentType("text/html");
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		PrintWriter out = response.getWriter();
-		out.println("<html>");
-		{
-			out.println("<head><title>Error</title></head>");
-			out.println("<body>");
-			{
-				out.println("<h1>Error</h1>");
-				out.println("<p>");
-				{
-					out.println(message);
-				}
-				out.println("</p>");
-			}
-			out.println("</body>");
+
+		Saml2Handler handler = Saml2Handler.findSaml2Handler(request);
+		if (null == handler) {
+			/*
+			 * If no protocol handler is active at this point then something
+			 * must be going wrong here.
+			 */
+			ErrorPage.errorPage("errorNoProtocolHandlerActive", response);
+			return;
+
 		}
-		out.println("</html>");
-		out.close();
+		try {
+			handler.finalizeDeviceOperation(request, response);
+		} catch (DeviceFinalizationException e) {
+			ErrorPage.errorPage(e.getMessage(), response);
+			return;
+		}
 	}
 }

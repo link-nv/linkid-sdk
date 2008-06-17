@@ -19,6 +19,8 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
@@ -38,42 +40,59 @@ public class IdentityServlet extends AbstractStatementServlet {
 	@EJB(mappedName = "SafeOnline/BeIdDeviceServiceBean/local")
 	private BeIdDeviceService beIdDeviceService;
 
+	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
+	private SamlAuthorityService samlAuthorityService;
+
 	@Override
 	protected void processStatement(byte[] statementData, HttpSession session,
 			HttpServletResponse response) throws IOException {
+		ProtocolContext protocolContext = ProtocolContext
+				.getProtocolContext(session);
 		PrintWriter writer = response.getWriter();
 		try {
+			protocolContext.setValidity(this.samlAuthorityService
+					.getAuthnAssertionValidity());
+
 			String userId = (String) session.getAttribute("userId");
 			this.beIdDeviceService.register(userId, statementData);
+			response.setStatus(HttpServletResponse.SC_OK);
+			// notify that registration was successful.
+			protocolContext.setSuccess(true);
 		} catch (TrustDomainNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("Trust domain not found");
+			protocolContext.setSuccess(false);
 		} catch (PermissionDeniedException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("Permission denied error");
+			protocolContext.setSuccess(false);
 		} catch (ArgumentIntegrityException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("Argument integrity error");
+			protocolContext.setSuccess(false);
 		} catch (AttributeTypeNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("Attribute type not found error");
+			protocolContext.setSuccess(false);
 		} catch (DeviceNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("Device not found error");
+			protocolContext.setSuccess(false);
 		} catch (AttributeNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
+			protocolContext.setSuccess(false);
 			writer.println("Attribute not found error");
 		}
 	}

@@ -212,6 +212,12 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 			 * Authentication failed but response was valid.
 			 */
 			return null;
+		} else if (samlStatusCode.equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
+			/**
+			 * Unsupported device operation authentication request but response
+			 * was valid.
+			 */
+			return null;
 		} else if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
 			LOG.debug("SAML status code: " + samlStatusCode);
 			RequestSecurityTokenResponseType response = createResponse(

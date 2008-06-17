@@ -21,20 +21,22 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.device.sdk.DeviceManager;
-import net.link.safeonline.device.sdk.reg.saml2.Saml2BrowserPostHandler;
+import net.link.safeonline.device.sdk.ErrorPage;
+import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
+import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
+import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
 import net.link.safeonline.sdk.KeyStoreUtils;
+import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.sdk.servlet.annotation.Context;
 import net.link.safeonline.sdk.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.seam.annotations.web.RequestParameter;
 
 /**
- * Landing servlet where OLAS initially redirects to for device registration,
- * updating, removal.
+ * Landing servlet on the remote device issuer side where OLAS posts its SAML
+ * authentication request to for device registration, updating, removal.
  * 
  * @author wvdhaute
  * 
@@ -44,9 +46,6 @@ public class LandingServlet extends AbstractInjectionServlet {
 	private static final Log LOG = LogFactory.getLog(LandingServlet.class);
 
 	private static final long serialVersionUID = 1L;
-
-	@Init(name = "RegistrationServiceUrl")
-	private String registrationServiceUrl;
 
 	@Context(name = "KeyStoreResource", optional = true)
 	private String p12KeyStoreResourceName;
@@ -60,22 +59,14 @@ public class LandingServlet extends AbstractInjectionServlet {
 	@Context(name = "KeyStoreType", defaultValue = "pkcs12")
 	private String keyStoreType;
 
-	@Context(name = "ApplicationName")
-	private String applicationName;
+	@Init(name = "RegistrationUrl", optional = true)
+	private String registrationUrl;
 
-	@Context(name = "DeviceName")
-	private String deviceName;
+	@Init(name = "RemovalUrl", optional = true)
+	private String removalUrl;
 
-	/**
-	 * The 'source' request parameter is used to find out to who the
-	 * communication should be directed. This can be 'user' for the user web
-	 * application or 'auth' for the authentication web application.
-	 */
-	@RequestParameter("source")
-	private String source;
-
-	@RequestParameter("node")
-	private String node;
+	@Init(name = "UpdateUrl", optional = true)
+	private String updateUrl;
 
 	private KeyPair applicationKeyPair;
 
@@ -119,22 +110,41 @@ public class LandingServlet extends AbstractInjectionServlet {
 	}
 
 	@Override
-	protected void invokeGet(HttpServletRequest request,
+	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("node: " + this.node);
-		LOG.debug("source: " + this.source);
-		DeviceManager.setServiceUrls(request.getSession(), this.node,
-				this.source);
-
-		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
-				.getSaml2BrowserPostHandler(request);
-		saml2BrowserPostHandler.init(this.registrationServiceUrl,
-				this.applicationName, this.applicationKeyPair,
-				this.applicationCertificate, this.configParams);
-		String targetUrl = DeviceManager
-				.getDeviceLandingServiceUrl(request.getSession());
-
-		saml2BrowserPostHandler.authnRequest(request, response, targetUrl,
-				this.deviceName);
+		LOG.debug("doPost");
+		DeviceOperationType deviceOperation;
+		try {
+			Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
+			handler.init(this.configParams, this.applicationCertificate,
+					this.applicationKeyPair);
+			deviceOperation = handler.initDeviceOperation(request);
+			if (deviceOperation.equals(DeviceOperationType.REGISTER)) {
+				if (null == this.registrationUrl) {
+					handler.abortDeviceOperation(request, response);
+				}
+				response.sendRedirect(this.registrationUrl);
+			} else if (deviceOperation.equals(DeviceOperationType.REMOVE)) {
+				if (null == this.removalUrl) {
+					handler.abortDeviceOperation(request, response);
+				}
+				response.sendRedirect(this.removalUrl);
+			} else if (deviceOperation.equals(DeviceOperationType.UPDATE)) {
+				if (null == this.updateUrl) {
+					handler.abortDeviceOperation(request, response);
+				}
+				response.sendRedirect(this.updateUrl);
+			} else {
+				handler.abortDeviceOperation(request, response);
+			}
+		} catch (DeviceInitializationException e) {
+			LOG.debug("device initialization exception: " + e.getMessage());
+			ErrorPage.errorPage(e.getMessage(), response);
+			return;
+		} catch (DeviceFinalizationException e) {
+			LOG.debug("device finalization exception: " + e.getMessage());
+			ErrorPage.errorPage(e.getMessage(), response);
+			return;
+		}
 	}
 }

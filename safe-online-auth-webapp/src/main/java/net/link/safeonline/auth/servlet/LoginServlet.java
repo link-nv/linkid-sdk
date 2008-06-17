@@ -66,7 +66,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 	@EJB(mappedName = "SafeOnline/UsageAgreementServiceBean/local")
 	private UsageAgreementService usageAgreementService;
 
-	@In(value = LoginManager.USERNAME_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(value = LoginManager.USERID_ATTRIBUTE, scope = ScopeType.SESSION)
 	String username;
 
 	@In(value = LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, scope = ScopeType.SESSION)

@@ -17,16 +17,18 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.encap.Removal;
 import net.link.safeonline.entity.AttributeEntity;
@@ -73,6 +75,9 @@ public class RemovalBean implements Removal {
 	@EJB
 	private SubjectService subjectService;
 
+	@EJB
+	private SamlAuthorityService samlAuthorityService;
+
 	@Logger
 	private Log log;
 
@@ -81,6 +86,9 @@ public class RemovalBean implements Removal {
 
 	@In
 	private String userId;
+
+	@In(value = ProtocolContext.PROTOCOL_CONTEXT)
+	private ProtocolContext protocolContext;
 
 	@DataModel(MOBILE_ATTRIBUTE_LIST_NAME)
 	List<AttributeDO> mobileAttributes;
@@ -94,15 +102,24 @@ public class RemovalBean implements Removal {
 		this.log.debug("destroy");
 	}
 
-	public String mobileExit() {
+	public String mobileCancel() {
+		this.protocolContext.setSuccess(false);
+		exit();
+		return null;
+	}
+
+	private void exit() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = facesContext.getExternalContext();
 		try {
-			SafeOnlineDeviceUtils.deviceExit();
+			externalContext.redirect("./deviceexit");
 		} catch (IOException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return null;
+			return;
 		}
-		return null;
+		this.protocolContext.setValidity(this.samlAuthorityService
+				.getAuthnAssertionValidity());
 	}
 
 	private Locale getViewLocale() {
@@ -226,7 +243,9 @@ public class RemovalBean implements Removal {
 					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return null;
 		}
-		return mobileExit();
+		this.protocolContext.setSuccess(true);
+		exit();
+		return null;
 	}
 
 }

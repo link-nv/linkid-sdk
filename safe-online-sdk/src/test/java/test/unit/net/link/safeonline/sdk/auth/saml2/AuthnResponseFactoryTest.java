@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.junit.Test;
+import org.opensaml.saml2.core.StatusCode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -96,4 +97,102 @@ public class AuthnResponseFactoryTest {
 		assertEquals(target, recipientNode.getTextContent());
 
 	}
+
+	@Test
+	public void createAuthnResponseFailed() throws Exception {
+		// setup
+		String inResponseTo = "id-in-response-to-test-id";
+		String issuerName = "test-issuer-name";
+		String target = "https://sp.test.com";
+		KeyPair signerKeyPair = PkiTestUtils.generateKeyPair();
+
+		// operate
+		long begin = System.currentTimeMillis();
+		String result = AuthnResponseFactory.createAuthResponseFailed(
+				inResponseTo, issuerName, signerKeyPair, target);
+		long end = System.currentTimeMillis();
+
+		// verify
+		assertNotNull(result);
+		LOG.debug("duration: " + (end - begin) + " ms");
+		LOG.debug("result message: " + result);
+		File tmpFile = File.createTempFile("saml-response-failed-", ".xml");
+		FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
+		IOUtils.write(result, tmpOutput);
+		IOUtils.closeQuietly(tmpOutput);
+
+		Document resultDocument = DomTestUtils.parseDocument(result);
+
+		Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument,
+				"/samlp:Response/@InResponseTo");
+		assertNotNull(inResponseToNode);
+		assertEquals(inResponseTo, inResponseToNode.getTextContent());
+
+		Node statusNode = XPathAPI.selectSingleNode(resultDocument,
+				"/samlp:Response/samlp:Status/samlp:StatusCode/@Value");
+		assertNotNull(statusNode);
+		assertEquals(StatusCode.AUTHN_FAILED_URI, statusNode.getTextContent());
+
+		// Document document = responseElement.getOwnerDocument();
+		Element nsElement = resultDocument.createElement("nsElement");
+		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+				"xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+				"xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+
+		Node issuerNode = XPathAPI.selectSingleNode(resultDocument,
+				"/samlp:Response/saml:Issuer", nsElement);
+		assertNotNull(issuerNode);
+		assertEquals(issuerName, issuerNode.getTextContent());
+	}
+
+	@Test
+	public void createAuthnResponseUnsupported() throws Exception {
+		// setup
+		String inResponseTo = "id-in-response-to-test-id";
+		String issuerName = "test-issuer-name";
+		String target = "https://sp.test.com";
+		KeyPair signerKeyPair = PkiTestUtils.generateKeyPair();
+
+		// operate
+		long begin = System.currentTimeMillis();
+		String result = AuthnResponseFactory.createAuthResponseUnsupported(
+				inResponseTo, issuerName, signerKeyPair, target);
+		long end = System.currentTimeMillis();
+
+		// verify
+		assertNotNull(result);
+		LOG.debug("duration: " + (end - begin) + " ms");
+		LOG.debug("result message: " + result);
+		File tmpFile = File.createTempFile("saml-response-failed-", ".xml");
+		FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
+		IOUtils.write(result, tmpOutput);
+		IOUtils.closeQuietly(tmpOutput);
+
+		Document resultDocument = DomTestUtils.parseDocument(result);
+
+		Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument,
+				"/samlp:Response/@InResponseTo");
+		assertNotNull(inResponseToNode);
+		assertEquals(inResponseTo, inResponseToNode.getTextContent());
+
+		Node statusNode = XPathAPI.selectSingleNode(resultDocument,
+				"/samlp:Response/samlp:Status/samlp:StatusCode/@Value");
+		assertNotNull(statusNode);
+		assertEquals(StatusCode.REQUEST_UNSUPPORTED_URI, statusNode
+				.getTextContent());
+
+		// Document document = responseElement.getOwnerDocument();
+		Element nsElement = resultDocument.createElement("nsElement");
+		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+				"xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+				"xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+
+		Node issuerNode = XPathAPI.selectSingleNode(resultDocument,
+				"/samlp:Response/saml:Issuer", nsElement);
+		assertNotNull(issuerNode);
+		assertEquals(issuerName, issuerNode.getTextContent());
+	}
+
 }
