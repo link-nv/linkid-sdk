@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.device.sdk.reg.saml2;
+package net.link.safeonline.device.sdk.saml2;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -52,7 +52,7 @@ public class Saml2Handler implements Serializable {
 
 	private static final Log LOG = LogFactory.getLog(Saml2Handler.class);
 
-	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/saml2-post-binding.vm";
+	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
 
 	private String stsWsLocation;
 

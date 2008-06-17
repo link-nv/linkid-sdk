@@ -1,4 +1,4 @@
-package net.link.safeonline.device.sdk.reg.servlet;
+package net.link.safeonline.device.sdk.servlet;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.device.sdk.ErrorPage;
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
-import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
+import net.link.safeonline.device.sdk.saml2.Saml2Handler;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 
 /**

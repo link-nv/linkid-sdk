@@ -23,8 +23,6 @@ public class ProtocolContext implements Serializable {
 
 	private DeviceOperationType deviceOperation;
 
-	private String application;
-
 	private String issuer;
 
 	private String inResponseTo;
@@ -74,14 +72,6 @@ public class ProtocolContext implements Serializable {
 
 	public void setWantedDevice(String wantedDevice) {
 		this.wantedDevice = wantedDevice;
-	}
-
-	public String getApplication() {
-		return this.application;
-	}
-
-	public void setApplication(String application) {
-		this.application = application;
 	}
 
 	public String getIssuer() {

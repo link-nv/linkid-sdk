@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.device.sdk.reg.servlet;
+package net.link.safeonline.device.sdk.servlet;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.device.sdk.ErrorPage;
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
-import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
+import net.link.safeonline.device.sdk.saml2.Saml2Handler;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;

@@ -128,7 +128,7 @@
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.reg.servlet.LandingServlet 
+			net.link.safeonline.device.sdk.servlet.LandingServlet 
 		</servlet-class>
 		<init-param>
 			<param-name>RegistrationUrl</param-name>
@@ -145,7 +145,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class> net.link.safeonline.device.sdk.reg.servlet.ExitServlet 
+		<servlet-class> net.link.safeonline.device.sdk.servlet.ExitServlet 
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
