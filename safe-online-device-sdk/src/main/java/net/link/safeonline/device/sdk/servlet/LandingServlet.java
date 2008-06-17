@@ -21,13 +21,13 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.device.sdk.ErrorPage;
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
 import net.link.safeonline.device.sdk.saml2.Saml2Handler;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Context;
 import net.link.safeonline.sdk.servlet.annotation.Init;
 
@@ -67,6 +67,12 @@ public class LandingServlet extends AbstractInjectionServlet {
 
 	@Init(name = "UpdateUrl", optional = true)
 	private String updateUrl;
+
+	@Init(name = "ErrorPage", optional = true)
+	private String errorPage;
+
+	@Init(name = "ResourceBundle", optional = true)
+	private String resourceBundleName;
 
 	private KeyPair applicationKeyPair;
 
@@ -139,11 +145,15 @@ public class LandingServlet extends AbstractInjectionServlet {
 			}
 		} catch (DeviceInitializationException e) {
 			LOG.debug("device initialization exception: " + e.getMessage());
-			ErrorPage.errorPage(e.getMessage(), response);
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(e.getMessage()));
+
 			return;
 		} catch (DeviceFinalizationException e) {
 			LOG.debug("device finalization exception: " + e.getMessage());
-			ErrorPage.errorPage(e.getMessage(), response);
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(e.getMessage()));
+
 			return;
 		}
 	}

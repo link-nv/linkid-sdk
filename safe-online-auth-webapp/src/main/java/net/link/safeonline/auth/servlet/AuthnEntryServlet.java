@@ -21,6 +21,7 @@ import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Init;
 
 /**
@@ -90,7 +91,10 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 		try {
 			protocolContext = ProtocolHandlerManager.handleRequest(request);
 		} catch (ProtocolException e) {
-			redirectToProtocolErrorPage(request, response, e);
+			redirectToErrorPage(request, response, this.protocolErrorUrl, null,
+					new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE, e
+							.getProtocolName()), new ErrorMessage(
+							PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
 			return;
 		}
 
@@ -119,18 +123,6 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 		} else {
 			response.sendRedirect(this.startUrl);
 		}
-	}
-
-	private void redirectToProtocolErrorPage(HttpServletRequest request,
-			HttpServletResponse response, ProtocolException e)
-			throws IOException {
-		HttpSession session = request.getSession();
-		String protocolName = e.getProtocolName();
-		session.setAttribute(PROTOCOL_NAME_ATTRIBUTE, protocolName);
-		String protocolErrorMessage = e.getMessage();
-		session.setAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE,
-				protocolErrorMessage);
-		response.sendRedirect(this.protocolErrorUrl);
 	}
 
 	private boolean isFirstTime(HttpServletRequest request,

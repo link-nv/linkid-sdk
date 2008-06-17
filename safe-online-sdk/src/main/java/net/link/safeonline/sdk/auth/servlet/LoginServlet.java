@@ -8,7 +8,6 @@
 package net.link.safeonline.sdk.auth.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +17,8 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.ErrorMessage;
+import net.link.safeonline.sdk.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +36,11 @@ public class LoginServlet extends AbstractInjectionServlet {
 
 	private static final Log LOG = LogFactory.getLog(LoginServlet.class);
 
-	public static final String ERROR_MESSAGE_ATTRIBUTE = "errorMessage";
+	@Init(name = "ErrorPage", optional = true)
+	private String errorPage;
+
+	@Init(name = "ResourceBundle", optional = true)
+	private String resourceBundleName;
 
 	@Override
 	protected void invokeGet(HttpServletRequest request,
@@ -62,7 +67,9 @@ public class LoginServlet extends AbstractInjectionServlet {
 			 */
 			String msg = "no protocol handler active";
 			LOG.error(msg);
-			writeErrorPage(msg, response);
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(msg));
+
 			return;
 		}
 
@@ -71,7 +78,8 @@ public class LoginServlet extends AbstractInjectionServlet {
 		if (null == username) {
 			String msg = "protocol handler could not finalize";
 			LOG.error(msg);
-			writeErrorPage(msg, response);
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(msg));
 			return;
 		}
 
@@ -81,37 +89,5 @@ public class LoginServlet extends AbstractInjectionServlet {
 		String target = AuthenticationProtocolManager.getTarget(request);
 		LOG.debug("target: " + target);
 		response.sendRedirect(target);
-	}
-
-    // private void redirectToErrorPage(HttpServletRequest request,
-    // HttpServletResponse response, String errorMessage)
-    // throws IOException {
-    // HttpSession session = request.getSession();
-    // session.setAttribute(ERROR_MESSAGE_ATTRIBUTE, errorMessage);
-    // // response.sendRedirect(this.protocolErrorUrl);
-    // }
-
-	// XXX: remove this by a custom jsf error page ( XPlanner: id=16262 )
-	private void writeErrorPage(String message, HttpServletResponse response)
-			throws IOException {
-		response.setContentType("text/html");
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		PrintWriter out = response.getWriter();
-		out.println("<html>");
-		{
-			out.println("<head><title>Error</title></head>");
-			out.println("<body>");
-			{
-				out.println("<h1>Error</h1>");
-				out.println("<p>");
-				{
-					out.println(message);
-				}
-				out.println("</p>");
-			}
-			out.println("</body>");
-		}
-		out.println("</html>");
-		out.close();
 	}
 }

@@ -6,10 +6,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.device.sdk.ErrorPage;
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.saml2.Saml2Handler;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.ErrorMessage;
+import net.link.safeonline.sdk.servlet.annotation.Init;
 
 /**
  * This servlet returns a saml authentication response from device issuer to
@@ -21,6 +22,12 @@ import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 public class ExitServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	@Init(name = "ErrorPage", optional = true)
+	private String errorPage;
+
+	@Init(name = "ResourceBundle", optional = true)
+	private String resourceBundleName;
 
 	@Override
 	protected void invokePost(HttpServletRequest request,
@@ -43,14 +50,17 @@ public class ExitServlet extends AbstractInjectionServlet {
 			 * If no protocol handler is active at this point then something
 			 * must be going wrong here.
 			 */
-			ErrorPage.errorPage("errorNoProtocolHandlerActive", response);
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(
+							"errorNoProtocolHandlerActive"));
 			return;
 
 		}
 		try {
 			handler.finalizeDeviceOperation(request, response);
 		} catch (DeviceFinalizationException e) {
-			ErrorPage.errorPage(e.getMessage(), response);
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(e.getMessage()));
 			return;
 		}
 	}

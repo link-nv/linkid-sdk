@@ -55,7 +55,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 	public static final String NAME = "SAML v2 Browser POST Authentication Protocol";
 
-	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/saml2-post-binding.vm";
+	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
 
 	static {
 		System

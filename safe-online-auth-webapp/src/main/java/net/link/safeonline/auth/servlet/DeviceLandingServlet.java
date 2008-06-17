@@ -8,13 +8,10 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
@@ -23,6 +20,7 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Init;
 
 /**
@@ -55,12 +53,14 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 		try {
 			deviceMapping = authenticationService.authenticate(request);
 		} catch (NodeNotFoundException e) {
-			redirectToDeviceErrorPage(request, response,
-					"errorProtocolHandlerFinalization");
+			redirectToErrorPage(request, response, this.deviceErrorUrl,
+					RESOURCE_BASE, new ErrorMessage("deviceErrorMessage",
+							"errorProtocolHandlerFinalization"));
 			return;
 		} catch (DeviceMappingNotFoundException e) {
-			redirectToDeviceErrorPage(request, response,
-					"errorDeviceRegistrationNotFound");
+			redirectToErrorPage(request, response, this.deviceErrorUrl,
+					RESOURCE_BASE, new ErrorMessage("deviceErrorMessage",
+							"errorDeviceRegistrationNotFound"));
 			return;
 		}
 		if (null == deviceMapping) {
@@ -77,19 +77,5 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 			response.sendRedirect("../login");
 		}
-	}
-
-	private void redirectToDeviceErrorPage(HttpServletRequest request,
-			HttpServletResponse response, String errorMessage)
-			throws IOException {
-		HttpSession session = request.getSession();
-		Locale locale = request.getLocale();
-		ResourceBundle resourceBundle = ResourceBundle.getBundle(RESOURCE_BASE,
-				locale);
-		String errorMessageString = resourceBundle.getString(errorMessage);
-		session
-				.setAttribute(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-						errorMessageString);
-		response.sendRedirect(this.deviceErrorUrl);
 	}
 }

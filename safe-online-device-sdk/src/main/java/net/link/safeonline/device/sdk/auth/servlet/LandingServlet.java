@@ -21,11 +21,11 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.device.sdk.ErrorPage;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2Handler;
 import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Context;
 import net.link.safeonline.sdk.servlet.annotation.Init;
 
@@ -52,6 +52,12 @@ public class LandingServlet extends AbstractInjectionServlet {
 
 	@Context(name = "KeyStoreType", defaultValue = "pkcs12")
 	private String keyStoreType;
+
+	@Init(name = "ErrorPage", optional = true)
+	private String errorPage;
+
+	@Init(name = "ResourceBundle", optional = true)
+	private String resourceBundleName;
 
 	private KeyPair applicationKeyPair;
 
@@ -105,7 +111,8 @@ public class LandingServlet extends AbstractInjectionServlet {
 					this.applicationKeyPair);
 			handler.initAuthentication(request);
 		} catch (AuthenticationInitializationException e) {
-			ErrorPage.errorPage(e.getMessage(), response);
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(e.getMessage()));
 			return;
 		}
 		response.sendRedirect(this.authenticationUrl);

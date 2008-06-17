@@ -8,10 +8,14 @@
 package net.link.safeonline.sdk.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletConfig;
@@ -45,8 +49,8 @@ import org.jboss.seam.annotations.web.RequestParameter;
  * {@link UnavailableException} will be thrown.
  * <li>Injects servlet context parameters. If no defaultValue is specified, an
  * {@link UnavailableException} will be thrown.
- * <li>Default checks if the servlet is accessed with a secure connection. If
- * context parameter <code>Protocol</code> is <code>http</code> or
+ * <li>By default checks if the servlet is accessed with a secure connection.
+ * If context parameter <code>Protocol</code> is <code>http</code> or
  * <code>securityCheck</code> is set to <code>false</code> this check will
  * be ommitted.
  * </ul>
@@ -386,5 +390,83 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 			LOG.debug("outjecting to session attribute: " + outName);
 			session.setAttribute(outName, value);
 		}
+	}
+
+	/**
+	 * Redirects to the specified error page. The errorMessages entries contain
+	 * as key the name of the error message attribute that will be pushed on the
+	 * session. The attribute value will be looked up if a resource bundle is
+	 * specified, else directly pushed onto the session.
+	 * 
+	 * @param request
+	 * @param response
+	 * @param errorPage
+	 * @param resourceBundleName
+	 * @param errorMessages
+	 * @throws IOException
+	 */
+	public void redirectToErrorPage(HttpServletRequest request,
+			HttpServletResponse response, String errorPage,
+			String resourceBundleName, ErrorMessage... errorMessages)
+			throws IOException {
+		HttpSession session = request.getSession();
+		ResourceBundle resourceBundle = null;
+		if (null != resourceBundleName) {
+			Locale locale = request.getLocale();
+			try {
+				resourceBundle = ResourceBundle.getBundle(resourceBundleName,
+						locale, Thread.currentThread().getContextClassLoader());
+			} catch (MissingResourceException e) {
+				resourceBundle = null;
+			}
+		}
+		for (ErrorMessage errorMessage : errorMessages) {
+			if (null != resourceBundle) {
+				try {
+					errorMessage.setMessage(resourceBundle
+							.getString(errorMessage.getMessage()));
+				} catch (MissingResourceException e) {
+					// not found
+				}
+			}
+		}
+		if (null == errorPage) {
+			/*
+			 * If no error page specified, spit out a basic HTML page containing
+			 * the error message.
+			 */
+			writeBasicErrorPage(response, errorMessages);
+		} else {
+			for (ErrorMessage errorMessage : errorMessages) {
+				session.setAttribute(errorMessage.getName(), errorMessage
+						.getMessage());
+			}
+			response.sendRedirect(errorPage);
+		}
+	}
+
+	private void writeBasicErrorPage(HttpServletResponse response,
+			ErrorMessage... errorMessages) throws IOException {
+		response.setContentType("text/html");
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		PrintWriter out = response.getWriter();
+		out.println("<html>");
+		{
+			out.println("<head><title>Error</title></head>");
+			out.println("<body>");
+			{
+				out.println("<h1>Error(s)</h1>");
+				out.println("<p>");
+				{
+					for (ErrorMessage errorMessage : errorMessages) {
+						out.println(errorMessage.getMessage() + "</br>");
+					}
+				}
+				out.println("</p>");
+			}
+			out.println("</body>");
+		}
+		out.println("</html>");
+		out.close();
 	}
 }

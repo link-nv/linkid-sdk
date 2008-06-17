@@ -7,18 +7,16 @@
 package net.link.safeonline.user.servlet;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
@@ -42,12 +40,13 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 	private static final Log LOG = LogFactory
 			.getLog(DeviceLandingServlet.class);
 
-	public static final String RESOURCE_BASE = "messages.webapp";
-
 	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-	@Init(name = "DeviceErrorUrl")
-	private String deviceErrorUrl;
+	@Init(name = "ErrorPage", optional = true)
+	private String errorPage;
+
+	@Init(name = "ResourceBundle", optional = true)
+	private String resourceBundleName;
 
 	@Override
 	protected void invokePost(HttpServletRequest request,
@@ -59,20 +58,26 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 				.getAttribute(
 						DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
 		if (null == deviceOperationService) {
-			redirectToDeviceErrorPage(request, response,
-					"errorProtocolHandlerFinalization");
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(
+							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+							"errorProtocolHandlerFinalization"));
 			return;
 		}
 
 		try {
 			deviceOperationService.finalize(request);
 		} catch (NodeNotFoundException e) {
-			redirectToDeviceErrorPage(request, response,
-					"errorProtocolHandlerFinalization");
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(
+							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+							"errorProtocolHandlerFinalization"));
 			return;
 		} catch (DeviceMappingNotFoundException e) {
-			redirectToDeviceErrorPage(request, response,
-					"errorDeviceRegistrationNotFound");
+			redirectToErrorPage(request, response, this.errorPage,
+					this.resourceBundleName, new ErrorMessage(
+							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+							"errorDeviceRegistrationNotFound"));
 			return;
 		}
 
@@ -82,19 +87,4 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 		response.sendRedirect("./devices.seam");
 	}
-
-	private void redirectToDeviceErrorPage(HttpServletRequest request,
-			HttpServletResponse response, String errorMessage)
-			throws IOException {
-		HttpSession session = request.getSession();
-		Locale locale = request.getLocale();
-		ResourceBundle resourceBundle = ResourceBundle.getBundle(RESOURCE_BASE,
-				locale);
-		String errorMessageString = resourceBundle.getString(errorMessage);
-		session
-				.setAttribute(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-						errorMessageString);
-		response.sendRedirect(this.deviceErrorUrl);
-	}
-
 }

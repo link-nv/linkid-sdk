@@ -110,6 +110,14 @@
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>mobile.seam</param-value>
 		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ResourceBundle</param-name>
+			<param-value>messages.webapp</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LandingServlet</servlet-name>
@@ -120,6 +128,14 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.auth.servlet.ExitServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ResourceBundle</param-name>
+			<param-value>messages.webapp</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ExitServlet</servlet-name>
@@ -127,8 +143,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.device.sdk.servlet.LandingServlet 
+		<servlet-class> net.link.safeonline.device.sdk.servlet.LandingServlet 
 		</servlet-class>
 		<init-param>
 			<param-name>RegistrationUrl</param-name>
@@ -137,6 +152,14 @@
 		<init-param>
 			<param-name>RemovalUrl</param-name>
 			<param-value>remove-mobile.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ResourceBundle</param-name>
+			<param-value>messages.webapp</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -147,6 +170,14 @@
 		<servlet-name>DeviceExitServlet</servlet-name>
 		<servlet-class> net.link.safeonline.device.sdk.servlet.ExitServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ResourceBundle</param-name>
+			<param-value>messages.webapp</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DeviceExitServlet</servlet-name>
