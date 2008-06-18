@@ -179,6 +179,14 @@
 		<servlet-class> net.link.safeonline.auth.servlet.DeviceLandingServlet 
 		</servlet-class>
 		<init-param>
+			<param-name>StartUrl</param-name>
+			<param-value>../main.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>LoginUrl</param-name>
+			<param-value>../login</param-value>
+		</init-param>
+		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
 			<param-value>../device-error.seam</param-value>
 		</init-param>

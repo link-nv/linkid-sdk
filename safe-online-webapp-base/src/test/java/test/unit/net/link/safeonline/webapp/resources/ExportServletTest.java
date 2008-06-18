@@ -64,7 +64,7 @@ public class ExportServletTest extends TestCase {
 
 		this.servletTestManager = new ServletTestManager();
 		this.servletTestManager.setUp(ExportServlet.class);
-		this.servletLocation = this.servletTestManager.createSocketConnector();
+		this.servletLocation = this.servletTestManager.getServletLocation();
 
 		this.mockObjects = new Object[] { this.mockStatisticService };
 	}

@@ -38,6 +38,12 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
+	@Init(name = "LoginUrl")
+	private String loginUrl;
+
+	@Init(name = "StartUrl")
+	private String startUrl;
+
 	@Init(name = "DeviceErrorUrl")
 	private String deviceErrorUrl;
 
@@ -67,7 +73,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 			/*
 			 * Authentication failed, redirect to start page
 			 */
-			response.sendRedirect("../main.seam");
+			response.sendRedirect(this.startUrl);
 		} else {
 			/*
 			 * Authentication success, redirect to login servlet
@@ -75,7 +81,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 			LoginManager.login(request.getSession(), deviceMapping.getSubject()
 					.getUserId(), deviceMapping.getDevice());
 
-			response.sendRedirect("../login");
+			response.sendRedirect(this.loginUrl);
 		}
 	}
 }

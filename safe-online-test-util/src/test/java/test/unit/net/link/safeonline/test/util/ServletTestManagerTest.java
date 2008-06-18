@@ -134,7 +134,7 @@ public class ServletTestManagerTest {
 		servletTestManager.setUp(TestServlet.class);
 		try {
 			TestServlet.reset();
-			String location = servletTestManager.createSocketConnector();
+			String location = servletTestManager.getServletLocation();
 			LOG.debug("location: " + location);
 			HttpClient httpClient = new HttpClient();
 			GetMethod getMethod = new GetMethod(location);
@@ -156,7 +156,7 @@ public class ServletTestManagerTest {
 		servletTestManager.setUp(TestServlet.class, initParams);
 		try {
 			TestServlet.reset();
-			String location = servletTestManager.createSocketConnector();
+			String location = servletTestManager.getServletLocation();
 			LOG.debug("location: " + location);
 			HttpClient httpClient = new HttpClient();
 			GetMethod getMethod = new GetMethod(location);
@@ -218,7 +218,7 @@ public class ServletTestManagerTest {
 		TestFilter.reset();
 		servletTestManager.setUp(TestServlet.class, TestFilter.class);
 		try {
-			String location = servletTestManager.createSocketConnector();
+			String location = servletTestManager.getServletLocation();
 			LOG.debug("location: " + location);
 			HttpClient httpClient = new HttpClient();
 			GetMethod getMethod = new GetMethod(location);
@@ -243,7 +243,7 @@ public class ServletTestManagerTest {
 		servletTestManager.setUp(TestServlet.class, TestFilter.class,
 				filterInitParams);
 		try {
-			String location = servletTestManager.createSocketConnector();
+			String location = servletTestManager.getServletLocation();
 			LOG.debug("location: " + location);
 			HttpClient httpClient = new HttpClient();
 			GetMethod getMethod = new GetMethod(location);
@@ -266,7 +266,7 @@ public class ServletTestManagerTest {
 		TestServlet.setSessionAttributeWhenInvoked("attribute1", "value1");
 		servletTestManager.setUp(TestServlet.class);
 		try {
-			String location = servletTestManager.createSocketConnector();
+			String location = servletTestManager.getServletLocation();
 			LOG.debug("location: " + location);
 			HttpClient httpClient = new HttpClient();
 			GetMethod getMethod = new GetMethod(location);
@@ -289,7 +289,7 @@ public class ServletTestManagerTest {
 		servletTestManager.setSessionAttribute("attribute1", "value1");
 		TestServlet.setSessionAttributeWhenInvoked("setter", "value");
 		try {
-			String location = servletTestManager.createSocketConnector();
+			String location = servletTestManager.getServletLocation();
 			LOG.debug("location: " + location);
 			HttpClient httpClient = new HttpClient();
 			GetMethod getMethod = new GetMethod(location);

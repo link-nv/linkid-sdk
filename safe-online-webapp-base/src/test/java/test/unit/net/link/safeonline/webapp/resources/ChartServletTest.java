@@ -66,7 +66,7 @@ public class ChartServletTest extends TestCase {
 
 		this.servletTestManager = new ServletTestManager();
 		this.servletTestManager.setUp(ChartServlet.class);
-		this.servletLocation = this.servletTestManager.createSocketConnector();
+		this.servletLocation = this.servletTestManager.getServletLocation();
 
 		this.mockObjects = new Object[] { this.mockStatisticService };
 	}

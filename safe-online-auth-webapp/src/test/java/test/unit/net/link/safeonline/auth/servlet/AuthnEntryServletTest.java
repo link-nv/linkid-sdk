@@ -48,12 +48,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.saml2.core.AuthnRequest;
 
-public class AuthEntryServletTest {
+public class AuthnEntryServletTest {
 
 	private static final Log LOG = LogFactory
-			.getLog(AuthEntryServletTest.class);
+			.getLog(AuthnEntryServletTest.class);
 
-	private ServletTestManager entryServletTestManager;
+	private ServletTestManager authnEntryServletTestManager;
 
 	private String firstTimeUrl = "first-time";
 
@@ -108,7 +108,7 @@ public class AuthEntryServletTest {
 		JmxTestUtils jmxTestUtils = new JmxTestUtils();
 		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		this.entryServletTestManager = new ServletTestManager();
+		this.authnEntryServletTestManager = new ServletTestManager();
 		Map<String, String> initParams = new HashMap<String, String>();
 		initParams.put("StartUrl", this.startUrl);
 		initParams.put("FirstTimeUrl", this.firstTimeUrl);
@@ -120,7 +120,7 @@ public class AuthEntryServletTest {
 				AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
 				this.mockAuthenticationService);
 
-		this.entryServletTestManager.setUp(AuthnEntryServlet.class, initParams,
+		this.authnEntryServletTestManager.setUp(AuthnEntryServlet.class, initParams,
 				null, null, initialSessionAttributes);
 
 		this.mockObjects = new Object[] {
@@ -131,7 +131,7 @@ public class AuthEntryServletTest {
 
 	@After
 	public void tearDown() throws Exception {
-		this.entryServletTestManager.tearDown();
+		this.authnEntryServletTestManager.tearDown();
 		this.jndiTestUtils.tearDown();
 	}
 
@@ -139,7 +139,7 @@ public class AuthEntryServletTest {
 	public void unsupportedAuthenticationProtocol() throws Exception {
 		// setup
 		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.entryServletTestManager
+		GetMethod getMethod = new GetMethod(this.authnEntryServletTestManager
 				.getServletLocation());
 		/*
 		 * Here we simulate a user that directly visits the authentication web
@@ -162,7 +162,7 @@ public class AuthEntryServletTest {
 	public void saml2AuthenticationProtocol() throws Exception {
 		// setup
 		HttpClient httpClient = new HttpClient();
-		String servletLocation = this.entryServletTestManager
+		String servletLocation = this.authnEntryServletTestManager
 				.getServletLocation();
 		PostMethod postMethod = new PostMethod(servletLocation);
 
@@ -209,10 +209,13 @@ public class AuthEntryServletTest {
 		String location = postMethod.getResponseHeader("Location").getValue();
 		LOG.debug("location: " + location);
 		assertTrue(location.endsWith(this.firstTimeUrl));
-		String resultApplicationId = (String) this.entryServletTestManager
+		String resultApplicationId = (String) this.authnEntryServletTestManager
 				.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
 		assertEquals(applicationName, resultApplicationId);
-		String target = (String) this.entryServletTestManager
+		String resultApplicationName = (String) this.authnEntryServletTestManager
+				.getSessionAttribute(LoginManager.APPLICATION_FRIENDLY_NAME_ATTRIBUTE);
+		assertEquals(applicationName, resultApplicationName);
+		String target = (String) this.authnEntryServletTestManager
 				.getSessionAttribute(LoginManager.TARGET_ATTRIBUTE);
 		assertEquals(assertionConsumerService, target);
 	}

@@ -42,6 +42,8 @@ public class ServletTestManager {
 
 	private Server server;
 
+	private String contextPath;
+
 	public static class TestHashSessionManager extends HashSessionManager {
 
 		final Map<String, Object> initialSessionAttributes;
@@ -99,12 +101,23 @@ public class ServletTestManager {
 			Map<String, String> servletInitParameters, Class<?> filterClass,
 			Map<String, String> filterInitParameters,
 			Map<String, Object> initialSessionAttributes) throws Exception {
+		setUp(servletClass, "/", servletInitParameters, filterClass,
+				filterInitParameters, initialSessionAttributes);
+	}
+
+	public void setUp(Class<?> servletClass, String contextPath,
+			Map<String, String> servletInitParameters, Class<?> filterClass,
+			Map<String, String> filterInitParameters,
+			Map<String, Object> initialSessionAttributes) throws Exception {
+
 		this.server = new Server();
+		this.contextPath = contextPath;
+
 		Connector connector = new LocalConnector();
 		this.sessionManager = new TestHashSessionManager();
 		Context context = new Context(null, new SessionHandler(
 				this.sessionManager), new SecurityHandler(), null, null);
-		context.setContextPath("/");
+		context.setContextPath(contextPath);
 		this.server.addConnector(connector);
 		this.server.addHandler(context);
 
@@ -113,8 +126,8 @@ public class ServletTestManager {
 		}
 
 		if (null != filterClass) {
-			FilterHolder filterHolder = context.addFilter(filterClass, "/",
-					Handler.DEFAULT);
+			FilterHolder filterHolder = context.addFilter(filterClass,
+					this.contextPath, Handler.DEFAULT);
 			if (null != filterInitParameters) {
 				filterHolder.setInitParameters(filterInitParameters);
 			}
@@ -134,7 +147,7 @@ public class ServletTestManager {
 
 		ServletMapping servletMapping = new ServletMapping();
 		servletMapping.setServletName(servletName);
-		servletMapping.setPathSpecs(new String[] { "/*" });
+		servletMapping.setPathSpecs(new String[] { "/*", this.contextPath });
 		handler.addServletMapping(servletMapping);
 
 		this.server.start();
@@ -145,7 +158,7 @@ public class ServletTestManager {
 		}
 	}
 
-	public String createSocketConnector() throws Exception {
+	private String createSocketConnector() throws Exception {
 		SocketConnector connector = new SocketConnector();
 		connector.setHost("127.0.0.1");
 		this.server.addConnector(connector);
@@ -155,11 +168,11 @@ public class ServletTestManager {
 			connector.open();
 		}
 
-		return "http://127.0.0.1:" + connector.getLocalPort() + "/";
+		return "http://127.0.0.1:" + connector.getLocalPort();
 	}
 
 	public String getServletLocation() throws Exception {
-		return createSocketConnector();
+		return createSocketConnector() + this.contextPath;
 	}
 
 	public void tearDown() throws Exception {
