@@ -56,9 +56,6 @@ public class LandingServlet extends AbstractInjectionServlet {
 	@Init(name = "ErrorPage", optional = true)
 	private String errorPage;
 
-	@Init(name = "ResourceBundle", optional = true)
-	private String resourceBundleName;
-
 	private KeyPair applicationKeyPair;
 
 	private X509Certificate applicationCertificate;
@@ -111,8 +108,8 @@ public class LandingServlet extends AbstractInjectionServlet {
 					this.applicationKeyPair);
 			handler.initAuthentication(request);
 		} catch (AuthenticationInitializationException e) {
-			redirectToErrorPage(request, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(e.getMessage()));
+			redirectToErrorPage(request, response, this.errorPage, null,
+					new ErrorMessage(e.getMessage()));
 			return;
 		}
 		response.sendRedirect(this.authenticationUrl);

@@ -71,9 +71,6 @@ public class LandingServlet extends AbstractInjectionServlet {
 	@Init(name = "ErrorPage", optional = true)
 	private String errorPage;
 
-	@Init(name = "ResourceBundle", optional = true)
-	private String resourceBundleName;
-
 	private KeyPair applicationKeyPair;
 
 	private X509Certificate applicationCertificate;
@@ -145,14 +142,14 @@ public class LandingServlet extends AbstractInjectionServlet {
 			}
 		} catch (DeviceInitializationException e) {
 			LOG.debug("device initialization exception: " + e.getMessage());
-			redirectToErrorPage(request, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(e.getMessage()));
+			redirectToErrorPage(request, response, this.errorPage, null,
+					new ErrorMessage(e.getMessage()));
 
 			return;
 		} catch (DeviceFinalizationException e) {
 			LOG.debug("device finalization exception: " + e.getMessage());
-			redirectToErrorPage(request, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(e.getMessage()));
+			redirectToErrorPage(request, response, this.errorPage, null,
+					new ErrorMessage(e.getMessage()));
 
 			return;
 		}

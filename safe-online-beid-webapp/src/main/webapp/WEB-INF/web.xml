@@ -117,10 +117,6 @@
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
-		<init-param>
-			<param-name>ResourceBundle</param-name>
-			<param-value>messages.webapp</param-value>
-		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AuthLandingServlet</servlet-name>
@@ -144,10 +140,6 @@
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
-		<init-param>
-			<param-name>ResourceBundle</param-name>
-			<param-value>messages.webapp</param-value>
-		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ExitServlet</servlet-name>
@@ -170,10 +162,6 @@
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
-		<init-param>
-			<param-name>ResourceBundle</param-name>
-			<param-value>messages.webapp</param-value>
-		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DeviceLandingServlet</servlet-name>
@@ -195,10 +183,6 @@
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
-		</init-param>
-		<init-param>
-			<param-name>ResourceBundle</param-name>
-			<param-value>messages.webapp</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>

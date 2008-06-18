@@ -26,9 +26,6 @@ public class ExitServlet extends AbstractInjectionServlet {
 	@Init(name = "ErrorPage", optional = true)
 	private String errorPage;
 
-	@Init(name = "ResourceBundle", optional = true)
-	private String resourceBundleName;
-
 	@Override
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -50,17 +47,16 @@ public class ExitServlet extends AbstractInjectionServlet {
 			 * If no protocol handler is active at this point then something
 			 * must be going wrong here.
 			 */
-			redirectToErrorPage(request, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(
-							"errorNoProtocolHandlerActive"));
+			redirectToErrorPage(request, response, this.errorPage, null,
+					new ErrorMessage("No protocol handler is active"));
 			return;
 
 		}
 		try {
 			handler.finalizeDeviceOperation(request, response);
 		} catch (DeviceFinalizationException e) {
-			redirectToErrorPage(request, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(e.getMessage()));
+			redirectToErrorPage(request, response, this.errorPage, null,
+					new ErrorMessage(e.getMessage()));
 			return;
 		}
 	}

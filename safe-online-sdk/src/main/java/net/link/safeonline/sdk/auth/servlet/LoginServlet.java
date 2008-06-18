@@ -39,9 +39,6 @@ public class LoginServlet extends AbstractInjectionServlet {
 	@Init(name = "ErrorPage", optional = true)
 	private String errorPage;
 
-	@Init(name = "ResourceBundle", optional = true)
-	private String resourceBundleName;
-
 	@Override
 	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -67,8 +64,8 @@ public class LoginServlet extends AbstractInjectionServlet {
 			 */
 			String msg = "no protocol handler active";
 			LOG.error(msg);
-			redirectToErrorPage(request, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(msg));
+			redirectToErrorPage(request, response, this.errorPage, null,
+					new ErrorMessage(msg));
 
 			return;
 		}
@@ -78,8 +75,8 @@ public class LoginServlet extends AbstractInjectionServlet {
 		if (null == username) {
 			String msg = "protocol handler could not finalize";
 			LOG.error(msg);
-			redirectToErrorPage(request, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(msg));
+			redirectToErrorPage(request, response, this.errorPage, null,
+					new ErrorMessage(msg));
 			return;
 		}
 

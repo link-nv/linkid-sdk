@@ -687,7 +687,14 @@ public static class MyCompounded {
 				existing JavaEE web application. Below you find a configuration
 				example of
 				<code>web.xml</code>
-				for the landing page component.
+				for the landing page component. This servlet has an extra init
+				parameter which lets you specify an error page. In case of an error,
+				the servlet will set the error message on the HttpSession as a
+				session attribute named
+				<code>ErrorMessage</code>
+				. With this
+				<code>ErrorPage</code>
+				parameter you can create a custom page to handle these errors.
 				<programlisting><![CDATA[<context-param>
 	<param-name>LandingPage</param-name>
 	<param-value>
@@ -700,6 +707,10 @@ public static class MyCompounded {
 	<servlet-class>
 		net.link.safeonline.sdk.auth.servlet.LoginServlet
 	</servlet-class>
+	<init-param>
+		<param-name>ErrorPage</param-name>
+		<param-value>protocol-error.seam</param-value>
+	</init-param>
 </servlet>
 
 <servlet-mapping>

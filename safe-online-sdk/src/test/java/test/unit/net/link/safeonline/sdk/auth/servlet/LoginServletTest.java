@@ -86,7 +86,7 @@ public class LoginServletTest {
 				+ DomTestUtils.domToString(resultDocument));
 		Node h1Node = XPathAPI.selectSingleNode(resultDocument, "//h1/text()");
 		assertNotNull(h1Node);
-		assertEquals("Error", h1Node.getNodeValue());
+		assertEquals("Error(s)", h1Node.getNodeValue());
 	}
 
 	@Test

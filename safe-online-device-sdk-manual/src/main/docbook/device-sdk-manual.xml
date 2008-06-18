@@ -112,6 +112,17 @@
 			should match the device name configured in OLAS. Below you find an
 			example of such a configuration.
 		</para>
+		<para>
+			Both servlets have an optional error page init parameter. In case of
+			an error, these servlets will put the error message on the
+			HttpSession as the session attribute
+			<code>ErrorMessage</code>
+			. With this
+			<code>ErrorPage</code>
+			parameter you specify a custom error page showing this
+			<code>ErrorMessage</code>
+			.
+		</para>
 		<programlisting><![CDATA[<context-param>
 		<param-name>KeyStoreType</param-name>
 		<param-value>jks</param-value>
@@ -146,6 +157,10 @@
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>authentication.jsf</param-value>
 		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -158,6 +173,10 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.auth.servlet.ExitServlet
 		</servlet-class>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -280,6 +299,17 @@
 			.
 		</para>
 		<para>
+			Both servlets have an optional error page init parameter. In case of
+			an error, these servlets will put the error message on the
+			HttpSession as the session attribute
+			<code>ErrorMessage</code>
+			. With this
+			<code>ErrorPage</code>
+			parameter you specify a custom error page showing this
+			<code>ErrorMessage</code>
+			.
+		</para>
+		<para>
 			Both of these servlets and associated context parameters should be
 			configured via the
 			<code>web.xml</code>
@@ -323,6 +353,10 @@
 			<param-name>UpdateUrl</param-name>
 			<param-value>update-device.jsf</param-value>
 		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -335,6 +369,10 @@
 		<servlet-class>
 			net.link.safeonline.device.sdk.servlet.ExitServlet
 		</servlet-class>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
