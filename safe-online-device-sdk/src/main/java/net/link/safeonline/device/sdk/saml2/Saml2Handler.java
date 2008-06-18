@@ -266,9 +266,6 @@ public class Saml2Handler implements Serializable {
 					usedDevice, this.applicationKeyPair, validity, target);
 		}
 
-		// invalidate the protocolcontext
-		ProtocolContext.removeProtocolContext(request.getSession());
-
 		String encodedSamlResponseToken = Base64.encode(samlResponseToken
 				.getBytes());
 
@@ -282,5 +279,8 @@ public class Saml2Handler implements Serializable {
 		} catch (IOException e) {
 			throw new DeviceFinalizationException(e.getMessage());
 		}
+
+		// destroy the session to prevent reuse
+		request.getSession().invalidate();
 	}
 }

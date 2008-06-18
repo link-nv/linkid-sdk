@@ -195,7 +195,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		return "/captcha?cacheid=" + (Math.random() * 1000000);
 	}
 
-	@Factory("allDevicesReg")
+	@Factory("allDevicesAccountRegistration")
 	public List<SelectItem> allDevicesFactory() {
 		this.log.debug("all devices factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -205,6 +205,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		List<DeviceEntity> devices = this.devicePolicyService.getDevices();
 
 		for (DeviceEntity deviceEntity : devices) {
+			if (!deviceEntity.isRegistrable()) {
+				continue;
+			}
 			String deviceName = this.devicePolicyService.getDeviceDescription(
 					deviceEntity.getName(), viewLocale);
 			SelectItem allDevice = new SelectItem(deviceEntity.getName(),

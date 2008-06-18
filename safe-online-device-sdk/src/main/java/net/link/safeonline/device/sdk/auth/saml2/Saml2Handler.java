@@ -232,6 +232,9 @@ public class Saml2Handler implements Serializable {
 		} catch (IOException e) {
 			throw new AuthenticationFinalizationException(e.getMessage());
 		}
+
+		// destroy the session to prevent reuse
+		request.getSession().invalidate();
 	}
 
 }

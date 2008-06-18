@@ -50,14 +50,6 @@ public class ProtocolContext implements Serializable {
 		return instance;
 	}
 
-	public static void removeProtocolContext(HttpSession session) {
-		ProtocolContext instance = (ProtocolContext) session
-				.getAttribute(PROTOCOL_CONTEXT);
-		if (null != instance) {
-			session.removeAttribute(PROTOCOL_CONTEXT);
-		}
-	}
-
 	public String getSubject() {
 		return this.subject;
 	}

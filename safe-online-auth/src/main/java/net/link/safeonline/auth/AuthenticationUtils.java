@@ -34,7 +34,7 @@ public class AuthenticationUtils {
 
 	public static final String DEVICE_REG_SERVICE_URL_INIT_PARAM = "DeviceRegistrationServiceUrl";
 
-	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/saml2-post-binding.vm";
+	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
 
 	public static final String SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM = "Saml2BrowserPostTemplate";
 

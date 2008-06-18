@@ -240,6 +240,15 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
+	 * Returns whether or not a user is allowed to register this device himself.
+	 * 
+	 */
+	@Transient
+	public boolean isRegistrable() {
+		return (null != this.registrationPath);
+	}
+
+	/**
 	 * Retrieves the local URL for removal of this device.
 	 * 
 	 */
@@ -263,6 +272,15 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
+	 * Returns whether or not a user is allowed to remove this device himself.
+	 * 
+	 */
+	@Transient
+	public boolean isRemovable() {
+		return (null == this.removalPath);
+	}
+
+	/**
 	 * Retrieves the URL for updating of this device.
 	 * 
 	 */
@@ -283,6 +301,15 @@ public class DeviceEntity implements Serializable {
 		if (null == this.location)
 			return this.updatePath;
 		return this.location.getLocation() + "/" + this.updatePath;
+	}
+
+	/**
+	 * Returns whether or not a user is allowed to update this device himself.
+	 * 
+	 */
+	@Transient
+	public boolean isUpdatable() {
+		return (null == this.updatePath);
 	}
 
 	/**
