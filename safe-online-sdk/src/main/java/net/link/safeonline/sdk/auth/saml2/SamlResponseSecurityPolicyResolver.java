@@ -33,7 +33,6 @@ public class SamlResponseSecurityPolicyResolver implements
 				.getPolicyRules();
 		securityPolicyRules.add(new HTTPRule(null, "POST", false));
 		securityPolicyRules.add(new MandatoryIssuerRule());
-		securityPolicyRules.add(new InResponseToRule());
 		return securityPolicy;
 	}
 }

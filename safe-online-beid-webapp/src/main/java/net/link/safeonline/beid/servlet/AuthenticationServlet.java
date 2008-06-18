@@ -8,7 +8,6 @@
 package net.link.safeonline.beid.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -56,7 +55,6 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 		String sessionId = session.getId();
 		LOG.debug("session Id: " + sessionId);
 
-		PrintWriter writer = response.getWriter();
 		try {
 			AuthenticationStatement authenticationStatement;
 
@@ -77,22 +75,18 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
-			writer.println("decoding error");
 		} catch (TrustDomainNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
-			writer.println("Trust domain not found");
 		} catch (SubjectNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
-			writer.println("Subject not found");
 		} catch (ArgumentIntegrityException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
-			writer.println("Argument integrity error");
 		}
 	}
 }

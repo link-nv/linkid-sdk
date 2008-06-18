@@ -55,7 +55,11 @@
 			<saml:NameID>test-user-name</saml:NameID>
 		</saml:Subject>
 		<saml:Conditions NotBefore="replaceWithCurrentTime"
-			NotOnOrAfter="replaceWithCurrentPlusValidityTime" />
+			NotOnOrAfter="replaceWithCurrentPlusValidityTime">
+			<saml:AudienceRestriction>
+				<saml:Audience>test-application</saml:Audience>
+			</saml:AudienceRestriction>
+		</saml:Conditions>
 		<saml:AuthnStatement AuthnInstant="replaceWithCurrentTime">
 			<saml:AuthnContext>
 				<saml:AuthnContextClassRef>

@@ -33,8 +33,11 @@ import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.common.SAMLObject;
+import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
@@ -125,7 +128,7 @@ public class AuthnResponseUtil {
 	 * @param now
 	 * @param httpRequest
 	 * @param expectedInResponseTo
-	 * @param applicationName
+	 * @param expectedAudience
 	 * @param stsWsLocation
 	 * @param applicationCertificate
 	 * @param applicationPrivateKey
@@ -133,7 +136,7 @@ public class AuthnResponseUtil {
 	 */
 	public static Response validateResponse(DateTime now,
 			HttpServletRequest httpRequest, String expectedInResponseTo,
-			String applicationName, String stsWsLocation,
+			String expectedAudience, String stsWsLocation,
 			X509Certificate applicationCertificate,
 			PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
 			throws ServletException {
@@ -148,10 +151,7 @@ public class AuthnResponseUtil {
 		LOG.debug("SAMLResponse parameter found");
 		LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
 
-		// TODO: check the applicationName for real !! AudienceRestrictionRule ?
-		// applicationName can also be device operation !
-		SamlResponseMessageContext messageContext = new SamlResponseMessageContext(
-				expectedInResponseTo, applicationName);
+		BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
 		messageContext
 				.setInboundMessageTransport(new HttpServletRequestAdapter(
 						httpRequest));
@@ -197,8 +197,19 @@ public class AuthnResponseUtil {
 				stsWsLocation, applicationCertificate, applicationPrivateKey);
 		stsClient.validate(samlElement, trustDomain);
 
+		/*
+		 * Check whether the response is indeed a response to a previous request
+		 * by comparing the InResponseTo fields
+		 */
+		if (!samlResponse.getInResponseTo().equals(expectedInResponseTo)) {
+			throw new ServletException(
+					"SAML response is not a response belonging to the original request.");
+		}
+
 		if (samlResponse.getStatus().getStatusCode().getValue().equals(
-				StatusCode.AUTHN_FAILED_URI)) {
+				StatusCode.AUTHN_FAILED_URI)
+				|| samlResponse.getStatus().getStatusCode().getValue().equals(
+						StatusCode.REQUEST_UNSUPPORTED_URI)) {
 			/**
 			 * Authentication failed but response ok.
 			 */
@@ -227,6 +238,36 @@ public class AuthnResponseUtil {
 			if (null == subject) {
 				throw new ServletException("missing Assertion Subject");
 			}
+
+			/*
+			 * Check whether the audience of the response corresponds to the
+			 * original audience restriction
+			 */
+			List<AudienceRestriction> audienceRestrictions = conditions
+					.getAudienceRestrictions();
+			if (audienceRestrictions.isEmpty()) {
+				throw new ServletException(
+						"no Audience Restrictions found in response assertion");
+			}
+
+			AudienceRestriction audienceRestriction = audienceRestrictions
+					.get(0);
+			List<Audience> audiences = audienceRestriction.getAudiences();
+			if (audiences.isEmpty()) {
+				throw new ServletException(
+						"no Audiences found in AudienceRestriction");
+			}
+
+			Audience audience = audiences.get(0);
+
+			String actualAudience = audience.getAudienceURI();
+			LOG.debug("actual audience name: " + actualAudience);
+			if (false == expectedAudience.equals(actualAudience)) {
+				throw new ServletException(
+						"audience name not correct, expected: "
+								+ expectedAudience);
+			}
+
 		}
 		return samlResponse;
 	}

@@ -475,10 +475,11 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		OlasEntity node = this.nodeAuthenticationService.getLocalNode();
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
-				request, this.expectedDeviceChallengeId, null, node
-						.getLocation(), authIdentityServiceClient
-						.getCertificate(), authIdentityServiceClient
-						.getPrivateKey(), TrustDomainType.DEVICE);
+				request, this.expectedDeviceChallengeId,
+				DeviceOperationType.REGISTER.name(), node.getLocation(),
+				authIdentityServiceClient.getCertificate(),
+				authIdentityServiceClient.getPrivateKey(),
+				TrustDomainType.DEVICE);
 		if (null == samlResponse)
 			return null;
 
