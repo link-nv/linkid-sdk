@@ -21,7 +21,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 @Local
 public interface BeIdDeviceService {
 
-	String authenticate(String sessionId,
+	String authenticate(String sessionId, String applicationId,
 			AuthenticationStatement authenticationStatement)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException;

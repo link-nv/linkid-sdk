@@ -177,7 +177,7 @@ public class CredentialManagerBeanTest extends TestCase {
 
 		// operate
 		String resultDeviceUserId = this.testedInstance.authenticate(sessionId,
-				authenticationStatement);
+				applicationId, authenticationStatement);
 
 		// verify
 		verify(this.mockObjects);

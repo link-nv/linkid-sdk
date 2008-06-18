@@ -67,7 +67,7 @@ public class CredentialManagerBean implements CredentialManager {
 	@EJB
 	private SecurityAuditLogger securityAuditLogger;
 
-	public String authenticate(String sessionId,
+	public String authenticate(String sessionId, String applicationId,
 			AuthenticationStatement authenticationStatement)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException {
@@ -77,6 +77,8 @@ public class CredentialManagerBean implements CredentialManager {
 		}
 
 		String statementSessionId = authenticationStatement.getSessionId();
+		String statementApplicationId = authenticationStatement
+				.getApplicationId();
 
 		PkiProvider pkiProvider = this.pkiProviderManager
 				.findPkiProvider(certificate);
@@ -93,6 +95,12 @@ public class CredentialManagerBean implements CredentialManager {
 		if (false == sessionId.equals(statementSessionId)) {
 			this.securityAuditLogger.addSecurityAudit(
 					SecurityThreatType.DECEPTION, "session Id mismatch");
+			throw new ArgumentIntegrityException();
+		}
+
+		if (false == applicationId.equals(statementApplicationId)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION, "application Id mismatch");
 			throw new ArgumentIntegrityException();
 		}
 

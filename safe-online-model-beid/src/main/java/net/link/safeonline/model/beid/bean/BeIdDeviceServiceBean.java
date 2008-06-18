@@ -34,12 +34,13 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 	@EJB
 	private CredentialManager credentialManager;
 
-	public String authenticate(String sessionId,
+	public String authenticate(String sessionId, String applicationId,
 			AuthenticationStatement authenticationStatement)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException {
-		LOG.debug("authenticate: sessionId=" + sessionId);
-		return this.credentialManager.authenticate(sessionId,
+		LOG.debug("authenticate: sessionId=" + sessionId + " applicaitonId="
+				+ applicationId);
+		return this.credentialManager.authenticate(sessionId, applicationId,
 				authenticationStatement);
 	}
 

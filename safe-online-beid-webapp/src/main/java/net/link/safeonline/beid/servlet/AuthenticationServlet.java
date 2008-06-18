@@ -56,16 +56,16 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 		LOG.debug("session Id: " + sessionId);
 
 		try {
+			AuthenticationContext authenticationContext = AuthenticationContext
+					.getAuthenticationContext(session);
+
 			AuthenticationStatement authenticationStatement;
 
 			authenticationStatement = new AuthenticationStatement(statementData);
 			String deviceUserId = this.beIdDeviceService.authenticate(
-					sessionId, authenticationStatement);
+					sessionId, authenticationContext.getApplication(),
+					authenticationStatement);
 
-			// TODO: do something with applicationId
-
-			AuthenticationContext authenticationContext = AuthenticationContext
-					.getAuthenticationContext(session);
 			authenticationContext.setUserId(deviceUserId);
 			authenticationContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
