@@ -100,6 +100,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 
 	private String applicationName;
 
+	private String applicationFriendlyName;
+
 	private KeyPair applicationKeyPair;
 
 	private X509Certificate applicationCertificate;
@@ -111,12 +113,13 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 	private String wsLocation;
 
 	public void init(String inAuthnServiceUrl, String inApplicationName,
-			KeyPair inApplicationKeyPair,
+			String inApplicationFriendlyName, KeyPair inApplicationKeyPair,
 			X509Certificate inApplicationCertificate,
 			Map<String, String> inConfigParams) {
 		LOG.debug("init");
 		this.authnServiceUrl = inAuthnServiceUrl;
 		this.applicationName = inApplicationName;
+		this.applicationFriendlyName = inApplicationFriendlyName;
 		this.applicationKeyPair = inApplicationKeyPair;
 		this.applicationCertificate = inApplicationCertificate;
 		this.configParams = inConfigParams;
@@ -169,8 +172,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		Set<String> devices = getDevices(httpRequest);
 		String samlRequestToken = AuthnRequestFactory.createAuthnRequest(
 				this.applicationName, this.applicationName,
-				this.applicationKeyPair, targetUrl, this.authnServiceUrl,
-				this.challenge, devices);
+				this.applicationFriendlyName, this.applicationKeyPair,
+				targetUrl, this.authnServiceUrl, this.challenge, devices);
 
 		String encodedSamlRequestToken = Base64.encode(samlRequestToken
 				.getBytes());

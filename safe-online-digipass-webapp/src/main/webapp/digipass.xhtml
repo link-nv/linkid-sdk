@@ -9,7 +9,8 @@
 	<ui:define name="top_content">
 	</ui:define>
 	<ui:define name="content">
-		<h2>#{msgs.digipassAuthentication}</h2>
+		<h2>#{msgs.digipassAuthentication} : #{msgs.authenticatingFor}
+		#{applicationName}</h2>
 
 		<h:form id="auth-form">
 			<h:outputLabel for="loginName" value="#{msgs.login}" />

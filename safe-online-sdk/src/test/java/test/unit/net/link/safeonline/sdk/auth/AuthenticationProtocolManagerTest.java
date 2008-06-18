@@ -89,7 +89,7 @@ public class AuthenticationProtocolManagerTest {
 				.createAuthenticationProtocolHandler(
 						AuthenticationProtocol.SAML2_BROWSER_POST,
 						"http://authn.service", "application-id", null, null,
-						configParams, this.mockHttpServletRequest);
+						null, configParams, this.mockHttpServletRequest);
 
 		// verify
 		verify(this.mockObjects);

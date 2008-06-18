@@ -23,6 +23,8 @@ public class ProtocolContext {
 
 	private final String applicationId;
 
+	private final String applicationFriendlyName;
+
 	private final String target;
 
 	private final Set<DeviceEntity> requiredDevices;
@@ -34,21 +36,30 @@ public class ProtocolContext {
 	 *            the application Id of the application that the authentication
 	 *            protocol handler has determined that issued the authentication
 	 *            request.
+	 * @param applicationFriendlyName
+	 *            the application friendly name, can be used by the remote
+	 *            device issuer to display what the user is authenticating for
 	 * @param target
 	 *            the target URL to which to send the authentication response.
 	 * @param requiredDevices
 	 *            the optional set of required devices for this authentication
 	 *            session.
 	 */
-	public ProtocolContext(String applicationId, String target,
+	public ProtocolContext(String applicationId,
+			String applicationFriendlyName, String target,
 			Set<DeviceEntity> requiredDevices) {
 		this.applicationId = applicationId;
+		this.applicationFriendlyName = applicationFriendlyName;
 		this.target = target;
 		this.requiredDevices = requiredDevices;
 	}
 
 	public String getApplicationId() {
 		return this.applicationId;
+	}
+
+	public String getApplicationFriendlyName() {
+		return this.applicationFriendlyName;
 	}
 
 	public String getTarget() {

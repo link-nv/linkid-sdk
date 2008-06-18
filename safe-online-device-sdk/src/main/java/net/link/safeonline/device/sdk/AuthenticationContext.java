@@ -32,6 +32,8 @@ public class AuthenticationContext implements Serializable {
 
 	private String application;
 
+	private String applicationFriendlyName;
+
 	private String issuer;
 
 	private int validity;
@@ -117,5 +119,13 @@ public class AuthenticationContext implements Serializable {
 
 	public void setTargetUrl(String targetUrl) {
 		this.targetUrl = targetUrl;
+	}
+
+	public void setApplicationFriendlyName(String applicationFriendlyName) {
+		this.applicationFriendlyName = applicationFriendlyName;
+	}
+
+	public String getApplicationFriendlyName() {
+		return this.applicationFriendlyName;
 	}
 }

@@ -561,7 +561,7 @@ public static class MyCompounded {
 				<variablelist>
 					<varlistentry>
 						<term>
-							<code>AuthenticationFilter</code>
+							<code>AuthnRequestFilter</code>
 						</term>
 						<listitem>
 							<para> This filter can be used to initiate the authentication
@@ -570,7 +570,7 @@ public static class MyCompounded {
 					</varlistentry>
 					<varlistentry>
 						<term>
-							<code>LoginFilter</code>
+							<code>AuthnResponseFilter</code>
 						</term>
 						<listitem>
 							<para> This filter can be used to finalize an authentication
@@ -586,16 +586,16 @@ public static class MyCompounded {
 				to configure the OLAS SDK filters to secure a certain section of a
 				web application.
 				<programlisting><![CDATA[<filter>
-	<filter-name>LoginFilter</filter-name>
+	<filter-name>AuthnResponseFilter</filter-name>
 	<filter-class>
-		net.link.safeonline.sdk.auth.filter.LoginFilter
+		net.link.safeonline.sdk.auth.filter.AuthnResponseFilter
 	</filter-class>
 </filter>
 				
 <filter>
-	<filter-name>AuthenticationFilter</filter-name>
+	<filter-name>AuthnRequestFilter</filter-name>
 	<filter-class>
-		net.link.safeonline.sdk.auth.filter.AuthenticationFilter
+		net.link.safeonline.sdk.auth.filter.AuthnRequestFilter
 	</filter-class>
 	<init-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
@@ -606,6 +606,10 @@ public static class MyCompounded {
 	<init-param>
 		<param-name>ApplicationName</param-name>
 		<param-value>demo-application</param-value>
+	</init-param>
+	<init-param>
+		<param-name>ApplicationFriendlyName</param-name>
+		<param-value>Demo Application Human Readable Name</param-value>
 	</init-param>
 	<init-param>
 		<param-name>AuthenticationProtocol</param-name>
@@ -637,14 +641,17 @@ public static class MyCompounded {
 ]]>
 				</programlisting>
 				It is important to notice here that the
-				<code>LoginFilter</code>
+				<code>AuthnResponseFilter</code>
 				should come before the
-				<code>AuthenticationFilter</code>
+				<code>AuthnRequestFilter</code>
 				. If the
-				<code>AuthenticationFilter</code>
+				<code>AuthnRequestFilter</code>
 				would be first then the user will always be redirected to the
 				authentication web application and never be able to actually login
-				into the web application.
+				into the web application. The
+				<code>ApplicationFriendlyName</code>
+				init parameter is optional to provide a human readable name that can
+				be displayed by device providers.
 			</para>
 		</section>
 		<section>
@@ -655,7 +662,7 @@ public static class MyCompounded {
 				<code>SafeOnlineLoginUtils</code>
 				that can be used on Seam/JSF-based web applications. Notice that in
 				this case the usage of the
-				<code>LoginFilter</code>
+				<code>AuthnResponseFilter</code>
 				is still required to be able to process the authentication response
 				as received from the OLAS authentication web application.
 			</para>

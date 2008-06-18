@@ -157,6 +157,7 @@ public class AuthenticationProtocolManager {
 	 * @param authenticationProtocol
 	 * @param authnServiceUrl
 	 * @param applicationName
+	 * @param applicationFriendlyName
 	 * @param applicationKeyPair
 	 * @param applicationCertificate
 	 * @param httpRequest
@@ -165,7 +166,8 @@ public class AuthenticationProtocolManager {
 	public static AuthenticationProtocolHandler createAuthenticationProtocolHandler(
 			AuthenticationProtocol authenticationProtocol,
 			String authnServiceUrl, String applicationName,
-			KeyPair applicationKeyPair, X509Certificate applicationCertificate,
+			String applicationFriendlyName, KeyPair applicationKeyPair,
+			X509Certificate applicationCertificate,
 			Map<String, String> inConfigParams, HttpServletRequest httpRequest)
 			throws ServletException {
 		HttpSession session = httpRequest.getSession();
@@ -205,7 +207,8 @@ public class AuthenticationProtocolManager {
 					+ authnProtocolHandlerClass.getName());
 		}
 		protocolHandler.init(authnServiceUrl, applicationName,
-				applicationKeyPair, applicationCertificate, configParams);
+				applicationFriendlyName, applicationKeyPair,
+				applicationCertificate, configParams);
 
 		/*
 		 * We save the stateful protocol handler into the HTTP session as

@@ -13,6 +13,8 @@
 
 	<ui:define name="content">
 
+		<h1>#{msgs.authenticatingFor}: #{applicationName}</h1>
+
 		<applet name="AuthenticationApplet"
 			code="net.link.safeonline.auth.pcsc.AuthenticationApplet.class"
 			archive="safe-online-auth-pcsc-applet-package.jar" width="450"
@@ -20,7 +22,8 @@
 			<param name="ServletPath" value="authentication" />
 			<param name="TargetPath" value="authenticationexit" />
 			<param name="HelpdeskEventPath" value="helpdesk" />
-			<param name="HelpPath" value="./help_auth.seam?location=beid-applet.seam" />
+			<param name="HelpPath"
+				value="./help_auth.seam?location=beid-applet.seam" />
 			<param name="SessionId"
 				value="#{facesContext.externalContext.request.session.id}" />
 			<param name="ApplicationId" value="${applicationId}" />

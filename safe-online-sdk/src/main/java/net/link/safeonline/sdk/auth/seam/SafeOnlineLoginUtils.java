@@ -40,285 +40,289 @@ import org.apache.commons.logging.LogFactory;
  */
 public class SafeOnlineLoginUtils {
 
-    private static final Log                   LOG                           = LogFactory
-                                                                                     .getLog(SafeOnlineLoginUtils.class);
+	private static final Log LOG = LogFactory
+			.getLog(SafeOnlineLoginUtils.class);
 
-    public static final String                 AUTH_SERVICE_URL_INIT_PARAM   = "AuthenticationServiceUrl";
-    public static final String                 APPLICATION_NAME_INIT_PARAM   = "ApplicationName";
-    public static final String                 AUTHN_PROTOCOL_INIT_PARAM     = "AuthenticationProtocol";
-    public static final String                 KEY_STORE_RESOURCE_INIT_PARAM = "KeyStoreResource";
-    public static final String                 KEY_STORE_FILE_INIT_PARAM     = "KeyStoreFile";
-    public static final String                 KEY_STORE_TYPE_INIT_PARAM     = "KeyStoreType";
-    public static final String                 KEY_STORE_PASSWORD_INIT_PARAM = "KeyStorePassword";
+	public static final String AUTH_SERVICE_URL_INIT_PARAM = "AuthenticationServiceUrl";
+	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
+	public static final String APPLICATION_FRIENDLY_NAME_INIT_PARAM = "ApplicationFriendlyName";
+	public static final String AUTHN_PROTOCOL_INIT_PARAM = "AuthenticationProtocol";
+	public static final String KEY_STORE_RESOURCE_INIT_PARAM = "KeyStoreResource";
+	public static final String KEY_STORE_FILE_INIT_PARAM = "KeyStoreFile";
+	public static final String KEY_STORE_TYPE_INIT_PARAM = "KeyStoreType";
+	public static final String KEY_STORE_PASSWORD_INIT_PARAM = "KeyStorePassword";
 
-    public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL        = AuthenticationProtocol.SAML2_BROWSER_POST;
+	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
 
+	private SafeOnlineLoginUtils() {
 
-    private SafeOnlineLoginUtils() {
+		// empty
+	}
 
-        // empty
-    }
+	/**
+	 * Performs a SafeOnline login using the SafeOnline authentication web
+	 * application.
+	 * 
+	 * <b>Note: This method is ONLY for logging in from an application that uses
+	 * the JSF framework.</b>
+	 * 
+	 * <p>
+	 * The method requires the <code>AuthenticationServiceUrl</code> context
+	 * parameter defined in <code>web.xml</code> pointing to the location of
+	 * the SafeOnline authentication web application.
+	 * </p>
+	 * 
+	 * <p>
+	 * The method also requires the <code>ApplicationName</code> context
+	 * parameter defined in <code>web.xml</code> containing the application
+	 * name that will be communicated towards the SafeOnline authentication web
+	 * application.
+	 * </p>
+	 * 
+	 * <p>
+	 * The method also requires the <code>AuthenticationProtocol</code>
+	 * context parameter defined in <code>web.xml</code> containing the
+	 * authentication protocol used between the application and the OLAS
+	 * authentication web application. This can be: SAML2_BROWSER_POST. Defaults
+	 * to: SAML2_BROWSER_POST
+	 * </p>
+	 * 
+	 * <p>
+	 * The optional keystore resource name <code>KeyStoreResource</code>
+	 * context parameter. The key pair within this keystore can be used by the
+	 * authentication protocol handler to digitally sign the authentication
+	 * request.
+	 * </p>
+	 * 
+	 * <p>
+	 * The optional keystore file name <code>KeyStoreFile</code> context
+	 * parameter. The key pair within this keystore can be used by the
+	 * authentication protocol handler to digitally sign the authentication
+	 * request.
+	 * </p>
+	 * 
+	 * <p>
+	 * The optional <code>KeyStoreType</code> key store type context
+	 * parameter. Accepted values are: <code>pkcs12</code> and
+	 * <code>jks</code>.
+	 * </p>
+	 * 
+	 * <p>
+	 * The optional <code>KeyStorePassword</code> context parameter contains
+	 * the password to unlock the keystore and key entry.
+	 * </p>
+	 * 
+	 * @param targetPage
+	 *            the page to which the user should be redirected after login.
+	 */
+	@SuppressWarnings("unchecked")
+	public static String login(String targetPage) {
 
-    /**
-     * Performs a SafeOnline login using the SafeOnline authentication web
-     * application.
-     * 
-     * <b>Note: This method is ONLY for logging in from an application that uses
-     * the JSF framework.</b>
-     * 
-     * <p>
-     * The method requires the <code>AuthenticationServiceUrl</code> context
-     * parameter defined in <code>web.xml</code> pointing to the location of the
-     * SafeOnline authentication web application.
-     * </p>
-     * 
-     * <p>
-     * The method also requires the <code>ApplicationName</code> context
-     * parameter defined in <code>web.xml</code> containing the application name
-     * that will be communicated towards the SafeOnline authentication web
-     * application.
-     * </p>
-     * 
-     * <p>
-     * The method also requires the <code>AuthenticationProtocol</code> context
-     * parameter defined in <code>web.xml</code> containing the authentication
-     * protocol used between the application and the OLAS authentication web
-     * application. This can be: SAML2_BROWSER_POST. Defaults to:
-     * SAML2_BROWSER_POST
-     * </p>
-     * 
-     * <p>
-     * The optional keystore resource name <code>KeyStoreResource</code> context
-     * parameter. The key pair within this keystore can be used by the
-     * authentication protocol handler to digitally sign the authentication
-     * request.
-     * </p>
-     * 
-     * <p>
-     * The optional keystore file name <code>KeyStoreFile</code> context
-     * parameter. The key pair within this keystore can be used by the
-     * authentication protocol handler to digitally sign the authentication
-     * request.
-     * </p>
-     * 
-     * <p>
-     * The optional <code>KeyStoreType</code> key store type context parameter.
-     * Accepted values are: <code>pkcs12</code> and <code>jks</code>.
-     * </p>
-     * 
-     * <p>
-     * The optional <code>KeyStorePassword</code> context parameter contains the
-     * password to unlock the keystore and key entry.
-     * </p>
-     * 
-     * @param targetPage
-     *            the page to which the user should be redirected after login.
-     */
-    @SuppressWarnings("unchecked")
-    public static String login(String targetPage) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
 
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
+		try {
+			return login(externalContext.getInitParameterMap(), targetPage,
+					(HttpServletRequest) externalContext.getRequest(),
+					(HttpServletResponse) externalContext.getResponse());
+		}
 
-        try {
-            return login(externalContext.getInitParameterMap(), targetPage,
-                    (HttpServletRequest) externalContext.getRequest(),
-                    (HttpServletResponse) externalContext.getResponse());
-        }
+		finally {
+			/*
+			 * Signal the JavaServer Faces implementation that the HTTP response
+			 * for this request has already been generated (such as an HTTP
+			 * redirect), and that the request processing lifecycle should be
+			 * terminated as soon as the current phase is completed.
+			 */
+			context.responseComplete();
+		}
+	}
 
-        finally {
-            /*
-             * Signal the JavaServer Faces implementation that the HTTP response
-             * for this request has already been generated (such as an HTTP
-             * redirect), and that the request processing lifecycle should be
-             * terminated as soon as the current phase is completed.
-             */
-            context.responseComplete();
-        }
-    }
+	/**
+	 * Performs a SafeOnline login using the SafeOnline authentication web
+	 * application.
+	 * 
+	 * <b>Note: This is a general purpose method that should work for any web
+	 * application framework.</b>
+	 * 
+	 * @see #login(String) For details about the init parameters that should be
+	 *      configured in the application's <code>web.xml</code>.
+	 * 
+	 * @param targetPage
+	 *            the page to which the user should be redirected after login.
+	 * @param request
+	 *            The {@link HttpServletRequest} object from the servlet making
+	 *            the login request.
+	 * @param response
+	 *            The {@link HttpServletResponse} object from the servlet making
+	 *            the login request.
+	 */
+	public static String login(String targetPage, HttpServletRequest request,
+			HttpServletResponse response) {
 
-    /**
-     * Performs a SafeOnline login using the SafeOnline authentication web
-     * application.
-     * 
-     * <b>Note: This is a general purpose method that should work for any web
-     * application framework.</b>
-     * 
-     * @see #login(String) For details about the init parameters that should be
-     *      configured in the application's <code>web.xml</code>.
-     * 
-     * @param targetPage
-     *            the page to which the user should be redirected after login.
-     * @param request
-     *            The {@link HttpServletRequest} object from the servlet making
-     *            the login request.
-     * @param response
-     *            The {@link HttpServletResponse} object from the servlet making
-     *            the login request.
-     */
-    public static String login(String targetPage, HttpServletRequest request,
-            HttpServletResponse response) {
+		Map<String, String> config = new HashMap<String, String>();
+		ServletContext context = request.getSession().getServletContext();
 
-        Map<String, String> config = new HashMap<String, String>();
-        ServletContext context = request.getSession().getServletContext();
+		@SuppressWarnings("unchecked")
+		Enumeration<String> names = context.getInitParameterNames();
+		while (names.hasMoreElements()) {
+			String name = names.nextElement();
+			config.put(name, context.getInitParameter(name));
+		}
 
-        @SuppressWarnings("unchecked")
-        Enumeration<String> names = context.getInitParameterNames();
-        while (names.hasMoreElements()) {
-            String name = names.nextElement();
-            config.put(name, context.getInitParameter(name));
-        }
+		return login(config, targetPage, request, response);
+	}
 
-        return login(config, targetPage, request, response);
-    }
+	private static String login(Map<String, String> config, String targetPage,
+			HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
-    private static String login(Map<String, String> config, String targetPage,
-            HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+		/* Initialize parameters from web.xml */
+		String authenticationServiceUrl = getInitParameter(config,
+				AUTH_SERVICE_URL_INIT_PARAM);
+		String applicationName = getInitParameter(config,
+				APPLICATION_NAME_INIT_PARAM);
+		String applicationFriendlyName = getInitParameter(config,
+				APPLICATION_FRIENDLY_NAME_INIT_PARAM, null);
+		String authenticationProtocolString = getInitParameter(config,
+				AUTHN_PROTOCOL_INIT_PARAM, DEFAULT_AUTHN_PROTOCOL.name());
+		String keyStoreResource = getInitParameter(config,
+				KEY_STORE_RESOURCE_INIT_PARAM, null);
+		String keyStoreFile = getInitParameter(config,
+				KEY_STORE_FILE_INIT_PARAM, null);
+		String keyStorePassword = getInitParameter(config,
+				KEY_STORE_PASSWORD_INIT_PARAM, null);
+		String keyStoreType = getInitParameter(config,
+				KEY_STORE_TYPE_INIT_PARAM, null);
+		LOG.debug("redirecting to: " + authenticationServiceUrl);
 
-        /* Initialize parameters from web.xml */
-        String authenticationServiceUrl = getInitParameter(config,
-                AUTH_SERVICE_URL_INIT_PARAM);
-        String applicationName = getInitParameter(config,
-                APPLICATION_NAME_INIT_PARAM);
-        String authenticationProtocolString = getInitParameter(config,
-                AUTHN_PROTOCOL_INIT_PARAM, DEFAULT_AUTHN_PROTOCOL.name());
-        String keyStoreResource = getInitParameter(config,
-                KEY_STORE_RESOURCE_INIT_PARAM, null);
-        String keyStoreFile = getInitParameter(config,
-                KEY_STORE_FILE_INIT_PARAM, null);
-        String keyStorePassword = getInitParameter(config,
-                KEY_STORE_PASSWORD_INIT_PARAM, null);
-        String keyStoreType = getInitParameter(config,
-                KEY_STORE_TYPE_INIT_PARAM, null);
-        LOG.debug("redirecting to: " + authenticationServiceUrl);
+		/* Figure out what protocol to use. */
+		AuthenticationProtocol authenticationProtocol = null;
+		try {
+			authenticationProtocol = AuthenticationProtocol
+					.toAuthenticationProtocol(authenticationProtocolString);
+		} catch (UnavailableException e) {
+			throw new RuntimeException(
+					"could not parse authentication protocol: "
+							+ authenticationProtocolString);
+		}
+		LOG.debug("authentication protocol: " + authenticationProtocol);
 
-        /* Figure out what protocol to use. */
-        AuthenticationProtocol authenticationProtocol = null;
-        try {
-            authenticationProtocol = AuthenticationProtocol
-                    .toAuthenticationProtocol(authenticationProtocolString);
-        } catch (UnavailableException e) {
-            throw new RuntimeException(
-                    "could not parse authentication protocol: "
-                            + authenticationProtocolString);
-        }
-        LOG.debug("authentication protocol: " + authenticationProtocol);
+		/* Load key data if provided. */
+		KeyPair keyPair = null;
+		X509Certificate certificate = null;
+		PrivateKeyEntry privateKeyEntry = getApplicationKey(keyStoreFile,
+				keyStoreResource, keyStoreType, keyStorePassword);
+		if (privateKeyEntry != null) {
+			keyPair = new KeyPair(privateKeyEntry.getCertificate()
+					.getPublicKey(), privateKeyEntry.getPrivateKey());
+			certificate = (X509Certificate) privateKeyEntry.getCertificate();
+		}
 
-        /* Load key data if provided. */
-        KeyPair keyPair = null;
-        X509Certificate certificate = null;
-        PrivateKeyEntry privateKeyEntry = getApplicationKey(keyStoreFile,
-                keyStoreResource, keyStoreType, keyStorePassword);
-        if (privateKeyEntry != null) {
-            keyPair = new KeyPair(privateKeyEntry.getCertificate()
-                    .getPublicKey(), privateKeyEntry.getPrivateKey());
-            certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        }
+		/*
+		 * Convert our target URL to an absolute URL and use encodeRedirectURL
+		 * to add parameters to it that should help preserve the session upon
+		 * return from SafeOnline auth should the browser not support cookies.
+		 */
+		String requestUrl = httpRequest.getRequestURL().toString();
+		String targetUrl = getTargetUrl(requestUrl, targetPage);
+		targetUrl = httpResponse.encodeRedirectURL(targetUrl);
+		LOG.debug("target url: " + targetUrl);
 
-        /*
-         * Convert our target URL to an absolute URL and use encodeRedirectURL
-         * to add parameters to it that should help preserve the session upon
-         * return from SafeOnline auth should the browser not support cookies.
-         */
-        String requestUrl = httpRequest.getRequestURL().toString();
-        String targetUrl = getTargetUrl(requestUrl, targetPage);
-        targetUrl = httpResponse.encodeRedirectURL(targetUrl);
-        LOG.debug("target url: " + targetUrl);
+		/* Initialize and execute the authentication protocol. */
+		try {
+			AuthenticationProtocolManager.createAuthenticationProtocolHandler(
+					authenticationProtocol, authenticationServiceUrl,
+					applicationName, applicationFriendlyName, keyPair,
+					certificate, config, httpRequest);
+			LOG.debug("initialized protocol");
+		} catch (ServletException e) {
+			throw new RuntimeException(
+					"could not init authentication protocol handler: "
+							+ authenticationProtocol + "; original message: "
+							+ e.getMessage(), e);
+		}
+		try {
+			AuthenticationProtocolManager.initiateAuthentication(httpRequest,
+					httpResponse, targetUrl);
+			LOG.debug("executed protocol");
+		} catch (Exception e) {
+			throw new RuntimeException("could not initiate authentication: "
+					+ e.getMessage(), e);
+		}
 
-        /* Initialize and execute the authentication protocol. */
-        try {
-            AuthenticationProtocolManager.createAuthenticationProtocolHandler(
-                    authenticationProtocol, authenticationServiceUrl,
-                    applicationName, keyPair, certificate, config, httpRequest);
-            LOG.debug("initialized protocol");
-        } catch (ServletException e) {
-            throw new RuntimeException(
-                    "could not init authentication protocol handler: "
-                            + authenticationProtocol + "; original message: "
-                            + e.getMessage(), e);
-        }
-        try {
-            AuthenticationProtocolManager.initiateAuthentication(httpRequest,
-                    httpResponse, targetUrl);
-            LOG.debug("executed protocol");
-        } catch (Exception e) {
-            throw new RuntimeException("could not initiate authentication: "
-                    + e.getMessage(), e);
-        }
+		return null;
+	}
 
-        return null;
-    }
+	/**
+	 * Load the application key from the given key store file OR resource (at
+	 * least one must be <code>null</code>).
+	 * 
+	 * @param keyStorePassword
+	 * @param keyStoreType
+	 */
+	private static PrivateKeyEntry getApplicationKey(String keyStoreFile,
+			String keyStoreResource, String keyStoreType,
+			String keyStorePassword) {
 
-    /**
-     * Load the application key from the given key store file OR resource (at
-     * least one must be <code>null</code>).
-     * 
-     * @param keyStorePassword
-     * @param keyStoreType
-     */
-    private static PrivateKeyEntry getApplicationKey(String keyStoreFile,
-            String keyStoreResource, String keyStoreType,
-            String keyStorePassword) {
+		if (null == keyStoreResource && null == keyStoreFile)
+			return null;
 
-        if (null == keyStoreResource && null == keyStoreFile)
-            return null;
+		/* Can't have both resource and file defined. */
+		if (null != keyStoreResource && null != keyStoreFile) {
+			throw new RuntimeException(
+					"both KeyStoreResource and KeyStoreFile are defined");
+		}
 
-        /* Can't have both resource and file defined. */
-        if (null != keyStoreResource && null != keyStoreFile) {
-            throw new RuntimeException(
-                    "both KeyStoreResource and KeyStoreFile are defined");
-        }
+		InputStream keyStoreInputStream;
+		if (null != keyStoreResource) {
+			keyStoreInputStream = Thread.currentThread()
+					.getContextClassLoader().getResourceAsStream(
+							keyStoreResource);
+			if (null == keyStoreInputStream) {
+				throw new RuntimeException("resource not found: "
+						+ keyStoreResource);
+			}
+		} else {
+			try {
+				keyStoreInputStream = new FileInputStream(keyStoreFile);
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException("file not found: " + keyStoreFile);
+			}
+		}
 
-        InputStream keyStoreInputStream;
-        if (null != keyStoreResource) {
-            keyStoreInputStream = Thread.currentThread()
-                    .getContextClassLoader().getResourceAsStream(
-                            keyStoreResource);
-            if (null == keyStoreInputStream) {
-                throw new RuntimeException("resource not found: "
-                        + keyStoreResource);
-            }
-        } else {
-            try {
-                keyStoreInputStream = new FileInputStream(keyStoreFile);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException("file not found: " + keyStoreFile);
-            }
-        }
+		return KeyStoreUtils.loadPrivateKeyEntry(keyStoreType,
+				keyStoreInputStream, keyStorePassword, keyStorePassword);
+	}
 
-        return KeyStoreUtils.loadPrivateKeyEntry(keyStoreType,
-                keyStoreInputStream, keyStorePassword, keyStorePassword);
-    }
+	public static String getTargetUrl(String requestUrl, String targetPage) {
 
-    public static String getTargetUrl(String requestUrl, String targetPage) {
+		if (targetPage.matches("^https?://.*"))
+			return targetPage;
 
-        if (targetPage.matches("^https?://.*"))
-            return targetPage;
+		int lastSlash = requestUrl.lastIndexOf("/");
+		String prefix = requestUrl.substring(0, lastSlash);
+		String targetUrl = prefix + "/" + targetPage;
 
-        int lastSlash = requestUrl.lastIndexOf("/");
-        String prefix = requestUrl.substring(0, lastSlash);
-        String targetUrl = prefix + "/" + targetPage;
+		return targetUrl;
+	}
 
-        return targetUrl;
-    }
+	private static String getInitParameter(Map<String, String> config,
+			String parameterName) {
 
-    private static String getInitParameter(Map<String, String> config,
-            String parameterName) {
+		if (!config.containsKey(parameterName)) {
+			throw new RuntimeException("missing context-param in web.xml: "
+					+ parameterName);
+		}
 
-        if (!config.containsKey(parameterName)) {
-            throw new RuntimeException("missing context-param in web.xml: "
-                    + parameterName);
-        }
+		return config.get(parameterName);
+	}
 
-        return config.get(parameterName);
-    }
+	private static String getInitParameter(Map<String, String> config,
+			String parameterName, String defaultValue) {
 
-    private static String getInitParameter(Map<String, String> config,
-            String parameterName, String defaultValue) {
+		if (config.containsKey(parameterName))
+			return config.get(parameterName);
 
-        if (config.containsKey(parameterName))
-            return config.get(parameterName);
-
-        return defaultValue;
-    }
+		return defaultValue;
+	}
 }

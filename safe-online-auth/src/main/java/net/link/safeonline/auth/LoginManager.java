@@ -39,6 +39,8 @@ public class LoginManager {
 
 	public static final String APPLICATION_ID_ATTRIBUTE = "LoginManager.applicationId";
 
+	public static final String APPLICATION_FRIENDLY_NAME_ATTRIBUTE = "applicationName";
+
 	private LoginManager() {
 		// empty
 	}
@@ -121,6 +123,16 @@ public class LoginManager {
 		session.setAttribute(APPLICATION_ID_ATTRIBUTE, applicationId);
 	}
 
+	public static void setApplicationFriendlyName(HttpSession session,
+			String applicationFriendlyName) {
+		if (null == applicationFriendlyName) {
+			throw new IllegalArgumentException(
+					"applicationFriendlyName is null");
+		}
+		session.setAttribute(APPLICATION_FRIENDLY_NAME_ATTRIBUTE,
+				applicationFriendlyName);
+	}
+
 	public static void setTarget(HttpSession session, String target) {
 		if (null == target) {
 			throw new IllegalArgumentException("target is null");
@@ -153,12 +165,6 @@ public class LoginManager {
 		Set<DeviceEntity> requiredDevices = (Set<DeviceEntity>) session
 				.getAttribute(REQUIRED_DEVICES_ATTRIBUTE);
 		return requiredDevices;
-	}
-
-	public static String findApplication(HttpSession session) {
-		String application = (String) session
-				.getAttribute(APPLICATION_ID_ATTRIBUTE);
-		return application;
 	}
 
 	public static String getTarget(HttpSession session) {

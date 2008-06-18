@@ -88,6 +88,7 @@ public class AuthnRequestFactory {
 	 * 
 	 * @param issuerName
 	 * @param applicationName
+	 * @param applicationFriendlyName
 	 * @param signerKeyPair
 	 * @param assertionConsumerServiceURL
 	 *            the optional location of the assertion consumer service. This
@@ -101,9 +102,10 @@ public class AuthnRequestFactory {
 	 *            the optional list of allowed authentication devices.
 	 */
 	public static String createAuthnRequest(String issuerName,
-			String applicationName, KeyPair signerKeyPair,
-			String assertionConsumerServiceURL, String destinationURL,
-			Challenge<String> challenge, Set<String> devices) {
+			String applicationName, String applicationFriendlyName,
+			KeyPair signerKeyPair, String assertionConsumerServiceURL,
+			String destinationURL, Challenge<String> challenge,
+			Set<String> devices) {
 		if (null == signerKeyPair) {
 			throw new IllegalArgumentException(
 					"signer key pair should not be null");
@@ -147,6 +149,12 @@ public class AuthnRequestFactory {
 
 		if (null != destinationURL) {
 			request.setDestination(destinationURL);
+		}
+
+		if (null == applicationFriendlyName) {
+			request.setProviderName(applicationName);
+		} else {
+			request.setProviderName(applicationFriendlyName);
 		}
 
 		NameIDPolicy nameIdPolicy = buildXMLObject(NameIDPolicy.class,

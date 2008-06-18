@@ -9,7 +9,9 @@
 	<ui:define name="top_content">
 	</ui:define>
 	<ui:define name="content">
-		<h2>#{msgs.mobileAuthentication}</h2>
+
+		<h2>#{msgs.mobileAuthentication} : #{msgs.authenticatingFor}
+		#{applicationName}</h2>
 
 
 		<a4j:form id="auth-form" ajaxSubmit="true"

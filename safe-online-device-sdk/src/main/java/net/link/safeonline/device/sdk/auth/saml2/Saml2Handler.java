@@ -155,6 +155,8 @@ public class Saml2Handler implements Serializable {
 		}
 		LOG.debug("application: " + application);
 
+		String applicationFriendlyName = samlAuthnRequest.getProviderName();
+
 		String nodeName = samlAuthnRequest.getIssuer().getValue();
 
 		String samlAuthnRequestId = samlAuthnRequest.getID();
@@ -174,11 +176,14 @@ public class Saml2Handler implements Serializable {
 		}
 
 		this.session.setAttribute("applicationId", application);
+		this.session.setAttribute("applicationName", applicationFriendlyName);
 
 		AuthenticationContext authenticationContext = AuthenticationContext
 				.getAuthenticationContext(request.getSession());
 		authenticationContext.setWantedDevices(devices);
 		authenticationContext.setApplication(application);
+		authenticationContext
+				.setApplicationFriendlyName(applicationFriendlyName);
 		authenticationContext.setNodeName(nodeName);
 		authenticationContext.setInResponseTo(samlAuthnRequestId);
 		authenticationContext.setTargetUrl(assertionConsumerService);

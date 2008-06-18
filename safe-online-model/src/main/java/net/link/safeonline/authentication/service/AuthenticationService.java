@@ -193,6 +193,14 @@ public interface AuthenticationService {
 	String getExpectedApplicationId();
 
 	/**
+	 * Gives back the application friendly name we are authenticating for.
+	 * 
+	 * Calling this method is only valid after a call to
+	 * {@link #initialize(AuthnRequest)}.
+	 */
+	String getExpectedApplicationFriendlyName();
+
+	/**
 	 * Gives back the target to which to send the final authentication response.
 	 * 
 	 * Calling this method is only valid after a call to

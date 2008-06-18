@@ -184,7 +184,26 @@
 		<url-pattern>/authenticationexit</url-pattern>
 	</servlet-mapping>]]></programlisting>
 		<para>
-			Upon successful authentication, an
+			After the
+			<code>LandingServlet</code>
+			has handled the incoming SAML authentication request, 2 session
+			attributes will be available.
+			<itemizedlist>
+				<listitem>
+					<code>applicationId</code>
+					: The machine readable application name.
+				</listitem>
+				<listitem>
+					<code>applicationName</code>
+					: The human readable application name.
+				</listitem>
+			</itemizedlist>
+			Also a partially filled in
+			<code>AuthenticationContext</code>
+			will be pushed on the session containing both attributes.
+		</para>
+		<para>
+			Upon successful authentication, this
 			<code>AuthenticationContext</code>
 			should be filled in containing the authentication details such as :
 			<itemizedlist>

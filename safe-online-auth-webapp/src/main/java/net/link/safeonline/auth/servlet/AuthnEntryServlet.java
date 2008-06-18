@@ -109,6 +109,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 		HttpSession session = request.getSession();
 		LoginManager
 				.setApplication(session, protocolContext.getApplicationId());
+		LoginManager.setApplicationFriendlyName(session, protocolContext
+				.getApplicationFriendlyName());
 		LoginManager.setTarget(session, protocolContext.getTarget());
 		LoginManager.setRequiredDevices(session, protocolContext
 				.getRequiredDevices());

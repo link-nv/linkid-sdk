@@ -65,7 +65,7 @@ public class AuthnRequestFactoryTest {
 		long begin = System.currentTimeMillis();
 		Set<String> devices = Collections.singleton(device);
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				applicationName, keyPair, assertionConsumerServiceURL,
+				applicationName, null, keyPair, assertionConsumerServiceURL,
 				destinationURL, challenge, devices);
 		long end = System.currentTimeMillis();
 
@@ -254,7 +254,7 @@ public class AuthnRequestFactoryTest {
 
 		// operate
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				applicationName, keyPair, null, null, null, null);
+				applicationName, null, keyPair, null, null, null, null);
 		LOG.debug("result: " + result);
 	}
 

@@ -215,7 +215,7 @@ public class AuthenticationServiceBeanTest {
 		String destinationUrl = "http://test.destination.url";
 
 		String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationName, applicationKeyPair,
+				applicationName, applicationName, null, applicationKeyPair,
 				assertionConsumerService, destinationUrl, null, null);
 		AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -261,7 +261,7 @@ public class AuthenticationServiceBeanTest {
 		devices.add(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
 
 		String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationName, applicationKeyPair,
+				applicationName, applicationName, null, applicationKeyPair,
 				assertionConsumerService, destinationUrl, null, devices);
 		AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -324,7 +324,7 @@ public class AuthenticationServiceBeanTest {
 						"CN=TestApplication");
 
 		String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationName, applicationKeyPair,
+				applicationName, applicationName, null, applicationKeyPair,
 				assertionConsumerService, destinationUrl, null, null);
 		AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
@@ -364,7 +364,7 @@ public class AuthenticationServiceBeanTest {
 		String destinationUrl = "http://test.destination.url";
 
 		String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationName, applicationKeyPair,
+				applicationName, applicationName, null, applicationKeyPair,
 				assertionConsumerService, destinationUrl, null, null);
 		AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 

@@ -36,6 +36,8 @@ public interface AuthenticationProtocolHandler extends Serializable {
 	 *            handler.
 	 * @param applicationName
 	 *            the application name to be used by the handler.
+	 * @param applicationFriendlyName
+	 *            the human readable application name
 	 * @param applicationKeyPair
 	 *            the application RSA key pair used to sign the authentication
 	 *            request.
@@ -47,7 +49,8 @@ public interface AuthenticationProtocolHandler extends Serializable {
 	 *            parameters.
 	 */
 	void init(String authnServiceUrl, String applicationName,
-			KeyPair applicationKeyPair, X509Certificate applicationCertificate,
+			String applicationFriendlyName, KeyPair applicationKeyPair,
+			X509Certificate applicationCertificate,
 			Map<String, String> configParams);
 
 	/**

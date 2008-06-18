@@ -99,6 +99,9 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 	@Init(name = "ApplicationName")
 	private String applicationName;
 
+	@Init(name = "ApplicationFriendlyName", optional = true)
+	private String applicationFriendlyName;
+
 	@Init(name = "AuthenticationProtocol", optional = true)
 	private String authenticationProtocolString;
 
@@ -184,8 +187,9 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 			ServletException {
 		AuthenticationProtocolManager.createAuthenticationProtocolHandler(
 				this.authenticationProtocol, this.authenticationServiceUrl,
-				this.applicationName, this.applicationKeyPair,
-				this.applicationCertificate, this.configParams, httpRequest);
+				this.applicationName, this.applicationFriendlyName,
+				this.applicationKeyPair, this.applicationCertificate,
+				this.configParams, httpRequest);
 		AuthenticationProtocolManager.initiateAuthentication(httpRequest,
 				httpResponse);
 	}

@@ -170,7 +170,7 @@ public class AuthEntryServletTest {
 		String applicationName = "test-application-id";
 		String assertionConsumerService = "http://test.assertion.consumer.service";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationName, applicationKeyPair,
+				applicationName, applicationName, null, applicationKeyPair,
 				assertionConsumerService, servletLocation, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
@@ -186,6 +186,10 @@ public class AuthEntryServletTest {
 				.andStubReturn(AuthenticationState.INIT);
 		expect(this.mockAuthenticationService.getExpectedApplicationId())
 				.andStubReturn(applicationName);
+		expect(
+				this.mockAuthenticationService
+						.getExpectedApplicationFriendlyName()).andStubReturn(
+				applicationName);
 		expect(this.mockAuthenticationService.getExpectedTarget())
 				.andStubReturn(assertionConsumerService);
 		expect(this.mockAuthenticationService.getRequiredDevicePolicy())

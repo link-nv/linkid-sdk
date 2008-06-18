@@ -134,6 +134,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	private String expectedApplicationId;
 
+	private String expectedApplicationFriendlyName;
+
 	private String expectedChallengeId;
 
 	private String expectedDeviceChallengeId;
@@ -241,6 +243,13 @@ public class AuthenticationServiceBean implements AuthenticationService,
 					"missing AssertionConsumerServiceURL");
 		}
 
+		String applicationFriendlyName = samlAuthnRequest.getProviderName();
+		if (null == applicationFriendlyName) {
+			LOG.debug("missing ProviderName");
+			throw new AuthenticationInitializationException(
+					"missing ProviderName");
+		}
+
 		String samlAuthnRequestId = samlAuthnRequest.getID();
 		LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
 
@@ -275,6 +284,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		 */
 		this.authenticationState = INITIALIZED;
 		this.expectedApplicationId = issuerName;
+		this.expectedApplicationFriendlyName = applicationFriendlyName;
 		this.requiredDevicePolicy = devices;
 		this.expectedTarget = assertionConsumerService;
 		this.expectedChallengeId = samlAuthnRequestId;
@@ -306,7 +316,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		Challenge<String> challenge = new Challenge<String>();
 
 		String samlRequestToken = AuthnRequestFactory.createAuthnRequest(node
-				.getName(), this.expectedApplicationId, keyPair,
+				.getName(), this.expectedApplicationId,
+				this.expectedApplicationFriendlyName, keyPair,
 				authenticationServiceUrl, targetUrl, challenge, devices);
 
 		String encodedSamlRequestToken = Base64.encode(samlRequestToken
@@ -594,6 +605,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.authenticatedSubject = null;
 		this.authenticationDevice = null;
 		this.expectedApplicationId = null;
+		this.expectedApplicationFriendlyName = null;
 		this.expectedChallengeId = null;
 		this.requiredDevicePolicy = null;
 		this.expectedTarget = null;
@@ -748,6 +760,13 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			throw new IllegalStateException("call initialize first");
 		}
 		return this.expectedApplicationId;
+	}
+
+	public String getExpectedApplicationFriendlyName() {
+		if (this.authenticationState == INIT) {
+			throw new IllegalStateException("call initialize first");
+		}
+		return this.expectedApplicationFriendlyName;
 	}
 
 	public String getExpectedTarget() {

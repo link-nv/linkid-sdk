@@ -176,7 +176,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 					.createAuthenticationProtocolHandler(
 							AuthenticationProtocol.SAML2_BROWSER_POST,
 							"http://test.authn.service", "test-application",
-							keyPair, null, configParams, request);
+							null, keyPair, null, configParams, request);
 			authenticationProtocolHandler.initiateAuthentication(request,
 					response, "http://target");
 		}
@@ -221,7 +221,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 					.createAuthenticationProtocolHandler(
 							AuthenticationProtocol.SAML2_BROWSER_POST,
 							"http://test.authn.service", "test-application",
-							keyPair, certificate, configParams, request);
+							null, keyPair, certificate, configParams, request);
 			Saml2BrowserPostAuthenticationProtocolHandler saml2Handler = (Saml2BrowserPostAuthenticationProtocolHandler) authenticationProtocolHandler;
 			try {
 				Field challengeField = Saml2BrowserPostAuthenticationProtocolHandler.class
