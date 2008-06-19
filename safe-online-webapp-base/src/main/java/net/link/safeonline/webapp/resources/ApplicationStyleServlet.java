@@ -75,8 +75,6 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 
-		this.securityCheck = false;
-
 		Properties velocityProperties = new Properties();
 		velocityProperties.put("resource.loader", "class");
 		velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,

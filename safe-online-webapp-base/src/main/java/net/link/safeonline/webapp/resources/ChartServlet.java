@@ -37,7 +37,6 @@ public class ChartServlet extends AbstractInjectionServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		this.securityCheck = false;
 	}
 
 	@Override

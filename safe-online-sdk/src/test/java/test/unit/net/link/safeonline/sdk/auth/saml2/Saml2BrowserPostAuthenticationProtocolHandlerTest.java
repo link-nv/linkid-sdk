@@ -145,7 +145,6 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 			response.getAny().add(objectFactory.createStatus(status));
 			return response;
 		}
-
 	}
 
 	public static class SamlRequestTestServlet extends HttpServlet {

@@ -51,7 +51,6 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		this.securityCheck = false;
 	}
 
 	/**
@@ -60,7 +59,6 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
 	@Override
 	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		this.securityCheck = false;
 
 		boolean logoWritten = false;
 		String applicationName = request.getParameter("applicationName");

@@ -46,6 +46,15 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
 	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
+	@Init(name = "LoginUrl")
+	private String loginUrl;
+
+	@Init(name = "RegisterDeviceUrl")
+	private String registerDeviceUrl;
+
+	@Init(name = "NewUserDeviceUrl")
+	private String newUserDeviceUrl;
+
 	@Init(name = "DeviceErrorUrl")
 	private String deviceErrorUrl;
 
@@ -61,12 +70,14 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 			deviceMapping = authenticationService.register(request);
 		} catch (NodeNotFoundException e) {
 			redirectToErrorPage(request, response, this.deviceErrorUrl,
-					RESOURCE_BASE, new ErrorMessage("deviceErrorMessage",
+					RESOURCE_BASE, new ErrorMessage(
+							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
 							"errorProtocolHandlerFinalization"));
 			return;
 		} catch (DeviceMappingNotFoundException e) {
 			redirectToErrorPage(request, response, this.deviceErrorUrl,
-					RESOURCE_BASE, new ErrorMessage("deviceErrorMessage",
+					RESOURCE_BASE, new ErrorMessage(
+							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
 							"errorDeviceRegistrationNotFound"));
 			return;
 		}
@@ -77,9 +88,9 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 			 */
 			if (authenticationService.getAuthenticationState().equals(
 					AuthenticationState.USER_AUTHENTICATED)) {
-				response.sendRedirect("../register-device.seam");
+				response.sendRedirect(this.registerDeviceUrl);
 			} else {
-				response.sendRedirect("../new-user-device.seam");
+				response.sendRedirect(this.newUserDeviceUrl);
 			}
 
 		} else {
@@ -88,7 +99,7 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 			 */
 			LoginManager.relogin(request.getSession(), deviceMapping
 					.getDevice());
-			response.sendRedirect("../login");
+			response.sendRedirect(this.loginUrl);
 		}
 	}
 }

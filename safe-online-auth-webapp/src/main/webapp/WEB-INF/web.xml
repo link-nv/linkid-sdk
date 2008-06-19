@@ -201,6 +201,18 @@
 			net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet 
 		</servlet-class>
 		<init-param>
+			<param-name>RegisterDeviceUrl</param-name>
+			<param-value>../register-device.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>NewUserDeviceUrl</param-name>
+			<param-value>../new-user-device.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>LoginUrl</param-name>
+			<param-value>../login</param-value>
+		</init-param>
+		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
 			<param-value>../device-error.seam</param-value>
 		</init-param>

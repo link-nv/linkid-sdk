@@ -60,12 +60,14 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 			deviceMapping = authenticationService.authenticate(request);
 		} catch (NodeNotFoundException e) {
 			redirectToErrorPage(request, response, this.deviceErrorUrl,
-					RESOURCE_BASE, new ErrorMessage("deviceErrorMessage",
+					RESOURCE_BASE, new ErrorMessage(
+							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
 							"errorProtocolHandlerFinalization"));
 			return;
 		} catch (DeviceMappingNotFoundException e) {
 			redirectToErrorPage(request, response, this.deviceErrorUrl,
-					RESOURCE_BASE, new ErrorMessage("deviceErrorMessage",
+					RESOURCE_BASE, new ErrorMessage(
+							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
 							"errorDeviceRegistrationNotFound"));
 			return;
 		}
