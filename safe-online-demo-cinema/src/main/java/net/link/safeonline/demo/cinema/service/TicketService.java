@@ -12,8 +12,7 @@ import javax.ejb.Local;
 @Local
 public interface TicketService {
 
-    public static final String LOCAL_BINDING = "SafeOnlineTicketDemo/TicketServiceBean/local";
+	public static final String LOCAL_BINDING = "SafeOnlineTicketDemo/TicketServiceBean/local";
 
-
-    boolean hasValidPass(String nrn, String from, String to);
+	boolean hasValidPass(String nrn, String time);
 }
