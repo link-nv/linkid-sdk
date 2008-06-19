@@ -69,8 +69,6 @@ public class ExitServletTest {
 
 	private String protocolErrorUrl = "protocol-error";
 
-	private String protocol = "http";
-
 	private ServletTestManager exitServletTestManager;
 
 	private String username = "test-user-name";
@@ -151,7 +149,6 @@ public class ExitServletTest {
 		this.exitServletTestManager = new ServletTestManager();
 		Map<String, String> servletInitParams = new HashMap<String, String>();
 		servletInitParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
-		servletInitParams.put("Protocol", this.protocol);
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 
 		DeviceClassEntity deviceClass = new DeviceClassEntity(

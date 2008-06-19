@@ -69,10 +69,6 @@
 		<param-value>${safe-online.host.basename}</param-value>
 	</context-param>
 	<context-param>
-		<param-name>Protocol</param-name>
-		<param-value>${safe-online.host.protocol}</param-value>
-	</context-param>
-	<context-param>
 		<param-name>LandingPage</param-name>
 		<param-value> ${safe-online.host.basename}/olas/login </param-value>
 	</context-param>
@@ -189,6 +185,10 @@
 		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class> net.link.safeonline.user.servlet.DeviceLandingServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>DevicesPage</param-name>
+			<param-value>devices.seam</param-value>
+		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>device-error.seam</param-value>

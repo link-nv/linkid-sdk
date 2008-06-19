@@ -77,8 +77,6 @@ public class LandingServletTest {
 
 	private Set<String> wantedDevices;
 
-	private String protocol = "http";
-
 	private KeyPair keyPair;
 
 	@Before
@@ -123,7 +121,6 @@ public class LandingServletTest {
 
 		this.servletTestManager = new ServletTestManager();
 		Map<String, String> initParams = new HashMap<String, String>();
-		initParams.put("Protocol", this.protocol);
 		initParams.put("AuthenticationUrl", this.authenticationUrl);
 		initParams.put("KeyStoreResource", p12ResourceName);
 		initParams.put("KeyStorePassword", "secret");

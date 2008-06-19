@@ -42,6 +42,9 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
+	@Init(name = "DevicesPage")
+	private String devicesPage;
+
 	@Init(name = "ErrorPage", optional = true)
 	private String errorPage;
 
@@ -85,6 +88,6 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 		request.getSession().removeAttribute(
 				DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
 
-		response.sendRedirect("./devices.seam");
+		response.sendRedirect(this.devicesPage);
 	}
 }

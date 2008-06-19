@@ -79,8 +79,6 @@ public class LandingServletTest {
 
 	private String applicationName = "test-application";
 
-	private String protocol = "http";
-
 	private KeyPair keyPair;
 
 	String userId = UUID.randomUUID().toString();
@@ -127,7 +125,6 @@ public class LandingServletTest {
 
 		this.servletTestManager = new ServletTestManager();
 		Map<String, String> initParams = new HashMap<String, String>();
-		initParams.put("Protocol", this.protocol);
 		initParams.put("RegistrationUrl", this.registrationUrl);
 		initParams.put("UpdateUrl", this.updateUrl);
 		initParams.put("RemovalUrl", this.removalUrl);

@@ -58,10 +58,6 @@
 		<param-value> ${safe-online.host.basename} </param-value>
 	</context-param>
 	<context-param>
-		<param-name>Protocol</param-name>
-		<param-value>${safe-online.host.protocol}</param-value>
-	</context-param>
-	<context-param>
 		<param-name>ApplicationName</param-name>
 		<param-value>olas-auth</param-value>
 	</context-param>

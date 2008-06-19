@@ -11,8 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,19 +41,12 @@ public class ExitServletTest {
 
 	private String location;
 
-	private String protocol = "http";
-
 	String userId = UUID.randomUUID().toString();
 
 	@Before
 	public void setUp() throws Exception {
 		this.servletTestManager = new ServletTestManager();
-		Map<String, String> initParams = new HashMap<String, String>();
-		initParams.put("Protocol", this.protocol);
-		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-
-		this.servletTestManager.setUp(ExitServlet.class, initParams, null,
-				null, initialSessionAttributes);
+		this.servletTestManager.setUp(ExitServlet.class);
 		this.location = this.servletTestManager.getServletLocation();
 		this.httpClient = new HttpClient();
 	}

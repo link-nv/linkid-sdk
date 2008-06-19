@@ -9,9 +9,6 @@ package test.unit.net.link.safeonline.beid.servlet;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.beid.servlet.IdentificationDataServlet;
@@ -30,17 +27,12 @@ public class IdentificationDataServletTest {
 	private static final Log LOG = LogFactory
 			.getLog(IdentificationDataServletTest.class);
 
-	private String protocol = "http";
-
 	private ServletTestManager servletTestManager;
 
 	@Before
 	public void setUp() throws Exception {
 		this.servletTestManager = new ServletTestManager();
-		Map<String, String> servletInitParams = Collections.singletonMap(
-				"Protocol", this.protocol);
-		this.servletTestManager.setUp(IdentificationDataServlet.class,
-				servletInitParams);
+		this.servletTestManager.setUp(IdentificationDataServlet.class);
 	}
 
 	@After

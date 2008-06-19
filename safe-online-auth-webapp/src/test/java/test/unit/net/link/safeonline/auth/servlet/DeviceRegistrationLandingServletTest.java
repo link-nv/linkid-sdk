@@ -29,7 +29,6 @@ import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -62,11 +61,7 @@ public class DeviceRegistrationLandingServletTest {
 
 	private String loginUrl = "login";
 
-	private String protocol = "http";
-
 	String userId = UUID.randomUUID().toString();
-
-	private JndiTestUtils jndiTestUtils;
 
 	private AuthenticationService mockAuthenticationService;
 
@@ -74,8 +69,6 @@ public class DeviceRegistrationLandingServletTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
 
 		this.mockAuthenticationService = createMock(AuthenticationService.class);
 
@@ -85,7 +78,6 @@ public class DeviceRegistrationLandingServletTest {
 		initParams.put("NewUserDeviceUrl", this.newUserDeviceUrl);
 		initParams.put("LoginUrl", this.loginUrl);
 		initParams.put("DeviceErrorUrl", this.deviceErrorUrl);
-		initParams.put("Protocol", this.protocol);
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		initialSessionAttributes.put(
 				AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
@@ -104,7 +96,6 @@ public class DeviceRegistrationLandingServletTest {
 	@After
 	public void tearDown() throws Exception {
 		this.servletTestManager.tearDown();
-		this.jndiTestUtils.tearDown();
 	}
 
 	@Test
