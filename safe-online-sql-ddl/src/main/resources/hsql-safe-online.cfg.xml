@@ -8,6 +8,9 @@
 		<property name="dialect">
             org.hibernate.dialect.HSQLDialect
 		</property>
+        <property name="hibernate.jdbc.batch_size">
+            0
+        </property>  
 		&safe-online-cfg;
 	</session-factory>
 </hibernate-configuration>
