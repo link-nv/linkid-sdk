@@ -18,7 +18,7 @@ public class HomePage extends Layout {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    FilmService               filmService      = new FilmServiceBean();
+    transient FilmService     filmService      = new FilmServiceBean();
 
 
     public HomePage() {
@@ -29,7 +29,7 @@ public class HomePage extends Layout {
         // add(new PageLink("editLink", FindCinema.class));
 
         add(new FilmsForm("films"));
-        add(new TheatersForm("theaters"));
+        // add(new TheatersForm("theaters"));
     }
 
 
@@ -43,7 +43,7 @@ public class HomePage extends Layout {
             super(id);
 
             List<FilmEntity> data = HomePage.this.filmService.getAllFilms();
-            add(new ListView<FilmEntity>("films", data) {
+            add(new ListView<FilmEntity>("list", data) {
 
                 private static final long serialVersionUID = 1L;
 

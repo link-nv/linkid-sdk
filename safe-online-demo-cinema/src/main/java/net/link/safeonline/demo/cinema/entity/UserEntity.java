@@ -7,6 +7,7 @@
 
 package net.link.safeonline.demo.cinema.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,13 +16,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class UserEntity {
+public class UserEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @OneToMany(mappedBy = "owner")
     private Set<TicketEntity> tickets;
 
     @Id
-    private String      id;
+    private String            id;
 
 
     public UserEntity() {

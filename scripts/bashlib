@@ -327,10 +327,10 @@ spinner() {
     while true; do
         if (( output ))
         then echo -n $'\r'                                          >&$fd
-        else echo -n "$load"                                        >&$fd
+        else echo -n "$load$eel"                                        >&$fd
         fi
 
-        echo -n "$eel$reset $style$color${graphics[i++ % 4]} "      >&$fd
+        echo -n "$reset $style$color${graphics[i++ % 4]} "      >&$fd
 
         if (( output ))
         then echo -n "$reset$bold$blue-$reset "                     >&$fd

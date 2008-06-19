@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.demo.cinema.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,24 +28,26 @@ import javax.persistence.Id;
  * @author mbillemo
  */
 @Entity
-public class ShowTimeEntity {
+public class ShowTimeEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @SuppressWarnings("unused")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private long              id;
 
-    private Long monStart;
-    private Long tueStart;
-    private Long wedStart;
-    private Long thuStart;
-    private Long friStart;
-    private Long satStart;
-    private Long sunStart;
+    private Long              monStart;
+    private Long              tueStart;
+    private Long              wedStart;
+    private Long              thuStart;
+    private Long              friStart;
+    private Long              satStart;
+    private Long              sunStart;
 
 
-    public ShowTimeEntity(Long monStart, Long tueStart, Long wedStart, Long thuStart,
-            Long friStart, Long satStart, Long sunStart) {
+    public ShowTimeEntity(Long monStart, Long tueStart, Long wedStart,
+            Long thuStart, Long friStart, Long satStart, Long sunStart) {
 
         this.monStart = monStart;
         this.tueStart = tueStart;

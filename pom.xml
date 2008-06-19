@@ -1284,6 +1284,18 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
+		<!--repository>
+			<id>org.wicketstuff</id> 
+			<name>Wicket Stuff Repo</name> 
+			<url>http://wicketstuff.org/maven/repository</url> 
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository-->
 	</repositories>
 
 	<!-- MAVEN PLUGIN REPOSITORIES -->
@@ -1885,6 +1897,16 @@
 				<groupId>org.apache.wicket</groupId>
 				<artifactId>wicket-extensions</artifactId>
 				<version>${wicket.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.wicket</groupId>
+				<artifactId>wicket-ioc</artifactId>
+				<version>${wicket.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.wicket</groupId>
+				<artifactId>wicket-contrib-javaee</artifactId>
+				<version>1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>dumbster</groupId>

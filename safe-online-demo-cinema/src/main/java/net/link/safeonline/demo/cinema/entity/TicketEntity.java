@@ -7,6 +7,7 @@
 
 package net.link.safeonline.demo.cinema.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -16,19 +17,21 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class TicketEntity {
+public class TicketEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @SuppressWarnings("unused")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private long              id;
 
     @ManyToOne
-    private UserEntity owner;
+    private UserEntity        owner;
 
     @ManyToOne
-    private FilmEntity film;
-    private Date showTime;
+    private FilmEntity        film;
+    private Date              showTime;
 
 
     public TicketEntity() {
@@ -60,8 +63,8 @@ public class TicketEntity {
     }
 
     /**
-     * @return The {@link Date} of the showing of the {@link FilmEntity} that this
-     *         ticket grants the owner access to.
+     * @return The {@link Date} of the showing of the {@link FilmEntity} that
+     *         this ticket grants the owner access to.
      */
     public Date getShowTime() {
 
