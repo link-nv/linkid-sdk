@@ -7,7 +7,6 @@
 
 package net.link.safeonline.user.bean;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,11 +17,15 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.user.Identity;
@@ -46,6 +49,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Name("identityBean")
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "IdentityBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class IdentityBean implements Identity {
 
 	private static final Log LOG = LogFactory.getLog(IdentityBean.class);
@@ -76,25 +80,12 @@ public class IdentityBean implements Identity {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	@Factory(ATTRIBUTE_LIST_NAME)
-	public void attributeListFactory() {
+	@ErrorHandling( { @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeNotFoundSpecific") })
+	public void attributeListFactory() throws AttributeTypeNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("attributeListFactory");
 		Locale viewLocale = getViewLocale();
-		try {
-			this.attributeList = this.identityService
-					.listAttributes(viewLocale);
-		} catch (AttributeTypeNotFoundException e) {
-			LOG.error("attribute type not found: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorAttributeTypeNotFoundSpecific", e.getMessage());
-			this.attributeList = new LinkedList<AttributeDO>();
-		} catch (PermissionDeniedException e) {
-			LOG.error("permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied", e
-							.getMessage());
-			this.attributeList = new LinkedList<AttributeDO>();
-		}
+		this.attributeList = this.identityService.listAttributes(viewLocale);
 	}
 
 	private Locale getViewLocale() {
@@ -116,7 +107,8 @@ public class IdentityBean implements Identity {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String removeAttribute() {
+	public String removeAttribute() throws AttributeTypeNotFoundException,
+			PermissionDeniedException, AttributeNotFoundException {
 		LOG.debug("remove attribute: " + this.selectedAttribute);
 		try {
 			this.identityService.removeAttribute(this.selectedAttribute);
@@ -126,18 +118,6 @@ public class IdentityBean implements Identity {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR,
 					"errorUserNotAllowedToRemoveAttribute");
-			return null;
-		} catch (AttributeNotFoundException e) {
-			String msg = "attribute not found";
-			LOG.error(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeNotFound");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			String msg = "attribute type not found";
-			LOG.error(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		}
 		attributeListFactory();

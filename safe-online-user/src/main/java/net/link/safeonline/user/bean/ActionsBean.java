@@ -11,10 +11,11 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AccountService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.user.Actions;
 import net.link.safeonline.user.UserConstants;
@@ -34,6 +35,7 @@ import org.jboss.seam.web.Session;
 @Name("actions")
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "ActionsBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class ActionsBean implements Actions {
 
 	@In
@@ -54,19 +56,12 @@ public class ActionsBean implements Actions {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String removeAccount() {
+	public String removeAccount() throws SubscriptionNotFoundException,
+			MessageHandlerNotFoundException {
 		this.log.debug("remove account");
-		try {
-			this.accountService.removeAccount();
-		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-			return null;
-		} catch (MessageHandlerNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorMessage");
-			return null;
-		}
+
+		this.accountService.removeAccount();
+
 		this.sessionContext.set("login-processing", null);
 		this.sessionContext.set("username", null);
 		Session.instance().invalidate();

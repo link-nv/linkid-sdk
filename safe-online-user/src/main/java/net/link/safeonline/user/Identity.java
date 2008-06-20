@@ -9,6 +9,10 @@ package net.link.safeonline.user;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+
 @Local
 public interface Identity {
 
@@ -20,7 +24,8 @@ public interface Identity {
 	/*
 	 * Factories.
 	 */
-	void attributeListFactory();
+	void attributeListFactory() throws AttributeTypeNotFoundException,
+			PermissionDeniedException;
 
 	/*
 	 * Accessors
@@ -32,7 +37,8 @@ public interface Identity {
 	 */
 	String edit();
 
-	String removeAttribute();
+	String removeAttribute() throws AttributeTypeNotFoundException,
+			PermissionDeniedException, AttributeNotFoundException;
 
 	String add();
 }

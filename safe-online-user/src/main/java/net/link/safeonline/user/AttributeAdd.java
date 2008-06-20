@@ -9,6 +9,8 @@ package net.link.safeonline.user;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+
 @Local
 public interface AttributeAdd {
 
@@ -20,10 +22,10 @@ public interface AttributeAdd {
 	/*
 	 * Actions.
 	 */
-	String commit();
+	String commit() throws AttributeTypeNotFoundException;
 
 	/*
 	 * Factories.
 	 */
-	void attributeEditContextFactory();
+	void attributeEditContextFactory() throws AttributeTypeNotFoundException;
 }

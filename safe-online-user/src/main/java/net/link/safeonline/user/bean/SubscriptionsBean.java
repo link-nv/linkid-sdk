@@ -16,6 +16,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -24,6 +25,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -50,6 +52,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX
 		+ "SubscriptionsBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class SubscriptionsBean implements Subscriptions {
 
 	private static final Log LOG = LogFactory.getLog(SubscriptionsBean.class);
@@ -90,48 +93,27 @@ public class SubscriptionsBean implements Subscriptions {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String viewSubscription() {
+	public String viewSubscription() throws SubscriptionNotFoundException,
+			ApplicationNotFoundException, ApplicationIdentityNotFoundException {
 		String applicationName = this.selectedSubscription.getApplication()
 				.getName();
 		LOG.debug("view subscription: " + applicationName);
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		try {
-			this.confirmedIdentityAttributes = this.identityService
-					.listConfirmedIdentity(applicationName, viewLocale);
-		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-			return null;
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (ApplicationIdentityNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationIdentityNotFound");
-			return null;
-		}
+		this.confirmedIdentityAttributes = this.identityService
+				.listConfirmedIdentity(applicationName, viewLocale);
 		return "view-subscription";
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String unsubscribe() {
+	public String unsubscribe() throws SubscriptionNotFoundException,
+			ApplicationNotFoundException {
 		LOG.debug("unsubscribe from: "
 				+ this.selectedSubscription.getApplication().getName());
 		String applicationName = this.selectedSubscription.getApplication()
 				.getName();
 		try {
 			this.subscriptionService.unsubscribe(applicationName);
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-			return null;
 		} catch (PermissionDeniedException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR,
@@ -148,20 +130,13 @@ public class SubscriptionsBean implements Subscriptions {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String getUsageAgreement() {
+	public String getUsageAgreement() throws ApplicationNotFoundException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		try {
-			return this.usageAgreementService.getUsageAgreementText(
-					this.selectedSubscription.getApplication().getName(),
-					viewLocale.getLanguage(), this.selectedSubscription
-							.getConfirmedUsageAgreementVersion());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		}
+		return this.usageAgreementService.getUsageAgreementText(
+				this.selectedSubscription.getApplication().getName(),
+				viewLocale.getLanguage(), this.selectedSubscription
+						.getConfirmedUsageAgreementVersion());
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

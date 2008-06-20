@@ -535,7 +535,6 @@ public class EntityTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testTrustPoint() throws Exception {
 		// setup
 		String trustDomainName = "test-trust-domain-"

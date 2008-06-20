@@ -7,10 +7,15 @@
 
 package net.link.safeonline.user;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.DeviceMappingDO;
 
 @Local
@@ -27,26 +32,30 @@ public interface Devices {
 
 	void setOldPassword(String oldPassword);
 
-	boolean isPasswordConfigured();
+	boolean isPasswordConfigured() throws SubjectNotFoundException,
+			DeviceNotFoundException;
 
 	/*
 	 * Actions.
 	 */
-	String register();
+	String register() throws DeviceNotFoundException, IOException;
 
-	String remove();
+	String remove() throws DeviceNotFoundException, IOException;
 
-	String removeDevice();
+	String removeDevice() throws DeviceNotFoundException, IOException;
 
-	String update();
+	String update() throws DeviceNotFoundException, IOException;
 
-	String updateDevice();
+	String updateDevice() throws DeviceNotFoundException, IOException;
 
-	String changePassword();
+	String changePassword() throws SubjectNotFoundException,
+			PermissionDeniedException, DeviceNotFoundException;
 
-	String registerPassword();
+	String registerPassword() throws SubjectNotFoundException,
+			PermissionDeniedException, DeviceNotFoundException;
 
-	String removePassword();
+	String removePassword() throws SubjectNotFoundException,
+			DeviceNotFoundException, PermissionDeniedException;
 
 	/*
 	 * Lifecycle.
@@ -58,5 +67,7 @@ public interface Devices {
 	 */
 	List<DeviceEntry> devicesFactory();
 
-	List<DeviceMappingDO> deviceRegistrationsFactory();
+	List<DeviceMappingDO> deviceRegistrationsFactory()
+			throws SubjectNotFoundException, DeviceNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException;
 }

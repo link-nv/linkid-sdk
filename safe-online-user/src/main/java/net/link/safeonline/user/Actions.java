@@ -9,13 +9,17 @@ package net.link.safeonline.user;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
+
 @Local
 public interface Actions {
 
 	/*
 	 * Actions.
 	 */
-	String removeAccount();
+	String removeAccount() throws SubscriptionNotFoundException,
+			MessageHandlerNotFoundException;
 
 	/*
 	 * Lifecycle.

@@ -21,6 +21,7 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.data.DeviceMappingDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -61,6 +65,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Name("devicesBean")
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "DevicesBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class DevicesBean implements Devices {
 
 	private static final Log LOG = LogFactory.getLog(DevicesBean.class);
@@ -129,27 +134,12 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String registerPassword() {
-		try {
-			this.credentialService.registerPassword(this.newPassword);
-		} catch (PermissionDeniedException e) {
-			String msg = "old password not correct";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("newpassword",
-					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotCorrect");
-			return null;
-		} catch (DeviceNotFoundException e) {
-			String msg = "there is no old password";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("newpassword",
-					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotFound");
-			return null;
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		}
-
+	@ErrorHandling( {
+			@Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "newpassword"),
+			@Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "newpassword") })
+	public String registerPassword() throws SubjectNotFoundException,
+			PermissionDeniedException, DeviceNotFoundException {
+		this.credentialService.registerPassword(this.newPassword);
 		this.credentialCacheFlushRequired = true;
 		LOG.debug("returning success");
 		return "success";
@@ -157,55 +147,25 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String changePassword() {
-		try {
-			this.credentialService.changePassword(this.oldPassword,
-					this.newPassword);
-		} catch (PermissionDeniedException e) {
-			String msg = "old password not correct";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("oldpassword",
-					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotCorrect");
-			return null;
-		} catch (DeviceNotFoundException e) {
-			String msg = "there is no old password";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("oldpassword",
-					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotFound");
-			return null;
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		}
-
+	@ErrorHandling( {
+			@Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
+			@Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
+	public String changePassword() throws SubjectNotFoundException,
+			PermissionDeniedException, DeviceNotFoundException {
+		this.credentialService.changePassword(this.oldPassword,
+				this.newPassword);
 		this.credentialCacheFlushRequired = true;
 		LOG.debug("returning success");
 		return "success";
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String removePassword() {
-		try {
-			this.credentialService.removePassword(this.oldPassword);
-		} catch (PermissionDeniedException e) {
-			String msg = "old password not correct";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("oldpassword",
-					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotCorrect");
-			return null;
-		} catch (DeviceNotFoundException e) {
-			String msg = "there is no old password";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("oldpassword",
-					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotFound");
-			return null;
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		}
-
+	@ErrorHandling( {
+			@Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
+			@Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
+	public String removePassword() throws SubjectNotFoundException,
+			DeviceNotFoundException, PermissionDeniedException {
+		this.credentialService.removePassword(this.oldPassword);
 		this.credentialCacheFlushRequired = true;
 		return "success";
 	}
@@ -256,34 +216,14 @@ public class DevicesBean implements Devices {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	@Factory(DEVICE_MAPPINGS_LIST_NAME)
-	public List<DeviceMappingDO> deviceRegistrationsFactory() {
+	public List<DeviceMappingDO> deviceRegistrationsFactory()
+			throws SubjectNotFoundException, DeviceNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException {
 		Locale locale = getViewLocale();
 		LOG.debug("device registrations factory");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		try {
-			this.deviceMappings = this.deviceService.getDeviceRegistrations(
-					subject, locale);
-		} catch (SubjectNotFoundException e) {
-			LOG.debug("Subject not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		} catch (DeviceNotFoundException e) {
-			LOG.debug("Device not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			LOG.error("permission denied: " + e.getMessage());
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			LOG.error("attribute type not found");
-			return null;
-		}
+		this.deviceMappings = this.deviceService.getDeviceRegistrations(
+				subject, locale);
 		return this.deviceMappings;
 	}
 
@@ -302,33 +242,17 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String register() {
+	public String register() throws DeviceNotFoundException, IOException {
 		LOG.debug("register device: " + this.selectedDevice.getFriendlyName());
 		String userId = this.subjectManager.getCallerSubject().getUserId();
 
-		String registrationURL;
-		try {
-			registrationURL = this.devicePolicyService
-					.getRegistrationURL(this.selectedDevice.getDevice()
-							.getName());
-		} catch (DeviceNotFoundException e) {
-			LOG.error("device not found: "
-					+ this.selectedDevice.getDevice().getName());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		}
+		String registrationURL = this.devicePolicyService
+				.getRegistrationURL(this.selectedDevice.getDevice().getName());
 		if (this.selectedDevice.getDevice().getName().equals(
 				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			ExternalContext externalContext = context.getExternalContext();
-			try {
-				externalContext.redirect(registrationURL);
-			} catch (IOException e) {
-				LOG.debug("IO error: " + e.getMessage());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorIO");
-			}
+			externalContext.redirect(registrationURL);
 			return null;
 		}
 		DeviceOperationUtils.redirect(this.facesMessages, registrationURL,
@@ -338,7 +262,7 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String removeDevice() {
+	public String removeDevice() throws DeviceNotFoundException, IOException {
 		if (!deviceRemovalAllowed()) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
@@ -357,33 +281,20 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String remove() {
+	public String remove() throws DeviceNotFoundException, IOException {
 		LOG.debug("remove device: " + this.selectedDevice.getFriendlyName());
 		return redirectRemove(this.selectedDevice.getDevice().getName());
 	}
 
-	private String redirectRemove(String deviceName) {
+	private String redirectRemove(String deviceName)
+			throws DeviceNotFoundException, IOException {
 		String userId = this.subjectManager.getCallerSubject().getUserId();
 
-		String removalURL;
-		try {
-			removalURL = this.devicePolicyService.getRemovalURL(deviceName);
-		} catch (DeviceNotFoundException e) {
-			LOG.error("device not found: " + deviceName);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		}
+		String removalURL = this.devicePolicyService.getRemovalURL(deviceName);
 		if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			ExternalContext externalContext = context.getExternalContext();
-			try {
-				externalContext.redirect(removalURL);
-			} catch (IOException e) {
-				LOG.debug("IO error: " + e.getMessage());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorIO");
-			}
+			externalContext.redirect(removalURL);
 			return null;
 		}
 		DeviceOperationUtils.redirect(this.facesMessages, removalURL,
@@ -392,7 +303,7 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String updateDevice() {
+	public String updateDevice() throws DeviceNotFoundException, IOException {
 		LOG.debug("update device: "
 				+ this.selectedDeviceMapping.getFriendlyName());
 		return redirectUpdate(this.selectedDeviceMapping.getDeviceMapping()
@@ -401,33 +312,20 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String update() {
+	public String update() throws DeviceNotFoundException, IOException {
 		LOG.debug("update device: " + this.selectedDevice.getFriendlyName());
 		return redirectUpdate(this.selectedDevice.getDevice().getName());
 	}
 
-	private String redirectUpdate(String deviceName) {
+	private String redirectUpdate(String deviceName) throws IOException,
+			DeviceNotFoundException {
 		String userId = this.subjectManager.getCallerSubject().getUserId();
 
-		String updateURL;
-		try {
-			updateURL = this.devicePolicyService.getUpdateURL(deviceName);
-		} catch (DeviceNotFoundException e) {
-			LOG.error("device not found: " + deviceName);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		}
+		String updateURL = this.devicePolicyService.getUpdateURL(deviceName);
 		if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			ExternalContext externalContext = context.getExternalContext();
-			try {
-				externalContext.redirect(updateURL);
-			} catch (IOException e) {
-				LOG.debug("IO error: " + e.getMessage());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorIO");
-			}
+			externalContext.redirect(updateURL);
 			return null;
 		}
 		DeviceOperationUtils.redirect(this.facesMessages, updateURL,
@@ -436,21 +334,8 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public boolean isPasswordConfigured() {
-		boolean hasPassword;
-		try {
-			hasPassword = this.credentialService.isPasswordConfigured();
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return false;
-		} catch (DeviceNotFoundException e) {
-			LOG.error("device not found: "
-					+ this.selectedDevice.getDevice().getName());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return false;
-		}
-		return hasPassword;
+	public boolean isPasswordConfigured() throws SubjectNotFoundException,
+			DeviceNotFoundException {
+		return this.credentialService.isPasswordConfigured();
 	}
 }
