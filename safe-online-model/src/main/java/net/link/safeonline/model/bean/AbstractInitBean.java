@@ -40,6 +40,7 @@ import net.link.safeonline.dao.AllowedDeviceDAO;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
+import net.link.safeonline.dao.ApplicationScopeIdDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -486,6 +487,9 @@ public abstract class AbstractInitBean implements Startable {
 	private SubscriptionDAO subscriptionDAO;
 
 	@EJB
+	private ApplicationScopeIdDAO applicationScopeIdDAO;
+
+	@EJB
 	private ApplicationOwnerDAO applicationOwnerDAO;
 
 	@EJB
@@ -688,6 +692,10 @@ public abstract class AbstractInitBean implements Startable {
 				continue;
 			this.subscriptionDAO.addSubscription(subscriptionOwnerType,
 					subject, application);
+			if (application.getIdScope().equals(IdScopeType.APPLICATION)) {
+				this.applicationScopeIdDAO.addApplicationScopeId(subject,
+						application);
+			}
 		}
 	}
 

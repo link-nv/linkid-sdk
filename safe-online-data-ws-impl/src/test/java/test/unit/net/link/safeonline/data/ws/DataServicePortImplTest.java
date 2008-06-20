@@ -54,10 +54,10 @@ import liberty.util._2006_08.StatusType;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.AttributeProviderService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.data.ws.DataServiceConstants;
 import net.link.safeonline.data.ws.DataServiceFactory;
@@ -119,7 +119,7 @@ public class DataServicePortImplTest {
 
 	private ConfigurationManager mockConfigurationManager;
 
-	private UserIdMappingService mockUserIdMappingService;
+	private ApplicationIdentifierMappingService mockApplicationIdentifierMappingService;
 
 	private Object[] mockObjects;
 
@@ -184,13 +184,14 @@ public class DataServicePortImplTest {
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
 				Long.MAX_VALUE);
 
-		this.mockUserIdMappingService = createMock(UserIdMappingService.class);
+		this.mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
 		this.jndiTestUtils.bindComponent(
-				"SafeOnline/UserIdMappingServiceBean/local",
-				this.mockUserIdMappingService);
+				"SafeOnline/ApplicationIdentifierMappingServiceBean/local",
+				this.mockApplicationIdentifierMappingService);
 		expect(
-				this.mockUserIdMappingService.getUserId(this.applicationName,
-						this.targetIdentity)).andStubReturn(this.testSubjectId);
+				this.mockApplicationIdentifierMappingService.findUserId(
+						this.applicationName, this.targetIdentity))
+				.andStubReturn(this.testSubjectId);
 
 		this.mockObjects = new Object[] {
 				this.mockWSSecurityConfigurationService,
@@ -198,7 +199,8 @@ public class DataServicePortImplTest {
 				this.mockApplicationAuthenticationService,
 				this.mockDeviceAuthenticationService,
 				this.mockNodeAuthenticationService, this.mockPkiValidator,
-				this.mockConfigurationManager, this.mockUserIdMappingService };
+				this.mockConfigurationManager,
+				this.mockApplicationIdentifierMappingService };
 
 		this.webServiceTestUtils = new WebServiceTestUtils();
 

@@ -7,6 +7,6 @@
 package net.link.safeonline.entity;
 
 public enum IdScopeType {
-	USER, SUBSCRIPTION;
+	USER, SUBSCRIPTION, APPLICATION;
 
 }

@@ -47,3 +47,4 @@
 	class="net.link.safeonline.entity.notification.EndpointReferenceEntity" />
 <mapping
 	class="net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity" />
+<mapping class="net.link.safeonline.entity.ApplicationScopeIdEntity" />

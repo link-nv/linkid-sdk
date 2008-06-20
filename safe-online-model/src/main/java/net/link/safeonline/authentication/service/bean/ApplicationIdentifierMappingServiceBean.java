@@ -17,7 +17,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.service.IdentifierMappingService;
+import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -30,10 +30,11 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
 @Stateless
-public class IdentifierMappingServiceBean implements IdentifierMappingService {
+public class ApplicationIdentifierMappingServiceBean implements
+		ApplicationIdentifierMappingService {
 
 	private static final Log LOG = LogFactory
-			.getLog(IdentifierMappingServiceBean.class);
+			.getLog(ApplicationIdentifierMappingServiceBean.class);
 
 	@EJB
 	private ApplicationManager applicationManager;
@@ -45,9 +46,9 @@ public class IdentifierMappingServiceBean implements IdentifierMappingService {
 	private SubjectIdentifierDAO subjectIdentifierDAO;
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public String getUserId(String username) throws PermissionDeniedException,
-			ApplicationNotFoundException, SubscriptionNotFoundException,
-			SubjectNotFoundException {
+	public String getApplicationUserId(String username)
+			throws PermissionDeniedException, ApplicationNotFoundException,
+			SubscriptionNotFoundException, SubjectNotFoundException {
 		LOG.debug("getUserId: " + username);
 		checkPermission();
 		ApplicationEntity application = this.applicationManager
@@ -70,5 +71,13 @@ public class IdentifierMappingServiceBean implements IdentifierMappingService {
 			throw new PermissionDeniedException(
 					"application not allowed to use the identifier mapping service");
 		}
+	}
+
+	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+	public String findUserId(String applicationName, String applicationUserId)
+			throws ApplicationNotFoundException {
+		LOG.debug("getUserId: " + applicationName + ", " + applicationUserId);
+		return this.userIdMappingService.findUserId(applicationName,
+				applicationUserId);
 	}
 }

@@ -27,6 +27,7 @@ import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
+import net.link.safeonline.dao.bean.ApplicationScopeIdDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
@@ -45,6 +46,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.ApplicationScopeIdEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
@@ -125,7 +127,7 @@ public class DemoStartableBeanTest {
 			SecurityAuditDAOBean.class, ResourceAuditDAOBean.class,
 			DevicesBean.class, NotificationProducerServiceBean.class,
 			NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class,
-			DeviceSubjectDAOBean.class };
+			DeviceSubjectDAOBean.class, ApplicationScopeIdDAOBean.class };
 
 	@Before
 	public void setUp() throws Exception {
@@ -149,7 +151,8 @@ public class DemoStartableBeanTest {
 				SubjectIdentifierEntity.class, UsageAgreementEntity.class,
 				UsageAgreementTextEntity.class, OlasEntity.class,
 				EndpointReferenceEntity.class,
-				NotificationProducerSubscriptionEntity.class);
+				NotificationProducerSubscriptionEntity.class,
+				ApplicationScopeIdEntity.class);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 

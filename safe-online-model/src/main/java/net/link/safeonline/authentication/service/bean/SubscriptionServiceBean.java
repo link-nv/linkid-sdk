@@ -28,11 +28,13 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.SubscriptionServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.ApplicationScopeIdDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.SubjectManager;
@@ -66,6 +68,9 @@ public class SubscriptionServiceBean implements SubscriptionService,
 	private ApplicationDAO applicationDAO;
 
 	@EJB
+	private ApplicationScopeIdDAO applicationScopeIdDAO;
+
+	@EJB
 	private HistoryDAO historyDAO;
 
 	@Resource
@@ -93,6 +98,15 @@ public class SubscriptionServiceBean implements SubscriptionService,
 		Application application = ApplicationFactory.getApplication(this,
 				applicationName);
 		subject.subscribe(application);
+
+		if (application.getEntity().getIdScope()
+				.equals(IdScopeType.APPLICATION)) {
+			if (null == this.applicationScopeIdDAO.findApplicationScopeId(
+					subject.getSubjectEntity(), application.getEntity())) {
+				this.applicationScopeIdDAO.addApplicationScopeId(subject
+						.getSubjectEntity(), application.getEntity());
+			}
+		}
 
 		this.historyDAO.addHistoryEntry(subject.getSubjectEntity(),
 				HistoryEventType.SUBSCRIPTION_ADD, applicationName, null);

@@ -29,12 +29,12 @@ public interface UserIdMappingService {
 
 	/**
 	 * Returns the SafeOnline global user id using the application's id scope
-	 * settings and provided application id.
+	 * settings and provided application id. Returns null if not found.
 	 * 
 	 * @param applicationName
 	 * @param applicationUserId
 	 * @throws ApplicationNotFoundException
 	 */
-	String getUserId(String applicationName, String applicationUserId)
+	String findUserId(String applicationName, String applicationUserId)
 			throws ApplicationNotFoundException;
 }

@@ -22,6 +22,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.authentication.service.AccountServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.ApplicationScopeIdDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.DeviceMappingDAO;
 import net.link.safeonline.dao.DeviceSubjectDAO;
@@ -58,6 +59,9 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
+
+	@EJB
+	private ApplicationScopeIdDAO applicationScopeIdDAO;
 
 	@EJB
 	private SubjectDAO subjectDAO;
@@ -111,6 +115,7 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
 		this.historyDAO.clearAllHistory(subject);
 		this.subscriptionDAO.removeAllSubscriptions(subject);
+		this.applicationScopeIdDAO.removeApplicationScopeIds(subject);
 		this.attributeDAO.removeAttributes(subject);
 		this.subjectIdentifierDAO.removeSubjectIdentifiers(subject);
 		this.subjectDAO.removeSubject(subject);

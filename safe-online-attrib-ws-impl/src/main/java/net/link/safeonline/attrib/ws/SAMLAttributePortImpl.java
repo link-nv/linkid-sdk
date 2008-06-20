@@ -32,10 +32,10 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.model.ApplicationManager;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -133,7 +133,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			String subjectLogin = nameId.getValue();
 			if (this.certificateDomain.equals(CertificateDomain.APPLICATION)) {
 				try {
-					return getUserId(subjectLogin);
+					return findUserId(subjectLogin);
 				} catch (ApplicationNotFoundException e) {
 					return null;
 				}
@@ -143,7 +143,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		return null;
 	}
 
-	private String getUserId(String applicationUserId)
+	private String findUserId(String applicationUserId)
 			throws ApplicationNotFoundException {
 		ApplicationManager applicationManager = EjbUtils.getEJB(
 				"SafeOnline/ApplicationManagerBean/local",
@@ -151,11 +151,12 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		ApplicationEntity application = applicationManager
 				.getCallerApplication();
 
-		UserIdMappingService userIdMappingService = EjbUtils.getEJB(
-				"SafeOnline/UserIdMappingServiceBean/local",
-				UserIdMappingService.class);
-		return userIdMappingService.getUserId(application.getName(),
-				applicationUserId);
+		ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils
+				.getEJB(
+						"SafeOnline/ApplicationIdentifierMappingServiceBean/local",
+						ApplicationIdentifierMappingService.class);
+		return applicationIdentifierMappingService.findUserId(application
+				.getName(), applicationUserId);
 	}
 
 	public ResponseType attributeQuery(AttributeQueryType request) {

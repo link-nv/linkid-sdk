@@ -27,8 +27,8 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.DeviceIdentifierMappingService;
-import net.link.safeonline.authentication.service.IdentifierMappingService;
 import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
 import net.link.safeonline.ws.common.SamlpTopLevelErrorCode;
 import net.link.safeonline.ws.util.CertificateDomainException;
@@ -68,8 +68,8 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 	@Resource
 	private WebServiceContext context;
 
-	@EJB(mappedName = "SafeOnline/IdentifierMappingServiceBean/local")
-	private IdentifierMappingService identifierMappingService;
+	@EJB(mappedName = "SafeOnline/ApplicationIdentifierMappingServiceBean/local")
+	private ApplicationIdentifierMappingService applicationIdentifierMappingService;
 
 	@EJB(mappedName = "SafeOnline/DeviceIdentifierMappingServiceBean/local")
 	private DeviceIdentifierMappingService deviceIdentifierMappingService;
@@ -123,7 +123,8 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 		String userId;
 		try {
 			if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
-				userId = this.identifierMappingService.getUserId(username);
+				userId = this.applicationIdentifierMappingService
+						.getApplicationUserId(username);
 			} else if (certificateDomain.equals(CertificateDomain.DEVICE)) {
 				userId = this.deviceIdentifierMappingService
 						.getDeviceMappingId(username);

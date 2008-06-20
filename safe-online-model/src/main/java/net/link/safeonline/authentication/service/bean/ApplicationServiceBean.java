@@ -44,6 +44,7 @@ import net.link.safeonline.dao.AllowedDeviceDAO;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
+import net.link.safeonline.dao.ApplicationScopeIdDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.StatisticDAO;
@@ -94,6 +95,9 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
+
+	@EJB
+	private ApplicationScopeIdDAO applicationScopeIdDAO;
 
 	@EJB
 	private SubjectService subjectService;
@@ -239,8 +243,11 @@ public class ApplicationServiceBean implements ApplicationService,
 		 * and application identities for the moment. Postpone this until be
 		 * understand better what data needs to be preserved.
 		 */
-		for (SubscriptionEntity subscription : subscriptions)
+		for (SubscriptionEntity subscription : subscriptions) {
 			this.subscriptionDAO.removeSubscription(subscription);
+		}
+
+		this.applicationScopeIdDAO.removeApplicationScopeIds(application);
 
 		List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO
 				.listApplicationIdentities(application);

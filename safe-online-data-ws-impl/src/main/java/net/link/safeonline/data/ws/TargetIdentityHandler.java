@@ -28,7 +28,7 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.service.UserIdMappingService;
+import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.util.CertificateMapperHandler;
@@ -75,13 +75,12 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		return headers;
 	}
 
-	public void close(@SuppressWarnings("unused")
-	MessageContext context) {
+	public void close(@SuppressWarnings("unused") MessageContext context) {
 		LOG.debug("close");
 	}
 
-	public boolean handleFault(@SuppressWarnings("unused")
-	SOAPMessageContext soapContext) {
+	public boolean handleFault(
+			@SuppressWarnings("unused") SOAPMessageContext soapContext) {
 		return true;
 	}
 
@@ -157,11 +156,10 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		SubjectType subject = (SubjectType) element;
 		String login = findSubjectLogin(subject);
 
-		String applicationName = CertificateMapperHandler
-				.getId(soapContext);
+		String applicationName = CertificateMapperHandler.getId(soapContext);
 		String userId = null;
 		try {
-			userId = getUserId(applicationName, login);
+			userId = findUserId(applicationName, login);
 		} catch (ApplicationNotFoundException e) {
 			throw new RuntimeException(
 					"application on JAX-WS context not found");
@@ -193,12 +191,13 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		return null;
 	}
 
-	private String getUserId(String applicationName, String applicationUserId)
+	private String findUserId(String applicationName, String applicationUserId)
 			throws ApplicationNotFoundException {
-		UserIdMappingService userIdMappingService = EjbUtils.getEJB(
-				"SafeOnline/UserIdMappingServiceBean/local",
-				UserIdMappingService.class);
-		return userIdMappingService.getUserId(applicationName,
+		ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils
+				.getEJB(
+						"SafeOnline/ApplicationIdentifierMappingServiceBean/local",
+						ApplicationIdentifierMappingService.class);
+		return applicationIdentifierMappingService.findUserId(applicationName,
 				applicationUserId);
 	}
 

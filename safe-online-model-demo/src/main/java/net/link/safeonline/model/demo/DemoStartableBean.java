@@ -59,8 +59,8 @@ public class DemoStartableBean extends AbstractInitBean {
 	public static final String DEMO_PRESCRIPTION_APPLICATION_NAME = "demo-prescription";
 
 	public static final String DEMO_MANDATE_APPLICATION_NAME = "demo-mandate";
-	
-	private static final String DEMO_CINEMA_APPLICATION_NAME       = "demo-cinema";
+
+	private static final String DEMO_CINEMA_APPLICATION_NAME = "demo-cinema";
 
 	public static final String LICENSE_AGREEMENT_CONFIRM_TEXT_EN = "PLEASE READ THIS SOFTWARE LICENSE AGREEMENT (\"LICENSE\") CAREFULLY BEFORE USING THE SOFTWARE. \n BY USING THE SOFTWARE, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE. \n IF YOU ARE ACCESSING THE SOFTWARE ELECTRONICALLY, SIGNIFY YOUR AGREEMENT TO BE BOUND BY THE TERMS OF THIS LICENSE BY CLICKING THE \"AGREE/ACCEPT\" BUTTON. \n IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE, DO NOT USE THE SOFTWARE AND (IF APPLICABLE) RETURN THE APPLE SOFTWARE TO THE PLACE WHERE YOU OBTAINED IT FOR A REFUND OR, IF THE SOFTWARE WAS ACCESSED ELECTRONICALLY, CLICK \"DISAGREE/DECLINE\".";
 
@@ -86,7 +86,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		configTicketDemo();
 
 		configCinemaDemo();
-		
+
 		configPaymentDemo();
 
 		configLawyerDemo();
@@ -115,7 +115,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.registeredApplications.add(new Application(
 				DEMO_MANDATE_APPLICATION_NAME, "owner", null, null, getLogo(),
 				null, true, true, demoMandateCertificate, true,
-				IdScopeType.SUBSCRIPTION));
+				IdScopeType.APPLICATION));
 
 		/*
 		 * Subscribe the demo users to the mandate demo application.
@@ -263,54 +263,54 @@ public class DemoStartableBean extends AbstractInitBean {
 				demoTicketCertificate);
 
 	}
-	
+
 	private void configCinemaDemo() {
 
-        PrivateKeyEntry demoCinemaPrivateKeyEntry = DemoCinemaKeyStoreUtils
-                .getPrivateKeyEntry();
-        X509Certificate demoCinemaCertificate = (X509Certificate) demoCinemaPrivateKeyEntry
-                .getCertificate();
+		PrivateKeyEntry demoCinemaPrivateKeyEntry = DemoCinemaKeyStoreUtils
+				.getPrivateKeyEntry();
+		X509Certificate demoCinemaCertificate = (X509Certificate) demoCinemaPrivateKeyEntry
+				.getCertificate();
 
-        this.trustedCertificates.put(demoCinemaCertificate,
-                SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-        this.registeredApplications.add(new Application(
-                DEMO_CINEMA_APPLICATION_NAME, "owner", null, null, getLogo(),
-                null, true, true, demoCinemaCertificate, false,
-                IdScopeType.SUBSCRIPTION));
+		this.trustedCertificates.put(demoCinemaCertificate,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+		this.registeredApplications.add(new Application(
+				DEMO_CINEMA_APPLICATION_NAME, "owner", null, null, getLogo(),
+				null, true, true, demoCinemaCertificate, false,
+				IdScopeType.SUBSCRIPTION));
 
-        this.identities.add(new Identity(DEMO_CINEMA_APPLICATION_NAME,
-                new IdentityAttributeTypeDO[] {
-                        new IdentityAttributeTypeDO(
-                                DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-                                false, false),
-                        new IdentityAttributeTypeDO(
-                                DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
-                                false) }));
+		this.identities.add(new Identity(DEMO_CINEMA_APPLICATION_NAME,
+				new IdentityAttributeTypeDO[] {
+						new IdentityAttributeTypeDO(
+								DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+								false, false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
+								false) }));
 
-        /*
-         * Application usage agreements
-         */
-        UsageAgreement usageAgreement = new UsageAgreement(
-                DEMO_CINEMA_APPLICATION_NAME);
-        usageAgreement.addUsageAgreementText(new UsageAgreementText(
-                Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV"
-                        + "\n" + "Software License Agreement for "
-                        + DEMO_CINEMA_APPLICATION_NAME + "\n\n"
-                        + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
-        usageAgreement.addUsageAgreementText(new UsageAgreementText("nl",
-                "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-                        + "Software Gebruikers Overeenkomst voor "
-                        + DEMO_CINEMA_APPLICATION_NAME + "\n\n"
-                        + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
-        this.usageAgreements.add(usageAgreement);
+		/*
+		 * Application usage agreements
+		 */
+		UsageAgreement usageAgreement = new UsageAgreement(
+				DEMO_CINEMA_APPLICATION_NAME);
+		usageAgreement.addUsageAgreementText(new UsageAgreementText(
+				Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV"
+						+ "\n" + "Software License Agreement for "
+						+ DEMO_CINEMA_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+		usageAgreement.addUsageAgreementText(new UsageAgreementText("nl",
+				"Nederlands" + "\n\n" + "Lin-k NV" + "\n"
+						+ "Software Gebruikers Overeenkomst voor "
+						+ DEMO_CINEMA_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+		this.usageAgreements.add(usageAgreement);
 
-        /*
-         * WS-Notification subscriptions
-         */
-        configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER,
-                demoCinemaCertificate);
+		/*
+		 * WS-Notification subscriptions
+		 */
+		configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER,
+				demoCinemaCertificate);
 
-    }
+	}
 
 	private void configPaymentDemo() {
 
@@ -641,15 +641,15 @@ public class DemoStartableBean extends AbstractInitBean {
 		}
 
 		if (null != enName) {
-            this.attributeTypeDescriptions
+			this.attributeTypeDescriptions
 					.add(new AttributeTypeDescriptionEntity(attributeType,
 							Locale.ENGLISH.getLanguage(), enName, null));
-        }
+		}
 		if (null != nlName) {
-            this.attributeTypeDescriptions
+			this.attributeTypeDescriptions
 					.add(new AttributeTypeDescriptionEntity(attributeType,
 							"nl", nlName, null));
-        }
+		}
 		return attributeType;
 	}
 
@@ -726,10 +726,10 @@ public class DemoStartableBean extends AbstractInitBean {
 				.getString("olas.host.port.ssl"));
 		String address = protocol + "://" + hostname + ":";
 		if (protocol.equals("http")) {
-            address += hostport;
-        } else {
-            address += hostportssl;
-        }
+			address += hostport;
+		} else {
+			address += hostportssl;
+		}
 		address += "/safe-online-demo-ws/consumer";
 		this.notificationSubcriptions.add(new NotificationSubscription(topic,
 				address, certificate));

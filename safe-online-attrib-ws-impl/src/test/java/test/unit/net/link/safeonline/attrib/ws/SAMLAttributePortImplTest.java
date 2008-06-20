@@ -34,12 +34,12 @@ import net.link.safeonline.attrib.ws.SAMLAttributePortImpl;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.model.ApplicationManager;
@@ -102,7 +102,7 @@ public class SAMLAttributePortImplTest {
 
 	private ApplicationManager mockApplicationManager;
 
-	private UserIdMappingService mockUserIdMappingService;
+	private ApplicationIdentifierMappingService mockApplicationIdentifierMappingService;
 
 	private Object[] mockObjects;
 
@@ -138,7 +138,7 @@ public class SAMLAttributePortImplTest {
 		this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
 		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
 		this.mockApplicationManager = createMock(ApplicationManager.class);
-		this.mockUserIdMappingService = createMock(UserIdMappingService.class);
+		this.mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
 
 		this.mockObjects = new Object[] {
 				this.mockWSSecurityConfigurationService,
@@ -146,7 +146,7 @@ public class SAMLAttributePortImplTest {
 				this.mockPkiValidator,
 				this.mockApplicationAuthenticationService,
 				this.mockSamlAuthorityService, this.mockApplicationManager,
-				this.mockUserIdMappingService };
+				this.mockApplicationIdentifierMappingService };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/WSSecurityConfigurationBean/local",
@@ -175,8 +175,8 @@ public class SAMLAttributePortImplTest {
 				"SafeOnline/ApplicationManagerBean/local",
 				this.mockApplicationManager);
 		this.jndiTestUtils.bindComponent(
-				"SafeOnline/UserIdMappingServiceBean/local",
-				this.mockUserIdMappingService);
+				"SafeOnline/ApplicationIdentifierMappingServiceBean/local",
+				this.mockApplicationIdentifierMappingService);
 
 		expect(
 				this.mockPkiValidator.validateCertificate((String) EasyMock
@@ -195,9 +195,9 @@ public class SAMLAttributePortImplTest {
 								null, this.certificate));
 
 		expect(
-				this.mockUserIdMappingService.getUserId(this.testApplicationId,
-						this.testSubjectLogin)).andStubReturn(
-				this.testSubjectId);
+				this.mockApplicationIdentifierMappingService.findUserId(
+						this.testApplicationId, this.testSubjectLogin))
+				.andStubReturn(this.testSubjectId);
 
 		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 
