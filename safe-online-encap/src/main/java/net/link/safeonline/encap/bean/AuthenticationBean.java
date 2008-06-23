@@ -16,11 +16,15 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.encap.Authentication;
 import net.link.safeonline.encap.EncapConstants;
@@ -42,6 +46,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Name("authentication")
 @LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX
 		+ "AuthenticationBean/local")
+@Interceptors(ErrorMessageInterceptor.class)
 public class AuthenticationBean implements Authentication {
 
 	private static final Log LOG = LogFactory.getLog(AuthenticationBean.class);
@@ -89,7 +94,7 @@ public class AuthenticationBean implements Authentication {
 	}
 
 	@End
-	public String login() {
+	public String login() throws MobileAuthenticationException, IOException {
 		LOG.debug("login: " + this.mobile);
 		HelpdeskLogger.add("login: " + this.mobile, LogLevelType.INFO);
 		try {
@@ -121,17 +126,13 @@ public class AuthenticationBean implements Authentication {
 			HelpdeskLogger.add("login: failed to contact encap webservice for "
 					+ this.mobile, LogLevelType.ERROR);
 			return null;
-		} catch (MobileAuthenticationException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
-			return null;
 		}
 		HelpdeskLogger.clear();
 		destroyCallback();
 		return null;
 	}
 
-	private void login(String deviceUserId) {
+	private void login(String deviceUserId) throws IOException {
 		this.authenticationContext.setUserId(deviceUserId);
 		this.authenticationContext.setValidity(this.samlAuthorityService
 				.getAuthnAssertionValidity());
@@ -144,22 +145,14 @@ public class AuthenticationBean implements Authentication {
 	}
 
 	@Begin
-	public String requestOTP() {
+	@ErrorHandling( {
+			@Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
+			@Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
+	public String requestOTP() throws MalformedURLException, MobileException {
 		LOG.debug("request OTP: mobile=" + this.mobile);
 		try {
 			this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
 			LOG.debug("received challengeId: " + this.challengeId);
-		} catch (MalformedURLException e) {
-			LOG.debug("requestOTP: MalformedURLException thrown: "
-					+ e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			return null;
-		} catch (MobileException e) {
-			LOG.debug("requestOTP: MobileException thrown: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			return null;
 		} catch (SubjectNotFoundException e) {
 			HelpdeskLogger.add("login: subject not found for " + this.mobile,
 					LogLevelType.ERROR);
@@ -170,25 +163,18 @@ public class AuthenticationBean implements Authentication {
 		return "success";
 	}
 
-	public String cancel() {
+	public String cancel() throws IOException {
 		exit();
 		return null;
 	}
 
-	private void exit() {
+	private void exit() throws IOException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
 
 		String redirectUrl = "authenticationexit";
 		LOG.debug("redirecting to: " + redirectUrl);
-		try {
-			externalContext.redirect(redirectUrl);
-		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return;
-		}
+		externalContext.redirect(redirectUrl);
 	}
 
 	@PostConstruct

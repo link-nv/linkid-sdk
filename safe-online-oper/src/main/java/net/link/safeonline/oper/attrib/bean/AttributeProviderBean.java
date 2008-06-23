@@ -7,8 +7,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
@@ -17,6 +17,7 @@ import net.link.safeonline.authentication.exception.ExistingAttributeProviderExc
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AttributeProviderManagerService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -40,6 +41,7 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "AttributeProviderBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class AttributeProviderBean implements AttributeProvider {
 
 	public static final String ATTRIBUTE_PROVIDERS_NAME = "attributeProviders";
@@ -57,7 +59,6 @@ public class AttributeProviderBean implements AttributeProvider {
 	@DataModel(ATTRIBUTE_PROVIDERS_NAME)
 	private List<AttributeProviderEntity> attributeProviders;
 
-	@SuppressWarnings("unused")
 	@DataModelSelection(ATTRIBUTE_PROVIDERS_NAME)
 	private AttributeProviderEntity selectedAttributeProvider;
 
@@ -71,15 +72,11 @@ public class AttributeProviderBean implements AttributeProvider {
 
 	@Factory(ATTRIBUTE_PROVIDERS_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void attributeProvidersFactory() {
+	public void attributeProvidersFactory()
+			throws AttributeTypeNotFoundException {
 		String attributeName = this.selectedAttributeType.getName();
-		try {
-			this.attributeProviders = this.attributeProviderManagerService
-					.getAttributeProviders(attributeName);
-		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-		}
+		this.attributeProviders = this.attributeProviderManagerService
+				.getAttributeProviders(attributeName);
 	}
 
 	@Remove
@@ -89,46 +86,23 @@ public class AttributeProviderBean implements AttributeProvider {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeProvider() {
+	public String removeProvider() throws AttributeTypeNotFoundException,
+			AttributeProviderNotFoundException {
 		this.log.debug("removing attribute provider #0",
 				this.selectedAttributeProvider);
-		try {
-			this.attributeProviderManagerService
-					.removeAttributeProvider(this.selectedAttributeProvider);
-		} catch (AttributeProviderNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorAttributeProviderNotFound");
-			return null;
-		}
+		this.attributeProviderManagerService
+				.removeAttributeProvider(this.selectedAttributeProvider);
 		attributeProvidersFactory();
 		return "provider-removed";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	public String add() throws ExistingAttributeProviderException,
+			ApplicationNotFoundException, AttributeTypeNotFoundException,
+			PermissionDeniedException {
 		this.log.debug("add application provider: " + this.application);
-		try {
-			this.attributeProviderManagerService.addAttributeProvider(
-					this.application, this.selectedAttributeType.getName());
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			return null;
-		} catch (ExistingAttributeProviderException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorAttributeProviderAlreadyExists");
-			return null;
-		} catch (PermissionDeniedException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		this.attributeProviderManagerService.addAttributeProvider(
+				this.application, this.selectedAttributeType.getName());
 		return "success";
 	}
 

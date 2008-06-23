@@ -17,11 +17,15 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ExistingNodeException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.NodeService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.node.Node;
@@ -48,6 +52,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Name("operNode")
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "NodeBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class NodeBean implements Node {
 
 	private static final Log LOG = LogFactory.getLog(NodeBean.class);
@@ -101,7 +106,8 @@ public class NodeBean implements Node {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	@ErrorHandling( { @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload") })
+	public String add() throws CertificateEncodingException, IOException {
 		LOG.debug("add olas node: " + this.name);
 
 		try {
@@ -123,16 +129,6 @@ public class NodeBean implements Node {
 			this.facesMessages.addToControlFromResourceBundle("name",
 					FacesMessage.SEVERITY_ERROR, "errorNodeAlreadyExists",
 					this.name);
-			return null;
-		} catch (IOException e) {
-			LOG.debug("IO error");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return null;
-		} catch (CertificateEncodingException e) {
-			LOG.debug("X509 certificate encoding error");
-			this.facesMessages.addToControlFromResourceBundle("fileupload",
-					FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
 			return null;
 		}
 		nodeListFactory();
@@ -202,16 +198,11 @@ public class NodeBean implements Node {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() {
+	public String remove() throws NodeNotFoundException {
 		String nodeName = this.selectedNode.getName();
 		LOG.debug("remove node: " + nodeName);
 		try {
 			this.nodeService.removeNode(nodeName);
-		} catch (NodeNotFoundException e) {
-			LOG.debug("node not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
-			return null;
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied to remove: " + nodeName);
 			this.facesMessages.addFromResourceBundle(
@@ -231,74 +222,29 @@ public class NodeBean implements Node {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() {
+	public String save() throws CertificateEncodingException,
+			NodeNotFoundException, IOException, GenericJDBCException {
 		String nodeName = this.selectedNode.getName();
 		LOG.debug("save node: " + nodeName);
 
 		if (null != this.authnUpFile) {
 			LOG.debug("updating node authentication certificate");
-			try {
-				this.nodeService.updateAuthnCertificate(nodeName,
-						getUpFileContent(this.authnUpFile));
-			} catch (CertificateEncodingException e) {
-				LOG.debug("certificate encoding error");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
-				return null;
-			} catch (NodeNotFoundException e) {
-				LOG.debug("node not found");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
-				return null;
-			} catch (IOException e) {
-				LOG.debug("IO error: " + e.getMessage());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorIO");
-				return null;
-			}
+			this.nodeService.updateAuthnCertificate(nodeName,
+					getUpFileContent(this.authnUpFile));
 		}
 
 		if (null != this.signingUpFile) {
 			LOG.debug("updating node signing certificate");
-			try {
-				this.nodeService.updateSigningCertificate(nodeName,
-						getUpFileContent(this.signingUpFile));
-			} catch (CertificateEncodingException e) {
-				LOG.debug("certificate encoding error");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
-				return null;
-			} catch (NodeNotFoundException e) {
-				LOG.debug("node not found");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
-				return null;
-			} catch (IOException e) {
-				LOG.debug("IO error: " + e.getMessage());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorIO");
-				return null;
-			}
+			this.nodeService.updateSigningCertificate(nodeName,
+					getUpFileContent(this.signingUpFile));
 		}
-		try {
-			this.nodeService.updateLocation(nodeName, this.hostname,
-					this.protocol, this.port, this.sslPort);
+		this.nodeService.updateLocation(nodeName, this.hostname, this.protocol,
+				this.port, this.sslPort);
 
-			/*
-			 * Refresh the selected application.
-			 */
-			this.selectedNode = this.nodeService.getNode(nodeName);
-		} catch (GenericJDBCException e) {
-			LOG.debug("invalid data type.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDataType");
-			return null;
-		} catch (NodeNotFoundException e) {
-			LOG.debug("node not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
-			return null;
-		}
+		/*
+		 * Refresh the selected application.
+		 */
+		this.selectedNode = this.nodeService.getNode(nodeName);
 
 		nodeListFactory();
 		return "success";

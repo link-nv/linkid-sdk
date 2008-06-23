@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.UsageAgreementEntity;
 
 @Local
@@ -20,9 +22,11 @@ public interface UsageAgreement {
 	 */
 	void usageAgreementTextListFactory();
 
-	void draftUsageAgreementsTextsFactory();
+	void draftUsageAgreementsTextsFactory()
+			throws ApplicationNotFoundException, PermissionDeniedException;
 
-	void currentUsageAgreementsTextsFactory();
+	void currentUsageAgreementsTextsFactory() throws PermissionDeniedException,
+			ApplicationNotFoundException;
 
 	/*
 	 * Actions
@@ -33,28 +37,37 @@ public interface UsageAgreement {
 
 	String viewDraftText();
 
-	String saveText();
+	String saveText() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
-	String createUsageAgreement();
+	String createUsageAgreement() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
 	String editDraftText();
 
-	String removeDraftText();
+	String removeDraftText() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
-	String editCurrentText();
+	String editCurrentText() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
-	String addText();
+	String addText() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
-	String releaseDraft();
+	String releaseDraft() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
-	String removeDraft();
+	String removeDraft() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
 	/*
 	 * Accessors
 	 */
-	UsageAgreementEntity getDraftUsageAgreement();
+	UsageAgreementEntity getDraftUsageAgreement()
+			throws ApplicationNotFoundException, PermissionDeniedException;
 
-	UsageAgreementEntity getCurrentUsageAgreement();
+	UsageAgreementEntity getCurrentUsageAgreement()
+			throws PermissionDeniedException, ApplicationNotFoundException;
 
 	void setLanguage(String language);
 

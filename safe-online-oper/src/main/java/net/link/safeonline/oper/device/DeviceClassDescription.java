@@ -9,6 +9,10 @@ package net.link.safeonline.oper.device;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingDeviceClassDescriptionException;
+
 @Local
 public interface DeviceClassDescription {
 
@@ -20,18 +24,21 @@ public interface DeviceClassDescription {
 	/*
 	 * Factories
 	 */
-	void deviceClassDescriptionsListFactory();
+	void deviceClassDescriptionsListFactory()
+			throws DeviceClassNotFoundException;
 
 	/*
 	 * Actions.
 	 */
-	String add();
+	String add() throws ExistingDeviceClassDescriptionException,
+			DeviceClassNotFoundException;
 
 	String edit();
 
 	String save();
 
-	String remove();
+	String remove() throws DeviceClassDescriptionNotFoundException,
+			DeviceClassNotFoundException;
 
 	String cancelEdit();
 

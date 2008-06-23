@@ -17,11 +17,13 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
@@ -50,6 +52,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "NotificationBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class NotificationBean implements Notification {
 
 	private static final Log LOG = LogFactory.getLog(NotificationBean.class);
@@ -109,17 +112,10 @@ public class NotificationBean implements Notification {
 
 	@Factory(OPER_SUBSCRIPTION_LIST_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void subscriptionListFactory() {
+	public void subscriptionListFactory() throws SubscriptionNotFoundException {
 		LOG.debug("subscription list factory for topic: " + this.selectedTopic);
-		try {
-			this.subscriptionList = this.notificationSubscriptionService
-					.listSubscriptions(this.selectedTopic.getTopic());
-		} catch (SubscriptionNotFoundException e) {
-			LOG.debug("subscription not found: "
-					+ this.selectedTopic.getTopic());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-		}
+		this.subscriptionList = this.notificationSubscriptionService
+				.listSubscriptions(this.selectedTopic.getTopic());
 	}
 
 	@Factory(OPER_CONSUMERS_LIST_NAME)
@@ -152,7 +148,7 @@ public class NotificationBean implements Notification {
 		return "add";
 	}
 
-	public String addSubscription() {
+	public String addSubscription() throws SubscriptionNotFoundException {
 		LOG.debug("add subscription for consumer " + this.consumer);
 		try {
 			this.notificationSubscriptionService.addSubscription(
@@ -169,18 +165,12 @@ public class NotificationBean implements Notification {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() {
+	public String remove() throws SubscriptionNotFoundException {
 		LOG.debug("remove subscription for topic "
 				+ this.selectedTopic.getTopic());
 		try {
 			this.notificationSubscriptionService.removeSubscription(
 					this.selectedTopic.getTopic(), this.selectedSubscription);
-		} catch (SubscriptionNotFoundException e) {
-			LOG.debug("subscription not found: "
-					+ this.selectedTopic.getTopic());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-			return null;
 		} catch (EndpointReferenceNotFoundException e) {
 			LOG.debug("endpoint not found: "
 					+ this.selectedSubscription.getName());

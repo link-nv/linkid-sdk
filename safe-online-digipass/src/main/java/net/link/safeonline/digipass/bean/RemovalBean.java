@@ -14,9 +14,13 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.digipass.DigipassConstants;
 import net.link.safeonline.digipass.Removal;
@@ -39,6 +43,7 @@ import org.jboss.seam.log.Log;
 @Stateful
 @Name("digipassRemoval")
 @LocalBinding(jndiBinding = DigipassConstants.JNDI_PREFIX + "RemovalBean/local")
+@Interceptors(ErrorMessageInterceptor.class)
 public class RemovalBean implements Removal {
 
 	private static final String DIGIPASS_ATTRIBUTE_LIST_NAME = "digipassAttributes";
@@ -75,49 +80,28 @@ public class RemovalBean implements Removal {
 	}
 
 	@Factory(DIGIPASS_ATTRIBUTE_LIST_NAME)
-	public List<AttributeDO> digipassAttributesFactory() {
+	@ErrorHandling( { @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login") })
+	public List<AttributeDO> digipassAttributesFactory()
+			throws SubjectNotFoundException, PermissionDeniedException {
 		Locale locale = getViewLocale();
-		try {
-			this.digipassAttributes = this.digipassDeviceService.getDigipasses(
-					this.loginName, locale);
-		} catch (SubjectNotFoundException e) {
-			this.log.debug("Subject not found: " + this.loginName);
-			this.facesMessages.addToControlFromResourceBundle("login",
-					"errorSubjectNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			this.log.debug("Permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle("errorPermissionDenied");
-			return null;
-		}
+		this.digipassAttributes = this.digipassDeviceService.getDigipasses(
+				this.loginName, locale);
 		return this.digipassAttributes;
 	}
 
-	public String remove() {
+	@ErrorHandling( { @Error(exceptionClass = DigipassException.class, messageId = "errorDeviceRegistrationNotFound") })
+	public String remove() throws SubjectNotFoundException, DigipassException,
+			PermissionDeniedException {
 		this.log.debug("remove digipass: "
 				+ this.selectedDigipass.getStringValue() + " for user "
 				+ this.loginName);
-		try {
-			this.digipassDeviceService.remove(this.loginName,
-					this.selectedDigipass.getStringValue());
-		} catch (SubjectNotFoundException e) {
-			this.log.debug("Subject not found");
-			this.facesMessages.addFromResourceBundle("errorSubjectNotFound");
-			return null;
-		} catch (DigipassException e) {
-			this.log.debug("Subject not found");
-			this.facesMessages
-					.addFromResourceBundle("errorDeviceRegistrationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			this.log.debug("Subject not found");
-			this.facesMessages.addFromResourceBundle("errorPermissionDenied");
-			return null;
-		}
+		this.digipassDeviceService.remove(this.loginName, this.selectedDigipass
+				.getStringValue());
 		return "success";
 	}
 
-	public String getRegistrations() {
+	public String getRegistrations() throws SubjectNotFoundException,
+			PermissionDeniedException {
 		this.log.debug("get digipasses for: " + this.loginName);
 		digipassAttributesFactory();
 		return "";

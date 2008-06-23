@@ -9,6 +9,10 @@ package net.link.safeonline.oper.attrib;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+
 @Local
 public interface Attributes {
 
@@ -24,7 +28,8 @@ public interface Attributes {
 
 	String remove();
 
-	String removeConfirm();
+	String removeConfirm() throws AttributeTypeDescriptionNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException;
 
 	/*
 	 * Lifecycle.

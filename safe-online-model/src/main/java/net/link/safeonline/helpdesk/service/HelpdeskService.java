@@ -13,6 +13,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
+import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 
 /**
  * Interface to service for retrieving information about helpdesk logs.
@@ -55,6 +56,6 @@ public interface HelpdeskService {
 	 * 
 	 * @param logId
 	 */
-	boolean removeLog(Long logId);
+	boolean removeLog(Long logId) throws HelpdeskContextNotFoundException;
 
 }

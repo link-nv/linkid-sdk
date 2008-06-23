@@ -13,11 +13,14 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceDescriptionException;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
@@ -46,6 +49,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "DeviceDescriptionBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class DeviceDescriptionBean implements DeviceDescription {
 
 	private static final Log LOG = LogFactory
@@ -87,25 +91,20 @@ public class DeviceDescriptionBean implements DeviceDescription {
 	 */
 	@Factory(OPER_DEVICE_DESCR_LIST_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void deviceDescriptionsListFactory() {
+	public void deviceDescriptionsListFactory() throws DeviceNotFoundException {
 		LOG.debug("device description list factory for device: "
 				+ this.selectedDevice.getName());
-		try {
-			this.deviceDescriptions = this.deviceService
-					.listDeviceDescriptions(this.selectedDevice.getName());
-		} catch (DeviceNotFoundException e) {
-			LOG.debug("device " + this.selectedDevice.getName() + " not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return;
-		}
+		this.deviceDescriptions = this.deviceService
+				.listDeviceDescriptions(this.selectedDevice.getName());
 	}
 
 	/*
 	 * Actions
 	 */
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	@ErrorHandling( { @Error(exceptionClass = ExistingDeviceDescriptionException.class, messageId = "errorDeviceDescriptionAlreadyExists", fieldId = "language") })
+	public String add() throws ExistingDeviceDescriptionException,
+			DeviceNotFoundException {
 		LOG.debug("add: " + this.language);
 
 		DeviceDescriptionEntity newDeviceDescription = new DeviceDescriptionEntity();
@@ -113,20 +112,7 @@ public class DeviceDescriptionBean implements DeviceDescription {
 				.getName(), this.language);
 		newDeviceDescription.setPk(pk);
 		newDeviceDescription.setDescription(this.description);
-		try {
-			this.deviceService.addDeviceDescription(newDeviceDescription);
-		} catch (DeviceNotFoundException e) {
-			LOG.debug("device not found: " + this.selectedDevice.getName());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		} catch (ExistingDeviceDescriptionException e) {
-			LOG.debug("device description already exists");
-			this.facesMessages.addToControlFromResourceBundle("language",
-					FacesMessage.SEVERITY_ERROR,
-					"errorDeviceDescriptionAlreadyExists");
-			return null;
-		}
+		this.deviceService.addDeviceDescription(newDeviceDescription);
 		return "success";
 	}
 
@@ -139,18 +125,11 @@ public class DeviceDescriptionBean implements DeviceDescription {
 
 	@End
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() {
+	public String remove() throws DeviceNotFoundException,
+			DeviceDescriptionNotFoundException {
 		LOG.debug("remove: " + this.selectedDeviceDescription);
-		try {
-			this.deviceService
-					.removeDeviceDescription(this.selectedDeviceDescription);
-		} catch (DeviceDescriptionNotFoundException e) {
-			String msg = "device description not found";
-			LOG.debug(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorDeviceDescriptionNotFound");
-		}
+		this.deviceService
+				.removeDeviceDescription(this.selectedDeviceDescription);
 		deviceDescriptionsListFactory();
 		return "removed";
 	}

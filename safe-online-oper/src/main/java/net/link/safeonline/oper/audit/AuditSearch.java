@@ -11,6 +11,8 @@ import javax.ejb.Local;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
+import net.link.safeonline.audit.exception.AuditContextNotFoundException;
+
 @Local
 public interface AuditSearch {
 
@@ -61,7 +63,7 @@ public interface AuditSearch {
 
 	String viewAuditRecords();
 
-	String removeContext();
+	String removeContext() throws AuditContextNotFoundException;
 
 	String search();
 

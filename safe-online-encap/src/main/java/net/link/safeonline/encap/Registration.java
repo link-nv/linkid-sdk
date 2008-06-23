@@ -7,7 +7,15 @@
 
 package net.link.safeonline.encap;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import javax.ejb.Local;
+
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 @Local
 public interface Registration {
@@ -26,13 +34,15 @@ public interface Registration {
 	/*
 	 * Actions.
 	 */
-	String mobileCancel();
+	String mobileCancel() throws IOException;
 
-	String mobileActivationOk();
+	String mobileActivationOk() throws IOException;
 
-	String mobileActivationCancel();
+	String mobileActivationCancel() throws SubjectNotFoundException,
+			MobileException, MalformedURLException, IOException;
 
-	String mobileRegister();
+	String mobileRegister() throws MobileException, MalformedURLException,
+			MobileRegistrationException, ArgumentIntegrityException;
 
 	/*
 	 * Factories

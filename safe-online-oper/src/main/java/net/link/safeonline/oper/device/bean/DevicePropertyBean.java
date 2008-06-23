@@ -13,11 +13,14 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
@@ -46,6 +49,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "DevicePropertyBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class DevicePropertyBean implements DeviceProperty {
 
 	private static final Log LOG = LogFactory.getLog(DevicePropertyBean.class);
@@ -86,25 +90,20 @@ public class DevicePropertyBean implements DeviceProperty {
 	 */
 	@Factory(OPER_DEVICE_PROP_LIST_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void devicePropertiesListFactory() {
+	public void devicePropertiesListFactory() throws DeviceNotFoundException {
 		LOG.debug("device properties list factory for device: "
 				+ this.selectedDevice.getName());
-		try {
-			this.deviceProperties = this.deviceService
-					.listDeviceProperties(this.selectedDevice.getName());
-		} catch (DeviceNotFoundException e) {
-			LOG.debug("device " + this.selectedDevice.getName() + " not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return;
-		}
+		this.deviceProperties = this.deviceService
+				.listDeviceProperties(this.selectedDevice.getName());
 	}
 
 	/*
 	 * Actions
 	 */
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	@ErrorHandling( { @Error(exceptionClass = ExistingDevicePropertyException.class, messageId = "errorDevicePropertyAlreadyExists", fieldId = "name") })
+	public String add() throws ExistingDevicePropertyException,
+			DeviceNotFoundException {
 		LOG.debug("add: " + this.name);
 
 		DevicePropertyEntity newDeviceProperty = new DevicePropertyEntity();
@@ -113,20 +112,8 @@ public class DevicePropertyBean implements DeviceProperty {
 		newDeviceProperty.setPk(pk);
 		newDeviceProperty.setValue(this.value);
 
-		try {
-			this.deviceService.addDeviceProperty(newDeviceProperty);
-		} catch (DeviceNotFoundException e) {
-			LOG.debug("device not found: " + this.selectedDevice.getName());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		} catch (ExistingDevicePropertyException e) {
-			LOG.debug("device property already exists");
-			this.facesMessages.addToControlFromResourceBundle("name",
-					FacesMessage.SEVERITY_ERROR,
-					"errorDevicePropertyAlreadyExists");
-			return null;
-		}
+		this.deviceService.addDeviceProperty(newDeviceProperty);
+
 		return "success";
 	}
 
@@ -139,17 +126,10 @@ public class DevicePropertyBean implements DeviceProperty {
 
 	@End
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() {
+	public String remove() throws DevicePropertyNotFoundException,
+			DeviceNotFoundException {
 		LOG.debug("remove: " + this.selectedDeviceProperty);
-		try {
-			this.deviceService
-					.removeDeviceProperty(this.selectedDeviceProperty);
-		} catch (DevicePropertyNotFoundException e) {
-			String msg = "device property not found";
-			LOG.debug(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDevicePropertyNotFound");
-		}
+		this.deviceService.removeDeviceProperty(this.selectedDeviceProperty);
 		devicePropertiesListFactory();
 		return "removed";
 	}

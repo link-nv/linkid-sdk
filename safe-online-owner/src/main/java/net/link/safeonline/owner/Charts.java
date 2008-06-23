@@ -7,7 +7,11 @@
 
 package net.link.safeonline.owner;
 
+import java.io.IOException;
+
 import javax.ejb.Local;
+
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 @Local
 public interface Charts {
@@ -15,16 +19,16 @@ public interface Charts {
 	/*
 	 * Factories
 	 */
-	void statListFactory();
+	void statListFactory() throws PermissionDeniedException;
 
 	/*
 	 * Actions.
 	 */
 	String viewStat();
 
-	String export();
+	String export() throws IOException;
 
-	String exportStat();
+	String exportStat() throws IOException;
 
 	/*
 	 * Lifecycle.

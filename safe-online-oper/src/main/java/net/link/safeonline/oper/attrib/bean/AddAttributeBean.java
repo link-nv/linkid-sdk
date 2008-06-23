@@ -14,8 +14,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -24,6 +24,9 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.NodeService;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.OlasEntity;
@@ -51,6 +54,7 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "AddAttributeBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class AddAttributeBean implements AddAttribute {
 
 	@Remove
@@ -223,7 +227,14 @@ public class AddAttributeBean implements AddAttribute {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@End
-	public String add() {
+	@ErrorHandling( {
+			@Error(exceptionClass = NodeNotFoundException.class, messageId = "errorNodeNotFound", fieldId = "location"),
+			@Error(exceptionClass = ExistingAttributeTypeException.class, messageId = "errorAttributeTypeAlreadyExists", fieldId = "name"),
+			@Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeMemberNotFound", fieldId = "name"),
+			@Error(exceptionClass = AttributeTypeDefinitionException.class, messageId = "errorAttributeTypeMemberIllegal", fieldId = "name") })
+	public String add() throws NodeNotFoundException,
+			ExistingAttributeTypeException, AttributeTypeNotFoundException,
+			AttributeTypeDefinitionException {
 		this.log.debug("add");
 
 		AttributeTypeEntity attributeType = new AttributeTypeEntity();
@@ -241,16 +252,8 @@ public class AddAttributeBean implements AddAttribute {
 		attributeType.setUserVisible(this.userVisible);
 		attributeType.setDeviceAttribute(this.deviceAttribute);
 
-		try {
-			OlasEntity olasNode = this.nodeService.getNode(this.node);
-			attributeType.setLocation(olasNode);
-		} catch (NodeNotFoundException e) {
-			String msg = "olas node not found";
-			this.log.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("location",
-					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
-			return null;
-		}
+		OlasEntity olasNode = this.nodeService.getNode(this.node);
+		attributeType.setLocation(olasNode);
 
 		if (null != this.memberAccessControlAttributes) {
 			int memberSequence = 0;
@@ -263,30 +266,8 @@ public class AddAttributeBean implements AddAttribute {
 				memberSequence += 1;
 			}
 		}
-		try {
-			this.attributeTypeService.add(attributeType);
-		} catch (ExistingAttributeTypeException e) {
-			String msg = "existing attribute type";
-			this.log.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("name",
-					FacesMessage.SEVERITY_ERROR,
-					"errorAttributeTypeAlreadyExists");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			String msg = "member attribute type not found";
-			this.log.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("name",
-					FacesMessage.SEVERITY_ERROR,
-					"errorAttributeTypeMemberNotFound");
-			return null;
-		} catch (AttributeTypeDefinitionException e) {
-			String msg = "illegal member attribute type";
-			this.log.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("name",
-					FacesMessage.SEVERITY_ERROR,
-					"errorAttributeTypeMemberIllegal");
-			return null;
-		}
+
+		this.attributeTypeService.add(attributeType);
 
 		/*
 		 * Reload the attribute type list here.

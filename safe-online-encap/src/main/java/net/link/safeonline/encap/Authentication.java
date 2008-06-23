@@ -1,6 +1,12 @@
 package net.link.safeonline.encap;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import javax.ejb.Local;
+
+import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
 
 @Local
 public interface Authentication {
@@ -23,11 +29,11 @@ public interface Authentication {
 	/*
 	 * Actions.
 	 */
-	String login();
+	String login() throws MobileAuthenticationException, IOException;
 
-	String requestOTP();
+	String requestOTP() throws MalformedURLException, MobileException;
 
-	String cancel();
+	String cancel() throws IOException;
 
 	/*
 	 * Lifecycle.

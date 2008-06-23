@@ -16,14 +16,17 @@ import java.util.Locale;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
@@ -56,6 +59,7 @@ import org.jboss.seam.log.Log;
 @Stateful
 @Name("removal")
 @LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "RemovalBean/local")
+@Interceptors(ErrorMessageInterceptor.class)
 public class RemovalBean implements Removal {
 
 	private static final String MOBILE_ATTRIBUTE_LIST_NAME = "mobileAttributes";
@@ -102,22 +106,16 @@ public class RemovalBean implements Removal {
 		this.log.debug("destroy");
 	}
 
-	public String mobileCancel() {
+	public String mobileCancel() throws IOException {
 		this.protocolContext.setSuccess(false);
 		exit();
 		return null;
 	}
 
-	private void exit() {
+	private void exit() throws IOException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
-		try {
-			externalContext.redirect("./deviceexit");
-		} catch (IOException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return;
-		}
+		externalContext.redirect("./deviceexit");
 		this.protocolContext.setValidity(this.samlAuthorityService
 				.getAuthnAssertionValidity());
 	}
@@ -129,23 +127,12 @@ public class RemovalBean implements Removal {
 	}
 
 	@Factory(MOBILE_ATTRIBUTE_LIST_NAME)
-	public List<AttributeDO> mobileAttributesFactory() {
+	public List<AttributeDO> mobileAttributesFactory()
+			throws SubjectNotFoundException, DeviceNotFoundException {
 		Locale locale = getViewLocale();
-		try {
-			this.mobileAttributes = listAttributes(
-					net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID,
-					locale);
-		} catch (DeviceNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			this.log.error("device not found");
-			return new LinkedList<AttributeDO>();
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			this.log.error("subject not found");
-			return new LinkedList<AttributeDO>();
-		}
+		this.mobileAttributes = listAttributes(
+				net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID,
+				locale);
 		return this.mobileAttributes;
 	}
 
@@ -226,23 +213,11 @@ public class RemovalBean implements Removal {
 		return attributes;
 	}
 
-	public String mobileRemove() {
-		try {
-			this.encapDeviceService.remove(this.userId, this.selectedMobile
-					.getStringValue());
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			return null;
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			return null;
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		}
+	@ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
+	public String mobileRemove() throws SubjectNotFoundException,
+			MobileException, IOException {
+		this.encapDeviceService.remove(this.userId, this.selectedMobile
+				.getStringValue());
 		this.protocolContext.setSuccess(true);
 		exit();
 		return null;

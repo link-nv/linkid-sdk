@@ -36,7 +36,6 @@ import org.jboss.seam.faces.FacesMessages;
 public class ConfigurationBean implements Configuration {
 
 	@DataModel("configGroupList")
-	@SuppressWarnings("unused")
 	private List<ConfigGroupEntity> configGroupList;
 
 	@EJB

@@ -27,6 +27,7 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -40,6 +41,7 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -60,7 +62,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
-import org.hibernate.exception.GenericJDBCException;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
@@ -78,6 +79,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "ApplicationBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class ApplicationBean implements Application {
 
 	private static final Log LOG = LogFactory.getLog(ApplicationBean.class);
@@ -179,38 +181,23 @@ public class ApplicationBean implements Application {
 
 	@Factory(APPLICATION_IDENTITY_ATTRIBUTES_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void applicationIdentityAttributesFactory() {
+	public void applicationIdentityAttributesFactory()
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException {
 		LOG.debug("application identity attributes factory");
 		String applicationName = this.selectedApplication.getName();
-		try {
-			this.applicationIdentityAttributes = this.applicationService
-					.getCurrentApplicationIdentity(applicationName);
-			this.numberOfSubscriptions = this.subscriptionService
-					.getNumberOfSubscriptions(applicationName);
-			this.ownerAdminName = this.subjectService
-					.getSubjectLogin(this.selectedApplication
-							.getApplicationOwner().getAdmin().getUserId());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return;
-		} catch (ApplicationIdentityNotFoundException e) {
-			LOG.debug("application identity not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationIdentityNotFound");
-			return;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return;
-		}
+
+		this.applicationIdentityAttributes = this.applicationService
+				.getCurrentApplicationIdentity(applicationName);
+		this.numberOfSubscriptions = this.subscriptionService
+				.getNumberOfSubscriptions(applicationName);
+		this.ownerAdminName = this.subjectService
+				.getSubjectLogin(this.selectedApplication.getApplicationOwner()
+						.getAdmin().getUserId());
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	public String add() throws AttributeTypeNotFoundException, IOException {
 
 		LOG.debug("add application: " + this.name);
 		if (null != this.friendlyName)
@@ -311,20 +298,10 @@ public class ApplicationBean implements Application {
 					FacesMessage.SEVERITY_ERROR,
 					"errorApplicationOwnerNotFound", this.applicationOwner);
 			return null;
-		} catch (IOException e) {
-			LOG.debug("IO error");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return null;
 		} catch (CertificateEncodingException e) {
 			LOG.debug("X509 certificate encoding error");
 			this.facesMessages.addToControlFromResourceBundle("fileupload",
 					FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			LOG.debug("attribute type not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		}
 		applicationListFactory();
@@ -436,7 +413,7 @@ public class ApplicationBean implements Application {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeApplication() {
+	public String removeApplication() throws ApplicationNotFoundException {
 		/*
 		 * http://jira.jboss.com/jira/browse/EJBTHREE-786
 		 */
@@ -444,11 +421,6 @@ public class ApplicationBean implements Application {
 		LOG.debug("remove application: " + applicationName);
 		try {
 			this.applicationService.removeApplication(applicationName);
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied to remove: " + applicationName);
 			this.facesMessages.addFromResourceBundle(
@@ -475,29 +447,12 @@ public class ApplicationBean implements Application {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@Factory(IDENTITY_ATTRIBUTES_NAME)
-	public void identityAttributesFactory() {
-		Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes;
-		try {
-			currentIdentityAttributes = this.applicationService
-					.getCurrentApplicationIdentity(this.selectedApplication
-							.getName());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return;
-		} catch (ApplicationIdentityNotFoundException e) {
-			LOG.debug("application identity not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationIdentityNotFound");
-			return;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return;
-		}
+	public void identityAttributesFactory()
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException {
+		Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes = this.applicationService
+				.getCurrentApplicationIdentity(this.selectedApplication
+						.getName());
 
 		/*
 		 * Construct a map for fast lookup. The key is the attribute type name.
@@ -551,7 +506,10 @@ public class ApplicationBean implements Application {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() {
+	public String save() throws CertificateEncodingException,
+			ApplicationNotFoundException, IOException,
+			ApplicationIdentityNotFoundException,
+			AttributeTypeNotFoundException, PermissionDeniedException {
 		String applicationId = this.selectedApplication.getName();
 		LOG.debug("save application: " + applicationId);
 
@@ -592,26 +550,8 @@ public class ApplicationBean implements Application {
 
 		if (null != this.upFile) {
 			LOG.debug("updating application certificate");
-			try {
-				this.applicationService.updateApplicationCertificate(
-						applicationId, getUpFileContent(this.upFile));
-			} catch (CertificateEncodingException e) {
-				LOG.debug("certificate encoding error");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
-				return null;
-			} catch (ApplicationNotFoundException e) {
-				LOG.debug("application not found");
-				this.facesMessages
-						.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
-								"errorApplicationNotFound");
-				return null;
-			} catch (IOException e) {
-				LOG.debug("IO error: " + e.getMessage());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorIO");
-				return null;
-			}
+			this.applicationService.updateApplicationCertificate(applicationId,
+					getUpFileContent(this.upFile));
 		}
 
 		List<IdentityAttributeTypeDO> tempNewIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
@@ -625,58 +565,30 @@ public class ApplicationBean implements Application {
 			tempNewIdentityAttributes.add(newIdentityAttribute);
 		}
 
-		try {
-			this.applicationService.updateApplicationIdentity(applicationId,
-					tempNewIdentityAttributes);
-			this.applicationService.updateApplicationUrl(applicationId,
-					newApplicationUrl);
-			if (newApplicationLogo != null)
-				this.applicationService.updateApplicationLogo(applicationId,
-						newApplicationLogo);
-			this.applicationService.updateApplicationColor(applicationId,
-					newApplicationColor);
-			this.applicationService.setIdentifierMappingServiceAccess(
-					applicationId, this.idmapping);
-			if (null != this.applicationIdScope)
-				this.applicationService.setIdScope(applicationId, IdScopeType
-						.valueOf(this.applicationIdScope));
-			this.applicationService.setSkipMessageIntegrityCheck(applicationId,
-					this.skipMessageIntegrityCheck);
+		this.applicationService.updateApplicationIdentity(applicationId,
+				tempNewIdentityAttributes);
+		this.applicationService.updateApplicationUrl(applicationId,
+				newApplicationUrl);
+		if (newApplicationLogo != null)
+			this.applicationService.updateApplicationLogo(applicationId,
+					newApplicationLogo);
+		this.applicationService.updateApplicationColor(applicationId,
+				newApplicationColor);
+		this.applicationService.setIdentifierMappingServiceAccess(
+				applicationId, this.idmapping);
+		if (null != this.applicationIdScope)
+			this.applicationService.setIdScope(applicationId, IdScopeType
+					.valueOf(this.applicationIdScope));
+		this.applicationService.setSkipMessageIntegrityCheck(applicationId,
+				this.skipMessageIntegrityCheck);
 
-			/*
-			 * Refresh the selected application.
-			 */
-			this.selectedApplication = this.applicationService
-					.getApplication(applicationId);
-			this.applicationIdentityAttributes = this.applicationService
-					.getCurrentApplicationIdentity(applicationId);
-		} catch (GenericJDBCException e) {
-			LOG.debug("invalid data type.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDataType");
-			return null;
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (ApplicationIdentityNotFoundException e) {
-			LOG.debug("application identity not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationIdentityNotFound");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			LOG.debug("application identity not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		/*
+		 * Refresh the selected application.
+		 */
+		this.selectedApplication = this.applicationService
+				.getApplication(applicationId);
+		this.applicationIdentityAttributes = this.applicationService
+				.getCurrentApplicationIdentity(applicationId);
 
 		applicationListFactory();
 		return "success";
@@ -739,21 +651,14 @@ public class ApplicationBean implements Application {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getUsageAgreement() {
+	public String getUsageAgreement() throws ApplicationNotFoundException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		try {
-			String text = this.usageAgreementService.getUsageAgreementText(
-					this.selectedApplication.getName(), viewLocale
-							.getLanguage());
-			if (null == text)
-				return "";
-			return text;
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		}
+
+		String text = this.usageAgreementService.getUsageAgreementText(
+				this.selectedApplication.getName(), viewLocale.getLanguage());
+		if (null == text)
+			return "";
+		return text;
 	}
 }

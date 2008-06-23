@@ -8,19 +8,19 @@
 package net.link.safeonline.owner.bean;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.owner.Charts;
@@ -47,6 +47,7 @@ import org.joda.time.format.DateTimeFormatter;
 @Name("chart")
 @LocalBinding(jndiBinding = OwnerConstants.JNDI_PREFIX + "ChartsBean/local")
 @SecurityDomain(OwnerConstants.SAFE_ONLINE_OWNER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class ChartsBean implements Charts {
 
 	private static final Log LOG = LogFactory.getLog(ChartsBean.class);
@@ -81,17 +82,10 @@ public class ChartsBean implements Charts {
 
 	@Factory(STAT_LIST_NAME)
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public void statListFactory() {
+	public void statListFactory() throws PermissionDeniedException {
 		LOG.debug("selectedApplication: " + this.selectedApplication);
-		try {
-			this.statList = this.statisticService
-					.getStatistics(this.selectedApplication);
-		} catch (PermissionDeniedException e) {
-			LOG.error("permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			this.statList = new LinkedList<StatisticEntity>();
-		}
+		this.statList = this.statisticService
+				.getStatistics(this.selectedApplication);
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
@@ -103,7 +97,7 @@ public class ChartsBean implements Charts {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-	public String export() {
+	public String export() throws IOException {
 		DateTime dt = new DateTime();
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
 		String filename = "accounting_" + this.selectedApplication.getName()
@@ -114,18 +108,12 @@ public class ChartsBean implements Charts {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		try {
-			externalContext.redirect(exportURL);
-		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-		}
+		externalContext.redirect(exportURL);
 		return null;
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-	public String exportStat() {
+	public String exportStat() throws IOException {
 		DateTime dt = new DateTime();
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
 		String filename = "accounting_" + this.selectedApplication.getName()
@@ -139,13 +127,7 @@ public class ChartsBean implements Charts {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		try {
-			externalContext.redirect(exportURL);
-		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-		}
+		externalContext.redirect(exportURL);
 		return null;
 	}
 

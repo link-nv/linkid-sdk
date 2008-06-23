@@ -9,25 +9,46 @@ package net.link.safeonline.ctrl.error;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.security.cert.CertificateEncodingException;
 
 import javax.faces.application.FacesMessage;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 import javax.management.AttributeNotFoundException;
+import javax.management.relation.RoleNotFoundException;
 
+import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
+import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
+import net.link.safeonline.authentication.exception.ExistingDeviceDescriptionException;
+import net.link.safeonline.authentication.exception.ExistingDeviceException;
+import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
+import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
 
+import org.hibernate.exception.GenericJDBCException;
 import org.jboss.seam.faces.FacesMessages;
 
 /**
@@ -57,21 +78,59 @@ public class ErrorMessageInterceptor {
 					"errorApplicationIdentityNotFound"),
 			new ErrorHandle(AttributeNotFoundException.class,
 					"errorAttributeNotFound"),
+			new ErrorHandle(AttributeProviderNotFoundException.class,
+					"errorAttributeProviderNotFound"),
+			new ErrorHandle(AttributeTypeDescriptionNotFoundException.class,
+					"errorAttributeTypeDescriptionNotFound"),
 			new ErrorHandle(AttributeTypeNotFoundException.class,
 					"errorAttributeTypeNotFound"),
+			new ErrorHandle(AuditContextNotFoundException.class,
+					"errorAuditContextNotFound"),
+			new ErrorHandle(CertificateEncodingException.class,
+					"errorX509Encoding"),
+			new ErrorHandle(DeviceClassDescriptionNotFoundException.class,
+					"errorDeviceClassDescriptionNotFound"),
+			new ErrorHandle(DeviceClassNotFoundException.class,
+					"errorDeviceClassNotFound"),
+			new ErrorHandle(DeviceDescriptionNotFoundException.class,
+					"errorDeviceDescriptionNotFound"),
 			new ErrorHandle(DeviceNotFoundException.class,
 					"errorDeviceNotFound"),
+			new ErrorHandle(DevicePropertyNotFoundException.class,
+					"errorDevicePropertyNotFound"),
 			new ErrorHandle(EmptyDevicePolicyException.class,
 					"errorEmptyDevicePolicy"),
+			new ErrorHandle(EndpointReferenceNotFoundException.class,
+					"errorConsumerNotFound"),
+			new ErrorHandle(ExistingAttributeProviderException.class,
+					"errorAttributeProviderAlreadyExists"),
+			new ErrorHandle(ExistingDeviceException.class,
+					"errorDeviceAlreadyExists"),
+			new ErrorHandle(ExistingDeviceDescriptionException.class,
+					"errorDeviceDescriptionAlreadyExists"),
+			new ErrorHandle(GenericJDBCException.class, "errorDataType"),
 			new ErrorHandle(IOException.class, "errorIO"),
-			new ErrorHandle(PermissionDeniedException.class,
-					"errorPermissionDenied"),
+			new ErrorHandle(HelpdeskContextNotFoundException.class,
+					"errorHelpdeskLogNotFound"),
 			new ErrorHandle(MessageHandlerNotFoundException.class,
 					"errorMessage"),
+			new ErrorHandle(MobileAuthenticationException.class,
+					"mobileAuthenticationFailed"),
+			new ErrorHandle(MobileException.class, "mobileCommunicationFailed"),
+			new ErrorHandle(MobileRegistrationException.class,
+					"mobileRegistrationFailed"),
+			new ErrorHandle(NodeNotFoundException.class, "errorNodeNotFound"),
+			new ErrorHandle(PermissionDeniedException.class,
+					"errorPermissionDenied"),
+			new ErrorHandle(RoleNotFoundException.class, "errorRoleNotFound"),
 			new ErrorHandle(SubjectNotFoundException.class,
 					"errorSubjectNotFound"),
 			new ErrorHandle(SubscriptionNotFoundException.class,
-					"errorSubscriptionNotFound") };
+					"errorSubscriptionNotFound"),
+			new ErrorHandle(TrustDomainNotFoundException.class,
+					"errorTrustDomainNotFound"),
+			new ErrorHandle(TrustPointNotFoundException.class,
+					"errorTrustPointNotFound") };
 
 	@AroundInvoke
 	public Object invoke(InvocationContext invocationContext) throws Exception {

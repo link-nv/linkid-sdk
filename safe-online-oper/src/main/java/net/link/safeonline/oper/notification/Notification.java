@@ -12,6 +12,8 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+
 @Local
 public interface Notification {
 
@@ -19,7 +21,7 @@ public interface Notification {
 
 	void topicListFactory();
 
-	void subscriptionListFactory();
+	void subscriptionListFactory() throws SubscriptionNotFoundException;
 
 	List<SelectItem> consumerListFactory();
 
@@ -27,9 +29,9 @@ public interface Notification {
 
 	String add();
 
-	String addSubscription();
+	String addSubscription() throws SubscriptionNotFoundException;
 
-	String remove();
+	String remove() throws SubscriptionNotFoundException;
 
 	String getAddress();
 

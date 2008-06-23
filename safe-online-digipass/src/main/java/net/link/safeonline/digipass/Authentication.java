@@ -1,5 +1,7 @@
 package net.link.safeonline.digipass;
 
+import java.io.IOException;
+
 import javax.ejb.Local;
 
 @Local
@@ -19,9 +21,9 @@ public interface Authentication {
 	/*
 	 * Actions.
 	 */
-	String login();
+	String login() throws IOException;
 
-	String cancel();
+	String cancel() throws IOException;
 
 	/*
 	 * Lifecycle.

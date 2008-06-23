@@ -50,19 +50,16 @@ public class SchedulingBean implements Scheduling {
 	private static final Log LOG = LogFactory.getLog(SchedulingBean.class);
 
 	@DataModel("schedulingList")
-	@SuppressWarnings("unused")
 	private List<SchedulingEntity> schedulingList;
 
 	@DataModelSelection("schedulingList")
 	@Out(value = "selectedScheduling", required = false, scope = ScopeType.SESSION)
 	@In(value = "selectedScheduling", required = false)
-	@SuppressWarnings("unused")
 	private SchedulingEntity selectedScheduling;
 
 	@DataModelSelection("taskList")
 	@Out(value = "selectedTask", required = false, scope = ScopeType.SESSION)
 	@In(value = "selectedTask", required = false)
-	@SuppressWarnings("unused")
 	private TaskEntity selectedTask;
 
 	@DataModel("taskList")

@@ -19,9 +19,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.audit.service.AuditService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.audit.AccessAuditEntity;
 import net.link.safeonline.entity.audit.AuditAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
@@ -52,6 +54,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "AuditSearchBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class AuditSearchBean implements AuditSearch {
 
 	private static final Log LOG = LogFactory.getLog(AuditSearchBean.class);
@@ -313,17 +316,9 @@ public class AuditSearchBean implements AuditSearch {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeContext() {
+	public String removeContext() throws AuditContextNotFoundException {
 		LOG.debug("Remove context " + this.auditContext.getId());
-		try {
-			this.auditService.removeAuditContext(this.auditContext.getId());
-		} catch (AuditContextNotFoundException e) {
-			String msg = "audit context not found";
-			LOG.debug(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAuditContextNotFound");
-			return null;
-		}
+		this.auditService.removeAuditContext(this.auditContext.getId());
 		auditContextListFactory();
 		return "success";
 	}

@@ -7,7 +7,12 @@
 
 package net.link.safeonline.oper.node;
 
+import java.io.IOException;
+
 import javax.ejb.Local;
+
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
@@ -54,11 +59,12 @@ public interface Node {
 	/*
 	 * Actions.
 	 */
-	String add();
+	String add() throws CertificateEncodingException, IOException;
 
-	String remove();
+	String remove() throws NodeNotFoundException;
 
-	String save();
+	String save() throws CertificateEncodingException, NodeNotFoundException,
+			IOException;
 
 	String view();
 

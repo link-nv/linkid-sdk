@@ -13,8 +13,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.pkix.TrustDomain;
@@ -71,27 +72,19 @@ public class TrustDomainBean implements TrustDomain {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	@ErrorHandling( { @Error(exceptionClass = ExistingTrustDomainException.class, messageId = "errorTrustDomainAlreadyExists", fieldId = "name") })
+	public String add() throws ExistingTrustDomainException {
 		LOG.debug("add trust domain");
-		try {
-			/*
-			 * this.pkiService.addTrustDomain(this.name, this.performOcspCheck,
-			 * this.ocspCacheTimeOutMillis);
-			 */
-			String name = this.newTrustDomain.getName();
-			boolean performOcspCheck = this.newTrustDomain.isPerformOcspCheck();
-			long ocspCacheTimeOutMillis = this.newTrustDomain
-					.getOcspCacheTimeOutMillis();
-			this.pkiService.addTrustDomain(name, performOcspCheck,
-					ocspCacheTimeOutMillis);
-		} catch (ExistingTrustDomainException e) {
-			String msg = "existing trust domain";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("name",
-					FacesMessage.SEVERITY_ERROR,
-					"errorTrustDomainAlreadyExists");
-			return null;
-		}
+		/*
+		 * this.pkiService.addTrustDomain(this.name, this.performOcspCheck,
+		 * this.ocspCacheTimeOutMillis);
+		 */
+		String name = this.newTrustDomain.getName();
+		boolean performOcspCheck = this.newTrustDomain.isPerformOcspCheck();
+		long ocspCacheTimeOutMillis = this.newTrustDomain
+				.getOcspCacheTimeOutMillis();
+		this.pkiService.addTrustDomain(name, performOcspCheck,
+				ocspCacheTimeOutMillis);
 		return "success";
 	}
 
@@ -108,18 +101,9 @@ public class TrustDomainBean implements TrustDomain {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeTrustDomain() {
+	public String removeTrustDomain() throws TrustDomainNotFoundException {
 		LOG.debug("remove trust domain: " + this.selectedTrustDomain);
-		try {
-			this.pkiService.removeTrustDomain(this.selectedTrustDomain
-					.getName());
-		} catch (TrustDomainNotFoundException e) {
-			String msg = "trust domain not found";
-			LOG.debug(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorTrustDomainNotFound");
-			return null;
-		}
+		this.pkiService.removeTrustDomain(this.selectedTrustDomain.getName());
 		trustDomainListFactory();
 		return "removed";
 	}

@@ -10,10 +10,14 @@ package net.link.safeonline.digipass.bean;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.digipass.DigipassConstants;
 import net.link.safeonline.digipass.Registration;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
@@ -30,6 +34,7 @@ import org.jboss.seam.log.Log;
 @Name("digipassRegistration")
 @LocalBinding(jndiBinding = DigipassConstants.JNDI_PREFIX
 		+ "RegistrationBean/local")
+@Interceptors(ErrorMessageInterceptor.class)
 public class RegistrationBean implements Registration {
 
 	@Logger
@@ -53,28 +58,14 @@ public class RegistrationBean implements Registration {
 		this.serialNumber = null;
 	}
 
-	public String register() {
+	@ErrorHandling( {
+			@Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
+			@Error(exceptionClass = ArgumentIntegrityException.class, messageId = "errorDigipassRegistered", fieldId = "serialNumber") })
+	public String register() throws PermissionDeniedException,
+			SubjectNotFoundException, ArgumentIntegrityException {
 		this.log.debug("register digipas with sn=" + this.serialNumber
 				+ " for user: " + this.loginName);
-		try {
-			this.digipassDeviceService.register(this.loginName,
-					this.serialNumber);
-		} catch (SubjectNotFoundException e) {
-			this.log.debug("Subject not found: " + this.loginName);
-			this.facesMessages.addToControlFromResourceBundle("login",
-					"errorSubjectNotFound");
-			return null;
-		} catch (ArgumentIntegrityException e) {
-			this.log.debug("digipass already registered for: " + this.loginName
-					+ "(sn=" + this.serialNumber + ")");
-			this.facesMessages.addToControlFromResourceBundle("serialNumber",
-					"errorDigipassRegistered");
-			return null;
-		} catch (PermissionDeniedException e) {
-			this.log.debug("Permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle("errorPermissionDenied");
-			return null;
-		}
+		this.digipassDeviceService.register(this.loginName, this.serialNumber);
 		return "success";
 	}
 

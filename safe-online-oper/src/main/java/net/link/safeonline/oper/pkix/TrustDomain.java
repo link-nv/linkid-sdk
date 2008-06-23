@@ -10,6 +10,8 @@ package net.link.safeonline.oper.pkix;
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.pkix.exception.ExistingTrustDomainException;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 @Local
 public interface TrustDomain {
@@ -31,9 +33,9 @@ public interface TrustDomain {
 	 */
 	String view();
 
-	String add();
+	String add() throws ExistingTrustDomainException;
 
-	String removeTrustDomain();
+	String removeTrustDomain() throws TrustDomainNotFoundException;
 
 	String clearOcspCache();
 

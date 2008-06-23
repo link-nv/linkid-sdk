@@ -15,11 +15,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
@@ -45,6 +46,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OwnerConstants.JNDI_PREFIX
 		+ "UsageAgreementBean/local")
 @SecurityDomain(OwnerConstants.SAFE_ONLINE_OWNER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class UsageAgreementBean implements UsageAgreement {
 
 	private static final Log LOG = LogFactory.getLog(UsageAgreementBean.class);
@@ -128,22 +130,11 @@ public class UsageAgreementBean implements UsageAgreement {
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	@Factory(draftUsageAgreementsTextsModel)
-	public void draftUsageAgreementsTextsFactory() {
+	public void draftUsageAgreementsTextsFactory()
+			throws ApplicationNotFoundException, PermissionDeniedException {
 		LOG.debug("get draft texts");
-		try {
-			this.draftUsageAgreement = this.usageAgreementService
-					.getDraftUsageAgreement(this.selectedApplication.getName());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return;
-		}
+		this.draftUsageAgreement = this.usageAgreementService
+				.getDraftUsageAgreement(this.selectedApplication.getName());
 		if (null == this.draftUsageAgreement)
 			return;
 		this.draftUsageAgreementsTexts = this.draftUsageAgreement
@@ -152,23 +143,11 @@ public class UsageAgreementBean implements UsageAgreement {
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	@Factory(currentUsageAgreementsTextsModel)
-	public void currentUsageAgreementsTextsFactory() {
+	public void currentUsageAgreementsTextsFactory()
+			throws PermissionDeniedException, ApplicationNotFoundException {
 		LOG.debug("get current texts");
-		try {
-			this.currentUsageAgreement = this.usageAgreementService
-					.getCurrentUsageAgreement(this.selectedApplication
-							.getName());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return;
-		}
+		this.currentUsageAgreement = this.usageAgreementService
+				.getCurrentUsageAgreement(this.selectedApplication.getName());
 		if (null == this.currentUsageAgreement)
 			return;
 		this.currentUsageAgreementsTexts = this.currentUsageAgreement
@@ -179,42 +158,19 @@ public class UsageAgreementBean implements UsageAgreement {
 	 * Accessors
 	 */
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public UsageAgreementEntity getCurrentUsageAgreement() {
-		try {
-			this.currentUsageAgreement = this.usageAgreementService
-					.getCurrentUsageAgreement(this.selectedApplication
-							.getName());
-			return this.currentUsageAgreement;
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+	public UsageAgreementEntity getCurrentUsageAgreement()
+			throws PermissionDeniedException, ApplicationNotFoundException {
+		this.currentUsageAgreement = this.usageAgreementService
+				.getCurrentUsageAgreement(this.selectedApplication.getName());
+		return this.currentUsageAgreement;
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public UsageAgreementEntity getDraftUsageAgreement() {
-		try {
-			this.draftUsageAgreement = this.usageAgreementService
-					.getDraftUsageAgreement(this.selectedApplication.getName());
-			return this.draftUsageAgreement;
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+	public UsageAgreementEntity getDraftUsageAgreement()
+			throws ApplicationNotFoundException, PermissionDeniedException {
+		this.draftUsageAgreement = this.usageAgreementService
+				.getDraftUsageAgreement(this.selectedApplication.getName());
+		return this.draftUsageAgreement;
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
@@ -270,56 +226,34 @@ public class UsageAgreementBean implements UsageAgreement {
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String createUsageAgreement() {
+	public String createUsageAgreement() throws ApplicationNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("create draft usage agreement");
-		try {
-			if (null != this.currentUsageAgreement)
-				this.draftUsageAgreement = this.usageAgreementService
-						.createDraftUsageAgreement(this.selectedApplication
-								.getName(), this.currentUsageAgreement
-								.getUsageAgreementVersion());
-			else
-				this.draftUsageAgreement = this.usageAgreementService
-						.createDraftUsageAgreement(this.selectedApplication
-								.getName(), this.selectedApplication
-								.getCurrentApplicationUsageAgreement());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
+		if (null != this.currentUsageAgreement) {
+			this.draftUsageAgreement = this.usageAgreementService
+					.createDraftUsageAgreement(this.selectedApplication
+							.getName(), this.currentUsageAgreement
+							.getUsageAgreementVersion());
+		} else {
+			this.draftUsageAgreement = this.usageAgreementService
+					.createDraftUsageAgreement(this.selectedApplication
+							.getName(), this.selectedApplication
+							.getCurrentApplicationUsageAgreement());
 		}
 		return "success";
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String editCurrentText() {
+	public String editCurrentText() throws ApplicationNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("edit current usage agreement text: language="
 				+ this.selectedCurrentUsageAgreementText.getLanguage());
-		try {
-			UsageAgreementEntity usageAgreement = this.usageAgreementService
-					.createDraftUsageAgreement(this.selectedApplication
-							.getName(), this.currentUsageAgreement
-							.getUsageAgreementVersion());
-			this.selectedUsageAgreementText = usageAgreement
-					.getUsageAgreementText(this.selectedCurrentUsageAgreementText
-							.getLanguage());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		UsageAgreementEntity usageAgreement = this.usageAgreementService
+				.createDraftUsageAgreement(this.selectedApplication.getName(),
+						this.currentUsageAgreement.getUsageAgreementVersion());
+		this.selectedUsageAgreementText = usageAgreement
+				.getUsageAgreementText(this.selectedCurrentUsageAgreementText
+						.getLanguage());
 		return "edittext";
 	}
 
@@ -332,114 +266,58 @@ public class UsageAgreementBean implements UsageAgreement {
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String removeDraftText() {
+	public String removeDraftText() throws ApplicationNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("remove draft text: language="
 				+ this.selectedDraftUsageAgreementText.getLanguage());
-		try {
-			this.usageAgreementService.removeDraftUsageAgreementText(
-					this.selectedApplication.getName(),
-					this.selectedDraftUsageAgreementText.getLanguage());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		this.usageAgreementService.removeDraftUsageAgreementText(
+				this.selectedApplication.getName(),
+				this.selectedDraftUsageAgreementText.getLanguage());
 		this.draftUsageAgreementsTextsFactory();
 		return "removed";
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String addText() {
+	public String addText() throws ApplicationNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("add draft text: language=" + this.language);
-		try {
-			this.selectedUsageAgreementText = this.usageAgreementService
-					.createDraftUsageAgreementText(this.selectedApplication
-							.getName(), this.language, "");
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		this.selectedUsageAgreementText = this.usageAgreementService
+				.createDraftUsageAgreementText(this.selectedApplication
+						.getName(), this.language, "");
 		this.draftUsageAgreementsTextsFactory();
 		return "edittext";
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String saveText() {
+	public String saveText() throws ApplicationNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("save usage agreement text: language="
 				+ this.selectedUsageAgreementText.getLanguage());
 		String text = this.selectedUsageAgreementText.getText();
-		try {
-			this.usageAgreementService.setDraftUsageAgreementText(
-					this.selectedApplication.getName(),
-					this.selectedUsageAgreementText.getLanguage(), text);
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		this.usageAgreementService.setDraftUsageAgreementText(
+				this.selectedApplication.getName(),
+				this.selectedUsageAgreementText.getLanguage(), text);
 		this.draftUsageAgreementsTextsFactory();
 		return "saved";
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String releaseDraft() {
+	public String releaseDraft() throws ApplicationNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("release draft usage agreement");
-		try {
-			this.usageAgreementService
-					.updateUsageAgreement(this.selectedApplication.getName());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		this.usageAgreementService
+				.updateUsageAgreement(this.selectedApplication.getName());
 		this.currentUsageAgreementsTextsFactory();
 		this.draftUsageAgreementsTextsFactory();
 		return "success";
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String removeDraft() {
+	public String removeDraft() throws ApplicationNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("remove draft usage agreement");
-		try {
-			this.usageAgreementService
-					.removeDraftUsageAgreement(this.selectedApplication
-							.getName());
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		this.usageAgreementService
+				.removeDraftUsageAgreement(this.selectedApplication.getName());
 		this.currentUsageAgreementsTextsFactory();
 		this.draftUsageAgreementsTextsFactory();
 		return "success";

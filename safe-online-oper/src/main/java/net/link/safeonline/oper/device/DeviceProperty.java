@@ -9,6 +9,10 @@ package net.link.safeonline.oper.device;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
+
 @Local
 public interface DeviceProperty {
 
@@ -20,18 +24,20 @@ public interface DeviceProperty {
 	/*
 	 * Factories
 	 */
-	void devicePropertiesListFactory();
+	void devicePropertiesListFactory() throws DeviceNotFoundException;
 
 	/*
 	 * Actions.
 	 */
-	String add();
+	String add() throws ExistingDevicePropertyException,
+			DeviceNotFoundException;
 
 	String edit();
 
 	String save();
 
-	String remove();
+	String remove() throws DevicePropertyNotFoundException,
+			DeviceNotFoundException;
 
 	String cancelEdit();
 

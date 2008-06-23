@@ -7,10 +7,17 @@
 
 package net.link.safeonline.oper.app;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
+
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
@@ -24,9 +31,12 @@ public interface Application {
 
 	void newIdentityAttributesFactory();
 
-	void identityAttributesFactory();
+	void identityAttributesFactory() throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException;
 
-	void applicationIdentityAttributesFactory();
+	void applicationIdentityAttributesFactory()
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException;
 
 	List<SelectItem> availableApplicationOwnersFactory();
 
@@ -80,7 +90,7 @@ public interface Application {
 
 	void setIdmapping(boolean idmapping);
 
-	String getUsageAgreement();
+	String getUsageAgreement() throws ApplicationNotFoundException;
 
 	void setApplicationIdScope(String applicationIdScope);
 
@@ -93,11 +103,14 @@ public interface Application {
 	/*
 	 * Actions.
 	 */
-	String add();
+	String add() throws AttributeTypeNotFoundException, IOException;
 
-	String removeApplication();
+	String removeApplication() throws ApplicationNotFoundException;
 
-	String save();
+	String save() throws CertificateEncodingException,
+			ApplicationNotFoundException, IOException,
+			ApplicationIdentityNotFoundException,
+			AttributeTypeNotFoundException, PermissionDeniedException;
 
 	String view();
 

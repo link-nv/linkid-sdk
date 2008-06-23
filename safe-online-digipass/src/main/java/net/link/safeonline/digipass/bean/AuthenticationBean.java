@@ -15,10 +15,12 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.digipass.Authentication;
 import net.link.safeonline.digipass.DigipassConstants;
@@ -38,6 +40,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Name("digipassAuthentication")
 @LocalBinding(jndiBinding = DigipassConstants.JNDI_PREFIX
 		+ "AuthenticationBean/local")
+@Interceptors(ErrorMessageInterceptor.class)
 public class AuthenticationBean implements Authentication {
 
 	private static final Log LOG = LogFactory.getLog(AuthenticationBean.class);
@@ -74,7 +77,7 @@ public class AuthenticationBean implements Authentication {
 		this.token = token;
 	}
 
-	public String login() {
+	public String login() throws IOException {
 		LOG.debug("login: " + this.loginName);
 		HelpdeskLogger.add("login: " + this.loginName, LogLevelType.INFO);
 
@@ -110,7 +113,7 @@ public class AuthenticationBean implements Authentication {
 		return null;
 	}
 
-	private void login(String deviceUserId) {
+	private void login(String deviceUserId) throws IOException {
 		this.authenticationContext.setUserId(deviceUserId);
 		this.authenticationContext.setValidity(this.samlAuthorityService
 				.getAuthnAssertionValidity());
@@ -122,25 +125,18 @@ public class AuthenticationBean implements Authentication {
 		exit();
 	}
 
-	public String cancel() {
+	public String cancel() throws IOException {
 		exit();
 		return null;
 	}
 
-	private void exit() {
+	private void exit() throws IOException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
 
 		String redirectUrl = "authenticationexit";
 		LOG.debug("redirecting to: " + redirectUrl);
-		try {
-			externalContext.redirect(redirectUrl);
-		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return;
-		}
+		externalContext.redirect(redirectUrl);
 	}
 
 	@PostConstruct

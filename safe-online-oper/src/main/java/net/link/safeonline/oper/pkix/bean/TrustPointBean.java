@@ -18,9 +18,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.oper.OperatorConstants;
@@ -51,6 +54,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "TrustPointBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class TrustPointBean implements TrustPoint {
 
 	private static final Log LOG = LogFactory.getLog(TrustPointBean.class);
@@ -125,39 +129,17 @@ public class TrustPointBean implements TrustPoint {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	@ErrorHandling( {
+			@Error(exceptionClass = TrustDomainNotFoundException.class, messageId = "errorTrustDomainNotFound", fieldId = "fileupload"),
+			@Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
+			@Error(exceptionClass = ExistingTrustPointException.class, messageId = "errorTrustPointAlreadyExists", fieldId = "fileupload"),
+			@Error(exceptionClass = IOException.class, messageId = "errorIO", fieldId = "fileupload") })
+	public String add() throws IOException, TrustDomainNotFoundException,
+			ExistingTrustPointException, CertificateEncodingException {
 		String domainName = this.selectedTrustDomain.getName();
 		LOG.debug("adding trust point to domain " + domainName);
-		try {
-			byte[] content = getUpFileContent();
-			this.pkiService.addTrustPoint(domainName, content);
-		} catch (TrustDomainNotFoundException e) {
-			String msg = "trust domain not found";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("fileupload",
-					FacesMessage.SEVERITY_ERROR, "errorTrustDomainNotFound");
-			return null;
-		} catch (CertificateEncodingException e) {
-			String msg = "certificate encoding error";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("fileupload",
-					FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
-			return null;
-		} catch (ExistingTrustPointException e) {
-			String msg = "existing trust point";
-			LOG.debug(msg);
-			this.facesMessages
-					.addToControlFromResourceBundle("fileupload",
-							FacesMessage.SEVERITY_ERROR,
-							"errorTrustPointAlreadyExists");
-			return null;
-		} catch (IOException e) {
-			String msg = "I/O error";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("fileupload",
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return null;
-		}
+		byte[] content = getUpFileContent();
+		this.pkiService.addTrustPoint(domainName, content);
 		return "success";
 	}
 
@@ -171,7 +153,6 @@ public class TrustPointBean implements TrustPoint {
 		this.upFile = uploadedFile;
 	}
 
-	@SuppressWarnings("unchecked")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String view() {
 		TrustPointTreeNode selectedNode = (TrustPointTreeNode) FacesContext
@@ -206,20 +187,12 @@ public class TrustPointBean implements TrustPoint {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeTrustPoint() {
+	public String removeTrustPoint() throws TrustPointNotFoundException {
 		TrustPointEntity selectedTrustPoint = (TrustPointEntity) FacesContext
 				.getCurrentInstance().getExternalContext().getSessionMap().get(
 						"selectedTrustPoint");
 		LOG.debug("remove trust point: " + selectedTrustPoint);
-		try {
-			this.pkiService.removeTrustPoint(selectedTrustPoint);
-		} catch (TrustPointNotFoundException e) {
-			String msg = "trust point not found";
-			LOG.debug(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorTrustPointNotFound");
-			return null;
-		}
+		this.pkiService.removeTrustPoint(selectedTrustPoint);
 		return "removed";
 	}
 }

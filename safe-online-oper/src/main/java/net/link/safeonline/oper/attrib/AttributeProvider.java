@@ -12,22 +12,31 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+
 @Local
 public interface AttributeProvider {
 
 	/*
 	 * factories
 	 */
-	void attributeProvidersFactory();
+	void attributeProvidersFactory() throws AttributeTypeNotFoundException;
 
 	List<SelectItem> getApplicationList();
 
 	/*
 	 * actions
 	 */
-	String removeProvider();
+	String removeProvider() throws AttributeTypeNotFoundException,
+			AttributeProviderNotFoundException;
 
-	String add();
+	String add() throws ExistingAttributeProviderException,
+			ApplicationNotFoundException, AttributeTypeNotFoundException,
+			PermissionDeniedException;
 
 	/*
 	 * accessors

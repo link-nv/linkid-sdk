@@ -13,11 +13,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.attrib.Attributes;
@@ -42,6 +43,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "AttributesBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class AttributesBean implements Attributes {
 
 	private static final Log LOG = LogFactory.getLog(AttributesBean.class);
@@ -56,7 +58,6 @@ public class AttributesBean implements Attributes {
 	@DataModel("attributeTypeList")
 	private List<AttributeTypeEntity> attributeTypeList;
 
-	@SuppressWarnings("unused")
 	@DataModelSelection("attributeTypeList")
 	@Out(value = "selectedAttributeType", required = false, scope = ScopeType.SESSION)
 	@In(required = false)
@@ -90,28 +91,11 @@ public class AttributesBean implements Attributes {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeConfirm() {
+	public String removeConfirm()
+			throws AttributeTypeDescriptionNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException {
 		LOG.debug("confirm remove: " + this.selectedAttributeType.getName());
-		try {
-			this.attributeTypeService.remove(this.selectedAttributeType);
-		} catch (AttributeTypeDescriptionNotFoundException e) {
-			LOG.debug("attribute type description not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorAttributeTypeDescriptionNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("Permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
-							.getResourceArgs());
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			LOG.debug("attribute type not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			return null;
-		}
+		this.attributeTypeService.remove(this.selectedAttributeType);
 		return "success";
 	}
 }

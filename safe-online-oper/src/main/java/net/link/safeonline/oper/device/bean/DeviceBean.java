@@ -18,6 +18,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
@@ -30,6 +31,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.NodeService;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
@@ -60,6 +64,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Name("operDevice")
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "DeviceBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class DeviceBean implements Device {
 
 	private static final Log LOG = LogFactory.getLog(DeviceBean.class);
@@ -199,77 +204,32 @@ public class DeviceBean implements Device {
 	 * Actions
 	 */
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	@ErrorHandling( {
+			@Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
+			@Error(exceptionClass = IOException.class, messageId = "errorUploadCertificate") })
+	public String add() throws ExistingDeviceException,
+			CertificateEncodingException, DeviceClassNotFoundException,
+			AttributeTypeNotFoundException, NodeNotFoundException, IOException {
 		LOG.debug("add device: " + this.name);
 
 		byte[] encodedCertificate = null;
 		if (null != this.certificate) {
-			try {
-				encodedCertificate = getUpFileContent(this.certificate);
-			} catch (IOException e) {
-				LOG.debug("Failed to upload certificate");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorUploadCertificate");
-				return null;
-			}
+			encodedCertificate = getUpFileContent(this.certificate);
 		}
 
-		try {
-			this.deviceService.addDevice(this.name, this.deviceClass,
-					this.node, this.authenticationURL, this.registrationURL,
-					this.removalURL, this.updateURL, encodedCertificate,
-					this.attributeType, this.userAttributeType);
-		} catch (CertificateEncodingException e) {
-			LOG.debug("X509 certificate encoding error");
-			this.facesMessages.addToControlFromResourceBundle("fileupload",
-					FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
-			return null;
-		} catch (DeviceClassNotFoundException e) {
-			LOG.debug("device " + this.deviceClass + " not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceClassNotFound");
-			return null;
-		} catch (ExistingDeviceException e) {
-			LOG.debug("device already exists: " + this.name);
-			this.facesMessages.addToControlFromResourceBundle("name",
-					FacesMessage.SEVERITY_ERROR, "errorDeviceAlreadyExists",
-					this.name);
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			LOG.debug("attribute type " + this.attributeType + " not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			return null;
-		} catch (NodeNotFoundException e) {
-			LOG.debug("node " + this.node + " not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
-			return null;
-		}
+		this.deviceService.addDevice(this.name, this.deviceClass, this.node,
+				this.authenticationURL, this.registrationURL, this.removalURL,
+				this.updateURL, encodedCertificate, this.attributeType,
+				this.userAttributeType);
 		return "success";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() {
+	public String remove() throws DeviceNotFoundException,
+			DeviceDescriptionNotFoundException, DevicePropertyNotFoundException {
 		LOG.debug("remove device: " + this.selectedDevice.getName());
 		try {
 			this.deviceService.removeDevice(this.selectedDevice.getName());
-		} catch (DeviceNotFoundException e) {
-			LOG.debug("device " + this.selectedDevice.getName() + " not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		} catch (DeviceDescriptionNotFoundException e) {
-			LOG.debug("device description not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorDeviceDescriptionNotFound");
-			return null;
-		} catch (DevicePropertyNotFoundException e) {
-			LOG.debug("device property not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDevicePropertyNotFound");
-			return null;
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
@@ -299,100 +259,44 @@ public class DeviceBean implements Device {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() {
+	public String save() throws DeviceNotFoundException,
+			CertificateEncodingException, IOException,
+			AttributeTypeNotFoundException {
 		LOG.debug("save device: " + this.selectedDevice.getName());
 		String deviceName = this.selectedDevice.getName();
 
-		try {
-			this.deviceService.updateAuthenticationUrl(deviceName,
-					this.authenticationURL);
-			if (null != this.registrationURL)
-				this.deviceService.updateRegistrationUrl(deviceName,
-						this.registrationURL);
-			if (null != this.removalURL)
-				this.deviceService
-						.updateRemovalUrl(deviceName, this.removalURL);
-			if (null != this.updateURL)
-				this.deviceService.updateUpdateUrl(deviceName, this.updateURL);
-		} catch (DeviceNotFoundException e) {
-			LOG.debug("device not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		}
+		this.deviceService.updateAuthenticationUrl(deviceName,
+				this.authenticationURL);
+		if (null != this.registrationURL)
+			this.deviceService.updateRegistrationUrl(deviceName,
+					this.registrationURL);
+		if (null != this.removalURL)
+			this.deviceService.updateRemovalUrl(deviceName, this.removalURL);
+		if (null != this.updateURL)
+			this.deviceService.updateUpdateUrl(deviceName, this.updateURL);
 
 		if (null != this.certificate) {
 			LOG.debug("updating device certificate");
-			try {
-				this.deviceService.updateDeviceCertificate(deviceName,
-						getUpFileContent(this.certificate));
-			} catch (CertificateEncodingException e) {
-				LOG.debug("certificate encoding error");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
-				return null;
-			} catch (DeviceNotFoundException e) {
-				LOG.debug("device not found");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-				return null;
-			} catch (IOException e) {
-				LOG.debug("IO error: " + e.getMessage());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorIO");
-				return null;
-			}
+			this.deviceService.updateDeviceCertificate(deviceName,
+					getUpFileContent(this.certificate));
 		}
 
 		if (null != this.attributeType) {
 			LOG.debug("updating attribute type");
-			try {
-				this.deviceService.updateAttributeType(deviceName,
-						this.attributeType);
-			} catch (DeviceNotFoundException e) {
-				LOG.debug("device not found");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-				return null;
-			} catch (AttributeTypeNotFoundException e) {
-				LOG.debug("attribute type not found");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR,
-						"errorAttributeTypeNotFound");
-				return null;
-			}
+			this.deviceService.updateAttributeType(deviceName,
+					this.attributeType);
 		}
 
 		if (null != this.userAttributeType) {
 			LOG.debug("updating user attribute type");
-			try {
-				this.deviceService.updateUserAttributeType(deviceName,
-						this.userAttributeType);
-			} catch (DeviceNotFoundException e) {
-				LOG.debug("device not found");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-				return null;
-			} catch (AttributeTypeNotFoundException e) {
-				LOG.debug("attribute type not found");
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR,
-						"errorAttributeTypeNotFound");
-				return null;
-			}
+			this.deviceService.updateUserAttributeType(deviceName,
+					this.userAttributeType);
 		}
 
 		/*
 		 * Refresh the device
 		 */
-		try {
-			this.selectedDevice = this.deviceService.getDevice(deviceName);
-		} catch (DeviceNotFoundException e) {
-			LOG.debug("device not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		}
+		this.selectedDevice = this.deviceService.getDevice(deviceName);
 		return "success";
 	}
 

@@ -18,12 +18,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.helpdesk.HelpdeskConstants;
 import net.link.safeonline.helpdesk.HelpdeskLog;
-import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 import net.link.safeonline.helpdesk.service.HelpdeskService;
 
 import org.apache.commons.logging.Log;
@@ -45,6 +46,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = HelpdeskConstants.JNDI_PREFIX
 		+ "HelpdeskLogBean/local")
 @SecurityDomain(HelpdeskConstants.SAFE_ONLINE_HELPDESK_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class HelpdeskLogBean implements HelpdeskLog {
 
 	private static final Log LOG = LogFactory.getLog(HelpdeskLogBean.class);
@@ -75,7 +77,6 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	/*
 	 * Seam Data models
 	 */
-	@SuppressWarnings("unused")
 	@DataModel(HELPDESK_CONTEXT_LIST_NAME)
 	private List<HelpdeskContextEntity> helpdeskContextList;
 
@@ -88,7 +89,6 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	@DataModel(HELPDESK_LOG_LIST_NAME)
 	private List<HelpdeskEventEntity> helpdeskLogList;
 
-	@SuppressWarnings("unused")
 	@DataModel(HELPDESK_USER_LIST_NAME)
 	private List<String> helpdeskUserList;
 
@@ -178,14 +178,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		else
 			id = this.selectedContext.getId();
 		LOG.debug("remove log: " + id);
-		try {
-			this.helpdeskService.removeLog(id);
-		} catch (HelpdeskContextNotFoundException e) {
-			LOG.debug("helpdesk log not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorHelpdeskLogNotFound");
-			return null;
-		}
+
+		this.helpdeskService.removeLog(id);
 		if (null == this.selectedContext)
 			helpdeskContextListFactory();
 		else

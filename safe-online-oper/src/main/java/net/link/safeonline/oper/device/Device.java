@@ -7,10 +7,20 @@
 
 package net.link.safeonline.oper.device;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
+
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingDeviceException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
@@ -22,13 +32,17 @@ public interface Device {
 	 */
 	String view();
 
-	String add();
+	String add() throws ExistingDeviceException, CertificateEncodingException,
+			DeviceClassNotFoundException, AttributeTypeNotFoundException,
+			NodeNotFoundException, IOException;
 
-	String remove();
+	String remove() throws DeviceNotFoundException,
+			DeviceDescriptionNotFoundException, DevicePropertyNotFoundException;
 
 	String edit();
 
-	String save();
+	String save() throws DeviceNotFoundException, CertificateEncodingException,
+			IOException, AttributeTypeNotFoundException;
 
 	/*
 	 * Accessors

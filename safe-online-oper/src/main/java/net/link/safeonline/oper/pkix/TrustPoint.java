@@ -7,7 +7,14 @@
 
 package net.link.safeonline.oper.pkix;
 
+import java.io.IOException;
+
 import javax.ejb.Local;
+
+import net.link.safeonline.pkix.exception.CertificateEncodingException;
+import net.link.safeonline.pkix.exception.ExistingTrustPointException;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.apache.myfaces.custom.tree2.TreeModel;
@@ -32,9 +39,10 @@ public interface TrustPoint {
 	/*
 	 * Actions.
 	 */
-	String add();
+	String add() throws IOException, TrustDomainNotFoundException,
+			ExistingTrustPointException, CertificateEncodingException;
 
 	String view();
 
-	String removeTrustPoint();
+	String removeTrustPoint() throws TrustPointNotFoundException;
 }

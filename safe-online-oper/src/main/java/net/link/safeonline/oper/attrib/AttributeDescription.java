@@ -9,6 +9,8 @@ package net.link.safeonline.oper.attrib;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 
 @Local
@@ -17,7 +19,8 @@ public interface AttributeDescription {
 	/*
 	 * Factories.
 	 */
-	void attributeTypeDescriptionsFactory();
+	void attributeTypeDescriptionsFactory()
+			throws AttributeTypeNotFoundException;
 
 	AttributeTypeDescriptionEntity newAttributeTypeDescriptionFactory();
 
@@ -31,11 +34,13 @@ public interface AttributeDescription {
 	 */
 	String edit();
 
-	String add();
+	String add() throws AttributeTypeNotFoundException;
 
 	String save();
 
-	String removeDescription();
+	String removeDescription()
+			throws AttributeTypeDescriptionNotFoundException,
+			AttributeTypeNotFoundException;
 
 	String cancelEdit();
 }

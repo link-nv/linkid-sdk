@@ -9,6 +9,10 @@ package net.link.safeonline.owner;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+
 @Local
 public interface Application {
 
@@ -21,16 +25,19 @@ public interface Application {
 	 */
 	void applicationListFactory();
 
-	void usageAgreementListFactory();
+	void usageAgreementListFactory() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
 	/*
 	 * Actions
 	 */
-	String view();
+	String view() throws ApplicationNotFoundException,
+			PermissionDeniedException, ApplicationIdentityNotFoundException;
 
 	String edit();
 
-	String save();
+	String save() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
 	String viewStats();
 
@@ -38,7 +45,8 @@ public interface Application {
 
 	String viewUsageAgreement();
 
-	String editUsageAgreement();
+	String editUsageAgreement() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 
 	/*
 	 * Lifecycle

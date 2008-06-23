@@ -9,6 +9,8 @@ package net.link.safeonline.oper.pkix;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+
 @Local
 public interface EditTrustDomain {
 
@@ -22,7 +24,7 @@ public interface EditTrustDomain {
 	 */
 	String edit();
 
-	String save();
+	String save() throws TrustDomainNotFoundException;
 
 	String cancel();
 

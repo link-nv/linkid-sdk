@@ -11,7 +11,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.oper.OperatorConstants;
@@ -54,20 +53,12 @@ public class EditTrustDomainBean implements EditTrustDomain {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@End
-	public String save() {
+	public String save() throws TrustDomainNotFoundException {
 		LOG.debug("saving " + this.selectedTrustDomain);
 		this.selectedTrustDomain.setPerformOcspCheck(this.performOcspCheck);
 		this.selectedTrustDomain
 				.setOcspCacheTimeOutMillis(this.ocspCacheTimeOutMillis);
-		try {
-			this.pkiService.saveTrustDomain(this.selectedTrustDomain);
-		} catch (TrustDomainNotFoundException e) {
-			String msg = "trust domain not found";
-			LOG.debug(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorTrustDomainNotFound");
-			return null;
-		}
+		this.pkiService.saveTrustDomain(this.selectedTrustDomain);
 		return "success";
 	}
 

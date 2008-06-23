@@ -9,6 +9,8 @@ package net.link.safeonline.oper.device;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
+
 @Local
 public interface DeviceClass {
 
@@ -21,7 +23,7 @@ public interface DeviceClass {
 
 	String edit();
 
-	String save();
+	String save() throws DeviceClassNotFoundException;
 
 	String remove();
 

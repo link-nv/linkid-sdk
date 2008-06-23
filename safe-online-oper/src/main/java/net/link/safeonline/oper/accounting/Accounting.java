@@ -7,7 +7,11 @@
 
 package net.link.safeonline.oper.accounting;
 
+import java.io.IOException;
+
 import javax.ejb.Local;
+
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 @Local
 public interface Accounting {
@@ -23,9 +27,9 @@ public interface Accounting {
 
 	String viewStat();
 
-	String export();
+	String export() throws IOException;
 
-	String exportStat();
+	String exportStat() throws IOException;
 
 	/*
 	 * Lifecycle.
@@ -39,5 +43,5 @@ public interface Accounting {
 	 */
 	void applicationListFactory();
 
-	void statListFactory();
+	void statListFactory() throws PermissionDeniedException;
 }

@@ -8,7 +8,6 @@
 package net.link.safeonline.oper.accounting.bean;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -16,13 +15,14 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.oper.OperatorConstants;
@@ -51,6 +51,7 @@ import org.joda.time.format.DateTimeFormatter;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "AccountingBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class AccountingBean implements Accounting {
 
 	public static final String ACCOUNTING_APPLICATION_LIST_NAME = "accountingApplications";
@@ -70,7 +71,7 @@ public class AccountingBean implements Accounting {
 	private StatisticService statisticService;
 
 	@SuppressWarnings("unused")
-    @DataModel(ACCOUNTING_APPLICATION_LIST_NAME)
+	@DataModel(ACCOUNTING_APPLICATION_LIST_NAME)
 	private List<ApplicationEntity> applicationList;
 
 	@DataModelSelection(ACCOUNTING_APPLICATION_LIST_NAME)
@@ -79,7 +80,7 @@ public class AccountingBean implements Accounting {
 	private ApplicationEntity selectedApplication;
 
 	@SuppressWarnings("unused")
-    @DataModel(ACCOUNTING_STAT_LIST_NAME)
+	@DataModel(ACCOUNTING_STAT_LIST_NAME)
 	private List<StatisticEntity> statList;
 
 	@DataModelSelection(ACCOUNTING_STAT_LIST_NAME)
@@ -87,7 +88,7 @@ public class AccountingBean implements Accounting {
 	private StatisticEntity selectedStat;
 
 	@SuppressWarnings("unused")
-    @Out(value = "chartURL", required = false)
+	@Out(value = "chartURL", required = false)
 	private String chartURL;
 
 	@Remove
@@ -110,17 +111,10 @@ public class AccountingBean implements Accounting {
 
 	@Factory(ACCOUNTING_STAT_LIST_NAME)
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void statListFactory() {
+	public void statListFactory() throws PermissionDeniedException {
 		this.log.debug("selectedApplication: " + this.selectedApplication);
-		try {
-			this.statList = this.statisticService
-					.getStatistics(this.selectedApplication);
-		} catch (PermissionDeniedException e) {
-			this.log.error("permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			this.statList = new LinkedList<StatisticEntity>();
-		}
+		this.statList = this.statisticService
+				.getStatistics(this.selectedApplication);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -140,7 +134,7 @@ public class AccountingBean implements Accounting {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public String export() {
+	public String export() throws IOException {
 		DateTime dt = new DateTime();
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
 		String filename = "accounting_" + this.selectedApplication.getName()
@@ -151,18 +145,13 @@ public class AccountingBean implements Accounting {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		try {
-			externalContext.redirect(exportURL);
-		} catch (IOException e) {
-			this.log.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-		}
+
+		externalContext.redirect(exportURL);
 		return null;
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public String exportStat() {
+	public String exportStat() throws IOException {
 		DateTime dt = new DateTime();
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
 		String filename = "accounting_" + this.selectedApplication.getName()
@@ -176,13 +165,8 @@ public class AccountingBean implements Accounting {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		try {
-			externalContext.redirect(exportURL);
-		} catch (IOException e) {
-			this.log.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-		}
+
+		externalContext.redirect(exportURL);
 		return null;
 	}
 }

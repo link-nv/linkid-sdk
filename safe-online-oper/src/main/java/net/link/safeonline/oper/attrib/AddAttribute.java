@@ -12,6 +12,10 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
 @Local
@@ -70,7 +74,8 @@ public interface AddAttribute {
 
 	String typeNext();
 
-	String add();
+	String add() throws NodeNotFoundException, ExistingAttributeTypeException,
+			AttributeTypeNotFoundException, AttributeTypeDefinitionException;
 
 	String cancel();
 

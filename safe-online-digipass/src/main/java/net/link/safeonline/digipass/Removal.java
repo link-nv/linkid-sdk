@@ -11,7 +11,10 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.model.digipass.DigipassException;
 
 @Local
 public interface Removal {
@@ -26,14 +29,17 @@ public interface Removal {
 	/*
 	 * Actions.
 	 */
-	String getRegistrations();
+	String getRegistrations() throws SubjectNotFoundException,
+			PermissionDeniedException;
 
-	String remove();
+	String remove() throws SubjectNotFoundException, DigipassException,
+			PermissionDeniedException;
 
 	/*
 	 * Factories
 	 */
-	List<AttributeDO> digipassAttributesFactory();
+	List<AttributeDO> digipassAttributesFactory()
+			throws SubjectNotFoundException, PermissionDeniedException;
 
 	/*
 	 * Lifecycle.

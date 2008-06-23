@@ -13,10 +13,11 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -45,6 +46,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "AttributeDescriptionBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class AttributeDescriptionBean implements AttributeDescription {
 
 	private static final Log LOG = LogFactory
@@ -79,18 +81,12 @@ public class AttributeDescriptionBean implements AttributeDescription {
 
 	@Factory(ATTRIBUTE_TYPE_DESCRIPTION_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void attributeTypeDescriptionsFactory() {
+	public void attributeTypeDescriptionsFactory()
+			throws AttributeTypeNotFoundException {
 		String attributeTypeName = this.selectedAttributeType.getName();
 		LOG.debug("attrib type descr factory: " + attributeTypeName);
-		try {
-			this.attributeTypeDescriptions = this.attributeTypeService
-					.listDescriptions(attributeTypeName);
-		} catch (AttributeTypeNotFoundException e) {
-			String msg = "attribute type not found";
-			LOG.debug(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-		}
+		this.attributeTypeDescriptions = this.attributeTypeService
+				.listDescriptions(attributeTypeName);
 	}
 
 	@Remove
@@ -114,39 +110,26 @@ public class AttributeDescriptionBean implements AttributeDescription {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	public String add() throws AttributeTypeNotFoundException {
 		LOG.debug("add: " + this.newAttributeTypeDescription);
 		String attributeTypeName = this.selectedAttributeType.getName();
 		String language = this.newAttributeTypeDescription.getLanguage();
 		AttributeTypeDescriptionPK pk = new AttributeTypeDescriptionPK(
 				attributeTypeName, language);
 		this.newAttributeTypeDescription.setPk(pk);
-		try {
-			this.attributeTypeService
-					.addDescription(this.newAttributeTypeDescription);
-		} catch (AttributeTypeNotFoundException e) {
-			String msg = "attribute type not found";
-			LOG.debug(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-		}
+		this.attributeTypeService
+				.addDescription(this.newAttributeTypeDescription);
 		return "success";
 	}
 
 	@End
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeDescription() {
+	public String removeDescription()
+			throws AttributeTypeDescriptionNotFoundException,
+			AttributeTypeNotFoundException {
 		LOG.debug("remove: " + this.selectedAttributeTypeDescription);
-		try {
-			this.attributeTypeService
-					.removeDescription(this.selectedAttributeTypeDescription);
-		} catch (AttributeTypeDescriptionNotFoundException e) {
-			String msg = "attribute type description not found";
-			LOG.debug(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorAttributeTypeDescriptionNotFound");
-		}
+		this.attributeTypeService
+				.removeDescription(this.selectedAttributeTypeDescription);
 		attributeTypeDescriptionsFactory();
 		return "removed";
 	}

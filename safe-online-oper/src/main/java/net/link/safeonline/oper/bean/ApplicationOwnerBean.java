@@ -62,7 +62,6 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 	@EJB
 	protected SubjectService subjectService;
 
-	@SuppressWarnings("unused")
 	@DataModel(APPLICATION_OWNER_LIST_NAME)
 	private List<ApplicationOwnerWrapper> applicationOwnerList;
 

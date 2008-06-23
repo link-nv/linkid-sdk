@@ -21,6 +21,7 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -34,6 +35,9 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.ctrl.HistoryMessage;
 import net.link.safeonline.ctrl.HistoryMessageManager;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.data.DeviceMappingDO;
 import net.link.safeonline.entity.HistoryEntity;
@@ -66,6 +70,7 @@ import org.jboss.seam.log.Log;
 		+ "UserManagementBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Scope(ScopeType.CONVERSATION)
+@Interceptors(ErrorMessageInterceptor.class)
 public class UserManagementBean implements UserManagement {
 
 	@Logger
@@ -119,30 +124,12 @@ public class UserManagementBean implements UserManagement {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@Begin
-	public String search() {
+	@ErrorHandling( { @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "user") })
+	public String search() throws SubjectNotFoundException,
+			DeviceNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 		this.log.debug("search: #0", this.user);
-		try {
-			getUserInfo(this.user);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addToControlFromResourceBundle("user",
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		} catch (DeviceNotFoundException e) {
-			this.log.debug("Device not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			this.log.debug("permission denied: " + e.getMessage());
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			this.log.error("attribute type not found");
-			return null;
-		}
+		getUserInfo(this.user);
 		return "found";
 	}
 
@@ -195,19 +182,9 @@ public class UserManagementBean implements UserManagement {
 
 	@End
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() {
+	public String save() throws SubjectNotFoundException, RoleNotFoundException {
 		this.log.debug("save: " + this.user);
-		try {
-			this.authorizationManagerService.setRoles(this.user, this.roles);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		} catch (RoleNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorRoleNotFound");
-			return null;
-		}
+		this.authorizationManagerService.setRoles(this.user, this.roles);
 		return "saved";
 	}
 
@@ -219,25 +196,12 @@ public class UserManagementBean implements UserManagement {
 
 	@End
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeConfirm() {
+	public String removeConfirm() throws SubjectNotFoundException,
+			SubscriptionNotFoundException, MessageHandlerNotFoundException {
 		this.log.debug("confirm remove: " + this.user);
-		try {
-			SubjectEntity subject = this.subjectService
-					.getSubjectFromUserName(this.user);
-			this.accountService.removeAccount(subject);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-			return null;
-		} catch (MessageHandlerNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorMessage");
-			return null;
-		}
+		SubjectEntity subject = this.subjectService
+				.getSubjectFromUserName(this.user);
+		this.accountService.removeAccount(subject);
 		return "success";
 	}
 

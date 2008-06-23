@@ -14,10 +14,12 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceClassException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.device.DeviceClass;
@@ -42,6 +44,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "DeviceClassBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class DeviceClassBean implements DeviceClass {
 
 	private static final Log LOG = LogFactory.getLog(DeviceClassBean.class);
@@ -139,20 +142,13 @@ public class DeviceClassBean implements DeviceClass {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() {
+	public String save() throws DeviceClassNotFoundException {
 		LOG.debug("save device class: " + this.selectedDeviceClass.getName());
 		String deviceClassName = this.selectedDeviceClass.getName();
-		try {
-			this.deviceService.updateAuthenticationContextClass(
-					deviceClassName, this.authenticationContextClass);
-			this.selectedDeviceClass = this.deviceService
-					.getDeviceClass(deviceClassName);
-		} catch (DeviceClassNotFoundException e) {
-			LOG.debug("device class not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceClassNotFound");
-			return null;
-		}
+		this.deviceService.updateAuthenticationContextClass(deviceClassName,
+				this.authenticationContextClass);
+		this.selectedDeviceClass = this.deviceService
+				.getDeviceClass(deviceClassName);
 		return "success";
 	}
 

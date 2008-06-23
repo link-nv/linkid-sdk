@@ -13,15 +13,18 @@ import java.net.MalformedURLException;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.device.backend.MobileManager;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.EncapConstants;
@@ -44,6 +47,7 @@ import org.jboss.seam.log.Log;
 @Name("registration")
 @LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX
 		+ "RegistrationBean/local")
+@Interceptors(ErrorMessageInterceptor.class)
 public class RegistrationBean implements Registration {
 
 	@Logger
@@ -81,54 +85,36 @@ public class RegistrationBean implements Registration {
 		this.mobileActivationCode = null;
 	}
 
-	public String mobileCancel() {
+	public String mobileCancel() throws IOException {
 		this.protocolContext.setSuccess(false);
 		exit();
 		return null;
 	}
 
-	private void exit() {
+	private void exit() throws IOException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
-		try {
-			externalContext.redirect("./deviceexit");
-		} catch (IOException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return;
-		}
+
+		externalContext.redirect("./deviceexit");
 		this.protocolContext.setValidity(this.samlAuthorityService
 				.getAuthnAssertionValidity());
 	}
 
 	@Begin
-	public String mobileRegister() {
+	@ErrorHandling( {
+			@Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
+			@Error(exceptionClass = ArgumentIntegrityException.class, messageId = "errorMobileTaken") })
+	public String mobileRegister() throws MobileException,
+			MalformedURLException, MobileRegistrationException,
+			ArgumentIntegrityException {
 		this.log.debug("register mobile: " + this.mobile);
-		try {
-			this.mobileActivationCode = this.encapDeviceService.register(
-					this.userId, this.mobile);
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			return null;
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			return null;
-		} catch (MobileRegistrationException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (ArgumentIntegrityException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorMobileTaken");
-			return null;
-		}
+		this.mobileActivationCode = this.encapDeviceService.register(
+				this.userId, this.mobile);
 		return "";
 	}
 
 	@End
-	public String mobileActivationOk() {
+	public String mobileActivationOk() throws IOException {
 		this.log.debug("mobile activation ok: " + this.mobile);
 		this.mobileActivationCode = null;
 		this.protocolContext.setSuccess(true);
@@ -137,24 +123,12 @@ public class RegistrationBean implements Registration {
 	}
 
 	@End
-	public String mobileActivationCancel() {
+	@ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
+	public String mobileActivationCancel() throws SubjectNotFoundException,
+			MobileException, IOException {
 		this.log.debug("mobile activation canceled: " + this.mobile);
 		this.mobileActivationCode = null;
-		try {
-			this.encapDeviceService.remove(this.userId, this.mobile);
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			return null;
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			return null;
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		}
+		this.encapDeviceService.remove(this.userId, this.mobile);
 		this.protocolContext.setSuccess(false);
 		exit();
 		return null;
