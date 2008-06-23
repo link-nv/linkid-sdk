@@ -7,10 +7,15 @@
 
 package net.link.safeonline.auth;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
+
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 
 @Local
 public interface Device {
@@ -30,12 +35,13 @@ public interface Device {
 	/*
 	 * Actions.
 	 */
-	String next();
+	String next() throws IOException, DeviceNotFoundException;
 
 	/*
 	 * Factories.
 	 */
-	List<SelectItem> applicationDevicesFactory();
+	List<SelectItem> applicationDevicesFactory()
+			throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
 	List<SelectItem> allDevicesFactory();
 }

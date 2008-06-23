@@ -16,6 +16,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
@@ -26,6 +27,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.data.AttributeDO;
 
 import org.apache.commons.logging.Log;
@@ -44,6 +46,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
 		+ "MissingAttributesBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class MissingAttributesBean implements MissingAttributes {
 
 	private static final Log LOG = LogFactory
@@ -65,35 +68,15 @@ public class MissingAttributesBean implements MissingAttributes {
 
 	@Factory(MISSING_ATTRIBUTE_LIST)
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public void missingAttributeListFactory() {
+	public void missingAttributeListFactory()
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 		LOG.debug("missing attribute list factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		try {
-			this.missingAttributeList = this.identityService
-					.listMissingAttributes(this.application, viewLocale);
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return;
-		} catch (ApplicationIdentityNotFoundException e) {
-			LOG.debug("application identity not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationIdentityNotFound");
-			return;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return;
-		} catch (AttributeTypeNotFoundException e) {
-			LOG.debug("attribute type not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			return;
-		}
+		this.missingAttributeList = this.identityService.listMissingAttributes(
+				this.application, viewLocale);
 	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)

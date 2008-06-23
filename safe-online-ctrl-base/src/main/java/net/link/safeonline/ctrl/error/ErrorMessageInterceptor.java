@@ -15,10 +15,12 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 import javax.management.AttributeNotFoundException;
 
+import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -47,6 +49,8 @@ import org.jboss.seam.faces.FacesMessages;
 public class ErrorMessageInterceptor {
 
 	private ErrorHandle[] defaultErrors = {
+			new ErrorHandle(AlreadySubscribedException.class,
+					"errorAlreadySubscribed"),
 			new ErrorHandle(ApplicationNotFoundException.class,
 					"errorApplicationNotFound"),
 			new ErrorHandle(ApplicationIdentityNotFoundException.class,
@@ -57,6 +61,8 @@ public class ErrorMessageInterceptor {
 					"errorAttributeTypeNotFound"),
 			new ErrorHandle(DeviceNotFoundException.class,
 					"errorDeviceNotFound"),
+			new ErrorHandle(EmptyDevicePolicyException.class,
+					"errorEmptyDevicePolicy"),
 			new ErrorHandle(IOException.class, "errorIO"),
 			new ErrorHandle(PermissionDeniedException.class,
 					"errorPermissionDenied"),
@@ -68,7 +74,7 @@ public class ErrorMessageInterceptor {
 					"errorSubscriptionNotFound") };
 
 	@AroundInvoke
-	public Object invoke(InvocationContext invocationContext) {
+	public Object invoke(InvocationContext invocationContext) throws Exception {
 		try {
 			return invocationContext.proceed();
 		} catch (Exception e) {

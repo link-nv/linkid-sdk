@@ -16,10 +16,10 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
@@ -30,6 +30,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.DeviceEntity;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -46,6 +47,7 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
 		+ "DeviceRegistrationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class DeviceRegistrationBean extends AbstractLoginBean implements
 		DeviceRegistration {
 
@@ -74,29 +76,15 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String deviceNext() {
+	public String deviceNext() throws IOException, DeviceNotFoundException {
 		this.log.debug("deviceNext: " + this.device);
 
-		String registrationURL;
-		try {
-			registrationURL = this.devicePolicyService
-					.getRegistrationURL(this.device);
-		} catch (DeviceNotFoundException e) {
-			this.log.error("device not found: " + this.device);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		}
+		String registrationURL = this.devicePolicyService
+				.getRegistrationURL(this.device);
 		if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			ExternalContext externalContext = context.getExternalContext();
-			try {
-				externalContext.redirect(registrationURL);
-			} catch (IOException e) {
-				this.log.debug("IO error: " + e.getMessage());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorIO");
-			}
+			externalContext.redirect(registrationURL);
 			return null;
 		}
 		AuthenticationUtils.redirect(this.facesMessages, registrationURL,
@@ -120,23 +108,11 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String passwordNext() {
+	public String passwordNext() throws SubjectNotFoundException,
+			DeviceNotFoundException {
 		this.log.debug("passwordNext");
-		try {
-			this.authenticationService
-					.setPassword(this.username, this.password);
-			this.authenticationService.authenticate(this.username,
-					this.password);
-		} catch (DeviceNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		}
-
+		this.authenticationService.setPassword(this.username, this.password);
+		this.authenticationService.authenticate(this.username, this.password);
 		super.relogin(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 		return null;
 	}

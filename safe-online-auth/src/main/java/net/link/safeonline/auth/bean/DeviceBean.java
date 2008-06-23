@@ -16,10 +16,10 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
@@ -30,6 +30,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.DeviceEntity;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -47,6 +48,7 @@ import org.jboss.seam.log.Log;
 @Name("device")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
 		+ "DeviceBean/local")
+@Interceptors(ErrorMessageInterceptor.class)
 public class DeviceBean implements Device {
 
 	@In(create = true)
@@ -80,20 +82,12 @@ public class DeviceBean implements Device {
 		this.deviceSelection = deviceSelection;
 	}
 
-	public String next() {
+	public String next() throws IOException, DeviceNotFoundException {
 		this.log.debug("next: " + this.deviceSelection);
 
-		String authenticationPath;
-		try {
-			authenticationPath = this.devicePolicyService
-					.getAuthenticationURL(this.deviceSelection);
-			this.log.debug("authenticationPath: " + authenticationPath);
-		} catch (DeviceNotFoundException e) {
-			this.log.error("device not found: " + this.deviceSelection);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		}
+		String authenticationPath = this.devicePolicyService
+				.getAuthenticationURL(this.deviceSelection);
+		this.log.debug("authenticationPath: " + authenticationPath);
 
 		if (!this.deviceSelection
 				.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
@@ -104,41 +98,26 @@ public class DeviceBean implements Device {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		try {
-			externalContext.redirect(authenticationPath);
-		} catch (IOException e) {
-			this.log.debug("IO error: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-		}
+		externalContext.redirect(authenticationPath);
 		return null;
 	}
 
 	@Factory("applicationDevices")
-	public List<SelectItem> applicationDevicesFactory() {
+	public List<SelectItem> applicationDevicesFactory()
+			throws ApplicationNotFoundException, EmptyDevicePolicyException {
 		this.log.debug("application devices factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
 		List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
-		try {
-			List<DeviceEntity> devicePolicy = this.devicePolicyService
-					.getDevicePolicy(this.application,
-							this.requiredDevicePolicy);
-			for (DeviceEntity device : devicePolicy) {
-				String deviceName = this.devicePolicyService
-						.getDeviceDescription(device.getName(), viewLocale);
-				SelectItem applicationDevice = new SelectItem(device.getName(),
-						deviceName);
-				applicationDevices.add(applicationDevice);
-			}
-		} catch (ApplicationNotFoundException e) {
-			this.log.error("application not found: " + this.application);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-		} catch (EmptyDevicePolicyException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorEmptyDevicePolicy");
-			this.log.error("empty device policy");
+
+		List<DeviceEntity> devicePolicy = this.devicePolicyService
+				.getDevicePolicy(this.application, this.requiredDevicePolicy);
+		for (DeviceEntity device : devicePolicy) {
+			String deviceName = this.devicePolicyService.getDeviceDescription(
+					device.getName(), viewLocale);
+			SelectItem applicationDevice = new SelectItem(device.getName(),
+					deviceName);
+			applicationDevices.add(applicationDevice);
 		}
 		return applicationDevices;
 	}

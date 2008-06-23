@@ -19,6 +19,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -31,6 +32,9 @@ import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
@@ -50,6 +54,7 @@ import com.octo.captcha.service.image.ImageCaptchaService;
 @Name("accountRegistration")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
 		+ "AccountRegistrationBean/local")
+@Interceptors(ErrorMessageInterceptor.class)
 public class AccountRegistrationBean extends AbstractLoginBean implements
 		AccountRegistration {
 
@@ -82,7 +87,12 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		this.login = login;
 	}
 
-	public String loginNext() {
+	@ErrorHandling( {
+			@Error(exceptionClass = ExistingUserException.class, messageId = "errorLoginTaken", fieldId = "login"),
+			@Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorLoginTaken", fieldId = "login"),
+			@Error(exceptionClass = PermissionDeniedException.class, messageId = "errorPermissionDenied", fieldId = "login") })
+	public String loginNext() throws ExistingUserException,
+			AttributeTypeNotFoundException, PermissionDeniedException {
 		this.log.debug("loginNext");
 
 		this.log.debug("captcha: " + this.captcha);
@@ -120,51 +130,23 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			return null;
 		}
 
-		SubjectEntity subject;
-		try {
-			subject = this.userRegistrationService.registerUser(this.login);
-		} catch (ExistingUserException e) {
-			this.facesMessages.addToControlFromResourceBundle("login",
-					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.addToControlFromResourceBundle("login",
-					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
-			return null;
-		} catch (PermissionDeniedException e) {
-			this.facesMessages.addToControlFromResourceBundle("login",
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		SubjectEntity subject = this.userRegistrationService
+				.registerUser(this.login);
 
 		this.username = subject.getUserId();
 		return "next";
 	}
 
-	public String deviceNext() {
+	public String deviceNext() throws DeviceNotFoundException, IOException {
 		this.log.debug("deviceNext: " + this.device);
 
-		String registrationURL;
-		try {
-			registrationURL = this.devicePolicyService
-					.getRegistrationURL(this.device);
-		} catch (DeviceNotFoundException e) {
-			this.log.error("device not found: " + this.device);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		}
+		String registrationURL = this.devicePolicyService
+				.getRegistrationURL(this.device);
 
 		if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			ExternalContext externalContext = context.getExternalContext();
-			try {
-				externalContext.redirect(registrationURL);
-			} catch (IOException e) {
-				this.log.debug("IO error: " + e.getMessage());
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "errorIO");
-			}
+			externalContext.redirect(registrationURL);
 			return null;
 		}
 		AuthenticationUtils.redirect(this.facesMessages, registrationURL,

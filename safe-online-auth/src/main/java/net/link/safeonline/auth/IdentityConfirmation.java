@@ -11,6 +11,11 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 
 @Local
@@ -19,7 +24,9 @@ public interface IdentityConfirmation {
 	/*
 	 * Actions.
 	 */
-	String agree();
+	String agree() throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException, SubscriptionNotFoundException;
 
 	/*
 	 * Lifecycle.
@@ -29,5 +36,7 @@ public interface IdentityConfirmation {
 	/*
 	 * Factory.
 	 */
-	List<AttributeDO> identityConfirmationListFactory();
+	List<AttributeDO> identityConfirmationListFactory()
+			throws SubscriptionNotFoundException, ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException;
 }

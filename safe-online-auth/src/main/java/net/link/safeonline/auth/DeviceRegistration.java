@@ -7,10 +7,14 @@
 
 package net.link.safeonline.auth;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
+
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 @Local
 public interface DeviceRegistration {
@@ -31,9 +35,10 @@ public interface DeviceRegistration {
 	/*
 	 * Actions.
 	 */
-	String deviceNext();
+	String deviceNext() throws IOException, DeviceNotFoundException;
 
-	String passwordNext();
+	String passwordNext() throws SubjectNotFoundException,
+			DeviceNotFoundException;
 
 	/*
 	 * Factories

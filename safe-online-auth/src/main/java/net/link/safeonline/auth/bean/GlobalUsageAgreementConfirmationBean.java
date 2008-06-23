@@ -5,8 +5,8 @@ import java.util.Locale;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
@@ -20,6 +20,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -34,6 +35,7 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
 		+ "GlobalUsageAgreementConfirmationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class GlobalUsageAgreementConfirmationBean implements
 		GlobalUsageAgreementConfirmation {
 
@@ -56,7 +58,10 @@ public class GlobalUsageAgreementConfirmationBean implements
 	FacesMessages facesMessages;
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String confirm() {
+	public String confirm() throws ApplicationNotFoundException,
+			SubscriptionNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 
 		this.log.debug("confirm global usage agreement");
 		this.usageAgreementService.confirmGlobalUsageAgreementVersion();
@@ -64,77 +69,25 @@ public class GlobalUsageAgreementConfirmationBean implements
 		/*
 		 * After successful confirmation we continue the workflow as usual.
 		 */
-		boolean subscriptionRequired;
-		try {
-			subscriptionRequired = !this.subscriptionService
-					.isSubscribed(this.applicationId);
-			if (!subscriptionRequired)
-				try {
-					subscriptionRequired = this.usageAgreementService
-							.requiresUsageAgreementAcceptation(this.applicationId);
-				} catch (SubscriptionNotFoundException e) {
-					this.facesMessages.addFromResourceBundle(
-							FacesMessage.SEVERITY_ERROR,
-							"errorSubscriptionNotFound");
-					return null;
-				}
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
+		boolean subscriptionRequired = !this.subscriptionService
+				.isSubscribed(this.applicationId);
+		if (!subscriptionRequired) {
+			subscriptionRequired = this.usageAgreementService
+					.requiresUsageAgreementAcceptation(this.applicationId);
 		}
 		this.log.debug("subscription required: " + subscriptionRequired);
 		if (true == subscriptionRequired)
 			return "subscription-required";
 
-		boolean confirmationRequired;
-		try {
-			confirmationRequired = this.identityService
-					.isConfirmationRequired(this.applicationId);
-		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-			return null;
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (ApplicationIdentityNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationIdentityNotFound");
-			return null;
-		}
+		boolean confirmationRequired = this.identityService
+				.isConfirmationRequired(this.applicationId);
 		this.log.debug("confirmation required: " + confirmationRequired);
 		if (true == confirmationRequired) {
 			return "confirmation-required";
 		}
 
-		boolean hasMissingAttributes;
-		try {
-			hasMissingAttributes = this.identityService
-					.hasMissingAttributes(this.applicationId);
-		} catch (ApplicationNotFoundException e) {
-			this.log.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (ApplicationIdentityNotFoundException e) {
-			this.log.debug("application identity not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			this.log.debug("permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			this.log.debug("attribute type not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			return null;
-		}
+		boolean hasMissingAttributes = this.identityService
+				.hasMissingAttributes(this.applicationId);
 
 		if (true == hasMissingAttributes) {
 			return "missing-attributes";

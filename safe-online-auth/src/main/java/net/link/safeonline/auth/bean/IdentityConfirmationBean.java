@@ -14,8 +14,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
@@ -27,6 +27,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.data.AttributeDO;
 
 import org.apache.commons.logging.Log;
@@ -44,6 +45,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
 		+ "IdentityConfirmationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
+@Interceptors(ErrorMessageInterceptor.class)
 public class IdentityConfirmationBean implements IdentityConfirmation {
 
 	private static final Log LOG = LogFactory
@@ -59,40 +61,13 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 	private IdentityService identityService;
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String agree() {
+	public String agree() throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException, SubscriptionNotFoundException {
 		LOG.debug("agree");
-		boolean hasMissingAttributes;
-		try {
-			this.identityService.confirmIdentity(this.application);
-			hasMissingAttributes = this.identityService
-					.hasMissingAttributes(this.application);
-		} catch (SubscriptionNotFoundException e) {
-			LOG.debug("subscription not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-			return null;
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (ApplicationIdentityNotFoundException e) {
-			LOG.debug("application identity not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationIdentityNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			LOG.debug("attribute type not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			return null;
-		}
+		this.identityService.confirmIdentity(this.application);
+		boolean hasMissingAttributes = this.identityService
+				.hasMissingAttributes(this.application);
 
 		if (true == hasMissingAttributes) {
 			return "missing-attributes";
@@ -110,32 +85,16 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 
 	@Factory("identityConfirmationList")
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public List<AttributeDO> identityConfirmationListFactory() {
+	public List<AttributeDO> identityConfirmationListFactory()
+			throws SubscriptionNotFoundException, ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException {
 		LOG.debug("identityConfirmationList factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		try {
-			List<AttributeDO> confirmationList = this.identityService
-					.listIdentityAttributesToConfirm(this.application,
-							viewLocale);
-			LOG.debug("confirmation list: " + confirmationList);
-			return confirmationList;
-		} catch (SubscriptionNotFoundException e) {
-			LOG.debug("subscription not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-			return null;
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		} catch (ApplicationIdentityNotFoundException e) {
-			LOG.debug("application identity not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationIdentityNotFound");
-			return null;
-		}
+
+		List<AttributeDO> confirmationList = this.identityService
+				.listIdentityAttributesToConfirm(this.application, viewLocale);
+		LOG.debug("confirmation list: " + confirmationList);
+		return confirmationList;
 	}
 }

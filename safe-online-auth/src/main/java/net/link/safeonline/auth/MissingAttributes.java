@@ -9,13 +9,20 @@ package net.link.safeonline.auth;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+
 @Local
 public interface MissingAttributes {
 
 	/*
 	 * Factories.
 	 */
-	void missingAttributeListFactory();
+	void missingAttributeListFactory() throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException;
 
 	/*
 	 * Actions.

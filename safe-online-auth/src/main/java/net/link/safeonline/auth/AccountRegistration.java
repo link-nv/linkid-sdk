@@ -7,10 +7,16 @@
 
 package net.link.safeonline.auth;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
+
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingUserException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 @Local
 public interface AccountRegistration {
@@ -47,7 +53,8 @@ public interface AccountRegistration {
 	/*
 	 * Actions.
 	 */
-	String loginNext();
+	String loginNext() throws ExistingUserException,
+			AttributeTypeNotFoundException, PermissionDeniedException;
 
-	String deviceNext();
+	String deviceNext() throws DeviceNotFoundException, IOException;
 }
