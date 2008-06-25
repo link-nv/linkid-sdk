@@ -49,6 +49,10 @@
 				<h:outputLabel for="activationCode" value="#{msgs.activationCode}" />
 				<h:outputLabel id="activationCode"
 					value="#{registration.mobileActivationCode}" />
+
+                <br />
+
+				<h:outputLabel for="activation-ok" />
 				<h:commandButton id="activation-ok"
 					action="#{registration.mobileActivationOk}" value="#{msgs.confirm}"
 					styleClass="submit" />
