@@ -11,7 +11,6 @@ import java.net.MalformedURLException;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.entity.SubjectEntity;
 
 @Local
 public interface MobileManager {
@@ -22,7 +21,7 @@ public interface MobileManager {
 	boolean verifyOTP(String challengeId, String OTPValue)
 			throws MalformedURLException, MobileException;
 
-	String activate(String mobile, SubjectEntity subject)
+	String activate(String mobile, String sessionInfo)
 			throws MalformedURLException, MobileException;
 
 	void remove(String mobile) throws MalformedURLException, MobileException;

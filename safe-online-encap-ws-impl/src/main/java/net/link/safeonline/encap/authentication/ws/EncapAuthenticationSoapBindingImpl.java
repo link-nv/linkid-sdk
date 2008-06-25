@@ -74,7 +74,8 @@ public class EncapAuthenticationSoapBindingImpl implements BankIdAuthentication 
 			response.setAdditionalInfo("Invalid OTP: too long");
 			return response;
 		}
-		if ((System.currentTimeMillis() % 2) == 0) {
+		int otp = Integer.parseInt(OTPValue);
+		if (otp % 2 == 0) {
 			LOG.debug("Valid OTPValue received");
 			response.setStatus(ENCAP_SUCCES);
 		} else {

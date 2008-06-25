@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -31,22 +30,29 @@ public interface Registration {
 
 	String getMobileClientLink();
 
+	String getMobileOTP();
+
+	void setMobileOTP(String mobileOTP);
+
+	String getChallengeId();
+
 	/*
 	 * Actions.
 	 */
-	String mobileCancel() throws IOException;
+	String mobileRegister() throws MobileException, MalformedURLException,
+			MobileRegistrationException;
 
-	String mobileActivationOk() throws IOException;
+	String cancel() throws IOException;
+
+	String mobileActivationOk();
 
 	String mobileActivationCancel() throws SubjectNotFoundException,
 			MobileException, MalformedURLException, IOException;
 
-	String mobileRegister() throws MobileException, MalformedURLException,
-			MobileRegistrationException, ArgumentIntegrityException;
+	String requestOTP() throws MalformedURLException, MobileException;
 
-	/*
-	 * Factories
-	 */
+	String authenticate() throws IOException, MobileException,
+			SubjectNotFoundException;
 
 	/*
 	 * Lifecycle.

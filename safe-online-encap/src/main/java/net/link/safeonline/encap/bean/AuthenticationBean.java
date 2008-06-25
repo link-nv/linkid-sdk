@@ -150,16 +150,8 @@ public class AuthenticationBean implements Authentication {
 			@Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
 	public String requestOTP() throws MalformedURLException, MobileException {
 		LOG.debug("request OTP: mobile=" + this.mobile);
-		try {
-			this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
-			LOG.debug("received challengeId: " + this.challengeId);
-		} catch (SubjectNotFoundException e) {
-			HelpdeskLogger.add("login: subject not found for " + this.mobile,
-					LogLevelType.ERROR);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
-			return null;
-		}
+		this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
+		LOG.debug("received challengeId: " + this.challengeId);
 		return "success";
 	}
 

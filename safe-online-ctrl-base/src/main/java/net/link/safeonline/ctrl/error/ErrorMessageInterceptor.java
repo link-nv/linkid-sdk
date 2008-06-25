@@ -48,6 +48,8 @@ import net.link.safeonline.notification.exception.MessageHandlerNotFoundExceptio
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.exception.GenericJDBCException;
 import org.jboss.seam.faces.FacesMessages;
 
@@ -68,6 +70,9 @@ import org.jboss.seam.faces.FacesMessages;
  * 
  */
 public class ErrorMessageInterceptor {
+
+	private static final Log LOG = LogFactory
+			.getLog(ErrorMessageInterceptor.class);
 
 	private ErrorHandle[] defaultErrors = {
 			new ErrorHandle(AlreadySubscribedException.class,
@@ -173,6 +178,7 @@ public class ErrorMessageInterceptor {
 		// unknown error
 		FacesMessages.instance().addFromResourceBundle(
 				FacesMessage.SEVERITY_ERROR, "errorMessage");
+		LOG.error("Unhandled exception: " + e.getClass().getName(), e);
 		return;
 	}
 

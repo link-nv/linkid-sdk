@@ -32,7 +32,7 @@
 				id="register" value="#{msgs.register}"
 				rendered="#{empty registration.mobileActivationCode}"
 				styleClass="submit" />
-			<h:commandButton action="#{registration.mobileCancel}" id="cancel"
+			<h:commandButton action="#{registration.cancel}" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true"
 				rendered="#{empty registration.mobileActivationCode}"
 				styleClass="submit" />
@@ -50,7 +50,7 @@
 				<h:outputLabel id="activationCode"
 					value="#{registration.mobileActivationCode}" />
 
-                <br />
+				<br />
 
 				<h:outputLabel for="activation-ok" />
 				<h:commandButton id="activation-ok"

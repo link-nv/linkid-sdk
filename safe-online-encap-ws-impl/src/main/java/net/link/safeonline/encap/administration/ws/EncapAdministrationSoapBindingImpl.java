@@ -99,7 +99,7 @@ public class EncapAdministrationSoapBindingImpl implements BankIdAdministration 
 	}
 
 	private boolean checkMobile(String mobile) {
-		if (mobile.length() > 10) {
+		if (mobile.length() > 15) {
 			LOG.error("Invalid mobile number: " + mobile);
 			return false;
 		}

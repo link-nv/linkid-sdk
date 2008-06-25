@@ -10,7 +10,6 @@ import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.device.backend.MobileManager;
-import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.sdk.ws.encap.activation.EncapActivationClient;
 import net.link.safeonline.sdk.ws.encap.activation.EncapActivationClientImpl;
 import net.link.safeonline.sdk.ws.encap.administration.EncapAdministrationClient;
@@ -61,13 +60,13 @@ public class MobileManagerBean implements MobileManager {
 		}
 	}
 
-	public String activate(String mobile, SubjectEntity subject)
+	public String activate(String mobile, String sessionInfo)
 			throws MobileException, MalformedURLException {
 		try {
 			EncapActivationClient encapActivationClient = new EncapActivationClientImpl(
 					this.encapServerLocation);
 			return encapActivationClient.activate(mobile,
-					this.encapOrganisationId, subject.getUserId());
+					this.encapOrganisationId, sessionInfo);
 		} catch (RemoteException e) {
 			throw new MobileException(e.getMessage());
 		}
