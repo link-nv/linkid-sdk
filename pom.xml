@@ -459,9 +459,9 @@
 				<safe-online.host.name>
 					test.encap.no
 				</safe-online.host.name>
-				<safe-online.host.port>12080</safe-online.host.port>
+				<safe-online.host.port>80</safe-online.host.port>
 				<safe-online.host.port.ssl>
-					12443
+					443
 				</safe-online.host.port.ssl>
 				<safe-online.jboss.host.port>
 					12080
