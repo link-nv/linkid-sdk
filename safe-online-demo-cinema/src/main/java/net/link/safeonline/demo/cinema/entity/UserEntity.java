@@ -8,23 +8,34 @@
 package net.link.safeonline.demo.cinema.entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
+@NamedQueries( { @NamedQuery(name = UserEntity.getById, query = "SELECT u FROM UserEntity u WHERE u.id = :id") })
 public class UserEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long        serialVersionUID = 1L;
+
+    public static final String       getById          = "UserEntity.getById";
 
     @OneToMany(mappedBy = "owner")
-    private Set<TicketEntity> tickets;
+    private Collection<TicketEntity> tickets;
 
     @Id
-    private String            id;
+    private String                   id;
+
+    private boolean                  junior;
+
+    private String                   nrn;
+
+    private String                   name;
 
 
     public UserEntity() {
@@ -35,6 +46,7 @@ public class UserEntity implements Serializable {
     public UserEntity(String id) {
 
         this();
+
         this.id = id;
     }
 
@@ -49,8 +61,59 @@ public class UserEntity implements Serializable {
     /**
      * @return The {@link TicketEntity}s this user has bought.
      */
-    public Set<TicketEntity> getTickets() {
+    public Collection<TicketEntity> getTickets() {
 
         return this.tickets;
+    }
+
+    /**
+     * @param isJunior
+     *            <code>true</code> if this user has a junior account.
+     */
+    public void setJunior(boolean isJunior) {
+
+        this.junior = isJunior;
+    }
+
+    /**
+     * @return <code>true</code> if this user has a junior account.
+     */
+    public boolean isJunior() {
+
+        return this.junior;
+    }
+
+    /**
+     * @param nrn
+     *            The user's national registry number.
+     */
+    public void setNrn(String nrn) {
+
+        this.nrn = nrn;
+    }
+
+    /**
+     * @return The user's national registry number.
+     */
+    public String getNrn() {
+
+        return this.nrn;
+    }
+
+    /**
+     * @param name
+     *            The OLAS username of this user.
+     */
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    /**
+     * @return The OLAS username of this user.
+     */
+    public String getName() {
+
+        return this.name;
     }
 }

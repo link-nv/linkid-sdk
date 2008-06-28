@@ -6,6 +6,12 @@
 <web-app>
 	<display-name>Demo Cinema Application</display-name>
 
+	<listener>
+		<listener-class>
+			net.link.safeonline.demo.cinema.startup.CinemaStartupListener
+		</listener-class>
+	</listener>
+
 	<servlet>
 		<servlet-name>cinemaapp</servlet-name>
 		<servlet-class>
@@ -81,7 +87,7 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>cinemaapp</servlet-name>
-		<url-pattern>/app/*</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
 	<filter>
@@ -101,12 +107,11 @@
 	</filter>
 	<filter>
 		<filter-name>AuthnResponseFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnResponseFilter 
-		</filter-class>
+		<filter-class>net.link.safeonline.sdk.auth.filter.AuthnResponseFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>AuthnResponseFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
+        <url-pattern>/login</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>

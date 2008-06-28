@@ -15,35 +15,44 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQueries( { @NamedQuery(name = TicketEntity.findTicket, query = "SELECT t FROM TicketEntity t WHERE t.owner.nrn = :nrn AND t.time <= :time AND t.time + t.film.duration >= :time") })
 public class TicketEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long    serialVersionUID = 1L;
+
+    public static final String   findTicket       = "TicketEntity.findTicket";
 
     @Id
     @SuppressWarnings("unused")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long              id;
+    private long                 id;
 
     @ManyToOne
-    private UserEntity        owner;
+    private UserEntity           owner;
 
     @ManyToOne
-    private FilmEntity        film;
-    private Date              showTime;
+    private FilmEntity           film;
+    private SeatOccupationEntity occupation;
+    private long                 time;
+    private double               price;
 
 
     public TicketEntity() {
 
     }
 
-    public TicketEntity(UserEntity owner, FilmEntity film, Date showTime) {
+    public TicketEntity(UserEntity owner, FilmEntity film, long time,
+            SeatOccupationEntity occupation) {
 
         this.owner = owner;
 
         this.film = film;
-        this.showTime = showTime;
+        this.occupation = occupation;
+        this.time = time;
     }
 
     /**
@@ -66,8 +75,35 @@ public class TicketEntity implements Serializable {
      * @return The {@link Date} of the showing of the {@link FilmEntity} that
      *         this ticket grants the owner access to.
      */
-    public Date getShowTime() {
+    public long getTime() {
 
-        return this.showTime;
+        return this.time;
+    }
+
+    /**
+     * @return The seat occupied by this {@link TicketEntity}.
+     */
+    public SeatOccupationEntity getOccupation() {
+
+        return this.occupation;
+    }
+
+    /**
+     * @param price
+     *            The calculated price for this {@link TicketEntity} at the time
+     *            of purchase.
+     */
+    public void setPrice(double price) {
+
+        this.price = price;
+    }
+
+    /**
+     * @return The calculated price for this {@link TicketEntity} at the time of
+     *         purchase.
+     */
+    public double getPrice() {
+
+        return this.price;
     }
 }

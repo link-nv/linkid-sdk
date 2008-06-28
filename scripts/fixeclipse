@@ -2,7 +2,7 @@
 source "${0%/*}/bashlib"                                                      #
 nonGnuSed=$(sed -i '' /dev/null >/dev/null 2>&1; [[ $? != 4 ]] && echo 1)
 
-cd "$(readlink -f "${0%/*}/..")"
+cd "${0%/*}/.."
 
 p=${PWD##*/}
 emit "Converting JAR dependencies on safe-online projects to source dependencies" --
@@ -43,9 +43,7 @@ emit -o "Setting up project-specific configurations" --
                 cp "$f" "$p/${f#'scripts/ws~'}" || { result=$?; break 2; }
             done
         }
-
-        true
     done
 
     echo
-emit -$?
+emit -$result

@@ -5,43 +5,45 @@
 	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
 
     <body>
-
         <wicket:extend>
-            <p>Welcome to the Cinema Demo.  Please begin by selecting either your theater or the film you would like to watch.</p>
+
+            <h2>Select the film and theatre of your choice.</h2>
 
             <form wicket:id="films">
                 <table>
                     <caption>Available Films</caption>
 
+                    <colgroup />
+                    <colgroup class="small" />
+
                     <tbody wicket:id="list">
                         <tr>
-                            <th wicket:id="name" />
-                            <td />
+                            <th class="nopad"><a wicket:id="select"><span wicket:id="name" /></a></th>
+                            <th wicket:id="price" />
                         </tr>
                         <tr>
-                            <td colspan="2" wicket:id="description" />
+                            <td wicket:id="description" colspan="2" />
                         </tr>
                     </tbody>
                 </table>
             </form>
 
-            <!--form wicket:id="theaters">
+            <form wicket:id="theatres">
                 <table>
-                    <caption>Available Theaters</caption>
+                    <caption>Available Theatres</caption>
 
                     <tbody wicket:id="list">
                         <tr>
-                            <th>
-                                <span wicket:id="name" />
-                            </th>
-                            <td>
-                                <span wicket:id="city" />
-                            </td>
+                            <th class="nopad"><a wicket:id="select"><span wicket:id="name" /></a></th>
+                        </tr>
+                        <tr>
+                            <td><pre wicket:id="address" /></td>
                         </tr>
                     </tbody>
                 </table>
-            </form-->
-        </wicket:extend>
+            </form>
 
+        </wicket:extend>
     </body>
+
 </html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <body>
+        <wicket:extend>
+
+            <h2>Here's a list of all tickets you purchased.</h2>
+
+            <form wicket:id="tickets">
+                <table>
+                    <caption>Ticket History</caption>
+
+                    <colgroup />
+                    <colgroup class="small" />
+                    <colgroup class="tiny" />
+
+                    <tbody wicket:id="list">
+                        <tr>
+                            <th colspan="2" wicket:id="film" />
+                            <th wicket:id="price" />
+                        </tr><tr>
+                            <td wicket:id="theatre" />
+                            <td wicket:id="time" />
+                            <td wicket:id="room" />
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table>
+                    <caption>New Ticket</caption>
+
+                    <colgroup />
+                    <colgroup class="small" />
+
+                    <tr>
+                        <th />
+                        <th class="nopad"><a wicket:id="new">Select Your Film &gt;</a></th>
+                    </tr>
+                </table>
+            </form>
+
+        </wicket:extend>
+    </body>
+
+</html>

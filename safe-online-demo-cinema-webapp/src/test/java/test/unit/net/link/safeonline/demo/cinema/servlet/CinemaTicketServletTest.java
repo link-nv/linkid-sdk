@@ -49,7 +49,7 @@ public class CinemaTicketServletTest extends TestCase {
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
 		this.mockTicketService = createMock(TicketService.class);
-		this.jndiTestUtils.bindComponent(TicketService.LOCAL_BINDING,
+		this.jndiTestUtils.bindComponent(TicketService.BINDING,
 				this.mockTicketService);
 
 		this.servletTestManager = new ServletTestManager();

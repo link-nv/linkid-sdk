@@ -7,84 +7,173 @@
 
 package net.link.safeonline.demo.cinema.service.bean;
 
-import javax.ejb.Stateless;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
+
+import net.link.safeonline.demo.cinema.CinemaConstants;
+import net.link.safeonline.demo.cinema.entity.FilmEntity;
+import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
+import net.link.safeonline.demo.cinema.entity.TicketEntity;
+import net.link.safeonline.demo.cinema.entity.UserEntity;
+import net.link.safeonline.demo.cinema.service.SeatService;
 import net.link.safeonline.demo.cinema.service.TicketService;
+import net.link.safeonline.demo.cinema.service.UserService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+/**
+ * <h2>{@link TicketServiceBean}<br>
+ * <sub>Service bean for {@link TicketService}.</sub></h2>
+ * 
+ * <p>
+ * <i>Jun 25, 2008</i>
+ * </p>
+ * 
+ * @author mbillemo
+ */
 @Stateless
-@LocalBinding(jndiBinding = TicketService.LOCAL_BINDING)
-public class TicketServiceBean implements TicketService {
+@LocalBinding(jndiBinding = TicketService.BINDING)
+public class TicketServiceBean extends AbstractCinemaServiceBean implements
+        TicketService {
 
-	// private static final Log LOG =
-	// LogFactory.getLog(TicketServiceBean.class);
-	//
-	// @PersistenceContext(unitName = "DemoTicketEntityManager")
-	// private EntityManager entityManager;
+    @EJB
+    private transient SeatService seatService;
+    @EJB
+    private UserService           userService;
 
-	@SuppressWarnings("unchecked")
-	public boolean hasValidPass(String nrn, String time) {
 
-		// LOG.debug("has valid pass: " + nrn + " from " + from + " to " + to);
-		//
-		// Query userQuery = User.createQueryWhereNrn(this.entityManager, nrn);
-		// List<User> users = userQuery.getResultList();
-		// if (users.isEmpty()) {
-		// LOG.debug("no matching user found for NRN: " + nrn);
-		// return false;
-		// }
-		//
-		// User user = users.get(0);
-		// LOG.debug("user located: " + user.getSafeOnlineUserName());
-		//
-		// Site start;
-		// Site destination;
-		// try {
-		// start = Site.valueOf(from);
-		// destination = Site.valueOf(to);
-		// } catch (IllegalArgumentException e) {
-		// LOG.debug("illegal argument: " + e.getMessage());
-		// return false;
-		// }
-		// Query ticketQuery = Ticket.createQueryWhereOwner(this.entityManager,
-		// user);
-		// List<Ticket> tickets = ticketQuery.getResultList();
-		// if (tickets.isEmpty()) {
-		// LOG.debug("no passes found for user: "
-		// + user.getSafeOnlineUserName());
-		// return false;
-		// }
-		//
-		// for (Ticket ticket : tickets) {
-		// if (ticket.isBiDirectional()) {
-		// if (start != ticket.getStart()
-		// && destination != ticket.getStart()) {
-		// continue;
-		// }
-		// if (destination != ticket.getDestination()
-		// && start != ticket.getDestination()) {
-		// continue;
-		// }
-		// } else {
-		// if (start != ticket.getStart()) {
-		// continue;
-		// }
-		// if (destination != ticket.getDestination()) {
-		// continue;
-		// }
-		// }
-		// DateTime beginDate = new DateTime(ticket.getValidFrom());
-		// DateTime endDate = new DateTime(ticket.getValidTo());
-		// if (beginDate.isAfterNow()) {
-		// continue;
-		// }
-		// if (endDate.isBeforeNow()) {
-		// continue;
-		// }
-		// return true;
-		// }
+    /**
+     * {@inheritDoc}
+     */
+    public TicketEntity createTicket(UserEntity user, FilmEntity film,
+            Date time, SeatOccupationEntity occupation) {
 
-		return false;
-	}
+        // Occupy our seat.
+        SeatOccupationEntity ticketOccupation = this.seatService
+                .validate(occupation);
+
+        // Create a ticket for them.
+        TicketEntity ticket = new TicketEntity(user, film, time.getTime(),
+                ticketOccupation);
+        ticket.setPrice(calculatePrice(ticket));
+
+        return ticket;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public TicketEntity reserve(TicketEntity ticket) {
+
+        ticket.getOccupation().reserve();
+        this.em.persist(ticket);
+
+        return ticket;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double calculatePrice(TicketEntity ticket) {
+
+        double modifier = 1;
+        int basePrice = ticket.getFilm().getPrice();
+
+        // Discount for Junior users.
+        if (ticket.getOwner().isJunior()) {
+            modifier = 1 - CinemaConstants.JUNIOR_DISCOUNT;
+        }
+
+        return Math.round(basePrice * modifier * 10) / 10;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TicketEntity> getTickets(String nrn, Date time) {
+
+        LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
+        try {
+            return this.em.createNamedQuery(TicketEntity.findTicket)
+                    .setParameter("nrn", nrn).setParameter("time",
+                            time.getTime()).getResultList();
+        }
+
+        catch (NoResultException e) {
+            return new ArrayList<TicketEntity>();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<TicketEntity> getTickets(String nrn, Date time,
+            String theatreName) {
+
+        List<TicketEntity> tickets = getTickets(nrn, time);
+        for (Iterator<TicketEntity> it = tickets.iterator(); it.hasNext();)
+            if (!it.next().getOccupation().getSeat().getRoom().getTheatre()
+                    .getName().equalsIgnoreCase(theatreName)) {
+                it.remove();
+            }
+
+        return tickets;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValid(String nrn, Date time, String theatreName,
+            String filmName) {
+
+        for (TicketEntity ticket : getTickets(nrn, time, theatreName))
+            if (ticket.getFilm().getName().equalsIgnoreCase(filmName))
+                return true;
+
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<TicketEntity> getTickets(UserEntity user) {
+
+        if (user != null) {
+            UserEntity attachedUser = this.userService.attach(user);
+            if (attachedUser != null)
+                return new LinkedList<TicketEntity>(attachedUser.getTickets());
+        }
+
+        return new ArrayList<TicketEntity>();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getFilmName(TicketEntity ticket) {
+
+        return ticket.getFilm().getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getRoomName(TicketEntity ticket) {
+
+        return ticket.getOccupation().getSeat().getRoom().getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getTheatreName(TicketEntity ticket) {
+
+        return ticket.getOccupation().getSeat().getRoom().getTheatre()
+                .getName();
+    }
 }

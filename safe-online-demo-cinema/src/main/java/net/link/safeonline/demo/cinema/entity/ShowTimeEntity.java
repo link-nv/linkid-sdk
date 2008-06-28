@@ -37,17 +37,22 @@ public class ShowTimeEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long              id;
 
-    private Long              monStart;
-    private Long              tueStart;
-    private Long              wedStart;
-    private Long              thuStart;
-    private Long              friStart;
-    private Long              satStart;
-    private Long              sunStart;
+    private Integer           monStart;
+    private Integer           tueStart;
+    private Integer           wedStart;
+    private Integer           thuStart;
+    private Integer           friStart;
+    private Integer           satStart;
+    private Integer           sunStart;
 
 
-    public ShowTimeEntity(Long monStart, Long tueStart, Long wedStart,
-            Long thuStart, Long friStart, Long satStart, Long sunStart) {
+    public ShowTimeEntity() {
+
+    }
+
+    public ShowTimeEntity(Integer monStart, Integer tueStart, Integer wedStart,
+            Integer thuStart, Integer friStart, Integer satStart,
+            Integer sunStart) {
 
         this.monStart = monStart;
         this.tueStart = tueStart;
@@ -72,7 +77,7 @@ public class ShowTimeEntity implements Serializable {
                 timeToStr(this.sunStart));
     }
 
-    private String timeToStr(Long time) {
+    private String timeToStr(Integer time) {
 
         if (time == null)
             return "-";
@@ -83,37 +88,37 @@ public class ShowTimeEntity implements Serializable {
         return String.format("%d:%d", hours, minutes);
     }
 
-    public Long getMonStart() {
+    public Integer getMonStart() {
 
         return this.monStart;
     }
 
-    public Long getTueStart() {
+    public Integer getTueStart() {
 
         return this.tueStart;
     }
 
-    public Long getWedStart() {
+    public Integer getWedStart() {
 
         return this.wedStart;
     }
 
-    public Long getThuStart() {
+    public Integer getThuStart() {
 
         return this.thuStart;
     }
 
-    public Long getFriStart() {
+    public Integer getFriStart() {
 
         return this.friStart;
     }
 
-    public Long getSatStart() {
+    public Integer getSatStart() {
 
         return this.satStart;
     }
 
-    public Long getSunStart() {
+    public Integer getSunStart() {
 
         return this.sunStart;
     }

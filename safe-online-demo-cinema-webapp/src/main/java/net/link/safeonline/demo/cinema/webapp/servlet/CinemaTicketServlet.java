@@ -8,6 +8,8 @@
 package net.link.safeonline.demo.cinema.webapp.servlet;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,59 +17,91 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.demo.cinema.entity.TicketEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.thoughtworks.xstream.XStream;
+
 public class CinemaTicketServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID  = 1L;
+    private static final Log   LOG               = LogFactory
+                                                         .getLog(CinemaTicketServlet.class);
 
-	private static final Log LOG = LogFactory.getLog(CinemaTicketServlet.class);
+    public static final String NRN_PARAMETER     = "nrn";
+    public static final String TIME_PARAMETER    = "time";
+    public static final String FILM_PARAMETER    = "film";
+    public static final String THEATRE_PARAMETER = "theatre";
 
-	public static final String NRN_PARAMETER = "NRN";
+    private TicketService      ticketService;
 
-	public static final String TIME_PARAMETER = "TIME";
 
-	private TicketService ticketService;
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		LOG.debug("init");
-		this.ticketService = getTicketService();
-	}
+        LOG.debug("init");
+        super.init(config);
 
-	private TicketService getTicketService() {
-		return EjbUtils
-				.getEJB(TicketService.LOCAL_BINDING, TicketService.class);
-	}
+        this.ticketService = EjbUtils.getEJB(TicketService.BINDING,
+                TicketService.class);
+    }
 
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("do get");
-		String nrn = request.getParameter(NRN_PARAMETER);
-		if (null == nrn) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-					"No National Register Number passed as parameter.");
-			return;
-		}
+    @Override
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-		String time = request.getParameter(TIME_PARAMETER);
-		if (null == time) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-					"No TIME parameter");
-			return;
-		}
+        LOG.debug("do get");
 
-		boolean result = this.ticketService.hasValidPass(nrn, time);
+        String nrn = request.getParameter(NRN_PARAMETER);
+        String time = request.getParameter(TIME_PARAMETER);
+        String film = request.getParameter(FILM_PARAMETER);
+        String theatre = request.getParameter(THEATRE_PARAMETER);
+        Date date;
 
-		if (false == result) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-					"User has no valid pass.");
-		}
-	}
+        // Validate parameters.
+        if (null == nrn) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "No National Register Number passed as parameter.");
+            return;
+        }
+        if (null == time) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "No Time passed as parameter.");
+            return;
+        }
+        try {
+            date = new Date(Long.valueOf(time));
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Time parameter does not contain a valid timestamp.");
+            return;
+        }
+
+        // Retrieve all tickets for user at time (optionally, in theatre).
+        if (film == null) {
+            List<TicketEntity> tickets;
+            if (theatre == null) {
+                tickets = this.ticketService.getTickets(nrn, date);
+            } else {
+                tickets = this.ticketService.getTickets(nrn, date, theatre);
+            }
+
+            XStream xstream = new XStream();
+            xstream.toXML(tickets, response.getWriter());
+        }
+
+        // Check whether there is a ticket for user at time in theatre for film.
+        else {
+            if (!this.ticketService.isValid(nrn, date, film, theatre)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                        "The user has no tickets for this time and day.");
+            }
+
+        }
+
+    }
 }

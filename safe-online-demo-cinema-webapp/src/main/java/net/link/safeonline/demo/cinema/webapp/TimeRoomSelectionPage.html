@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <body>
+        <wicket:extend>
+
+            <h2>Select the time and theatre room of your choice.</h2>
+
+            <form wicket:id="times">
+                <table>
+                    <caption>Available Show Times</caption>
+
+                    <tr wicket:id="list">
+                        <th class="nopad"><a wicket:id="select"><span wicket:id="time" /></a></th>
+                    </tr>
+                </table>
+            </form>
+
+            <form wicket:id="rooms">
+                <table>
+                    <caption>Available Theatres Rooms</caption>
+
+                    <tr wicket:id="list">
+                        <th class="nopad"><a wicket:id="select"><span wicket:id="name" /></a></th>
+                    </tr>
+                </table>
+            </form>
+
+        </wicket:extend>
+    </body>
+
+</html>

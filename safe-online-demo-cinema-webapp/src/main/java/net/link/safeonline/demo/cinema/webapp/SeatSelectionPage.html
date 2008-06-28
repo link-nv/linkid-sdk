@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <body>
+        <wicket:extend>
+
+            <h2>Please select your theatre seats.</h2>
+
+            <form wicket:id="seats">
+                <table id="seats">
+                    <caption>Theatre Room <b wicket:id="name" />: Seats</caption>
+
+                    <tr wicket:id="row">
+                        <td class="nopad" wicket:id="column">
+                            <a wicket:id="seat" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+        </wicket:extend>
+    </body>
+
+</html>

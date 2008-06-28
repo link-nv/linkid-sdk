@@ -102,6 +102,7 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configMandateDemo() {
+
 		PrivateKeyEntry demoMandatePrivateKeyEntry = DemoMandateKeyStoreUtils
 				.getPrivateKeyEntry();
 		X509Certificate demoMandateCertificate = (X509Certificate) demoMandatePrivateKeyEntry
@@ -211,6 +212,7 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configTicketDemo() {
+
 		PrivateKeyEntry demoTicketPrivateKeyEntry = DemoTicketKeyStoreUtils
 				.getPrivateKeyEntry();
 		X509Certificate demoTicketCertificate = (X509Certificate) demoTicketPrivateKeyEntry
@@ -423,6 +425,7 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configPrescriptionDemo() {
+
 		String prescriptionAdmin = "prescription-admin";
 		this.authorizedUsers.put(prescriptionAdmin, new AuthenticationDevice(
 				"secret", null, null));
@@ -531,6 +534,7 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configLawyerDemo() {
+
 		this.authorizedUsers.put("baradmin", new AuthenticationDevice("secret",
 				null, null));
 
@@ -620,6 +624,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	private void configLawyerDemoAttribute(String attributeName,
 			DatatypeType datatype, String enName, String nlName) {
+
 		configDemoAttribute(attributeName, datatype, false,
 				DEMO_LAWYER_APPLICATION_NAME, enName, nlName, true, false);
 	}
@@ -628,6 +633,7 @@ public class DemoStartableBean extends AbstractInitBean {
 			DatatypeType datatype, boolean multiValued,
 			String attributeProviderName, String enName, String nlName,
 			boolean userVisible, boolean userEditable) {
+
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
 				attributeName, datatype, userVisible, userEditable);
 		attributeType.setMultivalued(multiValued);
@@ -654,6 +660,7 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configDemoUsers() {
+
 		this.authorizedUsers.put("fcorneli", new AuthenticationDevice("secret",
 				null, null));
 		this.authorizedUsers.put("dieter", new AuthenticationDevice("secret",
@@ -718,6 +725,7 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configSubscription(String topic, X509Certificate certificate) {
+
 		ResourceBundle properties = ResourceBundle.getBundle("config");
 		String protocol = properties.getString("olas.host.protocol");
 		String hostname = properties.getString("olas.host.name");
@@ -736,6 +744,7 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configureNode() {
+
 		ResourceBundle properties = ResourceBundle.getBundle("config");
 		String nodeName = properties.getString("olas.node.name");
 		String protocol = properties.getString("olas.host.protocol");
@@ -757,6 +766,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	@Override
 	public int getPriority() {
+
 		return BeIdConstants.BEID_BOOT_PRIORITY - 1;
 	}
 }

@@ -5,10 +5,21 @@
 	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
 
     <body>
-
         <wicket:extend>
-            <a wicket:id="loginlink" href="#">Click here to log in</a>
-        </wicket:extend>
 
+            <h2>Welcome to the Cinema Demo.</h2>
+
+            <table>
+                <caption>Please begin by logging in</caption>
+
+                <tr>
+                    <th class="nopad">
+                        <a wicket:id="loginlink">Click here to log in using your OLAS account.</a>
+                    </th>
+                </tr>
+            </table>
+
+        </wicket:extend>
     </body>
+
 </html>

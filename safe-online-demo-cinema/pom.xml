@@ -14,32 +14,13 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Demo Cinema Beans</name>
 	<description>
-		The EJB3 Seam Backing Beans for the SafeOnline Demo Cinema
-		Beans.
+        The entity beans for the Cinema Demo
 	</description>
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-ejb-plugin</artifactId>
-				<configuration>
-					<ejbVersion>3.0</ejbVersion>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-					<generateClient>true</generateClient>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jboss-maven-plugin</artifactId>
-				<configuration>
-					<fileName>
-						${project.build.directory}/${project.build.finalName}.jar
-					</fileName>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

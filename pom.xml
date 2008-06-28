@@ -682,6 +682,8 @@
 			1.0-beta-1
 		</jboss-jsfunit-richfaces.version>
 		<itext.version>1.4.8</itext.version>
+		<xpp3.version>1.1.4c</xpp3.version>
+		<xstream.version>1.1.3</xstream.version>
 		<keytool-maven-plugin.version>1.0</keytool-maven-plugin.version>
 		<poi.version>3.0.2-FINAL</poi.version>
 	</properties>
@@ -2110,6 +2112,16 @@
 				<groupId>com.lowagie</groupId>
 				<artifactId>itext</artifactId>
 				<version>${itext.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xpp3</groupId>
+				<artifactId>xpp3_min</artifactId>
+				<version>${xpp3.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xstream</groupId>
+				<artifactId>xstream</artifactId>
+				<version>${xstream.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
