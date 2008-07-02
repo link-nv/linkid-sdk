@@ -116,9 +116,8 @@
 	<!-- COMPILATION PROFILES -->
 	<profiles>
 
-		<!-- Demo initializations without demo webapps -->
 		<profile>
-			<id>demo-core</id>
+			<id>demo</id>
 			<modules>
 				<module>safe-online-model-demo</module>
 				<module>safe-online-demo-keystore</module>
@@ -128,13 +127,8 @@
 				<module>safe-online-demo-prescription-keystore</module>
 				<module>safe-online-demo-mandate-keystore</module>
 				<module>safe-online-demo-cinema-keystore</module>
-			</modules>
-		</profile>
-
-		<!-- This requires the demo-core to be active -->
-		<profile>
-			<id>demo-webapps</id>
-			<modules>
+				<module>safe-online-demo-startup</module>
+				<module>safe-online-demo-deploy</module>
 				<module>safe-online-demo-webapp</module>
 				<module>safe-online-demo-service</module>
 				<module>safe-online-demo-remote-service</module>
@@ -427,6 +421,8 @@
 			</properties>
 			<modules>
 				<module>safe-online-model-performance</module>
+				<module>safe-online-performance-startup</module>
+				<module>safe-online-performance-deploy</module>
 				<module>safe-online-performance-keystore</module>
 				<module>safe-online-performance-entity</module>
 				<module>safe-online-performance-agent-service</module>
@@ -524,7 +520,7 @@
 		<stax-ex.version>1.1</stax-ex.version>
 		<streambuffer.version>0.6-safe-online</streambuffer.version>
 		<easymock.version>2.3</easymock.version>
-		<maven-ear-plugin.version>2.3.1</maven-ear-plugin.version>
+		<maven-ear-plugin.version>2.3.1-safe-online</maven-ear-plugin.version>
 		<commons-io.version>1.3.1</commons-io.version>
 		<hibernate-entitymanager.version>
 			3.3.1.ga

@@ -108,7 +108,7 @@
 							<excludeArtifactIds>
 								jboss-as,jboss-messaging,jboss-messaging-sar,jaxws-ri 
 							</excludeArtifactIds>
-							<includeScope>compile</includeScope>
+							<includeScope>runtime</includeScope>
 						</configuration>
 					</execution>
 				</executions>
@@ -179,14 +179,80 @@
 		<dependency>
 			<groupId>org.opensaml</groupId>
 			<artifactId>opensaml</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>resolver</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>serializer</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.opensaml</groupId>
 			<artifactId>xmltooling</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>resolver</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>serializer</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.opensaml</groupId>
 			<artifactId>openws</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>resolver</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>serializer</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>velocity</groupId>
@@ -358,6 +424,10 @@
 					<groupId>commons-collections</groupId>
 					<artifactId>commons-collections</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.faces</groupId>
+					<artifactId>jsf-impl</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -367,6 +437,10 @@
 				<exclusion>
 					<groupId>commons-collections</groupId>
 					<artifactId>commons-collections</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.faces</groupId>
+					<artifactId>jsf-impl</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -419,6 +493,16 @@
 				<exclusion>
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-commons-annotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>axis</groupId>
+			<artifactId>axis</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>axis</groupId>
+					<artifactId>axis-saaj</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

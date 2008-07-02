@@ -13,5 +13,5 @@ public class BeidConstants {
 		// empty
 	}
 
-	public static final String JNDI_PREFIX = "SafeOnline/beid/";
+	public static final String JNDI_PREFIX = "SafeOnlineBeid/";
 }

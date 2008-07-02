@@ -60,7 +60,7 @@ public class IdentityServletTest {
 
 		this.mockBeIdDeviceServiceBean = createMock(BeIdDeviceService.class);
 		this.jndiTestUtils.bindComponent(
-				"SafeOnline/BeIdDeviceServiceBean/local",
+				"SafeOnlineBeid/BeIdDeviceServiceBean/local",
 				this.mockBeIdDeviceServiceBean);
 
 		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);

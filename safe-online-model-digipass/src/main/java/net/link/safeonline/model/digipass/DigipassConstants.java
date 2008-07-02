@@ -15,6 +15,8 @@ public class DigipassConstants {
 		// empty
 	}
 
+	public static final String DIGIPASS_STARTABLE_JNDI_PREFIX = "SafeOnlineDigipass/startup/";
+	
 	public static final String DIGIPASS_DEVICE_ID = "digipass";
 
 	public static final String DIGIPASS_IDENTIFIER_DOMAIN = "digipass";

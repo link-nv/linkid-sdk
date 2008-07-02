@@ -13,5 +13,5 @@ public class DigipassConstants {
 		// empty
 	}
 
-	public static final String JNDI_PREFIX = "SafeOnline/digipass/";
+	public static final String JNDI_PREFIX = "SafeOnlineDigipass/";
 }

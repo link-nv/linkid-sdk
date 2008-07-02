@@ -31,7 +31,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @Local(Startable.class)
-@LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "PerformanceStartableBean")
+@LocalBinding(jndiBinding = PerformanceConstants.PERFORMANCE_STARTABLE_JNDI_PREFIX + "PerformanceStartableBean")
 public class PerformanceStartableBean extends AbstractInitBean {
 
 	private static final String PERFORMANCE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:test";

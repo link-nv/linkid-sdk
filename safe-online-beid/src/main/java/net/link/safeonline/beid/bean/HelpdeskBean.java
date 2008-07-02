@@ -9,6 +9,7 @@ package net.link.safeonline.beid.bean;
 
 import javax.ejb.Stateful;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.beid.BeidConstants;
 import net.link.safeonline.beid.Helpdesk;
 import net.link.safeonline.helpdesk.bean.HelpdeskBaseBean;

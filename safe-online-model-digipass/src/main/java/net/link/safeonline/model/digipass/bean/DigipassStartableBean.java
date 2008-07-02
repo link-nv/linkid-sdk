@@ -31,7 +31,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @Local(Startable.class)
-@LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "DigipassStartableBean")
+@LocalBinding(jndiBinding = DigipassConstants.DIGIPASS_STARTABLE_JNDI_PREFIX + "DigipassStartableBean")
 public class DigipassStartableBean extends AbstractInitBean {
 
 	private static final Log LOG = LogFactory

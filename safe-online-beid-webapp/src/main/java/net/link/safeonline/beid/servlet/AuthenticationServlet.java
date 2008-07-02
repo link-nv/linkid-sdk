@@ -43,7 +43,7 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 	private static final Log LOG = LogFactory
 			.getLog(AuthenticationServlet.class);
 
-	@EJB(mappedName = "SafeOnline/BeIdDeviceServiceBean/local")
+	@EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
 	private BeIdDeviceService beIdDeviceService;
 
 	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")

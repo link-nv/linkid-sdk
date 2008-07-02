@@ -37,7 +37,7 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	@EJB(mappedName = "SafeOnline/BeIdDeviceServiceBean/local")
+	@EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
 	private BeIdDeviceService beIdDeviceService;
 
 	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
