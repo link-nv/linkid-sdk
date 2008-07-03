@@ -281,14 +281,21 @@ public class DemoStartableBean extends AbstractInitBean {
 				IdScopeType.SUBSCRIPTION));
 
 		this.identities.add(new Identity(DEMO_CINEMA_APPLICATION_NAME,
-				new IdentityAttributeTypeDO[] {
-						new IdentityAttributeTypeDO(
-								DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-								false, false),
-						new IdentityAttributeTypeDO(
-								DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
-								false) }));
+                new IdentityAttributeTypeDO[] {
+                        new IdentityAttributeTypeDO(
+                                BeIdConstants.NRN_ATTRIBUTE, true, false),
+                        new IdentityAttributeTypeDO(
+                                DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+                                false, false),
+                        new IdentityAttributeTypeDO(
+                                DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
+                                false) }));
 
+        List<String> tempAllowedDevices = new LinkedList<String>();
+        tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
+        this.allowedDevices.put(DEMO_TICKET_APPLICATION_NAME,
+                tempAllowedDevices);
+        
 		/*
 		 * Application usage agreements
 		 */
