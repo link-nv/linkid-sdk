@@ -792,7 +792,6 @@
 		<module>
 			safe-online-notification-subscription-manager-ws-impl
 		</module>
-		<module>safe-online-saml-authn-context</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
