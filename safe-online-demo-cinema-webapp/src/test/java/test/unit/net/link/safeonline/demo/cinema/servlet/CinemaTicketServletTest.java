@@ -18,6 +18,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
+import net.link.safeonline.demo.cinema.service.InitializationService;
 import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.demo.cinema.webapp.servlet.CinemaTicketServlet;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -31,112 +32,126 @@ import org.apache.commons.logging.LogFactory;
 
 public class CinemaTicketServletTest extends TestCase {
 
-	private static final Log LOG = LogFactory
-			.getLog(CinemaTicketServletTest.class);
+    private static final Log   LOG = LogFactory
+                                           .getLog(CinemaTicketServletTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager servletTestManager;
 
-	private String servletLocation;
+    private String             servletLocation;
 
-	private JndiTestUtils jndiTestUtils;
+    private JndiTestUtils      jndiTestUtils;
 
-	private TicketService mockTicketService;
+    private TicketService      mockTicketService;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
-		this.mockTicketService = createMock(TicketService.class);
-		this.jndiTestUtils.bindComponent(TicketService.BINDING,
-				this.mockTicketService);
+    @Override
+    protected void setUp() throws Exception {
 
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(CinemaTicketServlet.class);
+        super.setUp();
 
-		this.servletLocation = this.servletTestManager.getServletLocation();
-	}
+        this.jndiTestUtils = new JndiTestUtils();
+        this.jndiTestUtils.setUp();
+        this.mockTicketService = createMock(TicketService.class);
+        this.jndiTestUtils.bindComponent(TicketService.BINDING,
+                this.mockTicketService);
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-		this.jndiTestUtils.tearDown();
-		super.tearDown();
-	}
+        this.servletTestManager = new ServletTestManager();
+        this.servletTestManager.setUp(CinemaTicketServlet.class);
 
-	public void testDoGetWithValidPass() throws Exception {
-		// setup
-		String testNrn = UUID.randomUUID().toString();
-		String testTime = new Date().toString();
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletLocation);
-		getMethod
-				.setQueryString(new NameValuePair[] {
-						new NameValuePair(CinemaTicketServlet.NRN_PARAMETER,
-								testNrn),
-						new NameValuePair(CinemaTicketServlet.TIME_PARAMETER,
-								testTime) });
+        this.servletLocation = this.servletTestManager.getServletLocation();
+    }
 
-		// setup
-		expect(this.mockTicketService.hasValidPass(testNrn, testTime))
-				.andReturn(true);
+    @Override
+    protected void tearDown() throws Exception {
 
-		// prepare
-		replay(this.mockTicketService);
+        this.servletTestManager.tearDown();
+        this.jndiTestUtils.tearDown();
+        super.tearDown();
+    }
 
-		// operate
-		int result = httpClient.executeMethod(getMethod);
+    public void testDoGetWithValidPass() throws Exception {
 
-		// verify
-		LOG.debug("result: " + result);
-		verify(this.mockTicketService);
-		assertEquals(HttpServletResponse.SC_OK, result);
-	}
+        // Setup
+        String testNrn = UUID.randomUUID().toString(); // User's NRN.
+        int filmId = 0; // The index of the film in the initialization service.
+        int theatreThatPlaysFilmId = 0; // The i'th theatre that plays the film.
+        Date testTime = new Date(); // Time of user's ticket check.
 
-	public void testDoGetWithInvalidPass() throws Exception {
-		// setup
-		String testNrn = UUID.randomUUID().toString();
-		String testTime = new Date().toString();
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletLocation);
-		getMethod
-				.setQueryString(new NameValuePair[] {
-						new NameValuePair(CinemaTicketServlet.NRN_PARAMETER,
-								testNrn),
-						new NameValuePair(CinemaTicketServlet.TIME_PARAMETER,
-								testTime) });
+        // Resolve film & theatre names.
+        String testFilm = InitializationService.filmNames[filmId];
+        String testTheatre = InitializationService.theatreNames[InitializationService.filmTheatres[filmId][theatreThatPlaysFilmId]];
 
-		// setup
-		expect(this.mockTicketService.hasValidPass(testNrn, testTime))
-				.andReturn(false);
+        // Setup Mock.
+        expect(
+                this.mockTicketService.isValid(testNrn, testTime, testTheatre,
+                        testFilm)).andReturn(true);
+        replay(this.mockTicketService);
 
-		// prepare
-		replay(this.mockTicketService);
+        // Validate ticket.
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletLocation);
+        getMethod.setQueryString(new NameValuePair[] {
+                new NameValuePair(CinemaTicketServlet.NRN, testNrn),
+                new NameValuePair(CinemaTicketServlet.TIME, Long
+                        .toString(testTime.getTime())),
+                new NameValuePair(CinemaTicketServlet.FILM, testFilm),
+                new NameValuePair(CinemaTicketServlet.THEATRE, testTheatre) });
+        int result = httpClient.executeMethod(getMethod);
 
-		// operate
-		int result = httpClient.executeMethod(getMethod);
+        // Verify result.
+        LOG.debug("result: " + result);
+        verify(this.mockTicketService);
+        assertEquals(HttpServletResponse.SC_OK, result);
+    }
 
-		// verify
-		LOG.debug("result: " + result);
-		verify(this.mockTicketService);
-		assertEquals(HttpServletResponse.SC_UNAUTHORIZED, result);
-	}
+    public void testDoGetWithInvalidPass() throws Exception {
 
-	public void testDoGetWithoutValidParams() throws Exception {
-		// setup
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletLocation);
+        // Setup
+        String testNrn = UUID.randomUUID().toString(); // User's NRN.
+        int filmId = 0; // The index of the film in the initialization service.
+        int theatreThatPlaysFilmId = 0; // The i'th theatre that plays the film.
+        Date testTime = new Date(); // Time of user's ticket check.
 
-		// prepare
-		replay(this.mockTicketService);
+        // Resolve film & theatre names.
+        String testFilm = InitializationService.filmNames[filmId];
+        String testTheatre = InitializationService.theatreNames[InitializationService.filmTheatres[filmId][theatreThatPlaysFilmId]];
 
-		// operate
-		int result = httpClient.executeMethod(getMethod);
+        // Setup Mock.
+        expect(
+                this.mockTicketService.isValid(testNrn, testTime, testFilm,
+                        testTheatre)).andReturn(false);
+        replay(this.mockTicketService);
 
-		// verify
-		LOG.debug("result: " + result);
-		verify(this.mockTicketService);
-		assertEquals(HttpServletResponse.SC_BAD_REQUEST, result);
-	}
+        // Validate ticket.
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletLocation);
+        getMethod.setQueryString(new NameValuePair[] {
+                new NameValuePair(CinemaTicketServlet.NRN, testNrn),
+                new NameValuePair(CinemaTicketServlet.TIME, Long
+                        .toString(testTime.getTime())),
+                new NameValuePair(CinemaTicketServlet.FILM, testFilm),
+                new NameValuePair(CinemaTicketServlet.THEATRE, testTheatre) });
+        int result = httpClient.executeMethod(getMethod);
+
+        // Verify result.
+        LOG.debug("result: " + result);
+        verify(this.mockTicketService);
+        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, result);
+    }
+
+    public void testDoGetWithoutValidParams() throws Exception {
+
+        // Setup Mock.
+        replay(this.mockTicketService);
+
+        // Validate ticket.
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletLocation);
+        int result = httpClient.executeMethod(getMethod);
+
+        // Verify Result.
+        LOG.debug("result: " + result);
+        verify(this.mockTicketService);
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, result);
+    }
 }

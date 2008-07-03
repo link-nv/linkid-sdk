@@ -32,10 +32,10 @@ public class CinemaTicketServlet extends HttpServlet {
     private static final Log   LOG               = LogFactory
                                                          .getLog(CinemaTicketServlet.class);
 
-    public static final String NRN_PARAMETER     = "nrn";
-    public static final String TIME_PARAMETER    = "time";
-    public static final String FILM_PARAMETER    = "film";
-    public static final String THEATRE_PARAMETER = "theatre";
+    public static final String NRN     = "nrn";
+    public static final String TIME    = "time";
+    public static final String FILM    = "film";
+    public static final String THEATRE = "theatre";
 
     private TicketService      ticketService;
 
@@ -56,10 +56,10 @@ public class CinemaTicketServlet extends HttpServlet {
 
         LOG.debug("do get");
 
-        String nrn = request.getParameter(NRN_PARAMETER);
-        String time = request.getParameter(TIME_PARAMETER);
-        String film = request.getParameter(FILM_PARAMETER);
-        String theatre = request.getParameter(THEATRE_PARAMETER);
+        String nrn = request.getParameter(NRN);
+        String time = request.getParameter(TIME);
+        String film = request.getParameter(FILM);
+        String theatre = request.getParameter(THEATRE);
         Date date;
 
         // Validate parameters.
