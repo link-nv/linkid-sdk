@@ -37,5 +37,23 @@
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineDemo.ear</destName>
 		</file>
+		<file>
+			<source> target/files/safe-online-demo-deploy-1.0-SNAPSHOT.ear 
+			</source>
+			<outputDirectory> jboss/server/default/deploy </outputDirectory>
+			<destName>SafeOnlineBeid.ear</destName>
+		</file>
+		<file>
+			<source> target/files/safe-online-demo-deploy-1.0-SNAPSHOT.ear 
+			</source>
+			<outputDirectory> jboss/server/default/deploy </outputDirectory>
+			<destName>SafeOnlineDigipass.ear</destName>
+		</file>
+		<file>
+			<source> target/files/safe-online-demo-deploy-1.0-SNAPSHOT.ear 
+			</source>
+			<outputDirectory> jboss/server/default/deploy </outputDirectory>
+			<destName>SafeOnlineEncap.ear</destName>
+		</file>
 	</files>
 </assembly>
