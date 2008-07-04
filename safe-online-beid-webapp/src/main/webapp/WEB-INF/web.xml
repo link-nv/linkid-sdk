@@ -52,7 +52,7 @@
 	</context-param>
 	<context-param>
 		<param-name>StsWsLocation</param-name>
-		<param-value>${safe-online.host.basename}</param-value>
+		<param-value>${safe-online.host.auth.basename}</param-value>
 	</context-param>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>

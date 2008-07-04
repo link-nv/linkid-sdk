@@ -19,70 +19,68 @@ import org.apache.wicket.protocol.http.WebResponse;
 
 public class LoginPage extends LayoutPage {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @EJB
-    transient UserService     userService;
+	@EJB
+	transient UserService userService;
 
+	/**
+	 * If the user is logged in; continue to the ticket history page.
+	 * 
+	 * If not, show a link to the OLAS authentication service for logging the
+	 * user in.
+	 */
+	public LoginPage() {
 
-    /**
-     * If the user is logged in; continue to the ticket history page.
-     * 
-     * If not, show a link to the OLAS authentication service for logging the
-     * user in.
-     */
-    public LoginPage() {
+		// If logged in, send user to the ticket history page.
+		HttpServletRequest loginRequest = ((WebRequest) getRequest())
+				.getHttpServletRequest();
+		if (LoginManager.isAuthenticated(loginRequest)) {
+			try {
+				UserEntity user = this.userService.getUser(LoginManager
+						.getUsername(loginRequest));
+				this.userService.updateUser(user, loginRequest);
+				CinemaSession.get().setUser(user);
 
-        // If logged in, send user to the ticket history page.
-        HttpServletRequest loginRequest = ((WebRequest) getRequest())
-                .getHttpServletRequest();
-        if (LoginManager.isAuthenticated(loginRequest)) {
-            try {
-                UserEntity user = this.userService.getUser(LoginManager
-                        .getUsername(loginRequest));
-                this.userService.updateUser(user, loginRequest);
-                CinemaSession.get().setUser(user);
+				setResponsePage(TicketPage.class);
+				return;
+			}
 
-                setResponsePage(TicketPage.class);
-                return;
-            }
+			catch (ServletException e) {
+				this.LOG
+						.error(
+								"LoginManager claimed we were logged in but no user id was available!",
+								e);
+			}
+		}
 
-            catch (ServletException e) {
-                this.LOG
-                        .error(
-                                "LoginManager claimed we were logged in but no user id was available!",
-                                e);
-            }
-        }
+		add(new Label<String>("headerTitle", "Login Page"));
+		add(new Link<Object>("loginlink") {
 
-        add(new Label<String>("headerTitle", "Login Page"));
-        add(new Link<Object>("loginlink") {
+			private static final long serialVersionUID = 1L;
 
-            private static final long serialVersionUID = 1L;
+			@Override
+			public void onClick() {
 
+				getRequestCycle().setRequestTarget(new IRequestTarget() {
 
-            @Override
-            public void onClick() {
+					public void detach(RequestCycle requestCycle) {
 
-                getRequestCycle().setRequestTarget(new IRequestTarget() {
+					}
 
-                    public void detach(RequestCycle requestCycle) {
+					public void respond(RequestCycle requestCycle) {
 
-                    }
+						HttpServletRequest request = ((WebRequest) requestCycle
+								.getRequest()).getHttpServletRequest();
+						HttpServletResponse response = ((WebResponse) requestCycle
+								.getResponse()).getHttpServletResponse();
+						String target = request.getServletPath();
 
-                    public void respond(RequestCycle requestCycle) {
+						SafeOnlineLoginUtils.login(target, request, response);
+					}
 
-                        HttpServletRequest request = ((WebRequest) requestCycle
-                                .getRequest()).getHttpServletRequest();
-                        HttpServletResponse response = ((WebResponse) requestCycle
-                                .getResponse()).getHttpServletResponse();
-                        String target = request.getRequestURL().toString();
-
-                        SafeOnlineLoginUtils.login(target, request, response);
-                    }
-
-                });
-            }
-        });
-    }
+				});
+			}
+		});
+	}
 }

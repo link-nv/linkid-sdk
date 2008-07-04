@@ -48,7 +48,7 @@ public class TicketLogonBean extends AbstractTicketDataClientBean implements
 	public String logout() {
 		this.log.debug("logout");
 		this.sessionContext.set("username", null);
-        Session.getInstance().invalidate();
+		Session.getInstance().invalidate();
 		return "logout-success";
 	}
 

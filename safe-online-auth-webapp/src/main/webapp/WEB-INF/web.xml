@@ -43,19 +43,19 @@
 		<description>Point of return for remote device issuers when
 			authenticating</description>
 		<param-name>DeviceAuthenticationServiceUrl</param-name>
-		<param-value> ${safe-online.host.basename}/olas-auth/device/auth 
+		<param-value> ${safe-online.host.auth.basename}/olas-auth/device/auth 
 		</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for remote device issuers when
 			registrating</description>
 		<param-name>DeviceRegistrationServiceUrl</param-name>
-		<param-value> ${safe-online.host.basename}/olas-auth/device/reg 
+		<param-value> ${safe-online.host.auth.basename}/olas-auth/device/reg 
 		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>WsLocation</param-name>
-		<param-value> ${safe-online.host.basename} </param-value>
+		<param-value> ${safe-online.host.auth.basename} </param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>

@@ -4,13 +4,10 @@
         "http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">
 <datasources>
 	<local-tx-datasource>
-        <jndi-name>${safe-online.data.source}</jndi-name>
-		<connection-url>
-            ${safe-online.data.source.uri}
-		</connection-url>
+		<jndi-name>${safe-online.data.source}</jndi-name>
+		<connection-url> ${safe-online.data.source.uri} </connection-url>
 		<driver-class>com.mysql.jdbc.Driver</driver-class>
-		<transaction-isolation>
-			TRANSACTION_READ_COMMITTED
+		<transaction-isolation> TRANSACTION_READ_COMMITTED 
 		</transaction-isolation>
 		<user-name>safeonline</user-name>
 		<password>safeonline</password>

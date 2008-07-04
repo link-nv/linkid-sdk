@@ -2,45 +2,40 @@
 <!DOCTYPE web-app
       PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
       "http://java.sun.com/dtd/web-app_2_3.dtd">
-
 <web-app>
 	<display-name>Demo Cinema Application</display-name>
-
 	<listener>
 		<listener-class>
-			net.link.safeonline.demo.cinema.startup.CinemaStartupListener
+			net.link.safeonline.demo.cinema.startup.CinemaStartupListener 
 		</listener-class>
 	</listener>
-
 	<servlet>
 		<servlet-name>cinemaapp</servlet-name>
-		<servlet-class>
-			org.apache.wicket.protocol.http.WicketServlet
+		<servlet-class> org.apache.wicket.protocol.http.WicketServlet 
 		</servlet-class>
 		<init-param>
 			<param-name>applicationClassName</param-name>
 			<param-value>
-				net.link.safeonline.demo.cinema.webapp.CinemaApplication
+				net.link.safeonline.demo.cinema.webapp.CinemaApplication 
 			</param-value>
 		</init-param>
 		<!--<init-param>
 			<param-name>configuration</param-name>
 			<param-value>DEPLOYMENT</param-value>
         </init-param>-->
-        <context-param>
-            <param-name>configuration</param-name>
-            <param-value>development</param-value>
-        </context-param>
+		<context-param>
+			<param-name>configuration</param-name>
+			<param-value>development</param-value>
+		</context-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
 	<context-param>
 		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.basename}/olas-auth/entry</param-value>
+		<param-value>${safe-online.host.auth.basename}/olas-auth/entry</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
-        <param-value>demo-cinema</param-value>
+		<param-value>demo-cinema</param-value>
 	</context-param>
 	<context-param>
 		<param-name>AuthenticationProtocol</param-name>
@@ -60,12 +55,17 @@
 	</context-param>
 	<context-param>
 		<param-name>LandingPage</param-name>
-		<param-value> ${safe-online.host.basename}/demo-cinema/login 
+		<param-value> ${safe-online.host.auth.basename}/demo-cinema/login 
 		</param-value>
 	</context-param>
 	<context-param>
+		<param-name>TargetBaseUrl</param-name>
+		<param-value> ${safe-online.host.basename}/demo-cinema/ </param-value>
+		<description>Url to redirect to after successful authentication</description>
+	</context-param>
+	<context-param>
 		<param-name>WsLocation</param-name>
-		<param-value>${safe-online.host.basename}</param-value>
+		<param-value>${safe-online.host.auth.basename}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>DemoHostName</param-name>
@@ -75,7 +75,6 @@
 		<param-name>DemoHostPort</param-name>
 		<param-value>${safe-online.host.port}</param-value>
 	</context-param>
-
 	<servlet>
 		<servlet-name>AuthLoginServlet</servlet-name>
 		<servlet-class> net.link.safeonline.sdk.auth.servlet.LoginServlet 
@@ -89,7 +88,6 @@
 		<servlet-name>cinemaapp</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
-
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
@@ -111,9 +109,8 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>AuthnResponseFilter</filter-name>
-        <url-pattern>*.seam</url-pattern>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
-
 	<filter-mapping>
 		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -133,5 +130,4 @@
 		<filter-name>AuthnResponseFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping-->
-
 </web-app>

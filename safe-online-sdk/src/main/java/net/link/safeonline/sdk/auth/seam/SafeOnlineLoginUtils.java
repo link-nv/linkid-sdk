@@ -44,6 +44,7 @@ public class SafeOnlineLoginUtils {
 			.getLog(SafeOnlineLoginUtils.class);
 
 	public static final String AUTH_SERVICE_URL_INIT_PARAM = "AuthenticationServiceUrl";
+	public static final String TARGET_BASE_URL_INIT_PARAM = "TargetBaseUrl";
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 	public static final String APPLICATION_FRIENDLY_NAME_INIT_PARAM = "ApplicationFriendlyName";
 	public static final String AUTHN_PROTOCOL_INIT_PARAM = "AuthenticationProtocol";
@@ -70,6 +71,12 @@ public class SafeOnlineLoginUtils {
 	 * The method requires the <code>AuthenticationServiceUrl</code> context
 	 * parameter defined in <code>web.xml</code> pointing to the location of
 	 * the SafeOnline authentication web application.
+	 * </p>
+	 * 
+	 * <p>
+	 * The method also requires the <code>TargetBaseUrl</code> context
+	 * parameter defined in <code>web.xml</code> pointing to the base location
+	 * to redirect to after successful authentication.
 	 * </p>
 	 * 
 	 * <p>
@@ -112,17 +119,20 @@ public class SafeOnlineLoginUtils {
 	 * the password to unlock the keystore and key entry.
 	 * </p>
 	 * 
-	 * @param targetPage
-	 *            the page to which the user should be redirected after login.
+	 * @param target
+	 *            The target to which to redirect to after successful
+	 *            authentication. Dont put the full URL in here, the full URL is
+	 *            retrieved with the {@link #TARGET_URL_INIT_PARAM}.
+	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public static String login(String targetPage) {
+	public static String login(String target) {
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 
 		try {
-			return login(externalContext.getInitParameterMap(), targetPage,
+			return login(target, externalContext.getInitParameterMap(),
 					(HttpServletRequest) externalContext.getRequest(),
 					(HttpServletResponse) externalContext.getResponse());
 		}
@@ -148,8 +158,9 @@ public class SafeOnlineLoginUtils {
 	 * @see #login(String) For details about the init parameters that should be
 	 *      configured in the application's <code>web.xml</code>.
 	 * 
-	 * @param targetPage
-	 *            the page to which the user should be redirected after login.
+	 * @param target
+	 *            The target url to redirect to after successful authentication.
+	 * 
 	 * @param request
 	 *            The {@link HttpServletRequest} object from the servlet making
 	 *            the login request.
@@ -157,7 +168,7 @@ public class SafeOnlineLoginUtils {
 	 *            The {@link HttpServletResponse} object from the servlet making
 	 *            the login request.
 	 */
-	public static String login(String targetPage, HttpServletRequest request,
+	public static String login(String target, HttpServletRequest request,
 			HttpServletResponse response) {
 
 		Map<String, String> config = new HashMap<String, String>();
@@ -170,15 +181,17 @@ public class SafeOnlineLoginUtils {
 			config.put(name, context.getInitParameter(name));
 		}
 
-		return login(config, targetPage, request, response);
+		return login(target, config, request, response);
 	}
 
-	private static String login(Map<String, String> config, String targetPage,
+	private static String login(String target, Map<String, String> config,
 			HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
 		/* Initialize parameters from web.xml */
 		String authenticationServiceUrl = getInitParameter(config,
 				AUTH_SERVICE_URL_INIT_PARAM);
+		String targetBaseUrl = getInitParameter(config,
+				TARGET_BASE_URL_INIT_PARAM);
 		String applicationName = getInitParameter(config,
 				APPLICATION_NAME_INIT_PARAM);
 		String applicationFriendlyName = getInitParameter(config,
@@ -219,12 +232,11 @@ public class SafeOnlineLoginUtils {
 		}
 
 		/*
-		 * Convert our target URL to an absolute URL and use encodeRedirectURL
-		 * to add parameters to it that should help preserve the session upon
-		 * return from SafeOnline auth should the browser not support cookies.
+		 * Use encodeRedirectURL to add parameters to it that should help
+		 * preserve the session upon return from SafeOnline auth should the
+		 * browser not support cookies.
 		 */
-		String requestUrl = httpRequest.getRequestURL().toString();
-		String targetUrl = getTargetUrl(requestUrl, targetPage);
+		String targetUrl = targetBaseUrl + target;
 		targetUrl = httpResponse.encodeRedirectURL(targetUrl);
 		LOG.debug("target url: " + targetUrl);
 
@@ -292,18 +304,6 @@ public class SafeOnlineLoginUtils {
 
 		return KeyStoreUtils.loadPrivateKeyEntry(keyStoreType,
 				keyStoreInputStream, keyStorePassword, keyStorePassword);
-	}
-
-	public static String getTargetUrl(String requestUrl, String targetPage) {
-
-		if (targetPage.matches("^https?://.*"))
-			return targetPage;
-
-		int lastSlash = requestUrl.lastIndexOf("/");
-		String prefix = requestUrl.substring(0, lastSlash);
-		String targetUrl = prefix + "/" + targetPage;
-
-		return targetUrl;
 	}
 
 	private static String getInitParameter(Map<String, String> config,

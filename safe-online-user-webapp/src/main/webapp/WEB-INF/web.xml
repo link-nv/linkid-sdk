@@ -17,7 +17,7 @@
 	</listener>
 	<context-param>
 		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.basename}/olas-auth/entry</param-value>
+		<param-value>${safe-online.host.auth.basename}/olas-auth/entry</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for the remote device operations.</description>
@@ -66,11 +66,18 @@
 	</context-param>
 	<context-param>
 		<param-name>WsLocation</param-name>
-		<param-value>${safe-online.host.basename}</param-value>
+		<param-value>${safe-online.host.auth.basename}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>LandingPage</param-name>
-		<param-value> ${safe-online.host.basename}/olas/login </param-value>
+		<param-value> ${safe-online.host.auth.basename}/olas/login 
+		</param-value>
+		<description>Page that handles the incoming SAML authn response</description>
+	</context-param>
+	<context-param>
+		<param-name>TargetBaseUrl</param-name>
+		<param-value> ${safe-online.host.basename}/olas/ </param-value>
+		<description>Url to redirect to after successful authentication</description>
 	</context-param>
 	<filter>
 		<filter-name>ExceptionFilter</filter-name>

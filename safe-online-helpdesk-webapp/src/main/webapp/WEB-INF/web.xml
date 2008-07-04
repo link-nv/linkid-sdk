@@ -12,7 +12,7 @@
 	</listener>
 	<context-param>
 		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.basename}/olas-auth/entry</param-value>
+		<param-value>${safe-online.host.auth.basename}/olas-auth/entry</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
@@ -56,12 +56,18 @@
 	</context-param>
 	<context-param>
 		<param-name>LandingPage</param-name>
-		<param-value> ${safe-online.host.basename}/olas-helpdesk/login 
+		<param-value> ${safe-online.host.auth.basename}/olas-helpdesk/login 
 		</param-value>
 	</context-param>
 	<context-param>
+		<param-name>TargetBaseUrl</param-name>
+		<param-value> ${safe-online.host.basename}/olas-helpdesk/ 
+		</param-value>
+		<description>Url to redirect to after successful authentication</description>
+	</context-param>
+	<context-param>
 		<param-name>WsLocation</param-name>
-		<param-value>${safe-online.host.basename}</param-value>
+		<param-value>${safe-online.host.auth.basename}</param-value>
 	</context-param>
 	<filter>
 		<filter-name>Seam Filter</filter-name>

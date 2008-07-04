@@ -42,7 +42,7 @@ public class PrescriptionLogonBean extends AbstractPrescriptionDataClientBean
 
 	public String logout() {
 		this.log.debug("logout");
-        Session.getInstance().invalidate();
+		Session.getInstance().invalidate();
 		return "logout-success";
 	}
 
