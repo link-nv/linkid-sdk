@@ -194,7 +194,7 @@
 		</servlet-class>
 		<init-param>
 			<param-name>DevicesPage</param-name>
-			<param-value>devices.seam</param-value>
+			<param-value>${safe-online.host.basename}/olas/device/devices.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
