@@ -59,6 +59,8 @@ public class DeviceLandingServletTest {
 
 	private String loginUrl = "login";
 
+	private String servletEndpointUrl = "http://test.auth/servlet";
+
 	private AuthenticationService mockAuthenticationService;
 
 	private Object[] mockObjects;
@@ -72,6 +74,7 @@ public class DeviceLandingServletTest {
 		initParams.put("StartUrl", this.startUrl);
 		initParams.put("LoginUrl", this.loginUrl);
 		initParams.put("DeviceErrorUrl", this.deviceErrorUrl);
+		initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		initialSessionAttributes.put(
 				AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,

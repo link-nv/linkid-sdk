@@ -22,7 +22,7 @@
 	<context-param>
 		<description>Point of return for the remote device operations.</description>
 		<param-name>DeviceServiceUrl</param-name>
-		<param-value>${safe-online.host.basename}/olas/device/landing</param-value>
+		<param-value>${safe-online.host.auth.basename}/olas/device/landing</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
@@ -195,6 +195,14 @@
 		<init-param>
 			<param-name>DevicesPage</param-name>
 			<param-value>${safe-online.host.basename}/olas/device/devices.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas/device/landing 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>

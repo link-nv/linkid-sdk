@@ -59,21 +59,21 @@ public interface Device {
 
 	void setNode(String node);
 
-	String getAuthenticationURL();
+	String getAuthenticationPath();
 
-	void setAuthenticationURL(String authenticationURL);
+	void setAuthenticationPath(String authenticationPath);
 
-	String getRegistrationURL();
+	String getRegistrationPath();
 
-	void setRegistrationURL(String registrationURL);
+	void setRegistrationPath(String registrationPath);
 
-	String getRemovalURL();
+	String getRemovalPath();
 
-	void setRemovalURL(String removalURL);
+	void setRemovalPath(String removalPath);
 
-	String getUpdateURL();
+	String getUpdatePath();
 
-	void setUpdateURL(String updateURL);
+	void setUpdatePath(String updatePath);
 
 	UploadedFile getCertificate();
 

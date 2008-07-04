@@ -59,6 +59,8 @@ public class AuthnEntryServletTest {
 
 	private String startUrl = "start";
 
+	private String servletEndpointUrl = "http://test.auth/servlet";
+
 	private String unsupportedProtocolUrl = "unsupported-protocol";
 
 	private String protocolErrorUrl = "protocol-error";
@@ -110,6 +112,7 @@ public class AuthnEntryServletTest {
 		Map<String, String> initParams = new HashMap<String, String>();
 		initParams.put("StartUrl", this.startUrl);
 		initParams.put("FirstTimeUrl", this.firstTimeUrl);
+		initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
 		initParams.put("UnsupportedProtocolUrl", this.unsupportedProtocolUrl);
 		initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
@@ -168,7 +171,7 @@ public class AuthnEntryServletTest {
 		String assertionConsumerService = "http://test.assertion.consumer.service";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
 				applicationName, applicationName, null, applicationKeyPair,
-				assertionConsumerService, servletLocation, null, null);
+				assertionConsumerService, this.servletEndpointUrl, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 

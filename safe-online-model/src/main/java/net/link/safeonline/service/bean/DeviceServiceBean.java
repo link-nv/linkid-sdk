@@ -191,8 +191,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void addDevice(String name, String deviceClassName, String nodeName,
-			String authenticationURL, String registrationURL,
-			String removalURL, String updateURL, byte[] encodedCertificate,
+			String authenticationPath, String registrationPath,
+			String removalPath, String updatePath, byte[] encodedCertificate,
 			String attributeTypeName, String userAttributeTypeName)
 			throws CertificateEncodingException, DeviceClassNotFoundException,
 			ExistingDeviceException, AttributeTypeNotFoundException,
@@ -211,8 +211,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 				.getAttributeType(userAttributeTypeName);
 		OlasEntity node = this.olasDAO.getNode(nodeName);
 
-		this.deviceDAO.addDevice(name, deviceClass, node, authenticationURL,
-				registrationURL, removalURL, updateURL, certificate,
+		this.deviceDAO.addDevice(name, deviceClass, node, authenticationPath,
+				registrationPath, removalPath, updatePath, certificate,
 				attributeType, userAttributeType);
 	}
 
@@ -347,31 +347,31 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateAuthenticationUrl(String deviceName,
-			String authenticationURL) throws DeviceNotFoundException {
+	public void updateAuthenticationPath(String deviceName,
+			String authenticationPath) throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		device.setAuthenticationPath(authenticationURL);
+		device.setAuthenticationPath(authenticationPath);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateRegistrationUrl(String deviceName, String registrationURL)
-			throws DeviceNotFoundException {
+	public void updateRegistrationPath(String deviceName,
+			String registrationPath) throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		device.setRegistrationPath(registrationURL);
+		device.setRegistrationPath(registrationPath);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateRemovalUrl(String deviceName, String removalURL)
+	public void updateRemovalPath(String deviceName, String removalPath)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		device.setRemovalPath(removalURL);
+		device.setRemovalPath(removalPath);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateUpdateUrl(String deviceName, String updateURL)
+	public void updateUpdatePath(String deviceName, String updatePath)
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		device.setUpdatePath(updateURL);
+		device.setUpdatePath(updatePath);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

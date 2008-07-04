@@ -61,8 +61,8 @@ public interface DeviceService {
 			throws DevicePropertyNotFoundException;
 
 	void addDevice(String name, String deviceClassName, String nodeName,
-			String authenticationURL, String registrationURL,
-			String removalURL, String updateURL, byte[] encodedCertificate,
+			String authenticationPath, String registrationPath,
+			String removalPath, String updatePath, byte[] encodedCertificate,
 			String attributeTypeName, String userAttributeTypeName)
 			throws CertificateEncodingException, DeviceClassNotFoundException,
 			ExistingDeviceException, AttributeTypeNotFoundException,
@@ -88,13 +88,13 @@ public interface DeviceService {
 
 	void removeDeviceClass(String name) throws PermissionDeniedException;
 
-	void updateAuthenticationUrl(String deviceName, String authenticationURL)
+	void updateAuthenticationPath(String deviceName, String authenticationPath)
 			throws DeviceNotFoundException;
 
-	void updateRegistrationUrl(String deviceName, String registrationURL)
+	void updateRegistrationPath(String deviceName, String registrationPath)
 			throws DeviceNotFoundException;
 
-	void updateRemovalUrl(String deviceName, String removalURL)
+	void updateRemovalPath(String deviceName, String removalPath)
 			throws DeviceNotFoundException;
 
 	void updateDeviceCertificate(String deviceName, byte[] encodedCertificate)
@@ -115,7 +115,7 @@ public interface DeviceService {
 	DeviceClassEntity getDeviceClass(String deviceClassName)
 			throws DeviceClassNotFoundException;
 
-	void updateUpdateUrl(String deviceName, String updateURL)
+	void updateUpdatePath(String deviceName, String updatePath)
 			throws DeviceNotFoundException;
 
 	void updateAttributeType(String deviceName, String attributeType)

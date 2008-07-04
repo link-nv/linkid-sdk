@@ -19,6 +19,7 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Init;
@@ -55,6 +56,9 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 	@Init(name = "NewUserDeviceUrl")
 	private String newUserDeviceUrl;
 
+	@Init(name = "ServletEndpointUrl")
+	private String servletEndpointUrl;
+
 	@Init(name = "DeviceErrorUrl")
 	private String deviceErrorUrl;
 
@@ -63,19 +67,27 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doPost");
 
+		/**
+		 * Wrap the request to use the servlet endpoint url. To prevent failure
+		 * when behind a reverse proxy or loadbalancer when opensaml is checking
+		 * the destination field.
+		 */
+		HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
+				request, this.servletEndpointUrl);
+
 		AuthenticationService authenticationService = AuthenticationServiceManager
-				.getAuthenticationService(request.getSession());
+				.getAuthenticationService(requestWrapper.getSession());
 		DeviceMappingEntity deviceMapping;
 		try {
-			deviceMapping = authenticationService.register(request);
+			deviceMapping = authenticationService.register(requestWrapper);
 		} catch (NodeNotFoundException e) {
-			redirectToErrorPage(request, response, this.deviceErrorUrl,
+			redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
 					RESOURCE_BASE, new ErrorMessage(
 							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
 							"errorProtocolHandlerFinalization"));
 			return;
 		} catch (DeviceMappingNotFoundException e) {
-			redirectToErrorPage(request, response, this.deviceErrorUrl,
+			redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
 					RESOURCE_BASE, new ErrorMessage(
 							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
 							"errorDeviceRegistrationNotFound"));
@@ -97,7 +109,7 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 			/*
 			 * Registration ok, redirect to login servlet
 			 */
-			LoginManager.relogin(request.getSession(), deviceMapping
+			LoginManager.relogin(requestWrapper.getSession(), deviceMapping
 					.getDevice());
 			response.sendRedirect(this.loginUrl);
 		}

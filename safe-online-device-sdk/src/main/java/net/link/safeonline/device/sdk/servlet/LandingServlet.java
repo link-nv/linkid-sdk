@@ -26,6 +26,7 @@ import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
 import net.link.safeonline.device.sdk.saml2.Saml2Handler;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
+import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Context;
@@ -58,6 +59,9 @@ public class LandingServlet extends AbstractInjectionServlet {
 
 	@Context(name = "KeyStoreType", defaultValue = "pkcs12")
 	private String keyStoreType;
+
+	@Init(name = "ServletEndpointUrl")
+	private String servletEndpointUrl;
 
 	@Init(name = "RegistrationUrl", optional = true)
 	private String registrationUrl;
@@ -116,39 +120,48 @@ public class LandingServlet extends AbstractInjectionServlet {
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doPost");
+
+		/**
+		 * Wrap the request to use the servlet endpoint url. To prevent failure
+		 * when behind a reverse proxy or loadbalancer when opensaml is checking
+		 * the destination field.
+		 */
+		HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
+				request, this.servletEndpointUrl);
+
 		DeviceOperationType deviceOperation;
 		try {
-			Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
+			Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
 			handler.init(this.configParams, this.applicationCertificate,
 					this.applicationKeyPair);
-			deviceOperation = handler.initDeviceOperation(request);
+			deviceOperation = handler.initDeviceOperation(requestWrapper);
 			if (deviceOperation.equals(DeviceOperationType.REGISTER)) {
 				if (null == this.registrationUrl) {
-					handler.abortDeviceOperation(request, response);
+					handler.abortDeviceOperation(requestWrapper, response);
 				}
 				response.sendRedirect(this.registrationUrl);
 			} else if (deviceOperation.equals(DeviceOperationType.REMOVE)) {
 				if (null == this.removalUrl) {
-					handler.abortDeviceOperation(request, response);
+					handler.abortDeviceOperation(requestWrapper, response);
 				}
 				response.sendRedirect(this.removalUrl);
 			} else if (deviceOperation.equals(DeviceOperationType.UPDATE)) {
 				if (null == this.updateUrl) {
-					handler.abortDeviceOperation(request, response);
+					handler.abortDeviceOperation(requestWrapper, response);
 				}
 				response.sendRedirect(this.updateUrl);
 			} else {
-				handler.abortDeviceOperation(request, response);
+				handler.abortDeviceOperation(requestWrapper, response);
 			}
 		} catch (DeviceInitializationException e) {
 			LOG.debug("device initialization exception: " + e.getMessage());
-			redirectToErrorPage(request, response, this.errorPage, null,
+			redirectToErrorPage(requestWrapper, response, this.errorPage, null,
 					new ErrorMessage(e.getMessage()));
 
 			return;
 		} catch (DeviceFinalizationException e) {
 			LOG.debug("device finalization exception: " + e.getMessage());
-			redirectToErrorPage(request, response, this.errorPage, null,
+			redirectToErrorPage(requestWrapper, response, this.errorPage, null,
 					new ErrorMessage(e.getMessage()));
 
 			return;

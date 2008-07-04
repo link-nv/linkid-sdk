@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2Handler;
 import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
 import net.link.safeonline.sdk.KeyStoreUtils;
+import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Context;
@@ -40,6 +41,9 @@ public class LandingServlet extends AbstractInjectionServlet {
 
 	@Init(name = "AuthenticationUrl")
 	private String authenticationUrl;
+
+	@Init(name = "ServletEndpointUrl")
+	private String servletEndpointUrl;
 
 	@Context(name = "KeyStoreResource", optional = true)
 	private String p12KeyStoreResourceName;
@@ -102,13 +106,22 @@ public class LandingServlet extends AbstractInjectionServlet {
 	protected void invokePost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doPost");
+
+		/**
+		 * Wrap the request to use the servlet endpoint url. To prevent failure
+		 * when behind a reverse proxy or loadbalancer when opensaml is checking
+		 * the destination field.
+		 */
+		HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
+				request, this.servletEndpointUrl);
+
 		try {
-			Saml2Handler handler = Saml2Handler.getSaml2Handler(request);
+			Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
 			handler.init(this.configParams, this.applicationCertificate,
 					this.applicationKeyPair);
-			handler.initAuthentication(request);
+			handler.initAuthentication(requestWrapper);
 		} catch (AuthenticationInitializationException e) {
-			redirectToErrorPage(request, response, this.errorPage, null,
+			redirectToErrorPage(requestWrapper, response, this.errorPage, null,
 					new ErrorMessage(e.getMessage()));
 			return;
 		}

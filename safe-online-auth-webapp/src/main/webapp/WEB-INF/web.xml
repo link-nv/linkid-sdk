@@ -136,6 +136,14 @@
 			<param-value>first-time.seam</param-value>
 		</init-param>
 		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas-auth/entry 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
+		</init-param>
+		<init-param>
 			<param-name>UnsupportedProtocolUrl</param-name>
 			<param-value>unsupported-protocol.seam</param-value>
 		</init-param>
@@ -183,6 +191,14 @@
 			<param-value>../login</param-value>
 		</init-param>
 		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas-auth/device/auth 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
+		</init-param>
+		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
 			<param-value>../device-error.seam</param-value>
 		</init-param>
@@ -207,6 +223,14 @@
 		<init-param>
 			<param-name>LoginUrl</param-name>
 			<param-value>../login</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas-auth/device/reg 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
 		</init-param>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>

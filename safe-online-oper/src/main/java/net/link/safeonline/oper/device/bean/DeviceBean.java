@@ -93,13 +93,13 @@ public class DeviceBean implements Device {
 
 	private String node;
 
-	private String authenticationURL;
+	private String authenticationPath;
 
-	private String registrationURL;
+	private String registrationPath;
 
-	private String removalURL;
+	private String removalPath;
 
-	private String updateURL;
+	private String updatePath;
 
 	private UploadedFile certificate;
 
@@ -218,9 +218,9 @@ public class DeviceBean implements Device {
 		}
 
 		this.deviceService.addDevice(this.name, this.deviceClass, this.node,
-				this.authenticationURL, this.registrationURL, this.removalURL,
-				this.updateURL, encodedCertificate, this.attributeType,
-				this.userAttributeType);
+				this.authenticationPath, this.registrationPath,
+				this.removalPath, this.updatePath, encodedCertificate,
+				this.attributeType, this.userAttributeType);
 		return "success";
 	}
 
@@ -245,9 +245,9 @@ public class DeviceBean implements Device {
 	public String edit() {
 		LOG.debug("edit device: " + this.selectedDevice.getName());
 
-		this.authenticationURL = this.selectedDevice.getAuthenticationPath();
-		this.registrationURL = this.selectedDevice.getRegistrationPath();
-		this.removalURL = this.selectedDevice.getRemovalPath();
+		this.authenticationPath = this.selectedDevice.getAuthenticationPath();
+		this.registrationPath = this.selectedDevice.getRegistrationPath();
+		this.removalPath = this.selectedDevice.getRemovalPath();
 		if (null != this.selectedDevice.getAttributeType())
 			this.attributeType = this.selectedDevice.getAttributeType()
 					.getName();
@@ -265,15 +265,15 @@ public class DeviceBean implements Device {
 		LOG.debug("save device: " + this.selectedDevice.getName());
 		String deviceName = this.selectedDevice.getName();
 
-		this.deviceService.updateAuthenticationUrl(deviceName,
-				this.authenticationURL);
-		if (null != this.registrationURL)
-			this.deviceService.updateRegistrationUrl(deviceName,
-					this.registrationURL);
-		if (null != this.removalURL)
-			this.deviceService.updateRemovalUrl(deviceName, this.removalURL);
-		if (null != this.updateURL)
-			this.deviceService.updateUpdateUrl(deviceName, this.updateURL);
+		this.deviceService.updateAuthenticationPath(deviceName,
+				this.authenticationPath);
+		if (null != this.registrationPath)
+			this.deviceService.updateRegistrationPath(deviceName,
+					this.registrationPath);
+		if (null != this.removalPath)
+			this.deviceService.updateRemovalPath(deviceName, this.removalPath);
+		if (null != this.updatePath)
+			this.deviceService.updateUpdatePath(deviceName, this.updatePath);
 
 		if (null != this.certificate) {
 			LOG.debug("updating device certificate");
@@ -340,43 +340,43 @@ public class DeviceBean implements Device {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getAuthenticationURL() {
-		return this.authenticationURL;
+	public String getAuthenticationPath() {
+		return this.authenticationPath;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setAuthenticationURL(String authenticationURL) {
-		this.authenticationURL = authenticationURL;
+	public void setAuthenticationPath(String authenticationPath) {
+		this.authenticationPath = authenticationPath;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getRegistrationURL() {
-		return this.registrationURL;
+	public String getRegistrationPath() {
+		return this.registrationPath;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setRegistrationURL(String registrationURL) {
-		this.registrationURL = registrationURL;
+	public void setRegistrationPath(String registrationPath) {
+		this.registrationPath = registrationPath;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getRemovalURL() {
-		return this.removalURL;
+	public String getRemovalPath() {
+		return this.removalPath;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setRemovalURL(String removalURL) {
-		this.removalURL = removalURL;
+	public void setRemovalPath(String removalPath) {
+		this.removalPath = removalPath;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getUpdateURL() {
-		return this.updateURL;
+	public String getUpdatePath() {
+		return this.updatePath;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setUpdateURL(String updateURL) {
-		this.updateURL = updateURL;
+	public void setUpdatePath(String updatePath) {
+		this.updatePath = updatePath;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

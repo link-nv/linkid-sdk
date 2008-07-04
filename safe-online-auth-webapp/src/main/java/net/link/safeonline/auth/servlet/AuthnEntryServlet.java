@@ -20,6 +20,7 @@ import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Init;
@@ -67,6 +68,9 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 	@Init(name = "FirstTimeUrl")
 	private String firstTimeUrl;
 
+	@Init(name = "ServletEndpointUrl")
+	private String servletEndpointUrl;
+
 	@Init(name = "UnsupportedProtocolUrl")
 	private String unsupportedProtocolUrl;
 
@@ -87,9 +91,19 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
 	private void handleLanding(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
+
+		/**
+		 * Wrap the request to use the servlet endpoint url. To prevent failure
+		 * when behind a reverse proxy or loadbalancer when opensaml is checking
+		 * the destination field.
+		 */
+		HttpServletRequestEndpointWrapper authnRequestWrapper = new HttpServletRequestEndpointWrapper(
+				request, this.servletEndpointUrl);
+
 		ProtocolContext protocolContext;
 		try {
-			protocolContext = ProtocolHandlerManager.handleRequest(request);
+			protocolContext = ProtocolHandlerManager
+					.handleRequest(authnRequestWrapper);
 		} catch (ProtocolException e) {
 			redirectToErrorPage(request, response, this.protocolErrorUrl, null,
 					new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE, e

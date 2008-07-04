@@ -79,6 +79,8 @@ public class LandingServletTest {
 
 	private String applicationName = "test-application";
 
+	private String servletEndpointUrl = "http://test.device/servlet";
+
 	private KeyPair keyPair;
 
 	String userId = UUID.randomUUID().toString();
@@ -131,6 +133,7 @@ public class LandingServletTest {
 		initParams.put("KeyStoreResource", p12ResourceName);
 		initParams.put("KeyStorePassword", "secret");
 		initParams.put("DeviceName", this.deviceName);
+		initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
 		initParams.put("StsWsLocation", this.webServiceTestUtils.getLocation());
 
 		this.servletTestManager.setUp(LandingServlet.class, initParams, null,
@@ -180,7 +183,7 @@ public class LandingServletTest {
 		String samlAuthnRequest = AuthnRequestFactory
 				.createDeviceOperationAuthnRequest(this.applicationName,
 						this.userId, this.keyPair, "http://test.authn.service",
-						this.location, DeviceOperationType.REGISTER,
+						this.servletEndpointUrl, DeviceOperationType.REGISTER,
 						new Challenge<String>(), this.deviceName);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
@@ -217,7 +220,7 @@ public class LandingServletTest {
 		String samlAuthnRequest = AuthnRequestFactory
 				.createDeviceOperationAuthnRequest(this.applicationName,
 						this.userId, this.keyPair, "http://test.authn.service",
-						this.location, DeviceOperationType.REMOVE,
+						this.servletEndpointUrl, DeviceOperationType.REMOVE,
 						new Challenge<String>(), this.deviceName);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
@@ -254,7 +257,7 @@ public class LandingServletTest {
 		String samlAuthnRequest = AuthnRequestFactory
 				.createDeviceOperationAuthnRequest(this.applicationName,
 						this.userId, this.keyPair, "http://test.authn.service",
-						this.location, DeviceOperationType.UPDATE,
+						this.servletEndpointUrl, DeviceOperationType.UPDATE,
 						new Challenge<String>(), this.deviceName);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());

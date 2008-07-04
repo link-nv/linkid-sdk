@@ -107,6 +107,14 @@
 			<param-value>mobile.seam</param-value>
 		</init-param>
 		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas-encap/auth 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
+		</init-param>
+		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
@@ -140,6 +148,14 @@
 		<init-param>
 			<param-name>RemovalUrl</param-name>
 			<param-value>remove-mobile.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas-encap/device 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>

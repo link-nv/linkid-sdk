@@ -52,23 +52,23 @@
 				</h:selectOneMenu>
 
 
-				<h:outputLabel for="authUrl" value="#{msgs.authenticationUrl}" />
+				<h:outputLabel for="authPath" value="#{msgs.authenticationPath}" />
 				<s:decorate>
-					<h:inputText id="authUrl" value="#{operDevice.authenticationURL}"
+					<h:inputText id="authPath" value="#{operDevice.authenticationPath}"
 						required="true" styleClass="label" />
-				</s:decorate>*<h:message for="authUrl" styleClass="error" />
-				<h:outputLabel for="regUrl" value="#{msgs.registrationUrl}" />
-				<h:inputText id="regUrl" value="#{operDevice.registrationURL}"
+				</s:decorate>*<h:message for="authPath" styleClass="error" />
+				<h:outputLabel for="regPath" value="#{msgs.registrationPath}" />
+				<h:inputText id="regPath" value="#{operDevice.registrationPath}"
 					styleClass="label" />
-				<h:message for="regUrl" styleClass="error" />
-				<h:outputLabel for="remUrl" value="#{msgs.removalUrl}" />
-				<h:inputText id="remUrl" value="#{operDevice.removalURL}"
+				<h:message for="regPath" styleClass="error" />
+				<h:outputLabel for="remPath" value="#{msgs.removalPath}" />
+				<h:inputText id="remPath" value="#{operDevice.removalPath}"
 					styleClass="label" />
-				<h:message for="remUrl" styleClass="error" />
-				<h:outputLabel for="updateUrl" value="#{msgs.updateUrl}" />
-				<h:inputText id="updateUrl" value="#{operDevice.updateURL}"
+				<h:message for="remPath" styleClass="error" />
+				<h:outputLabel for="updatePath" value="#{msgs.updatePath}" />
+				<h:inputText id="updatePath" value="#{operDevice.updatePath}"
 					styleClass="label" />
-				<h:message for="updateUrl" styleClass="error" />
+				<h:message for="updatePath" styleClass="error" />
 			</rich:simpleTogglePanel>
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"

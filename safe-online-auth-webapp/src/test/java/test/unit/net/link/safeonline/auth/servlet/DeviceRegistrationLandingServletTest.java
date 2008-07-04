@@ -61,6 +61,8 @@ public class DeviceRegistrationLandingServletTest {
 
 	private String loginUrl = "login";
 
+	private String servletEndpointUrl = "http://test.auth/servlet";
+
 	String userId = UUID.randomUUID().toString();
 
 	private AuthenticationService mockAuthenticationService;
@@ -78,6 +80,7 @@ public class DeviceRegistrationLandingServletTest {
 		initParams.put("NewUserDeviceUrl", this.newUserDeviceUrl);
 		initParams.put("LoginUrl", this.loginUrl);
 		initParams.put("DeviceErrorUrl", this.deviceErrorUrl);
+		initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		initialSessionAttributes.put(
 				AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,

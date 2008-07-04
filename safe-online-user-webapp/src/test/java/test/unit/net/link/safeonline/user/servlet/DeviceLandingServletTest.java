@@ -56,6 +56,8 @@ public class DeviceLandingServletTest {
 
 	private String devicesPage = "devices-page";
 
+	private String servletEndpointUrl = "http://test.user/servlet";
+
 	private DeviceOperationService mockDeviceOperationService;
 
 	private Object[] mockObjects;
@@ -69,6 +71,7 @@ public class DeviceLandingServletTest {
 		Map<String, String> initParams = new HashMap<String, String>();
 		initParams.put("ErrorPage", this.errorPage);
 		initParams.put("DevicesPage", this.devicesPage);
+		initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		initialSessionAttributes.put(
 				DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE,

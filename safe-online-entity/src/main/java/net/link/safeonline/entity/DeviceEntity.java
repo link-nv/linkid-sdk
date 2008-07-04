@@ -194,7 +194,7 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
-	 * Retrieve the local URL for authentication of this device.
+	 * Retrieve the local path for authentication of this device.
 	 * 
 	 */
 	public String getAuthenticationPath() {
@@ -213,11 +213,11 @@ public class DeviceEntity implements Serializable {
 	public String getAuthenticationURL() {
 		if (null == this.location)
 			return this.authenticationPath;
-		return this.location.getLocation() + "/" + this.authenticationPath;
+		return this.location.getLocation() + this.authenticationPath;
 	}
 
 	/**
-	 * Retrieves the local URL for registration of this device.
+	 * Retrieves the local path for registration of this device.
 	 * 
 	 */
 	public String getRegistrationPath() {
@@ -236,7 +236,7 @@ public class DeviceEntity implements Serializable {
 	public String getRegistrationURL() {
 		if (null == this.location)
 			return this.registrationPath;
-		return this.location.getLocation() + "/" + this.registrationPath;
+		return this.location.getLocation() + this.registrationPath;
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
-	 * Retrieves the local URL for removal of this device.
+	 * Retrieves the local path for removal of this device.
 	 * 
 	 */
 	public String getRemovalPath() {
@@ -268,7 +268,7 @@ public class DeviceEntity implements Serializable {
 	public String getRemovalURL() {
 		if (null == this.location)
 			return this.removalPath;
-		return this.location.getLocation() + "/" + this.removalPath;
+		return this.location.getLocation() + this.removalPath;
 	}
 
 	/**
@@ -281,7 +281,7 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
-	 * Retrieves the URL for updating of this device.
+	 * Retrieves the path for updating of this device.
 	 * 
 	 */
 	public String getUpdatePath() {
@@ -300,7 +300,7 @@ public class DeviceEntity implements Serializable {
 	public String getUpdateURL() {
 		if (null == this.location)
 			return this.updatePath;
-		return this.location.getLocation() + "/" + this.updatePath;
+		return this.location.getLocation() + this.updatePath;
 	}
 
 	/**

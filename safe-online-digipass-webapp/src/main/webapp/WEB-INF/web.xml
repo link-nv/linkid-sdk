@@ -107,6 +107,14 @@
 			<param-value>digipass.seam</param-value>
 		</init-param>
 		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas-digipass/auth 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
+		</init-param>
+		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>

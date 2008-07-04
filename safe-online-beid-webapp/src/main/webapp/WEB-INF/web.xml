@@ -104,10 +104,18 @@
 			net.link.safeonline.device.sdk.auth.servlet.LandingServlet 
 		</servlet-class>
 		<init-param>
-			<description> URL to where we redirect after successful handling SAML
-				POST request. </description>
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>beid.html</param-value>
+			<description> URL to where we redirect after successful handling SAML
+				POST request. </description>
+		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas-beid/auth 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
@@ -153,6 +161,14 @@
 		<init-param>
 			<param-name>RemovalUrl</param-name>
 			<param-value>removeService</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas-beid/device 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>

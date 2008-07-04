@@ -71,6 +71,8 @@ public class LandingServletTest {
 
 	private String authenticationUrl = "authentication";
 
+	private String servletEndpointUrl = "http://test.device/servlet";
+
 	private String deviceName = "test-device";
 
 	private String applicationName = "test-application";
@@ -125,6 +127,7 @@ public class LandingServletTest {
 		initParams.put("KeyStoreResource", p12ResourceName);
 		initParams.put("KeyStorePassword", "secret");
 		initParams.put("DeviceName", this.deviceName);
+		initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
 		initParams.put("StsWsLocation", this.webServiceTestUtils.getLocation());
 
 		this.servletTestManager.setUp(LandingServlet.class, initParams, null,
@@ -174,7 +177,7 @@ public class LandingServletTest {
 		this.wantedDevices = Collections.singleton(this.deviceName);
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
 				this.applicationName, this.applicationName, null, this.keyPair,
-				"http://test.authn.service", this.location,
+				"http://test.authn.service", this.servletEndpointUrl,
 				new Challenge<String>(), this.wantedDevices);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
