@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.sdk.servlet.ErrorMessage;
 import net.link.safeonline.sdk.servlet.annotation.Init;
@@ -36,6 +37,9 @@ public class LoginServlet extends AbstractInjectionServlet {
 
 	private static final Log LOG = LogFactory.getLog(LoginServlet.class);
 
+	@Init(name = "ServletEndpointUrl", optional = true)
+	private String servletEndpointUrl;
+
 	@Init(name = "ErrorPage", optional = true)
 	private String errorPage;
 
@@ -54,8 +58,22 @@ public class LoginServlet extends AbstractInjectionServlet {
 	private void handleLanding(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
+		/**
+		 * Wrap the request to use the servlet endpoint url if defined. To
+		 * prevent failure when behind a reverse proxy or loadbalancer when
+		 * opensaml is checking the destination field.
+		 */
+		HttpServletRequestEndpointWrapper requestWrapper;
+		if (null != this.servletEndpointUrl) {
+			requestWrapper = new HttpServletRequestEndpointWrapper(request,
+					this.servletEndpointUrl);
+		} else {
+			requestWrapper = new HttpServletRequestEndpointWrapper(request,
+					request.getRequestURL().toString());
+		}
+
 		AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
-				.findAuthenticationProtocolHandler(request);
+				.findAuthenticationProtocolHandler(requestWrapper);
 		if (null == protocolHandler) {
 			/*
 			 * The landing page can only be used for finalizing an ongoing
@@ -64,26 +82,27 @@ public class LoginServlet extends AbstractInjectionServlet {
 			 */
 			String msg = "no protocol handler active";
 			LOG.error(msg);
-			redirectToErrorPage(request, response, this.errorPage, null,
+			redirectToErrorPage(requestWrapper, response, this.errorPage, null,
 					new ErrorMessage(msg));
 
 			return;
 		}
 
-		String username = protocolHandler.finalizeAuthentication(request,
-				response);
+		String username = protocolHandler.finalizeAuthentication(
+				requestWrapper, response);
 		if (null == username) {
 			String msg = "protocol handler could not finalize";
 			LOG.error(msg);
-			redirectToErrorPage(request, response, this.errorPage, null,
+			redirectToErrorPage(requestWrapper, response, this.errorPage, null,
 					new ErrorMessage(msg));
 			return;
 		}
 
 		LOG.debug("username: " + username);
-		LoginManager.setUsername(username, request);
-		AuthenticationProtocolManager.cleanupAuthenticationHandler(request);
-		String target = AuthenticationProtocolManager.getTarget(request);
+		LoginManager.setUsername(username, requestWrapper);
+		AuthenticationProtocolManager
+				.cleanupAuthenticationHandler(requestWrapper);
+		String target = AuthenticationProtocolManager.getTarget(requestWrapper);
 		LOG.debug("target: " + target);
 		response.sendRedirect(target);
 	}

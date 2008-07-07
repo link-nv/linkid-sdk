@@ -179,6 +179,14 @@
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value> ${safe-online.host.auth.basename}/olas/login 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml response.</description>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
