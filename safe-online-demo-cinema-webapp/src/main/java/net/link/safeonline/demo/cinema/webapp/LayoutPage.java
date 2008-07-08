@@ -58,6 +58,20 @@ public class LayoutPage extends WebPage<Object> {
 
             super(id);
 
+            add(new Link<String>("logout") {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public void onClick() {
+
+                    getSession().invalidateNow();
+
+                    setRedirect(true);
+                    setResponsePage(LoginPage.class);
+                }
+            });
             Label<String> name = new Label<String>("name");
             add(name);
             Label<String> nrn = new Label<String>("nrn");

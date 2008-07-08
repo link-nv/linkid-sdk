@@ -99,6 +99,18 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
 
         LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
         try {
+            for (TicketEntity ticket : (List<TicketEntity>) this.em
+                    .createQuery("SELECT t FROM TicketEntity t")
+                    .getResultList()) {
+                LOG.debug("Ticket "
+                        + ticket
+                        + "? "
+                        + (ticket.getTime() <= time.getTime() && ticket
+                                .getTime()
+                                + ticket.getFilm().getDuration() >= time
+                                .getTime()));
+            }
+
             return this.em.createNamedQuery(TicketEntity.findTicket)
                     .setParameter("nrn", nrn).setParameter("time",
                             time.getTime()).getResultList();
@@ -122,6 +134,13 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
                 it.remove();
             }
 
+        // Feed the log.
+        LOG.debug("----");
+        LOG.debug("Found " + tickets.size() + " tickets:");
+        for (TicketEntity ticket : tickets) {
+            LOG.debug(ticket);
+        }
+
         return tickets;
     }
 
@@ -135,6 +154,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
             if (ticket.getFilm().getName().equalsIgnoreCase(filmName))
                 return true;
 
+        LOG.debug("None for film " + filmName);
         return false;
     }
 

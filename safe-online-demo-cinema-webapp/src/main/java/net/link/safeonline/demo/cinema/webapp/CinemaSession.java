@@ -20,9 +20,6 @@ import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
 import net.link.safeonline.demo.cinema.entity.TheatreEntity;
 import net.link.safeonline.demo.cinema.entity.TicketEntity;
 import net.link.safeonline.demo.cinema.entity.UserEntity;
-import net.link.safeonline.demo.cinema.service.FilmService;
-import net.link.safeonline.demo.cinema.service.RoomService;
-import net.link.safeonline.demo.cinema.service.TheatreService;
 import net.link.safeonline.demo.cinema.service.TicketService;
 
 import org.apache.commons.logging.Log;
@@ -50,9 +47,6 @@ public class CinemaSession extends Session {
     private static final Log         LOG              = LogFactory
                                                               .getLog(CinemaSession.class);
 
-    private transient FilmService    filmService;
-    private transient TheatreService theatreService;
-    private transient RoomService    roomService;
     private transient TicketService  ticketService;
 
     private UserEntity               user;
@@ -71,12 +65,6 @@ public class CinemaSession extends Session {
         try {
             InitialContext context = new InitialContext();
 
-            this.filmService = (FilmService) context
-                    .lookup(FilmService.BINDING);
-            this.theatreService = (TheatreService) context
-                    .lookup(TheatreService.BINDING);
-            this.roomService = (RoomService) context
-                    .lookup(RoomService.BINDING);
             this.ticketService = (TicketService) context
                     .lookup(TicketService.BINDING);
         }
@@ -110,7 +98,7 @@ public class CinemaSession extends Session {
      */
     public FilmEntity getFilm() {
 
-        return this.filmService.attach(this.film);
+        return this.film;
     }
 
     /**
@@ -127,7 +115,7 @@ public class CinemaSession extends Session {
      */
     public TheatreEntity getTheatre() {
 
-        return this.theatreService.attach(this.theatre);
+        return this.theatre;
     }
 
     /**
@@ -161,7 +149,7 @@ public class CinemaSession extends Session {
      */
     public RoomEntity getRoom() {
 
-        return this.roomService.attach(this.room);
+        return this.room;
     }
 
     /**

@@ -56,6 +56,19 @@ public class TicketEntity implements Serializable {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+
+        return String.format(
+                "[%s]   Owner: %s, Price %s, Film: %s, Theatre: %s", new Date(
+                        getTime()), getOwner().getNrn(), getPrice(), getFilm()
+                        .getName(), getOccupation().getSeat().getRoom()
+                        .getTheatre().getName());
+    }
+
+    /**
      * @return The {@link UserEntity} that this ticket is valid for.
      */
     public UserEntity getOwner() {

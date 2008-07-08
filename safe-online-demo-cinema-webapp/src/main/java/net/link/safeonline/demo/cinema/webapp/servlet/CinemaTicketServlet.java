@@ -74,12 +74,21 @@ public class CinemaTicketServlet extends HttpServlet {
             return;
         }
         try {
-            date = new Date(Long.valueOf(time));
+            date = new Date(Long.valueOf(time) * 1000);
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    "Time parameter does not contain a valid timestamp.");
+                    "Time parameter does not contain a valid timestamp: "
+                            + time);
             return;
         }
+        
+        // Feed the log.
+        LOG.debug("---- Start Cinema Ticket Validation:");
+        LOG.debug("NRN: " + nrn);
+        LOG.debug("Time: " + date);
+        LOG.debug("Film: " + film);
+        LOG.debug("Theatre: " + theatre);
+        LOG.debug("----");
 
         // Retrieve all tickets for user at time (optionally, in theatre).
         if (film == null) {
@@ -89,6 +98,10 @@ public class CinemaTicketServlet extends HttpServlet {
             } else {
                 tickets = this.ticketService.getTickets(nrn, date, theatre);
             }
+            
+            // Feed the log.
+            LOG.debug("Found " + tickets.size() + " tickets:");
+            LOG.debug(tickets);
 
             XStream xstream = new XStream();
             xstream.toXML(tickets, response.getWriter());
@@ -96,12 +109,12 @@ public class CinemaTicketServlet extends HttpServlet {
 
         // Check whether there is a ticket for user at time in theatre for film.
         else {
-            if (!this.ticketService.isValid(nrn, date, film, theatre)) {
+            if (!this.ticketService.isValid(nrn, date, theatre, film)) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                         "The user has no tickets for this time and day.");
             }
-
         }
 
+        LOG.debug("---- End Cinema Ticket Validation.");
     }
 }

@@ -70,22 +70,23 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements
 
         try {
             AttributeClientImpl attributeClient = getOLASAttributeService(loginRequest);
+            UserEntity userEntity = attach(user);
 
             // National registry number of user.
-            String nrn = attributeClient.getAttributeValue(user.getId(),
+            String nrn = attributeClient.getAttributeValue(userEntity.getId(),
                     BeIdConstants.NRN_ATTRIBUTE, String[].class)[0];
-            user.setNrn(nrn);
-            
+            userEntity.setNrn(nrn);
+
             // National registry number of user.
-            String name = attributeClient.getAttributeValue(user.getId(),
+            String name = attributeClient.getAttributeValue(userEntity.getId(),
                     DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
-            user.setName(name);
+            userEntity.setName(name);
 
             // Does user have a junior account?
-            Boolean juniorValue = attributeClient.getAttributeValue(user
+            Boolean juniorValue = attributeClient.getAttributeValue(userEntity
                     .getId(), DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
                     Boolean.class);
-            user.setJunior(juniorValue != null
+            userEntity.setJunior(juniorValue != null
                     && juniorValue.booleanValue() == true);
         }
 

@@ -58,13 +58,17 @@ public class FilmEntity implements Serializable {
         this.times = new HashSet<ShowTimeEntity>();
     }
 
+    /**
+     * @param duration
+     *            The duration of the film in seconds.
+     */
     public FilmEntity(String name, String description, long duration,
             int price, Collection<ShowTimeEntity> times,
             Collection<RoomEntity> rooms) {
 
         this.name = name;
         this.description = description;
-        this.duration = duration;
+        this.duration = duration * 1000;
         this.price = price;
         this.times = times;
         this.rooms = rooms;

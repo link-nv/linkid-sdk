@@ -1,5 +1,6 @@
 package net.link.safeonline.demo.cinema.webapp;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -100,7 +101,7 @@ public class TicketPage extends LayoutPage {
 
                     /* Ticket Details. */
                     item.add(new Label<String>("time", CinemaSession
-                            .format(ticket.getTime())));
+                            .format(new Date(ticket.getTime()))));
                     item.add(new Label<String>("film",
                             TicketPage.this.ticketService.getFilmName(ticket)));
                     item.add(new Label<String>("theatre",
