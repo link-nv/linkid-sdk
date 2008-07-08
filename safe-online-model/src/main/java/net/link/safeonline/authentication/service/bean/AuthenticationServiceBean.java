@@ -449,11 +449,11 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return deviceMapping;
 	}
 
-	public boolean authenticate(@NonEmptyString String login,
+	public boolean authenticate(@NonEmptyString String loginName,
 			@NonEmptyString String password) throws SubjectNotFoundException,
 			DeviceNotFoundException {
-		SubjectEntity subject = this.passwordDeviceService.authenticate(login,
-				password);
+		SubjectEntity subject = this.passwordDeviceService.authenticate(
+				loginName, password);
 		if (null == subject)
 			return false;
 		DeviceEntity device = this.deviceDAO
@@ -745,10 +745,10 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return this.subjectService.getSubjectLogin(userId);
 	}
 
-	public void setPassword(String login, String password)
+	public void setPassword(String userId, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException {
 		LOG.debug("set password");
-		this.passwordDeviceService.register(login, password);
+		this.passwordDeviceService.register(userId, password);
 		DeviceEntity device = this.deviceDAO
 				.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 

@@ -3,11 +3,7 @@
 	"-//JBoss//DTD Web Application 2.4//EN"
 	"http://www.jboss.org/j2ee/dtd/jboss-web_4_0.dtd">
 <jboss-web>
-
 	<security-domain flushOnSessionInvalidation="true">
-		java:/jaas/safe-online-helpdesk
-	</security-domain>
-
-	<context-root>/olas-helpdesk</context-root>
-
+		java:/jaas/safe-online-helpdesk </security-domain>
+	<context-root>/${safe-online.helpdesk.webapp.name}</context-root>
 </jboss-web>

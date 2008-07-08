@@ -3,11 +3,7 @@
 	"-//JBoss//DTD Web Application 2.4//EN"
 	"http://www.jboss.org/j2ee/dtd/jboss-web_4_0.dtd">
 <jboss-web>
-
 	<security-domain flushOnSessionInvalidation="true">
-		java:/jaas/demo-mandate
-	</security-domain>
-
-	<context-root>/demo-mandate</context-root>
-
+		java:/jaas/demo-mandate </security-domain>
+	<context-root>/${safe-online.demo.mandate.webapp.name}</context-root>
 </jboss-web>

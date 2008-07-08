@@ -68,7 +68,7 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 	public String login() {
 		LOG.debug("login: " + this.loginname);
 		HelpdeskLogger.add("login: " + this.loginname, LogLevelType.INFO);
-		super.clearUsername();
+		super.clearUserId();
 
 		try {
 			boolean authenticated = this.authenticationService.authenticate(

@@ -133,7 +133,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		SubjectEntity subject = this.userRegistrationService
 				.registerUser(this.login);
 
-		this.username = subject.getUserId();
+		this.userId = subject.getUserId();
 		return "next";
 	}
 
@@ -150,7 +150,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			return null;
 		}
 		AuthenticationUtils.redirect(this.facesMessages, registrationURL,
-				this.device, this.username);
+				this.device, this.userId);
 		return null;
 	}
 

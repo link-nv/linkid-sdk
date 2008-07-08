@@ -56,7 +56,7 @@ public interface AuthenticationService {
 	 * invoked.
 	 * 
 	 * @param applicationName
-	 * @param login
+	 * @param loginName
 	 * @param password
 	 * @return <code>true</code> if the user was authenticated correctly,
 	 *         <code>false</code> otherwise.
@@ -64,7 +64,7 @@ public interface AuthenticationService {
 	 * @throws DeviceNotFoundException
 	 *             in case the user did not configure the password device.
 	 */
-	boolean authenticate(String login, String password)
+	boolean authenticate(String loginName, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException;
 
 	/**
@@ -98,10 +98,11 @@ public interface AuthenticationService {
 	 * Sets the password of a user. This method should be used in case the user
 	 * did not yet had a password registered as authentication device.
 	 * 
+	 * @param userId
 	 * @param password
 	 * @throws DeviceNotFoundException
 	 */
-	void setPassword(String login, String password)
+	void setPassword(String userId, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException;
 
 	/**

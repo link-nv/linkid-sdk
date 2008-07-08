@@ -50,7 +50,7 @@ public class SafeOnlineConstants {
 	 */
 	public static final String SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN = "applications";
 
-	public static final String SAFE_ONLINE_USER_APPLICATION_NAME = "olas-user";
+	public static final String SAFE_ONLINE_USER_APPLICATION_NAME = "olas";
 
 	public static final String SAFE_ONLINE_OPERATOR_APPLICATION_NAME = "olas-oper";
 

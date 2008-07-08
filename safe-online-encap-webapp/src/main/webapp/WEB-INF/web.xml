@@ -28,11 +28,11 @@
 	</context-param>
 	<context-param>
 		<param-name>CommercialName</param-name>
-		<param-value>OLAS</param-value>
+		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
-		<param-value>olas-encap</param-value>
+		<param-value>${safe-online.encap.webapp.name}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>DeviceName</param-name>
@@ -108,7 +108,8 @@
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
-			<param-value> ${safe-online.host.auth.basename}/olas-encap/auth 
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.encap.webapp.name}/auth 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -151,7 +152,8 @@
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
-			<param-value> ${safe-online.host.auth.basename}/olas-encap/device 
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.encap.webapp.name}/device 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the

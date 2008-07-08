@@ -25,7 +25,6 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.DeviceRegistration;
-import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
@@ -60,9 +59,6 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
 	@In(required = true)
 	private AuthenticationService authenticationService;
-
-	@In(value = LoginManager.USERID_ATTRIBUTE, required = true)
-	private String userId;
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
@@ -111,8 +107,8 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	public String passwordNext() throws SubjectNotFoundException,
 			DeviceNotFoundException {
 		this.log.debug("passwordNext");
-		this.authenticationService.setPassword(this.username, this.password);
-		this.authenticationService.authenticate(this.username, this.password);
+		this.authenticationService.setPassword(this.userId, this.password);
+		this.authenticationService.authenticate(getUsername(), this.password);
 		super.relogin(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 		return null;
 	}
@@ -124,7 +120,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String getUsername() {
-		return this.subjectService.getSubjectLogin(this.username);
+		return this.subjectService.getSubjectLogin(this.userId);
 	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)

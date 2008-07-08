@@ -5,5 +5,5 @@
 <jboss-web>
 	<security-domain flushOnSessionInvalidation="true">
 		java:/jaas/safe-online-digipass </security-domain>
-	<context-root>/olas-digipass</context-root>
+	<context-root>/${safe-online.digipass.webapp.name}</context-root>
 </jboss-web>

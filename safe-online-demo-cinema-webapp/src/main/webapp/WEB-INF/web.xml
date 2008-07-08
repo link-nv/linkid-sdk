@@ -31,11 +31,11 @@
 	</servlet>
 	<context-param>
 		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/olas-auth/entry</param-value>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
-		<param-value>demo-cinema</param-value>
+		<param-value>${safe-online.demo.cinema.webapp.name}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>AuthenticationProtocol</param-name>
@@ -55,12 +55,15 @@
 	</context-param>
 	<context-param>
 		<param-name>LandingPage</param-name>
-		<param-value> ${safe-online.host.auth.basename}/demo-cinema/login 
+		<param-value>
+			${safe-online.host.auth.basename}/${safe-online.demo.cinema.webapp.name}/login 
 		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>TargetBaseUrl</param-name>
-		<param-value> ${safe-online.host.basename}/demo-cinema/ </param-value>
+		<param-value>
+			${safe-online.host.basename}/${safe-online.demo.cinema.webapp.name}/ 
+		</param-value>
 		<description>Url to redirect to after successful authentication</description>
 	</context-param>
 	<context-param>

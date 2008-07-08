@@ -17,11 +17,11 @@
 	</listener>
 	<context-param>
 		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/olas-auth/entry</param-value>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
-		<param-value>demo-payment</param-value>
+		<param-value>${safe-online.demo.payment.webapp.name}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>AuthenticationProtocol</param-name>
@@ -61,12 +61,14 @@
 	</context-param>
 	<context-param>
 		<param-name>LandingPage</param-name>
-		<param-value> ${safe-online.host.auth.basename}/demo-payment/authlogin 
+		<param-value>
+			${safe-online.host.auth.basename}/${safe-online.demo.payment.webapp.name}/authlogin 
 		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>TargetBaseUrl</param-name>
-		<param-value> ${safe-online.host.basename}/demo-payment/ 
+		<param-value>
+			${safe-online.host.basename}/${safe-online.demo.payment.webapp.name}/ 
 		</param-value>
 		<description>Url to redirect to after successful authentication</description>
 	</context-param>

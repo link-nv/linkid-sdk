@@ -37,20 +37,22 @@
 	</context-param>
 	<context-param>
 		<param-name>CommercialName</param-name>
-		<param-value>OLAS</param-value>
+		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for remote device issuers when
 			authenticating</description>
 		<param-name>DeviceAuthenticationServiceUrl</param-name>
-		<param-value> ${safe-online.host.auth.basename}/olas-auth/device/auth 
+		<param-value>
+			${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/auth 
 		</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for remote device issuers when
 			registrating</description>
 		<param-name>DeviceRegistrationServiceUrl</param-name>
-		<param-value> ${safe-online.host.auth.basename}/olas-auth/device/reg 
+		<param-value>
+			${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/reg 
 		</param-value>
 	</context-param>
 	<context-param>
@@ -59,7 +61,7 @@
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
-		<param-value>olas-auth</param-value>
+		<param-value>${safe-online.auth.webapp.name}</param-value>
 	</context-param>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
@@ -137,7 +139,8 @@
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
-			<param-value> ${safe-online.host.auth.basename}/olas-auth/entry 
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -184,15 +187,16 @@
 		</servlet-class>
 		<init-param>
 			<param-name>StartUrl</param-name>
-			<param-value>../main.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/main.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>LoginUrl</param-name>
-			<param-value>../login</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/login</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
-			<param-value> ${safe-online.host.auth.basename}/olas-auth/device/auth 
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/auth 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -200,7 +204,7 @@
 		</init-param>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
-			<param-value>../device-error.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device-error.seam</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -214,19 +218,20 @@
 		</servlet-class>
 		<init-param>
 			<param-name>RegisterDeviceUrl</param-name>
-			<param-value>../register-device.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/register-device.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>NewUserDeviceUrl</param-name>
-			<param-value>../new-user-device.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/new-user-device.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>LoginUrl</param-name>
-			<param-value>../login</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/login</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
-			<param-value> ${safe-online.host.auth.basename}/olas-auth/device/reg 
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/reg 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -234,7 +239,7 @@
 		</init-param>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
-			<param-value>../device-error.seam</param-value>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device-error.seam</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>

@@ -50,7 +50,7 @@
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-user-webapp </artifactId>
-							<contextRoot>/olas</contextRoot>
+							<contextRoot>/${safe-online.user.webapp.name}</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
@@ -63,7 +63,7 @@
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-helpdesk-webapp </artifactId>
-							<contextRoot>/olas-helpdesk</contextRoot>
+							<contextRoot>/${safe-online.helpdesk.webapp.name}</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
@@ -80,7 +80,7 @@
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-oper-webapp </artifactId>
-							<contextRoot>/olas-oper</contextRoot>
+							<contextRoot>/${safe-online.oper.webapp.name}</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
@@ -93,7 +93,7 @@
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-owner-webapp </artifactId>
-							<contextRoot>/olas-owner</contextRoot>
+							<contextRoot>/${safe-online.owner.webapp.name}</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
@@ -102,7 +102,7 @@
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-auth-webapp </artifactId>
-							<contextRoot>/olas-auth</contextRoot>
+							<contextRoot>/${safe-online.auth.webapp.name}</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>

@@ -54,12 +54,12 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService,
 	@EJB
 	private HistoryDAO historyDAO;
 
-	public SubjectEntity authenticate(String login, String password)
+	public SubjectEntity authenticate(String loginName, String password)
 			throws DeviceNotFoundException, SubjectNotFoundException {
-		LOG.debug("authenticate \"" + login + "\"");
+		LOG.debug("authenticate \"" + loginName + "\"");
 
 		SubjectEntity subject = this.subjectService
-				.getSubjectFromUserName(login);
+				.getSubjectFromUserName(loginName);
 		DeviceMappingEntity deviceMapping = this.deviceMappingService
 				.getDeviceMapping(subject.getUserId(),
 						SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
@@ -93,9 +93,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService,
 		return subject;
 	}
 
-	public void register(String login, String password)
+	public void register(String userId, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException {
-		SubjectEntity subject = this.subjectService.getSubject(login);
+		SubjectEntity subject = this.subjectService.getSubject(userId);
 		register(subject, password);
 	}
 

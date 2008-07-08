@@ -16,10 +16,10 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface PasswordDeviceService {
 
-	SubjectEntity authenticate(String login, String password)
+	SubjectEntity authenticate(String loginName, String password)
 			throws DeviceNotFoundException, SubjectNotFoundException;
 
-	void register(String login, String password)
+	void register(String userId, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException;
 
 	void register(SubjectEntity subject, String password)

@@ -17,16 +17,16 @@
 	</listener>
 	<context-param>
 		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/olas-auth/entry</param-value>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for the remote device operations.</description>
 		<param-name>DeviceServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/olas/device/landing</param-value>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/device/landing</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
-		<param-value>olas-user</param-value>
+		<param-value>${safe-online.user.webapp.name}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>AuthenticationProtocol</param-name>
@@ -62,7 +62,7 @@
 	</context-param>
 	<context-param>
 		<param-name>CommercialName</param-name>
-		<param-value>OLAS</param-value>
+		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>WsLocation</param-name>
@@ -70,13 +70,16 @@
 	</context-param>
 	<context-param>
 		<param-name>LandingPage</param-name>
-		<param-value> ${safe-online.host.auth.basename}/olas/login 
+		<param-value>
+			${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/login 
 		</param-value>
 		<description>Page that handles the incoming SAML authn response</description>
 	</context-param>
 	<context-param>
 		<param-name>TargetBaseUrl</param-name>
-		<param-value> ${safe-online.host.basename}/olas/ </param-value>
+		<param-value>
+			${safe-online.host.basename}/${safe-online.user.webapp.name}/ 
+		</param-value>
 		<description>Url to redirect to after successful authentication</description>
 	</context-param>
 	<filter>
@@ -85,7 +88,7 @@
 		</filter-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>/error.seam</param-value>
+			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/error.seam</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -94,7 +97,7 @@
 		</filter-class>
 		<init-param>
 			<param-name>TimeoutPath</param-name>
-			<param-value>/timeout.seam</param-value>
+			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/timeout.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>LoginSessionAttribute</param-name>
@@ -181,7 +184,8 @@
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
-			<param-value> ${safe-online.host.auth.basename}/olas/login 
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/login 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -202,11 +206,12 @@
 		</servlet-class>
 		<init-param>
 			<param-name>DevicesPage</param-name>
-			<param-value>${safe-online.host.basename}/olas/device/devices.seam</param-value>
+			<param-value>${safe-online.host.basename}/${safe-online.user.webapp.name}/device/devices.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
-			<param-value> ${safe-online.host.auth.basename}/olas/device/landing 
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/device/landing 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the

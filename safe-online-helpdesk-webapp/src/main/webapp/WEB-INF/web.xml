@@ -12,11 +12,11 @@
 	</listener>
 	<context-param>
 		<param-name>AuthenticationServiceUrl</param-name>
-		<param-value>${safe-online.host.auth.basename}/olas-auth/entry</param-value>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
-		<param-value>olas-helpdesk</param-value>
+		<param-value>${safe-online.helpdesk.webapp.name}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>AuthenticationProtocol</param-name>
@@ -52,16 +52,18 @@
 	</context-param>
 	<context-param>
 		<param-name>CommercialName</param-name>
-		<param-value>OLAS</param-value>
+		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>LandingPage</param-name>
-		<param-value> ${safe-online.host.auth.basename}/olas-helpdesk/login 
+		<param-value>
+			${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/login 
 		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>TargetBaseUrl</param-name>
-		<param-value> ${safe-online.host.basename}/olas-helpdesk/ 
+		<param-value>
+			${safe-online.host.basename}/${safe-online.helpdesk.webapp.name}/ 
 		</param-value>
 		<description>Url to redirect to after successful authentication</description>
 	</context-param>
@@ -89,11 +91,7 @@
 		</filter-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>/error.seam</param-value>
-		</init-param>
-		<init-param>
-			<param-name>MainPage</param-name>
-			<param-value>/main.seam</param-value>
+			<param-value>${safe-online.host.basename}/${safe-online.helpdesk.webapp.name}/error.seam</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -102,7 +100,7 @@
 		</filter-class>
 		<init-param>
 			<param-name>TimeoutPath</param-name>
-			<param-value>/timeout.seam</param-value>
+			<param-value>${safe-online.host.basename}/${safe-online.helpdesk.webapp.name}/timeout.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>LoginSessionAttribute</param-name>

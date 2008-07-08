@@ -45,8 +45,8 @@ public class AbstractLoginBean {
 	DeviceDAO deviceDAO;
 
 	@Out(value = LoginManager.USERID_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
-	@In(required = false, scope = ScopeType.SESSION)
-	protected String username;
+	@In(value = LoginManager.USERID_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
+	protected String userId;
 
 	@SuppressWarnings("unused")
 	@Out(value = LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
@@ -56,8 +56,8 @@ public class AbstractLoginBean {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	protected void clearUsername() {
-		this.username = null;
+	protected void clearUserId() {
+		this.userId = null;
 	}
 
 	/**
@@ -66,8 +66,8 @@ public class AbstractLoginBean {
 	protected void login(String inputUsername, String inputAuthenticationDevice) {
 		this.log.debug("login using: " + inputUsername + " via device: "
 				+ inputAuthenticationDevice);
-		this.username = this.subjectService.findSubjectFromUserName(
-				inputUsername).getUserId();
+		this.userId = this.subjectService
+				.findSubjectFromUserName(inputUsername).getUserId();
 		relogin(inputAuthenticationDevice);
 	}
 
