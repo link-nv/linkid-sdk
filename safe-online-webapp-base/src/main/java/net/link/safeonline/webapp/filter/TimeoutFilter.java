@@ -12,7 +12,6 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -62,6 +61,7 @@ public class TimeoutFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		LOG.debug("doFilter");
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		String requestedSessionId = httpRequest.getRequestedSessionId();
 		if (null == requestedSessionId) {
 			/*
@@ -74,7 +74,6 @@ public class TimeoutFilter implements Filter {
 		boolean requestedSessionIdValid = httpRequest
 				.isRequestedSessionIdValid();
 		if (true == requestedSessionIdValid) {
-			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			/*
 			 * We wrap the response since we need to be able to add cookies
 			 * after the body has been committed.
@@ -113,9 +112,7 @@ public class TimeoutFilter implements Filter {
 		if (true == hasLoginCookie(httpRequest)) {
 			LOG.debug("forwaring to timeout path: " + this.timeoutPath);
 			removeLoginCookie(httpRequest, response);
-			RequestDispatcher requestDispatcher = request
-					.getRequestDispatcher(this.timeoutPath);
-			requestDispatcher.forward(request, response);
+			httpResponse.sendRedirect(this.timeoutPath);
 			return;
 		}
 		/*
