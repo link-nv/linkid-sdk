@@ -99,18 +99,6 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
 
         LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
         try {
-            for (TicketEntity ticket : (List<TicketEntity>) this.em
-                    .createQuery("SELECT t FROM TicketEntity t")
-                    .getResultList()) {
-                LOG.debug("Ticket "
-                        + ticket
-                        + "? "
-                        + (ticket.getTime() <= time.getTime() && ticket
-                                .getTime()
-                                + ticket.getFilm().getDuration() >= time
-                                .getTime()));
-            }
-
             return this.em.createNamedQuery(TicketEntity.findTicket)
                     .setParameter("nrn", nrn).setParameter("time",
                             time.getTime()).getResultList();
