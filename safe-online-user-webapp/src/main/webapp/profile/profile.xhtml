@@ -4,8 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:t="http://myfaces.apache.org/tomahawk">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -18,17 +17,17 @@
 	</ui:define>
 	<ui:define name="content">
 
-        <table class="listingTable">
-            <colgroup />
-            <colgroup />
+		<table class="listingTable">
+			<colgroup />
+			<colgroup />
 
-            <tbody>
-                <tr>
-                    <th>#{msgs.login}</th>
-                    <td>#{identityBean.username}</td>
-                </tr>
-            </tbody>
-        </table>
+			<tbody>
+				<tr>
+					<th>#{msgs.login}</th>
+					<td>#{identityBean.username}</td>
+				</tr>
+			</tbody>
+		</table>
 
 		<f:subview rendered="#{0 == attributeList.rowCount}">
 			<p>#{msgs.profileEmpty}</p>
@@ -42,7 +41,7 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
-					<so:outputAttributeName value="#{item}"/>
+					<so:outputAttributeName value="#{item}" />
 				</h:column>
 
 				<h:column>
@@ -65,7 +64,7 @@
 				</h:column>
 			</h:dataTable>
 
-			<t:messages globalOnly="true" styleClass="error" />
+			<h:messages globalOnly="true" styleClass="error" />
 		</h:form>
 	</ui:define>
 

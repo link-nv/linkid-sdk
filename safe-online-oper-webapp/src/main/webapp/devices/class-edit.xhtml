@@ -4,11 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:tr="http://myfaces.apache.org/trinidad"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:rich="http://richfaces.org/rich">
+	xmlns:s="http://jboss.com/products/seam/taglib">
 <body>
 <ui:composition template="/WEB-INF/template-root.xhtml">
 	<ui:define name="topnav">
@@ -31,7 +27,7 @@
 				<h:message for="contextclass" styleClass="error" />
 			</s:decorate>
 
-			<t:messages styleClass="error" globalOnly="true" />
+			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:outputLabel for="save" value="" />
 			<h:commandButton action="#{operDeviceClass.save}" id="save"

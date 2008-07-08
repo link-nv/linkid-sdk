@@ -4,7 +4,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
@@ -42,7 +41,7 @@
 
 				<h:commandButton action="#{helpdeskLog.searchUser}" id="searchUser"
 					value="#{msgs.searchAction}" styleClass="submit" />
-				<t:message id="searchMessage" for="searchUserName"
+				<h:message id="searchMessage" for="searchUserName"
 					styleClass="error" />
 			</h:panelGrid>
 		</h:form>
@@ -63,38 +62,38 @@
 						action="#{helpdeskLog.viewUser}" styleClass="submit" />
 				</h:column>
 
-                <f:facet name="footer">
-                    <rich:datascroller for="helpdesk-user-data" pageIndexVar="pageIndex"
-                        pagesVar="pages" fastControls="hide">
-                        <f:facet name="first">
-                            <h:graphicImage value="/images/icons/control_start.png" />
-                        </f:facet>
-                        <f:facet name="first_disabled">
-                            <h:graphicImage value="/images/icons/control_start.png" />
-                        </f:facet>
-                        <f:facet name="previous">
-                            <h:graphicImage value="/images/icons/control_rewind.png" />
-                        </f:facet>
-                        <f:facet name="previous_disabled">
-                            <h:graphicImage value="/images/icons/control_rewind.png" />
-                        </f:facet>
-                        <f:facet name="pages">
-                            <h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
-                        </f:facet>
-                        <f:facet name="next">
-                            <h:graphicImage value="/images/icons/control_fastforward.png" />
-                        </f:facet>
-                        <f:facet name="next_disabled">
-                            <h:graphicImage value="/images/icons/control_fastforward.png" />
-                        </f:facet>
-                        <f:facet name="last">
-                            <h:graphicImage value="/images/icons/control_end.png" />
-                        </f:facet>
-                        <f:facet name="last_disabled">
-                            <h:graphicImage value="/images/icons/control_end.png" />
-                        </f:facet>
-                    </rich:datascroller>
-                </f:facet>
+				<f:facet name="footer">
+					<rich:datascroller for="helpdesk-user-data"
+						pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
+						<f:facet name="first">
+							<h:graphicImage value="/images/icons/control_start.png" />
+						</f:facet>
+						<f:facet name="first_disabled">
+							<h:graphicImage value="/images/icons/control_start.png" />
+						</f:facet>
+						<f:facet name="previous">
+							<h:graphicImage value="/images/icons/control_rewind.png" />
+						</f:facet>
+						<f:facet name="previous_disabled">
+							<h:graphicImage value="/images/icons/control_rewind.png" />
+						</f:facet>
+						<f:facet name="pages">
+							<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+						</f:facet>
+						<f:facet name="next">
+							<h:graphicImage value="/images/icons/control_fastforward.png" />
+						</f:facet>
+						<f:facet name="next_disabled">
+							<h:graphicImage value="/images/icons/control_fastforward.png" />
+						</f:facet>
+						<f:facet name="last">
+							<h:graphicImage value="/images/icons/control_end.png" />
+						</f:facet>
+						<f:facet name="last_disabled">
+							<h:graphicImage value="/images/icons/control_end.png" />
+						</f:facet>
+					</rich:datascroller>
+				</f:facet>
 
 			</rich:dataTable>
 		</h:form>

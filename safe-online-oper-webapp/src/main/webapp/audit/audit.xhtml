@@ -30,14 +30,14 @@
 				<h:inputText id="auditID" value="#{audit.searchContextId}"
 					validator="#{audit.validateId}" styleClass="label" />
 			</s:decorate>
-			<t:message for="auditID" styleClass="error" />
+			<h:message for="auditID" styleClass="error" />
 
 			<h:outputLabel for="auditUser" value="#{msgs.user}" />
 			<s:decorate>
 				<h:inputText id="auditUser" value="#{audit.searchAuditUser}"
 					validator="#{audit.validateUser}" styleClass="label" />
 			</s:decorate>
-			<t:message for="auditUser" styleClass="error" />
+			<h:message for="auditUser" styleClass="error" />
 
 			<h:outputLabel for="search" value="" />
 			<h:commandButton id="search" value="#{msgs.searchAction}"
@@ -64,19 +64,23 @@
 				</h:column>
 
 				<h:column>
-                    <f:facet name="header"><so:nbsp /></f:facet>
+					<f:facet name="header">
+						<so:nbsp />
+					</f:facet>
 					<h:commandLink value="#{msgs.viewaction}" action="#{audit.view}" />
 				</h:column>
 
 				<h:column>
-                    <f:facet name="header"><so:nbsp /></f:facet>
+					<f:facet name="header">
+						<so:nbsp />
+					</f:facet>
 					<h:commandLink value="#{msgs.removeaction}"
 						action="#{audit.removeContext}" />
 				</h:column>
 
 				<f:facet name="footer">
-					<rich:datascroller for="audit-context-data" pageIndexVar="pageIndex"
-						pagesVar="pages" fastControls="hide">
+					<rich:datascroller for="audit-context-data"
+						pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
 						<f:facet name="first">
 							<h:graphicImage value="/images/icons/control_start.png" />
 						</f:facet>

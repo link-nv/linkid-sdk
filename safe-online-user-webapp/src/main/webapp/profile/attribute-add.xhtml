@@ -4,7 +4,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:s="http://jboss.com/products/seam/taglib">
 <body>
@@ -38,7 +37,7 @@
 			<h:commandButton action="cancel" id="cancel"
 				value="#{msgs.cancelaction}" class="submit" immediate="true" />
 
-			<t:messages globalOnly="true" styleClass="error" />
+			<h:messages globalOnly="true" styleClass="error" />
 		</h:form>
 
 	</ui:define>
