@@ -2,7 +2,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
@@ -59,14 +58,16 @@
 						value="#{msgs.deviceRemove}" rendered="#{item.removable}" />
 				</h:column>
 				<h:column>
-					<f:facet name="header"><so:nbsp /></f:facet>
+					<f:facet name="header">
+						<so:nbsp />
+					</f:facet>
 					<h:commandLink action="#{devicesBean.updateDevice}" id="update"
 						value="#{msgs.deviceUpdate}" rendered="#{item.updatable}" />
 				</h:column>
 			</rich:dataTable>
 		</a4j:form>
 
-		<t:messages globalOnly="true" styleClass="error" />
+		<h:messages globalOnly="true" styleClass="error" />
 	</ui:define>
 	<ui:define name="sidebar">
 		<p>#{msgs.helpDevices}</p>
