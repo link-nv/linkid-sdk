@@ -1,68 +1,68 @@
-<html>
-<head>
-<title>BeID Runtime Detection</title>
-<script language="javascript" type="text/javascript">
-<!--
-	function init() {
-		document.getElementById("appName").value = navigator.appName;	
-		document.getElementById("appVersion").value = navigator.appVersion;
-		document.getElementById("appMinorVersion").value = navigator.appMinorVersion;
-		document.getElementById("appCodeName").value = navigator.appCodeName;
-		document.getElementById("platform").value = navigator.platform;
-		document.getElementById("userAgent").value = navigator.userAgent;
-		document.getElementById("vendor").value = navigator.vendor;
-		document.getElementById("cpuClass").value = navigator.cpuClass;
-		document.getElementById("javaEnabled").value = navigator.javaEnabled();
-	
-		var versionApplet = document.getElementById("versionApplet");
-		var javaVersion;
-		var javaVendor;
-		var hasPkcs11;
-		try {
-			javaVersion =  versionApplet.getVersion();
-			javaVendor = versionApplet.getVendor();
-			hasPkcs11 = versionApplet.hasPkcs11();
-		}
-		catch(e) {
-			// empty
-		}
-		document.getElementById("javaVersion").value = javaVersion;
-		document.getElementById("javaVendor").value = javaVendor;
-		document.getElementById("hasPkcs11").value = hasPkcs11;
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>BeID Runtime Detection</title>
 
-		document.dataForm.submit();
-	}
-// -->
-</script>
-</head>
-<body onload="init()">
-<script language="javascript" type="text/javascript">
-<!--
-	var appName = navigator.appName;
-	if (appName == "Microsoft Internet Explorer") {
-		document.write('<object id="versionApplet" classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" width="1" height="1">',
-		'<param name="type"	value="application/x-java-applet;version=1.3">',
-		'<param name="archive" value="java-version-applet.jar"/>',
-		'<param name="code" value="net.link.safeonline.version.JavaVersionApplet"/>',
-		'</object>');
-	}
-	else {
-		document.write('<applet id="versionApplet" code="net.link.safeonline.version.JavaVersionApplet.class" archive="java-version-applet.jar" width="1" height="1" />');
-	}
-// -->
-</script>
-<p>Please wait while loading the page...</p>
-<form name="dataForm" action="./version" method="post"><input
-	type="hidden" name="appName" id="appName" /> <input type="hidden"
-	name="appVersion" id="appVersion" /> <input type="hidden"
-	name="appMinorVersion" id="appMinorVersion" /> <input type="hidden"
-	name="appCodeName" id="appCodeName" /> <input type="hidden"
-	name="platform" id="platform" /> <input type="hidden" name="userAgent"
-	id="userAgent" /> <input type="hidden" name="vendor" id="vendor" /> <input
-	type="hidden" name="cpuClass" id="cpuClass" /> <input type="hidden"
-	name="javaEnabled" id="javaEnabled" /> <input type="hidden"
-	name="javaVersion" id="javaVersion" /> <input type="hidden"
-	name="javaVendor" id="javaVendor" /> <input type="hidden"
-	name="hasPkcs11" id="hasPkcs11" /></form>
-</body>
+        <script language="javascript" type="text/javascript">
+        <!--
+            function init() {
+                /* Properties from the Browser. */
+                document.getElementById("appName").value = navigator.appName;	
+                document.getElementById("appVersion").value = navigator.appVersion;
+                document.getElementById("appMinorVersion").value = navigator.appMinorVersion;
+                document.getElementById("appCodeName").value = navigator.appCodeName;
+                document.getElementById("platform").value = navigator.platform;
+                document.getElementById("userAgent").value = navigator.userAgent;
+                document.getElementById("vendor").value = navigator.vendor;
+                document.getElementById("cpuClass").value = navigator.cpuClass;
+                document.getElementById("javaEnabled").value = navigator.javaEnabled();
+            
+                /* Properties from the Java VM. */
+                try {
+                    var versionApplet = document.getElementById("versionApplet");
+                    document.getElementById("javaVersion").value = versionApplet.getVersion();
+                    document.getElementById("javaVendor").value = versionApplet.getVendor();
+                    document.getElementById("hasPkcs11").value = versionApplet.hasPkcs11();
+                } catch(e) {}
+
+                /* Submit these properties. */
+                document.dataForm.submit();
+            }
+        // -->
+        </script>
+    </head>
+
+    <body onload="init()">
+        <script language="javascript" type="text/javascript">
+        <!--
+            if (navigator.appName == "Microsoft Internet Explorer") {
+                document.write('<object id="versionApplet" classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" width="1" height="1">',
+                '<param name="type"	value="application/x-java-applet;version=1.3">',
+                '<param name="archive" value="java-version-applet.jar"/>',
+                '<param name="code" value="net.link.safeonline.version.JavaVersionApplet"/>',
+                '</object>');
+            }
+
+            else {
+                document.write('<applet id="versionApplet" code="net.link.safeonline.version.JavaVersionApplet" archive="java-version-applet.jar" width="1" height="1" />');
+            }
+        // -->
+        </script>
+
+        <p>Please wait while loading the page...</p>
+
+        <form name="dataForm" action="./version" method="post">
+            <input type="hidden" name="appName" id="appName" />
+            <input type="hidden" name="appVersion" id="appVersion" />
+            <input type="hidden" name="appMinorVersion" id="appMinorVersion" />
+            <input type="hidden" name="appCodeName" id="appCodeName" />
+            <input type="hidden" name="platform" id="platform" />
+            <input type="hidden" name="userAgent" id="userAgent" />
+            <input type="hidden" name="vendor" id="vendor" />
+            <input type="hidden" name="cpuClass" id="cpuClass" />
+            <input type="hidden" name="javaEnabled" id="javaEnabled" />
+            <input type="hidden" name="javaVersion" id="javaVersion" />
+            <input type="hidden" name="javaVendor" id="javaVendor" />
+            <input type="hidden" name="hasPkcs11" id="hasPkcs11" />
+        </form>
+    </body>
 </html>

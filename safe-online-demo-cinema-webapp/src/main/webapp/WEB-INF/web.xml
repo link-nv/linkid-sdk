@@ -29,6 +29,16 @@
 		</context-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>
+		<servlet-name>CinemaServlet</servlet-name>
+        <servlet-class>net.link.safeonline.demo.cinema.webapp.servlet.CinemaTicketServlet
+        </servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CinemaServlet</servlet-name>
+		<url-pattern>/CinemaServlet/*</url-pattern>
+	</servlet-mapping>
+
 	<context-param>
 		<param-name>AuthenticationServiceUrl</param-name>
 		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
