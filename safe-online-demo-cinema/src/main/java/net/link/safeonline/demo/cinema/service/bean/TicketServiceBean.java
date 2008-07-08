@@ -99,9 +99,9 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
 
         LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
         try {
+            // NOTE: time parameter is not checked because this is a demo.
             return this.em.createNamedQuery(TicketEntity.findTicket)
-                    .setParameter("nrn", nrn).setParameter("time",
-                            time.getTime()).getResultList();
+                    .setParameter("nrn", nrn).getResultList();
         }
 
         catch (NoResultException e) {

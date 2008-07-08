@@ -19,7 +19,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQueries( { @NamedQuery(name = TicketEntity.findTicket, query = "SELECT t FROM TicketEntity t WHERE t.owner.nrn = :nrn AND t.time <= :time AND t.time + t.film.duration >= :time") })
+@NamedQueries( { @NamedQuery(name = TicketEntity.findTicket, query = "SELECT t FROM TicketEntity t WHERE t.owner.nrn = :nrn") })
 public class TicketEntity implements Serializable {
 
     private static final long    serialVersionUID = 1L;
