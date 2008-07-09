@@ -118,7 +118,7 @@ public class HelpdeskEventEntity implements Serializable {
 		return this.helpdeskContext;
 	}
 
-	@Temporal(value = TemporalType.TIME)
+	@Temporal(value = TemporalType.DATE)
 	public Date getTime() {
 		return this.time;
 	}
@@ -154,21 +154,19 @@ public class HelpdeskEventEntity implements Serializable {
 
 	public interface QueryInterface {
 		@QueryMethod(QUERY_WHERE_CONTEXTID)
-		List<HelpdeskEventEntity> listLogs(@QueryParam("contextId")
-		Long contextId);
+		List<HelpdeskEventEntity> listLogs(
+				@QueryParam("contextId") Long contextId);
 
 		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
-		void deleteEvents(@QueryParam("contextId")
-		Long contextId);
+		void deleteEvents(@QueryParam("contextId") Long contextId);
 
 		@UpdateMethod(QUERY_DELETE_WHERE_OLDER)
-		void deleteEvents(@QueryParam("ageLimit")
-		Date ageLimit, @QueryParam("logLevel")
-		LogLevelType logLevel);
+		void deleteEvents(@QueryParam("ageLimit") Date ageLimit,
+				@QueryParam("logLevel") LogLevelType logLevel);
 
 		@QueryMethod(QUERY_LIST_USER_CONTEXTS)
-		List<HelpdeskContextEntity> listUserContexts(@QueryParam("principal")
-		String user);
+		List<HelpdeskContextEntity> listUserContexts(
+				@QueryParam("principal") String user);
 
 		@QueryMethod(QUERY_LIST_USERS)
 		List<String> listUsers();
