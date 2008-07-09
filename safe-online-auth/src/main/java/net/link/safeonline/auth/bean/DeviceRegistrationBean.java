@@ -83,8 +83,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 			externalContext.redirect(registrationURL);
 			return null;
 		}
-		AuthenticationUtils.redirect(this.facesMessages, registrationURL,
-				this.device, this.userId);
+		AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
 		return null;
 	}
 

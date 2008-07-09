@@ -1,6 +1,7 @@
 package net.link.safeonline.demo.lawyer.webapp;
 
 import net.link.safeonline.demo.wicket.tools.RolesAllowed;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -13,7 +14,7 @@ public class FindLawyer extends Layout {
 	private static final long serialVersionUID = 1L;
 
 	public FindLawyer() {
-		add(new Label("headerTitle", "Find a Lawyer"));
+		add(new Label<String>("headerTitle", "Find a Lawyer"));
 		add(new AdminNavigationBorder("navigation"));
 
 		final FeedbackPanel feedback = new FeedbackPanel("feedback");
@@ -24,16 +25,17 @@ public class FindLawyer extends Layout {
 
 	}
 
-	public final class SearchForm extends Form {
+	public final class SearchForm extends Form<SearchFormInputModel> {
 
 		private static final long serialVersionUID = 1L;
 
 		public SearchForm(final String id) {
 			// Construct form with no validation listener
-			super(id, new CompoundPropertyModel(new SearchFormInputModel()));
+            super(id, new CompoundPropertyModel<SearchFormInputModel>(
+                    new SearchFormInputModel()));
 
 			// Add text entry widget
-			add(new RequiredTextField("safeonlineId"));
+            add(new RequiredTextField<String>("safeonlineId"));
 		}
 
 		/**
@@ -42,7 +44,7 @@ public class FindLawyer extends Layout {
 		@Override
         public final void onSubmit() {
 			// Construct a copy of the edited comment
-			SearchFormInputModel model = (SearchFormInputModel) getModelObject();
+			SearchFormInputModel model = getModelObject();
 			String safeonlineId = model.getSafeonlineId();
 
 			// call webservice to find lawyer

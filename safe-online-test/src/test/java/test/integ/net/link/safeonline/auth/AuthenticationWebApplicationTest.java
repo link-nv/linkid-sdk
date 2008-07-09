@@ -60,189 +60,206 @@ import org.w3c.tidy.Tidy;
 
 public class AuthenticationWebApplicationTest {
 
-	static final Log LOG = LogFactory
-			.getLog(AuthenticationWebApplicationTest.class);
+    static final Log LOG = LogFactory
+                                 .getLog(AuthenticationWebApplicationTest.class);
 
-	@Test
-	public void testLogin() throws Exception {
-		PrivateKeyEntry privateKeyEntry = PerformanceKeyStoreUtils
-				.getPrivateKeyEntry();
-		PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-		PublicKey publicKey = privateKeyEntry.getCertificate().getPublicKey();
 
-		Protocol.registerProtocol("https", new Protocol("https",
-				new MySSLSocketFactory(), 443));
+    @Test
+    public void testLogin() throws Exception {
 
-		HttpClient httpClient = new HttpClient();
+        PrivateKeyEntry privateKeyEntry = PerformanceKeyStoreUtils
+                .getPrivateKeyEntry();
+        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
+        PublicKey publicKey = privateKeyEntry.getCertificate().getPublicKey();
 
-		String uri = "https://localhost:8443/olas-auth/entry";
+        Protocol.registerProtocol("https", new Protocol("https",
+                new MySSLSocketFactory(), 443));
 
-		PostMethod postMethod = new PostMethod(uri);
-		postMethod.setRequestHeader("Cookie", "deflowered=true");
+        HttpClient httpClient = new HttpClient();
 
-		KeyPair keyPair = new KeyPair(publicKey, privateKey);
-		String authnRequest = AuthnRequestFactory.createAuthnRequest(
-				"performance-application", "performance-application", keyPair,
-				"http://localhost:1234/performance-application", null, null,
-				null);
-		LOG.debug("authentication request: " + authnRequest);
-		String encodedAuthnRequest = new String(Base64
-				.encodeBase64(authnRequest.getBytes()));
+        String uri = "https://localhost:8443/olas-auth/entry";
 
-		postMethod.addParameter(new NameValuePair("SAMLRequest",
-				encodedAuthnRequest));
+        PostMethod postMethod = new PostMethod(uri);
+        postMethod.setRequestHeader("Cookie", "deflowered=true");
 
-		int statusCode = httpClient.executeMethod(postMethod);
-		LOG.debug("status code: " + statusCode);
+        KeyPair keyPair = new KeyPair(publicKey, privateKey);
+        String authnRequest = AuthnRequestFactory.createAuthnRequest(
+                "performance-application", "performance-application", null,
+                keyPair, "http://localhost:1234/performance-application", null,
+                null, null);
+        LOG.debug("authentication request: " + authnRequest);
+        String encodedAuthnRequest = new String(Base64
+                .encodeBase64(authnRequest.getBytes()));
 
-		String jsessionId = null;
-		for (Cookie cookie : httpClient.getState().getCookies()) {
-			LOG.debug("client side cookie: " + cookie);
-			if ("JSESSIONID".equals(cookie.getName()))
-				jsessionId = cookie.getValue();
-		}
-		assertNotNull(jsessionId);
+        postMethod.addParameter(new NameValuePair("SAMLRequest",
+                encodedAuthnRequest));
 
-		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
-		Header locationHeader = postMethod.getResponseHeader("Location");
-		String location = locationHeader.getValue();
-		LOG.debug("location: " + location);
-		postMethod = new PostMethod(location);
+        int statusCode = httpClient.executeMethod(postMethod);
+        LOG.debug("status code: " + statusCode);
 
-		postMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
-		statusCode = httpClient.executeMethod(postMethod);
-		Tidy tidy = new Tidy();
-		Document resultDocument = tidy.parseDOM(postMethod
-				.getResponseBodyAsStream(), null);
-		LOG.debug("result document: "
-				+ DomTestUtils.domToString(resultDocument));
+        String jsessionId = null;
+        for (Cookie cookie : httpClient.getState().getCookies()) {
+            LOG.debug("client side cookie: " + cookie);
+            if ("JSESSIONID".equals(cookie.getName())) {
+                jsessionId = cookie.getValue();
+            }
+        }
+        assertNotNull(jsessionId);
 
-		Node formNode = XPathAPI.selectSingleNode(resultDocument, "//form");
-		assertNotNull(formNode);
+        assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
+        Header locationHeader = postMethod.getResponseHeader("Location");
+        String location = locationHeader.getValue();
+        LOG.debug("location: " + location);
+        postMethod = new PostMethod(location);
 
-		Node passwordInputNode = XPathAPI.selectSingleNode(formNode,
-				"//input[@type='radio' and @value='password']");
-		String passwordFieldName = passwordInputNode.getAttributes()
-				.getNamedItem("name").getNodeValue();
-		String passwordFieldValue = passwordInputNode.getAttributes()
-				.getNamedItem("value").getNodeValue();
-		LOG.debug("radio attribute: " + passwordFieldName + "="
-				+ passwordFieldValue);
+        postMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
+        statusCode = httpClient.executeMethod(postMethod);
+        Tidy tidy = new Tidy();
+        Document resultDocument = tidy.parseDOM(postMethod
+                .getResponseBodyAsStream(), null);
+        LOG.debug("result document: "
+                + DomTestUtils.domToString(resultDocument));
 
-		postMethod = createFormPostMethod(formNode, jsessionId);
-		postMethod.addParameter(new NameValuePair(passwordFieldName,
-				passwordFieldValue));
+        Node formNode = XPathAPI.selectSingleNode(resultDocument, "//form");
+        assertNotNull(formNode);
 
-		statusCode = httpClient.executeMethod(postMethod);
-		LOG.debug("status code: " + statusCode);
+        Node passwordInputNode = XPathAPI.selectSingleNode(formNode,
+                "//input[@type='radio' and @value='password']");
+        String passwordFieldName = passwordInputNode.getAttributes()
+                .getNamedItem("name").getNodeValue();
+        String passwordFieldValue = passwordInputNode.getAttributes()
+                .getNamedItem("value").getNodeValue();
+        LOG.debug("radio attribute: " + passwordFieldName + "="
+                + passwordFieldValue);
 
-		tidy = new Tidy();
-		resultDocument = tidy.parseDOM(postMethod.getResponseBodyAsStream(),
-				null);
-		LOG.debug("result document: "
-				+ DomTestUtils.domToString(resultDocument));
-	}
+        postMethod = createFormPostMethod(formNode, jsessionId);
+        postMethod.addParameter(new NameValuePair(passwordFieldName,
+                passwordFieldValue));
 
-	private PostMethod createFormPostMethod(Node formNode, String jsessionId)
-			throws TransformerException {
-		NodeIterator hiddenInputNodeIterator = XPathAPI.selectNodeIterator(
-				formNode, "//input[@type='hidden']");
-		Node hiddenInputNode;
-		List<NameValuePair> submitFields = new LinkedList<NameValuePair>();
-		while (null != (hiddenInputNode = hiddenInputNodeIterator.nextNode())) {
-			NamedNodeMap attributes = hiddenInputNode.getAttributes();
-			String name = attributes.getNamedItem("name").getNodeValue();
-			String value = attributes.getNamedItem("value").getNodeValue();
-			LOG.debug("attribute: " + name + "=" + value);
-			submitFields.add(new NameValuePair(name, value));
-		}
+        statusCode = httpClient.executeMethod(postMethod);
+        LOG.debug("status code: " + statusCode);
 
-		Node submitInputNode = XPathAPI.selectSingleNode(formNode,
-				"//input[@type='submit']");
-		String submitName = submitInputNode.getAttributes()
-				.getNamedItem("name").getNodeValue();
-		submitFields.add(new NameValuePair(submitName, ""));
+        tidy = new Tidy();
+        resultDocument = tidy.parseDOM(postMethod.getResponseBodyAsStream(),
+                null);
+        LOG.debug("result document: "
+                + DomTestUtils.domToString(resultDocument));
+    }
 
-		String actionValue = formNode.getAttributes().getNamedItem("action")
-				.getNodeValue();
-		LOG.debug("action value: " + actionValue);
-		PostMethod postMethod = new PostMethod("https://localhost:8443"
-				+ actionValue);
-		postMethod.addParameters(submitFields.toArray(new NameValuePair[] {}));
+    private PostMethod createFormPostMethod(Node formNode, String jsessionId)
+            throws TransformerException {
 
-		postMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
+        NodeIterator hiddenInputNodeIterator = XPathAPI.selectNodeIterator(
+                formNode, "//input[@type='hidden']");
+        Node hiddenInputNode;
+        List<NameValuePair> submitFields = new LinkedList<NameValuePair>();
+        while (null != (hiddenInputNode = hiddenInputNodeIterator.nextNode())) {
+            NamedNodeMap attributes = hiddenInputNode.getAttributes();
+            String name = attributes.getNamedItem("name").getNodeValue();
+            String value = attributes.getNamedItem("value").getNodeValue();
+            LOG.debug("attribute: " + name + "=" + value);
+            submitFields.add(new NameValuePair(name, value));
+        }
 
-		return postMethod;
-	}
+        Node submitInputNode = XPathAPI.selectSingleNode(formNode,
+                "//input[@type='submit']");
+        String submitName = submitInputNode.getAttributes()
+                .getNamedItem("name").getNodeValue();
+        submitFields.add(new NameValuePair(submitName, ""));
 
-	public static class MySSLSocketFactory implements ProtocolSocketFactory {
+        String actionValue = formNode.getAttributes().getNamedItem("action")
+                .getNodeValue();
+        LOG.debug("action value: " + actionValue);
+        PostMethod postMethod = new PostMethod("https://localhost:8443"
+                + actionValue);
+        postMethod.addParameters(submitFields.toArray(new NameValuePair[] {}));
 
-		private final SSLSocketFactory sslSocketFactory;
+        postMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
 
-		public MySSLSocketFactory() throws DriverException {
-			try {
-				SSLContext sslContext = SSLContext.getInstance("TLS");
-				SecureRandom secureRandom = new SecureRandom();
-				TrustManager trustManager = new MyTrustManager();
-				TrustManager[] trustManagers = { trustManager };
-				sslContext.init(null, trustManagers, secureRandom);
-				this.sslSocketFactory = sslContext.getSocketFactory();
-			} catch (NoSuchAlgorithmException e) {
-				throw new DriverException("no such algo");
-			} catch (KeyManagementException e) {
-				throw new DriverException("key error");
-			}
-		}
+        return postMethod;
+    }
 
-		public Socket createSocket(String host, int port) throws IOException,
-				UnknownHostException {
-			LOG.debug("createSocket: " + host + ":" + port);
-			return null;
-		}
 
-		public Socket createSocket(String host, int port,
-				InetAddress localAddress, int localPort) throws IOException,
-				UnknownHostException {
-			LOG.debug("createSocket: " + host + ":" + port + ", local: "
-					+ localAddress + ":" + localPort);
-			return null;
-		}
+    public static class MySSLSocketFactory implements ProtocolSocketFactory {
 
-		public Socket createSocket(String host, int port,
-				InetAddress localAddress, int localPort,
-				HttpConnectionParams params) throws IOException,
-				UnknownHostException, ConnectTimeoutException {
-			LOG.debug("createSocket: " + host + ":" + port + ", local: "
-					+ localAddress + ":" + localPort + ", params: " + params);
+        private final SSLSocketFactory sslSocketFactory;
 
-			Socket socket = this.sslSocketFactory.createSocket(host, port,
-					localAddress, localPort);
-			return socket;
-		}
-	}
 
-	static class MyTrustManager implements X509TrustManager {
+        public MySSLSocketFactory() throws DriverException {
 
-		public void checkClientTrusted(X509Certificate[] chain, String authType)
-				throws CertificateException {
-			throw new CertificateException("cannot verify client certificates");
-		}
+            try {
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                SecureRandom secureRandom = new SecureRandom();
+                TrustManager trustManager = new MyTrustManager();
+                TrustManager[] trustManagers = { trustManager };
+                sslContext.init(null, trustManagers, secureRandom);
+                this.sslSocketFactory = sslContext.getSocketFactory();
+            } catch (NoSuchAlgorithmException e) {
+                throw new DriverException("no such algo");
+            } catch (KeyManagementException e) {
+                throw new DriverException("key error");
+            }
+        }
 
-		public void checkServerTrusted(X509Certificate[] chain, String authType)
-				throws CertificateException {
-			if (null == chain)
-				throw new CertificateException("null certificate chain");
-			if (0 == chain.length)
-				throw new CertificateException("empty certificate chain");
-			if (null == authType)
-				throw new CertificateException("null authentication type");
-			if (0 == authType.length())
-				throw new CertificateException("empty authentication type");
-			LOG.debug("server certificate: " + chain[0].getSubjectDN());
-		}
+        public Socket createSocket(String host, int port) throws IOException,
+                UnknownHostException {
 
-		public X509Certificate[] getAcceptedIssuers() {
-			return null;
-		}
-	}
+            LOG.debug("createSocket: " + host + ":" + port);
+            return null;
+        }
+
+        public Socket createSocket(String host, int port,
+                InetAddress localAddress, int localPort) throws IOException,
+                UnknownHostException {
+
+            LOG.debug("createSocket: " + host + ":" + port + ", local: "
+                    + localAddress + ":" + localPort);
+            return null;
+        }
+
+        public Socket createSocket(String host, int port,
+                InetAddress localAddress, int localPort,
+                HttpConnectionParams params) throws IOException,
+                UnknownHostException, ConnectTimeoutException {
+
+            LOG.debug("createSocket: " + host + ":" + port + ", local: "
+                    + localAddress + ":" + localPort + ", params: " + params);
+
+            Socket socket = this.sslSocketFactory.createSocket(host, port,
+                    localAddress, localPort);
+            return socket;
+        }
+    }
+
+    static class MyTrustManager implements X509TrustManager {
+
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+
+            throw new CertificateException("cannot verify client certificates");
+        }
+
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+
+            if (null == chain) {
+                throw new CertificateException("null certificate chain");
+            }
+            if (0 == chain.length) {
+                throw new CertificateException("empty certificate chain");
+            }
+            if (null == authType) {
+                throw new CertificateException("null authentication type");
+            }
+            if (0 == authType.length()) {
+                throw new CertificateException("empty authentication type");
+            }
+            LOG.debug("server certificate: " + chain[0].getSubjectDN());
+        }
+
+        public X509Certificate[] getAcceptedIssuers() {
+
+            return null;
+        }
+    }
 }

@@ -74,12 +74,10 @@ public class AuthenticationUtils {
 	 * </p>
 	 * 
 	 * 
-	 * @param facesMessages
 	 * @param landingUrl
 	 * @param device
 	 */
-	public static String redirectAuthentication(FacesMessages facesMessages,
-			String landingUrl, String device) {
+	public static String redirectAuthentication(String landingUrl, String device) {
 		LOG.debug("redirecting to: " + landingUrl);
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
@@ -161,15 +159,14 @@ public class AuthenticationUtils {
 	 * </p>
 	 * 
 	 * 
-	 * @param facesMessages
 	 * @param landingUrl
 	 *            the location at the remote device issuer where to post the
 	 *            authentication request to
 	 * @param device
 	 * @param username
 	 */
-	public static String redirect(FacesMessages facesMessages,
-			String landingUrl, String device, String username) {
+	public static String redirect(String landingUrl, String device,
+            String username) {
 		LOG.debug("redirecting to: " + landingUrl);
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
@@ -239,7 +236,7 @@ public class AuthenticationUtils {
 			String parameterName) {
 		String initParameter = context.getInitParameter(parameterName);
 		if (null == initParameter)
-			throw new RuntimeException("missing context-param in web.xml: "
+            throw new RuntimeException("missing context-param in web.xml: "
 					+ parameterName);
 		return initParameter;
 	}

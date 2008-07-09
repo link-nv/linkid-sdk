@@ -90,11 +90,8 @@ public class DeviceBean implements Device {
 		this.log.debug("authenticationPath: " + authenticationPath);
 
 		if (!this.deviceSelection
-				.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-			return AuthenticationUtils.redirectAuthentication(
-					this.facesMessages, authenticationPath,
-					this.deviceSelection);
-		}
+				.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
+            return AuthenticationUtils.redirectAuthentication(authenticationPath, this.deviceSelection);
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();

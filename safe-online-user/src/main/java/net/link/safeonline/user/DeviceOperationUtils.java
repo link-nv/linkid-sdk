@@ -23,7 +23,6 @@ import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.seam.faces.FacesMessages;
 
 public class DeviceOperationUtils {
 
@@ -56,7 +55,6 @@ public class DeviceOperationUtils {
 	 * </p>
 	 * 
 	 * 
-	 * @param facesMessages
 	 * @param landingUrl
 	 *            the location at the remote device issuer where to post the
 	 *            authentication request to
@@ -64,8 +62,8 @@ public class DeviceOperationUtils {
 	 * @param userId
 	 *            the OLAS user ID.
 	 */
-	public static String redirect(FacesMessages facesMessages,
-			String landingUrl, DeviceOperationType deviceOperation,
+	public static String redirect(String landingUrl,
+            DeviceOperationType deviceOperation,
 			String device, String userId) {
 		LOG.debug("redirecting to: " + landingUrl);
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -142,7 +140,7 @@ public class DeviceOperationUtils {
 			String parameterName) {
 		String initParameter = context.getInitParameter(parameterName);
 		if (null == initParameter)
-			throw new RuntimeException("missing context-param in web.xml: "
+            throw new RuntimeException("missing context-param in web.xml: "
 					+ parameterName);
 		return initParameter;
 	}

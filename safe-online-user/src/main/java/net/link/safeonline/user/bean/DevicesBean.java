@@ -255,8 +255,8 @@ public class DevicesBean implements Devices {
 			externalContext.redirect(registrationURL);
 			return null;
 		}
-		DeviceOperationUtils.redirect(this.facesMessages, registrationURL,
-				DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
+		DeviceOperationUtils.redirect(registrationURL,
+                DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
 						.getName(), userId);
 		return null;
 	}
@@ -297,8 +297,8 @@ public class DevicesBean implements Devices {
 			externalContext.redirect(removalURL);
 			return null;
 		}
-		DeviceOperationUtils.redirect(this.facesMessages, removalURL,
-				DeviceOperationType.REMOVE, deviceName, userId);
+		DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE,
+                deviceName, userId);
 		return null;
 	}
 
@@ -328,8 +328,8 @@ public class DevicesBean implements Devices {
 			externalContext.redirect(updateURL);
 			return null;
 		}
-		DeviceOperationUtils.redirect(this.facesMessages, updateURL,
-				DeviceOperationType.UPDATE, deviceName, userId);
+		DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE,
+                deviceName, userId);
 		return null;
 	}
 

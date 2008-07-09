@@ -149,8 +149,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			externalContext.redirect(registrationURL);
 			return null;
 		}
-		AuthenticationUtils.redirect(this.facesMessages, registrationURL,
-				this.device, this.userId);
+		AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
 		return null;
 	}
 
@@ -174,7 +173,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	}
 
 	public String getCaptchaURL() {
-		return "/captcha?cacheid=" + (Math.random() * 1000000);
+		return "/captcha?cacheid=" + Math.random() * 1000000;
 	}
 
 	@Factory("allDevicesAccountRegistration")
