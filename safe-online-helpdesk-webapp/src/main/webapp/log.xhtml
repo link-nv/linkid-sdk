@@ -21,11 +21,11 @@
 
 		<h:form>
 			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
+				<s:span styleClass="" />
 			</f:facet>
 
 			<h:panelGrid columns="5" border="0" style="border: 1px solid black;">
-				<f:verbatim>#{msgs.lookupHelpId}</f:verbatim>
+				<f:verbatim>#{msgs.helpdeskId}</f:verbatim>
 				<s:decorate id="decorateSearchId">
 					<h:inputText value="#{helpdeskLog.searchId}" id="searchId"
 						validator="#{helpdeskLog.validateId}" required="true" />
@@ -38,9 +38,10 @@
 				</rich:suggestionbox>
 				<h:commandButton action="#{helpdeskLog.search}" id="search"
 					value="#{msgs.searchAction}" styleClass="submit" />
-				<h:message id="searchMessage" for="searchId" styleClass="error" />
+				<h:messages styleClass="error" />
 			</h:panelGrid>
 		</h:form>
+
 
 		<h:form>
 			<rich:dataTable id="helpdesk-context-data" var="item"
@@ -59,11 +60,13 @@
 				</h:column>
 
 				<h:column>
+					<f:facet name="header">#{msgs.viewaction}</f:facet>
 					<h:commandLink value="#{msgs.viewaction}"
 						action="#{helpdeskLog.view}" />
 				</h:column>
 
 				<h:column>
+					<f:facet name="header">#{msgs.removeaction}</f:facet>
 					<h:commandLink value="#{msgs.removeaction}"
 						action="#{helpdeskLog.removeLog}" />
 				</h:column>

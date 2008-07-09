@@ -25,7 +25,7 @@
 			</f:facet>
 
 			<h:panelGrid columns="5" border="0" style="border: 1px solid black;">
-				<f:verbatim>#{msgs.lookupHelpUser}</f:verbatim>
+				<f:verbatim>#{msgs.helpdeskUser}</f:verbatim>
 				<s:decorate id="decorateSearchUserName">
 					<h:inputText value="#{helpdeskLog.searchUserName}"
 						validator="#{helpdeskLog.validateUser}" id="searchUserName"
@@ -41,8 +41,7 @@
 
 				<h:commandButton action="#{helpdeskLog.searchUser}" id="searchUser"
 					value="#{msgs.searchAction}" styleClass="submit" />
-				<h:message id="searchMessage" for="searchUserName"
-					styleClass="error" />
+				<h:messages styleClass="error" />
 			</h:panelGrid>
 		</h:form>
 
@@ -58,6 +57,7 @@
 				</h:column>
 
 				<h:column>
+					<f:facet name="header">#{msgs.viewaction}</f:facet>
 					<h:commandLink value="#{msgs.viewaction}"
 						action="#{helpdeskLog.viewUser}" styleClass="submit" />
 				</h:column>

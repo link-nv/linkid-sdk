@@ -14,7 +14,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
@@ -286,8 +285,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		}
 		LOG.debug("id " + id + " not found");
 		((UIInput) toValidate).setValid(false);
-		FacesMessage message = new FacesMessage("Unknown context id");
-		contextIn.addMessage(toValidate.getClientId(contextIn), message);
+		this.facesMessages.addFromResourceBundle("errorHelpdeskIdNotFound");
 	}
 
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
@@ -298,8 +296,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		this.helpdeskUserList = this.helpdeskService.listUsers();
 		if (!this.helpdeskUserList.contains(user)) {
 			((UIInput) toValidate).setValid(false);
-			FacesMessage message = new FacesMessage("Unknown user");
-			contextIn.addMessage(toValidate.getClientId(contextIn), message);
+			this.facesMessages
+					.addFromResourceBundle("errorHelpdeskUserNotFound");
 		}
 	}
 }
