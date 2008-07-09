@@ -227,7 +227,7 @@ public class StatisticServiceBean implements StatisticService,
 
 	private void exportStatistic(StatisticEntity statistic,
 			HSSFWorkbook workbook) throws StatisticNotFoundException {
-		HSSFSheet mainSheet = workbook.createSheet(statistic.getName());
+		HSSFSheet mainSheet = workbook.createSheet();
 
 		HSSFCellStyle dateCellStyle = workbook.createCellStyle();
 		dateCellStyle.setDataFormat(HSSFDataFormat
