@@ -13,11 +13,14 @@
 			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
+
 	<ui:define name="top_content">
 		<h1>#{msgs.operatorAccounting}</h1>
-	</ui:define>
+    </ui:define>
+
 	<ui:define name="content">
 		<h:form id="applicationForm" ajaxSubmit="true" reRender="app-data">
+
 			<rich:dataTable id="app-data" var="item"
 				value="#{accountingApplications}" rows="10"
 				styleClass="listingTable"

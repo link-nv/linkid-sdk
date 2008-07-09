@@ -402,7 +402,6 @@ hr.float_fix {
     border:             1px solid black;
 }
 .usage_agreement, .white_space {
-    display:            block;
     overflow:           auto;
 
     font-family:        fixed;
@@ -412,6 +411,9 @@ hr.float_fix {
     white-space:        -pre-wrap;                  /* Opera 4-6 */
     white-space:        -o-pre-wrap;                /* Opera 7 */
     word-wrap:          break-word;
+}
+span.usage_agreement, span.white_space {
+    display:            block;
 }
 
 /********************************************* SAFE ONLINE TAGLIB **/

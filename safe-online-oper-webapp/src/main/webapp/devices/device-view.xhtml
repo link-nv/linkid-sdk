@@ -135,6 +135,10 @@
 				</tbody>
 			</table>
 
+            <h:outputText rendered="#{selectedDevice.attributeType.compounded}">
+                <br />
+            </h:outputText>
+
 			<rich:dataTable id="compounded-members" var="item"
 				value="#{selectedDevice.attributeType.members}"
 				rendered="#{selectedDevice.attributeType.compounded}"
@@ -148,6 +152,7 @@
 		</rich:simpleTogglePanel>
 
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+            rendered="#{selectedDevice.userAttributeType.name}"
 			opened="false" id="user-attribute-tab"
 			label="#{msgs.deviceUserAttribute}">
 

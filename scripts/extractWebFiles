@@ -1,6 +1,8 @@
 #!/bin/bash
 source "${0%/*}"/bashlib
 
+
+# Parse options.
 while [[ $1 = -* ]]; do
     case $1 in
         -L) nolink=1    ;;
@@ -13,13 +15,17 @@ while [[ $1 = -* ]]; do
     shift
 done
 
-base="${2:-${0%/*}/..}"
-distribution=$1
 
-shift 2
+# Parse distribution and base paths.
+(( ! apply )) && { distribution=$1; shift; }
+base="${1:-${0%/*}/..}"; shift
+pwd=$PWD
+
+
+# Figure out which webapps to use.
 (( $# )) && \
     webapps=("$@") || \
-    webapps=( SafeOnline dodentocht )
+    webapps=( SafeOnline{,Beid,Demo,Digipas,Encap} )
 (( ! ${#repos[@]} )) && {
     repos=()
     for webapp in "${webapps[@]}"; do
@@ -27,23 +33,30 @@ shift 2
     done
 }
 
-[[ ! $distribution ]] && {
-    distribution=$(cd "$base/safe-online-base-distribution/target/"*"/jboss/server/default/deploy/../../../../"; echo "$PWD")
+
+# Figure out path to distribution.
+(( ! apply )) && {
+    [[ ! $distribution ]] && {
+        distribution=$(cd "$base/safe-online-base-distribution/target/"*"/jboss/server/default/deploy/../../../../"; echo "$PWD")
+    }
+
+    [[ ! -d $distribution/jboss/server/default/tmp ]] && {
+        emit -r "Invalid distribution path or distribution not deployed: '$distribution'"
+        exit 1
+    }
 }
 base="$base/work"
 
-[[ ! -d $distribution/jboss/server/default/tmp ]] && {
-    emit -r "Invalid distribution path or distribution not deployed: '$distribution'"
-    exit 1
-}
 
+# Make paths absolute.
 [[ -x $(type -P readlink 2>/dev/null) ]] && {
     base=$(readlink -m "$base")
     distribution=$(readlink -m "$distribution")
 }
-
 [[ $base = /* ]] || base="$PWD/$base"
 
+
+# Extraction work functions.
 function extractCss {
     css=( *'/css/style.css' )
     [[ -e $css ]]                                   || return 0
@@ -64,7 +77,6 @@ function extractCss {
         (( ! $? )) && touch "$file"                 || return
     done
 }
-
 function extractHtml {
     while read file; do
         mkdir -p "$base/$webapp/${file%/*}"         || return
@@ -86,13 +98,14 @@ function extractHtml {
         touch "$file"                               || return
     done < <(find . -name '*.xhtml' -o -name '*.html')
 }
-
 function extractStuff {
 
         extractCss && \
         extractHtml
 }
 
+
+# Figure out what to do now.
 if (( apply )); then
     [[ ! -e $base ]] && {
         emit -R "No work files present at '$(shorten "$base")'.  Cannot apply."
@@ -125,7 +138,7 @@ if (( apply )); then
 
         find . '(' -name '*.xhtml' -o -name '*.css' ')' -print0 | while read -d '' file; do
             [[ -e $file~ ]] || {
-                emit -y "Backup of '$(shorten "$file")' not found."
+                emit -y "Backup of '$(shorten -p "$pwd" "$file")' not found."
                 continue
             }
 
@@ -142,9 +155,10 @@ if (( apply )); then
                     adest=("${adest[@]}")
 
                     if (( ! ${#adest[@]} || ${#adest[@]} > 1 )) || [[ ! -e $adest ]]; then
-                        emit -y "Source of '$(shorten "$file")' not found.  Tried:"
+                        emit -y "Source of '$(shorten -p "$pwd" "$file")' not found.  Tried:"
                         for dest in "$ddest" "${adest[@]}"; do
-                            emit -y "  - '$dest'"
+                            emit -y "   - $(shorten -p "$pwd" "$dest"):"\
+                                    "$([[ -e $dest ]] && echo "${green}exists${reset}." || echo "${red}doesn't exist${reset}.")"
                         done
 
                         continue
@@ -155,7 +169,9 @@ if (( apply )); then
                     dest=$ddest
                 fi
 
-                cp "$file" "$dest"
+                emit "Modifying $(shorten -p "$pwd" "$dest")"
+                emit "   - Source: $(shorten -p "$pwd" "$file")."
+                mv "$dest"{,~} && cp "$file" "$dest"
             fi
         done
     done
