@@ -65,7 +65,8 @@ public interface Devices {
 	/*
 	 * Factory.
 	 */
-	List<DeviceEntry> devicesFactory();
+	List<DeviceEntry> devicesFactory() throws SubjectNotFoundException,
+			DeviceNotFoundException;
 
 	List<DeviceMappingDO> deviceRegistrationsFactory()
 			throws SubjectNotFoundException, DeviceNotFoundException,

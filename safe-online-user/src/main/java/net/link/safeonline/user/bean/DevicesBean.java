@@ -229,14 +229,22 @@ public class DevicesBean implements Devices {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	@Factory(DEVICES_LIST_NAME)
-	public List<DeviceEntry> devicesFactory() {
+	public List<DeviceEntry> devicesFactory() throws SubjectNotFoundException,
+			DeviceNotFoundException {
 		Locale locale = getViewLocale();
 		this.devices = new LinkedList<DeviceEntry>();
 		List<DeviceEntity> deviceList = this.devicePolicyService.getDevices();
 		for (DeviceEntity device : deviceList) {
 			String deviceDescription = this.devicePolicyService
 					.getDeviceDescription(device.getName(), locale);
-			this.devices.add(new DeviceEntry(device, deviceDescription));
+			if (device.getName().equals(
+					SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)
+					&& isPasswordConfigured()) {
+				this.devices.add(new DeviceEntry(device, deviceDescription,
+						false));
+			} else {
+				this.devices.add(new DeviceEntry(device, deviceDescription));
+			}
 		}
 		return this.devices;
 	}
@@ -256,7 +264,7 @@ public class DevicesBean implements Devices {
 			return null;
 		}
 		DeviceOperationUtils.redirect(registrationURL,
-                DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
+				DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
 						.getName(), userId);
 		return null;
 	}
@@ -298,7 +306,7 @@ public class DevicesBean implements Devices {
 			return null;
 		}
 		DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE,
-                deviceName, userId);
+				deviceName, userId);
 		return null;
 	}
 
@@ -329,7 +337,7 @@ public class DevicesBean implements Devices {
 			return null;
 		}
 		DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE,
-                deviceName, userId);
+				deviceName, userId);
 		return null;
 	}
 
