@@ -24,25 +24,30 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<h:panelGrid columns="5" border="0" style="border: 1px solid black;">
-				<f:verbatim>#{msgs.helpdeskUser}</f:verbatim>
-				<s:decorate id="decorateSearchUserName">
-					<h:inputText value="#{helpdeskLog.searchUserName}"
-						validator="#{helpdeskLog.validateUser}" id="searchUserName"
-						required="true" />
-				</s:decorate>
-				<rich:suggestionbox for="decorateSearchUserName:searchUserName"
-					suggestionAction="#{helpdeskLog.autocompleteUser}"
-					var="searchUserNameInput" selfRendered="true">
-					<h:column>
-						<h:outputText value="#{searchUserNameInput}" />
-					</h:column>
-				</rich:suggestionbox>
-
-				<h:commandButton action="#{helpdeskLog.searchUser}" id="searchUser"
-					value="#{msgs.searchAction}" styleClass="submit" />
-				<h:messages styleClass="error" />
-			</h:panelGrid>
+            <table class="listingTable">
+                <tr>
+                    <th>#{msgs.helpdeskUser}</th>
+                    <td>
+                        <s:decorate id="decorateSearchUserName">
+                            <h:inputText value="#{helpdeskLog.searchUserName}"
+                                validator="#{helpdeskLog.validateUser}" id="searchUserName"
+                                required="true" />
+                        </s:decorate>
+                        <rich:suggestionbox for="decorateSearchUserName:searchUserName"
+                            suggestionAction="#{helpdeskLog.autocompleteUser}"
+                            var="searchUserNameInput" selfRendered="true">
+                            <h:column>
+                                <h:outputText value="#{searchUserNameInput}" />
+                            </h:column>
+                        </rich:suggestionbox>
+                        <h:messages styleClass="error" />
+                    </td>
+                    <td>
+                        <h:commandButton action="#{helpdeskLog.searchUser}" id="searchUser"
+                            value="#{msgs.searchAction}" styleClass="submit" />
+                    </td>
+                </tr>
+			</table>
 		</h:form>
 
 		<h:form>

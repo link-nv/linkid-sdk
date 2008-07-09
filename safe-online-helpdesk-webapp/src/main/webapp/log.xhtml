@@ -24,22 +24,28 @@
 				<s:span styleClass="" />
 			</f:facet>
 
-			<h:panelGrid columns="5" border="0" style="border: 1px solid black;">
-				<f:verbatim>#{msgs.helpdeskId}</f:verbatim>
-				<s:decorate id="decorateSearchId">
-					<h:inputText value="#{helpdeskLog.searchId}" id="searchId"
-						validator="#{helpdeskLog.validateId}" required="true" />
-				</s:decorate>
-				<rich:suggestionbox for="decorateSearchId:searchId"
-					suggestionAction="#{helpdeskLog.autocomplete}" var="searchIdInput">
-					<h:column>
-						<h:outputText value="#{searchIdInput}" />
-					</h:column>
-				</rich:suggestionbox>
-				<h:commandButton action="#{helpdeskLog.search}" id="search"
-					value="#{msgs.searchAction}" styleClass="submit" />
-				<h:messages styleClass="error" />
-			</h:panelGrid>
+            <table class="listingTable">
+                <tr>
+                    <th>#{msgs.helpdeskId}</th>
+                    <td>
+                        <s:decorate id="decorateSearchId">
+                            <h:inputText value="#{helpdeskLog.searchId}" id="searchId"
+                                validator="#{helpdeskLog.validateId}" required="true" />
+                        </s:decorate>
+                        <rich:suggestionbox for="decorateSearchId:searchId"
+                            suggestionAction="#{helpdeskLog.autocomplete}" var="searchIdInput">
+                            <h:column>
+                                <h:outputText value="#{searchIdInput}" />
+                            </h:column>
+                        </rich:suggestionbox>
+                        <h:messages styleClass="error" />
+                    </td>
+                    <td>
+                        <h:commandButton action="#{helpdeskLog.search}" id="search"
+                            value="#{msgs.searchAction}" styleClass="submit" />
+                    </td>
+                </tr>
+			</table>
 		</h:form>
 
 
