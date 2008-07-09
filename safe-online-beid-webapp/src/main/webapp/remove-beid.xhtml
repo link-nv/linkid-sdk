@@ -20,7 +20,10 @@
 			<param name="HelpdeskEventPath" value="helpdesk" />
 			<param name="HelpPath"
 				value="./help.seam?location=remove-identity.seam" />
+			<param name="SessionId"
+				value="#{facesContext.externalContext.request.session.id}" />
 			<param name="User" value="#{userId}" />
+			<param name="ApplicationId" value="${applicationId}" />
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
 

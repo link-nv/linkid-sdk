@@ -491,7 +491,7 @@ img.label {
     width:              auto;
 }
 select.label, select.label:hover {
-    border:             none;
+    border:             none; 
 }
 input.submit {
     display:            inline;

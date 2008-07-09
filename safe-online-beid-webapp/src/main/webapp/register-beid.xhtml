@@ -21,6 +21,9 @@
 			<param name="HelpdeskEventPath" value="helpdesk" />
 			<param name="HelpPath"
 				value="./help.seam?location=register-beid.seam" />
+			<param name="SessionId"
+				value="#{facesContext.externalContext.request.session.id}" />
+			<param name="ApplicationId" value="${applicationId}" />
 			<param name="NoPkcs11Path" value="no-pkcs11" />
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
