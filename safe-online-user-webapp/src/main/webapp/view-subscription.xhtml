@@ -21,58 +21,61 @@
 
 		<a4j:outputPanel id="subscriptionPanel">
 
-            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-                label="#{msgs.information}">
-                <table class="inner listingTable">
-                    <colgroup />
-                    <colgroup />
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				label="#{msgs.information}">
+				<table class="inner listingTable">
+					<colgroup />
+					<colgroup />
 
-                    <tbody>
-                        <tr>
-                            <th><h:outputText value="#{msgs.name}" /></th>
-                            <td><h:outputText
-                                    value="#{selectedSubscription.application.friendlyName}"
-                                    rendered="#{!empty selectedSubscription.application.friendlyName}" />
-                                <h:outputText value="#{selectedSubscription.application.name}"
-                                    rendered="#{empty selectedSubscription.application.friendlyName}" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><h:outputText value="#{msgs.userOwner}" /></th>
-                            <td><h:outputText
-                                    value="#{selectedSubscription.subscriptionOwnerType}" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><h:outputText value="#{msgs.description}" /></th>
-                            <td><h:outputText value="#{selectedSubscription.application.description}" styleClass="white_space" /></td>
-                        </tr>
-                    </tbody>
-                </table>
+					<tbody>
+						<tr>
+							<th><h:outputText value="#{msgs.name}" /></th>
+							<td><h:outputText
+								value="#{selectedSubscription.application.friendlyName}"
+								rendered="#{!empty selectedSubscription.application.friendlyName}" />
+							<h:outputText value="#{selectedSubscription.application.name}"
+								rendered="#{empty selectedSubscription.application.friendlyName}" />
+							</td>
+						</tr>
+						<tr>
+							<th><h:outputText value="#{msgs.userOwner}" /></th>
+							<td><h:outputText
+								value="#{selectedSubscription.subscriptionOwnerType}" /></td>
+						</tr>
+						<tr>
+							<th><h:outputText value="#{msgs.description}" /></th>
+							<td><h:outputText
+								value="#{selectedSubscription.application.description}"
+								styleClass="white_space" /></td>
+						</tr>
+					</tbody>
+				</table>
 			</rich:simpleTogglePanel>
 
-            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			    label="#{msgs.confirmedUsageAgreement}">
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				opened="false" label="#{msgs.confirmedUsageAgreement}">
 				<div class="white_space">#{subscriptions.usageAgreement}</div>
 			</rich:simpleTogglePanel>
 
-            <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			    label="#{msgs.confirmedIdentity}">
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				opened="false" label="#{msgs.confirmedIdentity}">
 				<ui:repeat id="data" var="item"
 					value="#{confirmedIdentityAttributes}">
-                    <table class="inner listingTable">
-                        <tr><td>
-                                <h:outputText value="#{item.name}"
-                                    rendered="#{empty item.humanReadableName}" />
-                                <h:outputText value="#{item.humanReadableName}"
-                                    rendered="#{!empty item.humanReadableName}" />
-                        </td><td width="1">
-                                <h:graphicImage value="/images/icons/accept.png"
-                                    rendered="#{item.dataMining}" />
-                                <h:graphicImage value="/images/icons/cancel.png"
-                                    rendered="#{!item.dataMining}" />
-                        </td></tr>
-                    </table>
+					<table class="inner listingTable">
+						<tr>
+							<th>#{msgs.attributeName}</th>
+							<th>#{msgs.dataMining}</th>
+						</tr>
+						<tr>
+							<td><h:outputText value="#{item.name}"
+								rendered="#{empty item.humanReadableName}" /> <h:outputText
+								value="#{item.humanReadableName}"
+								rendered="#{!empty item.humanReadableName}" /></td>
+							<td width="1"><h:graphicImage
+								value="/images/icons/accept.png" rendered="#{item.dataMining}" />
+							</td>
+						</tr>
+					</table>
 				</ui:repeat>
 			</rich:simpleTogglePanel>
 		</a4j:outputPanel>
