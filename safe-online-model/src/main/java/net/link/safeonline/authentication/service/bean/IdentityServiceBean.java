@@ -328,15 +328,6 @@ public class IdentityServiceBean implements IdentityService,
 				continue;
 
 			addValueToView(value, attributeType, attributesView, locale);
-
-			/*
-			 * if (attributeType.isDeviceAttribute()) { // in case of a device
-			 * attribute, we'll get a list of values, 1 // for each device
-			 * registration Object[] values = (Object[]) value; for (Object
-			 * deviceValue : values) { addValueToView(deviceValue,
-			 * attributeType, attributesView, locale); } } else {
-			 * addValueToView(value, attributeType, attributesView, locale); }
-			 */
 		}
 		return attributesView;
 	}

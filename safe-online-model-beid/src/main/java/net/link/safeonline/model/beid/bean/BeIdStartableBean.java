@@ -42,7 +42,8 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @Local(Startable.class)
-@LocalBinding(jndiBinding = BeIdConstants.BEID_STARTABLE_JNDI_PREFIX + "BeIdStartableBean")
+@LocalBinding(jndiBinding = BeIdConstants.BEID_STARTABLE_JNDI_PREFIX
+		+ "BeIdStartableBean")
 public class BeIdStartableBean extends AbstractInitBean {
 
 	private static final Log LOG = LogFactory.getLog(BeIdStartableBean.class);
@@ -94,7 +95,7 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 		AttributeTypeEntity beidDeviceAttributeType = new AttributeTypeEntity(
 				BeIdConstants.BEID_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED,
-				false, false, true);
+				true, false, true);
 		beidDeviceAttributeType.setMultivalued(true);
 		beidDeviceAttributeType.addMember(givenNameAttributeType, 0, true);
 		beidDeviceAttributeType.addMember(surnameAttributeType, 1, true);
@@ -111,6 +112,11 @@ public class BeIdStartableBean extends AbstractInitBean {
 				true, false, true);
 		beidDeviceUserAttributeType.setMultivalued(true);
 		this.attributeTypes.add(beidDeviceUserAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				beidDeviceAttributeType, Locale.ENGLISH.getLanguage(),
+				"BeID Name", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				beidDeviceAttributeType, "nl", "BeID Naam", null));
 
 		X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
