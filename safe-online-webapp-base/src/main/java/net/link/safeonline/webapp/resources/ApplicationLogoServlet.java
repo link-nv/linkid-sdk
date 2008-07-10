@@ -60,8 +60,6 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
 	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-        LOG.debug("Resource Base URL: "
-                + ClassLoader.getSystemResource(".").toExternalForm());
 		boolean logoWritten = false;
 		String applicationName = request.getParameter("applicationName");
 		if (null == applicationName)
