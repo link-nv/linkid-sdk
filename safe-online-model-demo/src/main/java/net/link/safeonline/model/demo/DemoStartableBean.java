@@ -279,9 +279,9 @@ public class DemoStartableBean extends AbstractInitBean {
         this.trustedCertificates.put(demoCinemaCertificate,
                 SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         this.registeredApplications.add(new Application(
-                DEMO_CINEMA_APPLICATION_NAME, "owner", null, null, getLogo(),
-                null, true, true, demoCinemaCertificate, false,
-                IdScopeType.SUBSCRIPTION));
+                DEMO_CINEMA_APPLICATION_NAME, "owner", null, null,
+                getLogo("/cinema.png"), null, true, true,
+                demoCinemaCertificate, false, IdScopeType.SUBSCRIPTION));
 
         this.identities.add(new Identity(DEMO_CINEMA_APPLICATION_NAME,
                 new IdentityAttributeTypeDO[] {
