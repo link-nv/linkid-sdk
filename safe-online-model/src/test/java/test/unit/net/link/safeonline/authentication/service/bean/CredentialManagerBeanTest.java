@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.auth.AuthenticationStatementFactory;
+import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
@@ -364,7 +365,7 @@ public class CredentialManagerBeanTest extends TestCase {
 			this.testedInstance.mergeIdentityStatement(deviceMappingId,
 					identityStatement);
 			fail();
-		} catch (PermissionDeniedException e) {
+		} catch (AlreadyRegisteredException e) {
 			// expected
 			verify(this.mockObjects);
 		}
