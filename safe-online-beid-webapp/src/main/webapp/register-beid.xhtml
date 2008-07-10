@@ -23,7 +23,8 @@
 				value="./help.seam?location=register-beid.seam" />
 			<param name="SessionId"
 				value="#{facesContext.externalContext.request.session.id}" />
-			<param name="ApplicationId" value="${applicationId}" />
+			<param name="User" value="#{userId}" />
+			<param name="Operation" value="#{operation}" />
 			<param name="NoPkcs11Path" value="no-pkcs11" />
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>

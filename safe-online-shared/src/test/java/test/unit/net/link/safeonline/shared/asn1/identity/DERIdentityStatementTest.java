@@ -12,6 +12,11 @@ import java.security.KeyPair;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.UUID;
+
+import junit.framework.TestCase;
+import net.link.safeonline.shared.asn1.statement.DERIdentityStatement;
+import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -21,10 +26,6 @@ import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERVisibleString;
 
-import net.link.safeonline.shared.asn1.statement.DERIdentityStatement;
-import net.link.safeonline.test.util.PkiTestUtils;
-import junit.framework.TestCase;
-
 public class DERIdentityStatementTest extends TestCase {
 
 	public void testEncoding() throws Exception {
@@ -33,7 +34,9 @@ public class DERIdentityStatementTest extends TestCase {
 		X509Certificate authCert = PkiTestUtils.generateSelfSignedCertificate(
 				authKeyPair, "CN=AuthTest");
 
+		String sessionId = UUID.randomUUID().toString();
 		String user = "user";
+		String operation = "operation";
 		String givenName = "given-name";
 		String surname = "surname";
 
@@ -41,7 +44,7 @@ public class DERIdentityStatementTest extends TestCase {
 
 		// operate
 		DERIdentityStatement identityStatement = new DERIdentityStatement(
-				authCert, user, givenName, surname);
+				authCert, sessionId, user, operation, givenName, surname);
 		identityStatement.setSignature(signature);
 		byte[] result = identityStatement.getEncoded();
 
@@ -54,9 +57,19 @@ public class DERIdentityStatementTest extends TestCase {
 				.getObjectAt(DERIdentityStatement.VERSION_IDX));
 		assertEquals(1, version.getValue().intValue());
 
+		DERVisibleString sessionIdString = DERVisibleString
+				.getInstance(bodySequence
+						.getObjectAt(DERIdentityStatement.SESSION_IDX));
+		assertEquals(sessionId, sessionIdString.getString());
+
 		DERVisibleString userString = DERVisibleString.getInstance(bodySequence
 				.getObjectAt(DERIdentityStatement.USER_IDX));
 		assertEquals(user, userString.getString());
+
+		DERVisibleString operationString = DERVisibleString
+				.getInstance(bodySequence
+						.getObjectAt(DERIdentityStatement.OPERATION_IDX));
+		assertEquals(operation, operationString.getString());
 
 		DERVisibleString givenNameString = DERVisibleString
 				.getInstance(bodySequence

@@ -205,6 +205,9 @@ public class LandingServletTest {
 		String resultUserId = (String) this.servletTestManager
 				.getSessionAttribute("userId");
 		assertEquals(this.userId, resultUserId);
+		String resultOperation = (String) this.servletTestManager
+				.getSessionAttribute("operation");
+		assertEquals(DeviceOperationType.REGISTER.name(), resultOperation);
 		ProtocolContext protocolContext = (ProtocolContext) this.servletTestManager
 				.getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
 		assertNotNull(protocolContext);
@@ -242,6 +245,9 @@ public class LandingServletTest {
 		String resultUserId = (String) this.servletTestManager
 				.getSessionAttribute("userId");
 		assertEquals(this.userId, resultUserId);
+		String resultOperation = (String) this.servletTestManager
+				.getSessionAttribute("operation");
+		assertEquals(DeviceOperationType.REMOVE.name(), resultOperation);
 		ProtocolContext protocolContext = (ProtocolContext) this.servletTestManager
 				.getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
 		assertNotNull(protocolContext);
@@ -279,6 +285,9 @@ public class LandingServletTest {
 		String resultUserId = (String) this.servletTestManager
 				.getSessionAttribute("userId");
 		assertEquals(this.userId, resultUserId);
+		String resultOperation = (String) this.servletTestManager
+				.getSessionAttribute("operation");
+		assertEquals(DeviceOperationType.UPDATE.name(), resultOperation);
 		ProtocolContext protocolContext = (ProtocolContext) this.servletTestManager
 				.getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
 		assertNotNull(protocolContext);

@@ -9,9 +9,11 @@ package test.unit.net.link.safeonline.authentication.service.bean;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.authentication.service.bean.IdentityStatement;
+import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.shared.JceSigner;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.IdentityProvider;
@@ -24,7 +26,9 @@ public class IdentityStatementTest extends TestCase {
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		String user = "test-user";
+		String sessionId = UUID.randomUUID().toString();
+		String userId = "test-user";
+		String operation = DeviceOperationType.REGISTER.name();
 		final String givenName = "test-given-name";
 		final String surname = "test-surname";
 
@@ -41,7 +45,7 @@ public class IdentityStatementTest extends TestCase {
 		Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
 
 		net.link.safeonline.shared.statement.IdentityStatement testIdentityStatement = new net.link.safeonline.shared.statement.IdentityStatement(
-				user, identityProvider, signer);
+				sessionId, userId, operation, identityProvider, signer);
 
 		byte[] encodedIdentityStatement = testIdentityStatement
 				.generateStatement();
@@ -55,6 +59,9 @@ public class IdentityStatementTest extends TestCase {
 		// verify
 		assertNotNull(resultCertificate);
 		assertEquals(certificate, resultCertificate);
+		assertEquals(sessionId, identityStatement.getSessionId());
+		assertEquals(userId, identityStatement.getUser());
+		assertEquals(operation, identityStatement.getOperation());
 		assertEquals(givenName, identityStatement.getGivenName());
 		assertEquals(surname, identityStatement.getSurname());
 	}

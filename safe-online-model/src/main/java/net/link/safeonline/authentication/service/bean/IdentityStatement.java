@@ -28,4 +28,12 @@ public class IdentityStatement extends
 	public String getUser() {
 		return super.getStatementStructure().getUser();
 	}
+
+	public String getSessionId() {
+		return super.getStatementStructure().getSessionId();
+	}
+
+	public String getOperation() {
+		return super.getStatementStructure().getOperation();
+	}
 }

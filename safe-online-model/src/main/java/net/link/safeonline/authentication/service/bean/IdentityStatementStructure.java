@@ -23,7 +23,11 @@ public class IdentityStatementStructure extends AbstractStatementStructure {
 		super(encodedIdentityStatement);
 	}
 
+	private String sessionId;
+
 	private String user;
+
+	private String operation;
 
 	private String givenName;
 
@@ -33,7 +37,7 @@ public class IdentityStatementStructure extends AbstractStatementStructure {
 
 	@Override
 	protected void decode(ASN1Sequence tbsSequence) throws DecodingException {
-		if (tbsSequence.size() != 5) {
+		if (tbsSequence.size() != 7) {
 			throw new DecodingException();
 		}
 
@@ -42,8 +46,14 @@ public class IdentityStatementStructure extends AbstractStatementStructure {
 		if (version.getValue().intValue() != DERIdentityStatement.VERSION) {
 			throw new DecodingException();
 		}
+		this.sessionId = DERVisibleString.getInstance(
+				tbsSequence.getObjectAt(DERIdentityStatement.SESSION_IDX))
+				.getString();
 		this.user = DERVisibleString.getInstance(
 				tbsSequence.getObjectAt(DERIdentityStatement.USER_IDX))
+				.getString();
+		this.operation = DERVisibleString.getInstance(
+				tbsSequence.getObjectAt(DERIdentityStatement.OPERATION_IDX))
 				.getString();
 		this.givenName = DERVisibleString.getInstance(
 				tbsSequence.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX))
@@ -68,6 +78,14 @@ public class IdentityStatementStructure extends AbstractStatementStructure {
 
 	public String getUser() {
 		return this.user;
+	}
+
+	public String getSessionId() {
+		return this.sessionId;
+	}
+
+	public String getOperation() {
+		return this.operation;
 	}
 
 	@Override

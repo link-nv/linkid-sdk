@@ -9,6 +9,7 @@ package test.unit.net.link.safeonline.shared.identity;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.shared.JceSigner;
@@ -33,7 +34,9 @@ public class IdentityStatementTest extends TestCase {
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair,
 						"CN=AuthenticationCertificate");
+		String sessionId = UUID.randomUUID().toString();
 		String user = "user";
+		String operation = "operation";
 
 		Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
 
@@ -48,8 +51,8 @@ public class IdentityStatementTest extends TestCase {
 		};
 
 		// operate
-		IdentityStatement identityStatement = new IdentityStatement(user,
-				identityProvider, signer);
+		IdentityStatement identityStatement = new IdentityStatement(sessionId,
+				user, operation, identityProvider, signer);
 		byte[] resultIdentityStatement = identityStatement.generateStatement();
 
 		// verify

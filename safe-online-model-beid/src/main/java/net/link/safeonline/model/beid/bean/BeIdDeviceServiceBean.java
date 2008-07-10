@@ -45,22 +45,26 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 				authenticationStatement);
 	}
 
-	public void register(String deviceUserId, byte[] identityStatementData)
+	public void register(String sessionId, String deviceUserId,
+			String operation, byte[] identityStatementData)
 			throws PermissionDeniedException, ArgumentIntegrityException,
 			AttributeTypeNotFoundException, TrustDomainNotFoundException,
 			DeviceNotFoundException, AttributeNotFoundException,
 			AlreadyRegisteredException {
-		LOG.debug("register: " + deviceUserId);
-		this.credentialManager.mergeIdentityStatement(deviceUserId,
-				identityStatementData);
+		LOG.debug("register: sessionId=" + sessionId + " userId="
+				+ deviceUserId + " operation=" + operation);
+		this.credentialManager.mergeIdentityStatement(sessionId, deviceUserId,
+				operation, identityStatementData);
 	}
 
-	public void remove(String deviceUserId, byte[] identityStatementData)
-			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException,
-			SubjectNotFoundException, DeviceNotFoundException {
-		LOG.debug("remove");
-		this.credentialManager.removeIdentity(deviceUserId,
-				identityStatementData);
+	public void remove(String sessionId, String deviceUserId, String operation,
+			byte[] identityStatementData) throws TrustDomainNotFoundException,
+			PermissionDeniedException, ArgumentIntegrityException,
+			AttributeTypeNotFoundException, SubjectNotFoundException,
+			DeviceNotFoundException {
+		LOG.debug("remove: sessionId=" + sessionId + " userId=" + deviceUserId
+				+ " operation=" + operation);
+		this.credentialManager.removeIdentity(sessionId, deviceUserId,
+				operation, identityStatementData);
 	}
 }

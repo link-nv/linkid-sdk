@@ -27,13 +27,15 @@ public interface CredentialManager {
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException;
 
-	void mergeIdentityStatement(String deviceUserId,
-			byte[] identityStatementData) throws TrustDomainNotFoundException,
-			PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException, DeviceNotFoundException,
-			AttributeNotFoundException, AlreadyRegisteredException;
+	void mergeIdentityStatement(String sessionId, String deviceUserId,
+			String operation, byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException, AttributeTypeNotFoundException,
+			DeviceNotFoundException, AttributeNotFoundException,
+			AlreadyRegisteredException;
 
-	void removeIdentity(String deviceUserId, byte[] identityStatementData)
+	void removeIdentity(String sessionId, String deviceUserId,
+			String operation, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException,
 			SubjectNotFoundException, DeviceNotFoundException;

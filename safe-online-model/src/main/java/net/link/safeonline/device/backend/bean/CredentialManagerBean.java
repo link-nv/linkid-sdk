@@ -13,9 +13,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
@@ -46,12 +43,23 @@ import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.service.SubjectService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 @Stateless
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class CredentialManagerBean implements CredentialManager {
 
 	private static final Log LOG = LogFactory
 			.getLog(CredentialManagerBean.class);
+
+	public static final String SECURITY_MESSAGE_SESSION_ID_MISMATCH = "Session ID mismatch";
+
+	public static final String SECURITY_MESSAGE_APPLICATION_ID_MISMATCH = "Application ID mismatch";
+
+	public static final String SECURITY_MESSAGE_USER_MISMATCH = "User mismatch";
+
+	public static final String SECURITY_MESSAGE_OPERATION_MISMATCH = "Operation mismatch";
 
 	@EJB
 	private PkiProviderManager pkiProviderManager;
@@ -101,13 +109,15 @@ public class CredentialManagerBean implements CredentialManager {
 
 		if (false == sessionId.equals(statementSessionId)) {
 			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, "session Id mismatch");
+					SecurityThreatType.DECEPTION,
+					SECURITY_MESSAGE_SESSION_ID_MISMATCH);
 			throw new ArgumentIntegrityException();
 		}
 
 		if (false == applicationId.equals(statementApplicationId)) {
 			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, "application Id mismatch");
+					SecurityThreatType.DECEPTION,
+					SECURITY_MESSAGE_APPLICATION_ID_MISMATCH);
 			throw new ArgumentIntegrityException();
 		}
 
@@ -124,11 +134,12 @@ public class CredentialManagerBean implements CredentialManager {
 
 	}
 
-	public void mergeIdentityStatement(String deviceUserId,
-			byte[] identityStatementData) throws TrustDomainNotFoundException,
-			PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException, DeviceNotFoundException,
-			AttributeNotFoundException, AlreadyRegisteredException {
+	public void mergeIdentityStatement(String sessionId, String deviceUserId,
+			String operation, byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException, AttributeTypeNotFoundException,
+			DeviceNotFoundException, AttributeNotFoundException,
+			AlreadyRegisteredException {
 		/*
 		 * First check integrity of the received identity statement.
 		 */
@@ -144,6 +155,10 @@ public class CredentialManagerBean implements CredentialManager {
 			throw new ArgumentIntegrityException();
 		}
 
+		String statementSessionId = identityStatement.getSessionId();
+		String statementOperation = identityStatement.getOperation();
+		String statementUser = identityStatement.getUser();
+
 		PkiProvider pkiProvider = this.pkiProviderManager
 				.findPkiProvider(certificate);
 		if (null == pkiProvider) {
@@ -158,12 +173,25 @@ public class CredentialManagerBean implements CredentialManager {
 		}
 
 		/*
-		 * Check whether the identity statement is owned by the authenticated
-		 * user.
+		 * Check whether the identity statement properties are ok.
 		 */
-		String user = identityStatement.getUser();
-		if (false == deviceUserId.equals(user)) {
-			throw new PermissionDeniedException("statement user mismatch");
+		if (false == deviceUserId.equals(statementUser)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION,
+					SECURITY_MESSAGE_USER_MISMATCH);
+			throw new PermissionDeniedException(SECURITY_MESSAGE_USER_MISMATCH);
+		}
+		if (false == sessionId.equals(statementSessionId)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION,
+					SECURITY_MESSAGE_SESSION_ID_MISMATCH);
+			throw new ArgumentIntegrityException();
+		}
+		if (false == operation.equals(statementOperation)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION,
+					SECURITY_MESSAGE_OPERATION_MISMATCH);
+			throw new ArgumentIntegrityException();
 		}
 
 		SubjectEntity deviceRegistration;
@@ -244,7 +272,8 @@ public class CredentialManagerBean implements CredentialManager {
 				.addOrUpdateAttribute(attributeType, subject, 0, value);
 	}
 
-	public void removeIdentity(String deviceUserId, byte[] identityStatementData)
+	public void removeIdentity(String sessionId, String deviceUserId,
+			String operation, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException,
 			SubjectNotFoundException, DeviceNotFoundException {
@@ -266,6 +295,10 @@ public class CredentialManagerBean implements CredentialManager {
 			throw new ArgumentIntegrityException();
 		}
 
+		String statementSessionId = identityStatement.getSessionId();
+		String statementOperation = identityStatement.getOperation();
+		String statementUser = identityStatement.getUser();
+
 		PkiProvider pkiProvider = this.pkiProviderManager
 				.findPkiProvider(certificate);
 		if (null == pkiProvider) {
@@ -280,12 +313,25 @@ public class CredentialManagerBean implements CredentialManager {
 		}
 
 		/*
-		 * Check whether the identity statement is owned by the authenticated
-		 * user.
+		 * Check whether the identity statement properties are ok.
 		 */
-		String user = identityStatement.getUser();
-		if (false == deviceUserId.equals(user)) {
-			throw new PermissionDeniedException("statement user mismatch");
+		if (false == deviceUserId.equals(statementUser)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION,
+					SECURITY_MESSAGE_USER_MISMATCH);
+			throw new PermissionDeniedException(SECURITY_MESSAGE_USER_MISMATCH);
+		}
+		if (false == sessionId.equals(statementSessionId)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION,
+					SECURITY_MESSAGE_SESSION_ID_MISMATCH);
+			throw new ArgumentIntegrityException();
+		}
+		if (false == operation.equals(statementOperation)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION,
+					SECURITY_MESSAGE_OPERATION_MISMATCH);
+			throw new ArgumentIntegrityException();
 		}
 
 		String domain = pkiProvider.getIdentifierDomainName();

@@ -25,7 +25,8 @@
 				value="./help.seam?location=register-beid-pcsc.seam" />
 			<param name="SessionId"
 				value="#{facesContext.externalContext.request.session.id}" />
-			<param name="ApplicationId" value="${applicationId}" />
+			<param name="User" value="#{userId}" />
+			<param name="Operation" value="#{operation}" />
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
 

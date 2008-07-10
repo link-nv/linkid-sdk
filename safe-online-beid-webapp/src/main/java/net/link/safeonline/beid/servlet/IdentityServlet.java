@@ -52,6 +52,9 @@ public class IdentityServlet extends AbstractStatementServlet {
 	@Override
 	protected void processStatement(byte[] statementData, HttpSession session,
 			HttpServletResponse response) throws IOException {
+		String sessionId = session.getId();
+		LOG.debug("session Id: " + sessionId);
+
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(session);
 		PrintWriter writer = response.getWriter();
@@ -60,7 +63,9 @@ public class IdentityServlet extends AbstractStatementServlet {
 					.getAuthnAssertionValidity());
 
 			String userId = (String) session.getAttribute("userId");
-			this.beIdDeviceService.register(userId, statementData);
+			String operation = (String) session.getAttribute("operation");
+			this.beIdDeviceService.register(sessionId, userId, operation,
+					statementData);
 			response.setStatus(HttpServletResponse.SC_OK);
 			// notify that registration was successful.
 			protocolContext.setSuccess(true);

@@ -197,7 +197,7 @@ public class Saml2Handler implements Serializable {
 		protocolContext.setDeviceOperation(deviceOperation);
 
 		request.getSession().setAttribute("userId", deviceUserId);
-
+		request.getSession().setAttribute("operation", deviceOperation.name());
 		return deviceOperation;
 	}
 

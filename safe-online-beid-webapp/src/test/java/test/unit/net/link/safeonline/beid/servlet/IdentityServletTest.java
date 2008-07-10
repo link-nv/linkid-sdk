@@ -117,6 +117,7 @@ public class IdentityServletTest {
 
 		// expectations
 		this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(),
+				(String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
 				EasyMock.aryEq("test-message".getBytes()));
 		EasyMock.expect(
 				this.mockSamlAuthorityService.getAuthnAssertionValidity())
@@ -154,6 +155,7 @@ public class IdentityServletTest {
 
 		// expectations
 		this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(),
+				(String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
 				EasyMock.aryEq("test-message".getBytes()));
 		EasyMock.expect(
 				this.mockSamlAuthorityService.getAuthnAssertionValidity())

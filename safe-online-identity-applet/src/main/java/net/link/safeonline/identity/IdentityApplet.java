@@ -38,6 +38,9 @@ public class IdentityApplet extends AppletBase {
 	@Override
 	public byte[] createStatement(Signer signer,
 			IdentityProvider identityProvider) {
+		String sessionId = getParameter("SessionId");
+		String user = getParameter("User");
+		String operation = getParameter("Operation");
 
 		Locale locale = getLocale();
 		ResourceBundle messages = ResourceBundle.getBundle(
@@ -45,10 +48,12 @@ public class IdentityApplet extends AppletBase {
 
 		super.outputInfoMessage(InfoLevel.NORMAL, messages
 				.getString("creatingStmt"));
-		String user = getParameter("User");
+		super.outputDetailMessage("Session ID: " + sessionId);
 		super.outputDetailMessage("User: " + user);
+		super.outputDetailMessage("Operation: " + operation);
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(user, signer, identityProvider);
+				.createIdentityStatement(sessionId, user, operation, signer,
+						identityProvider);
 		return identityStatement;
 	}
 }

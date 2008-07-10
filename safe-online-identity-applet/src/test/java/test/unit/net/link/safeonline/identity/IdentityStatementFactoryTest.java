@@ -9,6 +9,7 @@ package test.unit.net.link.safeonline.identity;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.identity.IdentityStatementFactory;
@@ -30,7 +31,9 @@ public class IdentityStatementFactoryTest extends TestCase {
 
 	public void testCreateIdentityStatement() throws Exception {
 		// setup
+		String sessionId = UUID.randomUUID().toString();
 		String testUser = "test-user";
+		String testOperation = "test-operation";
 		KeyPair testKeyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate testCertificate = PkiTestUtils
 				.generateSelfSignedCertificate(testKeyPair, "CN=Test");
@@ -49,7 +52,7 @@ public class IdentityStatementFactoryTest extends TestCase {
 
 		// operate
 		byte[] result = IdentityStatementFactory.createIdentityStatement(
-				testUser, signer, identityProvider);
+				sessionId, testUser, testOperation, signer, identityProvider);
 
 		// verify
 		assertNotNull(result);

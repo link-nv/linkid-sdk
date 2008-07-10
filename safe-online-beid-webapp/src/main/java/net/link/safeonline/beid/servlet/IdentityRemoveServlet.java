@@ -50,6 +50,9 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
 	@Override
 	protected void processStatement(byte[] statementData, HttpSession session,
 			HttpServletResponse response) throws ServletException, IOException {
+		String sessionId = session.getId();
+		LOG.debug("session Id: " + sessionId);
+
 		PrintWriter writer = response.getWriter();
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(session);
@@ -57,7 +60,9 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
 			protocolContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
 			String userId = (String) session.getAttribute("userId");
-			this.beIdDeviceService.remove(userId, statementData);
+			String operation = (String) session.getAttribute("operation");
+			this.beIdDeviceService.remove(sessionId, userId, operation,
+					statementData);
 			response.setStatus(HttpServletResponse.SC_OK);
 			protocolContext.setSuccess(true);
 		} catch (TrustDomainNotFoundException e) {

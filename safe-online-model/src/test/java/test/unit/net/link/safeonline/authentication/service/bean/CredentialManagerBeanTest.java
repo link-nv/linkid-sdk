@@ -18,6 +18,7 @@ import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import junit.framework.TestCase;
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.auth.AuthenticationStatementFactory;
 import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
@@ -30,12 +31,14 @@ import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.bean.CredentialManagerBean;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.identity.IdentityStatementFactory;
 import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.shared.JceSigner;
 import net.link.safeonline.shared.Signer;
@@ -76,6 +79,8 @@ public class CredentialManagerBeanTest extends TestCase {
 
 	private IdentityProvider identityProvider;
 
+	private SecurityAuditLogger mockSecurityAuditLogger;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -102,10 +107,14 @@ public class CredentialManagerBeanTest extends TestCase {
 		this.mockSubjectService = createMock(SubjectService.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockSubjectService);
 
+		this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockSecurityAuditLogger);
+
 		this.mockObjects = new Object[] { this.mockAttributeDAO,
 				this.mockPkiProviderManager, this.mockPkiValidator,
 				this.mockPkiProvider, this.mockSubjectIdentifierDAO,
-				this.mockAttributeTypeDAO, this.mockSubjectService };
+				this.mockAttributeTypeDAO, this.mockSubjectService,
+				this.mockSecurityAuditLogger };
 
 		EJBTestUtils.init(this.testedInstance);
 
@@ -189,15 +198,17 @@ public class CredentialManagerBeanTest extends TestCase {
 		// setup
 		byte[] identityStatement = "foobar-identity-statemennt".getBytes();
 
-		SubjectEntity subject = new SubjectEntity();
+		String sessionId = UUID.randomUUID().toString();
+		String deviceUserId = UUID.randomUUID().toString();
+		String operation = DeviceOperationType.REGISTER.name();
 
 		// prepare
 		replay(this.mockObjects);
 
 		// operate
 		try {
-			this.testedInstance.mergeIdentityStatement(subject.getUserId(),
-					identityStatement);
+			this.testedInstance.mergeIdentityStatement(sessionId, deviceUserId,
+					operation, identityStatement);
 			fail();
 		} catch (ArgumentIntegrityException e) {
 			// expected
@@ -209,6 +220,8 @@ public class CredentialManagerBeanTest extends TestCase {
 
 	public void testMergeIdentityStatement() throws Exception {
 		// setup
+		String sessionId = UUID.randomUUID().toString();
+		String operation = DeviceOperationType.REGISTER.name();
 		String deviceMappingId = UUID.randomUUID().toString();
 		String deviceRegistrationId = UUID.randomUUID().toString();
 		DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
@@ -218,8 +231,8 @@ public class CredentialManagerBeanTest extends TestCase {
 		deviceSubject.getRegistrations().add(deviceRegistration);
 
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(deviceMappingId, this.signer,
-						this.identityProvider);
+				.createIdentityStatement(sessionId, deviceMappingId, operation,
+						this.signer, this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 		String surnameAttribute = "test-surname-attribute";
@@ -290,8 +303,8 @@ public class CredentialManagerBeanTest extends TestCase {
 		replay(this.mockObjects);
 
 		// operate
-		this.testedInstance.mergeIdentityStatement(deviceMappingId,
-				identityStatement);
+		this.testedInstance.mergeIdentityStatement(sessionId, deviceMappingId,
+				operation, identityStatement);
 
 		// verify
 		verify(this.mockObjects);
@@ -300,6 +313,8 @@ public class CredentialManagerBeanTest extends TestCase {
 	public void testMergeIdentityStatementFailsIfAnotherSubjectAlreadyRegisteredTheCert()
 			throws Exception {
 		// setup
+		String sessionId = UUID.randomUUID().toString();
+		String operation = DeviceOperationType.REGISTER.name();
 		String deviceMappingId = UUID.randomUUID().toString();
 		String deviceRegistrationId = UUID.randomUUID().toString();
 		DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
@@ -309,8 +324,8 @@ public class CredentialManagerBeanTest extends TestCase {
 		deviceSubject.getRegistrations().add(deviceRegistration);
 
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(deviceMappingId, this.signer,
-						this.identityProvider);
+				.createIdentityStatement(sessionId, deviceMappingId, operation,
+						this.signer, this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 		String surnameAttribute = "test-surname-attribute";
@@ -350,20 +365,13 @@ public class CredentialManagerBeanTest extends TestCase {
 				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
 						identifier)).andStubReturn(anotherSubject);
 
-		expect(this.mockSubjectService.findDeviceSubject(deviceMappingId))
-				.andReturn(null);
-		expect(this.mockSubjectService.addDeviceSubject(deviceMappingId))
-				.andReturn(deviceSubject);
-		expect(this.mockSubjectService.addDeviceRegistration()).andReturn(
-				deviceRegistration);
-
 		// prepare
 		replay(this.mockObjects);
 
 		// operate & verify
 		try {
-			this.testedInstance.mergeIdentityStatement(deviceMappingId,
-					identityStatement);
+			this.testedInstance.mergeIdentityStatement(sessionId,
+					deviceMappingId, operation, identityStatement);
 			fail();
 		} catch (AlreadyRegisteredException e) {
 			// expected
@@ -374,10 +382,12 @@ public class CredentialManagerBeanTest extends TestCase {
 	public void testMergeIdentityStatementFailsIfLoginAndUserDoNotCorrespond()
 			throws Exception {
 		// setup
+		String sessionId = UUID.randomUUID().toString();
+		String operation = DeviceOperationType.REGISTER.name();
 		String user = "foobar-test-user";
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(user, this.signer,
-						this.identityProvider);
+				.createIdentityStatement(sessionId, user, operation,
+						this.signer, this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 
@@ -387,33 +397,111 @@ public class CredentialManagerBeanTest extends TestCase {
 		expect(
 				this.mockPkiValidator.validateCertificate(trustDomain,
 						this.certificate)).andStubReturn(true);
+		this.mockSecurityAuditLogger.addSecurityAudit(
+				SecurityThreatType.DECEPTION,
+				CredentialManagerBean.SECURITY_MESSAGE_USER_MISMATCH);
 
 		// prepare
 		replay(this.mockObjects);
 
 		// operate & verify
 		try {
-			this.testedInstance.mergeIdentityStatement(this.testSubject
-					.getUserId(), identityStatement);
+			this.testedInstance.mergeIdentityStatement(sessionId,
+					this.testSubject.getUserId(), operation, identityStatement);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
 			verify(this.mockObjects);
 		}
+	}
 
+	public void testMergeIdentityStatementFailsIfSessionIdIsInvalid()
+			throws Exception {
+		// setup
+		String sessionId = UUID.randomUUID().toString();
+		String wrongSessionId = "wrong-session-id";
+		String operation = DeviceOperationType.REGISTER.name();
+		String userId = UUID.randomUUID().toString();
+		byte[] identityStatement = IdentityStatementFactory
+				.createIdentityStatement(wrongSessionId, userId, operation,
+						this.signer, this.identityProvider);
+		TrustDomainEntity trustDomain = new TrustDomainEntity(
+				"test-trust-domain", true);
+
+		// stubs
+		expect(this.mockPkiProvider.getTrustDomain())
+				.andStubReturn(trustDomain);
+		expect(
+				this.mockPkiValidator.validateCertificate(trustDomain,
+						this.certificate)).andStubReturn(true);
+		this.mockSecurityAuditLogger.addSecurityAudit(
+				SecurityThreatType.DECEPTION,
+				CredentialManagerBean.SECURITY_MESSAGE_SESSION_ID_MISMATCH);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate & verify
+		try {
+			this.testedInstance.mergeIdentityStatement(sessionId, userId,
+					operation, identityStatement);
+			fail();
+		} catch (ArgumentIntegrityException e) {
+			// expected
+			verify(this.mockObjects);
+		}
+	}
+
+	public void testMergeIdentityStatementFailsIfOperationIdIsInvalid()
+			throws Exception {
+		// setup
+		String sessionId = UUID.randomUUID().toString();
+		String operation = DeviceOperationType.REGISTER.name();
+		String wrongOperation = "wrong-operation";
+		String userId = UUID.randomUUID().toString();
+		byte[] identityStatement = IdentityStatementFactory
+				.createIdentityStatement(sessionId, userId, wrongOperation,
+						this.signer, this.identityProvider);
+		TrustDomainEntity trustDomain = new TrustDomainEntity(
+				"test-trust-domain", true);
+
+		// stubs
+		expect(this.mockPkiProvider.getTrustDomain())
+				.andStubReturn(trustDomain);
+		expect(
+				this.mockPkiValidator.validateCertificate(trustDomain,
+						this.certificate)).andStubReturn(true);
+		this.mockSecurityAuditLogger.addSecurityAudit(
+				SecurityThreatType.DECEPTION,
+				CredentialManagerBean.SECURITY_MESSAGE_OPERATION_MISMATCH);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate & verify
+		try {
+			this.testedInstance.mergeIdentityStatement(sessionId, userId,
+					operation, identityStatement);
+			fail();
+		} catch (ArgumentIntegrityException e) {
+			// expected
+			verify(this.mockObjects);
+		}
 	}
 
 	public void testMergeIdentityStatementFailsIfNotSignedByClaimedAuthCert()
 			throws Exception {
 		// setup
-		String user = "test-user";
+		String sessionId = UUID.randomUUID().toString();
+		String userId = "test-user";
+		String operation = DeviceOperationType.REGISTER.name();
 
 		KeyPair otherKeyPair = PkiTestUtils.generateKeyPair();
 		Signer otherSigner = new JceSigner(otherKeyPair.getPrivate(),
 				this.certificate);
 
-		IdentityStatement identityStatement = new IdentityStatement(user,
-				this.identityProvider, otherSigner);
+		IdentityStatement identityStatement = new IdentityStatement(sessionId,
+				userId, operation, this.identityProvider, otherSigner);
 		byte[] identityStatementData = identityStatement.generateStatement();
 
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
@@ -429,8 +517,8 @@ public class CredentialManagerBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			this.testedInstance.mergeIdentityStatement(this.testSubject
-					.getUserId(), identityStatementData);
+			this.testedInstance.mergeIdentityStatement(sessionId, userId,
+					operation, identityStatementData);
 			fail();
 		} catch (ArgumentIntegrityException e) {
 			// expected
@@ -441,10 +529,13 @@ public class CredentialManagerBeanTest extends TestCase {
 	public void testMergeIdentityStatementFailsIfCertNotTrusted()
 			throws Exception {
 		// setup
-		String user = "test-user";
+		String sessionId = UUID.randomUUID().toString();
+		String userId = "test-user";
+		String operation = DeviceOperationType.REGISTER.name();
+
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(user, this.signer,
-						this.identityProvider);
+				.createIdentityStatement(sessionId, userId, operation,
+						this.signer, this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 
@@ -460,8 +551,8 @@ public class CredentialManagerBeanTest extends TestCase {
 
 		// operate
 		try {
-			this.testedInstance.mergeIdentityStatement(this.testSubject
-					.getUserId(), identityStatement);
+			this.testedInstance.mergeIdentityStatement(sessionId, userId,
+					operation, identityStatement);
 			fail();
 		} catch (ArgumentIntegrityException e) {
 			// expected

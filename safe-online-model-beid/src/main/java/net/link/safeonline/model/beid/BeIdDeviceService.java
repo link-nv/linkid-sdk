@@ -27,15 +27,16 @@ public interface BeIdDeviceService {
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException;
 
-	void register(String deviceUserId, byte[] identityStatementData)
-			throws PermissionDeniedException, ArgumentIntegrityException,
-			TrustDomainNotFoundException, AttributeTypeNotFoundException,
-			DeviceNotFoundException, AttributeNotFoundException,
-			AlreadyRegisteredException;
+	void register(String sessionId, String deviceUserId, String operation,
+			byte[] identityStatementData) throws PermissionDeniedException,
+			ArgumentIntegrityException, TrustDomainNotFoundException,
+			AttributeTypeNotFoundException, DeviceNotFoundException,
+			AttributeNotFoundException, AlreadyRegisteredException;
 
-	void remove(String deviceUserId, byte[] identityStatementData)
-			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException,
-			SubjectNotFoundException, DeviceNotFoundException;
+	void remove(String sessionId, String deviceUserId, String operation,
+			byte[] identityStatementData) throws TrustDomainNotFoundException,
+			PermissionDeniedException, ArgumentIntegrityException,
+			AttributeTypeNotFoundException, SubjectNotFoundException,
+			DeviceNotFoundException;
 
 }
