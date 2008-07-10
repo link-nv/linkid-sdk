@@ -60,28 +60,32 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
 	protected void invokeGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
+        LOG.debug("Resource Base URL: "
+                + ClassLoader.getSystemResource(".").toExternalForm());
 		boolean logoWritten = false;
 		String applicationName = request.getParameter("applicationName");
-		if (null == applicationName) {
-			throw new IllegalArgumentException(
+		if (null == applicationName)
+            throw new IllegalArgumentException(
 					"The application name must be provided.");
-		}
 
 		try {
 			PublicApplication application = this.publicApplicationService
 					.findPublicApplication(applicationName);
-			if (application == null)
+			if (application == null) {
+                LOG.debug("No application found by name of " + applicationName);
 				return;
+			}
 
 			byte[] logo = application.getLogo();
-			if (null == logo)
+			if (null == logo) {
+                LOG.debug("No logo found for application " + applicationName);
 				return;
+			}
 
 			MagicMatch magic = Magic.getMagicMatch(logo);
-			if (!magic.getMimeType().startsWith("image/")) {
-				throw new IllegalStateException(
-						"Not allowed to load non-image data out of the application URL field.");
-			}
+			if (!magic.getMimeType().startsWith("image/"))
+                throw new IllegalStateException(
+						"Application logo is not an image; refusing to show.");
 
 			response.setContentType(magic.getMimeType());
 			response.getOutputStream().write(logo);

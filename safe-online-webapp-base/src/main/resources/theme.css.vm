@@ -72,11 +72,14 @@ table.rich-table    tfoot tr, table.rich-table    thead tr {
 }
 
 
+textarea,
 table.rich-table tbody tr th, table.rich-table tbody tr td,
 table.listingTable tbody tr th, table.listingTable tbody tr td {
 
     border-color:       #E8E7E7 !important;
 }
+
+
 table.listingTable, table.rich-table {
 
     border-top-color:   #E8E7E7;
@@ -141,8 +144,7 @@ input.radio,
 
 
 #sidebox ul,
-input.label,
-textarea.label {
+input.label {
 
     border-color:       #333;
 }
@@ -170,12 +172,6 @@ ul.timeline li.active,
 #sidebox li a {
 
     color:              $bright;
-}
-
-
-textarea {
-
-    border-color:       $bright;
 }
 
 

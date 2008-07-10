@@ -312,7 +312,7 @@ spinner() {
     trap 'break' USR1
 
     # Toggle screen monitor status.
-    [[ $TERM = screen* ]] && screen -X monitor
+    [[ $TERM = screen* ]] && screen -X monitor >/dev/null 2>&1
 
     # Figure out what FD to use for our messages.
     [[ -t 1 ]]; local fd=$(( $? + 1 ))
@@ -350,7 +350,7 @@ spinner() {
     trap - USR1 USR2; (( monitor )) && set -m
 
     # Toggle screen monitor status back.
-    [[ $TERM = screen* ]] && screen -X monitor
+    [[ $TERM = screen* ]] && screen -X monitor >/dev/null 2>&1
 
     # Spinner final status.
     if (( output ))

@@ -25,7 +25,7 @@ pwd=$PWD
 # Figure out which webapps to use.
 (( $# )) && \
     webapps=("$@") || \
-    webapps=( SafeOnline{,Beid,Demo,Digipas,Encap} )
+    webapps=( SafeOnline{,Beid,Demo,Digipass,Encap} )
 (( ! ${#repos[@]} )) && {
     repos=()
     for webapp in "${webapps[@]}"; do

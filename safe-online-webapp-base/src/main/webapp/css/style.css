@@ -98,7 +98,7 @@ a:hover {
 
     border:             1px solid transparent;
 }
-#header span:hover img {
+#header a:hover img {
     border:             1px solid white;
 }
 
@@ -206,7 +206,7 @@ a:hover {
     float:              right;
 
     width:              300px;
-    margin:             0;
+    margin:             0 0 0 2em;
     padding:            0;
 
     text-align:         left;
@@ -267,29 +267,20 @@ a:hover {
 }
 
 /******************************************************* TIMELINE **/
-ul.timeline {
-    display:            block;
-
+table.timeline {
     height:             70px;
     margin:             0;
     padding:            0;
 
     background:         url('../images/timeline.gif') top left repeat;
 
-    list-style:         none;
-
     text-align:         center;
 }
-ul.timeline[class] {
+table.timeline[class] {
     height:             35px;
 }
-ul.timeline li {
-    display:            inline;
-    float:              left;
-
-    width:              100px;
+table.timeline td {
     height:             70px;
-    margin:             0 auto;
     padding:            0;
     padding-top:        35px;
     padding-left:       5px;
@@ -300,22 +291,20 @@ ul.timeline li {
     font:               10px/ 15px "Trebuchet MS", Verdana, Arial;
     text-align:         center;
 }
-ul.timeline>li {
+table.timeline>td {
     height:             35px;
 }
 
-ul.timeline li.active {
+table.timeline td.active {
     background:         url('../images/timeline_current.gif') top center no-repeat;
 }
-ul.timeline li.start {
+table.timeline td.start {
     width:              50px;
     height:             100%;
 
     background:         url('../images/timeline_fade_in.gif') top right repeat-y;
 }
-ul.timeline li.end {
-    float:              right;
-
+table.timeline td.end {
     width:              50px;
     height:             100%;
 
@@ -329,6 +318,15 @@ ul.timeline li.end {
  */
 
 /************************************************* ERROR MESSAGES **/
+.tiny {
+    width:              10%;
+}
+.small {
+    width:              20%;
+}
+.half {
+    width:              50%;
+}
 span.error {
     display:            block;
     clear:              left;
@@ -451,7 +449,7 @@ label[for] {
 
     width:              125px;                      /* Non-IE box-model */
 
-    border-bottom:      1px solid transparent;      /* Prevent empty label collapsing. */
+    border-bottom:      1px solid transparent;      /* Prevent empty label collapsing */
 }
 table label {
     float:              none;
@@ -507,8 +505,11 @@ input.submit {
     text-align:         center;
 }
 textarea {
-    border:             0;
-    border-left:        1px dotted black;
+    display:            block;
+
+    margin:             auto;
+
+    border:             1px solid black;
 }
 
 
@@ -521,7 +522,7 @@ textarea {
     width:              auto;
 }*/
 table, .fullwidth {
-    width:              575px;
+    width:              568px;                      /* Just right to fit simpleTogglePanels */
 }
 table {
     float:              none;
@@ -531,7 +532,6 @@ table {
     padding:            0;
 
     border:             0 solid black;
-    border-width:       0 2px 2px 1px;
     border-collapse:    collapse;
 }
 table, tr, td, th {
@@ -540,6 +540,9 @@ table, tr, td, th {
 }
 table colgroup {
     width:              inherit;
+}
+table.listingTable {
+    border-width:       0 2px 2px 1px;
 }
 table.rich-table thead tr th, table.rich-table thead tr td,
 table.listingTable thead tr th, table.listingTable thead tr td {

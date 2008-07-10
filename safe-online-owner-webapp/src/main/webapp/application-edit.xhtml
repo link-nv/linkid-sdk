@@ -22,9 +22,19 @@
 
             <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				label="#{msgs.devices}">
-					<h:outputLabel for="restriction" value="#{msgs.isDeviceRestriction}"/> <h:selectBooleanCheckbox
-						id="restriction" value="#{selectedApplication.deviceRestriction}" />
-					<rich:dataTable value="#{allowedDevices}" var="item" styleClass="inner">
+                    <table class="inner listingTable">
+                        <tr>
+                            <th class="half">
+                                <h:outputLabel for="restriction" value="#{msgs.isDeviceRestriction}"/>
+                            </th>
+                            <td>
+                                <h:selectBooleanCheckbox id="restriction" value="#{selectedApplication.deviceRestriction}" />
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br />
+					<rich:dataTable value="#{allowedDevices}" var="item" styleClass="inner listingTable">
 						<h:column>
 							<f:facet name="header">#{msgs.name}</f:facet>
 							<h:outputText value="#{item.friendlyName}" />

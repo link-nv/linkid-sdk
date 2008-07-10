@@ -19,12 +19,11 @@
         <div id="c-header">
             <div id="header">
                 <h:form>
-                    <span>
+                    <h:commandLink action="#{language.entry}">
                         <h:graphicImage
                             value="/images/langs/#{facesContext.viewRoot.locale.language}.gif" />
-                        <h:commandLink action="#{language.entry}"
-                            value="#{msgs.chooseLanguage}" />
-                    </span>
+                        #{msgs.chooseLanguage}
+                    </h:commandLink>
 
                     <ui:insert name="logout">
                         <f:subview rendered="#{username != null}">
