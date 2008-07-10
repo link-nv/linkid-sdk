@@ -213,7 +213,7 @@ emit() {
         local font=$reset$textstyle$textcolor
         text=$font${text//$reset/$font}
         
-        echo -n $'\r'"$reset $style$color* $text"                   >&$fd
+        printf "\r$reset $style$color* %s\n" "$text"               >&$fd
     fi
 } # _____________________________________________________________________
 
@@ -304,7 +304,7 @@ spinner() {
 
     # Initialize spinner vars.
     # Make sure monitor mode is off or we won't be able to trap INT properly.
-    local monitor=$([[ $- != *m* ]]; echo $?); set +m
+    local monitor=0; [[ $- = *m* ]] && monitor=1
     local done="${green}done"
 
     # Place the trap for interrupt signals.
@@ -322,22 +322,23 @@ spinner() {
     text=$font${text//$reset/$font}
 
     # Spinner initial status.
-    echo -n $'\r'"$save$eel$reset $style$color* $text"              >&$fd
-    (( output )) && echo                                            >&$fd
+    printf "\r$save$eel$reset $style$color* %s\n" "$text"           >&$fd
+    (( output )) && printf "\n"                                     >&$fd
 
     # Render the spinner.
+    set +m
     local i=0
     while true; do
         if (( output ))
-        then echo -n $'\r'                                          >&$fd
-        else echo -n "$load$eel"                                    >&$fd
+        then printf "\r"                                            >&$fd
+        else printf "$load$eel"                                     >&$fd
         fi
 
-        echo -n "$reset $style$color${graphics[i++ % 4]} "          >&$fd
-
         if (( output ))
-        then echo -n "$reset$bold$blue-$reset "                     >&$fd
-        else echo -n "$text"                                        >&$fd
+        then printf "$reset $style$color$blue%s %s" \
+                "${graphics[i++ % 4]}" "$text"                      >&$fd
+        else printf "$reset $style$color%s %s" \
+                "${graphics[i++ % 4]}" "$text"                      >&$fd
         fi
 
         sleep .25 # Four iterations make one second.
@@ -354,11 +355,12 @@ spinner() {
 
     # Spinner final status.
     if (( output ))
-    then echo -n $'\r'; text=                                       >&$fd
-    else echo -n "$load"                                            >&$fd
+    then text=; printf "\r"                                         >&$fd
+    else printf "$load"                                             >&$fd
     fi
 
-    echo "$eel$reset $style$color* $text${text:+ }$bold$done$font." >&$fd
+    printf "$eel$reset $style$color* %s${text:+ }$bold%s$font.\n" \
+            "$text" "$done"                                         >&$fd
 } # _____________________________________________________________________
 
 
@@ -476,7 +478,7 @@ ask() {
 
         shift
     else
-        for arg in $(getArgs "$(echo {a..z} {A..Z} | tr -d ' ')!" "$@"); do
+        for arg in $(getArgs "$(printf "%s" {a..z} {A..Z})!" "$@"); do
             [[ $arg = [[:upper:]] ]] \
                 && default=$arg
             [[ $arg = ! ]] \
@@ -495,14 +497,14 @@ ask() {
     # Ask the question.
     emit -yn "$*${option:+ [$option]}${options:+ [$options]} "
     read ${options:+-n1}
-    [[ $options && $REPLY ]] && echo                                >&$fd
+    [[ $options && $REPLY ]] && printf "\n"                         >&$fd
 
     # Evaluate the reply.
     while true; do
         if [[ $REPLY && ( ! $options || $options = *$REPLY* ) ]]; then
             if [[ $valid ]]
             then [[ $REPLY = $valid ]]
-            else echo "$REPLY"
+            else printf "%s" "$REPLY"
             fi
 
             return
@@ -544,7 +546,7 @@ trim() {
     # Trim the lines
     for line in "${lines[@]}"; do
         line=${line##*([[:space:]])}; line=${line%%*([[:space:]])}
-        echo "$line"
+        printf "%s" "$line"
     done
 } # _____________________________________________________________________
 
@@ -638,7 +640,7 @@ skill() {
         # Be somewhat rude.
         (( verbose )) && emit -ny "Being rude .."
         kill -TERM $1
-        sleep 2; kill -0 $1 || { (( verbose )) && echo; return; }  >&$fd
+        sleep 2; kill -0 $1 || { (( verbose )) && echo; return; }   >&$fd
 
         # Be vicious.
         (( verbose )) && emit -nr "Being vicious .."
@@ -715,13 +717,13 @@ getArgs() {
         [[ $arg != '?' ]] && found=1
 
         (( quiet + count )) || \
-            echo -n "$arg${OPTARG:+ }$OPTARG$delimitor"
+            printf "%s${OPTARG:+ }%s%s" "$arg" "$OPTARG" "$delimitor"
     done
     OPTARGS=$(( OPTIND - 1 ))
     OPTIND=$oOPTIND
 
     # Any arguments found?
-    (( count )) && echo "$OPTARGS"
+    (( count )) && printf "%s" "$OPTARGS"
     (( found ))
 } # _____________________________________________________________________
 
@@ -760,23 +762,23 @@ showHelp() {
     [[ -t 1 ]]; local fd=$(( $? + 1 ))
 
     # Print out the help header.
-    echo $reset$bold                                                >&$fd
-    echo $'\t\t'"$appName"                                          >&$fd
-    echo $reset$green                                               >&$fd
-    echo "$appDesc" | fmt -w 70 | sed $'s/^/\t/'                    >&$fd
-    echo $'\t'"   $reset$bold~ $reset$yellow$appAuthor"             >&$fd
-    echo $reset                                                     >&$fd
+    printf "$reset$bold\n"                                          >&$fd
+    printf "\t\t%s\n" "$appName"                                    >&$fd
+    printf "$reset$green\n"                                         >&$fd
+    printf "%s\n" "$appDesc" | fmt -w 70 | sed $'s/^/\t/'           >&$fd
+    printf "\t   $reset$bold~ $reset$yellow%s" "$appAuthor\n"       >&$fd
+    printf "$reset\n"                                               >&$fd
 
     # Print out the application options and columnize them.
     while (( $# )); do
         local optName=$1; shift
         local optDesc=$1; shift
-        echo -n "    $optName"$'\t'
-        echo "${optDesc//+( )/ }" | fmt -tw 70 | sed $'1!s/^/ \t/'
-        echo
+        printf "    %s\t" "$optName"
+        printf "%s\n" "${optDesc//+( )/ }" | fmt -tw 70 | sed $'1!s/^/ \t/'
+        printf "\n"
     done | column -t -s $'\t' \
          | sed -r "s/^(    [^ ]*)/$bold$green\1$reset/"             >&$fd
-    echo                                                            >&$fd
+    printf "\n"                                                     >&$fd
 } # _____________________________________________________________________
 
 
@@ -810,7 +812,7 @@ quote() {
 
     # Print out each argument, quoting it properly.
     for arg; do
-        (( ! first )) && printf ' ' || first=0
+        (( ! first )) && printf " " || first=0
 
         if (( escape )); then
             printf "%q"     "$arg"
@@ -818,6 +820,8 @@ quote() {
             printf "'%s'"   "${arg//"'"/"\\'"}"
         fi
     done
+
+    printf "\n"
 } # _____________________________________________________________________
 
 
@@ -865,7 +869,7 @@ shorten() {
         }
     done
 
-    echo "$path"
+    printf "%s" "$path"
 } # _____________________________________________________________________
 
 
@@ -948,7 +952,7 @@ map() {
             mapIndex=$(_findMapNameIndex ${quiet:+-q} "$mapName") && \
             keyIndex=$(_findMapKeyIndex ${quiet:+-q} "$mapIndex" "$mapKey")
         then
-            echo "${_mapValues[keyIndex]}"
+            printf "%s" "${_mapValues[keyIndex]}"
         fi
     elif (( $# == 1 )); then
         if 
@@ -956,7 +960,7 @@ map() {
         then
             for keyIndex in "${!_mapKeys[@]}"; do
                 if [[ ${_mapKeys[keyIndex]} = $mapIndex-* ]]; then
-                    echo "${_mapKeys[keyIndex]#*-}"
+                    printf "%s" "${_mapKeys[keyIndex]#*-}"
                 fi
             done
         fi
@@ -988,7 +992,7 @@ _findMapNameIndex() {
             [[ ${_mapNames[mapIndex]} = $mapName ]] && break
         done
     then
-        echo "$mapIndex"
+        printf "%s" "$mapIndex"
     else
         (( quiet )) || emit -r "There is no map named '$mapName'."
         return 1
@@ -1021,7 +1025,7 @@ _findMapKeyIndex() {
             [[ ${_mapKeys[keyIndex]} = $mapIndex-$mapKey ]] && break
         done
     then
-        echo "$keyIndex"
+        printf "%s" "$keyIndex"
     else
         (( quiet )) || emit -r "The map '$mapName' does not contain a key '$mapKey'."
         return 1
@@ -1078,8 +1082,8 @@ _depricated_map() {
                 val=$newValue
                 notFound=0
             else
-                echo "$val"
-                return 0
+                printf "%s" "$val"
+                return
             fi
         fi
 
@@ -1090,7 +1094,7 @@ _depricated_map() {
     # If we were assigning a new value, output the new map.
     # Otherwise, we couldn't find the search key.
     [[ $newValue ]] \
-        && { echo "${map[*]}"; return $notFound; } \
+        && { printf "%s" "${map[*]}"; return $notFound; } \
         || return 1
 } # _____________________________________________________________________
 
@@ -1129,12 +1133,12 @@ hideDebug() {
 stackTrace() {
 
     # Some general debug information.
-    echo $'\t'"$bold$BASH$reset v$bold$BASH_VERSION$reset"
-    #echo "    Was running: $bold$BASH_COMMAND $*$reset"
-    echo
-    echo "    [Shell    : $bold$(printf %15s "$SHLVL")$reset]    [Subshells : $bold$(printf %5s "$BASH_SUBSHELL")$reset]"
-    echo "    [Locale   : $bold$(printf %15s "$LC_ALL")$reset]    [Runtime   : $bold$(printf %5s "${SECONDS}s")$reset]"
-    echo
+    printf "\t$bold%s$reset v$bold%s$reset" "$BASH" "$BASH_VERSION\n"
+    printf "    Was running: $bold%s %s$reset" "$BASH_COMMAND" "$*\n"
+    printf "\n"
+    printf "    [Shell    : $bold%15s$reset]    [Subshells : $bold%5s$reset]\n" "$SHLVL" "$BASH_SUBSHELL"
+    printf "    [Locale   : $bold%15s$reset]    [Runtime   : $bold%5s$reset]\n" "$LC_ALL" "${SECONDS}s"
+    printf "\n"
 
     # Search through the map.
     local arg=0
@@ -1142,25 +1146,25 @@ stackTrace() {
         #if (( i )); then
 
             # Print this execution stack's location.
-            echo -n "$reset  $bold-$reset $green"
+            printf "$reset  $bold-$reset $green"
             [[ ${BASH_SOURCE[i+1]} ]] \
-                && echo -n "${BASH_SOURCE[i+1]}$reset:$green$bold${BASH_LINENO[i]}" \
-                || echo -n "${bold}Prompt"
-            echo -n "$reset :"$'\t'"$bold${FUNCNAME[i]}("
+                && printf "%s$reset:$green$bold%s" "${BASH_SOURCE[i+1]}" "${BASH_LINENO[i]}" \
+                || printf "${bold}Prompt"
 
-            # Print this execution stack's positional parameters.
+            # Print this execution stack's function and positional parameters.
+            printf "$reset :\t$bold%s(" "${FUNCNAME[i]}"
             [[ ${BASH_ARGC[i]} ]] && \
                 for (( j = 0; j < ${BASH_ARGC[i]}; j++ )); do
-                    (( j )) && echo -n ', '
-                    echo -n "${BASH_ARGV[arg]}"
+                    (( j )) && printf ', '
+                    printf "%s" "${BASH_ARGV[arg]}"
                     let arg++
                 done
 
             # Print the end of this execution stack's line.
-            echo ")$reset"
+            printf ")$reset\n"
         #fi
     done
-    echo
+    printf "\n"
 
 } # _____________________________________________________________________
 
