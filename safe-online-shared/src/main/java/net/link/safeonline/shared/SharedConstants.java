@@ -35,6 +35,8 @@ public class SharedConstants {
 
 	public static final String USAGE_AGREEMENT_TEXT_NOT_FOUND_ERROR = "USAGE_AGREEMENT_TEXT_NOT_FOUND_ERROR";
 
+	public static final String ALREADY_REGISTERED_ERROR = "ALREADY_REGISTERED_ERROR";
+
 	private SharedConstants() {
 		// empty
 	}

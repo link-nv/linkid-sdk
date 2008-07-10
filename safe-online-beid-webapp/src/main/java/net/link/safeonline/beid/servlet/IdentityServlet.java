@@ -14,6 +14,7 @@ import javax.ejb.EJB;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -26,6 +27,9 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * The identity servlet implementation. This servlet receives its data from the
  * BeID via the IdentityApplet.
@@ -36,6 +40,8 @@ import net.link.safeonline.shared.SharedConstants;
 public class IdentityServlet extends AbstractStatementServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final Log LOG = LogFactory.getLog(IdentityServlet.class);
 
 	@EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
 	private BeIdDeviceService beIdDeviceService;
@@ -94,6 +100,13 @@ public class IdentityServlet extends AbstractStatementServlet {
 					.getErrorCode());
 			protocolContext.setSuccess(false);
 			writer.println("Attribute not found error");
+		} catch (AlreadyRegisteredException e) {
+			LOG.debug("device already registered");
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			protocolContext.setSuccess(false);
+			writer.println("Already registered error");
 		}
 	}
 }

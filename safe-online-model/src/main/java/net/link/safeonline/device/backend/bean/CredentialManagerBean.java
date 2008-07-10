@@ -13,9 +13,13 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -45,6 +49,9 @@ import net.link.safeonline.service.SubjectService;
 @Stateless
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class CredentialManagerBean implements CredentialManager {
+
+	private static final Log LOG = LogFactory
+			.getLog(CredentialManagerBean.class);
 
 	@EJB
 	private PkiProviderManager pkiProviderManager;
@@ -121,7 +128,7 @@ public class CredentialManagerBean implements CredentialManager {
 			byte[] identityStatementData) throws TrustDomainNotFoundException,
 			PermissionDeniedException, ArgumentIntegrityException,
 			AttributeTypeNotFoundException, DeviceNotFoundException,
-			AttributeNotFoundException {
+			AttributeNotFoundException, AlreadyRegisteredException {
 		/*
 		 * First check integrity of the received identity statement.
 		 */
@@ -159,20 +166,7 @@ public class CredentialManagerBean implements CredentialManager {
 			throw new PermissionDeniedException("statement user mismatch");
 		}
 
-		/*
-		 * Create new device subject
-		 */
-		DeviceSubjectEntity deviceSubject = this.subjectService
-				.findDeviceSubject(deviceUserId);
-		if (null == deviceSubject)
-			deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
-
-		/*
-		 * Create new device registration subject
-		 */
-		SubjectEntity deviceRegistration = this.subjectService
-				.addDeviceRegistration();
-		deviceSubject.getRegistrations().add(deviceRegistration);
+		SubjectEntity deviceRegistration;
 
 		String domain = pkiProvider.getIdentifierDomainName();
 		String identifier = pkiProvider.getSubjectIdentifier(certificate);
@@ -180,16 +174,33 @@ public class CredentialManagerBean implements CredentialManager {
 				.findSubject(domain, identifier);
 		if (null == existingMappedSubject) {
 			/*
+			 * Create new device subject if needed
+			 */
+			DeviceSubjectEntity deviceSubject = this.subjectService
+					.findDeviceSubject(deviceUserId);
+			if (null == deviceSubject) {
+				deviceSubject = this.subjectService
+						.addDeviceSubject(deviceUserId);
+			}
+
+			/*
+			 * Create new device registration subject
+			 */
+			deviceRegistration = this.subjectService.addDeviceRegistration();
+			deviceSubject.getRegistrations().add(deviceRegistration);
+
+			/*
 			 * In this case we register a new subject identifier within the
 			 * system.
 			 */
 			this.subjectIdentifierDAO.addSubjectIdentifier(domain, identifier,
 					deviceRegistration);
-		} else if (false == deviceRegistration.equals(existingMappedSubject)) {
+		} else {
 			/*
 			 * The certificate is already linked to another user.
 			 */
-			throw new PermissionDeniedException("certificate already in use");
+			LOG.debug("device already registered");
+			throw new AlreadyRegisteredException();
 		}
 		/*
 		 * The user can only have one subject identifier for the domain. We

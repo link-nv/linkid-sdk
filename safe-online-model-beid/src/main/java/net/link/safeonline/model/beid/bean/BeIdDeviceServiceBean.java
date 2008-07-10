@@ -9,6 +9,7 @@ package net.link.safeonline.model.beid.bean;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -47,7 +48,8 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 	public void register(String deviceUserId, byte[] identityStatementData)
 			throws PermissionDeniedException, ArgumentIntegrityException,
 			AttributeTypeNotFoundException, TrustDomainNotFoundException,
-			DeviceNotFoundException, AttributeNotFoundException {
+			DeviceNotFoundException, AttributeNotFoundException,
+			AlreadyRegisteredException {
 		LOG.debug("register: " + deviceUserId);
 		this.credentialManager.mergeIdentityStatement(deviceUserId,
 				identityStatementData);

@@ -257,7 +257,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 		if (SharedConstants.PERMISSION_DENIED_ERROR
 				.equals(safeOnlineResultCode)) {
 			this.appletView
-					.outputDetailMessage("PERMISSION DENIED. YOUR EID MIGHT BE IN USE BY ANOTHER USER");
+					.outputDetailMessage("PERMISSION DENIED. Invalid statement");
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString("permissionDenied"));
 			return false;
@@ -272,6 +272,12 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 				.equals(safeOnlineResultCode)) {
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString("eIdNotRegistered"));
+			return false;
+		}
+		if (SharedConstants.ALREADY_REGISTERED_ERROR
+				.equals(safeOnlineResultCode)) {
+			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+					.getString("eIdAlreadyRegistered"));
 			return false;
 		}
 		throw new IOException("Response code: " + responseCode);

@@ -9,6 +9,7 @@ package net.link.safeonline.device.backend;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -30,7 +31,7 @@ public interface CredentialManager {
 			byte[] identityStatementData) throws TrustDomainNotFoundException,
 			PermissionDeniedException, ArgumentIntegrityException,
 			AttributeTypeNotFoundException, DeviceNotFoundException,
-			AttributeNotFoundException;
+			AttributeNotFoundException, AlreadyRegisteredException;
 
 	void removeIdentity(String deviceUserId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
