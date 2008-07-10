@@ -695,35 +695,55 @@ public static class MyCompounded {
 				example of
 				<code>web.xml</code>
 				for the landing page component. This servlet has an extra init
-				parameter which lets you specify an error page. In case of an error,
-				the servlet will set the error message on the HttpSession as a
-				session attribute named
-				<code>ErrorMessage</code>
-				. With this
+				parameter
 				<code>ErrorPage</code>
-				parameter you can create a custom page to handle these errors.
-				<programlisting><![CDATA[<context-param>
-	<param-name>LandingPage</param-name>
-	<param-value>
-		https://your.application.domain/your-application-context/login
-	</param-value>
-</context-param>
+				which you can use to create a custom page to handle these errors. In
+				case of an error, the servlet will set the error message on the
+				HttpSession as a session attribute named
+				<code>ErrorMessage</code>
+				.
+			</para>
+			<para>
+				When you are setting up a configuration behind a proxy, you will
+				need to specify an extra initialization parameter
+				<code>ServletEndpointUrl</code>
+				for the
+				<code>LoginServlet</code>
+				. If not, the validation of the incoming SAML response will fail as
+				the receiving endpoint ( behind the proxy ) will not match the
+				endpoint specified in the SAML response. Below you find a
+				configuration where this optional parameter is specified.
+			</para>
+			<para>
+				<programlisting><![CDATA[
+	<context-param>
+		<param-name>LandingPage</param-name>
+		<param-value>
+			https://your.application.domain/your-application-context/login
+		</param-value>
+	</context-param>
 	
-<servlet>
-	<servlet-name>LoginServlet</servlet-name>
-	<servlet-class>
-		net.link.safeonline.sdk.auth.servlet.LoginServlet
-	</servlet-class>
-	<init-param>
-		<param-name>ErrorPage</param-name>
-		<param-value>protocol-error.seam</param-value>
-	</init-param>
-</servlet>
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.sdk.auth.servlet.LoginServlet
+		</servlet-class>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				https://device.webapp/device/login 
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+	</servlet>
 
-<servlet-mapping>
-	<servlet-name>LoginServlet</servlet-name>
-	<url-pattern>/login</url-pattern>
-</servlet-mapping>]]></programlisting>
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>]]></programlisting>
 			</para>
 		</section>
 	</chapter>

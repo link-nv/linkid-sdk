@@ -42,7 +42,7 @@ public class LandingServlet extends AbstractInjectionServlet {
 	@Init(name = "AuthenticationUrl")
 	private String authenticationUrl;
 
-	@Init(name = "ServletEndpointUrl")
+	@Init(name = "ServletEndpointUrl", optional = true)
 	private String servletEndpointUrl;
 
 	@Context(name = "KeyStoreResource", optional = true)
@@ -108,12 +108,18 @@ public class LandingServlet extends AbstractInjectionServlet {
 		LOG.debug("doPost");
 
 		/**
-		 * Wrap the request to use the servlet endpoint url. To prevent failure
-		 * when behind a reverse proxy or loadbalancer when opensaml is checking
-		 * the destination field.
+		 * Wrap the request to use the servlet endpoint url if defined. To
+		 * prevent failure when behind a reverse proxy or loadbalancer when
+		 * opensaml is checking the destination field.
 		 */
-		HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
-				request, this.servletEndpointUrl);
+		HttpServletRequestEndpointWrapper requestWrapper;
+		if (null != this.servletEndpointUrl) {
+			requestWrapper = new HttpServletRequestEndpointWrapper(request,
+					this.servletEndpointUrl);
+		} else {
+			requestWrapper = new HttpServletRequestEndpointWrapper(request,
+					request.getRequestURL().toString());
+		}
 
 		try {
 			Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);

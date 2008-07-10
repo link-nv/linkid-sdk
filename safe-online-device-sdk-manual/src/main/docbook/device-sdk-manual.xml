@@ -58,7 +58,7 @@
 			<mediaobject>
 				<imageobject>
 					<imagedata format="PNG" align="center" scale="55"
-						fileref="device-integration.png" />
+						fileref="remotedeviceinteraction.png" />
 				</imageobject>
 				<caption>Remote device interaction</caption>
 			</mediaobject>
@@ -227,6 +227,41 @@
 			, an instance of this class will be initialized on the HttpSession.
 		</para>
 		<para>
+			When you are setting up your device webapp behind a proxy, an extra
+			init parameter named
+			<code>ServletEndpointUrl</code>
+			is needed for the
+			<code>LandingServlet</code>
+			. If not specified, the SAML request will be rejected as the
+			receiving endpoint ( behind the proxy ) will not match the endpoint
+			specified in the SAML request. When this is the case your
+			configuration for the LandingServlet should look something like :
+			<programlisting>
+			<![CDATA[	
+	<servlet>
+		<servlet-name>LandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.auth.servlet.LandingServlet
+		</servlet-class>
+		<init-param>
+			<param-name>AuthenticationUrl</param-name>
+			<param-value>authentication.jsf</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				https://device.webapp/device/auth 
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+	</servlet>	
+			]]>
+			</programlisting>
+		</para>
+		<para>
 			To finalize the authentication process, redirect to the
 			<code>ExitServlet</code>
 			's URL to return to OLAS. If the
@@ -236,7 +271,7 @@
 			are not set, when redirecting to the exit servlet, a SAML response
 			containing
 			<code>Authentication Failed</code>
-			will be sent to OLAS. If they are sent a SAML response containing the
+			will be sent to OLAS. If they are set, a SAML response containing the
 			right assertions will be sent.
 		</para>
 	</chapter>
@@ -287,17 +322,26 @@
 			and
 			<code>UpdateUrl</code>
 			. If one of these parameters are not specified, and still a request
-			for this operation is returned, the servlet will retyrb a SAML
+			for this operation is returned, the servlet will return a SAML
 			response containing a
 			<code>Operation not supported</code>
-			status. When the landing servlet has finished handling the incoming
-			SAML request, an instance of the class
+			status.
+		</para>
+		<para>
+			When the landing servlet has finished handling the incoming SAML
+			request, an instance of the class
 			<code>ProtocolContext</code>
 			will be initialized on the HttpSession. This will contain the user ID
-			of the subject who is performing the request device operation. This
+			of the subject who is performing the requested device operation. This
 			is the ID that should be returned during authentication to OLAS. It
-			will also contain the device we want to perform a device operation
-			on.
+			will also contain the device we want to perform a device operation on
+			as well as the operation.
+		</para>
+		<para>
+			Two session parameters will also be pushed on the HttpSession, namely
+			<code>userId</code>
+			and
+			<code>operation</code>.
 		</para>
 		<para>
 			When the device operation has finished, failed or has to be aborted,
@@ -398,5 +442,48 @@
 		<servlet-name>DeviceExitServlet</servlet-name>
 		<url-pattern>/deviceexit</url-pattern>
 	</servlet-mapping>]]></programlisting>
+		<para>
+			When you are setting up your device webapp behind a proxy, an extra
+			init parameter named
+			<code>ServletEndpointUrl</code>
+			is needed for the
+			<code>LandingServlet</code>
+			. If not specified, the SAML request will be rejected as the
+			receiving endpoint ( behind the proxy ) will not match the endpoint
+			specified in the SAML request. When this is the case your
+			configuration for the LandingServlet should look something like :
+		</para>
+		<programlisting>
+			<![CDATA[
+	<servlet>
+		<servlet-name>DeviceLandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.servlet.LandingServlet
+		</servlet-class>
+		<init-param>
+			<param-name>RegistrationUrl</param-name>
+			<param-value>register-device.jsf</param-value>
+		</init-param>
+		<init-param>
+			<param-name>RemovalUrl</param-name>
+			<param-value>remove-device.jsf</param-value>
+		</init-param>
+		<init-param>
+			<param-name>UpdateUrl</param-name>
+			<param-value>update-device.jsf</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				https://device.webapp/device/auth 
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+	</servlet>
+			]]>
+		</programlisting>
 	</chapter>
 </book>
