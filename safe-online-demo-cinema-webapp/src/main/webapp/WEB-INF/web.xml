@@ -31,14 +31,13 @@
 	</servlet>
 	<servlet>
 		<servlet-name>CinemaServlet</servlet-name>
-        <servlet-class>net.link.safeonline.demo.cinema.webapp.servlet.CinemaTicketServlet
-        </servlet-class>
+		<servlet-class>net.link.safeonline.demo.cinema.webapp.servlet.CinemaTicketServlet 
+		</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>CinemaServlet</servlet-name>
 		<url-pattern>/CinemaServlet/*</url-pattern>
 	</servlet-mapping>
-
 	<context-param>
 		<param-name>AuthenticationServiceUrl</param-name>
 		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
@@ -92,6 +91,19 @@
 		<servlet-name>AuthLoginServlet</servlet-name>
 		<servlet-class> net.link.safeonline.sdk.auth.servlet.LoginServlet 
 		</servlet-class>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.demo.cinema.webapp.name}/login 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml response.</description>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AuthLoginServlet</servlet-name>

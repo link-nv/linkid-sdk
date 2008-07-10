@@ -172,6 +172,15 @@
 		<servlet-class> net.link.safeonline.sdk.auth.servlet.LoginServlet 
 		</servlet-class>
 		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.helpdesk.webapp.name}/login 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml response.</description>
+		</init-param>
+		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
