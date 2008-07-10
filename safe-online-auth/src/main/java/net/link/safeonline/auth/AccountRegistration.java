@@ -45,6 +45,8 @@ public interface AccountRegistration {
 
 	String getCaptchaURL();
 
+	String getUsername();
+
 	/*
 	 * Factories
 	 */

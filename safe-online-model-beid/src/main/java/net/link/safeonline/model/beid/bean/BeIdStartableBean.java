@@ -113,10 +113,10 @@ public class BeIdStartableBean extends AbstractInitBean {
 		beidDeviceUserAttributeType.setMultivalued(true);
 		this.attributeTypes.add(beidDeviceUserAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				beidDeviceAttributeType, Locale.ENGLISH.getLanguage(),
+				beidDeviceUserAttributeType, Locale.ENGLISH.getLanguage(),
 				"BeID Name", null));
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				beidDeviceAttributeType, "nl", "BeID Naam", null));
+				beidDeviceUserAttributeType, "nl", "BeID Naam", null));
 
 		X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();

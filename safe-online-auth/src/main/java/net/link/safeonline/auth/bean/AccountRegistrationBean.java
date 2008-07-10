@@ -176,6 +176,10 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		return "/captcha?cacheid=" + Math.random() * 1000000;
 	}
 
+	public String getUsername() {
+		return this.subjectService.getSubjectLogin(this.userId);
+	}
+
 	@Factory("allDevicesAccountRegistration")
 	public List<SelectItem> allDevicesFactory() {
 		this.log.debug("all devices factory");
