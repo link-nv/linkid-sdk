@@ -21,19 +21,16 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<h:form>
 			<rich:listShuttle
 				sourceValue="#{addAttribute.sourceMemberAttributes}"
 				targetValue="#{addAttribute.targetMemberAttributes}" var="item"
-				listHeight="300" listWidth="300"
 				sourceCaptionLabel="#{msgs.availableAttributes}:"
 				targetCaptionLabel="#{msgs.memberAttributes}:"
 				converter="net.link.safeonline.converter.AttributeTypeConverter">
 
 				<rich:column>
-					<h:outputText value="#{item.name}"></h:outputText>
+					<h:outputText value="#{item.name}" />
 				</rich:column>
 			</rich:listShuttle>
 

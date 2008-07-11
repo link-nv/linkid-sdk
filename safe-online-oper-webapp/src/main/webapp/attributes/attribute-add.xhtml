@@ -19,13 +19,10 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<h:form>
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-
 
 			<h:outputLabel for="name" value="#{msgs.name}" />
 
@@ -55,11 +52,9 @@
 			<h:selectBooleanCheckbox id="deviceAttribute"
 				value="#{addAttribute.deviceAttribute}" styleClass="radio" />
 
-
 			<h:message styleClass="error" for="category" />
 
 			<h:messages styleClass="error" globalOnly="true" />
-
 
 			<h:outputLabel for="cancel" value="" />
 			<h:commandButton action="#{addAttribute.cancel}" id="cancel"

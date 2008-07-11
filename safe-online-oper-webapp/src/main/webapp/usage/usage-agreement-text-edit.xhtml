@@ -19,15 +19,12 @@
 	<ui:define name="content">
 
 		<a4j:form>
-			<rich:panel>
-				<f:facet name="header">
-					<h:outputLabel for="text"
-						value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
-				</f:facet>
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			    label="#{msgs.language}: #{selectedUsageAgreementText.language}">
 				<h:inputTextarea id="text"
 					value="#{selectedUsageAgreementText.text}" escape="false" cols="75"
 					rows="10" />
-			</rich:panel>
+			</rich:simpleTogglePanel>
 
 			<h:outputLabel for="save" value="" />
 			<a4j:commandButton value="#{msgs.saveaction}"
