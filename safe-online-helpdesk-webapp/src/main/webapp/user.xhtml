@@ -24,7 +24,7 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-            <table class="listingTable">
+            <table>
                 <tr>
                     <th>#{msgs.helpdeskUser}</th>
                     <td>
@@ -53,7 +53,6 @@
 		<h:form>
 			<rich:dataTable id="helpdesk-user-data" var="item"
 				value="#{helpdeskUserList}" rows="10" preserveDataModel="false"
-				styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>

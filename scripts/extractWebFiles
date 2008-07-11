@@ -8,6 +8,7 @@ while [[ $1 = -* ]]; do
         -L) nolink=1    ;;
         -R) reverse=1   ;;
         -a) apply=1     ;;
+        -v) verbose=1   ;;
         -f) force=1     ;;
         *)  break       ;;
     esac
@@ -29,8 +30,14 @@ pwd=$PWD
 (( ! ${#repos[@]} )) && {
     repos=()
     for webapp in "${webapps[@]}"; do
-        repos+=( "$PWD/${0%/*}/../../$webapp" )
+        [[ -e "$PWD/${0%/*}/../../$webapp" ]] \
+            && repos+=( "$PWD/${0%/*}/../../$webapp" ) \
+            || repos+=( "$PWD/${0%/*}/.." )
     done
+}
+(( ${#repos[@]} != ${#webapps[@]} )) && {
+    emit -R "Not an equal amount of repositories (${#repos[@]}) and web applications (${#webapps[@]})."
+    exit 1
 }
 
 
@@ -142,7 +149,7 @@ if (( apply )); then
                 continue
             }
 
-            if (( force )) || ! diff -q "$file"{,~} >/dev/null; then
+            if (( force )) || [[ $(openssl md4 < "$file") != $(openssl md4 < "$file~") ]]; then
                 ddest="${repos[w]}/${file/-1.0-SNAPSHOT-exp.war//src/main/webapp}"
 
                 if ! [[ -e $ddest ]]; then
@@ -169,8 +176,10 @@ if (( apply )); then
                     dest=$ddest
                 fi
 
-                emit "Modifying $(shorten -p "$pwd" "$dest")"
-                emit "   - Source: $(shorten -p "$pwd" "$file")."
+                (( verbose )) && {
+                    emit "Modifying $(shorten -p "$pwd" "$dest")"
+                    emit "   - Source: $(shorten -p "$pwd" "$file")."
+                }
                 mv "$dest"{,~} && cp "$file" "$dest"
             fi
         done

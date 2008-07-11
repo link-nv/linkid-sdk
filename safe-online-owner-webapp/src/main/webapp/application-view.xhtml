@@ -16,7 +16,7 @@
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			label="#{msgs.generic}">
 
-            <table class="inner listingTable">
+            <table class="inner">
                 <colgroup />
                 <colgroup />
 
@@ -66,7 +66,7 @@
                 reRender="usage-agreement-data">
                 <rich:dataTable id="usage-agreement-data" var="item"
                     value="#{selectedApplicationUsageAgreements}" rows="10"
-                    styleClass="inner listingTable"
+                    styleClass="inner "
                     rowClasses="listingTable_Row1,listingTable_Row2">
                     <h:column>
                         <a4j:commandLink id="view-agreement"
@@ -111,7 +111,7 @@
 
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
 			label="#{msgs.accessControl}">
-            <table class="inner listingTable">
+            <table class="inner">
                 <colgroup />
                 <colgroup />
 
@@ -134,7 +134,7 @@
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
 			label="#{msgs.applicationIdentity}">
             <h:dataTable value="#{selectedApplicationIdentity}" var="item"
-                styleClass="inner listingTable">
+                styleClass="inner ">
                 <h:column>
                     <f:facet name="header">#{msgs.applicationIdentity}</f:facet>
                     <h:outputText value="#{item.attributeTypeName}" />
@@ -164,7 +164,7 @@
                 value="#{selectedApplication.deviceRestriction}" disabled="true"
                 styleClass="radio" />
 
-            <h:dataTable value="#{allowedDevices}" var="item" styleClass="inner listingTable">
+            <h:dataTable value="#{allowedDevices}" var="item" styleClass="inner ">
                 <h:column>
                     <f:facet name="header">#{msgs.name}</f:facet>
                     <h:outputText value="#{item.friendlyName}" />

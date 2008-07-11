@@ -40,8 +40,7 @@ input.submit {
 
 
 #c-content,
-table.listingTable  tbody tr,
-table.rich-table    tbody tr {
+table tbody tr {
 
     background-color:   white;
 }
@@ -52,8 +51,7 @@ table.rich-table    tbody tr {
  * Nearly White
  * ------------ */
 
-table.listingTable  tbody tr:hover,
-table.rich-table    tbody tr:hover {
+table tbody tr:hover {
     
     background-color:   #f0f0f0;
 }
@@ -65,22 +63,20 @@ table.rich-table    tbody tr:hover {
  * ----------- */
 
 #c-sidebox,
-table.listingTable  tfoot tr, table.listingTable  thead tr,
-table.rich-table    tfoot tr, table.rich-table    thead tr {
+table tfoot tr, table thead tr {
 
     background-color:   #E8E7E7;
 }
 
 
 textarea,
-table.rich-table tbody tr th, table.rich-table tbody tr td,
-table.listingTable tbody tr th, table.listingTable tbody tr td {
+table tbody tr th, table tbody tr td {
 
     border-color:       #E8E7E7 !important;
 }
 
 
-table.listingTable, table.rich-table {
+table {
 
     border-top-color:   #E8E7E7;
     border-left-color:  #E8E7E7;
@@ -96,7 +92,7 @@ table.listingTable, table.rich-table {
 
     color:              #CCC;
 }
-table.listingTable, table.rich-table {
+table {
 
     border-right-color: #CCC;
     border-bottom-color:#CCC;

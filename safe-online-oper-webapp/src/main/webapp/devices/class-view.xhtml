@@ -21,7 +21,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-        <table class="listingTable">
+        <table>
             <colgroup />
             <colgroup />
 
@@ -45,7 +45,7 @@
             label="#{msgs.description}">
             <h:form id="classdescform">
                 <rich:dataTable id="desc-data" var="item"
-                    value="#{deviceClassDescriptions}" styleClass="inner listingTable"
+                    value="#{deviceClassDescriptions}" styleClass="inner "
                     rowClasses="listingTable_Row1,listingTable_Row2">
                     <h:column>
                         <f:facet name="header">#{msgs.language}</f:facet>

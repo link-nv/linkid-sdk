@@ -21,7 +21,7 @@
                 label="#{msgs.version}: #{msgs.draft}" rendered="#{!empty ownerUsageAgreement.draftUsageAgreement}">
 
 				<a4j:form id="editDraftForm" reRender="usagePanel" ajaxSubmit="true">
-                    <table class="inner listingTable">
+                    <table class="inner">
                         <colgroup />
                         <colgroup />
 
@@ -42,7 +42,7 @@
 					ajaxSubmit="true">
 					<rich:dataTable id="draft-text-data" var="item"
 						value="#{draftUsageAgreementsTexts}" rows="10"
-						styleClass="inner listingTable"
+						styleClass="inner "
 						rowClasses="listingTable_Row1,listingTable_Row2">
 						<h:column>
 							<a4j:commandLink id="view-draft-text"
@@ -95,7 +95,7 @@
 				</a4j:form>
 
 				<a4j:form id="addDraftLanguageForm">
-                    <table class="inner listingTable">
+                    <table class="inner">
                         <colgroup />
                         <colgroup />
 
@@ -135,7 +135,7 @@
 				<a4j:form id="editCurrentsForm" reRender="usagePanel" rendered="#{empty ownerUsageAgreement.draftUsageAgreement}"
 					ajaxSubmit="true">
 
-                    <table class="inner listingTable">
+                    <table class="inner">
                         <colgroup />
                         <colgroup />
 
@@ -156,7 +156,7 @@
 
 					<rich:dataTable id="current-text-data" var="item"
 						value="#{currentUsageAgreementsTexts}" rows="10"
-						styleClass="inner listingTable"
+						styleClass="inner "
 						rowClasses="listingTable_Row1,listingTable_Row2">
 						<h:column>
 							<a4j:commandLink id="edit-current-text"

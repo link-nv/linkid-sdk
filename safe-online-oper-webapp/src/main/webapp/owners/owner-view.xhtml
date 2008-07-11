@@ -17,7 +17,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<table class="listingTable">
+		<table>
             <colgroup />
             <colgroup />
 
@@ -39,7 +39,7 @@
 
 		<a4j:form id="appOwnerForm" ajaxSubmit="true" reRender="app-data">
 			<rich:dataTable id="app-data" var="item" value="#{applicationList}"
-				rows="10" styleClass="listingTable"
+				rows="10"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
 					<f:facet name="header">#{msgs.application}</f:facet>

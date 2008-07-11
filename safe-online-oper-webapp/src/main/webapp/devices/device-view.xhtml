@@ -23,7 +23,7 @@
 
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			id="generic-tab" label="#{msgs.generic}">
-			<table class="inner listingTable">
+			<table class="inner">
 				<colgroup />
 				<colgroup />
 
@@ -74,7 +74,7 @@
 			opened="false" id="description-tab" label="#{msgs.description}">
 			<h:form id="descrform">
 				<rich:dataTable id="desc-data" var="item"
-					value="#{deviceDescriptions}" styleClass="inner listingTable"
+					value="#{deviceDescriptions}" styleClass="inner "
 					rowClasses="listingTable_Row1,listingTable_Row2">
 					<h:column>
 						<f:facet name="header">#{msgs.language}</f:facet>
@@ -97,7 +97,7 @@
 			opened="false" id="properties-tab" label="#{msgs.properties}">
 			<h:form id="propertiesform">
 				<rich:dataTable id="prop-data" var="item"
-					value="#{deviceProperties}" styleClass="inner listingTable"
+					value="#{deviceProperties}" styleClass="inner "
 					rowClasses="listingTable_Row1,listingTable_Row2">
 					<h:column>
 						<f:facet name="header">#{msgs.name}</f:facet>
@@ -118,7 +118,7 @@
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			opened="false" id="attribute-tab" label="#{msgs.deviceAttribute}">
 
-			<table class="inner listingTable">
+			<table class="inner">
 				<colgroup />
 				<colgroup />
 
@@ -142,7 +142,7 @@
 			<rich:dataTable id="compounded-members" var="item"
 				value="#{selectedDevice.attributeType.members}"
 				rendered="#{selectedDevice.attributeType.compounded}"
-				styleClass="inner listingTable"
+				styleClass="inner "
 				rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
 					<f:facet name="header">#{msgs.memberAttributes}</f:facet>
@@ -156,7 +156,7 @@
 			opened="false" id="user-attribute-tab"
 			label="#{msgs.deviceUserAttribute}">
 
-			<table class="inner listingTable">
+			<table class="inner">
 				<colgroup />
 				<colgroup />
 
@@ -176,7 +176,7 @@
 			<h:dataTable id="user-compounded-members" var="item"
 				value="#{selectedDevice.userAttributeType.members}"
 				rendered="#{selectedDevice.userAttributeType.compounded}"
-				styleClass="inner listingTable"
+				styleClass="inner "
 				rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
 					<f:facet name="header">#{msgs.memberAttributes}</f:facet>

@@ -21,10 +21,10 @@
 
 		<h:form>
 			<f:facet name="aroundInvalidField">
-				<s:span styleClass="" />
+				<s:span />
 			</f:facet>
 
-            <table class="listingTable">
+            <table>
                 <tr>
                     <th>#{msgs.helpdeskId}</th>
                     <td>
@@ -52,7 +52,7 @@
 		<h:form>
 			<rich:dataTable id="helpdesk-context-data" var="item"
 				value="#{helpdeskContextList}" rows="10" preserveDataModel="false"
-				styleClass="listingTable"
+			
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>

@@ -17,7 +17,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<table class="listingTable">
+		<table>
 			<colgroup />
 			<colgroup />
 
@@ -33,9 +33,11 @@
 			<p>#{msgs.profileEmpty}</p>
 		</f:subview>
 
+        <br />
+
 		<h:form>
 			<h:dataTable id="data" var="item" value="#{attributeList}"
-				preserveDataModel="false" styleClass="listingTable"
+				preserveDataModel="false"
 				rowClasses="listingTable_Row1,listingTable_Row2"
 				rendered="#{0 != attributeList.rowCount}">
 

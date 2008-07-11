@@ -213,7 +213,7 @@ emit() {
         local font=$reset$textstyle$textcolor
         text=$font${text//$reset/$font}
         
-        printf "\r$reset $style$color* %s\n" "$text"               >&$fd
+        printf "\r$reset $style$color* %s" "$text"               >&$fd
     fi
 } # _____________________________________________________________________
 
@@ -322,7 +322,7 @@ spinner() {
     text=$font${text//$reset/$font}
 
     # Spinner initial status.
-    printf "\r$save$eel$reset $style$color* %s\n" "$text"           >&$fd
+    printf "\r$save$eel$reset $style$color* %s" "$text"           >&$fd
     (( output )) && printf "\n"                                     >&$fd
 
     # Render the spinner.
@@ -855,7 +855,7 @@ shorten() {
 
     # Make path absolute, clean out repeated slashes and dot-directories.
     [[ $path = /* ]] || path=$PWD/$path
-    path=$(sed 's,///*,/,g; s,\(^\|/\)\./,\1,g; s,\(^\|/\)[^/]*/\.\./,\1,g' <<< "$path")
+    path=$(sed 's,///*,/,g; s,\(^\|/\)\./,\1,g; s,\(^\|/\)[^/]*/\.\./,\1,g; s,///*,/,g' <<< "$path")
 
     # Replace special paths.
     path=${path#$pwd/}

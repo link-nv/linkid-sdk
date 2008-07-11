@@ -274,6 +274,7 @@ table.timeline {
 
     background:         url('../images/timeline.gif') top left repeat;
 
+    font:               inherit;
     text-align:         center;
 }
 table.timeline[class] {
@@ -518,9 +519,6 @@ textarea {
  * Section: Tables
  */
 
-/*table.rich-table td {
-    width:              auto;
-}*/
 table, .fullwidth {
     width:              568px;                      /* Just right to fit simpleTogglePanels */
 }
@@ -532,20 +530,17 @@ table {
     padding:            0;
 
     border:             0 solid black;
+    border-width:       0 2px 2px 1px;
     border-collapse:    collapse;
 }
-table, tr, td, th {
+table {
     font-family:        "Trebuchet MS", Verdana, Arial !important;
     font-size:          14px !important;
 }
 table colgroup {
     width:              inherit;
 }
-table.listingTable {
-    border-width:       0 2px 2px 1px;
-}
-table.rich-table thead tr th, table.rich-table thead tr td,
-table.listingTable thead tr th, table.listingTable thead tr td {
+table thead tr th, table thead tr td {
     margin:             0;
     padding:            5px;
 
@@ -554,17 +549,14 @@ table.listingTable thead tr th, table.listingTable thead tr td {
     font-weight:        bold;
     text-align:         left;
 }
-table.rich-table tbody tr th, table.rich-table tbody tr td,
-table.listingTable tbody tr th, table.listingTable tbody tr td {
+table tbody tr th, table tbody tr td {
     margin:             0;
     padding:            5px;
 
     border:             1px solid black;
     border-style:       solid none none;
 }
-table.listingTable tfoot tr, table.rich-table tfoot tr {
-    float:              none;
-
+table tfoot tr {
     padding:            0;
     margin:             0;
 }
@@ -585,23 +577,29 @@ div.dr-dscr * {
     background:         none;
 }
 /* Make links in tables easier to click. */
-table.listingTable td a, table.listingTable th a, table.rich-table td a {
+table td a, table th a {
     display:            block;
 
     width:              inherit;
     height:             inherit;
     padding-bottom:     1px;
 }
-a.noblock {
+table td a.noblock {
     display:            inline;
 
     width:              auto;
     height:             auto;
 }
-table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table td a:hover {
+table td a:hover, table th a:hover {
     border:             none;
 
     text-decoration:    underline;
+}
+table.plain, table.plain tr td, table.plain tr th {
+    border:             none;
+}
+table.plain tr, table.plain tr:hover {
+    background:         transparent;
 }
 
 

@@ -22,7 +22,7 @@
 
             <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				label="#{msgs.devices}">
-                    <table class="inner listingTable">
+                    <table class="inner">
                         <tr>
                             <th class="half">
                                 <h:outputLabel for="restriction" value="#{msgs.isDeviceRestriction}"/>
@@ -34,7 +34,7 @@
                     </table>
 
                     <br />
-					<rich:dataTable value="#{allowedDevices}" var="item" styleClass="inner listingTable">
+					<rich:dataTable value="#{allowedDevices}" var="item" styleClass="inner ">
 						<h:column>
 							<f:facet name="header">#{msgs.name}</f:facet>
 							<h:outputText value="#{item.friendlyName}" />

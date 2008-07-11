@@ -22,7 +22,7 @@
 		<f:subview>
             <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
                 id="generic-tab" label="#{msgs.generic}">
-                <table class="inner listingTable">
+                <table class="inner">
                     <colgroup />
                     <colgroup />
 
@@ -62,7 +62,7 @@
 
             <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
                 id="access-control-tab" label="#{msgs.accessControl}">
-                <table class="inner listingTable">
+                <table class="inner">
                     <colgroup />
                     <colgroup />
 
@@ -86,7 +86,7 @@
                 disabled="#{!selectedAttributeType.compounded}">
 
                 <rich:dataTable id="compounded-members" var="item"
-                    value="#{selectedAttributeType.members}" styleClass="inner listingTable"
+                    value="#{selectedAttributeType.members}" styleClass="inner "
                     rowClasses="listingTable_Row1,listingTable_Row2">
                     <h:column>
                         <f:facet name="header">#{msgs.name}</f:facet>
@@ -104,7 +104,7 @@
 
                 <h:form>
                     <rich:dataTable id="desc-data" var="item"
-                        value="#{attributeTypeDescriptions}" styleClass="inner listingTable"
+                        value="#{attributeTypeDescriptions}" styleClass="inner "
                         rowClasses="listingTable_Row1,listingTable_Row2">
                         <h:column>
                             <f:facet name="header">#{msgs.language}</f:facet>
@@ -131,7 +131,7 @@
 				id="providers-tab" label="#{msgs.attributeProviders}">
                 <h:form>
                     <rich:dataTable id="atttrib-prov" var="item"
-                        value="#{attributeProviders}" styleClass="inner listingTable"
+                        value="#{attributeProviders}" styleClass="inner "
                         rowClasses="listingTable_Row1,listingTable_Row2">
                         <h:column>
                             <f:facet name="header">#{msgs.application}</f:facet>

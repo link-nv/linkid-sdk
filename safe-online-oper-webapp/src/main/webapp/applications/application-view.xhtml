@@ -21,7 +21,7 @@
 
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			label="#{msgs.generic}">
-            <table class="inner listingTable">
+            <table class="inner">
                 <colgroup />
                 <colgroup />
 
@@ -92,7 +92,7 @@
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
 			label="#{msgs.accessControl}">
 
-            <table class="inner listingTable">
+            <table class="inner">
                 <colgroup />
                 <colgroup />
 
@@ -128,7 +128,7 @@
 			label="#{msgs.applicationIdentity}">
 
             <h:dataTable value="#{applicationIdentityAttributes}" var="item"
-                styleClass="inner listingTable">
+                styleClass="inner ">
                 <h:column>
                     <f:facet name="header">#{msgs.attributeName}</f:facet>
                     <h:outputText value="#{item.attributeTypeName}" />
