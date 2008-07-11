@@ -83,12 +83,20 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
             }
 
             MagicMatch magic = Magic.getMagicMatch(logo);
-            if (!magic.getMimeType().startsWith("image/"))
-                throw new IllegalStateException(
-                        "Application logo is not an image; refusing to show.");
+            String mime = magic.getMimeType();
+
+            // If mime type is not "image/*" and "nomime" parameter not given;
+            // don't show the logo; it is probably malicious code.
+            String noMime = request.getParameter("nomime");
+            if (!mime.startsWith("image/"))
+                if (noMime == null)
+                    throw new IllegalStateException("Application logo for "
+                            + applicationName + " is not an image (it is "
+                            + mime + "); refusing to show.");
 
             response.setContentType(magic.getMimeType());
             response.getOutputStream().write(logo);
+
             logoWritten = true;
         }
 
@@ -103,8 +111,7 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
 
                 int read;
                 byte[] buf = new byte[42];
-                InputStream spacerUrl = ClassLoader
-                        .getSystemResourceAsStream(SPACER);
+                InputStream spacerUrl = getClass().getResourceAsStream(SPACER);
                 if (spacerUrl == null) {
                     LOG.warn("Spacer not found!");
                 } else {
