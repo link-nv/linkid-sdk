@@ -127,6 +127,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		if (false == valid) {
 			this.facesMessages.addToControlFromResourceBundle("captcha",
 					FacesMessage.SEVERITY_ERROR, "errorInvalidCaptcha");
+			this.captcha = null;
 			return null;
 		}
 

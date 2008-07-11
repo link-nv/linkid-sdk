@@ -8,10 +8,13 @@
 package net.link.safeonline.model.bean;
 
 import java.awt.Color;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
@@ -48,6 +51,15 @@ import org.jboss.annotation.ejb.LocalBinding;
 public class SystemInitializationStartableBean extends AbstractInitBean {
 
 	public SystemInitializationStartableBean() {
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String protocol = properties.getString("olas.host.protocol");
+		String hostname = properties.getString("olas.host.name");
+		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
+		String userWebappName = properties.getString("olas.user.webapp.name");
+		String operWebappName = properties.getString("olas.oper.webapp.name");
+		String ownerWebappName = properties.getString("olas.owner.webapp.name");
+		String helpdeskWebappName = properties
+				.getString("olas.helpdesk.webapp.name");
 
 		configureNode();
 		configureAttributeTypes();
@@ -69,27 +81,44 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
 
-		// TODO: Fill in the correct Home URL and Logo URL.
-		this.registeredApplications.add(new Application(
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
-				"The SafeOnline User Web Application.", null,
-				getLogo("/logo.jpg"), null, false, false, userCert, false,
-				IdScopeType.USER));
-		this.registeredApplications.add(new Application(
-				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-				"owner", "The SafeOnline Operator Web Application.", null,
-				getLogo("/logo.jpg"), Color.decode("#2c0075"), false, false,
-				operCert, false, IdScopeType.USER));
-		this.registeredApplications.add(new Application(
-				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
-				"owner", "The SafeOnline Application Owner Web Application.",
-				null, getLogo("/logo.jpg"), Color.decode("#001975"), false,
-				false, ownerCert, false, IdScopeType.USER));
-		this.registeredApplications.add(new Application(
-				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
-				"owner", "The SafeOnline Helpdesk Web Application.", null,
-				getLogo("/logo.jpg"), Color.decode("#006f73"), false, false,
-				helpdeskCert, false, IdScopeType.USER));
+		try {
+			this.registeredApplications
+					.add(new Application(
+							SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+							"owner", "The SafeOnline User Web Application.",
+							new URL(protocol, hostname, hostport, "/"
+									+ userWebappName), getLogo("/logo.jpg"),
+							null, false, false, userCert, false,
+							IdScopeType.USER));
+			this.registeredApplications
+					.add(new Application(
+							SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
+							"owner",
+							"The SafeOnline Operator Web Application.",
+							new URL(protocol, hostname, hostport, "/"
+									+ operWebappName), getLogo("/logo.jpg"),
+							Color.decode("#2c0075"), false, false, operCert,
+							false, IdScopeType.USER));
+			this.registeredApplications
+					.add(new Application(
+							SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
+							"owner",
+							"The SafeOnline Application Owner Web Application.",
+							new URL(protocol, hostname, hostport, "/"
+									+ ownerWebappName), getLogo("/logo.jpg"),
+							Color.decode("#001975"), false, false, ownerCert,
+							false, IdScopeType.USER));
+			this.registeredApplications.add(new Application(
+					SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
+					"owner", "The SafeOnline Helpdesk Web Application.",
+					new URL(protocol, hostname, hostport, "/"
+							+ helpdeskWebappName), getLogo("/logo.jpg"), Color
+							.decode("#006f73"), false, false, helpdeskCert,
+					false, IdScopeType.USER));
+		} catch (MalformedURLException e) {
+			throw new EJBException("Malformed Application URL exception: "
+					+ e.getMessage());
+		}
 
 		this.trustedCertificates.put(userCert,
 				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
@@ -122,7 +151,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
 		ResourceBundle properties = ResourceBundle.getBundle("config");
 		String nodeName = properties.getString("olas.node.name");
-		String protocol = properties.getString("olas.host.protocol");
+		String sslprotocol = properties.getString("olas.host.protocol.ssl");
 		String hostname = properties.getString("olas.host.name");
 		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
 		int hostportssl = Integer.parseInt(properties
@@ -130,7 +159,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-		this.node = new Node(nodeName, protocol, hostname, hostport,
+		this.node = new Node(nodeName, sslprotocol, hostname, hostport,
 				hostportssl, authIdentityServiceClient.getCertificate(),
 				identityServiceClient.getCertificate());
 		this.trustedCertificates.put(

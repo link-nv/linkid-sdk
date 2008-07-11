@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core">
+<body>
+<ui:composition template="/WEB-INF/template-root.xhtml">
+	<ui:define name="content">
+		<h1>#{msgs.timeout}</h1>
+		<p>#{msgs.timeoutInfo}</p>
+
+		<c:if test="#{!empty timeout.applicationUrl}">
+			<p><a href="#{timeout.applicationUrl}">#{msgs.timeoutLinkToMain}</a></p>
+		</c:if>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

@@ -123,6 +123,12 @@ public class LoginManager {
 		session.setAttribute(APPLICATION_ID_ATTRIBUTE, applicationId);
 	}
 
+	public static String findApplication(HttpSession session) {
+		String application = (String) session
+				.getAttribute(APPLICATION_ID_ATTRIBUTE);
+		return application;
+	}
+
 	public static void setApplicationFriendlyName(HttpSession session,
 			String applicationFriendlyName) {
 		if (null == applicationFriendlyName) {

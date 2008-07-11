@@ -17,6 +17,9 @@ import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.servlet.annotation.Context;
 import net.link.safeonline.sdk.servlet.annotation.Init;
@@ -173,4 +176,62 @@ public abstract class AbstractInjectionFilter implements Filter {
 			}
 		}
 	}
+
+	protected static void addCookie(String name, String value,
+			HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+		if (true == hasCookie(name, httpRequest)) {
+			return;
+		}
+		Cookie cookie = new Cookie(name, value);
+		LOG.debug("adding cookie: " + name + "=" + value);
+		httpResponse.addCookie(cookie);
+	}
+
+	protected static void setCookie(String name, String value,
+			HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+		Cookie cookie = new Cookie(name, value);
+		LOG.debug("setting cookie: " + name + "=" + value);
+		httpResponse.addCookie(cookie);
+	}
+
+	protected static void removeCookie(String name,
+			HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+		if (false == hasCookie(name, httpRequest)) {
+			return;
+		}
+		LOG.debug("removing cookie: " + name);
+		Cookie cookie = new Cookie(name, "");
+		cookie.setMaxAge(0);
+		httpResponse.addCookie(cookie);
+
+	}
+
+	protected static boolean hasCookie(String name,
+			HttpServletRequest httpRequest) {
+		Cookie[] cookies = httpRequest.getCookies();
+		if (null == cookies) {
+			return false;
+		}
+		for (Cookie cookie : cookies) {
+			if (name.equals(cookie.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	protected static String findCookieValue(String name,
+			HttpServletRequest httpRequest) {
+		Cookie[] cookies = httpRequest.getCookies();
+		if (null == cookies) {
+			return null;
+		}
+		for (Cookie cookie : cookies) {
+			if (name.equals(cookie.getName())) {
+				return cookie.getValue();
+			}
+		}
+		return null;
+	}
+
 }

@@ -81,6 +81,13 @@ public class LoginServlet extends AbstractInjectionServlet {
 		LOG.debug("doGet");
 		HttpSession session = request.getSession();
 
+		boolean devicePolicyCheck = performDevicePolicyCheck(session);
+		if (false == devicePolicyCheck) {
+			redirectToRegisterDevice(response);
+			return;
+		}
+		HelpdeskLogger.add(session, "authn device OK", LogLevelType.INFO);
+
 		boolean globalConfirmationRequired = performGlobalUsageAgreementCheck();
 		if (true == globalConfirmationRequired) {
 			redirectToGlobalConfirmation(response);
@@ -88,13 +95,6 @@ public class LoginServlet extends AbstractInjectionServlet {
 		}
 		HelpdeskLogger.add(session,
 				"global usage agreement confirmation found", LogLevelType.INFO);
-
-		boolean devicePolicyCheck = performDevicePolicyCheck(session);
-		if (false == devicePolicyCheck) {
-			redirectToRegisterDevice(response);
-			return;
-		}
-		HelpdeskLogger.add(session, "authn device OK", LogLevelType.INFO);
 
 		boolean subscriptionRequired = performSubscriptionCheck(session);
 		if (true == subscriptionRequired) {
