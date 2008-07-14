@@ -9,6 +9,13 @@ package net.link.safeonline.oper;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingApplicationAdminException;
+import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+
 @Local
 public interface ApplicationOwner {
 
@@ -33,9 +40,13 @@ public interface ApplicationOwner {
 	/*
 	 * Actions.
 	 */
-	String add();
+	String add() throws SubjectNotFoundException,
+			ExistingApplicationOwnerException,
+			ExistingApplicationAdminException;
 
-	String remove();
+	String remove() throws SubscriptionNotFoundException,
+			SubjectNotFoundException, ApplicationOwnerNotFoundException,
+			PermissionDeniedException;
 
 	String view();
 

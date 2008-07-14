@@ -21,6 +21,7 @@ import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
@@ -134,7 +135,8 @@ public class ApplicationBean implements Application {
 	 */
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	@Factory("ownerApplicationList")
-	public void applicationListFactory() {
+	public void applicationListFactory()
+			throws ApplicationOwnerNotFoundException {
 		LOG.debug("application list factory");
 		this.ownerApplicationList = this.applicationService
 				.getOwnedApplications();

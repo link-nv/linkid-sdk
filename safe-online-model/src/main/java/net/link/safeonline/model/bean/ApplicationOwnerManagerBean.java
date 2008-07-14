@@ -11,15 +11,16 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import org.jboss.annotation.security.SecurityDomain;
-
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationOwnerManager;
 import net.link.safeonline.model.SubjectManager;
+
+import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -32,7 +33,8 @@ public class ApplicationOwnerManagerBean implements ApplicationOwnerManager {
 	private ApplicationOwnerDAO applicationOwnerDAO;
 
 	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-	public ApplicationOwnerEntity getCallerApplicationOwner() {
+	public ApplicationOwnerEntity getCallerApplicationOwner()
+			throws ApplicationOwnerNotFoundException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 				.getApplicationOwner(subject);

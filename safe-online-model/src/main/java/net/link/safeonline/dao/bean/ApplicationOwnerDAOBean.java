@@ -77,7 +77,17 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 		return applicationOwners;
 	}
 
-	public ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject) {
+	public ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject)
+			throws ApplicationOwnerNotFoundException {
+		ApplicationOwnerEntity applicationOwner = findApplicationOwner(adminSubject);
+		if (null == applicationOwner) {
+			throw new ApplicationOwnerNotFoundException();
+		}
+		return applicationOwner;
+	}
+
+	public ApplicationOwnerEntity findApplicationOwner(
+			SubjectEntity adminSubject) {
 		ApplicationOwnerEntity applicationOwner = this.queryObject
 				.getApplicationOwner(adminSubject);
 		return applicationOwner;

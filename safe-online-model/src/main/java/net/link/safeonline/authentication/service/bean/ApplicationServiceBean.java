@@ -31,6 +31,7 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingApplicationAdminException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -308,13 +309,15 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void registerApplicationOwner(String ownerName, String adminLogin)
-			throws SubjectNotFoundException, ExistingApplicationOwnerException {
+			throws SubjectNotFoundException, ExistingApplicationOwnerException,
+			ExistingApplicationAdminException {
 		LOG.debug("register application owner: " + ownerName + " with account "
 				+ adminLogin);
 		checkExistingOwner(ownerName);
 
 		SubjectEntity adminSubject = this.subjectService
 				.getSubjectFromUserName(adminLogin);
+		checkExistingAdmin(adminSubject);
 
 		this.applicationOwnerDAO.addApplicationOwner(ownerName, adminSubject);
 
@@ -337,6 +340,14 @@ public class ApplicationServiceBean implements ApplicationService,
 		 */
 		SecurityManagerUtils.flushCredentialCache(adminSubject.getUserId(),
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+	}
+
+	private void checkExistingAdmin(SubjectEntity adminSubject)
+			throws ExistingApplicationAdminException {
+		ApplicationOwnerEntity existingApplicationOwner = this.applicationOwnerDAO
+				.findApplicationOwner(adminSubject);
+		if (null != existingApplicationOwner)
+			throw new ExistingApplicationAdminException();
 	}
 
 	private void checkExistingOwner(String name)
@@ -399,7 +410,8 @@ public class ApplicationServiceBean implements ApplicationService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-	public List<ApplicationEntity> getOwnedApplications() {
+	public List<ApplicationEntity> getOwnedApplications()
+			throws ApplicationOwnerNotFoundException {
 		LOG.debug("get owned applications");
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerManager
 				.getCallerApplicationOwner();

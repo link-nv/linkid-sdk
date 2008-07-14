@@ -21,6 +21,7 @@ import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -79,6 +80,8 @@ public class ErrorMessageInterceptor {
 					"errorAlreadySubscribed"),
 			new ErrorHandle(ApplicationNotFoundException.class,
 					"errorApplicationNotFound"),
+			new ErrorHandle(ApplicationOwnerNotFoundException.class,
+					"errorApplicationOwnerNotFound"),
 			new ErrorHandle(ApplicationIdentityNotFoundException.class,
 					"errorApplicationIdentityNotFound"),
 			new ErrorHandle(AttributeNotFoundException.class,

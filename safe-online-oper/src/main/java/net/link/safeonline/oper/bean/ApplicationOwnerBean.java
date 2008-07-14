@@ -14,14 +14,18 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.application.FacesMessage;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingApplicationAdminException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.ctrl.error.annotation.Error;
+import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.oper.ApplicationOwner;
@@ -46,6 +50,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Name("applicationOwner")
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "ApplicationOwnerBean/local")
+@Interceptors(ErrorMessageInterceptor.class)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class ApplicationOwnerBean implements ApplicationOwner {
 
@@ -98,57 +103,27 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
+	@ErrorHandling( {
+			@Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
+			@Error(exceptionClass = ExistingApplicationOwnerException.class, messageId = "errorApplicationOwnerAlreadyExists", fieldId = "name"),
+			@Error(exceptionClass = ExistingApplicationAdminException.class, messageId = "errorApplicationAdminAlreadyExists", fieldId = "login") })
+	public String add() throws SubjectNotFoundException,
+			ExistingApplicationOwnerException,
+			ExistingApplicationAdminException {
 		LOG.debug("add");
-		try {
-			this.applicationService.registerApplicationOwner(this.name,
-					this.login);
-		} catch (SubjectNotFoundException e) {
-			String msg = "subject not found";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("login",
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		} catch (ExistingApplicationOwnerException e) {
-			String msg = "application owner already exists";
-			LOG.debug(msg);
-			this.facesMessages.addToControlFromResourceBundle("name",
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationOwnerAlreadyExists");
-			return null;
-		}
+		this.applicationService.registerApplicationOwner(this.name, this.login);
 		return "success";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() {
+	public String remove() throws SubscriptionNotFoundException,
+			SubjectNotFoundException, ApplicationOwnerNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("remove");
-		try {
-			this.applicationService.removeApplicationOwner(
-					this.selectedApplicationOwner.getEntity().getName(),
-					this.selectedApplicationOwner.getAdminName());
-		} catch (SubscriptionNotFoundException e) {
-			LOG.debug("owner's subscription to owner webapp not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
-			return null;
-		} catch (SubjectNotFoundException e) {
-			LOG.debug("subject not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			return null;
-		} catch (ApplicationOwnerNotFoundException e) {
-			LOG.debug("application owner not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationOwnerNotFound");
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied, owner still owns applications");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
+		this.applicationService.removeApplicationOwner(
+				this.selectedApplicationOwner.getEntity().getName(),
+				this.selectedApplicationOwner.getAdminName());
+
 		applicationOwnerListFactory();
 		return "success";
 	}

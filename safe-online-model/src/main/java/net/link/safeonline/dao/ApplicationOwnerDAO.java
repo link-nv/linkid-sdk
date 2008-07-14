@@ -30,7 +30,10 @@ public interface ApplicationOwnerDAO {
 
 	List<ApplicationOwnerEntity> listApplicationOwners();
 
-	ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject);
+	ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject)
+			throws ApplicationOwnerNotFoundException;
+
+	ApplicationOwnerEntity findApplicationOwner(SubjectEntity adminSubject);
 
 	void removeApplication(ApplicationEntity application);
 }

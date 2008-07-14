@@ -114,8 +114,8 @@ public class ApplicationOwnerEntity implements Serializable {
 		@QueryMethod(QUERY_WHERE_ALL)
 		List<ApplicationOwnerEntity> listApplicationOwners();
 
-		@QueryMethod(QUERY_WHERE_ADMIN)
-		ApplicationOwnerEntity getApplicationOwner(@QueryParam("admin")
-		SubjectEntity adminSubject);
+		@QueryMethod(value = QUERY_WHERE_ADMIN, nullable = true)
+		ApplicationOwnerEntity getApplicationOwner(
+				@QueryParam("admin") SubjectEntity adminSubject);
 	}
 }

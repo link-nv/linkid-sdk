@@ -18,6 +18,7 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingApplicationAdminException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -56,8 +57,11 @@ public interface ApplicationService {
 	/**
 	 * Gives back the applications owned by the caller principal.
 	 * 
+	 * @throws ApplicationOwnerNotFoundException
+	 * 
 	 */
-	List<ApplicationEntity> getOwnedApplications();
+	List<ApplicationEntity> getOwnedApplications()
+			throws ApplicationOwnerNotFoundException;
 
 	/**
 	 * @param name
@@ -117,9 +121,11 @@ public interface ApplicationService {
 	 *            the admin subject login.
 	 * @throws SubjectNotFoundException
 	 * @throws ExistingApplicationOwnerException
+	 * @throws ExistingApplicationAdminException
 	 */
 	void registerApplicationOwner(String ownerName, String adminLogin)
-			throws SubjectNotFoundException, ExistingApplicationOwnerException;
+			throws SubjectNotFoundException, ExistingApplicationOwnerException,
+			ExistingApplicationAdminException;
 
 	/**
 	 * Removes an application owner.
