@@ -94,6 +94,25 @@ export draw=$(      tput enacs    2>/dev/null ;
 # |______________________________________________________________________|
 
 #  ______________________________________________________________________
+# |__ Eol _______________________________________________________________|
+#
+#       eol message
+#
+# Return the message with termination punctuation added.
+#
+eol() {
+
+    local eol='..'
+    local text=$1
+
+    [[ $text = *[\!\?.,:\;\|] ]] && eol=
+
+    printf "%s%s\n" "$text" "$eol"
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
 # |__ Emit ______________________________________________________________|
 #
 #       emit [options] message... [-- [command args...]]
@@ -141,7 +160,7 @@ emit() {
     local color=
     local textstyle=
     local textcolor=
-    local eol=$'..\n'
+    local noeol=0
     local cmd=0
 
     # Parse the options.
@@ -160,7 +179,7 @@ emit() {
             G) textcolor=$green     ;;
             Y) textcolor=$yellow    ;;
             R) textcolor=$red       ;;
-            n) eol=                 ;;
+            n) noeol=1              ;;
             o) spinArgs+=("-$arg")  ;;
         esac
     done
@@ -180,8 +199,8 @@ emit() {
     local text=
     for arg; do [[ $arg = -- ]] && break; text+="$arg "; done
     text=${text%% }
-    [[ $text = *[^a-zA-Z0-9$'\047'$'\042'] ]] && eol=${eol:+$'\n'}
-    text+=$eol
+    (( noeol )) || text=$(eol "$text")$'\n'
+
     
     # Trim off everything up to --
     while [[ $# -gt 1 && $1 != -- ]]; do shift; done
@@ -196,7 +215,9 @@ emit() {
         trap : INT
 
         # Create the spinner in the background.
-        { spinner "${spinArgs[@]}" "$text" -- "$style" "$color" "$textstyle" "$textcolor" & } 2>/dev/null
+        spinPipe=$(mktemp -uq).$$ && mkfifo "$spinPipe" || unset spinPipe
+        { spinner "${spinArgs[@]}" "$text" -- "$style" "$color" "$textstyle" "$textcolor" < "${spinPipe:-/dev/null}" & } 2>/dev/null
+        [[ $spinPipe ]] && echo > "$spinPipe"
         spinPid=$!
 
         # Execute the command for the spinner if one is given.
@@ -322,13 +343,18 @@ spinner() {
     text=$font${text//$reset/$font}
 
     # Spinner initial status.
-    printf "\r$save$eel$reset $style$color* %s" "$text"           >&$fd
+    printf "\r$save$eel$reset $style$color* %s" "$text"             >&$fd
     (( output )) && printf "\n"                                     >&$fd
 
     # Render the spinner.
     set +m
     local i=0
     while true; do
+        IFS= read -r -d '' newtext
+        newtext=${newtext%%$'\n'}
+        [[ $newtext ]] \
+            && text=$(eol "$font${newtext//$reset/$font}")
+
         if (( output ))
         then printf "\r"                                            >&$fd
         else printf "$load$eel"                                     >&$fd
@@ -384,7 +410,6 @@ report() {
 
     # Exit Status of previous command.
     local code=$?
-    local exit=0
 
     # Parse the options.
     while [[ $1 = -* && $2 ]]; do
@@ -397,7 +422,6 @@ report() {
         # Process arg: Either a spinner type or result code.
         if [[ $arg = *[^0-9]* ]]; then
             case $arg in
-                e) exit=1   ;;
             esac
         else code=$arg
         fi
@@ -424,9 +448,7 @@ report() {
     fi
 
     # Pass on exit code.
-    (( exit )) \
-        && exit   $code \
-        || return $code
+    return $code
 
 } # _____________________________________________________________________
 

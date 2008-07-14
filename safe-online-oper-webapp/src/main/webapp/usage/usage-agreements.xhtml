@@ -33,11 +33,11 @@
 							<tr>
 								<th colspan="2">#{msgs.actions}</th>
 							</tr>
-							<tr>
-								<th><a4j:commandLink value="#{msgs.releaseaction}"
-									action="#{globalUsageAgreement.releaseDraft}" /></th>
-								<th><a4j:commandLink value="#{msgs.removeaction}"
-									action="#{globalUsageAgreement.removeDraft}" /></th>
+							<tr class="center">
+								<td><a4j:commandLink value="#{msgs.releaseaction}"
+									action="#{globalUsageAgreement.releaseDraft}" /></td>
+								<td><a4j:commandLink value="#{msgs.removeaction}"
+									action="#{globalUsageAgreement.removeDraft}" /></td>
 							</tr>
 						</tbody>
 					</table>
@@ -45,8 +45,7 @@
 
 				<br />
 
-				<a4j:form id="editDraftTextsForm" reRender="usagePanel"
-					ajaxSubmit="true">
+				<a4j:form id="editDraftTextsForm" reRender="usagePanel" ajaxSubmit="true">
 					<rich:dataTable id="draft-text-data" var="item"
 						value="#{globalDraftUsageAgreementsTexts}" rows="10"
 						styleClass="inner "
@@ -133,29 +132,26 @@
 				label="#{msgs.version}: #{globalUsageAgreement.currentUsageAgreement.usageAgreementVersion}"
 				rendered="#{!empty globalUsageAgreement.currentUsageAgreement}">
 
-				<a4j:form id="editCurrentsForm" reRender="usagePanel"
-					rendered="#{empty globalUsageAgreement.draftUsageAgreement}"
-					ajaxSubmit="true">
+				<a4j:form id="editCurrentsForm" reRender="usagePanel" ajaxSubmit="true"
+                    rendered="#{empty globalUsageAgreement.draftUsageAgreement}">
 
 					<table class="inner">
-						<colgroup />
 						<colgroup />
 
 						<tbody>
 							<tr>
-								<th colspan="2">#{msgs.actions}</th>
+								<th>#{msgs.actions}</th>
 							</tr>
-							<tr>
-								<th><a4j:commandLink id="edit-agreement"
+							<tr class="center">
+								<td><a4j:commandLink id="edit-agreement"
 									value="#{msgs.editaction}"
-									action="#{globalUsageAgreement.createUsageAgreement}" /></th>
+									action="#{globalUsageAgreement.createUsageAgreement}" /></td>
 							</tr>
 						</tbody>
 					</table>
 				</a4j:form>
 
-				<a4j:form id="editCurrentForm" reRender="usagePanel"
-					ajaxSubmit="true">
+				<a4j:form id="editCurrentForm" reRender="usagePanel" ajaxSubmit="true">
 
 					<rich:dataTable id="current-text-data" var="item"
 						value="#{globalCurrentUsageAgreementsTexts}" rows="10"

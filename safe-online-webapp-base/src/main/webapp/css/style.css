@@ -333,18 +333,21 @@ span.error {
     clear:              left;
 
     width:              273px;
-    margin:             0;
+    margin:             1ex 0 0;
     margin-left:        150px;
-    padding:            3px;
+    padding:            7px;
     padding-left:       25px;
 
     border:             1px solid red;
     background:         pink url('../images/icons/exclamation.png') no-repeat 5px 5px;
 }
-span.error input {
+table .error {
+    margin:             1ex 0 0;
+}
+.error input {
     clear:              none;
 }
-span.error_message {
+.error_message {
     display:            block;
     clear:              left;
 
@@ -526,37 +529,35 @@ table {
     float:              none;
     clear:              left;
 
-    margin:             0;
+    margin:             0 0 1em;
     padding:            0;
 
     border:             0 solid black;
     border-width:       0 2px 2px 1px;
     border-collapse:    collapse;
-}
-table {
-    font-family:        "Trebuchet MS", Verdana, Arial !important;
-    font-size:          14px !important;
+
+    font-size:          11px;
+    font-family:        Arial, Verdana, sans-serif;
 }
 table colgroup {
     width:              inherit;
 }
-table thead tr th, table thead tr td {
+table th, table td {
+    border:             1px solid black;
+    border-left:        none;
+
     margin:             0;
-    padding:            5px;
-
-    border:             none;
-
+    padding:            4px;
+}
+table th {
+    border-bottom:      none;
+}
+table thead tr th, table thead tr td {
     font-weight:        bold;
     text-align:         left;
 }
-table tbody tr th, table tbody tr td {
-    margin:             0;
-    padding:            5px;
-
-    border:             1px solid black;
-    border-style:       solid none none;
-}
-table tfoot tr {
+table tfoot tr, table tfoot td, table tfoot th {
+    border:             none;
     padding:            0;
     margin:             0;
 }
@@ -613,6 +614,7 @@ div.dr-dscr * {
 }
 table.rich-list-shuttle, table.rich-list-shuttle table {
     width:              auto;
+    margin:             0;
 }
 table.rich-shuttle-body table {
     border:             none;

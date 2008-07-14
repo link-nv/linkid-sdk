@@ -27,16 +27,16 @@
 
                         <tbody>
                             <tr><th colspan="2">#{msgs.actions}</th></tr>
-                            <tr><th><a4j:commandLink value="#{msgs.releaseaction}"
+                            <tr class="center">
+                                <td><a4j:commandLink value="#{msgs.releaseaction}"
                                         action="#{ownerUsageAgreement.releaseDraft}" />
-                            </th><th><a4j:commandLink value="#{msgs.removeaction}"
+                                </td><td><a4j:commandLink value="#{msgs.removeaction}"
                                         action="#{ownerUsageAgreement.removeDraft}" />
-                            </th></tr>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
 				</a4j:form>
-
-                <br />
 
 				<a4j:form id="editDraftTextsForm" reRender="usagePanel"
 					ajaxSubmit="true">
@@ -149,8 +149,6 @@
                     </table>
                 </a4j:form>
 
-                <br />
- 
 				<a4j:form id="editCurrentForm" reRender="usagePanel"
 					ajaxSubmit="true">
 

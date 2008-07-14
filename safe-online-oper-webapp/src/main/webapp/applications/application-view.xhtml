@@ -31,16 +31,14 @@
                         <td>#{selectedApplication.applicationOwner.name}</td>
                     </tr>
                     <tr>
-                        <th>#{msgs.operatorApplicationOwnerAdmin}</th>
-                        <td>#{ownerAdminName}</td>
-                    </tr>
-                    <tr>
                         <th>#{msgs.operatorUserAllowedToSubscribe}</th>
-                        <td><h:selectBooleanCheckbox disabled="true" value="#{selectedApplication.allowUserSubscription}"/></td>
+                        <td><h:selectBooleanCheckbox disabled="true"
+                                value="#{selectedApplication.allowUserSubscription}"/></td>
                     </tr>
                     <tr>
                         <th>#{msgs.removable}</th>
-                        <td><h:selectBooleanCheckbox disabled="true" value="#{selectedApplication.removable}"/></td>
+                        <td><h:selectBooleanCheckbox disabled="true"
+                                value="#{selectedApplication.removable}"/></td>
                     </tr>
                     <tr>
                         <th>#{msgs.operatorNumberOfSubscriptions}</th>
@@ -52,7 +50,7 @@
                     </tr>
                     <tr>
                         <th>#{msgs.applicationLogo}</th>
-                        <td><h:graphicImage
+                        <td class="center"><h:graphicImage
                             url="../logo?applicationName=${selectedApplication.name}"
                             rendered="#{!empty selectedApplication.applicationLogo}" /></td>
                     </tr>
@@ -77,16 +75,20 @@
 
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
 			label="#{msgs.description}">
-            <h:outputText value="#{selectedApplication.description}"
-                escape="true" rendered="#{!empty selectedApplication.description}" />
+            <h:outputText value="#{selectedApplication.description}" escape="true"
+                rendered="#{!empty selectedApplication.description}"
+                styleClass="white_space" />
             <h:outputText value="#{msgs.noDescription}"
                 rendered="#{empty selectedApplication.description}" />
-            <!-- XSS vulnerability possible: do not set escape="false" -->
 		</rich:simpleTogglePanel>
 
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
 			label="#{msgs.usageAgreement}">
-            <div class="white_space">#{operApplication.usageAgreement}</div>
+            <h:outputText value="#{operApplication.usageAgreement}" escape="true"
+                rendered="#{!empty operApplication.usageAgreement}"
+                styleClass="white_space" />
+            <h:outputText value="#{msgs.noAgreement}"
+                rendered="#{empty operApplication.usageAgreement}" />
 		</rich:simpleTogglePanel>
 
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"

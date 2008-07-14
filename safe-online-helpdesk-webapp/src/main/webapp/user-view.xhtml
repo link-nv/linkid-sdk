@@ -36,10 +36,12 @@
 					<h:outputLabel value="#{item.location}" />
 				</h:column>
 				<h:column>
+                    <f:facet name="header"><so:nbsp /></f:facet>
 					<h:commandLink value="#{msgs.viewaction}"
 						action="#{helpdeskLog.view}" />
 				</h:column>
 				<h:column>
+                    <f:facet name="header"><so:nbsp /></f:facet>
 					<h:commandLink value="#{msgs.removeaction}"
 						action="#{helpdeskLog.removeLog}" />
 				</h:column>

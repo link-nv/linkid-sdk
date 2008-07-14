@@ -49,6 +49,7 @@ public interface ApplicationOwner {
 			PermissionDeniedException;
 
 	String view();
+    String viewapp(); 
 
 	/*
 	 * Lifecycle.

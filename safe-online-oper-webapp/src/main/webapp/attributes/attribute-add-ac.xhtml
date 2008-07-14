@@ -19,8 +19,6 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<h:form>
 
 			<h:outputLabel for="userVisible" value="#{msgs.userVisible}" />
@@ -32,15 +30,13 @@
 			<h:selectBooleanCheckbox id="userEditable"
 				value="#{addAttribute.userEditable}" styleClass="radio"/>
 
-
-
 			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:outputLabel for="add" value="" />
-			<h:commandButton value="#{msgs.addaction}" id="add"
-				action="#{addAttribute.add}" styleClass="submit" />
 			<h:commandButton value="#{msgs.previous}" id="previous"
 				action="previous" immediate="true" styleClass="submit" />
+			<h:commandButton value="#{msgs.addaction}" id="add"
+				action="#{addAttribute.add}" styleClass="submit" />
 			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 

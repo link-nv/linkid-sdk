@@ -78,6 +78,11 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 	@SuppressWarnings("unused")
 	@DataModel(APPLICATION_LIST_NAME)
 	private List<ApplicationEntity> applicationList;
+	
+	@DataModelSelection(APPLICATION_LIST_NAME)
+    @Out(value = "selectedApplication", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private ApplicationEntity selectedApplication;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -130,9 +135,15 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String view() {
-		LOG.debug("view");
+		LOG.debug("view owner: " + this.selectedApplicationOwner.getAdminName());
 		return "view-owner";
 	}
+	
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String viewapp() {
+        LOG.debug("view owner app: " + this.selectedApplication.getName());
+        return "view-app";
+    }
 
 	@Factory(APPLICATION_OWNER_LIST_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

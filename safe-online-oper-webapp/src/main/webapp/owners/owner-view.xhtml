@@ -35,15 +35,14 @@
             </tbody>
 		</table>
 
-        <br />
-
-		<a4j:form id="appOwnerForm" ajaxSubmit="true" reRender="app-data">
+		<h:form id="appOwnerForm">
 			<rich:dataTable id="app-data" var="item" value="#{applicationList}"
 				rows="10"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
 					<f:facet name="header">#{msgs.application}</f:facet>
-					<h:outputText value="#{item.name}" />
+					<h:commandLink id="view" value="#{item.name}"
+						action="#{applicationOwner.viewapp}" />
 				</h:column>
 				<h:column>
 					<f:facet name="header">#{msgs.applicationfriendlyname}</f:facet>
@@ -85,7 +84,7 @@
 			</rich:dataTable>
 
 			<rich:messages styleClass="error" />
-		</a4j:form>
+		</h:form>
 
 		<h:form>
 			<h:commandButton id="back" value="#{msgs.backaction}" action="back"

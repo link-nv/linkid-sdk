@@ -29,7 +29,8 @@
                 <tbody>
                     <tr>
                         <th>#{msgs.operatorPerformOCSPCheck}:</th>
-                        <td>#{selectedTrustDomain.performOcspCheck}</td>
+                        <td><h:selectBooleanCheckbox disabled="true"
+                                value="#{selectedTrustDomain.performOcspCheck}" /></td>
                     </tr>
                     <tr>
                         <th>#{msgs.operatorOCSPCacheTimeout} (ms):</th>
@@ -37,6 +38,11 @@
                     </tr>
                 </tbody>
 			</table>
+
+			<h:commandButton action="#{editTrustDomain.edit}" id="edit"
+				value="#{msgs.editaction}" styleClass="submit" />
+
+            <br />
 
 			<h2>#{msgs.miscContent}</h2>
 
@@ -57,8 +63,6 @@
 
 			<h:commandButton action="add" id="add" value="#{msgs.addaction}"
 				styleClass="submit" />
-			<h:commandButton action="#{editTrustDomain.edit}" id="edit"
-				value="#{msgs.editaction}" styleClass="submit" />
 			<h:commandButton value="#{msgs.clearOcspCache}" id="clear-cache"
 				action="#{trustDomain.clearOcspCachePerTrustDomain}"
 				styleClass="submit" />

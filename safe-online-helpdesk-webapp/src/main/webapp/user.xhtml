@@ -25,15 +25,16 @@
 			</f:facet>
 
             <table>
+                <colgroup class="half" />
+                <colgroup />
+
                 <tr>
                     <th>#{msgs.helpdeskUser}</th>
                     <td>
-                        <s:decorate id="decorateSearchUserName">
-                            <h:inputText value="#{helpdeskLog.searchUserName}"
-                                validator="#{helpdeskLog.validateUser}" id="searchUserName"
-                                required="true" />
-                        </s:decorate>
-                        <rich:suggestionbox for="decorateSearchUserName:searchUserName"
+                        <h:inputText value="#{helpdeskLog.searchUserName}"
+                            validator="#{helpdeskLog.validateUser}" id="searchUserName"
+                            required="true" />
+                        <rich:suggestionbox for="searchUserName"
                             suggestionAction="#{helpdeskLog.autocompleteUser}"
                             var="searchUserNameInput" selfRendered="true">
                             <h:column>
@@ -42,9 +43,11 @@
                         </rich:suggestionbox>
                         <h:messages styleClass="error" />
                     </td>
-                    <td>
-                        <h:commandButton action="#{helpdeskLog.searchUser}" id="searchUser"
-                            value="#{msgs.searchAction}" styleClass="submit" />
+                </tr>
+                <tr>
+                    <td colspan="2" class="center">
+                        <h:commandLink action="#{helpdeskLog.searchUser}" id="searchUser"
+                            value="#{msgs.searchAction}" />
                     </td>
                 </tr>
 			</table>

@@ -87,7 +87,6 @@
 					</h:column>
 				</rich:dataTable>
 
-				<rich:spacer height="10" />
 				<h:commandButton action="add-descr" id="add-descr"
 					value="#{msgs.addaction}" styleClass="submit" />
 			</h:form>
@@ -109,7 +108,6 @@
 					</h:column>
 				</rich:dataTable>
 
-				<rich:spacer height="10" />
 				<h:commandButton action="add-prop" id="add-prop"
 					value="#{msgs.addaction}" styleClass="submit" />
 			</h:form>
@@ -193,8 +191,6 @@
 			<h:outputText value="#{msgs.noCertificate}"
 				rendered="#{empty selectedDevice.certificate}" />
 		</rich:simpleTogglePanel>
-
-		<rich:spacer height="10" />
 
 		<h:form id="actionform">
 			<h:commandButton value="#{msgs.backaction}" id="back" action="back"

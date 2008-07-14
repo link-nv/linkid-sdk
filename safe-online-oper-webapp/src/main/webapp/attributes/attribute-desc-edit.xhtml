@@ -18,8 +18,6 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<h:form>
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -46,15 +44,11 @@
 				value="#{editAttributeTypeDescription.description}"
 				styleClass="label" />
 
-
 			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:outputLabel for="save" value="" />
 			<h:commandButton value="#{msgs.saveaction}" id="save"
 				action="#{attributeDesc.save}" styleClass="submit" />
-			<h:commandButton action="#{attributeDesc.removeDescription}"
-				id="remove" value="#{msgs.removeaction}" immediate="true"
-				styleClass="submit" />
 			<h:commandButton action="#{attributeDesc.cancelEdit}" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 		</h:form>

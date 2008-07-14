@@ -53,11 +53,13 @@
 			</rich:simpleTogglePanel>
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+                rendered="#{!empty subscriptions.usageAgreement}"
 				opened="false" label="#{msgs.confirmedUsageAgreement}">
 				<div class="white_space">#{subscriptions.usageAgreement}</div>
 			</rich:simpleTogglePanel>
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+                rendered="#{!empty confirmedIdentityAttributes}"
 				opened="false" label="#{msgs.confirmedIdentity}">
 				<ui:repeat id="data" var="item"
 					value="#{confirmedIdentityAttributes}">

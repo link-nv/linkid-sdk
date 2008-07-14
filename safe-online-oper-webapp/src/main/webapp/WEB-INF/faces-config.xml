@@ -108,6 +108,10 @@
 			<from-outcome>back</from-outcome>
 			<to-view-id>/owners/owners.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-app</from-outcome>
+			<to-view-id>/applications/application-view.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 	<!-- Begin PKIX navigation rules -->
 	<navigation-rule>

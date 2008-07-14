@@ -17,8 +17,6 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
 		<h:form>
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -27,6 +25,7 @@
 			<h:outputLabel for="typename" value="#{msgs.attributeName}" />
 			<h:inputText id="typename" value="#{selectedAttributeType.name}"
 				styleClass="label" disabled="true" />
+            <br />
 
 			<h:outputLabel for="application" value="#{msgs.application}" />
 			<h:selectOneMenu id="application" required="true"
@@ -34,7 +33,6 @@
 				<f:selectItems value="#{attributeProvider.applicationList}"
 					styleClass="label" />
 			</h:selectOneMenu>
-
 
 			<h:messages styleClass="error" globalOnly="true" />
 

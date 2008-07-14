@@ -25,6 +25,9 @@
 			</f:facet>
 
             <table>
+                <colgroup class="half" />
+                <colgroup />
+
                 <tr>
                     <th>#{msgs.helpdeskId}</th>
                     <td>
@@ -40,9 +43,11 @@
                         </rich:suggestionbox>
                         <h:messages styleClass="error" />
                     </td>
-                    <td>
-                        <h:commandButton action="#{helpdeskLog.search}" id="search"
-                            value="#{msgs.searchAction}" styleClass="submit" />
+                </tr>
+                <tr>
+                    <td colspan="2" class="center">
+                        <h:commandLink action="#{helpdeskLog.search}" id="search"
+                            value="#{msgs.searchAction}" />
                     </td>
                 </tr>
 			</table>

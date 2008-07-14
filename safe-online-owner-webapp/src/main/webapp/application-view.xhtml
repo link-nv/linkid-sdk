@@ -27,11 +27,13 @@
                     </tr>
                     <tr>
                         <th>#{msgs.ownerUserAllowedToSubscribe}</th>
-                        <td>#{selectedApplication.allowUserSubscription}</td>
+                        <td><h:selectBooleanCheckbox disabled="true"
+                                value="#{selectedApplication.allowUserSubscription}" /></td>
                     </tr>
                     <tr>
                         <th>#{msgs.removable}</th>
-                        <td>#{selectedApplication.removable}</td>
+                        <td><h:selectBooleanCheckbox disabled="true"
+                                value="#{selectedApplication.removable}" /></td>
                     </tr>
                     <tr>
                         <th>#{msgs.ownerNumberOfSubscriptions}</th>
@@ -60,7 +62,21 @@
 
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
 			label="#{msgs.usageAgreement}">
-            #{msgs.usageAgreementVersion}:<so:nbsp />#{selectedApplication.currentApplicationUsageAgreement}
+
+            <table class="inner">
+                <colgroup />
+                <colgroup />
+
+                <tr>
+                    <th>
+                        <h:outputLabel value="#{msgs.usageAgreementVersion}" />
+                    </th>
+                    <td>
+                        <h:outputLabel value="#{selectedApplication.currentApplicationUsageAgreement}" />
+                    </td>
+                </tr>
+            </table>
+            
 
             <a4j:form id="usageAgreementForm" ajaxSubmit="true"
                 reRender="usage-agreement-data">
@@ -159,10 +175,21 @@
 
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
 			label="#{msgs.devices}">
-            <h:outputLabel for="restriction" value="#{msgs.isDeviceRestriction}" />
-            <h:selectBooleanCheckbox id="restriction"
-                value="#{selectedApplication.deviceRestriction}" disabled="true"
-                styleClass="radio" />
+
+            <table class="inner">
+                <colgroup />
+                <colgroup />
+
+                <tr>
+                    <th>
+                        <h:outputLabel for="restriction" value="#{msgs.isDeviceRestriction}" />
+                    </th>
+                    <td>
+                        <h:selectBooleanCheckbox id="restriction"
+                            value="#{selectedApplication.deviceRestriction}" disabled="true" />
+                    </td>
+                </tr>
+            </table>
 
             <h:dataTable value="#{allowedDevices}" var="item" styleClass="inner ">
                 <h:column>

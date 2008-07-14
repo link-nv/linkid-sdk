@@ -16,7 +16,6 @@
  * ----------- */
 
 input,
-select,
 textarea,
 img.label,
 .af_inputFile,
@@ -39,6 +38,7 @@ input.submit {
 }
 
 
+select,
 #c-content,
 table tbody tr {
 
@@ -74,9 +74,9 @@ table tfoot tr, table thead tr {
 
 
 textarea,
-table tbody tr th, table tbody tr td {
+table td {
 
-    border-color:       #E8E7E7 !important;
+    border-color:       #E8E7E7;
 }
 
 
@@ -91,19 +91,9 @@ table tbody tr th, table tbody tr td {
 }
 
 
-table {
+table, table th {
 
-    border-top-color:   #C4C0C9;
-    border-left-color:  #C4C0C9;
-    border-bottom-color:#CCC;
-    border-right-color: #CCC;
-}
-table thead th, table thead td {
-
-    border-top-color:   #CCC;
-    border-left-color:  #CCC;
-    border-bottom-color:#C4C0C9;
-    border-right-color: #C4C0C9;
+    border-color:       #CCC;
 }
 
 

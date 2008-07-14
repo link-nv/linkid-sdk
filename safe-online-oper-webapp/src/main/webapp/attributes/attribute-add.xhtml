@@ -26,10 +26,8 @@
 
 			<h:outputLabel for="name" value="#{msgs.name}" />
 
-			<s:decorate>
-				<h:inputText id="name" value="#{addAttribute.name}" required="true"
-					styleClass="label" />
-			</s:decorate>
+            <h:inputText id="name" value="#{addAttribute.name}" required="true"
+                styleClass="label" />
 
 			<h:message for="name" styleClass="error" />
 
@@ -57,10 +55,10 @@
 			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:outputLabel for="cancel" value="" />
-			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 			<h:commandButton value="#{msgs.next}" id="next"
 				action="#{addAttribute.next}" styleClass="submit" />
+			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 
 		</h:form>
 
