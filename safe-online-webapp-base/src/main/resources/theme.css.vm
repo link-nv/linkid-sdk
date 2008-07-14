@@ -57,6 +57,10 @@ table tbody tr:hover {
 }
 
 
+table th {
+    background-color:   #F1EEE9;
+}
+
 
 /* ==================================================================
  * Bright Grey
@@ -76,13 +80,6 @@ table tbody tr th, table tbody tr td {
 }
 
 
-table {
-
-    border-top-color:   #E8E7E7;
-    border-left-color:  #E8E7E7;
-}
-
-
 
 /* ==================================================================
  * Grey
@@ -92,10 +89,21 @@ table {
 
     color:              #CCC;
 }
+
+
 table {
 
-    border-right-color: #CCC;
+    border-top-color:   #C4C0C9;
+    border-left-color:  #C4C0C9;
     border-bottom-color:#CCC;
+    border-right-color: #CCC;
+}
+table thead th, table thead td {
+
+    border-top-color:   #CCC;
+    border-left-color:  #CCC;
+    border-bottom-color:#C4C0C9;
+    border-right-color: #C4C0C9;
 }
 
 
