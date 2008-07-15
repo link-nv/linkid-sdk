@@ -51,16 +51,17 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.action}</f:facet>
-					<h:commandLink value="#{msgs.editaction}"
-						action="#{identityBean.edit}" rendered="#{item.editable}" />
-					<so:nbsp />
-					<h:commandLink value="#{msgs.removeaction}"
-						action="#{identityBean.removeAttribute}"
-						rendered="#{item.editable}" />
-					<so:nbsp />
-					<h:commandLink value="#{msgs.addaction}"
-						action="#{identityBean.add}"
-						rendered="#{item.multivalued and item.editable}" />
+                    <h:commandLink value="#{msgs.editaction}" styleClass="noblock"
+                        action="#{identityBean.edit}" rendered="#{item.editable}" />
+                    <h:outputText rendered="#{item.editable}" value="," />
+                    <so:nbsp />
+                    <h:commandLink value="#{msgs.removeaction}" styleClass="noblock"
+                        action="#{identityBean.removeAttribute}" rendered="#{item.editable}" />
+                    <h:outputText rendered="#{item.multivalued and item.editable}" value="," />
+                    <so:nbsp />
+                    <h:commandLink value="#{msgs.addaction}" styleClass="noblock"
+                        action="#{identityBean.add}"
+                        rendered="#{item.multivalued and item.editable}" />
 				</h:column>
 			</h:dataTable>
 

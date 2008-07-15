@@ -109,6 +109,13 @@ input.label:active,
 }
 
 
+#sidebox ul,
+#sidebox ul li {
+
+    border-color:       #989797;
+}
+
+
 
 /* ==================================================================
  * Darker Grey
@@ -137,7 +144,8 @@ input.radio,
 }
 
 
-#sidebox ul,
+#sidebox ul:hover,
+#sidebox ul li:hover,
 input.label {
 
     border-color:       #333;

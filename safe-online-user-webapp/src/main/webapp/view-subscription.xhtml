@@ -14,8 +14,10 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.subscription}
-		#{selectedSubscription.application.friendlyName}</h1>
+		<h1>#{msgs.subscription}:<so:nbsp />
+            <h:outputText rendered="#{!empty friendlyName}" value="#{selectedSubscription.application.friendlyName}" />
+            <h:outputText rendered="#{empty friendlyName}" value="#{selectedSubscription.application.name}" />
+        </h1>
 	</ui:define>
 	<ui:define name="content">
 
@@ -40,7 +42,7 @@
 						<tr>
 							<th><h:outputText value="#{msgs.userOwner}" /></th>
 							<td><h:outputText
-								value="#{selectedSubscription.subscriptionOwnerType}" /></td>
+								value="#{selectedSubscription.application.applicationOwner.name}" /></td>
 						</tr>
 						<tr>
 							<th><h:outputText value="#{msgs.description}" /></th>
@@ -61,24 +63,24 @@
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
                 rendered="#{!empty confirmedIdentityAttributes}"
 				opened="false" label="#{msgs.confirmedIdentity}">
-				<ui:repeat id="data" var="item"
-					value="#{confirmedIdentityAttributes}">
-					<table class="inner">
-						<tr>
-							<th>#{msgs.attributeName}</th>
-							<th>#{msgs.dataMining}</th>
-						</tr>
-						<tr>
-							<td><h:outputText value="#{item.name}"
-								rendered="#{empty item.humanReadableName}" /> <h:outputText
-								value="#{item.humanReadableName}"
-								rendered="#{!empty item.humanReadableName}" /></td>
-							<td width="1"><h:graphicImage
-								value="/images/icons/accept.png" rendered="#{item.dataMining}" />
-							</td>
-						</tr>
-					</table>
-				</ui:repeat>
+                <table class="inner">
+                    <tr>
+                        <th>#{msgs.attributeName}</th>
+                        <th>#{msgs.dataMining}</th>
+                    </tr>
+
+                    <ui:repeat id="data" var="item" value="#{confirmedIdentityAttributes}">
+                        <tr>
+                            <td><h:outputText value="#{item.name}"
+                                rendered="#{empty item.humanReadableName}" /> <h:outputText
+                                value="#{item.humanReadableName}"
+                                rendered="#{!empty item.humanReadableName}" /></td>
+                            <td width="1"><h:graphicImage
+                                value="/images/icons/accept.png" rendered="#{item.dataMining}" />
+                            </td>
+                        </tr>
+                    </ui:repeat>
+                </table>
 			</rich:simpleTogglePanel>
 		</a4j:outputPanel>
 		<h:form>
