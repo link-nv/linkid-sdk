@@ -72,4 +72,17 @@ public class FilterUtil {
 		}
 		return outputSet;
 	}
+
+	public static <KeyType, ValueType> List<KeyType> filterToList(
+			Map<KeyType, ValueType> inputMap,
+			MapEntryFilter<KeyType, ValueType> filter) {
+		List<KeyType> outputList = new LinkedList<KeyType>();
+		for (Map.Entry<KeyType, ValueType> entry : inputMap.entrySet()) {
+			if (false == filter.isAllowed(entry)) {
+				continue;
+			}
+			outputList.add(entry.getKey());
+		}
+		return outputList;
+	}
 }

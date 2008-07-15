@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -25,7 +26,10 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.DeviceRegistration;
+import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
@@ -59,6 +63,12 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
 	@In(required = true)
 	private AuthenticationService authenticationService;
+
+	@In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
+	private String application;
+
+	@In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
+	private Set<DeviceEntity> requiredDevicePolicy;
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
@@ -123,26 +133,24 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	@Factory("allDevicesDeviceRegistration")
-	public List<SelectItem> allDevicesFactory() {
-		this.log.debug("all devices factory");
+	@Factory("applicationDevicesDeviceRegistration")
+	public List<SelectItem> applicationDevicesFactory()
+			throws ApplicationNotFoundException, EmptyDevicePolicyException {
+		this.log.debug("application devices factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		List<SelectItem> allDevices = new LinkedList<SelectItem>();
+		List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
 
-		List<DeviceEntity> devices = this.devicePolicyService.getDevices();
-
-		for (DeviceEntity deviceEntity : devices) {
-			if (!deviceEntity.isRegistrable()) {
-				continue;
-			}
+		List<DeviceEntity> devicePolicy = this.devicePolicyService
+				.getDevicePolicy(this.application, this.requiredDevicePolicy);
+		for (DeviceEntity device : devicePolicy) {
 			String deviceName = this.devicePolicyService.getDeviceDescription(
-					deviceEntity.getName(), viewLocale);
-			SelectItem allDevice = new SelectItem(deviceEntity.getName(),
+					device.getName(), viewLocale);
+			SelectItem applicationDevice = new SelectItem(device.getName(),
 					deviceName);
-			allDevices.add(allDevice);
+			applicationDevices.add(applicationDevice);
 		}
-		return allDevices;
+		return applicationDevices;
 	}
 
 }

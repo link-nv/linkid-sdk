@@ -61,7 +61,8 @@ public class TimeoutBean implements Timeout {
 			if (null != application) {
 				if (null != application.getUrl()) {
 					log.debug("found url: " + application.getUrl().toString());
-					return application.getUrl().toString();
+					return application.getUrl().toString()
+							+ "?authenticationTimeout=true";
 				}
 			}
 			return null;
@@ -69,12 +70,17 @@ public class TimeoutBean implements Timeout {
 			this.log.debug("removing entry and timeout cookie");
 			HttpServletResponse response = (HttpServletResponse) facesContext
 					.getExternalContext().getResponse();
-			Cookie timeoutCookie = new Cookie(TIMEOUT_COOKIE, "");
-			Cookie entryCookie = new Cookie(ENTRY_COOKIE, "");
-			timeoutCookie.setMaxAge(0);
-			entryCookie.setMaxAge(0);
-			response.addCookie(timeoutCookie);
-			response.addCookie(entryCookie);
+			removeCookie(TIMEOUT_COOKIE, response);
+			removeCookie(ENTRY_COOKIE, response);
+			removeCookie(APPLICATION_COOKIE, response);
 		}
+	}
+
+	private void removeCookie(String name, HttpServletResponse response) {
+		this.log.debug("remove cookie: " + name);
+		Cookie cookie = new Cookie(name, "");
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
 	}
 }

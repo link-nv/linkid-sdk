@@ -26,8 +26,10 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
@@ -182,7 +184,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	}
 
 	@Factory("allDevicesAccountRegistration")
-	public List<SelectItem> allDevicesFactory() {
+	public List<SelectItem> allDevicesFactory()
+			throws ApplicationNotFoundException, EmptyDevicePolicyException {
 		this.log.debug("all devices factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
@@ -190,14 +193,10 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 		List<DeviceEntity> devices = this.devicePolicyService.getDevices();
 
-		for (DeviceEntity deviceEntity : devices) {
-			if (!deviceEntity.isRegistrable()) {
-				continue;
-			}
+		for (DeviceEntity device : devices) {
 			String deviceName = this.devicePolicyService.getDeviceDescription(
-					deviceEntity.getName(), viewLocale);
-			SelectItem allDevice = new SelectItem(deviceEntity.getName(),
-					deviceName);
+					device.getName(), viewLocale);
+			SelectItem allDevice = new SelectItem(device.getName(), deviceName);
 			allDevices.add(allDevice);
 		}
 		return allDevices;

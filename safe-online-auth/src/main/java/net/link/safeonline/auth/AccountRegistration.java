@@ -13,8 +13,10 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
@@ -50,7 +52,8 @@ public interface AccountRegistration {
 	/*
 	 * Factories
 	 */
-	List<SelectItem> allDevicesFactory();
+	List<SelectItem> allDevicesFactory()
+			throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
 	/*
 	 * Actions.

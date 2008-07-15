@@ -24,6 +24,10 @@ public interface MissingAttributes {
 			ApplicationIdentityNotFoundException, PermissionDeniedException,
 			AttributeTypeNotFoundException;
 
+	void optionalAttributeListFactory() throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException;
+
 	/*
 	 * Actions.
 	 */

@@ -102,7 +102,7 @@
 	<!-- ${safe-online.profiling.filter} -->
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>

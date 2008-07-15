@@ -91,7 +91,8 @@ public class DeviceBean implements Device {
 
 		if (!this.deviceSelection
 				.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
-            return AuthenticationUtils.redirectAuthentication(authenticationPath, this.deviceSelection);
+			return AuthenticationUtils.redirectAuthentication(
+					authenticationPath, this.deviceSelection);
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
@@ -121,7 +122,7 @@ public class DeviceBean implements Device {
 
 	@Factory("allDevices")
 	public List<SelectItem> allDevicesFactory() {
-		this.log.debug("all devices factory");
+		this.log.debug("application devices factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
 		List<SelectItem> allDevices = new LinkedList<SelectItem>();

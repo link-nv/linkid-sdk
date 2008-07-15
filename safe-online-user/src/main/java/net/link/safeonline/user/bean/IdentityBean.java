@@ -19,6 +19,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -82,7 +83,7 @@ public class IdentityBean implements Identity {
 	@Factory(ATTRIBUTE_LIST_NAME)
 	@ErrorHandling( { @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeNotFoundSpecific") })
 	public void attributeListFactory() throws AttributeTypeNotFoundException,
-			PermissionDeniedException {
+			PermissionDeniedException, ApplicationIdentityNotFoundException {
 		LOG.debug("attributeListFactory");
 		Locale viewLocale = getViewLocale();
 		this.attributeList = this.identityService.listAttributes(viewLocale);
@@ -108,7 +109,8 @@ public class IdentityBean implements Identity {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String removeAttribute() throws AttributeTypeNotFoundException,
-			PermissionDeniedException, AttributeNotFoundException {
+			PermissionDeniedException, AttributeNotFoundException,
+			ApplicationIdentityNotFoundException {
 		LOG.debug("remove attribute: " + this.selectedAttribute);
 		try {
 			this.identityService.removeAttribute(this.selectedAttribute);

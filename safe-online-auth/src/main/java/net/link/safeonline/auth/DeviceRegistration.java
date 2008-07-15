@@ -13,7 +13,9 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 @Local
@@ -43,7 +45,8 @@ public interface DeviceRegistration {
 	/*
 	 * Factories
 	 */
-	List<SelectItem> allDevicesFactory();
+	List<SelectItem> applicationDevicesFactory()
+			throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
 	/*
 	 * Lifecycle.

@@ -142,13 +142,16 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
 
 			AttributeTypeEntity deviceUserAttributeType = deviceMapping
 					.getDevice().getUserAttributeType();
+			if (null == deviceUserAttributeType) {
+				continue;
+			}
 
 			if (deviceUserAttributeType.getName().equals(
 					attributeType.getName())) {
 				return deviceMapping.getId();
 			}
 
-			if (deviceAttributeType.isCompounded()) {
+			if (deviceUserAttributeType.isCompounded()) {
 				List<CompoundedAttributeTypeMemberEntity> members = deviceUserAttributeType
 						.getMembers();
 				for (CompoundedAttributeTypeMemberEntity member : members) {

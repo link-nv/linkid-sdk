@@ -68,9 +68,11 @@ public interface IdentityService {
 	 * 
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
+	 * @throws ApplicationIdentityNotFoundException
 	 */
 	List<AttributeDO> listAttributes(Locale locale)
-			throws AttributeTypeNotFoundException, PermissionDeniedException;
+			throws AttributeTypeNotFoundException, PermissionDeniedException,
+			ApplicationIdentityNotFoundException;
 
 	/**
 	 * Gives back a list of all attribute for the specified user. Also
@@ -197,6 +199,26 @@ public interface IdentityService {
 	 */
 	List<AttributeDO> listMissingAttributes(String applicationName,
 			Locale locale) throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException;
+
+	/**
+	 * Gives back a list of the user's optional attributes for the given
+	 * application.This method also returns a list of {@link AttributeDO}
+	 * objects to make life easier in the view/control. The control components
+	 * will most likely afterwards call {@link #saveAttribute(AttributeDO)} to
+	 * save new values for the optional attributes.
+	 * 
+	 * @param application
+	 * @param locale
+	 * @return
+	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws ApplicationIdentityNotFoundException
+	 * @throws ApplicationNotFoundException
+	 */
+	List<AttributeDO> listOptionalAttributes(String application, Locale local)
+			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, PermissionDeniedException,
 			AttributeTypeNotFoundException;
 

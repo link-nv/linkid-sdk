@@ -63,8 +63,13 @@ public class MissingAttributesBean implements MissingAttributes {
 
 	public static final String MISSING_ATTRIBUTE_LIST = "missingAttributeList";
 
+	public static final String OPTIONAL_ATTRIBUTE_LIST = "optionalAttributeList";
+
 	@DataModel(MISSING_ATTRIBUTE_LIST)
 	private List<AttributeDO> missingAttributeList;
+
+	@DataModel(OPTIONAL_ATTRIBUTE_LIST)
+	private List<AttributeDO> optionalAttributeList;
 
 	@Factory(MISSING_ATTRIBUTE_LIST)
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
@@ -79,11 +84,45 @@ public class MissingAttributesBean implements MissingAttributes {
 				this.application, viewLocale);
 	}
 
+	@Factory(OPTIONAL_ATTRIBUTE_LIST)
+	@RolesAllowed(AuthenticationConstants.USER_ROLE)
+	public void optionalAttributeListFactory()
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
+		LOG.debug("optional attribute list factory");
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
+		this.optionalAttributeList = this.identityService
+				.listOptionalAttributes(this.application, viewLocale);
+	}
+
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String save() {
 		LOG.debug("save");
 		for (AttributeDO attribute : this.missingAttributeList) {
-			LOG.debug("attribute to save: " + attribute);
+			LOG.debug("required attribute to save: " + attribute);
+			try {
+				this.identityService.saveAttribute(attribute);
+			} catch (PermissionDeniedException e) {
+				LOG.debug("permission denied for attribute: "
+						+ attribute.getName());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR,
+						"errorPermissionDeniedForAttribute", attribute
+								.getName());
+				return null;
+			} catch (AttributeTypeNotFoundException e) {
+				LOG.debug("attribute type not found: " + attribute.getName());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR,
+						"errorAttributeTypeNotFoundSpecific", attribute
+								.getName());
+				return null;
+			}
+		}
+		for (AttributeDO attribute : this.optionalAttributeList) {
+			LOG.debug("optional attribute to save: " + attribute);
 			try {
 				this.identityService.saveAttribute(attribute);
 			} catch (PermissionDeniedException e) {

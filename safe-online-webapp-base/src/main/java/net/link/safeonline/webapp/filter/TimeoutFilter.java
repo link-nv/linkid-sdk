@@ -9,18 +9,16 @@ package net.link.safeonline.webapp.filter;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.UnavailableException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.sdk.servlet.AbstractInjectionFilter;
+import net.link.safeonline.sdk.servlet.annotation.Init;
 import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
 
 import org.apache.commons.logging.Log;
@@ -41,16 +39,16 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class TimeoutFilter implements Filter {
-
-	public static final String TIMEOUT_PATH_INIT_PARAM = "TimeoutPath";
-
-	public static final String LOGIN_SESSION_ATTRIBUTE_INIT_PARAM = "LoginSessionAttribute";
+public class TimeoutFilter extends AbstractInjectionFilter {
 
 	private static final Log LOG = LogFactory.getLog(TimeoutFilter.class);
 
+	private static final String LOGIN_COOKIE = "OLAS.login";
+
+	@Init(name = "TimeoutPath")
 	private String timeoutPath;
 
+	@Init(name = "LoginSessionAttribute")
 	private String loginSessionAttribute;
 
 	public void destroy() {
@@ -62,6 +60,16 @@ public class TimeoutFilter implements Filter {
 		LOG.debug("doFilter");
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+		String authenticationTimeout = httpRequest
+				.getParameter("authenticationTimeout");
+		LOG.debug("authenticationTimeout=" + authenticationTimeout);
+		if (null != authenticationTimeout) {
+			LOG.debug("return from timeout authentication webapp");
+			chain.doFilter(request, response);
+			return;
+		}
+
 		String requestedSessionId = httpRequest.getRequestedSessionId();
 		if (null == requestedSessionId) {
 			/*
@@ -91,14 +99,14 @@ public class TimeoutFilter implements Filter {
 			Object tempLoginSessionAttribute = session
 					.getAttribute(this.loginSessionAttribute);
 			if (null != tempLoginSessionAttribute) {
-				addLoginCookie(httpRequest, httpResponse);
+				addCookie(LOGIN_COOKIE, "true", httpRequest, httpResponse);
 			} else {
 				/*
 				 * If the user performs a logout, we need to remove the login
 				 * cookie. Else the user could trigger an explicit timeout while
 				 * actually he's no longer logged in.
 				 */
-				removeLoginCookie(httpRequest, response);
+				removeCookie(LOGIN_COOKIE, httpRequest, httpResponse);
 			}
 			timeoutResponseWrapper.commit();
 			return;
@@ -109,9 +117,9 @@ public class TimeoutFilter implements Filter {
 		 * caused a timeout on the web application. We detect this via the login
 		 * cookie.
 		 */
-		if (true == hasLoginCookie(httpRequest)) {
+		if (true == hasCookie(LOGIN_COOKIE, httpRequest)) {
 			LOG.debug("forwaring to timeout path: " + this.timeoutPath);
-			removeLoginCookie(httpRequest, response);
+			removeCookie(LOGIN_COOKIE, httpRequest, httpResponse);
 			httpResponse.sendRedirect(this.timeoutPath);
 			return;
 		}
@@ -122,63 +130,5 @@ public class TimeoutFilter implements Filter {
 		 */
 		LOG.debug("non harmful timeout");
 		chain.doFilter(request, response);
-	}
-
-	private void addLoginCookie(HttpServletRequest httpRequest,
-			HttpServletResponse httpResponse) {
-		if (true == hasLoginCookie(httpRequest)) {
-			return;
-		}
-		/*
-		 * We communicate that the user has been properly logged in by setting a
-		 * non-persistent browser cookie.
-		 */
-		Cookie loginCookie = new Cookie("login", "true");
-		LOG.debug("adding login cookie");
-		httpResponse.addCookie(loginCookie);
-	}
-
-	private void removeLoginCookie(HttpServletRequest httpRequest,
-			ServletResponse response) {
-		if (false == hasLoginCookie(httpRequest)) {
-			return;
-		}
-		LOG.debug("removing login cookie");
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
-		Cookie loginCookie = new Cookie("login", "");
-		loginCookie.setMaxAge(0);
-		httpResponse.addCookie(loginCookie);
-	}
-
-	private boolean hasLoginCookie(HttpServletRequest httpRequest) {
-		Cookie[] cookies = httpRequest.getCookies();
-		if (null == cookies) {
-			return false;
-		}
-		for (Cookie cookie : cookies) {
-			if ("login".equals(cookie.getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void init(FilterConfig config) throws ServletException {
-		LOG.debug("init");
-		this.timeoutPath = getInitParameter(config, TIMEOUT_PATH_INIT_PARAM);
-		this.loginSessionAttribute = getInitParameter(config,
-				LOGIN_SESSION_ATTRIBUTE_INIT_PARAM);
-		LOG.debug("timeout path: " + this.timeoutPath);
-		LOG.debug("login session attribute: " + this.loginSessionAttribute);
-	}
-
-	private String getInitParameter(FilterConfig config, String parameterName)
-			throws UnavailableException {
-		String value = config.getInitParameter(parameterName);
-		if (null == value) {
-			throw new UnavailableException("missing init parameter: "
-					+ parameterName);
-		}
-		return value;
 	}
 }

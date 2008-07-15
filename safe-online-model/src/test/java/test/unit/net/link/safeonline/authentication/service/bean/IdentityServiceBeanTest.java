@@ -540,6 +540,31 @@ public class IdentityServiceBeanTest {
 
 		refreshTransaction(entityManager);
 
+		// operate: add application
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+		String applicationOwnerName = "test-application-owner-name";
+		applicationService
+				.registerApplicationOwner(applicationOwnerName, login);
+		String applicationName = "test-application";
+		List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+		initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(
+				compoundedAttributeName, true, false));
+		applicationService.addApplication(applicationName, null,
+				applicationOwnerName, null, false, IdScopeType.USER, null,
+				null, null, null, initialApplicationIdentityAttributes, false);
+
+		// operate: subscribe user to application
+		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
+				SubscriptionServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
+		subscriptionService.subscribe(applicationName);
+
+		identityService.confirmIdentity(applicationName);
+
 		// operate: remove a single multi-valued attribute
 		identityService.removeAttribute(new AttributeDO(
 				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 1,
@@ -659,6 +684,31 @@ public class IdentityServiceBeanTest {
 
 		refreshTransaction(entityManager);
 
+		// operate: add application
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+		String applicationOwnerName = "test-application-owner-name";
+		applicationService
+				.registerApplicationOwner(applicationOwnerName, login);
+		String applicationName = "test-application";
+		List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+		initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(
+				compoundedAttributeName, true, false));
+		applicationService.addApplication(applicationName, null,
+				applicationOwnerName, null, false, IdScopeType.USER, null,
+				null, null, null, initialApplicationIdentityAttributes, false);
+
+		// operate: subscribe user to application
+		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
+				SubscriptionServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
+		subscriptionService.subscribe(applicationName);
+
+		identityService.confirmIdentity(applicationName);
+
 		// operate: remove a single multi-valued attribute
 		identityService.removeAttribute(new AttributeDO(
 				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 1,
@@ -701,10 +751,6 @@ public class IdentityServiceBeanTest {
 
 			applicationIdentityDAO.addApplicationIdentityAttribute(
 					applicationIdentity, compoundedAttributeType, true, false);
-
-			AttributeEntity optionalAttribute = attributeDAO.addAttribute(
-					optionalAttributeType, subject);
-			optionalAttribute.setStringValue("value");
 		}
 
 		public void verify(List<AttributeDO> result) {
@@ -714,16 +760,12 @@ public class IdentityServiceBeanTest {
 
 			assertEquals(this.COMP_ATT_NAME, result.get(0).getName());
 			assertTrue(result.get(0).isCompounded());
-			assertFalse(result.get(0).isRequired());
 
 			assertEquals(this.REQ_ATT_NAME, result.get(1).getName());
 			assertTrue(result.get(1).isMember());
-			assertTrue(result.get(1).isRequired());
 
 			assertEquals(this.OPT_ATT_NAME, result.get(2).getName());
 			assertTrue(result.get(2).isMember());
-			assertEquals("value", result.get(2).getStringValue());
-			assertFalse(result.get(2).isRequired());
 		}
 	}
 
@@ -821,7 +863,6 @@ public class IdentityServiceBeanTest {
 			assertNotNull(result);
 			assertEquals(1, result.size());
 			assertEquals(this.attributeType.getName(), result.get(0).getName());
-			assertTrue(result.get(0).isRequired());
 		}
 	}
 
@@ -985,11 +1026,36 @@ public class IdentityServiceBeanTest {
 		attributeType.setUserEditable(true);
 		attributeTypeService.add(attributeType);
 
-		// add attribute value
+		// operate: add application
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+		String applicationOwnerName = "test-application-owner-name";
+		applicationService.registerApplicationOwner(applicationOwnerName,
+				userLogin);
+		String applicationName = "test-application";
+		List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+		initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(
+				attributeName, true, false));
+		applicationService.addApplication(applicationName, null,
+				applicationOwnerName, null, false, IdScopeType.USER, null,
+				null, null, null, initialApplicationIdentityAttributes, false);
+
+		// operate: subscribe user to application
+		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
+				SubscriptionServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				userSubject.getUserId(), "user");
+		subscriptionService.subscribe(applicationName);
+
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				userSubject.getUserId(), SafeOnlineRoles.USER_ROLE);
+		identityService.confirmIdentity(applicationName);
+
+		// add attribute value
 		String attributeValue = "test-attribute-value-"
 				+ UUID.randomUUID().toString();
 		AttributeDO attribute = new AttributeDO(attributeName,
@@ -1065,11 +1131,36 @@ public class IdentityServiceBeanTest {
 		compoundedAttributeType.addMember(optionalAttributeType, 1, false);
 		attributeTypeService.add(compoundedAttributeType);
 
-		// add attribute value
+		// operate: add application
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+		String applicationOwnerName = "test-application-owner-name";
+		applicationService.registerApplicationOwner(applicationOwnerName,
+				userLogin);
+		String applicationName = "test-application";
+		List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+		initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(
+				compoundedAttributeName, true, false));
+		applicationService.addApplication(applicationName, null,
+				applicationOwnerName, null, false, IdScopeType.USER, null,
+				null, null, null, initialApplicationIdentityAttributes, false);
+
+		// operate: subscribe user to application
+		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
+				SubscriptionServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				userSubject.getUserId(), "user");
+		subscriptionService.subscribe(applicationName);
+
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				userSubject.getUserId(), SafeOnlineRoles.USER_ROLE);
+		identityService.confirmIdentity(applicationName);
+
+		// add attribute value
 		AttributeDO compoundedAttribute = new AttributeDO(
 				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 0,
 				null, null, true, true, null, null);
@@ -1322,7 +1413,7 @@ public class IdentityServiceBeanTest {
 
 		refreshTransaction(entityManager);
 
-		String compoundedAttributeName = "test-comp-attrib-name";
+		String compoundedAttributeName = "test-comp-attrib-name-aargh";
 		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
 				compoundedAttributeName, DatatypeType.COMPOUNDED, true, true);
 		compoundedAttributeType.setMultivalued(true);
@@ -1346,12 +1437,20 @@ public class IdentityServiceBeanTest {
 				applicationOwnerName, null, false, IdScopeType.USER, null,
 				null, null, null, initialApplicationIdentityAttributes, false);
 
-		// operate: save attribute
+		// operate: subscribe user to application
+		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
+				SubscriptionServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
+		subscriptionService.subscribe(applicationName);
+
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager, subject
 						.getUserId(), SafeOnlineRoles.USER_ROLE);
+		identityService.confirmIdentity(applicationName);
 
+		// operate: save attribute
 		AttributeDO compoundedAttribute0 = new AttributeDO(
 				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 0,
 				null, null, true, true, null, null);

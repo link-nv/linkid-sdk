@@ -8,6 +8,7 @@
 package net.link.safeonline.taglib;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
@@ -39,6 +40,8 @@ public class AttributeNameOutputComponent extends UIOutput {
 
 	public final static String STYLE_DEFAULT = "so-nameoutput";
 
+	private boolean optional = false;
+
 	@Override
 	public void encodeBegin(FacesContext context) throws IOException {
 		ResponseWriter response = context.getResponseWriter();
@@ -48,20 +51,26 @@ public class AttributeNameOutputComponent extends UIOutput {
 		response.writeAttribute("class", STYLE_DEFAULT + " " + this.styleClass,
 				"styleClass");
 		AttributeDO attribute = (AttributeDO) getValue();
+		String attributeName = attribute.getHumanReadableName();
+		ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+		String optionalStr = messages.getString("optional");
+		if (this.optional) {
+			attributeName += " ( " + optionalStr + " )";
+		}
 		if (attribute.isCompounded()) {
 			response.startElement("span", null);
 			response.writeAttribute("class", COMPOUNDED_DEFAULT + " "
 					+ this.compoundedStyleClass, "compoundedStyleClass");
-			response.write(attribute.getHumanReadableName());
+			response.write(attributeName);
 			response.endElement("span");
 		} else if (attribute.isMember()) {
 			response.startElement("span", null);
 			response.writeAttribute("class", MEMBER_DEFAULT + " "
 					+ this.memberStyleClass, "memberStyleClass");
-			response.write(attribute.getHumanReadableName());
+			response.write(attributeName);
 			response.endElement("span");
 		} else {
-			response.write(attribute.getHumanReadableName());
+			response.write(attributeName);
 		}
 	}
 
@@ -93,5 +102,13 @@ public class AttributeNameOutputComponent extends UIOutput {
 
 	public void setStyleClass(String styleClass) {
 		this.styleClass = styleClass;
+	}
+
+	public boolean getOptional() {
+		return this.optional;
+	}
+
+	public void setOptional(boolean optional) {
+		this.optional = optional;
 	}
 }
