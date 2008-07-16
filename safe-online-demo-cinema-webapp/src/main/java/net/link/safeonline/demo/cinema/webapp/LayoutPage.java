@@ -2,6 +2,7 @@ package net.link.safeonline.demo.cinema.webapp;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
@@ -337,7 +338,7 @@ public class LayoutPage extends WebPage<Object> {
                     String message = String.format(
                             "Viewing of %s at %s in %s.",
                             LayoutPage.this.ticketService.getFilmName(ticket),
-                            CinemaSession.format(ticket.getTime()),
+                            CinemaSession.format(new Date(ticket.getTime())),
                             LayoutPage.this.ticketService
                                     .getTheatreName(ticket));
 
