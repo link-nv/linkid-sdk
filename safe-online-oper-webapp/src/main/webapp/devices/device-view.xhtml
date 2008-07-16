@@ -73,6 +73,18 @@
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			opened="false" id="description-tab" label="#{msgs.description}">
 			<h:form id="descrform">
+                <table class="inner">
+                    <tr>
+                        <th>#{msgs.action}</th>
+                    </tr>
+                    <tr class="center">
+                        <td>
+                            <h:commandLink action="add-descr" id="add-descr"
+                                value="#{msgs.addaction}" />
+                        </td>
+                    </tr>
+                </table>
+
 				<rich:dataTable id="desc-data" var="item"
 					value="#{deviceDescriptions}" styleClass="inner "
 					rowClasses="listingTable_Row1,listingTable_Row2">
@@ -86,15 +98,24 @@
 						<h:outputText value="#{item.description}" />
 					</h:column>
 				</rich:dataTable>
-
-				<h:commandButton action="add-descr" id="add-descr"
-					value="#{msgs.addaction}" styleClass="submit" />
 			</h:form>
 		</rich:simpleTogglePanel>
 
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			opened="false" id="properties-tab" label="#{msgs.properties}">
 			<h:form id="propertiesform">
+                <table class="inner">
+                    <tr>
+                        <th>#{msgs.action}</th>
+                    </tr>
+                    <tr class="center">
+                        <td>
+                            <h:commandLink action="add-prop" id="add-prop"
+                                value="#{msgs.addaction}" />
+                        </td>
+                    </tr>
+                </table>
+
 				<rich:dataTable id="prop-data" var="item"
 					value="#{deviceProperties}" styleClass="inner "
 					rowClasses="listingTable_Row1,listingTable_Row2">
@@ -107,9 +128,6 @@
 						<h:outputText value="#{item.value}" />
 					</h:column>
 				</rich:dataTable>
-
-				<h:commandButton action="add-prop" id="add-prop"
-					value="#{msgs.addaction}" styleClass="submit" />
 			</h:form>
 		</rich:simpleTogglePanel>
 
@@ -117,25 +135,14 @@
 			opened="false" id="attribute-tab" label="#{msgs.deviceAttribute}">
 
 			<table class="inner">
-				<colgroup />
-				<colgroup />
-
-				<thead>
-					<tr>
-						<th>#{msgs.deviceAttribute}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><h:outputText id="attribute-name"
-							value="#{selectedDevice.attributeType.name}" /></td>
-					</tr>
-				</tbody>
+                <tr>
+                    <th>#{msgs.deviceAttribute}</th>
+                </tr>
+                <tr>
+                    <td><h:outputText id="attribute-name"
+                        value="#{selectedDevice.attributeType.name}" /></td>
+                </tr>
 			</table>
-
-            <h:outputText rendered="#{selectedDevice.attributeType.compounded}">
-                <br />
-            </h:outputText>
 
 			<rich:dataTable id="compounded-members" var="item"
 				value="#{selectedDevice.attributeType.members}"
@@ -155,20 +162,13 @@
 			label="#{msgs.deviceUserAttribute}">
 
 			<table class="inner">
-				<colgroup />
-				<colgroup />
-
-				<thead>
-					<tr>
-						<th>#{msgs.deviceUserAttribute}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><h:outputText id="user-attribute-name"
-							value="#{selectedDevice.userAttributeType.name}" /></td>
-					</tr>
-				</tbody>
+                <tr>
+                    <th>#{msgs.deviceUserAttribute}</th>
+                </tr>
+                <tr>
+                    <td><h:outputText id="user-attribute-name"
+                        value="#{selectedDevice.userAttributeType.name}" /></td>
+                </tr>
 			</table>
 
 			<h:dataTable id="user-compounded-members" var="item"

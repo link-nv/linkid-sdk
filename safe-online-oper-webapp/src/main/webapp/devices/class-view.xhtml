@@ -22,9 +22,6 @@
 	<ui:define name="content">
 
         <table>
-            <colgroup />
-            <colgroup />
-
             <thead>
                 <tr>
                     <th><h:outputText for="contextclass"
@@ -42,6 +39,18 @@
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
             label="#{msgs.description}">
             <h:form id="classdescform">
+                <table class="inner">
+                    <tr>
+                        <th>#{msgs.actions}</th>
+                    </tr>
+                    <tr class="center">
+                        <td>
+                            <h:commandLink action="add-descr" id="add-descr"
+                                value="#{msgs.addaction}" />
+                        </td>
+                    </tr>
+                </table>
+
                 <rich:dataTable id="desc-data" var="item"
                     value="#{deviceClassDescriptions}" styleClass="inner "
                     rowClasses="listingTable_Row1,listingTable_Row2">
@@ -55,9 +64,6 @@
                         <h:outputText value="#{item.description}" />
                     </h:column>
                 </rich:dataTable>
-
-                <h:commandButton action="add-descr" id="add-descr"
-                    value="#{msgs.addaction}" styleClass="submit" />
             </h:form>
         </rich:simpleTogglePanel>
 

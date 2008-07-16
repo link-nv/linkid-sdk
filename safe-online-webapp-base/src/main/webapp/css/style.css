@@ -377,6 +377,10 @@ hr.float_fix {
 .padded {
     padding:            7px !important;
 }
+.nospace, .nospace * {
+    margin:             0;
+    padding:            0;
+}
 .inner {
     width:              500px;
     margin-left:        27px;                       /* auto margin doesn't center in IE. */

@@ -26,16 +26,24 @@
 			label="#{msgs.generic}">
 
 			<h:form>
+                <table class="inner">
+                    <tr>
+                        <th>#{msgs.actions}</th>
+                    </tr>
+                    <tr class="center">
+                        <td>
+                            <h:commandLink value="#{msgs.saveaction}" id="save"
+                                action="#{userManager.save}" />
+                        </td>
+                    </tr>
+                </table>
+
 				<h:selectManyCheckbox id="roles" layout="pageDirection" styleClass="inner "
 					value="#{userManager.roles}">
 					<f:selectItems value="#{availableRoles}" />
 				</h:selectManyCheckbox>
 
 				<h:messages styleClass="error" />
-
-				<h:commandButton value="#{msgs.saveaction}" id="save"
-					action="#{userManager.save}" styleClass="submit" />
-				<h:outputLabel id="sep" value="" />
 			</h:form>
 
 		</rich:simpleTogglePanel>

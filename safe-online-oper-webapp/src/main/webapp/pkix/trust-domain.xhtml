@@ -46,7 +46,7 @@
 
 			<h2>#{msgs.miscContent}</h2>
 
-            <div class="noborders">
+            <div class="noborders nospace">
                 <t:tree2 value="#{trustPoint.treeModel}" var="node"
                     clientSideToggle="false">
                     <f:facet name="root">
@@ -55,7 +55,7 @@
                     <f:facet name="node">
                         <h:panelGroup>
                             <h:commandLink action="#{trustPoint.view}">#{node.description}</h:commandLink>
-                            <br />(SN: #{node.serialNumber})<br /><br />
+                            (SN: #{node.serialNumber})<br /><so:nbsp /><br />
                         </h:panelGroup>
                     </f:facet>
                 </t:tree2>
