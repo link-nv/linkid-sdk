@@ -15,6 +15,10 @@
 	<ui:define name="content">
 		<p><span class="error_message">#{msgs.javaDisabledInfo} <a
 			href="./beid.html">#{msgs.tryAgain}</a></span></p>
+		<p><h:outputLink id="cancel_auth" value="authenticationexit"
+			rendered="#{!empty applicationId}">#{msgs.cancelaction}</h:outputLink></p>
+		<p><h:outputLink id="cancel_dev" value="deviceexit"
+			rendered="#{!empty userId}">#{msgs.cancelaction}</h:outputLink></p>
 	</ui:define>
 
 </ui:composition>
