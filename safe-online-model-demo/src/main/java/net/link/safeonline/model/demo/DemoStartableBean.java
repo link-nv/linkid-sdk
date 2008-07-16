@@ -374,7 +374,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
 		List<String> tempAllowedDevices = new LinkedList<String>();
 		tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
-		this.allowedDevices.put(DEMO_TICKET_APPLICATION_NAME,
+		this.allowedDevices.put(DEMO_CINEMA_APPLICATION_NAME,
 				tempAllowedDevices);
 
 		/*
