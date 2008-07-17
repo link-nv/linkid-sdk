@@ -674,12 +674,13 @@ public class IdentityServiceBean implements IdentityService,
 			if (attributeType.isCompounded()) {
 				continue;
 			}
-			if (required == false && attributeType.isUserEditable()) {
+			if (required == false) {
+				attributeRequirements.put(attributeType,
+						(required == identityAttribute.isRequired())
+								&& attributeType.isUserEditable());
+			} else {
 				attributeRequirements.put(attributeType,
 						required == identityAttribute.isRequired());
-			} else {
-				attributeRequirements.put(attributeType, identityAttribute
-						.isRequired());
 			}
 		}
 
@@ -712,12 +713,13 @@ public class IdentityServiceBean implements IdentityService,
 					 */
 					continue;
 				}
-				if (required == false && memberAttributeType.isUserEditable()) {
+				if (required == false) {
 					attributeRequirements.put(parentAttributeType,
-							required == identityAttribute.isRequired());
+							(required == identityAttribute.isRequired())
+									&& memberAttributeType.isUserEditable());
 				} else {
 					attributeRequirements.put(parentAttributeType,
-							identityAttribute.isRequired());
+							required == identityAttribute.isRequired());
 				}
 			}
 		}
@@ -744,6 +746,8 @@ public class IdentityServiceBean implements IdentityService,
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, PermissionDeniedException,
 			AttributeTypeNotFoundException {
+		LOG.debug("list optional missing attributes for application: "
+				+ applicationName);
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
 		List<AttributeTypeEntity> optionalApplicationAttributeTypes = getDataAttributeTypes(
@@ -759,6 +763,9 @@ public class IdentityServiceBean implements IdentityService,
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, PermissionDeniedException,
 			AttributeTypeNotFoundException {
+		LOG
+				.debug("list missing attributes for application: "
+						+ applicationName);
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
 		List<AttributeTypeEntity> requiredApplicationAttributeTypes = getDataAttributeTypes(
@@ -777,9 +784,6 @@ public class IdentityServiceBean implements IdentityService,
 			throws PermissionDeniedException, AttributeTypeNotFoundException {
 		List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
 		for (AttributeTypeEntity attributeType : attributeTypes) {
-			// get these with their parent, skip
-			if (attributeType.isCompoundMember())
-				continue;
 			LOG.debug("find attribute value for type: "
 					+ attributeType.getName());
 			Object value = this.proxyAttributeService.findAttributeValue(
