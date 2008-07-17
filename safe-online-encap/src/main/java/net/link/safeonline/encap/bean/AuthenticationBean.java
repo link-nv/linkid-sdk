@@ -155,6 +155,17 @@ public class AuthenticationBean implements Authentication {
 		return "success";
 	}
 
+	@ErrorHandling( {
+			@Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
+			@Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
+	public String requestNewOTP() throws MalformedURLException, MobileException {
+		LOG.debug("request new OTP: mobile=" + this.mobile);
+		this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
+		LOG.debug("received new challengeId: " + this.challengeId);
+		return "success";
+
+	}
+
 	public String cancel() throws IOException {
 		exit();
 		return null;

@@ -341,7 +341,9 @@ public class IdentityServiceBean implements IdentityService,
 				attributeTypes.add(device.getAttributeType());
 			}
 			if (null != device.getUserAttributeType()
-					&& device.getUserAttributeType().isUserVisible()) {
+					&& device.getUserAttributeType().isUserVisible()
+					&& !device.getAttributeType().equals(
+							device.getUserAttributeType())) {
 				LOG.debug("add device user attribute type: "
 						+ device.getUserAttributeType());
 				attributeTypes.add(device.getUserAttributeType());

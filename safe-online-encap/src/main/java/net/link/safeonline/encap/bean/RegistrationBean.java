@@ -114,6 +114,18 @@ public class RegistrationBean implements Registration {
 	public String mobileRegister() throws MobileException,
 			MalformedURLException, MobileRegistrationException {
 		this.log.debug("register mobile: " + this.mobile);
+		return mobileActivation();
+	}
+
+	@ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
+	public String mobileActivationRetry() throws MalformedURLException,
+			MobileException, MobileRegistrationException {
+		this.log.debug("mobile retry activation: " + this.mobile);
+		return mobileActivation();
+	}
+
+	private String mobileActivation() throws MalformedURLException,
+			MobileException, MobileRegistrationException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
 		HttpSession session = (HttpSession) externalContext.getSession(true);

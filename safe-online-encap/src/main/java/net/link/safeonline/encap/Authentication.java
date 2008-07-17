@@ -33,6 +33,8 @@ public interface Authentication {
 
 	String requestOTP() throws MalformedURLException, MobileException;
 
+	String requestNewOTP() throws MalformedURLException, MobileException;
+
 	String cancel() throws IOException;
 
 	/*

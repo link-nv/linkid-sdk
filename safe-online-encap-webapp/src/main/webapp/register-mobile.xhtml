@@ -52,10 +52,12 @@
 
 				<br />
 
-				<h:outputLabel for="activation-ok" />
 				<h:commandButton id="activation-ok"
 					action="#{registration.mobileActivationOk}" value="#{msgs.confirm}"
 					styleClass="submit" />
+				<h:commandButton id="activation-retry"
+					action="#{registration.mobileActivationRetry}"
+					value="#{msgs.tryAgain}" styleClass="submit" />
 				<h:commandButton id="activation-cancel"
 					action="#{registration.mobileActivationCancel}"
 					value="#{msgs.cancelaction}" styleClass="submit" />
