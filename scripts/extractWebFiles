@@ -57,8 +57,8 @@ base="$base/work"
 
 # Make paths absolute.
 [[ -x $(type -P readlink 2>/dev/null) ]] && {
-    base=$(readlink -m "$base")
-    distribution=$(readlink -m "$distribution")
+    base=$(readlink -f "$base")
+    distribution=$(readlink -f "$distribution")
 }
 [[ $base = /* ]] || base="$PWD/$base"
 
