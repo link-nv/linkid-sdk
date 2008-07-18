@@ -638,7 +638,9 @@
 
 	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
 	<modules>
+        <!-- CORE -->
 		<module>safe-online-container</module>
+		<module>safe-online-cli</module>
 		<module>safe-online-sdk</module>
 		<module>safe-online-ws-runtime</module>
 		<module>safe-online-entity</module>
@@ -646,64 +648,76 @@
 		<module>safe-online-model</module>
 		<module>safe-online-test-util</module>
 		<module>safe-online-startup</module>
-		<module>safe-online-user-webapp</module>
-		<module>safe-online-documentation</module>
-		<module>safe-online-user</module>
-		<module>safe-online-user-service</module>
-		<module>safe-online-taglib</module>
+        <module>safe-online-documentation</module>
 		<module>safe-online-service</module>
 		<module>safe-online-j2ee-util</module>
-		<module>safe-online-webapp-base</module>
-		<module>safe-online-oper-webapp</module>
-		<module>safe-online-oper</module>
-		<module>safe-online-oper-service</module>
-		<module>safe-online-owner-webapp</module>
-		<module>safe-online-owner</module>
-		<module>safe-online-owner-service</module>
 		<module>safe-online-ctrl-base</module>
 		<module>safe-online-sql-ddl</module>
-		<module>safe-online-auth-webapp</module>
 		<module>safe-online-common</module>
-		<module>safe-online-pkcs11-sc</module>
-		<module>safe-online-pkcs11-sc-beid</module>
-		<module>safe-online-identity-applet</module>
 		<module>safe-online-shared</module>
-		<module>safe-online-model-beid</module>
-		<module>safe-online-model-encap</module>
-		<module>safe-online-model-digipass</module>
-		<module>safe-online-identity-applet-package</module>
-		<module>safe-online-auth-applet</module>
-		<module>safe-online-auth-applet-package</module>
 		<module>safe-online-keystore</module>
-		<module>safe-online-applet-common</module>
-		<module>safe-online-attrib-ws</module>
-		<module>safe-online-attrib-ws-impl</module>
-		<module>safe-online-auth</module>
-		<module>safe-online-data-ws</module>
-		<module>safe-online-data-ws-impl</module>
-		<module>safe-online-ws-util</module>
-		<module>safe-online-auth-service</module>
 		<module>safe-online-app-console</module>
-		<module>safe-online-ws-common</module>
-		<module>safe-online-sms</module>
-		<module>safe-online-sms-ra</module>
-		<module>safe-online-sms-ra-package</module>
 		<module>safe-online-jpa-util</module>
 		<module>safe-online-sdk-deploy-ctx</module>
 		<module>safe-online-saml-authn-context</module>
-		<module>safe-online-helpdesk-webapp</module>
-		<module>safe-online-helpdesk</module>
-		<module>safe-online-helpdesk-service</module>
-		<module>safe-online-user-keystore</module>
-		<module>safe-online-helpdesk-keystore</module>
-		<module>safe-online-oper-keystore</module>
-		<module>safe-online-owner-keystore</module>
-		<module>safe-online-cli</module>
+		<module>safe-online-node-keystore</module>
+
+        <!-- CORE WEB APPS -->
+		<module>safe-online-webapp-base</module>
 		<module>safe-online-webapp-common</module>
+		<module>safe-online-taglib</module>
+		<module>safe-online-user</module>
+		<module>safe-online-user-webapp</module>
+		<module>safe-online-user-service</module>
+		<module>safe-online-user-keystore</module>
+		<module>safe-online-oper</module>
+		<module>safe-online-oper-webapp</module>
+		<module>safe-online-oper-service</module>
+		<module>safe-online-oper-keystore</module>
+		<module>safe-online-owner</module>
+		<module>safe-online-owner-webapp</module>
+		<module>safe-online-owner-service</module>
+		<module>safe-online-owner-keystore</module>
+		<module>safe-online-helpdesk</module>
+		<module>safe-online-helpdesk-webapp</module>
+		<module>safe-online-helpdesk-service</module>
+		<module>safe-online-helpdesk-keystore</module>
+		<module>safe-online-auth</module>
+		<module>safe-online-auth-webapp</module>
+		<module>safe-online-auth-service</module>
+		<module>safe-online-auth-applet</module>
+		<module>safe-online-auth-applet-package</module>
+		<module>safe-online-applet-common</module>
+
+        <!-- CORE WEB SERVICES -->
+		<module>safe-online-ws-util</module>
+		<module>safe-online-ws-common</module>
+		<module>safe-online-attrib-ws</module>
+		<module>safe-online-attrib-ws-impl</module>
+		<module>safe-online-data-ws</module>
+		<module>safe-online-data-ws-impl</module>
 		<module>safe-online-idmapping-ws</module>
 		<module>safe-online-idmapping-ws-impl</module>
 		<module>safe-online-sts-ws</module>
 		<module>safe-online-sts-ws-impl</module>
+		<module>safe-online-ping-ws</module>
+		<module>safe-online-ping-ws-impl</module>
+		<module>safe-online-notification-consumer-ws</module>
+		<module>safe-online-notification-consumer-ws-abstract-impl</module>
+		<module>safe-online-notification-consumer-ws-impl</module>
+		<module>safe-online-notification-producer-ws</module>
+		<module>safe-online-notification-producer-ws-impl</module>
+		<module>safe-online-notification-subscription-manager-ws</module>
+		<module>safe-online-notification-subscription-manager-ws-impl</module>
+
+        <!-- EXTERNAL DEVICES -->
+		<module>safe-online-device-webapp-base</module>
+		<module>safe-online-model-beid</module>
+		<module>safe-online-model-encap</module>
+		<module>safe-online-model-digipass</module>
+		<module>safe-online-sms</module>
+		<module>safe-online-sms-ra</module>
+		<module>safe-online-sms-ra-package</module>
 		<module>safe-online-encap-ws</module>
 		<module>safe-online-encap-ws-impl</module>
 		<module>safe-online-encap-sdk</module>
@@ -713,32 +727,25 @@
 		<module>safe-online-encap</module>
 		<module>safe-online-encap-startup</module>
 		<module>safe-online-encap-deploy</module>
-		<module>safe-online-beid</module>
-		<module>safe-online-beid-startup</module>
-		<module>safe-online-beid-deploy</module>
-		<module>safe-online-beid-keystore</module>
-		<module>safe-online-beid-webapp</module>
 		<module>safe-online-digipass</module>
 		<module>safe-online-digipass-startup</module>
 		<module>safe-online-digipass-deploy</module>
 		<module>safe-online-digipass-keystore</module>
 		<module>safe-online-digipass-webapp</module>
-		<module>safe-online-ping-ws</module>
-		<module>safe-online-ping-ws-impl</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet</module>
 		<module>safe-online-java-version-applet-package</module>
-		<module>safe-online-node-keystore</module>
+		<module>safe-online-pkcs11-sc</module>
+		<module>safe-online-pkcs11-sc-beid</module>
 		<module>safe-online-auth-pcsc-applet</module>
 		<module>safe-online-auth-pcsc-applet-package</module>
-		<module>safe-online-notification-consumer-ws</module>
-		<module> safe-online-notification-consumer-ws-abstract-impl </module>
-		<module>safe-online-notification-consumer-ws-impl</module>
-		<module>safe-online-notification-producer-ws</module>
-		<module>safe-online-notification-producer-ws-impl</module>
-		<module> safe-online-notification-subscription-manager-ws </module>
-		<module> safe-online-notification-subscription-manager-ws-impl 
-		</module>
+		<module>safe-online-beid</module>
+		<module>safe-online-beid-startup</module>
+		<module>safe-online-beid-deploy</module>
+		<module>safe-online-beid-keystore</module>
+		<module>safe-online-beid-webapp</module>
+		<module>safe-online-identity-applet</module>
+		<module>safe-online-identity-applet-package</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->

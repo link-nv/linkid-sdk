@@ -10,6 +10,10 @@
 	<ui:define name="top_content">
 	</ui:define>
 	<ui:define name="content">
+		<ui:include src="/WEB-INF/incl/progress-registration.xhtml">
+			<ui:param name="stage" value="register" />
+		</ui:include>
+
 		<h2>#{msgs.digipassRegister}</h2>
 
 		<h:form id="digipass-register-form">

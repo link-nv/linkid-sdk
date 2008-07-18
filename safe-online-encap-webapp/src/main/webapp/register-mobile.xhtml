@@ -10,6 +10,10 @@
 	<ui:define name="top_content">
 	</ui:define>
 	<ui:define name="content">
+		<ui:include src="/WEB-INF/incl/progress-registration.xhtml">
+			<ui:param name="stage" value="register" />
+		</ui:include>
+
 		<h2>#{msgs.registerANewDevice}</h2>
 
 		<a4j:form id="mobile-register-form" ajaxSubmit="true"
@@ -52,12 +56,10 @@
 
 				<br />
 
+				<h:outputLabel for="activation-ok" />
 				<h:commandButton id="activation-ok"
 					action="#{registration.mobileActivationOk}" value="#{msgs.confirm}"
 					styleClass="submit" />
-				<h:commandButton id="activation-retry"
-					action="#{registration.mobileActivationRetry}"
-					value="#{msgs.tryAgain}" styleClass="submit" />
 				<h:commandButton id="activation-cancel"
 					action="#{registration.mobileActivationCancel}"
 					value="#{msgs.cancelaction}" styleClass="submit" />

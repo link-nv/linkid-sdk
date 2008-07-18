@@ -9,6 +9,10 @@
 	<ui:define name="top_content">
 	</ui:define>
 	<ui:define name="content">
+		<ui:include src="/WEB-INF/incl/progress-authentication.xhtml">
+			<ui:param name="stage" value="authenticate" />
+		</ui:include>
+
 		<h2>#{msgs.digipassAuthentication} : #{msgs.authenticatingFor}
 		#{applicationName}</h2>
 

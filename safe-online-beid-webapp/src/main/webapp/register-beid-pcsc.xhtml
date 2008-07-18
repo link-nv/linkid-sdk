@@ -13,6 +13,10 @@
 	</ui:define>
 
 	<ui:define name="content">
+		<ui:include src="/WEB-INF/incl/progress-registration.xhtml">
+			<ui:param name="stage" value="register" />
+		</ui:include>
+
 		<applet name="IdentityApplet"
 			code="net.link.safeonline.auth.pcsc.IdentityApplet.class"
 			archive="safe-online-auth-pcsc-applet-package.jar" width="450"

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"
+         prefer="public">
+    <public publicId="-//W3C//DTD XHTML 1.0 Transitional//EN"
+        uri="xhtml1-transitional.dtd"/>
+
+    <public publicId="-//W3C//ENTITIES Latin 1" uri="xhtml-lat1.ent"/>
+    <public publicId="-//W3C//ENTITIES Symbols" uri="xhtml-symbol.ent"/>
+    <public publicId="-//W3C//ENTITIES Special" uri="xhtml-special.ent"/>
+</catalog>
