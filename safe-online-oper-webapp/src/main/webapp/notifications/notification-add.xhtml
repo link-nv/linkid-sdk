@@ -19,7 +19,6 @@
 	</ui:define>
 	<ui:define name="content">
 
-
 		<h:form>
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -41,8 +40,7 @@
 
 			<h:messages styleClass="error" globalOnly="true" />
 
-			<br />
-
+            <h:outputLabel for="add" value="" />
 			<h:commandButton action="#{operNotification.addSubscription}"
 				id="add" value="#{msgs.addaction}" styleClass="submit" />
 			<h:commandButton action="cancel" id="cancel"

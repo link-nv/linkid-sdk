@@ -25,7 +25,7 @@
 				value="#{accountingApplications}" rows="10"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
-				<h:column>
+				<h:column headerClass="half">
 					<f:facet name="header">#{msgs.application}</f:facet>
 					<h:commandLink id="view" value="#{item.name}"
 						action="#{operAccounting.view}" />

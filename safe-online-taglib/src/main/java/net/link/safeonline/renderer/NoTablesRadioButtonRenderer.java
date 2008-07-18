@@ -37,8 +37,9 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 		if (requestParameterMap.containsKey(clientId)) {
 			String newValue = requestParameterMap.get(clientId);
 			setSubmittedValue(component, newValue);
-		} else
-			setSubmittedValue(component, "");
+		} else {
+            setSubmittedValue(component, "");
+        }
 
 		return;
 
@@ -77,12 +78,14 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 
 		UISelectOne selectOne = (UISelectOne) component;
 		Object curValue = selectOne.getSubmittedValue();
-		if (curValue == null)
-			curValue = selectOne.getValue();
+		if (curValue == null) {
+            curValue = selectOne.getValue();
+        }
 
 		Class<?> type = String.class;
-		if (curValue != null)
-			type = curValue.getClass();
+		if (curValue != null) {
+            type = curValue.getClass();
+        }
 		Object itemValue = curItem.getValue();
 		// Map<String, Object> requestMap = context.getExternalContext()
 		// .getRequestMap();
@@ -101,23 +104,26 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 		String itemLabel = curItem.getLabel();
 		if (itemLabel != null) {
 			writer.writeText(" ", component, null);
-			if (!curItem.isEscape())
-				// It seems the ResponseWriter API should
+			if (!curItem.isEscape()) {
+                // It seems the ResponseWriter API should
 				// have a writeText() with a boolean property
 				// to determine if it content written should
 				// be escaped or not.
 				writer.write(itemLabel);
-			else
-				writer.writeText(itemLabel, component, "label");
+            } else {
+                writer.writeText(itemLabel, component, "label");
+            }
 		}
 		writer.endElement("label");
 
 		writer.startElement("input", component);
 		writer.writeAttribute("type", "radio", "type");
-		if (styleClass != null)
-			writer.writeAttribute("class", styleClass, "class");
-		if (newValue.equals(curValue))
-			writer.writeAttribute("checked", Boolean.TRUE, null);
+		if (styleClass != null) {
+            writer.writeAttribute("class", styleClass, "class");
+        }
+		if (newValue.equals(curValue)) {
+            writer.writeAttribute("checked", Boolean.TRUE, null);
+        }
 		writer.writeAttribute("name", component.getClientId(context),
 				"clientId");
 
@@ -126,9 +132,6 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 		writer.writeAttribute("value", curItem.getValue().toString(), "value");
 
 		writer.endElement("input");
-
-		writer.startElement("br", component);
-		writer.endElement("br");
 
 	}
 
@@ -142,28 +145,29 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 				UISelectItem item = (UISelectItem) kid;
 				Object value = item.getValue();
 
-				if (value == null)
-					list.add(new SelectItem(item.getItemValue(), item
+				if (value == null) {
+                    list.add(new SelectItem(item.getItemValue(), item
 							.getItemLabel(), item.getItemDescription(), item
 							.isItemDisabled(), item.isItemEscaped()));
-				else if (value instanceof SelectItem)
-					list.add((SelectItem) value);
-				else {
+                } else if (value instanceof SelectItem) {
+                    list.add((SelectItem) value);
+                } else {
 					// empty
 				}
 			} else if (kid instanceof UISelectItems) {
 				Object value = ((UISelectItems) kid).getValue();
-				if (value instanceof SelectItem)
-					list.add((SelectItem) value);
-				else if (value instanceof SelectItem[]) {
+				if (value instanceof SelectItem) {
+                    list.add((SelectItem) value);
+                } else if (value instanceof SelectItem[]) {
 					SelectItem[] items = (SelectItem[]) value;
-					for (SelectItem item : items)
-						list.add(item);
+					for (SelectItem item : items) {
+                        list.add(item);
+                    }
 				} else if (value instanceof Collection) {
 					for (Object element : (Collection<?>) value)
-						if (SelectItem.class.isInstance(element))
-							list.add((SelectItem) element);
-						else {
+						if (SelectItem.class.isInstance(element)) {
+                            list.add((SelectItem) element);
+                        } else {
 							// empty
 						}
 				} else if (value instanceof Map) {
@@ -172,8 +176,9 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 						Entry<?, ?> entry = (Entry<?, ?>) o;
 						Object key = entry.getKey();
 						Object val = entry.getValue();
-						if (key == null || val == null)
-							continue;
+						if (key == null || val == null) {
+                            continue;
+                        }
 						list.add(new SelectItem(val, key.toString()));
 					}
 				} else {
@@ -185,8 +190,9 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 	}
 
 	public void setSubmittedValue(UIComponent component, Object value) {
-		if (component instanceof UIInput)
-			((UIInput) component).setSubmittedValue(value);
+		if (component instanceof UIInput) {
+            ((UIInput) component).setSubmittedValue(value);
+        }
 
 	}
 

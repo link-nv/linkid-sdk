@@ -29,7 +29,7 @@
 				<label for="value"><so:outputAttributeName value="#{item}" /></label>
 				<s:decorate>
 					<so:inputAttribute id="value" value="#{item.value}" required="true"
-						textStyleClass="label" checkboxStyleClass="radio" />
+						textStyleClass="label" checkboxStyleClass="label" />
 				</s:decorate>
 				<h:message for="value" styleClass="error" />
 			</ui:repeat>
@@ -39,7 +39,7 @@
 					optional="true" /></label>
 				<s:decorate>
 					<so:inputAttribute id="value" value="#{item.value}"
-						required="false" textStyleClass="label" checkboxStyleClass="radio" />
+						required="false" textStyleClass="label" checkboxStyleClass="label" />
 				</s:decorate>
 				<h:message for="value" styleClass="error" />
 			</ui:repeat>

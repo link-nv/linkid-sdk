@@ -22,13 +22,21 @@
 
 		<h:form>
 
-			<h:outputLabel for="userVisible" value="#{msgs.userVisible}" />
-			<h:selectBooleanCheckbox id="userVisible"
-				value="#{addAttribute.userVisible}" styleClass="radio" />
+            <table>
+                <colgroup class="half" />
+                <colgroup />
 
-			<h:outputLabel for="userEditable" value="#{msgs.userEditable}" />
-			<h:selectBooleanCheckbox id="userEditable"
-				value="#{addAttribute.userEditable}" styleClass="radio" />
+                <tr>
+                    <th><h:outputText value="#{msgs.userVisible}" /></th>
+                    <td><h:selectBooleanCheckbox id="userVisible"
+                            value="#{addAttribute.userVisible}" /></td>
+                </tr>
+                <tr>
+                    <th><h:outputText value="#{msgs.userEditable}" /></th>
+                    <td><h:selectBooleanCheckbox id="userEditable"
+                            value="#{addAttribute.userEditable}" /></td>
+                </tr>
+            </table>
 
 			<h:messages styleClass="error" globalOnly="true" />
 

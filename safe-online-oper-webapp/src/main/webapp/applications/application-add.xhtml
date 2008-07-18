@@ -28,12 +28,12 @@
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				label="#{msgs.generic}">
 				<table class="inner">
-					<colgroup />
+					<colgroup class="third" />
 					<colgroup />
 
 					<tbody>
 						<tr>
-							<th><h:outputLabel for="name" value="#{msgs.name}" /></th>
+							<th><h:outputText value="#{msgs.name}" /></th>
 							<td><s:decorate>
 								<h:inputText id="name" value="#{operApplication.name}"
 									required="true" styleClass="label" />
@@ -42,8 +42,7 @@
 						</tr>
 						<tr>
 
-							<th><h:outputLabel for="friendlyName"
-								value="#{msgs.friendlyname}" /></th>
+							<th><h:outputText value="#{msgs.friendlyname}" /></th>
 							<td><s:decorate>
 								<h:inputText id="friendlyName"
 									value="#{operApplication.friendlyName}" styleClass="label" />
@@ -52,8 +51,7 @@
 						</tr>
 						<tr>
 
-							<th><h:outputLabel for="owner"
-								value="#{msgs.applicationOwner}" /></th>
+							<th><h:outputText value="#{msgs.applicationOwner}" /></th>
 							<td><s:decorate>
 								<h:selectOneMenu id="owner"
 									value="#{operApplication.applicationOwner}" required="true"
@@ -65,8 +63,7 @@
 						</tr>
 						<tr>
 
-							<th><h:outputLabel for="applicationUrl"
-								value="#{msgs.applicationUrl}" /></th>
+							<th><h:outputText value="#{msgs.applicationUrl}" /></th>
 							<td><s:decorate>
 								<h:inputText id="applicationUrl"
 									value="#{operApplication.applicationUrl}" styleClass="label" />
@@ -75,18 +72,16 @@
 						</tr>
 						<tr>
 
-							<th><h:outputLabel for="applicationLogo"
-								value="#{msgs.applicationLogo}" /></th>
+							<th><h:outputText value="#{msgs.applicationLogo}" /></th>
 							<td><s:decorate>
-								<t:inputFileUpload id="applicationLogo"
+								<t:inputFileUpload id="applicationLogo" styleClass="label"
 									value="#{operApplication.applicationLogoFile}" />
 							</s:decorate> <h:message for="applicationLogo" styleClass="error" /></td>
 
 						</tr>
 						<tr>
 
-							<th><h:outputLabel for="applicationColor"
-								value="#{msgs.applicationColor}" /></th>
+							<th><h:outputText value="#{msgs.applicationColor}" /></th>
 							<td><s:decorate>
 								<h:inputText id="applicationColor"
 									value="#{operApplication.applicationColor}" styleClass="label" />
@@ -95,8 +90,7 @@
 						</tr>
 						<tr>
 
-							<th><h:outputLabel for="applicationIdScope"
-								value="#{msgs.applicationIdScope}" /></th>
+							<th><h:outputText value="#{msgs.applicationIdScope}" /></th>
 							<td><s:decorate>
 								<h:selectOneMenu id="applicationIdScope"
 									value="#{operApplication.applicationIdScope}" required="true"
@@ -126,35 +120,31 @@
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				opened="false" label="#{msgs.accessControl}">
 				<table class="inner">
-					<colgroup />
+					<colgroup class="third" />
 					<colgroup />
 
 					<tbody>
 						<tr>
-							<th><h:outputLabel for="certificate"
-								value="#{msgs.certificate}" /></th>
+							<th><h:outputText value="#{msgs.certificate}" /></th>
 							<td><s:decorate>
-								<t:inputFileUpload id="certificate"
+								<t:inputFileUpload id="certificate" styleClass="label"
 									value="#{operApplication.upFile}" />
 							</s:decorate> <h:message for="fileupload" styleClass="error" /></td>
 
 						</tr>
 						<tr>
 
-							<th><h:outputLabel for="idmapping"
-								value="#{msgs.accessControlIdmappingService}" /></th>
+							<th><h:outputText value="#{msgs.accessControlIdmappingService}" /></th>
 							<td><h:selectBooleanCheckbox
-								value="#{operApplication.idmapping}" id="idmapping"
-								styleClass="radio" /></td>
+								value="#{operApplication.idmapping}" id="idmapping" /></td>
 
 						</tr>
 						<tr>
 
-							<th><h:outputLabel for="skipMessageIntegrityCheck"
-								value="#{msgs.skipMessageIntegrityCheck}" /></th>
+							<th><h:outputText value="#{msgs.skipMessageIntegrityCheck}" /></th>
 							<td><h:selectBooleanCheckbox
 								value="#{operApplication.skipMessageIntegrityCheck}"
-								id="skipMessageIntegrityCheck" styleClass="radio" /></td>
+								id="skipMessageIntegrityCheck" /></td>
 
 						</tr>
 					</tbody>
@@ -169,15 +159,15 @@
 						<f:facet name="header">#{msgs.attributeName}</f:facet>
 						<h:outputText value="#{item.name}" />
 					</h:column>
-					<h:column>
-						<f:facet name="header">#{msgs.attributeName}</f:facet>
+					<h:column headerClass="small">
+						<f:facet name="header">#{msgs.used}</f:facet>
 						<h:selectBooleanCheckbox value="#{item.included}" id="included" />
 					</h:column>
-					<h:column>
+					<h:column headerClass="small">
 						<f:facet name="header">#{msgs.required}</f:facet>
 						<h:selectBooleanCheckbox value="#{item.required}" id="required" />
 					</h:column>
-					<h:column>
+					<h:column headerClass="small">
 						<f:facet name="header">#{msgs.dataMining}</f:facet>
 						<h:selectBooleanCheckbox value="#{item.dataMining}"
 							id="dataMining" />

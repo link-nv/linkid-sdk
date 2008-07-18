@@ -25,14 +25,20 @@
 			</f:facet>
 
             <table>
+                <colgroup class="third" />
+                <colgroup />
+
                 <tr>
                     <th>
+                        <h:outputText value="#{msgs.certificate}:" />
+                    </th>
+                    <td>
                         <s:decorate>
-                            <t:inputFileUpload id="fileupload" label="#{msgs.certificate}:"
+                            <t:inputFileUpload id="fileupload" styleClass="label"
                                 value="#{trustPoint.upFile}" />
                         </s:decorate>
                         <h:message for="fileupload" styleClass="error" />
-                    </th>
+                    </td>
                 </tr>
             </table>
 

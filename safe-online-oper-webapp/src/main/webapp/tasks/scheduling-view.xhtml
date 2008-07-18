@@ -21,7 +21,7 @@
 	<ui:define name="content">
 
         <table>
-            <colgroup />
+            <colgroup class="half" />
             <colgroup />
 
             <tbody>
@@ -84,10 +84,10 @@
 				</f:facet>
 			</rich:dataTable>
 
+            <h:commandButton action="#{scheduling.editSchedulingView}" id="editscheduling"
+                value="#{msgs.editaction}" immediate="true" styleClass="submit" />
 			<a4j:commandButton action="#{scheduling.taskListView}" id="back"
 				value="#{msgs.backaction}" immediate="true" styleClass="submit" />
-
-
 		</a4j:form>
 	</ui:define>
 	<ui:define name="sidebar">
@@ -95,9 +95,6 @@
 			<ul>
 				<li><h:commandLink action="#{scheduling.performScheduling}"
 				id="performscheduling" value="#{msgs.performschedulingaction}"
-				immediate="true" /></li>
-				<li><h:commandLink action="#{scheduling.editSchedulingView}"
-				id="editscheduling" value="#{msgs.editschedulingaction}"
 				immediate="true" /></li>
 				<li><h:commandLink action="/audit/audit.seam"
 					value="#{msgs.audit}" /></li>

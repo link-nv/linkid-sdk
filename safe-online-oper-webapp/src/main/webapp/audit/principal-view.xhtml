@@ -19,17 +19,17 @@
 	<ui:define name="content">
 
         <table>
-            <colgroup />
+            <colgroup class="half" />
             <colgroup />
 
             <tbody>
                 <tr>
-                    <th><h:outputLabel for="login" value="#{msgs.login}" /></th>
-                    <td><h:outputLabel id="login" value="#{audit_principal.name}" /></td>
+                    <th><h:outputText value="#{msgs.login}" /></th>
+                    <td><h:outputText id="login" value="#{audit_principal.name}" /></td>
                 </tr>
                 <tr>
-                    <th><h:outputLabel for="id" value="#{msgs.id}" /></th>
-                    <td><h:outputLabel id="id" value="#{principal}" /></td>
+                    <th><h:outputText value="#{msgs.id}" /></th>
+                    <td><h:outputText id="id" value="#{principal}" /></td>
                 </tr>
             </tbody>
         </table>

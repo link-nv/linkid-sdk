@@ -16,15 +16,14 @@
 	</ui:define>
 	<ui:define name="content">
 
-
-
-
-
-		<h:outputText
-			value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
-
-		<div class="usage_agreement">#{selectedUsageAgreementText.text}</div>
-
+        <table>
+            <tr>
+                <th><h:outputText value="#{msgs.language}: #{selectedUsageAgreementText.language}" /></th>
+            </tr>
+            <tr>
+                <td class="center usage_agreement">#{selectedUsageAgreementText.text}</td>
+            </tr>
+        </table>
 
 		<a4j:form>
 			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"

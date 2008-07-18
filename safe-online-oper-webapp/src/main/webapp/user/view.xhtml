@@ -20,7 +20,15 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<p>#{msgs.user}: #{userManager.user}</p>
+        <table>
+            <colgroup class="half" />
+            <colgroup />
+
+            <tr>
+                <th><h:outputText value="#{msgs.user}" /></th>
+                <td>#{userManager.user}</td>
+            </tr>
+        </table>
 
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			label="#{msgs.generic}">
@@ -53,10 +61,9 @@
 
 			<h:dataTable id="data" var="item"
 				value="#{userManager.attributeList}" preserveDataModel="false"
-				styleClass="inner "
-				rowClasses="listingTable_Row1,listingTable_Row2">
+				styleClass="inner" rowClasses="listingTable_Row1,listingTable_Row2">
 
-				<h:column headerClass="half">
+				<h:column headerClass="third">
 					<f:facet name="header">#{msgs.name}</f:facet>
 					<so:outputAttributeName value="#{item}" />
 				</h:column>
@@ -75,8 +82,7 @@
 				reRender="subscription_data">
 				<rich:dataTable id="subscription_data" var="item"
 					value="#{userManager.subscriptionList}" rows="10"
-					styleClass="inner "
-					rowClasses="listingTable_Row1,listingTable_Row2"
+					styleClass="inner" rowClasses="listingTable_Row1,listingTable_Row2"
 					columnClasses="listingTable_ColumnTop,listingTable_Column">
 					<h:column>
 						<f:facet name="header">
@@ -130,7 +136,7 @@
 
 			<rich:dataTable id="registereddevices_data" styleClass="inner"
 				value="#{userManager.deviceRegistrationList}" var="item">
-				<h:column>
+				<h:column headerClass="half">
 					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:outputText value="#{item.friendlyName}" />
 				</h:column>
@@ -153,7 +159,7 @@
 					styleClass="inner "
 					rowClasses="listingTable_Row1,listingTable_Row2"
 					columnClasses="listingTable_ColumnTop,listingTable_Column">
-					<h:column>
+					<h:column headerClass="half">
 						<f:facet name="header">#{msgs.when}</f:facet>
 						<h:outputText value="#{item.when}">
 							<f:convertDateTime type="both" timeStyle="medium"

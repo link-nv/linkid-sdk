@@ -17,7 +17,7 @@
 			label="#{msgs.generic}">
 
             <table class="inner">
-                <colgroup />
+                <colgroup class="half" />
                 <colgroup />
 
                 <tbody>
@@ -64,15 +64,15 @@
 			label="#{msgs.usageAgreement}">
 
             <table class="inner">
-                <colgroup />
+                <colgroup class="half" />
                 <colgroup />
 
                 <tr>
                     <th>
-                        <h:outputLabel value="#{msgs.usageAgreementVersion}" />
+                        <h:outputText value="#{msgs.usageAgreementVersion}" />
                     </th>
                     <td>
-                        <h:outputLabel value="#{selectedApplication.currentApplicationUsageAgreement}" />
+                        <h:outputText value="#{selectedApplication.currentApplicationUsageAgreement}" />
                     </td>
                 </tr>
             </table>
@@ -128,8 +128,6 @@
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
 			label="#{msgs.accessControl}">
             <table class="inner">
-                <colgroup />
-
                 <thead>
                     <tr><th><h:outputText value="#{msgs.certificate}:" /></th></tr>
                 </thead>
@@ -150,7 +148,7 @@
 			label="#{msgs.applicationIdentity}">
             <h:dataTable value="#{selectedApplicationIdentity}" var="item"
                 styleClass="inner ">
-                <h:column>
+                <h:column headerClass="half">
                     <f:facet name="header">#{msgs.applicationIdentity}</f:facet>
                     <h:outputText value="#{item.attributeTypeName}" />
                 </h:column>
@@ -176,12 +174,12 @@
 			label="#{msgs.devices}">
 
             <table class="inner">
-                <colgroup />
+                <colgroup class="half" />
                 <colgroup />
 
                 <tr>
                     <th>
-                        <h:outputLabel for="restriction" value="#{msgs.isDeviceRestriction}" />
+                        <h:outputText value="#{msgs.isDeviceRestriction}" />
                     </th>
                     <td>
                         <h:selectBooleanCheckbox id="restriction"
@@ -191,13 +189,13 @@
             </table>
 
             <h:dataTable value="#{allowedDevices}" var="item" styleClass="inner ">
-                <h:column>
+                <h:column headerClass="half">
                     <f:facet name="header">#{msgs.name}</f:facet>
                     <h:outputText value="#{item.friendlyName}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header">#{msgs.allowed}</f:facet>
-                    <h:selectBooleanCheckbox value="#{item.allowed}" disabled="true" styleClass="radio"/>
+                    <h:selectBooleanCheckbox value="#{item.allowed}" disabled="true" />
                 </h:column>
                 <h:column>
                     <f:facet name="header">#{msgs.weight}</f:facet>
@@ -208,10 +206,10 @@
 
 		<rich:spacer height="10" />
 		<a4j:form>
-			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
-				styleClass="submit" />
 			<a4j:commandButton value="#{msgs.editaction}"
 				action="#{ownerApplication.edit}" id="edit" styleClass="submit" />
+			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
+				styleClass="submit" />
 		</a4j:form>
 
 	</ui:define>

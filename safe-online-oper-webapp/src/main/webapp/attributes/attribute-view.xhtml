@@ -23,7 +23,7 @@
             <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
                 id="generic-tab" label="#{msgs.generic}">
                 <table class="inner">
-                    <colgroup />
+                    <colgroup class="half" />
                     <colgroup />
 
                     <tbody>
@@ -63,7 +63,7 @@
             <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
                 id="access-control-tab" label="#{msgs.accessControl}">
                 <table class="inner">
-                    <colgroup />
+                    <colgroup class="half" />
                     <colgroup />
 
                     <tbody>
@@ -92,7 +92,7 @@
                         <f:facet name="header">#{msgs.name}</f:facet>
                         <h:outputText value="#{item.member.name}" />
                     </h:column>
-                    <h:column>
+                    <h:column headerClass="small">
                         <f:facet name="header">#{msgs.required}</f:facet>
                         <h:selectBooleanCheckbox disabled="true" value="#{item.required}" />
                     </h:column>
@@ -104,8 +104,6 @@
 
                 <h:form>
                     <table class="inner">
-                        <colgroup />
-
                         <tbody>
                             <tr>
                                 <th>#{msgs.actions}</th>
@@ -121,7 +119,7 @@
                     <rich:dataTable id="desc-data" var="item"
                         value="#{attributeTypeDescriptions}" styleClass="inner "
                         rowClasses="listingTable_Row1,listingTable_Row2">
-                        <h:column>
+                        <h:column headerClass="small">
                             <f:facet name="header">#{msgs.language}</f:facet>
                             <h:commandLink value="#{item.language}"
                                 action="#{attributeDesc.edit}" />
@@ -134,9 +132,9 @@
                             <f:facet name="header">#{msgs.description}</f:facet>
                             <h:outputText value="#{item.description}" />
                         </h:column>
-                        <h:column>
+                        <h:column headerClass="small">
                             <f:facet name="header">#{msgs.removeaction}</f:facet>
-                            <h:commandLink value="#{msgs.removeaction}"
+                            <h:commandLink value="#{msgs.removeaction}" styleClass="center"
                                 action="#{attributeDesc.removeDescription}" />
                         </h:column>
                     </rich:dataTable>
@@ -148,8 +146,6 @@
 				id="providers-tab" label="#{msgs.attributeProviders}">
                 <h:form>
                     <table class="inner">
-                        <colgroup />
-
                         <tbody>
                             <tr>
                                 <th>#{msgs.actions}</th>
@@ -166,7 +162,7 @@
                     <rich:dataTable id="atttrib-prov" var="item"
                         value="#{attributeProviders}" styleClass="inner "
                         rowClasses="listingTable_Row1,listingTable_Row2">
-                        <h:column>
+                        <h:column headerClass="half">
                             <f:facet name="header">#{msgs.application}</f:facet>
                             <h:outputText value="#{item.applicationName}" />
                         </h:column>

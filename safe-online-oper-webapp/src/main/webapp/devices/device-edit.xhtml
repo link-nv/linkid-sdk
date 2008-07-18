@@ -26,19 +26,19 @@
 				id="generic-tab" label="#{msgs.generic}">
 
 				<table class="inner">
-					<colgroup />
+					<colgroup class="third" />
 					<colgroup />
 
 					<tbody>
 						<tr>
-							<th><h:outputLabel value="#{msgs.location}" /></th>
+							<th><h:outputText value="#{msgs.location}" /></th>
 							<td><h:selectOneMenu id="node" value="#{operDevice.node}"
 								styleClass="label">
 								<f:selectItems value="#{deviceNodes}" />
 							</h:selectOneMenu></td>
 						</tr>
 						<tr>
-							<th><h:outputLabel value="#{msgs.authenticationPath}" /></th>
+							<th><h:outputText value="#{msgs.authenticationPath}" /></th>
 							<td><s:decorate>
 								<h:inputText id="authenticationPath"
 									value="#{operDevice.authenticationPath}" styleClass="label" />
@@ -46,7 +46,7 @@
 							</s:decorate></td>
 						</tr>
 						<tr>
-							<th><h:outputLabel value="#{msgs.registrationPath}" /></th>
+							<th><h:outputText value="#{msgs.registrationPath}" /></th>
 							<td><s:decorate>
 								<h:inputText id="registrationPath"
 									value="#{operDevice.registrationPath}" styleClass="label" />
@@ -54,7 +54,7 @@
 							</s:decorate></td>
 						</tr>
 						<tr>
-							<th><h:outputLabel value="#{msgs.removalPath}" /></th>
+							<th><h:outputText value="#{msgs.removalPath}" /></th>
 							<td><s:decorate>
 								<h:inputText id="removalPath" value="#{operDevice.removalPath}"
 									styleClass="label" />
@@ -62,7 +62,7 @@
 							</s:decorate></td>
 						</tr>
 						<tr>
-							<th><h:outputLabel value="#{msgs.updatePath}" /></th>
+							<th><h:outputText value="#{msgs.updatePath}" /></th>
 							<td><s:decorate>
 								<h:inputText id="updatePath" value="#{operDevice.updatePath}"
 									styleClass="label" />
@@ -77,19 +77,19 @@
 				id="attrib-tab" label="#{msgs.attribute}">
 
 				<table class="inner">
-					<colgroup />
+					<colgroup class="third" />
 					<colgroup />
 
 					<tbody>
 						<tr>
-							<th><h:outputLabel value="#{msgs.deviceAttribute}" /></th>
+							<th><h:outputText value="#{msgs.deviceAttribute}" /></th>
 							<td><h:selectOneMenu id="attribute-type"
 								value="#{operDevice.attributeType}" styleClass="label">
 								<f:selectItems value="#{attributeTypes}" />
 							</h:selectOneMenu></td>
 						</tr>
 						<tr>
-							<th><h:outputLabel value="#{msgs.deviceUserAttribute}" /></th>
+							<th><h:outputText value="#{msgs.deviceUserAttribute}" /></th>
 							<td><h:selectOneMenu id="user-attribute-type"
 								value="#{operDevice.userAttributeType}" styleClass="label">
 								<f:selectItems value="#{attributeTypes}" />
@@ -103,14 +103,14 @@
 				id="cert-tab" label="#{msgs.certificate}">
 
 				<table class="inner">
-					<colgroup />
+					<colgroup class="third" />
 					<colgroup />
 
 					<tbody>
 						<tr>
-							<th><h:outputLabel value="#{msgs.certificate}" /></th>
+							<th><h:outputText value="#{msgs.certificate}" /></th>
 							<td><s:decorate>
-								<t:inputFileUpload id="certificate"
+								<t:inputFileUpload id="certificate" styleClass="label"
 									value="#{operDevice.certificate}" />
 							</s:decorate></td>
 						</tr>

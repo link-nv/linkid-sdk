@@ -18,17 +18,22 @@
 	
     <ui:define name="content">
 
-		<table>
+        <table class="center fullwidth">
 			<tr>
 				<th>#{msgs.lastUpdate}:</th>
+            </tr>
+            <tr>
 				<td>#{selectedStat.creationTime}</td>
 			</tr>
+        </table>
+
+        <table class="fullwidth">
             <tr>
-                <td colspan="2">
+                <th>
                     <a href="#{chartURL}">
-                        <img src="#{chartURL}" class="inner" />
+                        <img src="#{chartURL}" class="inner noborders" />
                     </a>
-                </td>
+                </th>
             </tr>
 		</table>
 

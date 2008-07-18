@@ -20,7 +20,7 @@
 
 		<h:form>
             <table>
-                <colgroup />
+                <colgroup class="half" />
                 <colgroup />
 
                 <tbody>
@@ -34,7 +34,7 @@
                     </tr>
                     <tr>
                         <th>#{msgs.scheduling}</th>
-                        <td><h:selectOneMenu id="scheduling"
+                        <td><h:selectOneMenu id="scheduling" styleClass="label"
                             value="#{selectedTask.scheduling.name}">
                             <f:selectItems value="#{selectSchedulingList}" />
                         </h:selectOneMenu></td>

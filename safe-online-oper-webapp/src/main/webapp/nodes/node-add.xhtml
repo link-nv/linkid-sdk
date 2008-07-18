@@ -28,33 +28,33 @@
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				label="#{msgs.generic}">
 				<table class="inner">
-					<colgroup />
+					<colgroup class="third" />
 					<colgroup />
 
 					<tbody>
 						<tr>
-							<th><h:outputLabel for="name" value="#{msgs.name}" /></th>
+							<th><h:outputText value="#{msgs.name}" /></th>
 							<td><s:decorate>
 								<h:inputText id="name" value="#{operNode.name}" required="true"
 									styleClass="label" />
 							</s:decorate> <h:message for="name" styleClass="error" /></td>
 						</tr>
 						<tr>
-							<th><h:outputLabel for="hostname" value="#{msgs.hostname}" /></th>
+							<th><h:outputText value="#{msgs.hostname}" /></th>
 							<td><s:decorate>
 								<h:inputText id="hostname" value="#{operNode.hostname}"
 									styleClass="label" />
 							</s:decorate></td>
 						</tr>
 						<tr>
-							<th><h:outputLabel for="port" value="#{msgs.port}" /></th>
+							<th><h:outputText value="#{msgs.port}" /></th>
 							<td><s:decorate>
 								<h:inputText id="port" value="#{operNode.port}"
 									styleClass="label" />
 							</s:decorate></td>
 						</tr>
 						<tr>
-							<th><h:outputLabel for="sslPort" value="#{msgs.sslPort}" /></th>
+							<th><h:outputText value="#{msgs.sslPort}" /></th>
 							<td><s:decorate>
 								<h:inputText id="sslPort" value="#{operNode.sslPort}"
 									styleClass="label" />
@@ -67,23 +67,23 @@
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				label="#{msgs.certificate}">
 				<table class="inner">
-					<colgroup />
+					<colgroup class="third" />
 					<colgroup />
 
 					<tbody>
 						<tr>
-							<th><h:outputLabel for="authnCertificate"
+							<th><h:outputText
 								value="#{msgs.authenticationCertificate}" /></th>
 							<td><s:decorate>
-								<t:inputFileUpload id="authnCertificate"
+								<t:inputFileUpload id="authnCertificate" styleClass="label"
 									value="#{operNode.authnUpFile}" />
 							</s:decorate> <h:message for="authnCertificate" styleClass="error" /></td>
 						</tr>
 						<tr>
-							<th><h:outputLabel for="signingCertificate"
+							<th><h:outputText
 								value="#{msgs.signingCertificate}" /></th>
 							<td><s:decorate>
-								<t:inputFileUpload id="signingCertificate"
+								<t:inputFileUpload id="signingCertificate" styleClass="label"
 									value="#{operNode.signingUpFile}" />
 							</s:decorate> <h:message for="signingCertificate" styleClass="error" /></td>
 						</tr>

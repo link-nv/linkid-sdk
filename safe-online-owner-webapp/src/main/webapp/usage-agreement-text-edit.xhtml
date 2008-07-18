@@ -16,17 +16,19 @@
 	<ui:define name="content">
 
 		<a4j:form>
-			<rich:panel>
-				<f:facet name="header">
-					<h:outputLabel for="text"
-						value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
-				</f:facet>
-				<h:inputTextarea id="text"
-					value="#{selectedUsageAgreementText.text}" escape="false" cols="75"
-					rows="10" />
-			</rich:panel>
+            <table>
+                <tr>
+                    <th><h:outputText value="#{msgs.language}: #{selectedUsageAgreementText.language}" /></th>
+                </tr>
+                <tr>
+                    <td class="center">
+                        <h:inputTextarea id="text"
+                            value="#{selectedUsageAgreementText.text}" escape="false" cols="75"
+                            rows="10" />
+                    </td>
+                </tr>
+            </table>
 
-			<h:outputLabel for="save" value="" />
 			<a4j:commandButton value="#{msgs.saveaction}"
 				action="#{ownerUsageAgreement.saveText}" id="save"
 				styleClass="submit" />

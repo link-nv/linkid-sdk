@@ -19,13 +19,14 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<rich:panel>
-			<f:facet name="header">
-				<h:outputLabel
-					value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
-			</f:facet>
-			<pre>#{selectedUsageAgreementText.text}</pre>
-		</rich:panel>
+        <table>
+            <tr>
+                <th><h:outputText value="#{msgs.language}: #{selectedUsageAgreementText.language}" /></th>
+            </tr>
+            <tr>
+                <td class="center usage_agreement">#{selectedUsageAgreementText.text}</td>
+            </tr>
+        </table>
 
 		<a4j:form>
 			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"

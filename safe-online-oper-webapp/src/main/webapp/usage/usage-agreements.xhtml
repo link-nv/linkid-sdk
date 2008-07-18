@@ -26,7 +26,7 @@
 
 				<a4j:form id="editDraftForm" reRender="usagePanel" ajaxSubmit="true">
 					<table class="inner">
-						<colgroup />
+						<colgroup class="half" />
 						<colgroup />
 
 						<tbody>
@@ -46,7 +46,7 @@
 				<a4j:form id="editDraftTextsForm" reRender="usagePanel" ajaxSubmit="true">
 					<rich:dataTable id="draft-text-data" var="item"
 						value="#{globalDraftUsageAgreementsTexts}" rows="10"
-						styleClass="inner "
+						styleClass="inner"
 						rowClasses="listingTable_Row1,listingTable_Row2">
 						<h:column>
 							<a4j:commandLink id="view-draft-text"
@@ -100,29 +100,25 @@
 
 				<h:form id="addDraftLanguageForm">
 					<table class="inner">
+						<colgroup class="third" />
 						<colgroup />
-						<colgroup />
-						<colgroup />
+						<colgroup class="small" />
 
-						<tbody>
-							<tr>
-								<th><h:outputLabel for="language" value="#{msgs.language}" /></th>
-								<td><f:facet name="aroundInvalidField">
-									<s:span styleClass="error" />
-								</f:facet> <s:decorate>
-									<h:inputText id="language"
-										value="#{globalUsageAgreement.language}" required="true"
-										styleClass="label" />
-									<rich:suggestionbox for="language"
-										suggestionAction="#{globalUsageAgreement.autocompleteLanguage}"
-										var="languageInput" selfRendered="true">
-										<h:outputText value="#{languageInput}" />
-									</rich:suggestionbox>
-								</s:decorate><h:message for="language" styleClass="error" /></td>
-								<td class="center"><h:commandLink value="#{msgs.addaction}"
-									action="#{globalUsageAgreement.addText}" /></td>
-							</tr>
-						</tbody>
+                        <tr>
+                            <th><h:outputText value="#{msgs.language}" /></th>
+                            <td><s:decorate>
+                                <h:inputText id="language"
+                                    value="#{globalUsageAgreement.language}" required="true"
+                                    styleClass="label" />
+                                <rich:suggestionbox for="language"
+                                    suggestionAction="#{globalUsageAgreement.autocompleteLanguage}"
+                                    var="languageInput" selfRendered="true">
+                                    <h:outputText value="#{languageInput}" />
+                                </rich:suggestionbox>
+                            </s:decorate><h:message for="language" styleClass="error" /></td>
+                            <td><h:commandLink value="#{msgs.addaction}" styleClass="center"
+                                action="#{globalUsageAgreement.addText}" /></td>
+                        </tr>
 					</table>
 				</h:form>
 			</rich:simpleTogglePanel>

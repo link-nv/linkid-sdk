@@ -22,7 +22,7 @@
         <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			label="#{msgs.generic}">
             <table class="inner">
-                <colgroup />
+                <colgroup class="half" />
                 <colgroup />
 
                 <tbody>
@@ -95,34 +95,28 @@
 			label="#{msgs.accessControl}">
 
             <table class="inner">
-                <colgroup />
+                <colgroup class="half" />
                 <colgroup />
 
-                <tbody>
-                    <tr>
-                        <th><h:outputLabel for="idmap"
-                                value="#{msgs.accessControlIdmappingService}" /></th>
-                        <td><h:selectBooleanCheckbox id="idmap" disabled="true"
-                                value="#{selectedApplication.identifierMappingAllowed}"
-                                styleClass="radio" /></td>
-                    </tr><tr>
-                        <th><h:outputLabel for="skipcheck"
-                                value="#{msgs.skipMessageIntegrityCheck}:" /></th>
-                        <td><h:selectBooleanCheckbox id="skipcheck" disabled="true"
-                                value="#{selectedApplication.skipMessageIntegrityCheck}"
-                                styleClass="radio" /></td>
-                    </tr><tr>
-                        <th colspan="2"><h:outputText value="#{msgs.certificate}" /></th>
-                    </tr><tr>
-                        <td colspan="2" class="white_space"><h:outputText
-                                value="#{selectedApplication.certificate}"
-                                rendered="#{!empty selectedApplication.certificate}" />
-                            <h:outputText
-                                value="#{msgs.noCertificate}"
-                                rendered="#{empty selectedApplication.certificate}" />
-                        </td>
-                    </tr>
-                </tbody>
+                <tr>
+                    <th><h:outputText value="#{msgs.accessControlIdmappingService}" /></th>
+                    <td><h:selectBooleanCheckbox id="idmap" disabled="true"
+                            value="#{selectedApplication.identifierMappingAllowed}" /></td>
+                </tr><tr>
+                    <th><h:outputText value="#{msgs.skipMessageIntegrityCheck}:" /></th>
+                    <td><h:selectBooleanCheckbox id="skipcheck" disabled="true"
+                            value="#{selectedApplication.skipMessageIntegrityCheck}" /></td>
+                </tr><tr>
+                    <th colspan="2"><h:outputText value="#{msgs.certificate}" /></th>
+                </tr><tr>
+                    <td colspan="2" class="white_space"><h:outputText
+                            value="#{selectedApplication.certificate}"
+                            rendered="#{!empty selectedApplication.certificate}" />
+                        <h:outputText
+                            value="#{msgs.noCertificate}"
+                            rendered="#{empty selectedApplication.certificate}" />
+                    </td>
+                </tr>
             </table>
 		</rich:simpleTogglePanel>
 
@@ -130,19 +124,18 @@
 			label="#{msgs.applicationIdentity}">
 
             <h:dataTable value="#{applicationIdentityAttributes}" var="item"
-                styleClass="inner ">
+                styleClass="inner">
                 <h:column>
                     <f:facet name="header">#{msgs.attributeName}</f:facet>
                     <h:outputText value="#{item.attributeTypeName}" />
                 </h:column>
-                <h:column>
+                <h:column headerClass="small">
                     <f:facet name="header">#{msgs.required}</f:facet>
                     <h:selectBooleanCheckbox disabled="true" value="#{item.required}" />
                 </h:column>
-                <h:column>
+                <h:column headerClass="small">
                     <f:facet name="header">#{msgs.dataMining}</f:facet>
-                    <h:selectBooleanCheckbox disabled="true"
-                        value="#{item.dataMining}" />
+                    <h:selectBooleanCheckbox disabled="true" value="#{item.dataMining}" />
                 </h:column>
             </h:dataTable>
 		</rich:simpleTogglePanel>

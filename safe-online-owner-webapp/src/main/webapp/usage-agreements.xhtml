@@ -22,7 +22,7 @@
 
 				<a4j:form id="editDraftForm" reRender="usagePanel" ajaxSubmit="true">
                     <table class="inner">
-                        <colgroup />
+                        <colgroup class="half" />
                         <colgroup />
 
                         <tbody>
@@ -96,12 +96,13 @@
 
 				<a4j:form id="addDraftLanguageForm">
                     <table class="inner">
-                        <colgroup />
-                        <colgroup />
+						<colgroup class="third" />
+						<colgroup />
+						<colgroup class="small" />
 
                         <tbody>
                             <tr>
-                                <th><h:outputLabel for="language" value="#{msgs.language}" /></th>
+                                <th><h:outputText value="#{msgs.language}" /></th>
                                 <td><f:facet name="aroundInvalidField">
                                         <s:span styleClass="error" />
                                     </f:facet>
@@ -119,7 +120,7 @@
 
                                     <h:message for="language" styleClass="error" />
                                 </td><td>
-                                    <h:commandLink id="add" value="#{msgs.addaction}"
+                                    <h:commandLink id="add" value="#{msgs.addaction}" styleClass="center"
                                         action="#{ownerUsageAgreement.addText}" />
                                 </td>
                             </tr>
@@ -136,8 +137,6 @@
 					ajaxSubmit="true">
 
                     <table class="inner">
-                        <colgroup />
-
                         <tbody>
                             <tr><th>#{msgs.actions}</th></tr>
                             <tr><th>

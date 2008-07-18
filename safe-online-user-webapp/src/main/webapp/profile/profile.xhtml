@@ -18,15 +18,13 @@
 	<ui:define name="content">
 
 		<table>
-			<colgroup />
+			<colgroup class="half" />
 			<colgroup />
 
-			<tbody>
-				<tr>
-					<th>#{msgs.login}</th>
-					<td>#{identityBean.username}</td>
-				</tr>
-			</tbody>
+            <tr>
+                <th>#{msgs.login}</th>
+                <td>#{identityBean.username}</td>
+            </tr>
 		</table>
 
 		<f:subview rendered="#{0 == attributeList.rowCount}">

@@ -28,9 +28,9 @@
 					<f:facet name="header">#{msgs.attributeName}</f:facet>
 					<h:outputText value="#{item.name}" />
 				</h:column>
-				<h:column>
+				<h:column headerClass="small">
 					<f:facet name="header">#{msgs.required}</f:facet>
-					<h:selectBooleanCheckbox value="#{item.required}" styleClass="radio"/>
+					<h:selectBooleanCheckbox value="#{item.required}" />
 				</h:column>
 			</h:dataTable>
 

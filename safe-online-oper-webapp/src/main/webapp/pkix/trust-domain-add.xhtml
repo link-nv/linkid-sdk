@@ -25,16 +25,16 @@
 			</f:facet>
 
             <table class="inner">
-                <colgroup />
+                <colgroup class="third" />
                 <colgroup />
 
                 <tbody>
                     <tr>
-                        <th><h:outputLabel for="name" value="#{msgs.name}" /></th>
+                        <th><h:outputText value="#{msgs.name}" /></th>
                         <td>
                             <s:decorate>
-                                <h:inputText id="name" value="#{newTrustDomain.name}"
-                                    required="true" />
+                                <h:inputText id="name" styleClass="label" required="true"
+                                    value="#{newTrustDomain.name}" />
                             </s:decorate>
                             <h:message for="name" styleClass="error" />
                         </td>
@@ -49,7 +49,7 @@
 
                     <tr>
                         <th><h:outputText value="#{msgs.operatorOCSPCacheTimeout} (ms)" /></th>
-                        <td><h:inputText id="ocspCacheTimeOutMillis"
+                        <td><h:inputText id="ocspCacheTimeOutMillis" styleClass="label"
                                 value="#{newTrustDomain.ocspCacheTimeOutMillis}" required="true" />
                         </td>
                     </tr>

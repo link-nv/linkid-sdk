@@ -16,7 +16,6 @@
  * ----------- */
 
 input,
-textarea,
 img.label,
 .af_inputFile,
 div.dr-dscr table tr:hover {
@@ -39,6 +38,7 @@ input.submit {
 
 
 select,
+textarea,
 #c-content,
 table tbody tr {
 

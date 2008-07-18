@@ -18,7 +18,7 @@
 	<ui:define name="content">
 
 		<table>
-            <colgroup />
+            <colgroup class="half" />
             <colgroup />
 
             <tbody>
@@ -39,7 +39,7 @@
 			<rich:dataTable id="app-data" var="item" value="#{applicationList}"
 				rows="10"
 				rowClasses="listingTable_Row1,listingTable_Row2">
-				<h:column>
+				<h:column headerClass="half">
 					<f:facet name="header">#{msgs.application}</f:facet>
 					<h:commandLink id="view" value="#{item.name}"
 						action="#{applicationOwner.viewapp}" />
