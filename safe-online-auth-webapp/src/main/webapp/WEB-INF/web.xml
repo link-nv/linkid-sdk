@@ -159,13 +159,13 @@
 			<param-value>first-time.seam</param-value>
 		</init-param>
 		<init-param>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
 				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry 
 			</param-value>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
 		</init-param>
 		<init-param>
 			<param-name>UnsupportedProtocolUrl</param-name>
@@ -215,13 +215,13 @@
 			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/login</param-value>
 		</init-param>
 		<init-param>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
 				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/auth 
 			</param-value>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
 		</init-param>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>
@@ -250,13 +250,13 @@
 			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/login</param-value>
 		</init-param>
 		<init-param>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
 				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/device/reg 
 			</param-value>
-			<description>Used to wrap the servlet request's request URL for
-				verification of the receiving endpoint with the destination in the
-				saml request.</description>
 		</init-param>
 		<init-param>
 			<param-name>DeviceErrorUrl</param-name>

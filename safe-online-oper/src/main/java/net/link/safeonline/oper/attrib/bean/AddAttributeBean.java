@@ -199,6 +199,10 @@ public class AddAttributeBean implements AddAttribute {
 	public List<AttributeTypeEntity> getSourceMemberAttributes() {
 		this.sourceMemberAttributes = this.attributeTypeService
 				.listAvailableMemberAttributeTypes();
+		if (null != this.selectedMemberAttributes) {
+			this.sourceMemberAttributes
+					.removeAll(this.selectedMemberAttributes);
+		}
 		return this.sourceMemberAttributes;
 	}
 
