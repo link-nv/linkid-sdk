@@ -876,8 +876,9 @@ shorten() {
     path=$1; shift
 
     # Make path absolute, clean out repeated slashes and dot-directories.
-    [[ $path = /* ]] || path=$PWD/$path
-    path=$(sed 's,///*,/,g; s,\(^\|/\)\./,\1,g; s,\(^\|/\)[^/]*/\.\./,\1,g; s,///*,/,g' <<< "$path")
+    #[[ $path = /* ]] || path=$PWD/$path
+    #path=$(sed 's,///*,/,g; s,\(^\|/\)\./,\1,g; s,\(^\|/\)[^/]*/\.\./,\1,g; s,///*,/,g' <<< "$path")
+    path=$(cd "$path"; printf "%s" "$PWD")
 
     # Replace special paths.
     path=${path#$pwd/}
@@ -974,7 +975,7 @@ map() {
             mapIndex=$(_findMapNameIndex ${quiet:+-q} "$mapName") && \
             keyIndex=$(_findMapKeyIndex ${quiet:+-q} "$mapIndex" "$mapKey")
         then
-            printf "%s" "${_mapValues[keyIndex]}"
+            printf "%s\n" "${_mapValues[keyIndex]}"
         fi
     elif (( $# == 1 )); then
         if 
@@ -982,7 +983,7 @@ map() {
         then
             for keyIndex in "${!_mapKeys[@]}"; do
                 if [[ ${_mapKeys[keyIndex]} = $mapIndex-* ]]; then
-                    printf "%s" "${_mapKeys[keyIndex]#*-}"
+                    printf "%s\n" "${_mapKeys[keyIndex]#*-}"
                 fi
             done
         fi
@@ -1014,7 +1015,7 @@ _findMapNameIndex() {
             [[ ${_mapNames[mapIndex]} = $mapName ]] && break
         done
     then
-        printf "%s" "$mapIndex"
+        printf "%s\n" "$mapIndex"
     else
         (( quiet )) || emit -r "There is no map named '$mapName'."
         return 1
@@ -1047,77 +1048,11 @@ _findMapKeyIndex() {
             [[ ${_mapKeys[keyIndex]} = $mapIndex-$mapKey ]] && break
         done
     then
-        printf "%s" "$keyIndex"
+        printf "%s\n" "$keyIndex"
     else
         (( quiet )) || emit -r "The map '$mapName' does not contain a key '$mapKey'."
         return 1
     fi
-} # _____________________________________________________________________
-
-
-
-#  ______________________________________________________________________
-# |__ Map _______________________________________________________________|
-#
-#       map key map [ <<< value ]
-#
-# Retrieve a mapping of a key from the given map or modify the given map by
-# assigning a new value for the given key if stdin is not the terminal.
-#
-#   key     A string denoting the key of the relevant mapping.
-#   value   A string denoting the new value for the given key.
-#   map     This is a list of key and value strings that define the map.
-#
-# When no value is specified, the current value for the given key is returned.
-#
-# When assigning a new value, the whole map is returned with the mapping for
-# the given key modified to map to the new value.  The following options are
-# only relevant for this case:
-#
-#   -n      Use newlines as an output separator between keys and values.
-#   -0      Use NULL-bytes as an output separator between keys and values.
-#
-_depricated_map() {
-
-    # Check usage.
-    (( $# < 2 )) || getArgs -q :h "$@" && {
-        emit -y 'The key to search for and the map to search through.'
-        return 1
-    }
-
-    # Parse the options.
-    local search=$1; shift
-    local notFound=1
-    local newValue=
-    local map=()
-
-    # Read the new value from stdin if it's not a terminal.
-    [[ -t 0 ]] || newValue=$(cat)
-
-    # Search through the map.
-    while (( $# )); do
-        local key=$1; shift
-        local val=$1; shift
-
-        if [[ $key = $search ]]; then
-            if [[ $newValue ]]; then
-                val=$newValue
-                notFound=0
-            else
-                printf "%s" "$val"
-                return
-            fi
-        fi
-
-        [[ $newValue ]] \
-            && map+=( "$key" "$val" )
-    done
-
-    # If we were assigning a new value, output the new map.
-    # Otherwise, we couldn't find the search key.
-    [[ $newValue ]] \
-        && { printf "%s" "${map[*]}"; return $notFound; } \
-        || return 1
 } # _____________________________________________________________________
 
 
