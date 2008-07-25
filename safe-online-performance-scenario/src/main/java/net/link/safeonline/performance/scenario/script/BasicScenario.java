@@ -31,6 +31,7 @@ import net.link.safeonline.performance.scenario.charts.ScenarioDriverDurationsCh
 import net.link.safeonline.performance.scenario.charts.ScenarioDurationsChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioExceptionsChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioMemoryChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioQueueChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 
 import org.apache.commons.logging.Log;
@@ -132,6 +133,7 @@ public class BasicScenario implements Scenario {
 		List<Chart> charts = new ArrayList<Chart>();
 		charts.add(new ScenarioDurationsChart());
 		charts.add(new ScenarioMemoryChart());
+		charts.add(new ScenarioQueueChart());
 		charts.add(new ScenarioSpeedChart(5 * 60 * 1000));
 		charts.add(new ScenarioDriverDurationsChart());
 		charts.add(new ScenarioExceptionsChart());

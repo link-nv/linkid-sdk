@@ -87,10 +87,11 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 	 */
 	public void addOlasTime(long newOlasTime) {
 
-		if (this.olasDuration == null)
-			this.olasDuration = newOlasTime;
-		else
-			this.olasDuration += newOlasTime;
+		if (this.olasDuration == null) {
+            this.olasDuration = newOlasTime;
+        } else {
+            this.olasDuration += newOlasTime;
+        }
 	}
 
 	/**
@@ -168,4 +169,16 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 	public ExecutionEntity getExecution() {
 		return this.execution;
 	}
+	
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+
+        return String.format("ST: %01.2f(%+01.2f) MB, %d(+{o:%d, a:%d})",
+                this.startFreeMem / (1024 * 1024f),
+                (this.endFreeMem - this.startFreeMem) / (1024 * 1024f),
+                this.startTime, this.olasDuration, this.agentDuration);
+    }
 }

@@ -85,4 +85,13 @@ public class MeasurementEntity {
 
 		this.profileData = profileData;
 	}
+	
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+
+        return String.format("ME: %s=%s", this.measurement, this.duration);
+    }
 }

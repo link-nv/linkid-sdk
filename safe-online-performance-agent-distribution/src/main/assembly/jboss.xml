@@ -16,16 +16,17 @@
 					server/default/deploy/jms/hsqldb-jdbc2-service.xml
 				</exclude>
 				<exclude>server/default/conf/jboss-minimal.xml</exclude>
-				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
+				<exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
 				<exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
+				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
 				<exclude>server/default/lib/hsqldb.jar</exclude>
 				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
 				<exclude>
 					server/default/deploy/jms/hsqldb-jdbc-state-service.xml
 				</exclude>
 				<exclude>readme.html</exclude>
-                <exclude>bin/*.sh</exclude>
-                <exclude>server/default/lib/jboss-seam-1.2.1.GA-safe-online.jar</exclude>
+				<exclude>bin/*.sh</exclude>
+				<exclude>server/default/lib/jboss-seam-1.2.1.GA-safe-online.jar</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>
@@ -43,7 +44,12 @@
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
 	</fileSets>
-	<files>
+    <files>
+        <!-- We manage this file ourselves because the DS is different for the agent than for OLAS -->
+		<!--file>
+            <source>target/files/resources/mysql-safe-online-ds.xml</source>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</file-->
 		<file>
 			<source>target/files/mysql-connector-java-5.1.5.jar</source>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>

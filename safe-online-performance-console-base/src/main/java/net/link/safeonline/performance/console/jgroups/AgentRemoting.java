@@ -65,7 +65,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
 
 		catch (ChannelException e) {
 			String msg = "Couldn't establish the JGroups channel.";
-			LOG.error(msg, e);
+			LOG.fatal(msg, e);
 			throw new RuntimeException(msg, e);
 		}
 

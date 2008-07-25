@@ -16,7 +16,7 @@
 					server/default/deploy/jms/hsqldb-jdbc2-service.xml
 				</exclude>
 				<exclude>server/default/conf/jboss-minimal.xml</exclude>
-                <exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
+				<exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
 				<exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
 				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
 				<exclude>server/default/lib/hsqldb.jar</exclude>

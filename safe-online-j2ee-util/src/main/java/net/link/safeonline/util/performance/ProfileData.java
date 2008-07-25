@@ -27,6 +27,13 @@ import org.apache.commons.logging.LogFactory;
 public class ProfileData {
 
 	/**
+	 * The measurement string for the amount of messages currently
+     * queued in the Audit JMS queue; waiting to be processed by the
+     * audit backend.
+	 */
+	public static final String AUDIT_SIZE = "AuditSize";
+
+	/**
 	 * The measurement string for the time the request took. This is the
 	 * difference of time between the start and end of the request in
 	 * milliseconds.

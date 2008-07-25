@@ -2,6 +2,7 @@ package net.link.safeonline.util.filter;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.management.MBeanServerConnection;
@@ -24,6 +25,8 @@ import net.link.safeonline.util.performance.ProfilingPolicyContextHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.jboss.jms.server.messagecounter.MessageCounter;
 
 /**
  * Servlet Filter profiles the request and adds the results as headers of the
@@ -75,8 +78,12 @@ public class ProfileFilter implements Filter {
 			finally {
 				long deltaTime = System.currentTimeMillis() - startTime;
 				long endFreeMem = getFreeMemory();
+				long auditSize = getAuditQueueSize();
+                LOG.info("AUDIT QUEUE SIZE: " + auditSize);
 
 				try {
+					profileData.addMeasurement(ProfileData.AUDIT_SIZE,
+							auditSize);
 					profileData.addMeasurement(ProfileData.REQUEST_START_TIME,
 							startTime);
 					profileData.addMeasurement(ProfileData.REQUEST_DELTA_TIME,
@@ -108,6 +115,28 @@ public class ProfileFilter implements Filter {
 		finally {
 			responseWrapper.commit();
 		}
+	}
+
+	private long getAuditQueueSize() {
+
+		try {
+            List<MessageCounter> queues = (List<MessageCounter>) rmi.getAttribute(new ObjectName(
+					"jboss.messaging:service=ServerPeer"), "MessageCounters");
+
+            try {
+                for(MessageCounter queue : queues)
+                    if(queue.getDestinationName().equals("Queue.auditBackend"))
+                        return (long) queue.getMessageCount();
+
+                LOG.error("Audit queue not found.");
+            } catch (Exception e) {
+                LOG.error("Couldn't access audit queue stats in JMS queue counters.", e);
+            }
+		} catch (Exception e) {
+			LOG.error("Failed to read in JMS queue counters through JMX.", e);
+		}
+
+		return -1;
 	}
 
 	private long getFreeMemory() {

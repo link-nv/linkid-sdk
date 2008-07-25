@@ -354,7 +354,7 @@
 				</safe-online.profiling.agent.dialect>
 				<safe-online.profiling.agent.hibernate.hbm2ddl.auto> update 
 				</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
-				<safe-online.profiling.agent.data.source> DefaultDS 
+				<safe-online.profiling.agent.data.source> AgentDS 
 				</safe-online.profiling.agent.data.source>
 				<safe-online.profiling.initial_hosts>
 					sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800] 
@@ -417,6 +417,7 @@
 			<modules>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-performance-distribution</module>
+				<module>safe-online-performance-agent-distribution</module>
 			</modules>
 		</profile>
 		<profile>
@@ -492,7 +493,7 @@
 		<jaxws-api.version>2.1-safeonline</jaxws-api.version>
 		<commons-logging-api.version>1.1</commons-logging-api.version>
 		<jboss.version>4.2.2.GA</jboss.version>
-		<jboss-messaging.version>1.4.0.SP3</jboss-messaging.version>
+		<jboss-messaging-dist.version>1.4.0.SP3</jboss-messaging-dist.version>
 		<sjsxp.version>1.0</sjsxp.version>
 		<commons-logging.version>1.1</commons-logging.version>
 		<log4j.version>1.2.14</log4j.version>
@@ -629,6 +630,7 @@
 		<jboss-jsfunit-core.version> 1.0-beta-1 </jboss-jsfunit-core.version>
 		<jboss-jsfunit-richfaces.version> 1.0-beta-1 
 		</jboss-jsfunit-richfaces.version>
+        <jboss-messaging.version>1.4.1.CR1</jboss-messaging.version>
 		<itext.version>1.4.8</itext.version>
 		<xpp3.version>1.1.4c</xpp3.version>
 		<xstream.version>1.1.3</xstream.version>
@@ -847,6 +849,7 @@
 					<buildOutputDirectory> ${project.build.directory}/eclipse 
 					</buildOutputDirectory>
 					<projectNameTemplate> [artifactId] </projectNameTemplate>
+					<manifest>false</manifest>
 					<wtpmanifest>false</wtpmanifest>
 					<wtpapplicationxml>false</wtpapplicationxml>
 					<wtpversion>2.0</wtpversion>
@@ -1427,6 +1430,11 @@
 				<artifactId>jboss-annotations-ejb3</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>jboss.messaging</groupId>
+                <artifactId>jboss-messaging</artifactId>
+                <version>${jboss-messaging.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
@@ -1971,13 +1979,13 @@
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-messaging</artifactId>
 				<type>zip</type>
-				<version>${jboss-messaging.version}</version>
+				<version>${jboss-messaging-dist.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-messaging-sar</artifactId>
 				<type>zip</type>
-				<version>${jboss-messaging.version}</version>
+				<version>${jboss-messaging-dist.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>axis</groupId>

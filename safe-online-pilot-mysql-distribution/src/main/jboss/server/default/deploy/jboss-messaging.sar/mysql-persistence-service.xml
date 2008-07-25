@@ -122,7 +122,7 @@ LOAD_BINDINGS=SELECT QUEUE_NAME, COND, SELECTOR, CHANNEL_ID, CLUSTERED, ALL_NODE
       
       <!-- This post office is clustered. If you don't want a clustered post office then set to false -->
       
-      <attribute name="Clustered">true</attribute>
+      <attribute name="Clustered">false</attribute>
       
       <!-- All the remaining properties only have to be specified if the post office is clustered.
            You can safely comment them out if your post office is non clustered -->

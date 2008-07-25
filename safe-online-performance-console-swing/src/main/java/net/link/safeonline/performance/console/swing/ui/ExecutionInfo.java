@@ -151,7 +151,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
         setExecution(null);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -161,7 +160,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
             updateExecutionSelection();
         }
     }
-
 
     void updateExecutionSelection() {
 
@@ -175,7 +173,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
             }
         }
     }
-
 
     private void setExecution(ScenarioExecution execution) {
 
@@ -214,17 +211,24 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
             if (ConsoleData.getSelectedExecution() != null) {
                 int totalSpeedAgents = 0;
                 totalSpeed = 0d;
-                
+
                 for (ConsoleAgent agent : ConsoleData.getAgents().values()) {
-                    for (ScenarioExecution agentExecution : agent.getExecutions())
+                    for (ScenarioExecution agentExecution : agent
+                            .getExecutions())
                         if (agentExecution.equalRequest(ConsoleData
-                                .getSelectedExecution())) {
+                                .getSelectedExecution())
+                                && agentExecution.getSpeed() != null) {
                             totalSpeedAgents++;
                             totalSpeed += agentExecution.getSpeed();
                         }
                 }
-                totalSpeed *= ConsoleData.getSelectedExecution().getAgents()
-                        / totalSpeedAgents;
+                if (totalSpeedAgents == 0) {
+                    totalSpeed = 0d;
+                } else {
+                    totalSpeed *= ConsoleData.getSelectedExecution()
+                            .getAgents()
+                            / totalSpeedAgents;
+                }
             }
 
             this.startTime.setText(DateFormat.getDateTimeInstance().format(
@@ -254,7 +258,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -263,7 +266,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
         updateExecutions();
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -271,7 +273,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
         updateExecutions();
     }
-
 
     private void updateExecutions() {
 
@@ -304,7 +305,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
         setExecutions(commonExecutions);
     }
-
 
     private void setExecutions(final Set<ScenarioExecution> executions) {
 
@@ -348,7 +348,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
         updateExecutionSelection();
     }
 
-
     private boolean containsExecution(Set<ScenarioExecution> set,
             ScenarioExecution element) {
 
@@ -359,7 +358,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
         return false;
     }
-
 
     /**
      * Format a time of duration in a human readable manner.
@@ -417,7 +415,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
         return output.toString();
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -425,7 +422,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
         return getPreferredSize();
     }
-
 
     /**
      * {@inheritDoc}
@@ -436,7 +432,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
         return 100;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -445,7 +440,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
         return false;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -453,7 +447,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
         return true;
     }
-
 
     /**
      * {@inheritDoc}

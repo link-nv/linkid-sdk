@@ -186,8 +186,9 @@ public class ScenarioControllerBean implements ScenarioController {
 
 		Set<String> scenarios = new HashSet<String>();
 		for (Class<? extends Scenario> scenario : RegisteredScripts
-				.getRegisteredScenarios())
-			scenarios.add(scenario.getName());
+				.getRegisteredScenarios()) {
+            scenarios.add(scenario.getName());
+        }
 
 		return scenarios;
 	}
@@ -233,8 +234,8 @@ public class ScenarioControllerBean implements ScenarioController {
 		StringBuffer description = new StringBuffer();
 
 		for (DriverProfileEntity profile : new TreeSet<DriverProfileEntity>(
-				execution.getProfiles()))
-			try {
+				execution.getProfiles())) {
+            try {
 				String driverDescription = (String) loadClass(null,
 						profile.getDriverClassName()).getField("DESCRIPTION")
 						.get(null);
@@ -243,6 +244,7 @@ public class ScenarioControllerBean implements ScenarioController {
 						"</li>\n");
 			} catch (Exception e) {
 			}
+        }
 
 		if (description.length() > 0) {
 			description.insert(0, "\n\nThe following drivers were used:<ul>\n");
@@ -272,12 +274,15 @@ public class ScenarioControllerBean implements ScenarioController {
 		errorCharts = new ArrayList<Chart>();
 		timingCharts = new ArrayList<Chart>();
 		for (Chart chart : charts) {
-			if (chart.isDataProcessed())
-				dataCharts.add(chart);
-			if (chart.isErrorProcessed())
-				errorCharts.add(chart);
-			if (chart.isTimingProcessed())
-				timingCharts.add(chart);
+			if (chart.isDataProcessed()) {
+                dataCharts.add(chart);
+            }
+			if (chart.isErrorProcessed()) {
+                errorCharts.add(chart);
+            }
+			if (chart.isTimingProcessed()) {
+                timingCharts.add(chart);
+            }
 		}
 
 		// Chart scenario timing data.
@@ -285,13 +290,15 @@ public class ScenarioControllerBean implements ScenarioController {
 			List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
 					.getExecutionTimings(execution);
 			for (ScenarioTimingEntity timing : scenarioTimings)
-				if (timing != null)
-					for (Chart chart : timingCharts)
-						try {
+				if (timing != null) {
+                    for (Chart chart : timingCharts) {
+                        try {
 							chart.processTiming(timing);
 						} catch (Exception e) {
 							LOG.error("Charting Timing Failed:", e);
 						}
+                    }
+                }
 		}
 
 		// Chart driver data.
@@ -303,13 +310,17 @@ public class ScenarioControllerBean implements ScenarioController {
 				List<ProfileDataEntity> profileData = this.profileDataService
 						.getProfileData(profile, DATA_POINTS);
 				for (ProfileDataEntity data : profileData)
-					if (data != null)
-						for (Chart chart : dataCharts)
-							try {
+					if (data != null) {
+                        LOG.debug("Processing: " + data);
+
+                        for (Chart chart : dataCharts) {
+                            try {
 								chart.processData(data);
 							} catch (Exception e) {
 								LOG.error("Charting Data Failed:", e);
 							}
+                        }
+					}
 			}
 
 			// Chart errors.
@@ -317,24 +328,28 @@ public class ScenarioControllerBean implements ScenarioController {
 				List<DriverExceptionEntity> profileErrors = this.driverExceptionService
 						.getProfileErrors(profile, DATA_POINTS);
 				for (DriverExceptionEntity error : profileErrors)
-					if (error != null)
-						for (Chart chart : errorCharts)
-							try {
+					if (error != null) {
+                        for (Chart chart : errorCharts) {
+                            try {
 								chart.processError(error);
 							} catch (Exception e) {
 								LOG.error("Charting Error Failed:", e);
 							}
+                        }
+                    }
 			}
 		}
 
-		for (Chart chart : charts)
-			chart.postProcess();
+		for (Chart chart : charts) {
+            chart.postProcess();
+        }
 
 		Map<String, byte[][]> images = new LinkedHashMap<String, byte[][]>();
 		for (Chart chart : charts) {
 			byte[][] image = chart.render(DATA_POINTS);
-			if (image != null)
-				images.put(chart.getTitle(), image);
+			if (image != null) {
+                images.put(chart.getTitle(), image);
+            }
 		}
 
 		return images;

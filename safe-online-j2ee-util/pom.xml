@@ -61,6 +61,10 @@
 			<groupId>org.jboss</groupId>
 			<artifactId>jmx-client</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>jboss.messaging</groupId>
+            <artifactId>jboss-messaging</artifactId>
+        </dependency>
 	</dependencies>
 	<reporting>
 		<plugins>

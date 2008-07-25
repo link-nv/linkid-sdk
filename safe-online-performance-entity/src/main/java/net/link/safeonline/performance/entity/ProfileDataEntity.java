@@ -122,4 +122,14 @@ public class ProfileDataEntity {
 
 		return this.profile;
 	}
+	
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+
+        return String.format("[PD: %s - ST: %s]", this.measurements,
+                this.scenarioTiming);
+    }
 }
