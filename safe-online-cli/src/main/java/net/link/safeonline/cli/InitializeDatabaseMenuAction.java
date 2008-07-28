@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class InitializeDatabaseMenuAction extends AbstractMenuAction {
 
@@ -20,6 +21,12 @@ public class InitializeDatabaseMenuAction extends AbstractMenuAction {
 
 	public void run() {
 		System.out.println(super.getDescription());
+
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String databaseSchemaVersion = properties
+				.getString("database.schema.version");
+		System.out.println("Database schema version: " + databaseSchemaVersion);
+
 		DatabasePlugin databasePlugin = DatabasePluginManager
 				.getDatabasePlugin();
 		List<String> initList = databasePlugin.getInitList();
@@ -39,7 +46,7 @@ public class InitializeDatabaseMenuAction extends AbstractMenuAction {
 				statement
 						.executeUpdate("INSERT INTO metadata(name, value) VALUES ('"
 								+ DatabaseConstants.METADATA_VERSION_NAME
-								+ "','" + DatabaseConstants.VERSION + "')");
+								+ "','" + databaseSchemaVersion + "')");
 			} finally {
 				statement.close();
 			}
