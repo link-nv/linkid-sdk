@@ -813,16 +813,6 @@
 		<finalName>${pom.artifactId}-${pom.version}</finalName>
 		<plugins>
 			<plugin>
-				<inherited>false</inherited>
-				<artifactId>maven-clean-plugin</artifactId>
-
-				<!-- Don't clean parent directory's target directory: it contains cache data
-					such as eclipse:eclipse -DdownloadSources=true repository statuses.  -->
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -867,7 +857,9 @@
 						<validationSet>
 							<dir>.</dir>
 							<includes>
-								<include> src/main/webapp/**/*.xhtml </include>
+                                <include> target/**/*.xhtml </include>
+                                <include> target/**/*.html </include>
+                                <include> target/**/*.xml </include>
 							</includes>
 						</validationSet>
 					</validationSets>
@@ -880,6 +872,18 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+            <!-- NON-INHERITED PLUGIN SETTINGS -->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+
+				<!-- Don't clean parent directory's target directory: it contains cache data
+					such as eclipse:eclipse -DdownloadSources=true repository statuses.  -->
+				<inherited>false</inherited>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 
