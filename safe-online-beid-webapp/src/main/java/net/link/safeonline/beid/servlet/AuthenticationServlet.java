@@ -58,10 +58,10 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 		try {
 			AuthenticationContext authenticationContext = AuthenticationContext
 					.getAuthenticationContext(session);
+			authenticationContext.setUsedDevice(BeIdConstants.BEID_DEVICE_ID);
 
-			AuthenticationStatement authenticationStatement;
-
-			authenticationStatement = new AuthenticationStatement(statementData);
+			AuthenticationStatement authenticationStatement = new AuthenticationStatement(
+					statementData);
 			String deviceUserId = this.beIdDeviceService.authenticate(
 					sessionId, authenticationContext.getApplication(),
 					authenticationStatement);
@@ -69,7 +69,6 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 			authenticationContext.setUserId(deviceUserId);
 			authenticationContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
-			authenticationContext.setUsedDevice(BeIdConstants.BEID_DEVICE_ID);
 
 		} catch (DecodingException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -36,18 +36,10 @@
 		<para>
 			Following services can be provided by the device provider :
 			<itemizedlist>
-				<listitem>
-					Authentication
-				</listitem>
-				<listitem>
-					Registration
-				</listitem>
-				<listitem>
-					Removal
-				</listitem>
-				<listitem>
-					Updating
-				</listitem>
+				<listitem> Authentication </listitem>
+				<listitem> Registration </listitem>
+				<listitem> Removal </listitem>
+				<listitem> Updating </listitem>
 			</itemizedlist>
 		</para>
 		<para> Below the protocol is shown as is used for authentication of an
@@ -207,18 +199,10 @@
 			<code>AuthenticationContext</code>
 			should be filled in containing the authentication details such as :
 			<itemizedlist>
-				<listitem>
-					User ID
-				</listitem>
-				<listitem>
-					Used Device Name
-				</listitem>
-				<listitem>
-					SAML Response Token Validity Time
-				</listitem>
-				<listitem>
-					Device Provider Name
-				</listitem>
+				<listitem> User ID </listitem>
+				<listitem> Used Device Name </listitem>
+				<listitem> SAML Response Token Validity Time </listitem>
+				<listitem> Device Provider Name </listitem>
 			</itemizedlist>
 			The following class should be used to accomplish this :
 			<code>AuthenticationContext.java</code>
@@ -271,8 +255,15 @@
 			are not set, when redirecting to the exit servlet, a SAML response
 			containing
 			<code>Authentication Failed</code>
-			will be sent to OLAS. If they are set, a SAML response containing the
-			right assertions will be sent.
+			will be sent to OLAS. If only the
+			<code>usedDevice</code>
+			is set, a SAML response containing
+			<code>Unknown Principal</code>
+			will be sent to OLAS, causing the OLAS authentication webapp to
+			redirect to the
+			<code>all-devices</code>
+			page. If both are set, a SAML response containing the right
+			assertions will be sent.
 		</para>
 	</chapter>
 	<chapter id="operation">
@@ -341,7 +332,8 @@
 			Two session parameters will also be pushed on the HttpSession, namely
 			<code>userId</code>
 			and
-			<code>operation</code>.
+			<code>operation</code>
+			.
 		</para>
 		<para>
 			When the device operation has finished, failed or has to be aborted,

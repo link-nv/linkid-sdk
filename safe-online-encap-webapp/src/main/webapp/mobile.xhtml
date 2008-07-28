@@ -50,6 +50,14 @@
 
 	</ui:define>
 	<ui:define name="sidebar">
+		<h:form>
+			<ul>
+				<li><h:commandLink id="try-other-device"
+					action="#{authentication.tryAnotherDevice}"
+					value="#{msgs.tryAnotherDevice}" /></li>
+			</ul>
+		</h:form>
+
 		<p>#{msgs.helpMobileAuthentication}</p>
 	</ui:define>
 </ui:composition>

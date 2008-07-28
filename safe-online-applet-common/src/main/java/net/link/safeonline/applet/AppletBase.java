@@ -65,7 +65,9 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private JButton detailsButton;
 
-	JButton helpButton;
+	private JButton helpButton;
+
+	private JButton tryAnotherDeviceButton;
 
 	private static enum State {
 		HIDE, SHOW
@@ -141,9 +143,14 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		this.helpButton.setFont(helpFont);
 		this.helpButton.setForeground(Color.red);
 		this.helpButton.setVisible(false);
+		this.tryAnotherDeviceButton = new JButton(this.messages
+				.getString("tryAnotherDeviceAction"));
+		this.tryAnotherDeviceButton.setFont(helpFont);
+		this.tryAnotherDeviceButton.setVisible(false);
 		textPanel.add(this.infoLabel);
 		buttonPanel.add(this.detailsButton);
 		buttonPanel.add(this.helpButton);
+		buttonPanel.add(this.tryAnotherDeviceButton);
 		infoPanel.add(textPanel);
 		infoPanel.add(this.progressBar);
 		infoPanel.add(Box.createVerticalStrut(10));
@@ -168,6 +175,12 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		this.helpButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				redirectToHelp();
+			}
+		});
+
+		this.tryAnotherDeviceButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				redirectToTryAnotherDevice();
 			}
 		});
 
@@ -229,6 +242,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 						AppletBase.this.infoLabel.setForeground(Color.RED);
 						AppletBase.this.progressBar.setIndeterminate(false);
 						AppletBase.this.helpButton.setVisible(true);
+						AppletBase.this.tryAnotherDeviceButton.setVisible(true);
 						AppletBase.this.validate();
 						AppletBase.this.repaint();
 						break;
@@ -321,9 +335,16 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		}
 	}
 
-	void redirectToHelp() {
+	private void redirectToHelp() {
 		URL documentBase = this.getDocumentBase();
 		String targetPath = this.getParameter("HelpPath");
+		URL target = AppletControl.transformUrl(documentBase, targetPath);
+		this.showDocument(target);
+	}
+
+	private void redirectToTryAnotherDevice() {
+		URL documentBase = this.getDocumentBase();
+		String targetPath = this.getParameter("TargetPath");
 		URL target = AppletControl.transformUrl(documentBase, targetPath);
 		this.showDocument(target);
 	}

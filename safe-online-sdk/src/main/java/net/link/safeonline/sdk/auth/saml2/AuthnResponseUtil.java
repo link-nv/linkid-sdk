@@ -209,7 +209,9 @@ public class AuthnResponseUtil {
 		if (samlResponse.getStatus().getStatusCode().getValue().equals(
 				StatusCode.AUTHN_FAILED_URI)
 				|| samlResponse.getStatus().getStatusCode().getValue().equals(
-						StatusCode.REQUEST_UNSUPPORTED_URI)) {
+						StatusCode.REQUEST_UNSUPPORTED_URI)
+				|| samlResponse.getStatus().getStatusCode().getValue().equals(
+						StatusCode.UNKNOWN_PRINCIPAL_URI)) {
 			/**
 			 * Authentication failed but response ok.
 			 */

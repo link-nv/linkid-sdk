@@ -18,6 +18,7 @@ import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
@@ -44,6 +45,9 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 	@Init(name = "StartUrl")
 	private String startUrl;
+
+	@Init(name = "TryAnotherDeviceUrl")
+	private String tryAnotherDeviceUrl;
 
 	@Init(name = "ServletEndpointUrl")
 	private String servletEndpointUrl;
@@ -84,7 +88,14 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 							"errorDeviceRegistrationNotFound"));
 			return;
 		}
-		if (null == deviceMapping) {
+		if (null == deviceMapping
+				&& authenticationService.getAuthenticationState().equals(
+						AuthenticationState.REDIRECTED)) {
+			/*
+			 * Authentication failed but user requested to try another device
+			 */
+			response.sendRedirect(this.tryAnotherDeviceUrl);
+		} else if (null == deviceMapping) {
 			/*
 			 * Authentication failed, redirect to start page
 			 */

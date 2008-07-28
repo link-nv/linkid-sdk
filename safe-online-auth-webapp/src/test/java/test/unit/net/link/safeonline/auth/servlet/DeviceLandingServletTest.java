@@ -59,6 +59,8 @@ public class DeviceLandingServletTest {
 
 	private String loginUrl = "login";
 
+	private String tryAnotherDeviceUrl = "try-another-device";
+
 	private String servletEndpointUrl = "http://test.auth/servlet";
 
 	private AuthenticationService mockAuthenticationService;
@@ -73,6 +75,7 @@ public class DeviceLandingServletTest {
 		Map<String, String> initParams = new HashMap<String, String>();
 		initParams.put("StartUrl", this.startUrl);
 		initParams.put("LoginUrl", this.loginUrl);
+		initParams.put("TryAnotherDeviceUrl", this.tryAnotherDeviceUrl);
 		initParams.put("DeviceErrorUrl", this.deviceErrorUrl);
 		initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
@@ -107,13 +110,42 @@ public class DeviceLandingServletTest {
 	}
 
 	@Test
-	public void authenticationFailed() throws Exception {
+	public void authenticationNotRegistered() throws Exception {
 		// setup
 		PostMethod postMethod = new PostMethod(this.location);
 
 		// expectations
 		expect(this.mockAuthenticationService.getAuthenticationState())
 				.andStubReturn(AuthenticationState.REDIRECTED);
+		expect(
+				this.mockAuthenticationService
+						.authenticate((HttpServletRequest) EasyMock.anyObject()))
+				.andStubReturn(null);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		int statusCode = this.httpClient.executeMethod(postMethod);
+
+		// verify
+		verify(this.mockObjects);
+		LOG.debug("status code: " + statusCode);
+		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
+		String resultLocation = postMethod.getResponseHeader("Location")
+				.getValue();
+		LOG.debug("location: " + resultLocation);
+		assertTrue(resultLocation.endsWith(this.tryAnotherDeviceUrl));
+	}
+
+	@Test
+	public void authenticationFailed() throws Exception {
+		// setup
+		PostMethod postMethod = new PostMethod(this.location);
+
+		// expectations
+		expect(this.mockAuthenticationService.getAuthenticationState())
+				.andStubReturn(AuthenticationState.INITIALIZED);
 		expect(
 				this.mockAuthenticationService
 						.authenticate((HttpServletRequest) EasyMock.anyObject()))

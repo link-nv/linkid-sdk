@@ -401,6 +401,14 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			return null;
 
 		if (samlResponse.getStatus().getStatusCode().getValue().equals(
+				StatusCode.UNKNOWN_PRINCIPAL_URI)) {
+			/*
+			 * Authentication failed, user wants to try another device tho. Set
+			 * the state to redirected to mark this
+			 */
+			this.authenticationState = REDIRECTED;
+			return null;
+		} else if (samlResponse.getStatus().getStatusCode().getValue().equals(
 				StatusCode.AUTHN_FAILED_URI)) {
 			/*
 			 * Authentication failed, reset the state

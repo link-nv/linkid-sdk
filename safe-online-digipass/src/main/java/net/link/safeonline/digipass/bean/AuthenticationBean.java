@@ -152,4 +152,10 @@ public class AuthenticationBean implements Authentication {
 		this.token = null;
 	}
 
+	public String tryAnotherDevice() throws IOException {
+		this.authenticationContext
+				.setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
+		exit();
+		return null;
+	}
 }

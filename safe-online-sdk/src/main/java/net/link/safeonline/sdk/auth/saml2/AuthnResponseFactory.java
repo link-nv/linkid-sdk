@@ -204,6 +204,56 @@ public class AuthnResponseFactory {
 	}
 
 	/**
+	 * Creates a signed authentication response with status unknown principal,
+	 * indicating user requests a registration.
+	 */
+	public static String createAuthResponseRequestRegistration(
+			String inResponseTo, String issuerName, KeyPair signerKeyPair,
+			String target) {
+		if (null == signerKeyPair) {
+			throw new IllegalArgumentException(
+					"signer key pair should not be null");
+		}
+		if (null == issuerName) {
+			throw new IllegalArgumentException("issuer name should not be null");
+		}
+
+		Response response = buildXMLObject(Response.class,
+				Response.DEFAULT_ELEMENT_NAME);
+
+		DateTime now = new DateTime();
+
+		SecureRandomIdentifierGenerator idGenerator;
+		try {
+			idGenerator = new SecureRandomIdentifierGenerator();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("secure random init error: "
+					+ e.getMessage(), e);
+		}
+		response.setID(idGenerator.generateIdentifier());
+		response.setVersion(SAMLVersion.VERSION_20);
+		response.setInResponseTo(inResponseTo);
+		response.setIssueInstant(now);
+
+		Issuer responseIssuer = buildXMLObject(Issuer.class,
+				Issuer.DEFAULT_ELEMENT_NAME);
+		responseIssuer.setValue(issuerName);
+		response.setIssuer(responseIssuer);
+
+		response.setDestination(target);
+
+		Status status = buildXMLObject(Status.class,
+				Status.DEFAULT_ELEMENT_NAME);
+		StatusCode statusCode = buildXMLObject(StatusCode.class,
+				StatusCode.DEFAULT_ELEMENT_NAME);
+		statusCode.setValue(StatusCode.UNKNOWN_PRINCIPAL_URI);
+		status.setStatusCode(statusCode);
+		response.setStatus(status);
+
+		return signAuthnResponse(response, signerKeyPair);
+	}
+
+	/**
 	 * Creates a signed authentication response with status unsupported.
 	 */
 	public static String createAuthResponseUnsupported(String inResponseTo,

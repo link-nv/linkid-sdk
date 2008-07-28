@@ -35,6 +35,14 @@
 
 	</ui:define>
 	<ui:define name="sidebar">
+		<h:form>
+			<ul>
+				<li><h:commandLink id="try-other-device"
+					action="#{digipassAuthentication.tryAnotherDevice}"
+					value="#{msgs.tryAnotherDevice}" /></li>
+			</ul>
+		</h:form>
+
 		<p>#{msgs.helpDigipassAuthentication}</p>
 	</ui:define>
 </ui:composition>
