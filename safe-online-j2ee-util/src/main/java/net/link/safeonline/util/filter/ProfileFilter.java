@@ -25,7 +25,6 @@ import net.link.safeonline.util.performance.ProfilingPolicyContextHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.jboss.jms.server.messagecounter.MessageCounter;
 
 /**
@@ -97,9 +96,10 @@ public class ProfileFilter implements Filter {
 
 				// Add our profiling results as HTTP headers.
 				for (Map.Entry<String, String> header : profileData
-						.getHeaders().entrySet())
-					responseWrapper.addHeader(header.getKey(), header
+						.getHeaders().entrySet()) {
+                    responseWrapper.addHeader(header.getKey(), header
 							.getValue());
+                }
 
 				if (profileData.isLocked()) {
 					LOG.debug("someone forgot to unlock the profile data");
@@ -117,16 +117,17 @@ public class ProfileFilter implements Filter {
 		}
 	}
 
-	private long getAuditQueueSize() {
+    private long getAuditQueueSize() {
 
 		try {
+		    @SuppressWarnings("unchecked")
             List<MessageCounter> queues = (List<MessageCounter>) rmi.getAttribute(new ObjectName(
 					"jboss.messaging:service=ServerPeer"), "MessageCounters");
 
             try {
                 for(MessageCounter queue : queues)
                     if(queue.getDestinationName().equals("Queue.auditBackend"))
-                        return (long) queue.getMessageCount();
+                        return queue.getMessageCount();
 
                 LOG.error("Audit queue not found.");
             } catch (Exception e) {

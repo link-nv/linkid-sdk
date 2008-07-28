@@ -1049,7 +1049,7 @@
 			<url>http://buildserver/maven2-snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>false</enabled>
@@ -1060,12 +1060,12 @@
 			<name>Buildserver Repository</name>
 			<url>http://buildserver/maven2</url>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1237,11 +1237,11 @@
 			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</pluginRepository>
 		<pluginRepository>
