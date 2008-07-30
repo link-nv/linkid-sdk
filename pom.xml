@@ -857,9 +857,12 @@
 						<validationSet>
 							<dir>.</dir>
 							<includes>
-                                <include> target/**/*.xhtml </include>
-                                <include> target/**/*.html </include>
-                                <include> target/**/*.xml </include>
+                                <include> target/classes/**/*.xhtml </include>
+                                <include> target/classes/**/*.html </include>
+                                <include> target/classes/**/*.xml </include>
+                                <include> target/war/**/*.xhtml </include>
+                                <include> target/war/**/*.html </include>
+                                <include> target/war/**/*.xml </include>
 							</includes>
 						</validationSet>
 					</validationSets>

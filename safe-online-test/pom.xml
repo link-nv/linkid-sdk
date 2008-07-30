@@ -368,15 +368,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>openqa</id>
-			<url>http://maven.openqa.org</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
 	<reporting>
 		<plugins>
 			<plugin>
