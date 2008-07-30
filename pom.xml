@@ -857,9 +857,12 @@
 						<validationSet>
 							<dir>.</dir>
 							<includes>
-								<include> target/**/*.xhtml </include>
-								<include> target/**/*.html </include>
-								<include> target/**/*.xml </include>
+                                <include> target/classes/**/*.xhtml </include>
+                                <include> target/classes/**/*.html </include>
+                                <include> target/classes/**/*.xml </include>
+                                <include> target/war/**/*.xhtml </include>
+                                <include> target/war/**/*.html </include>
+                                <include> target/war/**/*.xml </include>
 							</includes>
 							<excludes>
 								<exclude> target/**/safe-online-cfg.xml </exclude>
@@ -1052,7 +1055,7 @@
 			<url>http://buildserver/maven2-snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>false</enabled>
@@ -1063,12 +1066,12 @@
 			<name>Buildserver Repository</name>
 			<url>http://buildserver/maven2</url>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 		<repository>
@@ -1240,11 +1243,11 @@
 			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 		</pluginRepository>
 		<pluginRepository>
