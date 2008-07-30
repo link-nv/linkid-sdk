@@ -42,6 +42,7 @@ import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.shared.statement.IdentityProvider;
 
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * The base class for both the identity and the authentication applet.
@@ -52,6 +53,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		AppletView, AppletHelpdesk, RuntimeContext, StatementProvider {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final Log LOG = LogFactory.getLog(AppletBase.class);
 
 	JTextArea outputArea;
 
@@ -65,9 +68,13 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private JButton detailsButton;
 
+	private JButton retryButton;
+
 	private JButton helpButton;
 
 	private JButton tryAnotherDeviceButton;
+
+	private Thread thread;
 
 	private static enum State {
 		HIDE, SHOW
@@ -107,8 +114,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private void initAppletController() {
 		this.appletController.init(this, this, this);
-		Thread thread = new Thread(this.appletController);
-		thread.start();
+		this.thread = new Thread(this.appletController);
+		this.thread.start();
 	}
 
 	@Override
@@ -138,6 +145,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		this.detailsButton = new JButton();
 		this.detailsButton.addActionListener(this);
+		this.retryButton = new JButton(this.messages.getString("retryAction"));
+		this.retryButton.setVisible(false);
 		Font helpFont = font.deriveFont((float) 10);
 		this.helpButton = new JButton(this.messages.getString("helpAction"));
 		this.helpButton.setFont(helpFont);
@@ -149,6 +158,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		this.tryAnotherDeviceButton.setVisible(false);
 		textPanel.add(this.infoLabel);
 		buttonPanel.add(this.detailsButton);
+		buttonPanel.add(this.retryButton);
 		buttonPanel.add(this.helpButton);
 		buttonPanel.add(this.tryAnotherDeviceButton);
 		infoPanel.add(textPanel);
@@ -171,6 +181,19 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		// syncing state
 		actionPerformed(null);
 		actionPerformed(null);
+
+		this.retryButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AppletBase.this.appletController.abort();
+				AppletBase.this.thread.interrupt();
+				AppletBase.this.retryButton.setVisible(false);
+				AppletBase.this.helpButton.setVisible(false);
+				AppletBase.this.tryAnotherDeviceButton.setVisible(false);
+				AppletBase.this.validate();
+				AppletBase.this.repaint();
+				initAppletController();
+			}
+		});
 
 		this.helpButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -241,6 +264,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 					case ERROR:
 						AppletBase.this.infoLabel.setForeground(Color.RED);
 						AppletBase.this.progressBar.setIndeterminate(false);
+						AppletBase.this.retryButton.setVisible(true);
 						AppletBase.this.helpButton.setVisible(true);
 						AppletBase.this.tryAnotherDeviceButton.setVisible(true);
 						AppletBase.this.validate();
@@ -254,6 +278,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	public boolean addHelpdeskEvent(String message, LogLevelType logLevel)
 			throws IOException {
+		LOG.debug("add helpdesk event: " + message);
 		HttpURLConnection httpURLConnection = prepareHelpdeskConnection();
 		httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD, "");
 		httpURLConnection.setRequestProperty(

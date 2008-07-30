@@ -57,6 +57,8 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 
 	private ResourceBundle messages;
 
+	private SmartCard smartCard;
+
 	private void setupLogging() {
 		Log log = this.appletView.getLog();
 		SmartCardImpl.setLog(log);
@@ -66,14 +68,14 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
 				.getString("connectingToSmartCard"));
 		this.appletView.outputDetailMessage("Loading smart card component...");
-		SmartCard smartCard = SmartCardFactory.newInstance();
+		this.smartCard = SmartCardFactory.newInstance();
 
 		setupLogging();
 
 		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 		List<SmartCardConfig> smartCardConfigs = configFactory
 				.getSmartCardConfigs();
-		smartCard.init(smartCardConfigs, this);
+		this.smartCard.init(smartCardConfigs, this);
 		for (SmartCardConfig smartCardConfig : smartCardConfigs)
 			this.appletView
 					.outputDetailMessage("smart card config available for: "
@@ -86,10 +88,10 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 		String osName = System.getProperty("os.name");
 		this.appletView.outputDetailMessage("os name: " + osName);
 
-		smartCard.setSmartCardPinCallback(this);
+		this.smartCard.setSmartCardPinCallback(this);
 
 		try {
-			smartCard.open(smartCardAlias);
+			this.smartCard.open(smartCardAlias);
 		} catch (NoPkcs11LibraryException e) {
 			this.appletView.outputDetailMessage("no PKCS#11 library found");
 			showDocument("NoPkcs11Path");
@@ -133,21 +135,21 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 
 		byte[] statement;
 		try {
-			Pkcs11Signer pkcs11Signer = new Pkcs11Signer(smartCard);
+			Pkcs11Signer pkcs11Signer = new Pkcs11Signer(this.smartCard);
 			BeIdIdentityProvider identityProvider = new BeIdIdentityProvider(
-					smartCard);
+					this.smartCard);
 			statement = this.statementProvider.createStatement(pkcs11Signer,
 					identityProvider);
 		} catch (ProviderException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof PKCS11Exception) {
-				smartCard.close();
-				smartCard.resetPKCS11Driver();
+				this.smartCard.close();
+				this.smartCard.resetPKCS11Driver();
 				try {
-					smartCard.open(smartCardAlias);
-					Pkcs11Signer pkcs11Signer = new Pkcs11Signer(smartCard);
+					this.smartCard.open(smartCardAlias);
+					Pkcs11Signer pkcs11Signer = new Pkcs11Signer(this.smartCard);
 					BeIdIdentityProvider identityProvider = new BeIdIdentityProvider(
-							smartCard);
+							this.smartCard);
 					statement = this.statementProvider.createStatement(
 							pkcs11Signer, identityProvider);
 				} catch (Exception e2) {
@@ -176,7 +178,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 		} finally {
 			this.appletView
 					.outputDetailMessage("Disconnecting from smart card...");
-			smartCard.close();
+			this.smartCard.close();
 		}
 
 		try {
@@ -334,6 +336,13 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 		Locale locale = this.runtimeContext.getLocale();
 		this.messages = ResourceBundle.getBundle(
 				"net.link.safeonline.applet.ControlMessages", locale);
+	}
+
+	public void abort() {
+		if (this.smartCard.isOpen()) {
+			this.smartCard.close();
+			this.smartCard.resetPKCS11Driver();
+		}
 	}
 
 	public Locale getLocale() {

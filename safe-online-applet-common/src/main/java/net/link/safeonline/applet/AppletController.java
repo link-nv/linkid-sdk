@@ -24,4 +24,6 @@ public interface AppletController extends Runnable {
 	 */
 	void init(AppletView appletView, RuntimeContext runtimeContext,
 			StatementProvider statementProvider);
+
+	void abort();
 }
