@@ -476,15 +476,18 @@ input, select, textarea {
 
     font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
 }
-.af_inputFile, .label, .so-output {
+.af_inputFile, .label, .so-output, .tinylabel {
     display:            block;
-
-    width:              300px;
+    
     margin:             0 0 15px 0;
 
-    border:             0;
+    border:             none;
 
     vertical-align:     bottom;
+}
+.af_inputFile, .label, .so-output {
+    width:              300px;
+    margin:             0 0 15px 0;
 }
 table .af_inputFile, table .label, table .so-output {
     margin:             0;
@@ -530,6 +533,11 @@ textarea {
 
 table, .fullwidth {
     width:              568px;                      /* Just right to fit simpleTogglePanels */
+}
+table.auto {
+    width:              auto;
+    margin-left:        auto;
+    margin-right:       auto;
 }
 table {
     float:              none;

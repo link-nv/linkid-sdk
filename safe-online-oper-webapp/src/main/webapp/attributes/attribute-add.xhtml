@@ -38,14 +38,14 @@
 				<f:selectItems value="#{attributeNodes}" />
 			</h:selectOneMenu>
 
-			<h:selectOneRadio value="#{addAttribute.category}" layout="pageDirection" required="true" id="category" styleClass="label">
+			<h:selectOneRadio value="#{addAttribute.category}" layout="pageDirection" required="true" id="category" styleClass="tinylabel">
 				<f:selectItem itemLabel="Single-valued" itemValue="singleValued" />
 				<f:selectItem itemLabel="Multi-valued" itemValue="multiValued" />
 				<f:selectItem itemLabel="Compounded" itemValue="compounded" />
 			</h:selectOneRadio>
 
 			<h:outputLabel for="deviceAttribute" value="#{msgs.deviceAttribute}" />
-			<h:selectBooleanCheckbox id="deviceAttribute" value="#{addAttribute.deviceAttribute}" styleClass="label" />
+			<h:selectBooleanCheckbox id="deviceAttribute" value="#{addAttribute.deviceAttribute}" styleClass="tinylabel" />
 
 			<h:message styleClass="error" for="category" />
 

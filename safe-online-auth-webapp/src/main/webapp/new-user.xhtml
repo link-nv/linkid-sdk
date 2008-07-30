@@ -36,13 +36,18 @@
 					required="true" styleClass="label" />
 				<h:message for="captcha" styleClass="error" />
 			</s:decorate>
-			<br />
 
 			<a4j:region>
-				<h:outputLabel for="image" />
-				<h:graphicImage id="image" styleClass="label"
-					value="#{accountRegistration.captchaURL}" />
-			</a4j:region>
+                <h:outputLabel for="image" />
+                <h:graphicImage id="image"
+                value="#{accountRegistration.captchaURL}" />
+                <br />
+                <h:outputLabel for="refresh" />
+                <sup>
+                    <a4j:commandLink id="refresh" immediate="true"
+                        value="#{msgs.refreshCaptcha}" reRender="image" />
+                </sup>
+            </a4j:region>
             <br />
 
 			<h:messages globalOnly="true" styleClass="error" />
@@ -56,8 +61,6 @@
 			<ul>
 				<li><h:commandLink action="existing" id="existing"
 					value="#{msgs.existingUser}" /></li>
-				<li><a4j:commandLink id="refresh" immediate="true"
-					value="#{msgs.refreshCaptcha}" reRender="image" /></li>
 			</ul>
 		</h:form>
 

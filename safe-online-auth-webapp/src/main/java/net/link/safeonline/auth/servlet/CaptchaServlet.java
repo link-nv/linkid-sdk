@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.octo.captcha.CaptchaException;
-import com.octo.captcha.engine.image.gimpy.DefaultGimpyEngine;
+import com.octo.captcha.engine.image.gimpy.SimpleListImageCaptchaEngine;
 import com.octo.captcha.service.captchastore.FastHashMapCaptchaStore;
 import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -38,55 +38,61 @@ import com.octo.captcha.service.image.ImageCaptchaService;
  */
 public class CaptchaServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(CaptchaServlet.class);
+    private static final Log  LOG              = LogFactory
+                                                       .getLog(CaptchaServlet.class);
 
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		String captchaId = session.getId();
-		LOG.debug("doGet: catpcha ID: " + captchaId);
-		ImageCaptchaService captchaService = getCaptchaService(session);
-		BufferedImage challengeImage;
-		try {
-			challengeImage = captchaService.getImageChallengeForID(captchaId);
-		} catch (CaptchaException e) {
-			LOG.error("CAPTCHA error: " + e.getMessage(), e);
-			throw new ServletException("Could not generate CAPTCHA");
-		}
-		ByteArrayOutputStream imageOutputStream = new ByteArrayOutputStream();
-		ImageIO.write(challengeImage, "jpeg", imageOutputStream);
 
-		response.setHeader("Cache-Control", "no-store");
-		response.setHeader("Pragma", "no-cache");
-		response.setDateHeader("Expires", 0);
-		response.setContentType("image/jpeg");
+    @Override
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-		ServletOutputStream out = response.getOutputStream();
-		IOUtils.write(imageOutputStream.toByteArray(), out);
-		out.flush();
-		out.close();
-	}
+        HttpSession session = request.getSession();
+        String captchaId = session.getId();
+        LOG.debug("doGet: catpcha ID: " + captchaId);
+        ImageCaptchaService captchaService = getCaptchaService(session);
+        BufferedImage challengeImage;
+        try {
+            challengeImage = captchaService.getImageChallengeForID(captchaId);
+        } catch (CaptchaException e) {
+            LOG.error("CAPTCHA error: " + e.getMessage(), e);
+            throw new ServletException("Could not generate CAPTCHA");
+        }
+        ByteArrayOutputStream imageOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(challengeImage, "jpeg", imageOutputStream);
 
-	public static final String CAPTCHA_SERVICE_ATTRIBUTE = "CaptchaService";
+        response.setHeader("Cache-Control", "no-store");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+        response.setContentType("image/jpeg");
 
-	/**
-	 * Because exactly the same captcha service instance is required for
-	 * validation we need to store the captcha service within the session.
-	 * 
-	 * @param session
-	 */
-	private ImageCaptchaService getCaptchaService(HttpSession session) {
-		ImageCaptchaService captchaService = (ImageCaptchaService) session
-				.getAttribute(CAPTCHA_SERVICE_ATTRIBUTE);
-		if (null == captchaService) {
-			captchaService = new DefaultManageableImageCaptchaService(
-					new FastHashMapCaptchaStore(), new DefaultGimpyEngine(),
-					180, 100000, 75000);
-			session.setAttribute(CAPTCHA_SERVICE_ATTRIBUTE, captchaService);
-		}
-		return captchaService;
-	}
+        ServletOutputStream out = response.getOutputStream();
+        IOUtils.write(imageOutputStream.toByteArray(), out);
+        out.flush();
+        out.close();
+    }
+
+
+    public static final String CAPTCHA_SERVICE_ATTRIBUTE = "CaptchaService";
+
+
+    /**
+     * Because exactly the same captcha service instance is required for
+     * validation we need to store the captcha service within the session.
+     * 
+     * @param session
+     */
+    private ImageCaptchaService getCaptchaService(HttpSession session) {
+
+        ImageCaptchaService captchaService = (ImageCaptchaService) session
+                .getAttribute(CAPTCHA_SERVICE_ATTRIBUTE);
+        if (null == captchaService) {
+            captchaService = new DefaultManageableImageCaptchaService(
+                    new FastHashMapCaptchaStore(),
+                    new SimpleListImageCaptchaEngine(), 180, 100000, 75000);
+            session.setAttribute(CAPTCHA_SERVICE_ATTRIBUTE, captchaService);
+        }
+        return captchaService;
+    }
 }

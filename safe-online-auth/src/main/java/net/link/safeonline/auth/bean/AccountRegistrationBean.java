@@ -176,7 +176,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	}
 
 	public String getCaptchaURL() {
-		return "/captcha?cacheid=" + Math.random() * 1000000;
+		return "/captcha.jpg?cacheid=" + Math.random() * 1000000;
 	}
 
 	public String getUsername() {

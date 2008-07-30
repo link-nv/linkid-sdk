@@ -37,7 +37,7 @@ public class AuthNewUser extends Page {
 			+ "/new-user.seam";
 
 	private static final String CAPTCHA = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/captcha";
+			+ "/captcha.jpg";
 
 	AcceptanceTestManager acceptanceTestManager;
 
