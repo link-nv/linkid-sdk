@@ -72,309 +72,384 @@ import org.jboss.annotation.ejb.TransactionTimeout;
 @LocalBinding(jndiBinding = ScenarioController.BINDING)
 public class ScenarioControllerBean implements ScenarioController {
 
-	/*
-	 * Timeout values for long running methods (in seconds).
-	 */
-	private static final int CHARTING_TIMEOUT = 10 * 60 * 60; // 24h
-	private static final int SCENARIO_EXECUTION_TIMEOUT = 10 * 60; // 10m
+    /*
+     * Timeout values for long running methods (in seconds).
+     */
+    private static final int             CHARTING_TIMEOUT           = 10 * 60 * 60;
+    private static final int             SCENARIO_EXECUTION_TIMEOUT = 10 * 60;
 
-	private static final Log LOG = LogFactory
-			.getLog(ScenarioControllerBean.class);
-	private static final int DATA_POINTS = 800;
+    private static final Log             LOG                        = LogFactory
+                                                                            .getLog(ScenarioControllerBean.class);
+    private static final int             DATA_POINTS                = 800;
 
-	private static MBeanServerConnection rmi;
+    private static MBeanServerConnection rmi;
 
-	static {
-		try {
-			rmi = (MBeanServerConnection) getInitialContext().lookup(
-					"jmx/invoker/RMIAdaptor");
-		} catch (NamingException e) {
-			LOG.error("JMX unavailable.", e);
-		}
-	}
+    static {
+        try {
+            rmi = (MBeanServerConnection) getInitialContext().lookup(
+                    "jmx/invoker/RMIAdaptor");
+        } catch (NamingException e) {
+            LOG.error("JMX unavailable.", e);
+        }
+    }
 
-	@EJB
-	private ExecutionService executionService;
+    @EJB
+    private ExecutionService             executionService;
 
-	@EJB
-	private ProfileDataService profileDataService;
+    @EJB
+    private ProfileDataService           profileDataService;
 
-	@EJB
-	private DriverExceptionService driverExceptionService;
+    @EJB
+    private DriverExceptionService       driverExceptionService;
 
-	@EJB
-	private ScenarioTimingService scenarioTimingService;
+    @EJB
+    private ScenarioTimingService        scenarioTimingService;
 
-	@Resource
-	SessionContext ctx;
+    @Resource
+    SessionContext                       ctx;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionTimeout(SCENARIO_EXECUTION_TIMEOUT)
-	public void execute(Date startTime) throws Exception {
 
-		ExecutionEntity execution = this.executionService
-				.getExecution(startTime);
-		ScenarioTimingEntity agentTime = this.executionService.start(execution);
-		agentTime.setStartMemory(getFreeMemory());
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionTimeout(SCENARIO_EXECUTION_TIMEOUT)
+    public void execute(Date startTime) throws Exception {
 
-		Scenario scenario = createScenario(execution.getScenarioName());
-		scenario.prepare(execution, agentTime);
+        ExecutionEntity execution = this.executionService
+                .getExecution(startTime);
+        ScenarioTimingEntity agentTime = this.executionService.start(execution);
+        agentTime.setStartMemory(getFreeMemory());
 
-		try {
-			scenario.run();
-		}
+        Scenario scenario = createScenario(execution.getScenarioName());
+        scenario.prepare(execution, agentTime);
 
-		// Must catch to prevent rollback.
-		catch (Throwable t) {
-			LOG.error("Scenario execution failed:", t);
-		}
+        try {
+            scenario.run();
+        }
 
-		finally {
-			agentTime.setEndMemory(getFreeMemory());
-			execution.dirtySpeed();
+        // Must catch to prevent rollback.
+        catch (Throwable t) {
+            LOG.error("Scenario execution failed:", t);
+        }
 
-			agentTime.stop();
-		}
-	}
+        finally {
+            agentTime.setEndMemory(getFreeMemory());
+            execution.dirtySpeed();
 
-	/**
-	 * Create an instance of the given scenario.
-	 */
-	private Scenario createScenario(String scenario) {
+            agentTime.stop();
+        }
+    }
 
-		try {
-			return loadClass(Scenario.class, scenario).newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException("Configured scenario '" + scenario
-					+ "' cannot be created.", e);
-		}
-	}
+    /**
+     * Create an instance of the given scenario.
+     */
+    private Scenario createScenario(String scenario) {
 
-	/**
-	 * Load a class with the given class name. TODO: Describe method.
-	 */
-	@SuppressWarnings("unchecked")
-	private <C> Class<C> loadClass(@SuppressWarnings("unused") Class<C> clazz,
-			String className) throws ClassNotFoundException {
+        try {
+            return loadClass(Scenario.class, scenario).newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("Configured scenario '" + scenario
+                    + "' cannot be created.", e);
+        }
+    }
 
-		return (Class<C>) Thread.currentThread().getContextClassLoader()
-				.loadClass(className);
-	}
+    /**
+     * Load a class with the given class name. TODO: Describe method.
+     */
+    @SuppressWarnings("unchecked")
+    private <C> Class<C> loadClass(@SuppressWarnings("unused") Class<C> clazz,
+            String className) throws ClassNotFoundException {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Date prepare(ExecutionMetadata metaData) {
+        return (Class<C>) Thread.currentThread().getContextClassLoader()
+                .loadClass(className);
+    }
 
-		// Create the execution and fill it up with metadata.
-		ExecutionEntity execution = this.executionService.addExecution(metaData
-				.getScenarioName(), metaData.getAgents(),
-				metaData.getWorkers(), metaData.getStartTime(), metaData
-						.getDuration(), metaData.getHostname(), metaData
-						.isSsl());
-		createScenario(execution.getScenarioName()).prepare(execution, null);
+    /**
+     * {@inheritDoc}
+     */
+    public Date prepare(ExecutionMetadata metaData) {
 
-		return execution.getStartTime();
-	}
+        // Create the execution and fill it up with metadata.
+        ExecutionEntity execution = this.executionService.addExecution(metaData
+                .getScenarioName(), metaData.getAgents(),
+                metaData.getWorkers(), metaData.getStartTime(), metaData
+                        .getDuration(), metaData.getHostname(), metaData
+                        .isSsl());
+        createScenario(execution.getScenarioName()).prepare(execution, null);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<String> getScenarios() {
+        return execution.getStartTime();
+    }
 
-		Set<String> scenarios = new HashSet<String>();
-		for (Class<? extends Scenario> scenario : RegisteredScripts
-				.getRegisteredScenarios()) {
+    /**
+     * {@inheritDoc}
+     */
+    public Set<String> getScenarios() {
+
+        Set<String> scenarios = new HashSet<String>();
+        for (Class<? extends Scenario> scenario : RegisteredScripts
+                .getRegisteredScenarios()) {
             scenarios.add(scenario.getName());
         }
 
-		return scenarios;
-	}
+        return scenarios;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<Date> getExecutions() {
+    /**
+     * {@inheritDoc}
+     */
+    public Set<Date> getExecutions() {
 
-		return this.executionService.getExecutions();
-	}
+        return this.executionService.getExecutions();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ExecutionMetadata getExecutionMetadata(Date executionId) {
+    /**
+     * {@inheritDoc}
+     */
+    public ExecutionMetadata getExecutionMetadata(Date executionId) {
 
-		ExecutionEntity execution = this.executionService
-				.getExecution(executionId);
+        ExecutionEntity execution = this.executionService
+                .getExecution(executionId);
 
-		return ExecutionMetadata.createResponse(execution.getScenarioName(),
-				getDescription(executionId), execution.getAgents(), execution
-						.getWorkers(), execution.getStartTime(), execution
-						.getDuration(), execution.getHostname(), execution
-						.isSsl(), execution.getSpeed());
-	}
+        return ExecutionMetadata.createResponse(execution.getScenarioName(),
+                getDescription(executionId), execution.getAgents(), execution
+                        .getWorkers(), execution.getStartTime(), execution
+                        .getDuration(), execution.getHostname(), execution
+                        .isSsl(), execution.getSpeed());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getDescription(String scenario) {
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription(String scenario) {
 
-		return createScenario(scenario).getDescription();
-	}
+        return createScenario(scenario).getDescription();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getDescription(Date executionId) {
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription(Date executionId) {
 
-		ExecutionEntity execution = this.executionService
-				.getExecution(executionId);
-		StringBuffer description = new StringBuffer();
+        ExecutionEntity execution = this.executionService
+                .getExecution(executionId);
+        StringBuffer description = new StringBuffer();
 
-		for (DriverProfileEntity profile : new TreeSet<DriverProfileEntity>(
-				execution.getProfiles())) {
+        for (DriverProfileEntity profile : new TreeSet<DriverProfileEntity>(
+                execution.getProfiles())) {
             try {
-				String driverDescription = (String) loadClass(null,
-						profile.getDriverClassName()).getField("DESCRIPTION")
-						.get(null);
+                String driverDescription = (String) loadClass(null,
+                        profile.getDriverClassName()).getField("DESCRIPTION")
+                        .get(null);
 
-				description.append("<li>").append(driverDescription).append(
-						"</li>\n");
-			} catch (Exception e) {
-			}
+                description.append("<li>").append(driverDescription).append(
+                        "</li>\n");
+            } catch (Exception e) {
+            }
         }
 
-		if (description.length() > 0) {
-			description.insert(0, "\n\nThe following drivers were used:<ul>\n");
-			description.append("</ul>");
-		}
+        if (description.length() > 0) {
+            description.insert(0, "\n\nThe following drivers were used:<ul>\n");
+            description.append("</ul>");
+        }
 
-		return getDescription(execution.getScenarioName())
-				+ description.toString();
-	}
+        return getDescription(execution.getScenarioName())
+                + description.toString();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionTimeout(CHARTING_TIMEOUT)
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public Map<String, byte[][]> createCharts(Date executionStartTime) {
+    /**
+     * {@inheritDoc}
+     */
+    public Double getProgress(Date executionStartTime) {
 
-		ExecutionEntity execution = this.executionService
-				.getExecution(executionStartTime);
+        ExecutionEntity execution = this.executionService
+                .getExecution(executionStartTime);
 
-		List<? extends Chart> charts = createScenario(
-				execution.getScenarioName()).getCharts();
+        return execution.getChartingProgress();
+    }
 
-		// Divide the charts over three lists depending on data they chart.
-		List<Chart> dataCharts, errorCharts, timingCharts;
-		dataCharts = new ArrayList<Chart>();
-		errorCharts = new ArrayList<Chart>();
-		timingCharts = new ArrayList<Chart>();
-		for (Chart chart : charts) {
-			if (chart.isDataProcessed()) {
-                dataCharts.add(chart);
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionTimeout(CHARTING_TIMEOUT)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public Map<String, byte[][]> createCharts(Date executionStartTime) {
+
+        boolean ready = false;
+        ExecutionEntity execution = this.executionService
+                .getExecution(executionStartTime);
+
+        try {
+            // Start the progress.
+            execution.setChartingProgress(0d);
+
+            // Check whether charts were already generated for this execution.
+            Map<String, byte[][]> images = execution.getCharts();
+            if (images != null) {
+                LOG.debug("Charts already done.");
+                ready = true;
+                return images;
             }
-			if (chart.isErrorProcessed()) {
-                errorCharts.add(chart);
-            }
-			if (chart.isTimingProcessed()) {
-                timingCharts.add(chart);
-            }
-		}
 
-		// Chart scenario timing data.
-		if (!timingCharts.isEmpty()) {
-			List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
-					.getExecutionTimings(execution);
-			for (ScenarioTimingEntity timing : scenarioTimings)
-				if (timing != null) {
-                    for (Chart chart : timingCharts) {
-                        try {
-							chart.processTiming(timing);
-						} catch (Exception e) {
-							LOG.error("Charting Timing Failed:", e);
-						}
+            List<? extends Chart> charts = createScenario(
+                    execution.getScenarioName()).getCharts();
+            LOG.debug("Creating " + charts.size() + "charts..");
+
+            // Divide the charts over three lists depending on data they chart.
+            List<Chart> dataCharts, errorCharts, timingCharts;
+            dataCharts = new ArrayList<Chart>();
+            errorCharts = new ArrayList<Chart>();
+            timingCharts = new ArrayList<Chart>();
+            for (Chart chart : charts) {
+                if (chart.isDataProcessed()) {
+                    dataCharts.add(chart);
+                }
+                if (chart.isErrorProcessed()) {
+                    errorCharts.add(chart);
+                }
+                if (chart.isTimingProcessed()) {
+                    timingCharts.add(chart);
+                }
+            }
+            LOG.debug(" - " + timingCharts.size() + " need(s) timings.");
+            LOG.debug(" - " + dataCharts.size() + " need(s) data.");
+            LOG.debug(" - " + errorCharts.size() + " need(s) errors.");
+
+            // Chart scenario timing data.
+            LOG.debug(" - Starting timings..");
+            if (!timingCharts.isEmpty()) {
+                List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
+                        .getExecutionTimings(execution);
+                double total = scenarioTimings.size(), current = 0;
+                LOG.debug(" - - Total: " + total);
+                for (ScenarioTimingEntity timing : scenarioTimings) {
+                    if (timing != null) {
+                        for (Chart chart : timingCharts) {
+                            try {
+                                chart.processTiming(timing);
+                            } catch (Exception e) {
+                                LOG.error("Charting Timing Failed:", e);
+                            }
+                        }
+                    }
+
+                    execution.setChartingProgress(++current / total * 0.4);
+                    LOG.debug(String.format(" - - %01.2f%% (timings)", current
+                            / total * 0.4 * 100));
+                }
+            }
+
+            // Chart driver data.
+            Set<DriverProfileEntity> profiles = execution.getProfiles();
+            double totalProfiles = profiles.size(), currentProfile = 0;
+            for (DriverProfileEntity profile : profiles) {
+
+                // Chart data.
+                LOG.debug(" - Starting " + profile.getDriverClassName() + "..");
+                if (!dataCharts.isEmpty()) {
+                    List<ProfileDataEntity> profileData = this.profileDataService
+                            .getProfileData(profile, DATA_POINTS);
+                    double total = profileData.size(), current = 0;
+                    LOG.debug(" - - Total: " + total);
+                    for (ProfileDataEntity data : profileData) {
+                        if (data != null) {
+                            LOG.debug("Processing: " + data);
+
+                            for (Chart chart : dataCharts) {
+                                try {
+                                    chart.processData(data);
+                                } catch (Exception e) {
+                                    LOG.error("Charting Data Failed:", e);
+                                }
+                            }
+                        }
+
+                        execution
+                                .setChartingProgress((total * currentProfile + ++current)
+                                        / (total * totalProfiles) * 0.4 + 0.4);
+                        LOG.debug(String.format(" - - %01.2f%% (data)", ((total
+                                * currentProfile + current)
+                                / (total * totalProfiles) * 0.4 + 0.4) * 100));
                     }
                 }
-		}
 
-		// Chart driver data.
-		Set<DriverProfileEntity> profiles = execution.getProfiles();
-		for (DriverProfileEntity profile : profiles) {
-
-			// Chart data.
-			if (!dataCharts.isEmpty()) {
-				List<ProfileDataEntity> profileData = this.profileDataService
-						.getProfileData(profile, DATA_POINTS);
-				for (ProfileDataEntity data : profileData)
-					if (data != null) {
-                        LOG.debug("Processing: " + data);
-
-                        for (Chart chart : dataCharts) {
-                            try {
-								chart.processData(data);
-							} catch (Exception e) {
-								LOG.error("Charting Data Failed:", e);
-							}
+                // Chart errors.
+                LOG.debug(" - - Errors..");
+                if (!errorCharts.isEmpty()) {
+                    List<DriverExceptionEntity> profileErrors = this.driverExceptionService
+                            .getProfileErrors(profile, DATA_POINTS);
+                    for (DriverExceptionEntity error : profileErrors)
+                        if (error != null) {
+                            for (Chart chart : errorCharts) {
+                                try {
+                                    chart.processError(error);
+                                } catch (Exception e) {
+                                    LOG.error("Charting Error Failed:", e);
+                                }
+                            }
                         }
-					}
-			}
+                }
 
-			// Chart errors.
-			if (!errorCharts.isEmpty()) {
-				List<DriverExceptionEntity> profileErrors = this.driverExceptionService
-						.getProfileErrors(profile, DATA_POINTS);
-				for (DriverExceptionEntity error : profileErrors)
-					if (error != null) {
-                        for (Chart chart : errorCharts) {
-                            try {
-								chart.processError(error);
-							} catch (Exception e) {
-								LOG.error("Charting Error Failed:", e);
-							}
-                        }
-                    }
-			}
-		}
+                ++currentProfile;
+            }
 
-		for (Chart chart : charts) {
-            chart.postProcess();
+            LOG.debug(" - Starting post-processing..");
+            double total = charts.size(), current = 0;
+            LOG.debug(" - - Total: " + total);
+            for (Chart chart : charts) {
+                chart.postProcess();
+
+                execution.setChartingProgress(++current / total * 0.1 + 0.8);
+                LOG.debug(String.format(" - - %01.2f%% (post)", (current
+                        / total * 0.1 + 0.8) * 100));
+            }
+
+            LOG.debug(" - Starting rendering..");
+            images = new LinkedHashMap<String, byte[][]>();
+            LOG.debug(" - - Total: " + total);
+            current = 0;
+            for (Chart chart : charts) {
+                byte[][] image = chart.render(DATA_POINTS);
+                if (image != null) {
+                    images.put(chart.getTitle(), image);
+                }
+
+                execution.setChartingProgress(++current / total * 0.1 + 0.9);
+                LOG.debug(String.format(" - - %01.2f%% (render)", (current
+                        / total * 0.1 + 0.9) * 100));
+            }
+
+            execution.setCharts(images);
+            ready = true;
+
+            return images;
         }
 
-		Map<String, byte[][]> images = new LinkedHashMap<String, byte[][]>();
-		for (Chart chart : charts) {
-			byte[][] image = chart.render(DATA_POINTS);
-			if (image != null) {
-                images.put(chart.getTitle(), image);
-            }
-		}
+        finally {
+            LOG.debug(" - Stopped Charting; Ready? " + ready);
+            execution.setChartingProgress(ready ? null : 1d);
+        }
+    }
 
-		return images;
-	}
+    private long getFreeMemory() {
 
-	private long getFreeMemory() {
+        try {
+            return (Long) rmi.getAttribute(new ObjectName(
+                    "jboss.system:type=ServerInfo"), "FreeMemory");
+        } catch (Exception e) {
+            LOG.error("Failed to read in free memory through JMX.", e);
+        }
 
-		try {
-			return (Long) rmi.getAttribute(new ObjectName(
-					"jboss.system:type=ServerInfo"), "FreeMemory");
-		} catch (Exception e) {
-			LOG.error("Failed to read in free memory through JMX.", e);
-		}
+        return -1;
+    }
 
-		return -1;
-	}
+    private static InitialContext getInitialContext() throws NamingException {
 
-	private static InitialContext getInitialContext() throws NamingException {
+        Hashtable<String, String> environment = new Hashtable<String, String>();
 
-		Hashtable<String, String> environment = new Hashtable<String, String>();
+        environment.put(Context.INITIAL_CONTEXT_FACTORY,
+                "org.jnp.interfaces.NamingContextFactory");
+        environment.put(Context.PROVIDER_URL, "localhost:1099");
 
-		environment.put(Context.INITIAL_CONTEXT_FACTORY,
-				"org.jnp.interfaces.NamingContextFactory");
-		environment.put(Context.PROVIDER_URL, "localhost:1099");
-
-		return new InitialContext(environment);
-	}
+        return new InitialContext(environment);
+    }
 }

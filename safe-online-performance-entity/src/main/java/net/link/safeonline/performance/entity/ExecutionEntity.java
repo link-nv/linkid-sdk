@@ -6,180 +6,265 @@
  */
 package net.link.safeonline.performance.entity;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 import net.link.safeonline.performance.service.ExecutionService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * <h2>{@link ExecutionEntity}<br>
  * <sub>Holds the global metadata for a scenario execution.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity
 @NamedQueries( {
-		@NamedQuery(name = ExecutionEntity.findAll, query = "SELECT e"
-				+ "    FROM ExecutionEntity e"),
-		@NamedQuery(name = ExecutionEntity.findById, query = "SELECT e"
-				+ "    FROM ExecutionEntity e"
-				+ "    WHERE e.startTime = :startTime"),
-		@NamedQuery(name = ExecutionEntity.calcSpeed, query = "SELECT 1000d * COUNT(t) / ( MAX(t.startTime) - MIN(t.startTime) )"
-				+ "    FROM ScenarioTimingEntity t"
-				+ "    WHERE t.execution = :execution") })
+        @NamedQuery(name = ExecutionEntity.findAll, query = "SELECT e"
+                + "    FROM ExecutionEntity e"),
+        @NamedQuery(name = ExecutionEntity.findById, query = "SELECT e"
+                + "    FROM ExecutionEntity e"
+                + "    WHERE e.startTime = :startTime"),
+        @NamedQuery(name = ExecutionEntity.calcSpeed, query = "SELECT 1000d * COUNT(t) / ( MAX(t.startTime) - MIN(t.startTime) )"
+                + "    FROM ScenarioTimingEntity t"
+                + "    WHERE t.execution = :execution") })
 public class ExecutionEntity {
 
-	public static final String findAll = "ExecutionEntity.findAll";
-	public static final String findById = "ExecutionEntity.findById";
-	public static final String calcSpeed = "ExecutionEntity.calcSpeed";
+    private static final Log         LOG       = LogFactory
+                                                       .getLog(ExecutionEntity.class);
 
-	@Id
-	private Date startTime;
+    public static final String       findAll   = "ExecutionEntity.findAll";
+    public static final String       findById  = "ExecutionEntity.findById";
+    public static final String       calcSpeed = "ExecutionEntity.calcSpeed";
 
-	private String scenarioName;
-	private int agents;
-	private int workers;
-	private long duration;
-	private String hostname;
-	private Double speed;
-	private boolean useSsl;
-	private boolean dirtySpeed;
+    @Id
+    private Date                     startTime;
 
-	@OneToMany(mappedBy = "execution")
-	private Set<DriverProfileEntity> profiles;
+    private String                   scenarioName;
+    private int                      agents;
+    private int                      workers;
+    private long                     duration;
+    private String                   hostname;
+    private Double                   speed;
+    private boolean                  useSsl;
+    private boolean                  dirtySpeed;
+    private Double                   chartingProgress;
 
-	public ExecutionEntity() {
+    @Lob
+    @Column(length = 100 * 1024 * 1024, nullable = true)
+    private byte[]                   charts;
 
-		this.profiles = new TreeSet<DriverProfileEntity>();
-		this.dirtySpeed = false;
-	}
+    @OneToMany(mappedBy = "execution")
+    private Set<DriverProfileEntity> profiles;
 
-	public ExecutionEntity(String scenarioName, Integer agents, int workers,
-			Date startTime, long duration, String hostname, Boolean ssl) {
 
-		this();
+    public ExecutionEntity() {
 
-		this.scenarioName = scenarioName;
-		this.agents = agents;
-		this.workers = workers;
-		this.startTime = startTime;
-		this.duration = duration;
-		this.hostname = hostname;
-		this.useSsl = ssl;
-	}
+        this.profiles = new TreeSet<DriverProfileEntity>();
+        this.dirtySpeed = false;
+    }
 
-	/**
-	 * @return The name of the scenario that was executed.
-	 */
-	public String getScenarioName() {
+    public ExecutionEntity(String scenarioName, Integer agents, int workers,
+            Date startTime, long duration, String hostname, Boolean ssl) {
 
-		return this.scenarioName;
-	}
+        this();
 
-	/**
-	 * @return The name of the host that runs the OLAS service.
-	 */
-	public String getHostname() {
+        this.scenarioName = scenarioName;
+        this.agents = agents;
+        this.workers = workers;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.hostname = hostname;
+        this.useSsl = ssl;
+    }
 
-		return this.hostname;
-	}
+    /**
+     * @return The chartingProgress of this {@link ExecutionEntity}.
+     */
+    public Double getChartingProgress() {
 
-	/**
-	 * @return <code>true</code> If we want to use SSL for communication with
-	 *         OLAS.
-	 */
-	public Boolean isSsl() {
+        return this.chartingProgress;
+    }
 
-		return this.useSsl;
-	}
+    /**
+     * @param chartingProgress
+     *            The chartingProgress of this {@link ExecutionEntity}.
+     */
+    public void setChartingProgress(Double chartingProgress) {
 
-	/**
-	 * @return The driver profiles generated for this execution.
-	 */
-	public Set<DriverProfileEntity> getProfiles() {
+        this.chartingProgress = chartingProgress;
+    }
 
-		return this.profiles;
-	}
+    /**
+     * @return The charts of this {@link ExecutionEntity}.
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, byte[][]> getCharts() {
 
-	/**
-	 * @return The amount of agents this scenario execution was initiated on.
-	 */
-	public int getAgents() {
+        if (this.charts == null)
+            return null;
 
-		return this.agents;
-	}
+        try {
+            ByteArrayInputStream bytes = new ByteArrayInputStream(this.charts);
+            ObjectInputStream deserializer = new ObjectInputStream(bytes);
 
-	/**
-	 * @return The amount of workers that was used to process this execution.
-	 */
-	public int getWorkers() {
+            return (Map<String, byte[][]>) deserializer.readObject();
+        }
 
-		return this.workers;
-	}
+        catch (IOException e) {
+            LOG.error("Couldn't deserialize charts!", e);
 
-	/**
-	 * @return The time at which this execution first started.
-	 */
-	public Date getStartTime() {
+        } catch (ClassNotFoundException e) {
+            LOG.error(
+                    "Charts object is in a class that could not be resolved!",
+                    e);
+        }
 
-		return this.startTime;
-	}
+        return null;
+    }
 
-	/**
-	 * @return The amount of time this execution was schedules to run (ms).
-	 */
-	public long getDuration() {
+    /**
+     * @param charts
+     *            The charts of this {@link ExecutionEntity}.
+     */
+    public void setCharts(Map<String, byte[][]> charts) {
 
-		return this.duration;
-	}
+        try {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            ObjectOutputStream serializer = new ObjectOutputStream(bytes);
+            serializer.writeObject(charts);
 
-	/**
-	 * The speed will only be recalculated if it has been set as dirty (which
-	 * automatically happens each time a scenario has been completed for it).
-	 *
-	 * @return The average scenario execution speed (#/s) in this execution.
-	 */
-	public Double getSpeed() {
+            this.charts = bytes.toByteArray();
+        }
 
-		if (this.dirtySpeed || this.speed == null)
-			try {
-				((ExecutionService) new InitialContext()
-						.lookup(ExecutionService.BINDING)).updateSpeed(this);
-			} catch (NamingException e) {
-			}
+        catch (IOException e) {
+            LOG.error("Couldn't serialize charts!", e);
+        }
+    }
 
-		return this.speed;
-	}
+    /**
+     * @return The name of the scenario that was executed.
+     */
+    public String getScenarioName() {
 
-	/**
-	 * @param speed
-	 *            The average scenario execution speed in this execution.
-	 */
-	public void setSpeed(Double speed) {
+        return this.scenarioName;
+    }
 
-		this.speed = speed;
-		this.dirtySpeed = false;
-	}
+    /**
+     * @return The name of the host that runs the OLAS service.
+     */
+    public String getHostname() {
 
-	/**
-	 * Signal that the speed value currently contained in this
-	 * {@link ExecutionEntity} is dirty and needs to be recalculated.
-	 */
-	public void dirtySpeed() {
+        return this.hostname;
+    }
 
-		this.dirtySpeed = true;
-	}
+    /**
+     * @return <code>true</code> If we want to use SSL for communication with
+     *         OLAS.
+     */
+    public Boolean isSsl() {
+
+        return this.useSsl;
+    }
+
+    /**
+     * @return The driver profiles generated for this execution.
+     */
+    public Set<DriverProfileEntity> getProfiles() {
+
+        return this.profiles;
+    }
+
+    /**
+     * @return The amount of agents this scenario execution was initiated on.
+     */
+    public int getAgents() {
+
+        return this.agents;
+    }
+
+    /**
+     * @return The amount of workers that was used to process this execution.
+     */
+    public int getWorkers() {
+
+        return this.workers;
+    }
+
+    /**
+     * @return The time at which this execution first started.
+     */
+    public Date getStartTime() {
+
+        return this.startTime;
+    }
+
+    /**
+     * @return The amount of time this execution was schedules to run (ms).
+     */
+    public long getDuration() {
+
+        return this.duration;
+    }
+
+    /**
+     * The speed will only be recalculated if it has been set as dirty (which
+     * automatically happens each time a scenario has been completed for it).
+     * 
+     * @return The average scenario execution speed (#/s) in this execution.
+     */
+    public Double getSpeed() {
+
+        if (this.dirtySpeed || this.speed == null) {
+            try {
+                ((ExecutionService) new InitialContext()
+                        .lookup(ExecutionService.BINDING)).updateSpeed(this);
+            } catch (NamingException e) {
+            }
+        }
+
+        return this.speed;
+    }
+
+    /**
+     * @param speed
+     *            The average scenario execution speed in this execution.
+     */
+    public void setSpeed(Double speed) {
+
+        this.speed = speed;
+        this.dirtySpeed = false;
+    }
+
+    /**
+     * Signal that the speed value currently contained in this
+     * {@link ExecutionEntity} is dirty and needs to be recalculated.
+     */
+    public void dirtySpeed() {
+
+        this.dirtySpeed = true;
+    }
 }

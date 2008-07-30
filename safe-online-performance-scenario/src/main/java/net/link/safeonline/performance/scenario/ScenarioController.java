@@ -29,7 +29,7 @@ public interface ScenarioController {
 	/**
 	 * Execute the scenario.
 	 */
-	public void execute(Date startTime) throws Exception;
+	public void execute(Date executionId) throws Exception;
 
 	/**
 	 * This method is called before any iterations are executed.<br>
@@ -56,7 +56,7 @@ public interface ScenarioController {
 	/**
 	 * Retrieve an object that holds all metadata concerning a given execution.
 	 */
-	public ExecutionMetadata getExecutionMetadata(Date startTime);
+	public ExecutionMetadata getExecutionMetadata(Date executionId);
 
 	/**
 	 * Retrieve an HTML formatted description string for the given scenario.
@@ -69,9 +69,18 @@ public interface ScenarioController {
 	 */
 	public String getDescription(Date executionId);
 
+	/**
+     * Check what the progress is on the charts generation of the given
+     * execution.
+     * 
+     * @return <code>null</code> when no execution is being charted at the
+     *         moment. A value ranging between 0 and 1 when charts are being
+     *         generated, and 1 when charts are available.
+     */
+    public Double getProgress(Date executionId);
 
 	/**
 	 * Create charts on data collected in this scenario.
 	 */
-	public Map<String, byte[][]> createCharts(Date startTime);
+	public Map<String, byte[][]> createCharts(Date executionId);
 }

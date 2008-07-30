@@ -27,101 +27,101 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ProfileDataServiceBean}<br>
  * <sub>Service bean for {@link ProfileDataEntity}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see ProfileDataService
  * @author mbillemo
  */
 @Stateless
 @LocalBinding(jndiBinding = ProfileDataService.BINDING)
-public class ProfileDataServiceBean extends AbstractProfilingServiceBean implements
-		ProfileDataService {
+public class ProfileDataServiceBean extends AbstractProfilingServiceBean
+        implements ProfileDataService {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public ProfileDataEntity addData(DriverProfileEntity profile,
-			ProfileData data, ScenarioTimingEntity agentTime) {
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public ProfileDataEntity addData(DriverProfileEntity profile,
+            ProfileData data, ScenarioTimingEntity agentTime) {
 
-		ProfileDataEntity dataEntity = new ProfileDataEntity(profile, agentTime);
-		this.em.persist(dataEntity);
+        ProfileDataEntity dataEntity = new ProfileDataEntity(profile, agentTime);
+        this.em.persist(dataEntity);
 
-		for (Map.Entry<String, Long> measurement : data.getMeasurements()
-				.entrySet())
-			this.em.persist(new MeasurementEntity(dataEntity, measurement
-					.getKey(), measurement.getValue()));
+        for (Map.Entry<String, Long> measurement : data.getMeasurements()
+                .entrySet()) {
+            this.em.persist(new MeasurementEntity(dataEntity, measurement
+                    .getKey(), measurement.getValue()));
+        }
 
-		return dataEntity;
-	}
+        return dataEntity;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public List<ProfileDataEntity> getAllProfileData(DriverProfileEntity profile) {
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public List<ProfileDataEntity> getAllProfileData(DriverProfileEntity profile) {
 
-		return this.em.createNamedQuery(ProfileDataEntity.getByProfile)
-				.setParameter("profile", profile).getResultList();
-	}
+        return this.em.createNamedQuery(ProfileDataEntity.getByProfile)
+                .setParameter("profile", profile).getResultList();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
-			int dataPoints) {
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
+            int dataPoints) {
 
-		// Find the driver profile's profile data.
-		Long dataDuration = (Long) this.em.createNamedQuery(
-				ProfileDataEntity.getExecutionDuration).setParameter("profile",
-				profile).getSingleResult();
-		Long dataStart = (Long) this.em.createNamedQuery(
-				ProfileDataEntity.getExecutionStart).setParameter("profile",
-				profile).getSingleResult();
+        // Find the driver profile's profile data.
+        Long dataDuration = (Long) this.em.createNamedQuery(
+                ProfileDataEntity.getExecutionDuration).setParameter("profile",
+                profile).getSingleResult();
+        Long dataStart = (Long) this.em.createNamedQuery(
+                ProfileDataEntity.getExecutionStart).setParameter("profile",
+                profile).getSingleResult();
 
-		// Bail out of there is no data for this profile.
-		if (dataDuration == null || dataStart == null
-				|| dataDuration + dataStart == 0) {
-			LOG.warn("No data for profile: " + profile.getDriverClassName());
-			return new ArrayList<ProfileDataEntity>();
-		}
+        // Bail out of there is no data for this profile.
+        if (dataDuration == null || dataStart == null
+                || dataDuration + dataStart == 0) {
+            LOG.warn("No data for profile: " + profile.getDriverClassName());
+            return new ArrayList<ProfileDataEntity>();
+        }
 
-		int period = (int) Math.ceil((double) dataDuration / dataPoints);
+        int period = (int) Math.ceil((double) dataDuration / dataPoints);
 
-		List<ProfileDataEntity> pointData = new ArrayList<ProfileDataEntity>();
-		for (long point = 0; point * period < dataDuration; ++point) {
-			ScenarioTimingEntity timing;
+        List<ProfileDataEntity> pointData = new ArrayList<ProfileDataEntity>(
+                (int) (dataDuration / period) + 1);
+        for (long point = 0; point * period < dataDuration; ++point) {
+            try {
+                ScenarioTimingEntity timing = (ScenarioTimingEntity) this.em
+                        .createNamedQuery(ProfileDataEntity.getScenarioTiming)
+                        .setParameter("execution", profile.getExecution())
+                        .setParameter("start", dataStart + point * period)
+                        .setParameter("stop", dataStart + (point + 1) * period)
+                        .getSingleResult();
 
-			try {
-				timing = (ScenarioTimingEntity) this.em
-						.createNamedQuery(ProfileDataEntity.getScenarioTiming)
-						.setParameter("execution", profile.getExecution())
-						.setParameter("start", dataStart + point * period)
-						.setParameter("stop", dataStart + (point + 1) * period)
-						.getSingleResult();
-			} catch (NoResultException e) {
-				continue;
-			}
+                ProfileDataEntity profileDataEntity = new ProfileDataEntity(
+                        profile, timing);
+                pointData.add(profileDataEntity);
 
-			ProfileDataEntity profileDataEntity = new ProfileDataEntity(
-					profile, timing);
-			pointData.add(profileDataEntity);
+                List<MeasurementEntity> measurements = this.em
+                        .createNamedQuery(ProfileDataEntity.createAverage)
+                        .setParameter("profile", profile).setParameter("start",
+                                dataStart + point * period).setParameter(
+                                "stop", dataStart + (point + 1) * period)
+                        .getResultList();
+                for (MeasurementEntity measurement : measurements) {
+                    measurement.setProfileData(profileDataEntity);
+                    profileDataEntity.getMeasurements().add(measurement);
+                }
+            } catch (NoResultException e) {
+            }
+        }
 
-			List<MeasurementEntity> measurements = this.em.createNamedQuery(
-					ProfileDataEntity.createAverage).setParameter("profile",
-					profile).setParameter("start", dataStart + point * period)
-					.setParameter("stop", dataStart + (point + 1) * period)
-					.getResultList();
-			for (MeasurementEntity measurement : measurements) {
-				measurement.setProfileData(profileDataEntity);
-				profileDataEntity.getMeasurements().add(measurement);
-			}
-		}
-
-		return pointData;
-	}
+        return pointData;
+    }
 }
