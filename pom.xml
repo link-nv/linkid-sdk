@@ -630,7 +630,7 @@
 		<jboss-jsfunit-core.version> 1.0-beta-1 </jboss-jsfunit-core.version>
 		<jboss-jsfunit-richfaces.version> 1.0-beta-1 
 		</jboss-jsfunit-richfaces.version>
-        <jboss-messaging.version>1.4.1.CR1</jboss-messaging.version>
+		<jboss-messaging.version>1.4.1.CR1</jboss-messaging.version>
 		<itext.version>1.4.8</itext.version>
 		<xpp3.version>1.1.4c</xpp3.version>
 		<xstream.version>1.1.3</xstream.version>
@@ -650,7 +650,7 @@
 		<module>safe-online-model</module>
 		<module>safe-online-test-util</module>
 		<module>safe-online-startup</module>
-        <module>safe-online-documentation</module>
+		<module>safe-online-documentation</module>
 		<module>safe-online-service</module>
 		<module>safe-online-j2ee-util</module>
 		<module>safe-online-ctrl-base</module>
@@ -857,10 +857,13 @@
 						<validationSet>
 							<dir>.</dir>
 							<includes>
-                                <include> target/**/*.xhtml </include>
-                                <include> target/**/*.html </include>
-                                <include> target/**/*.xml </include>
+								<include> target/**/*.xhtml </include>
+								<include> target/**/*.html </include>
+								<include> target/**/*.xml </include>
 							</includes>
+							<excludes>
+								<exclude> target/**/safe-online-cfg.xml </exclude>
+							</excludes>
 						</validationSet>
 					</validationSets>
 				</configuration>
@@ -1434,11 +1437,11 @@
 				<artifactId>jboss-annotations-ejb3</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>jboss.messaging</groupId>
-                <artifactId>jboss-messaging</artifactId>
-                <version>${jboss-messaging.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>jboss.messaging</groupId>
+				<artifactId>jboss-messaging</artifactId>
+				<version>${jboss-messaging.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>

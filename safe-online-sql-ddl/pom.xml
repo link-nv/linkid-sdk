@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -13,16 +12,15 @@
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline SQL DDL</name>
-	<description>
-		The SafeOnline SQL Data Definition Language.
+	<description> The SafeOnline SQL Data Definition Language. 
 	</description>
 	<build>
-        <resources>
-            <resource>
-                <directory>src/main</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
+		<resources>
+			<resource>
+				<directory>src/main</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -51,61 +49,52 @@
 							<tasks>
 								<echo>Generating SQL DDL...</echo>
 								<path id="jpatoolslib">
-									<path
-										refid="maven.compile.classpath" />
-									<path
-										refid="maven.plugin.classpath" />
-									<pathelement
-										location="${project.build.directory}/classes/resources" />
+									<path refid="maven.compile.classpath" />
+									<path refid="maven.plugin.classpath" />
+									<pathelement location="${project.build.directory}/classes/resources" />
 								</path>
-								<taskdef
-									classname="org.hibernate.tool.ant.HibernateToolTask"
+								<taskdef classname="org.hibernate.tool.ant.HibernateToolTask"
 									name="hibernatetool" classpathref="jpatoolslib" />
-								<mkdir
-									dir="${project.build.directory}/classes" />
-								<hibernatetool
-									destdir="${project.build.directory}/classes">
+								<mkdir dir="${project.build.directory}/classes" />
+								<hibernatetool destdir="${project.build.directory}/classes">
 									<classpath>
 										<path refid="jpatoolslib" />
 									</classpath>
 									<!-- jpaconfiguration can directly use the PAR -->
 									<annotationconfiguration
 										configurationfile="${project.build.directory}/classes/resources/hsql-safe-online.cfg.xml" />
-									<hbm2ddl export="false"
-										format="true" outputfilename="hsql-safe-online-ddl.sql" />
+									<hbm2ddl export="false" format="true"
+										outputfilename="hsql-safe-online-ddl.sql" />
 								</hibernatetool>
-								<hibernatetool
-									destdir="${project.build.directory}/classes">
+								<hibernatetool destdir="${project.build.directory}/classes">
 									<classpath>
 										<path refid="jpatoolslib" />
 									</classpath>
 									<!-- jpaconfiguration can directly use the PAR -->
 									<annotationconfiguration
 										configurationfile="${project.build.directory}/classes/resources/mysql-safe-online.cfg.xml" />
-									<hbm2ddl export="false"
-										format="true" outputfilename="mysql-safe-online-ddl.sql" />
+									<hbm2ddl export="false" format="true"
+										outputfilename="mysql-safe-online-ddl.sql" />
 								</hibernatetool>
-								<hibernatetool
-									destdir="${project.build.directory}/classes">
+								<hibernatetool destdir="${project.build.directory}/classes">
 									<classpath>
 										<path refid="jpatoolslib" />
 									</classpath>
 									<!-- jpaconfiguration can directly use the PAR -->
 									<annotationconfiguration
 										configurationfile="${project.build.directory}/classes/resources/postgresql-safe-online.cfg.xml" />
-									<hbm2ddl export="false"
-										format="true" outputfilename="postgresql-safe-online-ddl.sql" />
+									<hbm2ddl export="false" format="true"
+										outputfilename="postgresql-safe-online-ddl.sql" />
 								</hibernatetool>
-								<hibernatetool
-									destdir="${project.build.directory}/classes">
+								<hibernatetool destdir="${project.build.directory}/classes">
 									<classpath>
 										<path refid="jpatoolslib" />
 									</classpath>
 									<!-- jpaconfiguration can directly use the PAR -->
 									<annotationconfiguration
 										configurationfile="${project.build.directory}/classes/resources/oracle-safe-online.cfg.xml" />
-									<hbm2ddl export="false"
-										format="true" outputfilename="oracle-safe-online-ddl.sql" />
+									<hbm2ddl export="false" format="true"
+										outputfilename="oracle-safe-online-ddl.sql" />
 								</hibernatetool>
 							</tasks>
 						</configuration>

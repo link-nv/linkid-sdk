@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+    <!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd" [
+    <!ENTITY safe-online-cfg SYSTEM "${basedir}/src/main/resources/safe-online-cfg.xml"> ]>
 <hibernate-configuration>
 	<session-factory>
 		<property name="dialect">
-			net.link.safeonline.hibernate.dialect.Oracle11Dialect
-		</property>
+			net.link.safeonline.hibernate.dialect.Oracle11Dialect </property>
+		&safe-online-cfg;
 	</session-factory>
 </hibernate-configuration>
