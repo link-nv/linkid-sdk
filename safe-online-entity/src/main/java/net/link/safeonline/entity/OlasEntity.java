@@ -7,37 +7,27 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.OlasEntity.QUERY_LIST_ALL;
-import static net.link.safeonline.entity.OlasEntity.QUERY_WHERE_AUTHN_CERTID;
-import static net.link.safeonline.entity.OlasEntity.QUERY_WHERE_SIGNING_CERTID;
+import static net.link.safeonline.entity.OlasEntity.QUERY_WHERE_AUTHN_CERT_SUBJECT;
+import static net.link.safeonline.entity.OlasEntity.QUERY_WHERE_SIGNING_CERT_SUBJECT;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import javax.ejb.EJBException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.annotations.IndexColumn;
 
 /**
  * This entity represents an OLAS node in the OLAS network.
@@ -58,21 +48,21 @@ import org.hibernate.annotations.IndexColumn;
 @Table(name = "olas_entity")
 @NamedQueries( {
 		@NamedQuery(name = QUERY_LIST_ALL, query = "FROM OlasEntity o"),
-		@NamedQuery(name = QUERY_WHERE_AUTHN_CERTID, query = "SELECT olas "
+		@NamedQuery(name = QUERY_WHERE_AUTHN_CERT_SUBJECT, query = "SELECT olas "
 				+ "FROM OlasEntity AS olas "
-				+ "WHERE olas.authnCertificateIdentifier = :certificateIdentifier"),
-		@NamedQuery(name = QUERY_WHERE_SIGNING_CERTID, query = "SELECT olas "
+				+ "WHERE olas.authnCertificateSubject = :certificateSubject"),
+		@NamedQuery(name = QUERY_WHERE_SIGNING_CERT_SUBJECT, query = "SELECT olas "
 				+ "FROM OlasEntity AS olas "
-				+ "WHERE olas.signingCertificateIdentifier = :certificateIdentifier") })
+				+ "WHERE olas.signingCertificateSubject = :certificateSubject") })
 public class OlasEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_LIST_ALL = "olas.all";
 
-	public static final String QUERY_WHERE_AUTHN_CERTID = "olas.authn.certid";
+	public static final String QUERY_WHERE_AUTHN_CERT_SUBJECT = "olas.authn.cert.sub";
 
-	public static final String QUERY_WHERE_SIGNING_CERTID = "olas.signing.certid";
+	public static final String QUERY_WHERE_SIGNING_CERT_SUBJECT = "olas.signing.cert.sub";
 
 	private String name;
 
@@ -84,17 +74,9 @@ public class OlasEntity implements Serializable {
 
 	private int sslPort;
 
-	private byte[] encodedAuthnCert;
+	private String authnCertificateSubject;
 
-	private String authnCertificateIdentifier;
-
-	private transient X509Certificate authnCertificate;
-
-	private byte[] encodedSigningCert;
-
-	private String signingCertificateIdentifier;
-
-	private transient X509Certificate signingCertificate;
+	private String signingCertificateSubject;
 
 	public OlasEntity() {
 		// empty
@@ -109,22 +91,12 @@ public class OlasEntity implements Serializable {
 		this.port = port;
 		this.sslPort = sslPort;
 		if (null != authnCertificate) {
-			try {
-				this.encodedAuthnCert = authnCertificate.getEncoded();
-			} catch (CertificateEncodingException e) {
-				throw new EJBException("certificate encoding error: "
-						+ e.getMessage(), e);
-			}
-			this.authnCertificateIdentifier = toCertificateIdentifier(this.encodedAuthnCert);
+			this.authnCertificateSubject = authnCertificate
+					.getSubjectX500Principal().getName();
 		}
 		if (null != signingCertificate) {
-			try {
-				this.encodedSigningCert = signingCertificate.getEncoded();
-			} catch (CertificateEncodingException e) {
-				throw new EJBException("certificate encoding error: "
-						+ e.getMessage(), e);
-			}
-			this.signingCertificateIdentifier = toCertificateIdentifier(this.encodedSigningCert);
+			this.signingCertificateSubject = signingCertificate
+					.getSubjectX500Principal().getName();
 		}
 	}
 
@@ -198,64 +170,22 @@ public class OlasEntity implements Serializable {
 		return String.format("https://%s:%d", this.hostname, this.sslPort);
 	}
 
-	/**
-	 * Gives back the encoded node authentication certificate. This is used for
-	 * OLAS nodes to authenticate against OLAS nodes when using its web
-	 * services.
-	 * 
-	 */
-	@Lob
-	@Column(length = 4 * 1024, nullable = true)
-	public byte[] getEncodedAuthnCert() {
-		return this.encodedAuthnCert;
-	}
-
-	/**
-	 * Sets the encoded authentication certificate data. Do not use this method
-	 * directly. Use {@link #setAuthnCertificate(X509Certificate)} instead. This
-	 * method should only be used by JPA.
-	 * 
-	 * @param encodedAuthnCert
-	 */
-	public void setEncodedAuthnCert(byte[] encodedAuthnCert) {
-		this.encodedAuthnCert = encodedAuthnCert;
-	}
-
 	@Column(unique = true)
-	@IndexColumn(name = "authnCertID")
-	public String getAuthnCertificateIdentifier() {
-		return this.authnCertificateIdentifier;
+	public String getAuthnCertificateSubject() {
+		return this.authnCertificateSubject;
 	}
 
 	/**
-	 * Sets the certificate identifier. Do not use this method directly. Use
+	 * Sets the authentication certificate subject. Do not use this method
+	 * directly. Use
 	 * {@link #setAuthnCertificate(X509Certificate) setCertificate} instead. JPA
 	 * requires this setter.
 	 * 
-	 * @param authnCertificateIdentifier
+	 * @param authnCertificateSubject
 	 * @see #setAuthnCertificate(X509Certificate)
 	 */
-	public void setAuthnCertificateIdentifier(String authnCertificateIdentifier) {
-		this.authnCertificateIdentifier = authnCertificateIdentifier;
-	}
-
-	@Transient
-	public X509Certificate getAuthnCertificate() {
-		if (null != this.authnCertificate)
-			return this.authnCertificate;
-		if (null == this.encodedAuthnCert)
-			return null;
-		try {
-			CertificateFactory certificateFactory = CertificateFactory
-					.getInstance("X.509");
-			InputStream inputStream = new ByteArrayInputStream(
-					this.encodedAuthnCert);
-			this.authnCertificate = (X509Certificate) certificateFactory
-					.generateCertificate(inputStream);
-		} catch (CertificateException e) {
-			throw new EJBException("cert factory error: " + e.getMessage());
-		}
-		return this.authnCertificate;
+	public void setAuthnCertificateSubject(String authnCertificateSubject) {
+		this.authnCertificateSubject = authnCertificateSubject;
 	}
 
 	/**
@@ -267,73 +197,25 @@ public class OlasEntity implements Serializable {
 	 */
 	@Transient
 	public void setAuthnCertificate(X509Certificate authnCertificate) {
-		byte[] encodedAuthnCertificate;
-		try {
-			encodedAuthnCertificate = authnCertificate.getEncoded();
-		} catch (CertificateEncodingException e) {
-			throw new EJBException("certificate encoding error");
-		}
-		setEncodedAuthnCert(encodedAuthnCertificate);
-		setAuthnCertificateIdentifier(toCertificateIdentifier(encodedAuthnCertificate));
-	}
-
-	/**
-	 * Gives back the encoded node signing certificate. This is used to sign
-	 * SAML tokens.
-	 */
-	@Lob
-	@Column(length = 4 * 1024, nullable = true)
-	public byte[] getEncodedSigningCert() {
-		return this.encodedSigningCert;
-	}
-
-	/**
-	 * Sets the encoded signing certificate data. Do not use this method
-	 * directly. Use {@link #setAuthnCertificate(X509Certificate)} instead. This
-	 * method should only be used by JPA.
-	 * 
-	 * @param encodedSigningCert
-	 */
-	public void setEncodedSigningCert(byte[] encodedSigningCert) {
-		this.encodedSigningCert = encodedSigningCert;
+		setAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
+				.getName());
 	}
 
 	@Column(unique = true)
-	@IndexColumn(name = "signingCertID")
-	public String getSigningCertificateIdentifier() {
-		return this.signingCertificateIdentifier;
+	public String getSigningCertificateSubject() {
+		return this.signingCertificateSubject;
 	}
 
 	/**
-	 * Sets the certificate identifier. Do not use this method directly. Use
-	 * {@link #setAuthnCertificate(X509Certificate) setCertificate} instead. JPA
-	 * requires this setter.
+	 * Sets the signing certificate subject. Do not use this method directly.
+	 * Use {@link #setAuthnCertificate(X509Certificate) setCertificate} instead.
+	 * JPA requires this setter.
 	 * 
-	 * @param signingCertificateIdentifier
+	 * @param signingCertificateSubject
 	 * @see #setSigningCertificate(X509Certificate)
 	 */
-	public void setSigningCertificateIdentifier(
-			String signingCertificateIdentifier) {
-		this.signingCertificateIdentifier = signingCertificateIdentifier;
-	}
-
-	@Transient
-	public X509Certificate getSigningCertificate() {
-		if (null != this.signingCertificate)
-			return this.signingCertificate;
-		if (null == this.encodedSigningCert)
-			return null;
-		try {
-			CertificateFactory certificateFactory = CertificateFactory
-					.getInstance("X.509");
-			InputStream inputStream = new ByteArrayInputStream(
-					this.encodedSigningCert);
-			this.signingCertificate = (X509Certificate) certificateFactory
-					.generateCertificate(inputStream);
-		} catch (CertificateException e) {
-			throw new EJBException("cert factory error: " + e.getMessage());
-		}
-		return this.signingCertificate;
+	public void setSigningCertificateSubject(String signingCertificateSubject) {
+		this.signingCertificateSubject = signingCertificateSubject;
 	}
 
 	/**
@@ -345,25 +227,8 @@ public class OlasEntity implements Serializable {
 	 */
 	@Transient
 	public void setSigningCertificate(X509Certificate signingCertificate) {
-		byte[] encodedSigningCertificate;
-		try {
-			encodedSigningCertificate = signingCertificate.getEncoded();
-		} catch (CertificateEncodingException e) {
-			throw new EJBException("certificate encoding error");
-		}
-		setEncodedSigningCert(encodedSigningCertificate);
-		setSigningCertificateIdentifier(toCertificateIdentifier(encodedSigningCertificate));
-	}
-
-	/**
-	 * Gives back the certificate identifier for a given encoded X509
-	 * certificate.
-	 * 
-	 * @param encodedCertificate
-	 */
-	public static String toCertificateIdentifier(byte[] encodedCertificate) {
-		String certificateIdentifier = DigestUtils.shaHex(encodedCertificate);
-		return certificateIdentifier;
+		setSigningCertificateSubject(signingCertificate
+				.getSubjectX500Principal().getName());
 	}
 
 	@Override
@@ -391,36 +256,13 @@ public class OlasEntity implements Serializable {
 	public interface QueryInterface {
 		@QueryMethod(QUERY_LIST_ALL)
 		List<OlasEntity> listOlasEntities();
-	}
 
-	public static Query createQueryWhereAuthnCertificate(
-			EntityManager entityManager, X509Certificate authnCertificate) {
-		byte[] encodedAuthnCertificate;
-		try {
-			encodedAuthnCertificate = authnCertificate.getEncoded();
-		} catch (CertificateEncodingException e) {
-			throw new EJBException("Certificate encoding error: "
-					+ e.getMessage(), e);
-		}
-		String certificateIdentifier = toCertificateIdentifier(encodedAuthnCertificate);
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_AUTHN_CERTID);
-		query.setParameter("certificateIdentifier", certificateIdentifier);
-		return query;
-	}
+		@QueryMethod(QUERY_WHERE_AUTHN_CERT_SUBJECT)
+		List<OlasEntity> listOlasEntitiesWhereAuthnCertificateSubject(
+				@QueryParam("certificateSubject") String certificateSubject);
 
-	public static Query createQueryWhereSigningCertificate(
-			EntityManager entityManager, X509Certificate signingCertificate) {
-		byte[] encodedSigningCertificate;
-		try {
-			encodedSigningCertificate = signingCertificate.getEncoded();
-		} catch (CertificateEncodingException e) {
-			throw new EJBException("Certificate encoding error: "
-					+ e.getMessage(), e);
-		}
-		String certificateIdentifier = toCertificateIdentifier(encodedSigningCertificate);
-		Query query = entityManager
-				.createNamedQuery(QUERY_WHERE_SIGNING_CERTID);
-		query.setParameter("certificateIdentifier", certificateIdentifier);
-		return query;
+		@QueryMethod(QUERY_WHERE_SIGNING_CERT_SUBJECT)
+		List<OlasEntity> listOlasEntitiesWhereSigningCertificateSubject(
+				@QueryParam("certificateSubject") String certificateSubject);
 	}
 }

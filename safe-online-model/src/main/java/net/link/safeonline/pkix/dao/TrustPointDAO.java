@@ -32,4 +32,6 @@ public interface TrustPointDAO {
 			X509Certificate certificate);
 
 	void removeTrustPoint(TrustPointEntity trustPoint);
+
+	List<TrustPointEntity> listTrustPoints(String certificateSubject);
 }

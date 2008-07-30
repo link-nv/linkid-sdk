@@ -171,6 +171,13 @@ public class AuthenticationBean implements Authentication {
 		return null;
 	}
 
+	public String tryAnotherDevice() throws IOException {
+		this.authenticationContext
+				.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+		exit();
+		return null;
+	}
+
 	private void exit() throws IOException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
@@ -188,7 +195,7 @@ public class AuthenticationBean implements Authentication {
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		LOG.debug("remove");
+		LOG.debug("destroy");
 		this.mobileOTP = null;
 		this.mobile = null;
 	}

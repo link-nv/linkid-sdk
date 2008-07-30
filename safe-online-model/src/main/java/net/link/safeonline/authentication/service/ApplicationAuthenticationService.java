@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service;
 
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.ejb.Local;
 
@@ -35,14 +36,14 @@ public interface ApplicationAuthenticationService {
 			throws ApplicationNotFoundException;
 
 	/**
-	 * Gives back the application X509 certificate given the application Id.
+	 * Gives back the application X509 certificates given the application Id.
 	 * 
 	 * @param applicationId
 	 *            the application Id.
-	 * @return the X509 application certificate.
+	 * @return the X509 application certificates.
 	 * @throws ApplicationNotFoundException
 	 */
-	X509Certificate getCertificate(String applicationId)
+	List<X509Certificate> getCertificates(String applicationId)
 			throws ApplicationNotFoundException;
 
 	/**

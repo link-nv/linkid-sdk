@@ -15,6 +15,8 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
 @Local
@@ -30,5 +32,19 @@ public interface NotificationProducerService {
 	public void unsubscribe(String topic, String address,
 			X509Certificate certificate) throws SubscriptionNotFoundException,
 			PermissionDeniedException, EndpointReferenceNotFoundException;
+
+	public void subscribe(String topic, String address, DeviceEntity device);
+
+	public void subscribe(String topic, String address,
+			ApplicationEntity application);
+
+	public void unsubscribe(String topic, String address, DeviceEntity device)
+			throws SubscriptionNotFoundException,
+			EndpointReferenceNotFoundException;
+
+	public void unsubscribe(String topic, String address,
+			ApplicationEntity application)
+			throws SubscriptionNotFoundException,
+			EndpointReferenceNotFoundException;
 
 }

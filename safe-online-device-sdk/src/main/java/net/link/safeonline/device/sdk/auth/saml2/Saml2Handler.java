@@ -209,12 +209,20 @@ public class Saml2Handler implements Serializable {
 		int validity = authenticationContext.getValidity();
 
 		String samlResponseToken;
-		if (null == userId || null == usedDevice) {
+		if (null == userId && null == usedDevice) {
 			/*
 			 * Authentication must have failed
 			 */
 			samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(
 					inResponseTo, issuerName, this.applicationKeyPair, target);
+		} else if (null == userId && null != usedDevice) {
+			/*
+			 * Authentication failed and user requested to try another device.
+			 */
+			samlResponseToken = AuthnResponseFactory
+					.createAuthResponseRequestRegistration(inResponseTo,
+							issuerName, this.applicationKeyPair, target);
+
 		} else {
 			/*
 			 * Authentication was successful
@@ -241,5 +249,4 @@ public class Saml2Handler implements Serializable {
 		// destroy the session to prevent reuse
 		request.getSession().invalidate();
 	}
-
 }

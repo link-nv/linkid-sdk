@@ -7,6 +7,7 @@
 
 package net.link.safeonline.entity.pkix;
 
+import static net.link.safeonline.entity.pkix.TrustPointEntity.QUERY_WHERE_CERT_SUBJECT;
 import static net.link.safeonline.entity.pkix.TrustPointEntity.QUERY_WHERE_DOMAIN;
 
 import java.io.ByteArrayInputStream;
@@ -41,14 +42,20 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "trust_point")
-@NamedQueries(@NamedQuery(name = QUERY_WHERE_DOMAIN, query = "SELECT trustPoint "
-		+ "FROM TrustPointEntity AS trustPoint "
-		+ "WHERE trustPoint.trustDomain = :trustDomain"))
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_DOMAIN, query = "SELECT trustPoint "
+				+ "FROM TrustPointEntity AS trustPoint "
+				+ "WHERE trustPoint.trustDomain = :trustDomain"),
+		@NamedQuery(name = QUERY_WHERE_CERT_SUBJECT, query = "SELECT trustPoint "
+				+ "FROM TrustPointEntity AS trustPoint "
+				+ "WHERE trustPoint.subjectName = :certificateSubject") })
 public class TrustPointEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_WHERE_DOMAIN = "tp.domain";
+
+	public static final String QUERY_WHERE_CERT_SUBJECT = "tp.cert.sub";
 
 	private TrustPointPK pk;
 
@@ -57,6 +64,8 @@ public class TrustPointEntity implements Serializable {
 	private transient X509Certificate certificate;
 
 	private String issuerName;
+
+	private String subjectName;
 
 	private TrustDomainEntity trustDomain;
 
@@ -68,13 +77,14 @@ public class TrustPointEntity implements Serializable {
 			X509Certificate certificate) {
 		this.trustDomain = trustDomain;
 		this.certificate = certificate;
-		this.issuerName = certificate.getIssuerX500Principal().toString();
+		this.issuerName = certificate.getIssuerX500Principal().getName();
 		try {
 			this.encodedCert = certificate.getEncoded();
 		} catch (CertificateEncodingException e) {
 			throw new EJBException("cert encoding error: " + e.getMessage());
 		}
 		this.pk = new TrustPointPK(trustDomain, certificate);
+		this.subjectName = this.pk.getSubjectName();
 	}
 
 	@EmbeddedId
@@ -96,6 +106,15 @@ public class TrustPointEntity implements Serializable {
 
 	public void setIssuerName(String issuerName) {
 		this.issuerName = issuerName;
+	}
+
+	@Column(name = "subjectName", insertable = false, updatable = false)
+	public String getSubjectName() {
+		return this.subjectName;
+	}
+
+	public void setSubjectName(String subjectName) {
+		this.subjectName = subjectName;
 	}
 
 	@Lob
@@ -162,7 +181,11 @@ public class TrustPointEntity implements Serializable {
 
 	public interface QueryInterface {
 		@QueryMethod(QUERY_WHERE_DOMAIN)
-		List<TrustPointEntity> listTrustPoints(@QueryParam("trustDomain")
-		TrustDomainEntity trustDomain);
+		List<TrustPointEntity> listTrustPoints(
+				@QueryParam("trustDomain") TrustDomainEntity trustDomain);
+
+		@QueryMethod(QUERY_WHERE_CERT_SUBJECT)
+		List<TrustPointEntity> listTrustPoints(
+				@QueryParam("certificateSubject") String certificateSubject);
 	}
 }

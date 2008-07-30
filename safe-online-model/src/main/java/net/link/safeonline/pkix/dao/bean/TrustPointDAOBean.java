@@ -80,4 +80,10 @@ public class TrustPointDAOBean implements TrustPointDAO {
 		}
 		return trustPoint;
 	}
+
+	public List<TrustPointEntity> listTrustPoints(String certificateSubject) {
+		LOG.debug("get trust points with certificate subject: "
+				+ certificateSubject);
+		return this.queryObject.listTrustPoints(certificateSubject);
+	}
 }

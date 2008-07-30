@@ -60,7 +60,7 @@ public class TrustPointPK implements Serializable {
 	}
 
 	private String getSubjectName(X509Certificate certificate) {
-		return certificate.getSubjectX500Principal().toString();
+		return certificate.getSubjectX500Principal().getName();
 	}
 
 	public static String getSubjectKeyId(X509Certificate certificate) {

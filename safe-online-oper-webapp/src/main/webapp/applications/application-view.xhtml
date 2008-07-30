@@ -19,125 +19,128 @@
 	</ui:define>
 	<ui:define name="content">
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			label="#{msgs.generic}">
-            <table class="inner">
-                <colgroup class="half" />
-                <colgroup />
+			<table class="inner">
+				<colgroup class="half" />
+				<colgroup />
 
-                <tbody>
-                    <tr>
-                        <th>#{msgs.applicationOwner}</th>
-                        <td>#{selectedApplication.applicationOwner.name}</td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.operatorUserAllowedToSubscribe}</th>
-                        <td><h:selectBooleanCheckbox disabled="true"
-                                value="#{selectedApplication.allowUserSubscription}"/></td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.removable}</th>
-                        <td><h:selectBooleanCheckbox disabled="true"
-                                value="#{selectedApplication.removable}"/></td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.operatorNumberOfSubscriptions}</th>
-                        <td>#{numberOfSubscriptions}</td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.applicationIdScope}</th>
-                        <td>#{selectedApplication.idScope}</td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.applicationLogo}</th>
-                        <td class="center"><h:graphicImage
-                            url="../logo?applicationName=${selectedApplication.name}"
-                            rendered="#{!empty selectedApplication.applicationLogo}" /></td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.applicationColor}</th>
-                        <td><h:outputText value="${operApplication.applicationColor}"
-                            style="background: ${operApplication.applicationColor}" /></td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.applicationUrl}</th>
-                        <td><h:outputLink
-                            value="#{selectedApplication.applicationUrl}"
-                            rendered="#{!empty selectedApplication.applicationUrl}">
+				<tbody>
+					<tr>
+						<th>#{msgs.applicationOwner}</th>
+						<td>#{selectedApplication.applicationOwner.name}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.operatorUserAllowedToSubscribe}</th>
+						<td><h:selectBooleanCheckbox disabled="true"
+							value="#{selectedApplication.allowUserSubscription}" /></td>
+					</tr>
+					<tr>
+						<th>#{msgs.removable}</th>
+						<td><h:selectBooleanCheckbox disabled="true"
+							value="#{selectedApplication.removable}" /></td>
+					</tr>
+					<tr>
+						<th>#{msgs.operatorNumberOfSubscriptions}</th>
+						<td>#{numberOfSubscriptions}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.applicationIdScope}</th>
+						<td>#{selectedApplication.idScope}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.applicationLogo}</th>
+						<td class="center"><h:graphicImage
+							url="../logo?applicationName=${selectedApplication.name}"
+							rendered="#{!empty selectedApplication.applicationLogo}" /></td>
+					</tr>
+					<tr>
+						<th>#{msgs.applicationColor}</th>
+						<td><h:outputText value="${operApplication.applicationColor}"
+							style="background: ${operApplication.applicationColor}" /></td>
+					</tr>
+					<tr>
+						<th>#{msgs.applicationUrl}</th>
+						<td><h:outputLink
+							value="#{selectedApplication.applicationUrl}"
+							rendered="#{!empty selectedApplication.applicationUrl}">
                                 #{selectedApplication.applicationUrl}
                             </h:outputLink> <h:outputText
-                            value="#{msgs.noApplicationUrl}"
-                            rendered="#{empty selectedApplication.applicationUrl}" /></td>
-                    </tr>
-                </tbody>
-            </table>
+							value="#{msgs.noApplicationUrl}"
+							rendered="#{empty selectedApplication.applicationUrl}" /></td>
+					</tr>
+				</tbody>
+			</table>
 		</rich:simpleTogglePanel>
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			label="#{msgs.description}">
-            <h:outputText value="#{selectedApplication.description}" escape="true"
-                rendered="#{!empty selectedApplication.description}"
-                styleClass="white_space" />
-            <h:outputText value="#{msgs.noDescription}"
-                rendered="#{empty selectedApplication.description}" />
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			opened="false" label="#{msgs.description}">
+			<h:outputText value="#{selectedApplication.description}"
+				escape="true" rendered="#{!empty selectedApplication.description}"
+				styleClass="white_space" />
+			<h:outputText value="#{msgs.noDescription}"
+				rendered="#{empty selectedApplication.description}" />
 		</rich:simpleTogglePanel>
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			label="#{msgs.usageAgreement}">
-            <h:outputText value="#{operApplication.usageAgreement}" escape="true"
-                rendered="#{!empty operApplication.usageAgreement}"
-                styleClass="white_space" />
-            <h:outputText value="#{msgs.noAgreement}"
-                rendered="#{empty operApplication.usageAgreement}" />
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			opened="false" label="#{msgs.usageAgreement}">
+			<h:outputText value="#{operApplication.usageAgreement}" escape="true"
+				rendered="#{!empty operApplication.usageAgreement}"
+				styleClass="white_space" />
+			<h:outputText value="#{msgs.noAgreement}"
+				rendered="#{empty operApplication.usageAgreement}" />
 		</rich:simpleTogglePanel>
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			label="#{msgs.accessControl}">
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			opened="false" label="#{msgs.accessControl}">
 
-            <table class="inner">
-                <colgroup class="half" />
-                <colgroup />
+			<table class="inner">
+				<colgroup class="half" />
+				<colgroup />
 
-                <tr>
-                    <th><h:outputText value="#{msgs.accessControlIdmappingService}" /></th>
-                    <td><h:selectBooleanCheckbox id="idmap" disabled="true"
-                            value="#{selectedApplication.identifierMappingAllowed}" /></td>
-                </tr><tr>
-                    <th><h:outputText value="#{msgs.skipMessageIntegrityCheck}:" /></th>
-                    <td><h:selectBooleanCheckbox id="skipcheck" disabled="true"
-                            value="#{selectedApplication.skipMessageIntegrityCheck}" /></td>
-                </tr><tr>
-                    <th colspan="2"><h:outputText value="#{msgs.certificate}" /></th>
-                </tr><tr>
-                    <td colspan="2" class="white_space"><h:outputText
-                            value="#{selectedApplication.certificate}"
-                            rendered="#{!empty selectedApplication.certificate}" />
-                        <h:outputText
-                            value="#{msgs.noCertificate}"
-                            rendered="#{empty selectedApplication.certificate}" />
-                    </td>
-                </tr>
-            </table>
+				<tr>
+					<th><h:outputText
+						value="#{msgs.accessControlIdmappingService}" /></th>
+					<td><h:selectBooleanCheckbox id="idmap" disabled="true"
+						value="#{selectedApplication.identifierMappingAllowed}" /></td>
+				</tr>
+				<tr>
+					<th><h:outputText value="#{msgs.skipMessageIntegrityCheck}:" /></th>
+					<td><h:selectBooleanCheckbox id="skipcheck" disabled="true"
+						value="#{selectedApplication.skipMessageIntegrityCheck}" /></td>
+				</tr>
+				<tr>
+					<th colspan="2"><h:outputText
+						value="#{msgs.certificateSubject}" /></th>
+				</tr>
+				<tr>
+					<td colspan="2" class="white_space"><h:outputText
+						value="#{selectedApplication.certificateSubject}"
+						rendered="#{!empty selectedApplication.certificateSubject}" /> <h:outputText
+						value="#{msgs.noCertificate}"
+						rendered="#{empty selectedApplication.certificateSubject}" /></td>
+				</tr>
+			</table>
 		</rich:simpleTogglePanel>
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			label="#{msgs.applicationIdentity}">
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			opened="false" label="#{msgs.applicationIdentity}">
 
-            <h:dataTable value="#{applicationIdentityAttributes}" var="item"
-                styleClass="inner">
-                <h:column>
-                    <f:facet name="header">#{msgs.attributeName}</f:facet>
-                    <h:outputText value="#{item.attributeTypeName}" />
-                </h:column>
-                <h:column headerClass="small">
-                    <f:facet name="header">#{msgs.required}</f:facet>
-                    <h:selectBooleanCheckbox disabled="true" value="#{item.required}" />
-                </h:column>
-                <h:column headerClass="small">
-                    <f:facet name="header">#{msgs.dataMining}</f:facet>
-                    <h:selectBooleanCheckbox disabled="true" value="#{item.dataMining}" />
-                </h:column>
-            </h:dataTable>
+			<h:dataTable value="#{applicationIdentityAttributes}" var="item"
+				styleClass="inner">
+				<h:column>
+					<f:facet name="header">#{msgs.attributeName}</f:facet>
+					<h:outputText value="#{item.attributeTypeName}" />
+				</h:column>
+				<h:column headerClass="small">
+					<f:facet name="header">#{msgs.required}</f:facet>
+					<h:selectBooleanCheckbox disabled="true" value="#{item.required}" />
+				</h:column>
+				<h:column headerClass="small">
+					<f:facet name="header">#{msgs.dataMining}</f:facet>
+					<h:selectBooleanCheckbox disabled="true" value="#{item.dataMining}" />
+				</h:column>
+			</h:dataTable>
 		</rich:simpleTogglePanel>
 
 		<h:form>

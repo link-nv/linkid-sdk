@@ -19,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
@@ -263,8 +264,8 @@ public class SecurityTokenServicePortImplTest {
 
 		expect(
 				this.mockNodeAuthenticationService
-						.getSigningCertificate(testIssuer)).andStubReturn(
-				this.certificate);
+						.getSigningCertificates(testIssuer)).andStubReturn(
+				Collections.singletonList(this.certificate));
 
 		// prepare
 		replay(this.mockObjects);

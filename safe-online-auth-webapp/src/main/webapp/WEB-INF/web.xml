@@ -215,6 +215,10 @@
 			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/login</param-value>
 		</init-param>
 		<init-param>
+			<param-name>TryAnotherDeviceUrl</param-name>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/all-devices.seam</param-value>
+		</init-param>
+		<init-param>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
 				saml request.</description>

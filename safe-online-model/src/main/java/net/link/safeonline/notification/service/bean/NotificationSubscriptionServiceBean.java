@@ -7,7 +7,6 @@
 
 package net.link.safeonline.notification.service.bean;
 
-import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Set;
 
@@ -71,13 +70,14 @@ public class NotificationSubscriptionServiceBean implements
 			EndpointReferenceNotFoundException, PermissionDeniedException {
 		LOG.debug("remove subscription " + subscription.getName()
 				+ " for topic " + topic);
-		if (null != subscription.getApplication())
+		if (null != subscription.getApplication()) {
 			this.notificationProducerService.unsubscribe(topic, subscription
-					.getAddress(), subscription.getApplication()
-					.getCertificate());
-		else
+					.getAddress(), subscription.getApplication());
+
+		} else {
 			this.notificationProducerService.unsubscribe(topic, subscription
-					.getAddress(), subscription.getDevice().getCertificate());
+					.getAddress(), subscription.getDevice());
+		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -94,7 +94,6 @@ public class NotificationSubscriptionServiceBean implements
 			throws PermissionDeniedException {
 		LOG.debug("add subscription for topic " + topic + " address=" + address
 				+ " consumer=" + consumer);
-		X509Certificate certificate;
 		ApplicationEntity application = this.applicationDAO
 				.findApplication(consumer);
 		if (null == application) {
@@ -104,10 +103,10 @@ public class NotificationSubscriptionServiceBean implements
 				throw new PermissionDeniedException("Consumer not found",
 						"errorConsumerNotFound");
 			}
-			certificate = device.getCertificate();
+			this.notificationProducerService.subscribe(topic, address, device);
 		} else {
-			certificate = application.getCertificate();
+			this.notificationProducerService.subscribe(topic, address,
+					application);
 		}
-		this.notificationProducerService.subscribe(topic, address, certificate);
 	}
 }

@@ -37,6 +37,8 @@ public interface Authentication {
 
 	String cancel() throws IOException;
 
+	String tryAnotherDevice() throws IOException;
+
 	/*
 	 * Lifecycle.
 	 */
