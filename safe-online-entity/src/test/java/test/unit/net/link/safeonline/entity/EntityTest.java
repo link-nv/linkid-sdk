@@ -580,6 +580,51 @@ public class EntityTest {
 	}
 
 	@Test
+	public void testTrustPointCertificateSubjectQuery() throws Exception {
+		// setup
+		String trustDomainName = "test-trust-domain-"
+				+ UUID.randomUUID().toString();
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
+				true);
+
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		String dn = "CN=Test";
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, dn);
+		String keyId = new String(Hex
+				.encodeHex(new SubjectKeyIdentifierStructure(certificate
+						.getExtensionValue(X509Extensions.SubjectKeyIdentifier
+								.getId())).getKeyIdentifier()));
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(trustDomain);
+		TrustPointEntity trustPoint = new TrustPointEntity(trustDomain,
+				certificate);
+		entityManager.persist(trustPoint);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		TrustPointEntity resultTrustPoint = entityManager.find(
+				TrustPointEntity.class,
+				new TrustPointPK(trustDomain, dn, keyId));
+		assertNotNull(resultTrustPoint);
+		assertEquals(trustPoint, resultTrustPoint);
+
+		// operate: query test
+		LOG.debug("trust domain Id: " + trustDomain.getId());
+		TrustPointEntity.QueryInterface queryObject = QueryObjectFactory
+				.createQueryObject(entityManager,
+						TrustPointEntity.QueryInterface.class);
+		List<TrustPointEntity> resultTrustPoints = queryObject
+				.listTrustPoints(dn);
+
+		// verify
+		assertEquals(1, resultTrustPoints.size());
+		assertEquals(resultTrustPoint, resultTrustPoints.get(0));
+	}
+
+	@Test
 	public void testTrustPointWithEmptyKeyId() throws Exception {
 		// setup
 		String trustDomainName = "test-trust-domain-"

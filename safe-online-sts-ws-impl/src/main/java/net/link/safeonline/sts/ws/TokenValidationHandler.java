@@ -9,6 +9,7 @@ package net.link.safeonline.sts.ws;
 
 import java.io.StringWriter;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -148,12 +149,17 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 						.getEJB(
 								"SafeOnline/NodeAuthenticationServiceBean/local",
 								NodeAuthenticationService.class);
-				X509Certificate nodeSigningCertificate;
 				try {
-					nodeSigningCertificate = nodeAuthenticationService
-							.getSigningCertificate(issuerName);
-					result = xmlSignature
-							.checkSignatureValue(nodeSigningCertificate);
+					List<X509Certificate> nodeSigningCertificates = nodeAuthenticationService
+							.getSigningCertificates(issuerName);
+					result = false;
+					for (X509Certificate nodeSigningCertificate : nodeSigningCertificates) {
+						result = xmlSignature
+								.checkSignatureValue(nodeSigningCertificate);
+						if (result == true) {
+							break;
+						}
+					}
 				} catch (NodeNotFoundException e) {
 					LOG.debug("unknown token issuer: " + issuerName);
 					throw createSOAPFaultException("unknown token issuer: "
@@ -165,10 +171,16 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 								"SafeOnline/DeviceAuthenticationServiceBean/local",
 								DeviceAuthenticationService.class);
 				try {
-					X509Certificate deviceCertificate = deviceAuthenticationService
-							.getCertificate(issuerName);
-					result = xmlSignature
-							.checkSignatureValue(deviceCertificate);
+					List<X509Certificate> deviceCertificates = deviceAuthenticationService
+							.getCertificates(issuerName);
+					result = false;
+					for (X509Certificate deviceCertificate : deviceCertificates) {
+						result = xmlSignature
+								.checkSignatureValue(deviceCertificate);
+						if (result == true) {
+							break;
+						}
+					}
 				} catch (DeviceNotFoundException e) {
 					LOG.debug("unknown token issuer: " + issuerName);
 					throw createSOAPFaultException("unknown token issuer: "

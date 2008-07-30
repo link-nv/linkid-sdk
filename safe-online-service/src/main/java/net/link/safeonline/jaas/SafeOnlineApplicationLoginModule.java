@@ -106,9 +106,9 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 	}
 
 	public void initialize(Subject newSubject,
-			CallbackHandler newCallbackHandler, @SuppressWarnings("unchecked")
-			Map sharedState, @SuppressWarnings("unchecked")
-			Map options) {
+			CallbackHandler newCallbackHandler,
+			@SuppressWarnings("unchecked") Map sharedState,
+			@SuppressWarnings("unchecked") Map options) {
 		LOG.debug("initialize: " + this);
 
 		this.authenticationServiceJndiName = getOptionValue(options,

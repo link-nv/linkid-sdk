@@ -70,58 +70,102 @@ public class NotificationProducerServiceBean implements
 			X509Certificate certificate) throws PermissionDeniedException {
 		LOG.debug("subscribe");
 
-		NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO
-				.findSubscription(topic);
-		if (null == subscription)
-			subscription = this.notificationProducerDAO.addSubscription(topic);
-
 		ApplicationEntity application = this.applicationDAO
 				.findApplication(certificate);
-		if (null == application) {
-			DeviceEntity device = this.deviceDAO.findDevice(certificate);
-			if (null == device) {
-				throw new PermissionDeniedException(
-						"Application or device not found.");
-			}
-			EndpointReferenceEntity endpointReference = this.endpointReferenceDAO
-					.findEndpointReference(address, device);
-			if (null == endpointReference)
-				endpointReference = this.endpointReferenceDAO
-						.addEndpointReference(address, device);
-			subscription.getConsumers().add(endpointReference);
+		if (null != application) {
+			subscribe(topic, address, application);
 		} else {
-			EndpointReferenceEntity endpointReference = this.endpointReferenceDAO
-					.addEndpointReference(address, application);
-			if (null == endpointReference)
-				endpointReference = this.endpointReferenceDAO
-						.addEndpointReference(address, application);
-			subscription.getConsumers().add(endpointReference);
+			DeviceEntity device = this.deviceDAO.findDevice(certificate);
+			if (null != device) {
+				subscribe(topic, address, device);
+			} else {
+				throw new PermissionDeniedException(
+						"application or device not found.");
+			}
 		}
+	}
+
+	public void subscribe(String topic, String address, DeviceEntity device) {
+		LOG.debug("subscribe device " + device.getName() + " to topic: "
+				+ topic);
+		NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO
+				.findSubscription(topic);
+		if (null == subscription) {
+			subscription = this.notificationProducerDAO.addSubscription(topic);
+		}
+
+		EndpointReferenceEntity endpointReference = this.endpointReferenceDAO
+				.findEndpointReference(address, device);
+		if (null == endpointReference) {
+			endpointReference = this.endpointReferenceDAO.addEndpointReference(
+					address, device);
+		}
+		subscription.getConsumers().add(endpointReference);
+	}
+
+	public void subscribe(String topic, String address,
+			ApplicationEntity application) {
+		LOG.debug("subscribe application " + application.getName()
+				+ " to topic: " + topic);
+		NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO
+				.findSubscription(topic);
+		if (null == subscription) {
+			subscription = this.notificationProducerDAO.addSubscription(topic);
+		}
+
+		EndpointReferenceEntity endpointReference = this.endpointReferenceDAO
+				.findEndpointReference(address, application);
+		if (null == endpointReference) {
+			endpointReference = this.endpointReferenceDAO.addEndpointReference(
+					address, application);
+		}
+		subscription.getConsumers().add(endpointReference);
 	}
 
 	public void unsubscribe(String topic, String address,
 			X509Certificate certificate) throws SubscriptionNotFoundException,
 			PermissionDeniedException, EndpointReferenceNotFoundException {
 		LOG.debug("unsubscribe");
-		NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO
-				.getSubscription(topic);
 		ApplicationEntity application = this.applicationDAO
 				.findApplication(certificate);
-		if (null == application) {
-			DeviceEntity device = this.deviceDAO.findDevice(certificate);
-			if (null == device) {
-				throw new PermissionDeniedException(
-						"Application or device not found.");
-			}
-			EndpointReferenceEntity endpointReference = this.endpointReferenceDAO
-					.getEndpointReference(address, device);
-			subscription.getConsumers().remove(endpointReference);
+		if (null != application) {
+			unsubscribe(topic, address, application);
 		} else {
-			EndpointReferenceEntity endpointReference = this.endpointReferenceDAO
-					.getEndpointReference(address, application);
-			subscription.getConsumers().remove(endpointReference);
+			DeviceEntity device = this.deviceDAO.findDevice(certificate);
+			if (null != device) {
+				unsubscribe(topic, address, device);
+			} else {
+				throw new PermissionDeniedException(
+						"application or device not found.");
+			}
 		}
+	}
 
+	public void unsubscribe(String topic, String address, DeviceEntity device)
+			throws SubscriptionNotFoundException,
+			EndpointReferenceNotFoundException {
+		LOG.debug("unsubscribe device " + device.getName() + " from topic "
+				+ topic);
+		NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO
+				.getSubscription(topic);
+
+		EndpointReferenceEntity endpointReference = this.endpointReferenceDAO
+				.getEndpointReference(address, device);
+		subscription.getConsumers().remove(endpointReference);
+	}
+
+	public void unsubscribe(String topic, String address,
+			ApplicationEntity application)
+			throws SubscriptionNotFoundException,
+			EndpointReferenceNotFoundException {
+		LOG.debug("unsubscribe application " + application.getName()
+				+ " from topic " + topic);
+		NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO
+				.getSubscription(topic);
+
+		EndpointReferenceEntity endpointReference = this.endpointReferenceDAO
+				.getEndpointReference(address, application);
+		subscription.getConsumers().remove(endpointReference);
 	}
 
 	public void sendNotification(String topic, List<String> message)

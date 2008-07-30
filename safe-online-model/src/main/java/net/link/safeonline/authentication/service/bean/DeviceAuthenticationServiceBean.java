@@ -8,6 +8,8 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -54,12 +56,18 @@ public class DeviceAuthenticationServiceBean implements
 		return device.getName();
 	}
 
-	public X509Certificate getCertificate(String deviceName)
+	public List<X509Certificate> getCertificates(String deviceName)
 			throws DeviceNotFoundException {
-		LOG.debug("get certificate for device: " + deviceName);
+		LOG.debug("get certificates for device: " + deviceName);
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		X509Certificate certificate = device.getCertificate();
-		return certificate;
+		List<TrustPointEntity> trustPoints = this.trustPointDAO
+				.listTrustPoints(device.getCertificateSubject());
+		List<X509Certificate> certificates = new LinkedList<X509Certificate>();
+		for (TrustPointEntity trustPoint : trustPoints) {
+			certificates.add(trustPoint.getCertificate());
+
+		}
+		return certificates;
 	}
 
 	public TrustPointEntity findTrustPoint(String domainName,

@@ -329,11 +329,13 @@ public class AttributeTypeEntity implements Serializable {
 	public boolean isLocal() {
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 
-		if (null == getLocation())
+		if (null == getLocation()) {
 			return true;
+		}
 
-		if (authIdentityServiceClient.getCertificate().equals(
-				getLocation().getAuthnCertificate()))
+		if (authIdentityServiceClient.getCertificate()
+				.getSubjectX500Principal().getName().equals(
+						getLocation().getAuthnCertificateSubject()))
 			return true;
 
 		return false;

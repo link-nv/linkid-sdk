@@ -152,7 +152,7 @@ public class PkiValidatorBean implements PkiValidator {
 								.getKeyIdentifier()));
 			}
 			String issuer = currentRootCertificate.getIssuerX500Principal()
-					.toString();
+					.getName();
 			LOG.debug("issuer: " + issuer);
 			LOG.debug("keyId: " + keyId);
 			TrustPointPK trustPointPK = new TrustPointPK(trustDomain, issuer,

@@ -215,7 +215,7 @@ public class Saml2Handler implements Serializable {
 			 */
 			samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(
 					inResponseTo, issuerName, this.applicationKeyPair, target);
-		} else if (null != usedDevice) {
+		} else if (null == userId && null != usedDevice) {
 			/*
 			 * Authentication failed and user requested to try another device.
 			 */

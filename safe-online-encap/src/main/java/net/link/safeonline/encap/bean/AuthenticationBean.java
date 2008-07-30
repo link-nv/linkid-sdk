@@ -195,7 +195,7 @@ public class AuthenticationBean implements Authentication {
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		LOG.debug("remove");
+		LOG.debug("destroy");
 		this.mobileOTP = null;
 		this.mobile = null;
 	}

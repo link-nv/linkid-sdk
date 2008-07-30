@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -115,25 +114,25 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		return applications;
 	}
 
-	@SuppressWarnings("unchecked")
 	public ApplicationEntity getApplication(X509Certificate certificate)
 			throws ApplicationNotFoundException {
-		Query query = ApplicationEntity.createQueryWhereCertificate(
-				this.entityManager, certificate);
-		List<ApplicationEntity> applications = query.getResultList();
-		if (applications.isEmpty())
+		List<ApplicationEntity> applications = this.queryObject
+				.listApplicationsWhereCertificateSubject(certificate
+						.getSubjectX500Principal().getName());
+		if (applications.isEmpty()) {
 			throw new ApplicationNotFoundException();
+		}
 		ApplicationEntity application = applications.get(0);
 		return application;
 	}
 
-	@SuppressWarnings("unchecked")
 	public ApplicationEntity findApplication(X509Certificate certificate) {
-		Query query = ApplicationEntity.createQueryWhereCertificate(
-				this.entityManager, certificate);
-		List<ApplicationEntity> applications = query.getResultList();
-		if (applications.isEmpty())
+		List<ApplicationEntity> applications = this.queryObject
+				.listApplicationsWhereCertificateSubject(certificate
+						.getSubjectX500Principal().getName());
+		if (applications.isEmpty()) {
 			return null;
+		}
 		ApplicationEntity application = applications.get(0);
 		return application;
 

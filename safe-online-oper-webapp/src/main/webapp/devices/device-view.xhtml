@@ -73,17 +73,15 @@
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			opened="false" id="description-tab" label="#{msgs.description}">
 			<h:form id="descrform">
-                <table class="inner">
-                    <tr>
-                        <th>#{msgs.action}</th>
-                    </tr>
-                    <tr class="center">
-                        <td>
-                            <h:commandLink action="add-descr" id="add-descr"
-                                value="#{msgs.addaction}" />
-                        </td>
-                    </tr>
-                </table>
+				<table class="inner">
+					<tr>
+						<th>#{msgs.action}</th>
+					</tr>
+					<tr class="center">
+						<td><h:commandLink action="add-descr" id="add-descr"
+							value="#{msgs.addaction}" /></td>
+					</tr>
+				</table>
 
 				<rich:dataTable id="desc-data" var="item"
 					value="#{deviceDescriptions}" styleClass="inner "
@@ -104,17 +102,15 @@
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			opened="false" id="properties-tab" label="#{msgs.properties}">
 			<h:form id="propertiesform">
-                <table class="inner">
-                    <tr>
-                        <th>#{msgs.action}</th>
-                    </tr>
-                    <tr class="center">
-                        <td>
-                            <h:commandLink action="add-prop" id="add-prop"
-                                value="#{msgs.addaction}" />
-                        </td>
-                    </tr>
-                </table>
+				<table class="inner">
+					<tr>
+						<th>#{msgs.action}</th>
+					</tr>
+					<tr class="center">
+						<td><h:commandLink action="add-prop" id="add-prop"
+							value="#{msgs.addaction}" /></td>
+					</tr>
+				</table>
 
 				<rich:dataTable id="prop-data" var="item"
 					value="#{deviceProperties}" styleClass="inner "
@@ -135,20 +131,19 @@
 			opened="false" id="attribute-tab" label="#{msgs.deviceAttribute}">
 
 			<table class="inner">
-                <tr>
-                    <th>#{msgs.deviceAttribute}</th>
-                </tr>
-                <tr>
-                    <td><h:outputText id="attribute-name"
-                        value="#{selectedDevice.attributeType.name}" /></td>
-                </tr>
+				<tr>
+					<th>#{msgs.deviceAttribute}</th>
+				</tr>
+				<tr>
+					<td><h:outputText id="attribute-name"
+						value="#{selectedDevice.attributeType.name}" /></td>
+				</tr>
 			</table>
 
 			<rich:dataTable id="compounded-members" var="item"
 				value="#{selectedDevice.attributeType.members}"
 				rendered="#{selectedDevice.attributeType.compounded}"
-				styleClass="inner "
-				rowClasses="listingTable_Row1,listingTable_Row2">
+				styleClass="inner " rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
 					<f:facet name="header">#{msgs.memberAttributes}</f:facet>
 					<h:outputText value="#{item.member.name}" />
@@ -157,25 +152,23 @@
 		</rich:simpleTogglePanel>
 
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-            rendered="#{selectedDevice.userAttributeType.name}"
-			opened="false" id="user-attribute-tab"
-			label="#{msgs.deviceUserAttribute}">
+			rendered="#{selectedDevice.userAttributeType.name}" opened="false"
+			id="user-attribute-tab" label="#{msgs.deviceUserAttribute}">
 
 			<table class="inner">
-                <tr>
-                    <th>#{msgs.deviceUserAttribute}</th>
-                </tr>
-                <tr>
-                    <td><h:outputText id="user-attribute-name"
-                        value="#{selectedDevice.userAttributeType.name}" /></td>
-                </tr>
+				<tr>
+					<th>#{msgs.deviceUserAttribute}</th>
+				</tr>
+				<tr>
+					<td><h:outputText id="user-attribute-name"
+						value="#{selectedDevice.userAttributeType.name}" /></td>
+				</tr>
 			</table>
 
 			<h:dataTable id="user-compounded-members" var="item"
 				value="#{selectedDevice.userAttributeType.members}"
 				rendered="#{selectedDevice.userAttributeType.compounded}"
-				styleClass="inner "
-				rowClasses="listingTable_Row1,listingTable_Row2">
+				styleClass="inner " rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
 					<f:facet name="header">#{msgs.memberAttributes}</f:facet>
 					<h:outputText value="#{item.member.name}" />
@@ -184,12 +177,13 @@
 		</rich:simpleTogglePanel>
 
 		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			opened="false" id="certificate-tab" label="#{msgs.certificate}">
-			<h:outputText value="#{selectedDevice.certificate}"
+			opened="false" id="certificate-tab"
+			label="#{msgs.certificateSubject}">
+			<h:outputText value="#{selectedDevice.certificateSubject}"
 				styleClass="white_space"
-				rendered="#{!empty selectedDevice.certificate}" />
+				rendered="#{!empty selectedDevice.certificateSubject}" />
 			<h:outputText value="#{msgs.noCertificate}"
-				rendered="#{empty selectedDevice.certificate}" />
+				rendered="#{empty selectedDevice.certificateSubject}" />
 		</rich:simpleTogglePanel>
 
 		<h:form id="actionform">

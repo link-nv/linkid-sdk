@@ -8,6 +8,8 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,6 +18,8 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.dao.OlasDAO;
 import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
+import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
@@ -36,6 +40,9 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
 	@EJB
 	private OlasDAO olasDAO;
 
+	@EJB
+	private TrustPointDAO trustPointDAO;
+
 	public String authenticate(X509Certificate authnCertificate)
 			throws NodeNotFoundException {
 		OlasEntity node = this.olasDAO
@@ -45,20 +52,18 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
 		return nodeName;
 	}
 
-	public X509Certificate getAuthnCertificate(String nodeName)
-			throws NodeNotFoundException {
-		LOG.debug("get authentication certificate for node: " + nodeName);
-		OlasEntity node = this.olasDAO.getNode(nodeName);
-		X509Certificate authnCertificate = node.getAuthnCertificate();
-		return authnCertificate;
-	}
-
-	public X509Certificate getSigningCertificate(String nodeName)
+	public List<X509Certificate> getSigningCertificates(String nodeName)
 			throws NodeNotFoundException {
 		LOG.debug("get signing certificate for node: " + nodeName);
 		OlasEntity node = this.olasDAO.getNode(nodeName);
-		X509Certificate signingCertificate = node.getSigningCertificate();
-		return signingCertificate;
+		List<TrustPointEntity> trustPoints = this.trustPointDAO
+				.listTrustPoints(node.getSigningCertificateSubject());
+		List<X509Certificate> certificates = new LinkedList<X509Certificate>();
+		for (TrustPointEntity trustPoint : trustPoints) {
+			certificates.add(trustPoint.getCertificate());
+
+		}
+		return certificates;
 	}
 
 	public OlasEntity getNode(String nodeName) throws NodeNotFoundException {

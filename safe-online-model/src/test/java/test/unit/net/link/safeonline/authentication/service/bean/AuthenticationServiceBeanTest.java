@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -222,8 +223,8 @@ public class AuthenticationServiceBeanTest {
 		// expectations
 		expect(
 				this.mockApplicationAuthenticationService
-						.getCertificate(applicationName)).andReturn(
-				applicationCert);
+						.getCertificates(applicationName)).andReturn(
+				Collections.singletonList(applicationCert));
 		expect(
 				this.mockPkiValidator
 						.validateCertificate(
@@ -268,8 +269,8 @@ public class AuthenticationServiceBeanTest {
 		// expectations
 		expect(
 				this.mockApplicationAuthenticationService
-						.getCertificate(applicationName)).andReturn(
-				applicationCert);
+						.getCertificates(applicationName)).andReturn(
+				Collections.singletonList(applicationCert));
 		expect(
 				this.mockPkiValidator
 						.validateCertificate(
@@ -331,7 +332,8 @@ public class AuthenticationServiceBeanTest {
 		// expectations
 		expect(
 				this.mockApplicationAuthenticationService
-						.getCertificate(applicationName)).andReturn(foobarCert);
+						.getCertificates(applicationName)).andReturn(
+				Collections.singletonList(foobarCert));
 		expect(
 				this.mockPkiValidator
 						.validateCertificate(
@@ -371,8 +373,8 @@ public class AuthenticationServiceBeanTest {
 		// expectations
 		expect(
 				this.mockApplicationAuthenticationService
-						.getCertificate(applicationName)).andReturn(
-				applicationCert);
+						.getCertificates(applicationName)).andReturn(
+				Collections.singletonList(applicationCert));
 		expect(
 				this.mockPkiValidator
 						.validateCertificate(

@@ -14,7 +14,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -62,24 +61,22 @@ public class OlasDAOBean implements OlasDAO {
 		return node;
 	}
 
-	@SuppressWarnings("unchecked")
 	public OlasEntity getNodeFromAuthnCertificate(
 			X509Certificate authnCertificate) throws NodeNotFoundException {
-		Query query = OlasEntity.createQueryWhereAuthnCertificate(
-				this.entityManager, authnCertificate);
-		List<OlasEntity> nodes = query.getResultList();
+		List<OlasEntity> nodes = this.queryObject
+				.listOlasEntitiesWhereAuthnCertificateSubject(authnCertificate
+						.getSubjectX500Principal().getName());
 		if (nodes.isEmpty())
 			throw new NodeNotFoundException();
 		OlasEntity node = nodes.get(0);
 		return node;
 	}
 
-	@SuppressWarnings("unchecked")
 	public OlasEntity getNodeFromSigningCertificate(
 			X509Certificate signingCertificate) throws NodeNotFoundException {
-		Query query = OlasEntity.createQueryWhereSigningCertificate(
-				this.entityManager, signingCertificate);
-		List<OlasEntity> nodes = query.getResultList();
+		List<OlasEntity> nodes = this.queryObject
+				.listOlasEntitiesWhereSigningCertificateSubject(signingCertificate
+						.getSubjectX500Principal().getName());
 		if (nodes.isEmpty())
 			throw new NodeNotFoundException();
 		OlasEntity node = nodes.get(0);

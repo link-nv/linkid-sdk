@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service;
 
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.ejb.Local;
 
@@ -40,14 +41,14 @@ public interface DeviceAuthenticationService {
 			X509Certificate certificate) throws TrustDomainNotFoundException;
 
 	/**
-	 * Gives back the devices X509 certificate given the device name.
+	 * Gives back the device X509 certificates given the device name.
 	 * 
 	 * @param deviceName
 	 *            the device name.
-	 * @return the X509 device certificate.
+	 * @return the X509 device certificates.
 	 * @throws DeviceNotFoundException
 	 */
-	X509Certificate getCertificate(String deviceName)
+	List<X509Certificate> getCertificates(String deviceName)
 			throws DeviceNotFoundException;
 
 }

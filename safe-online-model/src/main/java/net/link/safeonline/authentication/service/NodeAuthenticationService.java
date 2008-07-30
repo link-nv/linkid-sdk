@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service;
 
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.ejb.Local;
 
@@ -36,25 +37,14 @@ public interface NodeAuthenticationService {
 			throws NodeNotFoundException;
 
 	/**
-	 * Gives back the node's authentication certificate given the node name.
+	 * Gives back the node's signing certificates given the node name.
 	 * 
 	 * @param nodeName
 	 *            the node name.
-	 * @return the authentication X509 node certificate.
+	 * @return the signing X509 node certificates.
 	 * @throws NodeNotFoundException
 	 */
-	X509Certificate getAuthnCertificate(String nodeName)
-			throws NodeNotFoundException;
-
-	/**
-	 * Gives back the node's signing certificate given the node name.
-	 * 
-	 * @param nodeName
-	 *            the node name.
-	 * @return the signing X509 node certificate.
-	 * @throws NodeNotFoundException
-	 */
-	X509Certificate getSigningCertificate(String nodeName)
+	List<X509Certificate> getSigningCertificates(String nodeName)
 			throws NodeNotFoundException;
 
 	/**

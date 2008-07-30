@@ -212,27 +212,19 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		String issuerName = issuer.getValue();
 		LOG.debug("issuer: " + issuerName);
 
-		X509Certificate certificate = this.applicationAuthenticationService
-				.getCertificate(issuerName);
+		List<X509Certificate> certificates = this.applicationAuthenticationService
+				.getCertificates(issuerName);
 
-		boolean certificateValid = this.pkiValidator.validateCertificate(
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-				certificate);
-
-		if (false == certificateValid) {
-			throw new AuthenticationInitializationException(
-					"certificate was not found to be valid");
+		boolean validSignature = false;
+		for (X509Certificate certificate : certificates) {
+			validSignature = validateSignature(certificate, samlAuthnRequest);
+			if (validSignature) {
+				break;
+			}
 		}
-
-		BasicX509Credential basicX509Credential = new BasicX509Credential();
-		basicX509Credential.setPublicKey(certificate.getPublicKey());
-		SignatureValidator signatureValidator = new SignatureValidator(
-				basicX509Credential);
-		try {
-			signatureValidator.validate(samlAuthnRequest.getSignature());
-		} catch (ValidationException e) {
+		if (!validSignature) {
 			throw new AuthenticationInitializationException(
-					"signature validation error: " + e.getMessage());
+					"signature validation error");
 		}
 
 		String assertionConsumerService = samlAuthnRequest
@@ -289,6 +281,28 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.expectedTarget = assertionConsumerService;
 		this.expectedChallengeId = samlAuthnRequestId;
 
+	}
+
+	private boolean validateSignature(X509Certificate certificate,
+			AuthnRequest samlAuthnRequest) throws TrustDomainNotFoundException {
+		boolean certificateValid = this.pkiValidator.validateCertificate(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				certificate);
+
+		if (false == certificateValid) {
+			return false;
+		}
+
+		BasicX509Credential basicX509Credential = new BasicX509Credential();
+		basicX509Credential.setPublicKey(certificate.getPublicKey());
+		SignatureValidator signatureValidator = new SignatureValidator(
+				basicX509Credential);
+		try {
+			signatureValidator.validate(samlAuthnRequest.getSignature());
+		} catch (ValidationException e) {
+			return false;
+		}
+		return true;
 	}
 
 	public String redirectAuthentication(

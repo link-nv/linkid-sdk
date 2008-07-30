@@ -8,6 +8,8 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,6 +18,8 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
+import net.link.safeonline.pkix.dao.TrustPointDAO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,6 +40,9 @@ public class ApplicationAuthenticationServiceBean implements
 	@EJB
 	private ApplicationDAO applicationDAO;
 
+	@EJB
+	private TrustPointDAO trustPointDAO;
+
 	public String authenticate(X509Certificate certificate)
 			throws ApplicationNotFoundException {
 		ApplicationEntity application = this.applicationDAO
@@ -45,13 +52,19 @@ public class ApplicationAuthenticationServiceBean implements
 		return applicationName;
 	}
 
-	public X509Certificate getCertificate(String applicationId)
+	public List<X509Certificate> getCertificates(String applicationId)
 			throws ApplicationNotFoundException {
-		LOG.debug("get certificate for application Id: " + applicationId);
+		LOG.debug("get certificates for application Id: " + applicationId);
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationId);
-		X509Certificate certificate = application.getCertificate();
-		return certificate;
+		List<TrustPointEntity> trustPoints = this.trustPointDAO
+				.listTrustPoints(application.getCertificateSubject());
+		List<X509Certificate> certificates = new LinkedList<X509Certificate>();
+		for (TrustPointEntity trustPoint : trustPoints) {
+			certificates.add(trustPoint.getCertificate());
+
+		}
+		return certificates;
 	}
 
 	public boolean skipMessageIntegrityCheck(String applicationId)
