@@ -60,6 +60,10 @@ public class IdentificationController implements AppletController {
 		this.messages = new AuthenticationMessages(locale);
 	}
 
+	public void abort() {
+
+	}
+
 	public void run() {
 		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
 				.getString(KEY.START));
