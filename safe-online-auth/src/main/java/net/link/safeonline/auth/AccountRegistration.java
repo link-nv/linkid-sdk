@@ -41,9 +41,9 @@ public interface AccountRegistration {
 
 	void setDevice(String device);
 
-	String getCaptcha();
+	String getGivenCaptcha();
 
-	void setCaptcha(String captcha);
+	void setGivenCaptcha(String givenCaptcha);
 
 	String getCaptchaURL();
 

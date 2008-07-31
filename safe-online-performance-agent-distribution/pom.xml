@@ -167,8 +167,8 @@
                     <artifactId>jmimemagic</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.octo.captcha</groupId>
-                    <artifactId>jcaptcha-all</artifactId>
+                    <groupId>com.google.code.kaptcha</groupId>
+                    <artifactId>kaptcha</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.myfaces.trinidad</groupId>
