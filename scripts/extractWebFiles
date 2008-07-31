@@ -1,6 +1,6 @@
 #!/bin/bash
 source "${0%/*}"/bashlib
-
+shopt -s nullglob
 
 # Parse options.
 while [[ $1 = -* ]]; do
@@ -44,10 +44,11 @@ pwd=$PWD
 # Figure out path to distribution.
 (( ! apply )) && {
     [[ ! $distribution ]] && {
-        distribution=$(cd "$base/safe-online-base-distribution/target/"*"/jboss/server/default/deploy/../../../../"; echo "$PWD")
+        distribution=$(cd "$base/safe-online-base-distribution/target/"*/{jboss/,}[s]erver/default/deploy/../../../../ 2>/dev/null && echo "$PWD")
     }
 
-    [[ ! -d $distribution/jboss/server/default/tmp ]] && {
+    tmp=( "$distribution"/{jboss/,}server/default/tmp )
+    (( ${#tmp[@]} )) || {
         emit -r "Invalid distribution path or distribution not deployed: '$distribution'"
         exit 1
     }
@@ -123,11 +124,11 @@ elif (( ! reverse )); then
         emit -Y "You already have work files at '$(shorten "$base")'.  Perhaps you meant to use -R?"
         emit -Y "Continuing will delete all these files and replace them by the current server's files."
         echo; ask -y!N "Continue?" || exit
-    }
 
-    emit "Cleaning up '$base'" --
-        rm -rf "$base"
-    emit -$?
+        emit "Cleaning up '$base'" --
+            rm -rf "$base"
+        emit -$?
+    }
 fi
 
 if (( reverse )); then
@@ -186,7 +187,8 @@ if (( apply )); then
     done
 else
     for webapp in "${webapps[@]}"; do
-        cd "$distribution/jboss/server/default/tmp/deploy/"*"$webapp.ear-contents/"*"/META-INF/../.." && \
+        loc=("$distribution"/{jboss/,}server/default/tmp/deploy/*"$webapp.ear-contents/"*"/META-INF/../..")
+        (( ${#loc[@]} )) && cd "$loc" && \
             extractStuff
     done
 fi

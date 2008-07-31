@@ -623,7 +623,7 @@
 		<Filters.version>1531</Filters.version>
 		<swing-worker.version>1.1</swing-worker.version>
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
-		<jcaptcha-all.version>1.0-RC6</jcaptcha-all.version>
+        <kaptcha.version>2.3</kaptcha.version>
 		<mysql-connector-java.version> 5.1.5 </mysql-connector-java.version>
 		<postgresql.version>8.2-504.jdbc3</postgresql.version>
 		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
@@ -1972,9 +1972,9 @@
 				<version>${BrowserLauncher2.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.octo.captcha</groupId>
-				<artifactId>jcaptcha-all</artifactId>
-				<version>${jcaptcha-all.version}</version>
+				<groupId>com.google.code.kaptcha</groupId>
+				<artifactId>kaptcha</artifactId>
+				<version>${kaptcha.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>mysql</groupId>

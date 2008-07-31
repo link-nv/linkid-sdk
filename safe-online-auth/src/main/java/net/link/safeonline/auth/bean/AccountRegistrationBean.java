@@ -20,7 +20,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
-import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AccountRegistration;
@@ -49,9 +48,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
-import com.octo.captcha.service.CaptchaServiceException;
-import com.octo.captcha.service.image.ImageCaptchaService;
-
 @Stateful
 @Name("accountRegistration")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
@@ -73,7 +69,10 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	private String device;
 
-	private String captcha;
+	@In(required = false, value = com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY, scope = ScopeType.SESSION)
+	String validCaptcha;
+
+	private String givenCaptcha;
 
 	@Remove
 	@Destroy
@@ -97,39 +96,19 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			AttributeTypeNotFoundException, PermissionDeniedException {
 		this.log.debug("loginNext");
 
-		this.log.debug("captcha: " + this.captcha);
+		this.log.debug("valid captcha: " + this.validCaptcha);
+		this.log.debug("given captcha: " + this.givenCaptcha);
 
-		if (null == this.captchaService) {
+		if (null == this.validCaptcha) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorNoCaptcha");
 			return null;
 		}
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		HttpSession httpSession = (HttpSession) externalContext
-				.getSession(false);
-		String captchaId = httpSession.getId();
-		this.log.debug("captcha Id: " + captchaId);
-
-		boolean valid;
-		try {
-			valid = this.captchaService.validateResponseForID(captchaId,
-					this.captcha);
-		} catch (CaptchaServiceException e) {
-			/*
-			 * It's possible that a data race occurs between the Captcha servlet
-			 * and this validation call. In that case we just ask the user to
-			 * try again.
-			 */
-			this.facesMessages.addToControlFromResourceBundle("captcha",
-					FacesMessage.SEVERITY_ERROR, "errorNoCaptchaValidation");
-			return null;
-		}
-		if (false == valid) {
+		if (!this.validCaptcha.equals(this.givenCaptcha)) {
 			this.facesMessages.addToControlFromResourceBundle("captcha",
 					FacesMessage.SEVERITY_ERROR, "errorInvalidCaptcha");
-			this.captcha = null;
+			this.givenCaptcha = null;
 			return null;
 		}
 
@@ -164,15 +143,12 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		this.device = device;
 	}
 
-	@In(required = false, value = "CaptchaService", scope = ScopeType.SESSION)
-	ImageCaptchaService captchaService;
-
-	public String getCaptcha() {
-		return this.captcha;
+	public String getGivenCaptcha() {
+		return this.givenCaptcha;
 	}
 
-	public void setCaptcha(String captcha) {
-		this.captcha = captcha;
+	public void setGivenCaptcha(String givenCaptcha) {
+		this.givenCaptcha = givenCaptcha;
 	}
 
 	public String getCaptchaURL() {
@@ -193,10 +169,11 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 		List<DeviceEntity> devices = this.devicePolicyService.getDevices();
 
-		for (DeviceEntity device : devices) {
+		for (DeviceEntity deviceEntity : devices) {
 			String deviceName = this.devicePolicyService.getDeviceDescription(
-					device.getName(), viewLocale);
-			SelectItem allDevice = new SelectItem(device.getName(), deviceName);
+					deviceEntity.getName(), viewLocale);
+            SelectItem allDevice = new SelectItem(deviceEntity.getName(),
+                    deviceName);
 			allDevices.add(allDevice);
 		}
 		return allDevices;

@@ -1,0 +1,15 @@
+# OS X
+/.com.apple.timemachine.supported
+/.fseventsd
+
+# Scripts
+/scripts
+
+# Eclipse
+/*/.settings
+/*/.project
+/*/.classpath
+
+# Compiled
+/target
+/*/target

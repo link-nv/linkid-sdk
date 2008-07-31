@@ -73,8 +73,8 @@
 			<artifactId>jboss-seam</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.octo.captcha</groupId>
-			<artifactId>jcaptcha-all</artifactId>
+			<groupId>com.google.code.kaptcha</groupId>
+			<artifactId>kaptcha</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

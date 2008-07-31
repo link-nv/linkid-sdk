@@ -68,9 +68,8 @@ public class IdentificationController implements AppletController {
 		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
 				.getString(KEY.START));
 		Card card = openCard();
-		if (null == card) {
-			return;
-		}
+		if (null == card)
+            return;
 		try {
 			CardChannel channel = card.getBasicChannel();
 			Pcsc pcsc = new Pcsc(channel);
@@ -222,12 +221,13 @@ public class IdentificationController implements AppletController {
 
 	public static URL transformUrl(URL documentBase, String targetPath) {
 		if (targetPath.startsWith("http://")
-				|| targetPath.startsWith("https://"))
-			try {
+				|| targetPath.startsWith("https://")) {
+            try {
 				return new URL(targetPath);
 			} catch (MalformedURLException e) {
 				throw new RuntimeException("URL error: " + e.getMessage());
 			}
+        }
 
 		String documentBaseStr = documentBase.toString();
 		int idx = documentBaseStr.lastIndexOf("/");
