@@ -99,14 +99,16 @@ public class TimeoutFilter extends AbstractInjectionFilter {
 			Object tempLoginSessionAttribute = session
 					.getAttribute(this.loginSessionAttribute);
 			if (null != tempLoginSessionAttribute) {
-				addCookie(LOGIN_COOKIE, "true", httpRequest, httpResponse);
+				addCookie(LOGIN_COOKIE, "true", httpRequest.getContextPath(),
+						httpRequest, httpResponse);
 			} else {
 				/*
 				 * If the user performs a logout, we need to remove the login
 				 * cookie. Else the user could trigger an explicit timeout while
 				 * actually he's no longer logged in.
 				 */
-				removeCookie(LOGIN_COOKIE, httpRequest, httpResponse);
+				removeCookie(LOGIN_COOKIE, httpRequest.getContextPath(),
+						httpRequest, httpResponse);
 			}
 			timeoutResponseWrapper.commit();
 			return;
@@ -119,7 +121,8 @@ public class TimeoutFilter extends AbstractInjectionFilter {
 		 */
 		if (true == hasCookie(LOGIN_COOKIE, httpRequest)) {
 			LOG.debug("forwaring to timeout path: " + this.timeoutPath);
-			removeCookie(LOGIN_COOKIE, httpRequest, httpResponse);
+			removeCookie(LOGIN_COOKIE, httpRequest.getContextPath(),
+					httpRequest, httpResponse);
 			httpResponse.sendRedirect(this.timeoutPath);
 			return;
 		}

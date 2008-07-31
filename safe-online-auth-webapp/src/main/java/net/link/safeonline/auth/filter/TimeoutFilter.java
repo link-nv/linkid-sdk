@@ -50,6 +50,8 @@ public class TimeoutFilter extends AbstractInjectionFilter {
 
 	private static final Log LOG = LogFactory.getLog(TimeoutFilter.class);
 
+	private static final String COOKIE_PATH = "/olas-auth/";
+
 	@Init(name = "TimeoutPath")
 	private String timeoutPath;
 
@@ -90,14 +92,16 @@ public class TimeoutFilter extends AbstractInjectionFilter {
 			String applicationId = LoginManager.findApplication(session);
 			if (null != applicationId) {
 				setCookie(Timeout.APPLICATION_COOKIE, applicationId,
-						httpRequest, httpResponse);
+						COOKIE_PATH, httpRequest, httpResponse);
 			}
 			/*
 			 * Remove the possible timeout cookie, add entry cookie to prevent
 			 * timing out again on first entry after a previous timeout.
 			 */
-			removeCookie(Timeout.TIMEOUT_COOKIE, httpRequest, httpResponse);
-			addCookie(Timeout.ENTRY_COOKIE, "", httpRequest, httpResponse);
+			removeCookie(Timeout.TIMEOUT_COOKIE, COOKIE_PATH, httpRequest,
+					httpResponse);
+			addCookie(Timeout.ENTRY_COOKIE, "", COOKIE_PATH, httpRequest,
+					httpResponse);
 			timeoutResponseWrapper.commit();
 			return;
 		}
@@ -119,8 +123,10 @@ public class TimeoutFilter extends AbstractInjectionFilter {
 		 */
 		if (hasCookie(Timeout.ENTRY_COOKIE, httpRequest)) {
 			LOG.debug("forwarding to timeout path: " + this.timeoutPath);
-			addCookie(Timeout.TIMEOUT_COOKIE, "", httpRequest, httpResponse);
-			removeCookie(Timeout.ENTRY_COOKIE, httpRequest, httpResponse);
+			addCookie(Timeout.TIMEOUT_COOKIE, "", COOKIE_PATH, httpRequest,
+					httpResponse);
+			removeCookie(Timeout.ENTRY_COOKIE, COOKIE_PATH, httpRequest,
+					httpResponse);
 			httpResponse.sendRedirect(this.timeoutPath);
 			return;
 		} else {

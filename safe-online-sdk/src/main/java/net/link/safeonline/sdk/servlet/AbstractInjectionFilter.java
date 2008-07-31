@@ -177,34 +177,34 @@ public abstract class AbstractInjectionFilter implements Filter {
 		}
 	}
 
-	protected static void addCookie(String name, String value,
+	protected static void addCookie(String name, String value, String path,
 			HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 		if (true == hasCookie(name, httpRequest)) {
 			return;
 		}
 		Cookie cookie = new Cookie(name, value);
-		cookie.setPath("/");
+		cookie.setPath(path);
 		LOG.debug("adding cookie: " + name + "=" + value + " path="
 				+ cookie.getPath());
 		httpResponse.addCookie(cookie);
 	}
 
-	protected static void setCookie(String name, String value,
+	protected static void setCookie(String name, String value, String path,
 			HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 		Cookie cookie = new Cookie(name, value);
-		cookie.setPath("/");
+		cookie.setPath(path);
 		LOG.debug("setting cookie: " + name + "=" + value);
 		httpResponse.addCookie(cookie);
 	}
 
-	protected static void removeCookie(String name,
+	protected static void removeCookie(String name, String path,
 			HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 		if (false == hasCookie(name, httpRequest)) {
 			return;
 		}
 		LOG.debug("removing cookie: " + name);
 		Cookie cookie = new Cookie(name, "");
-		cookie.setPath("/");
+		cookie.setPath(path);
 		cookie.setMaxAge(0);
 		httpResponse.addCookie(cookie);
 
