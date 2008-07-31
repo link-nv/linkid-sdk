@@ -7,9 +7,23 @@
 <ui:composition template="/WEB-INF/template-root.xhtml">
 	<ui:define name="content">
 		<h1>#{msgs.help}</h1>
-		<p>#{msgs.helpInfo} <b>id = #{helpdesk.id}</b>.</p>
+		<table>
+			<colgroup class="half" />
+			<colgroup />
 
-		<p>#{msgs.helpContact} :</p>
+			<thead>
+				<tr>
+					<th colspan="2">#{msgs.helpCreateTicketInfo}</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<th>#{msgs.helpId}</th>
+					<td>#{helpdesk.id}</td>
+				</tr>
+			</tbody>
+		</table>
 
 		<table>
 			<colgroup class="half" />
@@ -17,15 +31,18 @@
 
 			<thead>
 				<tr>
-					<th>#{msgs.helpInfo}</th>
+					<th colspan="2">#{msgs.helpContact}:</th>
 				</tr>
 			</thead>
 
 			<tbody>
 				<tr>
-					<td><h:outputLink
-						value="#{facesContext.externalContext.requestContextPath}/help_ticket.seam">#{msgs.helpCreateTicket}</h:outputLink>
-					</td>
+					<th><h:outputText value="#{msgs.phone}" /></th>
+					<td><h:outputText value="#{helpdesk.phone}" /></td>
+				</tr>
+				<tr>
+					<th><h:outputText value="#{msgs.email}" /></th>
+					<td><h:outputText value="#{helpdesk.email}" /></td>
 				</tr>
 			</tbody>
 		</table>

@@ -427,6 +427,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>sebeco-dev-13</id>
+			<properties>
+				<safe-online.host.name> sebeco-dev-13 </safe-online.host.name>
+			</properties>
+		</profile>
+		<profile>
 			<id>test.encap.no</id>
 			<properties>
 				<safe-online.host.name> test.encap.no </safe-online.host.name>
@@ -435,6 +441,12 @@
 				<safe-online.jboss.host.port> 12080 </safe-online.jboss.host.port>
 				<safe-online.jboss.host.port.ssl> 12443 
 				</safe-online.jboss.host.port.ssl>
+			</properties>
+		</profile>
+		<profile>
+			<id>wim-laptop</id>
+			<properties>
+				<safe-online.host.name> 192.168.5.103 </safe-online.host.name>
 			</properties>
 		</profile>
 	</profiles>
@@ -857,12 +869,12 @@
 						<validationSet>
 							<dir>.</dir>
 							<includes>
-                                <include> target/classes/**/*.xhtml </include>
-                                <include> target/classes/**/*.html </include>
-                                <include> target/classes/**/*.xml </include>
-                                <include> target/war/**/*.xhtml </include>
-                                <include> target/war/**/*.html </include>
-                                <include> target/war/**/*.xml </include>
+								<include> target/classes/**/*.xhtml </include>
+								<include> target/classes/**/*.html </include>
+								<include> target/classes/**/*.xml </include>
+								<include> target/war/**/*.xhtml </include>
+								<include> target/war/**/*.html </include>
+								<include> target/war/**/*.xml </include>
 							</includes>
 							<excludes>
 								<exclude> target/**/safe-online-cfg.xml </exclude>

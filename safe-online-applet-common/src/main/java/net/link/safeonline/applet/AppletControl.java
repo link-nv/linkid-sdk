@@ -95,10 +95,18 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 		} catch (NoPkcs11LibraryException e) {
 			this.appletView.outputDetailMessage("no PKCS#11 library found");
 			showDocument("NoPkcs11Path");
+			this.appletView
+					.outputDetailMessage("Disconnecting from smart card...");
+			this.smartCard.close();
+			this.smartCard.resetPKCS11Driver();
 			return;
 		} catch (MissingSmartCardReaderException e) {
 			this.appletView.outputDetailMessage("missing smart card reader");
 			showPath("missing-reader.seam");
+			this.appletView
+					.outputDetailMessage("Disconnecting from smart card...");
+			this.smartCard.close();
+			this.smartCard.resetPKCS11Driver();
 			return;
 		} catch (SmartCardNotFoundException e) {
 			this.appletView.outputDetailMessage("smart card not found");
@@ -107,11 +115,20 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 			/*
 			 * TODO: retry somehow? is difficult via pkcs11
 			 */
+			this.appletView
+					.outputDetailMessage("Disconnecting from smart card...");
+			this.smartCard.close();
+			this.smartCard.resetPKCS11Driver();
+
 			return;
 		} catch (UnsupportedSmartCardException e) {
 			this.appletView.outputDetailMessage("unsupported smart card");
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString("noBeID"));
+			this.appletView
+					.outputDetailMessage("Disconnecting from smart card...");
+			this.smartCard.close();
+			this.smartCard.resetPKCS11Driver();
 			return;
 		} catch (Exception e) {
 			this.appletView
@@ -121,7 +138,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 					+ e.getClass().getName());
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString("smartCardConnectError"));
-			for (StackTraceElement stackTraceElement : e.getStackTrace())
+			for (StackTraceElement stackTraceElement : e.getStackTrace()) {
 				this.appletView.outputDetailMessage(stackTraceElement
 						.getClassName()
 						+ "."
@@ -130,6 +147,12 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 						+ stackTraceElement.getFileName()
 						+ ":"
 						+ stackTraceElement.getLineNumber() + ")");
+			}
+			this.appletView
+					.outputDetailMessage("Disconnecting from smart card...");
+			this.smartCard.close();
+			this.smartCard.resetPKCS11Driver();
+
 			return;
 		}
 
@@ -179,6 +202,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 			this.appletView
 					.outputDetailMessage("Disconnecting from smart card...");
 			this.smartCard.close();
+			this.smartCard.resetPKCS11Driver();
 		}
 
 		try {
@@ -339,10 +363,8 @@ public class AppletControl implements AppletController, SmartCardPinCallback,
 	}
 
 	public void abort() {
-		if (this.smartCard.isOpen()) {
-			this.smartCard.close();
-			this.smartCard.resetPKCS11Driver();
-		}
+		this.smartCard.close();
+		this.smartCard.resetPKCS11Driver();
 	}
 
 	public Locale getLocale() {
