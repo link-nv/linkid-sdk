@@ -19,7 +19,7 @@ public class BirthDateConvertor implements Convertor<Date> {
 					"SEPT", "OCT", "NOV", "DEC" },
 			{ "JAN", "FEB", "MAAR", "APR", "MEI", "JUN", "JUL", "AUG", "SEP",
 					"OKT", "NOV", "DEC" },
-			{ "JAN", "FEB", "MÃ„R", "APR", "MAI", "JUN", "JUL", "AUG", "SEP",
+			{ "JAN", "FEB", "M€R", "APR", "MAI", "JUN", "JUL", "AUG", "SEP",
 					"OKT", "NOV", "DEZ" } };
 
 	public Date convert(byte[] value) throws ConvertorException {
