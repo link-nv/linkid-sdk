@@ -57,6 +57,11 @@
 			<fileMode>0500</fileMode>
 		</fileSet>
 		<fileSet>
+			<directory>target/classes/scripts</directory>
+			<outputDirectory>scripts</outputDirectory>
+			<fileMode>0500</fileMode>
+		</fileSet>
+		<fileSet>
 			<directory>target/files/jaxws-ri/lib</directory>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>

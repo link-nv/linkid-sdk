@@ -1,0 +1,21 @@
+#!/bin/bash
+scripts="${0%/*}"; [[ $scripts = /* ]] || scripts=$PWD/$scripts
+distribution=$(cd "$scripts/.."; echo "${PWD##*/}")
+source "$scripts/bashlib"
+
+
+# Stop the distribution if it's running.
+"$scripts/stop"
+
+
+# Delete temporary JBoss stuff.
+emit "Cleaning $distribution" --
+    rm -rf data/ tmp/ log/ work/
+emit -$?
+
+
+# Start the distribution.
+emit "Starting $distribution" --
+    "$scripts/jboss" & # </dev/null >/dev/null 2>&1 &
+    sleep 1; kill -0 $! || wait $!
+emit -$?

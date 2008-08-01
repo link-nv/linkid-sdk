@@ -1,0 +1,20 @@
+#!/bin/bash
+scripts="${0%/*}"; [[ $scripts = /* ]] || scripts=$PWD/$scripts
+distribution=$(cd "$scripts/.."; echo "${PWD##*/}")
+source "$scripts/bashlib"
+
+
+# Figure out distribution name from location of script.
+cd "$scripts/../jboss/server/default" || { emit -r "Invalid distribution: '$distribution'."; exit 1; }
+
+if [[ -f "$scripts/jboss.pid" && $(<"$scripts/jboss.pid") ]]; then
+    emit "Stopping PID $(<"$scripts/jboss.pid")" --
+        if ! kill -0 $(<"$scripts/jboss.pid") 2>/dev/null; then
+            report "" "Not running."
+        else
+            kill $(<"$scripts/jboss.pid")
+            while kill -0 $(<"$scripts/jboss.pid")
+            do sleep 1; done 2>/dev/null
+            emit -$? || exit
+        fi
+fi

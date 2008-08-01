@@ -1,0 +1,79 @@
+#!/bin/bash
+scripts="${0%/*}"; [[ $scripts = /* ]] || scripts=$PWD/$scripts
+distribution=$(cd "$scripts/.."; echo "${PWD##*/}")
+source "$scripts/bashlib"
+
+# Check whether the distribution is valid.
+cd "$scripts/../jboss/server/default/deploy" || { emit -r "Invalid distribution: '$distribution'."; exit 1; }
+
+# Find and read in configuration of our datasource.
+dbconfig=( !(jms)-ds.xml )
+[[ $dbconfig ]] || { emit -r "No database configuration found for '$distribution'."; exit 1; }
+IFS=':/' read _ dbms _ _ host port db < <(grep -o 'jdbc:[^< ]*' "$dbconfig")
+read user < <(sed -n '/<user-name>/ s/.*<user-name> *\([^ <]*\).*/\1/p' "$dbconfig")
+read pass < <(sed -n '/<password>/ s/.*<password> *\([^ <]*\).*/\1/p' "$dbconfig")
+
+# Bail when no datasource config.
+if [[ ! $dbms ]]; then
+	emit -r "No data source configuration found."
+	exit 1
+fi
+
+# When DBMS is mysql we can use the mysql(1) client to reinitialize the database.
+if [[ $dbms = mysql ]]; then
+
+	# If we're ran as root we can restart the mysqld(1) server.
+	if (( ! UID )); then
+		emit "(Re)Starting MySQLd"
+		/etc/init.d/mysqld restart || exit
+	fi
+
+	# Drop the database.
+	emit "Rebuilding database '$db' on host '$host:$port' for user '$user' (DBMS: '$dbms')"
+	rootpass=$(ask "The root DBMS password:")
+	mysql -h"$host" -P"$port" -uroot -p"$rootpass" <<< "DROP DATABASE IF EXISTS $db;"
+
+	# Rebuild the database if we can find the DDL scripts for it.
+	for ear in *.ear; do
+		case $ear in
+			SafeOnline.ear)
+				emit "Rebuilding SafeOnline" --
+					mysql -h"$host" -P"$port" -uroot -p"$rootpass" < <(unzip -qc "$ear" resources/mysql-create-database.sql) && \
+					mysql -h"$host" -P"$port" -uroot -p"$rootpass" < <(unzip -qc "$ear" resources/mysql-create-account.sql) && \
+					java -jar "$ear" <<-END
+						C
+						../lib/mysql-connector-java-5.1.5.jar
+						1
+						jdbc:$dbms://$host:$port/$db
+						$user
+						$pass
+						I
+						E
+					END
+				emit -$? || exit
+			;;
+
+			Dodentocht.ear)
+				emit "Rebuilding Dodentocht" --
+					(
+						cd "$scripts/../sql"
+						echo "Creating '$db' database.."
+						mysql -uroot -p"$rootpass" < mysql-create-database.sql || exit
+
+						echo "Creating database user '$user'.."
+						mysql -uroot -p"$rootpass" < mysql-create-account.sql || exit
+
+						echo "Initializing '$db' database schema.."
+						mysql -u"$user" -p"$pass" "$db" < mysql-dodentocht-ddl.sql || exit
+					)
+				emit -$? || exit
+			;;
+		esac
+	done
+
+	emit "Ready with '$db' for '$distribution'."
+else
+	emit -y "Cannot handle DBMS '$dbms'."
+	exit 1
+fi
+
