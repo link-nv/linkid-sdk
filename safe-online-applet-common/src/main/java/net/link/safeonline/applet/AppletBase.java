@@ -369,7 +369,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private void redirectToTryAnotherDevice() {
 		URL documentBase = this.getDocumentBase();
-		String targetPath = this.getParameter("TargetPath");
+		String targetPath = this.getParameter("TargetPath") + "?cacheid="
+				+ Math.random() * 1000000;
 		URL target = AppletControl.transformUrl(documentBase, targetPath);
 		this.showDocument(target);
 	}

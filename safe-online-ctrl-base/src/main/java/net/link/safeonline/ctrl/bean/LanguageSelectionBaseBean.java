@@ -2,6 +2,8 @@ package net.link.safeonline.ctrl.bean;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.ctrl.LanguageSelectionBase;
 
@@ -42,6 +44,14 @@ public class LanguageSelectionBaseBean implements LanguageSelectionBase {
 	public void selectLanguage(ActionEvent event) {
 		this.log.debug("selected language: " + event.getComponent().getId());
 		this.localeSelector.selectLanguage(event.getComponent().getId());
-	}
 
+		HttpServletResponse response = (HttpServletResponse) this.facesContext
+				.getExternalContext().getResponse();
+
+		Cookie languageCookie = new Cookie("OLAS.language", event
+				.getComponent().getId());
+		languageCookie.setPath("/");
+		languageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+		response.addCookie(languageCookie);
+	}
 }

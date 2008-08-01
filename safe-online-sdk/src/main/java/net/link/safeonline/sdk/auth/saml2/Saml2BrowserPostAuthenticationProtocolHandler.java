@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -186,8 +187,27 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		else
 			templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
+		String language = getLanguage(httpRequest);
+		if (null == language) {
+			language = httpRequest.getLocale().getLanguage();
+		}
+
 		AuthnRequestUtil.sendAuthnRequest(this.authnServiceUrl,
-				encodedSamlRequestToken, templateResourceName, httpResponse);
+				encodedSamlRequestToken, language, templateResourceName,
+				httpResponse);
+	}
+
+	private String getLanguage(HttpServletRequest httpRequest) {
+		Cookie[] cookies = httpRequest.getCookies();
+		if (null == cookies) {
+			return null;
+		}
+		for (Cookie cookie : cookies) {
+			if ("OLAS.language".equals(cookie.getName())) {
+				return cookie.getValue();
+			}
+		}
+		return null;
 	}
 
 	public String finalizeAuthentication(HttpServletRequest httpRequest,

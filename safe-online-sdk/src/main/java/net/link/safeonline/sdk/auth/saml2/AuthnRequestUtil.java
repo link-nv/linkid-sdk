@@ -66,6 +66,26 @@ public class AuthnRequestUtil {
 			String encodedSamlRequestToken, String templateResourceName,
 			HttpServletResponse httpResponse) throws ServletException,
 			IOException {
+		sendAuthnRequest(targetUrl, encodedSamlRequestToken, null,
+				templateResourceName, httpResponse);
+	}
+
+	/**
+	 * Sends a SAML2 authentication Request using the specified Velocity
+	 * template. The SAML2 Token should already be Base64 encoded.
+	 * 
+	 * @param targetUrl
+	 * @param encodedSamlRequestToken
+	 * @param language
+	 * @param templateResourceName
+	 * @param httpResponse
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	public static void sendAuthnRequest(String targetUrl,
+			String encodedSamlRequestToken, String language,
+			String templateResourceName, HttpServletResponse httpResponse)
+			throws ServletException, IOException {
 		/*
 		 * We could use the opensaml2 HTTPPostEncoderBuilder here to construct
 		 * the HTTP response. But this code is just too complex in usage. It's
@@ -90,6 +110,9 @@ public class AuthnRequestUtil {
 		VelocityContext velocityContext = new VelocityContext();
 		velocityContext.put("action", targetUrl);
 		velocityContext.put("SAMLRequest", encodedSamlRequestToken);
+		if (null != language) {
+			velocityContext.put("Language", language);
+		}
 
 		Template template;
 		try {

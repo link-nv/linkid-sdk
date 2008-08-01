@@ -81,6 +81,9 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			return null;
 		}
 		LOG.debug("POST request");
+		String language = authnRequest.getParameter("Language");
+		LOG.debug("Language parameter: " + language);
+
 		String encodedSamlRequest = authnRequest.getParameter("SAMLRequest");
 		if (null == encodedSamlRequest) {
 			return null;
@@ -135,7 +138,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		return new ProtocolContext(authenticationService
 				.getExpectedApplicationId(), authenticationService
 				.getExpectedApplicationFriendlyName(), authenticationService
-				.getExpectedTarget(), authenticationService
+				.getExpectedTarget(), language, authenticationService
 				.getRequiredDevicePolicy());
 	}
 

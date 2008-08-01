@@ -18,6 +18,7 @@
 	<lifecycle>
 		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
 		</phase-listener>
+		<phase-listener>net.link.safeonline.webapp.listener.LanguagePhaseListener</phase-listener>
 	</lifecycle>
 	<navigation-rule>
 		<navigation-case>

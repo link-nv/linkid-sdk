@@ -58,6 +58,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final String AUTH_LANGUAGE_COOKIE = "OLAS.auth.language";
+
 	public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
 
 	public static final String PROTOCOL_NAME_ATTRIBUTE = "protocolName";
@@ -110,6 +112,17 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 							.getProtocolName()), new ErrorMessage(
 							PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
 			return;
+		}
+
+		/*
+		 * Set the locale if language was specified in the browser post
+		 */
+		if (null != protocolContext.getLanguage()) {
+			Cookie authLanguageCookie = new Cookie(AUTH_LANGUAGE_COOKIE,
+					protocolContext.getLanguage());
+			authLanguageCookie.setPath("/olas-auth/");
+			authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+			response.addCookie(authLanguageCookie);
 		}
 
 		if (null == protocolContext) {

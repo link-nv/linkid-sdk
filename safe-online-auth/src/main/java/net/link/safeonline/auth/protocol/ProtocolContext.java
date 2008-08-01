@@ -27,6 +27,8 @@ public class ProtocolContext {
 
 	private final String target;
 
+	private final String language;
+
 	private final Set<DeviceEntity> requiredDevices;
 
 	/**
@@ -41,16 +43,20 @@ public class ProtocolContext {
 	 *            device issuer to display what the user is authenticating for
 	 * @param target
 	 *            the target URL to which to send the authentication response.
+	 * @param language
+	 *            the (optional) language to be used by the authentication
+	 *            webapp
 	 * @param requiredDevices
 	 *            the optional set of required devices for this authentication
 	 *            session.
 	 */
 	public ProtocolContext(String applicationId,
-			String applicationFriendlyName, String target,
+			String applicationFriendlyName, String target, String language,
 			Set<DeviceEntity> requiredDevices) {
 		this.applicationId = applicationId;
 		this.applicationFriendlyName = applicationFriendlyName;
 		this.target = target;
+		this.language = language;
 		this.requiredDevices = requiredDevices;
 	}
 
@@ -68,5 +74,9 @@ public class ProtocolContext {
 
 	public Set<DeviceEntity> getRequiredDevices() {
 		return this.requiredDevices;
+	}
+
+	public String getLanguage() {
+		return this.language;
 	}
 }

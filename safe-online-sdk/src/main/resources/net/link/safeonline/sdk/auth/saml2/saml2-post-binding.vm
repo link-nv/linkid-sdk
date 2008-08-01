@@ -10,6 +10,7 @@
 ## RelayState - String - the relay state for the message
 ## SAMLRequest - String - the Base64 encoded SAML Request
 ## SAMLResponse - String - the Base64 encoded SAML Response
+## Language - String - the Language of the webapp
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 
@@ -35,6 +36,10 @@
                 	<input type="hidden" name="SAMLResponse" value="${SAMLResponse}"/>
                 #end
                 
+                #if($Language)
+                	<input type="hidden" name="Language" value="${Language}"/>
+                #end
+
             </div>
             <noscript>
                 <div>

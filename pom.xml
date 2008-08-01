@@ -481,7 +481,7 @@
 		
 		<!-- WEBAPP NAMES -->
 		<safe-online.auth.webapp.name>olas-auth</safe-online.auth.webapp.name>
-		<safe-online.user.webapp.name>olas</safe-online.user.webapp.name>
+		<safe-online.user.webapp.name>olas-user</safe-online.user.webapp.name>
 		<safe-online.helpdesk.webapp.name>olas-helpdesk</safe-online.helpdesk.webapp.name>
 		<safe-online.oper.webapp.name>olas-oper</safe-online.oper.webapp.name>
 		<safe-online.owner.webapp.name>olas-owner</safe-online.owner.webapp.name>
