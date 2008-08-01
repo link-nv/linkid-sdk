@@ -69,7 +69,7 @@ public class IdentificationController implements AppletController {
 				.getString(KEY.START));
 		Card card = openCard();
 		if (null == card)
-            return;
+			return;
 		try {
 			CardChannel channel = card.getBasicChannel();
 			Pcsc pcsc = new Pcsc(channel);
@@ -209,7 +209,8 @@ public class IdentificationController implements AppletController {
 
 	private void showDocument(String runtimeParameter) {
 		URL documentBase = this.runtimeContext.getDocumentBase();
-		String path = this.runtimeContext.getParameter(runtimeParameter);
+		String path = this.runtimeContext.getParameter(runtimeParameter)
+				+ "?cacheid=" + Math.random() * 1000000;
 		if (null == path) {
 			this.appletView.outputDetailMessage("runtime parameter not set: "
 					+ runtimeParameter);
@@ -222,12 +223,12 @@ public class IdentificationController implements AppletController {
 	public static URL transformUrl(URL documentBase, String targetPath) {
 		if (targetPath.startsWith("http://")
 				|| targetPath.startsWith("https://")) {
-            try {
+			try {
 				return new URL(targetPath);
 			} catch (MalformedURLException e) {
 				throw new RuntimeException("URL error: " + e.getMessage());
 			}
-        }
+		}
 
 		String documentBaseStr = documentBase.toString();
 		int idx = documentBaseStr.lastIndexOf("/");
