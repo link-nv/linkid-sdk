@@ -114,6 +114,11 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 			return;
 		}
 
+		if (null == protocolContext) {
+			response.sendRedirect(this.unsupportedProtocolUrl);
+			return;
+		}
+
 		/*
 		 * Set the locale if language was specified in the browser post
 		 */
@@ -123,11 +128,6 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 			authLanguageCookie.setPath("/olas-auth/");
 			authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
 			response.addCookie(authLanguageCookie);
-		}
-
-		if (null == protocolContext) {
-			response.sendRedirect(this.unsupportedProtocolUrl);
-			return;
 		}
 
 		/*
