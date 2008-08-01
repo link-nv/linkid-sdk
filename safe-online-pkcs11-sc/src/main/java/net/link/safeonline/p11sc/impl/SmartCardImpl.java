@@ -469,20 +469,6 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 						+ new String(slotInfo.slotDescription));
 				LOG.debug("manufacturer: "
 						+ new String(slotInfo.manufacturerID));
-				// tryout
-				CK_TOKEN_INFO tokenInfo2 = pkcs11.C_GetTokenInfo(slotId);
-				String tokenLabel2 = new String(tokenInfo2.label);
-				LOG.debug("*test* token label: " + tokenLabel2);
-				LOG
-						.debug("*test* token model: "
-								+ new String(tokenInfo2.model));
-				LOG.debug("*test* manufacturer Id: "
-						+ new String(tokenInfo2.manufacturerID));
-				LOG.debug("*test* serial number: "
-						+ new String(tokenInfo2.serialNumber));
-				LOG.debug("*test* Card found in slot Idx: " + currSlotIdx);
-
-				// end-ryout
 				while (0 == (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)) {
 					String msg = this.messages.getString(KEY.NO_CARD);
 					this.interaction.output(msg);
