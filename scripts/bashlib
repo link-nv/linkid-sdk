@@ -878,7 +878,7 @@ shorten() {
     # Make path absolute, clean out repeated slashes and dot-directories.
     #[[ $path = /* ]] || path=$PWD/$path
     #path=$(sed 's,///*,/,g; s,\(^\|/\)\./,\1,g; s,\(^\|/\)[^/]*/\.\./,\1,g; s,///*,/,g' <<< "$path")
-    path=$(cd "$path"; printf "%s" "$PWD")
+    path=$([[ $path = */* ]] && cd "${path%/*}"; printf "%s/%s" "$PWD" "${path##*/}")
 
     # Replace special paths.
     path=${path#$pwd/}
