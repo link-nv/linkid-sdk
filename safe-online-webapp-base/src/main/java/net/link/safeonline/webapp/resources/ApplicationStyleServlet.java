@@ -76,8 +76,8 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
 
         try {
             super.init(config);
-        } catch (NoClassDefFoundError e) {
-            LOG.error("Some required field class(es) were not available.", e);
+        } catch (Exception e) {
+            LOG.error("Could not properly initialize style servlet.", e);
         }
 
         Properties velocityProperties = new Properties();
