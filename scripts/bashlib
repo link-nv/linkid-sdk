@@ -234,7 +234,7 @@ emit() {
         local font=$reset$textstyle$textcolor
         text=$font${text//$reset/$font}
         
-        printf "\r$reset $style$color* %s" "$text"               >&$fd
+        printf "\r$reset $style$color* %s" "$text"                  >&$fd
     fi
 } # _____________________________________________________________________
 
@@ -332,9 +332,6 @@ spinner() {
     trap 'done="${red}failed"; break' USR2
     trap 'break' USR1
 
-    # Toggle screen monitor status.
-    [[ $TERM = screen* ]] && screen -X monitor >/dev/null 2>&1
-
     # Figure out what FD to use for our messages.
     [[ -t 1 ]]; local fd=$(( $? + 1 ))
 
@@ -375,9 +372,6 @@ spinner() {
 
     # Get rid of the spinner traps.
     trap - USR1 USR2; (( monitor )) && set -m
-
-    # Toggle screen monitor status back.
-    [[ $TERM = screen* ]] && screen -X monitor >/dev/null 2>&1
 
     # Spinner final status.
     if (( output ))
@@ -478,6 +472,8 @@ report() {
 # If no option is marked as valid, the given reply is echoed and an exit
 # code of 0 is returned.
 #
+# You can specify the -# option to make ask hide the user's input.
+#
 ask() {
    
    # Check usage.
@@ -491,6 +487,7 @@ ask() {
     local option=
     local options=
     local default=
+    local silent=
     local valid=
 
     # Parse the options.
@@ -500,11 +497,13 @@ ask() {
 
         shift
     else
-        for arg in $(getArgs "$(printf "%s" {a..z} {A..Z})!" "$@"); do
+        for arg in $(getArgs "$(printf "%s" {a..z} {A..Z})!#" "$@"); do
             [[ $arg = [[:upper:]] ]] \
                 && default=$arg
             [[ $arg = ! ]] \
                 && { valid=${options: -1}; continue; }
+            [[ $arg = '#' ]] \
+                && { silent=1; arg=; }
 
             options+=$arg
         done
@@ -518,8 +517,8 @@ ask() {
 
     # Ask the question.
     emit -yn "$*${option:+ [$option]}${options:+ [$options]} "
-    read ${options:+-n1}
-    [[ $options && $REPLY ]] && printf "\n"                         >&$fd
+    read ${options:+-n1} ${silent:+-s}
+    [[ $options && $REPLY ]] || (( silent )) && printf "\n"         >&$fd
 
     # Evaluate the reply.
     while true; do

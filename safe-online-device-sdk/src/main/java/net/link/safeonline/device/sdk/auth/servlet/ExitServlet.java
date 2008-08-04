@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.device.sdk.auth.saml2.Saml2Handler;
 import net.link.safeonline.device.sdk.exception.AuthenticationFinalizationException;
-import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
-import net.link.safeonline.sdk.servlet.ErrorMessage;
-import net.link.safeonline.sdk.servlet.annotation.Init;
+import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.annotation.Init;
 
 public class ExitServlet extends AbstractInjectionServlet {
 

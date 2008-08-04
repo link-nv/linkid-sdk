@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.servlet.annotation;
+package net.link.safeonline.util.servlet.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

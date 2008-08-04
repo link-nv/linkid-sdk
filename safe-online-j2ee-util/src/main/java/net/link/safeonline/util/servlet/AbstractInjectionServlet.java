@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.servlet;
+package net.link.safeonline.util.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,9 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.sdk.servlet.annotation.Context;
-import net.link.safeonline.sdk.servlet.annotation.Init;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.util.servlet.annotation.Context;
+import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -17,8 +17,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.ee.IdentityServiceClient;
+import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;

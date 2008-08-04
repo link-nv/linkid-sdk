@@ -68,13 +68,13 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private JButton detailsButton;
 
-	private JButton retryButton;
+	JButton                   retryButton;
 
-	private JButton helpButton;
+	JButton                   helpButton;
 
-	private JButton tryAnotherDeviceButton;
+	JButton                   tryAnotherDeviceButton;
 
-	private Thread thread;
+	Thread                    thread;
 
 	private static enum State {
 		HIDE, SHOW
@@ -84,7 +84,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private ResourceBundle messages;
 
-	private AppletController appletController;
+	AppletController       appletController;
 
 	protected AppletBase() {
 		this.appletController = new AppletControl();
@@ -112,7 +112,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		initAppletController();
 	}
 
-	private void initAppletController() {
+	void initAppletController() {
 		this.appletController.init(this, this, this);
 		this.thread = new Thread(this.appletController);
 		this.thread.start();
@@ -311,8 +311,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 	}
 
 	private HttpURLConnection prepareHelpdeskConnection() throws IOException {
-		URL documentBase = this.getDocumentBase();
-		String servletPath = this.getParameter("HelpdeskEventPath");
+		URL documentBase = getDocumentBase();
+		String servletPath = getParameter("HelpdeskEventPath");
 		URL url = AppletControl.transformUrl(documentBase, servletPath);
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url
 				.openConnection();
@@ -348,7 +348,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		CardLayout cl = (CardLayout) (this.cards.getLayout());
+		CardLayout cl = (CardLayout) this.cards.getLayout();
 		if (this.state == State.HIDE) {
 			cl.show(this.cards, "details");
 			this.state = State.SHOW;
@@ -360,19 +360,19 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		}
 	}
 
-	private void redirectToHelp() {
-		URL documentBase = this.getDocumentBase();
-		String targetPath = this.getParameter("HelpPath");
+	void redirectToHelp() {
+		URL documentBase = getDocumentBase();
+		String targetPath = getParameter("HelpPath");
 		URL target = AppletControl.transformUrl(documentBase, targetPath);
-		this.showDocument(target);
+		showDocument(target);
 	}
 
-	private void redirectToTryAnotherDevice() {
-		URL documentBase = this.getDocumentBase();
-		String targetPath = this.getParameter("TargetPath") + "?cacheid="
+	void redirectToTryAnotherDevice() {
+		URL documentBase = getDocumentBase();
+		String targetPath = getParameter("TargetPath") + "?cacheid="
 				+ Math.random() * 1000000;
 		URL target = AppletControl.transformUrl(documentBase, targetPath);
-		this.showDocument(target);
+		showDocument(target);
 	}
 
 	private void iterateBackground(Component[] components, Color color) {

@@ -48,109 +48,119 @@ import org.jboss.seam.log.Log;
 @Stateful
 @Name("deviceRegistration")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-		+ "DeviceRegistrationBean/local")
+        + "DeviceRegistrationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceRegistrationBean extends AbstractLoginBean implements
-		DeviceRegistration {
+        DeviceRegistration {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                   log;
 
-	private String device;
+    private String                device;
 
-	private String password;
+    private String                password;
 
-	@In(required = true)
-	private AuthenticationService authenticationService;
+    @In(required = true)
+    private AuthenticationService authenticationService;
 
-	@In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-	private String application;
+    @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
+    private String                application;
 
-	@In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
-	private Set<DeviceEntity> requiredDevicePolicy;
+    @In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
+    private Set<DeviceEntity>     requiredDevicePolicy;
 
-	@EJB
-	private DevicePolicyService devicePolicyService;
+    @EJB
+    private DevicePolicyService   devicePolicyService;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		this.log.debug("destroy");
-		this.device = null;
-		this.password = null;
-	}
 
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String deviceNext() throws IOException, DeviceNotFoundException {
-		this.log.debug("deviceNext: " + this.device);
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-		String registrationURL = this.devicePolicyService
-				.getRegistrationURL(this.device);
-		if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = context.getExternalContext();
-			externalContext.redirect(registrationURL);
-			return null;
-		}
-		AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
-		return null;
-	}
+        this.log.debug("destroy");
+        this.device = null;
+        this.password = null;
+    }
 
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String getDevice() {
-		return this.device;
-	}
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public String deviceNext() throws IOException, DeviceNotFoundException {
 
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public void setDevice(String device) {
-		this.device = device;
-	}
+        this.log.debug("deviceNext: " + this.device);
 
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String getPassword() {
-		return this.password;
-	}
+        String registrationURL = this.devicePolicyService
+                .getRegistrationURL(this.device);
+        if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(registrationURL);
+            return null;
+        }
+        AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
+        return null;
+    }
 
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String passwordNext() throws SubjectNotFoundException,
-			DeviceNotFoundException {
-		this.log.debug("passwordNext");
-		this.authenticationService.setPassword(this.userId, this.password);
-		this.authenticationService.authenticate(getUsername(), this.password);
-		super.relogin(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-		return null;
-	}
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public String getDevice() {
 
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public void setPassword(String password) {
-		this.password = password;
-	}
+        return this.device;
+    }
 
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String getUsername() {
-		return this.subjectService.getSubjectLogin(this.userId);
-	}
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public void setDevice(String device) {
 
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	@Factory("applicationDevicesDeviceRegistration")
-	public List<SelectItem> applicationDevicesFactory()
-			throws ApplicationNotFoundException, EmptyDevicePolicyException {
-		this.log.debug("application devices factory");
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
+        this.device = device;
+    }
 
-		List<DeviceEntity> devicePolicy = this.devicePolicyService
-				.getDevicePolicy(this.application, this.requiredDevicePolicy);
-		for (DeviceEntity device : devicePolicy) {
-			String deviceName = this.devicePolicyService.getDeviceDescription(
-					device.getName(), viewLocale);
-			SelectItem applicationDevice = new SelectItem(device.getName(),
-					deviceName);
-			applicationDevices.add(applicationDevice);
-		}
-		return applicationDevices;
-	}
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public String getPassword() {
+
+        return this.password;
+    }
+
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public String passwordNext() throws SubjectNotFoundException,
+            DeviceNotFoundException {
+
+        this.log.debug("passwordNext");
+        this.authenticationService.setPassword(this.userId, this.password);
+        this.authenticationService.authenticate(getUsername(), this.password);
+        super.relogin(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        return null;
+    }
+
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public void setPassword(String password) {
+
+        this.password = password;
+    }
+
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public String getUsername() {
+
+        return this.subjectService.getSubjectLogin(this.userId);
+    }
+
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    @Factory("applicationDevicesDeviceRegistration")
+    public List<SelectItem> applicationDevicesFactory()
+            throws ApplicationNotFoundException, EmptyDevicePolicyException {
+
+        this.log.debug("application devices factory");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
+
+        List<DeviceEntity> devicePolicy = this.devicePolicyService
+                .getDevicePolicy(this.application, this.requiredDevicePolicy);
+        for (DeviceEntity deviceEntity : devicePolicy) {
+            String deviceName = this.devicePolicyService.getDeviceDescription(
+                    deviceEntity.getName(), viewLocale);
+            SelectItem applicationDevice = new SelectItem(deviceEntity
+                    .getName(), deviceName);
+            applicationDevices.add(applicationDevice);
+        }
+        return applicationDevices;
+    }
 
 }

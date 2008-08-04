@@ -17,9 +17,9 @@ import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
-import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
-import net.link.safeonline.sdk.servlet.ErrorMessage;
-import net.link.safeonline.sdk.servlet.annotation.Init;
+import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
