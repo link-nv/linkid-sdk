@@ -488,7 +488,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 				LOG.debug("serial number: "
 						+ new String(tokenInfo.serialNumber));
 				LOG.debug("Card found in slot Idx: " + currSlotIdx);
-				if (false == "BELPIC".equals(tokenLabel.trim())) {
+				if (false == tokenLabel.trim().startsWith("BELPIC")) {
 					throw new UnsupportedSmartCardException();
 				}
 				return currSlotIdx;

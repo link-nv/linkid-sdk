@@ -211,6 +211,7 @@ public class IdentificationController implements AppletController {
 		URL documentBase = this.runtimeContext.getDocumentBase();
 		String path = this.runtimeContext.getParameter(runtimeParameter)
 				+ "?cacheid=" + Math.random() * 1000000;
+		this.appletView.outputDetailMessage("redirecting to: " + path);
 		if (null == path) {
 			this.appletView.outputDetailMessage("runtime parameter not set: "
 					+ runtimeParameter);
