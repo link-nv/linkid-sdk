@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.model.application.PublicApplication;
-import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.service.PublicApplicationService;
+import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.sf.jmimemagic.Magic;
 import net.sf.jmimemagic.MagicException;
 import net.sf.jmimemagic.MagicMatch;

@@ -1,0 +1,19 @@
+#!/bin/bash
+scripts="${0%/*}"; [[ $scripts = /* ]] || scripts=$PWD/$scripts
+distribution=$(cd "$scripts/.."; echo "${PWD##*/}")
+source "$scripts/bashlib"
+
+
+# Notify the user if the distribution is not running anymore.
+if ! [[ -f "$scripts/jboss.pid" && $(<"$scripts/jboss.pid") ]]; then
+    emit -y "The distribution '$distribution' is not running (anymore)!"
+    read -n1 -t2
+fi
+
+
+# Use the default pager for reading the log file.
+if [[ -f "$scripts/../jboss/server/default/log/jboss.log" ]]; then
+    less +F "$scripts/../jboss/server/default/log/jboss.log"
+else
+    emit -r "Log file for '$distribution' not found."
+fi

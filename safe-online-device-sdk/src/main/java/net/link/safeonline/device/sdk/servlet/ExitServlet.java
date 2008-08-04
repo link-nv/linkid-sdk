@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.saml2.Saml2Handler;
-import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
-import net.link.safeonline.sdk.servlet.ErrorMessage;
-import net.link.safeonline.sdk.servlet.annotation.Init;
+import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.annotation.Init;
 
 /**
  * This servlet returns a saml authentication response from device issuer to

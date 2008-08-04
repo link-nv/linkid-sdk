@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;

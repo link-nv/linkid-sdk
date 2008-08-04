@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
-import net.link.safeonline.sdk.servlet.AbstractInjectionFilter;
-import net.link.safeonline.sdk.servlet.annotation.Init;
+import net.link.safeonline.util.servlet.AbstractInjectionFilter;
+import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -234,7 +234,7 @@ emit() {
         local font=$reset$textstyle$textcolor
         text=$font${text//$reset/$font}
         
-        printf "\r$reset $style$color* %s" "$text"                  >&$fd
+        printf "\r$reset $style$color* %s" "$text"               >&$fd
     fi
 } # _____________________________________________________________________
 
@@ -518,7 +518,7 @@ ask() {
     # Ask the question.
     emit -yn "$*${option:+ [$option]}${options:+ [$options]} "
     read ${options:+-n1} ${silent:+-s}
-    [[ $options && $REPLY ]] || (( silent )) && printf "\n"         >&$fd
+    [[ $options && $REPLY ]] && printf "\n"                         >&$fd
 
     # Evaluate the reply.
     while true; do

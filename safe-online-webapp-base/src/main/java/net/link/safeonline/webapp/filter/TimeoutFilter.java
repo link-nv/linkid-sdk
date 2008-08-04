@@ -17,9 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.sdk.servlet.AbstractInjectionFilter;
-import net.link.safeonline.sdk.servlet.annotation.Init;
 import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
+import net.link.safeonline.util.servlet.AbstractInjectionFilter;
+import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

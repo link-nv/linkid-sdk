@@ -855,6 +855,8 @@
 					<wtpmanifest>false</wtpmanifest>
 					<wtpapplicationxml>false</wtpapplicationxml>
 					<wtpversion>2.0</wtpversion>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>

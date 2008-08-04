@@ -21,9 +21,9 @@ import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
-import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
-import net.link.safeonline.sdk.servlet.ErrorMessage;
-import net.link.safeonline.sdk.servlet.annotation.Init;
+import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.ErrorMessage;
+import net.link.safeonline.util.servlet.annotation.Init;
 
 /**
  * Generic entry point for the authentication web application. This servlet will

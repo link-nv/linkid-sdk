@@ -14,12 +14,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.annotation.In;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
 
 /**
  * This servlet redirects back to the calling web application.
@@ -34,37 +33,37 @@ public class IdentificationExitServlet extends AbstractInjectionServlet {
 	private static final Log LOG = LogFactory
 			.getLog(IdentificationExitServlet.class);
 
-	@In(value = "target", scope = ScopeType.SESSION)
+	@In("target")
 	private String target;
 
-	@In(value = IdentificationDataServlet.NAME_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.NAME_SESSION_ATTRIBUTE)
 	private String name;
 
-	@In(value = IdentificationDataServlet.FIRST_NAME_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.FIRST_NAME_SESSION_ATTRIBUTE)
 	private String firstname;
 
-	@In(value = IdentificationDataServlet.NATIONALITY_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.NATIONALITY_SESSION_ATTRIBUTE)
 	private String nationality;
 
-	@In(value = IdentificationDataServlet.SEX_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.SEX_SESSION_ATTRIBUTE)
 	private String sex;
 
-	@In(value = IdentificationDataServlet.CITY_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.CITY_SESSION_ATTRIBUTE)
 	private String city;
 
-	@In(value = IdentificationDataServlet.ZIP_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.ZIP_SESSION_ATTRIBUTE)
 	private String zip;
 
-	@In(value = IdentificationDataServlet.DOB_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.DOB_SESSION_ATTRIBUTE)
 	private String dob;
 
-	@In(value = IdentificationDataServlet.STREET_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.STREET_SESSION_ATTRIBUTE)
 	private String street;
 
-	@In(value = IdentificationDataServlet.HOUSE_NR_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.HOUSE_NR_SESSION_ATTRIBUTE)
 	private String houseNr;
 
-	@In(value = IdentificationDataServlet.HASHED_NATIONAL_NUMBER_SESSION_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(IdentificationDataServlet.HASHED_NATIONAL_NUMBER_SESSION_ATTRIBUTE)
 	private String hashedNationalNumber;
 
 	@Override

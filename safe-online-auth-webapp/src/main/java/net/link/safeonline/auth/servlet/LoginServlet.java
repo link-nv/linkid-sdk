@@ -30,13 +30,12 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
-import net.link.safeonline.sdk.servlet.AbstractInjectionServlet;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.annotation.In;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
 
 /**
  * The login servlet. A device (username-password or BeID) confirms successful
@@ -66,13 +65,13 @@ public class LoginServlet extends AbstractInjectionServlet {
 	@EJB(mappedName = "SafeOnline/UsageAgreementServiceBean/local")
 	private UsageAgreementService usageAgreementService;
 
-	@In(value = LoginManager.USERID_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(LoginManager.USERID_ATTRIBUTE)
 	String username;
 
-	@In(value = LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE)
 	DeviceEntity device;
 
-	@In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, scope = ScopeType.SESSION)
+	@In(LoginManager.APPLICATION_ID_ATTRIBUTE)
 	String applicationId;
 
 	@Override
@@ -176,8 +175,8 @@ public class LoginServlet extends AbstractInjectionServlet {
 		try {
 			subscriptionRequired = !this.subscriptionService
 					.isSubscribed(this.applicationId);
-			if (!subscriptionRequired)
-				try {
+			if (!subscriptionRequired) {
+                try {
 					subscriptionRequired = this.usageAgreementService
 							.requiresUsageAgreementAcceptation(this.applicationId);
 				} catch (SubscriptionNotFoundException e) {
@@ -186,6 +185,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 							+ this.applicationId, LogLevelType.ERROR);
 					throw new ServletException("subscription not found");
 				}
+            }
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found: " + this.applicationId);
 			HelpdeskLogger.add(session, "application not found: "
