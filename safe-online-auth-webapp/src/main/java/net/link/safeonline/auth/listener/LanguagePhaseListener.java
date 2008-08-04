@@ -25,6 +25,12 @@ public class LanguagePhaseListener implements PhaseListener {
 		PhaseId phaseId = phaseEvent.getPhaseId();
 		if (phaseId == PhaseId.RESTORE_VIEW) {
 			FacesContext facesContext = phaseEvent.getFacesContext();
+			if (null == facesContext)
+				return;
+			if (null == facesContext.getExternalContext())
+				return;
+			if (null == facesContext.getExternalContext().getRequest())
+				return;
 			Cookie[] cookies = ((HttpServletRequest) facesContext
 					.getExternalContext().getRequest()).getCookies();
 			for (Cookie cookie : cookies) {
