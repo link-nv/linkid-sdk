@@ -16,12 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.annotation.Out;
+import net.link.safeonline.util.servlet.annotation.RequestParameter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Out;
-import org.jboss.seam.annotations.web.RequestParameter;
 
 /**
  * Servlet that receives the java version data from the JavaVersionApplet applet
@@ -128,7 +127,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 	private String hasPkcs11;
 
 	@SuppressWarnings("unused")
-	@Out(value = "platform", scope = ScopeType.SESSION)
+	@Out("platform")
 	private PLATFORM platform;
 
 	public static enum PLATFORM {
@@ -142,7 +141,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 	public static final String JAVA_VERSION_NAME = "javaVersion";
 
 	@SuppressWarnings("unused")
-	@Out(value = JAVA_VERSION_NAME, scope = ScopeType.SESSION)
+	@Out(JAVA_VERSION_NAME)
 	private JAVA_VERSION sessionJavaVersion;
 
 	@Override
@@ -231,10 +230,9 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 	}
 
 	private boolean checkJavaVersion() throws ServletException {
-		if (null == this.javaVersion) {
-			throw new ServletException(
+		if (null == this.javaVersion)
+            throw new ServletException(
 					"javaVersion request parameter is required");
-		}
 		boolean result = Pattern.matches(JAVA_VERSION_REG_EXPR,
 				this.javaVersion);
 		LOG.debug("java version check result: " + result);
@@ -249,19 +247,16 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 	}
 
 	private boolean checkJavaEnabled() throws ServletException {
-		if (null == this.javaEnabled) {
-			throw new ServletException("javaEnabled request parameter required");
-		}
-		if (false == Boolean.TRUE.toString().equals(this.javaEnabled)) {
-			return false;
-		}
+		if (null == this.javaEnabled)
+            throw new ServletException("javaEnabled request parameter required");
+		if (false == Boolean.TRUE.toString().equals(this.javaEnabled))
+            return false;
 		return true;
 	}
 
 	private boolean checkPlatform() throws ServletException {
-		if (null == this.platformRequestParameter) {
-			throw new ServletException("platform request parameter required");
-		}
+		if (null == this.platformRequestParameter)
+            throw new ServletException("platform request parameter required");
 		String platformStr = this.platformRequestParameter.toLowerCase();
 		if (platformStr.indexOf("win") != -1) {
 			this.platform = PLATFORM.WINDOWS;
@@ -269,9 +264,8 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 			this.platform = PLATFORM.LINUX;
 		} else if (platformStr.indexOf("mac") != -1) {
 			this.platform = PLATFORM.MAC;
-		} else {
-			return false;
-		}
+		} else
+            return false;
 		return true;
 	}
 }
