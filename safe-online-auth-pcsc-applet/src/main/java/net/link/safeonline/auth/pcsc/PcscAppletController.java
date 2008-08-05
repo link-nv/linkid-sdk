@@ -44,6 +44,10 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 			(byte) 0x94, 0x40, 0x0a, (byte) 0xa5, 0x03, 0x01, 0x01, 0x01,
 			(byte) 0xad, 0x13, 0x10 };
 
+	public static final byte[] BEID_ATR_100 = new byte[] { 0x3b, (byte) 98,
+			(byte) 0x94, 0x40, (byte) 0xff, (byte) 0xa5, 0x03, 0x01, 0x01,
+			0x01, (byte) 0xad, 0x13, 0x10 };
+
 	private AppletView appletView;
 
 	private RuntimeContext runtimeContext;
@@ -135,7 +139,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 
 	private void showDocument(String runtimeParameter) {
 		URL documentBase = this.runtimeContext.getDocumentBase();
-		String path = this.runtimeContext.getParameter(runtimeParameter) + "?cacheid=" + Math.random() * 1000000;
+		String path = this.runtimeContext.getParameter(runtimeParameter)
+				+ "?cacheid=" + Math.random() * 1000000;
 		this.appletView.outputDetailMessage("redirecting to: " + path);
 		if (null == path) {
 			this.appletView.outputDetailMessage("runtime parameter not set: "
@@ -267,7 +272,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 				ATR atr = card.getATR();
 				byte[] atrBytes = atr.getBytes();
 				if (false == Arrays.equals(BEID_ATR_11, atrBytes)
-						&& false == Arrays.equals(BEID_ATR_10, atrBytes)) {
+						&& false == Arrays.equals(BEID_ATR_10, atrBytes)
+						&& false == Arrays.equals(BEID_ATR_100, atrBytes)) {
 					continue;
 				}
 				return card;
