@@ -106,25 +106,27 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
             HttpServletResponse response) throws ServletException, IOException {
 
         String applicationName = request.getParameter("applicationName");
-        if (null == applicationName)
+        if (null == applicationName) {
             throw new IllegalArgumentException(
                     "The application name must be provided.");
+        }
 
         // Figure out the base color for the style.
         Color baseColor = Color.decode("#5a7500"); // Default: Green.
-        try {
-            PublicApplication application = this.publicApplicationService
-                    .findPublicApplication(applicationName);
+        if (this.publicApplicationService != null) {
+            try {
+                PublicApplication application = this.publicApplicationService
+                        .findPublicApplication(applicationName);
 
-            if (application == null || application.getColor() == null) {
-                throw new IllegalStateException("Application not found: "
-                        + applicationName);
+                if (application == null || application.getColor() == null)
+                    throw new IllegalStateException("Application not found: "
+                            + applicationName);
+
+                baseColor = application.getColor();
+            } catch (Exception e) {
+                LOG.error("Couldn't retrieve application color for "
+                        + applicationName + ", reverting to defaults.", e);
             }
-
-            baseColor = application.getColor();
-        } catch (Exception e) {
-            LOG.error("Couldn't retrieve application color for "
-                    + applicationName + ", reverting to defaults.", e);
         }
 
         // Merge the velocity style template with the color attributes.
