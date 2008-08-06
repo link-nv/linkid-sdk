@@ -45,7 +45,16 @@ public class IdentificationDataServletTest {
 		HttpClient httpClient = new HttpClient();
 		PostMethod postMethod = new PostMethod(this.servletTestManager
 				.getServletLocation());
+		postMethod.addParameter("name", "Doe");
+		postMethod.addParameter("firstname", "John");
+		postMethod.addParameter("dob", "01/01/1970");
+		postMethod.addParameter("nationality", "Belg");
+		postMethod.addParameter("sex", "M");
+		postMethod.addParameter("name", "John");
 		postMethod.addParameter("street", "test 1234 /1");
+		postMethod.addParameter("city", "Gent");
+		postMethod.addParameter("zip", "9000");
+		postMethod.addParameter("nnr", "123456789");
 
 		int statusCode = httpClient.executeMethod(postMethod);
 		LOG.debug("status code: " + statusCode);
