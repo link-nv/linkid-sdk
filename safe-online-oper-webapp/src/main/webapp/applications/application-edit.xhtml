@@ -71,6 +71,12 @@
 			</rich:simpleTogglePanel>
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				opened="false" id="description-tab" label="#{msgs.description}">
+				<h:inputTextarea value="#{operApplication.description}"
+					escape="false" cols="60" rows="10" />
+			</rich:simpleTogglePanel>
+
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				opened="false" id="identity-tab" label="#{msgs.applicationIdentity}">
 				<rich:dataTable id="identity-table" value="#{identityAttributes}"
 					styleClass="inner" var="item">
@@ -88,10 +94,41 @@
 					</h:column>
 					<h:column headerClass="small">
 						<f:facet name="header">#{msgs.dataMining}</f:facet>
-						<h:selectBooleanCheckbox value="#{item.dataMining}" id="datamining" />
+						<h:selectBooleanCheckbox value="#{item.dataMining}"
+							id="datamining" />
 					</h:column>
 				</rich:dataTable>
 			</rich:simpleTogglePanel>
+
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				opened="false" id="restriction-tab"
+				label="#{msgs.isDeviceRestriction}">
+				<table class="inner">
+					<tr>
+						<th class="half"><h:outputText
+							value="#{msgs.isDeviceRestriction}" /></th>
+						<td><h:selectBooleanCheckbox id="restriction"
+							value="#{operApplication.deviceRestriction}" /></td>
+					</tr>
+				</table>
+
+				<rich:dataTable value="#{operAllowedDevices}" var="item"
+					styleClass="inner ">
+					<h:column>
+						<f:facet name="header">#{msgs.name}</f:facet>
+						<h:outputText value="#{item.friendlyName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{msgs.allowed}</f:facet>
+						<h:selectBooleanCheckbox value="#{item.allowed}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{msgs.weight}</f:facet>
+						<h:inputText value="#{item.weight}" styleClass="label" />
+					</h:column>
+				</rich:dataTable>
+			</rich:simpleTogglePanel>
+
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				opened="false" id="cert-tab" label="#{msgs.accessControl}">
@@ -101,14 +138,15 @@
 
 					<tbody>
 						<tr>
-							<th><h:outputText value="#{msgs.accessControlIdmappingService}" /></th>
-                            <td><h:selectBooleanCheckbox id="idmapping"
-                                    value="#{operApplication.idmapping}" /></td>
+							<th><h:outputText
+								value="#{msgs.accessControlIdmappingService}" /></th>
+							<td><h:selectBooleanCheckbox id="idmapping"
+								value="#{operApplication.idmapping}" /></td>
 						</tr>
 						<tr>
 							<th><h:outputText value="#{msgs.skipMessageIntegrityCheck}" /></th>
-                            <td><h:selectBooleanCheckbox id="skipMessageIntegrityCheck"
-                                    value="#{operApplication.skipMessageIntegrityCheck}" /></td>
+							<td><h:selectBooleanCheckbox id="skipMessageIntegrityCheck"
+								value="#{operApplication.skipMessageIntegrityCheck}" /></td>
 						</tr>
 						<tr>
 							<th><h:outputText value="#{msgs.certificate}" /></th>

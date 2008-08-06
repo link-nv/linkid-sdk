@@ -1,51 +1,34 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:rich="http://richfaces.org/rich"
-	xmlns:a4j="http://richfaces.org/a4j">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="applications" />
-		</ui:include>
-	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.applications}</h1>
+		<h1>#{selectedApplication.name}</h1>
+
+		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{operSelectedUsageAgreement.usageAgreementVersion}
+		</h2>
 	</ui:define>
 	<ui:define name="content">
 
-		<h:form id="applicationForm" ajaxSubmit="true" reRender="app-data">
-			<rich:dataTable id="app-data" var="item"
-				value="#{operApplicationList}" rows="10"
+		<a4j:form id="usageAgreementForm" ajaxSubmit="true"
+			reRender="usage-agreement-text-data">
+			<rich:dataTable id="usage-agreement-text-data" var="item"
+				value="#{operUsageAgreementTextList}" rows="10"
 				rowClasses="listingTable_Row1,listingTable_Row2">
-
 				<h:column>
-					<f:facet name="header">#{msgs.application}</f:facet>
-					<h:commandLink id="view" value="#{item.name}"
-						action="#{operApplication.view}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.applicationfriendlyname}</f:facet>
-					<h:outputText value="#{item.friendlyName}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.action}</f:facet>
-					<h:commandLink id="usage" value="#{msgs.editUsageAgreement}"
-						action="#{operApplication.editUsageAgreement}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.action}</f:facet>
-					<h:commandLink id="remove" value="#{msgs.removeaction}"
-						action="#{operApplication.removeApplication}" />
+					<a4j:commandLink id="viewtext"
+						value="#{msgs.language}: #{item.language}"
+						action="#{operUsageAgreement.viewText}" />
 				</h:column>
 				<f:facet name="footer">
-					<rich:datascroller for="app-data" pageIndexVar="pageIndex"
-						pagesVar="pages" fastControls="hide">
+					<rich:datascroller for="usage-agreement-text-data"
+						pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
 						<f:facet name="first">
 							<h:graphicImage value="/images/icons/control_start.png" />
 						</f:facet>
@@ -76,21 +59,19 @@
 					</rich:datascroller>
 				</f:facet>
 			</rich:dataTable>
+		</a4j:form>
 
-			<rich:messages styleClass="error" />
+		<rich:spacer height="10" />
+		<a4j:form>
+			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
+				styleClass="submit" />
+			<so:nbsp />
+		</a4j:form>
 
-			<h:commandButton value="#{msgs.addaction}" id="add"
-				action="add-application" styleClass="submit" />
-		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/owners/owners.seam"
-					value="#{msgs.owners}" /></li>
-			</ul>
-		</h:form>
+		<p>#{msgs.helpUsageAgreementView}</p>
 	</ui:define>
 </ui:composition>
 </body>

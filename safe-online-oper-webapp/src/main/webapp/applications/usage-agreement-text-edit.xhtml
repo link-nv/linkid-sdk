@@ -19,17 +19,17 @@
 			<table>
 				<tr>
 					<th><h:outputText
-						value="#{msgs.language}: #{selectedUsageAgreementText.language}" /></th>
+						value="#{msgs.language}: #{operSelectedUsageAgreementText.language}" /></th>
 				</tr>
 				<tr>
 					<td class="center"><h:inputTextarea id="text"
-						value="#{selectedUsageAgreementText.text}" escape="false"
+						value="#{operSelectedUsageAgreementText.text}" escape="false"
 						cols="60" rows="10" /></td>
 				</tr>
 			</table>
 
 			<a4j:commandButton value="#{msgs.saveaction}"
-				action="#{ownerUsageAgreement.saveText}" id="save"
+				action="#{operUsageAgreement.saveText}" id="save"
 				styleClass="submit" />
 			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
 				styleClass="submit" />

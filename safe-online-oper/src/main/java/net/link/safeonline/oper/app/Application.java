@@ -42,6 +42,11 @@ public interface Application {
 
 	List<SelectItem> appliactionIdScopeFactory();
 
+	void allowedDevices();
+
+	void usageAgreementListFactory() throws ApplicationNotFoundException,
+			PermissionDeniedException;
+
 	/*
 	 * Lifecycle.
 	 */
@@ -100,10 +105,15 @@ public interface Application {
 
 	void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck);
 
+	boolean isDeviceRestriction();
+
+	void setDeviceRestriction(boolean deviceRestriction);
+
 	/*
 	 * Actions.
 	 */
-	String add() throws AttributeTypeNotFoundException, IOException;
+	String add() throws AttributeTypeNotFoundException, IOException,
+			ApplicationNotFoundException;
 
 	String removeApplication() throws ApplicationNotFoundException;
 
@@ -115,4 +125,9 @@ public interface Application {
 	String view();
 
 	String edit();
+
+	String viewUsageAgreement();
+
+	String editUsageAgreement() throws ApplicationNotFoundException,
+			PermissionDeniedException;
 }

@@ -161,7 +161,7 @@ public class ApplicationServiceBean implements ApplicationService,
 			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
 			byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
-			boolean skipMessageIntegrityCheck)
+			boolean skipMessageIntegrityCheck, boolean deviceRestriction)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
 			AttributeTypeNotFoundException {
@@ -183,6 +183,8 @@ public class ApplicationServiceBean implements ApplicationService,
 		application.setIdScope(idScope);
 
 		application.setSkipMessageIntegrityCheck(skipMessageIntegrityCheck);
+
+		application.setDeviceRestriction(deviceRestriction);
 
 		setInitialApplicationIdentity(initialApplicationIdentityAttributes,
 				application);
@@ -286,6 +288,8 @@ public class ApplicationServiceBean implements ApplicationService,
 	 */
 	private void checkWritePermission(ApplicationEntity application)
 			throws PermissionDeniedException {
+		if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE))
+			return;
 		ApplicationOwnerEntity applicationOwner = application
 				.getApplicationOwner();
 		SubjectEntity requiredSubject = applicationOwner.getAdmin();
@@ -295,7 +299,7 @@ public class ApplicationServiceBean implements ApplicationService,
 					"application owner admin mismatch");
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public void setApplicationDescription(String name, String description)
 			throws ApplicationNotFoundException, PermissionDeniedException {
 		LOG.debug("set application description: " + name);
@@ -494,7 +498,7 @@ public class ApplicationServiceBean implements ApplicationService,
 		application.setCertificate(certificate);
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public void setApplicationDeviceRestriction(String name,
 			boolean deviceRestriction) throws ApplicationNotFoundException,
 			PermissionDeniedException {

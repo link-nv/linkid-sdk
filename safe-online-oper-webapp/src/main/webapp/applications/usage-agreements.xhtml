@@ -19,7 +19,7 @@
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				label="#{msgs.version}: #{msgs.draft}"
-				rendered="#{!empty ownerUsageAgreement.draftUsageAgreement}">
+				rendered="#{!empty operUsageAgreement.draftUsageAgreement}">
 
 				<a4j:form id="editDraftForm" reRender="usagePanel,actionForm"
 					ajaxSubmit="true">
@@ -33,9 +33,9 @@
 							</tr>
 							<tr class="center">
 								<td><a4j:commandLink value="#{msgs.releaseaction}"
-									action="#{ownerUsageAgreement.releaseDraft}" /></td>
+									action="#{operUsageAgreement.releaseDraft}" /></td>
 								<td><a4j:commandLink value="#{msgs.removeaction}"
-									action="#{ownerUsageAgreement.removeDraft}" /></td>
+									action="#{operUsageAgreement.removeDraft}" /></td>
 							</tr>
 						</tbody>
 					</table>
@@ -44,21 +44,20 @@
 				<a4j:form id="editDraftTextsForm" reRender="usagePanel"
 					ajaxSubmit="true">
 					<rich:dataTable id="draft-text-data" var="item"
-						value="#{draftUsageAgreementsTexts}" rows="10" styleClass="inner "
+						value="#{operDraftUsageAgreementsTexts}" rows="10"
+						styleClass="inner "
 						rowClasses="listingTable_Row1,listingTable_Row2">
 						<h:column>
-							<a4j:commandLink id="view-draft-text"
-								value="#{msgs.language}: #{item.language}"
-								action="#{ownerUsageAgreement.viewDraftText}" />
+							#{msgs.language}: #{item.language}
 						</h:column>
 						<h:column>
 							<a4j:commandLink id="edit-draft-text" value="#{msgs.editaction}"
-								action="#{ownerUsageAgreement.editDraftText}" />
+								action="#{operUsageAgreement.editDraftText}" />
 						</h:column>
 						<h:column>
 							<a4j:commandLink id="remove-draft-text"
 								value="#{msgs.removeaction}"
-								action="#{ownerUsageAgreement.removeDraftText}" />
+								action="#{operUsageAgreement.removeDraftText}" />
 						</h:column>
 
 						<f:facet name="footer">
@@ -109,17 +108,17 @@
 									<s:span styleClass="error" />
 								</f:facet> <s:decorate>
 									<h:inputText id="language"
-										value="#{ownerUsageAgreement.language}" required="true"
+										value="#{operUsageAgreement.language}" required="true"
 										styleClass="label" />
 									<rich:suggestionbox for="language"
-										suggestionAction="#{ownerUsageAgreement.autocompleteLanguage}"
+										suggestionAction="#{operUsageAgreement.autocompleteLanguage}"
 										var="languageInput" selfRendered="true">
 
 										<h:outputText value="#{languageInput}" />
 									</rich:suggestionbox>
 								</s:decorate> <h:message for="language" styleClass="error" /></td>
 								<td><h:commandLink id="add" value="#{msgs.addaction}"
-									styleClass="center" action="#{ownerUsageAgreement.addText}" />
+									styleClass="center" action="#{operUsageAgreement.addText}" />
 								</td>
 							</tr>
 						</tbody>
@@ -128,11 +127,11 @@
 			</rich:simpleTogglePanel>
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-				label="#{msgs.version}: #{ownerUsageAgreement.currentUsageAgreement.usageAgreementVersion}"
-				rendered="#{!empty ownerUsageAgreement.currentUsageAgreement}">
+				label="#{msgs.version}: #{operUsageAgreement.currentUsageAgreement.usageAgreementVersion}"
+				rendered="#{!empty operUsageAgreement.currentUsageAgreement}">
 
 				<a4j:form id="editCurrentsForm" reRender="usagePanel"
-					rendered="#{empty ownerUsageAgreement.draftUsageAgreement}"
+					rendered="#{empty operUsageAgreement.draftUsageAgreement}"
 					ajaxSubmit="true">
 
 					<table class="inner">
@@ -140,7 +139,7 @@
 							<tr>
 								<th><a4j:commandLink id="edit-agreement"
 									value="#{msgs.editaction}"
-									action="#{ownerUsageAgreement.createUsageAgreement}" /></th>
+									action="#{operUsageAgreement.createUsageAgreement}" /></th>
 							</tr>
 						</tbody>
 					</table>
@@ -150,18 +149,16 @@
 					ajaxSubmit="true">
 
 					<rich:dataTable id="current-text-data" var="item"
-						value="#{currentUsageAgreementsTexts}" rows="10"
+						value="#{operCurrentUsageAgreementsTexts}" rows="10"
 						styleClass="inner "
 						rowClasses="listingTable_Row1,listingTable_Row2">
 						<h:column>
-							<a4j:commandLink id="edit-current-text"
-								value="#{msgs.language}: #{item.language}"
-								action="#{ownerUsageAgreement.viewCurrentText}" />
+							#{msgs.language}: #{item.language}
 						</h:column>
 						<h:column>
-							<a4j:commandLink id="view-current-text"
+							<a4j:commandLink id="edit-current-text"
 								value="#{msgs.editaction}"
-								action="#{ownerUsageAgreement.editCurrentText}" />
+								action="#{operUsageAgreement.editCurrentText}" />
 						</h:column>
 						<f:facet name="footer">
 							<rich:datascroller for="current-text-data"
@@ -202,8 +199,8 @@
 
 		<h:form id="actionForm">
 			<h:commandButton id="create-agreement" value="#{msgs.createaction}"
-				action="#{ownerUsageAgreement.createUsageAgreement}"
-				rendered="#{empty ownerUsageAgreement.currentUsageAgreement and empty owerUsageAgreement.draftUsageAgreement}"
+				action="#{operUsageAgreement.createUsageAgreement}"
+				rendered="#{empty operUsageAgreement.currentUsageAgreement and empty operUsageAgreement.draftUsageAgreement}"
 				class="submit" />
 			<h:commandButton value="#{msgs.backaction}" action="back" id="back"
 				styleClass="submit" />

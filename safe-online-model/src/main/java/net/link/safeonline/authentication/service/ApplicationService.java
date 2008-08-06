@@ -76,6 +76,7 @@ public interface ApplicationService {
 	 *            the optional attribute types that make up the initial
 	 *            application identity. Can be <code>null</code>.
 	 * @param skipMessageIntegrityCheck
+	 * @param deviceRestriction
 	 * @throws ExistingApplicationException
 	 * @throws ApplicationOwnerNotFoundException
 	 * @throws CertificateEncodingException
@@ -87,7 +88,7 @@ public interface ApplicationService {
 			URL applicationUrl, byte[] newApplicationLogo,
 			Color applicationColor, byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
-			boolean skipMessageIntegrityCheck)
+			boolean skipMessageIntegrityCheck, boolean deviceRestriction)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
 			AttributeTypeNotFoundException;

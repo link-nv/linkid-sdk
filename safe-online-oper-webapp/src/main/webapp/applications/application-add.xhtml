@@ -100,55 +100,15 @@
 							</s:decorate> <h:message for="applicationIdScope" styleClass="error" /></td>
 
 						</tr>
-						<tr>
-
-							<th colspan="2" class="padded"><h:outputText
-								for="description" value="#{msgs.description}" /></th>
-
-						</tr>
-						<tr>
-
-							<td colspan="2"><h:inputTextarea id="description"
-								styleClass="centered" value="#{operApplication.description}"
-								cols="60" rows="10" /></td>
-
-						</tr>
 					</tbody>
 				</table>
 			</rich:simpleTogglePanel>
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-				opened="false" label="#{msgs.accessControl}">
-				<table class="inner">
-					<colgroup class="third" />
-					<colgroup />
-
-					<tbody>
-						<tr>
-							<th><h:outputText value="#{msgs.certificate}" /></th>
-							<td><s:decorate>
-								<t:inputFileUpload id="certificate" styleClass="label"
-									value="#{operApplication.upFile}" />
-							</s:decorate> <h:message for="fileupload" styleClass="error" /></td>
-
-						</tr>
-						<tr>
-
-							<th><h:outputText value="#{msgs.accessControlIdmappingService}" /></th>
-							<td><h:selectBooleanCheckbox
-								value="#{operApplication.idmapping}" id="idmapping" /></td>
-
-						</tr>
-						<tr>
-
-							<th><h:outputText value="#{msgs.skipMessageIntegrityCheck}" /></th>
-							<td><h:selectBooleanCheckbox
-								value="#{operApplication.skipMessageIntegrityCheck}"
-								id="skipMessageIntegrityCheck" /></td>
-
-						</tr>
-					</tbody>
-				</table>
+				opened="false" id="description-tab" label="#{msgs.description}">
+				<h:inputTextarea id="description"
+					value="#{operApplication.description}" escape="false" cols="60"
+					rows="10" />
 			</rich:simpleTogglePanel>
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
@@ -174,6 +134,71 @@
 					</h:column>
 				</rich:dataTable>
 			</rich:simpleTogglePanel>
+
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				opened="false" id="restriction-tab"
+				label="#{msgs.isDeviceRestriction}">
+				<table class="inner">
+					<tr>
+						<th class="half"><h:outputText
+							value="#{msgs.isDeviceRestriction}" /></th>
+						<td><h:selectBooleanCheckbox id="restriction"
+							value="#{operApplication.deviceRestriction}" /></td>
+					</tr>
+				</table>
+
+				<rich:dataTable value="#{operAllowedDevices}" var="item"
+					styleClass="inner ">
+					<h:column>
+						<f:facet name="header">#{msgs.name}</f:facet>
+						<h:outputText value="#{item.friendlyName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{msgs.allowed}</f:facet>
+						<h:selectBooleanCheckbox value="#{item.allowed}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{msgs.weight}</f:facet>
+						<h:inputText value="#{item.weight}" styleClass="label" />
+					</h:column>
+				</rich:dataTable>
+			</rich:simpleTogglePanel>
+
+			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+				opened="false" label="#{msgs.accessControl}">
+				<table class="inner">
+					<colgroup class="third" />
+					<colgroup />
+
+					<tbody>
+						<tr>
+							<th><h:outputText value="#{msgs.certificate}" /></th>
+							<td><s:decorate>
+								<t:inputFileUpload id="certificate" styleClass="label"
+									value="#{operApplication.upFile}" />
+							</s:decorate> <h:message for="certificate" styleClass="error" /></td>
+
+						</tr>
+						<tr>
+
+							<th><h:outputText
+								value="#{msgs.accessControlIdmappingService}" /></th>
+							<td><h:selectBooleanCheckbox
+								value="#{operApplication.idmapping}" id="idmapping" /></td>
+
+						</tr>
+						<tr>
+
+							<th><h:outputText value="#{msgs.skipMessageIntegrityCheck}" /></th>
+							<td><h:selectBooleanCheckbox
+								value="#{operApplication.skipMessageIntegrityCheck}"
+								id="skipMessageIntegrityCheck" /></td>
+
+						</tr>
+					</tbody>
+				</table>
+			</rich:simpleTogglePanel>
+
 
 			<h:messages styleClass="error" globalOnly="true" />
 

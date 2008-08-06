@@ -177,7 +177,7 @@ public class ApplicationBean implements Application {
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	@Factory("selectedApplicationUsageAgreements")
+	@Factory(selectedApplicationUsageAgreementsModel)
 	public void usageAgreementListFactory()
 			throws ApplicationNotFoundException, PermissionDeniedException {
 		if (null == this.selectedApplication) {

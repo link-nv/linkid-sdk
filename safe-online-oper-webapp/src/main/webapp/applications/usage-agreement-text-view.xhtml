@@ -11,33 +11,30 @@
 	<ui:define name="top_content">
 		<h1>#{selectedApplication.name}</h1>
 
-		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{msgs.draft}</h2>
+		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{operSelectedUsageAgreement.usageAgreementVersion}
+		</h2>
 	</ui:define>
 	<ui:define name="content">
 
-		<a4j:form>
-			<table>
-				<tr>
-					<th><h:outputText
-						value="#{msgs.language}: #{selectedUsageAgreementText.language}" /></th>
-				</tr>
-				<tr>
-					<td class="center"><h:inputTextarea id="text"
-						value="#{selectedUsageAgreementText.text}" escape="false"
-						cols="60" rows="10" /></td>
-				</tr>
-			</table>
+		<table>
+			<tr>
+				<th><h:outputText
+					value="#{msgs.language}: #{operSelectedUsageAgreementText.language}" /></th>
+			</tr>
+			<tr>
+				<td class="center usage_agreement">#{operSelectedUsageAgreementText.text}</td>
+			</tr>
+		</table>
 
-			<a4j:commandButton value="#{msgs.saveaction}"
-				action="#{ownerUsageAgreement.saveText}" id="save"
-				styleClass="submit" />
+		<a4j:form>
 			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
 				styleClass="submit" />
+			<so:nbsp />
 		</a4j:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<p>#{msgs.helpUsageAgreementEdit}</p>
+		<p>#{msgs.helpUsageAgreementView}</p>
 	</ui:define>
 </ui:composition>
 </body>

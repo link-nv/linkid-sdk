@@ -114,7 +114,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	@EJB
 	private IdentityService identityService;
 
-	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.USER_ROLE })
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.USER_ROLE,
+			SafeOnlineRoles.OPERATOR_ROLE })
 	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
 	public List<AllowedDeviceEntity> listAllowedDevices(
 			ApplicationEntity application) {
@@ -126,7 +127,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 		return this.devices.listDevices();
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
 	public void setAllowedDevices(ApplicationEntity application,
 			List<AllowedDeviceEntity> allowedDeviceList) {
