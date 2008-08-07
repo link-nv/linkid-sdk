@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -296,11 +297,13 @@ public class ScenarioControllerBean implements ScenarioController {
             LOG.debug(" - " + errorCharts.size() + " need(s) errors.");
 
             // Chart scenario timing data.
-            LOG.debug(" - Starting timings..");
+            LinkedList<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
+                    .getExecutionTimings(execution, DATA_POINTS);
             if (!timingCharts.isEmpty()) {
-                List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService.getExecutionTimings(execution);
                 double total = scenarioTimings.size(), current = 0;
+                LOG.debug(" - Starting timings..");
                 LOG.debug(" - - Total: " + total);
+                
                 for (ScenarioTimingEntity timing : scenarioTimings) {
                     if (timing != null) {
                         for (Chart chart : timingCharts) {
@@ -323,10 +326,12 @@ public class ScenarioControllerBean implements ScenarioController {
             for (DriverProfileEntity profile : profiles) {
 
                 // Chart data.
-                LOG.debug(" - Starting " + profile.getDriverClassName() + "..");
                 if (!dataCharts.isEmpty()) {
-                    List<ProfileDataEntity> profileData = this.profileDataService.getProfileData(profile, DATA_POINTS);
+                    List<ProfileDataEntity> profileData = this.profileDataService
+                            .getProfileData(profile, scenarioTimings);
                     double total = profileData.size(), current = 0;
+                    LOG.debug(" - Starting " + profile.getDriverClassName()
+                            + "..");
                     LOG.debug(" - - Total: " + total);
                     for (ProfileDataEntity data : profileData) {
                         if (data != null) {

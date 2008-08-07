@@ -28,10 +28,6 @@
 			<artifactId>safe-online-encap-ws</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging-api</artifactId>
-		</dependency>
 
 	</dependencies>
 

@@ -21,17 +21,19 @@
 
 	<dependencies>
 
-		<dependency>
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <version>${safe-online.version}</version>
+            <scope>provided</scope>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Test Dependencies -->
+		<!--dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>bouncycastle</groupId>
@@ -43,7 +45,7 @@
 			<artifactId>safe-online-test-util</artifactId>
 			<version>${safe-online.version}</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 
 	</dependencies>
 

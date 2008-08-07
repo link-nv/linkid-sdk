@@ -96,15 +96,6 @@
 			<artifactId>safe-online-demo-payment</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<scope>compile</scope>
-		</dependency>
 
 	</dependencies>
 

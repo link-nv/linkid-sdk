@@ -30,25 +30,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<exclusions>
-				<!-- http://jira.codehaus.org/browse/MNG-2686 -->
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jnp-client</artifactId>
 		</dependency>
@@ -79,10 +60,6 @@
 		<dependency>
 			<groupId>concurrent</groupId>
             <artifactId>concurrent</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>jgroups</groupId>

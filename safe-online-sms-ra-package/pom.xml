@@ -24,16 +24,6 @@
 			<artifactId>safe-online-sms-ra</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 	</dependencies>
 

@@ -25,9 +25,16 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
+                    <warSourceExcludes>WEB-INF/lib/*.jar</warSourceExcludes>
+                    <archive>
+                      <manifest>
+                        <addClasspath>true</addClasspath>
+                        <classpathPrefix>lib/</classpathPrefix>
+                      </manifest>
+                    </archive>
+
 					<dependentWarExcludes> WEB-INF/web.xml,index.jsp 
 					</dependentWarExcludes>
-					<!-- http://jira.codehaus.org/browse/MWAR-18 -->
 					<webResources>
 						<resource>
 							<directory> ${basedir}/src/main/webapp/WEB-INF </directory>
@@ -131,10 +138,6 @@
 			<groupId>velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
 		</dependency>
 
 	</dependencies>

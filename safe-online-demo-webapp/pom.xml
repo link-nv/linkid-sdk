@@ -26,6 +26,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
+                    <warSourceExcludes>WEB-INF/lib/*.jar</warSourceExcludes>
+                    <archive>
+                      <manifest>
+                        <addClasspath>true</addClasspath>
+                        <classpathPrefix>lib/</classpathPrefix>
+                      </manifest>
+                    </archive>
+
 					<!-- http://jira.codehaus.org/browse/MWAR-18 -->
 
 					<dependencies>
@@ -91,42 +99,6 @@
 			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-digester</groupId>
-			<artifactId>commons-digester</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-el</groupId>
-			<artifactId>commons-el</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 			<scope>provided</scope>
@@ -184,11 +156,6 @@
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -264,10 +231,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>
