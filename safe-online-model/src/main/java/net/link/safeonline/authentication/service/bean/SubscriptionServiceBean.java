@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -53,126 +54,141 @@ import org.jboss.annotation.security.SecurityDomain;
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class SubscriptionServiceBean implements SubscriptionService,
-		SubscriptionServiceRemote, SubjectContext, ApplicationContext {
+        SubscriptionServiceRemote, SubjectContext, ApplicationContext {
 
-	private static final Log LOG = LogFactory
-			.getLog(SubscriptionServiceBean.class);
+    private static final Log      LOG = LogFactory
+                                              .getLog(SubscriptionServiceBean.class);
 
-	@EJB
-	private SubjectManager subjectManager;
+    @EJB
+    private SubjectManager        subjectManager;
 
-	@EJB
-	private SubscriptionDAO subscriptionDAO;
+    @EJB
+    private SubscriptionDAO       subscriptionDAO;
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO        applicationDAO;
 
-	@EJB
-	private ApplicationScopeIdDAO applicationScopeIdDAO;
+    @EJB
+    private ApplicationScopeIdDAO applicationScopeIdDAO;
 
-	@EJB
-	private HistoryDAO historyDAO;
+    @EJB
+    private HistoryDAO            historyDAO;
 
-	@Resource
-	private SessionContext sessionContext;
+    @Resource
+    private SessionContext        sessionContext;
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<SubscriptionEntity> listSubscriptions() {
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
-				.listSubsciptions(subject);
-		return subscriptions;
-	}
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<SubscriptionEntity> listSubscriptions(SubjectEntity subject)
-			throws SubjectNotFoundException {
-		return this.subscriptionDAO.listSubsciptions(subject);
-	}
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public List<SubscriptionEntity> listSubscriptions() {
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void subscribe(String applicationName)
-			throws ApplicationNotFoundException, AlreadySubscribedException,
-			PermissionDeniedException {
-		Subject subject = SubjectFactory.getCallerSubject(this);
-		Application application = ApplicationFactory.getApplication(this,
-				applicationName);
-		subject.subscribe(application);
+        SubjectEntity subject = this.subjectManager.getCallerSubject();
+        List<SubscriptionEntity> subscriptions = this.subscriptionDAO
+                .listSubsciptions(subject);
+        return subscriptions;
+    }
 
-		if (application.getEntity().getIdScope()
-				.equals(IdScopeType.APPLICATION)) {
-			if (null == this.applicationScopeIdDAO.findApplicationScopeId(
-					subject.getSubjectEntity(), application.getEntity())) {
-				this.applicationScopeIdDAO.addApplicationScopeId(subject
-						.getSubjectEntity(), application.getEntity());
-			}
-		}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public List<SubscriptionEntity> listSubscriptions(SubjectEntity subject)
+            throws SubjectNotFoundException {
 
-		this.historyDAO.addHistoryEntry(subject.getSubjectEntity(),
-				HistoryEventType.SUBSCRIPTION_ADD, applicationName, null);
-	}
+        return this.subscriptionDAO.listSubsciptions(subject);
+    }
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void unsubscribe(String applicationName)
-			throws ApplicationNotFoundException, SubscriptionNotFoundException,
-			PermissionDeniedException {
-		Subject subject = SubjectFactory.getCallerSubject(this);
-		Application application = ApplicationFactory.getApplication(this,
-				applicationName);
-		subject.unsubscribe(application);
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public void subscribe(String applicationName)
+            throws ApplicationNotFoundException, AlreadySubscribedException,
+            PermissionDeniedException {
 
-		this.historyDAO.addHistoryEntry(subject.getSubjectEntity(),
-				HistoryEventType.SUBSCRIPTION_REMOVE, applicationName, null);
-	}
+        Subject subject = SubjectFactory.getCallerSubject(this);
+        Application application = ApplicationFactory.getApplication(this,
+                applicationName);
+        subject.subscribe(application);
 
-	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
-	public long getNumberOfSubscriptions(String applicationName)
-			throws ApplicationNotFoundException, PermissionDeniedException {
-		LOG.debug("get number of subscriptions for application: "
-				+ applicationName);
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationName);
+        if (application.getEntity().getIdScope()
+                .equals(IdScopeType.APPLICATION)) {
+            if (null == this.applicationScopeIdDAO.findApplicationScopeId(
+                    subject.getSubjectEntity(), application.getEntity())) {
+                this.applicationScopeIdDAO.addApplicationScopeId(subject
+                        .getSubjectEntity(), application.getEntity());
+            }
+        }
 
-		checkReadPermission(application);
+        this.historyDAO.addHistoryEntry(subject.getSubjectEntity(),
+                HistoryEventType.SUBSCRIPTION_ADD, Collections.singletonMap(
+                        SafeOnlineConstants.APPLICATION_PROPERTY,
+                        applicationName));
+    }
 
-		long count = this.subscriptionDAO.getNumberOfSubscriptions(application);
-		return count;
-	}
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public void unsubscribe(String applicationName)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException,
+            PermissionDeniedException {
 
-	private void checkReadPermission(ApplicationEntity application)
-			throws PermissionDeniedException {
-		if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)) {
-			return;
-		}
-		ApplicationOwnerEntity applicationOwner = application
-				.getApplicationOwner();
-		SubjectEntity expectedSubject = applicationOwner.getAdmin();
-		SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-		if (false == expectedSubject.equals(actualSubject)) {
-			throw new PermissionDeniedException(
-					"application owner admin mismatch");
-		}
-	}
+        Subject subject = SubjectFactory.getCallerSubject(this);
+        Application application = ApplicationFactory.getApplication(this,
+                applicationName);
+        subject.unsubscribe(application);
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public boolean isSubscribed(String applicationName)
-			throws ApplicationNotFoundException {
-		LOG.debug("is subscribed: " + applicationName);
-		Subject subject = SubjectFactory.getCallerSubject(this);
-		Application application = ApplicationFactory.getApplication(this,
-				applicationName);
-		return subject.isSubscribed(application);
-	}
+        this.historyDAO.addHistoryEntry(subject.getSubjectEntity(),
+                HistoryEventType.SUBSCRIPTION_REMOVE, Collections.singletonMap(
+                        SafeOnlineConstants.APPLICATION_PROPERTY,
+                        applicationName));
+    }
 
-	public SubjectManager getSubjectManager() {
-		return this.subjectManager;
-	}
+    @RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
+    public long getNumberOfSubscriptions(String applicationName)
+            throws ApplicationNotFoundException, PermissionDeniedException {
 
-	public ApplicationDAO getApplicationDAO() {
-		return this.applicationDAO;
-	}
+        LOG.debug("get number of subscriptions for application: "
+                + applicationName);
+        ApplicationEntity application = this.applicationDAO
+                .getApplication(applicationName);
 
-	public SubscriptionDAO getSubscriptionDAO() {
-		return this.subscriptionDAO;
-	}
+        checkReadPermission(application);
+
+        long count = this.subscriptionDAO.getNumberOfSubscriptions(application);
+        return count;
+    }
+
+    private void checkReadPermission(ApplicationEntity application)
+            throws PermissionDeniedException {
+
+        if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)) {
+            return;
+        }
+        ApplicationOwnerEntity applicationOwner = application
+                .getApplicationOwner();
+        SubjectEntity expectedSubject = applicationOwner.getAdmin();
+        SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
+        if (false == expectedSubject.equals(actualSubject)) {
+            throw new PermissionDeniedException(
+                    "application owner admin mismatch");
+        }
+    }
+
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public boolean isSubscribed(String applicationName)
+            throws ApplicationNotFoundException {
+
+        LOG.debug("is subscribed: " + applicationName);
+        Subject subject = SubjectFactory.getCallerSubject(this);
+        Application application = ApplicationFactory.getApplication(this,
+                applicationName);
+        return subject.isSubscribed(application);
+    }
+
+    public SubjectManager getSubjectManager() {
+
+        return this.subjectManager;
+    }
+
+    public ApplicationDAO getApplicationDAO() {
+
+        return this.applicationDAO;
+    }
+
+    public SubscriptionDAO getSubscriptionDAO() {
+
+        return this.subscriptionDAO;
+    }
 }

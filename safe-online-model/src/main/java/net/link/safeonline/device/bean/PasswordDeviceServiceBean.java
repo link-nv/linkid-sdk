@@ -77,14 +77,13 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService,
 					deviceRegistration, password);
 		} catch (DeviceNotFoundException e) {
 			this.historyDAO.addHExceptionHistoryEntry(new Date(), subject,
-					HistoryEventType.LOGIN_PASSWORD_ATTRIBUTE_NOT_FOUND, null,
-					null);
+					HistoryEventType.LOGIN_PASSWORD_ATTRIBUTE_NOT_FOUND, null);
 			throw e;
 		}
 
 		if (!validationResult) {
 			this.historyDAO.addHistoryEntry(subject,
-					HistoryEventType.LOGIN_INCORRECT_PASSWORD, null, null);
+					HistoryEventType.LOGIN_INCORRECT_PASSWORD, null);
 			this.securityAuditLogger.addSecurityAudit(
 					SecurityThreatType.DECEPTION, subject.getUserId(),
 					"incorrect password");

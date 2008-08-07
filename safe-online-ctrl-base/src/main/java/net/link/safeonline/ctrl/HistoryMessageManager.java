@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 
 import javax.faces.context.FacesContext;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.HistoryEntity;
 
 /**
@@ -23,22 +24,49 @@ import net.link.safeonline.entity.HistoryEntity;
  */
 public class HistoryMessageManager {
 
-	public static final String RESOURCE_BASE = "messages.history";
+    public static final String RESOURCE_BASE = "messages.history";
 
-	public static String getMessage(FacesContext context,
-			HistoryEntity historyEntity) {
 
-		Locale locale = context.getExternalContext().getRequestLocale();
-		ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BASE,
-				locale);
+    public static String getMessage(FacesContext context,
+            HistoryEntity historyEntity) {
 
-		String message = messages.getString(historyEntity.getEvent().getKey());
+        Locale locale = context.getExternalContext().getRequestLocale();
+        ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BASE,
+                locale);
 
-		if (null == message)
-			return messages.getString("history_unknown");
+        String message = messages.getString(historyEntity.getEvent().getKey());
 
-		return MessageFormat.format(message, historyEntity.getSubject()
-				.getUserId(), historyEntity.getApplication(), historyEntity
-				.getInfo());
-	}
+        if (null == message) {
+            return messages.getString("history_unknown");
+        }
+
+        String application = null;
+        String attribute = null;
+        String device = null;
+        String info = null;
+
+        if (historyEntity.getProperties().get(
+                SafeOnlineConstants.APPLICATION_PROPERTY) != null) {
+            application = historyEntity.getProperties().get(
+                    SafeOnlineConstants.APPLICATION_PROPERTY).getValue();
+        }
+        if (historyEntity.getProperties().get(
+                SafeOnlineConstants.ATTRIBUTE_PROPERTY) != null) {
+            attribute = historyEntity.getProperties().get(
+                    SafeOnlineConstants.ATTRIBUTE_PROPERTY).getValue();
+        }
+        if (historyEntity.getProperties().get(
+                SafeOnlineConstants.DEVICE_PROPERTY) != null) {
+            device = historyEntity.getProperties().get(
+                    SafeOnlineConstants.DEVICE_PROPERTY).getValue();
+        }
+        if (historyEntity.getProperties()
+                .get(SafeOnlineConstants.INFO_PROPERTY) != null) {
+            info = historyEntity.getProperties().get(
+                    SafeOnlineConstants.INFO_PROPERTY).getValue();
+        }
+
+        return MessageFormat.format(message, historyEntity.getSubject()
+                .getUserId(), application, device, attribute, info);
+    }
 }

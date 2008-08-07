@@ -32,22 +32,24 @@ import org.jboss.seam.annotations.Name;
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 public class HistoryBean implements History {
 
-	@EJB
-	private IdentityService identityService;
+    @EJB
+    private IdentityService identityService;
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public List<HistoryMessage> getList() {
-		List<HistoryEntity> result = this.identityService.listHistory();
 
-		List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public List<HistoryMessage> getList() {
 
-		for (HistoryEntity historyEntity : result) {
-			String historyMessage = HistoryMessageManager.getMessage(
-					FacesContext.getCurrentInstance(), historyEntity);
-			messageList.add(new HistoryMessage(historyEntity.getWhen(),
-					historyMessage));
-		}
+        List<HistoryEntity> result = this.identityService.listHistory();
 
-		return messageList;
-	}
+        List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
+
+        for (HistoryEntity historyEntity : result) {
+            String historyMessage = HistoryMessageManager.getMessage(
+                    FacesContext.getCurrentInstance(), historyEntity);
+            messageList.add(new HistoryMessage(historyEntity.getWhen(),
+                    historyMessage));
+        }
+
+        return messageList;
+    }
 }

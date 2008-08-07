@@ -92,7 +92,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 		boolean result = authenicateEncap(challengeId, mobileOTP);
 		if (false == result) {
 			this.historyDAO.addHistoryEntry(new Date(), deviceRegistration,
-					HistoryEventType.LOGIN_INCORRECT_MOBILE_TOKEN, null, null);
+					HistoryEventType.LOGIN_INCORRECT_MOBILE_TOKEN, null);
 			this.securityAuditLogger.addSecurityAudit(
 					SecurityThreatType.DECEPTION, deviceSubject.getId(),
 					"incorrect mobile token");

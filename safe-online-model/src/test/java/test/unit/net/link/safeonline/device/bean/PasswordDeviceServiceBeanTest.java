@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.util.Map;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -121,6 +122,7 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 		assertNotNull(resultSubject);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void testAuthenticateWithWrongPasswordFails() throws Exception {
 		// setup
 		String login = "test-login";
@@ -161,8 +163,8 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 
 		// expectations
 		this.mockHistoryDAO.addHistoryEntry(EasyMock.eq(subject),
-				(HistoryEventType) EasyMock.anyObject(), (String) EasyMock
-						.anyObject(), (String) EasyMock.anyObject());
+				(HistoryEventType) EasyMock.anyObject(),
+				(Map<String, String>) EasyMock.anyObject());
 
 		this.mockSecurityAuditLogger.addSecurityAudit(
 				SecurityThreatType.DECEPTION, login, "incorrect password");

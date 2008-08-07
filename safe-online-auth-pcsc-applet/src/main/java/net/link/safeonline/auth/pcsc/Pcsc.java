@@ -38,6 +38,8 @@ public class Pcsc {
 
 	public static final String BEID_ATR_10 = "3b9894400aa503010101ad1310";
 
+	public static final String BEID_ATR_100 = "3b989440ffa503010101ad1310";
+
 	public static final byte[] MF = new byte[] { 0x3F, 0x00 };
 
 	/**
