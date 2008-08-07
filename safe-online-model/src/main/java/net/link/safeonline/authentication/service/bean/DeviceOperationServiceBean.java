@@ -10,6 +10,7 @@ package net.link.safeonline.authentication.service.bean;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -32,7 +33,9 @@ import net.link.safeonline.authentication.service.DeviceOperationService;
 import net.link.safeonline.authentication.service.DeviceOperationServiceRemote;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
@@ -67,136 +70,164 @@ import org.opensaml.saml2.core.Subject;
  */
 @Stateful
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class,
-		InputValidation.class })
+        InputValidation.class })
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class DeviceOperationServiceBean implements DeviceOperationService,
-		DeviceOperationServiceRemote {
+        DeviceOperationServiceRemote {
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceOperationServiceBean.class);
+    private static final Log          LOG = LogFactory
+                                                  .getLog(DeviceOperationServiceBean.class);
 
-	@EJB
-	private NodeAuthenticationService nodeAuthenticationService;
+    @EJB
+    private NodeAuthenticationService nodeAuthenticationService;
 
-	@EJB
-	private DeviceMappingService deviceMappingService;
+    @EJB
+    private DeviceMappingService      deviceMappingService;
 
-	private String expectedChallengeId;
+    @EJB
+    private HistoryDAO                historyDAO;
 
-	private DeviceOperationType expectedDeviceOperation;
+    private String                    expectedChallengeId;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		LOG.debug("device operation service bean created");
-	}
+    private DeviceOperationType       expectedDeviceOperation;
 
-	@Remove
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void abort() {
-		LOG.debug("abort");
-		this.expectedChallengeId = null;
-		this.expectedDeviceOperation = null;
-	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public String redirect(@NonEmptyString String serviceUrl,
-			@NonEmptyString String targetUrl,
-			@NotNull DeviceOperationType deviceOperation,
-			@NonEmptyString String device, @NonEmptyString String userId)
-			throws NodeNotFoundException, SubjectNotFoundException,
-			DeviceNotFoundException {
-		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-		PrivateKey privateKey = identityServiceClient.getPrivateKey();
-		PublicKey publicKey = identityServiceClient.getPublicKey();
-		KeyPair keyPair = new KeyPair(publicKey, privateKey);
+    @PostConstruct
+    public void postConstructCallback() {
 
-		OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+        LOG.debug("device operation service bean created");
+    }
 
-		Challenge<String> challenge = new Challenge<String>();
+    @Remove
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public void abort() {
 
-		DeviceMappingEntity deviceMapping = this.deviceMappingService
-				.getDeviceMapping(userId, device);
+        LOG.debug("abort");
+        this.expectedChallengeId = null;
+        this.expectedDeviceOperation = null;
+    }
 
-		String samlRequestToken = AuthnRequestFactory
-				.createDeviceOperationAuthnRequest(node.getName(),
-						deviceMapping.getId(), keyPair, serviceUrl, targetUrl,
-						deviceOperation, challenge, device);
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public String redirect(@NonEmptyString String serviceUrl,
+            @NonEmptyString String targetUrl,
+            @NotNull DeviceOperationType deviceOperation,
+            @NonEmptyString String device, @NonEmptyString String userId)
+            throws NodeNotFoundException, SubjectNotFoundException,
+            DeviceNotFoundException {
 
-		String encodedSamlRequestToken = Base64.encode(samlRequestToken
-				.getBytes());
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        PrivateKey privateKey = identityServiceClient.getPrivateKey();
+        PublicKey publicKey = identityServiceClient.getPublicKey();
+        KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
-		this.expectedChallengeId = challenge.getValue();
-		this.expectedDeviceOperation = deviceOperation;
+        OlasEntity node = this.nodeAuthenticationService.getLocalNode();
 
-		return encodedSamlRequestToken;
-	}
+        Challenge<String> challenge = new Challenge<String>();
 
-	@Remove
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public DeviceMappingEntity finalize(@NotNull HttpServletRequest request)
-			throws NodeNotFoundException, ServletException,
-			DeviceMappingNotFoundException {
-		LOG.debug("finalize");
-		LOG.debug("expected challenge id: " + this.expectedChallengeId);
-		LOG.debug("expected device operation: " + this.expectedDeviceOperation);
+        DeviceMappingEntity deviceMapping = this.deviceMappingService
+                .getDeviceMapping(userId, device);
 
-		DateTime now = new DateTime();
+        String samlRequestToken = AuthnRequestFactory
+                .createDeviceOperationAuthnRequest(node.getName(),
+                        deviceMapping.getId(), keyPair, serviceUrl, targetUrl,
+                        deviceOperation, challenge, device);
 
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+        String encodedSamlRequestToken = Base64.encode(samlRequestToken
+                .getBytes());
 
-		Response samlResponse = AuthnResponseUtil.validateResponse(now,
-				request, this.expectedChallengeId, this.expectedDeviceOperation
-						.name(), node.getLocation(), authIdentityServiceClient
-						.getCertificate(), authIdentityServiceClient
-						.getPrivateKey(), TrustDomainType.DEVICE);
-		if (null == samlResponse)
-			return null;
+        this.expectedChallengeId = challenge.getValue();
+        this.expectedDeviceOperation = deviceOperation;
 
-		if (samlResponse.getStatus().getStatusCode().getValue().equals(
-				StatusCode.AUTHN_FAILED_URI)) {
-			/*
-			 * Registration failed, reset the state
-			 */
-			this.expectedChallengeId = null;
-			return null;
-		} else if (samlResponse.getStatus().getStatusCode().getValue().equals(
-				StatusCode.REQUEST_UNSUPPORTED_URI)) {
-			/*
-			 * Registration not supported by this device, reset the state
-			 */
-			this.expectedChallengeId = null;
-			return null;
-		}
+        return encodedSamlRequestToken;
+    }
 
-		Assertion assertion = samlResponse.getAssertions().get(0);
-		List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-		if (authStatements.isEmpty()) {
-			throw new ServletException("missing authentication statement");
-		}
+    @Remove
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public DeviceMappingEntity finalize(@NotNull HttpServletRequest request)
+            throws NodeNotFoundException, ServletException,
+            DeviceMappingNotFoundException {
 
-		AuthnStatement authStatement = authStatements.get(0);
-		if (null == authStatement.getAuthnContext())
-			throw new ServletException(
-					"missing authentication context in authentication statement");
+        LOG.debug("finalize");
+        LOG.debug("expected challenge id: " + this.expectedChallengeId);
+        LOG.debug("expected device operation: " + this.expectedDeviceOperation);
 
-		AuthnContextClassRef authnContextClassRef = authStatement
-				.getAuthnContext().getAuthnContextClassRef();
-		String authenticatedDevice = authnContextClassRef
-				.getAuthnContextClassRef();
-		LOG.debug("used device: " + authenticatedDevice);
+        DateTime now = new DateTime();
 
-		Subject subject = assertion.getSubject();
-		NameID subjectName = subject.getNameID();
-		String subjectNameValue = subjectName.getValue();
-		LOG.debug("subject name value: " + subjectNameValue);
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        OlasEntity node = this.nodeAuthenticationService.getLocalNode();
 
-		/**
-		 * Check if this device mapping truly exists.
-		 */
-		DeviceMappingEntity deviceMapping = this.deviceMappingService
-				.getDeviceMapping(subjectNameValue);
-		return deviceMapping;
-	}
+        Response samlResponse = AuthnResponseUtil.validateResponse(now,
+                request, this.expectedChallengeId, this.expectedDeviceOperation
+                        .name(), node.getLocation(), authIdentityServiceClient
+                        .getCertificate(), authIdentityServiceClient
+                        .getPrivateKey(), TrustDomainType.DEVICE);
+        if (null == samlResponse)
+            return null;
 
+        if (samlResponse.getStatus().getStatusCode().getValue().equals(
+                StatusCode.AUTHN_FAILED_URI)) {
+            /*
+             * Registration failed, reset the state
+             */
+            this.expectedChallengeId = null;
+            return null;
+        } else if (samlResponse.getStatus().getStatusCode().getValue().equals(
+                StatusCode.REQUEST_UNSUPPORTED_URI)) {
+            // TODO: add security audit
+            /*
+             * Registration not supported by this device, reset the state
+             */
+            this.expectedChallengeId = null;
+            return null;
+        }
+
+        Assertion assertion = samlResponse.getAssertions().get(0);
+        List<AuthnStatement> authStatements = assertion.getAuthnStatements();
+        if (authStatements.isEmpty()) {
+            throw new ServletException("missing authentication statement");
+        }
+
+        AuthnStatement authStatement = authStatements.get(0);
+        if (null == authStatement.getAuthnContext())
+            throw new ServletException(
+                    "missing authentication context in authentication statement");
+
+        AuthnContextClassRef authnContextClassRef = authStatement
+                .getAuthnContext().getAuthnContextClassRef();
+        String authenticatedDevice = authnContextClassRef
+                .getAuthnContextClassRef();
+        LOG.debug("used device: " + authenticatedDevice);
+
+        Subject subject = assertion.getSubject();
+        NameID subjectName = subject.getNameID();
+        String subjectNameValue = subjectName.getValue();
+        LOG.debug("subject name value: " + subjectNameValue);
+
+        /**
+         * Check if this device mapping truly exists.
+         */
+        DeviceMappingEntity deviceMapping = this.deviceMappingService
+                .getDeviceMapping(subjectNameValue);
+
+        if (this.expectedDeviceOperation.equals(DeviceOperationType.REGISTER)) {
+            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(),
+                    HistoryEventType.DEVICE_REGISTRATION, Collections
+                            .singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                                    deviceMapping.getDevice().getName()));
+        } else if (this.expectedDeviceOperation
+                .equals(DeviceOperationType.UPDATE)) {
+            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(),
+                    HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
+                            SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping
+                                    .getDevice().getName()));
+        } else if (this.expectedDeviceOperation
+                .equals(DeviceOperationType.REMOVE)) {
+            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(),
+                    HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
+                            SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping
+                                    .getDevice().getName()));
+        }
+
+        return deviceMapping;
+    }
 }

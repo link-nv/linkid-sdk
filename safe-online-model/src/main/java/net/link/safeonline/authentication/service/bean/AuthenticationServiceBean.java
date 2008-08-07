@@ -531,6 +531,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
         if (samlResponse.getStatus().getStatusCode().getValue().equals(
                 StatusCode.AUTHN_FAILED_URI)) {
+
             /*
              * Registration failed, reset the state
              */
@@ -539,6 +540,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
             return null;
         } else if (samlResponse.getStatus().getStatusCode().getValue().equals(
                 StatusCode.REQUEST_UNSUPPORTED_URI)) {
+            // TODO: add security audit
             /*
              * Registration not supported by this device, reset the state
              */
@@ -581,6 +583,10 @@ public class AuthenticationServiceBean implements AuthenticationService,
         this.authenticationState = USER_AUTHENTICATED;
         this.authenticatedSubject = deviceMapping.getSubject();
         this.authenticationDevice = deviceMapping.getDevice();
+
+        addHistoryEntry(this.authenticatedSubject,
+                HistoryEventType.DEVICE_REGISTRATION, null, deviceMapping
+                        .getDevice().getName());
 
         return deviceMapping;
     }
@@ -751,18 +757,14 @@ public class AuthenticationServiceBean implements AuthenticationService,
         ApplicationEntity application = this.applicationDAO
                 .findApplication(this.expectedApplicationId);
         if (null == application) {
-            addHistoryEntry(this.authenticatedSubject,
-                    HistoryEventType.LOGIN_APPLICATION_NOT_FOUND,
-                    this.expectedApplicationId, null);
+            // TODO: add security audit
             throw new ApplicationNotFoundException();
         }
 
         SubscriptionEntity subscription = this.subscriptionDAO
                 .findSubscription(this.authenticatedSubject, application);
         if (null == subscription) {
-            addHistoryEntry(this.authenticatedSubject,
-                    HistoryEventType.SUBSCRIPTION_NOT_FOUND,
-                    this.expectedApplicationId, null);
+            // TODO: add security audit
             throw new SubscriptionNotFoundException();
         }
 

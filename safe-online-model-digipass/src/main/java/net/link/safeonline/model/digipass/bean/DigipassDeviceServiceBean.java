@@ -9,7 +9,6 @@ package net.link.safeonline.model.digipass.bean;
 
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +34,6 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.device.DeviceSubjectEntity;
@@ -99,9 +97,6 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
         }
         if (Integer.parseInt(token) % 2 != 0) {
             LOG.debug("Invalid token: " + token);
-            this.historyDAO.addHistoryEntry(new Date(), deviceSubject
-                    .getRegistrations().get(0),
-                    HistoryEventType.LOGIN_INCORRECT_DIGIPASS_TOKEN, null);
             this.securityAuditLogger.addSecurityAudit(
                     SecurityThreatType.DECEPTION, deviceSubject
                             .getRegistrations().get(0).getUserId(),

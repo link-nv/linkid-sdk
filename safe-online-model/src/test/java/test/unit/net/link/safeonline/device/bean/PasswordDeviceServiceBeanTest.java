@@ -5,7 +5,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.util.Map;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -17,7 +16,6 @@ import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
-import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.device.DeviceSubjectEntity;
@@ -25,160 +23,158 @@ import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 
-import org.easymock.EasyMock;
-
 public class PasswordDeviceServiceBeanTest extends TestCase {
 
-	private PasswordDeviceServiceBean testedInstance;
+    private PasswordDeviceServiceBean testedInstance;
 
-	private Object[] mockObjects;
+    private Object[]                  mockObjects;
 
-	private HistoryDAO mockHistoryDAO;
+    private HistoryDAO                mockHistoryDAO;
 
-	private DeviceMappingService mockDeviceMappingService;
+    private DeviceMappingService      mockDeviceMappingService;
 
-	private PasswordManager mockPasswordManager;
+    private PasswordManager           mockPasswordManager;
 
-	private SubjectService mockSubjectService;
+    private SubjectService            mockSubjectService;
 
-	private SecurityAuditLogger mockSecurityAuditLogger;
+    private SecurityAuditLogger       mockSecurityAuditLogger;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.testedInstance = new PasswordDeviceServiceBean();
+    @Override
+    protected void setUp() throws Exception {
 
-		this.mockSubjectService = createMock(SubjectService.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockSubjectService);
+        super.setUp();
 
-		this.mockHistoryDAO = createMock(HistoryDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockHistoryDAO);
+        this.testedInstance = new PasswordDeviceServiceBean();
 
-		this.mockDeviceMappingService = createMock(DeviceMappingService.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockDeviceMappingService);
+        this.mockSubjectService = createMock(SubjectService.class);
+        EJBTestUtils.inject(this.testedInstance, this.mockSubjectService);
 
-		this.mockPasswordManager = createMock(PasswordManager.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockPasswordManager);
+        this.mockHistoryDAO = createMock(HistoryDAO.class);
+        EJBTestUtils.inject(this.testedInstance, this.mockHistoryDAO);
 
-		this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockSecurityAuditLogger);
+        this.mockDeviceMappingService = createMock(DeviceMappingService.class);
+        EJBTestUtils.inject(this.testedInstance, this.mockDeviceMappingService);
 
-		EJBTestUtils.init(this.testedInstance);
+        this.mockPasswordManager = createMock(PasswordManager.class);
+        EJBTestUtils.inject(this.testedInstance, this.mockPasswordManager);
 
-		this.mockObjects = new Object[] { this.mockSubjectService,
-				this.mockPasswordManager, this.mockHistoryDAO,
-				this.mockSecurityAuditLogger, this.mockDeviceMappingService };
-	}
+        this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+        EJBTestUtils.inject(this.testedInstance, this.mockSecurityAuditLogger);
 
-	public void testAuthenticate() throws Exception {
-		// setup
-		String login = "test-login";
-		String password = "test-password";
-		String deviceMappingId = UUID.randomUUID().toString();
-		String deviceRegistrationId = UUID.randomUUID().toString();
+        EJBTestUtils.init(this.testedInstance);
 
-		// stubs
-		SubjectEntity subject = new SubjectEntity(login);
-		expect(this.mockSubjectService.getSubjectFromUserName(login))
-				.andStubReturn(subject);
+        this.mockObjects = new Object[] { this.mockSubjectService,
+                this.mockPasswordManager, this.mockHistoryDAO,
+                this.mockSecurityAuditLogger, this.mockDeviceMappingService };
+    }
 
-		DeviceClassEntity deviceClass = new DeviceClassEntity(
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-		DeviceEntity device = new DeviceEntity(
-				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass,
-				null, null, null, null, null, null);
+    public void testAuthenticate() throws Exception {
 
-		DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject,
-				deviceMappingId, device);
-		expect(
-				this.mockDeviceMappingService.getDeviceMapping(subject
-						.getUserId(), device.getName())).andStubReturn(
-				deviceMapping);
+        // setup
+        String login = "test-login";
+        String password = "test-password";
+        String deviceMappingId = UUID.randomUUID().toString();
+        String deviceRegistrationId = UUID.randomUUID().toString();
 
-		DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
-				deviceMappingId);
-		SubjectEntity deviceRegistration = new SubjectEntity(
-				deviceRegistrationId);
-		deviceSubject.getRegistrations().add(deviceRegistration);
+        // stubs
+        SubjectEntity subject = new SubjectEntity(login);
+        expect(this.mockSubjectService.getSubjectFromUserName(login))
+                .andStubReturn(subject);
 
-		expect(this.mockSubjectService.getDeviceSubject(deviceMappingId))
-				.andStubReturn(deviceSubject);
+        DeviceClassEntity deviceClass = new DeviceClassEntity(
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+        DeviceEntity device = new DeviceEntity(
+                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass,
+                null, null, null, null, null, null);
 
-		expect(
-				this.mockPasswordManager.validatePassword(deviceRegistration,
-						password)).andStubReturn(true);
+        DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject,
+                deviceMappingId, device);
+        expect(
+                this.mockDeviceMappingService.getDeviceMapping(subject
+                        .getUserId(), device.getName())).andStubReturn(
+                deviceMapping);
 
-		// prepare
-		replay(this.mockObjects);
+        DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
+                deviceMappingId);
+        SubjectEntity deviceRegistration = new SubjectEntity(
+                deviceRegistrationId);
+        deviceSubject.getRegistrations().add(deviceRegistration);
 
-		// operate
-		SubjectEntity resultSubject = this.testedInstance.authenticate(login,
-				password);
+        expect(this.mockSubjectService.getDeviceSubject(deviceMappingId))
+                .andStubReturn(deviceSubject);
 
-		// verify
-		verify(this.mockObjects);
-		assertNotNull(resultSubject);
-	}
+        expect(
+                this.mockPasswordManager.validatePassword(deviceRegistration,
+                        password)).andStubReturn(true);
 
-	@SuppressWarnings("unchecked")
-	public void testAuthenticateWithWrongPasswordFails() throws Exception {
-		// setup
-		String login = "test-login";
-		String wrongPassword = "foobar";
-		String deviceMappingId = UUID.randomUUID().toString();
-		String deviceRegistrationId = UUID.randomUUID().toString();
+        // prepare
+        replay(this.mockObjects);
 
-		// stubs
-		SubjectEntity subject = new SubjectEntity(login);
-		expect(this.mockSubjectService.getSubjectFromUserName(login))
-				.andStubReturn(subject);
-		DeviceClassEntity deviceClass = new DeviceClassEntity(
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-		DeviceEntity device = new DeviceEntity(
-				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass,
-				null, null, null, null, null, null);
+        // operate
+        SubjectEntity resultSubject = this.testedInstance.authenticate(login,
+                password);
 
-		DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject,
-				deviceMappingId, device);
-		expect(
-				this.mockDeviceMappingService.getDeviceMapping(subject
-						.getUserId(), device.getName())).andStubReturn(
-				deviceMapping);
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(resultSubject);
+    }
 
-		DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
-				deviceMappingId);
-		SubjectEntity deviceRegistration = new SubjectEntity(
-				deviceRegistrationId);
-		deviceSubject.getRegistrations().add(deviceRegistration);
+    @SuppressWarnings("unchecked")
+    public void testAuthenticateWithWrongPasswordFails() throws Exception {
 
-		expect(this.mockSubjectService.getDeviceSubject(deviceMappingId))
-				.andStubReturn(deviceSubject);
+        // setup
+        String login = "test-login";
+        String wrongPassword = "foobar";
+        String deviceMappingId = UUID.randomUUID().toString();
+        String deviceRegistrationId = UUID.randomUUID().toString();
 
-		expect(
-				this.mockPasswordManager.validatePassword(deviceRegistration,
-						wrongPassword)).andStubReturn(false);
+        // stubs
+        SubjectEntity subject = new SubjectEntity(login);
+        expect(this.mockSubjectService.getSubjectFromUserName(login))
+                .andStubReturn(subject);
+        DeviceClassEntity deviceClass = new DeviceClassEntity(
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+        DeviceEntity device = new DeviceEntity(
+                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass,
+                null, null, null, null, null, null);
 
-		// expectations
-		this.mockHistoryDAO.addHistoryEntry(EasyMock.eq(subject),
-				(HistoryEventType) EasyMock.anyObject(),
-				(Map<String, String>) EasyMock.anyObject());
+        DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject,
+                deviceMappingId, device);
+        expect(
+                this.mockDeviceMappingService.getDeviceMapping(subject
+                        .getUserId(), device.getName())).andStubReturn(
+                deviceMapping);
 
-		this.mockSecurityAuditLogger.addSecurityAudit(
-				SecurityThreatType.DECEPTION, login, "incorrect password");
+        DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
+                deviceMappingId);
+        SubjectEntity deviceRegistration = new SubjectEntity(
+                deviceRegistrationId);
+        deviceSubject.getRegistrations().add(deviceRegistration);
 
-		// prepare
-		replay(this.mockObjects);
+        expect(this.mockSubjectService.getDeviceSubject(deviceMappingId))
+                .andStubReturn(deviceSubject);
 
-		// operate
-		SubjectEntity resultSubject = this.testedInstance.authenticate(login,
-				wrongPassword);
+        expect(
+                this.mockPasswordManager.validatePassword(deviceRegistration,
+                        wrongPassword)).andStubReturn(false);
 
-		// verify
-		verify(this.mockObjects);
-		assertNull(resultSubject);
-	}
+        // expectations
+        this.mockSecurityAuditLogger.addSecurityAudit(
+                SecurityThreatType.DECEPTION, login, "incorrect password");
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        SubjectEntity resultSubject = this.testedInstance.authenticate(login,
+                wrongPassword);
+
+        // verify
+        verify(this.mockObjects);
+        assertNull(resultSubject);
+    }
 
 }

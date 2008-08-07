@@ -97,8 +97,92 @@
 		</abstract>
 		<section>
 			<title>User History Logging</title>
-			<para>For each user, certain events are logged into the system.
-				Following are the various events that are currently persisted.
+			<para>
+				For each user, certain events are logged into the system. These
+				events can be viewed by the user in the User webapp in the Account
+				section under History. Following are the events that are currently
+				persisted.
+				<variablelist>
+					<varlistentry>
+						<term>Login</term>
+						<listitem>
+							User logged in successfully for a certain application with a
+							certain device.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Device registration</term>
+						<listitem>
+							User successfully registered a new device.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Device removal</term>
+						<listitem>
+							User successfully removed an existing device.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Device update</term>
+						<listitem>
+							User successfully updated an existing device.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Subscription added</term>
+						<listitem>
+							User subscribed to a certain application.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Subscription removed</term>
+						<listitem>
+							User removed a subscription to a certain application.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute added</term>
+						<listitem>
+							User added an attribute.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute changed</term>
+						<listitem>
+							User modified an existing attribute.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute removed</term>
+						<listitem>
+							User removed an existing attribute.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute added by attribute provider</term>
+						<listitem>
+							User attribute was added by the attribute provider.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute changed by attribute provider</term>
+						<listitem>
+							User attribute was modified by the attribute provider.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute removed by attribute provider</term>
+						<listitem>
+							User attribute was removed by the attribute provider.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Helpdesk request</term>
+						<listitem>
+							User logged a helpdesk request.
+						</listitem>
+					</varlistentry>
+				</variablelist>
 			</para>
 		</section>
 	</chapter>

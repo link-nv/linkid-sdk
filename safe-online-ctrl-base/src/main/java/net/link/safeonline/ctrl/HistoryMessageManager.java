@@ -27,6 +27,20 @@ public class HistoryMessageManager {
     public static final String RESOURCE_BASE = "messages.history";
 
 
+    /**
+     * Returns the i18n history message. The history properties are used to
+     * format this message. Following order is to be used in the resource bundle :
+     * <ol>
+     * <li>Application</li>
+     * <li>Device</li>
+     * <li>Attribute</li>
+     * <li>Info</li>
+     * </ol>
+     * 
+     * @param context
+     * @param historyEntity
+     * @return
+     */
     public static String getMessage(FacesContext context,
             HistoryEntity historyEntity) {
 
@@ -35,10 +49,6 @@ public class HistoryMessageManager {
                 locale);
 
         String message = messages.getString(historyEntity.getEvent().getKey());
-
-        if (null == message) {
-            return messages.getString("history_unknown");
-        }
 
         String application = null;
         String attribute = null;

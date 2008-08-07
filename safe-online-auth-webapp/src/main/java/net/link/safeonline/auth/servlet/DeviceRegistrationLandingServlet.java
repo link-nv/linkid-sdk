@@ -38,80 +38,82 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID               = 1L;
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceRegistrationLandingServlet.class);
+    private static final Log   LOG                            = LogFactory
+                                                                      .getLog(DeviceRegistrationLandingServlet.class);
 
-	public static final String RESOURCE_BASE = "messages.webapp";
+    public static final String RESOURCE_BASE                  = "messages.webapp";
 
-	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
+    public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-	@Init(name = "LoginUrl")
-	private String loginUrl;
+    @Init(name = "LoginUrl")
+    private String             loginUrl;
 
-	@Init(name = "RegisterDeviceUrl")
-	private String registerDeviceUrl;
+    @Init(name = "RegisterDeviceUrl")
+    private String             registerDeviceUrl;
 
-	@Init(name = "NewUserDeviceUrl")
-	private String newUserDeviceUrl;
+    @Init(name = "NewUserDeviceUrl")
+    private String             newUserDeviceUrl;
 
-	@Init(name = "ServletEndpointUrl")
-	private String servletEndpointUrl;
+    @Init(name = "ServletEndpointUrl")
+    private String             servletEndpointUrl;
 
-	@Init(name = "DeviceErrorUrl")
-	private String deviceErrorUrl;
+    @Init(name = "DeviceErrorUrl")
+    private String             deviceErrorUrl;
 
-	@Override
-	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("doPost");
 
-		/**
-		 * Wrap the request to use the servlet endpoint url. To prevent failure
-		 * when behind a reverse proxy or loadbalancer when opensaml is checking
-		 * the destination field.
-		 */
-		HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
-				request, this.servletEndpointUrl);
+    @Override
+    protected void invokePost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-		AuthenticationService authenticationService = AuthenticationServiceManager
-				.getAuthenticationService(requestWrapper.getSession());
-		DeviceMappingEntity deviceMapping;
-		try {
-			deviceMapping = authenticationService.register(requestWrapper);
-		} catch (NodeNotFoundException e) {
-			redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
-					RESOURCE_BASE, new ErrorMessage(
-							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-							"errorProtocolHandlerFinalization"));
-			return;
-		} catch (DeviceMappingNotFoundException e) {
-			redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
-					RESOURCE_BASE, new ErrorMessage(
-							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-							"errorDeviceRegistrationNotFound"));
-			return;
-		}
-		if (null == deviceMapping) {
-			/*
-			 * Registration failed, redirect to register-device or
-			 * new-user-device
-			 */
-			if (authenticationService.getAuthenticationState().equals(
-					AuthenticationState.USER_AUTHENTICATED)) {
-				response.sendRedirect(this.registerDeviceUrl);
-			} else {
-				response.sendRedirect(this.newUserDeviceUrl);
-			}
+        LOG.debug("doPost");
 
-		} else {
-			/*
-			 * Registration ok, redirect to login servlet
-			 */
-			LoginManager.relogin(requestWrapper.getSession(), deviceMapping
-					.getDevice());
-			response.sendRedirect(this.loginUrl);
-		}
-	}
+        /**
+         * Wrap the request to use the servlet endpoint url. To prevent failure
+         * when behind a reverse proxy or loadbalancer when opensaml is checking
+         * the destination field.
+         */
+        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
+                request, this.servletEndpointUrl);
+
+        AuthenticationService authenticationService = AuthenticationServiceManager
+                .getAuthenticationService(requestWrapper.getSession());
+        DeviceMappingEntity deviceMapping;
+        try {
+            deviceMapping = authenticationService.register(requestWrapper);
+        } catch (NodeNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
+                    RESOURCE_BASE, new ErrorMessage(
+                            DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                            "errorProtocolHandlerFinalization"));
+            return;
+        } catch (DeviceMappingNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
+                    RESOURCE_BASE, new ErrorMessage(
+                            DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                            "errorDeviceRegistrationNotFound"));
+            return;
+        }
+        if (null == deviceMapping) {
+            /*
+             * Registration failed, redirect to register-device or
+             * new-user-device
+             */
+            if (authenticationService.getAuthenticationState().equals(
+                    AuthenticationState.USER_AUTHENTICATED)) {
+                response.sendRedirect(this.registerDeviceUrl);
+            } else {
+                response.sendRedirect(this.newUserDeviceUrl);
+            }
+
+        } else {
+            /*
+             * Registration ok, redirect to login servlet
+             */
+            LoginManager.relogin(requestWrapper.getSession(), deviceMapping
+                    .getDevice());
+            response.sendRedirect(this.loginUrl);
+        }
+    }
 }
