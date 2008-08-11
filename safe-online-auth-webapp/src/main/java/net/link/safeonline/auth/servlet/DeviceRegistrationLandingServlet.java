@@ -19,7 +19,9 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
@@ -100,6 +102,8 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
              * Registration failed, redirect to register-device or
              * new-user-device
              */
+            HelpdeskLogger.add(requestWrapper.getSession(),
+                    "registration failed", LogLevelType.ERROR);
             if (authenticationService.getAuthenticationState().equals(
                     AuthenticationState.USER_AUTHENTICATED)) {
                 response.sendRedirect(this.registerDeviceUrl);
@@ -113,6 +117,10 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
              */
             LoginManager.relogin(requestWrapper.getSession(), deviceMapping
                     .getDevice());
+            HelpdeskLogger.add(requestWrapper.getSession(),
+                    "successfully registered device: "
+                            + deviceMapping.getDevice(), LogLevelType.INFO);
+
             response.sendRedirect(this.loginUrl);
         }
     }

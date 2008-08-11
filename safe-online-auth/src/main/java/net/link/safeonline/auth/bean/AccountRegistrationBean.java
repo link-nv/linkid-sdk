@@ -103,7 +103,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
         this.log.debug("loginNext");
 
-        HelpdeskLogger.add("Account creation: login=" + this.login,
+        HelpdeskLogger.add("account creation: login=" + this.login,
                 LogLevelType.INFO);
 
         this.log.debug("valid captcha: " + this.validCaptcha);
@@ -133,7 +133,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
         this.log.debug("deviceNext: " + this.device);
 
-        HelpdeskLogger.add("Account creation: register device: " + this.device,
+        HelpdeskLogger.add("account creation: register device: " + this.device,
                 LogLevelType.INFO);
 
         String registrationURL = this.devicePolicyService

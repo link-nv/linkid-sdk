@@ -5,12 +5,17 @@
 	xmlns:h="http://java.sun.com/jsf/html">
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="logout">
+		<ul>
+			<li><h:outputLink
+				value="#{facesContext.externalContext.requestContextPath}/help.seam?location=#{facesContext.externalContext.requestServletPath}">
+					#{msgs.helpaction}</h:outputLink></li>
+		</ul>
 	</ui:define>
 
 	<ui:define name="sidebox">
 		<div id="c-sidebox"><h:graphicImage value="/images/box_top.png"
 			border="0" />
-        <div id="sidebox">
+		<div id="sidebox">
             <div class="center">
                 <img src="#{facesContext.externalContext.requestContextPath}/logo?applicationName=#{applicationName}" />
             </div>
