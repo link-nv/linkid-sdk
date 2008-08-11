@@ -20,7 +20,9 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
@@ -34,80 +36,92 @@ import net.link.safeonline.util.servlet.annotation.Init;
  */
 public class DeviceLandingServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID               = 1L;
 
-	public static final String RESOURCE_BASE = "messages.webapp";
+    public static final String RESOURCE_BASE                  = "messages.webapp";
 
-	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
+    public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-	@Init(name = "LoginUrl")
-	private String loginUrl;
+    @Init(name = "LoginUrl")
+    private String             loginUrl;
 
-	@Init(name = "StartUrl")
-	private String startUrl;
+    @Init(name = "StartUrl")
+    private String             startUrl;
 
-	@Init(name = "TryAnotherDeviceUrl")
-	private String tryAnotherDeviceUrl;
+    @Init(name = "TryAnotherDeviceUrl")
+    private String             tryAnotherDeviceUrl;
 
-	@Init(name = "ServletEndpointUrl")
-	private String servletEndpointUrl;
+    @Init(name = "ServletEndpointUrl")
+    private String             servletEndpointUrl;
 
-	@Init(name = "DeviceErrorUrl")
-	private String deviceErrorUrl;
+    @Init(name = "DeviceErrorUrl")
+    private String             deviceErrorUrl;
 
-	@Override
-	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
 
-		/**
-		 * Wrap the request to use the servlet endpoint url. To prevent failure
-		 * when behind a reverse proxy or loadbalancer when opensaml is checking
-		 * the destination field.
-		 */
-		HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
-				request, this.servletEndpointUrl);
+    @Override
+    protected void invokePost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-		/*
-		 * Authenticate
-		 */
-		AuthenticationService authenticationService = AuthenticationServiceManager
-				.getAuthenticationService(requestWrapper.getSession());
-		DeviceMappingEntity deviceMapping;
-		try {
-			deviceMapping = authenticationService.authenticate(requestWrapper);
-		} catch (NodeNotFoundException e) {
-			redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
-					RESOURCE_BASE, new ErrorMessage(
-							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-							"errorProtocolHandlerFinalization"));
-			return;
-		} catch (DeviceMappingNotFoundException e) {
-			redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
-					RESOURCE_BASE, new ErrorMessage(
-							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-							"errorDeviceRegistrationNotFound"));
-			return;
-		}
-		if (null == deviceMapping
-				&& authenticationService.getAuthenticationState().equals(
-						AuthenticationState.REDIRECTED)) {
-			/*
-			 * Authentication failed but user requested to try another device
-			 */
-			response.sendRedirect(this.tryAnotherDeviceUrl);
-		} else if (null == deviceMapping) {
-			/*
-			 * Authentication failed, redirect to start page
-			 */
-			response.sendRedirect(this.startUrl);
-		} else {
-			/*
-			 * Authentication success, redirect to login servlet
-			 */
-			LoginManager.login(requestWrapper.getSession(), deviceMapping
-					.getSubject().getUserId(), deviceMapping.getDevice());
+        /**
+         * Wrap the request to use the servlet endpoint url. To prevent failure
+         * when behind a reverse proxy or loadbalancer when opensaml is checking
+         * the destination field.
+         */
+        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
+                request, this.servletEndpointUrl);
 
-			response.sendRedirect(this.loginUrl);
-		}
-	}
+        /*
+         * Authenticate
+         */
+        AuthenticationService authenticationService = AuthenticationServiceManager
+                .getAuthenticationService(requestWrapper.getSession());
+        DeviceMappingEntity deviceMapping;
+        try {
+            deviceMapping = authenticationService.authenticate(requestWrapper);
+        } catch (NodeNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
+                    RESOURCE_BASE, new ErrorMessage(
+                            DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                            "errorProtocolHandlerFinalization"));
+            return;
+        } catch (DeviceMappingNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
+                    RESOURCE_BASE, new ErrorMessage(
+                            DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+                            "errorDeviceRegistrationNotFound"));
+            return;
+        }
+        if (null == deviceMapping
+                && authenticationService.getAuthenticationState().equals(
+                        AuthenticationState.REDIRECTED)) {
+            /*
+             * Authentication failed but user requested to try another device
+             */
+            HelpdeskLogger.add(requestWrapper.getSession(),
+                    "authentication failed, request to try another device",
+                    LogLevelType.ERROR);
+
+            response.sendRedirect(this.tryAnotherDeviceUrl);
+        } else if (null == deviceMapping) {
+            /*
+             * Authentication failed, redirect to start page
+             */
+            HelpdeskLogger.add(requestWrapper.getSession(),
+                    "authentication failed", LogLevelType.ERROR);
+            response.sendRedirect(this.startUrl);
+        } else {
+            /*
+             * Authentication success, redirect to login servlet
+             */
+            LoginManager.login(requestWrapper.getSession(), deviceMapping
+                    .getSubject().getUserId(), deviceMapping.getDevice());
+
+            HelpdeskLogger.add(requestWrapper.getSession(),
+                    "logged in successfully with device: "
+                            + deviceMapping.getDevice().getName(),
+                    LogLevelType.INFO);
+
+            response.sendRedirect(this.loginUrl);
+        }
+    }
 }

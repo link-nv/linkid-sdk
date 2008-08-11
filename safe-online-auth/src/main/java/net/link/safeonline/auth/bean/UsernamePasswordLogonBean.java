@@ -112,7 +112,6 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
         super.login(this.loginname,
                 SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 
-        HelpdeskLogger.clear();
         return null;
     }
 

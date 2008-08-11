@@ -29,6 +29,8 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,58 +45,64 @@ import org.jboss.seam.faces.FacesMessages;
 @Stateful
 @Name("identityConfirmation")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-		+ "IdentityConfirmationBean/local")
+        + "IdentityConfirmationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class IdentityConfirmationBean implements IdentityConfirmation {
 
-	private static final Log LOG = LogFactory
-			.getLog(IdentityConfirmationBean.class);
+    private static final Log LOG = LogFactory
+                                         .getLog(IdentityConfirmationBean.class);
 
-	@In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-	private String application;
+    @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
+    private String           application;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages            facesMessages;
 
-	@EJB
-	private IdentityService identityService;
+    @EJB
+    private IdentityService  identityService;
 
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String agree() throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException, SubscriptionNotFoundException {
-		LOG.debug("agree");
-		this.identityService.confirmIdentity(this.application);
-		boolean hasMissingAttributes = this.identityService
-				.hasMissingAttributes(this.application);
 
-		if (true == hasMissingAttributes) {
-			return "missing-attributes";
-		}
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public String agree() throws ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException, SubscriptionNotFoundException {
 
-		AuthenticationUtils.commitAuthentication(this.facesMessages);
+        LOG.debug("agree");
+        this.identityService.confirmIdentity(this.application);
+        boolean hasMissingAttributes = this.identityService
+                .hasMissingAttributes(this.application);
+        HelpdeskLogger.add("confirmed application identity for "
+                + this.application, LogLevelType.INFO);
 
-		return null;
-	}
+        if (true == hasMissingAttributes) {
+            return "missing-attributes";
+        }
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
+        AuthenticationUtils.commitAuthentication(this.facesMessages);
 
-	@Factory("identityConfirmationList")
-	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public List<AttributeDO> identityConfirmationListFactory()
-			throws SubscriptionNotFoundException, ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException {
-		LOG.debug("identityConfirmationList factory");
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
+        return null;
+    }
 
-		List<AttributeDO> confirmationList = this.identityService
-				.listIdentityAttributesToConfirm(this.application, viewLocale);
-		LOG.debug("confirmation list: " + confirmationList);
-		return confirmationList;
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
+
+    }
+
+    @Factory("identityConfirmationList")
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public List<AttributeDO> identityConfirmationListFactory()
+            throws SubscriptionNotFoundException, ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException {
+
+        LOG.debug("identityConfirmationList factory");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+
+        List<AttributeDO> confirmationList = this.identityService
+                .listIdentityAttributesToConfirm(this.application, viewLocale);
+        LOG.debug("confirmation list: " + confirmationList);
+        return confirmationList;
+    }
 }
