@@ -26,7 +26,9 @@ pwd=$PWD
 
 
 # Figure out which webapps to use.
-webapps=( "$base/jboss/server/default/deploy/"{SafeOnline*,Dodentocht}.ear )
+webapps=( "$base/jboss/server/default/deploy/"{SafeOnline*,Dodentocht*}.ear )
+webapps=( "${webapps[@]%.ear}" )
+webapps=( "${webapps[@]##*/}" )
 #repos=()
 #for webapp in "${webapps[@]}"; do
 #    [[ -e "$PWD/${0%/*}/../../$webapp" ]] \
@@ -43,7 +45,7 @@ webapps=( "$base/jboss/server/default/deploy/"{SafeOnline*,Dodentocht}.ear )
 (( ! apply )) && {
     tmp=(  )
     [[ -d "$base/jboss/server/default/tmp" ]] || {
-        emit -r "Invalid distribution path or distribution not deployed: '$distribution' at '$base'"
+        emit -r "Invalid distribution path or distribution not deployed: $distribution at $base"
         exit 1
     }
 }
@@ -101,27 +103,27 @@ function extractStuff {
 # Figure out what to do now.
 if (( apply )); then
     [[ ! -e $work ]] && {
-        emit -R "No work files present at '$(shorten "$work")'.  Cannot apply."
+        emit -R "No work files present at $(shorten "$work").  Cannot apply."
         exit 1
     }
 elif (( ! reverse )); then
     [[ -e $work ]] && {
-        emit -Y "You already have work files at '$(shorten "$work")'.  Perhaps you meant to use -R?"
+        emit -Y "You already have work files at $(shorten "$work").  Perhaps you meant to use -R?"
         emit -Y "Continuing will delete all these files and replace them by the current server's files."
         echo; ask -y!N "Continue?" || exit
 
-        emit "Cleaning up '$work'" --
+        emit "Cleaning up $(shorten "$work")" --
             rm -rf "$work"
         emit -$?
     }
 fi
 
 if (( reverse )); then
-    emit "Linking CSS and XHTML files from '$(shorten "$work")' to '$(shorten "$distribution")'" --
+    emit "Linking web files from $(shorten "$work") to $(shorten "$base")" --
 elif (( apply )); then
-    emit "Applying CSS and XHTML files from '$(shorten "$work")' to repository" --
+    emit "Applying web files from $(shorten "$work") to repository" --
 else
-    emit "Linking CSS and XHTML files from '$(shorten "$distribution")' to '$(shorten "$work")'" --
+    emit "Linking web files from $(shorten "$base") to $(shorten "$work")" --
 fi
 
 if (( apply )); then
@@ -131,7 +133,7 @@ if (( apply )); then
 
         find . '(' -name '*.xhtml' -o -name '*.css' ')' -print0 | while read -d '' file; do
             [[ -e $file~ ]] || {
-                emit -y "Backup of '$(shorten -p "$pwd" "$file")' not found."
+                emit -y "Backup of $(shorten -p "$pwd" "$file") not found."
                 continue
             }
 
@@ -148,7 +150,7 @@ if (( apply )); then
                     adest=("${adest[@]}")
 
                     if (( ! ${#adest[@]} || ${#adest[@]} > 1 )) || [[ ! -e $adest ]]; then
-                        emit -y "Source of '$(shorten -p "$pwd" "$file")' not found.  Tried:"
+                        emit -y "Source of $(shorten -p "$pwd" "$file") not found.  Tried:"
                         for dest in "$ddest" "${adest[@]}"; do
                             emit -y "   - $(shorten -p "$pwd" "$dest"):"\
                                     "$([[ -e $dest ]] && echo "${green}exists${reset}." || echo "${red}doesn't exist${reset}.")"
@@ -172,7 +174,7 @@ if (( apply )); then
     done
 else
     for webapp in "${webapps[@]}"; do
-        loc=("$distribution"/{jboss/,}server/default/tmp/deploy/*"$webapp.ear-contents/"*"/META-INF/../..")
+        loc=( "$base"/jboss/server/default/tmp/deploy/*"$webapp.ear-contents"/*/META-INF/../.. )
         (( ${#loc[@]} )) && cd "$loc" && \
             extractStuff
     done

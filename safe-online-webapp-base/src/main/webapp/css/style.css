@@ -384,9 +384,10 @@ hr.float_fix {
     margin:             0;
     padding:            0;
 }
-.inner {
+.inner, .usage_agreement, .white_space {
     width:              500px;
-    margin-left:        27px;                       /* auto margin doesn't center in IE. */
+    margin-left:        20px;                       /* auto margin doesn't center in IE. */
+    margin-right:       20px;
 }
 .center {
     float:              none;
@@ -402,7 +403,6 @@ hr.float_fix {
 
 /************************************************* USAGE AGREEMENT **/
 .usage_agreement {
-    width:              550px;
     height:             200px;
     padding:            10px;
 

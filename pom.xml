@@ -331,7 +331,7 @@
 			<id>performance</id>
 			<properties>
 				<safe-online.data.source.uri>
-					jdbc:mysql://sebeco-dev-13:3306/safeonline 
+					jdbc:mysql://localhost:3306/safeonline 
 				</safe-online.data.source.uri>
 				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
 				</safe-online.dialect>
