@@ -178,7 +178,7 @@ public class IdentityServiceBeanTest {
 				true));
 		applicationService.addApplication(applicationName, null,
 				"test-application-owner-name", null, false, IdScopeType.USER,
-				null, null, null, null, identity, false);
+				null, null, null, null, identity, false, false);
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager, subject
@@ -288,7 +288,8 @@ public class IdentityServiceBeanTest {
 				"test-application-owner-name", null, false, IdScopeType.USER,
 				null, null, null, null, Collections
 						.singletonList(new IdentityAttributeTypeDO(
-								"test-compounded-type", true, false)), false);
+								"test-compounded-type", true, false)), false,
+				false);
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager, subject
@@ -359,7 +360,7 @@ public class IdentityServiceBeanTest {
 		applicationService.addApplication(applicationName, null,
 				"test-application-owner-name", null, false, IdScopeType.USER,
 				null, null, null, null,
-				new LinkedList<IdentityAttributeTypeDO>(), false);
+				new LinkedList<IdentityAttributeTypeDO>(), false, false);
 
 		EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
 
@@ -554,7 +555,8 @@ public class IdentityServiceBeanTest {
 				compoundedAttributeName, true, false));
 		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialApplicationIdentityAttributes, false);
+				null, null, null, initialApplicationIdentityAttributes, false,
+				false);
 
 		// operate: subscribe user to application
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
@@ -698,7 +700,8 @@ public class IdentityServiceBeanTest {
 				compoundedAttributeName, true, false));
 		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialApplicationIdentityAttributes, false);
+				null, null, null, initialApplicationIdentityAttributes, false,
+				false);
 
 		// operate: subscribe user to application
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
@@ -1040,7 +1043,8 @@ public class IdentityServiceBeanTest {
 				attributeName, true, false));
 		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialApplicationIdentityAttributes, false);
+				null, null, null, initialApplicationIdentityAttributes, false,
+				false);
 
 		// operate: subscribe user to application
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
@@ -1145,7 +1149,8 @@ public class IdentityServiceBeanTest {
 				compoundedAttributeName, true, false));
 		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialApplicationIdentityAttributes, false);
+				null, null, null, initialApplicationIdentityAttributes, false,
+				false);
 
 		// operate: subscribe user to application
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
@@ -1435,7 +1440,8 @@ public class IdentityServiceBeanTest {
 				compoundedAttributeName, true, false));
 		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialApplicationIdentityAttributes, false);
+				null, null, null, initialApplicationIdentityAttributes, false,
+				false);
 
 		// operate: subscribe user to application
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(

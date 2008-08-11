@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,355 +54,380 @@ import org.jboss.annotation.security.SecurityDomain;
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class AttributeProviderServiceBean implements AttributeProviderService,
-		AttributeProviderServiceRemote {
+        AttributeProviderServiceRemote {
 
-	private static final Log LOG = LogFactory
-			.getLog(AttributeProviderServiceBean.class);
+    private static final Log       LOG = LogFactory
+                                               .getLog(AttributeProviderServiceBean.class);
 
-	@EJB
-	private AttributeProviderDAO attributeProviderDAO;
+    @EJB
+    private AttributeProviderDAO   attributeProviderDAO;
 
-	@EJB
-	private ApplicationManager applicationManager;
+    @EJB
+    private ApplicationManager     applicationManager;
 
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+    @EJB
+    private AttributeTypeDAO       attributeTypeDAO;
 
-	@EJB
-	private AttributeDAO attributeDAO;
+    @EJB
+    private AttributeDAO           attributeDAO;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService         subjectService;
 
-	@EJB
-	private HistoryDAO historyDAO;
+    @EJB
+    private HistoryDAO             historyDAO;
 
-	private AttributeManagerLWBean attributeManager;
+    private AttributeManagerLWBean attributeManager;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		/*
-		 * By injecting the attribute DAO of this session bean in the attribute
-		 * manager we are sure that the attribute manager (a lightweight bean)
-		 * will live within the same transaction and security context as this
-		 * identity service EJB3 session bean.
-		 */
-		LOG.debug("postConstruct");
-		this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
-	}
 
-	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public List<AttributeEntity> getAttributes(String subjectLogin,
-			String attributeName) throws AttributeTypeNotFoundException,
-			PermissionDeniedException, SubjectNotFoundException {
+    @PostConstruct
+    public void postConstructCallback() {
 
-		LOG.debug("get attributes of type " + attributeName + " for subject "
-				+ subjectLogin);
-		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute
+         * manager we are sure that the attribute manager (a lightweight bean)
+         * will live within the same transaction and security context as this
+         * identity service EJB3 session bean.
+         */
+        LOG.debug("postConstruct");
+        this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+    }
 
-		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
-				subject, attributeType);
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public List<AttributeEntity> getAttributes(String subjectLogin,
+            String attributeName) throws AttributeTypeNotFoundException,
+            PermissionDeniedException, SubjectNotFoundException {
 
-		if (false == attributeType.isCompounded()) {
-			return attributes;
-		}
+        LOG.debug("get attributes of type " + attributeName + " for subject "
+                + subjectLogin);
+        AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+        SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
-		List<CompoundedAttributeTypeMemberEntity> members = attributeType
-				.getMembers();
-		for (AttributeEntity attribute : attributes) {
-			for (CompoundedAttributeTypeMemberEntity member : members) {
-				AttributeEntity memberAttribute = this.attributeDAO
-						.findAttribute(subject, member.getMember(), attribute
-								.getAttributeIndex());
-				if (null != memberAttribute) {
-					attribute.getMembers().add(memberAttribute);
-				}
-			}
-		}
+        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
+                subject, attributeType);
 
-		return attributes;
-	}
+        if (false == attributeType.isCompounded()) {
+            return attributes;
+        }
 
-	/**
-	 * Check whether the caller application is an attribute provider for the
-	 * given attribute type.
-	 * 
-	 * <p>
-	 * It's an interesting design-pattern to combine access control checking
-	 * with retrieval of required entities for further processing. That way
-	 * you're always sure that the checks have been executed.
-	 * </p>
-	 * 
-	 * @param attributeName
-	 * @throws AttributeTypeNotFoundException
-	 * @throws PermissionDeniedException
-	 */
-	private AttributeTypeEntity checkAttributeProviderPermission(
-			String attributeName) throws AttributeTypeNotFoundException,
-			PermissionDeniedException {
-		ApplicationEntity application = this.applicationManager
-				.getCallerApplication();
-		AttributeTypeEntity attributeType = this.attributeTypeDAO
-				.getAttributeType(attributeName);
-		AttributeProviderEntity attributeProvider = this.attributeProviderDAO
-				.findAttributeProvider(application, attributeType);
-		if (null == attributeProvider) {
-			throw new PermissionDeniedException("not an attribute provider");
-		}
-		return attributeType;
-	}
+        List<CompoundedAttributeTypeMemberEntity> members = attributeType
+                .getMembers();
+        for (AttributeEntity attribute : attributes) {
+            for (CompoundedAttributeTypeMemberEntity member : members) {
+                AttributeEntity memberAttribute = this.attributeDAO
+                        .findAttribute(subject, member.getMember(), attribute
+                                .getAttributeIndex());
+                if (null != memberAttribute) {
+                    attribute.getMembers().add(memberAttribute);
+                }
+            }
+        }
 
-	private void createCompoundAttribute(SubjectEntity subject,
-			AttributeTypeEntity attributeType, Map<String, Object> memberValues) {
-		AttributeEntity compoundAttribute = this.attributeDAO.addAttribute(
-				attributeType, subject);
-		long attributeIdx = compoundAttribute.getAttributeIndex();
-		LOG.debug("createCompoundAttribute: idx " + attributeIdx);
-		String attributeId = UUID.randomUUID().toString();
-		LOG.debug("new attribute Id: " + attributeId);
-		compoundAttribute.setStringValue(attributeId);
+        return attributes;
+    }
 
-		List<CompoundedAttributeTypeMemberEntity> members = attributeType
-				.getMembers();
-		for (CompoundedAttributeTypeMemberEntity member : members) {
-			AttributeTypeEntity memberAttributeType = member.getMember();
-			AttributeEntity memberAttribute = this.attributeDAO.addAttribute(
-					memberAttributeType, subject, attributeIdx);
-			Object attributeValue = memberValues.get(memberAttributeType
-					.getName());
-			memberAttribute.setValue(attributeValue);
-		}
-	}
+    /**
+     * Check whether the caller application is an attribute provider for the
+     * given attribute type.
+     * 
+     * <p>
+     * It's an interesting design-pattern to combine access control checking
+     * with retrieval of required entities for further processing. That way
+     * you're always sure that the checks have been executed.
+     * </p>
+     * 
+     * @param attributeName
+     * @throws AttributeTypeNotFoundException
+     * @throws PermissionDeniedException
+     */
+    private AttributeTypeEntity checkAttributeProviderPermission(
+            String attributeName) throws AttributeTypeNotFoundException,
+            PermissionDeniedException {
 
-	@SuppressWarnings("unchecked")
-	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public void createAttribute(String subjectLogin, String attributeName,
-			Object attributeValue) throws AttributeTypeNotFoundException,
-			PermissionDeniedException, SubjectNotFoundException,
-			DatatypeMismatchException {
-		LOG
-				.debug("create attribute: " + attributeName + " for "
-						+ subjectLogin);
-		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+        ApplicationEntity application = this.applicationManager
+                .getCallerApplication();
+        AttributeTypeEntity attributeType = this.attributeTypeDAO
+                .getAttributeType(attributeName);
+        AttributeProviderEntity attributeProvider = this.attributeProviderDAO
+                .findAttributeProvider(application, attributeType);
+        if (null == attributeProvider) {
+            throw new PermissionDeniedException("not an attribute provider");
+        }
+        return attributeType;
+    }
 
-		this.historyDAO.addHistoryEntry(subject,
-				HistoryEventType.ATTRIBUTE_PROVIDER_ADD, attributeName,
-				this.applicationManager.getCallerApplication()
-						.getFriendlyName());
+    private void createCompoundAttribute(SubjectEntity subject,
+            AttributeTypeEntity attributeType, Map<String, Object> memberValues) {
 
-		if (null == attributeValue) {
-			this.attributeDAO.addAttribute(attributeType, subject);
-			return;
-		}
+        AttributeEntity compoundAttribute = this.attributeDAO.addAttribute(
+                attributeType, subject);
+        long attributeIdx = compoundAttribute.getAttributeIndex();
+        LOG.debug("createCompoundAttribute: idx " + attributeIdx);
+        String attributeId = UUID.randomUUID().toString();
+        LOG.debug("new attribute Id: " + attributeId);
+        compoundAttribute.setStringValue(attributeId);
 
-		if (attributeValue instanceof Map) {
-			Map<String, Object> memberValues = (Map<String, Object>) attributeValue;
-			createCompoundAttribute(subject, attributeType, memberValues);
-			return;
-		}
+        List<CompoundedAttributeTypeMemberEntity> members = attributeType
+                .getMembers();
+        for (CompoundedAttributeTypeMemberEntity member : members) {
+            AttributeTypeEntity memberAttributeType = member.getMember();
+            AttributeEntity memberAttribute = this.attributeDAO.addAttribute(
+                    memberAttributeType, subject, attributeIdx);
+            Object attributeValue = memberValues.get(memberAttributeType
+                    .getName());
+            memberAttribute.setValue(attributeValue);
+        }
+    }
 
-		Class attributeValueClass = attributeValue.getClass();
-		if (attributeType.isMultivalued()) {
-			if (false == attributeValueClass.isArray()) {
-				throw new DatatypeMismatchException();
-			}
+    @SuppressWarnings("unchecked")
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public void createAttribute(String subjectLogin, String attributeName,
+            Object attributeValue) throws AttributeTypeNotFoundException,
+            PermissionDeniedException, SubjectNotFoundException,
+            DatatypeMismatchException {
 
-			int size = Array.getLength(attributeValue);
-			for (int idx = 0; idx < size; idx++) {
-				Object value = Array.get(attributeValue, idx);
-				AttributeEntity attribute = this.attributeDAO.addAttribute(
-						attributeType, subject);
-				setAttributeValue(attribute, value);
-			}
-		} else {
-			/*
-			 * Single-valued attribute.
-			 */
-			AttributeEntity attribute = this.attributeDAO.addAttribute(
-					attributeType, subject);
-			setAttributeValue(attribute, attributeValue);
-		}
-	}
+        LOG
+                .debug("create attribute: " + attributeName + " for "
+                        + subjectLogin);
+        AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+        SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
-	private void setAttributeValue(AttributeEntity attribute, Object value)
-			throws DatatypeMismatchException {
-		try {
-			attribute.setValue(value);
-		} catch (ClassCastException e) {
-			throw new DatatypeMismatchException();
-		}
-	}
+        Map<String, String> historyProperties = new HashMap<String, String>();
+        historyProperties.put(SafeOnlineConstants.ATTRIBUTE_PROPERTY,
+                attributeName);
+        historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY,
+                this.applicationManager.getCallerApplication()
+                        .getFriendlyName());
+        this.historyDAO.addHistoryEntry(subject,
+                HistoryEventType.ATTRIBUTE_PROVIDER_ADD, historyProperties);
 
-	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public void setAttribute(String subjectLogin, String attributeName,
-			Object attributeValue) throws AttributeTypeNotFoundException,
-			PermissionDeniedException, SubjectNotFoundException,
-			AttributeNotFoundException, DatatypeMismatchException {
-		LOG.debug("set attribute " + attributeName + " for " + subjectLogin);
-		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+        if (null == attributeValue) {
+            this.attributeDAO.addAttribute(attributeType, subject);
+            return;
+        }
 
-		this.historyDAO.addHistoryEntry(subject,
-				HistoryEventType.ATTRIBUTE_PROVIDER_CHANGE, attributeName,
-				this.applicationManager.getCallerApplication()
-						.getFriendlyName());
+        if (attributeValue instanceof Map) {
+            Map<String, Object> memberValues = (Map<String, Object>) attributeValue;
+            createCompoundAttribute(subject, attributeType, memberValues);
+            return;
+        }
 
-		if (attributeType.isMultivalued()) {
-			setMultivaluedAttribute(attributeValue, attributeType, subject);
-		} else {
-			setSinglevaluedAttribute(attributeValue, attributeType, subject);
-		}
-	}
+        Class attributeValueClass = attributeValue.getClass();
+        if (attributeType.isMultivalued()) {
+            if (false == attributeValueClass.isArray()) {
+                throw new DatatypeMismatchException();
+            }
 
-	private void setSinglevaluedAttribute(Object attributeValue,
-			AttributeTypeEntity attributeType, SubjectEntity subject)
-			throws AttributeNotFoundException, DatatypeMismatchException {
-		/*
-		 * Single-valued attribute.
-		 */
-		AttributeEntity attribute = this.attributeDAO.getAttribute(
-				attributeType, subject);
+            int size = Array.getLength(attributeValue);
+            for (int idx = 0; idx < size; idx++) {
+                Object value = Array.get(attributeValue, idx);
+                AttributeEntity attribute = this.attributeDAO.addAttribute(
+                        attributeType, subject);
+                setAttributeValue(attribute, value);
+            }
+        } else {
+            /*
+             * Single-valued attribute.
+             */
+            AttributeEntity attribute = this.attributeDAO.addAttribute(
+                    attributeType, subject);
+            setAttributeValue(attribute, attributeValue);
+        }
+    }
 
-		if (null == attributeValue) {
-			/*
-			 * In case the attribute value is null we cannot extract the
-			 * reflection class type. But actually we don't care. Just clear
-			 * all.
-			 */
-			attribute.clearValues();
-			return;
-		}
+    private void setAttributeValue(AttributeEntity attribute, Object value)
+            throws DatatypeMismatchException {
 
-		setAttributeValue(attribute, attributeValue);
-	}
+        try {
+            attribute.setValue(value);
+        } catch (ClassCastException e) {
+            throw new DatatypeMismatchException();
+        }
+    }
 
-	private void setMultivaluedAttribute(Object attributeValue,
-			AttributeTypeEntity attributeType, SubjectEntity subject)
-			throws AttributeNotFoundException, DatatypeMismatchException {
-		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
-				subject, attributeType);
-		if (attributes.isEmpty()) {
-			/*
-			 * Via setAttribute one can only update existing multivalued
-			 * attributes, not create them.
-			 */
-			throw new AttributeNotFoundException();
-		}
-		if (null == attributeValue) {
-			/*
-			 * In this case we remove all but one, which we set with a null
-			 * value.
-			 */
-			Iterator<AttributeEntity> iterator = attributes.iterator();
-			AttributeEntity attribute = iterator.next();
-			attribute.clearValues();
-			while (iterator.hasNext()) {
-				attribute = iterator.next();
-				this.attributeDAO.removeAttribute(attribute);
-			}
-		} else {
-			if (false == attributeValue.getClass().isArray()) {
-				throw new DatatypeMismatchException();
-			}
-			int newSize = Array.getLength(attributeValue);
-			Iterator<AttributeEntity> iterator = attributes.iterator();
-			for (int idx = 0; idx < newSize; idx++) {
-				Object value = Array.get(attributeValue, idx);
-				AttributeEntity attribute;
-				if (iterator.hasNext()) {
-					attribute = iterator.next();
-				} else {
-					attribute = this.attributeDAO.addAttribute(attributeType,
-							subject);
-				}
-				setAttributeValue(attribute, value);
-			}
-			while (iterator.hasNext()) {
-				AttributeEntity attribute = iterator.next();
-				this.attributeDAO.removeAttribute(attribute);
-			}
-		}
-	}
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public void setAttribute(String subjectLogin, String attributeName,
+            Object attributeValue) throws AttributeTypeNotFoundException,
+            PermissionDeniedException, SubjectNotFoundException,
+            AttributeNotFoundException, DatatypeMismatchException {
 
-	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public void setCompoundAttributeRecord(String subjectLogin,
-			String attributeName, String attributeId,
-			Map<String, Object> memberValues)
-			throws AttributeTypeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException, DatatypeMismatchException,
-			AttributeNotFoundException {
-		LOG.debug("set compound attribute " + attributeName + " for "
-				+ subjectLogin);
-		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		if (false == attributeType.isCompounded()) {
-			throw new DatatypeMismatchException();
-		}
+        LOG.debug("set attribute " + attributeName + " for " + subjectLogin);
+        AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+        SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
-		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+        Map<String, String> historyProperties = new HashMap<String, String>();
+        historyProperties.put(SafeOnlineConstants.ATTRIBUTE_PROPERTY,
+                attributeName);
+        historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY,
+                this.applicationManager.getCallerApplication()
+                        .getFriendlyName());
+        this.historyDAO.addHistoryEntry(subject,
+                HistoryEventType.ATTRIBUTE_PROVIDER_CHANGE, historyProperties);
 
-		/*
-		 * AttributeId is the global Id of the record, while AttributeIdx is the
-		 * local database Id of the attribute record.
-		 */
-		AttributeEntity compoundAttribute = getCompoundAttribute(subject,
-				attributeType, attributeId);
+        if (attributeType.isMultivalued()) {
+            setMultivaluedAttribute(attributeValue, attributeType, subject);
+        } else {
+            setSinglevaluedAttribute(attributeValue, attributeType, subject);
+        }
+    }
 
-		long attributeIdx = compoundAttribute.getAttributeIndex();
-		LOG.debug("attribute idx: " + attributeIdx);
+    private void setSinglevaluedAttribute(Object attributeValue,
+            AttributeTypeEntity attributeType, SubjectEntity subject)
+            throws AttributeNotFoundException, DatatypeMismatchException {
 
-		for (Map.Entry<String, Object> memberValue : memberValues.entrySet()) {
-			AttributeTypeEntity memberAttributeType = this.attributeTypeDAO
-					.getAttributeType(memberValue.getKey());
-			AttributeEntity memberAttribute = this.attributeDAO.getAttribute(
-					memberAttributeType, subject, attributeIdx);
-			setAttributeValue(memberAttribute, memberValue.getValue());
-		}
-	}
+        /*
+         * Single-valued attribute.
+         */
+        AttributeEntity attribute = this.attributeDAO.getAttribute(
+                attributeType, subject);
 
-	private AttributeEntity getCompoundAttribute(SubjectEntity subject,
-			AttributeTypeEntity attributeType, String attributeId)
-			throws AttributeNotFoundException {
-		List<AttributeEntity> compoundAttributes = this.attributeDAO
-				.listAttributes(subject, attributeType);
-		for (AttributeEntity compoundAttribute : compoundAttributes) {
-			if (attributeId.equals(compoundAttribute.getStringValue())) {
-				return compoundAttribute;
-			}
-		}
-		throw new AttributeNotFoundException();
-	}
+        if (null == attributeValue) {
+            /*
+             * In case the attribute value is null we cannot extract the
+             * reflection class type. But actually we don't care. Just clear
+             * all.
+             */
+            attribute.clearValues();
+            return;
+        }
 
-	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public void removeAttribute(String subjectLogin, String attributeName)
-			throws AttributeTypeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException, AttributeNotFoundException {
-		LOG.debug("remove attribute " + attributeName + " from subject "
-				+ subjectLogin);
-		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+        setAttributeValue(attribute, attributeValue);
+    }
 
-		this.historyDAO.addHistoryEntry(subject,
-				HistoryEventType.ATTRIBUTE_PROVIDER_REMOVE, attributeName,
-				this.applicationManager.getCallerApplication()
-						.getFriendlyName());
+    private void setMultivaluedAttribute(Object attributeValue,
+            AttributeTypeEntity attributeType, SubjectEntity subject)
+            throws AttributeNotFoundException, DatatypeMismatchException {
 
-		this.attributeManager.removeAttribute(attributeType, subject);
-	}
+        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
+                subject, attributeType);
+        if (attributes.isEmpty()) {
+            /*
+             * Via setAttribute one can only update existing multivalued
+             * attributes, not create them.
+             */
+            throw new AttributeNotFoundException();
+        }
+        if (null == attributeValue) {
+            /*
+             * In this case we remove all but one, which we set with a null
+             * value.
+             */
+            Iterator<AttributeEntity> iterator = attributes.iterator();
+            AttributeEntity attribute = iterator.next();
+            attribute.clearValues();
+            while (iterator.hasNext()) {
+                attribute = iterator.next();
+                this.attributeDAO.removeAttribute(attribute);
+            }
+        } else {
+            if (false == attributeValue.getClass().isArray()) {
+                throw new DatatypeMismatchException();
+            }
+            int newSize = Array.getLength(attributeValue);
+            Iterator<AttributeEntity> iterator = attributes.iterator();
+            for (int idx = 0; idx < newSize; idx++) {
+                Object value = Array.get(attributeValue, idx);
+                AttributeEntity attribute;
+                if (iterator.hasNext()) {
+                    attribute = iterator.next();
+                } else {
+                    attribute = this.attributeDAO.addAttribute(attributeType,
+                            subject);
+                }
+                setAttributeValue(attribute, value);
+            }
+            while (iterator.hasNext()) {
+                AttributeEntity attribute = iterator.next();
+                this.attributeDAO.removeAttribute(attribute);
+            }
+        }
+    }
 
-	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public void removeCompoundAttributeRecord(String subjectLogin,
-			String attributeName, String attributeId)
-			throws AttributeTypeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException, AttributeNotFoundException {
-		LOG.debug("remove compound attribute " + attributeName
-				+ " from subject " + subjectLogin + " with attrib Id "
-				+ attributeId);
-		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public void setCompoundAttributeRecord(String subjectLogin,
+            String attributeName, String attributeId,
+            Map<String, Object> memberValues)
+            throws AttributeTypeNotFoundException, PermissionDeniedException,
+            SubjectNotFoundException, DatatypeMismatchException,
+            AttributeNotFoundException {
 
-		this.attributeManager.removeCompoundAttribute(attributeType, subject,
-				attributeId);
-	}
+        LOG.debug("set compound attribute " + attributeName + " for "
+                + subjectLogin);
+        AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+        if (false == attributeType.isCompounded()) {
+            throw new DatatypeMismatchException();
+        }
+
+        SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+
+        /*
+         * AttributeId is the global Id of the record, while AttributeIdx is the
+         * local database Id of the attribute record.
+         */
+        AttributeEntity compoundAttribute = getCompoundAttribute(subject,
+                attributeType, attributeId);
+
+        long attributeIdx = compoundAttribute.getAttributeIndex();
+        LOG.debug("attribute idx: " + attributeIdx);
+
+        for (Map.Entry<String, Object> memberValue : memberValues.entrySet()) {
+            AttributeTypeEntity memberAttributeType = this.attributeTypeDAO
+                    .getAttributeType(memberValue.getKey());
+            AttributeEntity memberAttribute = this.attributeDAO.getAttribute(
+                    memberAttributeType, subject, attributeIdx);
+            setAttributeValue(memberAttribute, memberValue.getValue());
+        }
+    }
+
+    private AttributeEntity getCompoundAttribute(SubjectEntity subject,
+            AttributeTypeEntity attributeType, String attributeId)
+            throws AttributeNotFoundException {
+
+        List<AttributeEntity> compoundAttributes = this.attributeDAO
+                .listAttributes(subject, attributeType);
+        for (AttributeEntity compoundAttribute : compoundAttributes) {
+            if (attributeId.equals(compoundAttribute.getStringValue())) {
+                return compoundAttribute;
+            }
+        }
+        throw new AttributeNotFoundException();
+    }
+
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public void removeAttribute(String subjectLogin, String attributeName)
+            throws AttributeTypeNotFoundException, PermissionDeniedException,
+            SubjectNotFoundException, AttributeNotFoundException {
+
+        LOG.debug("remove attribute " + attributeName + " from subject "
+                + subjectLogin);
+        AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+        SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+
+        Map<String, String> historyProperties = new HashMap<String, String>();
+        historyProperties.put(SafeOnlineConstants.ATTRIBUTE_PROPERTY,
+                attributeName);
+        historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY,
+                this.applicationManager.getCallerApplication()
+                        .getFriendlyName());
+        this.historyDAO.addHistoryEntry(subject,
+                HistoryEventType.ATTRIBUTE_PROVIDER_REMOVE, historyProperties);
+
+        this.attributeManager.removeAttribute(attributeType, subject);
+    }
+
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public void removeCompoundAttributeRecord(String subjectLogin,
+            String attributeName, String attributeId)
+            throws AttributeTypeNotFoundException, PermissionDeniedException,
+            SubjectNotFoundException, AttributeNotFoundException {
+
+        LOG.debug("remove compound attribute " + attributeName
+                + " from subject " + subjectLogin + " with attrib Id "
+                + attributeId);
+        AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+        SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+
+        this.attributeManager.removeCompoundAttribute(attributeType, subject,
+                attributeId);
+    }
 }

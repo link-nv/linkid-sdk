@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -292,7 +293,8 @@ public class IdentityServiceBean implements IdentityService,
         attribute.copyValueTo(attributeType, attributeEntity);
 
         this.historyDAO.addHistoryEntry(subject,
-                HistoryEventType.ATTRIBUTE_CHANGE, attributeName, null);
+                HistoryEventType.ATTRIBUTE_CHANGE, Collections.singletonMap(
+                        SafeOnlineConstants.ATTRIBUTE_PROPERTY, attributeName));
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -573,7 +575,9 @@ public class IdentityServiceBean implements IdentityService,
                 .setConfirmedIdentityVersion(currentApplicationIdentityVersion);
 
         this.historyDAO.addHistoryEntry(subject,
-                HistoryEventType.IDENTITY_CONFIRMATION, applicationName, null);
+                HistoryEventType.IDENTITY_CONFIRMATION, Collections
+                        .singletonMap(SafeOnlineConstants.APPLICATION_PROPERTY,
+                                applicationName));
 
     }
 
@@ -950,7 +954,8 @@ public class IdentityServiceBean implements IdentityService,
                 .getIndex(), subject);
 
         this.historyDAO.addHistoryEntry(subject,
-                HistoryEventType.ATTRIBUTE_REMOVE, attributeName, null);
+                HistoryEventType.ATTRIBUTE_REMOVE, Collections.singletonMap(
+                        SafeOnlineConstants.ATTRIBUTE_PROPERTY, attributeName));
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -1010,7 +1015,9 @@ public class IdentityServiceBean implements IdentityService,
             }
 
             this.historyDAO.addHistoryEntry(subject,
-                    HistoryEventType.ATTRIBUTE_ADD, attributeName, null);
+                    HistoryEventType.ATTRIBUTE_ADD, Collections.singletonMap(
+                            SafeOnlineConstants.ATTRIBUTE_PROPERTY,
+                            attributeName));
 
             return;
         }
@@ -1023,7 +1030,8 @@ public class IdentityServiceBean implements IdentityService,
         LOG.debug("new attribute index: " + attribute.getAttributeIndex());
         headAttribute.copyValueTo(attributeType, attribute);
         this.historyDAO.addHistoryEntry(subject,
-                HistoryEventType.ATTRIBUTE_ADD, attributeName, null);
+                HistoryEventType.ATTRIBUTE_ADD, Collections.singletonMap(
+                        SafeOnlineConstants.ATTRIBUTE_PROPERTY, attributeName));
 
     }
 

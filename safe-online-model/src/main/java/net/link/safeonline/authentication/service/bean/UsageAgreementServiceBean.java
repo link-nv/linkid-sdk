@@ -101,6 +101,9 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 	 */
 	private void checkWritePermission(ApplicationEntity application)
 			throws PermissionDeniedException {
+		if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)) {
+			return;
+		}
 		ApplicationOwnerEntity applicationOwner = application
 				.getApplicationOwner();
 		SubjectEntity requiredSubject = applicationOwner.getAdmin();
@@ -111,7 +114,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 		}
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public UsageAgreementEntity createDraftUsageAgreement(
 			String applicationName, Long usageAgreementVersion)
 			throws ApplicationNotFoundException, PermissionDeniedException {
@@ -138,7 +141,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 		return draftUsageAgreement;
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public UsageAgreementTextEntity createDraftUsageAgreementText(
 			String applicationName, String language, String text)
 			throws ApplicationNotFoundException, PermissionDeniedException {
@@ -157,7 +160,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 		return usageAgreementText;
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public void updateUsageAgreement(String applicationName)
 			throws ApplicationNotFoundException, PermissionDeniedException {
 		LOG.debug("update application usage agreement: " + applicationName);
@@ -168,7 +171,8 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 		this.usageAgreementManager.updateUsageAgreement(application);
 	}
 
-	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })
+	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE,
+			SafeOnlineRoles.OPERATOR_ROLE })
 	public UsageAgreementEntity getCurrentUsageAgreement(String applicationName)
 			throws PermissionDeniedException, ApplicationNotFoundException {
 		LOG.debug("get current usage agreement for application: "
@@ -181,7 +185,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 				application.getCurrentApplicationUsageAgreement());
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public List<UsageAgreementEntity> getUsageAgreements(String applicationName)
 			throws ApplicationNotFoundException, PermissionDeniedException {
 		LOG.debug("get usage agreements for application: " + applicationName);
@@ -192,7 +196,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 		return this.usageAgreementDAO.listUsageAgreements(application);
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public UsageAgreementEntity getDraftUsageAgreement(String applicationName)
 			throws ApplicationNotFoundException, PermissionDeniedException {
 		LOG.debug("get draft usage agreement for application: "
@@ -205,7 +209,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 				UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public void setDraftUsageAgreementText(String applicationName,
 			String language, String text) throws ApplicationNotFoundException,
 			PermissionDeniedException {
@@ -225,7 +229,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 		usageAgreementText.setText(text);
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public void removeDraftUsageAgreementText(String applicationName,
 			String language) throws ApplicationNotFoundException,
 			PermissionDeniedException {
@@ -245,7 +249,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 		this.usageAgreementDAO.removeUsageAgreementText(usageAgreementText);
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public void removeDraftUsageAgreement(String applicationName)
 			throws ApplicationNotFoundException, PermissionDeniedException {
 		LOG.debug("remove draft usage agreement for application: "

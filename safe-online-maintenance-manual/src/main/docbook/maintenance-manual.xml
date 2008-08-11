@@ -5,15 +5,13 @@
 	<bookinfo>
 		<title>OLAS Maintenance Manual</title>
 		<copyright>
-			<year>2007</year>
+			<year>2008</year>
 			<holder>LIN-K N.V.</holder>
 		</copyright>
-		<date>28/11/2007</date>
+		<date>07/08/2008</date>
 		<abstract>
-			<para>
-				This document contains maintenance manual for the OLAS
-				product.
-			</para>
+			<para> This document contains maintenance manual for the OLAS
+				product.</para>
 		</abstract>
 		<releaseinfo>1.0.0</releaseinfo>
 		<productname>OLAS</productname>
@@ -23,45 +21,41 @@
 				<firstname>Frank</firstname>
 				<surname>Cornelis</surname>
 			</author>
+			<author>
+				<firstname>Wim</firstname>
+				<surname>Vandenhaute</surname>
+			</author>
 		</authorgroup>
 	</bookinfo>
-
 	<chapter id="introduction">
 		<title>Introduction</title>
-		<para>
-			OLAS is an authentication, signature and user data exchange
-			service. It allows 3th party web application to authenticate
-			users, involve users in transactions and obtain user
-			identity data. It brings to users a central identity
-			management.
-		</para>
+		<para> OLAS is an authentication, signature and user data exchange
+			service. It allows 3th party web application to authenticate users,
+			involve users in transactions and obtain user identity data. It
+			brings to users a central identity management.</para>
 	</chapter>
-
 	<chapter id="database">
 		<title>Database</title>
 		<abstract>
-			<para>
-				This chapter described the maintenance procedures for
-				the OLAS database.
-			</para>
+			<para> This chapter describes the maintenance procedures for the OLAS
+				database.</para>
 		</abstract>
 		<section>
 			<title>Database backup</title>
 			<para>
-				Every OLAS database schema has a version number. This
-				version number is located in the
+				Every OLAS database schema has a version number. This version number
+				is located in the
 				<code>METADATA</code>
 				table under the table row
 				<code>VERSION</code>
-				. This version number will be used to detect the need
-				for an OLAS database schema update by the OLAS CLI.
+				. This version number will be used to detect the need for an OLAS
+				database schema update by the OLAS CLI.
 			</para>
 			<para>
-				After a first deployment of OLAS you'll notice that the
-				JBoss AS has created some extra tables in the database.
-				JBoss AS uses these tables as part of its JavaEE
-				implementation. When creating a backup of the OLAS
-				database also take these JBoss tables into
+				After a first deployment of OLAS you'll notice that the JBoss AS has
+				created some extra tables in the database. JBoss AS uses these
+				tables as part of its JavaEE implementation. When creating a backup
+				of the OLAS database also take these JBoss tables into
 				consideration. These tables are:
 				<code>HILOSEQUENCES</code>
 				,
@@ -81,27 +75,115 @@
 		<section>
 			<title>Database Recovery</title>
 			<para>
-				In case the OLAS JavaEE application runs out of DBMS
-				connections the JBoss transaction manager will start
-				writing database recovery files to:
-				<code>
-					$JBOSS_HOME/server/default/data/tx-object-store/
-				</code>
-				When rebooting the JBoss application server the JBoss
-				transaction manager will try to recover via the data
-				stored in disk files.
+				In case the OLAS JavaEE application runs out of DBMS connections the
+				JBoss transaction manager will start writing database recovery files
+				to:
+				<code> $JBOSS_HOME/server/default/data/tx-object-store/</code>
+				When rebooting the JBoss application server the JBoss transaction
+				manager will try to recover via the data stored in disk files.
 				<caution>
-					<para>
-						We still get an non-Serializable XAResource
-						error. We need to investigate on this so that
-						full recovery from the disk files is possible.
-						Exact error message: Could not find new
-						XAResource to use for recovering
-						non-serializable XAResource
-					</para>
+					<para> We still get an non-Serializable XAResource error. We need
+						to investigate on this so that full recovery from the disk files
+						is possible. Exact error message: Could not find new XAResource to
+						use for recovering non-serializable XAResource</para>
 				</caution>
 			</para>
 		</section>
 	</chapter>
-
+	<chapter id="logging">
+		<title>OLAS Logging</title>
+		<abstract>
+			This chapter describes the logging systems built into OLAS.
+		</abstract>
+		<section>
+			<title>User History Logging</title>
+			<para>
+				For each user, certain events are logged into the system. These
+				events can be viewed by the user in the User webapp in the Account
+				section under History. Following are the events that are currently
+				persisted.
+				<variablelist>
+					<varlistentry>
+						<term>Login</term>
+						<listitem>
+							User logged in successfully for a certain application with a
+							certain device.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Device registration</term>
+						<listitem>
+							User successfully registered a new device.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Device removal</term>
+						<listitem>
+							User successfully removed an existing device.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Device update</term>
+						<listitem>
+							User successfully updated an existing device.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Subscription added</term>
+						<listitem>
+							User subscribed to a certain application.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Subscription removed</term>
+						<listitem>
+							User removed a subscription to a certain application.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute added</term>
+						<listitem>
+							User added an attribute.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute changed</term>
+						<listitem>
+							User modified an existing attribute.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute removed</term>
+						<listitem>
+							User removed an existing attribute.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute added by attribute provider</term>
+						<listitem>
+							User attribute was added by the attribute provider.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute changed by attribute provider</term>
+						<listitem>
+							User attribute was modified by the attribute provider.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Attribute removed by attribute provider</term>
+						<listitem>
+							User attribute was removed by the attribute provider.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Helpdesk request</term>
+						<listitem>
+							User logged a helpdesk request.
+						</listitem>
+					</varlistentry>
+				</variablelist>
+			</para>
+		</section>
+	</chapter>
 </book>

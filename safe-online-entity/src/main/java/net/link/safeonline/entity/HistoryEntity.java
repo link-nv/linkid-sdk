@@ -7,22 +7,28 @@
 
 package net.link.safeonline.entity;
 
-import static net.link.safeonline.entity.HistoryEntity.DELETE_ALL;
+import static net.link.safeonline.entity.HistoryEntity.QUERY_DELETE_ALL;
 import static net.link.safeonline.entity.HistoryEntity.QUERY_DELETE_WHERE_OLDER;
+import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_OLDER;
 import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_SUBJECT;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,118 +37,144 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+
 @Entity
 @Table(name = "hist")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history "
-				+ "FROM HistoryEntity AS history "
-				+ "WHERE history.subject = :subject "
-				+ "ORDER BY history.when DESC"),
-		@NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE "
-				+ "FROM HistoryEntity AS history "
-				+ "WHERE history.when < :ageLimit"),
-		@NamedQuery(name = DELETE_ALL, query = "DELETE FROM HistoryEntity AS history "
-				+ "WHERE history.subject = :subject") })
+        @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history "
+                + "FROM HistoryEntity AS history "
+                + "WHERE history.subject = :subject "
+                + "ORDER BY history.when DESC"),
+        @NamedQuery(name = QUERY_WHERE_OLDER, query = "SELECT history "
+                + "FROM HistoryEntity AS history "
+                + "WHERE history.when < :ageLimit "),
+        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE "
+                + "FROM HistoryEntity AS history "
+                + "WHERE history.when < :ageLimit"),
+        @NamedQuery(name = QUERY_DELETE_ALL, query = "DELETE FROM HistoryEntity AS history "
+                + "WHERE history.subject = :subject") })
 public class HistoryEntity implements Serializable {
 
-	public static final String QUERY_WHERE_SUBJECT = "hist.subject";
+    public static final String                 QUERY_WHERE_SUBJECT      = "hist.subject";
 
-	public static final String QUERY_DELETE_WHERE_OLDER = "hist.old";
+    public static final String                 QUERY_WHERE_OLDER        = "hist.old";
 
-	public static final String DELETE_ALL = "hist.del";
+    public static final String                 QUERY_DELETE_WHERE_OLDER = "hist.del.old";
 
-	private static final long serialVersionUID = 1L;
+    public static final String                 QUERY_DELETE_ALL         = "hist.del.all";
 
-	private long id;
+    private static final long                  serialVersionUID         = 1L;
 
-	private SubjectEntity subject;
+    private long                               id;
 
-	private HistoryEventType event;
+    private SubjectEntity                      subject;
 
-	private String application;
+    private HistoryEventType                   event;
 
-	private String info;
+    private Map<String, HistoryPropertyEntity> properties;
 
-	private Date when;
+    private Date                               when;
 
-	@ManyToOne(optional = false)
-	public SubjectEntity getSubject() {
-		return this.subject;
-	}
 
-	public void setSubject(SubjectEntity subject) {
-		this.subject = subject;
-	}
+    public HistoryEntity() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long getId() {
-		return this.id;
-	}
+        // empty
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public HistoryEntity(Date when, SubjectEntity subject,
+            HistoryEventType event) {
 
-	public HistoryEntity() {
-		// empty
-	}
+        this.subject = subject;
+        this.event = event;
+        this.when = when;
+        this.properties = new HashMap<String, HistoryPropertyEntity>();
 
-	public HistoryEntity(Date when, SubjectEntity subject,
-			HistoryEventType event, String application, String info) {
-		this.subject = subject;
-		this.event = event;
-		this.application = application;
-		this.when = when;
-		this.info = info;
-	}
+    }
 
-	@Column(name = "histevent", nullable = false)
-	public HistoryEventType getEvent() {
-		return this.event;
-	}
+    @ManyToOne(optional = false)
+    public SubjectEntity getSubject() {
 
-	public void setEvent(HistoryEventType event) {
-		this.event = event;
-	}
+        return this.subject;
+    }
 
-	@Column(name = "whendate", nullable = false)
-	@Temporal(value = TemporalType.TIMESTAMP)
-	public Date getWhen() {
-		return this.when;
-	}
+    public void setSubject(SubjectEntity subject) {
 
-	public void setWhen(Date when) {
-		this.when = when;
-	}
+        this.subject = subject;
+    }
 
-	public String getApplication() {
-		return this.application;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
 
-	public void setApplication(String application) {
-		this.application = application;
-	}
+        return this.id;
+    }
 
-	public String getInfo() {
-		return this.info;
-	}
+    public void setId(long id) {
 
-	public void setInfo(String info) {
-		this.info = info;
-	}
+        this.id = id;
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_SUBJECT)
-		List<HistoryEntity> getHistory(@QueryParam("subject")
-		SubjectEntity subject);
+    @Column(name = "histevent", nullable = false)
+    public HistoryEventType getEvent() {
 
-		@UpdateMethod(DELETE_ALL)
-		void deleteAll(@QueryParam("subject")
-		SubjectEntity subject);
+        return this.event;
+    }
 
-		@UpdateMethod(QUERY_DELETE_WHERE_OLDER)
-		void deleteWhereOlder(@QueryParam("ageLimit")
-		Date ageLimit);
-	}
+    public void setEvent(HistoryEventType event) {
+
+        this.event = event;
+    }
+
+    @Column(name = "whendate", nullable = false)
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getWhen() {
+
+        return this.when;
+    }
+
+    public void setWhen(Date when) {
+
+        this.when = when;
+    }
+
+    @OneToMany(mappedBy = "history", fetch = FetchType.EAGER)
+    @MapKey(name = "name")
+    public Map<String, HistoryPropertyEntity> getProperties() {
+
+        return this.properties;
+    }
+
+    public void setProperties(Map<String, HistoryPropertyEntity> properties) {
+
+        this.properties = properties;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (false == obj instanceof HistoryEntity)
+            return false;
+        HistoryEntity rhs = (HistoryEntity) obj;
+        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_SUBJECT)
+        List<HistoryEntity> getHistory(
+                @QueryParam("subject") SubjectEntity subject);
+
+        @QueryMethod(QUERY_WHERE_OLDER)
+        List<HistoryEntity> getHistory(@QueryParam("ageLimit") Date ageLimit);
+
+        @UpdateMethod(QUERY_DELETE_ALL)
+        void deleteAll(@QueryParam("subject") SubjectEntity subject);
+
+        @UpdateMethod(QUERY_DELETE_WHERE_OLDER)
+        void deleteWhereOlder(@QueryParam("ageLimit") Date ageLimit);
+    }
 }

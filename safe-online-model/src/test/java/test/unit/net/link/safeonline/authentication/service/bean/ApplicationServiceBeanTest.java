@@ -77,8 +77,8 @@ public class ApplicationServiceBeanTest extends TestCase {
 		jmxTestUtils.registerActionHandler(
 				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
 				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						return authCertificate;
 					}
 				});
@@ -91,8 +91,8 @@ public class ApplicationServiceBeanTest extends TestCase {
 		jmxTestUtils.registerActionHandler(
 				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
 				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						return certificate;
 					}
 				});
@@ -197,7 +197,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 		applicationService.addApplication(testApplicationName,
 				testApplicationFriendlyName, testApplicationOwnerName, null,
 				false, IdScopeType.USER, null, null, null, null,
-				initialIdentity, false);
+				initialIdentity, false, false);
 		ApplicationEntity application = applicationService
 				.getApplication(testApplicationName);
 
@@ -250,7 +250,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		applicationService.addApplication(testApplicationName, null,
 				testApplicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialIdentity, false);
+				null, null, null, initialIdentity, false, false);
 
 		EntityTransaction entityTransaction = entityManager.getTransaction();
 		entityTransaction.commit();
@@ -310,7 +310,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		applicationService.addApplication(testApplicationName, null,
 				testApplicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialIdentity, false);
+				null, null, null, initialIdentity, false, false);
 		ApplicationEntity application = applicationService
 				.getApplication(testApplicationName);
 

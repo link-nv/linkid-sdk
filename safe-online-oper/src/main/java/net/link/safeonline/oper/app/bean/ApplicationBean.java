@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,22 +37,28 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
+import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.IdScopeType;
+import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.app.Application;
+import net.link.safeonline.oper.app.DeviceEntry;
 import net.link.safeonline.oper.app.IdentityAttribute;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.AttributeTypeService;
+import net.link.safeonline.service.DeviceService;
 import net.link.safeonline.service.SubjectService;
 import net.sf.jmimemagic.Magic;
 import net.sf.jmimemagic.MagicException;
@@ -84,6 +91,18 @@ public class ApplicationBean implements Application {
 
 	private static final Log LOG = LogFactory.getLog(ApplicationBean.class);
 
+	private static final String NEW_IDENTITY_ATTRIBUTES_NAME = "newIdentityAttributes";
+
+	private static final String IDENTITY_ATTRIBUTES_NAME = "identityAttributes";
+
+	private static final String OPER_APPLICATION_LIST_NAME = "operApplicationList";
+
+	private static final String APPLICATION_IDENTITY_ATTRIBUTES_NAME = "applicationIdentityAttributes";
+
+	private static final String OPER_APPLICATION_ALLOWED_DEVICES_NAME = "operAllowedDevices";
+
+	private static final String SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL = "operSelectedApplicationUsageAgreements";
+
 	@EJB
 	private ApplicationService applicationService;
 
@@ -98,6 +117,12 @@ public class ApplicationBean implements Application {
 
 	@EJB
 	private UsageAgreementService usageAgreementService;
+
+	@EJB
+	private DeviceService deviceService;
+
+	@EJB
+	private DevicePolicyService devicePolicyService;
 
 	private String name;
 
@@ -123,6 +148,8 @@ public class ApplicationBean implements Application {
 
 	private boolean skipMessageIntegrityCheck;
 
+	private boolean deviceRestriction;
+
 	@SuppressWarnings("unused")
 	@Out
 	private long numberOfSubscriptions;
@@ -130,15 +157,31 @@ public class ApplicationBean implements Application {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	public static final String NEW_IDENTITY_ATTRIBUTES_NAME = "newIdentityAttributes";
-
 	@DataModel(NEW_IDENTITY_ATTRIBUTES_NAME)
 	private List<IdentityAttribute> newIdentityAttributes;
 
-	public static final String IDENTITY_ATTRIBUTES_NAME = "identityAttributes";
-
 	@DataModel(IDENTITY_ATTRIBUTES_NAME)
 	private List<IdentityAttribute> identityAttributes;
+
+	@DataModel(OPER_APPLICATION_ALLOWED_DEVICES_NAME)
+	private List<DeviceEntry> allowedDevices;
+
+	@SuppressWarnings("unused")
+	@DataModel(value = SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
+	private List<UsageAgreementEntity> selectedApplicationUsageAgreements;
+
+	@DataModelSelection(SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
+	@Out(required = false, scope = ScopeType.SESSION)
+	@In(required = false)
+	private UsageAgreementEntity operSelectedUsageAgreement;
+
+	@SuppressWarnings("unused")
+	@Out(required = false, scope = ScopeType.SESSION)
+	private UsageAgreementEntity draftUsageAgreement;
+
+	@SuppressWarnings("unused")
+	@Out(required = false, scope = ScopeType.SESSION)
+	private UsageAgreementEntity currentUsageAgreement;
 
 	@Remove
 	@Destroy
@@ -150,8 +193,6 @@ public class ApplicationBean implements Application {
 		this.applicationColor = null;
 		this.skipMessageIntegrityCheck = false;
 	}
-
-	public static final String OPER_APPLICATION_LIST_NAME = "operApplicationList";
 
 	@SuppressWarnings("unused")
 	@DataModel(OPER_APPLICATION_LIST_NAME)
@@ -165,8 +206,6 @@ public class ApplicationBean implements Application {
 	@SuppressWarnings("unused")
 	@Out(required = false)
 	private String ownerAdminName;
-
-	public static final String APPLICATION_IDENTITY_ATTRIBUTES_NAME = "applicationIdentityAttributes";
 
 	@SuppressWarnings("unused")
 	@DataModel(value = APPLICATION_IDENTITY_ATTRIBUTES_NAME)
@@ -197,7 +236,8 @@ public class ApplicationBean implements Application {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() throws AttributeTypeNotFoundException, IOException {
+	public String add() throws AttributeTypeNotFoundException, IOException,
+			ApplicationNotFoundException {
 
 		LOG.debug("add application: " + this.name);
 		if (null != this.friendlyName)
@@ -284,7 +324,7 @@ public class ApplicationBean implements Application {
 							.valueOf(this.applicationIdScope),
 					newApplicationUrl, newApplicationLogo, newApplicationColor,
 					encodedCertificate, tempIdentityAttributes,
-					this.skipMessageIntegrityCheck);
+					this.skipMessageIntegrityCheck, this.deviceRestriction);
 
 		} catch (ExistingApplicationException e) {
 			LOG.debug("application already exists: " + this.name);
@@ -304,6 +344,24 @@ public class ApplicationBean implements Application {
 					FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
 			return null;
 		}
+
+		// fetch new application
+		this.selectedApplication = this.applicationService
+				.getApplication(this.name);
+
+		// device restriction
+		List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
+		for (DeviceEntry deviceEntry : this.allowedDevices) {
+			if (deviceEntry.isAllowed() == true) {
+				AllowedDeviceEntity device = new AllowedDeviceEntity(
+						this.selectedApplication, deviceEntry.getDevice(),
+						deviceEntry.getWeight());
+				allowedDeviceList.add(device);
+			}
+		}
+		this.deviceService.setAllowedDevices(this.selectedApplication,
+				allowedDeviceList);
+
 		applicationListFactory();
 		return "success";
 	}
@@ -410,6 +468,14 @@ public class ApplicationBean implements Application {
 
 	public void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck) {
 		this.skipMessageIntegrityCheck = skipMessageIntegrityCheck;
+	}
+
+	public boolean isDeviceRestriction() {
+		return this.deviceRestriction;
+	}
+
+	public void setDeviceRestriction(boolean deviceRestriction) {
+		this.deviceRestriction = deviceRestriction;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -582,6 +648,23 @@ public class ApplicationBean implements Application {
 		this.applicationService.setSkipMessageIntegrityCheck(applicationId,
 				this.skipMessageIntegrityCheck);
 
+		// device restriction
+		List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
+		for (DeviceEntry deviceEntry : this.allowedDevices) {
+			if (deviceEntry.isAllowed() == true) {
+				AllowedDeviceEntity device = new AllowedDeviceEntity(
+						this.selectedApplication, deviceEntry.getDevice(),
+						deviceEntry.getWeight());
+				allowedDeviceList.add(device);
+			}
+		}
+		this.applicationService.setApplicationDescription(applicationId,
+				this.description);
+		this.applicationService.setApplicationDeviceRestriction(applicationId,
+				this.deviceRestriction);
+		this.deviceService.setAllowedDevices(this.selectedApplication,
+				allowedDeviceList);
+
 		/*
 		 * Refresh the selected application.
 		 */
@@ -628,6 +711,10 @@ public class ApplicationBean implements Application {
 
 		this.applicationIdScope = this.selectedApplication.getIdScope().name();
 
+		this.description = this.selectedApplication.getDescription();
+
+		this.deviceRestriction = this.selectedApplication.isDeviceRestriction();
+
 		return "edit";
 	}
 
@@ -661,4 +748,71 @@ public class ApplicationBean implements Application {
 			return "";
 		return text;
 	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	@Factory(OPER_APPLICATION_ALLOWED_DEVICES_NAME)
+	public void allowedDevices() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
+
+		this.allowedDevices = new ArrayList<DeviceEntry>();
+		boolean defaultValue = false;
+
+		List<DeviceEntity> deviceList = this.deviceService.listDevices();
+		for (DeviceEntity deviceEntity : deviceList) {
+			String deviceDescription = this.devicePolicyService
+					.getDeviceDescription(deviceEntity.getName(), viewLocale);
+			this.allowedDevices.add(new DeviceEntry(deviceEntity,
+					deviceDescription, defaultValue, 0));
+		}
+
+		if (this.selectedApplication == null) {
+			return;
+		}
+
+		List<AllowedDeviceEntity> allowedDeviceList = this.deviceService
+				.listAllowedDevices(this.selectedApplication);
+
+		for (AllowedDeviceEntity allowedDevice : allowedDeviceList) {
+			for (DeviceEntry deviceEntry : this.allowedDevices) {
+				if (deviceEntry.getDevice().equals(allowedDevice.getDevice())) {
+					deviceEntry.setAllowed(true);
+					deviceEntry.setWeight(allowedDevice.getWeight());
+				}
+			}
+		}
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	@Factory(SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
+	public void usageAgreementListFactory()
+			throws ApplicationNotFoundException, PermissionDeniedException {
+		if (null == this.selectedApplication) {
+			return;
+		}
+		LOG.debug("usage agreement list factory");
+		this.selectedApplicationUsageAgreements = this.usageAgreementService
+				.getUsageAgreements(this.selectedApplication.getName());
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String viewUsageAgreement() {
+		LOG.debug("view usage agreement for application: "
+				+ this.selectedApplication.getName() + ", version="
+				+ this.operSelectedUsageAgreement.getUsageAgreementVersion());
+		return "view-usage-agreement";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String editUsageAgreement() throws ApplicationNotFoundException,
+			PermissionDeniedException {
+		LOG.debug("edit usage agreement for application: "
+				+ this.selectedApplication.getName());
+		this.draftUsageAgreement = this.usageAgreementService
+				.getDraftUsageAgreement(this.selectedApplication.getName());
+		this.currentUsageAgreement = this.usageAgreementService
+				.getCurrentUsageAgreement(this.selectedApplication.getName());
+		return "edit-usage-agreement";
+	}
+
 }

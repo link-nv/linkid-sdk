@@ -167,7 +167,7 @@
 									<artifactId> safe-online-cli </artifactId>
 									<outputDirectory> ${project.build.directory}/SafeOnline 
 									</outputDirectory>
-									<includes>**/*.class</includes>
+									<includes>**/*.class,**/*.properties</includes>
 								</artifactItem>
 								<artifactItem>
 									<groupId> net.lin-k.safe-online </groupId>

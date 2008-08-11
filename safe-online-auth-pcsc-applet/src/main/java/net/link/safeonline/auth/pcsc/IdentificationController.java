@@ -44,6 +44,10 @@ public class IdentificationController implements AppletController {
 			(byte) 0x94, 0x40, 0x0a, (byte) 0xa5, 0x03, 0x01, 0x01, 0x01,
 			(byte) 0xad, 0x13, 0x10 };
 
+	public static final byte[] BEID_ATR_100 = new byte[] { 0x3b, (byte) 98,
+			(byte) 0x94, 0x40, (byte) 0xff, (byte) 0xa5, 0x03, 0x01, 0x01,
+			0x01, (byte) 0xad, 0x13, 0x10 };
+
 	private AppletView appletView;
 
 	private RuntimeContext runtimeContext;
@@ -143,7 +147,8 @@ public class IdentificationController implements AppletController {
 				ATR atr = card.getATR();
 				byte[] atrBytes = atr.getBytes();
 				if (false == Arrays.equals(BEID_ATR_11, atrBytes)
-						&& false == Arrays.equals(BEID_ATR_10, atrBytes)) {
+						&& false == Arrays.equals(BEID_ATR_10, atrBytes)
+						&& false == Arrays.equals(BEID_ATR_100, atrBytes)) {
 					continue;
 				}
 				return card;

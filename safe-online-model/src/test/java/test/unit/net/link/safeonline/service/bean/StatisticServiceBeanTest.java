@@ -140,7 +140,7 @@ public class StatisticServiceBeanTest extends TestCase {
 
 		applicationService.addApplication(testApplicationName, null, "owner",
 				null, false, IdScopeType.USER, null, null, null, null, null,
-				false);
+				false, false);
 		ApplicationEntity application = applicationService
 				.getApplication(testApplicationName);
 		StatisticDAO statisticDAO = EJBTestUtils.newInstance(
@@ -215,7 +215,7 @@ public class StatisticServiceBeanTest extends TestCase {
 
 		applicationService.addApplication(testApplicationName, null, "owner",
 				null, false, IdScopeType.USER, null, null, null, null, null,
-				false);
+				false, false);
 		ApplicationEntity application = applicationService
 				.getApplication(testApplicationName);
 		StatisticDAO statisticDAO = EJBTestUtils.newInstance(

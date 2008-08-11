@@ -36,10 +36,18 @@
 		<para>
 			Following services can be provided by the device provider :
 			<itemizedlist>
-				<listitem> Authentication </listitem>
-				<listitem> Registration </listitem>
-				<listitem> Removal </listitem>
-				<listitem> Updating </listitem>
+				<listitem>
+					Authentication
+				</listitem>
+				<listitem>
+					Registration
+				</listitem>
+				<listitem>
+					Removal
+				</listitem>
+				<listitem>
+					Updating
+				</listitem>
 			</itemizedlist>
 		</para>
 		<para> Below the protocol is shown as is used for authentication of an
@@ -199,10 +207,18 @@
 			<code>AuthenticationContext</code>
 			should be filled in containing the authentication details such as :
 			<itemizedlist>
-				<listitem> User ID </listitem>
-				<listitem> Used Device Name </listitem>
-				<listitem> SAML Response Token Validity Time </listitem>
-				<listitem> Device Provider Name </listitem>
+				<listitem>
+					User ID
+				</listitem>
+				<listitem>
+					Used Device Name
+				</listitem>
+				<listitem>
+					SAML Response Token Validity Time
+				</listitem>
+				<listitem>
+					Device Provider Name
+				</listitem>
 			</itemizedlist>
 			The following class should be used to accomplish this :
 			<code>AuthenticationContext.java</code>

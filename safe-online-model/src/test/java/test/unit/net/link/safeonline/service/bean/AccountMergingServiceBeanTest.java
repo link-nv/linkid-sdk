@@ -95,8 +95,8 @@ public class AccountMergingServiceBeanTest {
 		jmxTestUtils.registerActionHandler(
 				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
 				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						return authCertificate;
 					}
 				});
@@ -109,8 +109,8 @@ public class AccountMergingServiceBeanTest {
 		jmxTestUtils.registerActionHandler(
 				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
 				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						return certificate;
 					}
 				});
@@ -378,7 +378,7 @@ public class AccountMergingServiceBeanTest {
 						attributeType.getName(), true, false));
 			applicationService.addApplication(this.applicationName, null,
 					"owner", null, false, IdScopeType.USER, null, null, null,
-					null, applicationIdentityAttributes, false);
+					null, applicationIdentityAttributes, false, false);
 		}
 	}
 

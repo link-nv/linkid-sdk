@@ -13,195 +13,192 @@
 	</ui:define>
 	<ui:define name="content">
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 			label="#{msgs.generic}">
 
-            <table class="inner">
-                <colgroup class="half" />
-                <colgroup />
+			<table class="inner">
+				<colgroup class="half" />
+				<colgroup />
 
-                <tbody>
-                    <tr>
-                        <th>#{msgs.applicationOwner}</th>
-                        <td>#{selectedApplication.applicationOwner.name}</td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.ownerUserAllowedToSubscribe}</th>
-                        <td><h:selectBooleanCheckbox disabled="true"
-                                value="#{selectedApplication.allowUserSubscription}" /></td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.removable}</th>
-                        <td><h:selectBooleanCheckbox disabled="true"
-                                value="#{selectedApplication.removable}" /></td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.ownerNumberOfSubscriptions}</th>
-                        <td>#{numberOfSubscriptions}</td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.identityVersion}</th>
-                        <td>#{selectedApplication.currentApplicationIdentity}</td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.usageAgreementVersion}</th>
-                        <td>#{selectedApplication.currentApplicationUsageAgreement}</td>
-                    </tr>
-                </tbody>
-            </table>
+				<tbody>
+					<tr>
+						<th>#{msgs.applicationOwner}</th>
+						<td>#{selectedApplication.applicationOwner.name}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.ownerUserAllowedToSubscribe}</th>
+						<td><h:selectBooleanCheckbox disabled="true"
+							value="#{selectedApplication.allowUserSubscription}" /></td>
+					</tr>
+					<tr>
+						<th>#{msgs.removable}</th>
+						<td><h:selectBooleanCheckbox disabled="true"
+							value="#{selectedApplication.removable}" /></td>
+					</tr>
+					<tr>
+						<th>#{msgs.ownerNumberOfSubscriptions}</th>
+						<td>#{numberOfSubscriptions}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.identityVersion}</th>
+						<td>#{selectedApplication.currentApplicationIdentity}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.usageAgreementVersion}</th>
+						<td>#{selectedApplication.currentApplicationUsageAgreement}</td>
+					</tr>
+				</tbody>
+			</table>
 		</rich:simpleTogglePanel>
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			label="#{msgs.description}">
-            <p><h:outputText value="#{selectedApplication.description}"
-                escape="true" rendered="#{!empty selectedApplication.description}" />
-            <h:outputText value="#{msgs.noDescription}"
-                rendered="#{empty selectedApplication.description}" /></p>
-            <!-- XSS vulnerability possible: do not set escape="false" -->
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			opened="false" label="#{msgs.description}">
+			<p><h:outputText value="#{selectedApplication.description}"
+				escape="true" rendered="#{!empty selectedApplication.description}" />
+			<h:outputText value="#{msgs.noDescription}"
+				rendered="#{empty selectedApplication.description}" /></p>
+			<!-- XSS vulnerability possible: do not set escape="false" -->
 		</rich:simpleTogglePanel>
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			label="#{msgs.usageAgreement}">
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			opened="false" label="#{msgs.usageAgreement}">
 
-            <table class="inner">
-                <colgroup class="half" />
-                <colgroup />
+			<table class="inner">
+				<colgroup class="half" />
+				<colgroup />
 
-                <tr>
-                    <th>
-                        <h:outputText value="#{msgs.usageAgreementVersion}" />
-                    </th>
-                    <td>
-                        <h:outputText value="#{selectedApplication.currentApplicationUsageAgreement}" />
-                    </td>
-                </tr>
-            </table>
-            
+				<tr>
+					<th><h:outputText value="#{msgs.usageAgreementVersion}" /></th>
+					<td><h:outputText
+						value="#{selectedApplication.currentApplicationUsageAgreement}" />
+					</td>
+				</tr>
+			</table>
 
-            <a4j:form id="usageAgreementForm" ajaxSubmit="true"
-                reRender="usage-agreement-data">
-                <rich:dataTable id="usage-agreement-data" var="item"
-                    value="#{selectedApplicationUsageAgreements}" rows="10"
-                    styleClass="inner "
-                    rowClasses="listingTable_Row1,listingTable_Row2">
-                    <h:column>
-                        <a4j:commandLink id="view-agreement"
-                            value="#{msgs.version}: #{item.usageAgreementVersion}"
-                            action="#{ownerApplication.viewUsageAgreement}" />
-                    </h:column>
-                    <f:facet name="footer">
-                        <rich:datascroller for="usage-agreement-data"
-                            pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
-                            <f:facet name="first">
-                                <h:graphicImage value="/images/icons/control_start.png" />
-                            </f:facet>
-                            <f:facet name="first_disabled">
-                                <h:graphicImage value="/images/icons/control_start.png" />
-                            </f:facet>
-                            <f:facet name="previous">
-                                <h:graphicImage value="/images/icons/control_rewind.png" />
-                            </f:facet>
-                            <f:facet name="previous_disabled">
-                                <h:graphicImage value="/images/icons/control_rewind.png" />
-                            </f:facet>
-                            <f:facet name="pages">
-                                <h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
-                            </f:facet>
-                            <f:facet name="next">
-                                <h:graphicImage value="/images/icons/control_fastforward.png" />
-                            </f:facet>
-                            <f:facet name="next_disabled">
-                                <h:graphicImage value="/images/icons/control_fastforward.png" />
-                            </f:facet>
-                            <f:facet name="last">
-                                <h:graphicImage value="/images/icons/control_end.png" />
-                            </f:facet>
-                            <f:facet name="last_disabled">
-                                <h:graphicImage value="/images/icons/control_end.png" />
-                            </f:facet>
-                        </rich:datascroller>
-                    </f:facet>
-                </rich:dataTable>
-            </a4j:form>
+
+			<a4j:form id="usageAgreementForm" ajaxSubmit="true"
+				reRender="usage-agreement-data">
+				<rich:dataTable id="usage-agreement-data" var="item"
+					value="#{selectedApplicationUsageAgreements}" rows="10"
+					styleClass="inner "
+					rowClasses="listingTable_Row1,listingTable_Row2">
+					<h:column>
+						<a4j:commandLink id="view-agreement"
+							value="#{msgs.version}: #{item.usageAgreementVersion}"
+							action="#{ownerApplication.viewUsageAgreement}" />
+					</h:column>
+					<f:facet name="footer">
+						<rich:datascroller for="usage-agreement-data"
+							pageIndexVar="pageIndex" pagesVar="pages" fastControls="hide">
+							<f:facet name="first">
+								<h:graphicImage value="/images/icons/control_start.png" />
+							</f:facet>
+							<f:facet name="first_disabled">
+								<h:graphicImage value="/images/icons/control_start.png" />
+							</f:facet>
+							<f:facet name="previous">
+								<h:graphicImage value="/images/icons/control_rewind.png" />
+							</f:facet>
+							<f:facet name="previous_disabled">
+								<h:graphicImage value="/images/icons/control_rewind.png" />
+							</f:facet>
+							<f:facet name="pages">
+								<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+							</f:facet>
+							<f:facet name="next">
+								<h:graphicImage value="/images/icons/control_fastforward.png" />
+							</f:facet>
+							<f:facet name="next_disabled">
+								<h:graphicImage value="/images/icons/control_fastforward.png" />
+							</f:facet>
+							<f:facet name="last">
+								<h:graphicImage value="/images/icons/control_end.png" />
+							</f:facet>
+							<f:facet name="last_disabled">
+								<h:graphicImage value="/images/icons/control_end.png" />
+							</f:facet>
+						</rich:datascroller>
+					</f:facet>
+				</rich:dataTable>
+			</a4j:form>
 		</rich:simpleTogglePanel>
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			label="#{msgs.accessControl}">
-            <table class="inner">
-                <thead>
-                    <tr><th><h:outputText value="#{msgs.certificate}:" /></th></tr>
-                </thead>
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			opened="false" label="#{msgs.accessControl}">
+			<table class="inner">
+				<thead>
+					<tr>
+						<th><h:outputText value="#{msgs.certificate}:" /></th>
+					</tr>
+				</thead>
 
-                <tbody>
-                    <tr><td>
-                        <h:outputText styleClass="white_space"
-                            value="#{selectedApplication.certificate}"
-                            rendered="#{!empty selectedApplication.certificate}" />
-                        <h:outputText value="#{msgs.noCertificate}"
-                            rendered="#{empty selectedApplication.certificate}" />
-                    </td></tr>
-                </tbody>
-            </table>
+				<tbody>
+					<tr>
+						<td><h:outputText styleClass="white_space"
+							value="#{selectedApplication.certificateSubject}"
+							rendered="#{!empty selectedApplication.certificateSubject}" /> <h:outputText
+							value="#{msgs.noCertificate}"
+							rendered="#{empty selectedApplication.certificateSubject}" /></td>
+					</tr>
+				</tbody>
+			</table>
 		</rich:simpleTogglePanel>
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			label="#{msgs.applicationIdentity}">
-            <h:dataTable value="#{selectedApplicationIdentity}" var="item"
-                styleClass="inner ">
-                <h:column headerClass="half">
-                    <f:facet name="header">#{msgs.applicationIdentity}</f:facet>
-                    <h:outputText value="#{item.attributeTypeName}" />
-                </h:column>
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			opened="false" label="#{msgs.applicationIdentity}">
+			<h:dataTable value="#{selectedApplicationIdentity}" var="item"
+				styleClass="inner ">
+				<h:column headerClass="half">
+					<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
+					<h:outputText value="#{item.attributeTypeName}" />
+				</h:column>
 
-                <h:column>
-                    <f:facet name="header">#{msgs.required}</f:facet>
-                    <h:graphicImage value="/images/icons/accept.png"
-                        rendered="#{item.required}" />
-                    <h:graphicImage value="/images/icons/cancel.png"
-                        rendered="#{!item.required}" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msgs.dataMining}</f:facet>
-                    <h:graphicImage value="/images/icons/accept.png"
-                        rendered="#{item.dataMining}" />
-                    <h:graphicImage value="/images/icons/cancel.png"
-                        rendered="#{!item.dataMining}" />
-                </h:column>
-            </h:dataTable>
+				<h:column>
+					<f:facet name="header">#{msgs.required}</f:facet>
+					<h:graphicImage value="/images/icons/accept.png"
+						rendered="#{item.required}" />
+					<h:graphicImage value="/images/icons/cancel.png"
+						rendered="#{!item.required}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.dataMining}</f:facet>
+					<h:graphicImage value="/images/icons/accept.png"
+						rendered="#{item.dataMining}" />
+					<h:graphicImage value="/images/icons/cancel.png"
+						rendered="#{!item.dataMining}" />
+				</h:column>
+			</h:dataTable>
 		</rich:simpleTogglePanel>
 
-        <rich:simpleTogglePanel switchType="client" styleClass="fullwidth" opened="false"
-			label="#{msgs.devices}">
+		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
+			opened="false" label="#{msgs.devices}">
 
-            <table class="inner">
-                <colgroup class="half" />
-                <colgroup />
+			<table class="inner">
+				<colgroup class="half" />
+				<colgroup />
 
-                <tr>
-                    <th>
-                        <h:outputText value="#{msgs.isDeviceRestriction}" />
-                    </th>
-                    <td>
-                        <h:selectBooleanCheckbox id="restriction"
-                            value="#{selectedApplication.deviceRestriction}" disabled="true" />
-                    </td>
-                </tr>
-            </table>
+				<tr>
+					<th><h:outputText value="#{msgs.isDeviceRestriction}" /></th>
+					<td><h:selectBooleanCheckbox id="restriction"
+						value="#{selectedApplication.deviceRestriction}" disabled="true" />
+					</td>
+				</tr>
+			</table>
 
-            <h:dataTable value="#{allowedDevices}" var="item" styleClass="inner ">
-                <h:column headerClass="half">
-                    <f:facet name="header">#{msgs.name}</f:facet>
-                    <h:outputText value="#{item.friendlyName}" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msgs.allowed}</f:facet>
-                    <h:selectBooleanCheckbox value="#{item.allowed}" disabled="true" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msgs.weight}</f:facet>
-                    <h:outputText value="#{item.weight}" />
-                </h:column>
-            </h:dataTable>
+			<h:dataTable value="#{allowedDevices}" var="item" styleClass="inner ">
+				<h:column headerClass="half">
+					<f:facet name="header">#{msgs.name}</f:facet>
+					<h:outputText value="#{item.friendlyName}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.allowed}</f:facet>
+					<h:selectBooleanCheckbox value="#{item.allowed}" disabled="true" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.weight}</f:facet>
+					<h:outputText value="#{item.weight}" />
+				</h:column>
+			</h:dataTable>
 		</rich:simpleTogglePanel>
 
 		<rich:spacer height="10" />

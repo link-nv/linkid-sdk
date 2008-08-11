@@ -22,7 +22,8 @@ public class InitializeDatabaseMenuAction extends AbstractMenuAction {
 	public void run() {
 		System.out.println(super.getDescription());
 
-		ResourceBundle properties = ResourceBundle.getBundle("config");
+		ResourceBundle properties = ResourceBundle
+				.getBundle("properties.config");
 		String databaseSchemaVersion = properties
 				.getString("database.schema.version");
 		System.out.println("Database schema version: " + databaseSchemaVersion);

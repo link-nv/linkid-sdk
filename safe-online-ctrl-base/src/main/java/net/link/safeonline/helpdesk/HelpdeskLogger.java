@@ -6,6 +6,7 @@
 
 package net.link.safeonline.helpdesk;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Vector;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.ctrl.ControlBaseConstants;
 import net.link.safeonline.dao.HistoryDAO;
@@ -30,162 +32,178 @@ import org.apache.commons.logging.LogFactory;
 
 public class HelpdeskLogger {
 
-	private static final Log LOG = LogFactory.getLog(HelpdeskLogger.class);
+    private static final Log    LOG                    = LogFactory
+                                                               .getLog(HelpdeskLogger.class);
 
-	private static final int HELPDESK_CONTEXT_LIMIT = 50;
+    private static final int    HELPDESK_CONTEXT_LIMIT = 50;
 
-	private static final String UNKNOWN_USER = "unknown";
+    private static final String UNKNOWN_USER           = "unknown";
 
-	/*
-	 * Clear the volatile helpdesk context on the HttpSession
-	 */
-	public static List<HelpdeskEventEntity> clear() {
-		return clear(getHttpSession());
-	}
 
-	public static List<HelpdeskEventEntity> clear(HttpSession session) {
-		session.removeAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
-		List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
-		session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
-				helpdeskContext);
-		LOG.debug("new volatile helpdesk context created");
-		return helpdeskContext;
-	}
+    /*
+     * Clear the volatile helpdesk context on the HttpSession
+     */
+    public static List<HelpdeskEventEntity> clear() {
 
-	/*
-	 * Get the volatile context from the HttpSession
-	 */
-	public static List<HelpdeskEventEntity> getCurrent() {
-		return getCurrent(getHttpSession());
-	}
+        return clear(getHttpSession());
+    }
 
-	@SuppressWarnings("unchecked")
-	public static List<HelpdeskEventEntity> getCurrent(HttpSession session) {
-		List<HelpdeskEventEntity> helpdeskContext = (List<HelpdeskEventEntity>) session
-				.getAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
-		if (null == helpdeskContext) {
-			helpdeskContext = new Vector<HelpdeskEventEntity>();
-			session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
-					helpdeskContext);
-		}
-		return helpdeskContext;
-	}
+    public static List<HelpdeskEventEntity> clear(HttpSession session) {
 
-	/*
-	 * Add a helpdesk event to the volatile context
-	 */
-	public static void add(String message, LogLevelType logLevel) {
-		add(getHttpSession(), message, logLevel);
-	}
+        session.removeAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
+        List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
+        session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
+                helpdeskContext);
+        LOG.debug("new volatile helpdesk context created");
+        return helpdeskContext;
+    }
 
-	public static void add(HttpSession session, String message,
-			LogLevelType logLevel) {
-		String principal = getPrincipal(session);
-		add(session, message, principal, logLevel);
-	}
+    /*
+     * Get the volatile context from the HttpSession
+     */
+    public static List<HelpdeskEventEntity> getCurrent() {
 
-	private static String getPrincipal(HttpSession session) {
-		String principal = (String) session.getAttribute("username");
-		if (null == principal)
-			principal = UNKNOWN_USER;
-		else {
-			SubjectService subjectService = EjbUtils
-					.getEJB("SafeOnline/SubjectServiceBean/local",
-							SubjectService.class);
-			principal = subjectService.getExceptionSubjectLogin(principal);
-			if (null == principal)
-				principal = UNKNOWN_USER;
+        return getCurrent(getHttpSession());
+    }
 
-		}
-		LOG.debug("principal found: " + principal);
-		return principal;
-	}
+    @SuppressWarnings("unchecked")
+    public static List<HelpdeskEventEntity> getCurrent(HttpSession session) {
 
-	private static void add(HttpSession session, String message,
-			String principal, LogLevelType logLevel) {
-		List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
-		if (helpdeskContext.size() >= HELPDESK_CONTEXT_LIMIT) {
-			SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(
-					"SafeOnline/SecurityAuditLoggerBean/local",
-					SecurityAuditLogger.class);
-			securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION,
-					principal, message);
-			LOG.debug("helpdesk context max size exceeded !");
-			return;
-		}
+        List<HelpdeskEventEntity> helpdeskContext = (List<HelpdeskEventEntity>) session
+                .getAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
+        if (null == helpdeskContext) {
+            helpdeskContext = new Vector<HelpdeskEventEntity>();
+            session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
+                    helpdeskContext);
+        }
+        return helpdeskContext;
+    }
 
-		HelpdeskEventEntity helpdeskEvent = new HelpdeskEventEntity(message,
-				principal, logLevel);
-		helpdeskContext.add(helpdeskEvent);
-		session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
-				helpdeskContext);
-		LOG.debug("add helpdesk event ( context-size=" + helpdeskContext.size()
-				+ " ) : " + message);
-	}
+    /*
+     * Add a helpdesk event to the volatile context
+     */
+    public static void add(String message, LogLevelType logLevel) {
 
-	/*
-	 * Persist the volatile helpdesk context
-	 */
-	public static Long persistContext() {
-		return persistContext(getLocation(), getHttpSession());
-	}
+        add(getHttpSession(), message, logLevel);
+    }
 
-	public static Long persistContext(String location, HttpSession session) {
-		List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
+    public static void add(HttpSession session, String message,
+            LogLevelType logLevel) {
 
-		String principal = getPrincipal(session);
-		/*
-		 * add extra information
-		 */
-		Enumeration<?> initParameterNames = session.getServletContext()
-				.getInitParameterNames();
-		while (initParameterNames.hasMoreElements()) {
-			String name = (String) initParameterNames.nextElement();
-			String value = session.getServletContext().getInitParameter(name);
-			add(session, "Servlet context: " + name + "=" + value, principal,
-					LogLevelType.INFO);
-		}
+        String principal = getPrincipal(session);
+        add(session, message, principal, logLevel);
+    }
 
-		add(session, "Server info: "
-				+ session.getServletContext().getServerInfo(),
-				LogLevelType.INFO);
-		add(session, "Servlet context path: "
-				+ session.getServletContext().getServletContextName(),
-				LogLevelType.INFO);
+    private static String getPrincipal(HttpSession session) {
 
-		HelpdeskManager helpdeskManager = EjbUtils.getEJB(
-				"SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
+        String principal = (String) session.getAttribute("username");
+        if (null == principal)
+            principal = UNKNOWN_USER;
+        else {
+            SubjectService subjectService = EjbUtils
+                    .getEJB("SafeOnline/SubjectServiceBean/local",
+                            SubjectService.class);
+            principal = subjectService.getExceptionSubjectLogin(principal);
+            if (null == principal)
+                principal = UNKNOWN_USER;
 
-		SubjectManager subjectManager = EjbUtils.getEJB(
-				"SafeOnline/SubjectManagerBean/local", SubjectManager.class);
+        }
+        LOG.debug("principal found: " + principal);
+        return principal;
+    }
 
-		HistoryDAO historyDAO = EjbUtils.getEJB(
-				"SafeOnline/HistoryDAOBean/local", HistoryDAO.class);
+    private static void add(HttpSession session, String message,
+            String principal, LogLevelType logLevel) {
 
-		LOG.debug("persisting volatile context for user " + principal + "...");
-		Long id = helpdeskManager.persist(location, helpdeskContext);
+        List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
+        if (helpdeskContext.size() >= HELPDESK_CONTEXT_LIMIT) {
+            SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(
+                    "SafeOnline/SecurityAuditLoggerBean/local",
+                    SecurityAuditLogger.class);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION,
+                    principal, message);
+            LOG.debug("helpdesk context max size exceeded !");
+            return;
+        }
 
-		if (!principal.equals(UNKNOWN_USER))
-			historyDAO.addHistoryEntry(subjectManager.getCallerSubject(),
-					HistoryEventType.HELPDESK_ID, null, id.toString());
-		return id;
-	}
+        HelpdeskEventEntity helpdeskEvent = new HelpdeskEventEntity(message,
+                principal, logLevel);
+        helpdeskContext.add(helpdeskEvent);
+        session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
+                helpdeskContext);
+        LOG.debug("add helpdesk event ( context-size=" + helpdeskContext.size()
+                + " ) : " + message);
+    }
 
-	/*
-	 * return HttpSession via FacesContext
-	 */
-	private static HttpSession getHttpSession() {
-		return (HttpSession) FacesContext.getCurrentInstance()
-				.getExternalContext().getSession(false);
-	}
+    /*
+     * Persist the volatile helpdesk context
+     */
+    public static Long persistContext() {
 
-	private static String getLocation() {
-		Map<?, ?> params = FacesContext.getCurrentInstance()
-				.getExternalContext().getRequestParameterMap();
-		String location = (String) params.get("location");
-		if (null == location)
-			location = FacesContext.getCurrentInstance().getExternalContext()
-					.getRequestServletPath();
-		return location;
-	}
+        return persistContext(getLocation(), getHttpSession());
+    }
+
+    public static Long persistContext(String location, HttpSession session) {
+
+        List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
+
+        String principal = getPrincipal(session);
+        /*
+         * add extra information
+         */
+        Enumeration<?> initParameterNames = session.getServletContext()
+                .getInitParameterNames();
+        while (initParameterNames.hasMoreElements()) {
+            String name = (String) initParameterNames.nextElement();
+            String value = session.getServletContext().getInitParameter(name);
+            add(session, "Servlet context: " + name + "=" + value, principal,
+                    LogLevelType.INFO);
+        }
+
+        add(session, "Server info: "
+                + session.getServletContext().getServerInfo(),
+                LogLevelType.INFO);
+        add(session, "Servlet context path: "
+                + session.getServletContext().getServletContextName(),
+                LogLevelType.INFO);
+
+        HelpdeskManager helpdeskManager = EjbUtils.getEJB(
+                "SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
+
+        SubjectManager subjectManager = EjbUtils.getEJB(
+                "SafeOnline/SubjectManagerBean/local", SubjectManager.class);
+
+        HistoryDAO historyDAO = EjbUtils.getEJB(
+                "SafeOnline/HistoryDAOBean/local", HistoryDAO.class);
+
+        LOG.debug("persisting volatile context for user " + principal + "...");
+        Long id = helpdeskManager.persist(location, helpdeskContext);
+
+        if (!principal.equals(UNKNOWN_USER)) {
+            historyDAO.addHistoryEntry(subjectManager.getCallerSubject(),
+                    HistoryEventType.HELPDESK_ID, Collections.singletonMap(
+                            SafeOnlineConstants.INFO_PROPERTY, id.toString()));
+        }
+        return id;
+    }
+
+    /*
+     * return HttpSession via FacesContext
+     */
+    private static HttpSession getHttpSession() {
+
+        return (HttpSession) FacesContext.getCurrentInstance()
+                .getExternalContext().getSession(false);
+    }
+
+    private static String getLocation() {
+
+        Map<?, ?> params = FacesContext.getCurrentInstance()
+                .getExternalContext().getRequestParameterMap();
+        String location = (String) params.get("location");
+        if (null == location)
+            location = FacesContext.getCurrentInstance().getExternalContext()
+                    .getRequestServletPath();
+        return location;
+    }
 }

@@ -41,6 +41,10 @@
 			<from-outcome>view</from-outcome>
 			<to-view-id>/applications/application-view.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit-usage-agreement</from-outcome>
+			<to-view-id>/applications/usage-agreements.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/applications/application-add.xhtml</from-view-id>
@@ -63,6 +67,10 @@
 			<from-outcome>edit</from-outcome>
 			<to-view-id>/applications/application-edit.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-usage-agreement</from-outcome>
+			<to-view-id>/applications/usage-agreement-view.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id> /applications/application-edit.xhtml </from-view-id>
@@ -73,6 +81,50 @@
 		<navigation-case>
 			<from-outcome>success</from-outcome>
 			<to-view-id>/applications/application-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/applications/usage-agreement-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>viewtext</from-outcome>
+			<to-view-id>/applications/usage-agreement-text-view.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/applications/application-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/applications/usage-agreement-text-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/applications/usage-agreement-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/applications/usage-agreements.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>edittext</from-outcome>
+			<to-view-id>/applications/usage-agreement-text-edit.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>viewtext</from-outcome>
+			<to-view-id>/applications/usage-agreement-text-view.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/applications/applications.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/applications/usage-agreement-text-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/applications/usage-agreements.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/applications/usage-agreements.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

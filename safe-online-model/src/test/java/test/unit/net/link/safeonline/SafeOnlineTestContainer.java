@@ -62,6 +62,7 @@ import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
+import net.link.safeonline.entity.HistoryPropertyEntity;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
@@ -119,69 +120,71 @@ import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
  */
 public class SafeOnlineTestContainer {
 
-	private SafeOnlineTestContainer() {
-		// empty
-	}
+    private SafeOnlineTestContainer() {
 
-	public static final Class<?>[] sessionBeans = new Class[] {
-			SubjectDAOBean.class, ApplicationDAOBean.class,
-			SubscriptionDAOBean.class, AttributeDAOBean.class,
-			TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class,
-			AttributeTypeDAOBean.class, ApplicationIdentityDAOBean.class,
-			SubjectManagerBean.class, HistoryDAOBean.class,
-			ApplicationOwnerManagerBean.class,
-			ApplicationIdentityManagerBean.class, ConfigGroupDAOBean.class,
-			ConfigItemDAOBean.class, TaskDAOBean.class,
-			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
-			ApplicationManagerBean.class, TrustPointDAOBean.class,
-			CachedOcspResponseDAOBean.class,
-			AttributeTypeDescriptionDecoratorBean.class,
-			AttributeProviderDAOBean.class, ApplicationsBean.class,
-			DeviceDAOBean.class, DeviceClassDAOBean.class,
-			AllowedDeviceDAOBean.class, HelpdeskContextDAOBean.class,
-			HelpdeskEventDAOBean.class, CredentialManagerBean.class,
-			PkiProviderManagerBean.class, PkiValidatorBean.class,
-			CachedOcspValidatorBean.class, OcspValidatorBean.class,
-			SubjectIdentifierDAOBean.class, UserRegistrationManagerBean.class,
-			ResourceAuditLoggerBean.class, AuditAuditDAOBean.class,
-			AuditContextDAOBean.class, AccessAuditDAOBean.class,
-			SecurityAuditDAOBean.class, ResourceAuditDAOBean.class,
-			PasswordManagerBean.class, SubjectServiceBean.class,
-			IdGeneratorBean.class, UsageAgreementDAOBean.class,
-			UsageAgreementManagerBean.class, PasswordDeviceServiceBean.class,
-			MobileManagerBean.class, SecurityAuditLoggerBean.class,
-			DevicePolicyServiceBean.class, DevicesBean.class,
-			AccountServiceBean.class, DeviceMappingServiceBean.class,
-			DeviceMappingDAOBean.class, OlasDAOBean.class,
-			ProxyAttributeServiceBean.class, StatisticDAOBean.class,
-			StatisticDataPointDAOBean.class,
-			NotificationProducerServiceBean.class,
-			NotificationProducerDAOBean.class,
-			NotificationConsumerServiceBean.class,
-			EndpointReferenceDAOBean.class, DeviceSubjectDAOBean.class,
-			ApplicationScopeIdDAOBean.class };
+        // empty
+    }
 
-	public static final Class<?>[] entities = new Class[] {
-			SubjectEntity.class, ApplicationEntity.class,
-			ApplicationOwnerEntity.class, AttributeEntity.class,
-			AttributeTypeEntity.class, SubscriptionEntity.class,
-			TrustDomainEntity.class, ApplicationIdentityEntity.class,
-			ConfigGroupEntity.class, ConfigItemEntity.class, TaskEntity.class,
-			SchedulingEntity.class, TaskHistoryEntity.class,
-			ApplicationIdentityAttributeEntity.class, TrustPointEntity.class,
-			AttributeTypeDescriptionEntity.class,
-			AttributeProviderEntity.class, DeviceEntity.class,
-			AllowedDeviceEntity.class, DeviceClassEntity.class,
-			DeviceDescriptionEntity.class, DeviceClassDescriptionEntity.class,
-			DevicePropertyEntity.class, DeviceMappingEntity.class,
-			DeviceSubjectEntity.class,
-			CompoundedAttributeTypeMemberEntity.class,
-			HelpdeskContextEntity.class, HelpdeskEventEntity.class,
-			HistoryEntity.class, SubjectIdentifierEntity.class,
-			UsageAgreementEntity.class, UsageAgreementTextEntity.class,
-			GlobalUsageAgreementEntity.class, OlasEntity.class,
-			StatisticEntity.class, StatisticDataPointEntity.class,
-			EndpointReferenceEntity.class,
-			NotificationProducerSubscriptionEntity.class,
-			ApplicationScopeIdEntity.class };
+
+    public static final Class<?>[] sessionBeans = new Class[] {
+            SubjectDAOBean.class, ApplicationDAOBean.class,
+            SubscriptionDAOBean.class, AttributeDAOBean.class,
+            TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class,
+            AttributeTypeDAOBean.class, ApplicationIdentityDAOBean.class,
+            SubjectManagerBean.class, HistoryDAOBean.class,
+            ApplicationOwnerManagerBean.class,
+            ApplicationIdentityManagerBean.class, ConfigGroupDAOBean.class,
+            ConfigItemDAOBean.class, TaskDAOBean.class,
+            SchedulingDAOBean.class, TaskHistoryDAOBean.class,
+            ApplicationManagerBean.class, TrustPointDAOBean.class,
+            CachedOcspResponseDAOBean.class,
+            AttributeTypeDescriptionDecoratorBean.class,
+            AttributeProviderDAOBean.class, ApplicationsBean.class,
+            DeviceDAOBean.class, DeviceClassDAOBean.class,
+            AllowedDeviceDAOBean.class, HelpdeskContextDAOBean.class,
+            HelpdeskEventDAOBean.class, CredentialManagerBean.class,
+            PkiProviderManagerBean.class, PkiValidatorBean.class,
+            CachedOcspValidatorBean.class, OcspValidatorBean.class,
+            SubjectIdentifierDAOBean.class, UserRegistrationManagerBean.class,
+            ResourceAuditLoggerBean.class, AuditAuditDAOBean.class,
+            AuditContextDAOBean.class, AccessAuditDAOBean.class,
+            SecurityAuditDAOBean.class, ResourceAuditDAOBean.class,
+            PasswordManagerBean.class, SubjectServiceBean.class,
+            IdGeneratorBean.class, UsageAgreementDAOBean.class,
+            UsageAgreementManagerBean.class, PasswordDeviceServiceBean.class,
+            MobileManagerBean.class, SecurityAuditLoggerBean.class,
+            DevicePolicyServiceBean.class, DevicesBean.class,
+            AccountServiceBean.class, DeviceMappingServiceBean.class,
+            DeviceMappingDAOBean.class, OlasDAOBean.class,
+            ProxyAttributeServiceBean.class, StatisticDAOBean.class,
+            StatisticDataPointDAOBean.class,
+            NotificationProducerServiceBean.class,
+            NotificationProducerDAOBean.class,
+            NotificationConsumerServiceBean.class,
+            EndpointReferenceDAOBean.class, DeviceSubjectDAOBean.class,
+            ApplicationScopeIdDAOBean.class    };
+
+    public static final Class<?>[] entities     = new Class[] {
+            SubjectEntity.class, ApplicationEntity.class,
+            ApplicationOwnerEntity.class, AttributeEntity.class,
+            AttributeTypeEntity.class, SubscriptionEntity.class,
+            TrustDomainEntity.class, ApplicationIdentityEntity.class,
+            ConfigGroupEntity.class, ConfigItemEntity.class, TaskEntity.class,
+            SchedulingEntity.class, TaskHistoryEntity.class,
+            ApplicationIdentityAttributeEntity.class, TrustPointEntity.class,
+            AttributeTypeDescriptionEntity.class,
+            AttributeProviderEntity.class, DeviceEntity.class,
+            AllowedDeviceEntity.class, DeviceClassEntity.class,
+            DeviceDescriptionEntity.class, DeviceClassDescriptionEntity.class,
+            DevicePropertyEntity.class, DeviceMappingEntity.class,
+            DeviceSubjectEntity.class,
+            CompoundedAttributeTypeMemberEntity.class,
+            HelpdeskContextEntity.class, HelpdeskEventEntity.class,
+            HistoryEntity.class, HistoryPropertyEntity.class,
+            SubjectIdentifierEntity.class, UsageAgreementEntity.class,
+            UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class,
+            OlasEntity.class, StatisticEntity.class,
+            StatisticDataPointEntity.class, EndpointReferenceEntity.class,
+            NotificationProducerSubscriptionEntity.class,
+            ApplicationScopeIdEntity.class     };
 }
