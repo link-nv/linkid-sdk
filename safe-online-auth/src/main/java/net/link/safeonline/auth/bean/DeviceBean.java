@@ -32,6 +32,8 @@ import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.ScopeType;
@@ -47,94 +49,103 @@ import org.jboss.seam.log.Log;
 @Stateful
 @Name("device")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-		+ "DeviceBean/local")
+        + "DeviceBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceBean implements Device {
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages               facesMessages;
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                 log;
 
-	@EJB
-	private DevicePolicyService devicePolicyService;
+    @EJB
+    private DevicePolicyService devicePolicyService;
 
-	@In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-	private String application;
+    @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
+    private String              application;
 
-	@In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
-	private Set<DeviceEntity> requiredDevicePolicy;
+    @In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
+    private Set<DeviceEntity>   requiredDevicePolicy;
 
-	@Out(required = false, scope = ScopeType.SESSION)
-	private String deviceSelection;
+    @Out(required = false, scope = ScopeType.SESSION)
+    private String              deviceSelection;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	public String getSelection() {
-		return this.deviceSelection;
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	public void setSelection(String deviceSelection) {
-		this.deviceSelection = deviceSelection;
-	}
+    }
 
-	public String next() throws IOException, DeviceNotFoundException {
-		this.log.debug("next: " + this.deviceSelection);
+    public String getSelection() {
 
-		String authenticationPath = this.devicePolicyService
-				.getAuthenticationURL(this.deviceSelection);
-		this.log.debug("authenticationPath: " + authenticationPath);
+        return this.deviceSelection;
+    }
 
-		if (!this.deviceSelection
-				.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
-			return AuthenticationUtils.redirectAuthentication(
-					authenticationPath, this.deviceSelection);
+    public void setSelection(String deviceSelection) {
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		externalContext.redirect(authenticationPath);
-		return null;
-	}
+        this.deviceSelection = deviceSelection;
+    }
 
-	@Factory("applicationDevices")
-	public List<SelectItem> applicationDevicesFactory()
-			throws ApplicationNotFoundException, EmptyDevicePolicyException {
-		this.log.debug("application devices factory");
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
+    public String next() throws IOException, DeviceNotFoundException {
 
-		List<DeviceEntity> devicePolicy = this.devicePolicyService
-				.getDevicePolicy(this.application, this.requiredDevicePolicy);
-		for (DeviceEntity device : devicePolicy) {
-			String deviceName = this.devicePolicyService.getDeviceDescription(
-					device.getName(), viewLocale);
-			SelectItem applicationDevice = new SelectItem(device.getName(),
-					deviceName);
-			applicationDevices.add(applicationDevice);
-		}
-		return applicationDevices;
-	}
+        this.log.debug("next: " + this.deviceSelection);
+        HelpdeskLogger.add("selected authentication device: "
+                + this.deviceSelection, LogLevelType.INFO);
 
-	@Factory("allDevices")
-	public List<SelectItem> allDevicesFactory() {
-		this.log.debug("application devices factory");
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		List<SelectItem> allDevices = new LinkedList<SelectItem>();
+        String authenticationPath = this.devicePolicyService
+                .getAuthenticationURL(this.deviceSelection);
+        this.log.debug("authenticationPath: " + authenticationPath);
 
-		List<DeviceEntity> devices = this.devicePolicyService.getDevices();
+        if (!this.deviceSelection
+                .equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
+            return AuthenticationUtils.redirectAuthentication(
+                    authenticationPath, this.deviceSelection);
 
-		for (DeviceEntity device : devices) {
-			String deviceName = this.devicePolicyService.getDeviceDescription(
-					device.getName(), viewLocale);
-			SelectItem allDevice = new SelectItem(device.getName(), deviceName);
-			allDevices.add(allDevice);
-		}
-		return allDevices;
-	}
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        externalContext.redirect(authenticationPath);
+        return null;
+    }
+
+    @Factory("applicationDevices")
+    public List<SelectItem> applicationDevicesFactory()
+            throws ApplicationNotFoundException, EmptyDevicePolicyException {
+
+        this.log.debug("application devices factory");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
+
+        List<DeviceEntity> devicePolicy = this.devicePolicyService
+                .getDevicePolicy(this.application, this.requiredDevicePolicy);
+        for (DeviceEntity device : devicePolicy) {
+            String deviceName = this.devicePolicyService.getDeviceDescription(
+                    device.getName(), viewLocale);
+            SelectItem applicationDevice = new SelectItem(device.getName(),
+                    deviceName);
+            applicationDevices.add(applicationDevice);
+        }
+        return applicationDevices;
+    }
+
+    @Factory("allDevices")
+    public List<SelectItem> allDevicesFactory() {
+
+        this.log.debug("application devices factory");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        List<SelectItem> allDevices = new LinkedList<SelectItem>();
+
+        List<DeviceEntity> devices = this.devicePolicyService.getDevices();
+
+        for (DeviceEntity device : devices) {
+            String deviceName = this.devicePolicyService.getDeviceDescription(
+                    device.getName(), viewLocale);
+            SelectItem allDevice = new SelectItem(device.getName(), deviceName);
+            allDevices.add(allDevice);
+        }
+        return allDevices;
+    }
 }

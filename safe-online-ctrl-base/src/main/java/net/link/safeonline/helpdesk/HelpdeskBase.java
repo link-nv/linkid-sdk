@@ -9,19 +9,26 @@ package net.link.safeonline.helpdesk;
 
 public interface HelpdeskBase {
 
-	/*
-	 * Getters for helpdesk information
-	 */
-	Long getId();
+    /*
+     * Getters for helpdesk information
+     */
+    Long getId();
 
-	String getPhone();
+    String getPhone();
 
-	String getEmail();
+    String getEmail();
 
-	/*
-	 * Lifecycle callbacks
-	 */
-	void init();
+    String getDummy();
 
-	void destroyCallback();
+    /*
+     * Lifecycle callbacks
+     */
+    void init();
+
+    void destroyCallback();
+
+    /*
+     * Actions
+     */
+    String createTicket();
 }
