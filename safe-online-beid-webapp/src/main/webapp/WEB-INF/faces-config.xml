@@ -19,4 +19,18 @@
 		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
 		</phase-listener>
 	</lifecycle>
+	<navigation-rule>
+		<from-view-id>/help.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>create-ticket</from-outcome>
+			<to-view-id>/help_ticket.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/help_auth.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>create-ticket</from-outcome>
+			<to-view-id>/help_auth_ticket.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 </faces-config>

@@ -38,6 +38,8 @@ import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.ScopeType;
@@ -51,131 +53,150 @@ import org.jboss.seam.log.Log;
 @Stateful
 @Name("accountRegistration")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-		+ "AccountRegistrationBean/local")
+        + "AccountRegistrationBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class AccountRegistrationBean extends AbstractLoginBean implements
-		AccountRegistration {
+        AccountRegistration {
 
-	@EJB
-	private UserRegistrationService userRegistrationService;
+    @EJB
+    private UserRegistrationService userRegistrationService;
 
-	@EJB
-	private DevicePolicyService devicePolicyService;
+    @EJB
+    private DevicePolicyService     devicePolicyService;
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                     log;
 
-	private String login;
+    private String                  login;
 
-	private String device;
+    private String                  device;
 
-	@In(required = false, value = com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY, scope = ScopeType.SESSION)
-	String validCaptcha;
+    @In(required = false, value = com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY, scope = ScopeType.SESSION)
+    String                          validCaptcha;
 
-	private String givenCaptcha;
+    private String                  givenCaptcha;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		this.log.debug("destroy");
-	}
 
-	public String getLogin() {
-		return this.login;
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+        this.log.debug("destroy");
+    }
 
-	@ErrorHandling( {
-			@Error(exceptionClass = ExistingUserException.class, messageId = "errorLoginTaken", fieldId = "login"),
-			@Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorLoginTaken", fieldId = "login"),
-			@Error(exceptionClass = PermissionDeniedException.class, messageId = "errorPermissionDenied", fieldId = "login") })
-	public String loginNext() throws ExistingUserException,
-			AttributeTypeNotFoundException, PermissionDeniedException {
-		this.log.debug("loginNext");
+    public String getLogin() {
 
-		this.log.debug("valid captcha: " + this.validCaptcha);
-		this.log.debug("given captcha: " + this.givenCaptcha);
+        return this.login;
+    }
 
-		if (null == this.validCaptcha) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorNoCaptcha");
-			return null;
-		}
+    public void setLogin(String login) {
 
-		if (!this.validCaptcha.equals(this.givenCaptcha)) {
-			this.facesMessages.addToControlFromResourceBundle("captcha",
-					FacesMessage.SEVERITY_ERROR, "errorInvalidCaptcha");
-			this.givenCaptcha = null;
-			return null;
-		}
+        this.login = login;
+    }
 
-		SubjectEntity subject = this.userRegistrationService
-				.registerUser(this.login);
+    @ErrorHandling( {
+            @Error(exceptionClass = ExistingUserException.class, messageId = "errorLoginTaken", fieldId = "login"),
+            @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorLoginTaken", fieldId = "login"),
+            @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorPermissionDenied", fieldId = "login") })
+    public String loginNext() throws ExistingUserException,
+            AttributeTypeNotFoundException, PermissionDeniedException {
 
-		this.userId = subject.getUserId();
-		return "next";
-	}
+        this.log.debug("loginNext");
 
-	public String deviceNext() throws DeviceNotFoundException, IOException {
-		this.log.debug("deviceNext: " + this.device);
+        HelpdeskLogger.add("Account creation: login=" + this.login,
+                LogLevelType.INFO);
 
-		String registrationURL = this.devicePolicyService
-				.getRegistrationURL(this.device);
+        this.log.debug("valid captcha: " + this.validCaptcha);
+        this.log.debug("given captcha: " + this.givenCaptcha);
 
-		if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = context.getExternalContext();
-			externalContext.redirect(registrationURL);
-			return null;
-		}
-		AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
-		return null;
-	}
+        if (null == this.validCaptcha) {
+            this.facesMessages.addFromResourceBundle(
+                    FacesMessage.SEVERITY_ERROR, "errorNoCaptcha");
+            return null;
+        }
 
-	public String getDevice() {
-		return this.device;
-	}
+        if (!this.validCaptcha.equals(this.givenCaptcha)) {
+            this.facesMessages.addToControlFromResourceBundle("captcha",
+                    FacesMessage.SEVERITY_ERROR, "errorInvalidCaptcha");
+            this.givenCaptcha = null;
+            return null;
+        }
 
-	public void setDevice(String device) {
-		this.device = device;
-	}
+        SubjectEntity subject = this.userRegistrationService
+                .registerUser(this.login);
 
-	public String getGivenCaptcha() {
-		return this.givenCaptcha;
-	}
+        this.userId = subject.getUserId();
+        return "next";
+    }
 
-	public void setGivenCaptcha(String givenCaptcha) {
-		this.givenCaptcha = givenCaptcha;
-	}
+    public String deviceNext() throws DeviceNotFoundException, IOException {
 
-	public String getCaptchaURL() {
-		return "/captcha.jpg?cacheid=" + Math.random() * 1000000;
-	}
+        this.log.debug("deviceNext: " + this.device);
 
-	public String getUsername() {
-		return this.subjectService.getSubjectLogin(this.userId);
-	}
+        HelpdeskLogger.add("Account creation: register device: " + this.device,
+                LogLevelType.INFO);
 
-	@Factory("allDevicesAccountRegistration")
-	public List<SelectItem> allDevicesFactory()
-			throws ApplicationNotFoundException, EmptyDevicePolicyException {
-		this.log.debug("all devices factory");
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		List<SelectItem> allDevices = new LinkedList<SelectItem>();
+        String registrationURL = this.devicePolicyService
+                .getRegistrationURL(this.device);
 
-		List<DeviceEntity> devices = this.devicePolicyService.getDevices();
+        if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(registrationURL);
+            return null;
+        }
+        AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
+        return null;
+    }
 
-		for (DeviceEntity deviceEntity : devices) {
-			String deviceName = this.devicePolicyService.getDeviceDescription(
-					deviceEntity.getName(), viewLocale);
+    public String getDevice() {
+
+        return this.device;
+    }
+
+    public void setDevice(String device) {
+
+        this.device = device;
+    }
+
+    public String getGivenCaptcha() {
+
+        return this.givenCaptcha;
+    }
+
+    public void setGivenCaptcha(String givenCaptcha) {
+
+        this.givenCaptcha = givenCaptcha;
+    }
+
+    public String getCaptchaURL() {
+
+        return "/captcha.jpg?cacheid=" + Math.random() * 1000000;
+    }
+
+    public String getUsername() {
+
+        return this.subjectService.getSubjectLogin(this.userId);
+    }
+
+    @Factory("allDevicesAccountRegistration")
+    public List<SelectItem> allDevicesFactory()
+            throws ApplicationNotFoundException, EmptyDevicePolicyException {
+
+        this.log.debug("all devices factory");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        List<SelectItem> allDevices = new LinkedList<SelectItem>();
+
+        List<DeviceEntity> devices = this.devicePolicyService.getDevices();
+
+        for (DeviceEntity deviceEntity : devices) {
+            String deviceName = this.devicePolicyService.getDeviceDescription(
+                    deviceEntity.getName(), viewLocale);
             SelectItem allDevice = new SelectItem(deviceEntity.getName(),
                     deviceName);
-			allDevices.add(allDevice);
-		}
-		return allDevices;
-	}
+            allDevices.add(allDevice);
+        }
+        return allDevices;
+    }
 }

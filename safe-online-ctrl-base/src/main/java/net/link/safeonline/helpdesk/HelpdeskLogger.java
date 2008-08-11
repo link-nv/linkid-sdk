@@ -7,9 +7,8 @@
 package net.link.safeonline.helpdesk;
 
 import java.util.Collections;
-import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import javax.faces.context.FacesContext;
@@ -72,7 +71,7 @@ public class HelpdeskLogger {
         List<HelpdeskEventEntity> helpdeskContext = (List<HelpdeskEventEntity>) session
                 .getAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
         if (null == helpdeskContext) {
-            helpdeskContext = new Vector<HelpdeskEventEntity>();
+            helpdeskContext = new LinkedList<HelpdeskEventEntity>();
             session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
                     helpdeskContext);
         }
@@ -138,34 +137,11 @@ public class HelpdeskLogger {
     /*
      * Persist the volatile helpdesk context
      */
-    public static Long persistContext() {
-
-        return persistContext(getLocation(), getHttpSession());
-    }
-
     public static Long persistContext(String location, HttpSession session) {
 
         List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
 
         String principal = getPrincipal(session);
-        /*
-         * add extra information
-         */
-        Enumeration<?> initParameterNames = session.getServletContext()
-                .getInitParameterNames();
-        while (initParameterNames.hasMoreElements()) {
-            String name = (String) initParameterNames.nextElement();
-            String value = session.getServletContext().getInitParameter(name);
-            add(session, "Servlet context: " + name + "=" + value, principal,
-                    LogLevelType.INFO);
-        }
-
-        add(session, "Server info: "
-                + session.getServletContext().getServerInfo(),
-                LogLevelType.INFO);
-        add(session, "Servlet context path: "
-                + session.getServletContext().getServletContextName(),
-                LogLevelType.INFO);
 
         HelpdeskManager helpdeskManager = EjbUtils.getEJB(
                 "SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
@@ -176,7 +152,8 @@ public class HelpdeskLogger {
         HistoryDAO historyDAO = EjbUtils.getEJB(
                 "SafeOnline/HistoryDAOBean/local", HistoryDAO.class);
 
-        LOG.debug("persisting volatile context for user " + principal + "...");
+        LOG.debug("persisting volatile context for user " + principal
+                + " size=" + helpdeskContext.size());
         Long id = helpdeskManager.persist(location, helpdeskContext);
 
         if (!principal.equals(UNKNOWN_USER)) {
@@ -194,16 +171,5 @@ public class HelpdeskLogger {
 
         return (HttpSession) FacesContext.getCurrentInstance()
                 .getExternalContext().getSession(false);
-    }
-
-    private static String getLocation() {
-
-        Map<?, ?> params = FacesContext.getCurrentInstance()
-                .getExternalContext().getRequestParameterMap();
-        String location = (String) params.get("location");
-        if (null == location)
-            location = FacesContext.getCurrentInstance().getExternalContext()
-                    .getRequestServletPath();
-        return location;
     }
 }

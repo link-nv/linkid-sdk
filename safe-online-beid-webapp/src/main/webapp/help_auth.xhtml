@@ -7,25 +7,22 @@
 <ui:composition template="/WEB-INF/template-root.xhtml">
 	<ui:define name="content">
 		<h1>#{msgs.help}</h1>
-		<p>#{msgs.helpInfo} <b>id = #{helpdesk.id}</b>.</p>
+		<h:form>
+			<table>
+				<thead>
+					<tr>
+						<th>#{msgs.helpInfo} #{helpdesk.dummy}</th>
+					</tr>
+				</thead>
 
-		<p>#{msgs.helpContact} :</p>
-
-		<table>
-			<thead>
-				<tr>
-					<th>#{msgs.helpInfo}</th>
-				</tr>
-			</thead>
-
-			<tbody>
-				<tr>
-					<td><h:outputLink
-						value="#{facesContext.externalContext.requestContextPath}/help_auth_ticket.seam">#{msgs.helpCreateTicket}</h:outputLink>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+				<tbody>
+					<tr>
+						<td><h:commandLink id="ticket"
+							action="#{helpdesk.createTicket}">#{msgs.helpCreateTicket} </h:commandLink></td>
+					</tr>
+				</tbody>
+			</table>
+		</h:form>
 
 		<p><h:outputLink
 			value="#{facesContext.externalContext.requestContextPath}/authenticationexit">#{msgs.helpLinkToMain}</h:outputLink></p>
