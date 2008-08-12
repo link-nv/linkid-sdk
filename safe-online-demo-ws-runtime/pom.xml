@@ -3,19 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-demo-ws-runtime</artifactId>
-	<packaging>war</packaging>
-	<version>1.0-SNAPSHOT</version>
+
 	<name>SafeOnline Demo Web Service Runtime</name>
 	<description>
 		The JAX-WS Web Service Runtime for the Demo services.
 	</description>
+
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-demo-ws-runtime</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -49,7 +53,9 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
+
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
@@ -121,7 +127,9 @@
 			<artifactId>joda-time</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 	</dependencies>
+
 	<reporting>
 		<plugins>
 			<plugin>
@@ -137,4 +145,5 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
 </project>

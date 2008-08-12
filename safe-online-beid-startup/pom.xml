@@ -3,17 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+
+	<name>SafeOnline Performance Startup</name>
+    <description>
+        Provides startup of some beid components.
+    </description>
+
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-beid-startup</artifactId>
-	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline Performance Startup</name>
-	<description>Provides startup of some beid components.</description>
+	<packaging>war</packaging>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -40,12 +46,16 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
+
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup</artifactId>
 			<type>war</type>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+
 	</dependencies>
+
 </project>
