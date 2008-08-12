@@ -3,13 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+
+	<name>SafeOnline Documentation</name>
+
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-documentation</artifactId>
-	<name>SafeOnline Documentation</name>
 	<version>1.0-SNAPSHOT</version>
+
 </project>

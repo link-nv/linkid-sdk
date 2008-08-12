@@ -2,17 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<modelVersion>4.0.0</modelVersion>
+
+	<name>SafeOnline Oracle Pilot Distribution</name>
+
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-pilot-oracle-distribution</artifactId>
-	<name>SafeOnline Oracle Pilot Distribution</name>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+
 	<build>
         <resources>
             <resource>
@@ -119,7 +123,9 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
+
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-pilot-distribution</artifactId>
@@ -158,5 +164,7 @@
                 </exclusion>
             </exclusions>
 		</dependency>
+
 	</dependencies>
+
 </project>

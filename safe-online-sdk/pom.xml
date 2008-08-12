@@ -2,18 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+
+	<name>SafeOnline SDK</name>
+    <description>
+        This SDK eases the communication with the SafeOnline Web Services.
+    </description>
+
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-sdk</artifactId>
-	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline SDK</name>
-	<description> This SDK eases the communication with the SafeOnline Web
-		Services. </description>
+	<packaging>jar</packaging>
+
 	<profiles>
 		<profile>
 			<id>sdk</id>
@@ -35,7 +40,9 @@
 			</build>
 		</profile>
 	</profiles>
+
 	<dependencies>
+
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-attrib-ws</artifactId>
@@ -292,7 +299,9 @@
 			<artifactId>jtidy</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
+
 	<reporting>
 		<plugins>
 			<plugin>
@@ -319,4 +328,5 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
 </project>
