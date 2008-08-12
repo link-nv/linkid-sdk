@@ -144,8 +144,6 @@ input.radio,
 }
 
 
-#sidebox ul:hover,
-#sidebox ul li:hover,
 input.label {
 
     border-color:       #333;

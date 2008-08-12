@@ -79,7 +79,7 @@
 			opened="false" label="#{msgs.description}">
 			<h:outputText value="#{selectedApplication.description}"
 				escape="true" rendered="#{!empty selectedApplication.description}"
-				styleClass="white_space" />
+				styleClass="text block" />
 			<h:outputText value="#{msgs.noDescription}"
 				rendered="#{empty selectedApplication.description}" />
 			<!-- XSS vulnerability possible: do not set escape="false" -->
@@ -225,7 +225,7 @@
 						value="#{msgs.certificateSubject}" /></th>
 				</tr>
 				<tr>
-					<td colspan="2" class="white_space"><h:outputText
+					<td colspan="2" class="text block"><h:outputText
 						value="#{selectedApplication.certificateSubject}"
 						rendered="#{!empty selectedApplication.certificateSubject}" /> <h:outputText
 						value="#{msgs.noCertificate}"

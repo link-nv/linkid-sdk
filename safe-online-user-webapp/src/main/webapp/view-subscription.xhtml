@@ -48,7 +48,7 @@
 							<th><h:outputText value="#{msgs.description}" /></th>
 							<td><h:outputText
 								value="#{selectedSubscription.application.description}"
-								styleClass="white_space" /></td>
+								styleClass="text" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -57,7 +57,7 @@
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
                 rendered="#{!empty subscriptions.usageAgreement}"
 				opened="false" label="#{msgs.confirmedUsageAgreement}">
-				<div class="white_space">#{subscriptions.usageAgreement}</div>
+				<div class="text block">#{subscriptions.usageAgreement}</div>
 			</rich:simpleTogglePanel>
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
