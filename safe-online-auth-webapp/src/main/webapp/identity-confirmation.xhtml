@@ -51,6 +51,11 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<p>#{msgs.helpIdentityConfirmation}</p>
+		<ul>
+			<li><h:outputLink
+				value="#{facesContext.externalContext.requestContextPath}/help.seam?location=#{facesContext.externalContext.requestServletPath}">
+					#{msgs.helpaction}</h:outputLink></li>
+		</ul>
 	</ui:define>
 </ui:composition>
 </body>

@@ -10,22 +10,23 @@ package net.link.safeonline.pkix.dao;
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
+import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 @Local
 public interface CachedOcspResponseDAO {
 
-	CachedOcspResponseEntity findCachedOcspResponse(String key);
+    CachedOcspResponseEntity findCachedOcspResponse(String key);
 
-	CachedOcspResponseEntity addCachedOcspResponse(String key, boolean result,
-			TrustDomainEntity trustDomain);
+    CachedOcspResponseEntity addCachedOcspResponse(String key,
+            CachedOcspResultType result, TrustDomainEntity trustDomain);
 
-	void removeCachedOcspResponse(CachedOcspResponseEntity cachedOcspResponse);
+    void removeCachedOcspResponse(CachedOcspResponseEntity cachedOcspResponse);
 
-	void clearOcspCache();
+    void clearOcspCache();
 
-	void clearOcspCachePerTrustDomain(TrustDomainEntity trustDomain);
+    void clearOcspCachePerTrustDomain(TrustDomainEntity trustDomain);
 
-	void clearOcspCacheExpiredForTrustDomain(TrustDomainEntity trustDomain);
+    void clearOcspCacheExpiredForTrustDomain(TrustDomainEntity trustDomain);
 
 }

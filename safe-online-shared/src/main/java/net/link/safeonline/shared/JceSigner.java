@@ -22,38 +22,42 @@ import java.security.cert.X509Certificate;
  */
 public class JceSigner implements Signer {
 
-	private final PrivateKey privateKey;
+    private final PrivateKey      privateKey;
 
-	private final X509Certificate certificate;
+    private final X509Certificate certificate;
 
-	public JceSigner(PrivateKey privateKey, X509Certificate certificate) {
-		this.privateKey = privateKey;
-		this.certificate = certificate;
-	}
 
-	public byte[] sign(byte[] data) {
-		Signature signature;
-		try {
-			signature = Signature.getInstance("SHA1withRSA");
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("SHA1withRSA algo not available");
-		}
-		try {
-			signature.initSign(this.privateKey);
-		} catch (InvalidKeyException e) {
-			throw new RuntimeException("invalid key: " + e.getMessage());
-		}
-		byte[] signatureValue;
-		try {
-			signature.update(data);
-			signatureValue = signature.sign();
-		} catch (SignatureException e) {
-			throw new RuntimeException("signature error: " + e.getMessage());
-		}
-		return signatureValue;
-	}
+    public JceSigner(PrivateKey privateKey, X509Certificate certificate) {
 
-	public X509Certificate getCertificate() {
-		return this.certificate;
-	}
+        this.privateKey = privateKey;
+        this.certificate = certificate;
+    }
+
+    public byte[] sign(byte[] data) {
+
+        Signature signature;
+        try {
+            signature = Signature.getInstance("SHA1withRSA");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA1withRSA algo not available");
+        }
+        try {
+            signature.initSign(this.privateKey);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException("invalid key: " + e.getMessage());
+        }
+        byte[] signatureValue;
+        try {
+            signature.update(data);
+            signatureValue = signature.sign();
+        } catch (SignatureException e) {
+            throw new RuntimeException("signature error: " + e.getMessage());
+        }
+        return signatureValue;
+    }
+
+    public X509Certificate getCertificate() {
+
+        return this.certificate;
+    }
 }

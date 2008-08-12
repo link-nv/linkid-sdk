@@ -18,7 +18,8 @@
 
 		<h:form id="_main">
 			<h:selectOneRadio value="#{device.selection}" required="true"
-				requiredMessage="#{msgs.errorDeviceSelection}" styleClass="tinylabel">
+				requiredMessage="#{msgs.errorDeviceSelection}"
+				styleClass="tinylabel">
 				<f:selectItems value="#{applicationDevices}" />
 			</h:selectOneRadio>
 
@@ -33,6 +34,9 @@
 	<ui:define name="sidebar">
 		<h:form>
 			<ul>
+				<li><h:outputLink
+					value="#{facesContext.externalContext.requestContextPath}/help.seam?location=#{facesContext.externalContext.requestServletPath}">
+					#{msgs.helpaction}</h:outputLink></li>
 				<li><h:commandLink id="new-user" action="/new-user.seam"
 					value="#{msgs.newUser}" /></li>
 				<li><h:commandLink id="try-other-device"

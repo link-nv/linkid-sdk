@@ -15,6 +15,11 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.PkiExpiredException;
+import net.link.safeonline.authentication.exception.PkiInvalidException;
+import net.link.safeonline.authentication.exception.PkiNotYetValidException;
+import net.link.safeonline.authentication.exception.PkiRevokedException;
+import net.link.safeonline.authentication.exception.PkiSuspendedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
 import net.link.safeonline.device.backend.CredentialManager;
@@ -27,44 +32,54 @@ import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class BeIdDeviceServiceBean implements BeIdDeviceService,
-		BeIdDeviceServiceRemote {
+        BeIdDeviceServiceRemote {
 
-	private final static Log LOG = LogFactory
-			.getLog(BeIdDeviceServiceBean.class);
+    private final static Log  LOG = LogFactory
+                                          .getLog(BeIdDeviceServiceBean.class);
 
-	@EJB
-	private CredentialManager credentialManager;
+    @EJB
+    private CredentialManager credentialManager;
 
-	public String authenticate(String sessionId, String applicationId,
-			AuthenticationStatement authenticationStatement)
-			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			SubjectNotFoundException {
-		LOG.debug("authenticate: sessionId=" + sessionId + " applicaitonId="
-				+ applicationId);
-		return this.credentialManager.authenticate(sessionId, applicationId,
-				authenticationStatement);
-	}
 
-	public void register(String sessionId, String deviceUserId,
-			String operation, byte[] identityStatementData)
-			throws PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException, TrustDomainNotFoundException,
-			DeviceNotFoundException, AttributeNotFoundException,
-			AlreadyRegisteredException {
-		LOG.debug("register: sessionId=" + sessionId + " userId="
-				+ deviceUserId + " operation=" + operation);
-		this.credentialManager.mergeIdentityStatement(sessionId, deviceUserId,
-				operation, identityStatementData);
-	}
+    public String authenticate(String sessionId, String applicationId,
+            AuthenticationStatement authenticationStatement)
+            throws ArgumentIntegrityException, TrustDomainNotFoundException,
+            SubjectNotFoundException, PkiRevokedException,
+            PkiSuspendedException, PkiExpiredException,
+            PkiNotYetValidException, PkiInvalidException {
 
-	public void remove(String sessionId, String deviceUserId, String operation,
-			byte[] identityStatementData) throws TrustDomainNotFoundException,
-			PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException, SubjectNotFoundException,
-			DeviceNotFoundException {
-		LOG.debug("remove: sessionId=" + sessionId + " userId=" + deviceUserId
-				+ " operation=" + operation);
-		this.credentialManager.removeIdentity(sessionId, deviceUserId,
-				operation, identityStatementData);
-	}
+        LOG.debug("authenticate: sessionId=" + sessionId + " applicaitonId="
+                + applicationId);
+        return this.credentialManager.authenticate(sessionId, applicationId,
+                authenticationStatement);
+    }
+
+    public void register(String sessionId, String deviceUserId,
+            String operation, byte[] identityStatementData)
+            throws PermissionDeniedException, ArgumentIntegrityException,
+            AttributeTypeNotFoundException, TrustDomainNotFoundException,
+            DeviceNotFoundException, AttributeNotFoundException,
+            AlreadyRegisteredException, PkiRevokedException,
+            PkiSuspendedException, PkiExpiredException,
+            PkiNotYetValidException, PkiInvalidException {
+
+        LOG.debug("register: sessionId=" + sessionId + " userId="
+                + deviceUserId + " operation=" + operation);
+        this.credentialManager.mergeIdentityStatement(sessionId, deviceUserId,
+                operation, identityStatementData);
+    }
+
+    public void remove(String sessionId, String deviceUserId, String operation,
+            byte[] identityStatementData) throws TrustDomainNotFoundException,
+            PermissionDeniedException, ArgumentIntegrityException,
+            AttributeTypeNotFoundException, SubjectNotFoundException,
+            DeviceNotFoundException, PkiRevokedException,
+            PkiSuspendedException, PkiExpiredException,
+            PkiNotYetValidException, PkiInvalidException {
+
+        LOG.debug("remove: sessionId=" + sessionId + " userId=" + deviceUserId
+                + " operation=" + operation);
+        this.credentialManager.removeIdentity(sessionId, deviceUserId,
+                operation, identityStatementData);
+    }
 }

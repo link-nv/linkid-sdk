@@ -60,6 +60,9 @@
 	<ui:define name="sidebar">
 		<h:form>
 			<ul>
+				<li><h:outputLink
+					value="#{facesContext.externalContext.requestContextPath}/help.seam?location=#{facesContext.externalContext.requestServletPath}">
+					#{msgs.helpaction}</h:outputLink></li>
 				<li><h:commandLink action="existing" id="existing"
 					value="#{msgs.existingUser}" /></li>
 			</ul>

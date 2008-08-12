@@ -15,6 +15,11 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.PkiExpiredException;
+import net.link.safeonline.authentication.exception.PkiInvalidException;
+import net.link.safeonline.authentication.exception.PkiNotYetValidException;
+import net.link.safeonline.authentication.exception.PkiRevokedException;
+import net.link.safeonline.authentication.exception.PkiSuspendedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -22,21 +27,27 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 @Local
 public interface CredentialManager {
 
-	String authenticate(String sessionId, String applicationId,
-			AuthenticationStatement authenticationStatement)
-			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			SubjectNotFoundException;
+    String authenticate(String sessionId, String applicationId,
+            AuthenticationStatement authenticationStatement)
+            throws ArgumentIntegrityException, TrustDomainNotFoundException,
+            SubjectNotFoundException, PkiRevokedException,
+            PkiSuspendedException, PkiExpiredException,
+            PkiNotYetValidException, PkiInvalidException;
 
-	void mergeIdentityStatement(String sessionId, String deviceUserId,
-			String operation, byte[] identityStatementData)
-			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException,
-			DeviceNotFoundException, AttributeNotFoundException,
-			AlreadyRegisteredException;
+    void mergeIdentityStatement(String sessionId, String deviceUserId,
+            String operation, byte[] identityStatementData)
+            throws TrustDomainNotFoundException, PermissionDeniedException,
+            ArgumentIntegrityException, AttributeTypeNotFoundException,
+            DeviceNotFoundException, AttributeNotFoundException,
+            AlreadyRegisteredException, PkiRevokedException,
+            PkiSuspendedException, PkiExpiredException,
+            PkiNotYetValidException, PkiInvalidException;
 
-	void removeIdentity(String sessionId, String deviceUserId,
-			String operation, byte[] identityStatementData)
-			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException,
-			SubjectNotFoundException, DeviceNotFoundException;
+    void removeIdentity(String sessionId, String deviceUserId,
+            String operation, byte[] identityStatementData)
+            throws TrustDomainNotFoundException, PermissionDeniedException,
+            ArgumentIntegrityException, AttributeTypeNotFoundException,
+            SubjectNotFoundException, DeviceNotFoundException,
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException,
+            PkiNotYetValidException, PkiInvalidException;
 }

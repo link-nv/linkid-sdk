@@ -29,6 +29,11 @@
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">
+		<ul>
+			<li><h:outputLink
+				value="#{facesContext.externalContext.requestContextPath}/help.seam?location=#{facesContext.externalContext.requestServletPath}">
+					#{msgs.helpaction}</h:outputLink></li>
+		</ul>
 		<p>#{msgs.helpRegisterDevice}</p>
 	</ui:define>
 </ui:composition>
