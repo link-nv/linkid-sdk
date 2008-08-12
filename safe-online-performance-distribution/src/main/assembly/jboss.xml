@@ -39,6 +39,13 @@
 			<fileMode>0500</fileMode>
 		</fileSet>
 		<fileSet>
+			<directory>
+				target/files/safe-online-base-distribution-1.0-SNAPSHOT/scripts 
+			</directory>
+			<outputDirectory>scripts</outputDirectory>
+			<fileMode>0500</fileMode>
+		</fileSet>
+		<fileSet>
 			<directory>target/classes/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
