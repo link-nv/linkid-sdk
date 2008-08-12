@@ -27,33 +27,35 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
-@SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_DEVICE_SECURITY_DOMAIN)
 @Stateless
+@SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_DEVICE_SECURITY_DOMAIN)
 public class DeviceIdentifierMappingServiceBean implements
-		DeviceIdentifierMappingService {
+        DeviceIdentifierMappingService {
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceIdentifierMappingServiceBean.class);
+    private static final Log     LOG = LogFactory
+                                             .getLog(DeviceIdentifierMappingServiceBean.class);
 
-	@EJB
-	private DeviceManager deviceManager;
+    @EJB
+    private DeviceManager        deviceManager;
 
-	@EJB
-	private DeviceMappingService deviceMappingService;
+    @EJB
+    private DeviceMappingService deviceMappingService;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService       subjectService;
 
-	@RolesAllowed(SafeOnlineDeviceRoles.DEVICE_ROLE)
-	public String getDeviceMappingId(String username)
-			throws DeviceNotFoundException, SubjectNotFoundException {
-		LOG.debug("get device mapping id: " + username);
-		DeviceEntity device = this.deviceManager.getCallerDevice();
-		SubjectEntity subject = this.subjectService
-				.getSubjectFromUserName(username);
 
-		DeviceMappingEntity deviceMapping = this.deviceMappingService
-				.getDeviceMapping(subject.getUserId(), device.getName());
-		return deviceMapping.getId();
-	}
+    @RolesAllowed(SafeOnlineDeviceRoles.DEVICE_ROLE)
+    public String getDeviceMappingId(String username)
+            throws DeviceNotFoundException, SubjectNotFoundException {
+
+        LOG.debug("get device mapping id: " + username);
+        DeviceEntity device = this.deviceManager.getCallerDevice();
+        SubjectEntity subject = this.subjectService
+                .getSubjectFromUserName(username);
+
+        DeviceMappingEntity deviceMapping = this.deviceMappingService
+                .getDeviceMapping(subject.getUserId(), device.getName());
+        return deviceMapping.getId();
+    }
 }

@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.MobileManager;
@@ -70,9 +69,6 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 
     @EJB
     private AttributeTypeDAO     attributeTypeDAO;
-
-    @EJB
-    private HistoryDAO           historyDAO;
 
     @EJB
     private SecurityAuditLogger  securityAuditLogger;

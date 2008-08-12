@@ -27,6 +27,7 @@ import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -85,7 +86,9 @@ public class LoginServlet extends HttpServlet {
 					"count not retrieve payment admin attribute");
 		} catch (SubjectNotFoundException e) {
 			throw new ServletException("subject not found");
-		}
+		} catch (WSClientTransportException e) {
+            throw new ServletException("connection failed");
+        }
 
 		if (null == paymentAdminAttribute) {
 			redirectToOverviewPage(session, response);

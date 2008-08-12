@@ -17,6 +17,7 @@ import javax.xml.ws.BindingProvider;
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
 import net.link.safeonline.ws.common.WebServiceConstants;
@@ -32,95 +33,105 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.ValidateTargetType;
 import org.w3c.dom.Element;
 
+import com.sun.xml.ws.client.ClientTransportException;
+
 /**
  * Implementation of Security Token Service Client.
  * 
  * @author fcorneli
  */
 public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
-		implements SecurityTokenServiceClient {
+        implements SecurityTokenServiceClient {
 
-	private final static Log LOG = LogFactory
-			.getLog(SecurityTokenServiceClientImpl.class);
+    private final static Log               LOG = LogFactory
+                                                       .getLog(SecurityTokenServiceClientImpl.class);
 
-	private final SecurityTokenServicePort port;
+    private final SecurityTokenServicePort port;
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param location
-	 *            the location (host:port) of the attribute web service.
-	 * @param clientCertificate
-	 *            the X509 certificate to use for WS-Security signature.
-	 * @param clientPrivateKey
-	 *            the private key corresponding with the client certificate.
-	 */
-	public SecurityTokenServiceClientImpl(String location,
-			X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
+    private final String                   location;
 
-		SecurityTokenService service = SecurityTokenServiceFactory
-				.newInstance();
-		this.port = service.getSecurityTokenServicePort();
-		setEndpointAddress(location);
 
-		registerMessageLoggerHandler(this.port);
-		WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
-				clientPrivateKey);
-		LOG.debug("location: " + location);
-	}
+    /**
+     * Main constructor.
+     * 
+     * @param location
+     *            the location (host:port) of the attribute web service.
+     * @param clientCertificate
+     *            the X509 certificate to use for WS-Security signature.
+     * @param clientPrivateKey
+     *            the private key corresponding with the client certificate.
+     */
+    public SecurityTokenServiceClientImpl(String location,
+            X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
-	private void setEndpointAddress(String location) {
-		BindingProvider bindingProvider = (BindingProvider) this.port;
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				location + "/safe-online-ws/sts");
-	}
+        SecurityTokenService service = SecurityTokenServiceFactory
+                .newInstance();
+        this.port = service.getSecurityTokenServicePort();
+        this.location = location + "/safe-online-ws/sts";
+        setEndpointAddress();
 
-	public void validate(Element token, TrustDomainType trustDomain) {
-		LOG.debug("invoke");
-		RequestSecurityTokenType request = new RequestSecurityTokenType();
-		ObjectFactory objectFactory = new ObjectFactory();
-		JAXBElement<String> requestType = objectFactory
-				.createRequestType(WebServiceConstants.WS_TRUST_REQUEST_TYPE
-						+ "Validate#" + trustDomain);
-		request.getAny().add(requestType);
+        registerMessageLoggerHandler(this.port);
+        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
+                clientPrivateKey);
+        LOG.debug("location: " + location);
+    }
 
-		JAXBElement<String> tokenType = objectFactory
-				.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
-		request.getAny().add(tokenType);
+    private void setEndpointAddress() {
 
-		ValidateTargetType validateTarget = new ValidateTargetType();
-		validateTarget.setAny(token);
-		request.getAny()
-				.add(objectFactory.createValidateTarget(validateTarget));
+        BindingProvider bindingProvider = (BindingProvider) this.port;
+        bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+    }
 
-		SafeOnlineTrustManager.configureSsl();
+    public void validate(Element token, TrustDomainType trustDomain)
+            throws WSClientTransportException {
 
-		RequestSecurityTokenResponseType response;
-		try {
-			response = this.port.requestSecurityToken(request);
-		} catch (Exception e) {
-			throw retrieveHeadersFromException(e);
-		} finally {
-			retrieveHeadersFromPort(this.port);
-		}
+        LOG.debug("invoke");
+        RequestSecurityTokenType request = new RequestSecurityTokenType();
+        ObjectFactory objectFactory = new ObjectFactory();
+        JAXBElement<String> requestType = objectFactory
+                .createRequestType(WebServiceConstants.WS_TRUST_REQUEST_TYPE
+                        + "Validate#" + trustDomain);
+        request.getAny().add(requestType);
 
-		StatusType status = null;
-		List<Object> results = response.getAny();
-		for (Object result : results)
-			if (result instanceof JAXBElement) {
-				JAXBElement<?> resultElement = (JAXBElement<?>) result;
-				Object value = resultElement.getValue();
-				if (value instanceof StatusType)
-					status = (StatusType) value;
-			}
-		if (null == status)
-			throw new RuntimeException("no Status found in response");
-		String statusCode = status.getCode();
-		if (SecurityTokenServiceConstants.STATUS_VALID.equals(statusCode))
-			return;
-		String reason = status.getReason();
-		LOG.debug("reason: " + reason);
-		throw new RuntimeException("token found to be invalid: " + reason);
-	}
+        JAXBElement<String> tokenType = objectFactory
+                .createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
+        request.getAny().add(tokenType);
+
+        ValidateTargetType validateTarget = new ValidateTargetType();
+        validateTarget.setAny(token);
+        request.getAny()
+                .add(objectFactory.createValidateTarget(validateTarget));
+
+        SafeOnlineTrustManager.configureSsl();
+
+        RequestSecurityTokenResponseType response;
+        try {
+            response = this.port.requestSecurityToken(request);
+        } catch (ClientTransportException e) {
+            throw new WSClientTransportException(this.location);
+        } catch (Exception e) {
+            throw retrieveHeadersFromException(e);
+        } finally {
+            retrieveHeadersFromPort(this.port);
+        }
+
+        StatusType status = null;
+        List<Object> results = response.getAny();
+        for (Object result : results)
+            if (result instanceof JAXBElement) {
+                JAXBElement<?> resultElement = (JAXBElement<?>) result;
+                Object value = resultElement.getValue();
+                if (value instanceof StatusType)
+                    status = (StatusType) value;
+            }
+        if (null == status)
+            throw new RuntimeException("no Status found in response");
+        String statusCode = status.getCode();
+        if (SecurityTokenServiceConstants.STATUS_VALID.equals(statusCode))
+            return;
+        String reason = status.getReason();
+        LOG.debug("reason: " + reason);
+        throw new RuntimeException("token found to be invalid: " + reason);
+    }
 }

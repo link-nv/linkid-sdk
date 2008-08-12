@@ -15,8 +15,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AccessAuditLogger;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AccountService;
@@ -44,113 +47,122 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class AccountServiceBean implements AccountService, AccountServiceRemote {
 
-	private static final Log LOG = LogFactory.getLog(AccountServiceBean.class);
+    private static final Log            LOG = LogFactory
+                                                    .getLog(AccountServiceBean.class);
 
-	@EJB
-	private SubjectManager subjectManager;
+    @EJB
+    private SubjectManager              subjectManager;
 
-	@EJB
-	private HistoryDAO historyDAO;
+    @EJB
+    private HistoryDAO                  historyDAO;
 
-	@EJB
-	private AttributeDAO attributeDAO;
+    @EJB
+    private AttributeDAO                attributeDAO;
 
-	@EJB
-	private SubscriptionDAO subscriptionDAO;
+    @EJB
+    private SubscriptionDAO             subscriptionDAO;
 
-	@EJB
-	private ApplicationScopeIdDAO applicationScopeIdDAO;
+    @EJB
+    private ApplicationScopeIdDAO       applicationScopeIdDAO;
 
-	@EJB
-	private SubjectDAO subjectDAO;
+    @EJB
+    private SubjectDAO                  subjectDAO;
 
-	@EJB
-	private DeviceSubjectDAO deviceSubjectDAO;
+    @EJB
+    private DeviceSubjectDAO            deviceSubjectDAO;
 
-	@EJB
-	private SubjectIdentifierDAO subjectIdentifierDAO;
+    @EJB
+    private SubjectIdentifierDAO        subjectIdentifierDAO;
 
-	@EJB
-	private DeviceMappingDAO deviceMappingDAO;
+    @EJB
+    private DeviceMappingDAO            deviceMappingDAO;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService              subjectService;
 
-	@EJB
-	private NotificationProducerService notificationProducerService;
+    @EJB
+    private NotificationProducerService notificationProducerService;
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void removeAccount() throws SubscriptionNotFoundException,
-			MessageHandlerNotFoundException {
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		removeSubject(subject);
-	}
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void removeAccount(SubjectEntity subject)
-			throws SubscriptionNotFoundException,
-			MessageHandlerNotFoundException {
-		removeSubject(subject);
-	}
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public void removeAccount() throws SubscriptionNotFoundException,
+            MessageHandlerNotFoundException {
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void removeAccount(String userId) throws SubjectNotFoundException,
-			SubscriptionNotFoundException, MessageHandlerNotFoundException {
-		SubjectEntity subject = this.subjectService.getSubject(userId);
-		removeSubject(subject);
-	}
+        SubjectEntity subject = this.subjectManager.getCallerSubject();
+        removeSubject(subject);
+    }
 
-	private void removeSubject(SubjectEntity subject)
-			throws SubscriptionNotFoundException,
-			MessageHandlerNotFoundException {
-		LOG.debug("remove account: " + subject.getUserId());
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void removeAccount(SubjectEntity subject)
+            throws SubscriptionNotFoundException,
+            MessageHandlerNotFoundException {
 
-		List<String> message = new LinkedList<String>();
-		message.add(subject.getUserId());
-		this.notificationProducerService.sendNotification(
-				SafeOnlineConstants.TOPIC_REMOVE_USER, message);
+        removeSubject(subject);
+    }
 
-		this.historyDAO.clearAllHistory(subject);
-		this.subscriptionDAO.removeAllSubscriptions(subject);
-		this.applicationScopeIdDAO.removeApplicationScopeIds(subject);
-		this.attributeDAO.removeAttributes(subject);
-		this.subjectIdentifierDAO.removeSubjectIdentifiers(subject);
-		this.subjectDAO.removeSubject(subject);
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public void removeAccount(String userId) throws SubjectNotFoundException,
+            SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
-		removeDeviceRegistrations(subject);
-		this.deviceMappingDAO.removeDeviceMappings(subject);
-	}
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+        removeSubject(subject);
+    }
 
-	/**
-	 * Remove local device attributes and possible local device subjects
-	 * 
-	 * @param subject
-	 */
-	private void removeDeviceRegistrations(SubjectEntity subject) {
-		List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO
-				.listDeviceMappings(subject);
-		for (DeviceMappingEntity deviceMapping : deviceMappings) {
-			if (deviceMapping.getDevice().getName().equals(
-					SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-				DeviceSubjectEntity deviceSubject = this.subjectService
-						.findDeviceSubject(deviceMapping.getId());
-				if (null == deviceSubject)
-					continue;
-				for (SubjectEntity deviceRegistration : deviceSubject
-						.getRegistrations()) {
-					removeDeviceRegistration(deviceRegistration);
-				}
-				this.deviceSubjectDAO.removeSubject(deviceSubject);
-			}
-		}
-	}
+    private void removeSubject(SubjectEntity subject)
+            throws SubscriptionNotFoundException,
+            MessageHandlerNotFoundException {
 
-	private void removeDeviceRegistration(SubjectEntity deviceRegistration) {
-		this.attributeDAO.removeAttributes(deviceRegistration);
-		this.subjectIdentifierDAO.removeSubjectIdentifiers(deviceRegistration);
-		this.subjectDAO.removeSubject(deviceRegistration);
-	}
+        LOG.debug("remove account: " + subject.getUserId());
+
+        List<String> message = new LinkedList<String>();
+        message.add(subject.getUserId());
+        this.notificationProducerService.sendNotification(
+                SafeOnlineConstants.TOPIC_REMOVE_USER, message);
+
+        this.historyDAO.clearAllHistory(subject);
+        this.subscriptionDAO.removeAllSubscriptions(subject);
+        this.applicationScopeIdDAO.removeApplicationScopeIds(subject);
+        this.attributeDAO.removeAttributes(subject);
+        this.subjectIdentifierDAO.removeSubjectIdentifiers(subject);
+        this.subjectDAO.removeSubject(subject);
+
+        removeDeviceRegistrations(subject);
+        this.deviceMappingDAO.removeDeviceMappings(subject);
+    }
+
+    /**
+     * Remove local device attributes and possible local device subjects
+     * 
+     * @param subject
+     */
+    private void removeDeviceRegistrations(SubjectEntity subject) {
+
+        List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO
+                .listDeviceMappings(subject);
+        for (DeviceMappingEntity deviceMapping : deviceMappings) {
+            if (deviceMapping.getDevice().getName().equals(
+                    SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+                DeviceSubjectEntity deviceSubject = this.subjectService
+                        .findDeviceSubject(deviceMapping.getId());
+                if (null == deviceSubject)
+                    continue;
+                for (SubjectEntity deviceRegistration : deviceSubject
+                        .getRegistrations()) {
+                    removeDeviceRegistration(deviceRegistration);
+                }
+                this.deviceSubjectDAO.removeSubject(deviceSubject);
+            }
+        }
+    }
+
+    private void removeDeviceRegistration(SubjectEntity deviceRegistration) {
+
+        this.attributeDAO.removeAttributes(deviceRegistration);
+        this.subjectIdentifierDAO.removeSubjectIdentifiers(deviceRegistration);
+        this.subjectDAO.removeSubject(deviceRegistration);
+    }
 }

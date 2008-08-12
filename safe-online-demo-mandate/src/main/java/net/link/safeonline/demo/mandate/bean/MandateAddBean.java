@@ -7,8 +7,6 @@
 
 package net.link.safeonline.demo.mandate.bean;
 
-import java.net.ConnectException;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateful;
 
@@ -19,6 +17,7 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -34,49 +33,55 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateAddBean/local")
 @SecurityDomain(MandateConstants.SECURITY_DOMAIN)
 public class MandateAddBean extends AbstractMandateDataClientBean implements
-		MandateAdd {
+        MandateAdd {
 
-	@In
-	private String mandateUser;
+    @In
+    private String             mandateUser;
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                log;
 
-	public static final String NEW_MANDATE = "newMandate";
+    public static final String NEW_MANDATE = "newMandate";
 
-	@In(value = NEW_MANDATE, required = false)
-	private Mandate newMandate;
+    @In(value = NEW_MANDATE, required = false)
+    private Mandate            newMandate;
 
-	@RolesAllowed(MandateConstants.ADMIN_ROLE)
-	public String add() {
-		this.log.debug("add new mandate for user #0", this.mandateUser);
 
-		NameIdentifierMappingClient mappingClient = getMappingClient();
-		String mandateUserId;
-		try {
-			mandateUserId = mappingClient.getUserId(this.mandateUser);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.add("subject not found");
-			return null;
-		} catch (RequestDeniedException e) {
-			this.facesMessages.add("request denied");
-			return null;
-		}
+    @RolesAllowed(MandateConstants.ADMIN_ROLE)
+    public String add() {
 
-		DataClient dataClient = getDataClient();
-		try {
-			dataClient.createAttribute(mandateUserId,
-					DemoConstants.MANDATE_ATTRIBUTE_NAME, this.newMandate);
-		} catch (ConnectException e) {
-			this.facesMessages.add("connection error");
-			return null;
-		}
+        this.log.debug("add new mandate for user #0", this.mandateUser);
 
-		return "success";
-	}
+        NameIdentifierMappingClient mappingClient = getMappingClient();
+        String mandateUserId;
+        try {
+            mandateUserId = mappingClient.getUserId(this.mandateUser);
+        } catch (SubjectNotFoundException e) {
+            this.facesMessages.add("subject not found");
+            return null;
+        } catch (RequestDeniedException e) {
+            this.facesMessages.add("request denied");
+            return null;
+        } catch (WSClientTransportException e) {
+            this.facesMessages.add("connection failed");
+            return null;
+        }
 
-	@Factory(NEW_MANDATE)
-	public Mandate newMandateFactory() {
-		return new Mandate();
-	}
+        DataClient dataClient = getDataClient();
+        try {
+            dataClient.createAttribute(mandateUserId,
+                    DemoConstants.MANDATE_ATTRIBUTE_NAME, this.newMandate);
+        } catch (WSClientTransportException e) {
+            this.facesMessages.add("connection error");
+            return null;
+        }
+
+        return "success";
+    }
+
+    @Factory(NEW_MANDATE)
+    public Mandate newMandateFactory() {
+
+        return new Mandate();
+    }
 }

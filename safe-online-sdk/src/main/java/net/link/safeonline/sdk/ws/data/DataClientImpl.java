@@ -9,7 +9,6 @@ package net.link.safeonline.sdk.ws.data;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -53,6 +52,7 @@ import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.annotation.Compound;
 import net.link.safeonline.sdk.ws.annotation.CompoundId;
 import net.link.safeonline.sdk.ws.annotation.CompoundMember;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
@@ -69,464 +69,477 @@ import com.sun.xml.ws.client.ClientTransportException;
  * 
  */
 public class DataClientImpl extends AbstractMessageAccessor implements
-		DataClient {
+        DataClient {
 
-	private static final Log LOG = LogFactory.getLog(DataClientImpl.class);
+    private static final Log                  LOG = LogFactory
+                                                          .getLog(DataClientImpl.class);
 
-	private final DataServicePort port;
+    private final DataServicePort             port;
 
-	private final TargetIdentityClientHandler targetIdentityHandler;
+    private final String                      location;
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param location
-	 *            the location (i.e. host:port) of the data web service.
-	 * @param clientCertificate
-	 * @param clientPrivateKey
-	 */
-	public DataClientImpl(String location,
-			X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
-		DataService dataService = DataServiceFactory.newInstance();
-		AddressingFeature addressingFeature = new AddressingFeature();
-		this.port = dataService.getDataServicePort(addressingFeature);
+    private final TargetIdentityClientHandler targetIdentityHandler;
 
-		setEndpointAddress(location);
 
-		registerMessageLoggerHandler(this.port);
+    /**
+     * Main constructor.
+     * 
+     * @param location
+     *            the location (i.e. host:port) of the data web service.
+     * @param clientCertificate
+     * @param clientPrivateKey
+     */
+    public DataClientImpl(String location, X509Certificate clientCertificate,
+            PrivateKey clientPrivateKey) {
 
-		/*
-		 * The order of the JAX-WS handlers is important. For outbound messages
-		 * the TargetIdentity SOAP handler needs to come first since it feeds
-		 * additional XML Id's to be signed by the WS-Security handler.
-		 */
-		this.targetIdentityHandler = new TargetIdentityClientHandler();
-		initTargetIdentityHandler();
+        DataService dataService = DataServiceFactory.newInstance();
+        AddressingFeature addressingFeature = new AddressingFeature();
+        this.port = dataService.getDataServicePort(addressingFeature);
+        this.location = location + "/safe-online-ws/data";
 
-		WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
-				clientPrivateKey);
-	}
+        setEndpointAddress();
 
-	private void initTargetIdentityHandler() {
-		BindingProvider bindingProvider = (BindingProvider) this.port;
-		Binding binding = bindingProvider.getBinding();
-		@SuppressWarnings("unchecked")
-		List<Handler> handlerChain = binding.getHandlerChain();
-		handlerChain.add(this.targetIdentityHandler);
-		binding.setHandlerChain(handlerChain);
-	}
+        registerMessageLoggerHandler(this.port);
 
-	private void setEndpointAddress(String location) {
-		BindingProvider bindingProvider = (BindingProvider) this.port;
+        /*
+         * The order of the JAX-WS handlers is important. For outbound messages
+         * the TargetIdentity SOAP handler needs to come first since it feeds
+         * additional XML Id's to be signed by the WS-Security handler.
+         */
+        this.targetIdentityHandler = new TargetIdentityClientHandler();
+        initTargetIdentityHandler();
 
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				location + "/safe-online-ws/data");
-	}
+        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
+                clientPrivateKey);
+    }
 
-	public void setAttributeValue(String subjectLogin, String attributeName,
-			Object attributeValue) throws ConnectException,
-			AttributeNotFoundException {
-		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
+    private void initTargetIdentityHandler() {
 
-		ModifyType modify = new ModifyType();
-		List<ModifyItemType> modifyItems = modify.getModifyItem();
-		ModifyItemType modifyItem = new ModifyItemType();
-		modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
-		modifyItems.add(modifyItem);
+        BindingProvider bindingProvider = (BindingProvider) this.port;
+        Binding binding = bindingProvider.getBinding();
+        @SuppressWarnings("unchecked")
+        List<Handler> handlerChain = binding.getHandlerChain();
+        handlerChain.add(this.targetIdentityHandler);
+        binding.setHandlerChain(handlerChain);
+    }
 
-		SelectType select = new SelectType();
-		modifyItem.setSelect(select);
-		select.setValue(attributeName);
+    private void setEndpointAddress() {
 
-		AppDataType newData = new AppDataType();
-		modifyItem.setNewData(newData);
-		AttributeType attribute = new AttributeType();
-		attribute.setName(attributeName);
-		setAttributeValue(attributeValue, attribute, false);
-		newData.setAttribute(attribute);
+        BindingProvider bindingProvider = (BindingProvider) this.port;
 
-		ModifyResponseType modifyResponse;
-		try {
-			modifyResponse = this.port.modify(modify);
-		} catch (ClientTransportException e) {
-			throw new ConnectException(e.getMessage());
-		} catch (Exception e) {
-			throw retrieveHeadersFromException(e);
-		} finally {
-			retrieveHeadersFromPort(this.port);
-		}
+        bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+    }
 
-		StatusType status = modifyResponse.getStatus();
-		LOG.debug("status: " + modifyResponse.getStatus().getCode());
-		TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
-				.fromCode(status.getCode());
+    public void setAttributeValue(String subjectLogin, String attributeName,
+            Object attributeValue) throws WSClientTransportException,
+            AttributeNotFoundException {
 
-		if (TopLevelStatusCode.OK != topLevelStatusCode) {
-			List<StatusType> secondLevelStatusList = status.getStatus();
-			if (secondLevelStatusList.size() > 0) {
-				StatusType secondLevelStatus = secondLevelStatusList.get(0);
-				LOG
-						.debug("second level status: "
-								+ secondLevelStatus.getCode());
-				SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode
-						.fromCode(secondLevelStatus.getCode());
-				LOG.debug("second level status comment: "
-						+ secondLevelStatus.getComment());
-				switch (secondLevelStatusCode) {
-				case INVALID_DATA:
-					throw new IllegalArgumentException(
-							"attribute value type incorrect");
-				case DOES_NOT_EXIST:
-					throw new AttributeNotFoundException();
-				default:
-				}
-			}
-			LOG.debug("status comment: " + status.getComment());
-			throw new RuntimeException("could not set the attribute");
-		}
-	}
+        this.targetIdentityHandler.setTargetIdentity(subjectLogin);
 
-	@SuppressWarnings("unchecked")
-	public <Type> Attribute<Type> getAttributeValue(String userId,
-			String attributeName, Class<Type> expectedValueClass)
-			throws ConnectException, RequestDeniedException,
-			SubjectNotFoundException {
-		this.targetIdentityHandler.setTargetIdentity(userId);
+        ModifyType modify = new ModifyType();
+        List<ModifyItemType> modifyItems = modify.getModifyItem();
+        ModifyItemType modifyItem = new ModifyItemType();
+        modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+        modifyItems.add(modifyItem);
 
-		QueryType query = new QueryType();
+        SelectType select = new SelectType();
+        modifyItem.setSelect(select);
+        select.setValue(attributeName);
 
-		List<QueryItemType> queryItems = query.getQueryItem();
-		QueryItemType queryItem = new QueryItemType();
-		queryItems.add(queryItem);
+        AppDataType newData = new AppDataType();
+        modifyItem.setNewData(newData);
+        AttributeType attribute = new AttributeType();
+        attribute.setName(attributeName);
+        setAttributeValue(attributeValue, attribute, false);
+        newData.setAttribute(attribute);
 
-		queryItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
-		SelectType select = new SelectType();
-		select.setValue(attributeName);
-		queryItem.setSelect(select);
+        ModifyResponseType modifyResponse;
+        try {
+            modifyResponse = this.port.modify(modify);
+        } catch (ClientTransportException e) {
+            throw new WSClientTransportException(this.location);
+        } catch (Exception e) {
+            throw retrieveHeadersFromException(e);
+        } finally {
+            retrieveHeadersFromPort(this.port);
+        }
 
-		SafeOnlineTrustManager.configureSsl();
+        StatusType status = modifyResponse.getStatus();
+        LOG.debug("status: " + modifyResponse.getStatus().getCode());
+        TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
+                .fromCode(status.getCode());
 
-		QueryResponseType queryResponse;
-		try {
-			queryResponse = this.port.query(query);
-		} catch (ClientTransportException e) {
-			throw new ConnectException(e.getMessage());
-		} catch (Exception e) {
-			throw retrieveHeadersFromException(e);
-		} finally {
-			retrieveHeadersFromPort(this.port);
-		}
+        if (TopLevelStatusCode.OK != topLevelStatusCode) {
+            List<StatusType> secondLevelStatusList = status.getStatus();
+            if (secondLevelStatusList.size() > 0) {
+                StatusType secondLevelStatus = secondLevelStatusList.get(0);
+                LOG
+                        .debug("second level status: "
+                                + secondLevelStatus.getCode());
+                SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode
+                        .fromCode(secondLevelStatus.getCode());
+                LOG.debug("second level status comment: "
+                        + secondLevelStatus.getComment());
+                switch (secondLevelStatusCode) {
+                    case INVALID_DATA:
+                        throw new IllegalArgumentException(
+                                "attribute value type incorrect");
+                    case DOES_NOT_EXIST:
+                        throw new AttributeNotFoundException();
+                    default:
+                }
+            }
+            LOG.debug("status comment: " + status.getComment());
+            throw new RuntimeException("could not set the attribute");
+        }
+    }
 
-		StatusType status = queryResponse.getStatus();
-		LOG.debug("status: " + status.getCode());
-		TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
-				.fromCode(status.getCode());
-		switch (topLevelStatusCode) {
-		case FAILED:
-			List<StatusType> secondLevelStatuses = status.getStatus();
-			if (0 == secondLevelStatuses.size())
-				throw new RuntimeException("ID-WSF DST error");
-			StatusType secondLevelStatus = secondLevelStatuses.get(0);
-			SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode
-					.fromCode(secondLevelStatus.getCode());
-			if (SecondLevelStatusCode.NOT_AUTHORIZED == secondLevelStatusCode)
-				throw new RequestDeniedException();
-			if (SecondLevelStatusCode.DOES_NOT_EXIST == secondLevelStatusCode)
-				throw new SubjectNotFoundException();
-			throw new RuntimeException("unknown error occurred");
-		case OK:
-			break;
-		default:
-			throw new RuntimeException("Unknown top level status code: "
-					+ topLevelStatusCode);
-		}
+    @SuppressWarnings("unchecked")
+    public <Type> Attribute<Type> getAttributeValue(String userId,
+            String attributeName, Class<Type> expectedValueClass)
+            throws WSClientTransportException, RequestDeniedException,
+            SubjectNotFoundException {
 
-		List<DataType> dataList = queryResponse.getData();
-		if (0 == dataList.size()) {
-			LOG.debug("no data entry");
-			return null;
-		}
-		DataType data = dataList.get(0);
-		AttributeType attribute = data.getAttribute();
-		if (null == attribute)
-			/*
-			 * This happens when the attribute entity does not exist.
-			 */
-			return null;
-		String name = attribute.getName();
-		List<Object> attributeValues = attribute.getAttributeValue();
-		Object firstAttributeValue = convertFromXmlDatatypeToClientDatatype(attributeValues
-				.get(0));
-		if (null == firstAttributeValue) {
-			/*
-			 * null does not have a type. Lucky us.
-			 */
-			Attribute<Type> dataValue = new Attribute<Type>(name, null);
-			return dataValue;
-		}
+        this.targetIdentityHandler.setTargetIdentity(userId);
 
-		/*
-		 * We also perform some type-checking on the received attribute values.
-		 */
-		if (expectedValueClass.isArray()) {
-			/*
-			 * Multi-valued attribute expected.
-			 */
-			if (false == Boolean.TRUE.toString().equals(
-					attribute.getOtherAttributes().get(
-							WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
-				String msg = "expected multivalued attribute, but received single-valued attribute";
-				LOG.error(msg);
-				throw new IllegalArgumentException(msg);
-			}
-			Class componentType = expectedValueClass.getComponentType();
-			int size = attributeValues.size();
-			Type values = (Type) Array.newInstance(componentType, size);
-			for (int idx = 0; idx < size; idx++) {
-				Object attributeValue = convertFromXmlDatatypeToClientDatatype(attributeValues
-						.get(idx));
-				if (attributeValue instanceof AttributeType) {
-					/*
-					 * We're dealing with a compounded attribute here.
-					 */
-					AttributeType compoundAttribute = (AttributeType) attributeValue;
-					CompoundBuilder compoundBuilder = new CompoundBuilder(
-							componentType);
+        QueryType query = new QueryType();
 
-					String attributeId = compoundAttribute.getOtherAttributes()
-							.get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
-					compoundBuilder.setCompoundId(attributeId);
+        List<QueryItemType> queryItems = query.getQueryItem();
+        QueryItemType queryItem = new QueryItemType();
+        queryItems.add(queryItem);
 
-					List<Object> memberAttributes = compoundAttribute
-							.getAttributeValue();
-					for (Object memberAttributeObject : memberAttributes) {
-						AttributeType memberAttribute = (AttributeType) memberAttributeObject;
-						String memberName = memberAttribute.getName();
-						Object memberAttributeValue = convertFromXmlDatatypeToClientDatatype(memberAttribute
-								.getAttributeValue().get(0));
-						compoundBuilder.setCompoundProperty(memberName,
-								memberAttributeValue);
-					}
+        queryItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+        SelectType select = new SelectType();
+        select.setValue(attributeName);
+        queryItem.setSelect(select);
 
-					Array.set(values, idx, compoundBuilder.getCompound());
-				} else {
-					if (false == componentType.isInstance(attributeValue))
-						throw new IllegalArgumentException("expected type "
-								+ componentType.getName() + "; received: "
-								+ attributeValue.getClass().getName());
-					Array.set(values, idx, attributeValue);
-				}
-			}
-			Attribute<Type> resultAttribute = new Attribute<Type>(
-					attributeName, values);
-			return resultAttribute;
-		}
+        SafeOnlineTrustManager.configureSsl();
 
-		/*
-		 * Single-valued attribute expected.
-		 */
-		if (false == expectedValueClass.isInstance(firstAttributeValue))
-			throw new IllegalArgumentException("type mismatch: expected "
-					+ expectedValueClass.getName() + "; received: "
-					+ firstAttributeValue.getClass().getName());
-		Type value = (Type) firstAttributeValue;
+        QueryResponseType queryResponse;
+        try {
+            queryResponse = this.port.query(query);
+        } catch (ClientTransportException e) {
+            throw new WSClientTransportException(this.location);
+        } catch (Exception e) {
+            throw retrieveHeadersFromException(e);
+        } finally {
+            retrieveHeadersFromPort(this.port);
+        }
 
-		Attribute<Type> dataValue = new Attribute<Type>(name, value);
-		return dataValue;
-	}
+        StatusType status = queryResponse.getStatus();
+        LOG.debug("status: " + status.getCode());
+        TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
+                .fromCode(status.getCode());
+        switch (topLevelStatusCode) {
+            case FAILED:
+                List<StatusType> secondLevelStatuses = status.getStatus();
+                if (0 == secondLevelStatuses.size())
+                    throw new RuntimeException("ID-WSF DST error");
+                StatusType secondLevelStatus = secondLevelStatuses.get(0);
+                SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode
+                        .fromCode(secondLevelStatus.getCode());
+                if (SecondLevelStatusCode.NOT_AUTHORIZED == secondLevelStatusCode)
+                    throw new RequestDeniedException();
+                if (SecondLevelStatusCode.DOES_NOT_EXIST == secondLevelStatusCode)
+                    throw new SubjectNotFoundException();
+                throw new RuntimeException("unknown error occurred");
+            case OK:
+            break;
+            default:
+                throw new RuntimeException("Unknown top level status code: "
+                        + topLevelStatusCode);
+        }
 
-	private Object convertFromXmlDatatypeToClientDatatype(Object value) {
-		if (null == value)
-			return null;
-		Object result = value;
-		if (value instanceof XMLGregorianCalendar) {
-			XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
-			result = calendar.toGregorianCalendar().getTime();
-		}
-		return result;
-	}
+        List<DataType> dataList = queryResponse.getData();
+        if (0 == dataList.size()) {
+            LOG.debug("no data entry");
+            return null;
+        }
+        DataType data = dataList.get(0);
+        AttributeType attribute = data.getAttribute();
+        if (null == attribute)
+            /*
+             * This happens when the attribute entity does not exist.
+             */
+            return null;
+        String name = attribute.getName();
+        List<Object> attributeValues = attribute.getAttributeValue();
+        Object firstAttributeValue = convertFromXmlDatatypeToClientDatatype(attributeValues
+                .get(0));
+        if (null == firstAttributeValue) {
+            /*
+             * null does not have a type. Lucky us.
+             */
+            Attribute<Type> dataValue = new Attribute<Type>(name, null);
+            return dataValue;
+        }
 
-	public void createAttribute(String userId, String attributeName,
-			Object attributeValue) throws ConnectException {
+        /*
+         * We also perform some type-checking on the received attribute values.
+         */
+        if (expectedValueClass.isArray()) {
+            /*
+             * Multi-valued attribute expected.
+             */
+            if (false == Boolean.TRUE.toString().equals(
+                    attribute.getOtherAttributes().get(
+                            WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
+                String msg = "expected multivalued attribute, but received single-valued attribute";
+                LOG.error(msg);
+                throw new IllegalArgumentException(msg);
+            }
+            Class componentType = expectedValueClass.getComponentType();
+            int size = attributeValues.size();
+            Type values = (Type) Array.newInstance(componentType, size);
+            for (int idx = 0; idx < size; idx++) {
+                Object attributeValue = convertFromXmlDatatypeToClientDatatype(attributeValues
+                        .get(idx));
+                if (attributeValue instanceof AttributeType) {
+                    /*
+                     * We're dealing with a compounded attribute here.
+                     */
+                    AttributeType compoundAttribute = (AttributeType) attributeValue;
+                    CompoundBuilder compoundBuilder = new CompoundBuilder(
+                            componentType);
 
-		this.targetIdentityHandler.setTargetIdentity(userId);
+                    String attributeId = compoundAttribute.getOtherAttributes()
+                            .get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
+                    compoundBuilder.setCompoundId(attributeId);
 
-		CreateType create = new CreateType();
-		List<CreateItemType> createItems = create.getCreateItem();
-		CreateItemType createItem = new CreateItemType();
-		createItems.add(createItem);
+                    List<Object> memberAttributes = compoundAttribute
+                            .getAttributeValue();
+                    for (Object memberAttributeObject : memberAttributes) {
+                        AttributeType memberAttribute = (AttributeType) memberAttributeObject;
+                        String memberName = memberAttribute.getName();
+                        Object memberAttributeValue = convertFromXmlDatatypeToClientDatatype(memberAttribute
+                                .getAttributeValue().get(0));
+                        compoundBuilder.setCompoundProperty(memberName,
+                                memberAttributeValue);
+                    }
 
-		createItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
-		AppDataType newData = new AppDataType();
-		AttributeType attribute = new AttributeType();
-		attribute.setName(attributeName);
-		setAttributeValue(attributeValue, attribute, true);
-		newData.setAttribute(attribute);
-		createItem.setNewData(newData);
+                    Array.set(values, idx, compoundBuilder.getCompound());
+                } else {
+                    if (false == componentType.isInstance(attributeValue))
+                        throw new IllegalArgumentException("expected type "
+                                + componentType.getName() + "; received: "
+                                + attributeValue.getClass().getName());
+                    Array.set(values, idx, attributeValue);
+                }
+            }
+            Attribute<Type> resultAttribute = new Attribute<Type>(
+                    attributeName, values);
+            return resultAttribute;
+        }
 
-		try {
-			CreateResponseType createResponse = this.port.create(create);
-			StatusType status = createResponse.getStatus();
-			LOG.debug("status: " + status.getCode());
+        /*
+         * Single-valued attribute expected.
+         */
+        if (false == expectedValueClass.isInstance(firstAttributeValue))
+            throw new IllegalArgumentException("type mismatch: expected "
+                    + expectedValueClass.getName() + "; received: "
+                    + firstAttributeValue.getClass().getName());
+        Type value = (Type) firstAttributeValue;
 
-			TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
-					.fromCode(status.getCode());
-			if (TopLevelStatusCode.OK != topLevelStatusCode)
-				throw new RuntimeException(
-						"error occurred while creating attribute");
-		} catch (ClientTransportException e) {
-			throw new ConnectException(e.getMessage());
-		} catch (Exception e) {
-			throw retrieveHeadersFromException(e);
-		} finally {
-			retrieveHeadersFromPort(this.port);
-		}
-	}
+        Attribute<Type> dataValue = new Attribute<Type>(name, value);
+        return dataValue;
+    }
 
-	/**
-	 * Sets the attribute value within the target SAML attribute element.
-	 * 
-	 * The input attribute value can be an Integer, Boolean or array of these in
-	 * case of a multivalued attribute.
-	 * 
-	 * @param attributeValue
-	 * @param targetAttribute
-	 * @param newAttribute
-	 */
-	private void setAttributeValue(Object attributeValue,
-			AttributeType targetAttribute, boolean isNewAttribute) {
-		if (null == attributeValue)
-			return;
-		List<Object> attributeValues = targetAttribute.getAttributeValue();
-		if (CompoundUtil.isCompound(attributeValue)) {
-			AttributeType compoundAttribute = createCompoundAttribute(
-					attributeValue, isNewAttribute);
-			attributeValues.add(compoundAttribute);
-			return;
-		}
-		if (attributeValue.getClass().isArray()) {
-			targetAttribute.getOtherAttributes().put(
-					WebServiceConstants.MULTIVALUED_ATTRIBUTE,
-					Boolean.TRUE.toString());
-			int size = Array.getLength(attributeValue);
-			for (int idx = 0; idx < size; idx++) {
-				Object value = Array.get(attributeValue, idx);
-				attributeValues.add(value);
-			}
-		} else
-			attributeValues.add(attributeValue);
-	}
+    private Object convertFromXmlDatatypeToClientDatatype(Object value) {
 
-	@SuppressWarnings("unchecked")
-	private AttributeType createCompoundAttribute(Object attributeValue,
-			boolean isNewAttribute) {
-		Class attributeClass = attributeValue.getClass();
-		Method[] methods = attributeClass.getMethods();
-		AttributeType compoundAttribute = new AttributeType();
-		Compound compoundAnnotation = (Compound) attributeClass
-				.getAnnotation(Compound.class);
-		String compoundName = compoundAnnotation.value();
-		compoundAttribute.setName(compoundName);
-		List<Object> attributeValues = compoundAttribute.getAttributeValue();
-		LOG.debug("creating compound attribute: " + compoundName);
-		String id = null;
-		for (Method method : methods) {
-			CompoundMember compoundMemberAnnotation = method
-					.getAnnotation(CompoundMember.class);
-			if (null != compoundMemberAnnotation) {
-				String memberName = compoundMemberAnnotation.value();
-				Object value;
-				try {
-					value = method.invoke(attributeValue, new Object[] {});
-				} catch (Exception e) {
-					throw new RuntimeException("could not get property: "
-							+ method.getName().substring(3));
-				}
-				AttributeType memberAttribute = new AttributeType();
-				memberAttribute.setName(memberName);
-				memberAttribute.getAttributeValue().add(value);
-				attributeValues.add(memberAttribute);
-			}
-			CompoundId compoundIdAnnotation = method
-					.getAnnotation(CompoundId.class);
-			if (null != compoundIdAnnotation)
-				try {
-					id = (String) method
-							.invoke(attributeValue, new Object[] {});
-				} catch (Exception e) {
-					throw new RuntimeException(
-							"@Id property not of type string");
-				}
-		}
-		if (null != id)
-			compoundAttribute.getOtherAttributes().put(
-					WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, id);
-		else if (false == isNewAttribute)
-			/*
-			 * The @Id property is really required to be able to target the
-			 * correct compound attribute record within the system. In case
-			 * we're creating a new compounded attribute record the attribute Id
-			 * is of no use.
-			 */
-			throw new IllegalArgumentException(
-					"Missing @Id property on compound attribute value");
-		return compoundAttribute;
-	}
+        if (null == value)
+            return null;
+        Object result = value;
+        if (value instanceof XMLGregorianCalendar) {
+            XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
+            result = calendar.toGregorianCalendar().getTime();
+        }
+        return result;
+    }
 
-	public void removeAttribute(String userIdn, String attributeName,
-			String attributeId) throws ConnectException {
-		LOG.debug("remove attribute " + attributeName + " for subject "
-				+ userIdn);
-		this.targetIdentityHandler.setTargetIdentity(userIdn);
+    public void createAttribute(String userId, String attributeName,
+            Object attributeValue) throws WSClientTransportException {
 
-		DeleteType delete = new DeleteType();
-		List<DeleteItemType> deleteItems = delete.getDeleteItem();
+        this.targetIdentityHandler.setTargetIdentity(userId);
 
-		DeleteItemType deleteItem = new DeleteItemType();
-		deleteItems.add(deleteItem);
+        CreateType create = new CreateType();
+        List<CreateItemType> createItems = create.getCreateItem();
+        CreateItemType createItem = new CreateItemType();
+        createItems.add(createItem);
 
-		deleteItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
-		SelectType select = new SelectType();
-		select.setValue(attributeName);
-		deleteItem.setSelect(select);
+        createItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+        AppDataType newData = new AppDataType();
+        AttributeType attribute = new AttributeType();
+        attribute.setName(attributeName);
+        setAttributeValue(attributeValue, attribute, true);
+        newData.setAttribute(attribute);
+        createItem.setNewData(newData);
 
-		if (null != attributeId)
-			select.getOtherAttributes().put(
-					WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, attributeId);
+        try {
+            CreateResponseType createResponse = this.port.create(create);
+            StatusType status = createResponse.getStatus();
+            LOG.debug("status: " + status.getCode());
 
-		DeleteResponseType deleteResponse;
-		try {
-			deleteResponse = this.port.delete(delete);
-			StatusType status = deleteResponse.getStatus();
-			LOG.debug("status: " + status.getCode());
+            TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
+                    .fromCode(status.getCode());
+            if (TopLevelStatusCode.OK != topLevelStatusCode)
+                throw new RuntimeException(
+                        "error occurred while creating attribute");
+        } catch (ClientTransportException e) {
+            throw new WSClientTransportException(this.location);
+        } catch (Exception e) {
+            throw retrieveHeadersFromException(e);
+        } finally {
+            retrieveHeadersFromPort(this.port);
+        }
+    }
 
-			TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
-					.fromCode(status.getCode());
-			if (TopLevelStatusCode.OK != topLevelStatusCode) {
-				String comment = status.getComment();
-				throw new RuntimeException(
-						"error occurred while removing attribute: " + comment);
-			}
-		} catch (ClientTransportException e) {
-			throw new ConnectException(e.getMessage());
-		} catch (Exception e) {
-			throw retrieveHeadersFromException(e);
-		} finally {
-			retrieveHeadersFromPort(this.port);
-		}
-	}
+    /**
+     * Sets the attribute value within the target SAML attribute element.
+     * 
+     * The input attribute value can be an Integer, Boolean or array of these in
+     * case of a multivalued attribute.
+     * 
+     * @param attributeValue
+     * @param targetAttribute
+     * @param newAttribute
+     */
+    private void setAttributeValue(Object attributeValue,
+            AttributeType targetAttribute, boolean isNewAttribute) {
 
-	public <Type> void removeAttribute(String userId, Attribute<Type> attribute)
-			throws ConnectException {
+        if (null == attributeValue)
+            return;
+        List<Object> attributeValues = targetAttribute.getAttributeValue();
+        if (CompoundUtil.isCompound(attributeValue)) {
+            AttributeType compoundAttribute = createCompoundAttribute(
+                    attributeValue, isNewAttribute);
+            attributeValues.add(compoundAttribute);
+            return;
+        }
+        if (attributeValue.getClass().isArray()) {
+            targetAttribute.getOtherAttributes().put(
+                    WebServiceConstants.MULTIVALUED_ATTRIBUTE,
+                    Boolean.TRUE.toString());
+            int size = Array.getLength(attributeValue);
+            for (int idx = 0; idx < size; idx++) {
+                Object value = Array.get(attributeValue, idx);
+                attributeValues.add(value);
+            }
+        } else
+            attributeValues.add(attributeValue);
+    }
 
-		String attributeName = attribute.getName();
+    @SuppressWarnings("unchecked")
+    private AttributeType createCompoundAttribute(Object attributeValue,
+            boolean isNewAttribute) {
 
-		Object value = attribute.getValue();
-		if (CompoundUtil.isCompound(value)) {
-			String attributeId = CompoundUtil.getAttributeId(value);
-			removeAttribute(userId, attributeName, attributeId);
-		} else
-			removeAttribute(userId, attributeName, null);
-	}
+        Class attributeClass = attributeValue.getClass();
+        Method[] methods = attributeClass.getMethods();
+        AttributeType compoundAttribute = new AttributeType();
+        Compound compoundAnnotation = (Compound) attributeClass
+                .getAnnotation(Compound.class);
+        String compoundName = compoundAnnotation.value();
+        compoundAttribute.setName(compoundName);
+        List<Object> attributeValues = compoundAttribute.getAttributeValue();
+        LOG.debug("creating compound attribute: " + compoundName);
+        String id = null;
+        for (Method method : methods) {
+            CompoundMember compoundMemberAnnotation = method
+                    .getAnnotation(CompoundMember.class);
+            if (null != compoundMemberAnnotation) {
+                String memberName = compoundMemberAnnotation.value();
+                Object value;
+                try {
+                    value = method.invoke(attributeValue, new Object[] {});
+                } catch (Exception e) {
+                    throw new RuntimeException("could not get property: "
+                            + method.getName().substring(3));
+                }
+                AttributeType memberAttribute = new AttributeType();
+                memberAttribute.setName(memberName);
+                memberAttribute.getAttributeValue().add(value);
+                attributeValues.add(memberAttribute);
+            }
+            CompoundId compoundIdAnnotation = method
+                    .getAnnotation(CompoundId.class);
+            if (null != compoundIdAnnotation)
+                try {
+                    id = (String) method
+                            .invoke(attributeValue, new Object[] {});
+                } catch (Exception e) {
+                    throw new RuntimeException(
+                            "@Id property not of type string");
+                }
+        }
+        if (null != id)
+            compoundAttribute.getOtherAttributes().put(
+                    WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, id);
+        else if (false == isNewAttribute)
+            /*
+             * The @Id property is really required to be able to target the
+             * correct compound attribute record within the system. In case
+             * we're creating a new compounded attribute record the attribute Id
+             * is of no use.
+             */
+            throw new IllegalArgumentException(
+                    "Missing @Id property on compound attribute value");
+        return compoundAttribute;
+    }
+
+    public void removeAttribute(String userIdn, String attributeName,
+            String attributeId) throws WSClientTransportException {
+
+        LOG.debug("remove attribute " + attributeName + " for subject "
+                + userIdn);
+        this.targetIdentityHandler.setTargetIdentity(userIdn);
+
+        DeleteType delete = new DeleteType();
+        List<DeleteItemType> deleteItems = delete.getDeleteItem();
+
+        DeleteItemType deleteItem = new DeleteItemType();
+        deleteItems.add(deleteItem);
+
+        deleteItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+        SelectType select = new SelectType();
+        select.setValue(attributeName);
+        deleteItem.setSelect(select);
+
+        if (null != attributeId)
+            select.getOtherAttributes().put(
+                    WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, attributeId);
+
+        DeleteResponseType deleteResponse;
+        try {
+            deleteResponse = this.port.delete(delete);
+            StatusType status = deleteResponse.getStatus();
+            LOG.debug("status: " + status.getCode());
+
+            TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
+                    .fromCode(status.getCode());
+            if (TopLevelStatusCode.OK != topLevelStatusCode) {
+                String comment = status.getComment();
+                throw new RuntimeException(
+                        "error occurred while removing attribute: " + comment);
+            }
+        } catch (ClientTransportException e) {
+            throw new WSClientTransportException(this.location);
+        } catch (Exception e) {
+            throw retrieveHeadersFromException(e);
+        } finally {
+            retrieveHeadersFromPort(this.port);
+        }
+    }
+
+    public <Type> void removeAttribute(String userId, Attribute<Type> attribute)
+            throws WSClientTransportException {
+
+        String attributeName = attribute.getName();
+
+        Object value = attribute.getValue();
+        if (CompoundUtil.isCompound(value)) {
+            String attributeId = CompoundUtil.getAttributeId(value);
+            removeAttribute(userId, attributeName, attributeId);
+        } else
+            removeAttribute(userId, attributeName, null);
+    }
 }

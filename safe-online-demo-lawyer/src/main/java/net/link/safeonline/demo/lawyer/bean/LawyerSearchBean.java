@@ -15,6 +15,7 @@ import net.link.safeonline.demo.lawyer.LawyerSearch;
 import net.link.safeonline.demo.lawyer.LawyerStatus;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -31,38 +32,43 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerSearchBean/local")
 @SecurityDomain(LawyerConstants.SECURITY_DOMAIN)
 public class LawyerSearchBean extends AbstractLawyerDataClientBean implements
-		LawyerSearch {
+        LawyerSearch {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log          log;
 
-	@In("name")
-	@Out(scope = ScopeType.SESSION)
-	private String name;
+    @In("name")
+    @Out(scope = ScopeType.SESSION)
+    private String       name;
 
-	@SuppressWarnings("unused")
-	@Out(value = "lawyerEditableStatus", required = false, scope = ScopeType.SESSION)
-	private LawyerStatus lawyerStatus;
+    @SuppressWarnings("unused")
+    @Out(value = "lawyerEditableStatus", required = false, scope = ScopeType.SESSION)
+    private LawyerStatus lawyerStatus;
 
-	@RolesAllowed(LawyerConstants.ADMIN_ROLE)
-	public String search() {
-		this.log.debug("search: " + this.name);
-		NameIdentifierMappingClient nameClient = getNameIdentifierMappingClient();
-		String userId;
-		try {
-			userId = nameClient.getUserId(this.name);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.add("subject not found");
-			return null;
-		} catch (RequestDeniedException e) {
-			this.facesMessages.add("request denied");
-			return null;
-		}
-		LawyerStatus currentLawyerStatus = getLawyerStatus(userId);
-		if (null == currentLawyerStatus) {
-			return null;
-		}
-		this.lawyerStatus = currentLawyerStatus;
-		return "success";
-	}
+
+    @RolesAllowed(LawyerConstants.ADMIN_ROLE)
+    public String search() {
+
+        this.log.debug("search: " + this.name);
+        NameIdentifierMappingClient nameClient = getNameIdentifierMappingClient();
+        String userId;
+        try {
+            userId = nameClient.getUserId(this.name);
+        } catch (SubjectNotFoundException e) {
+            this.facesMessages.add("subject not found");
+            return null;
+        } catch (RequestDeniedException e) {
+            this.facesMessages.add("request denied");
+            return null;
+        } catch (WSClientTransportException e) {
+            this.facesMessages.add("connection failed");
+            return null;
+        }
+        LawyerStatus currentLawyerStatus = getLawyerStatus(userId);
+        if (null == currentLawyerStatus) {
+            return null;
+        }
+        this.lawyerStatus = currentLawyerStatus;
+        return "success";
+    }
 }

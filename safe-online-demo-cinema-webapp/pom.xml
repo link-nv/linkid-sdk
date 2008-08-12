@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-
 	<name>SafeOnline Demo Cinema Web Application</name>
-    <description>
-        SafeOnline Demo Cinema Web Application in Wicket.
-    </description>
-
-	<modelVersion>4.0.0</modelVersion>
+	<description> SafeOnline Demo Cinema Web Application in Wicket. 
+	</description>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-cinema-webapp</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -38,9 +31,7 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<dependencies>
-
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
@@ -50,7 +41,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-cinema
+			<artifactId>safe-online-demo-cinema 
 			</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
@@ -106,9 +97,9 @@
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
+					<artifactId>slf4j-api</artifactId>
 				</exclusion>
-            </exclusions>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
@@ -116,15 +107,15 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-wicket-tools
+			<artifactId>safe-online-demo-wicket-tools 
 			</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
+					<artifactId>slf4j-api</artifactId>
 				</exclusion>
-            </exclusions>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -152,7 +143,5 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
-
 </project>

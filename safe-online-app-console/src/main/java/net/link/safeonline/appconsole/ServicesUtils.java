@@ -18,6 +18,7 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
@@ -37,219 +38,238 @@ import org.jdesktop.swingworker.SwingWorker;
  */
 public class ServicesUtils extends Observable {
 
-	static final Log LOG = LogFactory.getLog(ServicesUtils.class);
+    static final Log                    LOG                   = LogFactory
+                                                                      .getLog(ServicesUtils.class);
 
-	private static ServicesUtils servicesUtilsInstance = null;
+    private static ServicesUtils        servicesUtilsInstance = null;
 
-	private ApplicationConsoleManager consoleManager = ApplicationConsoleManager
-			.getInstance();
+    private ApplicationConsoleManager   consoleManager        = ApplicationConsoleManager
+                                                                      .getInstance();
 
-	private NameIdentifierMappingClient nameClient = null;
-	private AttributeClient attributeClient = null;
-	private DataClient dataClient = null;
+    private NameIdentifierMappingClient nameClient            = null;
+    private AttributeClient             attributeClient       = null;
+    private DataClient                  dataClient            = null;
 
-	private ServicesUtils() {
-	}
 
-	public static ServicesUtils getInstance() {
-		if (null == servicesUtilsInstance)
-			servicesUtilsInstance = new ServicesUtils();
-		return servicesUtilsInstance;
-	}
+    private ServicesUtils() {
 
-	/*
-	 * 
-	 * Name Identifier web service methods
-	 * 
-	 */
-	NameIdentifierMappingClient getNameIdentifierMappingClient() {
-		if (null == this.nameClient)
-			this.nameClient = new NameIdentifierMappingClientImpl(
-					this.consoleManager.getLocation(),
-					(X509Certificate) this.consoleManager.getIdentity()
-							.getCertificate(), this.consoleManager
-							.getIdentity().getPrivateKey());
-		return this.nameClient;
-	}
+    }
 
-	public String getUserId(String username) throws SubjectNotFoundException,
-			RequestDeniedException {
-		return getNameIdentifierMappingClient().getUserId(username);
-	}
+    public static ServicesUtils getInstance() {
 
-	/*
-	 * 
-	 * Attribute web service methods
-	 * 
-	 */
-	AttributeClient getAttributeClient() {
-		if (null == this.attributeClient)
-			this.attributeClient = new AttributeClientImpl(this.consoleManager
-					.getLocation(), (X509Certificate) this.consoleManager
-					.getIdentity().getCertificate(), this.consoleManager
-					.getIdentity().getPrivateKey());
+        if (null == servicesUtilsInstance)
+            servicesUtilsInstance = new ServicesUtils();
+        return servicesUtilsInstance;
+    }
 
-		this.consoleManager.setMessageAccessor(this.attributeClient);
-		return this.attributeClient;
-	}
+    /*
+     * 
+     * Name Identifier web service methods
+     * 
+     */
+    NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
-	public void getAttributes(final String user) {
-		SwingWorker<Map<String, Object>, Object> worker = new SwingWorker<Map<String, Object>, Object>() {
+        if (null == this.nameClient)
+            this.nameClient = new NameIdentifierMappingClientImpl(
+                    this.consoleManager.getLocation(),
+                    (X509Certificate) this.consoleManager.getIdentity()
+                            .getCertificate(), this.consoleManager
+                            .getIdentity().getPrivateKey());
+        return this.nameClient;
+    }
 
-			@Override
-			protected Map<String, Object> doInBackground() throws Exception {
-				Map<String, Object> attributes = null;
-				attributes = getAttributeClient().getAttributeValues(
-						getUserId(user));
-				return attributes;
-			}
+    public String getUserId(String username) throws SubjectNotFoundException,
+            RequestDeniedException, WSClientTransportException {
 
-			@SuppressWarnings("synthetic-access")
-			@Override
-			protected void done() {
-				String errorMessage = null;
-				setChanged();
-				try {
-					notifyObservers(get());
-				} catch (InterruptedException e) {
-					errorMessage = "Retrieving attributes interrupted ...";
-					LOG.error(errorMessage, e);
-				} catch (ExecutionException e) {
-					errorMessage = "Retrieving attributes failed to execute ...";
-					LOG.error(errorMessage, e);
-				}
-				if (null != errorMessage) {
-					setChanged();
-					notifyObservers(errorMessage);
-				}
-			}
+        return getNameIdentifierMappingClient().getUserId(username);
+    }
 
-		};
-		worker.execute();
-	}
+    /*
+     * 
+     * Attribute web service methods
+     * 
+     */
+    AttributeClient getAttributeClient() {
 
-	/*
-	 * 
-	 * Data web service methods
-	 * 
-	 */
-	DataClient getDataClient() {
-		if (null == this.dataClient)
-			this.dataClient = new DataClientImpl(this.consoleManager
-					.getLocation(), (X509Certificate) this.consoleManager
-					.getIdentity().getCertificate(), this.consoleManager
-					.getIdentity().getPrivateKey());
+        if (null == this.attributeClient)
+            this.attributeClient = new AttributeClientImpl(this.consoleManager
+                    .getLocation(), (X509Certificate) this.consoleManager
+                    .getIdentity().getCertificate(), this.consoleManager
+                    .getIdentity().getPrivateKey());
 
-		this.consoleManager.setMessageAccessor(this.dataClient);
-		return this.dataClient;
-	}
+        this.consoleManager.setMessageAccessor(this.attributeClient);
+        return this.attributeClient;
+    }
 
-	public void setAttributeValue(final String userName,
-			final String attributeName, final Object attributeValue) {
-		SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+    public void getAttributes(final String user) {
 
-			@Override
-			protected Boolean doInBackground() throws Exception {
+        SwingWorker<Map<String, Object>, Object> worker = new SwingWorker<Map<String, Object>, Object>() {
 
-				getDataClient().setAttributeValue(getUserId(userName),
-						attributeName, attributeValue);
-				return Boolean.TRUE;
-			}
+            @Override
+            protected Map<String, Object> doInBackground() throws Exception {
 
-			@SuppressWarnings("synthetic-access")
-			@Override
-			protected void done() {
-				String errorMessage = null;
-				setChanged();
-				try {
-					notifyObservers(get());
-				} catch (InterruptedException e) {
-					errorMessage = "Set attribute interrupted ...";
-					LOG.error(errorMessage, e);
-				} catch (ExecutionException e) {
-					errorMessage = "Set attribute failed to execute ...";
-					e.printStackTrace();
-					LOG.error(errorMessage, e);
-				}
-				if (null != errorMessage) {
-					setChanged();
-					notifyObservers(errorMessage);
-				}
-			}
-		};
-		worker.execute();
-	}
+                Map<String, Object> attributes = null;
+                attributes = getAttributeClient().getAttributeValues(
+                        getUserId(user));
+                return attributes;
+            }
 
-	public void removeAttribute(final String userName,
-			final String attributeName, final String attributeId) {
-		SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected void done() {
 
-			@Override
-			protected Boolean doInBackground() throws Exception {
-				getDataClient().removeAttribute(getUserId(userName),
-						attributeName, attributeId);
-				return Boolean.TRUE;
-			}
+                String errorMessage = null;
+                setChanged();
+                try {
+                    notifyObservers(get());
+                } catch (InterruptedException e) {
+                    errorMessage = "Retrieving attributes interrupted ...";
+                    LOG.error(errorMessage, e);
+                } catch (ExecutionException e) {
+                    errorMessage = "Retrieving attributes failed to execute ...";
+                    LOG.error(errorMessage, e);
+                }
+                if (null != errorMessage) {
+                    setChanged();
+                    notifyObservers(errorMessage);
+                }
+            }
 
-			@SuppressWarnings("synthetic-access")
-			@Override
-			protected void done() {
-				String errorMessage = null;
-				setChanged();
-				try {
-					notifyObservers(get());
-				} catch (InterruptedException e) {
-					errorMessage = "Remove attribute interrupted ...";
-					LOG.error(errorMessage, e);
-				} catch (ExecutionException e) {
-					errorMessage = "Remove attribute failed to execute ...";
-					e.printStackTrace();
-					LOG.error(errorMessage, e);
-				}
-				if (null != errorMessage) {
-					setChanged();
-					notifyObservers(errorMessage);
-				}
+        };
+        worker.execute();
+    }
 
-			}
-		};
-		worker.execute();
-	}
+    /*
+     * 
+     * Data web service methods
+     * 
+     */
+    DataClient getDataClient() {
 
-	public void createAttribute(final String userName,
-			final String attributeName, final Object attributeValue) {
-		SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+        if (null == this.dataClient)
+            this.dataClient = new DataClientImpl(this.consoleManager
+                    .getLocation(), (X509Certificate) this.consoleManager
+                    .getIdentity().getCertificate(), this.consoleManager
+                    .getIdentity().getPrivateKey());
 
-			@Override
-			protected Boolean doInBackground() throws Exception {
-				getDataClient().createAttribute(getUserId(userName),
-						attributeName, attributeValue);
-				return Boolean.TRUE;
-			}
+        this.consoleManager.setMessageAccessor(this.dataClient);
+        return this.dataClient;
+    }
 
-			@SuppressWarnings("synthetic-access")
-			@Override
-			protected void done() {
-				String errorMessage = null;
-				setChanged();
-				try {
-					notifyObservers(get());
-				} catch (InterruptedException e) {
-					errorMessage = "Create attribute interrupted ...";
-					LOG.error(errorMessage, e);
-				} catch (ExecutionException e) {
-					errorMessage = "Create attribute failed to execute ...";
-					e.printStackTrace();
-					LOG.error(errorMessage, e);
-				}
-				if (null != errorMessage) {
-					setChanged();
-					notifyObservers(errorMessage);
-				}
+    public void setAttributeValue(final String userName,
+            final String attributeName, final Object attributeValue) {
 
-			}
-		};
-		worker.execute();
-	}
+        SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+
+            @Override
+            protected Boolean doInBackground() throws Exception {
+
+                getDataClient().setAttributeValue(getUserId(userName),
+                        attributeName, attributeValue);
+                return Boolean.TRUE;
+            }
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected void done() {
+
+                String errorMessage = null;
+                setChanged();
+                try {
+                    notifyObservers(get());
+                } catch (InterruptedException e) {
+                    errorMessage = "Set attribute interrupted ...";
+                    LOG.error(errorMessage, e);
+                } catch (ExecutionException e) {
+                    errorMessage = "Set attribute failed to execute ...";
+                    e.printStackTrace();
+                    LOG.error(errorMessage, e);
+                }
+                if (null != errorMessage) {
+                    setChanged();
+                    notifyObservers(errorMessage);
+                }
+            }
+        };
+        worker.execute();
+    }
+
+    public void removeAttribute(final String userName,
+            final String attributeName, final String attributeId) {
+
+        SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+
+            @Override
+            protected Boolean doInBackground() throws Exception {
+
+                getDataClient().removeAttribute(getUserId(userName),
+                        attributeName, attributeId);
+                return Boolean.TRUE;
+            }
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected void done() {
+
+                String errorMessage = null;
+                setChanged();
+                try {
+                    notifyObservers(get());
+                } catch (InterruptedException e) {
+                    errorMessage = "Remove attribute interrupted ...";
+                    LOG.error(errorMessage, e);
+                } catch (ExecutionException e) {
+                    errorMessage = "Remove attribute failed to execute ...";
+                    e.printStackTrace();
+                    LOG.error(errorMessage, e);
+                }
+                if (null != errorMessage) {
+                    setChanged();
+                    notifyObservers(errorMessage);
+                }
+
+            }
+        };
+        worker.execute();
+    }
+
+    public void createAttribute(final String userName,
+            final String attributeName, final Object attributeValue) {
+
+        SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+
+            @Override
+            protected Boolean doInBackground() throws Exception {
+
+                getDataClient().createAttribute(getUserId(userName),
+                        attributeName, attributeValue);
+                return Boolean.TRUE;
+            }
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected void done() {
+
+                String errorMessage = null;
+                setChanged();
+                try {
+                    notifyObservers(get());
+                } catch (InterruptedException e) {
+                    errorMessage = "Create attribute interrupted ...";
+                    LOG.error(errorMessage, e);
+                } catch (ExecutionException e) {
+                    errorMessage = "Create attribute failed to execute ...";
+                    e.printStackTrace();
+                    LOG.error(errorMessage, e);
+                }
+                if (null != errorMessage) {
+                    setChanged();
+                    notifyObservers(errorMessage);
+                }
+
+            }
+        };
+        worker.execute();
+    }
 
 }
