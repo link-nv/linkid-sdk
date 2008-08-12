@@ -329,7 +329,7 @@ table.timeline td.end {
 .half {
     width:              50%;
 }
-span.error {
+.error {
     display:            block;
     clear:              left;
 
