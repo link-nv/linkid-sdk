@@ -147,7 +147,6 @@ public class LoginServlet extends AbstractInjectionServlet {
         } catch (ApplicationNotFoundException e) {
             throw new ServletException("application not found");
         } catch (ApplicationIdentityNotFoundException e) {
-            // TODO: security audit
             throw new ServletException("application identity not found");
         } catch (PermissionDeniedException e) {
             throw new ServletException("permission denied: " + e.getMessage());
@@ -186,13 +185,11 @@ public class LoginServlet extends AbstractInjectionServlet {
                             .requiresUsageAgreementAcceptation(this.applicationId);
                 } catch (SubscriptionNotFoundException e) {
                     LOG.debug("subscription not found: " + this.applicationId);
-                    // TODO: security audit
                     throw new ServletException("subscription not found");
                 }
             }
         } catch (ApplicationNotFoundException e) {
             LOG.debug("application not found: " + this.applicationId);
-            // TODO: security audit
             throw new ServletException("application not found");
         }
         return subscriptionRequired;
