@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.digipass.keystore.DigipassKeyStoreUtils;
@@ -69,9 +68,6 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
     private AttributeTypeDAO     attributeTypeDAO;
 
     @EJB
-    private HistoryDAO           historyDAO;
-
-    @EJB
     private SecurityAuditLogger  securityAuditLogger;
 
 
@@ -92,9 +88,8 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
         }
         DeviceSubjectEntity deviceSubject = this.subjectService
                 .getDeviceSubject(deviceUserId);
-        if (0 == deviceSubject.getRegistrations().size()) {
+        if (0 == deviceSubject.getRegistrations().size())
             return null;
-        }
         if (Integer.parseInt(token) % 2 != 0) {
             LOG.debug("Invalid token: " + token);
             this.securityAuditLogger.addSecurityAudit(
@@ -126,9 +121,8 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
         SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
                 .findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN,
                         serialNumber);
-        if (null != existingMappedSubject) {
+        if (null != existingMappedSubject)
             throw new ArgumentIntegrityException();
-        }
 
         DeviceSubjectEntity deviceSubject = this.subjectService
                 .findDeviceSubject(deviceUserId);
@@ -185,8 +179,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
         SubjectEntity deviceRegistration = this.subjectIdentifierDAO
                 .findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN,
                         serialNumber);
-        if (null == deviceRegistration)
+        if (null == deviceRegistration) {
             throw new DigipassException("device registration not found");
+        }
 
         AttributeTypeEntity snAttributeType;
         try {
@@ -201,8 +196,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
         List<AttributeEntity> snAttributes = this.attributeDAO.listAttributes(
                 deviceRegistration, snAttributeType);
         for (AttributeEntity snAttribute : snAttributes) {
-            if (snAttribute.getStringValue().equals(serialNumber))
+            if (snAttribute.getStringValue().equals(serialNumber)) {
                 this.attributeDAO.removeAttribute(snAttribute);
+            }
         }
         deviceSubject.getRegistrations().remove(deviceRegistration);
     }

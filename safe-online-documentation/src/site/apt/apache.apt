@@ -44,7 +44,7 @@ openssl req -new -x509 -nodes -out server.crt -keyout server.key
  On Fedora Core the <<<proxy_ajp>>> Apache Module can be configured via <<</etc/httpd/conf.d/proxy_ajp.conf>>>.
  
 +---+
-ProxyPass /olas/ ajp://localhost:8009/olas/
+ProxyPass /olas-user/ ajp://localhost:8009/olas-user/
 ProxyPass /olas-oper/ ajp://localhost:8009/olas-oper/
 ProxyPass /olas-owner/ ajp://localhost:8009/olas-owner/
 ProxyPass /olas-helpdesk/ ajp://localhost:8009/olas-helpdesk/

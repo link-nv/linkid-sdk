@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.MobileManager;
@@ -72,9 +71,6 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
     private AttributeTypeDAO     attributeTypeDAO;
 
     @EJB
-    private HistoryDAO           historyDAO;
-
-    @EJB
     private SecurityAuditLogger  securityAuditLogger;
 
 
@@ -84,8 +80,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 
         SubjectEntity deviceRegistration = this.subjectIdentifierDAO
                 .findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
-        if (null == deviceRegistration)
+        if (null == deviceRegistration) {
             throw new SubjectNotFoundException();
+        }
         DeviceSubjectEntity deviceSubject = this.subjectService
                 .getDeviceSubject(deviceRegistration);
 
@@ -104,8 +101,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
             MobileRegistrationException {
 
         String activationCode = this.mobileManager.activate(mobile, sessionId);
-        if (null == activationCode)
+        if (null == activationCode) {
             throw new MobileRegistrationException();
+        }
         return activationCode;
     }
 
@@ -178,9 +176,8 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
                 .getDeviceSubject(deviceUserId);
         SubjectEntity deviceRegistration = this.subjectIdentifierDAO
                 .findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
-        if (null == deviceRegistration) {
+        if (null == deviceRegistration)
             throw new MobileException("device registration not found");
-        }
 
         removeRegistration(deviceSubject, deviceRegistration, mobile);
     }
