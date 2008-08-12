@@ -6,7 +6,6 @@
  */
 package net.link.safeonline.demo.cinema.service.bean;
 
-import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
@@ -23,6 +22,7 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -94,7 +94,7 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements
             LOG.error("attribute not found: ", e);
         } catch (RequestDeniedException e) {
             LOG.error("request denied: ", e);
-        } catch (ConnectException e) {
+        } catch (WSClientTransportException e) {
             LOG.error("Connection error. Check your SSL setup.", e);
         }
     }

@@ -22,7 +22,7 @@ import net.link.safeonline.notification.consumer.ws.NotificationConsumerServiceF
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
-import net.link.safeonline.sdk.ws.exception.SafeOnlineClientTransportException;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,7 +80,7 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor
 	}
 
 	public void sendNotification(String topic, String destination,
-			List<String> message) throws SafeOnlineClientTransportException {
+			List<String> message) throws WSClientTransportException {
 		LOG.debug("send notification to " + this.location + " for topic: "
 				+ topic + " (destination=" + destination + ")");
 
@@ -103,7 +103,7 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor
 			this.port.notify(notifications);
 		} catch (ClientTransportException e) {
 			LOG.debug("Failed to send notification");
-			throw new SafeOnlineClientTransportException(this.location);
+			throw new WSClientTransportException(this.location);
 		}
 	}
 }

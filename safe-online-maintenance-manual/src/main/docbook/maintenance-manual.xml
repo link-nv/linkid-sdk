@@ -185,5 +185,58 @@
 				</variablelist>
 			</para>
 		</section>
+		<section>
+			<title>Helpdesk Logging</title>
+			<para> During the authentication process, various events are logged
+				for the OLAS helpdesk. These events are only persisted to the
+				database if the user is creating a helpdesk ticket during his
+				authentication. Before that, they are stored on the HTTP session,
+				limited to a certain amount of events. The helpdesk events should
+				give the helpdesk a good view of the authentication flow that was
+				used.</para>
+		</section>
+		<section>
+			<title>Audit Logging</title>
+			<para>
+				There are 4 types of audit events that are logged.
+				<variablelist>
+					<varlistentry>
+						<term>Access audit</term>
+						<listitem>
+							Audit events logging unauthorized access to certain business
+							methods or more general exceptions thrown by them.
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Resource audit</term>
+						<listitem>
+							Audit events logging unavailability of certain resources OLAS
+							needs ( e.g. ClockDrift, OCSP, Webservices, ... )
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Security audit</term>
+						<listitem>
+							Audit events logging possible misuse like authentication device
+							failures, ...
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Audit audit</term>
+						<listitem>
+							Audit events logging problems in the audit system itself.
+						</listitem>
+					</varlistentry>
+				</variablelist>
+				Audit events are part of an audit context. This audit context gets
+				pushed onto a JMS queue, where it will be processed later on by
+				various audit backends. At this time only 1 audit backend is
+				implemented, being a backend that writes to syslog. After all
+				backends have processed the audit context, it can be sanitized if it
+				does not contain important audit events. An audit cleanup task is
+				also in place to cleanup audit contexts and their related events
+				after a specified amount of time.
+			</para>
+		</section>
 	</chapter>
 </book>

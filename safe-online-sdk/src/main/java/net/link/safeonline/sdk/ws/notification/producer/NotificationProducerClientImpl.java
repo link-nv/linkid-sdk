@@ -23,6 +23,7 @@ import net.link.safeonline.sdk.exception.SubscriptionFailedException;
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.ws.common.WebServiceConstants;
 
 import org.apache.commons.logging.Log;
@@ -31,6 +32,8 @@ import org.oasis_open.docs.wsn.b_2.SubscribeCreationFailedFaultType;
 import org.oasis_open.docs.wsn.b_2.SubscribeResponse;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
+import com.sun.xml.ws.client.ClientTransportException;
+
 /**
  * Implementation WS-Notification producer service.
  * 
@@ -38,77 +41,92 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
  * 
  */
 public class NotificationProducerClientImpl extends AbstractMessageAccessor
-		implements NotificationProducerClient {
+        implements NotificationProducerClient {
 
-	private static final Log LOG = LogFactory
-			.getLog(NotificationProducerClientImpl.class);
+    private static final Log               LOG = LogFactory
+                                                       .getLog(NotificationProducerClientImpl.class);
 
-	private final NotificationProducerPort port;
+    private final NotificationProducerPort port;
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param location
-	 *            the location (host:port) of the attribute web service.
-	 * @param clientCertificate
-	 *            the X509 certificate to use for WS-Security signature.
-	 * @param clientPrivateKey
-	 *            the private key corresponding with the client certificate.
-	 */
-	public NotificationProducerClientImpl(String location,
-			X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
-		NotificationProducerService service = NotificationProducerServiceFactory
-				.newInstance();
-		this.port = service.getNotificationProducerPort();
-		setEndpointAddress(location);
+    private final String                   location;
 
-		LOG.debug("endpoint: " + location);
 
-		registerMessageLoggerHandler(this.port);
-		WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
-				clientPrivateKey);
-	}
+    /**
+     * Main constructor.
+     * 
+     * @param location
+     *            the location (host:port) of the attribute web service.
+     * @param clientCertificate
+     *            the X509 certificate to use for WS-Security signature.
+     * @param clientPrivateKey
+     *            the private key corresponding with the client certificate.
+     */
+    public NotificationProducerClientImpl(String location,
+            X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
-	private void setEndpointAddress(String location) {
-		BindingProvider bindingProvider = (BindingProvider) this.port;
+        NotificationProducerService service = NotificationProducerServiceFactory
+                .newInstance();
+        this.port = service.getNotificationProducerPort();
+        this.location = location + "/safe-online-ws/producer";
+        setEndpointAddress();
 
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				location + "/safe-online-ws/producer");
-	}
+        LOG.debug("endpoint: " + this.location);
 
-	private W3CEndpointReference getEndpointReference(String address) {
-		W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
-		builder.address(address);
-		return builder.build();
-	}
+        registerMessageLoggerHandler(this.port);
+        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
+                clientPrivateKey);
+    }
 
-	public void subscribe(String topic, String address)
-			throws SubscriptionFailedException {
-		LOG.debug("subscribe " + address + " to " + topic);
-		SubscribeRequest request = new SubscribeRequest();
+    private void setEndpointAddress() {
 
-		W3CEndpointReference endpoint = getEndpointReference(address);
-		request.setConsumerReference(endpoint);
+        BindingProvider bindingProvider = (BindingProvider) this.port;
 
-		FilterType filter = new FilterType();
-		TopicExpressionType topicExpression = new TopicExpressionType();
-		topicExpression.setDialect(WebServiceConstants.TOPIC_DIALECT_SIMPLE);
-		topicExpression.getContent().add(topic);
-		filter.setTopic(topicExpression);
-		request.setFilter(filter);
+        bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+    }
 
-		SafeOnlineTrustManager.configureSsl();
+    private W3CEndpointReference getEndpointReference(String address) {
 
-		SubscribeResponse response = this.port.subscribe(request);
-		checkStatus(response);
-	}
+        W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
+        builder.address(address);
+        return builder.build();
+    }
 
-	private void checkStatus(SubscribeResponse response)
-			throws SubscriptionFailedException {
-		for (Object errorObject : response.getAny()) {
-			if (errorObject instanceof SubscribeCreationFailedFaultType)
-				throw new SubscriptionFailedException();
-		}
-	}
+    public void subscribe(String topic, String address)
+            throws SubscriptionFailedException,
+            WSClientTransportException {
+
+        LOG.debug("subscribe " + address + " to " + topic);
+        SubscribeRequest request = new SubscribeRequest();
+
+        W3CEndpointReference endpoint = getEndpointReference(address);
+        request.setConsumerReference(endpoint);
+
+        FilterType filter = new FilterType();
+        TopicExpressionType topicExpression = new TopicExpressionType();
+        topicExpression.setDialect(WebServiceConstants.TOPIC_DIALECT_SIMPLE);
+        topicExpression.getContent().add(topic);
+        filter.setTopic(topicExpression);
+        request.setFilter(filter);
+
+        SafeOnlineTrustManager.configureSsl();
+
+        SubscribeResponse response;
+        try {
+            response = this.port.subscribe(request);
+        } catch (ClientTransportException e) {
+            throw new WSClientTransportException(this.location);
+        }
+
+        checkStatus(response);
+    }
+
+    private void checkStatus(SubscribeResponse response)
+            throws SubscriptionFailedException {
+
+        for (Object errorObject : response.getAny()) {
+            if (errorObject instanceof SubscribeCreationFailedFaultType)
+                throw new SubscriptionFailedException();
+        }
+    }
 }

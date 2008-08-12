@@ -27,6 +27,7 @@ import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,94 +43,102 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LoginServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(LoginServlet.class);
+    private static final Log  LOG              = LogFactory
+                                                       .getLog(LoginServlet.class);
 
-	private DataClient dataClient;
+    private DataClient        dataClient;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
 
-		LOG.debug("init");
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-		String wsLocation = config.getInitParameter("WsLocation");
+        super.init(config);
 
-		PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils
-				.getPrivateKeyEntry();
+        LOG.debug("init");
 
-		X509Certificate clientCertificate = (X509Certificate) privateKeyEntry
-				.getCertificate();
-		PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
+        String wsLocation = config.getInitParameter("WsLocation");
 
-		LOG.debug("creating dataclient to: " + wsLocation);
+        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils
+                .getPrivateKeyEntry();
 
-		this.dataClient = new DataClientImpl(wsLocation, clientCertificate,
-				clientPrivateKey);
-	}
+        X509Certificate clientCertificate = (X509Certificate) privateKeyEntry
+                .getCertificate();
+        PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
 
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		/*
-		 * Since the SAML protocol can enter the application via an HTTP POST we
-		 * also need to implement the doPost method.
-		 */
-		doGet(request, response);
-	}
+        LOG.debug("creating dataclient to: " + wsLocation);
 
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+        this.dataClient = new DataClientImpl(wsLocation, clientCertificate,
+                clientPrivateKey);
+    }
 
-		HttpSession session = request.getSession();
-		String username = (String) session.getAttribute("username");
-		LOG.debug("username: " + username);
+    @Override
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-		Attribute<Boolean> barAdminAttribute;
-		try {
-			barAdminAttribute = this.dataClient.getAttributeValue(username,
-					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
-					Boolean.class);
-		} catch (RequestDeniedException e) {
-			throw new ServletException("count not retrieve baradmin attribute");
-		} catch (SubjectNotFoundException e) {
-			throw new ServletException("subject not found");
-		}
+        /*
+         * Since the SAML protocol can enter the application via an HTTP POST we
+         * also need to implement the doPost method.
+         */
+        doGet(request, response);
+    }
 
-		if (null == barAdminAttribute) {
-			redirectToStatusPage(session, response);
-			return;
-		}
+    @Override
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-		Boolean value = barAdminAttribute.getValue();
-		if (null == value) {
-			redirectToStatusPage(session, response);
-			return;
-		}
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+        LOG.debug("username: " + username);
 
-		if (false == value) {
-			redirectToStatusPage(session, response);
-			return;
-		}
+        Attribute<Boolean> barAdminAttribute;
+        try {
+            barAdminAttribute = this.dataClient.getAttributeValue(username,
+                    DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
+                    Boolean.class);
+        } catch (RequestDeniedException e) {
+            throw new ServletException("count not retrieve baradmin attribute");
+        } catch (SubjectNotFoundException e) {
+            throw new ServletException("subject not found");
+        } catch (WSClientTransportException e) {
+            throw new ServletException("connection failed");
+        }
 
-		redirectToOverviewPage(session, response);
-	}
+        if (null == barAdminAttribute) {
+            redirectToStatusPage(session, response);
+            return;
+        }
 
-	private void redirectToStatusPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", LawyerConstants.USER_ROLE);
-		/*
-		 * The role attribute is used by the LawyerLoginModule for
-		 * authorization.
-		 */
-		response.sendRedirect("./status.seam");
-	}
+        Boolean value = barAdminAttribute.getValue();
+        if (null == value) {
+            redirectToStatusPage(session, response);
+            return;
+        }
 
-	private void redirectToOverviewPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", LawyerConstants.ADMIN_ROLE);
-		response.sendRedirect("./overview.seam");
-	}
+        if (false == value) {
+            redirectToStatusPage(session, response);
+            return;
+        }
+
+        redirectToOverviewPage(session, response);
+    }
+
+    private void redirectToStatusPage(HttpSession session,
+            HttpServletResponse response) throws IOException {
+
+        session.setAttribute("role", LawyerConstants.USER_ROLE);
+        /*
+         * The role attribute is used by the LawyerLoginModule for
+         * authorization.
+         */
+        response.sendRedirect("./status.seam");
+    }
+
+    private void redirectToOverviewPage(HttpSession session,
+            HttpServletResponse response) throws IOException {
+
+        session.setAttribute("role", LawyerConstants.ADMIN_ROLE);
+        response.sendRedirect("./overview.seam");
+    }
 }

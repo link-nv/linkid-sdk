@@ -8,7 +8,6 @@
 package net.link.safeonline.demo.prescription.servlet;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
@@ -28,6 +27,7 @@ import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -141,7 +141,7 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	private boolean getBoolean(String username, String attributeName)
-			throws ServletException, ConnectException {
+			throws ServletException {
 		Attribute<Boolean> attribute;
 		try {
 			attribute = this.dataClient.getAttributeValue(username,
@@ -151,16 +151,16 @@ public class LoginServlet extends HttpServlet {
 					"count not retrieve prescription admin attribute");
 		} catch (SubjectNotFoundException e) {
 			throw new ServletException("subject not found");
-		}
+		} catch (WSClientTransportException e) {
+            throw new ServletException("connection failed");
+        }
 
-		if (null == attribute) {
-			return false;
-		}
+		if (null == attribute)
+            return false;
 
 		Boolean value = attribute.getValue();
-		if (null == value) {
-			return false;
-		}
+		if (null == value)
+            return false;
 
 		return attribute.getValue();
 	}

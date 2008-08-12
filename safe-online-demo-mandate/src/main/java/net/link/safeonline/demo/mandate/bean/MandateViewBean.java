@@ -7,7 +7,6 @@
 
 package net.link.safeonline.demo.mandate.bean;
 
-import java.net.ConnectException;
 import java.security.Principal;
 
 import javax.annotation.Resource;
@@ -23,6 +22,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -39,90 +39,97 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateViewBean/local")
 @SecurityDomain(MandateConstants.SECURITY_DOMAIN)
 public class MandateViewBean extends AbstractMandateDataClientBean implements
-		MandateView {
+        MandateView {
 
-	@SuppressWarnings("unused")
-	@DataModel
-	private Mandate[] mandates;
+    @SuppressWarnings("unused")
+    @DataModel
+    private Mandate[]          mandates;
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                log;
 
-	@In(required = false)
-	private String mandateUser;
+    @In(required = false)
+    private String             mandateUser;
 
-	@Resource
-	private SessionContext context;
+    @Resource
+    private SessionContext     context;
 
-	public static final String USER_MANDATES = "userMandates";
+    public static final String USER_MANDATES = "userMandates";
 
-	@SuppressWarnings("unused")
-	@DataModel(USER_MANDATES)
-	private Mandate[] userMandates;
+    @SuppressWarnings("unused")
+    @DataModel(USER_MANDATES)
+    private Mandate[]          userMandates;
 
-	@Factory("mandates")
-	@RolesAllowed(MandateConstants.ADMIN_ROLE)
-	public void mandatesFactory() {
-		this.log.debug("mandates factory for user: #0", this.mandateUser);
 
-		NameIdentifierMappingClient mappingClient = super.getMappingClient();
-		String mandateUserId;
-		try {
-			mandateUserId = mappingClient.getUserId(this.mandateUser);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addToControl("name", "subject not found");
-			this.mandates = new Mandate[] {};
-			return;
-		} catch (RequestDeniedException e) {
-			this.facesMessages.add("request denied");
-			this.mandates = new Mandate[] {};
-			return;
-		}
+    @Factory("mandates")
+    @RolesAllowed(MandateConstants.ADMIN_ROLE)
+    public void mandatesFactory() {
 
-		DataClient dataClient = getDataClient();
-		Attribute<Mandate[]> mandateAttribute = null;
-		try {
-			mandateAttribute = dataClient.getAttributeValue(mandateUserId,
-					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
-		} catch (ConnectException e) {
-			this.facesMessages.add("connection error: " + e.getMessage());
-		} catch (RequestDeniedException e) {
-			this.facesMessages.add("request denied");
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addToControl("name", "subject not found");
-		}
+        this.log.debug("mandates factory for user: #0", this.mandateUser);
 
-		if (null != mandateAttribute) {
-			this.mandates = mandateAttribute.getValue();
-		} else {
-			this.mandates = new Mandate[] {};
-		}
-	}
+        NameIdentifierMappingClient mappingClient = super.getMappingClient();
+        String mandateUserId;
+        try {
+            mandateUserId = mappingClient.getUserId(this.mandateUser);
+        } catch (SubjectNotFoundException e) {
+            this.facesMessages.addToControl("name", "subject not found");
+            this.mandates = new Mandate[] {};
+            return;
+        } catch (RequestDeniedException e) {
+            this.facesMessages.add("request denied");
+            this.mandates = new Mandate[] {};
+            return;
+        } catch (WSClientTransportException e) {
+            this.facesMessages.add("connection failed");
+            this.mandates = new Mandate[] {};
+            return;
+        }
 
-	@RolesAllowed(MandateConstants.USER_ROLE)
-	@Factory(USER_MANDATES)
-	public void userMandatesFactory() {
-		Principal callerPrincipal = this.context.getCallerPrincipal();
-		String username = callerPrincipal.getName();
-		this.log.debug("user mandates factory for user #0", username);
+        DataClient dataClient = getDataClient();
+        Attribute<Mandate[]> mandateAttribute = null;
+        try {
+            mandateAttribute = dataClient.getAttributeValue(mandateUserId,
+                    DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
+        } catch (WSClientTransportException e) {
+            this.facesMessages.add("connection error: " + e.getMessage());
+        } catch (RequestDeniedException e) {
+            this.facesMessages.add("request denied");
+        } catch (SubjectNotFoundException e) {
+            this.facesMessages.addToControl("name", "subject not found");
+        }
 
-		DataClient dataClient = getDataClient();
-		Attribute<Mandate[]> mandateAttribute = null;
-		try {
-			mandateAttribute = dataClient.getAttributeValue(username,
-					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
-		} catch (ConnectException e) {
-			this.facesMessages.add("connection error: " + e.getMessage());
-		} catch (RequestDeniedException e) {
-			this.facesMessages.add("request denied");
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addToControl("name", "subject not found");
-		}
+        if (null != mandateAttribute) {
+            this.mandates = mandateAttribute.getValue();
+        } else {
+            this.mandates = new Mandate[] {};
+        }
+    }
 
-		if (null != mandateAttribute) {
-			this.userMandates = mandateAttribute.getValue();
-		} else {
-			this.userMandates = new Mandate[] {};
-		}
-	}
+    @RolesAllowed(MandateConstants.USER_ROLE)
+    @Factory(USER_MANDATES)
+    public void userMandatesFactory() {
+
+        Principal callerPrincipal = this.context.getCallerPrincipal();
+        String username = callerPrincipal.getName();
+        this.log.debug("user mandates factory for user #0", username);
+
+        DataClient dataClient = getDataClient();
+        Attribute<Mandate[]> mandateAttribute = null;
+        try {
+            mandateAttribute = dataClient.getAttributeValue(username,
+                    DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
+        } catch (WSClientTransportException e) {
+            this.facesMessages.add("connection error: " + e.getMessage());
+        } catch (RequestDeniedException e) {
+            this.facesMessages.add("request denied");
+        } catch (SubjectNotFoundException e) {
+            this.facesMessages.addToControl("name", "subject not found");
+        }
+
+        if (null != mandateAttribute) {
+            this.userMandates = mandateAttribute.getValue();
+        } else {
+            this.userMandates = new Mandate[] {};
+        }
+    }
 }

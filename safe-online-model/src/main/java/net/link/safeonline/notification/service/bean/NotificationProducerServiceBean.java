@@ -32,7 +32,7 @@ import net.link.safeonline.notification.dao.NotificationProducerDAO;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.notification.message.MessageHandlerManager;
 import net.link.safeonline.notification.service.NotificationProducerService;
-import net.link.safeonline.sdk.ws.exception.SafeOnlineClientTransportException;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -181,7 +181,7 @@ public class NotificationProducerServiceBean implements
 		for (EndpointReferenceEntity consumer : subscription.getConsumers()) {
 			try {
 				MessageHandlerManager.sendMessage(topic, message, consumer);
-			} catch (SafeOnlineClientTransportException e) {
+			} catch (WSClientTransportException e) {
 				LOG.debug("Failed to send messsage for topic " + topic
 						+ " to consumer: " + e.getLocation());
 				this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS,

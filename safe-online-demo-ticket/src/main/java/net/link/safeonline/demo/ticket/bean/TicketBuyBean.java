@@ -9,7 +9,6 @@ package net.link.safeonline.demo.ticket.bean;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -34,6 +33,7 @@ import net.link.safeonline.demo.ticket.entity.Ticket.Site;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -54,234 +54,256 @@ import org.joda.time.Period;
 @LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketBuyBean/local")
 @SecurityDomain("demo-ticket")
 public class TicketBuyBean extends AbstractTicketDataClientBean implements
-		TicketBuy {
+        TicketBuy {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log            log;
 
-	@Resource
-	private SessionContext sessionContext;
+    @Resource
+    private SessionContext sessionContext;
 
-	@PersistenceContext(unitName = "DemoTicketEntityManager")
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = "DemoTicketEntityManager")
+    private EntityManager  entityManager;
 
-	@SuppressWarnings("unused")
-	@Out(required = false)
-	private double ticketPrice;
+    @SuppressWarnings("unused")
+    @Out(required = false)
+    private double         ticketPrice;
 
-	@SuppressWarnings("unused")
-	@Out(required = false)
-	private Date startDate;
+    @SuppressWarnings("unused")
+    @Out(required = false)
+    private Date           startDate;
 
-	@SuppressWarnings("unused")
-	@Out(required = false)
-	private Date endDate;
+    @SuppressWarnings("unused")
+    @Out(required = false)
+    private Date           endDate;
 
-	public enum TicketPeriod {
-		DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH(
-				"one month", Period.months(1));
 
-		private final String name;
+    public enum TicketPeriod {
+        DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH(
+                "one month", Period.months(1));
 
-		private final Period period;
+        private final String name;
 
-		TicketPeriod(String name, Period period) {
-			this.name = name;
-			this.period = period;
-		}
+        private final Period period;
 
-		public String getName() {
-			return this.name;
-		}
 
-		public Date getEndDate(Date beginDate) {
-			DateTime begin = new DateTime(beginDate);
-			DateTime endDate = begin.plus(this.period);
-			return endDate.toDate();
-		}
-	}
+        TicketPeriod(String name, Period period) {
 
-	private String from;
+            this.name = name;
+            this.period = period;
+        }
 
-	private String to;
+        public String getName() {
 
-	private String validUntil;
+            return this.name;
+        }
 
-	private boolean returnTicket;
+        public Date getEndDate(Date beginDate) {
 
-	private String nrn;
+            DateTime begin = new DateTime(beginDate);
+            DateTime endDate = begin.plus(this.period);
+            return endDate.toDate();
+        }
+    }
 
-	@SuppressWarnings("unused")
-	@Out(required = false)
-	private int juniorReduction;
 
-	public String getFrom() {
-		return this.from;
-	}
+    private String  from;
 
-	public void setFrom(String from) {
-		this.from = from;
-	}
+    private String  to;
 
-	public String getTo() {
-		return this.to;
-	}
+    private String  validUntil;
 
-	public void setTo(String to) {
-		this.to = to;
-	}
+    private boolean returnTicket;
 
-	public String getValidUntil() {
-		return this.validUntil;
-	}
+    private String  nrn;
 
-	public void setValidUntil(String validUntil) {
-		this.validUntil = validUntil;
-	}
+    @SuppressWarnings("unused")
+    @Out(required = false)
+    private int     juniorReduction;
 
-	public boolean getReturnTicket() {
-		return this.returnTicket;
-	}
 
-	public void setReturnTicket(boolean returnTicket) {
-		this.returnTicket = returnTicket;
-	}
+    public String getFrom() {
 
-	private String getUsername() {
-		String username = getUsername(getUserId());
-		this.log.debug("username #0", username);
-		return username;
-	}
+        return this.from;
+    }
 
-	private String getUserId() {
-		Principal principal = this.sessionContext.getCallerPrincipal();
-		return principal.getName();
-	}
+    public void setFrom(String from) {
 
-	@Factory("siteList")
-	public List<SelectItem> siteListFactory() {
-		List<SelectItem> result = new ArrayList<SelectItem>();
-		for (Ticket.Site site : Ticket.Site.values()) {
-			result.add(new SelectItem(site.toString(), site.getName()));
-		}
-		return result;
-	}
+        this.from = from;
+    }
 
-	@Factory("dateList")
-	public List<SelectItem> dateListFactory() {
-		List<SelectItem> result = new ArrayList<SelectItem>();
-		for (TicketPeriod period : TicketPeriod.values()) {
-			result.add(new SelectItem(period.toString(), period.getName()));
-		}
-		return result;
-	}
+    public String getTo() {
 
-	@RolesAllowed("user")
-	public String checkOut() {
-		this.ticketPrice = 100;
-		this.juniorReduction = 0;
-		String userId = getUserId();
-		try {
-			this.nrn = this.getAttributeClient().getAttributeValue(userId,
-					"urn:net:lin-k:safe-online:attribute:beid:nrn",
-					String[].class)[0];
-			Boolean juniorValue = this.getAttributeClient().getAttributeValue(
-					userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-					Boolean.class);
-			if (juniorValue != null && juniorValue.booleanValue() == true) {
-				this.juniorReduction = 10;
-			}
-		} catch (AttributeNotFoundException e) {
-			String msg = "attribute not found: " + e.getMessage();
-			this.log.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		} catch (RequestDeniedException e) {
-			String msg = "request denied";
-			this.log.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		} catch (ConnectException e) {
-			String msg = "Connection error. Check your SSL setup.";
-			this.log.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		} catch (Exception e) {
-			String msg = "Error occurred: " + e.getMessage();
-			this.log.debug(msg, e);
-			this.log.debug("exception type: " + e.getClass().getName());
-			this.facesMessages.add(msg);
-			return null;
-		}
-		TicketPeriod valid = TicketPeriod.valueOf(this.validUntil);
-		this.startDate = new Date();
-		this.endDate = valid.getEndDate(this.startDate);
-		return "checkout";
-	}
+        return this.to;
+    }
 
-	@RolesAllowed("user")
-	@End
-	// conversation begin via pages.xml
-	public String confirm() {
-		User user = this.entityManager.find(User.class, this.getUsername());
-		if (user == null) {
-			user = new User(this.getUsername(), this.nrn);
-			this.entityManager.persist(user);
-		}
-		user.setNrn(this.nrn);
-		Ticket ticket = new Ticket(user, Site.valueOf(this.from), Site
-				.valueOf(this.to), this.startDate, this.endDate,
-				this.returnTicket);
-		user.getTickets().add(ticket);
-		this.entityManager.persist(ticket);
+    public void setTo(String to) {
 
-		redirectToPaymentService(ticket);
+        this.to = to;
+    }
 
-		return "list";
-	}
+    public String getValidUntil() {
 
-	private void redirectToPaymentService(Ticket ticket) {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = facesContext.getExternalContext();
+        return this.validUntil;
+    }
 
-		String user = getUsername();
-		String recipient = "De Lijn";
-		String message = "Ticket " + ticket.getId();
-		String target = "http://" + this.demoHostName + ":" + this.demoHostPort
-				+ "/demo-ticket/list.seam";
-		HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
-				.getResponse();
-		target = httpServletResponse.encodeRedirectURL(target);
+    public void setValidUntil(String validUntil) {
 
-		String redirectUrl;
-		try {
-			redirectUrl = "http://"
-					+ this.demoHostName
-					+ ":"
-					+ this.demoHostPort
-					+ "/demo-payment/entry.seam?user="
-					+ URLEncoder.encode(user, "UTF-8")
-					+ "&recipient="
-					+ URLEncoder.encode(recipient, "UTF-8")
-					+ "&amount="
-					+ URLEncoder.encode(Double.toString(this.ticketPrice
-							- this.juniorReduction), "UTF-8") + "&message="
-					+ URLEncoder.encode(message, "UTF-8") + "&target="
-					+ URLEncoder.encode(target, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			String msg = "URL encoding error";
-			this.log.debug(msg);
-			this.facesMessages.add(msg);
-			return;
-		}
+        this.validUntil = validUntil;
+    }
 
-		try {
-			externalContext.redirect(redirectUrl);
-		} catch (IOException e) {
-			String msg = "IO redirect error";
-			this.log.debug(msg);
-			this.facesMessages.add(msg);
-			return;
-		}
-	}
+    public boolean getReturnTicket() {
+
+        return this.returnTicket;
+    }
+
+    public void setReturnTicket(boolean returnTicket) {
+
+        this.returnTicket = returnTicket;
+    }
+
+    private String getUsername() {
+
+        String username = getUsername(getUserId());
+        this.log.debug("username #0", username);
+        return username;
+    }
+
+    private String getUserId() {
+
+        Principal principal = this.sessionContext.getCallerPrincipal();
+        return principal.getName();
+    }
+
+    @Factory("siteList")
+    public List<SelectItem> siteListFactory() {
+
+        List<SelectItem> result = new ArrayList<SelectItem>();
+        for (Ticket.Site site : Ticket.Site.values()) {
+            result.add(new SelectItem(site.toString(), site.getName()));
+        }
+        return result;
+    }
+
+    @Factory("dateList")
+    public List<SelectItem> dateListFactory() {
+
+        List<SelectItem> result = new ArrayList<SelectItem>();
+        for (TicketPeriod period : TicketPeriod.values()) {
+            result.add(new SelectItem(period.toString(), period.getName()));
+        }
+        return result;
+    }
+
+    @RolesAllowed("user")
+    public String checkOut() {
+
+        this.ticketPrice = 100;
+        this.juniorReduction = 0;
+        String userId = getUserId();
+        try {
+            this.nrn = this.getAttributeClient().getAttributeValue(userId,
+                    "urn:net:lin-k:safe-online:attribute:beid:nrn",
+                    String[].class)[0];
+            Boolean juniorValue = this.getAttributeClient().getAttributeValue(
+                    userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+                    Boolean.class);
+            if (juniorValue != null && juniorValue.booleanValue() == true) {
+                this.juniorReduction = 10;
+            }
+        } catch (AttributeNotFoundException e) {
+            String msg = "attribute not found: " + e.getMessage();
+            this.log.debug(msg);
+            this.facesMessages.add(msg);
+            return null;
+        } catch (RequestDeniedException e) {
+            String msg = "request denied";
+            this.log.debug(msg);
+            this.facesMessages.add(msg);
+            return null;
+        } catch (WSClientTransportException e) {
+            String msg = "Connection error. Check your SSL setup.";
+            this.log.debug(msg);
+            this.facesMessages.add(msg);
+            return null;
+        } catch (Exception e) {
+            String msg = "Error occurred: " + e.getMessage();
+            this.log.debug(msg, e);
+            this.log.debug("exception type: " + e.getClass().getName());
+            this.facesMessages.add(msg);
+            return null;
+        }
+        TicketPeriod valid = TicketPeriod.valueOf(this.validUntil);
+        this.startDate = new Date();
+        this.endDate = valid.getEndDate(this.startDate);
+        return "checkout";
+    }
+
+    @RolesAllowed("user")
+    @End
+    // conversation begin via pages.xml
+    public String confirm() {
+
+        User user = this.entityManager.find(User.class, this.getUsername());
+        if (user == null) {
+            user = new User(this.getUsername(), this.nrn);
+            this.entityManager.persist(user);
+        }
+        user.setNrn(this.nrn);
+        Ticket ticket = new Ticket(user, Site.valueOf(this.from), Site
+                .valueOf(this.to), this.startDate, this.endDate,
+                this.returnTicket);
+        user.getTickets().add(ticket);
+        this.entityManager.persist(ticket);
+
+        redirectToPaymentService(ticket);
+
+        return "list";
+    }
+
+    private void redirectToPaymentService(Ticket ticket) {
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+
+        String user = getUsername();
+        String recipient = "De Lijn";
+        String message = "Ticket " + ticket.getId();
+        String target = "http://" + this.demoHostName + ":" + this.demoHostPort
+                + "/demo-ticket/list.seam";
+        HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
+                .getResponse();
+        target = httpServletResponse.encodeRedirectURL(target);
+
+        String redirectUrl;
+        try {
+            redirectUrl = "http://"
+                    + this.demoHostName
+                    + ":"
+                    + this.demoHostPort
+                    + "/demo-payment/entry.seam?user="
+                    + URLEncoder.encode(user, "UTF-8")
+                    + "&recipient="
+                    + URLEncoder.encode(recipient, "UTF-8")
+                    + "&amount="
+                    + URLEncoder.encode(Double.toString(this.ticketPrice
+                            - this.juniorReduction), "UTF-8") + "&message="
+                    + URLEncoder.encode(message, "UTF-8") + "&target="
+                    + URLEncoder.encode(target, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            String msg = "URL encoding error";
+            this.log.debug(msg);
+            this.facesMessages.add(msg);
+            return;
+        }
+
+        try {
+            externalContext.redirect(redirectUrl);
+        } catch (IOException e) {
+            String msg = "IO redirect error";
+            this.log.debug(msg);
+            this.facesMessages.add(msg);
+            return;
+        }
+    }
 }

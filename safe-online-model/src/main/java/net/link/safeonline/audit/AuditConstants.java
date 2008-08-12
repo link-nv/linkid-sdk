@@ -9,22 +9,19 @@ package net.link.safeonline.audit;
 
 public class AuditConstants {
 
-	private AuditConstants() {
-		// empty
-	}
+    private AuditConstants() {
 
-	/**
-	 * The audit queue where finalized audit contexts are published on.
-	 */
-	public final static String AUDIT_BACKEND_QUEUE_NAME = "queue/auditBackend";
+        // empty
+    }
 
-	/**
-	 * The audit queue where audit contexts are cleaned up.
-	 */
-	public final static String AUDIT_SANITIZER_QUEUE_NAME = "queue/auditSanitizer";
 
-	/**
-	 * The name of the connection factory used for publishing JMS messages.
-	 */
-	public static final String CONNECTION_FACTORY_NAME = "java:/JmsXA";
+    /**
+     * The audit queue where finalized audit contexts are published on.
+     */
+    public final static String AUDIT_BACKEND_QUEUE_NAME = "queue/auditBackend";
+
+    /**
+     * The name of the connection factory used for publishing JMS messages.
+     */
+    public static final String CONNECTION_FACTORY_NAME  = "java:/JmsXA";
 }

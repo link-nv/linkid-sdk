@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.ws.sts;
 
 import net.link.safeonline.sdk.ws.MessageAccessor;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.w3c.dom.Element;
 
@@ -18,11 +19,13 @@ import org.w3c.dom.Element;
  */
 public interface SecurityTokenServiceClient extends MessageAccessor {
 
-	/**
-	 * Validate the given (SAML) token.
-	 * 
-	 * @param token
-	 * @param trustDomain
-	 */
-	void validate(Element token, TrustDomainType trustDomain);
+    /**
+     * Validate the given (SAML) token.
+     * 
+     * @param token
+     * @param trustDomain
+     * @throws WSClientTransportException
+     */
+    void validate(Element token, TrustDomainType trustDomain)
+            throws WSClientTransportException;
 }

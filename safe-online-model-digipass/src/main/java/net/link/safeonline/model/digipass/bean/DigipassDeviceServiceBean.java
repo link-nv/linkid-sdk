@@ -19,6 +19,7 @@ import javax.ejb.Stateless;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -34,6 +35,8 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.audit.ResourceLevelType;
+import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.model.digipass.DigipassConstants;
@@ -41,6 +44,7 @@ import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.model.digipass.DigipassDeviceServiceRemote;
 import net.link.safeonline.model.digipass.DigipassException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 import net.link.safeonline.service.SubjectService;
@@ -70,6 +74,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
     @EJB
     private SecurityAuditLogger  securityAuditLogger;
 
+    @EJB
+    private ResourceAuditLogger  resourceAuditLogger;
+
 
     public String authenticate(String loginName, String token)
             throws SubjectNotFoundException, PermissionDeniedException {
@@ -85,6 +92,11 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
             LOG.debug("request denied: " + e.getMessage());
             throw new PermissionDeniedException("Unable to retrieve login: "
                     + loginName);
+        } catch (WSClientTransportException e) {
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS,
+                    ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                    "Unable to contact id mapping WS");
+            throw new PermissionDeniedException(e.getMessage());
         }
         DeviceSubjectEntity deviceSubject = this.subjectService
                 .getDeviceSubject(deviceUserId);
@@ -116,6 +128,11 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
             LOG.debug("request denied: " + e.getMessage());
             throw new PermissionDeniedException("Unable to retrieve login: "
                     + loginName);
+        } catch (WSClientTransportException e) {
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS,
+                    ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                    "Unable to contact id mapping WS");
+            throw new PermissionDeniedException(e.getMessage());
         }
 
         SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
@@ -172,6 +189,11 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
             LOG.debug("request denied: " + e.getMessage());
             throw new PermissionDeniedException("Unable to retrieve login: "
                     + loginName);
+        } catch (WSClientTransportException e) {
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS,
+                    ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                    "Unable to contact id mapping WS");
+            throw new PermissionDeniedException(e.getMessage());
         }
 
         DeviceSubjectEntity deviceSubject = this.subjectService
@@ -218,6 +240,11 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService,
             LOG.debug("request denied: " + e.getMessage());
             throw new PermissionDeniedException("Unable to retrieve login: "
                     + loginName);
+        } catch (WSClientTransportException e) {
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS,
+                    ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                    "Unable to contact id mapping WS");
+            throw new PermissionDeniedException(e.getMessage());
         }
 
         AttributeTypeEntity snAttributeType;

@@ -27,12 +27,15 @@ import net.link.safeonline.sdk.exception.SubscriptionNotFoundException;
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.ws.common.NotificationErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
+
+import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation WS-Notification producer service.
@@ -41,82 +44,96 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
  * 
  */
 public class NotificationSubscriptionManagerClientImpl extends
-		AbstractMessageAccessor implements
-		NotificationSubscriptionManagerClient {
+        AbstractMessageAccessor implements
+        NotificationSubscriptionManagerClient {
 
-	private static final Log LOG = LogFactory
-			.getLog(NotificationSubscriptionManagerClientImpl.class);
+    private static final Log                          LOG = LogFactory
+                                                                  .getLog(NotificationSubscriptionManagerClientImpl.class);
 
-	private final NotificationSubscriptionManagerPort port;
+    private final NotificationSubscriptionManagerPort port;
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param location
-	 *            the location (host:port) of the attribute web service.
-	 * @param clientCertificate
-	 *            the X509 certificate to use for WS-Security signature.
-	 * @param clientPrivateKey
-	 *            the private key corresponding with the client certificate.
-	 */
-	public NotificationSubscriptionManagerClientImpl(String location,
-			X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
-		NotificationSubscriptionManagerService service = NotificationSubscriptionManagerServiceFactory
-				.newInstance();
-		this.port = service.getNotificationSubscriptionManagerPort();
-		setEndpointAddress(location);
+    private final String                              location;
 
-		registerMessageLoggerHandler(this.port);
-		WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
-				clientPrivateKey);
-	}
 
-	private void setEndpointAddress(String location) {
-		BindingProvider bindingProvider = (BindingProvider) this.port;
+    /**
+     * Main constructor.
+     * 
+     * @param location
+     *            the location (host:port) of the attribute web service.
+     * @param clientCertificate
+     *            the X509 certificate to use for WS-Security signature.
+     * @param clientPrivateKey
+     *            the private key corresponding with the client certificate.
+     */
+    public NotificationSubscriptionManagerClientImpl(String location,
+            X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				location + "/safe-online-ws/subscription");
-	}
+        NotificationSubscriptionManagerService service = NotificationSubscriptionManagerServiceFactory
+                .newInstance();
+        this.port = service.getNotificationSubscriptionManagerPort();
+        this.location = location + "/safe-online-ws/subscription";
+        setEndpointAddress();
 
-	private W3CEndpointReference getEndpointReference(String address) {
-		W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
-		builder.address(address);
-		return builder.build();
-	}
+        registerMessageLoggerHandler(this.port);
+        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
+                clientPrivateKey);
+    }
 
-	public void unsubscribe(String topic, String address)
-			throws SubscriptionNotFoundException, RequestDeniedException {
-		LOG.debug("unsubscribe");
-		UnsubscribeRequest request = new UnsubscribeRequest();
+    private void setEndpointAddress() {
 
-		W3CEndpointReference endpoint = getEndpointReference(address);
-		request.setConsumerReference(endpoint);
+        BindingProvider bindingProvider = (BindingProvider) this.port;
+        bindingProvider.getRequestContext().put(
+                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+    }
 
-		TopicType topicType = new TopicType();
-		TopicExpressionType topicExpression = new TopicExpressionType();
-		topicExpression.setDialect(WebServiceConstants.TOPIC_DIALECT_SIMPLE);
-		topicExpression.getContent().add(topic);
-		topicType.setTopic(topicExpression);
-		request.setTopic(topicType);
+    private W3CEndpointReference getEndpointReference(String address) {
 
-		SafeOnlineTrustManager.configureSsl();
+        W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
+        builder.address(address);
+        return builder.build();
+    }
 
-		UnsubscribeResponse response = this.port.unsubscribe(request);
-		checkStatus(response);
-	}
+    public void unsubscribe(String topic, String address)
+            throws SubscriptionNotFoundException, RequestDeniedException,
+            WSClientTransportException {
 
-	private void checkStatus(UnsubscribeResponse response)
-			throws SubscriptionNotFoundException, RequestDeniedException {
-		StatusType status = response.getStatus();
-		StatusCodeType statusCode = status.getStatusCode();
-		String statusCodeValue = statusCode.getValue();
-		NotificationErrorCode errorCode = NotificationErrorCode
-				.getNotificationErrorCode(statusCodeValue);
-		if (NotificationErrorCode.SUBSCRIPTION_NOT_FOUND == errorCode) {
-			throw new SubscriptionNotFoundException();
-		} else if (NotificationErrorCode.PERMISSION_DENIED == errorCode) {
-			throw new RequestDeniedException();
-		}
-	}
+        LOG.debug("unsubscribe");
+        UnsubscribeRequest request = new UnsubscribeRequest();
+
+        W3CEndpointReference endpoint = getEndpointReference(address);
+        request.setConsumerReference(endpoint);
+
+        TopicType topicType = new TopicType();
+        TopicExpressionType topicExpression = new TopicExpressionType();
+        topicExpression.setDialect(WebServiceConstants.TOPIC_DIALECT_SIMPLE);
+        topicExpression.getContent().add(topic);
+        topicType.setTopic(topicExpression);
+        request.setTopic(topicType);
+
+        SafeOnlineTrustManager.configureSsl();
+
+        UnsubscribeResponse response;
+        try {
+            response = this.port.unsubscribe(request);
+        } catch (ClientTransportException e) {
+            throw new WSClientTransportException(this.location);
+        }
+
+        checkStatus(response);
+    }
+
+    private void checkStatus(UnsubscribeResponse response)
+            throws SubscriptionNotFoundException, RequestDeniedException {
+
+        StatusType status = response.getStatus();
+        StatusCodeType statusCode = status.getStatusCode();
+        String statusCodeValue = statusCode.getValue();
+        NotificationErrorCode errorCode = NotificationErrorCode
+                .getNotificationErrorCode(statusCodeValue);
+        if (NotificationErrorCode.SUBSCRIPTION_NOT_FOUND == errorCode) {
+            throw new SubscriptionNotFoundException();
+        } else if (NotificationErrorCode.PERMISSION_DENIED == errorCode) {
+            throw new RequestDeniedException();
+        }
+    }
 }
