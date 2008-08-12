@@ -19,7 +19,8 @@
 		<h:form id="_new-user-device">
 			<h:selectOneRadio id="device" value="#{accountRegistration.device}"
 				layout="pageDirection" required="true"
-				requiredMessage="#{msgs.errorDeviceSelection}" styleClass="tinylabel">
+				requiredMessage="#{msgs.errorDeviceSelection}"
+				styleClass="tinylabel">
 				<f:selectItems value="#{allDevicesAccountRegistration}" />
 			</h:selectOneRadio>
 
@@ -32,6 +33,11 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<p>#{msgs.helpNewUserDevice}</p>
+		<ul>
+			<li><h:outputLink
+				value="#{facesContext.externalContext.requestContextPath}/help.seam?location=#{facesContext.externalContext.requestServletPath}">
+					#{msgs.helpaction}</h:outputLink></li>
+		</ul>
 	</ui:define>
 </ui:composition>
 </body>

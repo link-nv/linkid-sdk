@@ -82,6 +82,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
@@ -293,11 +294,11 @@ public class AuthenticationServiceBean implements AuthenticationService,
     private boolean validateSignature(X509Certificate certificate,
             AuthnRequest samlAuthnRequest) throws TrustDomainNotFoundException {
 
-        boolean certificateValid = this.pkiValidator.validateCertificate(
+        PkiResult certificateValid = this.pkiValidator.validateCertificate(
                 SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
                 certificate);
 
-        if (false == certificateValid) {
+        if (PkiResult.VALID != certificateValid) {
             return false;
         }
 

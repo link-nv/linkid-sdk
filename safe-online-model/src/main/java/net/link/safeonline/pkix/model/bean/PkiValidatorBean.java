@@ -34,6 +34,7 @@ import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.CachedOcspValidator;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.pkix.model.OcspValidator.OcspResult;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
@@ -48,254 +49,270 @@ import org.bouncycastle.x509.extension.X509ExtensionUtil;
 @Stateless
 public class PkiValidatorBean implements PkiValidator {
 
-	private static final Log LOG = LogFactory.getLog(PkiValidatorBean.class);
+    private static final Log    LOG = LogFactory.getLog(PkiValidatorBean.class);
 
-	@EJB
-	private TrustPointDAO trustPointDAO;
+    @EJB
+    private TrustPointDAO       trustPointDAO;
 
-	@EJB
-	private TrustDomainDAO trustDomainDAO;
+    @EJB
+    private TrustDomainDAO      trustDomainDAO;
 
-	@EJB
-	private CachedOcspValidator cachedOcspValidator;
+    @EJB
+    private CachedOcspValidator cachedOcspValidator;
 
-	public boolean validateCertificate(TrustDomainEntity trustDomain,
-			X509Certificate certificate) {
-		/*
-		 * We don't use the JDK certificate path builder API here, since it
-		 * doesn't bring anything but unnecessary complexity. Keep It Simple,
-		 * Stupid.
-		 */
 
-		if (null == certificate) {
-			throw new IllegalArgumentException("certificate is null");
-		}
+    public PkiResult validateCertificate(TrustDomainEntity trustDomain,
+            X509Certificate certificate) {
 
-		LOG.debug("validate certificate "
-				+ certificate.getSubjectX500Principal() + " in domain "
-				+ trustDomain.getName());
+        /*
+         * We don't use the JDK certificate path builder API here, since it
+         * doesn't bring anything but unnecessary complexity. Keep It Simple,
+         * Stupid.
+         */
 
-		List<TrustPointEntity> trustPointPath = buildTrustPointPath(
-				trustDomain, certificate);
+        if (null == certificate) {
+            throw new IllegalArgumentException("certificate is null");
+        }
 
-		boolean verificationResult = verifyPath(trustDomain, certificate,
-				trustPointPath);
-		if (false == verificationResult) {
-			return false;
-		}
-		return true;
-	}
+        LOG.debug("validate certificate "
+                + certificate.getSubjectX500Principal() + " in domain "
+                + trustDomain.getName());
 
-	private boolean checkValidity(X509Certificate certificate) {
-		try {
-			certificate.checkValidity();
-			return true;
-		} catch (CertificateExpiredException e) {
-			LOG.debug("certificate expired");
-			return false;
-		} catch (CertificateNotYetValidException e) {
-			LOG.debug("certificate not yet valid");
-			return false;
-		}
-	}
+        List<TrustPointEntity> trustPointPath = buildTrustPointPath(
+                trustDomain, certificate);
 
-	/**
-	 * Build the trust point path for a given certificate.
-	 * 
-	 * @param trustDomain
-	 * @param certificate
-	 * @return the path, or an empty list otherwise.
-	 */
-	private List<TrustPointEntity> buildTrustPointPath(
-			TrustDomainEntity trustDomain, X509Certificate certificate) {
+        return verifyPath(trustDomain, certificate, trustPointPath);
+    }
 
-		List<TrustPointEntity> trustPoints = this.trustPointDAO
-				.listTrustPoints(trustDomain);
-		HashMap<TrustPointPK, TrustPointEntity> trustPointMap = new HashMap<TrustPointPK, TrustPointEntity>();
-		for (TrustPointEntity trustPoint : trustPoints) {
-			trustPointMap.put(trustPoint.getPk(), trustPoint);
-		}
+    private PkiResult checkValidity(X509Certificate certificate) {
 
-		List<TrustPointEntity> trustPointPath = new LinkedList<TrustPointEntity>();
+        try {
+            certificate.checkValidity();
+            return PkiResult.VALID;
+        } catch (CertificateExpiredException e) {
+            LOG.debug("certificate expired");
+            return PkiResult.EXPIRED;
+        } catch (CertificateNotYetValidException e) {
+            LOG.debug("certificate not yet valid");
+            return PkiResult.NOT_YET_VALID;
+        }
+    }
 
-		LOG.debug("build path for cert: "
-				+ certificate.getSubjectX500Principal());
+    /**
+     * Build the trust point path for a given certificate.
+     * 
+     * @param trustDomain
+     * @param certificate
+     * @return the path, or an empty list otherwise.
+     */
+    private List<TrustPointEntity> buildTrustPointPath(
+            TrustDomainEntity trustDomain, X509Certificate certificate) {
 
-		X509Certificate currentRootCertificate = certificate;
-		while (true) {
-			byte[] authorityKeyIdentifierData = currentRootCertificate
-					.getExtensionValue(X509Extensions.AuthorityKeyIdentifier
-							.getId());
-			String keyId;
-			if (null == authorityKeyIdentifierData) {
-				/*
-				 * PKIX RFC allows this for the root CA certificate.
-				 */
-				LOG
-						.warn("certificate has no authority key identifier extension");
-				/*
-				 * NULL is not allowed for persistence.
-				 */
-				keyId = "";
-			} else {
-				AuthorityKeyIdentifierStructure authorityKeyIdentifierStructure;
-				try {
-					authorityKeyIdentifierStructure = new AuthorityKeyIdentifierStructure(
-							authorityKeyIdentifierData);
-				} catch (IOException e) {
-					LOG
-							.error("error parsing authority key identifier structure");
-					break;
-				}
-				keyId = new String(Hex
-						.encodeHex(authorityKeyIdentifierStructure
-								.getKeyIdentifier()));
-			}
-			String issuer = currentRootCertificate.getIssuerX500Principal()
-					.getName();
-			LOG.debug("issuer: " + issuer);
-			LOG.debug("keyId: " + keyId);
-			TrustPointPK trustPointPK = new TrustPointPK(trustDomain, issuer,
-					keyId);
-			TrustPointEntity matchingTrustPoint = trustPointMap
-					.get(trustPointPK);
-			if (null == matchingTrustPoint) {
-				LOG.debug("no matching trust point found");
-				break;
-			}
-			LOG.debug("found path node: "
-					+ matchingTrustPoint.getCertificate()
-							.getSubjectX500Principal());
-			trustPointPath.add(0, matchingTrustPoint);
-			currentRootCertificate = matchingTrustPoint.getCertificate();
-			if (isSelfIssued(currentRootCertificate)) {
-				break;
-			}
-		}
+        List<TrustPointEntity> trustPoints = this.trustPointDAO
+                .listTrustPoints(trustDomain);
+        HashMap<TrustPointPK, TrustPointEntity> trustPointMap = new HashMap<TrustPointPK, TrustPointEntity>();
+        for (TrustPointEntity trustPoint : trustPoints) {
+            trustPointMap.put(trustPoint.getPk(), trustPoint);
+        }
 
-		LOG.debug("path construction completed");
-		return trustPointPath;
-	}
+        List<TrustPointEntity> trustPointPath = new LinkedList<TrustPointEntity>();
 
-	private boolean isSelfIssued(X509Certificate certificate) {
-		X500Principal issuer = certificate.getIssuerX500Principal();
-		X500Principal subject = certificate.getSubjectX500Principal();
-		boolean result = subject.equals(issuer);
-		return result;
-	}
+        LOG.debug("build path for cert: "
+                + certificate.getSubjectX500Principal());
 
-	boolean verifyPath(TrustDomainEntity trustDomain,
-			X509Certificate certificate, List<TrustPointEntity> trustPointPath) {
-		if (trustPointPath.isEmpty()) {
-			LOG.debug("trust point path is empty");
-			return false;
-		}
+        X509Certificate currentRootCertificate = certificate;
+        while (true) {
+            byte[] authorityKeyIdentifierData = currentRootCertificate
+                    .getExtensionValue(X509Extensions.AuthorityKeyIdentifier
+                            .getId());
+            String keyId;
+            if (null == authorityKeyIdentifierData) {
+                /*
+                 * PKIX RFC allows this for the root CA certificate.
+                 */
+                LOG
+                        .warn("certificate has no authority key identifier extension");
+                /*
+                 * NULL is not allowed for persistence.
+                 */
+                keyId = "";
+            } else {
+                AuthorityKeyIdentifierStructure authorityKeyIdentifierStructure;
+                try {
+                    authorityKeyIdentifierStructure = new AuthorityKeyIdentifierStructure(
+                            authorityKeyIdentifierData);
+                } catch (IOException e) {
+                    LOG
+                            .error("error parsing authority key identifier structure");
+                    break;
+                }
+                keyId = new String(Hex
+                        .encodeHex(authorityKeyIdentifierStructure
+                                .getKeyIdentifier()));
+            }
+            String issuer = currentRootCertificate.getIssuerX500Principal()
+                    .getName();
+            LOG.debug("issuer: " + issuer);
+            LOG.debug("keyId: " + keyId);
+            TrustPointPK trustPointPK = new TrustPointPK(trustDomain, issuer,
+                    keyId);
+            TrustPointEntity matchingTrustPoint = trustPointMap
+                    .get(trustPointPK);
+            if (null == matchingTrustPoint) {
+                LOG.debug("no matching trust point found");
+                break;
+            }
+            LOG.debug("found path node: "
+                    + matchingTrustPoint.getCertificate()
+                            .getSubjectX500Principal());
+            trustPointPath.add(0, matchingTrustPoint);
+            currentRootCertificate = matchingTrustPoint.getCertificate();
+            if (isSelfIssued(currentRootCertificate)) {
+                break;
+            }
+        }
 
-		boolean performOcspCheck = trustDomain.isPerformOcspCheck();
+        LOG.debug("path construction completed");
+        return trustPointPath;
+    }
 
-		X509Certificate rootCertificate = trustPointPath.get(0)
-				.getCertificate();
-		X509Certificate issuerCertificate = rootCertificate;
-		PublicKey issuerPublicKey = issuerCertificate.getPublicKey();
+    private boolean isSelfIssued(X509Certificate certificate) {
 
-		for (TrustPointEntity trustPoint : trustPointPath) {
-			X509Certificate trustPointCertificate = trustPoint.getCertificate();
-			LOG.debug("verifying: "
-					+ trustPointCertificate.getSubjectX500Principal());
-			if (false == checkValidity(trustPointCertificate)) {
-				return false;
-			}
-			if (false == verifySignature(trustPointCertificate, issuerPublicKey)) {
-				return false;
-			}
-			if (false == verifyConstraints(trustPointCertificate)) {
-				LOG.debug("verify constraints did not pass");
-				return false;
-			}
-			issuerCertificate = trustPointCertificate;
-			issuerPublicKey = issuerCertificate.getPublicKey();
-		}
+        X500Principal issuer = certificate.getIssuerX500Principal();
+        X500Principal subject = certificate.getSubjectX500Principal();
+        boolean result = subject.equals(issuer);
+        return result;
+    }
 
-		if (false == checkValidity(certificate)) {
-			return false;
-		}
-		if (false == verifySignature(certificate, issuerPublicKey)) {
-			return false;
-		}
-		if (true == performOcspCheck) {
-			LOG.debug("performing OCSP check");
-			if (false == this.cachedOcspValidator.performCachedOcspCheck(
-					trustDomain, certificate, issuerCertificate)) {
-				return false;
-			}
-		}
+    PkiResult verifyPath(TrustDomainEntity trustDomain,
+            X509Certificate certificate, List<TrustPointEntity> trustPointPath) {
 
-		return true;
-	}
+        if (trustPointPath.isEmpty()) {
+            LOG.debug("trust point path is empty");
+            return PkiResult.INVALID;
+        }
 
-	private boolean verifyConstraints(X509Certificate certificate) {
-		byte[] basicConstraintsValue = certificate
-				.getExtensionValue(X509Extensions.BasicConstraints.getId());
-		if (null == basicConstraintsValue) {
-			LOG.debug("no basic contraints extension present");
-			/*
-			 * A basic constraints extension is optional.
-			 */
-			return true;
-		}
-		ASN1Encodable basicConstraintsDecoded;
-		try {
-			basicConstraintsDecoded = X509ExtensionUtil
-					.fromExtensionValue(basicConstraintsValue);
-		} catch (IOException e) {
-			LOG.error("IO error: " + e.getMessage(), e);
-			return false;
-		}
-		if (false == basicConstraintsDecoded instanceof ASN1Sequence) {
-			LOG.debug("basic constraints extension is not an ASN1 sequence");
-			return false;
-		}
-		ASN1Sequence basicConstraintsSequence = (ASN1Sequence) basicConstraintsDecoded;
-		BasicConstraints basicConstraints = new BasicConstraints(
-				basicConstraintsSequence);
-		if (false == basicConstraints.isCA()) {
-			LOG.debug("basic contraints says not a CA");
-			return false;
-		}
-		return true;
-	}
+        boolean performOcspCheck = trustDomain.isPerformOcspCheck();
 
-	private boolean verifySignature(X509Certificate certificate,
-			PublicKey issuerPublicKey) {
-		try {
-			certificate.verify(issuerPublicKey);
-		} catch (InvalidKeyException e) {
-			LOG.debug("invalid key");
-			/*
-			 * This can occur if a root certificate was not self-signed.
-			 */
-			return false;
-		} catch (CertificateException e) {
-			LOG.debug("cert error: " + e.getMessage());
-			return false;
-		} catch (NoSuchAlgorithmException e) {
-			LOG.debug("algo error");
-			return false;
-		} catch (NoSuchProviderException e) {
-			LOG.debug("provider error");
-			return false;
-		} catch (SignatureException e) {
-			LOG.debug("sign error: " + e.getMessage(), e);
-			return false;
-		}
-		return true;
-	}
+        X509Certificate rootCertificate = trustPointPath.get(0)
+                .getCertificate();
+        X509Certificate issuerCertificate = rootCertificate;
+        PublicKey issuerPublicKey = issuerCertificate.getPublicKey();
 
-	public boolean validateCertificate(String trustDomainName,
-			X509Certificate certificate) throws TrustDomainNotFoundException {
-		TrustDomainEntity trustDomain = this.trustDomainDAO
-				.getTrustDomain(trustDomainName);
-		boolean result = validateCertificate(trustDomain, certificate);
-		return result;
-	}
+        for (TrustPointEntity trustPoint : trustPointPath) {
+            X509Certificate trustPointCertificate = trustPoint.getCertificate();
+            LOG.debug("verifying: "
+                    + trustPointCertificate.getSubjectX500Principal());
+            PkiResult checkValidityResult = checkValidity(trustPointCertificate);
+            if (PkiResult.VALID != checkValidityResult) {
+                return checkValidityResult;
+            }
+            if (false == verifySignature(trustPointCertificate, issuerPublicKey)) {
+                return PkiResult.INVALID;
+            }
+            if (false == verifyConstraints(trustPointCertificate)) {
+                LOG.debug("verify constraints did not pass");
+                return PkiResult.INVALID;
+            }
+            issuerCertificate = trustPointCertificate;
+            issuerPublicKey = issuerCertificate.getPublicKey();
+        }
+
+        PkiResult checkValidityResult = checkValidity(certificate);
+        if (PkiResult.VALID != checkValidityResult) {
+            return checkValidityResult;
+        }
+        if (false == verifySignature(certificate, issuerPublicKey)) {
+            return PkiResult.INVALID;
+        }
+        if (true == performOcspCheck) {
+            LOG.debug("performing OCSP check");
+            return convertOcspResult(this.cachedOcspValidator
+                    .performCachedOcspCheck(trustDomain, certificate,
+                            issuerCertificate));
+        }
+
+        return PkiResult.VALID;
+    }
+
+    private PkiResult convertOcspResult(OcspResult ocspResult) {
+
+        if (ocspResult == OcspResult.GOOD) {
+            return PkiResult.VALID;
+        } else if (ocspResult == OcspResult.REVOKED) {
+            return PkiResult.REVOKED;
+        } else if (ocspResult == OcspResult.SUSPENDED) {
+            return PkiResult.SUSPENDED;
+        } else {
+            return PkiResult.INVALID;
+        }
+    }
+
+    private boolean verifyConstraints(X509Certificate certificate) {
+
+        byte[] basicConstraintsValue = certificate
+                .getExtensionValue(X509Extensions.BasicConstraints.getId());
+        if (null == basicConstraintsValue) {
+            LOG.debug("no basic contraints extension present");
+            /*
+             * A basic constraints extension is optional.
+             */
+            return true;
+        }
+        ASN1Encodable basicConstraintsDecoded;
+        try {
+            basicConstraintsDecoded = X509ExtensionUtil
+                    .fromExtensionValue(basicConstraintsValue);
+        } catch (IOException e) {
+            LOG.error("IO error: " + e.getMessage(), e);
+            return false;
+        }
+        if (false == basicConstraintsDecoded instanceof ASN1Sequence) {
+            LOG.debug("basic constraints extension is not an ASN1 sequence");
+            return false;
+        }
+        ASN1Sequence basicConstraintsSequence = (ASN1Sequence) basicConstraintsDecoded;
+        BasicConstraints basicConstraints = new BasicConstraints(
+                basicConstraintsSequence);
+        if (false == basicConstraints.isCA()) {
+            LOG.debug("basic contraints says not a CA");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean verifySignature(X509Certificate certificate,
+            PublicKey issuerPublicKey) {
+
+        try {
+            certificate.verify(issuerPublicKey);
+        } catch (InvalidKeyException e) {
+            LOG.debug("invalid key");
+            /*
+             * This can occur if a root certificate was not self-signed.
+             */
+            return false;
+        } catch (CertificateException e) {
+            LOG.debug("cert error: " + e.getMessage());
+            return false;
+        } catch (NoSuchAlgorithmException e) {
+            LOG.debug("algo error");
+            return false;
+        } catch (NoSuchProviderException e) {
+            LOG.debug("provider error");
+            return false;
+        } catch (SignatureException e) {
+            LOG.debug("sign error: " + e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
+    public PkiResult validateCertificate(String trustDomainName,
+            X509Certificate certificate) throws TrustDomainNotFoundException {
+
+        TrustDomainEntity trustDomain = this.trustDomainDAO
+                .getTrustDomain(trustDomainName);
+        return validateCertificate(trustDomain, certificate);
+    }
 }

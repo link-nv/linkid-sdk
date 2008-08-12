@@ -47,332 +47,370 @@ import sun.security.pkcs11.wrapper.PKCS11Exception;
  * 
  */
 public class AppletControl implements AppletController, SmartCardPinCallback,
-		SmartCardInteraction {
+        SmartCardInteraction {
 
-	private AppletView appletView;
+    private AppletView        appletView;
 
-	private RuntimeContext runtimeContext;
+    private RuntimeContext    runtimeContext;
 
-	private StatementProvider statementProvider;
+    private StatementProvider statementProvider;
 
-	private ResourceBundle messages;
+    private ResourceBundle    messages;
 
-	private SmartCard smartCard;
+    private SmartCard         smartCard;
 
-	private void setupLogging() {
-		Log log = this.appletView.getLog();
-		SmartCardImpl.setLog(log);
-	}
 
-	public void run() {
-		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
-				.getString("connectingToSmartCard"));
-		this.appletView.outputDetailMessage("Loading smart card component...");
-		this.smartCard = SmartCardFactory.newInstance();
+    private void setupLogging() {
 
-		setupLogging();
+        Log log = this.appletView.getLog();
+        SmartCardImpl.setLog(log);
+    }
 
-		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
-		List<SmartCardConfig> smartCardConfigs = configFactory
-				.getSmartCardConfigs();
-		this.smartCard.init(smartCardConfigs, this);
-		for (SmartCardConfig smartCardConfig : smartCardConfigs)
-			this.appletView
-					.outputDetailMessage("smart card config available for: "
-							+ smartCardConfig.getCardAlias());
+    public void run() {
 
-		String smartCardAlias = this.runtimeContext
-				.getParameter("SmartCardConfig");
+        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
+                .getString("connectingToSmartCard"));
+        this.appletView.outputDetailMessage("Loading smart card component...");
+        this.smartCard = SmartCardFactory.newInstance();
 
-		this.appletView.outputDetailMessage("Connecting to smart card...");
-		String osName = System.getProperty("os.name");
-		this.appletView.outputDetailMessage("os name: " + osName);
+        setupLogging();
 
-		this.smartCard.setSmartCardPinCallback(this);
+        SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
+        List<SmartCardConfig> smartCardConfigs = configFactory
+                .getSmartCardConfigs();
+        this.smartCard.init(smartCardConfigs, this);
+        for (SmartCardConfig smartCardConfig : smartCardConfigs)
+            this.appletView
+                    .outputDetailMessage("smart card config available for: "
+                            + smartCardConfig.getCardAlias());
 
-		try {
-			this.smartCard.open(smartCardAlias);
-		} catch (NoPkcs11LibraryException e) {
-			this.appletView.outputDetailMessage("no PKCS#11 library found");
-			showDocument("NoPkcs11Path");
-			this.appletView
-					.outputDetailMessage("Disconnecting from smart card...");
-			this.smartCard.close();
-			this.smartCard.resetPKCS11Driver();
-			return;
-		} catch (MissingSmartCardReaderException e) {
-			this.appletView.outputDetailMessage("missing smart card reader");
-			showPath("missing-reader.seam");
-			this.appletView
-					.outputDetailMessage("Disconnecting from smart card...");
-			this.smartCard.close();
-			this.smartCard.resetPKCS11Driver();
-			return;
-		} catch (SmartCardNotFoundException e) {
-			this.appletView.outputDetailMessage("smart card not found");
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("smartCardNotFound"));
-			/*
-			 * TODO: retry somehow? is difficult via pkcs11
-			 */
-			this.appletView
-					.outputDetailMessage("Disconnecting from smart card...");
-			this.smartCard.close();
-			this.smartCard.resetPKCS11Driver();
+        String smartCardAlias = this.runtimeContext
+                .getParameter("SmartCardConfig");
 
-			return;
-		} catch (UnsupportedSmartCardException e) {
-			this.appletView.outputDetailMessage("unsupported smart card");
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("noBeID"));
-			this.appletView
-					.outputDetailMessage("Disconnecting from smart card...");
-			this.smartCard.close();
-			this.smartCard.resetPKCS11Driver();
-			return;
-		} catch (Exception e) {
-			this.appletView
-					.outputDetailMessage("error opening the smart card: "
-							+ e.getMessage());
-			this.appletView.outputDetailMessage("error type: "
-					+ e.getClass().getName());
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("smartCardConnectError"));
-			for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-				this.appletView.outputDetailMessage(stackTraceElement
-						.getClassName()
-						+ "."
-						+ stackTraceElement.getMethodName()
-						+ " ("
-						+ stackTraceElement.getFileName()
-						+ ":"
-						+ stackTraceElement.getLineNumber() + ")");
-			}
-			this.appletView
-					.outputDetailMessage("Disconnecting from smart card...");
-			this.smartCard.close();
-			this.smartCard.resetPKCS11Driver();
+        this.appletView.outputDetailMessage("Connecting to smart card...");
+        String osName = System.getProperty("os.name");
+        this.appletView.outputDetailMessage("os name: " + osName);
 
-			return;
-		}
+        this.smartCard.setSmartCardPinCallback(this);
 
-		byte[] statement;
-		try {
-			Pkcs11Signer pkcs11Signer = new Pkcs11Signer(this.smartCard);
-			BeIdIdentityProvider identityProvider = new BeIdIdentityProvider(
-					this.smartCard);
-			statement = this.statementProvider.createStatement(pkcs11Signer,
-					identityProvider);
-		} catch (ProviderException e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof PKCS11Exception) {
-				this.smartCard.close();
-				this.smartCard.resetPKCS11Driver();
-				try {
-					this.smartCard.open(smartCardAlias);
-					Pkcs11Signer pkcs11Signer = new Pkcs11Signer(this.smartCard);
-					BeIdIdentityProvider identityProvider = new BeIdIdentityProvider(
-							this.smartCard);
-					statement = this.statementProvider.createStatement(
-							pkcs11Signer, identityProvider);
-				} catch (Exception e2) {
-					this.appletView.outputInfoMessage(InfoLevel.ERROR,
-							this.messages.getString("signErrorMsg"));
-					this.appletView
-							.outputDetailMessage("error signing the statement: "
-									+ e2.getMessage());
-					return;
-				}
-			} else {
-				this.appletView.outputInfoMessage(InfoLevel.ERROR,
-						this.messages.getString("signErrorMsg"));
-				this.appletView
-						.outputDetailMessage("error signing the statement: "
-								+ e.getMessage());
-				return;
-			}
-		} catch (Exception e) {
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("statementError"));
-			this.appletView
-					.outputDetailMessage("error creating the statement: "
-							+ e.getMessage());
-			return;
-		} finally {
-			this.appletView
-					.outputDetailMessage("Disconnecting from smart card...");
-			this.smartCard.close();
-			this.smartCard.resetPKCS11Driver();
-		}
+        try {
+            this.smartCard.open(smartCardAlias);
+        } catch (NoPkcs11LibraryException e) {
+            this.appletView.outputDetailMessage("no PKCS#11 library found");
+            showDocument("NoPkcs11Path");
+            this.appletView
+                    .outputDetailMessage("Disconnecting from smart card...");
+            this.smartCard.close();
+            this.smartCard.resetPKCS11Driver();
+            return;
+        } catch (MissingSmartCardReaderException e) {
+            this.appletView.outputDetailMessage("missing smart card reader");
+            showPath("missing-reader.seam");
+            this.appletView
+                    .outputDetailMessage("Disconnecting from smart card...");
+            this.smartCard.close();
+            this.smartCard.resetPKCS11Driver();
+            return;
+        } catch (SmartCardNotFoundException e) {
+            this.appletView.outputDetailMessage("smart card not found");
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("smartCardNotFound"));
+            /*
+             * TODO: retry somehow? is difficult via pkcs11
+             */
+            this.appletView
+                    .outputDetailMessage("Disconnecting from smart card...");
+            this.smartCard.close();
+            this.smartCard.resetPKCS11Driver();
 
-		try {
-			if (false == sendStatement(statement))
-				return;
-		} catch (IOException e) {
-			this.appletView
-					.outputDetailMessage("Error occurred while sending the statement");
-			this.appletView.outputDetailMessage("IO error: " + e.getMessage());
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("errorSending"));
-			return;
-		} catch (Exception e) {
-			this.appletView
-					.outputDetailMessage("Error occurred while sending the statement");
-			this.appletView.outputDetailMessage("Error: " + e.getMessage());
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("errorSending"));
-			return;
-		}
-		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
-				.getString("done"));
-		this.appletView.outputDetailMessage("Done.");
+            return;
+        } catch (UnsupportedSmartCardException e) {
+            this.appletView.outputDetailMessage("unsupported smart card");
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("noBeID"));
+            this.appletView
+                    .outputDetailMessage("Disconnecting from smart card...");
+            this.smartCard.close();
+            this.smartCard.resetPKCS11Driver();
+            return;
+        } catch (Exception e) {
+            this.appletView
+                    .outputDetailMessage("error opening the smart card: "
+                            + e.getMessage());
+            this.appletView.outputDetailMessage("error type: "
+                    + e.getClass().getName());
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("smartCardConnectError"));
+            for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+                this.appletView.outputDetailMessage(stackTraceElement
+                        .getClassName()
+                        + "."
+                        + stackTraceElement.getMethodName()
+                        + " ("
+                        + stackTraceElement.getFileName()
+                        + ":"
+                        + stackTraceElement.getLineNumber() + ")");
+            }
+            this.appletView
+                    .outputDetailMessage("Disconnecting from smart card...");
+            this.smartCard.close();
+            this.smartCard.resetPKCS11Driver();
 
-		showDocument("TargetPath");
-	}
+            return;
+        }
 
-	private void showPath(String path) {
-		URL documentBase = this.runtimeContext.getDocumentBase();
-		URL url = transformUrl(documentBase, path);
-		this.runtimeContext.showDocument(url);
-	}
+        byte[] statement;
+        try {
+            Pkcs11Signer pkcs11Signer = new Pkcs11Signer(this.smartCard);
+            BeIdIdentityProvider identityProvider = new BeIdIdentityProvider(
+                    this.smartCard);
+            statement = this.statementProvider.createStatement(pkcs11Signer,
+                    identityProvider);
+        } catch (ProviderException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof PKCS11Exception) {
+                this.smartCard.close();
+                this.smartCard.resetPKCS11Driver();
+                try {
+                    this.smartCard.open(smartCardAlias);
+                    Pkcs11Signer pkcs11Signer = new Pkcs11Signer(this.smartCard);
+                    BeIdIdentityProvider identityProvider = new BeIdIdentityProvider(
+                            this.smartCard);
+                    statement = this.statementProvider.createStatement(
+                            pkcs11Signer, identityProvider);
+                } catch (Exception e2) {
+                    this.appletView.outputInfoMessage(InfoLevel.ERROR,
+                            this.messages.getString("signErrorMsg"));
+                    this.appletView
+                            .outputDetailMessage("error signing the statement: "
+                                    + e2.getMessage());
+                    return;
+                }
+            } else {
+                this.appletView.outputInfoMessage(InfoLevel.ERROR,
+                        this.messages.getString("signErrorMsg"));
+                this.appletView
+                        .outputDetailMessage("error signing the statement: "
+                                + e.getMessage());
+                return;
+            }
+        } catch (Exception e) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("statementError"));
+            this.appletView
+                    .outputDetailMessage("error creating the statement: "
+                            + e.getMessage());
+            return;
+        } finally {
+            this.appletView
+                    .outputDetailMessage("Disconnecting from smart card...");
+            this.smartCard.close();
+            this.smartCard.resetPKCS11Driver();
+        }
 
-	private void showDocument(String runtimeParameter) {
-		URL documentBase = this.runtimeContext.getDocumentBase();
-		String path = this.runtimeContext.getParameter(runtimeParameter);
-		if (null == path) {
-			this.appletView.outputDetailMessage("runtime parameter not set: "
-					+ runtimeParameter);
-			return;
-		}
-		URL url = transformUrl(documentBase, path);
-		this.runtimeContext.showDocument(url);
-	}
+        try {
+            if (false == sendStatement(statement))
+                return;
+        } catch (IOException e) {
+            this.appletView
+                    .outputDetailMessage("Error occurred while sending the statement");
+            this.appletView.outputDetailMessage("IO error: " + e.getMessage());
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("errorSending"));
+            return;
+        } catch (Exception e) {
+            this.appletView
+                    .outputDetailMessage("Error occurred while sending the statement");
+            this.appletView.outputDetailMessage("Error: " + e.getMessage());
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("errorSending"));
+            return;
+        }
+        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
+                .getString("done"));
+        this.appletView.outputDetailMessage("Done.");
 
-	private boolean sendStatement(byte[] statement) throws IOException {
-		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
-				.getString("sending"));
-		this.appletView.outputDetailMessage("Sending statement...");
-		URL documentBase = this.runtimeContext.getDocumentBase();
-		this.appletView.outputDetailMessage("document base: " + documentBase);
-		String servletPath = this.runtimeContext.getParameter("ServletPath");
-		URL url = transformUrl(documentBase, servletPath);
-		HttpURLConnection httpURLConnection = (HttpURLConnection) url
-				.openConnection();
+        showDocument("TargetPath");
+    }
 
-		httpURLConnection.setRequestMethod("POST");
-		httpURLConnection.setAllowUserInteraction(false);
-		httpURLConnection.setRequestProperty("Content-type",
-				"application/octet-stream");
-		httpURLConnection.setDoOutput(true);
-		OutputStream outputStream = httpURLConnection.getOutputStream();
-		outputStream.write(statement);
-		outputStream.close();
+    private void showPath(String path) {
 
-		httpURLConnection.connect();
+        URL documentBase = this.runtimeContext.getDocumentBase();
+        URL url = transformUrl(documentBase, path);
+        this.runtimeContext.showDocument(url);
+    }
 
-		httpURLConnection.disconnect();
+    private void showDocument(String runtimeParameter) {
 
-		int responseCode = httpURLConnection.getResponseCode();
-		if (200 == responseCode) {
-			this.appletView
-					.outputDetailMessage("Statement successfully transmitted.");
-			return true;
-		}
-		String safeOnlineResultCode = httpURLConnection
-				.getHeaderField(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER);
-		if (SharedConstants.PERMISSION_DENIED_ERROR
-				.equals(safeOnlineResultCode)) {
-			this.appletView
-					.outputDetailMessage("PERMISSION DENIED. Invalid statement");
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("permissionDenied"));
-			return false;
-		}
-		if (SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR
-				.equals(safeOnlineResultCode)) {
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("notSubscribed"));
-			return false;
-		}
-		if (SharedConstants.SUBJECT_NOT_FOUND_ERROR
-				.equals(safeOnlineResultCode)) {
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("eIdNotRegistered"));
-			return false;
-		}
-		if (SharedConstants.ALREADY_REGISTERED_ERROR
-				.equals(safeOnlineResultCode)) {
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString("eIdAlreadyRegistered"));
-			return false;
-		}
-		throw new IOException("Response code: " + responseCode);
-	}
+        URL documentBase = this.runtimeContext.getDocumentBase();
+        String path = this.runtimeContext.getParameter(runtimeParameter);
+        if (null == path) {
+            this.appletView.outputDetailMessage("runtime parameter not set: "
+                    + runtimeParameter);
+            return;
+        }
+        URL url = transformUrl(documentBase, path);
+        this.runtimeContext.showDocument(url);
+    }
 
-	public char[] getPin() {
-		JLabel promptLabel = new JLabel(this.messages.getString("pinQuestion"));
+    private boolean sendStatement(byte[] statement) throws IOException {
 
-		JPasswordField passwordField = new JPasswordField(8);
-		passwordField.setEchoChar('*');
+        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
+                .getString("sending"));
+        this.appletView.outputDetailMessage("Sending statement...");
+        URL documentBase = this.runtimeContext.getDocumentBase();
+        this.appletView.outputDetailMessage("document base: " + documentBase);
+        String servletPath = this.runtimeContext.getParameter("ServletPath");
+        URL url = transformUrl(documentBase, servletPath);
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url
+                .openConnection();
 
-		Box passwordPanel = Box.createHorizontalBox();
-		passwordPanel.add(promptLabel);
-		passwordPanel.add(Box.createHorizontalStrut(5));
-		passwordPanel.add(passwordField);
+        httpURLConnection.setRequestMethod("POST");
+        httpURLConnection.setAllowUserInteraction(false);
+        httpURLConnection.setRequestProperty("Content-type",
+                "application/octet-stream");
+        httpURLConnection.setDoOutput(true);
+        OutputStream outputStream = httpURLConnection.getOutputStream();
+        outputStream.write(statement);
+        outputStream.close();
 
-		int result = JOptionPane.showOptionDialog(null, passwordPanel,
-				this.messages.getString("pinTitle"),
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-				null, null, null);
-		if (result == JOptionPane.OK_OPTION) {
-			char[] pin = passwordField.getPassword();
-			return pin;
-		}
-		return null;
-	}
+        httpURLConnection.connect();
 
-	public static URL transformUrl(URL documentBase, String targetPath) {
-		if (targetPath.startsWith("http://")
-				|| targetPath.startsWith("https://"))
-			try {
-				return new URL(targetPath);
-			} catch (MalformedURLException e) {
-				throw new RuntimeException("URL error: " + e.getMessage());
-			}
+        httpURLConnection.disconnect();
 
-		String documentBaseStr = documentBase.toString();
-		int idx = documentBaseStr.lastIndexOf("/");
-		String identityUrlStr = documentBaseStr.substring(0, idx + 1)
-				+ targetPath;
-		try {
-			return new URL(identityUrlStr);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("URL error: " + e.getMessage());
-		}
-	}
+        int responseCode = httpURLConnection.getResponseCode();
+        if (200 == responseCode) {
+            this.appletView
+                    .outputDetailMessage("Statement successfully transmitted.");
+            return true;
+        }
+        String safeOnlineResultCode = httpURLConnection
+                .getHeaderField(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER);
+        if (SharedConstants.PERMISSION_DENIED_ERROR
+                .equals(safeOnlineResultCode)) {
+            this.appletView
+                    .outputDetailMessage("PERMISSION DENIED. Invalid statement");
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("permissionDenied"));
+            return false;
+        }
+        if (SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR
+                .equals(safeOnlineResultCode)) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("notSubscribed"));
+            return false;
+        }
+        if (SharedConstants.SUBJECT_NOT_FOUND_ERROR
+                .equals(safeOnlineResultCode)) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("eIdNotRegistered"));
+            return false;
+        }
+        if (SharedConstants.ALREADY_REGISTERED_ERROR
+                .equals(safeOnlineResultCode)) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("eIdAlreadyRegistered"));
+            return false;
+        }
+        if (SharedConstants.PKI_EXPIRED_ERROR.equals(safeOnlineResultCode)) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("pkiExpired"));
+            return false;
+        }
+        if (SharedConstants.PKI_NOT_YET_VALID_ERROR
+                .equals(safeOnlineResultCode)) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("pkiNotYetValid"));
+            return false;
+        }
+        if (SharedConstants.PKI_REVOKED_ERROR.equals(safeOnlineResultCode)) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("pkiRevoked"));
+            return false;
+        }
+        if (SharedConstants.PKI_SUSPENDED_ERROR.equals(safeOnlineResultCode)) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("pkiSuspended"));
+            return false;
+        }
+        if (SharedConstants.PKI_INVALID_ERROR.equals(safeOnlineResultCode)) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
+                    .getString("pkiInvalid"));
+            return false;
+        }
+        throw new IOException("Response code: " + responseCode);
+    }
 
-	public void init(AppletView newAppletView,
-			RuntimeContext newRuntimeContext,
-			StatementProvider newStatementProvider) {
-		this.appletView = newAppletView;
-		this.runtimeContext = newRuntimeContext;
-		this.statementProvider = newStatementProvider;
-		Locale locale = this.runtimeContext.getLocale();
-		this.messages = ResourceBundle.getBundle(
-				"net.link.safeonline.applet.ControlMessages", locale);
-	}
+    public char[] getPin() {
 
-	public void abort() {
-		this.smartCard.close();
-		this.smartCard.resetPKCS11Driver();
-	}
+        JLabel promptLabel = new JLabel(this.messages.getString("pinQuestion"));
 
-	public Locale getLocale() {
-		Locale locale = this.runtimeContext.getLocale();
-		return locale;
-	}
+        JPasswordField passwordField = new JPasswordField(8);
+        passwordField.setEchoChar('*');
 
-	public void output(String message) {
-		this.appletView.outputInfoMessage(InfoLevel.NORMAL, message);
-	}
+        Box passwordPanel = Box.createHorizontalBox();
+        passwordPanel.add(promptLabel);
+        passwordPanel.add(Box.createHorizontalStrut(5));
+        passwordPanel.add(passwordField);
+
+        int result = JOptionPane.showOptionDialog(null, passwordPanel,
+                this.messages.getString("pinTitle"),
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, null, null);
+        if (result == JOptionPane.OK_OPTION) {
+            char[] pin = passwordField.getPassword();
+            return pin;
+        }
+        return null;
+    }
+
+    public static URL transformUrl(URL documentBase, String targetPath) {
+
+        if (targetPath.startsWith("http://")
+                || targetPath.startsWith("https://"))
+            try {
+                return new URL(targetPath);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("URL error: " + e.getMessage());
+            }
+
+        String documentBaseStr = documentBase.toString();
+        int idx = documentBaseStr.lastIndexOf("/");
+        String identityUrlStr = documentBaseStr.substring(0, idx + 1)
+                + targetPath;
+        try {
+            return new URL(identityUrlStr);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("URL error: " + e.getMessage());
+        }
+    }
+
+    public void init(AppletView newAppletView,
+            RuntimeContext newRuntimeContext,
+            StatementProvider newStatementProvider) {
+
+        this.appletView = newAppletView;
+        this.runtimeContext = newRuntimeContext;
+        this.statementProvider = newStatementProvider;
+        Locale locale = this.runtimeContext.getLocale();
+        this.messages = ResourceBundle.getBundle(
+                "net.link.safeonline.applet.ControlMessages", locale);
+    }
+
+    public void abort() {
+
+        this.smartCard.close();
+        this.smartCard.resetPKCS11Driver();
+    }
+
+    public Locale getLocale() {
+
+        Locale locale = this.runtimeContext.getLocale();
+        return locale;
+    }
+
+    public void output(String message) {
+
+        this.appletView.outputInfoMessage(InfoLevel.NORMAL, message);
+    }
 }

@@ -18,31 +18,41 @@ import net.link.safeonline.shared.statement.IdentityProvider;
 
 public class AuthenticationApplet extends AppletBase {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public AuthenticationApplet() {
-		super();
-	}
 
-	protected AuthenticationApplet(AppletController appletController) {
-		super(appletController);
-	}
+    public AuthenticationApplet() {
 
-	@Override
-	public byte[] createStatement(Signer signer,
-			IdentityProvider identityProvider) {
-		String sessionId = getParameter("SessionId");
-		String applicationId = getParameter("ApplicationId");
+        super();
+    }
 
-		Locale locale = getLocale();
-		ResourceBundle messages = ResourceBundle.getBundle(
-				"net.link.safeonline.auth.AuthenticationMessages", locale);
+    protected AuthenticationApplet(AppletController appletController) {
 
-		outputInfoMessage(InfoLevel.NORMAL, messages.getString("creatingStmt"));
-		outputDetailMessage("Session: " + sessionId);
-		outputDetailMessage("Application: " + applicationId);
-		byte[] authenticationStatement = AuthenticationStatementFactory
-				.createAuthenticationStatement(sessionId, applicationId, signer);
-		return authenticationStatement;
-	}
+        super(appletController);
+    }
+
+    @Override
+    public byte[] createStatement(Signer signer,
+            IdentityProvider identityProvider) {
+
+        String sessionId = getParameter("SessionId");
+        String applicationId = getParameter("ApplicationId");
+
+        Locale locale = getLocale();
+        ResourceBundle messages = ResourceBundle.getBundle(
+                "net.link.safeonline.auth.AuthenticationMessages", locale);
+
+        outputInfoMessage(InfoLevel.NORMAL, messages.getString("creatingStmt"));
+        outputDetailMessage("Session: " + sessionId);
+        outputDetailMessage("Application: " + applicationId);
+        try {
+            byte[] authenticationStatement = AuthenticationStatementFactory
+                    .createAuthenticationStatement(sessionId, applicationId,
+                            signer);
+            return authenticationStatement;
+        } catch (RuntimeException e) {
+            outputDetailMessage("runtime exception: " + e.getMessage());
+            throw e;
+        }
+    }
 }

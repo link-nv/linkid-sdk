@@ -66,6 +66,7 @@ import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
+import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.entity.pkix.TrustPointPK;
@@ -789,7 +790,7 @@ public class EntityTest {
                 true);
         String key = "1234";
         CachedOcspResponseEntity cachedOcspResponse = new CachedOcspResponseEntity(
-                key, true, trustDomain);
+                key, CachedOcspResultType.GOOD, trustDomain);
 
         // operate
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -811,8 +812,8 @@ public class EntityTest {
         entityManager = this.entityTestManager.refreshEntityManager();
         // verify unique constraint
         try {
-            entityManager.persist(new CachedOcspResponseEntity(key, true,
-                    trustDomain));
+            entityManager.persist(new CachedOcspResponseEntity(key,
+                    CachedOcspResultType.GOOD, trustDomain));
             entityManager.flush();
             fail();
         } catch (EntityExistsException e) {

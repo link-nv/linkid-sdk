@@ -12,18 +12,21 @@ import net.link.safeonline.shared.asn1.statement.AbstractDERStatement;
 
 abstract public class AbstractStatement {
 
-	private final AbstractDERStatement derStatement;
-	private final Signer signer;
+    private final AbstractDERStatement derStatement;
+    private final Signer               signer;
 
-	public AbstractStatement(Signer signer, AbstractDERStatement derStatement) {
-		this.derStatement = derStatement;
-		this.signer = signer;
-	}
 
-	public byte[] generateStatement() {
-		byte[] tbs = this.derStatement.getToBeSignedEncoded();
-		byte[] signatureValue = this.signer.sign(tbs);
-		this.derStatement.setSignature(signatureValue);
-		return this.derStatement.getEncoded();
-	}
+    public AbstractStatement(Signer signer, AbstractDERStatement derStatement) {
+
+        this.derStatement = derStatement;
+        this.signer = signer;
+    }
+
+    public byte[] generateStatement() {
+
+        byte[] tbs = this.derStatement.getToBeSignedEncoded();
+        byte[] signatureValue = this.signer.sign(tbs);
+        this.derStatement.setSignature(signatureValue);
+        return this.derStatement.getEncoded();
+    }
 }

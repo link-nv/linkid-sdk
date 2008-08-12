@@ -8,7 +8,6 @@
 package net.link.safeonline.beid.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +19,11 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.PkiExpiredException;
+import net.link.safeonline.authentication.exception.PkiInvalidException;
+import net.link.safeonline.authentication.exception.PkiNotYetValidException;
+import net.link.safeonline.authentication.exception.PkiRevokedException;
+import net.link.safeonline.authentication.exception.PkiSuspendedException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.model.beid.BeIdDeviceService;
@@ -39,79 +43,87 @@ import org.apache.commons.logging.LogFactory;
  */
 public class IdentityServlet extends AbstractStatementServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long    serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(IdentityServlet.class);
+    private static final Log     LOG              = LogFactory
+                                                          .getLog(IdentityServlet.class);
 
-	@EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
-	private BeIdDeviceService beIdDeviceService;
+    @EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
+    private BeIdDeviceService    beIdDeviceService;
 
-	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
-	private SamlAuthorityService samlAuthorityService;
+    @EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
+    private SamlAuthorityService samlAuthorityService;
 
-	@Override
-	protected void processStatement(byte[] statementData, HttpSession session,
-			HttpServletResponse response) throws IOException {
-		String sessionId = session.getId();
-		LOG.debug("session Id: " + sessionId);
 
-		ProtocolContext protocolContext = ProtocolContext
-				.getProtocolContext(session);
-		PrintWriter writer = response.getWriter();
-		try {
-			protocolContext.setValidity(this.samlAuthorityService
-					.getAuthnAssertionValidity());
+    @Override
+    protected void processStatement(byte[] statementData, HttpSession session,
+            HttpServletResponse response) throws IOException {
 
-			String userId = (String) session.getAttribute("userId");
-			String operation = (String) session.getAttribute("operation");
-			this.beIdDeviceService.register(sessionId, userId, operation,
-					statementData);
-			response.setStatus(HttpServletResponse.SC_OK);
-			// notify that registration was successful.
-			protocolContext.setSuccess(true);
-		} catch (TrustDomainNotFoundException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-			writer.println("Trust domain not found");
-			protocolContext.setSuccess(false);
-		} catch (PermissionDeniedException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-			writer.println("Permission denied error");
-			protocolContext.setSuccess(false);
-		} catch (ArgumentIntegrityException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-			writer.println("Argument integrity error");
-			protocolContext.setSuccess(false);
-		} catch (AttributeTypeNotFoundException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-			writer.println("Attribute type not found error");
-			protocolContext.setSuccess(false);
-		} catch (DeviceNotFoundException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-			writer.println("Device not found error");
-			protocolContext.setSuccess(false);
-		} catch (AttributeNotFoundException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-			protocolContext.setSuccess(false);
-			writer.println("Attribute not found error");
-		} catch (AlreadyRegisteredException e) {
-			LOG.debug("device already registered");
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-			protocolContext.setSuccess(false);
-			writer.println("Already registered error");
-		}
-	}
+        String sessionId = session.getId();
+        LOG.debug("session Id: " + sessionId);
+
+        ProtocolContext protocolContext = ProtocolContext
+                .getProtocolContext(session);
+        try {
+            protocolContext.setValidity(this.samlAuthorityService
+                    .getAuthnAssertionValidity());
+            protocolContext.setSuccess(false);
+
+            String userId = (String) session.getAttribute("userId");
+            String operation = (String) session.getAttribute("operation");
+            this.beIdDeviceService.register(sessionId, userId, operation,
+                    statementData);
+            response.setStatus(HttpServletResponse.SC_OK);
+            // notify that registration was successful.
+            protocolContext.setSuccess(true);
+        } catch (TrustDomainNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (PermissionDeniedException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (ArgumentIntegrityException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (AttributeTypeNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (DeviceNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (AttributeNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (AlreadyRegisteredException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (PkiRevokedException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (PkiSuspendedException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (PkiExpiredException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (PkiNotYetValidException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        } catch (PkiInvalidException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+                    .getErrorCode());
+        }
+    }
 }

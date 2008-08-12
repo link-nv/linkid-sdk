@@ -15,6 +15,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
+import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.dao.CachedOcspResponseDAO;
 import net.link.safeonline.pkix.model.CachedOcspValidator;
@@ -28,115 +29,137 @@ import org.apache.commons.logging.LogFactory;
 @Stateless
 public class CachedOcspValidatorBean implements CachedOcspValidator {
 
-	private static final Log LOG = LogFactory
-			.getLog(CachedOcspValidatorBean.class);
+    private static final Log LOG = LogFactory
+                                         .getLog(CachedOcspValidatorBean.class);
 
-	@EJB
-	OcspValidator ocspValidator;
+    @EJB
+    OcspValidator            ocspValidator;
 
-	@EJB
-	CachedOcspResponseDAO cachedOcspResponseDAO;
+    @EJB
+    CachedOcspResponseDAO    cachedOcspResponseDAO;
 
-	public boolean performCachedOcspCheck(TrustDomainEntity trustDomain,
-			X509Certificate certificate, X509Certificate issuerCertificate) {
 
-		LOG.debug("performing cached OCSP lookup");
+    public OcspResult performCachedOcspCheck(TrustDomainEntity trustDomain,
+            X509Certificate certificate, X509Certificate issuerCertificate) {
 
-		OcspResult ocspResult;
+        LOG.debug("performing cached OCSP lookup");
 
-		URI ocspURI = this.ocspValidator.getOcspUri(certificate);
-		if (null == ocspURI) {
-			return true;
-		}
+        OcspResult ocspResult;
 
-		String key = generateKey(certificate);
+        URI ocspURI = this.ocspValidator.getOcspUri(certificate);
+        if (null == ocspURI) {
+            return OcspResult.GOOD;
+        }
 
-		if (key == null) {
-			LOG.debug("Unable to generate cache key, skipping cache");
-			ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI,
-					certificate, issuerCertificate);
-			return convertOcspResult(ocspResult);
-		}
+        String key = generateKey(certificate);
 
-		// Cache lookup
-		CachedOcspResponseEntity cachedOcspResponse = this.cachedOcspResponseDAO
-				.findCachedOcspResponse(key);
+        if (key == null) {
+            LOG.debug("Unable to generate cache key, skipping cache");
+            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI,
+                    certificate, issuerCertificate);
+            return ocspResult;
+        }
 
-		// The response is not cached
-		if (cachedOcspResponse == null) {
-			LOG.debug("No cache entry found for key: " + key);
-			ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI,
-					certificate, issuerCertificate);
-			boolean result = convertOcspResult(ocspResult);
-			if (cacheResult(ocspResult)) {
-				this.cachedOcspResponseDAO.addCachedOcspResponse(key, result,
-						trustDomain);
-				LOG.debug("OCSP response cached for key: " + key);
-			}
-			return result;
-		}
+        // Cache lookup
+        CachedOcspResponseEntity cachedOcspResponse = this.cachedOcspResponseDAO
+                .findCachedOcspResponse(key);
 
-		// The response is cached
-		LOG.debug("Cache entry found for key: " + key);
-		long currentTime = System.currentTimeMillis();
-		long cachedTime = cachedOcspResponse.getEntryDate().getTime();
-		long timediff = currentTime - cachedTime;
+        // The response is not cached
+        if (cachedOcspResponse == null) {
+            LOG.debug("No cache entry found for key: " + key);
+            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI,
+                    certificate, issuerCertificate);
+            CachedOcspResultType result = convertOcspResult(ocspResult);
+            if (cacheResult(ocspResult)) {
+                this.cachedOcspResponseDAO.addCachedOcspResponse(key, result,
+                        trustDomain);
+                LOG.debug("OCSP response cached for key: " + key);
+            }
+            return ocspResult;
+        }
 
-		// ... either expired ...
-		LOG.debug("cache entry time: " + cachedTime);
-		LOG.debug("current time: " + currentTime);
-		LOG.debug("timediff: " + timediff);
-		LOG.debug("trust domain timeout: "
-				+ trustDomain.getOcspCacheTimeOutMillis());
-		if (timediff > trustDomain.getOcspCacheTimeOutMillis()) {
-			LOG.debug("Cache entry expired for key: " + key);
-			ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI,
-					certificate, issuerCertificate);
-			boolean result = convertOcspResult(ocspResult);
-			if (cacheResult(ocspResult)) {
-				cachedOcspResponse.setEntryDate(new Date(System
-						.currentTimeMillis()));
-				cachedOcspResponse.setResult(result);
-				LOG.debug("OCSP response updated for key: " + key);
-			} else {
-				this.cachedOcspResponseDAO
-						.removeCachedOcspResponse(cachedOcspResponse);
-				LOG.debug("Cache entry removed");
-			}
-			return result;
-		}
+        // The response is cached
+        LOG.debug("Cache entry found for key: " + key);
+        long currentTime = System.currentTimeMillis();
+        long cachedTime = cachedOcspResponse.getEntryDate().getTime();
+        long timediff = currentTime - cachedTime;
 
-		// .. or still valid
-		LOG.debug("Cache hit for key: " + key);
-		return cachedOcspResponse.getResult();
+        // ... either expired ...
+        LOG.debug("cache entry time: " + cachedTime);
+        LOG.debug("current time: " + currentTime);
+        LOG.debug("timediff: " + timediff);
+        LOG.debug("trust domain timeout: "
+                + trustDomain.getOcspCacheTimeOutMillis());
+        if (timediff > trustDomain.getOcspCacheTimeOutMillis()) {
+            LOG.debug("Cache entry expired for key: " + key);
+            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI,
+                    certificate, issuerCertificate);
+            CachedOcspResultType result = convertOcspResult(ocspResult);
+            if (cacheResult(ocspResult)) {
+                cachedOcspResponse.setEntryDate(new Date(System
+                        .currentTimeMillis()));
+                cachedOcspResponse.setResult(result);
+                LOG.debug("OCSP response updated for key: " + key);
+            } else {
+                this.cachedOcspResponseDAO
+                        .removeCachedOcspResponse(cachedOcspResponse);
+                LOG.debug("Cache entry removed");
+            }
+            return ocspResult;
+        }
 
-	}
+        // .. or still valid
+        LOG.debug("Cache hit for key: " + key);
+        return convertCachedOcspResultType(cachedOcspResponse.getResult());
+    }
 
-	private boolean cacheResult(OcspResult ocspResult) {
-		if (ocspResult == OcspResult.GOOD) {
-			return true;
-		}
-		if (ocspResult == OcspResult.REVOKED) {
-			return true;
-		}
-		return false;
-	}
+    private boolean cacheResult(OcspResult ocspResult) {
 
-	private boolean convertOcspResult(OcspResult ocspResult) {
-		if (ocspResult == OcspResult.GOOD) {
-			return true;
-		}
-		return false;
-	}
+        if (ocspResult == OcspResult.GOOD) {
+            return true;
+        }
+        if (ocspResult == OcspResult.REVOKED) {
+            return true;
+        }
+        return false;
+    }
 
-	private String generateKey(X509Certificate certificate) {
-		String result = null;
-		try {
-			result = DigestUtils.shaHex(certificate.getEncoded());
-		} catch (Exception e) {
-			return null;
-		}
-		return result;
-	}
+    private OcspResult convertCachedOcspResultType(
+            CachedOcspResultType cachedOcspResult) {
+
+        if (cachedOcspResult == CachedOcspResultType.GOOD) {
+            return OcspResult.GOOD;
+        } else if (cachedOcspResult == CachedOcspResultType.REVOKED) {
+            return OcspResult.REVOKED;
+        } else if (cachedOcspResult == CachedOcspResultType.SUSPENDED) {
+            return OcspResult.SUSPENDED;
+        } else {
+            return OcspResult.UNKNOWN;
+        }
+    }
+
+    private CachedOcspResultType convertOcspResult(OcspResult ocspResult) {
+
+        if (ocspResult == OcspResult.GOOD) {
+            return CachedOcspResultType.GOOD;
+        } else if (ocspResult == OcspResult.REVOKED) {
+            return CachedOcspResultType.REVOKED;
+        } else if (ocspResult == OcspResult.SUSPENDED) {
+            return CachedOcspResultType.SUSPENDED;
+        } else {
+            return CachedOcspResultType.UNKNOWN;
+        }
+    }
+
+    private String generateKey(X509Certificate certificate) {
+
+        String result = null;
+        try {
+            result = DigestUtils.shaHex(certificate.getEncoded());
+        } catch (Exception e) {
+            return null;
+        }
+        return result;
+    }
 
 }
