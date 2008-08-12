@@ -5,17 +5,14 @@ source "$scripts/bashlib"
 shopt -s nullglob
 
 # Parse options.
-while [[ $1 = -* ]]; do
-    case $1 in
-        -L) nolink=1    ;;
-        -R) reverse=1   ;;
-        -a) apply=1     ;;
-        -v) verbose=1   ;;
-        -f) force=1     ;;
-        *)  break       ;;
+for arg in $(getArgs LRavf "$@"); do
+    case $arg in
+        L) nolink=1     ;;
+        R) reverse=1    ;;
+        a) apply=1      ;;
+        v) verbose=1    ;;
+        f) force=1      ;;
     esac
-
-    shift
 done
 
 
@@ -26,19 +23,26 @@ pwd=$PWD
 
 
 # Figure out which webapps to use.
-webapps=( "$base/jboss/server/default/deploy/"{SafeOnline*,Dodentocht*}.ear )
+[[ -d "$base/jboss/server/default/deploy" ]] \
+    && webapps=( "$base/jboss/server/default/deploy/"{SafeOnline*,Dodentocht*}.ear ) \
+    || webapps=( "$work/"* )
 webapps=( "${webapps[@]%.ear}" )
 webapps=( "${webapps[@]##*/}" )
-#repos=()
-#for webapp in "${webapps[@]}"; do
-#    [[ -e "$PWD/${0%/*}/../../$webapp" ]] \
-#        && repos+=( "$PWD/${0%/*}/../../$webapp" ) \
-#        || repos+=( "$PWD/${0%/*}/.." )
-#done
-#(( ${#repos[@]} != ${#webapps[@]} )) && {
-#    emit -R "Not an equal amount of repositories (${#repos[@]}) and web applications (${#webapps[@]})."
-#    exit 1
-#}
+repos=()
+for webapp in "${webapps[@]}"; do
+    source=( "$base"/../*/*/target/"$webapp.ear" )
+    if (( ${#source[@]} )); then
+        source=( "${source[@]%/*/target/*}" )
+    else
+        source=$(ask "Source repository to apply $webapp onto:")
+    fi
+
+    [[ -d $source ]] && repos+=("$source")
+done
+(( ${#repos[@]} != ${#webapps[@]} )) && {
+    emit -R "Not an equal amount of repositories (${#repos[@]}) and web applications (${#webapps[@]})."
+    exit 1
+}
 
 
 # Make sure distribution is deployed and files are available for extraction.
@@ -137,7 +141,10 @@ if (( apply )); then
                 continue
             }
 
-            if (( force )) || [[ $(openssl md4 < "$file") != $(openssl md4 < "$file~") ]]; then
+            fileHash=$(openssl md4 < "$file")
+            backHash=$(openssl md4 < "$file~")
+
+            if (( force )) || [[ $fileHash != $backHash ]]; then
                 ddest="${repos[w]}/${file/-1.0-SNAPSHOT-exp.war//src/main/webapp}"
 
                 if ! [[ -e $ddest ]]; then
@@ -150,10 +157,11 @@ if (( apply )); then
                     adest=("${adest[@]}")
 
                     if (( ! ${#adest[@]} || ${#adest[@]} > 1 )) || [[ ! -e $adest ]]; then
-                        emit -y "Source of $(shorten -p "$pwd" "$file") not found.  Tried:"
+                        emit -y "Source of $(shorten -p "$pwd" "$file") could not be determined.  Possibilities:"
                         for dest in "$ddest" "${adest[@]}"; do
                             emit -y "   - $(shorten -p "$pwd" "$dest"):"\
-                                    "$([[ -e $dest ]] && echo "${green}exists${reset}." || echo "${red}doesn't exist${reset}.")"
+                                    "$([[ -e $dest ]] && echo "${green}exists${reset}." || echo "${red}doesn't exist${reset}.")"\
+                                    "$([[ -r $dest && $fileHash = $(openssl md4 < "$dest") ]] && echo "(${bold}${green}already up to date${reset})")"
                         done
 
                         continue
@@ -164,11 +172,15 @@ if (( apply )); then
                     dest=$ddest
                 fi
 
-                (( verbose )) && {
-                    emit "Modifying $(shorten -p "$pwd" "$dest")"
-                    emit "   - Source: $(shorten -p "$pwd" "$file")."
-                }
-                mv "$dest"{,~} && cp "$file" "$dest"
+                (( verbose )) \
+                    && emit "Updating ${file%%*/}:"
+                if [[ $fileHash != $(openssl md4 < "$dest") ]]; then
+                    emit "   - $(shorten -p "$pwd" "$file") => $(shorten -p "$pwd" "$dest" "/${file##*/}")" --
+                        mv "$dest"{,~} && cp "$file" "$dest"
+                    emit -$?
+                else
+                    emit "   - $(shorten -p "$pwd" "$dest") is already up to date."
+                fi
             fi
         done
     done

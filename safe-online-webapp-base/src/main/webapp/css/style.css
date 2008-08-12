@@ -252,16 +252,14 @@ a:hover {
     padding:            10px;
     padding-left:       30px;
 
+    border:             none;
     background:         url('../images/icons/bullet_go.png') no-repeat;
     background-position:10px 12px;
 
     text-decoration:    none;
 }
 #sidebox ul li a:hover {
-    border:             none;
-}
-#sidebox ul li.active a {
-    border:             none;
+    color:              white !important;
 }
 
 /******************************************************* TIMELINE **/
@@ -384,7 +382,7 @@ hr.float_fix {
     margin:             0;
     padding:            0;
 }
-.inner, .usage_agreement, .white_space {
+.inner, .text.block {
     width:              500px;
     margin-left:        20px;                       /* auto margin doesn't center in IE. */
     margin-right:       20px;
@@ -402,13 +400,13 @@ hr.float_fix {
 }
 
 /************************************************* USAGE AGREEMENT **/
-.usage_agreement {
+.text.usage {
     height:             200px;
     padding:            10px;
 
     border:             1px solid black;
 }
-.usage_agreement, .white_space {
+.text {
     overflow:           auto;
 
     font-family:        monospace;
@@ -419,7 +417,7 @@ hr.float_fix {
     white-space:        -o-pre-wrap;                /* Opera 7 */
     word-wrap:          break-word;
 }
-span.usage_agreement, span.white_space {
+.text.block {
     display:            block;
 }
 

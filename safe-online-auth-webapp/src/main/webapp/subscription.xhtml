@@ -23,7 +23,7 @@
 		<p><h:messages globalOnly="true" styleClass="error" /></p>
 
 		<f:subview rendered="#{authSubscription.usageAgreement != null}">
-			<div class="usage_agreement">#{authSubscription.usageAgreement}</div>
+			<div class="text usage block">#{authSubscription.usageAgreement}</div>
 		</f:subview>
 		<h:form id="_subscription">
 			<h:commandButton action="#{authSubscription.subscribe}" id="confirm"

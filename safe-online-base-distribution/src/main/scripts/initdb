@@ -31,7 +31,7 @@ if [[ $dbms = mysql ]]; then
 	# Drop the database.
 	emit "Rebuilding database '$db' on host '$host:$port' for user '$user' (DBMS: '$dbms')"
 	rootpass=$(ask "The root DBMS password:")
-	mysql -h"$host" -P"$port" -uroot -p"$rootpass" <<< "DROP DATABASE IF EXISTS $db;"
+	mysql -h"$host" -P"$port" -uroot -p"$rootpass" <<< "DROP DATABASE IF EXISTS $db; CREATE DATABASE IF NOT EXISTS $db;"
 
 	# Rebuild the database if we can find the DDL scripts for it.
 	for ear in *.ear; do

@@ -180,7 +180,7 @@
 			opened="false" id="certificate-tab"
 			label="#{msgs.certificateSubject}">
 			<h:outputText value="#{selectedDevice.certificateSubject}"
-				styleClass="white_space"
+				styleClass="text block"
 				rendered="#{!empty selectedDevice.certificateSubject}" />
 			<h:outputText value="#{msgs.noCertificate}"
 				rendered="#{empty selectedDevice.certificateSubject}" />
