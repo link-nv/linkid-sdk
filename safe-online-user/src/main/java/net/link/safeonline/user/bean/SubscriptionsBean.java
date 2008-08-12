@@ -133,6 +133,8 @@ public class SubscriptionsBean implements Subscriptions {
 	public String getUsageAgreement() throws ApplicationNotFoundException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
+		if (null == this.selectedSubscription)
+            return null;
 		return this.usageAgreementService.getUsageAgreementText(
 				this.selectedSubscription.getApplication().getName(),
 				viewLocale.getLanguage(), this.selectedSubscription
