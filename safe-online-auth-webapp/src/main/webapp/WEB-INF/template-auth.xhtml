@@ -8,15 +8,16 @@
 	</ui:define>
 
 	<ui:define name="sidebox">
-		<div id="c-sidebox"><h:graphicImage value="/images/box_top.gif"
+		<div id="c-sidebox"><h:graphicImage value="/images/box_top.png"
 			border="0" />
 		<div id="sidebox">
-		<div class="center"><img
-			src="#{facesContext.externalContext.requestContextPath}/logo?applicationName=#{applicationName}" />
-		</div>
+            <div class="center">
+                <img src="#{facesContext.externalContext.requestContextPath}/logo?applicationName=#{applicationName}" />
+            </div>
 
-		<ui:insert name="sidebar" /></div>
-		<h:graphicImage value="/images/box_bottom.gif" border="0" /></div>
+            <ui:insert name="sidebar" />
+        </div>
+		<h:graphicImage value="/images/box_bottom.png" border="0" /></div>
 	</ui:define>
 </ui:composition>
 </html>

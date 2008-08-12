@@ -43,7 +43,7 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
     private static final long        serialVersionUID = 1L;
     private static final Log         LOG              = LogFactory
                                                               .getLog(ApplicationLogoServlet.class);
-    private static final String      SPACER           = "/spacer.gif";
+    private static final String      SPACER           = "/spacer.png";
 
     @EJB(mappedName = PublicApplicationService.JNDI_BINDING)
     private PublicApplicationService publicApplicationService;

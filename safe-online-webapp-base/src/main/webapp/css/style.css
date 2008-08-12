@@ -27,7 +27,7 @@ body {
     margin:             0;
     padding:            0;
     
-    background:         url('../images/fade.gif') repeat-x top center;
+    background:         url('../images/fade.png') repeat-x top center;
 
     font:               14px/ 21px "Trebuchet MS", Verdana, Arial;
     text-align:         center;
@@ -74,7 +74,7 @@ a:hover {
     margin:             0 auto;
     padding:            0;
 
-    background:         url('../images/header.gif') no-repeat left top;
+    background:         url('../images/header.png') no-repeat left top;
 
     border:             none;
 }
@@ -125,15 +125,15 @@ a:hover {
     margin:             0;
     padding:            0;
 
-    background:         url('../images/tab_unselected.gif') top right;
+    background:         url('../images/tab_unselected.png') top right;
 }
 
 #c-header ul.menu li:hover {
-    background:         url('../images/tab_hover.gif');
+    background:         url('../images/tab_hover.png');
 }
 
 #c-header ul.menu li.selected {
-    background:         url('../images/tab_selected.gif');
+    background:         url('../images/tab_selected.png');
 }
 
 #c-header ul.menu li a {
@@ -197,7 +197,7 @@ a:hover {
     padding:            0;
     padding-top:        50px;
 
-    background:         url('../images/footer.gif') left top;
+    background:         url('../images/footer.png') left top;
 }
 
 /********************************************* SIDE BOX CONTAINER **/
@@ -252,7 +252,7 @@ a:hover {
     padding:            10px;
     padding-left:       30px;
 
-    background:         url('../images/icons/bullet_go.gif') no-repeat;
+    background:         url('../images/icons/bullet_go.png') no-repeat;
     background-position:10px 12px;
 
     text-decoration:    none;
@@ -270,7 +270,7 @@ table.timeline {
     margin:             0;
     padding:            0;
 
-    background:         url('../images/timeline.gif') top left repeat;
+    background:         url('../images/timeline.png') top left repeat;
 
     font:               inherit;
     text-align:         center;
@@ -285,7 +285,7 @@ table.timeline td {
     padding-left:       5px;
     padding-right:      5px;
 
-    background:         url('../images/timeline_other.gif') top center no-repeat;
+    background:         url('../images/timeline_other.png') top center no-repeat;
 
     font:               10px/ 15px "Trebuchet MS", Verdana, Arial;
     text-align:         center;
@@ -295,19 +295,19 @@ table.timeline>td {
 }
 
 table.timeline td.active {
-    background:         url('../images/timeline_current.gif') top center no-repeat;
+    background:         url('../images/timeline_current.png') top center no-repeat;
 }
 table.timeline td.start {
     width:              50px;
     height:             100%;
 
-    background:         url('../images/timeline_fade_in.gif') top right repeat-y;
+    background:         url('../images/timeline_fade_in.png') top right repeat-y;
 }
 table.timeline td.end {
     width:              50px;
     height:             100%;
 
-    background:         url('../images/timeline_fade_out.gif') top left repeat-y;
+    background:         url('../images/timeline_fade_out.png') top left repeat-y;
 }
 
 
@@ -449,7 +449,7 @@ label {
     width:              150px;
     padding:            0 25px 0 0;
 
-    background:         url('../images/icons/16-arrow-down.gif') no-repeat 5px 6px;
+    background:         url('../images/icons/16-arrow-down.png') no-repeat 5px 6px;
 
     font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
     text-align:         right;
