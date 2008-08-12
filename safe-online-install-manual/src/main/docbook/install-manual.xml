@@ -324,7 +324,7 @@
 					should contain similar entries as the ones below:
 					<programlisting><![CDATA[LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
 
-ProxyPass /olas/ ajp://localhost:8009/olas/
+ProxyPass /olas-user/ ajp://localhost:8009/olas-user/
 ProxyPass /olas-oper/ ajp://localhost:8009/olas-oper/
 ProxyPass /olas-owner/ ajp://localhost:8009/olas-owner/
 ProxyPass /olas-helpdesk/ ajp://localhost:8009/olas-helpdesk/

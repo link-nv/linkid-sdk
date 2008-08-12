@@ -80,8 +80,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
 
         SubjectEntity deviceRegistration = this.subjectIdentifierDAO
                 .findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
-        if (null == deviceRegistration)
+        if (null == deviceRegistration) {
             throw new SubjectNotFoundException();
+        }
         DeviceSubjectEntity deviceSubject = this.subjectService
                 .getDeviceSubject(deviceRegistration);
 
@@ -100,8 +101,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
             MobileRegistrationException {
 
         String activationCode = this.mobileManager.activate(mobile, sessionId);
-        if (null == activationCode)
+        if (null == activationCode) {
             throw new MobileRegistrationException();
+        }
         return activationCode;
     }
 
@@ -174,9 +176,8 @@ public class EncapDeviceServiceBean implements EncapDeviceService,
                 .getDeviceSubject(deviceUserId);
         SubjectEntity deviceRegistration = this.subjectIdentifierDAO
                 .findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
-        if (null == deviceRegistration) {
+        if (null == deviceRegistration)
             throw new MobileException("device registration not found");
-        }
 
         removeRegistration(deviceSubject, deviceRegistration, mobile);
     }

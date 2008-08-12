@@ -81,9 +81,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 			showPath("missing-reader.seam");
 			return;
 		}
-		if (null == card) {
-			return;
-		}
+		if (null == card)
+            return;
 		try {
 			CardChannel channel = card.getBasicChannel();
 			Signer signer = new PcscSigner(channel, this);
@@ -93,9 +92,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 					identityProvider);
 			try {
 				boolean result = sendStatement(statement);
-				if (false == result) {
-					return;
-				}
+				if (false == result)
+                    return;
 			} catch (IOException e) {
 				this.appletView.outputDetailMessage("IO error: "
 						+ e.getMessage());
@@ -139,14 +137,16 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 
 	private void showDocument(String runtimeParameter) {
 		URL documentBase = this.runtimeContext.getDocumentBase();
-		String path = this.runtimeContext.getParameter(runtimeParameter)
-				+ "?cacheid=" + Math.random() * 1000000;
-		this.appletView.outputDetailMessage("redirecting to: " + path);
+		String path = this.runtimeContext.getParameter(runtimeParameter);
 		if (null == path) {
 			this.appletView.outputDetailMessage("runtime parameter not set: "
 					+ runtimeParameter);
 			return;
 		}
+		
+		path += "?cacheid=" + Math.random() * 1000000;
+		this.appletView.outputDetailMessage("redirecting to: " + path);
+
 		URL url = transformUrl(documentBase, path);
 		this.runtimeContext.showDocument(url);
 	}
@@ -212,12 +212,13 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
 
 	public static URL transformUrl(URL documentBase, String targetPath) {
 		if (targetPath.startsWith("http://")
-				|| targetPath.startsWith("https://"))
-			try {
+				|| targetPath.startsWith("https://")) {
+            try {
 				return new URL(targetPath);
 			} catch (MalformedURLException e) {
 				throw new RuntimeException("URL error: " + e.getMessage());
 			}
+        }
 
 		String documentBaseStr = documentBase.toString();
 		int idx = documentBaseStr.lastIndexOf("/");

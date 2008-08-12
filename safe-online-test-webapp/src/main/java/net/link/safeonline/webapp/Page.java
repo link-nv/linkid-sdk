@@ -26,7 +26,7 @@ public abstract class Page {
 
 	protected static final String SAFE_ONLINE_ENCAP_WEBAPP_PREFIX = "/olas-encap";
 
-	protected static final String SAFE_ONLINE_USER_WEBAPP_PREFIX = "/olas";
+	protected static final String SAFE_ONLINE_USER_WEBAPP_PREFIX = "/olas-user";
 
 	protected static final String SAFE_ONLINE_OPER_WEBAPP_PREFIX = "/olas-oper";
 
