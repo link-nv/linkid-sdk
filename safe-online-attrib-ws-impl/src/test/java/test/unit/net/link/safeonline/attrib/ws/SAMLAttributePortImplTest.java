@@ -44,6 +44,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.model.ApplicationManager;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.test.util.DummyLoginModule;
@@ -75,595 +76,603 @@ import org.junit.Test;
 
 public class SAMLAttributePortImplTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(SAMLAttributePortImplTest.class);
-
-	private WebServiceTestUtils webServiceTestUtils;
-
-	private SAMLAttributePort clientPort;
-
-	private JndiTestUtils jndiTestUtils;
-
-	private WSSecurityConfigurationService mockWSSecurityConfigurationService;
-
-	private AttributeService mockAttributeService;
-
-	private NodeAttributeService mockNodeAttributeService;
-
-	private PkiValidator mockPkiValidator;
-
-	private ApplicationAuthenticationService mockApplicationAuthenticationService;
-
-	private DeviceAuthenticationService mockDeviceAuthenticationService;
-
-	private NodeAuthenticationService mockNodeAuthenticationService;
-
-	private SamlAuthorityService mockSamlAuthorityService;
-
-	private ApplicationManager mockApplicationManager;
-
-	private ApplicationIdentifierMappingService mockApplicationIdentifierMappingService;
-
-	private Object[] mockObjects;
-
-	private X509Certificate certificate;
-
-	private String testSubjectLogin;
-
-	private String testSubjectId;
-
-	private String testApplicationId = "test-application-name";
-
-	@SuppressWarnings("unchecked")
-	@Before
-	public void setUp() throws Exception {
-		LOG.debug("setup");
-
-		this.testSubjectLogin = "test-subject-login-"
-				+ UUID.randomUUID().toString();
-		this.testSubjectId = UUID.randomUUID().toString();
-
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
-		this.jndiTestUtils.bindComponent(
-				"java:comp/env/wsSecurityConfigurationServiceJndiName",
-				"SafeOnline/WSSecurityConfigurationBean/local");
-
-		this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
-		this.mockAttributeService = createMock(AttributeService.class);
-		this.mockNodeAttributeService = createMock(NodeAttributeService.class);
-		this.mockPkiValidator = createMock(PkiValidator.class);
-		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
-		this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
-		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-		this.mockApplicationManager = createMock(ApplicationManager.class);
-		this.mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
-
-		this.mockObjects = new Object[] {
-				this.mockWSSecurityConfigurationService,
-				this.mockAttributeService, this.mockNodeAttributeService,
-				this.mockPkiValidator,
-				this.mockApplicationAuthenticationService,
-				this.mockSamlAuthorityService, this.mockApplicationManager,
-				this.mockApplicationIdentifierMappingService };
-
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/WSSecurityConfigurationBean/local",
-				this.mockWSSecurityConfigurationService);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/AttributeServiceBean/local",
-				this.mockAttributeService);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/NodeAttributeServiceBean/local",
-				this.mockNodeAttributeService);
-		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
-				this.mockPkiValidator);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/ApplicationAuthenticationServiceBean/local",
-				this.mockApplicationAuthenticationService);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/DeviceAuthenticationServiceBean/local",
-				this.mockDeviceAuthenticationService);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/NodeAuthenticationServiceBean/local",
-				this.mockNodeAuthenticationService);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/SamlAuthorityServiceBean/local",
-				this.mockSamlAuthorityService);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/ApplicationManagerBean/local",
-				this.mockApplicationManager);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/ApplicationIdentifierMappingServiceBean/local",
-				this.mockApplicationIdentifierMappingService);
-
-		expect(
-				this.mockPkiValidator.validateCertificate((String) EasyMock
-						.anyObject(), (X509Certificate) EasyMock.anyObject()))
-				.andStubReturn(true);
-
-		expect(
-				this.mockWSSecurityConfigurationService
-						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-				Long.MAX_VALUE);
-
-		expect(this.mockApplicationManager.getCallerApplication())
-				.andStubReturn(
-						new ApplicationEntity(this.testApplicationId, null,
-								new ApplicationOwnerEntity(), null, null, null,
-								null, this.certificate));
-
-		expect(
-				this.mockApplicationIdentifierMappingService.findUserId(
-						this.testApplicationId, this.testSubjectLogin))
-				.andStubReturn(this.testSubjectId);
-
-		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
-
-		SAMLAttributePort wsPort = new SAMLAttributePortImpl();
-		this.webServiceTestUtils = new WebServiceTestUtils();
-		this.webServiceTestUtils.setUp(wsPort);
-		/*
-		 * Next is required, else the wsPort will get old mocks injected when
-		 * running multiple tests.
-		 */
-		InjectionInstanceResolver.clearInstanceCache();
-		SAMLAttributeService service = SAMLAttributeServiceFactory
-				.newInstance();
-		this.clientPort = service.getSAMLAttributePort();
-		this.webServiceTestUtils.setEndpointAddress(this.clientPort);
-
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
-				"CN=Test");
-
-		BindingProvider bindingProvider = (BindingProvider) this.clientPort;
-		Binding binding = bindingProvider.getBinding();
-		List<Handler> handlerChain = binding.getHandlerChain();
-		Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
-				this.certificate, keyPair.getPrivate());
-		handlerChain.add(wsSecurityHandler);
-		binding.setHandlerChain(handlerChain);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		LOG.debug("tearDown");
-		this.webServiceTestUtils.tearDown();
-		this.jndiTestUtils.tearDown();
-	}
-
-	@Test
-	public void testAttributeQuery() throws Exception {
-		// setup
-		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
-
-		AttributeQueryType request = new AttributeQueryType();
-		SubjectType subject = new SubjectType();
-		NameIDType subjectName = new NameIDType();
-		subjectName.setValue(this.testSubjectLogin);
-		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
-		request.setSubject(subject);
-
-		List<AttributeType> attributes = request.getAttribute();
-		AttributeType attribute = new AttributeType();
-		String testAttributeName = "test-attribute-name";
-		attribute.setName(testAttributeName);
-		attributes.add(attribute);
-
-		String testAttributeValue = "test-attribute-value";
-		String testIssuerName = "test-issuer-name";
-
-		// stubs
-		expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
-				testIssuerName);
-
-		// expectations
-		expect(
-				this.mockAttributeService.getConfirmedAttributeValue(
-						this.testSubjectId, testAttributeName)).andReturn(
-				testAttributeValue);
-		expect(
-				this.mockApplicationAuthenticationService
-						.authenticate(this.certificate)).andReturn(
-				"test-application-name");
-		expect(
-				this.mockWSSecurityConfigurationService
-						.skipMessageIntegrityCheck(this.certificate))
-				.andReturn(false);
-
-		// prepare
-		replay(this.mockObjects);
-
-		// operate
-		ResponseType response = this.clientPort.attributeQuery(request);
-
-		// verify
-		verify(this.mockObjects);
-		assertNotNull(response);
-
-		List<Object> resultAssertions = response
-				.getAssertionOrEncryptedAssertion();
-		assertEquals(1, resultAssertions.size());
-		LOG.debug("assertion class: "
-				+ resultAssertions.get(0).getClass().getName());
-		AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
-		SubjectType resultSubject = resultAssertion.getSubject();
-		List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
-		assertEquals(1, resultSubjectContent.size());
-		LOG.debug("subject content type: "
-				+ resultSubjectContent.get(0).getValue().getClass().getName());
-		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
-				.getValue();
-		assertEquals(this.testSubjectId, resultSubjectName.getValue());
-
-		List<StatementAbstractType> resultStatements = resultAssertion
-				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-		assertEquals(1, resultStatements.size());
-		AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
-				.get(0);
-		List<Object> resultAttributes = resultAttributeStatement
-				.getAttributeOrEncryptedAttribute();
-		assertEquals(1, resultAttributes.size());
-		LOG.debug("result attribute type: "
-				+ resultAttributes.get(0).getClass().getName());
-		AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
-		assertEquals(testAttributeName, resultAttribute.getName());
-		List<Object> resultAttributeValues = resultAttribute
-				.getAttributeValue();
-		assertEquals(1, resultAttributeValues.size());
-		Object resultAttributeValueObject = resultAttributeValues.get(0);
-		assertEquals(resultAttributeValueObject.getClass(), String.class);
-		String resultAttributeValue = (String) resultAttributeValueObject;
-		assertEquals(testAttributeValue, resultAttributeValue);
-
-		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-		Marshaller marshaller = context.createMarshaller();
-		StringWriter stringWriter = new StringWriter();
-		ObjectFactory samlpObjectFactory = new ObjectFactory();
-		marshaller.marshal(samlpObjectFactory.createResponse(response),
-				stringWriter);
-		LOG.debug("response: " + stringWriter);
-	}
-
-	@Test
-	public void testQueryMultivaluedAttribute() throws Exception {
-		// setup
-		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
-
-		AttributeQueryType request = new AttributeQueryType();
-		SubjectType subject = new SubjectType();
-		NameIDType subjectName = new NameIDType();
-		subjectName.setValue(this.testSubjectLogin);
-		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
-		request.setSubject(subject);
-
-		List<AttributeType> attributes = request.getAttribute();
-		AttributeType attribute = new AttributeType();
-		String testAttributeName = "test-attribute-name-"
-				+ UUID.randomUUID().toString();
-		attribute.setName(testAttributeName);
-		attributes.add(attribute);
-
-		String testAttributeValue1 = "test-attribute-value-1";
-		String testAttributeValue2 = "test-attribute-value-2";
-		String[] testAttributeValues = { testAttributeValue1,
-				testAttributeValue2 };
-		String testIssuerName = "test-issuer-name";
-
-		// stubs
-		expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
-				testIssuerName);
-
-		// expectations
-		expect(
-				this.mockAttributeService.getConfirmedAttributeValue(
-						this.testSubjectId, testAttributeName)).andReturn(
-				testAttributeValues);
-		expect(
-				this.mockApplicationAuthenticationService
-						.authenticate(this.certificate)).andReturn(
-				this.testApplicationId);
-		expect(
-				this.mockWSSecurityConfigurationService
-						.skipMessageIntegrityCheck(this.certificate))
-				.andReturn(false);
-
-		// prepare
-		replay(this.mockObjects);
-
-		// operate
-		ResponseType response = this.clientPort.attributeQuery(request);
-
-		// verify
-		verify(this.mockObjects);
-		assertNotNull(response);
-
-		List<Object> resultAssertions = response
-				.getAssertionOrEncryptedAssertion();
-		assertEquals(1, resultAssertions.size());
-		LOG.debug("assertion class: "
-				+ resultAssertions.get(0).getClass().getName());
-		AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
-		SubjectType resultSubject = resultAssertion.getSubject();
-		List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
-		assertEquals(1, resultSubjectContent.size());
-		LOG.debug("subject content type: "
-				+ resultSubjectContent.get(0).getValue().getClass().getName());
-		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
-				.getValue();
-		assertEquals(this.testSubjectId, resultSubjectName.getValue());
-
-		List<StatementAbstractType> resultStatements = resultAssertion
-				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-		assertEquals(1, resultStatements.size());
-		AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
-				.get(0);
-		List<Object> resultAttributes = resultAttributeStatement
-				.getAttributeOrEncryptedAttribute();
-		assertEquals(1, resultAttributes.size());
-		LOG.debug("result attribute type: "
-				+ resultAttributes.get(0).getClass().getName());
-		AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
-		assertEquals(testAttributeName, resultAttribute.getName());
-		assertEquals(Boolean.TRUE.toString(), resultAttribute
-				.getOtherAttributes().get(
-						WebServiceConstants.MULTIVALUED_ATTRIBUTE));
-		List<Object> resultAttributeValues = resultAttribute
-				.getAttributeValue();
-		assertEquals(2, resultAttributeValues.size());
-		Object resultAttributeValueObject = resultAttributeValues.get(0);
-		assertEquals(String.class, resultAttributeValueObject.getClass());
-		String resultAttributeValue = (String) resultAttributeValueObject;
-		assertEquals(testAttributeValue1, resultAttributeValue);
-		resultAttributeValueObject = resultAttributeValues.get(1);
-		assertEquals(String.class, resultAttributeValueObject.getClass());
-		resultAttributeValue = (String) resultAttributeValueObject;
-		assertEquals(testAttributeValue2, resultAttributeValue);
-
-		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-		Marshaller marshaller = context.createMarshaller();
-		StringWriter stringWriter = new StringWriter();
-		ObjectFactory samlpObjectFactory = new ObjectFactory();
-		marshaller.marshal(samlpObjectFactory.createResponse(response),
-				stringWriter);
-		LOG.debug("response: " + stringWriter);
-	}
-
-	@Test
-	public void testQueryCompoundedAttribute() throws Exception {
-		// setup
-		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
-
-		AttributeQueryType request = new AttributeQueryType();
-		SubjectType subject = new SubjectType();
-		NameIDType subjectName = new NameIDType();
-		subjectName.setValue(this.testSubjectLogin);
-		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
-		request.setSubject(subject);
-
-		List<AttributeType> attributes = request.getAttribute();
-		AttributeType attribute = new AttributeType();
-		String testAttributeName = "test-compounded-attribute-name-"
-				+ UUID.randomUUID().toString();
-		attribute.setName(testAttributeName);
-		attributes.add(attribute);
-
-		Map<?, ?>[] testAttributeValues = new Map[2];
-		Map<String, Object> compAttribute1 = new HashMap<String, Object>();
-		testAttributeValues[0] = compAttribute1;
-		compAttribute1.put("test-member1", "test-value11");
-		compAttribute1.put("test-member2", "test-value21");
-		Map<String, Object> compAttribute2 = new HashMap<String, Object>();
-		testAttributeValues[1] = compAttribute2;
-		compAttribute2.put("test-member1", "test-value12");
-		compAttribute2.put("test-member2", "test-value22");
-
-		String testIssuerName = "test-issuer-name";
-
-		// stubs
-		expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
-				testIssuerName);
-
-		// expectations
-		expect(
-				this.mockAttributeService.getConfirmedAttributeValue(
-						this.testSubjectId, testAttributeName)).andReturn(
-				testAttributeValues);
-		expect(
-				this.mockApplicationAuthenticationService
-						.authenticate(this.certificate)).andReturn(
-				this.testApplicationId);
-		expect(
-				this.mockWSSecurityConfigurationService
-						.skipMessageIntegrityCheck(this.certificate))
-				.andReturn(false);
-
-		// prepare
-		replay(this.mockObjects);
-
-		// operate
-		ResponseType response = this.clientPort.attributeQuery(request);
-
-		// verify
-		verify(this.mockObjects);
-		assertNotNull(response);
-
-		List<Object> resultAssertions = response
-				.getAssertionOrEncryptedAssertion();
-		assertEquals(1, resultAssertions.size());
-		LOG.debug("assertion class: "
-				+ resultAssertions.get(0).getClass().getName());
-		AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
-		SubjectType resultSubject = resultAssertion.getSubject();
-		List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
-		assertEquals(1, resultSubjectContent.size());
-		LOG.debug("subject content type: "
-				+ resultSubjectContent.get(0).getValue().getClass().getName());
-		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
-				.getValue();
-		assertEquals(this.testSubjectId, resultSubjectName.getValue());
-
-		List<StatementAbstractType> resultStatements = resultAssertion
-				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-		assertEquals(1, resultStatements.size());
-		AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
-				.get(0);
-		List<Object> resultAttributes = resultAttributeStatement
-				.getAttributeOrEncryptedAttribute();
-		assertEquals(1, resultAttributes.size());
-		LOG.debug("result attribute type: "
-				+ resultAttributes.get(0).getClass().getName());
-		AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
-		assertEquals(testAttributeName, resultAttribute.getName());
-		assertEquals(Boolean.TRUE.toString(), resultAttribute
-				.getOtherAttributes().get(
-						WebServiceConstants.MULTIVALUED_ATTRIBUTE));
-		List<Object> resultAttributeValues = resultAttribute
-				.getAttributeValue();
-		assertEquals(2, resultAttributeValues.size());
-
-		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-		Marshaller marshaller = context.createMarshaller();
-		StringWriter stringWriter = new StringWriter();
-		ObjectFactory samlpObjectFactory = new ObjectFactory();
-		marshaller.marshal(samlpObjectFactory.createResponse(response),
-				stringWriter);
-		LOG.debug("response: " + stringWriter);
-	}
-
-	@Test
-	public void testAttributeQueryWithBooleanValue() throws Exception {
-		// setup
-		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
-
-		AttributeQueryType request = new AttributeQueryType();
-		SubjectType subject = new SubjectType();
-		NameIDType subjectName = new NameIDType();
-		subjectName.setValue(this.testSubjectLogin);
-		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
-		request.setSubject(subject);
-
-		List<AttributeType> attributes = request.getAttribute();
-		AttributeType attribute = new AttributeType();
-		String testAttributeName = "test-attribute-name-"
-				+ UUID.randomUUID().toString();
-		attribute.setName(testAttributeName);
-		attributes.add(attribute);
-
-		Boolean testAttributeValue = Boolean.TRUE;
-		String testIssuerName = "test-issuer-name";
-
-		// stubs
-		expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
-				testIssuerName);
-
-		// expectations
-		expect(
-				this.mockAttributeService.getConfirmedAttributeValue(
-						this.testSubjectId, testAttributeName)).andReturn(
-				testAttributeValue);
-		expect(
-				this.mockApplicationAuthenticationService
-						.authenticate(this.certificate)).andReturn(
-				this.testApplicationId);
-		expect(
-				this.mockWSSecurityConfigurationService
-						.skipMessageIntegrityCheck(this.certificate))
-				.andReturn(false);
-
-		// prepare
-		replay(this.mockObjects);
-
-		// operate
-		ResponseType response = this.clientPort.attributeQuery(request);
-
-		// verify
-		verify(this.mockObjects);
-		assertNotNull(response);
-
-		List<Object> resultAssertions = response
-				.getAssertionOrEncryptedAssertion();
-		assertEquals(1, resultAssertions.size());
-		LOG.debug("assertion class: "
-				+ resultAssertions.get(0).getClass().getName());
-		AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
-		SubjectType resultSubject = resultAssertion.getSubject();
-		List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
-		assertEquals(1, resultSubjectContent.size());
-		LOG.debug("subject content type: "
-				+ resultSubjectContent.get(0).getValue().getClass().getName());
-		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
-				.getValue();
-		assertEquals(this.testSubjectId, resultSubjectName.getValue());
-
-		List<StatementAbstractType> resultStatements = resultAssertion
-				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-		assertEquals(1, resultStatements.size());
-		AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
-				.get(0);
-		List<Object> resultAttributes = resultAttributeStatement
-				.getAttributeOrEncryptedAttribute();
-		assertEquals(1, resultAttributes.size());
-		LOG.debug("result attribute type: "
-				+ resultAttributes.get(0).getClass().getName());
-		AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
-		assertEquals(testAttributeName, resultAttribute.getName());
-		List<Object> resultAttributeValues = resultAttribute
-				.getAttributeValue();
-		assertEquals(1, resultAttributeValues.size());
-		Object resultAttributeValueObject = resultAttributeValues.get(0);
-		assertEquals(resultAttributeValueObject.getClass(), Boolean.class);
-		Boolean resultAttributeValue = (Boolean) resultAttributeValueObject;
-		assertEquals(testAttributeValue, resultAttributeValue);
-	}
-
-	@Test
-	public void testAttributeQueryForNonExistingAttribute() throws Exception {
-		// setup
-		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
-
-		AttributeQueryType request = new AttributeQueryType();
-		SubjectType subject = new SubjectType();
-		NameIDType subjectName = new NameIDType();
-		subjectName.setValue(this.testSubjectLogin);
-		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
-		request.setSubject(subject);
-
-		List<AttributeType> attributes = request.getAttribute();
-		AttributeType attribute = new AttributeType();
-		String testAttributeName = "test-attribute-name";
-		attribute.setName(testAttributeName);
-		attributes.add(attribute);
-
-		// expectations
-		expect(
-				this.mockAttributeService.getConfirmedAttributeValue(
-						this.testSubjectId, testAttributeName)).andThrow(
-				new AttributeNotFoundException());
-		expect(
-				this.mockApplicationAuthenticationService
-						.authenticate(this.certificate)).andReturn(
-				this.testApplicationId);
-		expect(
-				this.mockWSSecurityConfigurationService
-						.skipMessageIntegrityCheck(this.certificate))
-				.andReturn(false);
-
-		// prepare
-		replay(this.mockObjects);
-
-		// operate
-		ResponseType response = this.clientPort.attributeQuery(request);
-
-		// verify
-		verify(this.mockObjects);
-		assertNotNull(response);
-		StatusType resultStatus = response.getStatus();
-		String resultStatusMessage = resultStatus.getStatusMessage();
-		LOG.debug("result status message: " + resultStatusMessage);
-		assertEquals("urn:oasis:names:tc:SAML:2.0:status:Requester",
-				resultStatus.getStatusCode().getValue());
-	}
+    private static final Log                    LOG               = LogFactory
+                                                                          .getLog(SAMLAttributePortImplTest.class);
+
+    private WebServiceTestUtils                 webServiceTestUtils;
+
+    private SAMLAttributePort                   clientPort;
+
+    private JndiTestUtils                       jndiTestUtils;
+
+    private WSSecurityConfigurationService      mockWSSecurityConfigurationService;
+
+    private AttributeService                    mockAttributeService;
+
+    private NodeAttributeService                mockNodeAttributeService;
+
+    private PkiValidator                        mockPkiValidator;
+
+    private ApplicationAuthenticationService    mockApplicationAuthenticationService;
+
+    private DeviceAuthenticationService         mockDeviceAuthenticationService;
+
+    private NodeAuthenticationService           mockNodeAuthenticationService;
+
+    private SamlAuthorityService                mockSamlAuthorityService;
+
+    private ApplicationManager                  mockApplicationManager;
+
+    private ApplicationIdentifierMappingService mockApplicationIdentifierMappingService;
+
+    private Object[]                            mockObjects;
+
+    private X509Certificate                     certificate;
+
+    private String                              testSubjectLogin;
+
+    private String                              testSubjectId;
+
+    private String                              testApplicationId = "test-application-name";
+
+
+    @SuppressWarnings("unchecked")
+    @Before
+    public void setUp() throws Exception {
+
+        LOG.debug("setup");
+
+        this.testSubjectLogin = "test-subject-login-"
+                + UUID.randomUUID().toString();
+        this.testSubjectId = UUID.randomUUID().toString();
+
+        this.jndiTestUtils = new JndiTestUtils();
+        this.jndiTestUtils.setUp();
+        this.jndiTestUtils.bindComponent(
+                "java:comp/env/wsSecurityConfigurationServiceJndiName",
+                "SafeOnline/WSSecurityConfigurationBean/local");
+
+        this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
+        this.mockAttributeService = createMock(AttributeService.class);
+        this.mockNodeAttributeService = createMock(NodeAttributeService.class);
+        this.mockPkiValidator = createMock(PkiValidator.class);
+        this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+        this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
+        this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+        this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        this.mockApplicationManager = createMock(ApplicationManager.class);
+        this.mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
+
+        this.mockObjects = new Object[] {
+                this.mockWSSecurityConfigurationService,
+                this.mockAttributeService, this.mockNodeAttributeService,
+                this.mockPkiValidator,
+                this.mockApplicationAuthenticationService,
+                this.mockSamlAuthorityService, this.mockApplicationManager,
+                this.mockApplicationIdentifierMappingService };
+
+        this.jndiTestUtils.bindComponent(
+                "SafeOnline/WSSecurityConfigurationBean/local",
+                this.mockWSSecurityConfigurationService);
+        this.jndiTestUtils.bindComponent(
+                "SafeOnline/AttributeServiceBean/local",
+                this.mockAttributeService);
+        this.jndiTestUtils.bindComponent(
+                "SafeOnline/NodeAttributeServiceBean/local",
+                this.mockNodeAttributeService);
+        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
+                this.mockPkiValidator);
+        this.jndiTestUtils.bindComponent(
+                "SafeOnline/ApplicationAuthenticationServiceBean/local",
+                this.mockApplicationAuthenticationService);
+        this.jndiTestUtils.bindComponent(
+                "SafeOnline/DeviceAuthenticationServiceBean/local",
+                this.mockDeviceAuthenticationService);
+        this.jndiTestUtils.bindComponent(
+                "SafeOnline/NodeAuthenticationServiceBean/local",
+                this.mockNodeAuthenticationService);
+        this.jndiTestUtils.bindComponent(
+                "SafeOnline/SamlAuthorityServiceBean/local",
+                this.mockSamlAuthorityService);
+        this.jndiTestUtils.bindComponent(
+                "SafeOnline/ApplicationManagerBean/local",
+                this.mockApplicationManager);
+        this.jndiTestUtils.bindComponent(
+                "SafeOnline/ApplicationIdentifierMappingServiceBean/local",
+                this.mockApplicationIdentifierMappingService);
+
+        expect(
+                this.mockPkiValidator.validateCertificate((String) EasyMock
+                        .anyObject(), (X509Certificate) EasyMock.anyObject()))
+                .andStubReturn(PkiResult.VALID);
+
+        expect(
+                this.mockWSSecurityConfigurationService
+                        .getMaximumWsSecurityTimestampOffset()).andStubReturn(
+                Long.MAX_VALUE);
+
+        expect(this.mockApplicationManager.getCallerApplication())
+                .andStubReturn(
+                        new ApplicationEntity(this.testApplicationId, null,
+                                new ApplicationOwnerEntity(), null, null, null,
+                                null, this.certificate));
+
+        expect(
+                this.mockApplicationIdentifierMappingService.findUserId(
+                        this.testApplicationId, this.testSubjectLogin))
+                .andStubReturn(this.testSubjectId);
+
+        JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
+
+        SAMLAttributePort wsPort = new SAMLAttributePortImpl();
+        this.webServiceTestUtils = new WebServiceTestUtils();
+        this.webServiceTestUtils.setUp(wsPort);
+        /*
+         * Next is required, else the wsPort will get old mocks injected when
+         * running multiple tests.
+         */
+        InjectionInstanceResolver.clearInstanceCache();
+        SAMLAttributeService service = SAMLAttributeServiceFactory
+                .newInstance();
+        this.clientPort = service.getSAMLAttributePort();
+        this.webServiceTestUtils.setEndpointAddress(this.clientPort);
+
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
+                "CN=Test");
+
+        BindingProvider bindingProvider = (BindingProvider) this.clientPort;
+        Binding binding = bindingProvider.getBinding();
+        List<Handler> handlerChain = binding.getHandlerChain();
+        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
+                this.certificate, keyPair.getPrivate());
+        handlerChain.add(wsSecurityHandler);
+        binding.setHandlerChain(handlerChain);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+
+        LOG.debug("tearDown");
+        this.webServiceTestUtils.tearDown();
+        this.jndiTestUtils.tearDown();
+    }
+
+    @Test
+    public void testAttributeQuery() throws Exception {
+
+        // setup
+        oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
+
+        AttributeQueryType request = new AttributeQueryType();
+        SubjectType subject = new SubjectType();
+        NameIDType subjectName = new NameIDType();
+        subjectName.setValue(this.testSubjectLogin);
+        subject.getContent().add(samlObjectFactory.createNameID(subjectName));
+        request.setSubject(subject);
+
+        List<AttributeType> attributes = request.getAttribute();
+        AttributeType attribute = new AttributeType();
+        String testAttributeName = "test-attribute-name";
+        attribute.setName(testAttributeName);
+        attributes.add(attribute);
+
+        String testAttributeValue = "test-attribute-value";
+        String testIssuerName = "test-issuer-name";
+
+        // stubs
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
+                testIssuerName);
+
+        // expectations
+        expect(
+                this.mockAttributeService.getConfirmedAttributeValue(
+                        this.testSubjectId, testAttributeName)).andReturn(
+                testAttributeValue);
+        expect(
+                this.mockApplicationAuthenticationService
+                        .authenticate(this.certificate)).andReturn(
+                "test-application-name");
+        expect(
+                this.mockWSSecurityConfigurationService
+                        .skipMessageIntegrityCheck(this.certificate))
+                .andReturn(false);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        ResponseType response = this.clientPort.attributeQuery(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        List<Object> resultAssertions = response
+                .getAssertionOrEncryptedAssertion();
+        assertEquals(1, resultAssertions.size());
+        LOG.debug("assertion class: "
+                + resultAssertions.get(0).getClass().getName());
+        AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
+        SubjectType resultSubject = resultAssertion.getSubject();
+        List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
+        assertEquals(1, resultSubjectContent.size());
+        LOG.debug("subject content type: "
+                + resultSubjectContent.get(0).getValue().getClass().getName());
+        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
+                .getValue();
+        assertEquals(this.testSubjectId, resultSubjectName.getValue());
+
+        List<StatementAbstractType> resultStatements = resultAssertion
+                .getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        assertEquals(1, resultStatements.size());
+        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
+                .get(0);
+        List<Object> resultAttributes = resultAttributeStatement
+                .getAttributeOrEncryptedAttribute();
+        assertEquals(1, resultAttributes.size());
+        LOG.debug("result attribute type: "
+                + resultAttributes.get(0).getClass().getName());
+        AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
+        assertEquals(testAttributeName, resultAttribute.getName());
+        List<Object> resultAttributeValues = resultAttribute
+                .getAttributeValue();
+        assertEquals(1, resultAttributeValues.size());
+        Object resultAttributeValueObject = resultAttributeValues.get(0);
+        assertEquals(resultAttributeValueObject.getClass(), String.class);
+        String resultAttributeValue = (String) resultAttributeValueObject;
+        assertEquals(testAttributeValue, resultAttributeValue);
+
+        JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+        Marshaller marshaller = context.createMarshaller();
+        StringWriter stringWriter = new StringWriter();
+        ObjectFactory samlpObjectFactory = new ObjectFactory();
+        marshaller.marshal(samlpObjectFactory.createResponse(response),
+                stringWriter);
+        LOG.debug("response: " + stringWriter);
+    }
+
+    @Test
+    public void testQueryMultivaluedAttribute() throws Exception {
+
+        // setup
+        oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
+
+        AttributeQueryType request = new AttributeQueryType();
+        SubjectType subject = new SubjectType();
+        NameIDType subjectName = new NameIDType();
+        subjectName.setValue(this.testSubjectLogin);
+        subject.getContent().add(samlObjectFactory.createNameID(subjectName));
+        request.setSubject(subject);
+
+        List<AttributeType> attributes = request.getAttribute();
+        AttributeType attribute = new AttributeType();
+        String testAttributeName = "test-attribute-name-"
+                + UUID.randomUUID().toString();
+        attribute.setName(testAttributeName);
+        attributes.add(attribute);
+
+        String testAttributeValue1 = "test-attribute-value-1";
+        String testAttributeValue2 = "test-attribute-value-2";
+        String[] testAttributeValues = { testAttributeValue1,
+                testAttributeValue2 };
+        String testIssuerName = "test-issuer-name";
+
+        // stubs
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
+                testIssuerName);
+
+        // expectations
+        expect(
+                this.mockAttributeService.getConfirmedAttributeValue(
+                        this.testSubjectId, testAttributeName)).andReturn(
+                testAttributeValues);
+        expect(
+                this.mockApplicationAuthenticationService
+                        .authenticate(this.certificate)).andReturn(
+                this.testApplicationId);
+        expect(
+                this.mockWSSecurityConfigurationService
+                        .skipMessageIntegrityCheck(this.certificate))
+                .andReturn(false);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        ResponseType response = this.clientPort.attributeQuery(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        List<Object> resultAssertions = response
+                .getAssertionOrEncryptedAssertion();
+        assertEquals(1, resultAssertions.size());
+        LOG.debug("assertion class: "
+                + resultAssertions.get(0).getClass().getName());
+        AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
+        SubjectType resultSubject = resultAssertion.getSubject();
+        List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
+        assertEquals(1, resultSubjectContent.size());
+        LOG.debug("subject content type: "
+                + resultSubjectContent.get(0).getValue().getClass().getName());
+        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
+                .getValue();
+        assertEquals(this.testSubjectId, resultSubjectName.getValue());
+
+        List<StatementAbstractType> resultStatements = resultAssertion
+                .getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        assertEquals(1, resultStatements.size());
+        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
+                .get(0);
+        List<Object> resultAttributes = resultAttributeStatement
+                .getAttributeOrEncryptedAttribute();
+        assertEquals(1, resultAttributes.size());
+        LOG.debug("result attribute type: "
+                + resultAttributes.get(0).getClass().getName());
+        AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
+        assertEquals(testAttributeName, resultAttribute.getName());
+        assertEquals(Boolean.TRUE.toString(), resultAttribute
+                .getOtherAttributes().get(
+                        WebServiceConstants.MULTIVALUED_ATTRIBUTE));
+        List<Object> resultAttributeValues = resultAttribute
+                .getAttributeValue();
+        assertEquals(2, resultAttributeValues.size());
+        Object resultAttributeValueObject = resultAttributeValues.get(0);
+        assertEquals(String.class, resultAttributeValueObject.getClass());
+        String resultAttributeValue = (String) resultAttributeValueObject;
+        assertEquals(testAttributeValue1, resultAttributeValue);
+        resultAttributeValueObject = resultAttributeValues.get(1);
+        assertEquals(String.class, resultAttributeValueObject.getClass());
+        resultAttributeValue = (String) resultAttributeValueObject;
+        assertEquals(testAttributeValue2, resultAttributeValue);
+
+        JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+        Marshaller marshaller = context.createMarshaller();
+        StringWriter stringWriter = new StringWriter();
+        ObjectFactory samlpObjectFactory = new ObjectFactory();
+        marshaller.marshal(samlpObjectFactory.createResponse(response),
+                stringWriter);
+        LOG.debug("response: " + stringWriter);
+    }
+
+    @Test
+    public void testQueryCompoundedAttribute() throws Exception {
+
+        // setup
+        oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
+
+        AttributeQueryType request = new AttributeQueryType();
+        SubjectType subject = new SubjectType();
+        NameIDType subjectName = new NameIDType();
+        subjectName.setValue(this.testSubjectLogin);
+        subject.getContent().add(samlObjectFactory.createNameID(subjectName));
+        request.setSubject(subject);
+
+        List<AttributeType> attributes = request.getAttribute();
+        AttributeType attribute = new AttributeType();
+        String testAttributeName = "test-compounded-attribute-name-"
+                + UUID.randomUUID().toString();
+        attribute.setName(testAttributeName);
+        attributes.add(attribute);
+
+        Map<?, ?>[] testAttributeValues = new Map[2];
+        Map<String, Object> compAttribute1 = new HashMap<String, Object>();
+        testAttributeValues[0] = compAttribute1;
+        compAttribute1.put("test-member1", "test-value11");
+        compAttribute1.put("test-member2", "test-value21");
+        Map<String, Object> compAttribute2 = new HashMap<String, Object>();
+        testAttributeValues[1] = compAttribute2;
+        compAttribute2.put("test-member1", "test-value12");
+        compAttribute2.put("test-member2", "test-value22");
+
+        String testIssuerName = "test-issuer-name";
+
+        // stubs
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
+                testIssuerName);
+
+        // expectations
+        expect(
+                this.mockAttributeService.getConfirmedAttributeValue(
+                        this.testSubjectId, testAttributeName)).andReturn(
+                testAttributeValues);
+        expect(
+                this.mockApplicationAuthenticationService
+                        .authenticate(this.certificate)).andReturn(
+                this.testApplicationId);
+        expect(
+                this.mockWSSecurityConfigurationService
+                        .skipMessageIntegrityCheck(this.certificate))
+                .andReturn(false);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        ResponseType response = this.clientPort.attributeQuery(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        List<Object> resultAssertions = response
+                .getAssertionOrEncryptedAssertion();
+        assertEquals(1, resultAssertions.size());
+        LOG.debug("assertion class: "
+                + resultAssertions.get(0).getClass().getName());
+        AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
+        SubjectType resultSubject = resultAssertion.getSubject();
+        List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
+        assertEquals(1, resultSubjectContent.size());
+        LOG.debug("subject content type: "
+                + resultSubjectContent.get(0).getValue().getClass().getName());
+        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
+                .getValue();
+        assertEquals(this.testSubjectId, resultSubjectName.getValue());
+
+        List<StatementAbstractType> resultStatements = resultAssertion
+                .getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        assertEquals(1, resultStatements.size());
+        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
+                .get(0);
+        List<Object> resultAttributes = resultAttributeStatement
+                .getAttributeOrEncryptedAttribute();
+        assertEquals(1, resultAttributes.size());
+        LOG.debug("result attribute type: "
+                + resultAttributes.get(0).getClass().getName());
+        AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
+        assertEquals(testAttributeName, resultAttribute.getName());
+        assertEquals(Boolean.TRUE.toString(), resultAttribute
+                .getOtherAttributes().get(
+                        WebServiceConstants.MULTIVALUED_ATTRIBUTE));
+        List<Object> resultAttributeValues = resultAttribute
+                .getAttributeValue();
+        assertEquals(2, resultAttributeValues.size());
+
+        JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+        Marshaller marshaller = context.createMarshaller();
+        StringWriter stringWriter = new StringWriter();
+        ObjectFactory samlpObjectFactory = new ObjectFactory();
+        marshaller.marshal(samlpObjectFactory.createResponse(response),
+                stringWriter);
+        LOG.debug("response: " + stringWriter);
+    }
+
+    @Test
+    public void testAttributeQueryWithBooleanValue() throws Exception {
+
+        // setup
+        oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
+
+        AttributeQueryType request = new AttributeQueryType();
+        SubjectType subject = new SubjectType();
+        NameIDType subjectName = new NameIDType();
+        subjectName.setValue(this.testSubjectLogin);
+        subject.getContent().add(samlObjectFactory.createNameID(subjectName));
+        request.setSubject(subject);
+
+        List<AttributeType> attributes = request.getAttribute();
+        AttributeType attribute = new AttributeType();
+        String testAttributeName = "test-attribute-name-"
+                + UUID.randomUUID().toString();
+        attribute.setName(testAttributeName);
+        attributes.add(attribute);
+
+        Boolean testAttributeValue = Boolean.TRUE;
+        String testIssuerName = "test-issuer-name";
+
+        // stubs
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
+                testIssuerName);
+
+        // expectations
+        expect(
+                this.mockAttributeService.getConfirmedAttributeValue(
+                        this.testSubjectId, testAttributeName)).andReturn(
+                testAttributeValue);
+        expect(
+                this.mockApplicationAuthenticationService
+                        .authenticate(this.certificate)).andReturn(
+                this.testApplicationId);
+        expect(
+                this.mockWSSecurityConfigurationService
+                        .skipMessageIntegrityCheck(this.certificate))
+                .andReturn(false);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        ResponseType response = this.clientPort.attributeQuery(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        List<Object> resultAssertions = response
+                .getAssertionOrEncryptedAssertion();
+        assertEquals(1, resultAssertions.size());
+        LOG.debug("assertion class: "
+                + resultAssertions.get(0).getClass().getName());
+        AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
+        SubjectType resultSubject = resultAssertion.getSubject();
+        List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
+        assertEquals(1, resultSubjectContent.size());
+        LOG.debug("subject content type: "
+                + resultSubjectContent.get(0).getValue().getClass().getName());
+        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
+                .getValue();
+        assertEquals(this.testSubjectId, resultSubjectName.getValue());
+
+        List<StatementAbstractType> resultStatements = resultAssertion
+                .getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        assertEquals(1, resultStatements.size());
+        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
+                .get(0);
+        List<Object> resultAttributes = resultAttributeStatement
+                .getAttributeOrEncryptedAttribute();
+        assertEquals(1, resultAttributes.size());
+        LOG.debug("result attribute type: "
+                + resultAttributes.get(0).getClass().getName());
+        AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
+        assertEquals(testAttributeName, resultAttribute.getName());
+        List<Object> resultAttributeValues = resultAttribute
+                .getAttributeValue();
+        assertEquals(1, resultAttributeValues.size());
+        Object resultAttributeValueObject = resultAttributeValues.get(0);
+        assertEquals(resultAttributeValueObject.getClass(), Boolean.class);
+        Boolean resultAttributeValue = (Boolean) resultAttributeValueObject;
+        assertEquals(testAttributeValue, resultAttributeValue);
+    }
+
+    @Test
+    public void testAttributeQueryForNonExistingAttribute() throws Exception {
+
+        // setup
+        oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
+
+        AttributeQueryType request = new AttributeQueryType();
+        SubjectType subject = new SubjectType();
+        NameIDType subjectName = new NameIDType();
+        subjectName.setValue(this.testSubjectLogin);
+        subject.getContent().add(samlObjectFactory.createNameID(subjectName));
+        request.setSubject(subject);
+
+        List<AttributeType> attributes = request.getAttribute();
+        AttributeType attribute = new AttributeType();
+        String testAttributeName = "test-attribute-name";
+        attribute.setName(testAttributeName);
+        attributes.add(attribute);
+
+        // expectations
+        expect(
+                this.mockAttributeService.getConfirmedAttributeValue(
+                        this.testSubjectId, testAttributeName)).andThrow(
+                new AttributeNotFoundException());
+        expect(
+                this.mockApplicationAuthenticationService
+                        .authenticate(this.certificate)).andReturn(
+                this.testApplicationId);
+        expect(
+                this.mockWSSecurityConfigurationService
+                        .skipMessageIntegrityCheck(this.certificate))
+                .andReturn(false);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        ResponseType response = this.clientPort.attributeQuery(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+        StatusType resultStatus = response.getStatus();
+        String resultStatusMessage = resultStatus.getStatusMessage();
+        LOG.debug("result status message: " + resultStatusMessage);
+        assertEquals("urn:oasis:names:tc:SAML:2.0:status:Requester",
+                resultStatus.getStatusCode().getValue());
+    }
 }

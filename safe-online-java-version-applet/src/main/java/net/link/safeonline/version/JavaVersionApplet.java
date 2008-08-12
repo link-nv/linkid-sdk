@@ -22,83 +22,96 @@ import java.util.List;
  */
 public class JavaVersionApplet extends Applet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String version;
+    private final String      version;
 
-	private final String vendor;
+    private final String      vendor;
 
-	private boolean hasPkcs11;
+    private boolean           hasPkcs11;
 
-	public static class PlatformDrivers {
-		final String platform;
 
-		final List   driverLocations;
+    public static class PlatformDrivers {
 
-		public PlatformDrivers(String platform, List driverLocations) {
-			this.platform = platform;
-			this.driverLocations = driverLocations;
-		}
-	}
+        final String platform;
 
-	private static final List platformsDrivers = new LinkedList();
+        final List   driverLocations;
 
-	static {
-		List linuxDrivers = new LinkedList();
-		linuxDrivers.add("/usr/local/lib/libbeidpkcs11.so");
-		linuxDrivers.add("/usr/lib/libbeidpkcs11.so");
-		linuxDrivers.add("/usr/lib/opensc-pkcs11.so");
-		platformsDrivers.add(new PlatformDrivers("Linux", linuxDrivers));
 
-		List windowsDrivers = new LinkedList();
-		windowsDrivers.add("C:\\WINDOWS\\system32\\beidpkcs11.dll");
-		windowsDrivers
-				.add("C:\\WINDOWS\\system32\\Belgium Identity Card PKCS11.dll");
-		platformsDrivers.add(new PlatformDrivers("Windows XP", windowsDrivers));
+        public PlatformDrivers(String platform, List driverLocations) {
 
-		List macDrivers = new LinkedList();
-		macDrivers
-				.add("/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.2.1.0.dylib");
-		macDrivers.add("/Library/OpenSC/lib/opensc-pkcs11.so");
-		platformsDrivers.add(new PlatformDrivers("Mac OS X", macDrivers));
-	}
+            this.platform = platform;
+            this.driverLocations = driverLocations;
+        }
+    }
 
-	public void init() {
-		super.init();
-		String osName = System.getProperty("os.name");
-		Iterator platformIterator = platformsDrivers.iterator();
-		this.hasPkcs11 = false;
-		while (platformIterator.hasNext()) {
-			PlatformDrivers platformDrivers = (PlatformDrivers) platformIterator
-					.next();
-			if (true == osName.matches(platformDrivers.platform)) {
-				List driverLocations = platformDrivers.driverLocations;
-				Iterator driverIterator = driverLocations.iterator();
-				while (driverIterator.hasNext()) {
-					String driverLocation = (String) driverIterator.next();
-					File driverPath = new File(driverLocation);
-					if (driverPath.exists()) {
-						this.hasPkcs11 = true;
-					}
-				}
-			}
-		}
-	}
 
-	public JavaVersionApplet() {
-		this.version = System.getProperty("java.version");
-		this.vendor = System.getProperty("java.vendor");
-	}
+    private static final List platformsDrivers = new LinkedList();
 
-	public String getVersion() {
-		return this.version;
-	}
+    static {
+        List linuxDrivers = new LinkedList();
+        linuxDrivers.add("/usr/local/lib/libbeidpkcs11.so");
+        linuxDrivers.add("/usr/lib/libbeidpkcs11.so");
+        linuxDrivers.add("/usr/lib/opensc-pkcs11.so");
+        platformsDrivers.add(new PlatformDrivers("Linux", linuxDrivers));
 
-	public String getVendor() {
-		return this.vendor;
-	}
+        List windowsDrivers = new LinkedList();
+        windowsDrivers.add("C:\\WINDOWS\\system32\\beidpkcs11.dll");
+        windowsDrivers
+                .add("C:\\WINDOWS\\system32\\Belgium Identity Card PKCS11.dll");
+        platformsDrivers.add(new PlatformDrivers("Windows XP", windowsDrivers));
 
-	public boolean hasPkcs11() {
-		return this.hasPkcs11;
-	}
+        List macDrivers = new LinkedList();
+        macDrivers
+                .add("/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.2.1.0.dylib");
+        macDrivers
+                .add("/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.dylib");
+        macDrivers.add("/Library/OpenSC/lib/opensc-pkcs11.so");
+        platformsDrivers.add(new PlatformDrivers("Mac OS X", macDrivers));
+    }
+
+
+    public void init() {
+
+        super.init();
+        String osName = System.getProperty("os.name");
+        Iterator platformIterator = platformsDrivers.iterator();
+        this.hasPkcs11 = false;
+        while (platformIterator.hasNext()) {
+            PlatformDrivers platformDrivers = (PlatformDrivers) platformIterator
+                    .next();
+            if (true == osName.matches(platformDrivers.platform)) {
+                List driverLocations = platformDrivers.driverLocations;
+                Iterator driverIterator = driverLocations.iterator();
+                while (driverIterator.hasNext()) {
+                    String driverLocation = (String) driverIterator.next();
+                    File driverPath = new File(driverLocation);
+                    if (driverPath.exists()) {
+                        this.hasPkcs11 = true;
+                    }
+                }
+            }
+        }
+    }
+
+    public JavaVersionApplet() {
+
+        this.version = System.getProperty("java.version");
+        this.vendor = System.getProperty("java.vendor");
+    }
+
+    public String getVersion() {
+
+        return this.version;
+    }
+
+    public String getVendor() {
+
+        return this.vendor;
+    }
+
+    public boolean hasPkcs11() {
+
+        return this.hasPkcs11;
+    }
 }
