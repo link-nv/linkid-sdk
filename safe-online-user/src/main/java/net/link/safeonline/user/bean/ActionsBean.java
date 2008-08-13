@@ -11,10 +11,14 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AccountService;
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.user.Actions;
@@ -30,7 +34,6 @@ import org.jboss.seam.contexts.Context;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.web.Session;
-
 
 @Stateful
 @Name("actions")
@@ -59,15 +62,31 @@ public class ActionsBean implements Actions {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String removeAccount() throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
+    public String removeAccount() throws SubscriptionNotFoundException,
+            MessageHandlerNotFoundException {
 
         this.log.debug("remove account");
 
         this.accountService.removeAccount();
 
-        this.sessionContext.set("login-processing", null);
+        removeLoginCookie();
         this.sessionContext.set("username", null);
         Session.instance().invalidate();
         return "logout-success";
     }
+
+    private void removeLoginCookie() {
+
+        this.log.debug("remove login cookie");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletResponse response = (HttpServletResponse) facesContext
+                .getExternalContext().getResponse();
+
+        Cookie loginCookie = new Cookie(SafeOnlineCookies.LOGIN_COOKIE, "");
+        loginCookie.setPath(facesContext.getExternalContext()
+                .getRequestContextPath());
+        loginCookie.setMaxAge(0);
+        response.addCookie(loginCookie);
+    }
+
 }
