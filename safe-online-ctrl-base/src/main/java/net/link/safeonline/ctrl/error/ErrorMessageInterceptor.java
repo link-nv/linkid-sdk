@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -58,15 +58,15 @@ import org.jboss.seam.faces.FacesMessages;
 /**
  * Seam Error Message interceptor. This interceptor will catch exceptions and try to construct a proper error message
  * from them.
- * 
+ *
  * The interceptor can be used on method or class level. It also has a default set of Exception-Error message pairs. It
  * will first look at a possible annotation on the method, then the class and if still not found use this default set.
- * 
+ *
  * @ErrorHandling(
  * @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorUserMayNotUnsubscribeFrom") })
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class ErrorMessageInterceptor {
 
@@ -127,24 +127,21 @@ public class ErrorMessageInterceptor {
         ErrorHandling methodErrorHandling = method.getAnnotation(ErrorHandling.class);
 
         if (null != methodErrorHandling) {
-            if (handleError(methodErrorHandling, e)) {
+            if (handleError(methodErrorHandling, e))
                 return;
-            }
         }
 
         // try the possible class error handling annotation
         Object target = invocationContext.getTarget();
         ErrorHandling classErrorHandling = target.getClass().getAnnotation(ErrorHandling.class);
         if (null != classErrorHandling) {
-            if (handleError(classErrorHandling, e)) {
+            if (handleError(classErrorHandling, e))
                 return;
-            }
         }
 
         // try the default error set
-        if (handleError(e)) {
+        if (handleError(e))
             return;
-        }
 
         // unknown error
         FacesMessages.instance().addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorMessage");

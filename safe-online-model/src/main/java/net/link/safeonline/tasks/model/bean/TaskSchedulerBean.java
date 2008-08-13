@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -219,10 +219,10 @@ public class TaskSchedulerBean implements TaskScheduler {
 
     /**
      * Creates a timer. We use some workaround code here because of the following issues:
-     * 
+     *
      * http://jira.jboss.com/jira/browse/JBAS-3379 http://jira.jboss.com/jira/browse/JBAS-3380
      * http://www.jboss.com/index.html?module=bb&op=viewtopic&p=3893673
-     * 
+     *
      * @param fireDate
      * @param schedulingName
      */
@@ -239,9 +239,8 @@ public class TaskSchedulerBean implements TaskScheduler {
                 LOG.error("trying again...");
             }
         } while (null == timer && tries > 0);
-        if (null == timer) {
+        if (null == timer)
             throw new EJBException("could not create an EJB timer");
-        }
         return timer;
     }
 

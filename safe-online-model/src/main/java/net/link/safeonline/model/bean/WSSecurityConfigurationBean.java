@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -55,7 +55,7 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
         } catch (ApplicationNotFoundException e) {
             throw WSSecurityUtil.createSOAPFaultException("unknown application", "FailedAuthentication");
         }
-        if (PkiResult.VALID != result)
+        if (PkiResult.VALID != result) {
             try {
                 result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
                         certificate);
@@ -64,6 +64,7 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
             } catch (TrustDomainNotFoundException e) {
                 throw WSSecurityUtil.createSOAPFaultException("devices trust domain not found", "FailedAuthentication");
             }
+        }
         if (PkiResult.VALID != result) {
             try {
                 result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,

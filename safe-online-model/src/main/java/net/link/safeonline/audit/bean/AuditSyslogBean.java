@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -129,8 +129,9 @@ public class AuditSyslogBean implements AuditBackend {
 
     public void process(long auditContextId) {
 
-        if (0 == this.syslogHost.length())
+        if (0 == this.syslogHost.length()) {
             LOG.debug("skipping syslog");
+        }
         logSecurityAudits(auditContextId);
         logResourceAudits(auditContextId);
         logAccessAudits(auditContextId);

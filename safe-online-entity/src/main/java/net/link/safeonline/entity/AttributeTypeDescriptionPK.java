@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -60,12 +60,10 @@ public class AttributeTypeDescriptionPK implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof SubscriptionPK) {
+        if (false == obj instanceof SubscriptionPK)
             return false;
-        }
         AttributeTypeDescriptionPK rhs = (AttributeTypeDescriptionPK) obj;
         return new EqualsBuilder().append(this.language, rhs.language).append(this.attributeType, rhs.attributeType)
                 .isEquals();

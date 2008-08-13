@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -9,13 +9,13 @@ package test.unit.net.link.safeonline.dao.bean;
 
 import java.util.List;
 
+import junit.framework.TestCase;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import junit.framework.TestCase;
 
 
 public class TaskDAOBeanTest extends TestCase {

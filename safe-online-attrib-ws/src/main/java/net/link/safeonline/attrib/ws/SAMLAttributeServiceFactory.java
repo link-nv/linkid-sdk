@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -25,9 +25,8 @@ public class SAMLAttributeServiceFactory {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL wsdlUrl = classLoader.getResource("saml-protocol-2.0.wsdl");
-        if (null == wsdlUrl) {
+        if (null == wsdlUrl)
             throw new RuntimeException("SAML protocol WSDL not found");
-        }
 
         SAMLAttributeService service = new SAMLAttributeService(wsdlUrl, new QName(
                 "urn:oasis:names:tc:SAML:2.0:protocol", "SAMLAttributeService"));

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -28,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Login Servlet. This servlet contains the landing page to finalize the authentication process initiated by the web
  * application.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class LoginServlet extends AbstractInjectionServlet {
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -59,15 +59,12 @@ public class SubjectIdentifierPK implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof SubjectIdentifierPK) {
+        if (false == obj instanceof SubjectIdentifierPK)
             return false;
-        }
         SubjectIdentifierPK rhs = (SubjectIdentifierPK) obj;
         return new EqualsBuilder().append(this.domain, rhs.domain).append(this.identifier, rhs.identifier).isEquals();
     }

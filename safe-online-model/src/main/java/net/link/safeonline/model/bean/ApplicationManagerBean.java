@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -16,16 +16,16 @@ import javax.ejb.EJBException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.security.SecurityDomain;
-
 import net.link.safeonline.SafeOnlineApplicationRoles;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.model.ApplicationManager;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.security.SecurityDomain;
 
 
 @Stateless

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -37,9 +37,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * Definition of the attribute provider entity. This entity manages the write and unconfirmed read access control of
  * applications towards attributes.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Entity
 @Table(name = "attribute_provider")
@@ -136,15 +136,12 @@ public class AttributeProviderEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (false == obj instanceof AttributeProviderEntity) {
+        if (false == obj instanceof AttributeProviderEntity)
             return false;
-        }
         AttributeProviderEntity rhs = (AttributeProviderEntity) obj;
         return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
     }

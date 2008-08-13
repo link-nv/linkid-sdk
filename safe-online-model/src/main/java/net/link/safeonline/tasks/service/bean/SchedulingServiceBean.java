@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -12,8 +12,6 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-
-import org.jboss.annotation.security.SecurityDomain;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingSchedulingException;
@@ -28,6 +26,8 @@ import net.link.safeonline.tasks.dao.TaskHistoryDAO;
 import net.link.safeonline.tasks.model.TaskScheduler;
 import net.link.safeonline.tasks.service.SchedulingService;
 import net.link.safeonline.tasks.service.SchedulingServiceRemote;
+
+import org.jboss.annotation.security.SecurityDomain;
 
 
 @Stateless
@@ -106,9 +106,8 @@ public class SchedulingServiceBean implements SchedulingService, SchedulingServi
             ExistingSchedulingException {
 
         SchedulingEntity existingScheduling = this.schedulingDAO.findSchedulingByName(scheduling.getName());
-        if (null != existingScheduling) {
+        if (null != existingScheduling)
             throw new ExistingSchedulingException();
-        }
 
         this.schedulingDAO.addScheduling(scheduling.getName(), scheduling.getCronExpression());
         this.taskScheduler.setTimer(scheduling);

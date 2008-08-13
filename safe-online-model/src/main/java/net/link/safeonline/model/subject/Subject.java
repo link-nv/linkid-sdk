@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -20,9 +20,9 @@ import net.link.safeonline.model.application.Application;
 
 /**
  * Domain Model class for Subject.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class Subject {
 
@@ -33,7 +33,7 @@ public class Subject {
 
     /**
      * Main constructor.
-     * 
+     *
      * @param context
      * @param entity
      */
@@ -50,7 +50,7 @@ public class Subject {
 
     /**
      * Subscribes this subject on the given application.
-     * 
+     *
      * @param application
      * @throws PermissionDeniedException
      * @throws AlreadySubscribedException
@@ -66,14 +66,13 @@ public class Subject {
 
     private void checkAlreadySubscribed(Application application) throws AlreadySubscribedException {
 
-        if (isSubscribed(application)) {
+        if (isSubscribed(application))
             throw new AlreadySubscribedException();
-        }
     }
 
     /**
      * Unsubscribes this subject from the given application.
-     * 
+     *
      * @param application
      * @throws SubscriptionNotFoundException
      * @throws PermissionDeniedException
@@ -83,18 +82,16 @@ public class Subject {
         SubscriptionDAO subscriptionDAO = this.context.getSubscriptionDAO();
         ApplicationEntity applicationEntity = application.getEntity();
         SubscriptionEntity subscription = subscriptionDAO.findSubscription(this.entity, applicationEntity);
-        if (null == subscription) {
+        if (null == subscription)
             throw new SubscriptionNotFoundException();
-        }
-        if (!SubscriptionOwnerType.SUBJECT.equals(subscription.getSubscriptionOwnerType())) {
+        if (!SubscriptionOwnerType.SUBJECT.equals(subscription.getSubscriptionOwnerType()))
             throw new PermissionDeniedException("subject cannot unsubscribe");
-        }
         subscriptionDAO.removeSubscription(this.entity, applicationEntity);
     }
 
     /**
      * Checks whether this subject is subscribed onto the given application.
-     * 
+     *
      * @param application
      */
     public boolean isSubscribed(Application application) {

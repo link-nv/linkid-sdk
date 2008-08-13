@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -43,9 +43,9 @@ import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 /**
  * Applet control component for PKCS#11 smart cards.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AppletControl implements AppletController, SmartCardPinCallback, SmartCardInteraction {
 
@@ -77,8 +77,9 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
         SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
         List<SmartCardConfig> smartCardConfigs = configFactory.getSmartCardConfigs();
         this.smartCard.init(smartCardConfigs, this);
-        for (SmartCardConfig smartCardConfig : smartCardConfigs)
+        for (SmartCardConfig smartCardConfig : smartCardConfigs) {
             this.appletView.outputDetailMessage("smart card config available for: " + smartCardConfig.getCardAlias());
+        }
 
         String smartCardAlias = this.runtimeContext.getParameter("SmartCardConfig");
 
@@ -303,12 +304,13 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
 
     public static URL transformUrl(URL documentBase, String targetPath) {
 
-        if (targetPath.startsWith("http://") || targetPath.startsWith("https://"))
+        if (targetPath.startsWith("http://") || targetPath.startsWith("https://")) {
             try {
                 return new URL(targetPath);
             } catch (MalformedURLException e) {
                 throw new RuntimeException("URL error: " + e.getMessage());
             }
+        }
 
         String documentBaseStr = documentBase.toString();
         int idx = documentBaseStr.lastIndexOf("/");

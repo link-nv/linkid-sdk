@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -38,45 +38,45 @@ import org.apache.commons.logging.LogFactory;
  * SafeOnline Authentication Request Filter. This filter can be used by servlet container based web applications for
  * authentication via SafeOnline. This filter initiates the authentication request towards the SafeOnline authentication
  * web application. The handling of the authentication response is done via the {@link AuthnResponseFilter}.
- * 
+ *
  * <p>
  * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor.
  * </p>
- * 
+ *
  * <p>
  * The init parameter <code>AuthenticationServiceUrl</code> should point to the Authentication Web Application entry
  * point.
  * </p>
- * 
+ *
  * <p>
  * The init parameter <code>ApplicationName</code> should contain the application name of this service provider.
  * </p>
- * 
+ *
  * <p>
  * The optional init parameter <code>AuthenticationProtocol</code> should contain the name of the protocol used between
  * the SafeOnline authentication web application and this service provider. This can be: SAML2_BROWSER_POST. Defaults
  * to: SAML2_BROWSER_POST
  * </p>
- * 
+ *
  * <p>
  * The optional keystore resource name <code>KeyStoreResource</code> init parameter. The key pair within this keystore
  * can be used by the authentication protocol handler to digitally sign the authentication request.
  * </p>
- * 
+ *
  * <p>
  * The optional keystore file name <code>KeyStoreFile</code> init parameter. The key pair within this keystore can be
  * used by the authentication protocol handler to digitally sign the authentication request.
  * </p>
- * 
+ *
  * <p>
  * The optional <code>KeyStoreType</code> key store type init parameter. Accepted values are: <code>pkcs12</code> and
  * <code>jks</code>.
  * </p>
- * 
+ *
  * <p>
  * The optional <code>KeyStorePassword</code> init parameter contains the password to unlock the keystore and key entry.
  * </p>
- * 
+ *
  * @author fcorneli
  * @see AuthnResponseFilter
  */
@@ -135,9 +135,8 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
             ClassLoader classLoader = currentThread.getContextClassLoader();
             LOG.debug("classloader name: " + classLoader.getClass().getName());
             keyStoreInputStream = classLoader.getResourceAsStream(this.p12KeyStoreResourceName);
-            if (null == keyStoreInputStream) {
+            if (null == keyStoreInputStream)
                 throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreResourceName);
-            }
         } else if (null != this.p12KeyStoreFileName) {
             try {
                 keyStoreInputStream = new FileInputStream(this.p12KeyStoreFileName);

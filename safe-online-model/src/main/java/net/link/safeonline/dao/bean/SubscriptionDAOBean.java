@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -92,8 +92,9 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
             throws SubscriptionNotFoundException {
 
         SubscriptionEntity subscription = findSubscription(subject, application);
-        if (null == subscription)
+        if (null == subscription) {
             throw new SubscriptionNotFoundException();
+        }
         this.entityManager.remove(subscription);
     }
 
@@ -120,8 +121,9 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
             throws SubscriptionNotFoundException {
 
         SubscriptionEntity subscription = findSubscription(subject, application);
-        if (null == subscription)
+        if (null == subscription) {
             throw new SubscriptionNotFoundException();
+        }
         return subscription;
     }
 

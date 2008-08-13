@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -49,9 +49,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Panel to extract a certificate in DER format from a keystore.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class ExtractCertificate extends JPanel {
 
@@ -234,8 +234,9 @@ public class ExtractCertificate extends JPanel {
         fc.addChoosableFileFilter(new KeyStoreFilter());
         fc.showOpenDialog(this.getParent());
         File certFile = fc.getSelectedFile();
-        if (certFile != null)
+        if (certFile != null) {
             this.keyStoreField.setText(certFile.getAbsolutePath());
+        }
     }
 
     protected boolean checkInput() {

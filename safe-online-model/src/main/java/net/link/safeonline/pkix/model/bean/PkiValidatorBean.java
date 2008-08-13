@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Copyright 2005-2006 Frank Cornelis.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
@@ -69,9 +69,8 @@ public class PkiValidatorBean implements PkiValidator {
          * complexity. Keep It Simple, Stupid.
          */
 
-        if (null == certificate) {
+        if (null == certificate)
             throw new IllegalArgumentException("certificate is null");
-        }
 
         LOG.debug("validate certificate " + certificate.getSubjectX500Principal() + " in domain "
                 + trustDomain.getName());
@@ -97,7 +96,7 @@ public class PkiValidatorBean implements PkiValidator {
 
     /**
      * Build the trust point path for a given certificate.
-     * 
+     *
      * @param trustDomain
      * @param certificate
      * @return the path, or an empty list otherwise.
@@ -185,12 +184,10 @@ public class PkiValidatorBean implements PkiValidator {
             X509Certificate trustPointCertificate = trustPoint.getCertificate();
             LOG.debug("verifying: " + trustPointCertificate.getSubjectX500Principal());
             PkiResult checkValidityResult = checkValidity(trustPointCertificate);
-            if (PkiResult.VALID != checkValidityResult) {
+            if (PkiResult.VALID != checkValidityResult)
                 return checkValidityResult;
-            }
-            if (false == verifySignature(trustPointCertificate, issuerPublicKey)) {
+            if (false == verifySignature(trustPointCertificate, issuerPublicKey))
                 return PkiResult.INVALID;
-            }
             if (false == verifyConstraints(trustPointCertificate)) {
                 LOG.debug("verify constraints did not pass");
                 return PkiResult.INVALID;
@@ -200,12 +197,10 @@ public class PkiValidatorBean implements PkiValidator {
         }
 
         PkiResult checkValidityResult = checkValidity(certificate);
-        if (PkiResult.VALID != checkValidityResult) {
+        if (PkiResult.VALID != checkValidityResult)
             return checkValidityResult;
-        }
-        if (false == verifySignature(certificate, issuerPublicKey)) {
+        if (false == verifySignature(certificate, issuerPublicKey))
             return PkiResult.INVALID;
-        }
         if (true == performOcspCheck) {
             LOG.debug("performing OCSP check");
             return convertOcspResult(this.cachedOcspValidator.performCachedOcspCheck(trustDomain, certificate,
@@ -217,15 +212,14 @@ public class PkiValidatorBean implements PkiValidator {
 
     private PkiResult convertOcspResult(OcspResult ocspResult) {
 
-        if (ocspResult == OcspResult.GOOD) {
+        if (ocspResult == OcspResult.GOOD)
             return PkiResult.VALID;
-        } else if (ocspResult == OcspResult.REVOKED) {
+        else if (ocspResult == OcspResult.REVOKED)
             return PkiResult.REVOKED;
-        } else if (ocspResult == OcspResult.SUSPENDED) {
+        else if (ocspResult == OcspResult.SUSPENDED)
             return PkiResult.SUSPENDED;
-        } else {
+        else
             return PkiResult.INVALID;
-        }
     }
 
     private boolean verifyConstraints(X509Certificate certificate) {

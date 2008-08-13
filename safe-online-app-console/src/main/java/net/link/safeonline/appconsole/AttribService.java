@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,7 +23,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
@@ -59,9 +58,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Attribute panel, uses the Safe Online attribute and data webservices via the ServicesUtils class
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class AttribService extends JPanel implements Observer {
 
@@ -246,9 +245,8 @@ public class AttribService extends JPanel implements Observer {
                 JOptionPane.showMessageDialog(this, "Invalid input, not a valid double value");
                 return null;
             }
-        } else {
+        } else
             return newValue;
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -287,8 +285,7 @@ public class AttribService extends JPanel implements Observer {
 
         HashMap<String, Object> data = (HashMap<String, Object>) map;
 
-        for (Iterator<String> it = data.keySet().iterator(); it.hasNext();) {
-            String attributeName = it.next();
+        for (String attributeName : data.keySet()) {
             Object attributeValue = data.get(attributeName);
 
             DefaultMutableTreeNode attributeNameNode = new DefaultMutableTreeNode(attributeName);
@@ -302,16 +299,17 @@ public class AttribService extends JPanel implements Observer {
             }
 
             // expand complete tree
-            for (int i = 0; i < this.attributeTree.getRowCount(); i++)
+            for (int i = 0; i < this.attributeTree.getRowCount(); i++) {
                 this.attributeTree.expandRow(i);
+            }
         }
     }
 
     private void addSingleValueAttribute(DefaultMutableTreeNode attributeNameNode, Object attributeValue) {
 
-        if (attributeValue instanceof AttributeType)
+        if (attributeValue instanceof AttributeType) {
             addCompoundAttribute(attributeNameNode, attributeValue);
-        else {
+        } else {
             DefaultMutableTreeNode attributeValueNode;
             if (attributeValue instanceof XMLGregorianCalendar) {
                 Date date = ((XMLGregorianCalendar) attributeValue).toGregorianCalendar().getTime();
@@ -364,9 +362,9 @@ public class AttribService extends JPanel implements Observer {
 
 
     /*
-     * 
+     *
      * Tree model listener class to catch leaf edits
-     * 
+     *
      * Upon an edit, the attribute is immediately updated through the SafeOnline web service
      */
     class AttributeTreeModelListener implements TreeModelListener {
@@ -374,7 +372,7 @@ public class AttribService extends JPanel implements Observer {
         public void treeNodesChanged(TreeModelEvent e) {
 
             DefaultMutableTreeNode node;
-            node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
+            node = (DefaultMutableTreeNode) e.getTreePath().getLastPathComponent();
 
             if (e.getTreePath().getPathCount() < 3)
                 return;
@@ -404,7 +402,7 @@ public class AttribService extends JPanel implements Observer {
     }
 
     /*
-     * 
+     *
      * Action classes
      */
     private class GetAttributesAction extends AbstractAction {
@@ -450,8 +448,9 @@ public class AttribService extends JPanel implements Observer {
             String attributeName = (String) node.getUserObject();
             Object attributeValue = getAttributeValue(node);
             String attributeId = null;
-            if (CompoundUtil.isCompound(attributeValue))
+            if (CompoundUtil.isCompound(attributeValue)) {
                 attributeId = CompoundUtil.getAttributeId(attributeValue);
+            }
 
             setCursor(new Cursor(Cursor.WAIT_CURSOR));
             ServicesUtils.getInstance().removeAttribute(user, attributeName, attributeId);
@@ -495,10 +494,11 @@ public class AttribService extends JPanel implements Observer {
                         booleanValues[0]);
                 if (boolAnswer == JOptionPane.CANCEL_OPTION)
                     return;
-                else if (boolAnswer == 0)
+                else if (boolAnswer == 0) {
                     attributeValue = new Boolean(true);
-                else
+                } else {
                     attributeValue = new Boolean(false);
+                }
             } else {
 
             }

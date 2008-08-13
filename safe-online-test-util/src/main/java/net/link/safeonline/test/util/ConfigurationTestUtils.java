@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -29,7 +29,7 @@ public class ConfigurationTestUtils {
             if (configurable != null) {
                 field.setAccessible(true);
                 if (configurable.name().equals(name)
-                        || (configurable.name().equals("") && field.getName().equals(name))) {
+                        || configurable.name().equals("") && field.getName().equals(name)) {
                     LOG.debug("setting field: " + name + " to: " + value);
                     field.set(target, value);
                 }

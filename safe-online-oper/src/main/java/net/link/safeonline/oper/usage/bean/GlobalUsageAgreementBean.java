@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -148,8 +148,9 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
         Locale[] locales = Locale.getAvailableLocales();
         for (Locale locale : locales) {
             if (locale.getLanguage().toLowerCase().startsWith(languagePrefix.toLowerCase())) {
-                if (!languages.contains(locale.getLanguage()))
+                if (!languages.contains(locale.getLanguage())) {
                     languages.add(locale.getLanguage());
+                }
             }
         }
         return languages;
@@ -242,8 +243,9 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
                 .debug("edit current usage agreement text: language="
                         + this.selectedCurrentUsageAgreementText.getLanguage());
         GlobalUsageAgreementEntity draftUsageAgreement = this.usageAgreementService.getDraftGlobalUsageAgreement();
-        if (null == draftUsageAgreement)
+        if (null == draftUsageAgreement) {
             draftUsageAgreement = this.usageAgreementService.createDraftGlobalUsageAgreement();
+        }
         this.selectedUsageAgreementText = draftUsageAgreement
                 .getUsageAgreementText(this.selectedCurrentUsageAgreementText.getLanguage());
         return "edittext";

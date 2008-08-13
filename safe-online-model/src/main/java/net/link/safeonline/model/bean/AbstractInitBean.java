@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -620,11 +620,13 @@ public abstract class AbstractInitBean implements Startable {
             String applicationName = attributeProvider.getApplicationName();
             String attributeName = attributeProvider.getAttributeTypeName();
             ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
-            if (null == application)
+            if (null == application) {
                 throw new EJBException("application not found: " + applicationName);
+            }
             AttributeTypeEntity attributeType = this.attributeTypeDAO.findAttributeType(attributeName);
-            if (null == attributeType)
+            if (null == attributeType) {
                 throw new EJBException("attribute type not found: " + attributeName);
+            }
             AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO.findAttributeProvider(
                     application, attributeType);
             if (null != existingAttributeProvider) {
@@ -966,8 +968,9 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initNode() {
 
-        if (null == this.node)
+        if (null == this.node) {
             throw new EJBException("No Olas node specified");
+        }
         OlasEntity olasNode = this.olasDAO.findNode(this.node.name);
         if (null == olasNode) {
             this.olasDAO.addNode(this.node.name, this.node.protocol, this.node.hostname, this.node.port,

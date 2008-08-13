@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -150,9 +150,8 @@ public class TrustPointEntity implements Serializable {
     @Transient
     public X509Certificate getCertificate() {
 
-        if (null != this.certificate) {
+        if (null != this.certificate)
             return this.certificate;
-        }
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             InputStream inputStream = new ByteArrayInputStream(this.encodedCert);
@@ -166,15 +165,12 @@ public class TrustPointEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (false == obj instanceof TrustPointEntity) {
+        if (false == obj instanceof TrustPointEntity)
             return false;
-        }
         TrustPointEntity rhs = (TrustPointEntity) obj;
         return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
     }

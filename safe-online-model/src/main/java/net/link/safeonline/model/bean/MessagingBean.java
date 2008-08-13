@@ -1,5 +1,7 @@
 package net.link.safeonline.model.bean;
 
+import static net.link.safeonline.messaging.bean.EmailBean.queueName;
+
 import javax.annotation.Resource;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -11,8 +13,6 @@ import javax.jms.Session;
 
 import net.link.safeonline.messaging.bean.EndUserMessage;
 import net.link.safeonline.model.Messaging;
-
-import static net.link.safeonline.messaging.bean.EmailBean.queueName;
 
 
 @Stateless

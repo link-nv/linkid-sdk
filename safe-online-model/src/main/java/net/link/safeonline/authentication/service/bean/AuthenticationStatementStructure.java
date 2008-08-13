@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -44,14 +44,12 @@ public class AuthenticationStatementStructure extends AbstractStatementStructure
     @Override
     protected void decode(ASN1Sequence tbsSequence) throws DecodingException {
 
-        if (tbsSequence.size() != 4) {
+        if (tbsSequence.size() != 4)
             throw new DecodingException();
-        }
         DERInteger version = DERInteger
                 .getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_VERSION_IDX));
-        if (DERAuthenticationStatement.VERSION != version.getValue().intValue()) {
+        if (DERAuthenticationStatement.VERSION != version.getValue().intValue())
             throw new DecodingException();
-        }
         DERVisibleString derSessionId = DERVisibleString.getInstance(tbsSequence
                 .getObjectAt(DERAuthenticationStatement.TBS_SESSION_IDX));
         this.sessionId = derSessionId.getString();

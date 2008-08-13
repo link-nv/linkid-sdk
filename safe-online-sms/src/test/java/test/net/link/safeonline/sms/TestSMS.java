@@ -1,11 +1,11 @@
 package test.net.link.safeonline.sms;
 
+import junit.framework.TestCase;
+import net.link.safeonline.sms.SMS;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import net.link.safeonline.sms.SMS;
-import junit.framework.TestCase;
 
 
 public class TestSMS extends TestCase {

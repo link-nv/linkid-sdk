@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -196,8 +196,9 @@ public class UsageAgreementBean implements UsageAgreement {
         Locale[] locales = Locale.getAvailableLocales();
         for (Locale locale : locales) {
             if (locale.getLanguage().toLowerCase().startsWith(languagePrefix.toLowerCase())) {
-                if (!languages.contains(locale.getLanguage()))
+                if (!languages.contains(locale.getLanguage())) {
                     languages.add(locale.getLanguage());
+                }
             }
         }
         return languages;

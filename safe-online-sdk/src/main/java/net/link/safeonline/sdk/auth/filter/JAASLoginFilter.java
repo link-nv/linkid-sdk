@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -37,16 +37,16 @@ import org.jboss.security.auth.callback.UsernamePasswordHandler;
 /**
  * JAAS login servlet filter. This servlet filter takes a username from the HTTP session and uses it to perform a JAAS
  * login. It also takes care of proper JAAS logout.
- * 
+ *
  * <p>
  * When running within a JBoss Application Server, EJB components can set a session attribute called
  * {@link #FLUSH_JBOSS_CREDENTIAL_CACHE_ATTRIBUTE_NAME} to flush the security domain credentials of the caller
  * principal. The value of this attribute is the name of the security domain for which to flush the credential cache.
  * This can be useful for EJB components that make changes to the credentials of the caller principal.
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class JAASLoginFilter implements Filter {
 
@@ -100,9 +100,8 @@ public class JAASLoginFilter implements Filter {
     private void login(HttpServletRequest request) {
 
         String username = LoginManager.findUsername(request);
-        if (username == null) {
+        if (username == null)
             return;
-        }
         UsernamePasswordHandler handler = new UsernamePasswordHandler(username, null);
         try {
             LoginContext loginContext = new LoginContext(this.loginContextName, handler);
@@ -117,9 +116,8 @@ public class JAASLoginFilter implements Filter {
     private void logout(ServletRequest request) {
 
         LoginContext loginContext = (LoginContext) request.getAttribute(JAAS_LOGIN_CONTEXT_SESSION_ATTRIB);
-        if (loginContext == null) {
+        if (loginContext == null)
             return;
-        }
         try {
             LOG.debug("logout");
             loginContext.logout();
@@ -138,19 +136,17 @@ public class JAASLoginFilter implements Filter {
         /*
          * We could trigger here an java.lang.IllegalStateException: Cannot create a session after the response has been
          * committed.
-         * 
+         *
          * So be careful when retrieving the session.
          */
-        if (null == session) {
+        if (null == session)
             return;
-        }
         String securityDomain = (String) session.getAttribute(FLUSH_JBOSS_CREDENTIAL_CACHE_ATTRIBUTE_NAME);
         /*
          * The EJB components can set this attribute via JACC.
          */
-        if (null == securityDomain) {
+        if (null == securityDomain)
             return;
-        }
         String username = LoginManager.getUsername(request);
         LOG.debug("trying to flush JBoss credential cache for " + username + " on security domain " + securityDomain);
         try {

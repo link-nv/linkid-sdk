@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -16,9 +16,9 @@ import java.util.List;
 
 /**
  * Detects the Java runtime. This covers the Java version and the availability of PKCS#11 drivers.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class JavaVersionApplet extends Applet {
 

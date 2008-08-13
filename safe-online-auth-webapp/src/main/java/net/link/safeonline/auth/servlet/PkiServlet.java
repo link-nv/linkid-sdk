@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -30,9 +30,9 @@ import org.bouncycastle.openssl.PEMWriter;
  * Servlet that exports the public key and certificate of the OLAS service that is being used to sign the generated SAML
  * tokens. This service can be useful to service providers that want to verify the correctness of the authentication
  * response tokens themselves.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class PkiServlet extends AbstractInjectionServlet {
 

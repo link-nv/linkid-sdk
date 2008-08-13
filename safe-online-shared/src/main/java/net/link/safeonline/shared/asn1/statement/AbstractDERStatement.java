@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -34,9 +34,8 @@ public abstract class AbstractDERStatement implements DEREncodable {
 
         DERSequence sequence = new DERSequence();
         sequence.add(tbs);
-        if (null == this.signature) {
+        if (null == this.signature)
             throw new IllegalStateException("set signature value first");
-        }
         DERBitString signatureBitString = new DERBitString(this.signature);
         sequence.add(signatureBitString);
         return sequence.getEncoded();

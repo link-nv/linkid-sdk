@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -24,9 +24,9 @@ import org.jboss.system.ServiceMBeanSupport;
 
 /**
  * Service that prepares the runtime for the SafeOnline application.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class RuntimeService extends ServiceMBeanSupport implements RuntimeServiceMBean {
 

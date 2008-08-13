@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -18,9 +18,9 @@ import java.util.Set;
 /**
  * Generic filter util class. Use this to filter on all kind of collections. The filter logic itself should be
  * implemented using the {@link Filter} interface.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class FilterUtil {
 

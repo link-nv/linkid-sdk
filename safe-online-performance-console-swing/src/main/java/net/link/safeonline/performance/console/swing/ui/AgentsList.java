@@ -26,11 +26,11 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * <h2>{@link AgentsList}<br>
  * <sub>A list that visualises agent status.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AgentsList extends JPanel implements AgentStateListener {
@@ -60,13 +60,15 @@ public class AgentsList extends JPanel implements AgentStateListener {
         for (Address address : addresses)
             if (!address.equals(ConsoleData.getSelf())) {
                 ConsoleAgent agent = ConsoleData.getAgent(address);
-                if (agent != null && findPanel(agent) == null)
+                if (agent != null && findPanel(agent) == null) {
                     addAgent(agent);
+                }
             }
 
         // Remove stale agents from the list.
-        for (ConsoleAgent agent : ConsoleData.removeStaleAgents())
+        for (ConsoleAgent agent : ConsoleData.removeStaleAgents()) {
             removeAgent(agent);
+        }
     }
 
     private void addAgent(ConsoleAgent agent) {
@@ -111,8 +113,9 @@ public class AgentsList extends JPanel implements AgentStateListener {
     public void agentSuspected(Address agentAddress) {
 
         ConsoleAgent agent = ConsoleData.getAgent(agentAddress);
-        if (null != agent)
+        if (null != agent) {
             agent.setHealthy(false);
+        }
     }
 
     /**
@@ -159,8 +162,9 @@ public class AgentsList extends JPanel implements AgentStateListener {
 
         Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
         for (AgentPanel panel : this.agentPanels)
-            if (panel.isSelected())
+            if (panel.isSelected()) {
                 selectedAgents.add(panel.getAgent());
+            }
 
         ConsoleData.setSelectedAgents(selectedAgents);
     }

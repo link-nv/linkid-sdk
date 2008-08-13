@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  * <i>Dec 6, 2007</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ApplicationLogoServlet extends AbstractInjectionServlet {
@@ -64,8 +64,9 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
 
         boolean logoWritten = false;
         String applicationName = request.getParameter("applicationName");
-        if (null == applicationName)
+        if (null == applicationName) {
             throw new IllegalArgumentException("The application name must be provided.");
+        }
 
         try {
             PublicApplication application = this.publicApplicationService.findPublicApplication(applicationName);
@@ -87,9 +88,10 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
             // don't show the logo; it is probably malicious code.
             String noMime = request.getParameter("nomime");
             if (!mime.startsWith("image/"))
-                if (noMime == null)
+                if (noMime == null) {
                     throw new IllegalStateException("Application logo for " + applicationName
                             + " is not an image (it is " + mime + "); refusing to show.");
+                }
 
             response.setContentType(magic.getMimeType());
             response.getOutputStream().write(logo);

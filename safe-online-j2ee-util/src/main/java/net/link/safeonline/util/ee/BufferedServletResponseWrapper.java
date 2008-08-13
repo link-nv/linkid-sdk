@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -22,13 +22,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Buffered servlet response wrapper.
- * 
+ *
  * <p>
  * See also: Servlet API version 2.4 specifications.
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
 
@@ -50,7 +50,7 @@ public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
 
     /**
      * This method will commit the buffered response to the real output response.
-     * 
+     *
      * @throws IOException
      */
     public void commit() throws IOException {

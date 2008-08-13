@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -22,15 +22,15 @@ import org.junit.Test;
 /**
  * <h2>{@link VelocityTest}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>May 13, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class VelocityTest {

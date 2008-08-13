@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -37,9 +37,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Authentication Servlet that accepts authentication statements from the client-side browser applet.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AuthenticationServlet extends AbstractStatementServlet {
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -24,13 +24,13 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Servlet container filter that sets the servlet container user principal according to the SafeOnline authenticated
  * user.
- * 
+ *
  * <p>
  * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor.
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class ContainerLoginFilter implements Filter {
 

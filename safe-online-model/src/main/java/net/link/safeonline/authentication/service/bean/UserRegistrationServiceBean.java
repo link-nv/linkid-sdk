@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -28,9 +28,9 @@ import net.link.safeonline.service.SubjectService;
 /**
  * Implementation of user registration service interface. This component does not live within the SafeOnline core
  * security domain. This because a user that is about to register himself is not yet logged on into the system.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Stateless
 public class UserRegistrationServiceBean implements UserRegistrationService, UserRegistrationServiceRemote {
@@ -65,8 +65,9 @@ public class UserRegistrationServiceBean implements UserRegistrationService, Use
         for (DeviceMappingEntity deviceMapping : deviceMappings) {
             Object deviceAttribute = this.proxyAttributeService.findDeviceAttributeValue(deviceMapping.getId(),
                     deviceMapping.getDevice().getAttributeType().getName());
-            if (null != deviceAttribute)
+            if (null != deviceAttribute) {
                 throw new ExistingUserException();
+            }
         }
         return subject;
     }

@@ -29,15 +29,15 @@ import net.link.safeonline.performance.console.swing.model.AgentSelectionListene
 /**
  * <h2>{@link ExecutionSettings}<br>
  * <sub>Manage execution preferences.</sub></h2>
- * 
+ *
  * <p>
  * This class keeps and listens to the components that contain the location of the OLAS service.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ExecutionSettings implements FocusListener, ItemListener, AgentSelectionListener, AgentStatusListener {
@@ -87,14 +87,16 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
 
         if (this.scenarioSelection.equals(e.getSource())) {
             String scenario = null;
-            if (this.scenarioSelection.getSelectedItem() != null)
+            if (this.scenarioSelection.getSelectedItem() != null) {
                 scenario = ((ItemRenderer<String>) this.scenarioSelection.getSelectedItem()).getItem();
+            }
 
             ConsoleData.setScenarioName(scenario);
         }
 
-        else if (this.useSsl.equals(e.getSource()))
+        else if (this.useSsl.equals(e.getSource())) {
             ConsoleData.setSsl(this.useSsl.isSelected());
+        }
     }
 
     /**
@@ -102,20 +104,18 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
      */
     public void focusLost(FocusEvent e) {
 
-        if (this.hostname.equals(e.getSource()))
+        if (this.hostname.equals(e.getSource())) {
             ConsoleData.setHostname(this.hostname.getText());
-
-        else if (this.port.equals(e.getSource()))
+        } else if (this.port.equals(e.getSource())) {
             ConsoleData.setPort(Integer.parseInt(this.port.getText()));
-
-        else if (this.workers.equals(e.getSource()))
+        } else if (this.workers.equals(e.getSource())) {
             ConsoleData.setWorkers(Integer.parseInt(this.workers.getText()));
-
-        else if (this.duration.equals(e.getSource()))
+        } else if (this.duration.equals(e.getSource())) {
             try {
                 ConsoleData.setDuration(Long.parseLong(this.duration.getText()) * 60 * 1000);
             } catch (NumberFormatException err) {
             }
+        }
     }
 
     /**
@@ -156,16 +156,18 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
         for (ConsoleAgent agent : selectedAgents) {
             Set<String> agentScenarios = agent.getScenarios();
 
-            if (agentScenarios == null)
+            if (agentScenarios == null) {
                 agentScenarios = new HashSet<String>();
+            }
 
-            if (commonScenarios.isEmpty())
+            if (commonScenarios.isEmpty()) {
                 commonScenarios.addAll(agentScenarios);
-            else {
+            } else {
                 Iterator<String> it = commonScenarios.iterator();
                 while (it.hasNext())
-                    if (!agentScenarios.contains(it.next()))
+                    if (!agentScenarios.contains(it.next())) {
                         it.remove();
+                    }
             }
         }
 
@@ -185,7 +187,7 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
                 Object selectedItem = box.getSelectedItem();
                 box.removeAllItems();
 
-                for (String scenario : scenarios)
+                for (String scenario : scenarios) {
                     box.addItem(new ItemRenderer<String>(scenario) {
 
                         @Override
@@ -194,10 +196,12 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
                             return this.item.replaceFirst(".*\\.", "");
                         }
                     });
+                }
 
                 box.setSelectedItem(selectedItem);
-                if (box.getSelectedItem() == null && !scenarios.isEmpty())
+                if (box.getSelectedItem() == null && !scenarios.isEmpty()) {
                     box.setSelectedIndex(0);
+                }
                 box.setEnabled(box.getModel().getSize() > 0);
             }
         });

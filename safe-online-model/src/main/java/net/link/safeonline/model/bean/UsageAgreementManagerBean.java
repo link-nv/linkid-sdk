@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -47,10 +47,11 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
         UsageAgreementEntity draftUsageAgreement = this.usageAgreementDAO.getUsageAgreement(application,
                 UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
         long newUsageAgreementVersion;
-        if (application.getCurrentApplicationUsageAgreement() == UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION)
+        if (application.getCurrentApplicationUsageAgreement() == UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION) {
             newUsageAgreementVersion = UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION;
-        else
+        } else {
             newUsageAgreementVersion = application.getCurrentApplicationUsageAgreement() + 1;
+        }
 
         UsageAgreementEntity newUsageAgreement = this.usageAgreementDAO.addUsageAgreement(application,
                 newUsageAgreementVersion);
@@ -76,10 +77,11 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
         long currentUsageAgreementVersion = currentUsageAgreement.getUsageAgreementVersion().longValue();
         if (currentUsageAgreementVersion == GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION.longValue()
                 || currentUsageAgreementVersion == GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
-                        .longValue())
+                        .longValue()) {
             newUsageAgreementVersion = GlobalUsageAgreementEntity.INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION;
-        else
+        } else {
             newUsageAgreementVersion = currentUsageAgreement.getUsageAgreementVersion() + 1;
+        }
         GlobalUsageAgreementEntity newUsageAgreement = this.usageAgreementDAO
                 .addGlobalUsageAgreement(newUsageAgreementVersion);
         for (UsageAgreementTextEntity draftUsageAgreementText : draftUsageAgreement.getUsageAgreementTexts()) {

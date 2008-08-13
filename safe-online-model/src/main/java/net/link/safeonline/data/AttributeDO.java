@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,9 +23,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
 /**
  * Attribute Data Object. Used to transfer data between service and user application. This has been done to make life in
  * the presentation layer easier.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AttributeDO implements Serializable, Cloneable {
 
@@ -89,7 +89,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     /**
      * Gives back the URN name of the attribute type.
-     * 
+     *
      */
     public String getName() {
 
@@ -136,7 +136,7 @@ public class AttributeDO implements Serializable, Cloneable {
      * <code>null</code> this method gives back the URN machine name. In case this attribute value is part of a
      * multi-valued attribute we also append the attribute index to the human readable name. We increase the index by
      * one since human beings tend to start counting from 1.
-     * 
+     *
      */
     public String getHumanReadableName() {
 
@@ -180,7 +180,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     /**
      * Gets the boolean value. Can be <code>null</code>.
-     * 
+     *
      */
     public Boolean getBooleanValue() {
 
@@ -225,7 +225,7 @@ public class AttributeDO implements Serializable, Cloneable {
     /**
      * Gets the value. The {@link #getValue()} and {@link #setValue(AttributeDO)} methods are used by the presentation
      * layer to allow for easy Expression Language expressions in the JSF pages.
-     * 
+     *
      */
     public AttributeDO getValue() {
 
@@ -234,7 +234,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     /**
      * Sets the value. Here we do a deep-copy of the values.
-     * 
+     *
      * @param value
      */
     public void setValue(AttributeDO value) {
@@ -274,18 +274,19 @@ public class AttributeDO implements Serializable, Cloneable {
 
     public void setValue(Object value) {
 
-        if (value.getClass().equals(String.class))
+        if (value.getClass().equals(String.class)) {
             this.setStringValue((String) value);
-        else if (value.getClass().equals(Boolean.class))
+        } else if (value.getClass().equals(Boolean.class)) {
             this.setBooleanValue((Boolean) value);
-        else if (value.getClass().equals(Integer.class))
+        } else if (value.getClass().equals(Integer.class)) {
             this.setIntegerValue((Integer) value);
-        else if (value.getClass().equals(Double.class))
+        } else if (value.getClass().equals(Double.class)) {
             this.setDoubleValue((Double) value);
-        else if (value.getClass().equals(Date.class))
+        } else if (value.getClass().equals(Date.class)) {
             this.setDateValue((Date) value);
-        else
+        } else {
             throw new EJBException("unsupported data type: " + value.getClass().getName());
+        }
 
     }
 
@@ -302,7 +303,7 @@ public class AttributeDO implements Serializable, Cloneable {
     /**
      * Gives back the index of this attribute. This only really makes sense in the event of multi-valued attributes. For
      * single-valued attributes the index defaults to zero.
-     * 
+     *
      */
     public long getIndex() {
 
@@ -316,7 +317,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     /**
      * Marks whether this attribute value is part of a multi-valued attribute or not.
-     * 
+     *
      */
     public boolean isMultivalued() {
 
@@ -331,7 +332,7 @@ public class AttributeDO implements Serializable, Cloneable {
     /**
      * Marks that this attribute entry is the title entry of a compounded attribute record. This flag will be used for
      * visualization.
-     * 
+     *
      */
     public boolean isCompounded() {
 
@@ -346,7 +347,7 @@ public class AttributeDO implements Serializable, Cloneable {
     /**
      * Marks that this attribute entry is a member entry of a compounded attribute record. This flag will be used for
      * visualization.
-     * 
+     *
      */
     public boolean isMember() {
 
@@ -360,7 +361,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     /**
      * Marks whether this attribute is required or not. For compounded member attribute the value could be optional.
-     * 
+     *
      */
     public boolean isRequired() {
 
@@ -374,7 +375,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     /**
      * Marks whether this attribute is user visible or not.
-     * 
+     *
      */
     public boolean isUserVisible() {
 
@@ -409,7 +410,7 @@ public class AttributeDO implements Serializable, Cloneable {
     /**
      * Copies the value of this attribute data object to the (attached) target attribute entity according to the
      * datatype constraints by the given attribute type.
-     * 
+     *
      * @param attributeType
      * @param targetAttribute
      */

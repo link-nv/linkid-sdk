@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,9 +23,9 @@ import org.jboss.mx.util.MBeanServerLocator;
 /**
  * Client for SafeOnline Authentication Identity Service JMX bean. This service manages the key pair of the SafeOnline
  * service itself. See also: safe-online-service.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AuthIdentityServiceClient {
 
@@ -54,7 +54,7 @@ public class AuthIdentityServiceClient {
 
     /**
      * Gives back the private key of the SafeOnline service entity.
-     * 
+     *
      */
     public PrivateKey getPrivateKey() {
 
@@ -72,7 +72,7 @@ public class AuthIdentityServiceClient {
 
     /**
      * Gives back the public key of the SafeOnline service entity.
-     * 
+     *
      */
     public PublicKey getPublicKey() {
 
@@ -89,7 +89,7 @@ public class AuthIdentityServiceClient {
 
     /**
      * Gives back the X509 certificate of the SafeOnline service entity.
-     * 
+     *
      */
     public X509Certificate getCertificate() {
 

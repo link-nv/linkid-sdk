@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Invocation handler for the query object factory. The query object factory is using the Proxy API to construct the
  * query object. The behaviour of the query object is provided via this invocation handler.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class QueryObjectInvocationHandler implements InvocationHandler {
 
@@ -48,14 +48,12 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 
         LOG.debug("invoke: " + method.getName());
         QueryMethod queryMethodAnnotation = method.getAnnotation(QueryMethod.class);
-        if (null != queryMethodAnnotation) {
+        if (null != queryMethodAnnotation)
             return query(queryMethodAnnotation, method, args);
-        }
 
         UpdateMethod updateMethodAnnotation = method.getAnnotation(UpdateMethod.class);
-        if (null != updateMethodAnnotation) {
+        if (null != updateMethodAnnotation)
             return update(updateMethodAnnotation, method, args);
-        }
 
         throw new RuntimeException("@QueryMethod or @UpdateMethod annotation expected: "
                 + method.getDeclaringClass().getName());
@@ -69,15 +67,13 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 
         Class<?> returnType = method.getReturnType();
 
-        if (Query.class.isAssignableFrom(returnType)) {
+        if (Query.class.isAssignableFrom(returnType))
             return query;
-        }
 
         Integer result = query.executeUpdate();
 
-        if (Integer.TYPE.isAssignableFrom(returnType)) {
+        if (Integer.TYPE.isAssignableFrom(returnType))
             return result;
-        }
         return null;
     }
 
@@ -90,9 +86,8 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 
         Class<?> returnType = method.getReturnType();
 
-        if (Query.class.isAssignableFrom(returnType)) {
+        if (Query.class.isAssignableFrom(returnType))
             return query;
-        }
 
         if (List.class.isAssignableFrom(returnType)) {
             List<?> resultList = query.getResultList();
@@ -102,9 +97,8 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
         boolean nullable = queryMethodAnnotation.nullable();
         if (true == nullable) {
             List<?> resultList = query.getResultList();
-            if (resultList.isEmpty()) {
+            if (resultList.isEmpty())
                 return null;
-            }
             return resultList.get(0);
         }
 
@@ -114,9 +108,8 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 
     private void setParameters(Method method, Object[] args, Query query) {
 
-        if (null == args) {
+        if (null == args)
             return;
-        }
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         for (int paramIdx = 0; paramIdx < args.length; paramIdx++) {
             for (Annotation parameterAnnotation : parameterAnnotations[paramIdx]) {

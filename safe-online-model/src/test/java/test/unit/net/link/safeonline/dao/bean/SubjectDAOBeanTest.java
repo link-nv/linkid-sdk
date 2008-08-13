@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -11,14 +11,14 @@ import java.util.UUID;
 
 import javax.persistence.RollbackException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import junit.framework.TestCase;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.test.util.EntityTestManager;
-import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 public class SubjectDAOBeanTest extends TestCase {

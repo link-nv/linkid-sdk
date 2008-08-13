@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Utils to ease the working with EJBs.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class EjbUtils {
 
@@ -42,7 +42,7 @@ public class EjbUtils {
 
     /**
      * Lookup an EJB within JNDI.
-     * 
+     *
      * @param <Type>
      * @param initialContext
      * @param jndiName

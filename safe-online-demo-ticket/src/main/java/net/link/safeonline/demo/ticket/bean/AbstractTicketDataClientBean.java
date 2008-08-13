@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -39,9 +39,9 @@ import org.jboss.seam.log.Log;
 
 /**
  * Abstract class for data client beans. Inherit from this class if you need a {@link DataClient} component.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public abstract class AbstractTicketDataClientBean implements AbstractTicketDataClient {
 
@@ -110,23 +110,21 @@ public abstract class AbstractTicketDataClientBean implements AbstractTicketData
 
     protected DataClient getDataClient() {
 
-        if (null == this.dataClient) {
+        if (null == this.dataClient)
             throw new EJBException("data client not yet initialized");
-        }
         return this.dataClient;
     }
 
     protected AttributeClient getAttributeClient() {
 
-        if (null == this.attributeClient) {
+        if (null == this.attributeClient)
             throw new EJBException("attribute client not yet initialized");
-        }
         return this.attributeClient;
     }
 
     /**
      * Returns the username for this user Id. Sets {@link FacesMessages} in case something goes wrong.
-     * 
+     *
      * @param userId
      */
     protected String getUsername(String userId) {

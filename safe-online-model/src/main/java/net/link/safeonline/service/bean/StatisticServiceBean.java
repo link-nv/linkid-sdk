@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -87,9 +87,8 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
         LOG.debug("finding statistic");
         StatisticEntity statistic = this.statisticDAO.findStatisticByNameDomainAndApplication(statisticName,
                 statisticDomain, application);
-        if (statistic == null) {
+        if (statistic == null)
             throw new StatisticNotFoundException();
-        }
 
         // trigger fetching
         LOG.debug("fetching datapoints");

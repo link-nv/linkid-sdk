@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -40,7 +40,7 @@ import org.opensaml.xml.ConfigurationException;
 
 /**
  * Implementation class for the SAML2 browser POST authentication protocol.
- * 
+ *
  * <p>
  * Optional configuration parameters:
  * </p>
@@ -50,16 +50,16 @@ import org.opensaml.xml.ConfigurationException;
  * <li><code>WsLocation</code>: contains the location of the OLAS web services. If present this handler will use the STS
  * web service for SAML authentication token validation.</li>
  * </ul>
- * 
+ *
  * <p>
  * Optional session configuration attributes:
  * </p>
  * <ul>
  * <li><code>Saml2Devices</code>: contains the <code>Set&lt;String&gt;</code> of allowed authentication devices.</li>
  * </ul>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @SupportedAuthenticationProtocol(AuthenticationProtocol.SAML2_BROWSER_POST)
 public class Saml2BrowserPostAuthenticationProtocolHandler implements AuthenticationProtocolHandler {
@@ -119,9 +119,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         this.configParams = inConfigParams;
         this.challenge = new Challenge<String>();
         this.wsLocation = inConfigParams.get("WsLocation");
-        if (null == this.wsLocation) {
+        if (null == this.wsLocation)
             throw new RuntimeException("Initialization param \"WsLocation\" not specified.");
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -133,19 +132,21 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         if (null == staticDeviceList && null == runtimeDevices)
             return null;
         Set<String> staticDevices;
-        if (null == staticDeviceList)
+        if (null == staticDeviceList) {
             staticDevices = null;
-        else {
+        } else {
             staticDevices = new HashSet<String>();
             StringTokenizer stringTokenizer = new StringTokenizer(staticDeviceList, ",");
-            while (stringTokenizer.hasMoreTokens())
+            while (stringTokenizer.hasMoreTokens()) {
                 staticDevices.add(stringTokenizer.nextToken());
+            }
         }
         if (null != staticDevices && null != runtimeDevices) {
             Set<String> intersection = new HashSet<String>(staticDevices);
             intersection.retainAll(runtimeDevices);
-            if (intersection.isEmpty())
+            if (intersection.isEmpty()) {
                 throw new RuntimeException("intersection of static and runtime device lists is empty");
+            }
             return intersection;
         }
         if (null != staticDevices)
@@ -167,10 +168,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
         String templateResourceName;
-        if (this.configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM))
+        if (this.configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
             templateResourceName = this.configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
-        else
+        } else {
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+        }
 
         String language = getLanguage(httpRequest);
         if (null == language) {
@@ -184,13 +186,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     private String getLanguage(HttpServletRequest httpRequest) {
 
         Cookie[] cookies = httpRequest.getCookies();
-        if (null == cookies) {
+        if (null == cookies)
             return null;
-        }
         for (Cookie cookie : cookies) {
-            if ("OLAS.language".equals(cookie.getName())) {
+            if ("OLAS.language".equals(cookie.getName()))
                 return cookie.getValue();
-            }
         }
         return null;
     }

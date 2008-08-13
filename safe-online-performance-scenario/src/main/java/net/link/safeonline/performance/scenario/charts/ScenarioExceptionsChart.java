@@ -34,14 +34,14 @@ import org.jfree.data.time.TimeSeriesCollection;
 /**
  * <h2>{@link ScenarioExceptionsChart}<br>
  * <sub>TODO</sub></h2>
- * 
+ *
  * <p>
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioExceptionsChart extends AbstractChart {
@@ -96,8 +96,9 @@ public class ScenarioExceptionsChart extends AbstractChart {
         for (Map.Entry<String, Map<String, TimeSeries>> driver : this.errorMaps.entrySet()) {
 
             TimeSeriesCollection errorCollection = new TimeSeriesCollection();
-            for (TimeSeries errorSet : driver.getValue().values())
+            for (TimeSeries errorSet : driver.getValue().values()) {
                 errorCollection.addSeries(errorSet);
+            }
 
             errorPlot.add(new XYPlot(errorCollection, null, new NumberAxis(driver.getKey() + " (errors)"),
                     new XYBarRenderer()));
@@ -120,12 +121,14 @@ public class ScenarioExceptionsChart extends AbstractChart {
         String profile = error.getProfile().getDriverClassName().replaceFirst(".*\\.", "");
 
         Map<String, TimeSeries> driverMap = this.errorMaps.get(profile);
-        if (driverMap == null)
+        if (driverMap == null) {
             this.errorMaps.put(profile, driverMap = new HashMap<String, TimeSeries>());
+        }
 
         TimeSeries errorSet = driverMap.get(error.getMessage());
-        if (errorSet == null)
+        if (errorSet == null) {
             driverMap.put(error.getMessage(), errorSet = new TimeSeries(error.getMessage(), FixedMillisecond.class));
+        }
 
         return errorSet;
     }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -242,15 +242,17 @@ public class ApplicationBean implements Application {
     public String add() throws AttributeTypeNotFoundException, IOException, ApplicationNotFoundException {
 
         LOG.debug("add application: " + this.name);
-        if (null != this.friendlyName)
+        if (null != this.friendlyName) {
             LOG.debug("user friendly name: " + this.friendlyName);
-        if (null != this.applicationUrl)
+        }
+        if (null != this.applicationUrl) {
             LOG.debug("application url: " + this.applicationUrl);
+        }
 
         URL newApplicationUrl = null;
         Color newApplicationColor = null;
         byte[] newApplicationLogo = null;
-        if (null != this.applicationUrl && this.applicationUrl.length() != 0)
+        if (null != this.applicationUrl && this.applicationUrl.length() != 0) {
             try {
                 newApplicationUrl = new URL(this.applicationUrl);
             } catch (MalformedURLException e) {
@@ -259,11 +261,13 @@ public class ApplicationBean implements Application {
                         "errorIllegalUrl", this.applicationUrl);
                 return null;
             }
-        if (null != this.applicationLogoFile)
+        }
+        if (null != this.applicationLogoFile) {
             try {
                 newApplicationLogo = getUpFileContent(this.applicationLogoFile);
-                if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/"))
+                if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/")) {
                     throw new MagicException("Application logo requires an image/* MIME type.");
+                }
             } catch (IOException e) {
                 LOG.debug("couldn't fetch uploaded data for application logo.");
                 this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
@@ -285,7 +289,8 @@ public class ApplicationBean implements Application {
                         "errorUploadLogoType");
                 return null;
             }
-        if (null != this.applicationColor && this.applicationColor.length() != 0)
+        }
+        if (null != this.applicationColor && this.applicationColor.length() != 0) {
             try {
                 newApplicationColor = Color.decode(this.applicationColor);
             } catch (NumberFormatException e) {
@@ -294,11 +299,13 @@ public class ApplicationBean implements Application {
                         "errorIllegalColor", this.applicationColor);
                 return null;
             }
+        }
 
         List<IdentityAttributeTypeDO> tempIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
         for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
-            if (false == viewIdentityAttribute.isIncluded())
+            if (false == viewIdentityAttribute.isIncluded()) {
                 continue;
+            }
             LOG.debug("include attribute: " + viewIdentityAttribute.getName());
             IdentityAttributeTypeDO identityAttribute = new IdentityAttributeTypeDO(viewIdentityAttribute.getName(),
                     viewIdentityAttribute.isRequired(), viewIdentityAttribute.isDataMining());
@@ -306,10 +313,11 @@ public class ApplicationBean implements Application {
         }
         try {
             byte[] encodedCertificate;
-            if (null != this.upFile)
+            if (null != this.upFile) {
                 encodedCertificate = getUpFileContent(this.upFile);
-            else
+            } else {
                 encodedCertificate = null;
+            }
             this.applicationService.addApplication(this.name, this.friendlyName, this.applicationOwner,
                     this.description, this.idmapping, IdScopeType.valueOf(this.applicationIdScope), newApplicationUrl,
                     newApplicationLogo, newApplicationColor, encodedCertificate, tempIdentityAttributes,
@@ -526,8 +534,9 @@ public class ApplicationBean implements Application {
          * Construct a map for fast lookup. The key is the attribute type name.
          */
         Map<String, ApplicationIdentityAttributeEntity> currentIdentity = new HashMap<String, ApplicationIdentityAttributeEntity>();
-        for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : currentIdentityAttributes)
+        for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : currentIdentityAttributes) {
             currentIdentity.put(applicationIdentityAttribute.getAttributeTypeName(), applicationIdentityAttribute);
+        }
 
         /*
          * The view receives a full attribute list, annotated with included and required flags.
@@ -541,10 +550,12 @@ public class ApplicationBean implements Application {
             ApplicationIdentityAttributeEntity currentIdentityAttribute = currentIdentity.get(attributeType.getName());
             if (null != currentIdentityAttribute) {
                 included = true;
-                if (currentIdentityAttribute.isRequired())
+                if (currentIdentityAttribute.isRequired()) {
                     required = true;
-                if (currentIdentityAttribute.isDataMining())
+                }
+                if (currentIdentityAttribute.isDataMining()) {
                     dataMining = true;
+                }
             }
             IdentityAttribute identityAttribute = new IdentityAttribute(attributeType.getName(), included, required,
                     dataMining);
@@ -565,8 +576,9 @@ public class ApplicationBean implements Application {
     public List<SelectItem> appliactionIdScopeFactory() {
 
         List<SelectItem> applicationIdScopes = new LinkedList<SelectItem>();
-        for (IdScopeType currentType : IdScopeType.values())
+        for (IdScopeType currentType : IdScopeType.values()) {
             applicationIdScopes.add(new SelectItem(currentType.name(), currentType.name()));
+        }
         return applicationIdScopes;
     }
 
@@ -580,7 +592,7 @@ public class ApplicationBean implements Application {
         URL newApplicationUrl = null;
         byte[] newApplicationLogo = null;
         Color newApplicationColor = null;
-        if (null != this.applicationUrl && this.applicationUrl.length() != 0)
+        if (null != this.applicationUrl && this.applicationUrl.length() != 0) {
             try {
                 newApplicationUrl = new URL(this.applicationUrl);
             } catch (MalformedURLException e) {
@@ -589,7 +601,8 @@ public class ApplicationBean implements Application {
                         "errorIllegalUrl", this.applicationUrl);
                 return null;
             }
-        if (null != this.applicationLogoFile)
+        }
+        if (null != this.applicationLogoFile) {
             try {
                 newApplicationLogo = getUpFileContent(this.applicationLogoFile);
             } catch (IOException e) {
@@ -598,7 +611,8 @@ public class ApplicationBean implements Application {
                         "errorUploadLogo");
                 return null;
             }
-        if (null != this.applicationColor && this.applicationColor.length() != 0)
+        }
+        if (null != this.applicationColor && this.applicationColor.length() != 0) {
             try {
                 newApplicationColor = Color.decode(this.applicationColor);
             } catch (NumberFormatException e) {
@@ -607,6 +621,7 @@ public class ApplicationBean implements Application {
                         "errorIllegalColor", this.applicationColor);
                 return null;
             }
+        }
 
         if (null != this.upFile) {
             LOG.debug("updating application certificate");
@@ -615,8 +630,9 @@ public class ApplicationBean implements Application {
 
         List<IdentityAttributeTypeDO> tempNewIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
         for (IdentityAttribute identityAttribute : this.identityAttributes) {
-            if (false == identityAttribute.isIncluded())
+            if (false == identityAttribute.isIncluded()) {
                 continue;
+            }
             IdentityAttributeTypeDO newIdentityAttribute = new IdentityAttributeTypeDO(identityAttribute.getName(),
                     identityAttribute.isRequired(), identityAttribute.isDataMining());
             tempNewIdentityAttributes.add(newIdentityAttribute);
@@ -624,12 +640,14 @@ public class ApplicationBean implements Application {
 
         this.applicationService.updateApplicationIdentity(applicationId, tempNewIdentityAttributes);
         this.applicationService.updateApplicationUrl(applicationId, newApplicationUrl);
-        if (newApplicationLogo != null)
+        if (newApplicationLogo != null) {
             this.applicationService.updateApplicationLogo(applicationId, newApplicationLogo);
+        }
         this.applicationService.updateApplicationColor(applicationId, newApplicationColor);
         this.applicationService.setIdentifierMappingServiceAccess(applicationId, this.idmapping);
-        if (null != this.applicationIdScope)
+        if (null != this.applicationIdScope) {
             this.applicationService.setIdScope(applicationId, IdScopeType.valueOf(this.applicationIdScope));
+        }
         this.applicationService.setSkipMessageIntegrityCheck(applicationId, this.skipMessageIntegrityCheck);
 
         // device restriction
@@ -673,14 +691,17 @@ public class ApplicationBean implements Application {
          */
         LOG.debug("edit application: " + this.selectedApplication.getName());
 
-        if (null != this.selectedApplication.getApplicationUrl())
+        if (null != this.selectedApplication.getApplicationUrl()) {
             this.applicationUrl = this.selectedApplication.getApplicationUrl().toExternalForm();
-        if (null != this.selectedApplication.getApplicationLogo())
+        }
+        if (null != this.selectedApplication.getApplicationLogo()) {
             this.applicationLogo = this.selectedApplication.getApplicationLogo();
-        if (null != this.selectedApplication.getApplicationColor())
+        }
+        if (null != this.selectedApplication.getApplicationColor()) {
             this.applicationColor = String.format("#%02x%02x%02x", this.selectedApplication.getApplicationColor()
                     .getRed(), this.selectedApplication.getApplicationColor().getGreen(), this.selectedApplication
                     .getApplicationColor().getBlue());
+        }
         this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
 
         this.skipMessageIntegrityCheck = this.selectedApplication.isSkipMessageIntegrityCheck();
@@ -745,9 +766,8 @@ public class ApplicationBean implements Application {
             this.allowedDevices.add(new DeviceEntry(deviceEntity, deviceDescription, defaultValue, 0));
         }
 
-        if (this.selectedApplication == null) {
+        if (this.selectedApplication == null)
             return;
-        }
 
         List<AllowedDeviceEntity> allowedDeviceList = this.deviceService.listAllowedDevices(this.selectedApplication);
 
@@ -765,9 +785,8 @@ public class ApplicationBean implements Application {
     @Factory(SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
     public void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException {
 
-        if (null == this.selectedApplication) {
+        if (null == this.selectedApplication)
             return;
-        }
         LOG.debug("usage agreement list factory");
         this.selectedApplicationUsageAgreements = this.usageAgreementService
                 .getUsageAgreements(this.selectedApplication.getName());

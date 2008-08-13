@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -10,9 +10,9 @@ package test.unit.net.link.safeonline.util.ee;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.util.ee.EjbUtils;
-import junit.framework.TestCase;
 
 
 public class EjbUtilsTest extends TestCase {

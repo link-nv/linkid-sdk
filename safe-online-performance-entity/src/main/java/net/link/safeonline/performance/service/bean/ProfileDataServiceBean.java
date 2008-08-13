@@ -28,11 +28,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ProfileDataServiceBean}<br>
  * <sub>Service bean for {@link ProfileDataEntity}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @see ProfileDataService
  * @author mbillemo
  */

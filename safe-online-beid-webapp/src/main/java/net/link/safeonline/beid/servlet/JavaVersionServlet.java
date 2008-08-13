@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Servlet that receives the java version data from the JavaVersionApplet applet and processes it. Depending on target
  * session attributes being set this servlet will redirect to different locations.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class JavaVersionServlet extends AbstractInjectionServlet {
 
@@ -51,7 +51,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     /**
      * Sets the target in case no PKCS#11 drivers were detected but Java 1.5 runtime is present.
-     * 
+     *
      * @param target
      * @param session
      */
@@ -62,7 +62,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     /**
      * Sets the target in case no PKCS#11 drivers were detected but Java 1.6 runtime is present.
-     * 
+     *
      * @param target
      * @param session
      */
@@ -73,7 +73,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     /**
      * Sets the target in case PKCS#11 drivers were detected.
-     * 
+     *
      * @param target
      * @param session
      */
@@ -231,8 +231,9 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     private boolean checkJavaVersion() throws ServletException {
 
-        if (null == this.javaVersion)
+        if (null == this.javaVersion) {
             throw new ServletException("javaVersion request parameter is required");
+        }
         boolean result = Pattern.matches(JAVA_VERSION_REG_EXPR, this.javaVersion);
         LOG.debug("java version check result: " + result);
         boolean java15 = Pattern.matches(JAVA_1_5_VERSION_REG_EXPR, this.javaVersion);
@@ -246,8 +247,9 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     private boolean checkJavaEnabled() throws ServletException {
 
-        if (null == this.javaEnabled)
+        if (null == this.javaEnabled) {
             throw new ServletException("javaEnabled request parameter required");
+        }
         if (false == Boolean.TRUE.toString().equals(this.javaEnabled))
             return false;
         return true;
@@ -255,8 +257,9 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     private boolean checkPlatform() throws ServletException {
 
-        if (null == this.platformRequestParameter)
+        if (null == this.platformRequestParameter) {
             throw new ServletException("platform request parameter required");
+        }
         String platformStr = this.platformRequestParameter.toLowerCase();
         if (platformStr.indexOf("win") != -1) {
             this.platform = PLATFORM.WINDOWS;

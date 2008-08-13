@@ -13,9 +13,8 @@ public class ProfilingPolicyContextHandler implements PolicyContextHandler {
 
     public Object getContext(String key, Object data) throws PolicyContextException {
 
-        if (false == key.equalsIgnoreCase(PROFILING_CONTEXT_KEY)) {
+        if (false == key.equalsIgnoreCase(PROFILING_CONTEXT_KEY))
             return null;
-        }
         return profileData.get();
     }
 

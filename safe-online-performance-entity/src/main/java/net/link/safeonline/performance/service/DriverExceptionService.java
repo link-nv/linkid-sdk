@@ -19,14 +19,14 @@ import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
 /**
  * <h2>{@link DriverExceptionServiceBean}<br>
  * <sub>Service bean for {@link DriverExceptionEntity}.</sub></h2>
- * 
+ *
  * <p>
  * Create {@link DriverExceptionEntity}s from {@link DriverException}s
  * </p>
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Local

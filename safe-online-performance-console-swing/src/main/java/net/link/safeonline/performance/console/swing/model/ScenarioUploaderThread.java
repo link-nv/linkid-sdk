@@ -15,11 +15,11 @@ import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 /**
  * <h2>{@link ScenarioUploaderThread}<br>
  * <sub>This thread uploads a scenario to a given agent.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioUploaderThread extends ScenarioThread {

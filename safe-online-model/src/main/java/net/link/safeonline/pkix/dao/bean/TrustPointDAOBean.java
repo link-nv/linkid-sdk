@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -76,9 +76,8 @@ public class TrustPointDAOBean implements TrustPointDAO {
     public TrustPointEntity getTrustPoint(TrustPointPK pk) throws TrustPointNotFoundException {
 
         TrustPointEntity trustPoint = this.entityManager.find(TrustPointEntity.class, pk);
-        if (null == trustPoint) {
+        if (null == trustPoint)
             throw new TrustPointNotFoundException();
-        }
         return trustPoint;
     }
 

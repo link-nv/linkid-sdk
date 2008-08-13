@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -89,7 +89,7 @@ public class SMS {
 
     /**
      * strips all non-numbers from the telephone numbers
-     * 
+     *
      * @param telnr
      */
     public static String strip(String telnr) {
@@ -99,7 +99,7 @@ public class SMS {
 
     /**
      * converts a telephone number to the format needed in sms encoding communication
-     * 
+     *
      * @param telnummer
      */
     public static byte[] telToBytes(String telnummer) {
@@ -116,7 +116,7 @@ public class SMS {
             } else {
                 b = new Integer(15);
             }
-            byte total = new Integer(a.intValue() + (b.intValue() * 16)).byteValue();
+            byte total = new Integer(a.intValue() + b.intValue() * 16).byteValue();
             ba.write(total);
         }
 
@@ -125,7 +125,7 @@ public class SMS {
 
     /**
      * converts a message to the sms encoding
-     * 
+     *
      * @param message
      * @throws Exception
      */
@@ -135,16 +135,16 @@ public class SMS {
         byte[] orig = message.getBytes("US-ASCII");
 
         // reserve space for the encoded message
-        byte[] res = new byte[((orig.length * 7) / 8) + 1];
+        byte[] res = new byte[orig.length * 7 / 8 + 1];
 
         // fill each byte of the result
         for (int i = 0; i < res.length; i++) {
             // the position of the first of the 2 original bytes that will fill
             // this one encoded byte
-            int origbytepos = (i * 8) / 7;
+            int origbytepos = i * 8 / 7;
 
             // how much of each of those 2 original bytes is kept
-            int padding = (i % 7);
+            int padding = i % 7;
 
             // the first byte
             Integer first = new Integer(orig[origbytepos]);

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -34,9 +34,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 /**
  * Implementation of the WS-Notification consumer interface. This class is using JAX-WS, secured via WS-Security and
  * server-side SSL.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class NotificationConsumerClientImpl extends AbstractMessageAccessor implements NotificationConsumerClient {
 
@@ -52,7 +52,7 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
 
     /**
      * Main constructor.
-     * 
+     *
      * @param location
      *            the location (full) of the notification web service.
      * @param clientCertificate

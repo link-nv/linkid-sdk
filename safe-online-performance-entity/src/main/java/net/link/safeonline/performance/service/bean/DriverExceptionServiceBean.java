@@ -25,11 +25,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link DriverExceptionServiceBean}<br>
  * <sub>Service bean for {@link DriverExceptionEntity}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @see DriverExceptionService
  * @author mbillemo
  */
@@ -45,8 +45,9 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
 
         // Dig for the root cause.
         Throwable cause = exception;
-        while (cause.getCause() != null)
+        while (cause.getCause() != null) {
             cause = cause.getCause();
+        }
 
         // Format this cause into a message.
         int errorSourceLine = -1;
@@ -99,10 +100,11 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
         int period = (int) Math.ceil((double) dataDuration / dataPoints);
 
         List<DriverExceptionEntity> pointData = new ArrayList<DriverExceptionEntity>();
-        for (long point = 0; point * period < dataDuration; ++point)
+        for (long point = 0; point * period < dataDuration; ++point) {
             pointData.addAll(this.em.createNamedQuery(DriverExceptionEntity.createAverage).setParameter("profile",
                     profile).setParameter("start", dataStart + point * period).setParameter("stop",
                     dataStart + (point + 1) * period).getResultList());
+        }
 
         return pointData;
     }

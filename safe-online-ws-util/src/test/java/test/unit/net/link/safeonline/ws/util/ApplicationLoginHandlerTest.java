@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -133,13 +133,11 @@ public class ApplicationLoginHandlerTest extends TestCase {
         public boolean logout() throws LoginException {
 
             LOG.debug("logout");
-            if (null == this.authenticatedPrincipal) {
+            if (null == this.authenticatedPrincipal)
                 throw new LoginException("no auth principal");
-            }
             boolean result = this.subject.getPrincipals().remove(this.authenticatedPrincipal);
-            if (false == result) {
+            if (false == result)
                 throw new LoginException("subject did not contain auth principal");
-            }
             return true;
         }
     }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -58,9 +58,9 @@ import org.joda.time.DateTime;
 
 /**
  * Utility class to load keystore key material.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class KeyStoreUtils {
 
@@ -78,15 +78,15 @@ public class KeyStoreUtils {
 
     /**
      * Loads a private key entry from a input stream.
-     * 
+     *
      * <p>
      * The supported types of keystores depend on the configured java security providers. Example: "pkcs12".
      * </p>
-     * 
+     *
      * <p>
      * A good alternative java security provider is <a href="http://www.bouncycastle.org/">Bouncy Castle</a>.
      * </p>
-     * 
+     *
      * @param keystoreType
      *            the type of the keystore.
      * @param keyStoreInputStream
@@ -120,14 +120,12 @@ public class KeyStoreUtils {
         } catch (KeyStoreException e) {
             throw new RuntimeException("could not get aliases: " + e.getMessage(), e);
         }
-        if (!aliases.hasMoreElements()) {
+        if (!aliases.hasMoreElements())
             throw new RuntimeException("keystore is empty");
-        }
         String alias = aliases.nextElement();
         try {
-            if (!keyStore.isKeyEntry(alias)) {
+            if (!keyStore.isKeyEntry(alias))
                 throw new RuntimeException("not key entry: " + alias);
-            }
         } catch (KeyStoreException e) {
             throw new RuntimeException("key store error: " + e.getMessage(), e);
         }
@@ -261,7 +259,7 @@ public class KeyStoreUtils {
 
     /**
      * Persist the given private key and corresponding certificate to a PKCS12 keystore file.
-     * 
+     *
      * @param pkcs12keyStore
      *            the file of the PKCS12 keystore to write the key material to.
      * @param privateKey

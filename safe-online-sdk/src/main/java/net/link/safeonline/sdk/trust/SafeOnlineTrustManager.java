@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -25,9 +25,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * SafeOnline SSL trust manager. This class should be used by SafeOnline client components to setup the SSL.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class SafeOnlineTrustManager implements X509TrustManager {
 
@@ -54,16 +54,15 @@ public class SafeOnlineTrustManager implements X509TrustManager {
             initSocketFactory();
             HttpsURLConnection.setDefaultSSLSocketFactory(socketFactory);
         } else {
-            if (false == socketFactory.equals(HttpsURLConnection.getDefaultSSLSocketFactory())) {
+            if (false == socketFactory.equals(HttpsURLConnection.getDefaultSSLSocketFactory()))
                 throw new RuntimeException("wrong SSL socket factory installed");
-            }
         }
     }
 
     /**
      * Sets the trusted SafeOnline server certicate to be used by this trust manager during SSL handshake for expressing
      * trust towards the service.
-     * 
+     *
      * @param trustedCertificate
      */
     public static void setTrustedCertificate(X509Certificate trustedCertificate) {
@@ -108,11 +107,9 @@ public class SafeOnlineTrustManager implements X509TrustManager {
         X509Certificate serverCertificate = certs[0];
         LOG.debug("server X509 subject: " + serverCertificate.getSubjectX500Principal().toString());
         LOG.debug("authentication type: " + authType);
-        if (null == SafeOnlineTrustManager.trustedCertificate) {
+        if (null == SafeOnlineTrustManager.trustedCertificate)
             return;
-        }
-        if (false == SafeOnlineTrustManager.trustedCertificate.equals(serverCertificate)) {
+        if (false == SafeOnlineTrustManager.trustedCertificate.equals(serverCertificate))
             throw new CertificateException();
-        }
     }
 }

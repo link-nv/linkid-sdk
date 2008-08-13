@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -27,9 +27,9 @@ import com.sun.xml.ws.server.AbstractMultiInstanceResolver;
  * Implementation class for injection JAX-WS RI instance resolver. This JAX-WS RI instance resolver injects JNDI
  * components. Simply use the EJB annotation with mappedName attribute on the injection fields of your JAX-WS endpoints.
  * Use only to inject stateless session beans. This cannot be used for injection of stateful session beans.
- * 
+ *
  * @author fcorneli
- * 
+ *
  * @param <T>
  */
 public class InjectionInstanceResolver<T> extends AbstractMultiInstanceResolver<T> {
@@ -71,14 +71,12 @@ public class InjectionInstanceResolver<T> extends AbstractMultiInstanceResolver<
                 continue;
             }
             String mappedName = ejb.mappedName();
-            if (null == mappedName) {
+            if (null == mappedName)
                 throw new EJBException("@EJB mappedName attribute required");
-            }
             LOG.debug("injecting: " + mappedName);
             Class type = field.getType();
-            if (false == type.isInterface()) {
+            if (false == type.isInterface())
                 throw new EJBException("field is not an interface type");
-            }
             Object ejbRef = EjbUtils.getEJB(mappedName, type);
             field.setAccessible(true);
             try {

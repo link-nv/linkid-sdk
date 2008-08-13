@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -138,15 +138,13 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
 
     private void checkReadPermission(ApplicationEntity application) throws PermissionDeniedException {
 
-        if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)) {
+        if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE))
             return;
-        }
         ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
         SubjectEntity expectedSubject = applicationOwner.getAdmin();
         SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-        if (false == expectedSubject.equals(actualSubject)) {
+        if (false == expectedSubject.equals(actualSubject))
             throw new PermissionDeniedException("application owner admin mismatch");
-        }
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)

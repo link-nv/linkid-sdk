@@ -25,7 +25,7 @@ import javax.servlet.ServletException;
  * <p>
  * <i>Nov 30, 2007</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ProfiledException extends ServletException {

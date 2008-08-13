@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -43,10 +43,11 @@ public class TrustPointPK implements Serializable {
 
         this.domain = trustDomain.getId();
         this.subjectName = subjectName;
-        if (null == keyId || keyId.equals(""))
+        if (null == keyId || keyId.equals("")) {
             this.keyId = subjectName;
-        else
+        } else {
             this.keyId = keyId;
+        }
     }
 
     public TrustPointPK(TrustDomainEntity trustDomain, X509Certificate certificate) {
@@ -56,10 +57,11 @@ public class TrustPointPK implements Serializable {
 
         this.domain = trustDomain.getId();
         this.subjectName = newSubjectName;
-        if (null == newKeyId || newKeyId.equals(""))
+        if (null == newKeyId || newKeyId.equals("")) {
             this.keyId = newSubjectName;
-        else
+        } else {
             this.keyId = newKeyId;
+        }
     }
 
     private String getSubjectName(X509Certificate certificate) {
@@ -70,12 +72,11 @@ public class TrustPointPK implements Serializable {
     public static String getSubjectKeyId(X509Certificate certificate) {
 
         byte[] subjectKeyIdData = certificate.getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId());
-        if (null == subjectKeyIdData) {
+        if (null == subjectKeyIdData)
             /*
              * NULL is not allowed as value for persistence.
              */
             return "";
-        }
         SubjectKeyIdentifierStructure subjectKeyIdentifierStructure;
         try {
             subjectKeyIdentifierStructure = new SubjectKeyIdentifierStructure(subjectKeyIdData);
@@ -119,12 +120,10 @@ public class TrustPointPK implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof TrustPointPK) {
+        if (false == obj instanceof TrustPointPK)
             return false;
-        }
         TrustPointPK rhs = (TrustPointPK) obj;
         return new EqualsBuilder().append(this.domain, rhs.domain).append(this.subjectName, rhs.subjectName).append(
                 this.keyId, rhs.keyId).isEquals();

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -53,12 +53,10 @@ public class ChartServlet extends AbstractInjectionServlet {
         String domainName = request.getParameter("domain");
         String applicationName = request.getParameter("applicationname");
 
-        if (null == chartName) {
+        if (null == chartName)
             throw new ServletException("chartname request parameter missing");
-        }
-        if (null == applicationName) {
+        if (null == applicationName)
             throw new ServletException("aplicationname request parameter missing");
-        }
 
         LOG.debug("getting chart: " + chartName + " for application: " + applicationName);
 

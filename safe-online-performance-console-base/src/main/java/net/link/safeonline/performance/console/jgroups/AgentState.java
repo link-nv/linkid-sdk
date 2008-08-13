@@ -21,11 +21,11 @@ import java.awt.Color;
 /**
  * <h2>{@link AgentState}<br>
  * <sub>Describes the different states an agent can be in.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public enum AgentState {

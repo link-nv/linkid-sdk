@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -77,14 +77,15 @@ public class SeatOccupationEntity implements Serializable {
 
     /**
      * Make sure this seat occupation can no longer be taken by anyone else.
-     * 
+     *
      * @throws IllegalStateException
      *             If the seat occupation has already been reserved.
      */
     public void reserve() throws IllegalStateException {
 
-        if (this.reserved)
+        if (this.reserved) {
             throw new IllegalStateException("Seat " + this.seat + " is already reserved!");
+        }
 
         this.reserved = true;
     }

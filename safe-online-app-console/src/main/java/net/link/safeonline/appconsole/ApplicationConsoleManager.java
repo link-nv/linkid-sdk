@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,9 +21,9 @@ import org.w3c.dom.Document;
 
 
 /**
- * 
+ *
  * Application console data class, observable for other registered observers
- * 
+ *
  * @author wvdhaute
  */
 public class ApplicationConsoleManager extends Observable {
@@ -51,8 +51,9 @@ public class ApplicationConsoleManager extends Observable {
 
     public static ApplicationConsoleManager getInstance() {
 
-        if (null == manager)
+        if (null == manager) {
             manager = new ApplicationConsoleManager();
+        }
         return manager;
     }
 

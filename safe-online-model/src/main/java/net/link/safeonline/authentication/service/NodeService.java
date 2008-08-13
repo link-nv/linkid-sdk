@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -20,22 +20,22 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 /**
  * Interface to service for retrieving information about applications.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface NodeService {
 
     /**
      * Gives back all known olas nodes
-     * 
+     *
      */
     List<OlasEntity> listNodes();
 
     /**
      * Gives back the olas node entity for a given node name.
-     * 
+     *
      * @param nodeName
      * @throws NodeNotFoundException
      */
@@ -54,14 +54,14 @@ public interface NodeService {
 
     /**
      * Removes an olas node.
-     * 
+     *
      * @param name
      */
     void removeNode(String name) throws NodeNotFoundException, PermissionDeniedException;
 
     /**
      * Updates the Olas node's hostname.
-     * 
+     *
      * @param nodeName
      * @param hostname
      * @param port
@@ -73,7 +73,7 @@ public interface NodeService {
 
     /**
      * Updates the OLAS node's authn certificate.
-     * 
+     *
      * @param nodeName
      * @param certificateData
      * @throws CertificateEncodingException
@@ -84,7 +84,7 @@ public interface NodeService {
 
     /**
      * Updates the OLAS node's signing certificate.
-     * 
+     *
      * @param nodeName
      * @param certificateData
      * @throws CertificateEncodingException

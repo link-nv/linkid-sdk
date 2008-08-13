@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -91,15 +91,13 @@ public class AuthenticationSubscriptionBean implements AuthenticationSubscriptio
 
         boolean confirmationRequired = this.identityService.isConfirmationRequired(this.applicationId);
         this.log.debug("confirmation required: " + confirmationRequired);
-        if (true == confirmationRequired) {
+        if (true == confirmationRequired)
             return "confirmation-required";
-        }
 
         boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.applicationId);
 
-        if (true == hasMissingAttributes) {
+        if (true == hasMissingAttributes)
             return "missing-attributes";
-        }
 
         AuthenticationUtils.commitAuthentication(this.facesMessages);
 

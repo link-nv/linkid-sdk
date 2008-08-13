@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -39,7 +39,7 @@ public class EncapActivationSoapBindingImpl implements BankIdActivation {
 
         LOG.debug("activate: msisdn=" + msisdn + " orgId=" + orgId);
         ActivationInitResponse response = new ActivationInitResponse();
-        if ((System.currentTimeMillis() % 2) == 0) {
+        if (System.currentTimeMillis() % 2 == 0) {
             response.setStatus(ENCAP_SUCCES);
             Random generator = new Random();
             Long activationCode = Math.abs(generator.nextLong()) % 999999L;

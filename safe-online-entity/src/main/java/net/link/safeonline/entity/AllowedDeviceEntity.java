@@ -1,11 +1,15 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.entity;
+
+import static net.link.safeonline.entity.AllowedDeviceEntity.DELETE_WHERE_APPLICATION;
+import static net.link.safeonline.entity.AllowedDeviceEntity.QUERY_WHERE_APPLICATION;
+import static net.link.safeonline.entity.AllowedDeviceEntity.QUERY_WHERE_APPLICATION_DEVICE;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,10 +28,6 @@ import javax.persistence.UniqueConstraint;
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
-
-import static net.link.safeonline.entity.AllowedDeviceEntity.QUERY_WHERE_APPLICATION;
-import static net.link.safeonline.entity.AllowedDeviceEntity.DELETE_WHERE_APPLICATION;
-import static net.link.safeonline.entity.AllowedDeviceEntity.QUERY_WHERE_APPLICATION_DEVICE;
 
 
 @Entity

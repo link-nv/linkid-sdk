@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,9 +13,9 @@ import net.link.safeonline.entity.ApplicationEntity;
 
 /**
  * Factory for domain model Application objects.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class ApplicationFactory {
 
@@ -26,7 +26,7 @@ public class ApplicationFactory {
 
     /**
      * Gives back the domain model object corresponding with the given application name.
-     * 
+     *
      * @param applicationContext
      * @param applicationName
      * @throws ApplicationNotFoundException

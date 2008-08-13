@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -8,7 +8,6 @@
 package net.link.safeonline.dao.bean;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -106,9 +105,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         LOG.debug("get attribute type: " + name);
         AttributeTypeEntity attributeType = findAttributeType(name);
-        if (null == attributeType) {
+        if (null == attributeType)
             throw new AttributeTypeNotFoundException();
-        }
         return attributeType;
     }
 
@@ -155,9 +153,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(
                 AttributeTypeDescriptionEntity.class, attributeTypeDescriptionPK);
-        if (null == attributeTypeDescription) {
+        if (null == attributeTypeDescription)
             throw new AttributeTypeDescriptionNotFoundException();
-        }
         return attributeTypeDescription;
     }
 
@@ -172,24 +169,24 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         LOG.debug("categorize: " + attributeType.getName());
         Query query;
-        if (attributeType.getType().equals(DatatypeType.STRING))
+        if (attributeType.getType().equals(DatatypeType.STRING)) {
             query = this.queryObject.createQueryCategorizeString(application, attributeType);
-        else if (attributeType.getType().equals(DatatypeType.LOGIN))
+        } else if (attributeType.getType().equals(DatatypeType.LOGIN)) {
             query = this.queryObject.createQueryCategorizeLogin(application, attributeType);
-        else if (attributeType.getType().equals(DatatypeType.BOOLEAN))
+        } else if (attributeType.getType().equals(DatatypeType.BOOLEAN)) {
             query = this.queryObject.createQueryCategorizeBoolean(application, attributeType);
-        else if (attributeType.getType().equals(DatatypeType.INTEGER))
+        } else if (attributeType.getType().equals(DatatypeType.INTEGER)) {
             query = this.queryObject.createQueryCategorizeInteger(application, attributeType);
-        else if (attributeType.getType().equals(DatatypeType.DOUBLE))
+        } else if (attributeType.getType().equals(DatatypeType.DOUBLE)) {
             query = this.queryObject.createQueryCategorizeDouble(application, attributeType);
-        else if (attributeType.getType().equals(DatatypeType.DATE))
+        } else if (attributeType.getType().equals(DatatypeType.DATE)) {
             query = this.queryObject.createQueryCategorizeDate(application, attributeType);
-        else
+        } else
             return null;
         List<?> results = query.getResultList();
         Map<Object, Long> result = new HashMap<Object, Long>();
-        for (Iterator<?> iter = results.iterator(); iter.hasNext();) {
-            Object[] values = (Object[]) iter.next();
+        for (Object name : results) {
+            Object[] values = (Object[]) name;
             result.put(values[0], (Long) values[1]);
         }
         return result;
@@ -198,9 +195,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     public AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType) throws AttributeTypeNotFoundException {
 
         AttributeTypeEntity parent = this.compoundedQueryObject.findParentAttribute(memberAttributeType);
-        if (null == parent) {
+        if (null == parent)
             throw new AttributeTypeNotFoundException();
-        }
         return parent;
     }
 
@@ -209,9 +205,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         List<CompoundedAttributeTypeMemberEntity> memberEntries = this.compoundedQueryObject
                 .listMemberEntries(memberAttributeType);
-        if (memberEntries.isEmpty()) {
+        if (memberEntries.isEmpty())
             throw new AttributeTypeNotFoundException();
-        }
         CompoundedAttributeTypeMemberEntity memberEntry = memberEntries.get(0);
         return memberEntry;
     }

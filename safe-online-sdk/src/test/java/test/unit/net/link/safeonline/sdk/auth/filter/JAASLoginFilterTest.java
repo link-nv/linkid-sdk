@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -42,9 +42,9 @@ import org.junit.Test;
 
 /**
  * Unit test for the generic JAAS login module. This unit test also demonstrates the JAAS login/logout workflow.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class JAASLoginFilterTest {
 

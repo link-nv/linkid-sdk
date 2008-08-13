@@ -15,15 +15,15 @@ import net.link.safeonline.demo.cinema.entity.UserEntity;
 /**
  * <h2>{@link UserService}<br>
  * <sub>Service bean for {@link UserEntity}.</sub></h2>
- * 
+ *
  * <p>
  * Obtain or create {@link UserEntity}s for logged in users.
  * </p>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Local
@@ -34,7 +34,7 @@ public interface UserService extends CinemaService {
 
     /**
      * If the given username does not yet exist; create a {@link UserEntity} for it.
-     * 
+     *
      * @return The {@link UserEntity} that maps the given username in the cinema database.
      */
     public UserEntity getUser(String username);

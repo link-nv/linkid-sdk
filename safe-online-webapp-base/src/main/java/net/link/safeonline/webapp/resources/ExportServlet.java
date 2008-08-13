@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -55,9 +55,8 @@ public class ExportServlet extends AbstractInjectionServlet {
 
         LOG.debug("export: chartName=" + chartName + " domain=" + domainName + " applicationName=" + applicationName);
 
-        if (null == applicationName) {
+        if (null == applicationName)
             throw new ServletException("aplicationname request parameter missing");
-        }
 
         HSSFWorkbook workbook;
 

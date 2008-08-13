@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -34,9 +34,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Implementation of the authorization service interface. This component cannot live within the SafeOnline core security
  * domain since it will be used by a JAAS login module to perform authorization of a caller principal.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Stateless
 public class AuthorizationServiceBean implements AuthorizationService, AuthorizationServiceRemote {
@@ -107,9 +107,8 @@ public class AuthorizationServiceBean implements AuthorizationService, Authoriza
             return;
         }
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
-        if (null == subscription) {
+        if (null == subscription)
             return;
-        }
         roles.add(roleToAdd);
     }
 }

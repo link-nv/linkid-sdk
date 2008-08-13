@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -19,9 +19,9 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
  * Interface for device authentication service.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Local
 public interface DeviceAuthenticationService {
@@ -29,7 +29,7 @@ public interface DeviceAuthenticationService {
     /**
      * Authenticates a device given a device certificate. At this point the device certificate already passed the PKI
      * validation.
-     * 
+     *
      * @param certificate
      *            the trusted X509 application certificate.
      * @return the device name of the authentication device.
@@ -41,7 +41,7 @@ public interface DeviceAuthenticationService {
 
     /**
      * Gives back the device X509 certificates given the device name.
-     * 
+     *
      * @param deviceName
      *            the device name.
      * @return the X509 device certificates.

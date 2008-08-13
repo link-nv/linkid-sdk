@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,9 +13,9 @@ import java.util.Map;
 
 /**
  * Error codes used by the WS-Notification WS's.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public enum NotificationErrorCode {
     SUCCESS("urn:net:lin-k:safe-online:topic:user:remove:status:Success"), SUBSCRIPTION_NOT_FOUND(
@@ -53,9 +53,8 @@ public enum NotificationErrorCode {
     public static NotificationErrorCode getNotificationErrorCode(String errorCode) {
 
         NotificationErrorCode notificationErrorCode = errorCodeMap.get(errorCode);
-        if (null == notificationErrorCode) {
+        if (null == notificationErrorCode)
             throw new IllegalArgumentException("unknown Notification error code: " + errorCode);
-        }
         return notificationErrorCode;
     }
 

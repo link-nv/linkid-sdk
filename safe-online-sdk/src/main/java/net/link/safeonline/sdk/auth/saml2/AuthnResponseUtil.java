@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -54,9 +54,9 @@ import org.w3c.dom.Element;
 
 /**
  * Utility class for SAML2 authentication responses.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class AuthnResponseUtil {
 
@@ -70,7 +70,7 @@ public class AuthnResponseUtil {
 
     /**
      * Sends out a SAML response message to the specified consumer URL.
-     * 
+     *
      * @param encodedSamlResponseToken
      * @param consumerUrl
      * @param httpResponse
@@ -122,7 +122,7 @@ public class AuthnResponseUtil {
      * <li>assertion subject</li>
      * <li>assertion conditions notOnOrAfter and notBefore
      * </ul>
-     * 
+     *
      * @param now
      * @param httpRequest
      * @param expectedInResponseTo
@@ -168,9 +168,8 @@ public class AuthnResponseUtil {
         }
 
         SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof Response) {
+        if (false == samlMessage instanceof Response)
             throw new ServletException("SAML message not an response message");
-        }
         Response samlResponse = (Response) samlMessage;
 
         byte[] decodedSamlResponse;
@@ -199,23 +198,20 @@ public class AuthnResponseUtil {
         /*
          * Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
          */
-        if (!samlResponse.getInResponseTo().equals(expectedInResponseTo)) {
+        if (!samlResponse.getInResponseTo().equals(expectedInResponseTo))
             throw new ServletException("SAML response is not a response belonging to the original request.");
-        }
 
         if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)
                 || samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)
-                || samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI)) {
+                || samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI))
             /**
              * Authentication failed but response ok.
              */
             return samlResponse;
-        }
 
         List<Assertion> assertions = samlResponse.getAssertions();
-        if (assertions.isEmpty()) {
+        if (assertions.isEmpty())
             throw new ServletException("missing Assertion");
-        }
 
         for (Assertion assertion : assertions) {
             Conditions conditions = assertion.getConditions();
@@ -226,36 +222,31 @@ public class AuthnResponseUtil {
             LOG.debug("notBefore: " + notBefore.toString());
             LOG.debug("notOnOrAfter : " + notOnOrAfter.toString());
 
-            if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
+            if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter))
                 throw new ServletException("invalid SAML message timeframe");
-            }
 
             Subject subject = assertion.getSubject();
-            if (null == subject) {
+            if (null == subject)
                 throw new ServletException("missing Assertion Subject");
-            }
 
             /*
              * Check whether the audience of the response corresponds to the original audience restriction
              */
             List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
-            if (audienceRestrictions.isEmpty()) {
+            if (audienceRestrictions.isEmpty())
                 throw new ServletException("no Audience Restrictions found in response assertion");
-            }
 
             AudienceRestriction audienceRestriction = audienceRestrictions.get(0);
             List<Audience> audiences = audienceRestriction.getAudiences();
-            if (audiences.isEmpty()) {
+            if (audiences.isEmpty())
                 throw new ServletException("no Audiences found in AudienceRestriction");
-            }
 
             Audience audience = audiences.get(0);
 
             String actualAudience = audience.getAudienceURI();
             LOG.debug("actual audience name: " + actualAudience);
-            if (false == expectedAudience.equals(actualAudience)) {
+            if (false == expectedAudience.equals(actualAudience))
                 throw new ServletException("audience name not correct, expected: " + expectedAudience);
-            }
 
         }
         return samlResponse;

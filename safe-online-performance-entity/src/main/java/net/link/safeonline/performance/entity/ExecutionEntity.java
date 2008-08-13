@@ -35,11 +35,11 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ExecutionEntity}<br>
  * <sub>Holds the global metadata for a scenario execution.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Entity
@@ -227,7 +227,7 @@ public class ExecutionEntity {
     /**
      * The speed will only be recalculated if it has been set as dirty (which automatically happens each time a scenario
      * has been completed for it).
-     * 
+     *
      * @return The average scenario execution speed (#/s) in this execution.
      */
     public Double getSpeed() {

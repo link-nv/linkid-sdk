@@ -214,18 +214,14 @@ public class AuthenticationWebApplicationTest {
 
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 
-            if (null == chain) {
+            if (null == chain)
                 throw new CertificateException("null certificate chain");
-            }
-            if (0 == chain.length) {
+            if (0 == chain.length)
                 throw new CertificateException("empty certificate chain");
-            }
-            if (null == authType) {
+            if (null == authType)
                 throw new CertificateException("null authentication type");
-            }
-            if (0 == authType.length()) {
+            if (0 == authType.length())
                 throw new CertificateException("empty authentication type");
-            }
             LOG.debug("server certificate: " + chain[0].getSubjectDN());
         }
 

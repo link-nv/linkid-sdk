@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -128,8 +128,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
 
         SubjectEntity existingMappedSubject = this.subjectIdentifierDAO.findSubject(
                 DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
-        if (null != existingMappedSubject)
+        if (null != existingMappedSubject) {
             throw new ArgumentIntegrityException();
+        }
 
         DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceUserId);
         if (null == deviceSubject) {
@@ -180,9 +181,8 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceUserId);
         SubjectEntity deviceRegistration = this.subjectIdentifierDAO.findSubject(
                 DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
-        if (null == deviceRegistration) {
+        if (null == deviceRegistration)
             throw new DigipassException("device registration not found");
-        }
 
         AttributeTypeEntity snAttributeType;
         try {

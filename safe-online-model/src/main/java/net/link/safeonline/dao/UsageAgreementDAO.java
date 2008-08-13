@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -34,7 +34,7 @@ public interface UsageAgreementDAO {
 
     /**
      * Removes a usage agreement. This will also remove the usage agreement texts related.
-     * 
+     *
      * @param usageAgreement
      */
     void removeUsageAgreement(ApplicationEntity application, Long usageAgreementVersion);

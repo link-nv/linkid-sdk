@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -44,9 +44,9 @@ import org.opensaml.xml.security.SecurityException;
 
 /**
  * Server-side protocol handler for the SAML2 Browser POST authentication protocol.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class Saml2PostProtocolHandler implements ProtocolHandler {
 
@@ -75,17 +75,15 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     public ProtocolContext handleRequest(HttpServletRequest authnRequest) throws ProtocolException {
 
         LOG.debug("request method: " + authnRequest.getMethod());
-        if (false == "POST".equals(authnRequest.getMethod())) {
+        if (false == "POST".equals(authnRequest.getMethod()))
             return null;
-        }
         LOG.debug("POST request");
         String language = authnRequest.getParameter("Language");
         LOG.debug("Language parameter: " + language);
 
         String encodedSamlRequest = authnRequest.getParameter("SAMLRequest");
-        if (null == encodedSamlRequest) {
+        if (null == encodedSamlRequest)
             return null;
-        }
         LOG.debug("SAMLRequest parameter found");
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
@@ -108,9 +106,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         }
 
         SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof AuthnRequest) {
+        if (false == samlMessage instanceof AuthnRequest)
             throw new ProtocolException("SAML message not an authentication request message");
-        }
         AuthnRequest samlAuthnRequest = (AuthnRequest) samlMessage;
 
         AuthenticationService authenticationService = AuthenticationServiceManager

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -49,13 +49,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of SAML Name Identifier Mapping Service.
- * 
+ *
  * <p>
  * Specification: Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0.
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @WebService(endpointInterface = "oasis.names.tc.saml._2_0.protocol.NameIdentifierMappingPort")
 @HandlerChain(file = "auth-ws-handlers.xml")

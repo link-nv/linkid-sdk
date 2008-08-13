@@ -21,8 +21,8 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * 
- * 
+ *
+ *
  * @author mbillemo
  */
 public class ProfileData {
@@ -125,8 +125,9 @@ public class ProfileData {
         // interesting data into the arrays.
         for (Map.Entry<String, List<String>> headerEntry : headers.entrySet()) {
             String header = headerEntry.getKey();
-            if (header == null || headerEntry.getValue().isEmpty())
+            if (header == null || headerEntry.getValue().isEmpty()) {
                 continue;
+            }
 
             String value = headerEntry.getValue().get(0);
             Matcher methodMatcher = methodSigRegex.matcher(header);
@@ -150,8 +151,9 @@ public class ProfileData {
         // Now fill up our instance of ProfileData with the values we collected
         // in the arrays.
         for (int i = 0; i < headers.size(); ++i)
-            if (null != methods[i])
+            if (null != methods[i]) {
                 this.measurements.put(methods[i], timings[i]);
+            }
     }
 
     public void addMeasurement(Method method, Long value) throws ProfileDataLockedException {
@@ -161,15 +163,17 @@ public class ProfileData {
 
     public synchronized void addMeasurement(String method, Long value) throws ProfileDataLockedException {
 
-        if (this.locked)
+        if (this.locked) {
             throw new ProfileDataLockedException();
+        }
         this.measurements.put(method, value);
     }
 
     public void clear() throws ProfileDataLockedException {
 
-        if (this.locked)
+        if (this.locked) {
             throw new ProfileDataLockedException();
+        }
         this.measurements.clear();
     }
 
@@ -210,8 +214,9 @@ public class ProfileData {
 
     public void lock() throws ProfileDataLockedException {
 
-        if (this.locked)
+        if (this.locked) {
             throw new ProfileDataLockedException();
+        }
         this.locked = true;
     }
 

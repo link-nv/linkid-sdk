@@ -25,16 +25,16 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link DummyScenario}<br>
  * <sub>A scenario that does absolutely nothing whatsoever.</sub></h2>
- * 
+ *
  * <p>
  * This scenario does nothing other than logging the prepare and run method entry and sleeping for a second in the run
  * call.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 7, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class DummyScenario implements Scenario {

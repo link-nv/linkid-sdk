@@ -22,16 +22,16 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ScenarioThread}<br>
  * <sub>Wrap long-running agent tasks in threads.</sub></h2>
- * 
+ *
  * <p>
  * Threads that extend this class are used for delegating actions that should be performed on {@link ConsoleAgent}s and
  * can take a long time in order to prevent hanging the UI during this operation.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public abstract class ScenarioThread extends Thread {
@@ -61,14 +61,16 @@ public abstract class ScenarioThread extends Thread {
             this.pool.submit(new Worker(agent));
 
             agent.setError(null);
-            if (this.state != null)
+            if (this.state != null) {
                 agent.setTransit(this.state);
+            }
         }
 
         try {
             this.pool.shutdown();
-            while (!this.pool.awaitTermination(10, TimeUnit.SECONDS))
+            while (!this.pool.awaitTermination(10, TimeUnit.SECONDS)) {
                 Thread.yield();
+            }
 
             completed();
         } catch (InterruptedException e) {

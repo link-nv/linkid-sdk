@@ -19,15 +19,15 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 /**
  * <h2>{@link AttribDriver}<br>
  * <sub>Provides access to the Attribute Request service.</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AttribDriver extends ProfileDriver {
@@ -44,7 +44,7 @@ public class AttribDriver extends ProfileDriver {
 
     /**
      * Retrieve the attributes for a given user.
-     * 
+     *
      * @param applicationKey
      *            The certificate of the application making the request. This identifies the application and gives the
      *            request the application's authority.
@@ -54,8 +54,9 @@ public class AttribDriver extends ProfileDriver {
      */
     public Map<String, Object> getAttributes(PrivateKeyEntry applicationKey, String userId) {
 
-        if (!(applicationKey.getCertificate() instanceof X509Certificate))
+        if (!(applicationKey.getCertificate() instanceof X509Certificate)) {
             throw new IllegalArgumentException("The certificate in the keystore needs to be of X509 format.");
+        }
 
         try {
             AttributeClientImpl service = new AttributeClientImpl(getHost(), (X509Certificate) applicationKey

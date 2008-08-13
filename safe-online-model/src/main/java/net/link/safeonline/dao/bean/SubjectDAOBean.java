@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -60,9 +60,8 @@ public class SubjectDAOBean implements SubjectDAO {
 
         LOG.debug("get subject: " + userId);
         SubjectEntity subject = findSubject(userId);
-        if (null == subject) {
+        if (null == subject)
             throw new SubjectNotFoundException();
-        }
         return subject;
     }
 

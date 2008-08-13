@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -20,9 +20,9 @@ public class DERUtils {
 
     /**
      * Write the length of the byte sequence.
-     * 
+     *
      * Source: org.bouncycastle.asn1.DEROutputStream.writeLength
-     * 
+     *
      * @param length
      * @param out
      * @throws IOException

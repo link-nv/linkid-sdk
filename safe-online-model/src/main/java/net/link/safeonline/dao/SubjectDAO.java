@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -17,16 +17,16 @@ import net.link.safeonline.entity.SubjectEntity;
 
 /**
  * Subject Data Access Object interface.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface SubjectDAO {
 
     /**
      * Finds the subject for a given user ID. Returns <code>null</code> if the entity could not be found.
-     * 
+     *
      * @param userId
      * @return the subject or <code>null</code> if the subject was not found.
      */
@@ -36,7 +36,7 @@ public interface SubjectDAO {
 
     /**
      * Gives back the subject for the given userId.
-     * 
+     *
      * @param userId
      *            the userId of the subject.
      * @return the subject.
@@ -46,14 +46,14 @@ public interface SubjectDAO {
 
     /**
      * Removes the given attached subject from the database.
-     * 
+     *
      * @param subject
      */
     void removeSubject(SubjectEntity subject);
 
     /**
      * Gives back a list of all user Ids.
-     * 
+     *
      */
     List<String> listUsers();
 }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -19,9 +19,9 @@ import net.link.safeonline.entity.HistoryEntity;
 
 /**
  * Takes a history entity and formats an internationalized message from it.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class HistoryMessageManager {
 
@@ -37,7 +37,7 @@ public class HistoryMessageManager {
      * <li>Attribute</li>
      * <li>Info</li>
      * </ol>
-     * 
+     *
      * @param context
      * @param historyEntity
      * @return

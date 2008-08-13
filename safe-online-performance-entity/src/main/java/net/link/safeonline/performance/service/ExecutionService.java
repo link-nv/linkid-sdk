@@ -20,15 +20,15 @@ import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 /**
  * <h2>{@link ExecutionServiceBean}<br>
  * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
- * 
+ *
  * <p>
  * Create {@link ExecutionEntity}s and manage the {@link ScenarioTimingEntity}s that they're linked with.
  * </p>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Local

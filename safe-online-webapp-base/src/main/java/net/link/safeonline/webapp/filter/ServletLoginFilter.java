@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -33,11 +33,11 @@ import org.jboss.security.SimplePrincipal;
  * Servlet Container login filter. This filter provides perceived servlet container security. This means that the
  * servlet web application that is applying this filter will see meaningful values for the request.getUserPrincipal and
  * request.isUserInRole methods. This filter does not provide web resource protection itself.
- * 
+ *
  * @see <a href="http://securityfilter.sourceforge.net/test">SecurityFilter</a>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class ServletLoginFilter implements Filter {
 

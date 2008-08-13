@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -59,12 +59,10 @@ public class DeviceClassDescriptionPK implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof DeviceClassDescriptionPK) {
+        if (false == obj instanceof DeviceClassDescriptionPK)
             return false;
-        }
         DeviceClassDescriptionPK rhs = (DeviceClassDescriptionPK) obj;
         return new EqualsBuilder().append(this.deviceClassName, rhs.deviceClassName)
                 .append(this.language, rhs.language).isEquals();

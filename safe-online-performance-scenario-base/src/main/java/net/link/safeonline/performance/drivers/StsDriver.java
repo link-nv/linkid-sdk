@@ -20,11 +20,11 @@ import org.w3c.dom.Element;
 /**
  * <h2>{@link StsDriver}<br>
  * <sub>Driver for the Security Token validation service.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class StsDriver extends ProfileDriver {
@@ -41,7 +41,7 @@ public class StsDriver extends ProfileDriver {
 
     /**
      * Validate the given SAML token.
-     * 
+     *
      * @param applicationKey
      *            The certificate of the application making the request. This identifies the application and gives the
      *            request the application's authority.
@@ -52,8 +52,9 @@ public class StsDriver extends ProfileDriver {
      */
     public void validate(PrivateKeyEntry applicationKey, Element token, TrustDomainType trustDomain) {
 
-        if (!(applicationKey.getCertificate() instanceof X509Certificate))
+        if (!(applicationKey.getCertificate() instanceof X509Certificate)) {
             throw new IllegalArgumentException("The certificate in the keystore needs to be of X509 format.");
+        }
 
         try {
             SecurityTokenServiceClientImpl service = new SecurityTokenServiceClientImpl(getHost(),

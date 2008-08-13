@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -55,9 +55,9 @@ import org.w3c.dom.Node;
 
 /**
  * SOAP JAX-WS handler to verify the signature on the token to be validated.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -90,19 +90,17 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
     public boolean handleMessage(SOAPMessageContext soapContext) {
 
         Boolean outboundProperty = (Boolean) soapContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-        if (true == outboundProperty) {
+        if (true == outboundProperty)
             return true;
-        }
         SOAPMessage soapMessage = soapContext.getMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
 
         Element tokenSignatureElement = findTokenSignatureElement(soapPart);
-        if (null == tokenSignatureElement) {
+        if (null == tokenSignatureElement)
             /*
              * Nothing to do here.
              */
             return true;
-        }
 
         Element issuerElement = findIssuerElement(soapPart);
         if (null == issuerElement) {
@@ -203,12 +201,13 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
             Element tokenSignatureElement = (Element) XPathAPI.selectSingleNode(document,
                     "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:Response/ds:Signature",
                     nsElement);
-            if (null == tokenSignatureElement)
+            if (null == tokenSignatureElement) {
                 tokenSignatureElement = (Element) XPathAPI
                         .selectSingleNode(
                                 document,
                                 "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:AuthnRequest/ds:Signature",
                                 nsElement);
+            }
             return tokenSignatureElement;
         } catch (TransformerException e) {
             throw new RuntimeException("XPath error: " + e.getMessage());
@@ -233,12 +232,13 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
             Element issuerElement = (Element) XPathAPI.selectSingleNode(document,
                     "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:Response/saml:Issuer",
                     nsElement);
-            if (null == issuerElement)
+            if (null == issuerElement) {
                 issuerElement = (Element) XPathAPI
                         .selectSingleNode(
                                 document,
                                 "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:AuthnRequest/saml:Issuer",
                                 nsElement);
+            }
             return issuerElement;
         } catch (TransformerException e) {
             throw new RuntimeException("XPath error: " + e.getMessage());
@@ -282,16 +282,15 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 
     /**
      * Gives back the result of the token signature validation.
-     * 
+     *
      * @param context
      */
     public static boolean getValidity(WebServiceContext context) {
 
         MessageContext messageContext = context.getMessageContext();
         Boolean validity = (Boolean) messageContext.get(VALIDITY_CONTEXT_VAR);
-        if (null == validity) {
+        if (null == validity)
             return false;
-        }
         return validity;
     }
 

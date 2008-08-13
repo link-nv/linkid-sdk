@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -27,9 +27,9 @@ import org.jboss.security.SimplePrincipal;
 /**
  * Tomcat Login Valve. This valve will set the Tomcat servlet container user principal based on a HTTP session context
  * attribute.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class LoginValve extends ValveBase {
 

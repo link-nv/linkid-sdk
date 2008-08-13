@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -12,9 +12,9 @@ import java.security.Principal;
 
 /**
  * Simple username-based JAAS principal.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class SimplePrincipal implements Principal {
 
@@ -23,7 +23,7 @@ public class SimplePrincipal implements Principal {
 
     /**
      * Main constructor.
-     * 
+     *
      * @param username
      *            the user name.
      */
@@ -43,12 +43,10 @@ public class SimplePrincipal implements Principal {
         /*
          * This method is required to be able to remove the principal from the subject on logout.
          */
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (!(obj instanceof Principal)) {
+        if (!(obj instanceof Principal))
             return false;
-        }
         Principal rhs = (Principal) obj;
         return this.username.equals(rhs.getName());
     }

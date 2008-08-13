@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ProfileDriver}<br>
  * <sub>Takes care of the internals that all drivers require.</sub></h2>
- * 
+ *
  * <p>
  * Abstract class of a service driver. This class manages the internals; such as persisting profile data and exceptions
  * for driver executions.<br>
@@ -39,11 +39,11 @@ import org.apache.commons.logging.LogFactory;
  * <br>
  * The profiling data will be gathered by this class and can later be retrieved by using {@link #getProfile()}.<br>
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public abstract class ProfileDriver {
@@ -108,10 +108,11 @@ public abstract class ProfileDriver {
         this.LOG.warn(String.format("Failed driver request: %s", error));
 
         DriverException driverException;
-        if (error instanceof DriverException)
+        if (error instanceof DriverException) {
             driverException = (DriverException) error;
-        else
+        } else {
             driverException = new DriverException(error);
+        }
 
         this.driverExceptionService.addException(this.profile, driverException);
 

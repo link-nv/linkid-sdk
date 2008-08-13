@@ -30,9 +30,9 @@ import org.jboss.jms.server.messagecounter.MessageCounter;
 
 /**
  * Servlet Filter profiles the request and adds the results as headers of the response.<br>
- * 
+ *
  * @author mbillemo
- * 
+ *
  */
 public class ProfileFilter implements Filter {
 

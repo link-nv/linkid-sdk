@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -15,9 +15,9 @@ import java.util.Map;
 
 /**
  * SafeOnline Command Line Interface Entry Point.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class Main {
 
@@ -52,9 +52,8 @@ public class Main {
 
         for (AbstractMenuAction menuAction : mainMenuActions) {
             char activationChar = Character.toUpperCase(menuAction.getActivationChar());
-            if (mainMenuActivationChars.containsKey(activationChar)) {
+            if (mainMenuActivationChars.containsKey(activationChar))
                 throw new RuntimeException("duplicate activation char: " + activationChar);
-            }
             mainMenuActivationChars.put(activationChar, menuAction);
         }
     }

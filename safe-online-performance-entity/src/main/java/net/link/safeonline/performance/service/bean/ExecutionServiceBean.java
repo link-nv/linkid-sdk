@@ -28,11 +28,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ExecutionServiceBean}<br>
  * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @see ExecutionService
  * @author mbillemo
  */
@@ -67,8 +67,9 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
         Set<Date> executionIds = new HashSet<Date>();
         List<ExecutionEntity> executions = this.em.createNamedQuery(ExecutionEntity.findAll).getResultList();
 
-        for (ExecutionEntity execution : executions)
+        for (ExecutionEntity execution : executions) {
             executionIds.add(execution.getStartTime());
+        }
 
         return executionIds;
     }

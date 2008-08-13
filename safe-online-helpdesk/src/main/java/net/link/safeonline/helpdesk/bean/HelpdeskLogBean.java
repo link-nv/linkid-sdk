@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -167,10 +167,11 @@ public class HelpdeskLogBean implements HelpdeskLog {
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
     public String view() {
 
-        if (null == this.selectedContext)
+        if (null == this.selectedContext) {
             LOG.debug("view log: " + this.selectedUserContext.getId());
-        else
+        } else {
             LOG.debug("view log: " + this.selectedContext.getId());
+        }
         return "view";
     }
 
@@ -178,17 +179,19 @@ public class HelpdeskLogBean implements HelpdeskLog {
     public String removeLog() {
 
         Long id;
-        if (null == this.selectedContext)
+        if (null == this.selectedContext) {
             id = this.selectedUserContext.getId();
-        else
+        } else {
             id = this.selectedContext.getId();
+        }
         LOG.debug("remove log: " + id);
 
         this.helpdeskService.removeLog(id);
-        if (null == this.selectedContext)
+        if (null == this.selectedContext) {
             helpdeskContextListFactory();
-        else
+        } else {
             helpdeskUserContextListFactory();
+        }
         return "success";
     }
 
@@ -205,9 +208,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
         LOG.debug("search id " + this.searchId);
         this.helpdeskContextList = this.helpdeskService.listContexts();
         for (HelpdeskContextEntity currentContext : this.helpdeskContextList) {
-            if (currentContext.getId().equals(this.searchId)) {
+            if (currentContext.getId().equals(this.searchId))
                 return "view";
-            }
         }
         return "search-failed";
     }
@@ -218,9 +220,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
         LOG.debug("search user " + this.searchUserName);
         this.helpdeskUserList = this.helpdeskService.listUsers();
         for (String user : this.helpdeskUserList) {
-            if (user.equals(this.searchUserName)) {
+            if (user.equals(this.searchUserName))
                 return "viewUser";
-            }
         }
         return "search-failed";
     }
@@ -284,7 +285,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
     }
 
     /*
-     * 
+     *
      * Validators
      */
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)

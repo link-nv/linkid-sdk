@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -18,9 +18,9 @@ import javax.servlet.UnavailableException;
 
 /**
  * Specifies that the field should be resolved from the servlet init parameter list.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Documented
 @Target(ElementType.FIELD)
@@ -32,7 +32,7 @@ public @interface Init {
 
     /**
      * The name of the init parameter.
-     * 
+     *
      */
     String name();
 

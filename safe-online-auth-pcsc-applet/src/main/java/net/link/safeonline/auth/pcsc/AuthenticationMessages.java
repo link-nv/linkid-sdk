@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,9 +13,9 @@ import java.util.ResourceBundle;
 
 /**
  * Class that manages the authentication messages.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AuthenticationMessages {
 
@@ -44,7 +44,7 @@ public class AuthenticationMessages {
 
     /**
      * Main constructor.
-     * 
+     *
      * @param locale
      */
     public AuthenticationMessages(Locale locale) {

@@ -18,11 +18,11 @@ import javax.persistence.NamedQuery;
 /**
  * <h2>{@link ScenarioTimingEntity}<br>
  * <sub>Holds the startTime at which a scenario has been executed.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 17, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Entity

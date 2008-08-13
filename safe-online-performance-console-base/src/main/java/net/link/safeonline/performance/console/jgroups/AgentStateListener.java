@@ -14,11 +14,11 @@ import org.jgroups.Address;
 /**
  * <h2>{@link AgentStateListener}<br>
  * <sub>Used for listening to agent availability events (JGroups).</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public interface AgentStateListener {

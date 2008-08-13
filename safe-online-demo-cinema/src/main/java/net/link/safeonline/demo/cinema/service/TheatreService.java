@@ -17,15 +17,15 @@ import net.link.safeonline.demo.cinema.entity.TheatreEntity;
 /**
  * <h2>{@link TheatreService}<br>
  * <sub>Service bean for {@link TheatreEntity}.</sub></h2>
- * 
+ *
  * <p>
  * Provide access to either all {@link TheatreEntity}s or those that play the given film.
  * </p>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Local

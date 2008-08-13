@@ -1,11 +1,13 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.entity;
+
+import static net.link.safeonline.entity.AttributeTypeDescriptionEntity.QUERY_WHERE_ATTRIBUTE_TYPE;
 
 import java.io.Serializable;
 import java.util.List;
@@ -29,8 +31,6 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import static net.link.safeonline.entity.AttributeTypeDescriptionEntity.QUERY_WHERE_ATTRIBUTE_TYPE;
 
 
 @Entity
@@ -142,15 +142,12 @@ public class AttributeTypeDescriptionEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (false == obj instanceof AttributeTypeDescriptionEntity) {
+        if (false == obj instanceof AttributeTypeDescriptionEntity)
             return false;
-        }
         AttributeTypeDescriptionEntity rhs = (AttributeTypeDescriptionEntity) obj;
         return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
     }

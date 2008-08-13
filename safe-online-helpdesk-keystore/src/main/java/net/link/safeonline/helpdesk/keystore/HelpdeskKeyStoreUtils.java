@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,9 +21,8 @@ public class HelpdeskKeyStoreUtils {
         String keyStoreResource = "safe-online-helpdesk-keystore.jks";
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream keyStoreInputStream = classLoader.getResourceAsStream(keyStoreResource);
-        if (null == keyStoreInputStream) {
+        if (null == keyStoreInputStream)
             throw new RuntimeException("keystore not found: " + keyStoreResource);
-        }
         PrivateKeyEntry privateKeyEntry = loadPrivateKeyEntry("jks", keyStoreInputStream, "secret", "secret");
         return privateKeyEntry;
     }
@@ -48,14 +47,12 @@ public class HelpdeskKeyStoreUtils {
         } catch (KeyStoreException e) {
             throw new RuntimeException("could not get aliases: " + e.getMessage(), e);
         }
-        if (!aliases.hasMoreElements()) {
+        if (!aliases.hasMoreElements())
             throw new RuntimeException("keystore is empty");
-        }
         String alias = aliases.nextElement();
         try {
-            if (!keyStore.isKeyEntry(alias)) {
+            if (!keyStore.isKeyEntry(alias))
                 throw new RuntimeException("not key entry: " + alias);
-            }
         } catch (KeyStoreException e) {
             throw new RuntimeException("key store error: " + e.getMessage(), e);
         }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -61,9 +61,9 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 /**
  * Application Console main frame.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class ApplicationConsole extends JFrame implements Observer {
 
@@ -163,8 +163,9 @@ public class ApplicationConsole extends JFrame implements Observer {
         this.fileMenu.addSeparator();
         this.fileMenu.add(this.quitMenuItem);
 
-        for (JMenuItem m : this.servicesMenuItems)
+        for (JMenuItem m : this.servicesMenuItems) {
             this.servicesMenu.add(m);
+        }
 
         this.utilsMenu.add(this.createP12MenuItem);
         this.utilsMenu.add(this.extractCertMenuItem);
@@ -181,8 +182,9 @@ public class ApplicationConsole extends JFrame implements Observer {
         buildStatusPanel();
         buildDebugPanel();
 
-        if (this.contentPanel == null)
+        if (this.contentPanel == null) {
             this.contentPanel = new JPanel();
+        }
         JSplitPane bottomPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.debugPanel, this.statusPanel);
         bottomPanel.setDividerSize(3);
         bottomPanel.setResizeWeight(0.5);
@@ -243,8 +245,9 @@ public class ApplicationConsole extends JFrame implements Observer {
     protected void onSetLocation() {
 
         String location = JOptionPane.showInputDialog(SET_LOCATION.getMessage(), this.consoleManager.getLocation());
-        if (null != location)
+        if (null != location) {
             this.consoleManager.setLocation(location);
+        }
     }
 
     protected void onExtract() {
@@ -321,7 +324,7 @@ public class ApplicationConsole extends JFrame implements Observer {
 
 
     /*
-     * 
+     *
      * Action classes
      */
     public class LoadIdAction extends AbstractAction {

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -237,7 +237,7 @@ public class AttributeTypeEntity implements Serializable {
 
     /**
      * Marks whether this attribute type allows for multivalued attributes.
-     * 
+     *
      */
     public boolean isMultivalued() {
 
@@ -253,7 +253,7 @@ public class AttributeTypeEntity implements Serializable {
      * Marks whether this attribute type is a member of a compounded attribute type. This field is used to have a
      * performant implementation of the restriction that an attribute type can only participate in one compounded
      * attribute type.
-     * 
+     *
      */
     public boolean isCompoundMember() {
 
@@ -279,17 +279,16 @@ public class AttributeTypeEntity implements Serializable {
 
     /**
      * Adds a member to this compounded attribute type. This method also marks the member attribute type as being such.
-     * 
+     *
      * @param memberAttributeType
      * @param memberSequence
      * @param required
      */
     public void addMember(AttributeTypeEntity memberAttributeType, int memberSequence, boolean required) {
 
-        if (memberAttributeType.isCompoundMember()) {
+        if (memberAttributeType.isCompoundMember())
             throw new EJBException("attribute type cannot be member of more than one compounded: "
                     + memberAttributeType.getName());
-        }
         CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(this, memberAttributeType,
                 memberSequence, required);
         getMembers().add(member);
@@ -316,7 +315,7 @@ public class AttributeTypeEntity implements Serializable {
 
     /**
      * Returns the OLAS node which holds the attribute values of this type.
-     * 
+     *
      */
     @ManyToOne
     public OlasEntity getLocation() {
@@ -334,9 +333,8 @@ public class AttributeTypeEntity implements Serializable {
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 
-        if (null == getLocation()) {
+        if (null == getLocation())
             return true;
-        }
 
         if (authIdentityServiceClient.getCertificate().getSubjectX500Principal().getName().equals(
                 getLocation().getAuthnCertificateSubject()))

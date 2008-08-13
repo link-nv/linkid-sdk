@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2005-2006 Frank Cornelis.
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
@@ -156,13 +156,11 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
     private SmartCardConfig getSmartCardConfig(String smartCardAlias) {
 
-        if (null == this.smartCardConfigs) {
+        if (null == this.smartCardConfigs)
             throw new IllegalStateException("call init first");
-        }
         for (SmartCardConfig smartCardConfig : this.smartCardConfigs) {
-            if (smartCardConfig.getCardAlias().equals(smartCardAlias)) {
+            if (smartCardConfig.getCardAlias().equals(smartCardAlias))
                 return smartCardConfig;
-            }
         }
         throw new IllegalArgumentException("no config found for card: " + smartCardAlias);
     }
@@ -183,9 +181,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             try {
                 Class<?> identityExtractorClass = classLoader.loadClass(identityExtractorClassname);
-                if (false == IdentityDataExtractor.class.isAssignableFrom(identityExtractorClass)) {
+                if (false == IdentityDataExtractor.class.isAssignableFrom(identityExtractorClass))
                     throw new RuntimeException("identity extractor class of incorrect type");
-                }
                 identityDataExtractor = (IdentityDataExtractor) identityExtractorClass.newInstance();
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException("identity extractor class not found");
@@ -208,9 +205,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
                 break;
             }
         }
-        if (null == existingDriverLocation) {
+        if (null == existingDriverLocation)
             throw new NoPkcs11LibraryException();
-        }
 
         long slotIdx = getBestEffortSlotIdx(existingDriverLocation);
 
@@ -222,9 +218,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
             throw new RuntimeException("IO error: " + e.getMessage());
         }
 
-        if (-1 == Security.addProvider(this.pkcs11Provider)) {
+        if (-1 == Security.addProvider(this.pkcs11Provider))
             throw new RuntimeException("could not add the security provider");
-        }
 
         try {
             loadCertificates(smartCardConfig);
@@ -306,9 +301,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
     private X509Certificate findIssuerCertificate(X509Certificate certificate, List<X509Certificate> certificateRepo) {
 
         for (X509Certificate repoCert : certificateRepo) {
-            if (certificate.getIssuerX500Principal().equals(repoCert.getSubjectX500Principal())) {
+            if (certificate.getIssuerX500Principal().equals(repoCert.getSubjectX500Principal()))
                 return repoCert;
-            }
         }
         return null;
     }
@@ -327,9 +321,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         configWriter.close();
         LOG.debug("Initializing via PKCS#11 driver: " + pkcs11Library);
         Provider provider = Security.getProvider("SunPKCS11-" + name);
-        if (null != provider) {
+        if (null != provider)
             throw new RuntimeException("Smart Card provider already active");
-        }
 
         // resetPKCS11Driver();
 
@@ -467,9 +460,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
                 LOG.debug("manufacturer Id: " + new String(tokenInfo.manufacturerID));
                 LOG.debug("serial number: " + new String(tokenInfo.serialNumber));
                 LOG.debug("Card found in slot Idx: " + currSlotIdx);
-                if (false == tokenLabel.trim().startsWith("BELPIC")) {
+                if (false == tokenLabel.trim().startsWith("BELPIC"))
                     throw new UnsupportedSmartCardException();
-                }
                 return currSlotIdx;
             }
             throw new SmartCardNotFoundException();
@@ -493,7 +485,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
         /**
          * Main constructor.
-         * 
+         *
          * @param smartCardPinCallback
          *            the optional smart card PIN call back.
          */
@@ -512,13 +504,11 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
                 } else if (callback instanceof PasswordCallback) {
                     pkcsLOG.debug("password callback");
                     PasswordCallback passwordCallback = (PasswordCallback) callback;
-                    if (null == this.smartCardPinCallback) {
+                    if (null == this.smartCardPinCallback)
                         throw new RuntimeException("no smart card PIN call back was provided");
-                    }
                     char[] pin = this.smartCardPinCallback.getPin();
-                    if (null == pin) {
+                    if (null == pin)
                         throw new UnsupportedCallbackException(callback, "User canceled PIN input");
-                    }
                     passwordCallback.setPassword(pin);
                 }
             }

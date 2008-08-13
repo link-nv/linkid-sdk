@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -33,9 +33,9 @@ import org.mortbay.jetty.servlet.SessionHandler;
 /**
  * Servlet Test Manager. This test manager allows one to unit test servlets. It is using the embeddable Jetty servlet
  * container.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class ServletTestManager {
 
@@ -198,7 +198,7 @@ public class ServletTestManager {
 
     /**
      * We update all existing sessions + we make sure that new session also get this session attribute.
-     * 
+     *
      * @param name
      * @param value
      */

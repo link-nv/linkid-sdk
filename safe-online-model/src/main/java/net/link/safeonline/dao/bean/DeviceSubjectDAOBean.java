@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -60,9 +60,8 @@ public class DeviceSubjectDAOBean implements DeviceSubjectDAO {
 
         LOG.debug("get device subject: " + userId);
         DeviceSubjectEntity subject = findSubject(userId);
-        if (null == subject) {
+        if (null == subject)
             throw new SubjectNotFoundException();
-        }
         return subject;
     }
 
@@ -74,8 +73,9 @@ public class DeviceSubjectDAOBean implements DeviceSubjectDAO {
     public DeviceSubjectEntity getSubject(SubjectEntity deviceRegistration) throws SubjectNotFoundException {
 
         DeviceSubjectEntity deviceSubject = this.queryObject.findSubject(deviceRegistration);
-        if (null == deviceSubject)
+        if (null == deviceSubject) {
             throw new SubjectNotFoundException();
+        }
         return deviceSubject;
     }
 }

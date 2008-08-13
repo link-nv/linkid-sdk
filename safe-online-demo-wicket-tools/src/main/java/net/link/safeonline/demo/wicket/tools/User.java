@@ -48,9 +48,8 @@ public class User implements Serializable {
 
         for (String hasRole : this.roles) {
             for (String needRole : roleList) {
-                if (hasRole.equals(needRole)) {
+                if (hasRole.equals(needRole))
                     return true;
-                }
             }
         }
         return false;
@@ -59,9 +58,8 @@ public class User implements Serializable {
     public boolean has(String role) {
 
         for (String hasRole : this.roles) {
-            if (hasRole.equals(role)) {
+            if (hasRole.equals(role))
                 return true;
-            }
         }
         return false;
     }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -24,9 +24,9 @@ import javax.management.ObjectName;
 
 /**
  * Utility methods for JMX unit testing.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class JmxTestUtils {
 
@@ -45,7 +45,7 @@ public class JmxTestUtils {
 
     /**
      * Sets up a test JMX MBean with the given MBean name.
-     * 
+     *
      * @param mbeanName
      * @throws MalformedObjectNameException
      * @throws NullPointerException
@@ -56,8 +56,9 @@ public class JmxTestUtils {
     public void setUp(String mbeanName) throws MalformedObjectNameException, NullPointerException,
             InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
 
-        if (null == this.mbeanServer)
+        if (null == this.mbeanServer) {
             this.mbeanServer = getMBeanServer();
+        }
         ObjectName mbeanObjectName = new ObjectName(mbeanName);
         DynamicTestMBean dynamicTestMBean = new DynamicTestMBean();
         this.mbeanServer.registerMBean(dynamicTestMBean, mbeanObjectName);
@@ -67,8 +68,9 @@ public class JmxTestUtils {
 
     public void tearDown() throws InstanceNotFoundException, MBeanRegistrationException {
 
-        for (ObjectName mbeanName : this.mbeanNames)
+        for (ObjectName mbeanName : this.mbeanNames) {
             this.mbeanServer.unregisterMBean(mbeanName);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -80,7 +82,7 @@ public class JmxTestUtils {
 
     /**
      * Registers an action handler.
-     * 
+     *
      * @param actionName
      * @param actionHandler
      */

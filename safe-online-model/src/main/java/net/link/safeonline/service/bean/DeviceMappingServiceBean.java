@@ -28,11 +28,11 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * <h2>{@link DeviceMappingServiceBean} - Service bean for device mappings.</h2>
- * 
+ *
  * <p>
  * <i>Jan 29, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Stateless
@@ -60,14 +60,15 @@ public class DeviceMappingServiceBean implements DeviceMappingService {
         DeviceEntity device = this.devicePolicyService.getDevice(deviceName);
 
         DeviceMappingEntity deviceMapping = this.deviceMappingDAO.findDeviceMapping(subject, device);
-        if (null == deviceMapping)
+        if (null == deviceMapping) {
             deviceMapping = this.deviceMappingDAO.addDeviceMapping(subject, device);
+        }
         return deviceMapping;
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      */
     public DeviceMappingEntity getDeviceMapping(String id) throws DeviceMappingNotFoundException {
 

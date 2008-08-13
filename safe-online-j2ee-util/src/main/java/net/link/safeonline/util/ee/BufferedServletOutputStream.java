@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -15,9 +15,9 @@ import javax.servlet.ServletOutputStream;
 
 /**
  * A buffered servlet output stream. The buffering happens in memory via a simple byte array output stream.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class BufferedServletOutputStream extends ServletOutputStream {
 
@@ -62,7 +62,7 @@ public class BufferedServletOutputStream extends ServletOutputStream {
 
     /**
      * Gives back the data that this servlet output stream has been buffering.
-     * 
+     *
      */
     public byte[] getData() {
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -236,9 +236,8 @@ public class Pcsc {
         }
         byte[] photoDigest = hash.digest(photoData);
         IdentityFile identityFile = getIdentityFile();
-        if (false == Arrays.equals(photoDigest, identityFile.hashPhoto)) {
+        if (false == Arrays.equals(photoDigest, identityFile.hashPhoto))
             return false;
-        }
 
         Signature signature;
         try {
@@ -348,7 +347,7 @@ public class Pcsc {
 
     /**
      * TLV: Tag Length Value structure.
-     * 
+     *
      * @param <T>
      * @param data
      * @param type
@@ -429,9 +428,8 @@ public class Pcsc {
                 continue;
             }
             int tagValue = tagAnnotation.value();
-            if (tag == tagValue) {
+            if (tag == tagValue)
                 return field;
-            }
         }
         return null;
     }

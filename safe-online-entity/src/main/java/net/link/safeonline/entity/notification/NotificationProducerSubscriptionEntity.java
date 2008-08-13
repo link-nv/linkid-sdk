@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -31,9 +31,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * WS-Notification producer subscription.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Entity
 @Table(name = "prod_subscr")
@@ -91,15 +91,12 @@ public class NotificationProducerSubscriptionEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof NotificationProducerSubscriptionEntity) {
+        if (false == obj instanceof NotificationProducerSubscriptionEntity)
             return false;
-        }
         NotificationProducerSubscriptionEntity rhs = (NotificationProducerSubscriptionEntity) obj;
         return new EqualsBuilder().append(this.topic, rhs.topic).isEquals();
     }

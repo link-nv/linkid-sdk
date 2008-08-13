@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author mbillemo
- * 
+ *
  */
 @SuppressWarnings("unused")
 public abstract class AbstractDataTest {

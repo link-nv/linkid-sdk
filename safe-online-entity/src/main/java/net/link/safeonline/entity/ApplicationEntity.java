@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -40,9 +40,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Application Entity.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Entity
 @Table(name = "application")
@@ -167,7 +167,7 @@ public class ApplicationEntity implements Serializable {
 
     /**
      * The unique name of the application. This field is used as primary key on the application entity.
-     * 
+     *
      */
     @Id
     @Column(name = "name")
@@ -183,7 +183,7 @@ public class ApplicationEntity implements Serializable {
 
     /**
      * The optional user friendly name of the application
-     * 
+     *
      */
     @Column(name = "friendlyName")
     public String getFriendlyName() {
@@ -249,7 +249,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * Marks whether a user is allowed to subscribe himself onto this application. This field prevents users from
      * subscribing themselves onto the operator web application or the application owner web application.
-     * 
+     *
      */
     public boolean isAllowUserSubscription() {
 
@@ -265,7 +265,7 @@ public class ApplicationEntity implements Serializable {
      * Marks whether the operator can remove this application. This prevents the operator from removing critical
      * application like the SafeOnline user web application, the SafeOnline application owner web application, the
      * SafeOnline authentication web application and the SafeOnline operator web application.
-     * 
+     *
      */
     public boolean isRemovable() {
 
@@ -280,7 +280,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * Gives back the application owner of this application. Each application has an application owner. The application
      * owner is allowed to perform certain operations regarding this application.
-     * 
+     *
      */
     @ManyToOne(optional = false)
     public ApplicationOwnerEntity getApplicationOwner() {
@@ -297,7 +297,7 @@ public class ApplicationEntity implements Serializable {
      * Gives back the current application identity version number. Each application can have multiple application
      * identities. Each application identity has a version number. This field marks the currently active application
      * identity version.
-     * 
+     *
      */
     public long getCurrentApplicationIdentity() {
 
@@ -313,7 +313,7 @@ public class ApplicationEntity implements Serializable {
      * Gives back the current application usage agreement version number. Each application can have multiple usage
      * agreement identities. Each application usage agreement has a version number. This field marks the currently
      * active application usage agreement version.
-     * 
+     *
      */
     @Column(name = "currentUsageAg")
     public long getCurrentApplicationUsageAgreement() {
@@ -329,7 +329,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * The certificate subject is used during application authentication phase to associate a given certificate with
      * it's corresponding application.
-     * 
+     *
      */
     @Column(unique = true)
     public String getCertificateSubject() {
@@ -340,7 +340,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * Sets the certificate subject. Do not use this method directly. Use {@link #setCertificate(X509Certificate)
      * setCertificate} instead. JPA requires this setter.
-     * 
+     *
      * @param certificateSubject
      * @see #setCertificate(X509Certificate)
      */
@@ -352,7 +352,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * Sets the X509 certificate subject of the application. Use this method to update the certificate subject for this
      * application.
-     * 
+     *
      * @param certificate
      */
     @Transient
@@ -363,7 +363,7 @@ public class ApplicationEntity implements Serializable {
 
     /**
      * The identifier mapping allowed field use used for access control over the identifier mapping service.
-     * 
+     *
      */
     public boolean isIdentifierMappingAllowed() {
 
@@ -377,7 +377,7 @@ public class ApplicationEntity implements Serializable {
 
     /**
      * The id scope field is used to determine which type of id should be returned to the caller application.
-     * 
+     *
      */
     public IdScopeType getIdScope() {
 
@@ -392,7 +392,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * When set to <code>true</code> the WS-Security SOAP handlers will not check whether the SOAP body has been signed.
      * This is required for compatability with .NET 3.0 WCF clients.
-     * 
+     *
      */
     public boolean isSkipMessageIntegrityCheck() {
 

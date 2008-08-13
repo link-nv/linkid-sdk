@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -32,9 +32,9 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
  * Subject Identifier entity. This entity allows us to unambiguously map from an identifier within a certain domain to
  * its subject. For example, within the domain of Belgian eID, we will map from the SHA-1 of the encoded authentication
  * certificate to a subject.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Entity
 @Table(name = "subject_identifier")

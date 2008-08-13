@@ -56,11 +56,11 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * <h2>{@link ExecutionInfo}<br>
  * <sub>Display available executions and information about them.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelectionListener, Scrollable,
@@ -341,7 +341,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
 
     /**
      * Format a time of duration in a human readable manner.
-     * 
+     *
      * @param duration
      *            A duration in ms.
      */

@@ -1,21 +1,21 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package test.accept.net.link.safeonline.user;
 
-import net.link.safeonline.webapp.AcceptanceTestManager;
 import junit.framework.TestCase;
+import net.link.safeonline.webapp.AcceptanceTestManager;
 
 
 /**
  * Acceptance test for user web application.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class UserTest extends TestCase {
 

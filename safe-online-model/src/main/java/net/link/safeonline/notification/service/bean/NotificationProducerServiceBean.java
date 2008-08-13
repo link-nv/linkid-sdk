@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -40,9 +40,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Service bean used by the WS-Notification producer service.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Stateless
 @Interceptors( { AuditContextManager.class })
@@ -77,9 +77,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             DeviceEntity device = this.deviceDAO.findDevice(certificate);
             if (null != device) {
                 subscribe(topic, address, device);
-            } else {
+            } else
                 throw new PermissionDeniedException("application or device not found.");
-            }
         }
     }
 
@@ -125,9 +124,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             DeviceEntity device = this.deviceDAO.findDevice(certificate);
             if (null != device) {
                 unsubscribe(topic, address, device);
-            } else {
+            } else
                 throw new PermissionDeniedException("application or device not found.");
-            }
         }
     }
 

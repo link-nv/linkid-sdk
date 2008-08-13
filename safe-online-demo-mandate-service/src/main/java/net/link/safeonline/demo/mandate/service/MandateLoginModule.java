@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -33,9 +33,9 @@ import org.jboss.security.SimplePrincipal;
 
 /**
  * Mandate JAAS login module.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class MandateLoginModule implements LoginModule {
 
@@ -100,9 +100,8 @@ public class MandateLoginModule implements LoginModule {
 
     private void setRole(Set<Principal> principals, String role) {
 
-        if (null == role) {
+        if (null == role)
             return;
-        }
         Group rolesGroup = getGroup("Roles", principals);
         Principal rolePrincipal = new SimplePrincipal(role);
         rolesGroup.addMember(rolePrincipal);
@@ -115,9 +114,8 @@ public class MandateLoginModule implements LoginModule {
                 continue;
             }
             Group group = (Group) principal;
-            if (groupName.equals(group.getName())) {
+            if (groupName.equals(group.getName()))
                 return group;
-            }
         }
         /*
          * If the group did not yet exist, create it and add it to the subject principals.

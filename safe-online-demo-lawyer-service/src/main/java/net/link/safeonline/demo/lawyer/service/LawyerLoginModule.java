@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -35,9 +35,9 @@ import org.jboss.security.SimplePrincipal;
  * Lawyer JAAS login module. This login module will retrieve the username and role attribute from the HTTP servlet
  * request using JACC. It uses these attribute values to populate the subject for usage within the JBoss Application
  * Server.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class LawyerLoginModule implements LoginModule {
 
@@ -86,9 +86,8 @@ public class LawyerLoginModule implements LoginModule {
         String jaasUsername = nameCallback.getName();
         LOG.debug("jaas username: " + jaasUsername);
 
-        if (false == jaasUsername.equals(sessionUsername)) {
+        if (false == jaasUsername.equals(sessionUsername))
             throw new LoginException("JAAS login username should equal session username");
-        }
 
         // authentication
         this.authenticatedPrincipal = new SimplePrincipal(sessionUsername);
@@ -110,9 +109,8 @@ public class LawyerLoginModule implements LoginModule {
 
     private void setRole(Set<Principal> principals, String role) {
 
-        if (null == role) {
+        if (null == role)
             return;
-        }
         Group rolesGroup = getGroup("Roles", principals);
         Principal rolePrincipal = new SimplePrincipal(role);
         rolesGroup.addMember(rolePrincipal);
@@ -125,9 +123,8 @@ public class LawyerLoginModule implements LoginModule {
                 continue;
             }
             Group group = (Group) principal;
-            if (groupName.equals(group.getName())) {
+            if (groupName.equals(group.getName()))
                 return group;
-            }
         }
         /*
          * If the group did not yet exist, create it and add it to the subject principals.

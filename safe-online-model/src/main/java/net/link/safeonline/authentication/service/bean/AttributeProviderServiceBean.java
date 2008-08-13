@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -101,9 +101,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
         List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
 
-        if (false == attributeType.isCompounded()) {
+        if (false == attributeType.isCompounded())
             return attributes;
-        }
 
         List<CompoundedAttributeTypeMemberEntity> members = attributeType.getMembers();
         for (AttributeEntity attribute : attributes) {
@@ -121,12 +120,12 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
     /**
      * Check whether the caller application is an attribute provider for the given attribute type.
-     * 
+     *
      * <p>
      * It's an interesting design-pattern to combine access control checking with retrieval of required entities for
      * further processing. That way you're always sure that the checks have been executed.
      * </p>
-     * 
+     *
      * @param attributeName
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
@@ -138,9 +137,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
         AttributeProviderEntity attributeProvider = this.attributeProviderDAO.findAttributeProvider(application,
                 attributeType);
-        if (null == attributeProvider) {
+        if (null == attributeProvider)
             throw new PermissionDeniedException("not an attribute provider");
-        }
         return attributeType;
     }
 
@@ -193,9 +191,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
         Class attributeValueClass = attributeValue.getClass();
         if (attributeType.isMultivalued()) {
-            if (false == attributeValueClass.isArray()) {
+            if (false == attributeValueClass.isArray())
                 throw new DatatypeMismatchException();
-            }
 
             int size = Array.getLength(attributeValue);
             for (int idx = 0; idx < size; idx++) {
@@ -267,12 +264,11 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
             throws AttributeNotFoundException, DatatypeMismatchException {
 
         List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
-        if (attributes.isEmpty()) {
+        if (attributes.isEmpty())
             /*
              * Via setAttribute one can only update existing multivalued attributes, not create them.
              */
             throw new AttributeNotFoundException();
-        }
         if (null == attributeValue) {
             /*
              * In this case we remove all but one, which we set with a null value.
@@ -285,9 +281,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
                 this.attributeDAO.removeAttribute(attribute);
             }
         } else {
-            if (false == attributeValue.getClass().isArray()) {
+            if (false == attributeValue.getClass().isArray())
                 throw new DatatypeMismatchException();
-            }
             int newSize = Array.getLength(attributeValue);
             Iterator<AttributeEntity> iterator = attributes.iterator();
             for (int idx = 0; idx < newSize; idx++) {
@@ -314,9 +309,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
         LOG.debug("set compound attribute " + attributeName + " for " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-        if (false == attributeType.isCompounded()) {
+        if (false == attributeType.isCompounded())
             throw new DatatypeMismatchException();
-        }
 
         SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
@@ -342,9 +336,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
         List<AttributeEntity> compoundAttributes = this.attributeDAO.listAttributes(subject, attributeType);
         for (AttributeEntity compoundAttribute : compoundAttributes) {
-            if (attributeId.equals(compoundAttribute.getStringValue())) {
+            if (attributeId.equals(compoundAttribute.getStringValue()))
                 return compoundAttribute;
-            }
         }
         throw new AttributeNotFoundException();
     }

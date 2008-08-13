@@ -80,15 +80,13 @@ public class GlobalUsageAgreementConfirmationBean implements GlobalUsageAgreemen
 
         boolean confirmationRequired = this.identityService.isConfirmationRequired(this.applicationId);
         this.log.debug("confirmation required: " + confirmationRequired);
-        if (true == confirmationRequired) {
+        if (true == confirmationRequired)
             return "confirmation-required";
-        }
 
         boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.applicationId);
 
-        if (true == hasMissingAttributes) {
+        if (true == hasMissingAttributes)
             return "missing-attributes";
-        }
 
         AuthenticationUtils.commitAuthentication(this.facesMessages);
 

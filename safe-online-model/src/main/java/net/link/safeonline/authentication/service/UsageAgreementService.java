@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,16 +21,16 @@ import net.link.safeonline.entity.UsageAgreementTextEntity;
 
 /**
  * Interface to service for retrieving information about applications' usage agreements.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Local
 public interface UsageAgreementService {
 
     /**
      * Create draft usage agreement from the specified version.
-     * 
+     *
      * @param applicationName
      * @throws PermissionDeniedException
      * @throws ApplicationNotFoundException
@@ -40,7 +40,7 @@ public interface UsageAgreementService {
 
     /**
      * Commits the draft usage agreement to a new version.
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
@@ -49,7 +49,7 @@ public interface UsageAgreementService {
 
     /**
      * Returns currently associated usage agreement with the specified application.
-     * 
+     *
      * @param applicationName
      * @throws PermissionDeniedException
      * @throws ApplicationNotFoundException
@@ -59,7 +59,7 @@ public interface UsageAgreementService {
 
     /**
      * Returns current draft usage agreement with the specified application. Returns null if no draft is present.
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
@@ -69,7 +69,7 @@ public interface UsageAgreementService {
 
     /**
      * Get all usage agreements of the specified application.
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
@@ -79,7 +79,7 @@ public interface UsageAgreementService {
 
     /**
      * Create ( if not already created ) new draft usage agreement text for the specified language.
-     * 
+     *
      * @param name
      * @param language
      * @param text
@@ -91,7 +91,7 @@ public interface UsageAgreementService {
 
     /**
      * Set draft usage agreement text for the specified application and language.
-     * 
+     *
      * @param name
      * @param language
      * @param text
@@ -103,7 +103,7 @@ public interface UsageAgreementService {
 
     /**
      * Remove draft usage agreement text for the specified application and language.
-     * 
+     *
      * @param applicationName
      * @param language
      * @throws ApplicationNotFoundException
@@ -114,7 +114,7 @@ public interface UsageAgreementService {
 
     /**
      * Remove draft usage agreement for the specified application.
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
@@ -125,7 +125,7 @@ public interface UsageAgreementService {
     /**
      * Check whether the authenticating subject's subscription to the specified application conforms with the
      * application's current usage agreement version.
-     * 
+     *
      * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
@@ -135,9 +135,9 @@ public interface UsageAgreementService {
 
     /**
      * Confirm current usage agreement for specified application.
-     * 
+     *
      * TODO: Version specified as application owner might be changing the current version while a user is confirming...
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
@@ -147,14 +147,14 @@ public interface UsageAgreementService {
 
     /**
      * Get application's usage agreement text for specified language
-     * 
+     *
      * @throws ApplicationNotFoundException
      */
     String getUsageAgreementText(String applicationName, String language) throws ApplicationNotFoundException;
 
     /**
      * Get version of application's usage agreement texts for specified language.
-     * 
+     *
      * @param applicationName
      * @param language
      * @param usageAgreementVersion
@@ -175,7 +175,7 @@ public interface UsageAgreementService {
 
     /**
      * Create ( if not already created ) new draft global usage agreement text for the specified language.
-     * 
+     *
      * @param language
      * @param text
      */
@@ -183,7 +183,7 @@ public interface UsageAgreementService {
 
     /**
      * Set draft global usage agreement text for the specified language.
-     * 
+     *
      * @param language
      * @param text
      */
@@ -191,33 +191,33 @@ public interface UsageAgreementService {
 
     /**
      * Remove draft global usage agreement text for the specified language.
-     * 
+     *
      * @param language
      */
     void removeDraftGlobalUsageAgreementText(String language);
 
     /**
      * Create draft usage agreement from the specified version.
-     * 
+     *
      * @param currentUsageAgreement
      */
     GlobalUsageAgreementEntity createDraftGlobalUsageAgreement();
 
     /**
      * Return draft global usage agreement.
-     * 
+     *
      */
     GlobalUsageAgreementEntity getDraftGlobalUsageAgreement();
 
     /**
      * Return current global usage agreement.
-     * 
+     *
      */
     GlobalUsageAgreementEntity getCurrentGlobalUsageAgreement();
 
     /**
      * Check whether authenticating subject has accepted the global usage agreement.
-     * 
+     *
      */
     boolean requiresGlobalUsageAgreementAcceptation();
 
@@ -228,14 +228,14 @@ public interface UsageAgreementService {
 
     /**
      * Get current global usage agreement text for specified language
-     * 
+     *
      * @param language
      */
     String getGlobalUsageAgreementText(String language);
 
     /**
      * Get current global usage agreement text for specified language and version.
-     * 
+     *
      * @param language
      */
     String getGlobalUsageAgreementText(String language, Long usageAgreementVersion);

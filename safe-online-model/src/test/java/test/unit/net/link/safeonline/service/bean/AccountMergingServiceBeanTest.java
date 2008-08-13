@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -279,8 +279,9 @@ public class AccountMergingServiceBeanTest {
                     SafeOnlineTestContainer.sessionBeans, this.entityManager, this.subject.getUserId(), "user");
             identityService.confirmIdentity(application.applicationName);
 
-            for (AttributeTypeEntity attributeType : application.attributeTypes)
+            for (AttributeTypeEntity attributeType : application.attributeTypes) {
                 addAttributeValue(attributeType, identityService);
+            }
 
         }
 
@@ -338,8 +339,9 @@ public class AccountMergingServiceBeanTest {
             ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                     SafeOnlineTestContainer.sessionBeans, this.entityManager, "test-operator", "operator");
             List<IdentityAttributeTypeDO> applicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
-            for (AttributeTypeEntity attributeType : this.attributeTypes)
+            for (AttributeTypeEntity attributeType : this.attributeTypes) {
                 applicationIdentityAttributes.add(new IdentityAttributeTypeDO(attributeType.getName(), true, false));
+            }
             applicationService.addApplication(this.applicationName, null, "owner", null, false, IdScopeType.USER, null,
                     null, null, null, applicationIdentityAttributes, false, false);
         }

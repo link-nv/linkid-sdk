@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -65,9 +65,8 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 
         LOG.debug("get app owner: " + name);
         ApplicationOwnerEntity applicationOwner = findApplicationOwner(name);
-        if (null == applicationOwner) {
+        if (null == applicationOwner)
             throw new ApplicationOwnerNotFoundException();
-        }
         return applicationOwner;
     }
 
@@ -81,9 +80,8 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
             throws ApplicationOwnerNotFoundException {
 
         ApplicationOwnerEntity applicationOwner = findApplicationOwner(adminSubject);
-        if (null == applicationOwner) {
+        if (null == applicationOwner)
             throw new ApplicationOwnerNotFoundException();
-        }
         return applicationOwner;
     }
 

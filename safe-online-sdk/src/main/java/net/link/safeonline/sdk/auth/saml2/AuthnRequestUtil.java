@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -43,9 +43,9 @@ import org.w3c.dom.Element;
 
 /**
  * Utility class for SAML2 authentication requests.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class AuthnRequestUtil {
 
@@ -57,7 +57,7 @@ public class AuthnRequestUtil {
     /**
      * Sends a SAML2 authentication Request using the specified Velocity template. The SAML2 Token should already be
      * Base64 encoded.
-     * 
+     *
      * @param targetUrl
      * @param encodedSamlRequestToken
      * @param templateResourceName
@@ -74,7 +74,7 @@ public class AuthnRequestUtil {
     /**
      * Sends a SAML2 authentication Request using the specified Velocity template. The SAML2 Token should already be
      * Base64 encoded.
-     * 
+     *
      * @param targetUrl
      * @param encodedSamlRequestToken
      * @param language
@@ -124,7 +124,7 @@ public class AuthnRequestUtil {
 
     /**
      * Validates a SAML request in the HTTP request
-     * 
+     *
      * @param request
      * @param stsWsLocation
      * @param applicationCertificate
@@ -136,9 +136,8 @@ public class AuthnRequestUtil {
             throws ServletException {
 
         String encodedSamlRequest = request.getParameter("SAMLRequest");
-        if (null == encodedSamlRequest) {
+        if (null == encodedSamlRequest)
             throw new ServletException("no SAML request found");
-        }
 
         byte[] decodedSamlResponse;
         try {
@@ -180,8 +179,9 @@ public class AuthnRequestUtil {
         }
 
         SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof AuthnRequest)
+        if (false == samlMessage instanceof AuthnRequest) {
             throw new ServletException("SAML message not an authentication request message");
+        }
         AuthnRequest samlAuthnRequest = (AuthnRequest) samlMessage;
         return samlAuthnRequest;
     }

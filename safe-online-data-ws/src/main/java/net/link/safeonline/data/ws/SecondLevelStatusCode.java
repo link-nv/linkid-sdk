@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,13 +13,13 @@ import java.util.Map;
 
 /**
  * Enumerate of ID-WSF DST v2.1 Second Level Status Codes.
- * 
+ *
  * <p>
  * Specification: ID-WSF DST v2.1 - 3.2.2. Second Level Status Codes
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public enum SecondLevelStatusCode {
     NOT_AUTHORIZED("ActionNotAuthorized"), UNSUPPORTED_OBJECT_TYPE("UnsupportedObjectType"), NO_MULTIPLE_ALLOWED(
@@ -52,9 +52,8 @@ public enum SecondLevelStatusCode {
     public static SecondLevelStatusCode fromCode(String code) {
 
         SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode.statusCodes.get(code);
-        if (null == secondLevelStatusCode) {
+        if (null == secondLevelStatusCode)
             throw new IllegalArgumentException("unknown code: " + code);
-        }
         return secondLevelStatusCode;
     }
 }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -39,9 +39,9 @@ import net.link.safeonline.webapp.user.profile.UserProfile;
 
 /**
  * Demo apps Acceptance Test.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class DemoTicketPaymentTest extends TestCase {
 
@@ -63,16 +63,16 @@ public class DemoTicketPaymentTest extends TestCase {
 
     /**
      * This test needs some manual intervention as BeId is used. The following steps are executed :
-     * 
+     *
      * 1. Register test user with password, login user webapp and register BeId (check profile, applications, devices,
      * history )
-     * 
+     *
      * 2. Login with 'payment-admin' into payment webapp, set test user as 'junior'.
-     * 
+     *
      * 3. Login with test user into ticket webapp, buy ticket, pay with payment webapp.
-     * 
+     *
      * 4. Remove user in ticket webapp ( free up BeId ), login user webapp, remove beid, remove user.
-     * 
+     *
      * @throws Exception
      */
     public void testDemoPaymentTicket() throws Exception {

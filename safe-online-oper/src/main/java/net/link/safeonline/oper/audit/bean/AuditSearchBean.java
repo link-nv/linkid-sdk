@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -109,7 +109,7 @@ public class AuditSearchBean implements AuditSearch {
 
 
     /*
-     * 
+     *
      * Datamodels
      */
     @SuppressWarnings("unused")
@@ -147,7 +147,7 @@ public class AuditSearchBean implements AuditSearch {
 
 
     /*
-     * 
+     *
      * Accessors
      */
     public Long getSearchContextId() {
@@ -201,7 +201,7 @@ public class AuditSearchBean implements AuditSearch {
     }
 
     /*
-     * 
+     *
      * Factories
      */
     @Factory(AUDIT_CONTEXT_LIST_NAME)
@@ -281,7 +281,7 @@ public class AuditSearchBean implements AuditSearch {
     }
 
     /*
-     * 
+     *
      * Actions
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -348,7 +348,7 @@ public class AuditSearchBean implements AuditSearch {
     public String searchLastTime() {
 
         Long timeLimitInMillis = System.currentTimeMillis()
-                - ((this.searchLastTimeMinutes + (this.searchLastTimeHours * 60) + (this.searchLastTimeDays * 60 * 24)) * 60 * 1000);
+                - (this.searchLastTimeMinutes + this.searchLastTimeHours * 60 + this.searchLastTimeDays * 60 * 24) * 60 * 1000;
         this.ageLimit = new Date(timeLimitInMillis);
         LOG.debug("Search audit records since " + this.ageLimit);
         setMode(SearchMode.TIME);
@@ -358,18 +358,20 @@ public class AuditSearchBean implements AuditSearch {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String viewPrincipal() {
 
-        if (null != this.accessAuditEntity)
+        if (null != this.accessAuditEntity) {
             this.auditPrincipal = this.accessAuditEntity.getPrincipal();
-        else if (null != this.securityAuditEntity)
+        } else if (null != this.securityAuditEntity) {
             this.auditPrincipal = this.securityAuditEntity.getTargetPrincipal();
-        if (null == this.auditPrincipal)
+        }
+        if (null == this.auditPrincipal) {
             this.auditPrincipal = OperatorConstants.UNKNOWN_PRINCIPAL;
+        }
         LOG.debug("view principal: " + this.auditPrincipal);
         return "view-principal";
     }
 
     /*
-     * 
+     *
      * Validators
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

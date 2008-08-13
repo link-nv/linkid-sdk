@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -37,9 +37,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation WS-Notification producer service.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class NotificationProducerClientImpl extends AbstractMessageAccessor implements NotificationProducerClient {
 
@@ -52,7 +52,7 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
 
     /**
      * Main constructor.
-     * 
+     *
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -118,8 +118,9 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
     private void checkStatus(SubscribeResponse response) throws SubscriptionFailedException {
 
         for (Object errorObject : response.getAny()) {
-            if (errorObject instanceof SubscribeCreationFailedFaultType)
+            if (errorObject instanceof SubscribeCreationFailedFaultType) {
                 throw new SubscriptionFailedException();
+            }
         }
     }
 }

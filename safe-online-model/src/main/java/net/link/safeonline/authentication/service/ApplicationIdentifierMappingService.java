@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -17,16 +17,16 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 
 /**
  * Interface for identifier mapping service component.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface ApplicationIdentifierMappingService {
 
     /**
      * Returns the subject's user id using the application's id scope.
-     * 
+     *
      * @param username
      * @throws PermissionDeniedException
      * @throws ApplicationNotFoundException
@@ -38,7 +38,7 @@ public interface ApplicationIdentifierMappingService {
 
     /**
      * Returns the global OLAS user ID using the application's id scope. Returns null if not found.
-     * 
+     *
      * @param applicationName
      * @param applicationUserId
      * @throws ApplicationNotFoundException

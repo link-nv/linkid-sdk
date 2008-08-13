@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -22,9 +22,9 @@ import org.jboss.security.auth.callback.UsernamePasswordHandler;
 
 /**
  * Utility methods to aid the integration testing via the remote RMI interface.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class IntegrationTestUtils {
 
@@ -36,7 +36,7 @@ public class IntegrationTestUtils {
     /**
      * Retrieves the JNDI initial context. This assumes that we have a locally running JBoss Application Server on port
      * 1099.
-     * 
+     *
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
@@ -51,7 +51,7 @@ public class IntegrationTestUtils {
 
     /**
      * Performs a client-side JAAS login.
-     * 
+     *
      * @param username
      *            the username.
      * @param password
@@ -70,7 +70,7 @@ public class IntegrationTestUtils {
     /**
      * Setup the client-side JAAS login configuration. The JBoss RMI will use the credentials from the JBoss
      * ClientLoginModule to authenticate at the server-side.
-     * 
+     *
      * @throws Exception
      */
     public static void setupLoginConfig() throws Exception {

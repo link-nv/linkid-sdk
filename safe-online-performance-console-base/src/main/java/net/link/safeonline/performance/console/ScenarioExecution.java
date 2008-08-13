@@ -15,11 +15,11 @@ import java.util.Map;
 /**
  * <h2>{@link ScenarioExecution}<br>
  * <sub>A data structure that holds the results of a scenario execution.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioExecution implements Serializable, Comparable<ScenarioExecution>, Cloneable {
@@ -114,8 +114,9 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
     public String toString() {
 
         String formattedStartTime = null;
-        if (this.startTime != null)
+        if (this.startTime != null) {
             formattedStartTime = new SimpleDateFormat("HH:mm").format(this.startTime);
+        }
 
         return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName
                 .replaceFirst(".*\\.", ""), formattedStartTime == null? "N/A": formattedStartTime,
@@ -126,7 +127,7 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
 
     /**
      * <b>NOTE</b>: The clone will <b>NOT</b> contain no charts even if this instance does!
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -167,38 +168,46 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
     public int hashCode() {
 
         double hashCode = this.startTime.hashCode();
-        if (this.scenarioName != null)
+        if (this.scenarioName != null) {
             hashCode += this.scenarioName.hashCode();
-        if (this.hostname != null)
+        }
+        if (this.hostname != null) {
             hashCode += this.hostname.hashCode();
-        if (this.duration != null)
+        }
+        if (this.duration != null) {
             hashCode += this.duration.hashCode();
-        if (this.workers != null)
+        }
+        if (this.workers != null) {
             hashCode += this.workers.hashCode();
-        if (this.agents != null)
+        }
+        if (this.agents != null) {
             hashCode += this.agents.hashCode();
-        if (this.speed != null)
+        }
+        if (this.speed != null) {
             hashCode += this.speed.hashCode();
+        }
 
         // Our hash is the integer average of all hashes.
         hashCode /= 7;
-        if ((int) hashCode == 0)
+        if ((int) hashCode == 0) {
             hashCode = Math.signum(hashCode);
+        }
 
         return (int) hashCode;
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Assure contract with equals; for {@link ScenarioExecution}s with the same startTime (execution id) compare
      * hashCode to differentiate other possible differences (like speed).
      */
     public int compareTo(ScenarioExecution o) {
 
         int difference = this.startTime.compareTo(o.startTime);
-        if (difference == 0)
+        if (difference == 0) {
             difference = hashCode() - o.hashCode();
+        }
 
         return difference;
     }

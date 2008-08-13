@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -33,9 +33,9 @@ import org.apache.ws.security.WSConstants;
  * JAX-WS SOAP Handler to verify the digestion of the SOAP Body element by the WS-Security signature. We have to
  * postpone this verification until after we know the calling application identity since we need to be able to determine
  * if we need to perform the check on an application basis.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -83,14 +83,12 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
     public boolean handleMessage(SOAPMessageContext soapMessageContext) {
 
         Boolean outboundProperty = (Boolean) soapMessageContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-        if (true == outboundProperty) {
+        if (true == outboundProperty)
             return true;
-        }
 
         X509Certificate certificate = WSSecurityServerHandler.getCertificate(soapMessageContext);
-        if (null == certificate) {
+        if (null == certificate)
             throw new RuntimeException("no certificate found on JAX-WS context");
-        }
 
         boolean skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
 
@@ -112,13 +110,11 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
             throw WSSecurityUtil.createSOAPFaultException("error retrieving SOAP Body", "FailedCheck");
         }
         String bodyId = soapBody.getAttributeNS(WSConstants.WSU_NS, "Id");
-        if (null == bodyId || 0 == bodyId.length()) {
+        if (null == bodyId || 0 == bodyId.length())
             throw WSSecurityUtil.createSOAPFaultException("SOAP Body should have a wsu:Id attribute", "FailedCheck");
-        }
         boolean isBodySigned = WSSecurityServerHandler.isSignedElement(bodyId, soapMessageContext);
-        if (false == isBodySigned) {
+        if (false == isBodySigned)
             throw WSSecurityUtil.createSOAPFaultException("SOAP Body was not signed", "FailedCheck");
-        }
 
         return true;
     }

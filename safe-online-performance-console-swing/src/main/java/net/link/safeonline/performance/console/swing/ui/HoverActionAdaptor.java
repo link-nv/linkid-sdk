@@ -29,7 +29,7 @@ import javax.swing.border.Border;
 /**
  * <h2>{@link HoverActionAdaptor}<br>
  * <sub>A mouse adaptor that invokes an action when one of its components is clicked.</sub></h2>
- * 
+ *
  * <p>
  * You are to implement {@link #clicked(JComponent)} yourself to provide the actions that must be undertaken whenever a
  * managed component is clicked.<br>
@@ -37,11 +37,11 @@ import javax.swing.border.Border;
  * This adaptor will take care of showing a nice border around the managed components whenever they are hovered over and
  * hide this border whilst they are not.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 21, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public abstract class HoverActionAdaptor extends MouseAdapter {
@@ -97,13 +97,15 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     public void enable(boolean enabled, JComponent... components) {
 
         for (JComponent component : components) {
-            if (!this.managedComponents.containsKey(component))
+            if (!this.managedComponents.containsKey(component)) {
                 throw new IllegalArgumentException("Given component is not managed!");
+            }
 
             this.managedComponents.put(component, enabled);
 
-            if (!enabled)
+            if (!enabled) {
                 component.setBorder(EMPTY_BORDER);
+            }
         }
     }
 
@@ -113,8 +115,9 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     @Override
     public void mouseEntered(MouseEvent e) {
 
-        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource()))
+        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource())) {
             getComponent(e).setBorder(HOVER_BORDER);
+        }
     }
 
     /**
@@ -123,8 +126,9 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     @Override
     public void mouseExited(MouseEvent e) {
 
-        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource()))
+        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource())) {
             getComponent(e).setBorder(EMPTY_BORDER);
+        }
     }
 
     /**
@@ -133,8 +137,9 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
 
-        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource()))
+        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource())) {
             getComponent(e).setBorder(PRESS_BORDER);
+        }
     }
 
     /**
@@ -144,10 +149,11 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     public void mouseReleased(MouseEvent e) {
 
         if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource()))
-            if (getComponent(e).contains(e.getPoint()))
+            if (getComponent(e).contains(e.getPoint())) {
                 mouseEntered(e);
-            else
+            } else {
                 mouseExited(e);
+            }
     }
 
     /**
@@ -156,8 +162,9 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource()))
+        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource())) {
             clicked(getComponent(e));
+        }
     }
 
     private JComponent getComponent(MouseEvent e) {

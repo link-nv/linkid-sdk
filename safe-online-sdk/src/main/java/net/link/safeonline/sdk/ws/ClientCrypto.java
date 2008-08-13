@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,9 +23,9 @@ import org.apache.ws.security.components.crypto.Crypto;
 /**
  * WSS4J Crypto implementation. This component hosts the client certificate and private key as used by the WSS4J
  * library.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class ClientCrypto implements Crypto {
 

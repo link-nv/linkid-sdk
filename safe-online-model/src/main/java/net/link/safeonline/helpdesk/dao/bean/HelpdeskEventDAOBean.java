@@ -1,5 +1,5 @@
 /* SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -45,8 +45,9 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
 
     public void persist(List<HelpdeskEventEntity> helpdeskEvents) {
 
-        for (HelpdeskEventEntity event : helpdeskEvents)
+        for (HelpdeskEventEntity event : helpdeskEvents) {
             this.entityManager.persist(event);
+        }
     }
 
     public List<HelpdeskEventEntity> listEvents(Long contextId) {
@@ -56,7 +57,7 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
 
     public void clearEvents(long ageInMinutes, LogLevelType logLevel) {
 
-        Date ageLimit = new Date(System.currentTimeMillis() - (ageInMinutes * 60 * 1000));
+        Date ageLimit = new Date(System.currentTimeMillis() - ageInMinutes * 60 * 1000);
         LOG.debug("clearing helpdesk " + logLevel.toString() + " events older than: " + ageLimit);
         this.queryObject.deleteEvents(ageLimit, logLevel);
     }

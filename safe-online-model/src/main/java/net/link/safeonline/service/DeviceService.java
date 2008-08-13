@@ -110,7 +110,7 @@ public interface DeviceService {
 
     /**
      * Returns the list of device registrations for the specified subject.
-     * 
+     *
      * @param subject
      * @param locale
      * @return list of device registration data objects.

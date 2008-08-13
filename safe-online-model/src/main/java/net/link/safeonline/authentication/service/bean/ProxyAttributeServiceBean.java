@@ -95,9 +95,8 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         if (null == subject)
             return null;
 
-        if (attributeType.isDeviceAttribute()) {
+        if (attributeType.isDeviceAttribute())
             return findDeviceAttributeValue(getDeviceId(subject, attributeType), attributeName);
-        }
 
         if (attributeType.isLocal())
             return findLocalAttribute(userId, attributeType);
@@ -107,7 +106,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
     /**
      * Returns the device mapping id for this device attribute type and specified subject.
-     * 
+     *
      * @param subject
      * @param attributeType
      * @return device mapping ID
@@ -119,16 +118,14 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         for (DeviceMappingEntity deviceMapping : deviceMappings) {
             AttributeTypeEntity deviceAttributeType = deviceMapping.getDevice().getAttributeType();
 
-            if (deviceAttributeType.getName().equals(attributeType.getName())) {
+            if (deviceAttributeType.getName().equals(attributeType.getName()))
                 return deviceMapping.getId();
-            }
 
             if (deviceAttributeType.isCompounded()) {
                 List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
                 for (CompoundedAttributeTypeMemberEntity member : members) {
-                    if (member.getMember().getName().equals(attributeType.getName())) {
+                    if (member.getMember().getName().equals(attributeType.getName()))
                         return deviceMapping.getId();
-                    }
                 }
             }
 
@@ -137,16 +134,14 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 continue;
             }
 
-            if (deviceUserAttributeType.getName().equals(attributeType.getName())) {
+            if (deviceUserAttributeType.getName().equals(attributeType.getName()))
                 return deviceMapping.getId();
-            }
 
             if (deviceUserAttributeType.isCompounded()) {
                 List<CompoundedAttributeTypeMemberEntity> members = deviceUserAttributeType.getMembers();
                 for (CompoundedAttributeTypeMemberEntity member : members) {
-                    if (member.getMember().getName().equals(attributeType.getName())) {
+                    if (member.getMember().getName().equals(attributeType.getName()))
                         return deviceMapping.getId();
-                    }
                 }
             }
         }
@@ -156,7 +151,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
     /**
      * Find local attribute. Subject ID can refer to a regular OLAS subject or an OLAS device registration subject.
-     * 
+     *
      * @param subjectId
      * @param attributeType
      * @return attribute value
@@ -173,10 +168,11 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
         List<AttributeEntity> nonEmptyAttributes = new LinkedList<AttributeEntity>();
         for (AttributeEntity attribute : attributes)
-            if (attribute.getAttributeType().isCompounded())
+            if (attribute.getAttributeType().isCompounded()) {
                 nonEmptyAttributes.add(attribute);
-            else if (!attribute.isEmpty())
+            } else if (!attribute.isEmpty()) {
                 nonEmptyAttributes.add(attribute);
+            }
 
         LOG.debug("found " + nonEmptyAttributes.size());
 
@@ -188,7 +184,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
     /**
      * Find remote attribute. Subject ID can refer to a regular OLAS subject or an OLAS device registration subject.
-     * 
+     *
      * @param subjectId
      * @param attributeType
      * @return attribute value
@@ -205,7 +201,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         DatatypeType datatype = attributeType.getType();
         Class<?> attributeClass;
 
-        if (attributeType.isMultivalued())
+        if (attributeType.isMultivalued()) {
             switch (datatype) {
                 case STRING:
                 case LOGIN:
@@ -229,7 +225,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 default:
                     throw new EJBException("datatype not supported: " + datatype);
             }
-        else
+        } else {
             switch (datatype) {
                 case STRING:
                 case LOGIN:
@@ -253,6 +249,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 default:
                     throw new EJBException("datatype not supported: " + datatype);
             }
+        }
 
         try {
             return attributeClient.getAttributeValue(subjectId, attributeType.getName(), attributeClass);
@@ -274,37 +271,42 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     private Object getValue(List<AttributeEntity> attributes, AttributeTypeEntity attributeType, SubjectEntity subject) {
 
         DatatypeType datatype = attributeType.getType();
-        if (attributeType.isMultivalued())
+        if (attributeType.isMultivalued()) {
             switch (datatype) {
                 case STRING:
                 case LOGIN: {
                     String[] values = new String[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++)
+                    for (int idx = 0; idx < values.length; idx++) {
                         values[idx] = attributes.get(idx).getStringValue();
+                    }
                     return values;
                 }
                 case BOOLEAN: {
                     Boolean[] values = new Boolean[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++)
+                    for (int idx = 0; idx < values.length; idx++) {
                         values[idx] = attributes.get(idx).getBooleanValue();
+                    }
                     return values;
                 }
                 case INTEGER: {
                     Integer[] values = new Integer[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++)
+                    for (int idx = 0; idx < values.length; idx++) {
                         values[idx] = attributes.get(idx).getIntegerValue();
+                    }
                     return values;
                 }
                 case DOUBLE: {
                     Double[] values = new Double[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++)
+                    for (int idx = 0; idx < values.length; idx++) {
                         values[idx] = attributes.get(idx).getDoubleValue();
+                    }
                     return values;
                 }
                 case DATE: {
                     Date[] values = new Date[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++)
+                    for (int idx = 0; idx < values.length; idx++) {
                         values[idx] = attributes.get(idx).getDateValue();
+                    }
                     return values;
                 }
                 case COMPOUNDED: {
@@ -320,10 +322,11 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                                 values[idx] = memberMap;
                             }
                             Object memberValue;
-                            if (null != attribute)
+                            if (null != attribute) {
                                 memberValue = attribute.getValue();
-                            else
+                            } else {
                                 memberValue = null;
+                            }
                             memberMap.put(memberAttributeType.getName(), memberValue);
                         }
                     }
@@ -332,6 +335,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 default:
                     throw new EJBException("datatype not supported: " + datatype);
             }
+        }
 
         /*
          * Single-valued attribute.

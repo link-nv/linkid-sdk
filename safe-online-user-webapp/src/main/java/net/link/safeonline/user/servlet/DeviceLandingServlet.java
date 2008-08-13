@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -26,13 +26,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Device registration landing page.
- * 
+ *
  * This landing servlet handles the SAML requests sent out by an external device provider, and sends back a response
  * containing the UUID for the registrating OLAS subject for this device. This landing is used for registration,
  * updating and removal.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class DeviceLandingServlet extends AbstractInjectionServlet {
 

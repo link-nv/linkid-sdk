@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -97,7 +97,7 @@ public class TrustDomainEntity implements Serializable {
     /**
      * Marks whether the certificate validator should perform an OCSP check when OCSP access location information is
      * available within a certificate.
-     * 
+     *
      */
     public boolean isPerformOcspCheck() {
 
@@ -111,7 +111,7 @@ public class TrustDomainEntity implements Serializable {
 
     /**
      * Indicates how long a cached OCSP lookup stays valid.
-     * 
+     *
      */
     public long getOcspCacheTimeOutMillis() {
 
@@ -132,15 +132,12 @@ public class TrustDomainEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof TrustDomainEntity) {
+        if (false == obj instanceof TrustDomainEntity)
             return false;
-        }
         TrustDomainEntity rhs = (TrustDomainEntity) obj;
         return new EqualsBuilder().append(this.name, rhs.name).isEquals();
     }

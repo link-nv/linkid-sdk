@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
  * Implementation of WS-Trust 1.3 STS JAX-WS web service endpoint. Beware that we validate both the WS-Security and SAML
  * token signature via SOAP handlers. The signature validation cannot be done within the endpoint implementation since
  * JAXB somehow breaks the signature digests.
- * 
+ *
  * @author fcorneli
  */
 @WebService(endpointInterface = "org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort")
@@ -92,12 +92,10 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
                 }
             }
         }
-        if (null == requestType) {
+        if (null == requestType)
             throw new RuntimeException("RequestType is required");
-        }
-        if (false == requestType.startsWith("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate")) {
+        if (false == requestType.startsWith("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate"))
             throw new RuntimeException("only supporting the validation binding");
-        }
         if (null != tokenType && false == SecurityTokenServiceConstants.TOKEN_TYPE_STATUS.equals(tokenType)) {
             RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
                     "optional TokenType should be Status");
@@ -180,8 +178,9 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
             return response;
         }
         List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
-        for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
+        for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs) {
             LOG.debug("requested authentication context: " + authnContextClassRef.getAuthnContextClassRef());
+        }
 
         return null;
     }
@@ -189,22 +188,22 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
     private RequestSecurityTokenResponseType validateSaml2Response(Response samlResponse) {
 
         String samlStatusCode = samlResponse.getStatus().getStatusCode().getValue();
-        if (samlStatusCode.equals(StatusCode.AUTHN_FAILED_URI)) {
+        if (samlStatusCode.equals(StatusCode.AUTHN_FAILED_URI))
             /**
              * Authentication failed but response was valid.
              */
             return null;
-        } else if (samlStatusCode.equals(StatusCode.UNKNOWN_PRINCIPAL_URI)) {
+        else if (samlStatusCode.equals(StatusCode.UNKNOWN_PRINCIPAL_URI))
             /**
              * Authentication failed, response valid, user requested to try another device.
              */
             return null;
-        } else if (samlStatusCode.equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
+        else if (samlStatusCode.equals(StatusCode.REQUEST_UNSUPPORTED_URI))
             /**
              * Unsupported device operation authentication request but response was valid.
              */
             return null;
-        } else if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
+        else if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
             LOG.debug("SAML status code: " + samlStatusCode);
             RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
                     "invalid SAML2 token status code");

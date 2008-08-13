@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -170,8 +170,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         DeviceDescriptionEntity description = this.deviceDAO.findDescription(new DeviceDescriptionPK(deviceName,
                 language));
-        if (null != description)
+        if (null != description) {
             throw new ExistingDeviceDescriptionException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -186,8 +187,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     private void checkExistingDeviceProperty(String deviceName, String name) throws ExistingDevicePropertyException {
 
         DevicePropertyEntity property = this.deviceDAO.findProperty(new DevicePropertyPK(deviceName, name));
-        if (null != property)
+        if (null != property) {
             throw new ExistingDevicePropertyException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -214,8 +216,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     private void checkExistingDevice(String name) throws ExistingDeviceException {
 
         DeviceEntity existingDevice = this.deviceDAO.findDevice(name);
-        if (null != existingDevice)
+        if (null != existingDevice) {
             throw new ExistingDeviceException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -229,9 +232,10 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         for (ApplicationEntity application : applications) {
             List<AllowedDeviceEntity> allowedDevices = this.devices.listAllowedDevices(application);
             for (AllowedDeviceEntity allowedDevice : allowedDevices) {
-                if (allowedDevice.getDevice().getName().equals(name))
+                if (allowedDevice.getDevice().getName().equals(name)) {
                     throw new PermissionDeniedException("Device still in device policy of " + application.getName(),
                             "errorPermissionDeviceInApplication", application.getName());
+                }
             }
         }
 
@@ -245,13 +249,15 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         // remove all device descriptions
         List<DeviceDescriptionEntity> deviceDescriptions = this.deviceDAO.listDescriptions(device);
-        for (DeviceDescriptionEntity deviceDescription : deviceDescriptions)
+        for (DeviceDescriptionEntity deviceDescription : deviceDescriptions) {
             removeDeviceDescription(deviceDescription);
+        }
 
         // remove all device properties
         List<DevicePropertyEntity> deviceProperties = this.deviceDAO.listProperties(device);
-        for (DevicePropertyEntity deviceProperty : deviceProperties)
+        for (DevicePropertyEntity deviceProperty : deviceProperties) {
             removeDeviceProperty(deviceProperty);
+        }
 
         this.deviceDAO.removeDevice(name);
     }
@@ -259,9 +265,10 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     private void checkDeviceMappings(DeviceEntity device) throws PermissionDeniedException {
 
         List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO.listDeviceMappings(device);
-        if (!deviceMappings.isEmpty())
+        if (!deviceMappings.isEmpty()) {
             throw new PermissionDeniedException("Device still has device registrations",
                     "errorPermissionDeviceHasRegistrations");
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -284,8 +291,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     private void checkExistingDeviceClass(String name) throws ExistingDeviceClassException {
 
         DeviceClassEntity existingDeviceClass = this.deviceClassDAO.findDeviceClass(name);
-        if (null != existingDeviceClass)
+        if (null != existingDeviceClass) {
             throw new ExistingDeviceClassException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -299,9 +307,10 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         DeviceClassEntity deviceClass = this.deviceClassDAO.findDeviceClass(deviceClassName);
         List<DeviceEntity> deviceList = this.deviceDAO.listDevices(deviceClass);
-        if (null != deviceList && deviceList.size() > 0)
+        if (null != deviceList && deviceList.size() > 0) {
             throw new PermissionDeniedException("Device class in use by existing devices",
                     "errorPermissionDeviceClassHasDevices");
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -321,8 +330,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         LOG.debug("checkExistingDeviceClassDescription: " + deviceClassName + ", " + language);
         DeviceClassDescriptionEntity description = this.deviceClassDAO.findDescription(new DeviceClassDescriptionPK(
                 deviceClassName, language));
-        if (null != description)
+        if (null != description) {
             throw new ExistingDeviceClassDescriptionException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -470,8 +480,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
             DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(), device
                     .getName());
             List<AttributeDO> registrationAttributes = listRegistrations(deviceMapping, locale);
-            if (null == registrationAttributes)
+            if (null == registrationAttributes) {
                 continue;
+            }
             if (registrationAttributes.isEmpty()) {
                 // no user attribute for this device
                 deviceMappings.add(new DeviceMappingDO(deviceMapping, deviceDescription, null));

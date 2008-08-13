@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -25,18 +25,18 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 
 /**
  * Audit Context JPA entity. This entity is kind of empty. Basically we're only interested in the automagically
  * generated audit context Id sequence.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Entity
 @Table(name = "audit_context")

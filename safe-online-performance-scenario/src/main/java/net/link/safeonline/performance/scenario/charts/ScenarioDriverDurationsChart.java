@@ -35,14 +35,14 @@ import org.jfree.data.xy.XYSeries;
 /**
  * <h2>{@link ScenarioDriverDurationsChart}<br>
  * <sub>A chart module that renders a detail of driver activity.</sub></h2>
- * 
+ *
  * <p>
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 4, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioDriverDurationsChart extends AbstractChart {
@@ -69,8 +69,9 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
         // Process all method (non-request) measurements.
         long sum_methodTime = 0;
         for (MeasurementEntity measurement : data.getMeasurements()) {
-            if (ProfileData.isRequestKey(measurement.getMeasurement()))
+            if (ProfileData.isRequestKey(measurement.getMeasurement())) {
                 continue;
+            }
 
             XYSeries measurementSet = getMeasurementSet(measurement);
 
@@ -91,8 +92,9 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
                 Long duration = measurement.getDuration();
                 long overhead = duration - sum_methodTime;
 
-                if (overhead > 0)
+                if (overhead > 0) {
                     measurementSet.addOrUpdate(startTime, overhead);
+                }
 
                 break;
             }
@@ -123,8 +125,9 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
             NumberAxis valueAxis = new NumberAxis(driverSet.getKey() + " (ms)");
             DefaultTableXYDataset driverMeasurements = new DefaultTableXYDataset();
 
-            for (XYSeries measurements : driverSet.getValue().values())
+            for (XYSeries measurements : driverSet.getValue().values()) {
                 driverMeasurements.addSeries(measurements);
+            }
 
             plot.add(new XYPlot(driverMeasurements, null, valueAxis, new StackedXYBarRenderer()));
         }
@@ -146,13 +149,15 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
         String profile = measurement.getProfileData().getProfile().getDriverClassName().replaceFirst(".*\\.", "");
 
         Map<String, XYSeries> driverMap = this.driverMaps.get(profile);
-        if (driverMap == null)
+        if (driverMap == null) {
             this.driverMaps.put(profile, driverMap = new HashMap<String, XYSeries>());
+        }
 
         XYSeries measurementSet = driverMap.get(measurement.getMeasurement());
-        if (measurementSet == null)
+        if (measurementSet == null) {
             driverMap.put(measurement.getMeasurement(), measurementSet = new XYSeries(measurement.getMeasurement(),
                     true, false));
+        }
 
         return measurementSet;
     }

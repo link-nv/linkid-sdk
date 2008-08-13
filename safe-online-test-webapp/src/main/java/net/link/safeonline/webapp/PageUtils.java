@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -36,9 +36,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Utility class providing some standard webapp operations like login, register, ...
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class PageUtils {
 
@@ -204,7 +204,7 @@ public class PageUtils {
     /**
      * Causes the thread to sleep and every now and then check if we have landed on the specified page yet. Timeouts
      * after a while.
-     * 
+     *
      * @param redirectPage
      */
     public static void waitForRedirect(AcceptanceTestManager acceptanceTestManager, String redirectPage) {

@@ -23,14 +23,14 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 /**
  * <h2>{@link ScenarioSpeedCorrelationChart}<br>
  * <sub>TODO</sub></h2>
- * 
+ *
  * <p>
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
@@ -50,7 +50,7 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
 
     /**
      * Active Scenarios: Amount of scenarios currently running.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -61,7 +61,7 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
 
     /**
      * Agent Duration: Time (in seconds) of a single scenario execution on the agent.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -93,12 +93,14 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
         this.activeScenarios.offer(current + timing.getAgentDuration());
 
         // Poll all active scenarios that ended before the start of the current.
-        while (this.activeScenarios.peek() < current)
+        while (this.activeScenarios.peek() < current) {
             this.activeScenarios.poll();
+        }
 
         // Use a static mean for X, not the mean of the current period.
-        if (this.customMeanX == null)
+        if (this.customMeanX == null) {
             this.customMeanX = (double) timing.getExecution().getWorkers();
+        }
 
         return super.getMovingAverage();
     }

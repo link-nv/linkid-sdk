@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -38,7 +38,7 @@ public class EncapAdministrationSoapBindingImpl implements BankIdAdministration 
      * @param orgId
      *            Bank organisation identifier
      * @return MSecResponse
-     * 
+     *
      */
     public MSecResponse lock(String msisdn, String orgId) throws RemoteException {
 

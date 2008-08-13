@@ -28,7 +28,7 @@ public class LoginPage extends LayoutPage {
 
     /**
      * If the user is logged in; continue to the ticket history page.
-     * 
+     *
      * If not, show a link to the OLAS authentication service for logging the user in.
      */
     public LoginPage() {

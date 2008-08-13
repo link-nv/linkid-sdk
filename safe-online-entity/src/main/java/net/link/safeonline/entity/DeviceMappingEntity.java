@@ -113,12 +113,10 @@ public class DeviceMappingEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof DeviceMappingEntity) {
+        if (false == obj instanceof DeviceMappingEntity)
             return false;
-        }
         DeviceMappingEntity rhs = (DeviceMappingEntity) obj;
         return new EqualsBuilder().append(this.id, rhs.id).isEquals();
     }

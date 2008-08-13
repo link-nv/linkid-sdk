@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -24,16 +24,16 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Exception filter that handles all GUI exceptions.
- * 
+ *
  * <p>
  * The init parameters for this filter are:
  * </p>
  * <ul>
  * <li><code>ErrorPage</code>: the path to the error page.</li>
  * </ul>
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class ExceptionFilter implements Filter {
 
@@ -66,9 +66,8 @@ public class ExceptionFilter implements Filter {
     private String getInitParameter(FilterConfig config, String parameterName) throws UnavailableException {
 
         String value = config.getInitParameter(parameterName);
-        if (null == value) {
+        if (null == value)
             throw new UnavailableException("missing init parameter: " + parameterName);
-        }
         return value;
     }
 

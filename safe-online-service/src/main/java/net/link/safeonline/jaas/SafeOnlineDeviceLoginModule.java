@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -43,9 +43,9 @@ import org.jboss.security.SimplePrincipal;
 /**
  * JAAS login module that performs authentication and authorization for devices. This module is used by the SafeOnline
  * core device security domain. The login module links an X509 certificate with a device principal.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class SafeOnlineDeviceLoginModule implements LoginModule {
 
@@ -79,9 +79,8 @@ public class SafeOnlineDeviceLoginModule implements LoginModule {
         LOG.debug("commit: " + this);
 
         Set<Principal> principals = this.subject.getPrincipals();
-        if (null == this.authenticatedPrincipal) {
+        if (null == this.authenticatedPrincipal)
             throw new LoginException("authenticated principal should be not null");
-        }
         // authenticate
         principals.add(this.authenticatedPrincipal);
 
@@ -125,9 +124,8 @@ public class SafeOnlineDeviceLoginModule implements LoginModule {
                 continue;
             }
             Group group = (Group) principal;
-            if (group.getName().equals(groupName)) {
+            if (group.getName().equals(groupName))
                 return group;
-            }
         }
         // If we did not find a group create one
         Group group = new SimpleGroup(groupName);
@@ -173,9 +171,8 @@ public class SafeOnlineDeviceLoginModule implements LoginModule {
         }
 
         String expectedDeviceName = nameCallback.getName();
-        if (false == deviceName.equals(expectedDeviceName)) {
+        if (false == deviceName.equals(expectedDeviceName))
             throw new FailedLoginException("device name not correct");
-        }
 
         this.authenticatedPrincipal = new SimplePrincipal(deviceName);
         LOG.debug("login: " + deviceName);
@@ -199,13 +196,11 @@ public class SafeOnlineDeviceLoginModule implements LoginModule {
 
         LOG.debug("logout: " + this);
         Set<Principal> principals = this.subject.getPrincipals();
-        if (null == this.authenticatedPrincipal) {
+        if (null == this.authenticatedPrincipal)
             throw new LoginException("authenticated principal should not be null");
-        }
         boolean result = principals.remove(this.authenticatedPrincipal);
-        if (!result) {
+        if (!result)
             throw new LoginException("could not remove authenticated principal");
-        }
         /*
          * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here
          * all data on the subject.

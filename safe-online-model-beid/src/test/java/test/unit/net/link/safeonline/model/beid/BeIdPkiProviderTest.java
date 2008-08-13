@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -10,12 +10,12 @@ package test.unit.net.link.safeonline.model.beid;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import junit.framework.TestCase;
 import net.link.safeonline.model.beid.BeIdPkiProvider;
 import net.link.safeonline.test.util.PkiTestUtils;
-import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 public class BeIdPkiProviderTest extends TestCase {

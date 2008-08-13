@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -38,12 +38,12 @@ import org.opensaml.xml.ConfigurationException;
 /**
  * SAML handler used by remote device issuers to handle an incoming SAML authentication request used for registration,
  * updating or removal and store the retrieved information on the session into {@link ProtocolContext}.
- * 
+ *
  * After registrating, updating or removing it will post a SAML authentication response containing the necessary
  * assertions or a SAML authentication response telling the authentication has failed.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class Saml2Handler implements Serializable {
 
@@ -104,9 +104,8 @@ public class Saml2Handler implements Serializable {
         this.issuer = configParams.get("DeviceName");
         this.applicationCertificate = newApplicationCertificate;
         this.applicationKeyPair = newApplicationKeyPair;
-        if (null == this.stsWsLocation) {
+        if (null == this.stsWsLocation)
             throw new DeviceInitializationException("Missing STS WS Location ( \"StsWsLocation\" )");
-        }
     }
 
     public DeviceOperationType initDeviceOperation(HttpServletRequest request) throws DeviceInitializationException {
@@ -120,16 +119,15 @@ public class Saml2Handler implements Serializable {
         }
 
         String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
-        if (null == assertionConsumerService) {
+        if (null == assertionConsumerService)
             throw new DeviceInitializationException("missing AssertionConsumerServiceURL");
-        }
         LOG.debug("assertion consumer: " + assertionConsumerService);
 
-        if (null == samlAuthnRequest.getConditions()) {
+        if (null == samlAuthnRequest.getConditions())
             throw new DeviceInitializationException("missing condition");
-        }
-        if (samlAuthnRequest.getConditions().getAudienceRestrictions().isEmpty())
+        if (samlAuthnRequest.getConditions().getAudienceRestrictions().isEmpty()) {
             throw new DeviceInitializationException("missing audience restriction");
+        }
 
         String nodeName = samlAuthnRequest.getIssuer().getValue();
         LOG.debug("node name: " + nodeName);
@@ -137,31 +135,25 @@ public class Saml2Handler implements Serializable {
         String samlAuthnRequestId = samlAuthnRequest.getID();
 
         RequestedAuthnContext requestedAuthnContext = samlAuthnRequest.getRequestedAuthnContext();
-        if (null == requestedAuthnContext) {
+        if (null == requestedAuthnContext)
             throw new DeviceInitializationException("missing requested authentication context");
-        }
-        if (requestedAuthnContext.getAuthnContextClassRefs().size() != 1) {
+        if (requestedAuthnContext.getAuthnContextClassRefs().size() != 1)
             throw new DeviceInitializationException("authentication context should contain exactly 1 reference");
-        }
         String device = requestedAuthnContext.getAuthnContextClassRefs().get(0).getAuthnContextClassRef();
         LOG.debug("device: " + device);
 
-        if (null == samlAuthnRequest.getSubject()) {
+        if (null == samlAuthnRequest.getSubject())
             throw new DeviceInitializationException("missing subject");
-        }
-        if (null == samlAuthnRequest.getSubject().getNameID()) {
+        if (null == samlAuthnRequest.getSubject().getNameID())
             throw new DeviceInitializationException("missing subject name ID");
-        }
         String deviceUserId = samlAuthnRequest.getSubject().getNameID().getValue();
         LOG.debug("device user id: " + deviceUserId);
 
-        if (samlAuthnRequest.getConditions().getAudienceRestrictions().size() != 1) {
+        if (samlAuthnRequest.getConditions().getAudienceRestrictions().size() != 1)
             throw new DeviceInitializationException(
                     "authentication request should contain exactly 1 audience restriction");
-        }
-        if (samlAuthnRequest.getConditions().getAudienceRestrictions().get(0).getAudiences().size() != 1) {
+        if (samlAuthnRequest.getConditions().getAudienceRestrictions().get(0).getAudiences().size() != 1)
             throw new DeviceInitializationException("authentication request should contain exactly 1 audience");
-        }
 
         DeviceOperationType deviceOperation = DeviceOperationType.valueOf(samlAuthnRequest.getConditions()
                 .getAudienceRestrictions().get(0).getAudiences().get(0).getAudienceURI());
@@ -188,9 +180,8 @@ public class Saml2Handler implements Serializable {
         String issuerName = protocolContext.getIssuer();
         String target = protocolContext.getTargetUrl();
         String inResponseTo = protocolContext.getInResponseTo();
-        if (null == inResponseTo) {
+        if (null == inResponseTo)
             throw new DeviceFinalizationException("missing IN_RESPONSE_TO session attribute");
-        }
 
         String samlResponseToken = AuthnResponseFactory.createAuthResponseUnsupported(inResponseTo, issuerName,
                 this.applicationKeyPair, target);
@@ -220,9 +211,8 @@ public class Saml2Handler implements Serializable {
         boolean deviceOperationSuccess = protocolContext.getSuccess();
         DeviceOperationType deviceOperation = protocolContext.getDeviceOperation();
         String inResponseTo = protocolContext.getInResponseTo();
-        if (null == inResponseTo) {
+        if (null == inResponseTo)
             throw new DeviceFinalizationException("missing IN_RESPONSE_TO session attribute");
-        }
 
         String samlResponseToken;
         if (!deviceOperationSuccess) {

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -11,12 +11,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
-
-import org.bouncycastle.asn1.ASN1Object;
-
 import net.link.safeonline.shared.asn1.DEREncodable;
 import net.link.safeonline.shared.asn1.DERInteger;
 import net.link.safeonline.shared.asn1.DERSequence;
+
+import org.bouncycastle.asn1.ASN1Object;
 
 
 public class DERSequenceTest extends TestCase {

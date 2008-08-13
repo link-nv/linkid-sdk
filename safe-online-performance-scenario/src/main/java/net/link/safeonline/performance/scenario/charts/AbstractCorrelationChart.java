@@ -21,14 +21,14 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 /**
  * <h2>{@link AbstractCorrelationChart}<br>
  * <sub>TODO</sub></h2>
- * 
+ *
  * <p>
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public abstract class AbstractCorrelationChart extends AbstractMovingAverageChart {
@@ -56,7 +56,7 @@ public abstract class AbstractCorrelationChart extends AbstractMovingAverageChar
 
     /**
      * Calculate the correlation coefficient for our current period's data.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -68,8 +68,9 @@ public abstract class AbstractCorrelationChart extends AbstractMovingAverageChar
 
         int i = 1;
         for (Long startTime : this.averageTimes) {
-            if (startTime == this.averageTimes.getFirst())
+            if (startTime == this.averageTimes.getFirst()) {
                 continue;
+            }
 
             double sweep = (i - 1d) / i;
             double delta_x = getCorrelationX(startTime) - mean_x;
@@ -79,10 +80,12 @@ public abstract class AbstractCorrelationChart extends AbstractMovingAverageChar
             sum_sq_y += delta_y * delta_y * sweep;
             sum_coproduct += delta_x * delta_y * sweep;
 
-            if (this.customMeanX == null)
+            if (this.customMeanX == null) {
                 mean_x += delta_x / i;
-            if (this.customMeanY == null)
+            }
+            if (this.customMeanY == null) {
                 mean_y += delta_y / i;
+            }
 
             ++i;
         }

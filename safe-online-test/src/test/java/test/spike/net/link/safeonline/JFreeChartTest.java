@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -27,7 +27,7 @@ import org.jfree.data.time.Millisecond;
 
 /**
  * @author mbillemo
- * 
+ *
  */
 public class JFreeChartTest extends TestCase {
 
@@ -35,9 +35,11 @@ public class JFreeChartTest extends TestCase {
 
         // Data.
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (int i = 0; i < 3; ++i)
-            for (int j = 0; j < 4; ++j)
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 4; ++j) {
                 dataset.addValue(Math.random() * 10, "row" + i, "col" + j);
+            }
+        }
         dataset.addValue(3, "row0", "col4");
         dataset.addValue(2, "row1", "col4");
 

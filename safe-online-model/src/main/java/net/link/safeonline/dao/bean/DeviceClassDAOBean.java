@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -64,9 +64,8 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
     public DeviceClassEntity getDeviceClass(String deviceClassName) throws DeviceClassNotFoundException {
 
         DeviceClassEntity deviceClass = this.entityManager.find(DeviceClassEntity.class, deviceClassName);
-        if (null == deviceClass) {
+        if (null == deviceClass)
             throw new DeviceClassNotFoundException();
-        }
         return deviceClass;
     }
 
@@ -116,9 +115,8 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
 
         DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class,
                 descriptionPK);
-        if (null == description) {
+        if (null == description)
             throw new DeviceClassDescriptionNotFoundException();
-        }
         return description;
     }
 

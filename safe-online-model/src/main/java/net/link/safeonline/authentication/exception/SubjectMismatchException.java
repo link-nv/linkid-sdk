@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Liimport javax.ejb.ApplicationException;
 N.V. proprietary/confidential. Use is subject to license terms.
  */

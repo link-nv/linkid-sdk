@@ -1,19 +1,19 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.sms.ra.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import net.link.safeonline.sms.GSMModem;
 import net.link.safeonline.sms.SMS;
 import net.link.safeonline.sms.exception.SMSException;
 import net.link.safeonline.sms.ra.SMSConnection;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 public class SMSConnectionImpl implements SMSConnection {

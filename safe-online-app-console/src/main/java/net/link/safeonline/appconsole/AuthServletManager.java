@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -45,9 +45,9 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 /**
  * Jetty servlet to load the application authentication page
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class AuthServletManager extends Observable {
 
@@ -64,8 +64,9 @@ public class AuthServletManager extends Observable {
 
     public static AuthServletManager getInstance() {
 
-        if (null == authServletManager)
+        if (null == authServletManager) {
             authServletManager = new AuthServletManager();
+        }
         return authServletManager;
     }
 

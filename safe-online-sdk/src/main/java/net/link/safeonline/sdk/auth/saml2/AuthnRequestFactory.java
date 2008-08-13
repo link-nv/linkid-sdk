@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -50,13 +50,13 @@ import org.w3c.dom.Element;
 
 /**
  * Factory class for SAML2 authentication requests.
- * 
+ *
  * <p>
  * We're using the OpenSAML2 Java library for construction of the XML SAML documents.
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AuthnRequestFactory {
 
@@ -84,7 +84,7 @@ public class AuthnRequestFactory {
      * Creates a SAML2 authentication request. For the moment we allow the Service Provider to pass on the Assertion
      * Consumer Service URL itself. Later on we could use the SAML Metadata service or a persistent server-side
      * application field to locate this service.
-     * 
+     *
      * @param issuerName
      * @param applicationName
      * @param applicationFriendlyName
@@ -103,15 +103,12 @@ public class AuthnRequestFactory {
             KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
             Challenge<String> challenge, Set<String> devices) {
 
-        if (null == signerKeyPair) {
+        if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        }
-        if (null == applicationName) {
+        if (null == applicationName)
             throw new IllegalArgumentException("application name should not be null");
-        }
-        if (null == issuerName) {
+        if (null == issuerName)
             throw new IllegalArgumentException("application name should not be null");
-        }
 
         AuthnRequest request = buildXMLObject(AuthnRequest.class, AuthnRequest.DEFAULT_ELEMENT_NAME);
 
@@ -182,7 +179,7 @@ public class AuthnRequestFactory {
     /**
      * Creates a SAML2 device operation authentication request. This authentication request will contain a Subject
      * element, containing the device mapping id.
-     * 
+     *
      * @param issuerName
      * @param subjectName
      *            the subject name which wants to execute a device operation ( register/removal/update ). This is the
@@ -201,18 +198,14 @@ public class AuthnRequestFactory {
             KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
             DeviceOperationType deviceOperation, Challenge<String> challenge, String device) {
 
-        if (null == signerKeyPair) {
+        if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        }
-        if (null == issuerName) {
+        if (null == issuerName)
             throw new IllegalArgumentException("application name should not be null");
-        }
-        if (null == destinationURL) {
+        if (null == destinationURL)
             throw new IllegalArgumentException("destination url should not be null");
-        }
-        if (null == deviceOperation) {
+        if (null == deviceOperation)
             throw new IllegalArgumentException("device operation should not be null");
-        }
 
         AuthnRequest request = buildXMLObject(AuthnRequest.class, AuthnRequest.DEFAULT_ELEMENT_NAME);
 
@@ -282,7 +275,7 @@ public class AuthnRequestFactory {
 
     /**
      * Signs the unsigned authentication request
-     * 
+     *
      * @return
      */
     private static String signAuthnRequest(AuthnRequest authnRequest, KeyPair signerKeyPair) {
@@ -335,9 +328,8 @@ public class AuthnRequestFactory {
             QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
-        if (builder == null) {
+        if (builder == null)
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        }
         Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
                 .getPrefix());
         return object;

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -42,10 +42,10 @@ import org.apache.commons.logging.LogFactory;
  * The login servlet. A device (username-password or BeID) confirms successful login by setting the 'username' session
  * attribute. Then the device redirects to this login servlet. This login servlet will decide which is the next step in
  * the authentication process.
- * 
- * 
+ *
+ *
  * @author fcorneli
- * 
+ *
  */
 public class LoginServlet extends AbstractInjectionServlet {
 
@@ -189,7 +189,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
     /**
      * Check whether the used authentication device is sufficient for the given application.
-     * 
+     *
      * @param session
      * @param applicationId
      * @param device

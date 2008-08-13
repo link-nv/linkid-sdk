@@ -23,15 +23,15 @@ import org.apache.wicket.markup.html.list.ListView;
 /**
  * <h2>{@link TimeRoomSelectionPage}<br>
  * <sub>Wicket backend for time and room selection page.</sub></h2>
- * 
+ *
  * <p>
  * On this page the user selects at what time and in which room he wants to view his film.
  * </p>
- * 
+ *
  * <p>
  * <i>Jun 20, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class TimeRoomSelectionPage extends LayoutPage {
@@ -47,7 +47,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
     /**
      * If time and room are selected; continue to the seat selection page.
-     * 
+     *
      * If not, assign components to the HTML wicket elements so the user can select a show time and the room.
      */
     public TimeRoomSelectionPage() {
@@ -73,22 +73,22 @@ public class TimeRoomSelectionPage extends LayoutPage {
     /**
      * <h2>{@link TimesForm}<br>
      * <sub>Time Selection Form.</sub></h2>
-     * 
+     *
      * <p>
      * This form shows the times at which the selected film plays.
-     * 
+     *
      * TODO:
-     * 
+     *
      * When no room is selected, it lists all times, otherwise it limits the time selection to those available in the
      * selected rooms.
-     * 
+     *
      * The user can then select the viewing time of his choosing.
      * </p>
-     * 
+     *
      * <p>
      * <i>Jun 23, 2008</i>
      * </p>
-     * 
+     *
      * @author mbillemo
      */
     class TimesForm extends Form<String> {
@@ -170,21 +170,21 @@ public class TimeRoomSelectionPage extends LayoutPage {
     /**
      * <h2>{@link RoomsForm}<br>
      * <sub>Room Selection Form.</sub></h2>
-     * 
+     *
      * <p>
      * This form shows the rooms in which the selected film plays.
-     * 
+     *
      * TODO:
-     * 
+     *
      * When no time is selected, it lists all rooms, otherwise it limits the room selection to those that play the film
      * at the selected time.
-     * 
+     *
      * The user can then select the room of his choosing.
      * <p>
-     * 
+     *
      * <i>Jun 23, 2008</i>
      * </p>
-     * 
+     *
      * @author mbillemo
      */
     class RoomsForm extends Form<String> {

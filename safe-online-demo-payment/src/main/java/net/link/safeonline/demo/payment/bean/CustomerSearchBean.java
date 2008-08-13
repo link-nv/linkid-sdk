@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -47,9 +47,8 @@ public class CustomerSearchBean extends AbstractPaymentDataClientBean implements
 
         this.log.debug("search: " + this.name);
         CustomerStatus inCustomerStatus = getCustomerStatus(this.name);
-        if (null == inCustomerStatus) {
+        if (null == inCustomerStatus)
             return null;
-        }
         this.customerStatus = inCustomerStatus;
         return "success";
     }

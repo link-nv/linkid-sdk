@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -76,8 +76,9 @@ public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
     public void removeContext(Long logId) throws HelpdeskContextNotFoundException {
 
         HelpdeskContextEntity context = this.entityManager.find(HelpdeskContextEntity.class, logId);
-        if (null == context)
+        if (null == context) {
             throw new HelpdeskContextNotFoundException();
+        }
         this.entityManager.remove(context);
     }
 }

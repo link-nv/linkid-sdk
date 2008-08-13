@@ -37,11 +37,11 @@ import com.jgoodies.looks.Options;
 /**
  * <h2>{@link ChartWindow}<br>
  * <sub>A window that displays charts.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ChartWindow extends WindowAdapter {
@@ -91,12 +91,14 @@ public class ChartWindow extends WindowAdapter {
 
     public static void display(Map<ConsoleAgent, ScenarioExecution> agentCharts) {
 
-        if (instance == null)
+        if (instance == null) {
             instance = new ChartWindow();
+        }
 
         for (Map.Entry<ConsoleAgent, ScenarioExecution> agentChart : agentCharts.entrySet())
-            if (agentChart.getValue() != null)
+            if (agentChart.getValue() != null) {
                 instance.addTab(agentChart.getKey(), agentChart.getValue());
+            }
 
         instance.show();
     }
@@ -151,8 +153,9 @@ public class ChartWindow extends WindowAdapter {
                 label.setHorizontalAlignment(SwingConstants.CENTER);
                 label.setFont(label.getFont().deriveFont(20f));
 
-                for (byte[] chart : charts.getValue())
+                for (byte[] chart : charts.getValue()) {
                     builder.append(new JLabel(new ImageIcon(chart)));
+                }
 
                 builder.appendSeparator();
             }

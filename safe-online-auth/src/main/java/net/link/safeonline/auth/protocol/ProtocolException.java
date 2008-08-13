@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -10,9 +10,9 @@ package net.link.safeonline.auth.protocol;
 /**
  * Thrown when a protocol handler detects a violation against the corresponding authentication protocol. The protocol
  * error message will be displayed in the protocol error message result page.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class ProtocolException extends Exception {
 
@@ -23,7 +23,7 @@ public class ProtocolException extends Exception {
 
     /**
      * Main constructor.
-     * 
+     *
      * @param message
      *            the protocol error message.
      */
@@ -35,7 +35,7 @@ public class ProtocolException extends Exception {
 
     /**
      * Sets the protocol name.
-     * 
+     *
      * @param protocolName
      */
     public void setProtocolName(String protocolName) {
@@ -45,7 +45,7 @@ public class ProtocolException extends Exception {
 
     /**
      * Gives back the protocol name.
-     * 
+     *
      */
     public String getProtocolName() {
 

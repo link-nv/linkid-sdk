@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -27,16 +27,16 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Lightweight attribute manager bean. The attribute manager is responsible for lifecycle management of attributes.
- * 
+ *
  * <p>
  * This bean is not an EJB3 session bean, but a regular POJO that can be used within the tx/security context of caller
  * session beans. This is an interesting pattern to keep the overhead of tx/security interceptors as low as possible.
  * Applying this pattern all over the place will certainly result in an increase of performance. For lightweight beans
  * we're using the LWBean suffix.
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AttributeManagerLWBean {
 
@@ -47,7 +47,7 @@ public class AttributeManagerLWBean {
 
     /**
      * Main constructor. We use constructor-based dependency injection here.
-     * 
+     *
      * @param attributeDAO
      */
     public AttributeManagerLWBean(AttributeDAO attributeDAO) {
@@ -57,11 +57,11 @@ public class AttributeManagerLWBean {
 
     /**
      * Removes an attribute of the given attribute type for the given subject.
-     * 
+     *
      * <p>
      * At this point the RBAC and owner access control checks should already have been performed.
      * </p>
-     * 
+     *
      * @param attributeType
      * @param subject
      * @throws AttributeNotFoundException
@@ -76,9 +76,8 @@ public class AttributeManagerLWBean {
             return;
         }
 
-        if (attributeType.isCompounded()) {
+        if (attributeType.isCompounded())
             throw new EJBException("cannot remove compounded attributes via this method");
-        }
 
         /*
          * Else we're dealing with multi-valued attributes. In this case we're removing all of the multi-valued entries
@@ -92,16 +91,16 @@ public class AttributeManagerLWBean {
 
     /**
      * Removes an attribute of the given attribute type for the given subject.
-     * 
+     *
      * <p>
      * In case of a multi-valued (compounded) attribute, only the attribute entry corresponding with the given attribute
      * index will be removed.
      * </p>
-     * 
+     *
      * <p>
      * At this point the RBAC and owner access control checks should already have been performed.
      * </p>
-     * 
+     *
      * @param attributeType
      * @param attributeIndex
      *            the index of the attribute entry to be removed in case of a multi-valued (compounded) attribute.
@@ -142,12 +141,11 @@ public class AttributeManagerLWBean {
              */
             List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
             if (attributes.isEmpty()) {
-                if (attributeType.isCompoundMember()) {
+                if (attributeType.isCompoundMember())
                     /*
                      * For compounded attributes we allow some optional member attributes to be empty.
                      */
                     return;
-                }
                 throw new AttributeNotFoundException();
             }
             Iterator<AttributeEntity> iterator = attributes.iterator();
@@ -160,12 +158,11 @@ public class AttributeManagerLWBean {
                 }
             }
             if (null == removeAttribute) {
-                if (attributeType.isCompoundMember()) {
+                if (attributeType.isCompoundMember())
                     /*
                      * For compounded attributes we allow some optional member attributes to be empty.
                      */
                     return;
-                }
                 throw new AttributeNotFoundException();
             }
             /*
@@ -189,15 +186,15 @@ public class AttributeManagerLWBean {
 
     /**
      * Removes a compounded attribute record of the given attribute type for the given subject.
-     * 
+     *
      * <p>
      * The compounded attribute record is identified via the attribute Id.
      * </p>
-     * 
+     *
      * <p>
      * At this point the RBAC and owner access control checks should already have been performed.
      * </p>
-     * 
+     *
      * @param attributeType
      * @param subject
      * @param attributeId
@@ -228,14 +225,12 @@ public class AttributeManagerLWBean {
     private AttributeEntity getCompoundAttribute(AttributeTypeEntity attributeType, SubjectEntity subject,
             String attributeId) throws AttributeNotFoundException {
 
-        if (false == attributeType.isCompounded()) {
+        if (false == attributeType.isCompounded())
             throw new EJBException("not a compounded attribute type");
-        }
         List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
         for (AttributeEntity attribute : attributes) {
-            if (attributeId.equals(attribute.getStringValue())) {
+            if (attributeId.equals(attribute.getStringValue()))
                 return attribute;
-            }
         }
         throw new AttributeNotFoundException();
     }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -35,7 +35,7 @@ import net.link.safeonline.util.servlet.annotation.Init;
  * <li>need to be able to do some low-level GET or POST parameter parsing and processing.</li>
  * <li>we want the entry point to be UI technology independent.</li>
  * </ul>
- * 
+ *
  * <p>
  * The following servlet init parameters are required:
  * </p>
@@ -49,9 +49,9 @@ import net.link.safeonline.util.servlet.annotation.Init;
  * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is
  * encountered.</li>
  * </ul>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AuthnEntryServlet extends AbstractInjectionServlet {
 

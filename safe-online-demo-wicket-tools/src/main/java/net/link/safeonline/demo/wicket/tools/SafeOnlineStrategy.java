@@ -49,9 +49,8 @@ public class SafeOnlineStrategy implements IAuthorizationStrategy {
         }
         HttpSession session = httpServletRequest.getSession();
         String username = (String) session.getAttribute("username");
-        if (username == null) {
+        if (username == null)
             throw new RestartResponseAtInterceptPageException(this.loginPageClass);
-        }
 
         // find user in session
         User user = getUser();

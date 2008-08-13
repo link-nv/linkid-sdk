@@ -38,11 +38,11 @@ import org.jgroups.Address;
 /**
  * <h2>{@link ScenarioRemoting}<br>
  * <sub>This class takes care of communication with the remote agent via RMI.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioRemoting {
@@ -88,7 +88,7 @@ public class ScenarioRemoting {
 
     /**
      * Invoke a method on the agent service deployed at AP of the given agent.
-     * 
+     *
      * @throws IllegalStateException
      *             When the RMI adaptor is not available on the given agent.
      */
@@ -245,8 +245,9 @@ public class ScenarioRemoting {
         try {
             return (Set<ScenarioExecution>) invokeFor(agent, "getExecutions", new Object[] {}, new String[] {});
         } catch (MBeanException e) {
-            if (e.getCause() instanceof NamingException)
+            if (e.getCause() instanceof NamingException) {
                 throw (NamingException) e.getCause();
+            }
 
             LOG.error("Server error during execution retrieval!", e);
 

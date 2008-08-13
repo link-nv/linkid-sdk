@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -50,9 +50,8 @@ public class PasswordManagerBean implements PasswordManager {
             throws PermissionDeniedException, DeviceNotFoundException {
 
         if (isPasswordConfigured(subject)) {
-            if (!validatePassword(subject, oldPassword)) {
+            if (!validatePassword(subject, oldPassword))
                 throw new PermissionDeniedException("password mismatch");
-            }
         }
 
         setPasswordWithForce(subject, newPassword);
@@ -60,9 +59,8 @@ public class PasswordManagerBean implements PasswordManager {
 
     public void setPassword(SubjectEntity subject, String password) throws PermissionDeniedException {
 
-        if (isPasswordConfigured(subject)) {
+        if (isPasswordConfigured(subject))
             throw new PermissionDeniedException("password already configured");
-        }
 
         setPasswordWithForce(subject, password);
     }
@@ -152,15 +150,13 @@ public class PasswordManagerBean implements PasswordManager {
         AttributeEntity passwordParentAttribute = this.attributeDAO.findAttribute(
                 SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE, subject);
         if (null == passwordHashAttribute || null == passwordSeedAttribute || null == passwordAlgorithmAttribute
-                || null == passwordParentAttribute) {
+                || null == passwordParentAttribute)
             throw new DeviceNotFoundException();
-        }
         String hash = passwordHashAttribute.getStringValue();
         String seed = passwordSeedAttribute.getStringValue();
         String algorithm = passwordAlgorithmAttribute.getStringValue();
-        if (null == hash || null == seed || null == algorithm) {
+        if (null == hash || null == seed || null == algorithm)
             throw new DeviceNotFoundException();
-        }
 
         return new Password(passwordHashAttribute, passwordSeedAttribute, passwordAlgorithmAttribute,
                 passwordParentAttribute);
@@ -179,8 +175,9 @@ public class PasswordManagerBean implements PasswordManager {
     public void removePassword(SubjectEntity subject, String password) throws DeviceNotFoundException,
             PermissionDeniedException {
 
-        if (!validatePassword(subject, password))
+        if (!validatePassword(subject, password)) {
             throw new PermissionDeniedException("password mismatch");
+        }
 
         Password currentPassword = getPasswordAttribute(subject);
         this.attributeDAO.removeAttribute(currentPassword.algorithm);

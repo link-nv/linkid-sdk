@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -48,9 +48,8 @@ public class DatabasePluginManager {
     public static Connection connect(DatabasePlugin databasePlugin, String connectionUrl, String user, String password)
             throws SQLException {
 
-        if (null != activeConnection) {
+        if (null != activeConnection)
             throw new IllegalStateException("already an active connection");
-        }
         Connection connection = databasePlugin.getConnection(connectionUrl, user, password);
         activeConnection = connection;
         activeDatabasePlugin = databasePlugin;
@@ -64,9 +63,8 @@ public class DatabasePluginManager {
 
     public static void disconnect() {
 
-        if (null == activeConnection) {
+        if (null == activeConnection)
             throw new IllegalStateException("no active connection to close");
-        }
         try {
             activeConnection.close();
         } catch (SQLException e) {
@@ -78,17 +76,15 @@ public class DatabasePluginManager {
 
     public static Connection getConnection() {
 
-        if (null == activeConnection) {
+        if (null == activeConnection)
             throw new IllegalStateException("no active connection");
-        }
         return activeConnection;
     }
 
     public static DatabasePlugin getDatabasePlugin() {
 
-        if (null == activeDatabasePlugin) {
+        if (null == activeDatabasePlugin)
             throw new IllegalStateException("no active database plugin");
-        }
         return activeDatabasePlugin;
     }
 }

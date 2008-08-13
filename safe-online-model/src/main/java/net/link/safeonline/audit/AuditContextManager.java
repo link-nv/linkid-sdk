@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,9 +23,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * EJB3 Interceptor that manages the audit context. Also publishes the finalized audit context id's to the audit topic
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AuditContextManager {
 
@@ -73,9 +73,8 @@ public class AuditContextManager {
     private void initAuditContext() {
 
         boolean hasAuditContext = AuditContextPolicyContextHandler.lockAuditContext();
-        if (true == hasAuditContext) {
+        if (true == hasAuditContext)
             return;
-        }
         /*
          * In this case we need to create a new audit context and associate it with the current caller thread.
          */

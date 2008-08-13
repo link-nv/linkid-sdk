@@ -32,15 +32,15 @@ import javax.swing.JPanel;
 /**
  * <h2>{@link TinyGraph}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Apr 2, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class TinyGraph extends JPanel {

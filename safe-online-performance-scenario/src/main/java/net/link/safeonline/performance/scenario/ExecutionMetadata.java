@@ -24,7 +24,7 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
 /**
  * <h2>{@link ExecutionMetadata}<br>
  * <sub>Holds execution metadata for communication between the agent and the scenario.</sub></h2>
- * 
+ *
  * <p>
  * This object can be used by the agent for making a scenario execution request to the {@link ScenarioControllerBean}.
  * In this case, use {@link #createRequest(String, Integer, Integer, Date, Long, String, Boolean)} to obtain the object.
@@ -35,11 +35,11 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
  * {@link #createResponse(String, String, Integer, Integer, Date, Long, String, Boolean, Double)} . All available fields
  * can be set providing the agent with as much information about the result of the execution as available.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ExecutionMetadata {
@@ -148,8 +148,9 @@ public class ExecutionMetadata {
     public String toString() {
 
         String formattedStartTime = null;
-        if (this.startTime != null)
+        if (this.startTime != null) {
             formattedStartTime = new SimpleDateFormat("HH:mm").format(this.startTime);
+        }
 
         return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName
                 .replaceFirst(".*\\.", ""), formattedStartTime == null? "N/A": formattedStartTime,

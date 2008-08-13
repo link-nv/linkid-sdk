@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -43,9 +43,9 @@ import org.jboss.annotation.security.SecurityDomain;
  * Implementation of the authorization manager service. For the moment the authorization is granted via application
  * subscriptions. I.e. when assigning a role to a subject, the subject will actually be subscribed onto the
  * corresponding SafeOnline application.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -125,22 +125,19 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
 
         ApplicationEntity application = getApplication(role);
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
-        if (null != subscription) {
+        if (null != subscription)
             return;
-        }
         this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, subject, application);
     }
 
     private ApplicationEntity getApplication(String role) throws RoleNotFoundException {
 
         String applicationName = roleApplicationNameMap.get(role);
-        if (null == applicationName) {
+        if (null == applicationName)
             throw new RoleNotFoundException();
-        }
         ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
-        if (null == application) {
+        if (null == application)
             throw new EJBException("application not found: " + applicationName);
-        }
         return application;
     }
 
@@ -148,9 +145,8 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
 
         ApplicationEntity application = getApplication(role);
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
-        if (null == subscription) {
+        if (null == subscription)
             return;
-        }
         this.subscriptionDAO.removeSubscription(subscription);
     }
 
@@ -164,9 +160,8 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
             return;
         }
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
-        if (null == subscription) {
+        if (null == subscription)
             return;
-        }
         roles.add(roleToAdd);
     }
 

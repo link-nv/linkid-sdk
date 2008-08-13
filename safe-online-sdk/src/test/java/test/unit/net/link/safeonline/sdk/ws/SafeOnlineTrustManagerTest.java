@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -150,9 +150,8 @@ public class SafeOnlineTrustManagerTest {
         public X509Certificate[] getCertificateChain(String alias) {
 
             LOG.debug("getCertificateChain: " + alias);
-            if (SERVER_ALIAS.equals(alias)) {
+            if (SERVER_ALIAS.equals(alias))
                 return new X509Certificate[] { this.certificate };
-            }
             return null;
         }
 
@@ -167,9 +166,8 @@ public class SafeOnlineTrustManagerTest {
             LOG.debug("getPrivateKey: " + alias);
             if (SERVER_ALIAS.equals(alias)) {
                 PrivateKey privateKey = this.keyPair.getPrivate();
-                if (null == privateKey) {
+                if (null == privateKey)
                     throw new SecurityException("no private key");
-                }
                 return this.keyPair.getPrivate();
             }
             return null;

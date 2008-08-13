@@ -20,14 +20,14 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 /**
  * <h2>{@link PublicApplicationServiceBean} - Service for {@link PublicApplication}.</h2>
- * 
+ *
  * <p>
  * Provides access to attributes of the given application that are publicly available.
  * </p>
  * <p>
  * <i>Dec 18, 2007</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Stateless

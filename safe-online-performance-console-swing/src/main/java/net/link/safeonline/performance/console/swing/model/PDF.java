@@ -47,11 +47,11 @@ import com.lowagie.tools.Executable;
 /**
  * <h2>{@link PDF}<br>
  * <sub>Renders charts to a PDF file and opens it.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class PDF {
@@ -67,9 +67,10 @@ public class PDF {
             if (entry.getValue().getSpeed() != null) {
                 speed += entry.getValue().getSpeed();
                 ++agentSpeeds;
-            } else
+            } else {
                 LOG.warn("Agent " + entry.getKey() + " doesn't know speed for execution "
                         + entry.getValue().getStartTime() + "!");
+            }
 
         // Get execution metadata from the first agent.
         ScenarioExecution execution = agentCharts.values().iterator().next();
@@ -92,13 +93,15 @@ public class PDF {
         try {
             // Find the max width and height of all charts.
             float width = 0, height = 0;
-            for (ScenarioExecution agent : agentCharts.values())
-                for (byte[][] charts : agent.getCharts().values())
+            for (ScenarioExecution agent : agentCharts.values()) {
+                for (byte[][] charts : agent.getCharts().values()) {
                     for (byte[] chart : charts) {
                         ImageIcon image = new ImageIcon(chart);
                         width = Math.max(width, image.getIconWidth());
                         height = Math.max(height, image.getIconHeight());
                     }
+                }
+            }
 
             // Create the PDF document.
             Document pdfDocument = new Document(new com.lowagie.text.Rectangle(width + 100, height + 200), 50, 50, 50,
@@ -139,8 +142,9 @@ public class PDF {
             // Create chapters from the labels of the first agent's charts.
             List<Chapter> chapters = new ArrayList<Chapter>();
             List<String> labels = new ArrayList<String>(agentCharts.values().iterator().next().getCharts().keySet());
-            for (int chapter = 0; chapter < labels.size(); ++chapter)
+            for (int chapter = 0; chapter < labels.size(); ++chapter) {
                 chapters.add(new Chapter(new Paragraph(labels.get(chapter), new Font(font, 20f)), chapter + 1));
+            }
 
             // Arrange all the data in the chapters.
             for (int chapter = 0; chapter < chapters.size(); ++chapter) {
@@ -153,8 +157,9 @@ public class PDF {
                     section.setTriggerNewPage(newPage);
                     newPage = true;
 
-                    for (byte[] chart : new ArrayList<byte[][]>(charts.getValue().getCharts().values()).get(chapter))
+                    for (byte[] chart : new ArrayList<byte[][]>(charts.getValue().getCharts().values()).get(chapter)) {
                         section.add(Image.getInstance(chart));
+                    }
                 }
             }
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -33,15 +33,15 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * <h2>{@link AgentPanel}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Apr 2, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AgentPanel extends JPanel implements MouseListener, AgentStatusListener, AgentSelectionListener,
@@ -80,9 +80,11 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
 
         c.addMouseListener(this);
 
-        if (c instanceof Container)
-            for (Component cc : ((Container) c).getComponents())
+        if (c instanceof Container) {
+            for (Component cc : ((Container) c).getComponents()) {
                 listen(cc);
+            }
+        }
     }
 
     private void buildUi() {
@@ -151,24 +153,28 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
          */
         ScenarioExecution selectedExecution = ConsoleData.getSelectedExecution();
         ScenarioExecution lastExecution = null;
-        if (this.agent.getExecutions() != null && !this.agent.getExecutions().isEmpty())
+        if (this.agent.getExecutions() != null && !this.agent.getExecutions().isEmpty()) {
             lastExecution = new TreeSet<ScenarioExecution>(this.agent.getExecutions()).last();
+        }
 
         /* Update all our text values. */
         this.speed.setText("");
-        if (this.agent.getExecutions() != null && selectedExecution != null)
+        if (this.agent.getExecutions() != null && selectedExecution != null) {
             for (ScenarioExecution execution : this.agent.getExecutions())
                 if (execution.equalRequest(selectedExecution)) {
-                    if (execution.getSpeed() != null)
+                    if (execution.getSpeed() != null) {
                         this.speed.setText(String.format("%.2f/s", execution.getSpeed()));
+                    }
 
                     break;
                 }
+        }
 
-        if (this.agent.getAddress() != null)
+        if (this.agent.getAddress() != null) {
             this.title.setText(this.agent.getAddress().toString());
-        else
+        } else {
             this.title.setText("[Unknown]");
+        }
         this.title.setForeground(this.state == null? Color.gray: this.agent.isHealthy()? Color.green.darker()
                 : Color.red);
 
@@ -216,8 +222,9 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
                     this.progress.setIndeterminate(false);
                     this.progress.setValue(completion);
                 }
-            } else
+            } else {
                 this.speedGraph.reset();
+            }
         }
     }
 
@@ -234,8 +241,9 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
      */
     public void statusChanged(ConsoleAgent changedAgent) {
 
-        if (this.agent.equals(changedAgent))
+        if (this.agent.equals(changedAgent)) {
             update();
+        }
     }
 
     /**
@@ -253,10 +261,11 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
 
         this.selected = !this.selected;
 
-        if (this.selected)
+        if (this.selected) {
             setBackground(Color.decode("#EEEEFF"));
-        else
+        } else {
             setBackground(null);
+        }
 
         this.list.fireListSelectionChanged();
     }

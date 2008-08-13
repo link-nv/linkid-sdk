@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,7 +23,7 @@ public class SafeOnlineException extends Exception {
     /**
      * Gives back the error code. The error code is a unique code per exception type. It can be used by client-side
      * components for better error handling.
-     * 
+     *
      */
     public String getErrorCode() {
 

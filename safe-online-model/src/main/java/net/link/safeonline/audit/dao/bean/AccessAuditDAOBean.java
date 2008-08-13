@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -17,15 +17,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.dao.AccessAuditDAO;
 import net.link.safeonline.entity.audit.AccessAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.OperationStateType;
 import net.link.safeonline.jpa.QueryObjectFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 @Stateless

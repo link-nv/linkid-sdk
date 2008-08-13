@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link AgentService}<br>
  * <sub>This class provides all functionality of the agent that is available to the console.</sub></h2>
- * 
+ *
  * <p>
  * This MBean launches the broadcaster service that provides agent visibility in JGroups and the deployer service that
  * is used for deploying uploaded scenarios. It also keeps the current state of the agent (see {@link AgentState}).<br>
@@ -39,11 +39,11 @@ import org.apache.commons.logging.LogFactory;
  * <br>
  * Metadata on previously performed executions are also cached by this agent as they are requested by the console.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AgentService implements AgentServiceMBean {
@@ -112,8 +112,9 @@ public class AgentService implements AgentServiceMBean {
     public AgentState getState() {
 
         try {
-            if (getScenarioController() == null)
+            if (getScenarioController() == null) {
                 throw new NamingException("ScenarioController not available.");
+            }
 
             Set<Date> executions = getScenarioController().getExecutions();
             if (executions == null || executions.isEmpty())
@@ -204,8 +205,9 @@ public class AgentService implements AgentServiceMBean {
     public Set<ScenarioExecution> getExecutions() throws NamingException {
 
         Set<ScenarioExecution> executions = new HashSet<ScenarioExecution>();
-        for (Date startTime : getScenarioController().getExecutions())
+        for (Date startTime : getScenarioController().getExecutions()) {
             executions.add(getExecution(startTime, false));
+        }
 
         return executions;
     }
@@ -218,8 +220,9 @@ public class AgentService implements AgentServiceMBean {
 
         this.error = error;
 
-        if (error != null)
+        if (error != null) {
             LOG.error("The following occurred during " + getTransit(), error);
+        }
     }
 
     /**

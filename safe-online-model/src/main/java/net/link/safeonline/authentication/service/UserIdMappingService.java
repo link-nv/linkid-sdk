@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -18,7 +18,7 @@ public interface UserIdMappingService {
 
     /**
      * Returns the application specific user id as specified in the application's id scope.
-     * 
+     *
      * @param applicationName
      * @param userId
      * @throws ApplicationNotFoundException
@@ -30,7 +30,7 @@ public interface UserIdMappingService {
     /**
      * Returns the SafeOnline global user id using the application's id scope settings and provided application id.
      * Returns null if not found.
-     * 
+     *
      * @param applicationName
      * @param applicationUserId
      * @throws ApplicationNotFoundException

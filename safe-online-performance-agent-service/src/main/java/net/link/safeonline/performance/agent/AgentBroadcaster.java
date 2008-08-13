@@ -16,11 +16,11 @@ import org.jgroups.JChannel;
 /**
  * <h2>{@link AgentBroadcaster}<br>
  * <sub>Takes care of providing visibility of this agent on the network using JGroups.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AgentBroadcaster {

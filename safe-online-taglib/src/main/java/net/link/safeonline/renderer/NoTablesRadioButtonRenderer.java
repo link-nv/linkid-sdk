@@ -21,9 +21,9 @@ import javax.faces.render.Renderer;
 
 /**
  * This renderer is based on Sun's RI for the radio button renderer
- * 
+ *
  * @author dhouthoo
- * 
+ *
  */
 public class NoTablesRadioButtonRenderer extends Renderer {
 

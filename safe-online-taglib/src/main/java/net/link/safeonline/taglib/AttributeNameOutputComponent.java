@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -20,9 +20,9 @@ import net.link.safeonline.data.AttributeDO;
 /**
  * JSF output component for name of {@link AttributeDO}. The visual effect will depend on the category of the attribute.
  * A compounded entry will appear in bold, a member entry will appear in italic.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AttributeNameOutputComponent extends UIOutput {
 

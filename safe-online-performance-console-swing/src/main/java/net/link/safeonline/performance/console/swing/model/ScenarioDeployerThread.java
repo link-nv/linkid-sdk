@@ -13,11 +13,11 @@ import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 /**
  * <h2>{@link ScenarioDeployerThread}<br>
  * <sub>This thread deploys a scenario on a given agent.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioDeployerThread extends ScenarioThread {

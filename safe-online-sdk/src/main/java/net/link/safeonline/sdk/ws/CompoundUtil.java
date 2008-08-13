@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -15,9 +15,9 @@ import net.link.safeonline.sdk.ws.annotation.CompoundId;
 
 /**
  * Utility class for compounded attributes.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class CompoundUtil {
 
@@ -28,15 +28,14 @@ public class CompoundUtil {
 
     /**
      * Gives back <code>true</code> if the given value represents a compounded object.
-     * 
+     *
      * @param attributeValue
      */
     @SuppressWarnings("unchecked")
     public static boolean isCompound(Object attributeValue) {
 
-        if (null == attributeValue) {
+        if (null == attributeValue)
             return false;
-        }
         Class attributeClass = attributeValue.getClass();
         Compound compoundAnnotation = (Compound) attributeClass.getAnnotation(Compound.class);
         return null != compoundAnnotation;
@@ -44,7 +43,7 @@ public class CompoundUtil {
 
     /**
      * Gives back the attribute Id of given the compounded object.
-     * 
+     *
      * @param attributeValue
      */
     public static String getAttributeId(Object attributeValue) {
@@ -56,9 +55,8 @@ public class CompoundUtil {
             if (null == compoundIdAnnotation) {
                 continue;
             }
-            if (false == String.class.equals(method.getReturnType())) {
+            if (false == String.class.equals(method.getReturnType()))
                 throw new RuntimeException("method " + method.getName() + " should return a String");
-            }
             String attributeId;
             try {
                 attributeId = (String) method.invoke(attributeValue, new Object[] {});
@@ -72,7 +70,7 @@ public class CompoundUtil {
 
     /**
      * Gives back the setter method that corresponds with the given getter for a certain class.
-     * 
+     *
      * @param clazz
      * @param getMethod
      */
@@ -84,9 +82,8 @@ public class CompoundUtil {
             propertyName = methodName.substring(3);
         } else if (methodName.startsWith("is")) {
             propertyName = methodName.substring(2);
-        } else {
+        } else
             throw new RuntimeException("not a property: " + methodName);
-        }
         Method setMethod;
         try {
             setMethod = clazz.getMethod("set" + propertyName, new Class[] { getMethod.getReturnType() });
