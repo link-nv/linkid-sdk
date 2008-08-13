@@ -34,6 +34,8 @@ public class LanguagePhaseListener implements PhaseListener {
             if (null == facesContext.getExternalContext().getRequest())
                 return;
             Cookie[] cookies = ((HttpServletRequest) facesContext.getExternalContext().getRequest()).getCookies();
+            if (null == cookies)
+                return;
             for (Cookie cookie : cookies) {
                 if (SafeOnlineCookies.AUTH_LANGUAGE_COOKIE.equals(cookie.getName())) {
                     String language = cookie.getValue();
