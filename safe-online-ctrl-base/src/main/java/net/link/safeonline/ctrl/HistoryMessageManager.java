@@ -12,16 +12,19 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.faces.context.FacesContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.entity.HistoryEntity;
 
 
 /**
  * Takes a history entity and formats an internationalized message from it.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class HistoryMessageManager {
 
@@ -37,7 +40,7 @@ public class HistoryMessageManager {
      * <li>Attribute</li>
      * <li>Info</li>
      * </ol>
-     *
+     * 
      * @param context
      * @param historyEntity
      * @return
@@ -45,6 +48,14 @@ public class HistoryMessageManager {
     public static String getMessage(FacesContext context, HistoryEntity historyEntity) {
 
         Locale locale = context.getExternalContext().getRequestLocale();
+        Cookie[] cookies = ((HttpServletRequest) context.getExternalContext().getRequest()).getCookies();
+        for (Cookie cookie : cookies) {
+            if (SafeOnlineCookies.LANGUAGE_COOKIE.equals(cookie.getName())) {
+                String language = cookie.getValue();
+                locale = new Locale(language);
+            }
+        }
+
         ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BASE, locale);
 
         String message = messages.getString(historyEntity.getEvent().getKey());
