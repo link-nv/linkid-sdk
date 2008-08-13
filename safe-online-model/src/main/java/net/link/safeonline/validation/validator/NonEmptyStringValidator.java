@@ -11,30 +11,28 @@ package net.link.safeonline.validation.validator;
 
 import net.link.safeonline.validation.annotation.NonEmptyString;
 
+
 public class NonEmptyStringValidator implements Validator<NonEmptyString> {
 
-	public void validate(Object value, int parameterIdx,
-			NonEmptyString parameterAnnotation, ValidatorResult result) {
-		String name = parameterAnnotation.value();
-		if ("".equals(name)) {
-			name = "parameter " + (parameterIdx + 1);
-		}
+    public void validate(Object value, int parameterIdx, NonEmptyString parameterAnnotation, ValidatorResult result) {
 
-		if (null == value) {
-			result.addResult("the given string parameter \"" + name
-					+ "\" is null");
-			return;
-		}
-		if (!(value instanceof String)) {
-			result.addResult("the given parameter \"" + name
-					+ "\" is not a string");
-			return;
-		}
-		String strValue = (String) value;
-		if (0 == strValue.length()) {
-			result.addResult("the given string parameter \"" + name
-					+ "\" is empty");
-			return;
-		}
-	}
+        String name = parameterAnnotation.value();
+        if ("".equals(name)) {
+            name = "parameter " + (parameterIdx + 1);
+        }
+
+        if (null == value) {
+            result.addResult("the given string parameter \"" + name + "\" is null");
+            return;
+        }
+        if (!(value instanceof String)) {
+            result.addResult("the given parameter \"" + name + "\" is not a string");
+            return;
+        }
+        String strValue = (String) value;
+        if (0 == strValue.length()) {
+            result.addResult("the given string parameter \"" + name + "\" is empty");
+            return;
+        }
+    }
 }

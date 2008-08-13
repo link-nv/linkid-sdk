@@ -18,6 +18,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 
+
 /**
  * Application entity data access object interface definition.
  * 
@@ -26,79 +27,71 @@ import net.link.safeonline.entity.ApplicationOwnerEntity;
  */
 @Local
 public interface ApplicationDAO {
-	/**
-	 * Find the application for a given application name.
-	 * 
-	 * @param applicationName
-	 *            the application name.
-	 * @return the application or <code>null</code> if not found.
-	 */
-	ApplicationEntity findApplication(String applicationName);
 
-	/**
-	 * Gives back the application entity for a given application name.
-	 * 
-	 * @param applicationName
-	 * @throws ApplicationNotFoundException
-	 *             in case the application was not found.
-	 */
-	ApplicationEntity getApplication(String applicationName)
-			throws ApplicationNotFoundException;
+    /**
+     * Find the application for a given application name.
+     * 
+     * @param applicationName
+     *            the application name.
+     * @return the application or <code>null</code> if not found.
+     */
+    ApplicationEntity findApplication(String applicationName);
 
-	ApplicationEntity addApplication(String applicationName,
-			String applicationFriendlyName,
-			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-			X509Certificate certificate);
+    /**
+     * Gives back the application entity for a given application name.
+     * 
+     * @param applicationName
+     * @throws ApplicationNotFoundException
+     *             in case the application was not found.
+     */
+    ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException;
 
-	ApplicationEntity addApplication(String applicationName,
-			String applicationFriendlyName,
-			ApplicationOwnerEntity applicationOwner,
-			boolean allowUserSubscription, boolean removable,
-			String description, URL applicationUrl, byte[] applicationLogo,
-			Color applicationColor, X509Certificate certificate,
-			long initialIdentityVersion, long usageAgreementVersion);
+    ApplicationEntity addApplication(String applicationName, String applicationFriendlyName,
+            ApplicationOwnerEntity applicationOwner, String description, URL applicationUrl, byte[] applicationLogo,
+            Color applicationColor, X509Certificate certificate);
 
-	/**
-	 * Gives back a list of all application registered within the SafeOnline
-	 * system.
-	 * 
-	 */
-	List<ApplicationEntity> listApplications();
+    ApplicationEntity addApplication(String applicationName, String applicationFriendlyName,
+            ApplicationOwnerEntity applicationOwner, boolean allowUserSubscription, boolean removable,
+            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
+            X509Certificate certificate, long initialIdentityVersion, long usageAgreementVersion);
 
-	/**
-	 * Gives back a list of all applications registered within the SafeOnline
-	 * system and allowed for regular users to view/subscribe to.
-	 * 
-	 */
-	List<ApplicationEntity> listUserApplications();
+    /**
+     * Gives back a list of all application registered within the SafeOnline system.
+     * 
+     */
+    List<ApplicationEntity> listApplications();
 
-	/**
-	 * Gives back the application owned by the given application owner.
-	 * 
-	 * @param applicationOwner
-	 */
-	List<ApplicationEntity> listApplications(
-			ApplicationOwnerEntity applicationOwner);
+    /**
+     * Gives back a list of all applications registered within the SafeOnline system and allowed for regular users to
+     * view/subscribe to.
+     * 
+     */
+    List<ApplicationEntity> listUserApplications();
 
-	void removeApplication(ApplicationEntity application);
+    /**
+     * Gives back the application owned by the given application owner.
+     * 
+     * @param applicationOwner
+     */
+    List<ApplicationEntity> listApplications(ApplicationOwnerEntity applicationOwner);
 
-	/**
-	 * Gives back an application entity.
-	 * 
-	 * @param certificate
-	 *            the application certificate.
-	 * @throws ApplicationNotFoundException
-	 */
-	ApplicationEntity getApplication(X509Certificate certificate)
-			throws ApplicationNotFoundException;
+    void removeApplication(ApplicationEntity application);
 
-	/**
-	 * Gives back an application entity.
-	 * 
-	 * @param certificate
-	 *            the application certificate.
-	 * @return the application or <code>null</code> if not found.
-	 */
-	ApplicationEntity findApplication(X509Certificate certificate);
+    /**
+     * Gives back an application entity.
+     * 
+     * @param certificate
+     *            the application certificate.
+     * @throws ApplicationNotFoundException
+     */
+    ApplicationEntity getApplication(X509Certificate certificate) throws ApplicationNotFoundException;
+
+    /**
+     * Gives back an application entity.
+     * 
+     * @param certificate
+     *            the application certificate.
+     * @return the application or <code>null</code> if not found.
+     */
+    ApplicationEntity findApplication(X509Certificate certificate);
 }

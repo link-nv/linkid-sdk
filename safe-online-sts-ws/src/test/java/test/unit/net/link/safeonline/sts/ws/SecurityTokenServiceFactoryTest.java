@@ -13,15 +13,16 @@ import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
 import org.junit.Test;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenService;
 
+
 public class SecurityTokenServiceFactoryTest {
 
-	@Test
-	public void testNewInstance() throws Exception {
-		// operate
-		SecurityTokenService service = SecurityTokenServiceFactory
-				.newInstance();
+    @Test
+    public void testNewInstance() throws Exception {
 
-		// verify
-		assertNotNull(service);
-	}
+        // operate
+        SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
+
+        // verify
+        assertNotNull(service);
+    }
 }

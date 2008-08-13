@@ -18,6 +18,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 
+
 /**
  * Subcription entity data access object interface definition.
  * 
@@ -27,36 +28,32 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 @Local
 public interface SubscriptionDAO {
 
-	SubscriptionEntity findSubscription(SubjectEntity subject,
-			ApplicationEntity application);
+    SubscriptionEntity findSubscription(SubjectEntity subject, ApplicationEntity application);
 
-	SubscriptionEntity getSubscription(SubjectEntity subject,
-			ApplicationEntity application) throws SubscriptionNotFoundException;
+    SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application)
+            throws SubscriptionNotFoundException;
 
-	void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
-			SubjectEntity subject, ApplicationEntity application);
+    void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject,
+            ApplicationEntity application);
 
-	void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
-			SubjectEntity subject, ApplicationEntity application,
-			String subscriptionUserId);
+    void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject,
+            ApplicationEntity application, String subscriptionUserId);
 
-	List<SubscriptionEntity> listSubsciptions(SubjectEntity subject);
+    List<SubscriptionEntity> listSubsciptions(SubjectEntity subject);
 
-	List<SubscriptionEntity> listSubscriptions(ApplicationEntity application);
+    List<SubscriptionEntity> listSubscriptions(ApplicationEntity application);
 
-	void removeSubscription(SubjectEntity subject, ApplicationEntity application)
-			throws SubscriptionNotFoundException;
+    void removeSubscription(SubjectEntity subject, ApplicationEntity application) throws SubscriptionNotFoundException;
 
-	void removeSubscription(SubscriptionEntity subscriptionEntity);
+    void removeSubscription(SubscriptionEntity subscriptionEntity);
 
-	long getNumberOfSubscriptions(ApplicationEntity application);
+    long getNumberOfSubscriptions(ApplicationEntity application);
 
-	long getActiveNumberOfSubscriptions(ApplicationEntity application,
-			Date activeLimit);
+    long getActiveNumberOfSubscriptions(ApplicationEntity application, Date activeLimit);
 
-	void loggedIn(SubscriptionEntity subscription);
+    void loggedIn(SubscriptionEntity subscription);
 
-	void removeAllSubscriptions(SubjectEntity subject);
+    void removeAllSubscriptions(SubjectEntity subject);
 
-	SubscriptionEntity findSubscription(String userApplicationId);
+    SubscriptionEntity findSubscription(String userApplicationId);
 }

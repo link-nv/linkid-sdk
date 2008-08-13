@@ -6,13 +6,13 @@
  */
 package net.link.safeonline.webapp.oper;
 
-
 public class OperMain extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/main.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/main.seam";
 
-	public OperMain() {
-		super(PAGE_NAME);
-	}
+
+    public OperMain() {
+
+        super(PAGE_NAME);
+    }
 }

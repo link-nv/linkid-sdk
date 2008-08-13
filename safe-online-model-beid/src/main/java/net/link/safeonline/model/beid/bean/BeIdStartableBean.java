@@ -40,207 +40,187 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @Local(Startable.class)
-@LocalBinding(jndiBinding = BeIdConstants.BEID_STARTABLE_JNDI_PREFIX
-		+ "BeIdStartableBean")
+@LocalBinding(jndiBinding = BeIdConstants.BEID_STARTABLE_JNDI_PREFIX + "BeIdStartableBean")
 public class BeIdStartableBean extends AbstractInitBean {
 
-	private static final Log LOG = LogFactory.getLog(BeIdStartableBean.class);
+    private static final Log   LOG            = LogFactory.getLog(BeIdStartableBean.class);
 
-	public static final String INDEX_RESOURCE = "certs/beid/index.txt";
+    public static final String INDEX_RESOURCE = "certs/beid/index.txt";
 
-	@EJB
-	private TrustDomainDAO trustDomainDAO;
+    @EJB
+    private TrustDomainDAO     trustDomainDAO;
 
-	@EJB
-	private TrustPointDAO trustPointDAO;
+    @EJB
+    private TrustPointDAO      trustPointDAO;
 
-	public BeIdStartableBean() {
-		configureNode();
 
-		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(
-				BeIdConstants.GIVENNAME_ATTRIBUTE, DatatypeType.STRING, true,
-				false, true);
-		givenNameAttributeType.setMultivalued(true);
-		this.attributeTypes.add(givenNameAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				givenNameAttributeType, Locale.ENGLISH.getLanguage(),
-				"Given name (BeID)", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				givenNameAttributeType, "nl", "Naam (BeID)", null));
+    public BeIdStartableBean() {
 
-		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(
-				BeIdConstants.SURNAME_ATTRIBUTE, DatatypeType.STRING, true,
-				false, true);
-		surnameAttributeType.setMultivalued(true);
-		this.attributeTypes.add(surnameAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				surnameAttributeType, Locale.ENGLISH.getLanguage(),
-				"Surname (BeID)", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				surnameAttributeType, "nl", "Achternaam (BeID)", null));
+        configureNode();
 
-		AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(
-				BeIdConstants.NRN_ATTRIBUTE, DatatypeType.STRING, true, false,
-				true);
-		nrnAttributeType.setMultivalued(true);
-		this.attributeTypes.add(nrnAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				nrnAttributeType, Locale.ENGLISH.getLanguage(),
-				"Identification number of the National Register", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				nrnAttributeType, "nl",
-				"Identificatienummer van het Rijksregister", null));
+        AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(BeIdConstants.GIVENNAME_ATTRIBUTE,
+                DatatypeType.STRING, true, false, true);
+        givenNameAttributeType.setMultivalued(true);
+        this.attributeTypes.add(givenNameAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(givenNameAttributeType, Locale.ENGLISH
+                .getLanguage(), "Given name (BeID)", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(givenNameAttributeType, "nl",
+                "Naam (BeID)", null));
 
-		AttributeTypeEntity beidDeviceAttributeType = new AttributeTypeEntity(
-				BeIdConstants.BEID_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED,
-				true, false, true);
-		beidDeviceAttributeType.setMultivalued(true);
-		beidDeviceAttributeType.addMember(givenNameAttributeType, 0, true);
-		beidDeviceAttributeType.addMember(surnameAttributeType, 1, true);
-		beidDeviceAttributeType.addMember(nrnAttributeType, 2, true);
-		this.attributeTypes.add(beidDeviceAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				beidDeviceAttributeType, Locale.ENGLISH.getLanguage(), "BeID",
-				null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				beidDeviceAttributeType, "nl", "BeID", null));
+        AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(BeIdConstants.SURNAME_ATTRIBUTE,
+                DatatypeType.STRING, true, false, true);
+        surnameAttributeType.setMultivalued(true);
+        this.attributeTypes.add(surnameAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(surnameAttributeType, Locale.ENGLISH
+                .getLanguage(), "Surname (BeID)", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(surnameAttributeType, "nl",
+                "Achternaam (BeID)", null));
 
-		AttributeTypeEntity beidDeviceUserAttributeType = new AttributeTypeEntity(
-				BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, DatatypeType.STRING,
-				true, false, true);
-		beidDeviceUserAttributeType.setMultivalued(true);
-		this.attributeTypes.add(beidDeviceUserAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				beidDeviceUserAttributeType, Locale.ENGLISH.getLanguage(),
-				"BeID Name", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				beidDeviceUserAttributeType, "nl", "BeID Naam", null));
+        AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(BeIdConstants.NRN_ATTRIBUTE,
+                DatatypeType.STRING, true, false, true);
+        nrnAttributeType.setMultivalued(true);
+        this.attributeTypes.add(nrnAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nrnAttributeType, Locale.ENGLISH
+                .getLanguage(), "Identification number of the National Register", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nrnAttributeType, "nl",
+                "Identificatienummer van het Rijksregister", null));
 
-		X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils
-				.getPrivateKeyEntry().getCertificate();
-		this.trustedCertificates.put(certificate,
-				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+        AttributeTypeEntity beidDeviceAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_DEVICE_ATTRIBUTE,
+                DatatypeType.COMPOUNDED, true, false, true);
+        beidDeviceAttributeType.setMultivalued(true);
+        beidDeviceAttributeType.addMember(givenNameAttributeType, 0, true);
+        beidDeviceAttributeType.addMember(surnameAttributeType, 1, true);
+        beidDeviceAttributeType.addMember(nrnAttributeType, 2, true);
+        this.attributeTypes.add(beidDeviceAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, Locale.ENGLISH
+                .getLanguage(), "BeID", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, "nl", "BeID",
+                null));
 
-		ResourceBundle properties = ResourceBundle.getBundle("config");
-		String nodeName = properties.getString("olas.node.name");
+        AttributeTypeEntity beidDeviceUserAttributeType = new AttributeTypeEntity(
+                BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, DatatypeType.STRING, true, false, true);
+        beidDeviceUserAttributeType.setMultivalued(true);
+        this.attributeTypes.add(beidDeviceUserAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceUserAttributeType,
+                Locale.ENGLISH.getLanguage(), "BeID Name", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceUserAttributeType, "nl",
+                "BeID Naam", null));
 
-		this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID,
-				SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName,
-				"/olas-beid/auth", "/olas-beid/device", "/olas-beid/device",
-				null, certificate, beidDeviceAttributeType,
-				beidDeviceUserAttributeType));
-		this.deviceDescriptions.add(new DeviceDescription(
-				BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
-		this.deviceDescriptions.add(new DeviceDescription(
-				BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(),
-				"Belgian eID"));
+        X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
-		/*
-		 * WS-Notification subscriptions
-		 */
-		configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER, certificate);
-	}
+        ResourceBundle properties = ResourceBundle.getBundle("config");
+        String nodeName = properties.getString("olas.node.name");
 
-	private void configSubscription(String topic, X509Certificate certificate) {
-		ResourceBundle properties = ResourceBundle.getBundle("config");
-		String protocol = properties.getString("olas.host.protocol");
-		String hostname = properties.getString("olas.host.name");
-		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-		int hostportssl = Integer.parseInt(properties
-				.getString("olas.host.port.ssl"));
-		String address = protocol + "://" + hostname + ":";
-		if (protocol.equals("http"))
-			address += hostport;
-		else
-			address += hostportssl;
-		address += "/safe-online-ws/consumer";
-		this.notificationSubcriptions.add(new NotificationSubscription(topic,
-				address, certificate));
-	}
+        this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName,
+                "/olas-beid/auth", "/olas-beid/device", "/olas-beid/device", null, certificate,
+                beidDeviceAttributeType, beidDeviceUserAttributeType));
+        this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
+        this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(),
+                "Belgian eID"));
 
-	@Override
-	public void postStart() {
-		LOG.debug("post start");
-		super.postStart();
-		initTrustDomain();
-	}
+        /*
+         * WS-Notification subscriptions
+         */
+        configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER, certificate);
+    }
 
-	@SuppressWarnings("unchecked")
-	public void initTrustDomain() {
-		TrustDomainEntity beidTrustDomain = this.trustDomainDAO
-				.findTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME);
-		if (null != beidTrustDomain)
-			return;
+    private void configSubscription(String topic, X509Certificate certificate) {
 
-		beidTrustDomain = this.trustDomainDAO.addTrustDomain(
-				BeIdPkiProvider.TRUST_DOMAIN_NAME, true);
+        ResourceBundle properties = ResourceBundle.getBundle("config");
+        String protocol = properties.getString("olas.host.protocol");
+        String hostname = properties.getString("olas.host.name");
+        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
+        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
+        String address = protocol + "://" + hostname + ":";
+        if (protocol.equals("http"))
+            address += hostport;
+        else
+            address += hostportssl;
+        address += "/safe-online-ws/consumer";
+        this.notificationSubcriptions.add(new NotificationSubscription(topic, address, certificate));
+    }
 
-		CertificateFactory certificateFactory;
-		try {
-			certificateFactory = CertificateFactory.getInstance("X.509");
-		} catch (CertificateException e) {
-			LOG.error("could not get cert factory: " + e.getMessage(), e);
-			return;
-		}
+    @Override
+    public void postStart() {
 
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
+        LOG.debug("post start");
+        super.postStart();
+        initTrustDomain();
+    }
 
-		InputStream indexInputStream = classLoader
-				.getResourceAsStream(INDEX_RESOURCE);
-		List<String> lines;
-		try {
-			lines = IOUtils.readLines(indexInputStream);
-		} catch (IOException e) {
-			LOG.error("could not read the BeID certificate index file");
-			return;
-		}
-		IOUtils.closeQuietly(indexInputStream);
+    @SuppressWarnings("unchecked")
+    public void initTrustDomain() {
 
-		for (String certFilename : lines) {
-			LOG.debug("loading " + certFilename);
-			InputStream certInputStream = classLoader
-					.getResourceAsStream("certs/beid/" + certFilename);
-			X509Certificate certificate;
-			try {
-				certificate = (X509Certificate) certificateFactory
-						.generateCertificate(certInputStream);
-				this.trustPointDAO.addTrustPoint(beidTrustDomain, certificate);
-			} catch (CertificateException e) {
-				LOG.error("certificate error: " + e.getMessage(), e);
-			}
-		}
-	}
+        TrustDomainEntity beidTrustDomain = this.trustDomainDAO.findTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME);
+        if (null != beidTrustDomain)
+            return;
 
-	private void configureNode() {
-		ResourceBundle properties = ResourceBundle.getBundle("config");
-		String nodeName = properties.getString("olas.node.name");
-		String protocol = properties.getString("olas.host.protocol");
-		String hostname = properties.getString("olas.host.name");
-		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-		int hostportssl = Integer.parseInt(properties
-				.getString("olas.host.port.ssl"));
+        beidTrustDomain = this.trustDomainDAO.addTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME, true);
 
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        CertificateFactory certificateFactory;
+        try {
+            certificateFactory = CertificateFactory.getInstance("X.509");
+        } catch (CertificateException e) {
+            LOG.error("could not get cert factory: " + e.getMessage(), e);
+            return;
+        }
 
-		this.node = new Node(nodeName, protocol, hostname, hostport,
-				hostportssl, authIdentityServiceClient.getCertificate(),
-				identityServiceClient.getCertificate());
-		this.trustedCertificates.put(
-				authIdentityServiceClient.getCertificate(),
-				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
-	}
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-	@Override
-	public void preStop() {
-		LOG.debug("pre stop");
-	}
+        InputStream indexInputStream = classLoader.getResourceAsStream(INDEX_RESOURCE);
+        List<String> lines;
+        try {
+            lines = IOUtils.readLines(indexInputStream);
+        } catch (IOException e) {
+            LOG.error("could not read the BeID certificate index file");
+            return;
+        }
+        IOUtils.closeQuietly(indexInputStream);
 
-	@Override
-	public int getPriority() {
-		return BeIdConstants.BEID_BOOT_PRIORITY;
-	}
+        for (String certFilename : lines) {
+            LOG.debug("loading " + certFilename);
+            InputStream certInputStream = classLoader.getResourceAsStream("certs/beid/" + certFilename);
+            X509Certificate certificate;
+            try {
+                certificate = (X509Certificate) certificateFactory.generateCertificate(certInputStream);
+                this.trustPointDAO.addTrustPoint(beidTrustDomain, certificate);
+            } catch (CertificateException e) {
+                LOG.error("certificate error: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    private void configureNode() {
+
+        ResourceBundle properties = ResourceBundle.getBundle("config");
+        String nodeName = properties.getString("olas.node.name");
+        String protocol = properties.getString("olas.host.protocol");
+        String hostname = properties.getString("olas.host.name");
+        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
+        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
+
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+
+        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient
+                .getCertificate(), identityServiceClient.getCertificate());
+        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(),
+                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+    }
+
+    @Override
+    public void preStop() {
+
+        LOG.debug("pre stop");
+    }
+
+    @Override
+    public int getPriority() {
+
+        return BeIdConstants.BEID_BOOT_PRIORITY;
+    }
 }

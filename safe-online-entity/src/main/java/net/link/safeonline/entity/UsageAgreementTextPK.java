@@ -15,77 +15,87 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Embeddable
 public class UsageAgreementTextPK implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String owner;
+    private String            owner;
 
-	private Long usageAgreementVersion;
+    private Long              usageAgreementVersion;
 
-	private String language;
+    private String            language;
 
-	public UsageAgreementTextPK() {
-		// empty
-	}
 
-	public UsageAgreementTextPK(String owner, Long usageAgreementVersion,
-			String language) {
-		this.language = language;
-		this.usageAgreementVersion = usageAgreementVersion;
-		this.owner = owner;
-	}
+    public UsageAgreementTextPK() {
 
-	public String getOwner() {
-		return this.owner;
-	}
+        // empty
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public UsageAgreementTextPK(String owner, Long usageAgreementVersion, String language) {
 
-	@Column(name = "version")
-	public Long getUsageAgreementVersion() {
-		return this.usageAgreementVersion;
-	}
+        this.language = language;
+        this.usageAgreementVersion = usageAgreementVersion;
+        this.owner = owner;
+    }
 
-	public void setUsageAgreementVersion(Long usageAgreementVersion) {
-		this.usageAgreementVersion = usageAgreementVersion;
-	}
+    public String getOwner() {
 
-	public String getLanguage() {
-		return this.language;
-	}
+        return this.owner;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public void setOwner(String owner) {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof UsageAgreementTextPK) {
-			return false;
-		}
-		UsageAgreementTextPK rhs = (UsageAgreementTextPK) obj;
-		return new EqualsBuilder().append(this.usageAgreementVersion,
-				rhs.usageAgreementVersion).append(this.owner, rhs.owner)
-				.append(this.language, rhs.language).isEquals();
-	}
+        this.owner = owner;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.owner).append(
-				this.usageAgreementVersion).append(this.language).toHashCode();
-	}
+    @Column(name = "version")
+    public Long getUsageAgreementVersion() {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append(this.owner).append(
-				this.usageAgreementVersion.toString()).append(this.language)
-				.toString();
-	}
+        return this.usageAgreementVersion;
+    }
+
+    public void setUsageAgreementVersion(Long usageAgreementVersion) {
+
+        this.usageAgreementVersion = usageAgreementVersion;
+    }
+
+    public String getLanguage() {
+
+        return this.language;
+    }
+
+    public void setLanguage(String language) {
+
+        this.language = language;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof UsageAgreementTextPK) {
+            return false;
+        }
+        UsageAgreementTextPK rhs = (UsageAgreementTextPK) obj;
+        return new EqualsBuilder().append(this.usageAgreementVersion, rhs.usageAgreementVersion).append(this.owner,
+                rhs.owner).append(this.language, rhs.language).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.owner).append(this.usageAgreementVersion).append(this.language)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append(this.owner).append(this.usageAgreementVersion.toString()).append(
+                this.language).toString();
+    }
 }

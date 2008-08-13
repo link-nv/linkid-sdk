@@ -17,29 +17,28 @@ import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 
+
 @Local
 public interface SchedulingService {
 
-	List<TaskEntity> listTaskList();
+    List<TaskEntity> listTaskList();
 
-	List<SchedulingEntity> getSchedulingList();
+    List<SchedulingEntity> getSchedulingList();
 
-	List<TaskHistoryEntity> getTaskHistoryList(TaskEntity task);
+    List<TaskHistoryEntity> getTaskHistoryList(TaskEntity task);
 
-	void performTask(TaskEntity task);
+    void performTask(TaskEntity task);
 
-	void performScheduling(SchedulingEntity scheduling);
+    void performScheduling(SchedulingEntity scheduling);
 
-	void clearTaskHistory(TaskEntity task);
+    void clearTaskHistory(TaskEntity task);
 
-	void clearAllTasksHistory();
+    void clearAllTasksHistory();
 
-	void saveScheduling(SchedulingEntity scheduling)
-			throws InvalidCronExpressionException;
+    void saveScheduling(SchedulingEntity scheduling) throws InvalidCronExpressionException;
 
-	void addScheduling(SchedulingEntity scheduling)
-			throws InvalidCronExpressionException, ExistingSchedulingException;
+    void addScheduling(SchedulingEntity scheduling) throws InvalidCronExpressionException, ExistingSchedulingException;
 
-	void saveTask(TaskEntity task);
+    void saveTask(TaskEntity task);
 
 }

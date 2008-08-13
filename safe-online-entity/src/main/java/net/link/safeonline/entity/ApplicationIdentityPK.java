@@ -15,70 +15,80 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Embeddable
 public class ApplicationIdentityPK implements Serializable {
 
-	public static final long INITIAL_IDENTITY_VERSION = 1;
+    public static final long  INITIAL_IDENTITY_VERSION = 1;
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID         = 1L;
 
-	private String application;
+    private String            application;
 
-	private long identityVersion;
+    private long              identityVersion;
 
-	public ApplicationIdentityPK() {
-		// empty
-	}
 
-	public ApplicationIdentityPK(String application, long identityVersion) {
-		this.application = application;
-		this.identityVersion = identityVersion;
-	}
+    public ApplicationIdentityPK() {
 
-	public ApplicationIdentityPK(ApplicationEntity application) {
-		this.application = application.getName();
-		this.identityVersion = INITIAL_IDENTITY_VERSION;
-	}
+        // empty
+    }
 
-	public String getApplication() {
-		return this.application;
-	}
+    public ApplicationIdentityPK(String application, long identityVersion) {
 
-	public void setApplication(String application) {
-		this.application = application;
-	}
+        this.application = application;
+        this.identityVersion = identityVersion;
+    }
 
-	public long getIdentityVersion() {
-		return this.identityVersion;
-	}
+    public ApplicationIdentityPK(ApplicationEntity application) {
 
-	public void setIdentityVersion(long identityVersion) {
-		this.identityVersion = identityVersion;
-	}
+        this.application = application.getName();
+        this.identityVersion = INITIAL_IDENTITY_VERSION;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof ApplicationIdentityPK) {
-			return false;
-		}
-		ApplicationIdentityPK rhs = (ApplicationIdentityPK) obj;
-		return new EqualsBuilder().append(this.application, rhs.application)
-				.append(this.identityVersion, rhs.identityVersion).isEquals();
-	}
+    public String getApplication() {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.application).append(
-				this.identityVersion).toHashCode();
-	}
+        return this.application;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("application", this.application).append(
-						"identityVersion", this.identityVersion).toString();
-	}
+    public void setApplication(String application) {
+
+        this.application = application;
+    }
+
+    public long getIdentityVersion() {
+
+        return this.identityVersion;
+    }
+
+    public void setIdentityVersion(long identityVersion) {
+
+        this.identityVersion = identityVersion;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof ApplicationIdentityPK) {
+            return false;
+        }
+        ApplicationIdentityPK rhs = (ApplicationIdentityPK) obj;
+        return new EqualsBuilder().append(this.application, rhs.application).append(this.identityVersion,
+                rhs.identityVersion).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.application).append(this.identityVersion).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("application", this.application).append("identityVersion",
+                this.identityVersion).toString();
+    }
 }

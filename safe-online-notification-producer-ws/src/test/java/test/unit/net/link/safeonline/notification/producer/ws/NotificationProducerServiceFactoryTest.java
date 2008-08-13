@@ -11,14 +11,15 @@ import junit.framework.TestCase;
 import net.lin_k.safe_online.notification.producer.NotificationProducerService;
 import net.link.safeonline.notification.producer.ws.NotificationProducerServiceFactory;
 
+
 public class NotificationProducerServiceFactoryTest extends TestCase {
 
-	public void testNewInstance() throws Exception {
-		// operate
-		NotificationProducerService result = NotificationProducerServiceFactory
-				.newInstance();
+    public void testNewInstance() throws Exception {
 
-		// verify
-		assertNotNull(result);
-	}
+        // operate
+        NotificationProducerService result = NotificationProducerServiceFactory.newInstance();
+
+        // verify
+        assertNotNull(result);
+    }
 }

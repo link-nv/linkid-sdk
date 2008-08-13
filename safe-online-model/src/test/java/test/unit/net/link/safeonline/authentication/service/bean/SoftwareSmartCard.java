@@ -18,86 +18,104 @@ import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardInteraction;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
 
+
 public class SoftwareSmartCard implements SmartCard {
 
-	private final KeyPair keyPair;
+    private final KeyPair         keyPair;
 
-	private final X509Certificate certificate;
+    private final X509Certificate certificate;
 
-	private final String surname;
+    private final String          surname;
 
-	private final String givenName;
+    private final String          givenName;
 
-	public SoftwareSmartCard(KeyPair keyPair, X509Certificate certificate) {
-		this.keyPair = keyPair;
-		this.certificate = certificate;
-		this.surname = UUID.randomUUID().toString();
-		this.givenName = UUID.randomUUID().toString();
-	}
 
-	public void close() {
-	}
+    public SoftwareSmartCard(KeyPair keyPair, X509Certificate certificate) {
 
-	public X509Certificate getAuthenticationCertificate() {
-		return this.certificate;
-	}
+        this.keyPair = keyPair;
+        this.certificate = certificate;
+        this.surname = UUID.randomUUID().toString();
+        this.givenName = UUID.randomUUID().toString();
+    }
 
-	public PrivateKey getAuthenticationPrivateKey() {
-		return this.keyPair.getPrivate();
-	}
+    public void close() {
 
-	public String getCity() {
-		return null;
-	}
+    }
 
-	public String getCountryCode() {
-		return null;
-	}
+    public X509Certificate getAuthenticationCertificate() {
 
-	public String getGivenName() {
-		return this.givenName;
-	}
+        return this.certificate;
+    }
 
-	public String getPostalCode() {
-		return null;
-	}
+    public PrivateKey getAuthenticationPrivateKey() {
 
-	public X509Certificate getSignatureCertificate() {
-		return null;
-	}
+        return this.keyPair.getPrivate();
+    }
 
-	public PrivateKey getSignaturePrivateKey() {
-		return null;
-	}
+    public String getCity() {
 
-	public String getStreet() {
-		return null;
-	}
+        return null;
+    }
 
-	public String getSurname() {
-		return this.surname;
-	}
+    public String getCountryCode() {
 
-	public void init(@SuppressWarnings("unused")
-	List<SmartCardConfig> smartCardConfigs, SmartCardInteraction smartCardInteraction) {
-	}
+        return null;
+    }
 
-	public boolean isOpen() {
-		return false;
-	}
+    public String getGivenName() {
 
-	public void setSmartCardPinCallback(@SuppressWarnings("unused")
-	SmartCardPinCallback smartCardPinCallback) {
-	}
+        return this.givenName;
+    }
 
-	public void open(@SuppressWarnings("unused")
-	String smartCardAlias) {
-	}
+    public String getPostalCode() {
 
-	public List<X509Certificate> getAuthenticationCertificatePath() {
-		return null;
-	}
+        return null;
+    }
 
-	public void resetPKCS11Driver() {
-	}
+    public X509Certificate getSignatureCertificate() {
+
+        return null;
+    }
+
+    public PrivateKey getSignaturePrivateKey() {
+
+        return null;
+    }
+
+    public String getStreet() {
+
+        return null;
+    }
+
+    public String getSurname() {
+
+        return this.surname;
+    }
+
+    public void init(@SuppressWarnings("unused") List<SmartCardConfig> smartCardConfigs,
+            SmartCardInteraction smartCardInteraction) {
+
+    }
+
+    public boolean isOpen() {
+
+        return false;
+    }
+
+    public void setSmartCardPinCallback(@SuppressWarnings("unused") SmartCardPinCallback smartCardPinCallback) {
+
+    }
+
+    public void open(@SuppressWarnings("unused") String smartCardAlias) {
+
+    }
+
+    public List<X509Certificate> getAuthenticationCertificatePath() {
+
+        return null;
+    }
+
+    public void resetPKCS11Driver() {
+
+    }
 }

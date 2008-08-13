@@ -14,6 +14,7 @@ import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 
+
 /**
  * <h2>{@link ScenarioExecutorThread}<br>
  * <sub>This thread executes a scenario on a given agent.</sub></h2>
@@ -26,35 +27,33 @@ import net.link.safeonline.performance.console.swing.data.ConsoleData;
  */
 public class ScenarioExecutorThread extends ScenarioThread {
 
-	private Date startTime;
+    private Date startTime;
 
-	public ScenarioExecutorThread() {
 
-		super(AgentState.EXECUTE);
+    public ScenarioExecutorThread() {
 
-		this.startTime = new Date();
-	}
+        super(AgentState.EXECUTE);
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	void process(ConsoleAgent agent) throws Exception {
+        this.startTime = new Date();
+    }
 
-		if (ConsoleData.getScenarioName() == null) {
-			JOptionPane.showMessageDialog(null,
-					"You didn't select a scenario to execute!",
-					"No scenario selected.", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    void process(ConsoleAgent agent) throws Exception {
 
-		String hostname = String.format("%s:%d", ConsoleData.getHostname(),
-				ConsoleData.getPort());
+        if (ConsoleData.getScenarioName() == null) {
+            JOptionPane.showMessageDialog(null, "You didn't select a scenario to execute!", "No scenario selected.",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-		this.scenarioDeployer.execute(agent.getAddress(), ConsoleData
-				.getScenarioName(), ConsoleData.getSelectedAgents().size(),
-				ConsoleData.getWorkers(), ConsoleData.getDuration(), hostname,
-				ConsoleData.isSsl(), this.startTime);
+        String hostname = String.format("%s:%d", ConsoleData.getHostname(), ConsoleData.getPort());
 
-	}
+        this.scenarioDeployer.execute(agent.getAddress(), ConsoleData.getScenarioName(), ConsoleData
+                .getSelectedAgents().size(), ConsoleData.getWorkers(), ConsoleData.getDuration(), hostname, ConsoleData
+                .isSsl(), this.startTime);
+
+    }
 }

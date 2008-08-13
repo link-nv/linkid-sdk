@@ -29,10 +29,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("timeout")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-        + "TimeoutBean/local")
+@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "TimeoutBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class TimeoutBean implements Timeout {
 
@@ -56,24 +56,20 @@ public class TimeoutBean implements Timeout {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            Cookie applicationCookie = (Cookie) facesContext
-                    .getExternalContext().getRequestCookieMap().get(
-                            APPLICATION_COOKIE);
-            PublicApplication application = this.publicApplicationService
-                    .findPublicApplication(applicationCookie.getValue());
+            Cookie applicationCookie = (Cookie) facesContext.getExternalContext().getRequestCookieMap().get(
+                    APPLICATION_COOKIE);
+            PublicApplication application = this.publicApplicationService.findPublicApplication(applicationCookie
+                    .getValue());
             if (null != application) {
                 if (null != application.getUrl()) {
-                    this.log.debug("found url: "
-                            + application.getUrl().toString());
-                    return application.getUrl().toString()
-                            + "?authenticationTimeout=true";
+                    this.log.debug("found url: " + application.getUrl().toString());
+                    return application.getUrl().toString() + "?authenticationTimeout=true";
                 }
             }
             return null;
         } finally {
             this.log.debug("removing entry and timeout cookie");
-            HttpServletResponse response = (HttpServletResponse) facesContext
-                    .getExternalContext().getResponse();
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
             removeCookie(TIMEOUT_COOKIE, response);
             removeCookie(ENTRY_COOKIE, response);
             removeCookie(APPLICATION_COOKIE, response);

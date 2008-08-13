@@ -33,141 +33,160 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Index;
 
+
 @Entity
 @Table(name = "comp_attribute_member")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_PARENT, query = "SELECT catm.parent FROM CompoundedAttributeTypeMemberEntity AS catm "
-				+ "WHERE catm.member = :member"),
-		@NamedQuery(name = QUERY_WHERE_MEMBER, query = "SELECT catm FROM CompoundedAttributeTypeMemberEntity AS catm "
-				+ "WHERE catm.member = :member"),
-		@NamedQuery(name = DELETE_WHERE_PARENT, query = "DELETE FROM CompoundedAttributeTypeMemberEntity AS catm "
-				+ "WHERE catm.parent = :parent") })
+        @NamedQuery(name = QUERY_PARENT, query = "SELECT catm.parent FROM CompoundedAttributeTypeMemberEntity AS catm "
+                + "WHERE catm.member = :member"),
+        @NamedQuery(name = QUERY_WHERE_MEMBER, query = "SELECT catm FROM CompoundedAttributeTypeMemberEntity AS catm "
+                + "WHERE catm.member = :member"),
+        @NamedQuery(name = DELETE_WHERE_PARENT, query = "DELETE FROM CompoundedAttributeTypeMemberEntity AS catm "
+                + "WHERE catm.parent = :parent") })
 public class CompoundedAttributeTypeMemberEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long               serialVersionUID    = 1L;
 
-	public static final String QUERY_PARENT = "cat.parent";
+    public static final String              QUERY_PARENT        = "cat.parent";
 
-	public static final String QUERY_WHERE_MEMBER = "cat.member";
+    public static final String              QUERY_WHERE_MEMBER  = "cat.member";
 
-	public static final String DELETE_WHERE_PARENT = "cat.delete.parent";
+    public static final String              DELETE_WHERE_PARENT = "cat.delete.parent";
 
-	private CompoundedAttributeTypeMemberPK pk;
+    private CompoundedAttributeTypeMemberPK pk;
 
-	private AttributeTypeEntity parent;
+    private AttributeTypeEntity             parent;
 
-	private AttributeTypeEntity member;
+    private AttributeTypeEntity             member;
 
-	private int memberSequence;
+    private int                             memberSequence;
 
-	private boolean required;
+    private boolean                         required;
 
-	public CompoundedAttributeTypeMemberEntity() {
-		// empty
-	}
 
-	public CompoundedAttributeTypeMemberEntity(AttributeTypeEntity parent,
-			AttributeTypeEntity member, int memberSequence, boolean required) {
-		this.parent = parent;
-		this.member = member;
-		this.memberSequence = memberSequence;
-		this.required = required;
-		this.pk = new CompoundedAttributeTypeMemberPK(this.parent, this.member);
-	}
+    public CompoundedAttributeTypeMemberEntity() {
 
-	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "parent", column = @Column(name = PARENT_COLUMN_NAME)),
-			@AttributeOverride(name = "member", column = @Column(name = MEMBER_COLUMN_NAME)) })
-	public CompoundedAttributeTypeMemberPK getPk() {
-		return this.pk;
-	}
+        // empty
+    }
 
-	public void setPk(CompoundedAttributeTypeMemberPK pk) {
-		this.pk = pk;
-	}
+    public CompoundedAttributeTypeMemberEntity(AttributeTypeEntity parent, AttributeTypeEntity member,
+            int memberSequence, boolean required) {
 
-	public static final String PARENT_COLUMN_NAME = "parent_attribute_type";
+        this.parent = parent;
+        this.member = member;
+        this.memberSequence = memberSequence;
+        this.required = required;
+        this.pk = new CompoundedAttributeTypeMemberPK(this.parent, this.member);
+    }
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = PARENT_COLUMN_NAME, insertable = false, updatable = false)
-	public AttributeTypeEntity getParent() {
-		return this.parent;
-	}
+    @EmbeddedId
+    @AttributeOverrides( { @AttributeOverride(name = "parent", column = @Column(name = PARENT_COLUMN_NAME)),
+            @AttributeOverride(name = "member", column = @Column(name = MEMBER_COLUMN_NAME)) })
+    public CompoundedAttributeTypeMemberPK getPk() {
 
-	public void setParent(AttributeTypeEntity parent) {
-		this.parent = parent;
-	}
+        return this.pk;
+    }
 
-	public static final String MEMBER_COLUMN_NAME = "member_attribute_type";
+    public void setPk(CompoundedAttributeTypeMemberPK pk) {
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = MEMBER_COLUMN_NAME, insertable = false, updatable = false)
-	@Index(name = "memberIndex")
-	public AttributeTypeEntity getMember() {
-		return this.member;
-	}
+        this.pk = pk;
+    }
 
-	public void setMember(AttributeTypeEntity member) {
-		this.member = member;
-	}
 
-	public static final String MEMBER_SEQUENCE_COLUMN_NAME = "memberSequence";
+    public static final String PARENT_COLUMN_NAME = "parent_attribute_type";
 
-	@Column(name = MEMBER_SEQUENCE_COLUMN_NAME)
-	public int getMemberSequence() {
-		return this.memberSequence;
-	}
 
-	public void setMemberSequence(int memberSequence) {
-		this.memberSequence = memberSequence;
-	}
+    @ManyToOne(optional = false)
+    @JoinColumn(name = PARENT_COLUMN_NAME, insertable = false, updatable = false)
+    public AttributeTypeEntity getParent() {
 
-	/**
-	 * Marks whether the member is a required part of the compounded attribute
-	 * type.
-	 * 
-	 */
-	public boolean isRequired() {
-		return this.required;
-	}
+        return this.parent;
+    }
 
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
+    public void setParent(AttributeTypeEntity parent) {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == obj instanceof CompoundedAttributeTypeMemberEntity) {
-			return false;
-		}
-		CompoundedAttributeTypeMemberEntity rhs = (CompoundedAttributeTypeMemberEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+        this.parent = parent;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.pk).toHashCode();
-	}
 
-	public interface QueryInterface {
-		@QueryMethod(value = QUERY_PARENT, nullable = true)
-		AttributeTypeEntity findParentAttribute(@QueryParam("member")
-		AttributeTypeEntity memberAttributeType);
+    public static final String MEMBER_COLUMN_NAME = "member_attribute_type";
 
-		@QueryMethod(QUERY_WHERE_MEMBER)
-		List<CompoundedAttributeTypeMemberEntity> listMemberEntries(
-				@QueryParam("member")
-				AttributeTypeEntity memberAttributeType);
 
-		@UpdateMethod(DELETE_WHERE_PARENT)
-		int deleteWhereParent(@QueryParam("parent")
-		AttributeTypeEntity parent);
-	}
+    @ManyToOne(optional = false)
+    @JoinColumn(name = MEMBER_COLUMN_NAME, insertable = false, updatable = false)
+    @Index(name = "memberIndex")
+    public AttributeTypeEntity getMember() {
+
+        return this.member;
+    }
+
+    public void setMember(AttributeTypeEntity member) {
+
+        this.member = member;
+    }
+
+
+    public static final String MEMBER_SEQUENCE_COLUMN_NAME = "memberSequence";
+
+
+    @Column(name = MEMBER_SEQUENCE_COLUMN_NAME)
+    public int getMemberSequence() {
+
+        return this.memberSequence;
+    }
+
+    public void setMemberSequence(int memberSequence) {
+
+        this.memberSequence = memberSequence;
+    }
+
+    /**
+     * Marks whether the member is a required part of the compounded attribute type.
+     * 
+     */
+    public boolean isRequired() {
+
+        return this.required;
+    }
+
+    public void setRequired(boolean required) {
+
+        this.required = required;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == obj instanceof CompoundedAttributeTypeMemberEntity) {
+            return false;
+        }
+        CompoundedAttributeTypeMemberEntity rhs = (CompoundedAttributeTypeMemberEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.pk).toHashCode();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(value = QUERY_PARENT, nullable = true)
+        AttributeTypeEntity findParentAttribute(@QueryParam("member") AttributeTypeEntity memberAttributeType);
+
+        @QueryMethod(QUERY_WHERE_MEMBER)
+        List<CompoundedAttributeTypeMemberEntity> listMemberEntries(
+                @QueryParam("member") AttributeTypeEntity memberAttributeType);
+
+        @UpdateMethod(DELETE_WHERE_PARENT)
+        int deleteWhereParent(@QueryParam("parent") AttributeTypeEntity parent);
+    }
 }

@@ -21,32 +21,27 @@ public class SafeOnlineConstants {
     public static final String SAFE_ONLINE_ENTITY_MANAGER              = "SafeOnlineEntityManager";
 
     /**
-     * The JBoss AS security domain for the SafeOnline components that need to
-     * be accessible by users.
+     * The JBoss AS security domain for the SafeOnline components that need to be accessible by users.
      */
     public static final String SAFE_ONLINE_SECURITY_DOMAIN             = "safe-online";
 
     /**
-     * The JBoss AS security domain for the SafeOnline components that need to
-     * be accessible by applications.
+     * The JBoss AS security domain for the SafeOnline components that need to be accessible by applications.
      */
     public static final String SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN = "safe-online-application";
 
     /**
-     * The JBoss AS security domain for the SafeOnline components that need to
-     * be accessible by other nodes.
+     * The JBoss AS security domain for the SafeOnline components that need to be accessible by other nodes.
      */
     public static final String SAFE_ONLINE_NODE_SECURITY_DOMAIN        = "safe-online-node";
 
     /**
-     * The JBoss AS security domain for the SafeOnline components that need to
-     * be accessible by other devices.
+     * The JBoss AS security domain for the SafeOnline components that need to be accessible by other devices.
      */
     public static final String SAFE_ONLINE_DEVICE_SECURITY_DOMAIN      = "safe-online-device";
 
     /**
-     * The PKI trust domain name for the SafeOnline application owner
-     * applications.
+     * The PKI trust domain name for the SafeOnline application owner applications.
      */
     public static final String SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN   = "applications";
 

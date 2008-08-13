@@ -12,18 +12,20 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.Remote;
 
+
 /**
  * Interface for performance service.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Remote
 public interface PerformanceService {
 
-	public static final String BINDING = "SafeOnline/PerformanceServiceBean";
+    public static final String BINDING = "SafeOnline/PerformanceServiceBean";
 
-	PrivateKey getPrivateKey();
 
-	X509Certificate getCertificate();
+    PrivateKey getPrivateKey();
+
+    X509Certificate getCertificate();
 }

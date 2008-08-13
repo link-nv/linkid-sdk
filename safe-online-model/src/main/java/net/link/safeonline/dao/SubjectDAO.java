@@ -14,6 +14,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
 
+
 /**
  * Subject Data Access Object interface.
  * 
@@ -22,37 +23,37 @@ import net.link.safeonline.entity.SubjectEntity;
  */
 @Local
 public interface SubjectDAO {
-	/**
-	 * Finds the subject for a given user ID. Returns <code>null</code> if the
-	 * entity could not be found.
-	 * 
-	 * @param userId
-	 * @return the subject or <code>null</code> if the subject was not found.
-	 */
-	SubjectEntity findSubject(String userId);
 
-	SubjectEntity addSubject(String userId);
+    /**
+     * Finds the subject for a given user ID. Returns <code>null</code> if the entity could not be found.
+     * 
+     * @param userId
+     * @return the subject or <code>null</code> if the subject was not found.
+     */
+    SubjectEntity findSubject(String userId);
 
-	/**
-	 * Gives back the subject for the given userId.
-	 * 
-	 * @param userId
-	 *            the userId of the subject.
-	 * @return the subject.
-	 * @exception SubjectNotFoundException
-	 */
-	SubjectEntity getSubject(String userId) throws SubjectNotFoundException;
+    SubjectEntity addSubject(String userId);
 
-	/**
-	 * Removes the given attached subject from the database.
-	 * 
-	 * @param subject
-	 */
-	void removeSubject(SubjectEntity subject);
+    /**
+     * Gives back the subject for the given userId.
+     * 
+     * @param userId
+     *            the userId of the subject.
+     * @return the subject.
+     * @exception SubjectNotFoundException
+     */
+    SubjectEntity getSubject(String userId) throws SubjectNotFoundException;
 
-	/**
-	 * Gives back a list of all user Ids.
-	 * 
-	 */
-	List<String> listUsers();
+    /**
+     * Removes the given attached subject from the database.
+     * 
+     * @param subject
+     */
+    void removeSubject(SubjectEntity subject);
+
+    /**
+     * Gives back a list of all user Ids.
+     * 
+     */
+    List<String> listUsers();
 }

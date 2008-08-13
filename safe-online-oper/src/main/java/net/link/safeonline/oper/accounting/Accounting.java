@@ -13,35 +13,36 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
+
 @Local
 public interface Accounting {
 
-	/*
-	 * Accessors.
-	 */
+    /*
+     * Accessors.
+     */
 
-	/*
-	 * Actions.
-	 */
-	String view();
+    /*
+     * Actions.
+     */
+    String view();
 
-	String viewStat();
+    String viewStat();
 
-	String export() throws IOException;
+    String export() throws IOException;
 
-	String exportStat() throws IOException;
+    String exportStat() throws IOException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	void postConstructCallback();
+    void postConstructCallback();
 
-	/*
-	 * Factories.
-	 */
-	void applicationListFactory();
+    /*
+     * Factories.
+     */
+    void applicationListFactory();
 
-	void statListFactory() throws PermissionDeniedException;
+    void statListFactory() throws PermissionDeniedException;
 }

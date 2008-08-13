@@ -36,80 +36,80 @@ import org.oasis_open.docs.wsn.b_2.Renew;
 import org.oasis_open.docs.wsn.b_2.RenewResponse;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
+
 @WebService(endpointInterface = "net.lin_k.safe_online.notification.subscription.manager.NotificationSubscriptionManagerPort")
 @HandlerChain(file = "auth-ws-handlers.xml")
 @Injection
-public class NotificationSubscriptionManagerPortImpl implements
-		NotificationSubscriptionManagerPort {
+public class NotificationSubscriptionManagerPortImpl implements NotificationSubscriptionManagerPort {
 
-	private final static Log LOG = LogFactory
-			.getLog(NotificationSubscriptionManagerPortImpl.class);
+    private final static Log            LOG = LogFactory.getLog(NotificationSubscriptionManagerPortImpl.class);
 
-	@Resource
-	private WebServiceContext context;
+    @Resource
+    private WebServiceContext           context;
 
-	@EJB(mappedName = "SafeOnline/NotificationProducerServiceBean/local")
-	private NotificationProducerService notificationProducerService;
+    @EJB(mappedName = "SafeOnline/NotificationProducerServiceBean/local")
+    private NotificationProducerService notificationProducerService;
 
-	public RenewResponse renew(Renew request) {
-		LOG.debug("renew");
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	public UnsubscribeResponse unsubscribe(UnsubscribeRequest request) {
-		LOG.debug("unsubscribe");
+    public RenewResponse renew(Renew request) {
 
-		X509Certificate certificate = WSSecurityServerHandler
-				.getCertificate(this.context);
+        LOG.debug("renew");
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-		W3CEndpointReference consumerReference = request.getConsumerReference();
-		DOMResult consumerReferenceDom = new DOMResult();
-		consumerReference.writeTo(consumerReferenceDom);
-		String address = consumerReferenceDom.getNode().getFirstChild()
-				.getFirstChild().getFirstChild().getNodeValue();
+    public UnsubscribeResponse unsubscribe(UnsubscribeRequest request) {
 
-		TopicExpressionType topicExpression = request.getTopic().getTopic();
-		String topic = (String) topicExpression.getContent().get(0);
+        LOG.debug("unsubscribe");
 
-		try {
-			this.notificationProducerService.unsubscribe(topic, address,
-					certificate);
-		} catch (SubscriptionNotFoundException e) {
-			LOG.debug("Subscription not found: " + e.getMessage());
-			return createSubscriptionNotFoundResponse(e.getMessage());
-		} catch (EndpointReferenceNotFoundException e) {
-			LOG.debug("Endpoint reference not found: " + e.getMessage());
-			return createSubscriptionNotFoundResponse(e.getMessage());
-		} catch (PermissionDeniedException e) {
-			LOG.debug("Permission denied: " + e.getMessage());
-			return createPermissionDeniedResponse(e.getMessage());
-		}
+        X509Certificate certificate = WSSecurityServerHandler.getCertificate(this.context);
 
-		return createGenericResponse(NotificationErrorCode.SUCCESS);
-	}
+        W3CEndpointReference consumerReference = request.getConsumerReference();
+        DOMResult consumerReferenceDom = new DOMResult();
+        consumerReference.writeTo(consumerReferenceDom);
+        String address = consumerReferenceDom.getNode().getFirstChild().getFirstChild().getFirstChild().getNodeValue();
 
-	private UnsubscribeResponse createPermissionDeniedResponse(String message) {
-		UnsubscribeResponse response = createGenericResponse(NotificationErrorCode.PERMISSION_DENIED);
-		response.getStatus().setStatusMessage(message);
-		return response;
-	}
+        TopicExpressionType topicExpression = request.getTopic().getTopic();
+        String topic = (String) topicExpression.getContent().get(0);
 
-	private UnsubscribeResponse createSubscriptionNotFoundResponse(
-			String message) {
-		UnsubscribeResponse response = createGenericResponse(NotificationErrorCode.SUBSCRIPTION_NOT_FOUND);
-		response.getStatus().setStatusMessage(message);
-		return response;
-	}
+        try {
+            this.notificationProducerService.unsubscribe(topic, address, certificate);
+        } catch (SubscriptionNotFoundException e) {
+            LOG.debug("Subscription not found: " + e.getMessage());
+            return createSubscriptionNotFoundResponse(e.getMessage());
+        } catch (EndpointReferenceNotFoundException e) {
+            LOG.debug("Endpoint reference not found: " + e.getMessage());
+            return createSubscriptionNotFoundResponse(e.getMessage());
+        } catch (PermissionDeniedException e) {
+            LOG.debug("Permission denied: " + e.getMessage());
+            return createPermissionDeniedResponse(e.getMessage());
+        }
 
-	private UnsubscribeResponse createGenericResponse(
-			NotificationErrorCode errorCode) {
-		UnsubscribeResponse response = new UnsubscribeResponse();
-		StatusType statusType = new StatusType();
-		StatusCodeType statusCode = new StatusCodeType();
-		statusCode.setValue(errorCode.getErrorCode());
-		statusType.setStatusCode(statusCode);
-		response.setStatus(statusType);
-		return response;
-	}
+        return createGenericResponse(NotificationErrorCode.SUCCESS);
+    }
+
+    private UnsubscribeResponse createPermissionDeniedResponse(String message) {
+
+        UnsubscribeResponse response = createGenericResponse(NotificationErrorCode.PERMISSION_DENIED);
+        response.getStatus().setStatusMessage(message);
+        return response;
+    }
+
+    private UnsubscribeResponse createSubscriptionNotFoundResponse(String message) {
+
+        UnsubscribeResponse response = createGenericResponse(NotificationErrorCode.SUBSCRIPTION_NOT_FOUND);
+        response.getStatus().setStatusMessage(message);
+        return response;
+    }
+
+    private UnsubscribeResponse createGenericResponse(NotificationErrorCode errorCode) {
+
+        UnsubscribeResponse response = new UnsubscribeResponse();
+        StatusType statusType = new StatusType();
+        StatusCodeType statusCode = new StatusCodeType();
+        statusCode.setValue(errorCode.getErrorCode());
+        statusType.setStatusCode(statusCode);
+        response.setStatus(statusType);
+        return response;
+    }
 }

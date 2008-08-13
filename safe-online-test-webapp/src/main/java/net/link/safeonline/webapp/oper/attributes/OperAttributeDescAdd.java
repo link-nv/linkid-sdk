@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.attributes;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperAttributeDescAdd extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/attributes/attribute-desc-add.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/attributes/attribute-desc-add.seam";
 
-	public OperAttributeDescAdd() {
-		super(PAGE_NAME);
-	}
+
+    public OperAttributeDescAdd() {
+
+        super(PAGE_NAME);
+    }
 }

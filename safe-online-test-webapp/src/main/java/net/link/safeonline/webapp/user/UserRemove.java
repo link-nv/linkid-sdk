@@ -8,21 +8,24 @@ package net.link.safeonline.webapp.user;
 
 public class UserRemove extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/remove.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/remove.seam";
 
-	public UserRemove() {
-		super(PAGE_NAME);
-	}
 
-	public UserMain remove() {
-		clickButtonAndWait("remove");
-		checkTextPresent("Login");
-		return new UserMain();
-	}
+    public UserRemove() {
 
-	public UserAccount cancel() {
-		clickButtonAndWait("cancel");
-		return new UserAccount();
-	}
+        super(PAGE_NAME);
+    }
+
+    public UserMain remove() {
+
+        clickButtonAndWait("remove");
+        checkTextPresent("Login");
+        return new UserMain();
+    }
+
+    public UserAccount cancel() {
+
+        clickButtonAndWait("cancel");
+        return new UserAccount();
+    }
 }

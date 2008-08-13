@@ -12,6 +12,7 @@ import java.util.List;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 
+
 /**
  * Interface for WS-Notification messages.
  * 
@@ -20,12 +21,11 @@ import net.link.safeonline.entity.DeviceEntity;
  */
 public interface MessageHandler {
 
-	void init();
+    void init();
 
-	List<String> createApplicationMessage(List<String> message,
-			ApplicationEntity application);
+    List<String> createApplicationMessage(List<String> message, ApplicationEntity application);
 
-	List<String> createDeviceMessage(List<String> message, DeviceEntity device);
+    List<String> createDeviceMessage(List<String> message, DeviceEntity device);
 
-	void handleMessage(String destination, List<String> message);
+    void handleMessage(String destination, List<String> message);
 }

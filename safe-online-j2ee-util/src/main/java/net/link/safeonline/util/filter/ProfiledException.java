@@ -12,43 +12,43 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+
 /**
- * <h2>{@link ProfiledException} - A wrapper for exceptions that occurred
- * during profiling.</h2>
+ * <h2>{@link ProfiledException} - A wrapper for exceptions that occurred during profiling.</h2>
  * <p>
- * This wrapper serves as an intermediate to make sure profiling data is still
- * transferred to the agents when exceptions occur in OLAS.<br>
+ * This wrapper serves as an intermediate to make sure profiling data is still transferred to the agents when exceptions
+ * occur in OLAS.<br>
  * <br>
- * Since HTTP headers are unavailable when exceptions occur, the profiling data
- * is serialized as a {@link Map} of {@link String}s. The agent unserializes
- * this data to retrieve the profiling data.
+ * Since HTTP headers are unavailable when exceptions occur, the profiling data is serialized as a {@link Map} of
+ * {@link String}s. The agent unserializes this data to retrieve the profiling data.
  * </p>
  * <p>
  * <i>Nov 30, 2007</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ProfiledException extends ServletException {
 
-	private static final long serialVersionUID = 1L;
-	private Map<String, String> headers;
+    private static final long   serialVersionUID = 1L;
+    private Map<String, String> headers;
 
-	/**
-	 * Create a new {@link ProfiledException} instance.
-	 */
-	public ProfiledException(Throwable e, Map<String, String> headers) {
 
-		super(e);
+    /**
+     * Create a new {@link ProfiledException} instance.
+     */
+    public ProfiledException(Throwable e, Map<String, String> headers) {
 
-		this.headers = headers;
-	}
+        super(e);
 
-	/**
-	 * @return The headers of this {@link ProfiledException}.
-	 */
-	public Map<String, String> getHeaders() {
+        this.headers = headers;
+    }
 
-		return Collections.unmodifiableMap(this.headers);
-	}
+    /**
+     * @return The headers of this {@link ProfiledException}.
+     */
+    public Map<String, String> getHeaders() {
+
+        return Collections.unmodifiableMap(this.headers);
+    }
 }

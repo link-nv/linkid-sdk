@@ -14,6 +14,7 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
+
 /**
  * Validator for PKI.
  * 
@@ -29,15 +30,13 @@ public interface PkiValidator {
 
 
     /**
-     * Validates the given X509 certificate using the trust points (and policy)
-     * defined within a certain trust domain.
+     * Validates the given X509 certificate using the trust points (and policy) defined within a certain trust domain.
      * 
      * @param trustDomainName
      * @param certificate
      */
-    PkiResult validateCertificate(TrustDomainEntity trustDomain,
-            X509Certificate certificate);
+    PkiResult validateCertificate(TrustDomainEntity trustDomain, X509Certificate certificate);
 
-    PkiResult validateCertificate(String trustDomainName,
-            X509Certificate certificate) throws TrustDomainNotFoundException;
+    PkiResult validateCertificate(String trustDomainName, X509Certificate certificate)
+            throws TrustDomainNotFoundException;
 }

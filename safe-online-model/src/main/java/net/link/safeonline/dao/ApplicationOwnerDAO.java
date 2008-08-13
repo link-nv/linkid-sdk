@@ -16,24 +16,23 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
+
 @Local
 public interface ApplicationOwnerDAO {
 
-	ApplicationOwnerEntity findApplicationOwner(String name);
+    ApplicationOwnerEntity findApplicationOwner(String name);
 
-	ApplicationOwnerEntity getApplicationOwner(String name)
-			throws ApplicationOwnerNotFoundException;
+    ApplicationOwnerEntity getApplicationOwner(String name) throws ApplicationOwnerNotFoundException;
 
-	ApplicationOwnerEntity addApplicationOwner(String name, SubjectEntity admin);
+    ApplicationOwnerEntity addApplicationOwner(String name, SubjectEntity admin);
 
-	void removeApplicationOwner(String name);
+    void removeApplicationOwner(String name);
 
-	List<ApplicationOwnerEntity> listApplicationOwners();
+    List<ApplicationOwnerEntity> listApplicationOwners();
 
-	ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject)
-			throws ApplicationOwnerNotFoundException;
+    ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject) throws ApplicationOwnerNotFoundException;
 
-	ApplicationOwnerEntity findApplicationOwner(SubjectEntity adminSubject);
+    ApplicationOwnerEntity findApplicationOwner(SubjectEntity adminSubject);
 
-	void removeApplication(ApplicationEntity application);
+    void removeApplication(ApplicationEntity application);
 }

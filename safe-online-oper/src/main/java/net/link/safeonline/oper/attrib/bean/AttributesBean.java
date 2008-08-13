@@ -38,64 +38,69 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("attributes")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "AttributesBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "AttributesBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AttributesBean implements Attributes {
 
-	private static final Log LOG = LogFactory.getLog(AttributesBean.class);
+    private static final Log          LOG                = LogFactory.getLog(AttributesBean.class);
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                     facesMessages;
 
-	@EJB
-	private AttributeTypeService attributeTypeService;
+    @EJB
+    private AttributeTypeService      attributeTypeService;
 
-	@SuppressWarnings("unused")
-	@DataModel("attributeTypeList")
-	private List<AttributeTypeEntity> attributeTypeList;
+    @SuppressWarnings("unused")
+    @DataModel("attributeTypeList")
+    private List<AttributeTypeEntity> attributeTypeList;
 
-	@DataModelSelection("attributeTypeList")
-	@Out(value = "selectedAttributeType", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private AttributeTypeEntity selectedAttributeType;
+    @DataModelSelection("attributeTypeList")
+    @Out(value = "selectedAttributeType", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private AttributeTypeEntity       selectedAttributeType;
 
-	public static final String NEW_ATTRIBUTE_TYPE = "newAttributeType";
+    public static final String        NEW_ATTRIBUTE_TYPE = "newAttributeType";
 
-	@Factory("attributeTypeList")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void attributeTypeListFactory() {
-		LOG.debug("attributeTypeListFactory");
-		this.attributeTypeList = this.attributeTypeService.listAttributeTypes();
-	}
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		LOG.debug("destroy");
-	}
+    @Factory("attributeTypeList")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void attributeTypeListFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		LOG.debug("view: " + this.selectedAttributeType.getName());
-		return "view";
-	}
+        LOG.debug("attributeTypeListFactory");
+        this.attributeTypeList = this.attributeTypeService.listAttributeTypes();
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() {
-		LOG.debug("remove: " + this.selectedAttributeType.getName());
-		return "remove";
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeConfirm()
-			throws AttributeTypeDescriptionNotFoundException,
-			PermissionDeniedException, AttributeTypeNotFoundException {
-		LOG.debug("confirm remove: " + this.selectedAttributeType.getName());
-		this.attributeTypeService.remove(this.selectedAttributeType);
-		return "success";
-	}
+        LOG.debug("destroy");
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String view() {
+
+        LOG.debug("view: " + this.selectedAttributeType.getName());
+        return "view";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String remove() {
+
+        LOG.debug("remove: " + this.selectedAttributeType.getName());
+        return "remove";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String removeConfirm() throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException {
+
+        LOG.debug("confirm remove: " + this.selectedAttributeType.getName());
+        this.attributeTypeService.remove(this.selectedAttributeType);
+        return "success";
+    }
 }

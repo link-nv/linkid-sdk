@@ -13,10 +13,10 @@ import javax.ejb.Local;
 
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 
+
 @Local
 public interface HelpdeskManager {
 
-	public Long persist(String location,
-			List<HelpdeskEventEntity> helpdeskEventList);
+    public Long persist(String location, List<HelpdeskEventEntity> helpdeskEventList);
 
 }

@@ -17,21 +17,21 @@ import net.link.safeonline.entity.audit.ResourceAuditEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 
+
 @Local
 public interface ResourceAuditDAO {
 
-	void addResourceAudit(AuditContextEntity auditContext,
-			ResourceNameType resourceName, ResourceLevelType resourceLevel,
-			String sourceComponent, String message);
+    void addResourceAudit(AuditContextEntity auditContext, ResourceNameType resourceName,
+            ResourceLevelType resourceLevel, String sourceComponent, String message);
 
-	void cleanup(Long id);
+    void cleanup(Long id);
 
-	List<ResourceAuditEntity> listRecords(Long id);
+    List<ResourceAuditEntity> listRecords(Long id);
 
-	boolean hasRecords(long id);
+    boolean hasRecords(long id);
 
-	List<ResourceAuditEntity> listRecordsSince(Date ageLimit);
+    List<ResourceAuditEntity> listRecordsSince(Date ageLimit);
 
-	List<ResourceAuditEntity> listRecords();
+    List<ResourceAuditEntity> listRecords();
 
 }

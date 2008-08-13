@@ -9,6 +9,7 @@ package net.link.safeonline.config.service;
 
 import javax.ejb.Remote;
 
+
 @Remote
 public interface ConfigurationServiceRemote extends ConfigurationService {
 

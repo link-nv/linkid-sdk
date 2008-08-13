@@ -35,116 +35,92 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+
 public class WSSecurityClientHandlerTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(WSSecurityClientHandlerTest.class);
+    private static final Log        LOG = LogFactory.getLog(WSSecurityClientHandlerTest.class);
 
-	private WSSecurityClientHandler testedInstance;
+    private WSSecurityClientHandler testedInstance;
 
-	@Before
-	public void setUp() throws Exception {
 
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
+    @Before
+    public void setUp() throws Exception {
 
-		this.testedInstance = new WSSecurityClientHandler(certificate, keyPair
-				.getPrivate());
-	}
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-	@Test
-	public void handleMessageAddsWsSecuritySoapHeader() throws Exception {
-		// setup
-		MessageFactory messageFactory = MessageFactory
-				.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
-		InputStream testSoapMessageInputStream = WSSecurityClientHandlerTest.class
-				.getResourceAsStream("/test-soap-message.xml");
+        this.testedInstance = new WSSecurityClientHandler(certificate, keyPair.getPrivate());
+    }
 
-		SOAPMessage message = messageFactory.createMessage(null,
-				testSoapMessageInputStream);
+    @Test
+    public void handleMessageAddsWsSecuritySoapHeader() throws Exception {
 
-		SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(
-				message, true);
+        // setup
+        MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
+        InputStream testSoapMessageInputStream = WSSecurityClientHandlerTest.class
+                .getResourceAsStream("/test-soap-message.xml");
 
-		// operate
-		WSSecurityClientHandler.addToBeSignedId("test-id", soapMessageContext);
-		this.testedInstance.handleMessage(soapMessageContext);
+        SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
 
-		// verify
-		SOAPMessage resultMessage = soapMessageContext.getMessage();
-		SOAPPart resultSoapPart = resultMessage.getSOAPPart();
-		LOG.debug("result SOAP part: "
-				+ DomTestUtils.domToString(resultSoapPart));
+        SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, true);
 
-		Element nsElement = resultSoapPart.createElement("nsElement");
-		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
-				"http://schemas.xmlsoap.org/soap/envelope/");
-		nsElement
-				.setAttributeNS(
-						Constants.NamespaceSpecNS,
-						"xmlns:wsse",
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
-				"http://www.w3.org/2000/09/xmldsig#");
+        // operate
+        WSSecurityClientHandler.addToBeSignedId("test-id", soapMessageContext);
+        this.testedInstance.handleMessage(soapMessageContext);
 
-		Node resultNode = XPathAPI
-				.selectSingleNode(
-						resultSoapPart,
-						"/soap:Envelope/soap:Header/wsse:Security[@soap:mustUnderstand = '1']",
-						nsElement);
-		assertNotNull(resultNode);
+        // verify
+        SOAPMessage resultMessage = soapMessageContext.getMessage();
+        SOAPPart resultSoapPart = resultMessage.getSOAPPart();
+        LOG.debug("result SOAP part: " + DomTestUtils.domToString(resultSoapPart));
 
-		resultNode = XPathAPI
-				.selectSingleNode(
-						resultSoapPart,
-						"/soap:Envelope/soap:Header/wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference[@URI='#test-id']",
-						nsElement);
-		assertNotNull(resultNode);
+        Element nsElement = resultSoapPart.createElement("nsElement");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wsse",
+                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
 
-		assertEquals(3.0, XPathAPI.eval(resultSoapPart,
-				"count(//ds:Reference)", nsElement).num());
+        Node resultNode = XPathAPI.selectSingleNode(resultSoapPart,
+                "/soap:Envelope/soap:Header/wsse:Security[@soap:mustUnderstand = '1']", nsElement);
+        assertNotNull(resultNode);
 
-		File tmpFile = File.createTempFile("ws-security-message-", ".xml");
-		DomTestUtils.saveDocument(resultSoapPart, tmpFile);
-	}
+        resultNode = XPathAPI.selectSingleNode(resultSoapPart,
+                "/soap:Envelope/soap:Header/wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference[@URI='#test-id']",
+                nsElement);
+        assertNotNull(resultNode);
 
-	@Test
-	public void unsignedSoapBody() throws Exception {
-		// setup
-		MessageFactory messageFactory = MessageFactory
-				.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
-		InputStream testSoapMessageInputStream = WSSecurityClientHandlerTest.class
-				.getResourceAsStream("/test-soap-message.xml");
+        assertEquals(3.0, XPathAPI.eval(resultSoapPart, "count(//ds:Reference)", nsElement).num());
 
-		SOAPMessage message = messageFactory.createMessage(null,
-				testSoapMessageInputStream);
+        File tmpFile = File.createTempFile("ws-security-message-", ".xml");
+        DomTestUtils.saveDocument(resultSoapPart, tmpFile);
+    }
 
-		SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(
-				message, true);
+    @Test
+    public void unsignedSoapBody() throws Exception {
 
-		// operate
-		this.testedInstance.setSkipBodySigning(true);
-		this.testedInstance.handleMessage(soapMessageContext);
+        // setup
+        MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
+        InputStream testSoapMessageInputStream = WSSecurityClientHandlerTest.class
+                .getResourceAsStream("/test-soap-message.xml");
 
-		// verify
-		SOAPMessage resultMessage = soapMessageContext.getMessage();
-		SOAPPart resultSoapPart = resultMessage.getSOAPPart();
-		LOG.debug("result SOAP part: "
-				+ DomTestUtils.domToString(resultSoapPart));
+        SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
 
-		Element nsElement = resultSoapPart.createElement("nsElement");
-		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
-				"http://schemas.xmlsoap.org/soap/envelope/");
-		nsElement
-				.setAttributeNS(
-						Constants.NamespaceSpecNS,
-						"xmlns:wsse",
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
-				"http://www.w3.org/2000/09/xmldsig#");
+        SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, true);
 
-		assertEquals(1.0, XPathAPI.eval(resultSoapPart,
-				"count(//ds:Reference)", nsElement).num());
-	}
+        // operate
+        this.testedInstance.setSkipBodySigning(true);
+        this.testedInstance.handleMessage(soapMessageContext);
+
+        // verify
+        SOAPMessage resultMessage = soapMessageContext.getMessage();
+        SOAPPart resultSoapPart = resultMessage.getSOAPPart();
+        LOG.debug("result SOAP part: " + DomTestUtils.domToString(resultSoapPart));
+
+        Element nsElement = resultSoapPart.createElement("nsElement");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wsse",
+                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
+
+        assertEquals(1.0, XPathAPI.eval(resultSoapPart, "count(//ds:Reference)", nsElement).num());
+    }
 }

@@ -24,40 +24,43 @@ import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.util.ASN1Dump;
 
+
 public class IdentityStatementFactoryTest extends TestCase {
 
-	private static final Log LOG = LogFactory
-			.getLog(IdentityStatementFactoryTest.class);
+    private static final Log LOG = LogFactory.getLog(IdentityStatementFactoryTest.class);
 
-	public void testCreateIdentityStatement() throws Exception {
-		// setup
-		String sessionId = UUID.randomUUID().toString();
-		String testUser = "test-user";
-		String testOperation = "test-operation";
-		KeyPair testKeyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate testCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(testKeyPair, "CN=Test");
 
-		Signer signer = new JceSigner(testKeyPair.getPrivate(), testCertificate);
-		IdentityProvider identityProvider = new IdentityProvider() {
+    public void testCreateIdentityStatement() throws Exception {
 
-			public String getGivenName() {
-				return "test-given-name";
-			}
+        // setup
+        String sessionId = UUID.randomUUID().toString();
+        String testUser = "test-user";
+        String testOperation = "test-operation";
+        KeyPair testKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate testCertificate = PkiTestUtils.generateSelfSignedCertificate(testKeyPair, "CN=Test");
 
-			public String getSurname() {
-				return "test-surname";
-			}
-		};
+        Signer signer = new JceSigner(testKeyPair.getPrivate(), testCertificate);
+        IdentityProvider identityProvider = new IdentityProvider() {
 
-		// operate
-		byte[] result = IdentityStatementFactory.createIdentityStatement(
-				sessionId, testUser, testOperation, signer, identityProvider);
+            public String getGivenName() {
 
-		// verify
-		assertNotNull(result);
-		LOG.debug("result size: " + result.length);
-		DERSequence sequence = (DERSequence) ASN1Object.fromByteArray(result);
-		LOG.debug("DER result: " + ASN1Dump.dumpAsString(sequence));
-	}
+                return "test-given-name";
+            }
+
+            public String getSurname() {
+
+                return "test-surname";
+            }
+        };
+
+        // operate
+        byte[] result = IdentityStatementFactory.createIdentityStatement(sessionId, testUser, testOperation, signer,
+                identityProvider);
+
+        // verify
+        assertNotNull(result);
+        LOG.debug("result size: " + result.length);
+        DERSequence sequence = (DERSequence) ASN1Object.fromByteArray(result);
+        LOG.debug("DER result: " + ASN1Dump.dumpAsString(sequence));
+    }
 }

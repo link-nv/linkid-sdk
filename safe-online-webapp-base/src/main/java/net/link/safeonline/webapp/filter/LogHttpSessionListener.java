@@ -13,16 +13,19 @@ import javax.servlet.http.HttpSessionListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class LogHttpSessionListener implements HttpSessionListener {
 
-	private static final Log LOG = LogFactory
-			.getLog(LogHttpSessionListener.class);
+    private static final Log LOG = LogFactory.getLog(LogHttpSessionListener.class);
 
-	public void sessionCreated(HttpSessionEvent event) {
-		LOG.debug("session created: " + event.getSession().getId());
-	}
 
-	public void sessionDestroyed(HttpSessionEvent event) {
-		LOG.debug("session destroyed: " + event.getSession().getId());
-	}
+    public void sessionCreated(HttpSessionEvent event) {
+
+        LOG.debug("session created: " + event.getSession().getId());
+    }
+
+    public void sessionDestroyed(HttpSessionEvent event) {
+
+        LOG.debug("session destroyed: " + event.getSession().getId());
+    }
 }

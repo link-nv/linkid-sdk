@@ -30,6 +30,7 @@ import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
+
 /**
  * Interface to service for retrieving information about applications.
  * 
@@ -39,231 +40,206 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 @Local
 public interface ApplicationService {
 
-	/**
-	 * Gives back all available applications.
-	 * 
-	 */
-	List<ApplicationEntity> listApplications();
+    /**
+     * Gives back all available applications.
+     * 
+     */
+    List<ApplicationEntity> listApplications();
 
-	/**
-	 * Gives back the application entity for a given application name.
-	 * 
-	 * @param applicationName
-	 * @throws ApplicationNotFoundException
-	 */
-	ApplicationEntity getApplication(String applicationName)
-			throws ApplicationNotFoundException;
+    /**
+     * Gives back the application entity for a given application name.
+     * 
+     * @param applicationName
+     * @throws ApplicationNotFoundException
+     */
+    ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException;
 
-	/**
-	 * Gives back the applications owned by the caller principal.
-	 * 
-	 * @throws ApplicationOwnerNotFoundException
-	 * 
-	 */
-	List<ApplicationEntity> getOwnedApplications()
-			throws ApplicationOwnerNotFoundException;
+    /**
+     * Gives back the applications owned by the caller principal.
+     * 
+     * @throws ApplicationOwnerNotFoundException
+     * 
+     */
+    List<ApplicationEntity> getOwnedApplications() throws ApplicationOwnerNotFoundException;
 
-	/**
-	 * @param name
-	 * @param friendlyName
-	 * @param applicationOwnerName
-	 * @param description
-	 * @param idMappingServiceAccess
-	 * @param idScope
-	 * @param encodedCertificate
-	 *            the optional application certificate.
-	 * @param initialApplicationIdentityAttributes
-	 *            the optional attribute types that make up the initial
-	 *            application identity. Can be <code>null</code>.
-	 * @param skipMessageIntegrityCheck
-	 * @param deviceRestriction
-	 * @throws ExistingApplicationException
-	 * @throws ApplicationOwnerNotFoundException
-	 * @throws CertificateEncodingException
-	 * @throws AttributeTypeNotFoundException
-	 */
-	void addApplication(String name, String friendlyName,
-			String applicationOwnerName, String description,
-			boolean idMappingServiceAccess, IdScopeType idScope,
-			URL applicationUrl, byte[] newApplicationLogo,
-			Color applicationColor, byte[] encodedCertificate,
-			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
-			boolean skipMessageIntegrityCheck, boolean deviceRestriction)
-			throws ExistingApplicationException,
-			ApplicationOwnerNotFoundException, CertificateEncodingException,
-			AttributeTypeNotFoundException;
+    /**
+     * @param name
+     * @param friendlyName
+     * @param applicationOwnerName
+     * @param description
+     * @param idMappingServiceAccess
+     * @param idScope
+     * @param encodedCertificate
+     *            the optional application certificate.
+     * @param initialApplicationIdentityAttributes
+     *            the optional attribute types that make up the initial application identity. Can be <code>null</code>.
+     * @param skipMessageIntegrityCheck
+     * @param deviceRestriction
+     * @throws ExistingApplicationException
+     * @throws ApplicationOwnerNotFoundException
+     * @throws CertificateEncodingException
+     * @throws AttributeTypeNotFoundException
+     */
+    void addApplication(String name, String friendlyName, String applicationOwnerName, String description,
+            boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo,
+            Color applicationColor, byte[] encodedCertificate,
+            List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
+            boolean deviceRestriction) throws ExistingApplicationException, ApplicationOwnerNotFoundException,
+            CertificateEncodingException, AttributeTypeNotFoundException;
 
-	/**
-	 * Removes an application an all its subscriptions.
-	 * 
-	 * @param name
-	 */
-	void removeApplication(String name) throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    /**
+     * Removes an application an all its subscriptions.
+     * 
+     * @param name
+     */
+    void removeApplication(String name) throws ApplicationNotFoundException, PermissionDeniedException;
 
-	/**
-	 * Sets the application description.
-	 * 
-	 * @param name
-	 *            the name of the application.
-	 * @param description
-	 * @throws ApplicationNotFoundException
-	 * @throws PermissionDeniedException
-	 */
-	void setApplicationDescription(String name, String description)
-			throws ApplicationNotFoundException, PermissionDeniedException;
+    /**
+     * Sets the application description.
+     * 
+     * @param name
+     *            the name of the application.
+     * @param description
+     * @throws ApplicationNotFoundException
+     * @throws PermissionDeniedException
+     */
+    void setApplicationDescription(String name, String description) throws ApplicationNotFoundException,
+            PermissionDeniedException;
 
-	/**
-	 * Registers an application owner.
-	 * 
-	 * @param ownerName
-	 *            the name of the application owner.
-	 * @param adminLogin
-	 *            the admin subject login.
-	 * @throws SubjectNotFoundException
-	 * @throws ExistingApplicationOwnerException
-	 * @throws ExistingApplicationAdminException
-	 */
-	void registerApplicationOwner(String ownerName, String adminLogin)
-			throws SubjectNotFoundException, ExistingApplicationOwnerException,
-			ExistingApplicationAdminException;
+    /**
+     * Registers an application owner.
+     * 
+     * @param ownerName
+     *            the name of the application owner.
+     * @param adminLogin
+     *            the admin subject login.
+     * @throws SubjectNotFoundException
+     * @throws ExistingApplicationOwnerException
+     * @throws ExistingApplicationAdminException
+     */
+    void registerApplicationOwner(String ownerName, String adminLogin) throws SubjectNotFoundException,
+            ExistingApplicationOwnerException, ExistingApplicationAdminException;
 
-	/**
-	 * Removes an application owner.
-	 * 
-	 * @param ownerName
-	 *            the name of the application owner.
-	 * @param adminLogin
-	 *            the admin subject login.
-	 * @throws PermissionDeniedException
-	 * @throws ApplicationOwnerNotFoundException
-	 * @throws SubjectNotFoundException
-	 * @throws SubscriptionNotFoundException
-	 */
-	void removeApplicationOwner(String ownerName, String adminLogin)
-			throws SubscriptionNotFoundException, SubjectNotFoundException,
-			ApplicationOwnerNotFoundException, PermissionDeniedException;
+    /**
+     * Removes an application owner.
+     * 
+     * @param ownerName
+     *            the name of the application owner.
+     * @param adminLogin
+     *            the admin subject login.
+     * @throws PermissionDeniedException
+     * @throws ApplicationOwnerNotFoundException
+     * @throws SubjectNotFoundException
+     * @throws SubscriptionNotFoundException
+     */
+    void removeApplicationOwner(String ownerName, String adminLogin) throws SubscriptionNotFoundException,
+            SubjectNotFoundException, ApplicationOwnerNotFoundException, PermissionDeniedException;
 
-	/**
-	 * Gives back a list of all application owners within the system.
-	 * 
-	 */
-	List<ApplicationOwnerEntity> listApplicationOwners();
+    /**
+     * Gives back a list of all application owners within the system.
+     * 
+     */
+    List<ApplicationOwnerEntity> listApplicationOwners();
 
-	/**
-	 * Gives back a list of attribute types that make up the current application
-	 * identity for the given application.
-	 * 
-	 * @param applicationName
-	 *            the name of the application.
-	 * @throws ApplicationIdentityNotFoundException
-	 * @throws PermissionDeniedException
-	 */
-	Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
-			String applicationName) throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException;
+    /**
+     * Gives back a list of attribute types that make up the current application identity for the given application.
+     * 
+     * @param applicationName
+     *            the name of the application.
+     * @throws ApplicationIdentityNotFoundException
+     * @throws PermissionDeniedException
+     */
+    Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(String applicationName)
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException;
 
-	/**
-	 * Updates the application identity for the given application using the
-	 * given set of attribute type names. The current application identity
-	 * version will only be changed if the new set of attribute types is a
-	 * superset of the current attribute type set that makes up the application
-	 * identity.
-	 * 
-	 * @param applicationId
-	 * @param applicationIdentityAttributes
-	 * @throws ApplicationNotFoundException
-	 * @throws ApplicationIdentityNotFoundException
-	 * @throws AttributeTypeNotFoundException
-	 */
-	void updateApplicationIdentity(String applicationId,
-			List<IdentityAttributeTypeDO> applicationIdentityAttributes)
-			throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException,
-			AttributeTypeNotFoundException;
+    /**
+     * Updates the application identity for the given application using the given set of attribute type names. The
+     * current application identity version will only be changed if the new set of attribute types is a superset of the
+     * current attribute type set that makes up the application identity.
+     * 
+     * @param applicationId
+     * @param applicationIdentityAttributes
+     * @throws ApplicationNotFoundException
+     * @throws ApplicationIdentityNotFoundException
+     * @throws AttributeTypeNotFoundException
+     */
+    void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException;
 
-	/**
-	 * Updates the application URL for the given application.
-	 * 
-	 * @param applicationId
-	 * @param applicationUrl
-	 * @throws ApplicationNotFoundException
-	 */
-	void updateApplicationUrl(String applicationId, URL applicationUrl)
-			throws ApplicationNotFoundException;
+    /**
+     * Updates the application URL for the given application.
+     * 
+     * @param applicationId
+     * @param applicationUrl
+     * @throws ApplicationNotFoundException
+     */
+    void updateApplicationUrl(String applicationId, URL applicationUrl) throws ApplicationNotFoundException;
 
-	/**
-	 * Updates the application Logo for the given application.
-	 * 
-	 * @param applicationId
-	 * @param newApplicationLogo
-	 * @throws ApplicationNotFoundException
-	 */
-	void updateApplicationLogo(String applicationId, byte[] newApplicationLogo)
-			throws ApplicationNotFoundException;
+    /**
+     * Updates the application Logo for the given application.
+     * 
+     * @param applicationId
+     * @param newApplicationLogo
+     * @throws ApplicationNotFoundException
+     */
+    void updateApplicationLogo(String applicationId, byte[] newApplicationLogo) throws ApplicationNotFoundException;
 
-	/**
-	 * Updates the application Color for the given application.
-	 * 
-	 * @param applicationId
-	 * @param applicationColor
-	 * @throws ApplicationNotFoundException
-	 */
-	void updateApplicationColor(String applicationId, Color applicationColor)
-			throws ApplicationNotFoundException;
+    /**
+     * Updates the application Color for the given application.
+     * 
+     * @param applicationId
+     * @param applicationColor
+     * @throws ApplicationNotFoundException
+     */
+    void updateApplicationColor(String applicationId, Color applicationColor) throws ApplicationNotFoundException;
 
-	/**
-	 * Updates the X509 certificate of the given application.
-	 * 
-	 * @param applicationName
-	 * @param certificateData
-	 * @throws CertificateEncodingException
-	 * @throws ApplicationNotFoundException
-	 */
-	void updateApplicationCertificate(String applicationName,
-			byte[] certificateData) throws CertificateEncodingException,
-			ApplicationNotFoundException;
+    /**
+     * Updates the X509 certificate of the given application.
+     * 
+     * @param applicationName
+     * @param certificateData
+     * @throws CertificateEncodingException
+     * @throws ApplicationNotFoundException
+     */
+    void updateApplicationCertificate(String applicationName, byte[] certificateData)
+            throws CertificateEncodingException, ApplicationNotFoundException;
 
-	/**
-	 * Sets the application description.
-	 * 
-	 * @param name
-	 *            the name of the application.
-	 * @param deviceRestriction
-	 * @throws ApplicationNotFoundException
-	 * @throws PermissionDeniedException
-	 */
-	void setApplicationDeviceRestriction(String applicationName,
-			boolean deviceRestriction) throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    /**
+     * Sets the application description.
+     * 
+     * @param name
+     *            the name of the application.
+     * @param deviceRestriction
+     * @throws ApplicationNotFoundException
+     * @throws PermissionDeniedException
+     */
+    void setApplicationDeviceRestriction(String applicationName, boolean deviceRestriction)
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
-	/**
-	 * Set the application's permission to use the id mapping ws.
-	 * 
-	 * @param applicationName
-	 * @param access
-	 * @throws ApplicationNotFoundException
-	 */
-	void setIdentifierMappingServiceAccess(String applicationName,
-			boolean access) throws ApplicationNotFoundException;
+    /**
+     * Set the application's permission to use the id mapping ws.
+     * 
+     * @param applicationName
+     * @param access
+     * @throws ApplicationNotFoundException
+     */
+    void setIdentifierMappingServiceAccess(String applicationName, boolean access) throws ApplicationNotFoundException;
 
-	/**
-	 * Set the application's id generation scope
-	 * 
-	 * @param applicationName
-	 * @param idScope
-	 * @throws ApplicationNotFoundException
-	 */
-	void setIdScope(String applicationName, IdScopeType idScope)
-			throws ApplicationNotFoundException;
+    /**
+     * Set the application's id generation scope
+     * 
+     * @param applicationName
+     * @param idScope
+     * @throws ApplicationNotFoundException
+     */
+    void setIdScope(String applicationName, IdScopeType idScope) throws ApplicationNotFoundException;
 
-	/**
-	 * Sets the message integrity check requirement for the given application.
-	 * 
-	 * @param skipMessageIntegrityCheck
-	 * @throws ApplicationNotFoundException
-	 */
-	void setSkipMessageIntegrityCheck(String applicationName,
-			boolean skipMessageIntegrityCheck)
-			throws ApplicationNotFoundException;
+    /**
+     * Sets the message integrity check requirement for the given application.
+     * 
+     * @param skipMessageIntegrityCheck
+     * @throws ApplicationNotFoundException
+     */
+    void setSkipMessageIntegrityCheck(String applicationName, boolean skipMessageIntegrityCheck)
+            throws ApplicationNotFoundException;
 }

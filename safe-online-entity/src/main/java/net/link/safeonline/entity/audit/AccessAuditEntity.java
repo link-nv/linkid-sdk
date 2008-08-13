@@ -36,6 +36,7 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+
 /**
  * Access Audit entity.
  * 
@@ -45,142 +46,147 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 @Entity
 @Table(name = "access_audit")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
-				+ "FROM AccessAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record "
-				+ "FROM AccessAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) "
-				+ "FROM AccessAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId AND "
-				+ "record.operationState IN (2, 3)"),
-		@NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.principal "
-				+ "FROM AccessAuditEntity AS record "
-				+ "WHERE record.principal IS NOT NULL"),
-		@NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record "
-				+ "FROM AccessAuditEntity AS record "
-				+ "WHERE record.principal = :principal"),
-		@NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record "
-				+ "FROM AccessAuditEntity AS record "
-				+ "WHERE record.eventDate > :ageLimit") })
+        @NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE " + "FROM AccessAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record " + "FROM AccessAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) " + "FROM AccessAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId AND " + "record.operationState IN (2, 3)"),
+        @NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.principal "
+                + "FROM AccessAuditEntity AS record " + "WHERE record.principal IS NOT NULL"),
+        @NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record " + "FROM AccessAuditEntity AS record "
+                + "WHERE record.principal = :principal"),
+        @NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record " + "FROM AccessAuditEntity AS record "
+                + "WHERE record.eventDate > :ageLimit") })
 public class AccessAuditEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID             = 1L;
 
-	public static final String QUERY_DELETE_WHERE_CONTEXTID = "aca.del.id";
+    public static final String QUERY_DELETE_WHERE_CONTEXTID = "aca.del.id";
 
-	public static final String QUERY_WHERE_CONTEXTID = "aca.id";
+    public static final String QUERY_WHERE_CONTEXTID        = "aca.id";
 
-	public static final String QUERY_WHERE_AGELIMIT = "aca.age";
+    public static final String QUERY_WHERE_AGELIMIT         = "aca.age";
 
-	public static final String QUERY_WHERE_USER = "aca.user";
+    public static final String QUERY_WHERE_USER             = "aca.user";
 
-	public static final String QUERY_LIST_USER = "aca.list.user";
+    public static final String QUERY_LIST_USER              = "aca.list.user";
 
-	public static final String COUNT_WHERE_CONTEXTID = "aca.count.id";
+    public static final String COUNT_WHERE_CONTEXTID        = "aca.count.id";
 
-	private Long id;
+    private Long               id;
 
-	private AuditContextEntity auditContext;
+    private AuditContextEntity auditContext;
 
-	private String operation;
+    private String             operation;
 
-	private OperationStateType operationState;
+    private OperationStateType operationState;
 
-	private String principal;
+    private String             principal;
 
-	private Date eventDate;
+    private Date               eventDate;
 
-	public AccessAuditEntity() {
-		// empty
-	}
 
-	public AccessAuditEntity(AuditContextEntity auditContext, String operation,
-			OperationStateType operationState, String principal) {
-		this.auditContext = auditContext;
-		this.operation = operation;
-		this.operationState = operationState;
-		this.principal = principal;
-		this.eventDate = new Date();
-	}
+    public AccessAuditEntity() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return this.id;
-	}
+        // empty
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public AccessAuditEntity(AuditContextEntity auditContext, String operation, OperationStateType operationState,
+            String principal) {
 
-	@ManyToOne
-	public AuditContextEntity getAuditContext() {
-		return this.auditContext;
-	}
+        this.auditContext = auditContext;
+        this.operation = operation;
+        this.operationState = operationState;
+        this.principal = principal;
+        this.eventDate = new Date();
+    }
 
-	public void setAuditContext(AuditContextEntity auditContext) {
-		this.auditContext = auditContext;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
 
-	@Column(nullable = false)
-	public String getOperation() {
-		return this.operation;
-	}
+        return this.id;
+    }
 
-	public void setOperation(String operation) {
-		this.operation = operation;
-	}
+    public void setId(Long id) {
 
-	public String getPrincipal() {
-		return this.principal;
-	}
+        this.id = id;
+    }
 
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
+    @ManyToOne
+    public AuditContextEntity getAuditContext() {
 
-	@Enumerated(EnumType.ORDINAL)
-	public OperationStateType getOperationState() {
-		return this.operationState;
-	}
+        return this.auditContext;
+    }
 
-	public void setOperationState(OperationStateType operationState) {
-		this.operationState = operationState;
-	}
+    public void setAuditContext(AuditContextEntity auditContext) {
 
-	@Temporal(value = TemporalType.TIMESTAMP)
-	public Date getEventDate() {
-		return this.eventDate;
-	}
+        this.auditContext = auditContext;
+    }
 
-	public void setEventDate(Date eventDate) {
-		this.eventDate = eventDate;
-	}
+    @Column(nullable = false)
+    public String getOperation() {
 
-	public interface QueryInterface {
-		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
-		void deleteRecords(@QueryParam("contextId")
-		Long contextId);
+        return this.operation;
+    }
 
-		@QueryMethod(QUERY_WHERE_CONTEXTID)
-		List<AccessAuditEntity> listRecords(@QueryParam("contextId")
-		Long id);
+    public void setOperation(String operation) {
 
-		@QueryMethod(COUNT_WHERE_CONTEXTID)
-		long countErrorRecords(@QueryParam("contextId")
-		long id);
+        this.operation = operation;
+    }
 
-		@QueryMethod(QUERY_WHERE_AGELIMIT)
-		List<AccessAuditEntity> listRecordsSince(@QueryParam("ageLimit")
-		Date ageLimit);
+    public String getPrincipal() {
 
-		@QueryMethod(QUERY_LIST_USER)
-		List<String> listUsers();
+        return this.principal;
+    }
 
-		@QueryMethod(QUERY_WHERE_USER)
-		List<AccessAuditEntity> listUserRecords(@QueryParam("principal")
-		String principal);
-	}
+    public void setPrincipal(String principal) {
+
+        this.principal = principal;
+    }
+
+    @Enumerated(EnumType.ORDINAL)
+    public OperationStateType getOperationState() {
+
+        return this.operationState;
+    }
+
+    public void setOperationState(OperationStateType operationState) {
+
+        this.operationState = operationState;
+    }
+
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getEventDate() {
+
+        return this.eventDate;
+    }
+
+    public void setEventDate(Date eventDate) {
+
+        this.eventDate = eventDate;
+    }
+
+
+    public interface QueryInterface {
+
+        @UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
+        void deleteRecords(@QueryParam("contextId") Long contextId);
+
+        @QueryMethod(QUERY_WHERE_CONTEXTID)
+        List<AccessAuditEntity> listRecords(@QueryParam("contextId") Long id);
+
+        @QueryMethod(COUNT_WHERE_CONTEXTID)
+        long countErrorRecords(@QueryParam("contextId") long id);
+
+        @QueryMethod(QUERY_WHERE_AGELIMIT)
+        List<AccessAuditEntity> listRecordsSince(@QueryParam("ageLimit") Date ageLimit);
+
+        @QueryMethod(QUERY_LIST_USER)
+        List<String> listUsers();
+
+        @QueryMethod(QUERY_WHERE_USER)
+        List<AccessAuditEntity> listUserRecords(@QueryParam("principal") String principal);
+    }
 }

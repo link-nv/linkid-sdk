@@ -17,35 +17,33 @@ import net.link.safeonline.shared.JceSigner;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+
 public class AuthenticationStatementTest extends TestCase {
 
-	public void testVerify() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		String sessionId = UUID.randomUUID().toString();
-		String applicationId = "test-application-id";
+    public void testVerify() throws Exception {
 
-		Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        String sessionId = UUID.randomUUID().toString();
+        String applicationId = "test-application-id";
 
-		net.link.safeonline.shared.statement.AuthenticationStatement testAuthenticationStatement = new net.link.safeonline.shared.statement.AuthenticationStatement(
-				sessionId, applicationId, signer);
+        Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
 
-		byte[] encodedAuthenticationStatement = testAuthenticationStatement
-				.generateStatement();
+        net.link.safeonline.shared.statement.AuthenticationStatement testAuthenticationStatement = new net.link.safeonline.shared.statement.AuthenticationStatement(
+                sessionId, applicationId, signer);
 
-		// operate
-		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-				encodedAuthenticationStatement);
+        byte[] encodedAuthenticationStatement = testAuthenticationStatement.generateStatement();
 
-		X509Certificate resultCertificate = authenticationStatement
-				.verifyIntegrity();
+        // operate
+        AuthenticationStatement authenticationStatement = new AuthenticationStatement(encodedAuthenticationStatement);
 
-		// verify
-		assertNotNull(resultCertificate);
-		assertEquals(certificate, resultCertificate);
-		assertEquals(sessionId, authenticationStatement.getSessionId());
-		assertEquals(applicationId, authenticationStatement.getApplicationId());
-	}
+        X509Certificate resultCertificate = authenticationStatement.verifyIntegrity();
+
+        // verify
+        assertNotNull(resultCertificate);
+        assertEquals(certificate, resultCertificate);
+        assertEquals(sessionId, authenticationStatement.getSessionId());
+        assertEquals(applicationId, authenticationStatement.getApplicationId());
+    }
 }

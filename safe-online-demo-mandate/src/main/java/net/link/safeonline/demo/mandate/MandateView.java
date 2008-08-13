@@ -9,13 +9,14 @@ package net.link.safeonline.demo.mandate;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface MandateView extends AbstractMandateDataClient {
 
-	/*
-	 * Factory.
-	 */
-	void mandatesFactory();
+    /*
+     * Factory.
+     */
+    void mandatesFactory();
 
-	void userMandatesFactory();
+    void userMandatesFactory();
 }

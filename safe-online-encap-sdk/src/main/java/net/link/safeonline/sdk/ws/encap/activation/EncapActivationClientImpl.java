@@ -23,46 +23,45 @@ import org.apache.commons.logging.LogFactory;
 import encap.msec.server.bus.ActivationInitResponse;
 import encap.msec.server.bus.MSecResponse;
 
+
 public class EncapActivationClientImpl implements EncapActivationClient {
 
-	private final static Log LOG = LogFactory
-			.getLog(EncapActivationClientImpl.class);
+    private final static Log                    LOG = LogFactory.getLog(EncapActivationClientImpl.class);
 
-	private MSecBankIdActivationSoapBindingStub activationStub;
+    private MSecBankIdActivationSoapBindingStub activationStub;
 
-	public EncapActivationClientImpl(String location) throws AxisFault,
-			MalformedURLException {
-		URL endpointURL = new URL("http://" + location
-				+ "/services/mSecBankIdActivation");
-		this.activationStub = new MSecBankIdActivationSoapBindingStub(
-				endpointURL, new Service());
-	}
 
-	public String activate(String mobile, String orgId, String userId)
-			throws RemoteException {
-		LOG.debug("activate: " + mobile + ", " + orgId + ", " + userId);
+    public EncapActivationClientImpl(String location) throws AxisFault, MalformedURLException {
 
-		ActivationInitResponse response = this.activationStub.activate(mobile,
-				orgId, userId);
+        URL endpointURL = new URL("http://" + location + "/services/mSecBankIdActivation");
+        this.activationStub = new MSecBankIdActivationSoapBindingStub(endpointURL, new Service());
+    }
 
-		LOG.debug("activation result: " + response.getStatus());
-		LOG.debug("activation info: " + response.getAdditionalInfo());
-		LOG.debug("activation app id: " + response.getAppId());
-		LOG.debug("activation client id: " + response.getClientId());
-		LOG.debug("activation so: " + response.getSecureObject());
-		LOG.debug("activation sp id: " + response.getServiceProviderId());
-		LOG.debug("activation session id: " + response.getSessionId());
-		LOG.debug("activation code: " + response.getActivationCode());
-		if (EncapConstants.ENCAP_SUCCES == response.getStatus())
-			return response.getActivationCode();
-		return null;
-	}
+    public String activate(String mobile, String orgId, String userId) throws RemoteException {
 
-	public boolean cancelSession(String sessionId) throws RemoteException {
-		LOG.debug("cancel session: " + sessionId);
-		MSecResponse response = this.activationStub.cancelSession(sessionId);
-		if (EncapConstants.ENCAP_SUCCES == response.getStatus())
-			return true;
-		return false;
-	}
+        LOG.debug("activate: " + mobile + ", " + orgId + ", " + userId);
+
+        ActivationInitResponse response = this.activationStub.activate(mobile, orgId, userId);
+
+        LOG.debug("activation result: " + response.getStatus());
+        LOG.debug("activation info: " + response.getAdditionalInfo());
+        LOG.debug("activation app id: " + response.getAppId());
+        LOG.debug("activation client id: " + response.getClientId());
+        LOG.debug("activation so: " + response.getSecureObject());
+        LOG.debug("activation sp id: " + response.getServiceProviderId());
+        LOG.debug("activation session id: " + response.getSessionId());
+        LOG.debug("activation code: " + response.getActivationCode());
+        if (EncapConstants.ENCAP_SUCCES == response.getStatus())
+            return response.getActivationCode();
+        return null;
+    }
+
+    public boolean cancelSession(String sessionId) throws RemoteException {
+
+        LOG.debug("cancel session: " + sessionId);
+        MSecResponse response = this.activationStub.cancelSession(sessionId);
+        if (EncapConstants.ENCAP_SUCCES == response.getStatus())
+            return true;
+        return false;
+    }
 }

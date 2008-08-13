@@ -10,6 +10,7 @@ package net.link.safeonline.applet;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.IdentityProvider;
 
+
 /**
  * Interface for statement provider.
  * 
@@ -18,5 +19,5 @@ import net.link.safeonline.shared.statement.IdentityProvider;
  */
 public interface StatementProvider {
 
-	byte[] createStatement(Signer signer, IdentityProvider identityProvider);
+    byte[] createStatement(Signer signer, IdentityProvider identityProvider);
 }

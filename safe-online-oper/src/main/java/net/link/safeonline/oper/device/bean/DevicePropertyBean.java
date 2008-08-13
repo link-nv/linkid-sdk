@@ -44,131 +44,138 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("deviceProp")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "DevicePropertyBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "DevicePropertyBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DevicePropertyBean implements DeviceProperty {
 
-	private static final Log LOG = LogFactory.getLog(DevicePropertyBean.class);
+    private static final Log          LOG                        = LogFactory.getLog(DevicePropertyBean.class);
 
-	public static final String OPER_DEVICE_PROP_LIST_NAME = "deviceProperties";
+    public static final String        OPER_DEVICE_PROP_LIST_NAME = "deviceProperties";
 
-	private String name;
+    private String                    name;
 
-	private String value;
+    private String                    value;
 
-	@In(value = "selectedDevice", required = true)
-	private DeviceEntity selectedDevice;
+    @In(value = "selectedDevice", required = true)
+    private DeviceEntity              selectedDevice;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                     facesMessages;
 
-	@EJB
-	private DeviceService deviceService;
+    @EJB
+    private DeviceService             deviceService;
 
-	@DataModel(OPER_DEVICE_PROP_LIST_NAME)
-	public List<DevicePropertyEntity> deviceProperties;
+    @DataModel(OPER_DEVICE_PROP_LIST_NAME)
+    public List<DevicePropertyEntity> deviceProperties;
 
-	@DataModelSelection(OPER_DEVICE_PROP_LIST_NAME)
-	@Out(value = "selectedDeviceProperty", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private DevicePropertyEntity selectedDeviceProperty;
+    @DataModelSelection(OPER_DEVICE_PROP_LIST_NAME)
+    @Out(value = "selectedDeviceProperty", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private DevicePropertyEntity      selectedDeviceProperty;
 
-	/*
-	 * Lifecycle
-	 */
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	/*
-	 * Factories
-	 */
-	@Factory(OPER_DEVICE_PROP_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void devicePropertiesListFactory() throws DeviceNotFoundException {
-		LOG.debug("device properties list factory for device: "
-				+ this.selectedDevice.getName());
-		this.deviceProperties = this.deviceService
-				.listDeviceProperties(this.selectedDevice.getName());
-	}
+    /*
+     * Lifecycle
+     */
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	/*
-	 * Actions
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@ErrorHandling( { @Error(exceptionClass = ExistingDevicePropertyException.class, messageId = "errorDevicePropertyAlreadyExists", fieldId = "name") })
-	public String add() throws ExistingDevicePropertyException,
-			DeviceNotFoundException {
-		LOG.debug("add: " + this.name);
+    }
 
-		DevicePropertyEntity newDeviceProperty = new DevicePropertyEntity();
-		DevicePropertyPK pk = new DevicePropertyPK(this.selectedDevice
-				.getName(), this.name);
-		newDeviceProperty.setPk(pk);
-		newDeviceProperty.setValue(this.value);
+    /*
+     * Factories
+     */
+    @Factory(OPER_DEVICE_PROP_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void devicePropertiesListFactory() throws DeviceNotFoundException {
 
-		this.deviceService.addDeviceProperty(newDeviceProperty);
+        LOG.debug("device properties list factory for device: " + this.selectedDevice.getName());
+        this.deviceProperties = this.deviceService.listDeviceProperties(this.selectedDevice.getName());
+    }
 
-		return "success";
-	}
+    /*
+     * Actions
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @ErrorHandling( { @Error(exceptionClass = ExistingDevicePropertyException.class, messageId = "errorDevicePropertyAlreadyExists", fieldId = "name") })
+    public String add() throws ExistingDevicePropertyException, DeviceNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Begin
-	public String edit() {
-		LOG.debug("edit: " + this.selectedDeviceProperty);
-		return "edit-prop";
-	}
+        LOG.debug("add: " + this.name);
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() throws DevicePropertyNotFoundException,
-			DeviceNotFoundException {
-		LOG.debug("remove: " + this.selectedDeviceProperty);
-		this.deviceService.removeDeviceProperty(this.selectedDeviceProperty);
-		devicePropertiesListFactory();
-		return "removed";
-	}
+        DevicePropertyEntity newDeviceProperty = new DevicePropertyEntity();
+        DevicePropertyPK pk = new DevicePropertyPK(this.selectedDevice.getName(), this.name);
+        newDeviceProperty.setPk(pk);
+        newDeviceProperty.setValue(this.value);
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() {
-		LOG.debug("save: " + this.selectedDeviceProperty);
-		this.deviceService.saveDeviceProperty(this.selectedDeviceProperty);
-		return "saved";
-	}
+        this.deviceService.addDeviceProperty(newDeviceProperty);
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String cancelEdit() {
-		return "cancel";
-	}
+        return "success";
+    }
 
-	/*
-	 * Accessors
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getName() {
-		return this.name;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Begin
+    public String edit() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setName(String name) {
-		this.name = name;
-	}
+        LOG.debug("edit: " + this.selectedDeviceProperty);
+        return "edit-prop";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getValue() {
-		return this.value;
-	}
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String remove() throws DevicePropertyNotFoundException, DeviceNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setValue(String value) {
-		this.value = value;
-	}
+        LOG.debug("remove: " + this.selectedDeviceProperty);
+        this.deviceService.removeDeviceProperty(this.selectedDeviceProperty);
+        devicePropertiesListFactory();
+        return "removed";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String save() {
+
+        LOG.debug("save: " + this.selectedDeviceProperty);
+        this.deviceService.saveDeviceProperty(this.selectedDeviceProperty);
+        return "saved";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String cancelEdit() {
+
+        return "cancel";
+    }
+
+    /*
+     * Accessors
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getName() {
+
+        return this.name;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getValue() {
+
+        return this.value;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setValue(String value) {
+
+        this.value = value;
+    }
 
 }

@@ -13,34 +13,32 @@ import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotF
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 
+
 @Local
 public interface AttributeDescription {
 
-	/*
-	 * Factories.
-	 */
-	void attributeTypeDescriptionsFactory()
-			throws AttributeTypeNotFoundException;
+    /*
+     * Factories.
+     */
+    void attributeTypeDescriptionsFactory() throws AttributeTypeNotFoundException;
 
-	AttributeTypeDescriptionEntity newAttributeTypeDescriptionFactory();
+    AttributeTypeDescriptionEntity newAttributeTypeDescriptionFactory();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Actions.
-	 */
-	String edit();
+    /*
+     * Actions.
+     */
+    String edit();
 
-	String add() throws AttributeTypeNotFoundException;
+    String add() throws AttributeTypeNotFoundException;
 
-	String save();
+    String save();
 
-	String removeDescription()
-			throws AttributeTypeDescriptionNotFoundException,
-			AttributeTypeNotFoundException;
+    String removeDescription() throws AttributeTypeDescriptionNotFoundException, AttributeTypeNotFoundException;
 
-	String cancelEdit();
+    String cancelEdit();
 }

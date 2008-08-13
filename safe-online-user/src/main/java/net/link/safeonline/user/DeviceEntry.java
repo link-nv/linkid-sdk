@@ -9,51 +9,61 @@ package net.link.safeonline.user;
 
 import net.link.safeonline.entity.DeviceEntity;
 
+
 public class DeviceEntry {
 
-	private DeviceEntity device;
+    private DeviceEntity device;
 
-	private String friendlyName;
+    private String       friendlyName;
 
-	boolean reigstrable = true;
+    boolean              reigstrable = true;
 
-	public DeviceEntry(DeviceEntity device, String friendlyName) {
-		this.device = device;
-		this.friendlyName = friendlyName;
-	}
 
-	public DeviceEntry(DeviceEntity device, String friendlyName,
-			boolean registrable) {
-		this.device = device;
-		this.friendlyName = friendlyName;
-		this.reigstrable = registrable;
-	}
+    public DeviceEntry(DeviceEntity device, String friendlyName) {
 
-	public DeviceEntity getDevice() {
-		return this.device;
-	}
+        this.device = device;
+        this.friendlyName = friendlyName;
+    }
 
-	public void setDevice(DeviceEntity device) {
-		this.device = device;
-	}
+    public DeviceEntry(DeviceEntity device, String friendlyName, boolean registrable) {
 
-	public String getFriendlyName() {
-		return this.friendlyName;
-	}
+        this.device = device;
+        this.friendlyName = friendlyName;
+        this.reigstrable = registrable;
+    }
 
-	public void setFriendlyName(String friendlyName) {
-		this.friendlyName = friendlyName;
-	}
+    public DeviceEntity getDevice() {
 
-	public boolean isRegistrable() {
-		return (null != this.device.getRegistrationPath() && this.reigstrable);
-	}
+        return this.device;
+    }
 
-	public boolean isUpdatable() {
-		return null != this.device.getUpdatePath();
-	}
+    public void setDevice(DeviceEntity device) {
 
-	public boolean isRemovable() {
-		return null != this.device.getRemovalPath();
-	}
+        this.device = device;
+    }
+
+    public String getFriendlyName() {
+
+        return this.friendlyName;
+    }
+
+    public void setFriendlyName(String friendlyName) {
+
+        this.friendlyName = friendlyName;
+    }
+
+    public boolean isRegistrable() {
+
+        return (null != this.device.getRegistrationPath() && this.reigstrable);
+    }
+
+    public boolean isUpdatable() {
+
+        return null != this.device.getUpdatePath();
+    }
+
+    public boolean isRemovable() {
+
+        return null != this.device.getRemovalPath();
+    }
 }

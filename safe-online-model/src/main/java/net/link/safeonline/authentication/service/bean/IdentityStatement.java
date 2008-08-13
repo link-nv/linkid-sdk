@@ -9,31 +9,36 @@ package net.link.safeonline.authentication.service.bean;
 
 import net.link.safeonline.authentication.exception.DecodingException;
 
-public class IdentityStatement extends
-		AbstractStatement<IdentityStatementStructure> {
 
-	public IdentityStatement(byte[] encodedIdentityStatement)
-			throws DecodingException {
-		super(new IdentityStatementStructure(encodedIdentityStatement));
-	}
+public class IdentityStatement extends AbstractStatement<IdentityStatementStructure> {
 
-	public String getGivenName() {
-		return super.getStatementStructure().getGivenName();
-	}
+    public IdentityStatement(byte[] encodedIdentityStatement) throws DecodingException {
 
-	public String getSurname() {
-		return super.getStatementStructure().getSurname();
-	}
+        super(new IdentityStatementStructure(encodedIdentityStatement));
+    }
 
-	public String getUser() {
-		return super.getStatementStructure().getUser();
-	}
+    public String getGivenName() {
 
-	public String getSessionId() {
-		return super.getStatementStructure().getSessionId();
-	}
+        return super.getStatementStructure().getGivenName();
+    }
 
-	public String getOperation() {
-		return super.getStatementStructure().getOperation();
-	}
+    public String getSurname() {
+
+        return super.getStatementStructure().getSurname();
+    }
+
+    public String getUser() {
+
+        return super.getStatementStructure().getUser();
+    }
+
+    public String getSessionId() {
+
+        return super.getStatementStructure().getSessionId();
+    }
+
+    public String getOperation() {
+
+        return super.getStatementStructure().getOperation();
+    }
 }

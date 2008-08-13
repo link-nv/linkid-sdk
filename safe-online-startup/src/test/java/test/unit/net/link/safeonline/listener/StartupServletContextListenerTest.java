@@ -20,71 +20,67 @@ import net.link.safeonline.test.util.JndiTestUtils;
 
 import org.easymock.IMocksControl;
 
+
 public class StartupServletContextListenerTest extends TestCase {
 
-	private JndiTestUtils jndiTestUtils;
+    private JndiTestUtils                 jndiTestUtils;
 
-	private StartupServletContextListener testedInstance;
+    private StartupServletContextListener testedInstance;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
+    @Override
+    protected void setUp() throws Exception {
 
-		this.testedInstance = new StartupServletContextListener();
-	}
+        super.setUp();
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.jndiTestUtils.tearDown();
+        this.jndiTestUtils = new JndiTestUtils();
+        this.jndiTestUtils.setUp();
 
-		super.tearDown();
-	}
+        this.testedInstance = new StartupServletContextListener();
+    }
 
-	public void testPostStartAccordingToPriorities() throws Exception {
-		// setup
-		IMocksControl mocksControl = createStrictControl();
-		mocksControl.checkOrder(true);
-		Startable mockDontCareStartable = mocksControl
-				.createMock(Startable.class);
-		Startable mockBootstrapStartable = mocksControl
-				.createMock(Startable.class);
-		ServletContext mockServletContext = mocksControl
-				.createMock(ServletContext.class);
-		ServletContextEvent servletContextEvent = new ServletContextEvent(
-				mockServletContext);
-		String testJndiPrefix = "test/jndi/prefix";
+    @Override
+    protected void tearDown() throws Exception {
 
-		this.jndiTestUtils.bindComponent(testJndiPrefix + "/dontcare",
-				mockDontCareStartable);
-		this.jndiTestUtils.bindComponent(testJndiPrefix + "/bootstrap",
-				mockBootstrapStartable);
+        this.jndiTestUtils.tearDown();
 
-		// stubs
-		expect(mockServletContext.getInitParameter("StartableJndiPrefix"))
-				.andStubReturn(testJndiPrefix);
-		expect(mockBootstrapStartable.getPriority()).andStubReturn(
-				Startable.PRIORITY_BOOTSTRAP);
-		expect(mockDontCareStartable.getPriority()).andStubReturn(
-				Startable.PRIORITY_DONT_CARE);
+        super.tearDown();
+    }
 
-		// expectations
-		mockBootstrapStartable.postStart();
-		mockDontCareStartable.postStart();
+    public void testPostStartAccordingToPriorities() throws Exception {
 
-		mockDontCareStartable.preStop();
-		mockBootstrapStartable.preStop();
+        // setup
+        IMocksControl mocksControl = createStrictControl();
+        mocksControl.checkOrder(true);
+        Startable mockDontCareStartable = mocksControl.createMock(Startable.class);
+        Startable mockBootstrapStartable = mocksControl.createMock(Startable.class);
+        ServletContext mockServletContext = mocksControl.createMock(ServletContext.class);
+        ServletContextEvent servletContextEvent = new ServletContextEvent(mockServletContext);
+        String testJndiPrefix = "test/jndi/prefix";
 
-		// prepare
-		mocksControl.replay();
+        this.jndiTestUtils.bindComponent(testJndiPrefix + "/dontcare", mockDontCareStartable);
+        this.jndiTestUtils.bindComponent(testJndiPrefix + "/bootstrap", mockBootstrapStartable);
 
-		// operate
-		this.testedInstance.contextInitialized(servletContextEvent);
-		this.testedInstance.contextDestroyed(servletContextEvent);
+        // stubs
+        expect(mockServletContext.getInitParameter("StartableJndiPrefix")).andStubReturn(testJndiPrefix);
+        expect(mockBootstrapStartable.getPriority()).andStubReturn(Startable.PRIORITY_BOOTSTRAP);
+        expect(mockDontCareStartable.getPriority()).andStubReturn(Startable.PRIORITY_DONT_CARE);
 
-		// verify
-		mocksControl.verify();
-	}
+        // expectations
+        mockBootstrapStartable.postStart();
+        mockDontCareStartable.postStart();
+
+        mockDontCareStartable.preStop();
+        mockBootstrapStartable.preStop();
+
+        // prepare
+        mocksControl.replay();
+
+        // operate
+        this.testedInstance.contextInitialized(servletContextEvent);
+        this.testedInstance.contextDestroyed(servletContextEvent);
+
+        // verify
+        mocksControl.verify();
+    }
 }

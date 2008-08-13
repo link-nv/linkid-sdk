@@ -9,12 +9,14 @@ package net.link.safeonline.cli;
 
 public class ExitMenuAction extends AbstractMenuAction {
 
-	public ExitMenuAction() {
-		super('e', "Exit");
-	}
+    public ExitMenuAction() {
 
-	public void run() {
-		System.out.println("Done.");
-		System.exit(0);
-	}
+        super('e', "Exit");
+    }
+
+    public void run() {
+
+        System.out.println("Done.");
+        System.exit(0);
+    }
 }

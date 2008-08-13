@@ -29,129 +29,142 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+
 @Entity
 @Table(name = "statistic_data_point")
 @NamedQueries( {
-		@NamedQuery(name = DELETE_WHERE_STATISTIC, query = "DELETE FROM StatisticDataPointEntity "
-				+ "WHERE statistic = :statistic"),
-		@NamedQuery(name = QUERY_WHERE_NAME_AND_STATISTIC, query = "SELECT dp FROM StatisticDataPointEntity "
-				+ "AS dp WHERE dp.statistic = :statistic "
-				+ "AND dp.name = :name"),
-		@NamedQuery(name = DELETE_WHERE_STATISTIC_EXPIRED, query = "DELETE FROM StatisticDataPointEntity "
-				+ "WHERE statistic = :statistic "
-				+ "AND creationTime < :ageLimit") })
+        @NamedQuery(name = DELETE_WHERE_STATISTIC, query = "DELETE FROM StatisticDataPointEntity "
+                + "WHERE statistic = :statistic"),
+        @NamedQuery(name = QUERY_WHERE_NAME_AND_STATISTIC, query = "SELECT dp FROM StatisticDataPointEntity "
+                + "AS dp WHERE dp.statistic = :statistic " + "AND dp.name = :name"),
+        @NamedQuery(name = DELETE_WHERE_STATISTIC_EXPIRED, query = "DELETE FROM StatisticDataPointEntity "
+                + "WHERE statistic = :statistic " + "AND creationTime < :ageLimit") })
 public class StatisticDataPointEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID               = 1L;
 
-	public static final String DELETE_WHERE_STATISTIC = "sdp.del";
+    public static final String DELETE_WHERE_STATISTIC         = "sdp.del";
 
-	public static final String QUERY_WHERE_NAME_AND_STATISTIC = "sdp.stat.name";
+    public static final String QUERY_WHERE_NAME_AND_STATISTIC = "sdp.stat.name";
 
-	public static final String DELETE_WHERE_STATISTIC_EXPIRED = "sdp.del.exp";
+    public static final String DELETE_WHERE_STATISTIC_EXPIRED = "sdp.del.exp";
 
-	private long id;
+    private long               id;
 
-	private String name;
+    private String             name;
 
-	private StatisticEntity statistic;
+    private StatisticEntity    statistic;
 
-	private Date creationTime;
+    private Date               creationTime;
 
-	private long x;
+    private long               x;
 
-	private long y;
+    private long               y;
 
-	private long z;
+    private long               z;
 
-	public StatisticDataPointEntity() {
-		// empty
-	}
 
-	public StatisticDataPointEntity(String name, StatisticEntity statistic,
-			Date creationTime, long x, long y, long z) {
-		this.name = name;
-		this.statistic = statistic;
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.creationTime = creationTime;
-	}
+    public StatisticDataPointEntity() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long getId() {
-		return this.id;
-	}
+        // empty
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public StatisticDataPointEntity(String name, StatisticEntity statistic, Date creationTime, long x, long y, long z) {
 
-	public long getX() {
-		return this.x;
-	}
+        this.name = name;
+        this.statistic = statistic;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.creationTime = creationTime;
+    }
 
-	public void setX(long x) {
-		this.x = x;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
 
-	public long getY() {
-		return this.y;
-	}
+        return this.id;
+    }
 
-	public void setY(long y) {
-		this.y = y;
-	}
+    public void setId(long id) {
 
-	public long getZ() {
-		return this.z;
-	}
+        this.id = id;
+    }
 
-	public void setZ(long z) {
-		this.z = z;
-	}
+    public long getX() {
 
-	public String getName() {
-		return this.name;
-	}
+        return this.x;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setX(long x) {
 
-	@ManyToOne
-	@JoinColumn(name = "statistic")
-	public StatisticEntity getStatistic() {
-		return this.statistic;
-	}
+        this.x = x;
+    }
 
-	public void setStatistic(StatisticEntity statistic) {
-		this.statistic = statistic;
-	}
+    public long getY() {
 
-	public Date getCreationTime() {
-		return this.creationTime;
-	}
+        return this.y;
+    }
 
-	public void setCreationTime(Date creationTime) {
-		this.creationTime = creationTime;
-	}
+    public void setY(long y) {
 
-	public interface QueryInterface {
-		@UpdateMethod(DELETE_WHERE_STATISTIC)
-		void deleteWhereStatistic(@QueryParam("statistic")
-		StatisticEntity statistic);
+        this.y = y;
+    }
 
-		@QueryMethod(QUERY_WHERE_NAME_AND_STATISTIC)
-		List<StatisticDataPointEntity> listStatisticDataPoints(
-				@QueryParam("name")
-				String name, @QueryParam("statistic")
-				StatisticEntity statistic);
+    public long getZ() {
 
-		@UpdateMethod(DELETE_WHERE_STATISTIC_EXPIRED)
-		void deleteWhereStatisticExpired(@QueryParam("statistic")
-		StatisticEntity statistic, @QueryParam("ageLimit")
-		Date ageLimit);
-	}
+        return this.z;
+    }
+
+    public void setZ(long z) {
+
+        this.z = z;
+    }
+
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "statistic")
+    public StatisticEntity getStatistic() {
+
+        return this.statistic;
+    }
+
+    public void setStatistic(StatisticEntity statistic) {
+
+        this.statistic = statistic;
+    }
+
+    public Date getCreationTime() {
+
+        return this.creationTime;
+    }
+
+    public void setCreationTime(Date creationTime) {
+
+        this.creationTime = creationTime;
+    }
+
+
+    public interface QueryInterface {
+
+        @UpdateMethod(DELETE_WHERE_STATISTIC)
+        void deleteWhereStatistic(@QueryParam("statistic") StatisticEntity statistic);
+
+        @QueryMethod(QUERY_WHERE_NAME_AND_STATISTIC)
+        List<StatisticDataPointEntity> listStatisticDataPoints(@QueryParam("name") String name,
+                @QueryParam("statistic") StatisticEntity statistic);
+
+        @UpdateMethod(DELETE_WHERE_STATISTIC_EXPIRED)
+        void deleteWhereStatisticExpired(@QueryParam("statistic") StatisticEntity statistic,
+                @QueryParam("ageLimit") Date ageLimit);
+    }
 }

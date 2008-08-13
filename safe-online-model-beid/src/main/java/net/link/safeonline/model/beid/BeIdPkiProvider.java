@@ -40,208 +40,193 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @LocalBinding(jndiBinding = PkiProvider.PKI_PROVIDER_JNDI + "/beid")
 public class BeIdPkiProvider implements PkiProvider {
 
-	public static final String TRUST_DOMAIN_NAME = "beid";
+    public static final String TRUST_DOMAIN_NAME      = "beid";
 
-	public static final String IDENTIFIER_DOMAIN_NAME = "beid";
+    public static final String IDENTIFIER_DOMAIN_NAME = "beid";
 
-	private static final Log LOG = LogFactory.getLog(BeIdPkiProvider.class);
+    private static final Log   LOG                    = LogFactory.getLog(BeIdPkiProvider.class);
 
-	@Resource
-	private SessionContext context;
+    @Resource
+    private SessionContext     context;
 
-	@EJB
-	private TrustDomainDAO trustDomainDAO;
+    @EJB
+    private TrustDomainDAO     trustDomainDAO;
 
-	@EJB
-	private AttributeDAO attributeDAO;
+    @EJB
+    private AttributeDAO       attributeDAO;
 
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+    @EJB
+    private AttributeTypeDAO   attributeTypeDAO;
 
-	@EJB
-	private DeviceDAO deviceDAO;
+    @EJB
+    private DeviceDAO          deviceDAO;
 
-	public boolean accept(X509Certificate certificate) {
-		X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
-		String subject = subjectPrincipal.toString();
-		LOG.debug("subject: " + subject);
-		if (subject.indexOf("SERIALNUMBER") == -1) {
-			return false;
-		}
-		if (subject.indexOf("GIVENNAME") == -1) {
-			return false;
-		}
-		if (subject.indexOf("SURNAME") == -1) {
-			return false;
-		}
-		return true;
-	}
 
-	public TrustDomainEntity getTrustDomain()
-			throws TrustDomainNotFoundException {
-		TrustDomainEntity trustDomain = this.trustDomainDAO
-				.getTrustDomain(TRUST_DOMAIN_NAME);
-		return trustDomain;
-	}
+    public boolean accept(X509Certificate certificate) {
 
-	public PkiProvider getReference() {
-		LOG.debug("get reference");
-		PkiProvider reference = this.context
-				.getBusinessObject(PkiProvider.class);
-		return reference;
-	}
+        X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
+        String subject = subjectPrincipal.toString();
+        LOG.debug("subject: " + subject);
+        if (subject.indexOf("SERIALNUMBER") == -1) {
+            return false;
+        }
+        if (subject.indexOf("GIVENNAME") == -1) {
+            return false;
+        }
+        if (subject.indexOf("SURNAME") == -1) {
+            return false;
+        }
+        return true;
+    }
 
-	public String mapAttribute(
-			IdentityStatementAttributes identityStatementAttributes) {
-		switch (identityStatementAttributes) {
-		case SURNAME:
-			return BeIdConstants.SURNAME_ATTRIBUTE;
-		case GIVEN_NAME:
-			return BeIdConstants.GIVENNAME_ATTRIBUTE;
-		case AUTH_CERT:
-			return BeIdConstants.AUTH_CERT_ATTRIBUTE;
-		default:
-			throw new IllegalArgumentException(
-					"unsupported identity statement attribute");
-		}
-	}
+    public TrustDomainEntity getTrustDomain() throws TrustDomainNotFoundException {
 
-	public String getIdentifierDomainName() {
-		return IDENTIFIER_DOMAIN_NAME;
-	}
+        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(TRUST_DOMAIN_NAME);
+        return trustDomain;
+    }
 
-	public String getSubjectIdentifier(X509Certificate certificate) {
-		byte[] data;
-		try {
-			data = certificate.getEncoded();
-		} catch (CertificateEncodingException e) {
-			throw new IllegalArgumentException("cert encoding error: "
-					+ e.getMessage());
-		}
-		String identifier = DigestUtils.shaHex(data);
-		return identifier;
-	}
+    public PkiProvider getReference() {
 
-	public void storeAdditionalAttributes(SubjectEntity subject,
-			X509Certificate certificate) {
-		String subjectName = getSubjectName(certificate);
-		String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
-		setOrOverrideAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, nrn);
-	}
+        LOG.debug("get reference");
+        PkiProvider reference = this.context.getBusinessObject(PkiProvider.class);
+        return reference;
+    }
 
-	private void setOrOverrideAttribute(String attributeName,
-			SubjectEntity subject, String value) {
-		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, subject);
-		if (null == attribute) {
-			AttributeTypeEntity attributeType;
-			try {
-				attributeType = this.attributeTypeDAO
-						.getAttributeType(attributeName);
-			} catch (AttributeTypeNotFoundException e) {
-				throw new EJBException("attribute type not found");
-			}
-			this.attributeDAO.addAttribute(attributeType, subject, value);
-		} else {
-			attribute.setStringValue(value);
-		}
-	}
+    public String mapAttribute(IdentityStatementAttributes identityStatementAttributes) {
 
-	private String getSubjectName(X509Certificate certificate) {
-		X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
-		String subjectName = subjectPrincipal.toString();
-		return subjectName;
-	}
+        switch (identityStatementAttributes) {
+            case SURNAME:
+                return BeIdConstants.SURNAME_ATTRIBUTE;
+            case GIVEN_NAME:
+                return BeIdConstants.GIVENNAME_ATTRIBUTE;
+            case AUTH_CERT:
+                return BeIdConstants.AUTH_CERT_ATTRIBUTE;
+            default:
+                throw new IllegalArgumentException("unsupported identity statement attribute");
+        }
+    }
 
-	private String getAttributeFromSubjectName(String subjectName,
-			String attributeName) {
-		int attributeBegin = subjectName.indexOf(attributeName + "=");
-		if (-1 == attributeBegin) {
-			throw new IllegalArgumentException(
-					"attribute name does not occur in subject: "
-							+ attributeName);
-		}
-		attributeBegin += attributeName.length() + 1; // "attributeName="
-		int attributeEnd = subjectName.indexOf(",", attributeBegin);
-		if (-1 == attributeEnd) {
-			// last field has no trailing ","
-			attributeEnd = subjectName.length();
-		}
-		String attributeValue = subjectName.substring(attributeBegin,
-				attributeEnd);
-		return attributeValue;
-	}
+    public String getIdentifierDomainName() {
 
-	public void removeAdditionalAttributes(SubjectEntity subject,
-			X509Certificate certificate) {
-		removeAttribute(BeIdConstants.NRN_ATTRIBUTE, subject);
-	}
+        return IDENTIFIER_DOMAIN_NAME;
+    }
 
-	private void removeAttribute(String attributeName, SubjectEntity subject) {
-		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, subject);
-		if (null != attribute)
-			this.attributeDAO.removeAttribute(attribute);
-	}
+    public String getSubjectIdentifier(X509Certificate certificate) {
 
-	public void storeDeviceAttribute(SubjectEntity subject)
-			throws DeviceNotFoundException, AttributeNotFoundException {
-		DeviceEntity device = this.deviceDAO
-				.getDevice(BeIdConstants.BEID_DEVICE_ID);
-		AttributeTypeEntity deviceAttributeType = device.getAttributeType();
-		AttributeEntity deviceAttribute = this.attributeDAO.findAttribute(
-				deviceAttributeType, subject);
-		if (null == deviceAttribute) {
-			deviceAttribute = this.attributeDAO.addAttribute(
-					deviceAttributeType, subject);
-			List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
-			deviceAttributeMembers.add(this.attributeDAO.getAttribute(
-					BeIdConstants.GIVENNAME_ATTRIBUTE, subject));
-			deviceAttributeMembers.add(this.attributeDAO.getAttribute(
-					BeIdConstants.NRN_ATTRIBUTE, subject));
-			deviceAttributeMembers.add(this.attributeDAO.getAttribute(
-					BeIdConstants.SURNAME_ATTRIBUTE, subject));
-			deviceAttribute.setMembers(deviceAttributeMembers);
-		}
-	}
+        byte[] data;
+        try {
+            data = certificate.getEncoded();
+        } catch (CertificateEncodingException e) {
+            throw new IllegalArgumentException("cert encoding error: " + e.getMessage());
+        }
+        String identifier = DigestUtils.shaHex(data);
+        return identifier;
+    }
 
-	public void storeDeviceUserAttribute(SubjectEntity subject)
-			throws DeviceNotFoundException, AttributeNotFoundException {
-		DeviceEntity device = this.deviceDAO
-				.getDevice(BeIdConstants.BEID_DEVICE_ID);
-		AttributeTypeEntity deviceUserAttributeType = device
-				.getUserAttributeType();
-		AttributeEntity deviceUserAttribute = this.attributeDAO.findAttribute(
-				deviceUserAttributeType, subject);
-		if (null == deviceUserAttribute) {
-			AttributeEntity givenNameAttribute = this.attributeDAO
-					.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE, subject);
-			AttributeEntity surNameAttribute = this.attributeDAO.getAttribute(
-					BeIdConstants.SURNAME_ATTRIBUTE, subject);
-			this.attributeDAO.addAttribute(deviceUserAttributeType, subject,
-					surNameAttribute.getStringValue() + ", "
-							+ givenNameAttribute.getStringValue());
-		}
-	}
+    public void storeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate) {
 
-	public void removeDeviceAttribute(SubjectEntity subject)
-			throws DeviceNotFoundException {
-		DeviceEntity device = this.deviceDAO
-				.getDevice(BeIdConstants.BEID_DEVICE_ID);
-		AttributeTypeEntity deviceAttributeType = device.getAttributeType();
-		removeAttribute(deviceAttributeType.getName(), subject);
-	}
+        String subjectName = getSubjectName(certificate);
+        String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
+        setOrOverrideAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, nrn);
+    }
 
-	public void removeDeviceUserAttribute(SubjectEntity subject)
-			throws DeviceNotFoundException {
-		DeviceEntity device = this.deviceDAO
-				.getDevice(BeIdConstants.BEID_DEVICE_ID);
-		AttributeTypeEntity deviceUserAttributeType = device
-				.getUserAttributeType();
-		removeAttribute(deviceUserAttributeType.getName(), subject);
-	}
+    private void setOrOverrideAttribute(String attributeName, SubjectEntity subject, String value) {
+
+        AttributeEntity attribute = this.attributeDAO.findAttribute(attributeName, subject);
+        if (null == attribute) {
+            AttributeTypeEntity attributeType;
+            try {
+                attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
+            } catch (AttributeTypeNotFoundException e) {
+                throw new EJBException("attribute type not found");
+            }
+            this.attributeDAO.addAttribute(attributeType, subject, value);
+        } else {
+            attribute.setStringValue(value);
+        }
+    }
+
+    private String getSubjectName(X509Certificate certificate) {
+
+        X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
+        String subjectName = subjectPrincipal.toString();
+        return subjectName;
+    }
+
+    private String getAttributeFromSubjectName(String subjectName, String attributeName) {
+
+        int attributeBegin = subjectName.indexOf(attributeName + "=");
+        if (-1 == attributeBegin) {
+            throw new IllegalArgumentException("attribute name does not occur in subject: " + attributeName);
+        }
+        attributeBegin += attributeName.length() + 1; // "attributeName="
+        int attributeEnd = subjectName.indexOf(",", attributeBegin);
+        if (-1 == attributeEnd) {
+            // last field has no trailing ","
+            attributeEnd = subjectName.length();
+        }
+        String attributeValue = subjectName.substring(attributeBegin, attributeEnd);
+        return attributeValue;
+    }
+
+    public void removeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate) {
+
+        removeAttribute(BeIdConstants.NRN_ATTRIBUTE, subject);
+    }
+
+    private void removeAttribute(String attributeName, SubjectEntity subject) {
+
+        AttributeEntity attribute = this.attributeDAO.findAttribute(attributeName, subject);
+        if (null != attribute)
+            this.attributeDAO.removeAttribute(attribute);
+    }
+
+    public void storeDeviceAttribute(SubjectEntity subject) throws DeviceNotFoundException, AttributeNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        AttributeTypeEntity deviceAttributeType = device.getAttributeType();
+        AttributeEntity deviceAttribute = this.attributeDAO.findAttribute(deviceAttributeType, subject);
+        if (null == deviceAttribute) {
+            deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject);
+            List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
+            deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE, subject));
+            deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.NRN_ATTRIBUTE, subject));
+            deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.SURNAME_ATTRIBUTE, subject));
+            deviceAttribute.setMembers(deviceAttributeMembers);
+        }
+    }
+
+    public void storeDeviceUserAttribute(SubjectEntity subject) throws DeviceNotFoundException,
+            AttributeNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        AttributeTypeEntity deviceUserAttributeType = device.getUserAttributeType();
+        AttributeEntity deviceUserAttribute = this.attributeDAO.findAttribute(deviceUserAttributeType, subject);
+        if (null == deviceUserAttribute) {
+            AttributeEntity givenNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE,
+                    subject);
+            AttributeEntity surNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.SURNAME_ATTRIBUTE, subject);
+            this.attributeDAO.addAttribute(deviceUserAttributeType, subject, surNameAttribute.getStringValue() + ", "
+                    + givenNameAttribute.getStringValue());
+        }
+    }
+
+    public void removeDeviceAttribute(SubjectEntity subject) throws DeviceNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        AttributeTypeEntity deviceAttributeType = device.getAttributeType();
+        removeAttribute(deviceAttributeType.getName(), subject);
+    }
+
+    public void removeDeviceUserAttribute(SubjectEntity subject) throws DeviceNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        AttributeTypeEntity deviceUserAttributeType = device.getUserAttributeType();
+        removeAttribute(deviceUserAttributeType.getName(), subject);
+    }
 }

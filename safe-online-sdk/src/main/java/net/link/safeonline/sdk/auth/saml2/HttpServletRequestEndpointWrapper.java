@@ -10,27 +10,28 @@ package net.link.safeonline.sdk.auth.saml2;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+
 /**
- * HttpServletRequest wrapper used to provide opensaml with the correct endpoint
- * URI.
+ * HttpServletRequest wrapper used to provide opensaml with the correct endpoint URI.
  * 
  * @author wvdhaute
  * 
  */
-public class HttpServletRequestEndpointWrapper extends
-		HttpServletRequestWrapper {
+public class HttpServletRequestEndpointWrapper extends HttpServletRequestWrapper {
 
-	private String requestUrl;
+    private String requestUrl;
 
-	public HttpServletRequestEndpointWrapper(HttpServletRequest request,
-			String requestUrl) {
-		super(request);
-		this.requestUrl = requestUrl;
-	}
 
-	@Override
-	public StringBuffer getRequestURL() {
-		return new StringBuffer(this.requestUrl);
-	}
+    public HttpServletRequestEndpointWrapper(HttpServletRequest request, String requestUrl) {
+
+        super(request);
+        this.requestUrl = requestUrl;
+    }
+
+    @Override
+    public StringBuffer getRequestURL() {
+
+        return new StringBuffer(this.requestUrl);
+    }
 
 }

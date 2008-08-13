@@ -23,29 +23,30 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("lawyerStatusManager")
 @LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerStatusManagerBean/local")
 @SecurityDomain(LawyerConstants.SECURITY_DOMAIN)
-public class LawyerStatusManagerBean extends AbstractLawyerDataClientBean
-		implements LawyerStatusManager {
+public class LawyerStatusManagerBean extends AbstractLawyerDataClientBean implements LawyerStatusManager {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log            log;
 
-	@Resource
-	private SessionContext sessionContext;
+    @Resource
+    private SessionContext sessionContext;
 
-	@Factory("lawyerStatus")
-	@RolesAllowed( { LawyerConstants.USER_ROLE, LawyerConstants.ADMIN_ROLE })
-	public LawyerStatus lawyerStatusFactory() {
-		this.log.debug("lawyerStatusFactory");
-		String subjectLogin = this.sessionContext.getCallerPrincipal()
-				.getName();
-		LawyerStatus lawyerStatus = getLawyerStatus(subjectLogin);
-		if (null == lawyerStatus) {
-			lawyerStatus = new LawyerStatus();
-		}
-		return lawyerStatus;
-	}
+
+    @Factory("lawyerStatus")
+    @RolesAllowed( { LawyerConstants.USER_ROLE, LawyerConstants.ADMIN_ROLE })
+    public LawyerStatus lawyerStatusFactory() {
+
+        this.log.debug("lawyerStatusFactory");
+        String subjectLogin = this.sessionContext.getCallerPrincipal().getName();
+        LawyerStatus lawyerStatus = getLawyerStatus(subjectLogin);
+        if (null == lawyerStatus) {
+            lawyerStatus = new LawyerStatus();
+        }
+        return lawyerStatus;
+    }
 }

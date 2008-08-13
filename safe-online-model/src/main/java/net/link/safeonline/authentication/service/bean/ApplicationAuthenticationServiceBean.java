@@ -24,6 +24,7 @@ import net.link.safeonline.pkix.dao.TrustPointDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Implementation of application authentication service.
  * 
@@ -31,48 +32,42 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
-public class ApplicationAuthenticationServiceBean implements
-		ApplicationAuthenticationService {
+public class ApplicationAuthenticationServiceBean implements ApplicationAuthenticationService {
 
-	private static final Log LOG = LogFactory
-			.getLog(ApplicationAuthenticationServiceBean.class);
+    private static final Log LOG = LogFactory.getLog(ApplicationAuthenticationServiceBean.class);
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO   applicationDAO;
 
-	@EJB
-	private TrustPointDAO trustPointDAO;
+    @EJB
+    private TrustPointDAO    trustPointDAO;
 
-	public String authenticate(X509Certificate certificate)
-			throws ApplicationNotFoundException {
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(certificate);
-		String applicationName = application.getName();
-		LOG.debug("authenticated application: " + applicationName);
-		return applicationName;
-	}
 
-	public List<X509Certificate> getCertificates(String applicationId)
-			throws ApplicationNotFoundException {
-		LOG.debug("get certificates for application Id: " + applicationId);
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationId);
-		List<TrustPointEntity> trustPoints = this.trustPointDAO
-				.listTrustPoints(application.getCertificateSubject());
-		List<X509Certificate> certificates = new LinkedList<X509Certificate>();
-		for (TrustPointEntity trustPoint : trustPoints) {
-			certificates.add(trustPoint.getCertificate());
+    public String authenticate(X509Certificate certificate) throws ApplicationNotFoundException {
 
-		}
-		return certificates;
-	}
+        ApplicationEntity application = this.applicationDAO.getApplication(certificate);
+        String applicationName = application.getName();
+        LOG.debug("authenticated application: " + applicationName);
+        return applicationName;
+    }
 
-	public boolean skipMessageIntegrityCheck(String applicationId)
-			throws ApplicationNotFoundException {
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationId);
-		boolean skipMessageIntegrityCheck = application
-				.isSkipMessageIntegrityCheck();
-		return skipMessageIntegrityCheck;
-	}
+    public List<X509Certificate> getCertificates(String applicationId) throws ApplicationNotFoundException {
+
+        LOG.debug("get certificates for application Id: " + applicationId);
+        ApplicationEntity application = this.applicationDAO.getApplication(applicationId);
+        List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(application.getCertificateSubject());
+        List<X509Certificate> certificates = new LinkedList<X509Certificate>();
+        for (TrustPointEntity trustPoint : trustPoints) {
+            certificates.add(trustPoint.getCertificate());
+
+        }
+        return certificates;
+    }
+
+    public boolean skipMessageIntegrityCheck(String applicationId) throws ApplicationNotFoundException {
+
+        ApplicationEntity application = this.applicationDAO.getApplication(applicationId);
+        boolean skipMessageIntegrityCheck = application.isSkipMessageIntegrityCheck();
+        return skipMessageIntegrityCheck;
+    }
 }

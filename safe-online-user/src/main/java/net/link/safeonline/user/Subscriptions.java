@@ -13,20 +13,20 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 
+
 @Local
 public interface Subscriptions {
 
-	void subscriptionListFactory();
+    void subscriptionListFactory();
 
-	String viewSubscription() throws SubscriptionNotFoundException,
-			ApplicationNotFoundException, ApplicationIdentityNotFoundException;
+    String viewSubscription() throws SubscriptionNotFoundException, ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException;
 
-	String unsubscribe() throws SubscriptionNotFoundException,
-			ApplicationNotFoundException;
+    String unsubscribe() throws SubscriptionNotFoundException, ApplicationNotFoundException;
 
-	String getUsageAgreement() throws ApplicationNotFoundException;
+    String getUsageAgreement() throws ApplicationNotFoundException;
 
-	String getGlobalUsageAgreement();
+    String getGlobalUsageAgreement();
 
-	void destroyCallback();
+    void destroyCallback();
 }

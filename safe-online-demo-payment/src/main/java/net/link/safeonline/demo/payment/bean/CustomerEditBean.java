@@ -28,12 +28,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("customerEdit")
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/CustomerEditBean/local")
 @SecurityDomain(PaymentConstants.SECURITY_DOMAIN)
-public class CustomerEditBean extends AbstractPaymentDataClientBean implements
-        CustomerEdit {
+public class CustomerEditBean extends AbstractPaymentDataClientBean implements CustomerEdit {
 
     @Logger
     private Log            log;
@@ -51,17 +51,13 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements
     @RolesAllowed(PaymentConstants.ADMIN_ROLE)
     public String persist() {
 
-        this.log
-                .debug(
-                        "---------------------------------------- save #0 -----------------------------",
-                        this.name);
+        this.log.debug("---------------------------------------- save #0 -----------------------------", this.name);
 
         try {
-            createOrUpdateAttribute(
-                    DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean
-                            .valueOf(this.customerStatus.isJunior()));
-            createOrUpdateAttribute(DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME,
-                    Boolean.valueOf(this.customerStatus.isPaymentAdmin()));
+            createOrUpdateAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.valueOf(this.customerStatus
+                    .isJunior()));
+            createOrUpdateAttribute(DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(this.customerStatus
+                    .isPaymentAdmin()));
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error");
             return null;
@@ -78,22 +74,18 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements
         return "success";
     }
 
-    private void createOrUpdateAttribute(String attributeName,
-            Object attributeValue) throws WSClientTransportException,
-            RequestDeniedException, SubjectNotFoundException,
+    private void createOrUpdateAttribute(String attributeName, Object attributeValue)
+            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException,
             AttributeNotFoundException {
 
         DataClient dataClient = getDataClient();
-        if (null == dataClient.getAttributeValue(this.customerStatus
-                .getUserId(), attributeName, attributeValue.getClass())) {
-            this.log.debug("create attribute #0 for #1", attributeName,
-                    this.name);
-            dataClient.createAttribute(this.customerStatus.getUserId(),
-                    attributeName, attributeValue);
+        if (null == dataClient.getAttributeValue(this.customerStatus.getUserId(), attributeName, attributeValue
+                .getClass())) {
+            this.log.debug("create attribute #0 for #1", attributeName, this.name);
+            dataClient.createAttribute(this.customerStatus.getUserId(), attributeName, attributeValue);
         } else {
             this.log.debug("set attribute #0 for #1", attributeName, this.name);
-            dataClient.setAttributeValue(this.customerStatus.getUserId(),
-                    attributeName, attributeValue);
+            dataClient.setAttributeValue(this.customerStatus.getUserId(), attributeName, attributeValue);
         }
     }
 }

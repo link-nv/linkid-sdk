@@ -37,11 +37,11 @@ import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * <h2>{@link BasicScenario}<br>
- * <sub>A basic scenario that runs all basic drivers to test OLAS on every field
- * available through the SDK.</sub></h2>
- *
+ * <sub>A basic scenario that runs all basic drivers to test OLAS on every field available through the SDK.</sub></h2>
+ * 
  * <p>
  * We perform the following, in order:
  * <ul>
@@ -50,112 +50,106 @@ import org.apache.commons.logging.LogFactory;
  * <li>{@link AttribDriver#getAttributes(PrivateKeyEntry, String)}</li>
  * </ul>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class BasicScenario implements Scenario {
 
-	private static final Log LOG = LogFactory.getLog(BasicScenario.class);
+    private static final Log    LOG             = LogFactory.getLog(BasicScenario.class);
 
-	private static final String applicationName = "performance-application";
-	private static final String username = "performance";
-	private static final String password = "performance";
+    private static final String applicationName = "performance-application";
+    private static final String username        = "performance";
+    private static final String password        = "performance";
 
-	private PrivateKeyEntry applicationKey;
-	private AttribDriver attribDriver;
-	private IdMappingDriver idDriver;
-	private AuthDriver authDriver;
+    private PrivateKeyEntry     applicationKey;
+    private AttribDriver        attribDriver;
+    private IdMappingDriver     idDriver;
+    private AuthDriver          authDriver;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getDescription() {
 
-		return "This scenario implements all standard drivers.\n"
-				+ "It is basically a scenario used to test each part of OLAS available through the SDK.";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription() {
 
-	public void prepare(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
+        return "This scenario implements all standard drivers.\n"
+                + "It is basically a scenario used to test each part of OLAS available through the SDK.";
+    }
 
-		LOG.debug("retrieving performance keys..");
-		try {
-			PerformanceService service = (PerformanceService) getInitialContext(
-					execution.getHostname()).lookup(PerformanceService.BINDING);
-			this.applicationKey = new KeyStore.PrivateKeyEntry(service
-					.getPrivateKey(), new Certificate[] { service
-					.getCertificate() });
-		} catch (NamingException e) {
-			LOG.error("OLAS couldn't provide performance keys.", e);
-		}
-		if (this.applicationKey == null)
-			this.applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+    public void prepare(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
-		LOG.debug("building drivers..");
-		this.authDriver = new AuthDriver(execution, agentTime);
-		this.attribDriver = new AttribDriver(execution, agentTime);
-		this.idDriver = new IdMappingDriver(execution, agentTime);
-	}
+        LOG.debug("retrieving performance keys..");
+        try {
+            PerformanceService service = (PerformanceService) getInitialContext(execution.getHostname()).lookup(
+                    PerformanceService.BINDING);
+            this.applicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service
+                    .getCertificate() });
+        } catch (NamingException e) {
+            LOG.error("OLAS couldn't provide performance keys.", e);
+        }
+        if (this.applicationKey == null)
+            this.applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void run() {
+        LOG.debug("building drivers..");
+        this.authDriver = new AuthDriver(execution, agentTime);
+        this.attribDriver = new AttribDriver(execution, agentTime);
+        this.idDriver = new IdMappingDriver(execution, agentTime);
+    }
 
-		if (this.applicationKey == null)
-			throw new IllegalStateException(
-					"Performance keys not set up. Perhaps you didn't call prepare?");
+    /**
+     * @{inheritDoc
+     */
+    public void run() {
 
-		/* Logging in. */
-		String loginUserId = this.authDriver.login(this.applicationKey,
-				applicationName, username, password);
-		if (loginUserId == null)
-			throw new IllegalStateException("Login failed.");
+        if (this.applicationKey == null)
+            throw new IllegalStateException("Performance keys not set up. Perhaps you didn't call prepare?");
 
-		/* Verifying UUID. */
-		String mappedUserId = this.idDriver.getUserId(this.applicationKey,
-				username);
-		if (!loginUserId.equals(mappedUserId))
-			throw new IllegalStateException("Login ID doesn't match mapped ID.");
+        /* Logging in. */
+        String loginUserId = this.authDriver.login(this.applicationKey, applicationName, username, password);
+        if (loginUserId == null)
+            throw new IllegalStateException("Login failed.");
 
-		/* Reading attributes. */
-		this.attribDriver.getAttributes(this.applicationKey, mappedUserId);
-	}
+        /* Verifying UUID. */
+        String mappedUserId = this.idDriver.getUserId(this.applicationKey, username);
+        if (!loginUserId.equals(mappedUserId))
+            throw new IllegalStateException("Login ID doesn't match mapped ID.");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<? extends Chart> getCharts() {
+        /* Reading attributes. */
+        this.attribDriver.getAttributes(this.applicationKey, mappedUserId);
+    }
 
-		List<Chart> charts = new ArrayList<Chart>();
-		charts.add(new ScenarioDurationsChart());
-		charts.add(new ScenarioMemoryChart());
-		charts.add(new ScenarioQueueChart());
-		charts.add(new ScenarioSpeedChart(5 * 60 * 1000));
-		charts.add(new ScenarioDriverDurationsChart());
-		charts.add(new ScenarioExceptionsChart());
+    /**
+     * {@inheritDoc}
+     */
+    public List<? extends Chart> getCharts() {
 
-		AbstractChart.sharedTimeAxis(charts);
+        List<Chart> charts = new ArrayList<Chart>();
+        charts.add(new ScenarioDurationsChart());
+        charts.add(new ScenarioMemoryChart());
+        charts.add(new ScenarioQueueChart());
+        charts.add(new ScenarioSpeedChart(5 * 60 * 1000));
+        charts.add(new ScenarioDriverDurationsChart());
+        charts.add(new ScenarioExceptionsChart());
 
-		return charts;
-	}
+        AbstractChart.sharedTimeAxis(charts);
 
-	/**
-	 * Retrieve an {@link InitialContext} for the JNDI of the AS on the given
-	 * host.
-	 */
-	private static InitialContext getInitialContext(String hostname)
-			throws NamingException {
+        return charts;
+    }
 
-		Hashtable<String, String> environment = new Hashtable<String, String>();
+    /**
+     * Retrieve an {@link InitialContext} for the JNDI of the AS on the given host.
+     */
+    private static InitialContext getInitialContext(String hostname) throws NamingException {
 
-		environment.put(Context.INITIAL_CONTEXT_FACTORY,
-				"org.jnp.interfaces.NamingContextFactory");
-		environment.put(Context.PROVIDER_URL, "jnp://" + hostname + ":1099");
+        Hashtable<String, String> environment = new Hashtable<String, String>();
 
-		return new InitialContext(environment);
-	}
+        environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
+        environment.put(Context.PROVIDER_URL, "jnp://" + hostname + ":1099");
+
+        return new InitialContext(environment);
+    }
 }

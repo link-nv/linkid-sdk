@@ -103,117 +103,101 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class DemoStartableBeanTest {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	private static Class<?>[] container = new Class[] { SubjectDAOBean.class,
-			ApplicationDAOBean.class, SubscriptionDAOBean.class,
-			AttributeDAOBean.class, TrustDomainDAOBean.class,
-			ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
-			ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class,
-			ConfigItemDAOBean.class, TaskDAOBean.class,
-			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
-			ApplicationIdentityManagerBean.class, TrustPointDAOBean.class,
-			AttributeProviderDAOBean.class, DeviceDAOBean.class,
-			DeviceClassDAOBean.class, AllowedDeviceDAOBean.class,
-			PasswordManagerBean.class, SubjectServiceBean.class,
-			SubjectIdentifierDAOBean.class, IdGeneratorBean.class,
-			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class,
-			OlasDAOBean.class, DevicePolicyServiceBean.class,
-			DeviceMappingServiceBean.class, DeviceMappingDAOBean.class,
-			ResourceAuditLoggerBean.class, AuditAuditDAOBean.class,
-			AuditContextDAOBean.class, AccessAuditDAOBean.class,
-			SecurityAuditDAOBean.class, ResourceAuditDAOBean.class,
-			DevicesBean.class, NotificationProducerServiceBean.class,
-			NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class,
-			DeviceSubjectDAOBean.class, ApplicationScopeIdDAOBean.class };
+    private static Class<?>[] container = new Class[] { SubjectDAOBean.class, ApplicationDAOBean.class,
+            SubscriptionDAOBean.class, AttributeDAOBean.class, TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class,
+            AttributeTypeDAOBean.class, ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class,
+            ConfigItemDAOBean.class, TaskDAOBean.class, SchedulingDAOBean.class, TaskHistoryDAOBean.class,
+            ApplicationIdentityManagerBean.class, TrustPointDAOBean.class, AttributeProviderDAOBean.class,
+            DeviceDAOBean.class, DeviceClassDAOBean.class, AllowedDeviceDAOBean.class, PasswordManagerBean.class,
+            SubjectServiceBean.class, SubjectIdentifierDAOBean.class, IdGeneratorBean.class,
+            UsageAgreementDAOBean.class, UsageAgreementManagerBean.class, OlasDAOBean.class,
+            DevicePolicyServiceBean.class, DeviceMappingServiceBean.class, DeviceMappingDAOBean.class,
+            ResourceAuditLoggerBean.class, AuditAuditDAOBean.class, AuditContextDAOBean.class,
+            AccessAuditDAOBean.class, SecurityAuditDAOBean.class, ResourceAuditDAOBean.class, DevicesBean.class,
+            NotificationProducerServiceBean.class, NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class,
+            DeviceSubjectDAOBean.class, ApplicationScopeIdDAOBean.class };
 
-	@Before
-	public void setUp() throws Exception {
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SubjectEntity.class,
-				ApplicationEntity.class, ApplicationOwnerEntity.class,
-				AttributeEntity.class, AttributeTypeEntity.class,
-				SubscriptionEntity.class, TrustDomainEntity.class,
-				ApplicationIdentityEntity.class, ConfigGroupEntity.class,
-				ConfigItemEntity.class, SchedulingEntity.class,
-				TaskEntity.class, TaskHistoryEntity.class,
-				TrustPointEntity.class,
-				ApplicationIdentityAttributeEntity.class,
-				AttributeTypeDescriptionEntity.class,
-				AttributeProviderEntity.class, DeviceEntity.class,
-				DeviceClassEntity.class, DeviceMappingEntity.class,
-				DeviceSubjectEntity.class, DeviceDescriptionEntity.class,
-				DevicePropertyEntity.class, DeviceClassDescriptionEntity.class,
-				AllowedDeviceEntity.class,
-				CompoundedAttributeTypeMemberEntity.class,
-				SubjectIdentifierEntity.class, UsageAgreementEntity.class,
-				UsageAgreementTextEntity.class, OlasEntity.class,
-				EndpointReferenceEntity.class,
-				NotificationProducerSubscriptionEntity.class,
-				ApplicationScopeIdEntity.class);
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+    @Before
+    public void setUp() throws Exception {
 
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class, ApplicationOwnerEntity.class,
+                AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class, TrustDomainEntity.class,
+                ApplicationIdentityEntity.class, ConfigGroupEntity.class, ConfigItemEntity.class,
+                SchedulingEntity.class, TaskEntity.class, TaskHistoryEntity.class, TrustPointEntity.class,
+                ApplicationIdentityAttributeEntity.class, AttributeTypeDescriptionEntity.class,
+                AttributeProviderEntity.class, DeviceEntity.class, DeviceClassEntity.class, DeviceMappingEntity.class,
+                DeviceSubjectEntity.class, DeviceDescriptionEntity.class, DevicePropertyEntity.class,
+                DeviceClassDescriptionEntity.class, AllowedDeviceEntity.class,
+                CompoundedAttributeTypeMemberEntity.class, SubjectIdentifierEntity.class, UsageAgreementEntity.class,
+                UsageAgreementTextEntity.class, OlasEntity.class, EndpointReferenceEntity.class,
+                NotificationProducerSubscriptionEntity.class, ApplicationScopeIdEntity.class);
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(
-							@SuppressWarnings("unused") Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(
-							@SuppressWarnings("unused") Object[] arguments) {
-						return certificate;
-					}
-				});
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		Startable systemStartable = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class, container,
-				entityManager);
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		systemStartable.postStart();
+                        return authCertificate;
+                    }
+                });
 
-		EntityTransaction entityTransaction = entityManager.getTransaction();
-		entityTransaction.commit();
-		entityTransaction.begin();
-	}
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-	@After
-	public void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-	}
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-	@Test
-	public void postStart() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(
-				DemoStartableBean.class, container, entityManager);
-		BeIdStartableBean beIdStartableBean = EJBTestUtils.newInstance(
-				BeIdStartableBean.class, container, entityManager);
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		EJBTestUtils.setJBossPrincipal("test-operator", "operator");
+                        return certificate;
+                    }
+                });
 
-		// operate
-		beIdStartableBean.postStart();
-		demoStartableBean.postStart();
-	}
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container,
+                entityManager);
+
+        systemStartable.postStart();
+
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.commit();
+        entityTransaction.begin();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+
+        this.entityTestManager.tearDown();
+    }
+
+    @Test
+    public void postStart() throws Exception {
+
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(DemoStartableBean.class, container,
+                entityManager);
+        BeIdStartableBean beIdStartableBean = EJBTestUtils.newInstance(BeIdStartableBean.class, container,
+                entityManager);
+
+        EJBTestUtils.setJBossPrincipal("test-operator", "operator");
+
+        // operate
+        beIdStartableBean.postStart();
+        demoStartableBean.postStart();
+    }
 }

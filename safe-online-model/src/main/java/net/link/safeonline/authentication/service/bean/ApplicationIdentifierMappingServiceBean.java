@@ -31,14 +31,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
-public class ApplicationIdentifierMappingServiceBean implements
-        ApplicationIdentifierMappingService {
+public class ApplicationIdentifierMappingServiceBean implements ApplicationIdentifierMappingService {
 
-    private static final Log     LOG = LogFactory
-                                             .getLog(ApplicationIdentifierMappingServiceBean.class);
+    private static final Log     LOG = LogFactory.getLog(ApplicationIdentifierMappingServiceBean.class);
 
     @EJB
     private ApplicationManager   applicationManager;
@@ -51,42 +50,35 @@ public class ApplicationIdentifierMappingServiceBean implements
 
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public String getApplicationUserId(String username)
-            throws PermissionDeniedException, ApplicationNotFoundException,
+    public String getApplicationUserId(String username) throws PermissionDeniedException, ApplicationNotFoundException,
             SubscriptionNotFoundException, SubjectNotFoundException {
 
         LOG.debug("getUserId: " + username);
         checkPermission();
-        ApplicationEntity application = this.applicationManager
-                .getCallerApplication();
-        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
-                SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, username);
+        ApplicationEntity application = this.applicationManager.getCallerApplication();
+        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
+                username);
         if (null == subject) {
             throw new SubjectNotFoundException();
         }
-        String userId = this.userIdMappingService.getApplicationUserId(
-                application.getName(), subject.getUserId());
+        String userId = this.userIdMappingService.getApplicationUserId(application.getName(), subject.getUserId());
         LOG.debug("userId: " + userId);
         return userId;
     }
 
     private void checkPermission() throws PermissionDeniedException {
 
-        ApplicationEntity application = this.applicationManager
-                .getCallerApplication();
+        ApplicationEntity application = this.applicationManager.getCallerApplication();
         boolean allowed = application.isIdentifierMappingAllowed();
         if (false == allowed) {
-            throw new PermissionDeniedException(
-                    "application not allowed to use the identifier mapping service");
+            throw new PermissionDeniedException("application not allowed to use the identifier mapping service");
         }
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public String findUserId(String applicationName, String applicationUserId)
-            throws ApplicationNotFoundException {
+    public String findUserId(String applicationName, String applicationUserId) throws ApplicationNotFoundException {
 
         LOG.debug("getUserId: " + applicationName + ", " + applicationUserId);
-        return this.userIdMappingService.findUserId(applicationName,
-                applicationUserId);
+        return this.userIdMappingService.findUserId(applicationName, applicationUserId);
     }
 }

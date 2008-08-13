@@ -18,6 +18,7 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.Log4JLogChute;
 import org.junit.Test;
 
+
 /**
  * <h2>{@link VelocityTest}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -39,13 +40,10 @@ public class VelocityTest {
 
         Properties velocityProperties = new Properties();
         velocityProperties.put("resource.loader", "class");
-        velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-                Log4JLogChute.class.getName());
-        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER,
-                VelocityTest.class.getName());
-        velocityProperties
-                .put("class.resource.loader.class",
-                        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, Log4JLogChute.class.getName());
+        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, VelocityTest.class.getName());
+        velocityProperties.put("class.resource.loader.class",
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
         VelocityEngine velocity = new VelocityEngine();
         velocity.init(velocityProperties);

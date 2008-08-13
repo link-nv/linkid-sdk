@@ -11,36 +11,41 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 
+
 @ApplicationException(rollback = true)
 public class AuditContextNotPublishedException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Long auditContextId;
+    private Long              auditContextId;
 
-	private String errorCode;
+    private String            errorCode;
 
-	private String message;
+    private String            message;
 
-	public AuditContextNotPublishedException(Long auditContextId,
-			String message, String errorCode) {
-		this.auditContextId = auditContextId;
-		this.errorCode = errorCode;
-		this.message = message;
-	}
 
-	public Long getAuditContextId() {
-		return this.auditContextId;
-	}
+    public AuditContextNotPublishedException(Long auditContextId, String message, String errorCode) {
 
-	@Override
-	public String getErrorCode() {
-		return this.errorCode;
-	}
+        this.auditContextId = auditContextId;
+        this.errorCode = errorCode;
+        this.message = message;
+    }
 
-	@Override
-	public String getMessage() {
-		return this.message;
-	}
+    public Long getAuditContextId() {
+
+        return this.auditContextId;
+    }
+
+    @Override
+    public String getErrorCode() {
+
+        return this.errorCode;
+    }
+
+    @Override
+    public String getMessage() {
+
+        return this.message;
+    }
 
 }

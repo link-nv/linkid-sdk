@@ -9,15 +9,15 @@ package net.link.safeonline.p11sc.spi;
 
 public interface IdentityDataCollector {
 
-	void setSurname(String surname);
+    void setSurname(String surname);
 
-	void setGivenName(String givenName);
+    void setGivenName(String givenName);
 
-	void setCountryCode(String countryCode);
+    void setCountryCode(String countryCode);
 
-	void setStreet(String street);
+    void setStreet(String street);
 
-	void setPostalCode(String postalCode);
+    void setPostalCode(String postalCode);
 
-	void setCity(String city);
+    void setCity(String city);
 }

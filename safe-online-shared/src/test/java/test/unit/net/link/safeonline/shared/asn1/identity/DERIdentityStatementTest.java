@@ -26,73 +26,65 @@ import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERVisibleString;
 
+
 public class DERIdentityStatementTest extends TestCase {
 
-	public void testEncoding() throws Exception {
-		// setup
-		KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate authCert = PkiTestUtils.generateSelfSignedCertificate(
-				authKeyPair, "CN=AuthTest");
+    public void testEncoding() throws Exception {
 
-		String sessionId = UUID.randomUUID().toString();
-		String user = "user";
-		String operation = "operation";
-		String givenName = "given-name";
-		String surname = "surname";
+        // setup
+        KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate authCert = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=AuthTest");
 
-		byte[] signature = "signature-value".getBytes();
+        String sessionId = UUID.randomUUID().toString();
+        String user = "user";
+        String operation = "operation";
+        String givenName = "given-name";
+        String surname = "surname";
 
-		// operate
-		DERIdentityStatement identityStatement = new DERIdentityStatement(
-				authCert, sessionId, user, operation, givenName, surname);
-		identityStatement.setSignature(signature);
-		byte[] result = identityStatement.getEncoded();
+        byte[] signature = "signature-value".getBytes();
 
-		// verify
-		assertNotNull(result);
-		DERSequence sequence = (DERSequence) ASN1Sequence
-				.getInstance(ASN1Object.fromByteArray(result));
-		DERSequence bodySequence = (DERSequence) sequence.getObjectAt(0);
-		DERInteger version = DERInteger.getInstance(bodySequence
-				.getObjectAt(DERIdentityStatement.VERSION_IDX));
-		assertEquals(1, version.getValue().intValue());
+        // operate
+        DERIdentityStatement identityStatement = new DERIdentityStatement(authCert, sessionId, user, operation,
+                givenName, surname);
+        identityStatement.setSignature(signature);
+        byte[] result = identityStatement.getEncoded();
 
-		DERVisibleString sessionIdString = DERVisibleString
-				.getInstance(bodySequence
-						.getObjectAt(DERIdentityStatement.SESSION_IDX));
-		assertEquals(sessionId, sessionIdString.getString());
+        // verify
+        assertNotNull(result);
+        DERSequence sequence = (DERSequence) ASN1Sequence.getInstance(ASN1Object.fromByteArray(result));
+        DERSequence bodySequence = (DERSequence) sequence.getObjectAt(0);
+        DERInteger version = DERInteger.getInstance(bodySequence.getObjectAt(DERIdentityStatement.VERSION_IDX));
+        assertEquals(1, version.getValue().intValue());
 
-		DERVisibleString userString = DERVisibleString.getInstance(bodySequence
-				.getObjectAt(DERIdentityStatement.USER_IDX));
-		assertEquals(user, userString.getString());
+        DERVisibleString sessionIdString = DERVisibleString.getInstance(bodySequence
+                .getObjectAt(DERIdentityStatement.SESSION_IDX));
+        assertEquals(sessionId, sessionIdString.getString());
 
-		DERVisibleString operationString = DERVisibleString
-				.getInstance(bodySequence
-						.getObjectAt(DERIdentityStatement.OPERATION_IDX));
-		assertEquals(operation, operationString.getString());
+        DERVisibleString userString = DERVisibleString.getInstance(bodySequence
+                .getObjectAt(DERIdentityStatement.USER_IDX));
+        assertEquals(user, userString.getString());
 
-		DERVisibleString givenNameString = DERVisibleString
-				.getInstance(bodySequence
-						.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX));
-		assertEquals(givenName, givenNameString.getString());
+        DERVisibleString operationString = DERVisibleString.getInstance(bodySequence
+                .getObjectAt(DERIdentityStatement.OPERATION_IDX));
+        assertEquals(operation, operationString.getString());
 
-		DERVisibleString surnameString = DERVisibleString
-				.getInstance(bodySequence
-						.getObjectAt(DERIdentityStatement.SURNAME_IDX));
-		assertEquals(surname, surnameString.getString());
+        DERVisibleString givenNameString = DERVisibleString.getInstance(bodySequence
+                .getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX));
+        assertEquals(givenName, givenNameString.getString());
 
-		DEREncodable encodedCert = bodySequence
-				.getObjectAt(DERIdentityStatement.AUTH_CERT_IDX);
-		assertNotNull(encodedCert);
-		byte[] resultEncodedCert = encodedCert.getDERObject().getEncoded();
-		X509Certificate resultCert = (X509Certificate) CertificateFactory
-				.getInstance("X.509").generateCertificate(
-						new ByteArrayInputStream(resultEncodedCert));
-		assertEquals(authCert, resultCert);
+        DERVisibleString surnameString = DERVisibleString.getInstance(bodySequence
+                .getObjectAt(DERIdentityStatement.SURNAME_IDX));
+        assertEquals(surname, surnameString.getString());
 
-		DERBitString signBitString = DERBitString.getInstance(sequence
-				.getObjectAt(1));
-		assertTrue(Arrays.equals(signature, signBitString.getBytes()));
+        DEREncodable encodedCert = bodySequence.getObjectAt(DERIdentityStatement.AUTH_CERT_IDX);
+        assertNotNull(encodedCert);
+        byte[] resultEncodedCert = encodedCert.getDERObject().getEncoded();
+        X509Certificate resultCert = (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(
+                new ByteArrayInputStream(resultEncodedCert));
+        assertEquals(authCert, resultCert);
 
-	}
+        DERBitString signBitString = DERBitString.getInstance(sequence.getObjectAt(1));
+        assertTrue(Arrays.equals(signature, signBitString.getBytes()));
+
+    }
 }

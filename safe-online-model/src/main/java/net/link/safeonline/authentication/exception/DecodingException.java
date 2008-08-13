@@ -9,9 +9,9 @@ package net.link.safeonline.authentication.exception;
 
 import javax.ejb.ApplicationException;
 
+
 /**
- * Gets thrown when an identity or authentication statement could not be decoded
- * properly.
+ * Gets thrown when an identity or authentication statement could not be decoded properly.
  * 
  * @author fcorneli
  * 
@@ -19,6 +19,6 @@ import javax.ejb.ApplicationException;
 @ApplicationException(rollback = true)
 public class DecodingException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

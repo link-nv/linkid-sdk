@@ -21,96 +21,116 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class TestSOAPMessageContext implements SOAPMessageContext {
 
-	private static final Log LOG = LogFactory
-			.getLog(TestSOAPMessageContext.class);
+    private static final Log          LOG = LogFactory.getLog(TestSOAPMessageContext.class);
 
-	private SOAPMessage message;
+    private SOAPMessage               message;
 
-	private final Map<String, Object> properties;
+    private final Map<String, Object> properties;
 
-	public TestSOAPMessageContext(SOAPMessage message, boolean outbound) {
-		this.message = message;
-		this.properties = new HashMap<String, Object>();
-		this.properties.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, outbound);
-	}
 
-	@SuppressWarnings("unused")
-	public Object[] getHeaders(QName name, JAXBContext context, boolean required) {
-		return null;
-	}
+    public TestSOAPMessageContext(SOAPMessage message, boolean outbound) {
 
-	public SOAPMessage getMessage() {
-		return this.message;
-	}
+        this.message = message;
+        this.properties = new HashMap<String, Object>();
+        this.properties.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, outbound);
+    }
 
-	public Set<String> getRoles() {
-		return null;
-	}
+    @SuppressWarnings("unused")
+    public Object[] getHeaders(QName name, JAXBContext context, boolean required) {
 
-	public void setMessage(SOAPMessage message) {
-		this.message = message;
-	}
+        return null;
+    }
 
-	@SuppressWarnings("unused")
-	public Scope getScope(String scope) {
-		return null;
-	}
+    public SOAPMessage getMessage() {
 
-	@SuppressWarnings("unused")
-	public void setScope(String scopeName, Scope scope) {
-		// empty
-	}
+        return this.message;
+    }
 
-	public void clear() {
-	}
+    public Set<String> getRoles() {
 
-	@SuppressWarnings("unused")
-	public boolean containsKey(Object key) {
-		return false;
-	}
+        return null;
+    }
 
-	@SuppressWarnings("unused")
-	public boolean containsValue(Object value) {
-		return false;
-	}
+    public void setMessage(SOAPMessage message) {
 
-	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-		return null;
-	}
+        this.message = message;
+    }
 
-	public Object get(Object key) {
-		return this.properties.get(key);
-	}
+    @SuppressWarnings("unused")
+    public Scope getScope(String scope) {
 
-	public boolean isEmpty() {
-		return false;
-	}
+        return null;
+    }
 
-	public Set<String> keySet() {
-		return null;
-	}
+    @SuppressWarnings("unused")
+    public void setScope(String scopeName, Scope scope) {
 
-	public Object put(String key, Object value) {
-		LOG.debug("put: " + key);
-		return this.properties.put(key, value);
-	}
+        // empty
+    }
 
-	@SuppressWarnings("unused")
-	public void putAll(Map<? extends String, ? extends Object> t) {
-	}
+    public void clear() {
 
-	@SuppressWarnings("unused")
-	public Object remove(Object key) {
-		return null;
-	}
+    }
 
-	public int size() {
-		return 0;
-	}
+    @SuppressWarnings("unused")
+    public boolean containsKey(Object key) {
 
-	public Collection<Object> values() {
-		return null;
-	}
+        return false;
+    }
+
+    @SuppressWarnings("unused")
+    public boolean containsValue(Object value) {
+
+        return false;
+    }
+
+    public Set<java.util.Map.Entry<String, Object>> entrySet() {
+
+        return null;
+    }
+
+    public Object get(Object key) {
+
+        return this.properties.get(key);
+    }
+
+    public boolean isEmpty() {
+
+        return false;
+    }
+
+    public Set<String> keySet() {
+
+        return null;
+    }
+
+    public Object put(String key, Object value) {
+
+        LOG.debug("put: " + key);
+        return this.properties.put(key, value);
+    }
+
+    @SuppressWarnings("unused")
+    public void putAll(Map<? extends String, ? extends Object> t) {
+
+    }
+
+    @SuppressWarnings("unused")
+    public Object remove(Object key) {
+
+        return null;
+    }
+
+    public int size() {
+
+        return 0;
+    }
+
+    public Collection<Object> values() {
+
+        return null;
+    }
 }

@@ -12,37 +12,38 @@ import javax.faces.validator.ValidatorException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class EqualValidator implements Validator {
 
-	private static final Log LOG = LogFactory.getLog(EqualValidator.class);
+    private static final Log LOG = LogFactory.getLog(EqualValidator.class);
 
-	public void validate(FacesContext context, UIComponent component,
-			Object value) throws ValidatorException {
 
-		String confirm = (String) value;
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
-		String textId = (String) component.getAttributes().get("for");
+        String confirm = (String) value;
 
-		String message = (String) component.getAttributes().get("message");
+        String textId = (String) component.getAttributes().get("for");
 
-		UIInput input = (UIInput) context.getViewRoot().findComponent(textId);
+        String message = (String) component.getAttributes().get("message");
 
-		String text = (String) input.getValue();
+        UIInput input = (UIInput) context.getViewRoot().findComponent(textId);
 
-		if (text == null || confirm == null)
-			return;
-		else if (text.equals(confirm))
-			return;
+        String text = (String) input.getValue();
 
-		FacesMessage facesMessage;
-		if (null == message) {
-			ResourceBundle messages = TaglibUtil.getResourceBundle(context);
-			facesMessage = new FacesMessage(messages.getString("notEqual"));
-		} else {
-			facesMessage = new FacesMessage(message);
-		}
-		LOG.error("fields are not equal");
-		throw new ValidatorException(facesMessage);
-	}
+        if (text == null || confirm == null)
+            return;
+        else if (text.equals(confirm))
+            return;
+
+        FacesMessage facesMessage;
+        if (null == message) {
+            ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+            facesMessage = new FacesMessage(messages.getString("notEqual"));
+        } else {
+            facesMessage = new FacesMessage(message);
+        }
+        LOG.error("fields are not equal");
+        throw new ValidatorException(facesMessage);
+    }
 
 }

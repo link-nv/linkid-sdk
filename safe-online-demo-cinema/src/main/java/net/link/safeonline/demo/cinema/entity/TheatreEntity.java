@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+
 @Entity
 @NamedQueries( {
         @NamedQuery(name = TheatreEntity.getAll, query = "SELECT t FROM TheatreEntity t"),

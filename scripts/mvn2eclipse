@@ -29,7 +29,7 @@ cd "${0%/*}/.."
 # Setup and parse arguments.
 noMaven=0
 nonGnuSed=$(sed -i '' /dev/null >/dev/null 2>&1; [[ $? != 4 ]] && echo 1)
-for arg in $(getArgs m "$@"); do
+for arg in $(getArgs M "$@"); do
     case $arg in
         M) noMaven=1    ;;
     esac

@@ -21,50 +21,52 @@ import org.apache.axis.client.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class EncapAdministrationClientImpl implements EncapAdministrationClient {
 
-	private final static Log LOG = LogFactory
-			.getLog(EncapAdministrationClientImpl.class);
+    private final static Log                        LOG = LogFactory.getLog(EncapAdministrationClientImpl.class);
 
-	private MSecBankIdAdministrationSoapBindingStub adminStub;
+    private MSecBankIdAdministrationSoapBindingStub adminStub;
 
-	public EncapAdministrationClientImpl(String location) throws AxisFault,
-			MalformedURLException {
-		URL endpointURL = new URL("http://" + location
-				+ "/services/mSecBankIdAdministration");
-		this.adminStub = new MSecBankIdAdministrationSoapBindingStub(
-				endpointURL, new Service());
-	}
 
-	public boolean lock(String mobile, String orgId) throws RemoteException {
-		LOG.debug("lock mobile: " + mobile);
-		MSecResponse response = this.adminStub.lock(mobile, orgId);
-		if (EncapConstants.ENCAP_SUCCES == response.getStatus())
-			return true;
-		return false;
-	}
+    public EncapAdministrationClientImpl(String location) throws AxisFault, MalformedURLException {
 
-	public boolean remove(String mobile, String orgId) throws RemoteException {
-		LOG.debug("remove mobile: " + mobile);
-		MSecResponse response = this.adminStub.remove(mobile, orgId);
-		if (EncapConstants.ENCAP_SUCCES == response.getStatus())
-			return true;
-		return false;
-	}
+        URL endpointURL = new URL("http://" + location + "/services/mSecBankIdAdministration");
+        this.adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL, new Service());
+    }
 
-	public String showStatus(String mobile, String orgId)
-			throws RemoteException {
-		LOG.debug("show status mobile: " + mobile);
-		MSecResponse response = this.adminStub.showStatus(mobile, orgId);
-		return response.getAdditionalInfo();
-	}
+    public boolean lock(String mobile, String orgId) throws RemoteException {
 
-	public boolean unLock(String mobile, String orgId) throws RemoteException {
-		LOG.debug("unLock mobile: " + mobile);
-		MSecResponse response = this.adminStub.unLock(mobile, orgId);
-		if (EncapConstants.ENCAP_SUCCES == response.getStatus())
-			return true;
-		return false;
-	}
+        LOG.debug("lock mobile: " + mobile);
+        MSecResponse response = this.adminStub.lock(mobile, orgId);
+        if (EncapConstants.ENCAP_SUCCES == response.getStatus())
+            return true;
+        return false;
+    }
+
+    public boolean remove(String mobile, String orgId) throws RemoteException {
+
+        LOG.debug("remove mobile: " + mobile);
+        MSecResponse response = this.adminStub.remove(mobile, orgId);
+        if (EncapConstants.ENCAP_SUCCES == response.getStatus())
+            return true;
+        return false;
+    }
+
+    public String showStatus(String mobile, String orgId) throws RemoteException {
+
+        LOG.debug("show status mobile: " + mobile);
+        MSecResponse response = this.adminStub.showStatus(mobile, orgId);
+        return response.getAdditionalInfo();
+    }
+
+    public boolean unLock(String mobile, String orgId) throws RemoteException {
+
+        LOG.debug("unLock mobile: " + mobile);
+        MSecResponse response = this.adminStub.unLock(mobile, orgId);
+        if (EncapConstants.ENCAP_SUCCES == response.getStatus())
+            return true;
+        return false;
+    }
 
 }

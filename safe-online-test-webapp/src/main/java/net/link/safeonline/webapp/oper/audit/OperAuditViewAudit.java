@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.audit;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperAuditViewAudit extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/audit/audit-view-audit.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/audit/audit-view-audit.seam";
 
-	public OperAuditViewAudit() {
-		super(PAGE_NAME);
-	}
+
+    public OperAuditViewAudit() {
+
+        super(PAGE_NAME);
+    }
 }

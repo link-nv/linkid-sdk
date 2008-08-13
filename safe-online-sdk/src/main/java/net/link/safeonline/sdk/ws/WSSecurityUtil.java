@@ -13,26 +13,25 @@ import javax.xml.soap.SOAPFactory;
 import javax.xml.soap.SOAPFault;
 import javax.xml.ws.soap.SOAPFaultException;
 
+
 public class WSSecurityUtil {
 
-	private WSSecurityUtil() {
-		// empty
-	}
+    private WSSecurityUtil() {
 
-	public static SOAPFaultException createSOAPFaultException(
-			String faultString, String wsseFaultCode) {
-		SOAPFault soapFault;
-		try {
-			SOAPFactory soapFactory = SOAPFactory.newInstance();
-			soapFault = soapFactory
-					.createFault(
-							faultString,
-							new QName(
-									"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-									wsseFaultCode, "wsse"));
-		} catch (SOAPException e) {
-			throw new RuntimeException("SOAP error");
-		}
-		return new SOAPFaultException(soapFault);
-	}
+        // empty
+    }
+
+    public static SOAPFaultException createSOAPFaultException(String faultString, String wsseFaultCode) {
+
+        SOAPFault soapFault;
+        try {
+            SOAPFactory soapFactory = SOAPFactory.newInstance();
+            soapFault = soapFactory.createFault(faultString, new QName(
+                    "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", wsseFaultCode,
+                    "wsse"));
+        } catch (SOAPException e) {
+            throw new RuntimeException("SOAP error");
+        }
+        return new SOAPFaultException(soapFault);
+    }
 }

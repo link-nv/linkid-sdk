@@ -13,25 +13,25 @@ import javax.xml.namespace.QName;
 
 import net.lin_k.safe_online.notification.producer.NotificationProducerService;
 
+
 public class NotificationProducerServiceFactory {
 
-	private NotificationProducerServiceFactory() {
-		// empty
-	}
+    private NotificationProducerServiceFactory() {
 
-	public static NotificationProducerService newInstance() {
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
-		URL wsdlUrl = classLoader.getResource("notification-producer.wsdl");
-		if (null == wsdlUrl) {
-			throw new RuntimeException("Notification Producer WSDL not found");
-		}
+        // empty
+    }
 
-		NotificationProducerService service = new NotificationProducerService(
-				wsdlUrl, new QName(
-						"urn:net:lin-k:safe-online:notification:producer",
-						"NotificationProducerService"));
+    public static NotificationProducerService newInstance() {
 
-		return service;
-	}
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URL wsdlUrl = classLoader.getResource("notification-producer.wsdl");
+        if (null == wsdlUrl) {
+            throw new RuntimeException("Notification Producer WSDL not found");
+        }
+
+        NotificationProducerService service = new NotificationProducerService(wsdlUrl, new QName(
+                "urn:net:lin-k:safe-online:notification:producer", "NotificationProducerService"));
+
+        return service;
+    }
 }

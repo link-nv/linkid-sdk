@@ -9,14 +9,16 @@ package net.link.safeonline.demo.payment;
 
 public class PaymentConstants {
 
-	private PaymentConstants() {
-		// empty
-	}
+    private PaymentConstants() {
 
-	public static final String SECURITY_DOMAIN = "demo-payment";
+        // empty
+    }
 
-	public static final String USER_ROLE = "user";
 
-	public static final String ADMIN_ROLE = "admin";
+    public static final String SECURITY_DOMAIN = "demo-payment";
+
+    public static final String USER_ROLE       = "user";
+
+    public static final String ADMIN_ROLE      = "admin";
 
 }

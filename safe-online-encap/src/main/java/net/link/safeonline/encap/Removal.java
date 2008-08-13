@@ -18,28 +18,27 @@ import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 
+
 @Local
 public interface Removal {
 
-	/*
-	 * Accessors.
-	 */
-	/*
-	 * Actions.
-	 */
-	String mobileRemove() throws SubjectNotFoundException, MobileException,
-			MalformedURLException, IOException;
+    /*
+     * Accessors.
+     */
+    /*
+     * Actions.
+     */
+    String mobileRemove() throws SubjectNotFoundException, MobileException, MalformedURLException, IOException;
 
-	String mobileCancel() throws IOException;
+    String mobileCancel() throws IOException;
 
-	/*
-	 * Factories
-	 */
-	List<AttributeDO> mobileAttributesFactory()
-			throws SubjectNotFoundException, DeviceNotFoundException;
+    /*
+     * Factories
+     */
+    List<AttributeDO> mobileAttributesFactory() throws SubjectNotFoundException, DeviceNotFoundException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

@@ -31,143 +31,156 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 
+
 public class AuthNewUser extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/new-user.seam";
+    public static final String  PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/new-user.seam";
 
-	private static final String CAPTCHA = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/captcha.jpg";
+    private static final String CAPTCHA   = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/captcha.jpg";
 
-	AcceptanceTestManager acceptanceTestManager;
+    AcceptanceTestManager       acceptanceTestManager;
 
-	String captcha;
+    String                      captcha;
 
-	public AuthNewUser() {
-		super(PAGE_NAME);
-	}
 
-	public void setLogin(String login) {
-		fillInputField("login", login);
-	}
+    public AuthNewUser() {
 
-	public void setCaptcha(AcceptanceTestManager acceptanceTestManager) {
-		this.acceptanceTestManager = acceptanceTestManager;
-		getCaptcha();
-		fillInputField("captcha", this.captcha);
-	}
+        super(PAGE_NAME);
+    }
 
-	public AuthNewUserDevice register() {
-		clickButtonAndWait("register");
-		return new AuthNewUserDevice();
-	}
+    public void setLogin(String login) {
 
-	private void getCaptcha() {
-		String jSessionId = getJSessionID();
-		LOG.debug("session id: " + jSessionId);
-		JFrame captchaFrame = new CaptchaFrame(jSessionId);
-		while (captchaFrame.isShowing())
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				Assert.fail("Thread interrupted");
-			}
-		if (null == this.captcha)
-			this.captcha = "";
-	}
+        fillInputField("login", login);
+    }
 
-	private String getJSessionID() {
-		String cookies = Page.getSelenium().getCookie();
-		if (cookies.indexOf("JSESSIONID") == -1)
-			return null;
-		StringTokenizer st = new StringTokenizer(cookies);
-		while (st.hasMoreTokens()) {
-			StringTokenizer st2 = new StringTokenizer(st.nextToken(), "=");
-			while (st2.hasMoreTokens()) {
-				String key = st2.nextToken();
-				String val = st2.nextToken();
-				if (key.equals("JSESSIONID"))
-					return val;
-			}
-		}
-		return null;
-	}
+    public void setCaptcha(AcceptanceTestManager acceptanceTestManager) {
 
-	private class CaptchaFrame extends JFrame {
+        this.acceptanceTestManager = acceptanceTestManager;
+        getCaptcha();
+        fillInputField("captcha", this.captcha);
+    }
 
-		private static final long serialVersionUID = 1L;
+    public AuthNewUserDevice register() {
 
-		private JLabel label = new JLabel();
-		private JTextField captchaText = new JTextField(15);
-		private JButton refresh = new JButton("Refresh");
-		private JButton submit = new JButton("Submit");
+        clickButtonAndWait("register");
+        return new AuthNewUserDevice();
+    }
 
-		private String jSessionId;
+    private void getCaptcha() {
 
-		public CaptchaFrame(String jSessionId) {
-			this.jSessionId = jSessionId;
-			loadCaptcha();
+        String jSessionId = getJSessionID();
+        LOG.debug("session id: " + jSessionId);
+        JFrame captchaFrame = new CaptchaFrame(jSessionId);
+        while (captchaFrame.isShowing())
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Assert.fail("Thread interrupted");
+            }
+        if (null == this.captcha)
+            this.captcha = "";
+    }
 
-			JPanel imagePanel = new JPanel(new FlowLayout());
-			imagePanel.add(this.label);
-			imagePanel.add(this.refresh);
+    private String getJSessionID() {
 
-			JPanel inputPanel = new JPanel(new FlowLayout());
-			inputPanel.add(this.captchaText);
-			inputPanel.add(this.submit);
+        String cookies = Page.getSelenium().getCookie();
+        if (cookies.indexOf("JSESSIONID") == -1)
+            return null;
+        StringTokenizer st = new StringTokenizer(cookies);
+        while (st.hasMoreTokens()) {
+            StringTokenizer st2 = new StringTokenizer(st.nextToken(), "=");
+            while (st2.hasMoreTokens()) {
+                String key = st2.nextToken();
+                String val = st2.nextToken();
+                if (key.equals("JSESSIONID"))
+                    return val;
+            }
+        }
+        return null;
+    }
 
-			this.getContentPane().add(imagePanel, BorderLayout.CENTER);
-			this.getContentPane().add(inputPanel, BorderLayout.SOUTH);
-			this.setTitle("Captcha");
-			this.pack();
-			this.setVisible(true);
 
-			handleEvents();
-		}
+    private class CaptchaFrame extends JFrame {
 
-		private void handleEvents() {
-			this.submit.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					AuthNewUser.this.captcha = getCaptchaText();
-					close();
-				}
-			});
+        private static final long serialVersionUID = 1L;
 
-			this.refresh.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					loadCaptcha();
-				}
-			});
-		}
+        private JLabel            label            = new JLabel();
+        private JTextField        captchaText      = new JTextField(15);
+        private JButton           refresh          = new JButton("Refresh");
+        private JButton           submit           = new JButton("Submit");
 
-		public void loadCaptcha() {
-			try {
-				HttpClient httpClient = new HttpClient();
-				HttpMethod method = new GetMethod(
-						AuthNewUser.this.acceptanceTestManager
-								.getSafeOnlineLocation()
-								+ CAPTCHA);
-				method.setRequestHeader("Cookie", "JSESSIONID="
-						+ this.jSessionId);
+        private String            jSessionId;
 
-				httpClient.executeMethod(method);
-				Image captchaImage = ImageIO.read(method
-						.getResponseBodyAsStream());
-				this.label.setIcon(new ImageIcon(captchaImage));
 
-			} catch (IOException e) {
-				return;
-			}
-		}
+        public CaptchaFrame(String jSessionId) {
 
-		public String getCaptchaText() {
-			return this.captchaText.getText();
-		}
+            this.jSessionId = jSessionId;
+            loadCaptcha();
 
-		public void close() {
-			this.dispose();
-		}
+            JPanel imagePanel = new JPanel(new FlowLayout());
+            imagePanel.add(this.label);
+            imagePanel.add(this.refresh);
 
-	}
+            JPanel inputPanel = new JPanel(new FlowLayout());
+            inputPanel.add(this.captchaText);
+            inputPanel.add(this.submit);
+
+            this.getContentPane().add(imagePanel, BorderLayout.CENTER);
+            this.getContentPane().add(inputPanel, BorderLayout.SOUTH);
+            this.setTitle("Captcha");
+            this.pack();
+            this.setVisible(true);
+
+            handleEvents();
+        }
+
+        private void handleEvents() {
+
+            this.submit.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+
+                    AuthNewUser.this.captcha = getCaptchaText();
+                    close();
+                }
+            });
+
+            this.refresh.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+
+                    loadCaptcha();
+                }
+            });
+        }
+
+        public void loadCaptcha() {
+
+            try {
+                HttpClient httpClient = new HttpClient();
+                HttpMethod method = new GetMethod(AuthNewUser.this.acceptanceTestManager.getSafeOnlineLocation()
+                        + CAPTCHA);
+                method.setRequestHeader("Cookie", "JSESSIONID=" + this.jSessionId);
+
+                httpClient.executeMethod(method);
+                Image captchaImage = ImageIO.read(method.getResponseBodyAsStream());
+                this.label.setIcon(new ImageIcon(captchaImage));
+
+            } catch (IOException e) {
+                return;
+            }
+        }
+
+        public String getCaptchaText() {
+
+            return this.captchaText.getText();
+        }
+
+        public void close() {
+
+            this.dispose();
+        }
+
+    }
 
 }

@@ -63,6 +63,7 @@ import org.opensaml.xml.signature.impl.SignatureBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+
 /**
  * Factory for SAML2 authentication responses.
  * 
@@ -71,439 +72,375 @@ import org.w3c.dom.Element;
  */
 public class AuthnResponseFactory {
 
-	static {
-		/*
-		 * Next is because Sun loves to endorse crippled versions of Xerces.
-		 */
-		System
-				.setProperty(
-						"javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
-						"org.apache.xerces.jaxp.validation.XMLSchemaFactory");
-		try {
-			DefaultBootstrap.bootstrap();
-		} catch (ConfigurationException e) {
-			throw new RuntimeException(
-					"could not bootstrap the OpenSAML2 library");
-		}
-	}
+    static {
+        /*
+         * Next is because Sun loves to endorse crippled versions of Xerces.
+         */
+        System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+                "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+        try {
+            DefaultBootstrap.bootstrap();
+        } catch (ConfigurationException e) {
+            throw new RuntimeException("could not bootstrap the OpenSAML2 library");
+        }
+    }
 
-	private AuthnResponseFactory() {
-		// empty
-	}
 
-	/**
-	 * Creates a signed authentication response.
-	 * 
-	 * @param audienceName
-	 *            This can be or the application name authenticated for, or the
-	 *            device operation executed
-	 */
-	public static String createAuthResponse(String inResponseTo,
-			String audienceName, String issuerName, String subjectName,
-			String samlName, KeyPair signerKeyPair, int validity, String target) {
-		if (null == signerKeyPair) {
-			throw new IllegalArgumentException(
-					"signer key pair should not be null");
-		}
-		if (null == issuerName) {
-			throw new IllegalArgumentException("issuer name should not be null");
-		}
-		if (null == subjectName) {
-			throw new IllegalArgumentException(
-					"subject name should not be null");
-		}
-		if (null == audienceName) {
-			throw new IllegalArgumentException(
-					"audience name should not be null");
-		}
+    private AuthnResponseFactory() {
 
-		Response response = buildXMLObject(Response.class,
-				Response.DEFAULT_ELEMENT_NAME);
+        // empty
+    }
 
-		DateTime now = new DateTime();
+    /**
+     * Creates a signed authentication response.
+     * 
+     * @param audienceName
+     *            This can be or the application name authenticated for, or the device operation executed
+     */
+    public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName,
+            String subjectName, String samlName, KeyPair signerKeyPair, int validity, String target) {
 
-		SecureRandomIdentifierGenerator idGenerator;
-		try {
-			idGenerator = new SecureRandomIdentifierGenerator();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("secure random init error: "
-					+ e.getMessage(), e);
-		}
-		response.setID(idGenerator.generateIdentifier());
-		response.setVersion(SAMLVersion.VERSION_20);
-		response.setInResponseTo(inResponseTo);
-		response.setIssueInstant(now);
+        if (null == signerKeyPair) {
+            throw new IllegalArgumentException("signer key pair should not be null");
+        }
+        if (null == issuerName) {
+            throw new IllegalArgumentException("issuer name should not be null");
+        }
+        if (null == subjectName) {
+            throw new IllegalArgumentException("subject name should not be null");
+        }
+        if (null == audienceName) {
+            throw new IllegalArgumentException("audience name should not be null");
+        }
 
-		Issuer responseIssuer = buildXMLObject(Issuer.class,
-				Issuer.DEFAULT_ELEMENT_NAME);
-		responseIssuer.setValue(issuerName);
-		response.setIssuer(responseIssuer);
+        Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
-		response.setDestination(target);
+        DateTime now = new DateTime();
 
-		Status status = buildXMLObject(Status.class,
-				Status.DEFAULT_ELEMENT_NAME);
-		StatusCode statusCode = buildXMLObject(StatusCode.class,
-				StatusCode.DEFAULT_ELEMENT_NAME);
-		statusCode.setValue(StatusCode.SUCCESS_URI);
-		status.setStatusCode(statusCode);
-		response.setStatus(status);
+        SecureRandomIdentifierGenerator idGenerator;
+        try {
+            idGenerator = new SecureRandomIdentifierGenerator();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
+        }
+        response.setID(idGenerator.generateIdentifier());
+        response.setVersion(SAMLVersion.VERSION_20);
+        response.setInResponseTo(inResponseTo);
+        response.setIssueInstant(now);
 
-		addAssertion(response, inResponseTo, audienceName, subjectName,
-				issuerName, samlName, validity, target);
+        Issuer responseIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
+        responseIssuer.setValue(issuerName);
+        response.setIssuer(responseIssuer);
 
-		return signAuthnResponse(response, signerKeyPair);
-	}
+        response.setDestination(target);
 
-	/**
-	 * Creates a signed authentication response with status failed.
-	 */
-	public static String createAuthResponseFailed(String inResponseTo,
-			String issuerName, KeyPair signerKeyPair, String target) {
-		if (null == signerKeyPair) {
-			throw new IllegalArgumentException(
-					"signer key pair should not be null");
-		}
-		if (null == issuerName) {
-			throw new IllegalArgumentException("issuer name should not be null");
-		}
+        Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
+        StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
+        statusCode.setValue(StatusCode.SUCCESS_URI);
+        status.setStatusCode(statusCode);
+        response.setStatus(status);
 
-		Response response = buildXMLObject(Response.class,
-				Response.DEFAULT_ELEMENT_NAME);
+        addAssertion(response, inResponseTo, audienceName, subjectName, issuerName, samlName, validity, target);
 
-		DateTime now = new DateTime();
+        return signAuthnResponse(response, signerKeyPair);
+    }
 
-		SecureRandomIdentifierGenerator idGenerator;
-		try {
-			idGenerator = new SecureRandomIdentifierGenerator();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("secure random init error: "
-					+ e.getMessage(), e);
-		}
-		response.setID(idGenerator.generateIdentifier());
-		response.setVersion(SAMLVersion.VERSION_20);
-		response.setInResponseTo(inResponseTo);
-		response.setIssueInstant(now);
+    /**
+     * Creates a signed authentication response with status failed.
+     */
+    public static String createAuthResponseFailed(String inResponseTo, String issuerName, KeyPair signerKeyPair,
+            String target) {
 
-		Issuer responseIssuer = buildXMLObject(Issuer.class,
-				Issuer.DEFAULT_ELEMENT_NAME);
-		responseIssuer.setValue(issuerName);
-		response.setIssuer(responseIssuer);
+        if (null == signerKeyPair) {
+            throw new IllegalArgumentException("signer key pair should not be null");
+        }
+        if (null == issuerName) {
+            throw new IllegalArgumentException("issuer name should not be null");
+        }
 
-		response.setDestination(target);
+        Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
-		Status status = buildXMLObject(Status.class,
-				Status.DEFAULT_ELEMENT_NAME);
-		StatusCode statusCode = buildXMLObject(StatusCode.class,
-				StatusCode.DEFAULT_ELEMENT_NAME);
-		statusCode.setValue(StatusCode.AUTHN_FAILED_URI);
-		status.setStatusCode(statusCode);
-		response.setStatus(status);
+        DateTime now = new DateTime();
 
-		return signAuthnResponse(response, signerKeyPair);
-	}
+        SecureRandomIdentifierGenerator idGenerator;
+        try {
+            idGenerator = new SecureRandomIdentifierGenerator();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
+        }
+        response.setID(idGenerator.generateIdentifier());
+        response.setVersion(SAMLVersion.VERSION_20);
+        response.setInResponseTo(inResponseTo);
+        response.setIssueInstant(now);
 
-	/**
-	 * Creates a signed authentication response with status unknown principal,
-	 * indicating user requests a registration.
-	 */
-	public static String createAuthResponseRequestRegistration(
-			String inResponseTo, String issuerName, KeyPair signerKeyPair,
-			String target) {
-		if (null == signerKeyPair) {
-			throw new IllegalArgumentException(
-					"signer key pair should not be null");
-		}
-		if (null == issuerName) {
-			throw new IllegalArgumentException("issuer name should not be null");
-		}
+        Issuer responseIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
+        responseIssuer.setValue(issuerName);
+        response.setIssuer(responseIssuer);
 
-		Response response = buildXMLObject(Response.class,
-				Response.DEFAULT_ELEMENT_NAME);
+        response.setDestination(target);
 
-		DateTime now = new DateTime();
+        Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
+        StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
+        statusCode.setValue(StatusCode.AUTHN_FAILED_URI);
+        status.setStatusCode(statusCode);
+        response.setStatus(status);
 
-		SecureRandomIdentifierGenerator idGenerator;
-		try {
-			idGenerator = new SecureRandomIdentifierGenerator();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("secure random init error: "
-					+ e.getMessage(), e);
-		}
-		response.setID(idGenerator.generateIdentifier());
-		response.setVersion(SAMLVersion.VERSION_20);
-		response.setInResponseTo(inResponseTo);
-		response.setIssueInstant(now);
+        return signAuthnResponse(response, signerKeyPair);
+    }
 
-		Issuer responseIssuer = buildXMLObject(Issuer.class,
-				Issuer.DEFAULT_ELEMENT_NAME);
-		responseIssuer.setValue(issuerName);
-		response.setIssuer(responseIssuer);
+    /**
+     * Creates a signed authentication response with status unknown principal, indicating user requests a registration.
+     */
+    public static String createAuthResponseRequestRegistration(String inResponseTo, String issuerName,
+            KeyPair signerKeyPair, String target) {
 
-		response.setDestination(target);
+        if (null == signerKeyPair) {
+            throw new IllegalArgumentException("signer key pair should not be null");
+        }
+        if (null == issuerName) {
+            throw new IllegalArgumentException("issuer name should not be null");
+        }
 
-		Status status = buildXMLObject(Status.class,
-				Status.DEFAULT_ELEMENT_NAME);
-		StatusCode statusCode = buildXMLObject(StatusCode.class,
-				StatusCode.DEFAULT_ELEMENT_NAME);
-		statusCode.setValue(StatusCode.UNKNOWN_PRINCIPAL_URI);
-		status.setStatusCode(statusCode);
-		response.setStatus(status);
+        Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
-		return signAuthnResponse(response, signerKeyPair);
-	}
+        DateTime now = new DateTime();
 
-	/**
-	 * Creates a signed authentication response with status unsupported.
-	 */
-	public static String createAuthResponseUnsupported(String inResponseTo,
-			String issuerName, KeyPair signerKeyPair, String target) {
-		if (null == signerKeyPair) {
-			throw new IllegalArgumentException(
-					"signer key pair should not be null");
-		}
-		if (null == issuerName) {
-			throw new IllegalArgumentException("issuer name should not be null");
-		}
+        SecureRandomIdentifierGenerator idGenerator;
+        try {
+            idGenerator = new SecureRandomIdentifierGenerator();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
+        }
+        response.setID(idGenerator.generateIdentifier());
+        response.setVersion(SAMLVersion.VERSION_20);
+        response.setInResponseTo(inResponseTo);
+        response.setIssueInstant(now);
 
-		Response response = buildXMLObject(Response.class,
-				Response.DEFAULT_ELEMENT_NAME);
+        Issuer responseIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
+        responseIssuer.setValue(issuerName);
+        response.setIssuer(responseIssuer);
 
-		DateTime now = new DateTime();
+        response.setDestination(target);
 
-		SecureRandomIdentifierGenerator idGenerator;
-		try {
-			idGenerator = new SecureRandomIdentifierGenerator();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("secure random init error: "
-					+ e.getMessage(), e);
-		}
-		response.setID(idGenerator.generateIdentifier());
-		response.setVersion(SAMLVersion.VERSION_20);
-		response.setInResponseTo(inResponseTo);
-		response.setIssueInstant(now);
+        Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
+        StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
+        statusCode.setValue(StatusCode.UNKNOWN_PRINCIPAL_URI);
+        status.setStatusCode(statusCode);
+        response.setStatus(status);
 
-		Issuer responseIssuer = buildXMLObject(Issuer.class,
-				Issuer.DEFAULT_ELEMENT_NAME);
-		responseIssuer.setValue(issuerName);
-		response.setIssuer(responseIssuer);
+        return signAuthnResponse(response, signerKeyPair);
+    }
 
-		response.setDestination(target);
+    /**
+     * Creates a signed authentication response with status unsupported.
+     */
+    public static String createAuthResponseUnsupported(String inResponseTo, String issuerName, KeyPair signerKeyPair,
+            String target) {
 
-		Status status = buildXMLObject(Status.class,
-				Status.DEFAULT_ELEMENT_NAME);
-		StatusCode statusCode = buildXMLObject(StatusCode.class,
-				StatusCode.DEFAULT_ELEMENT_NAME);
-		statusCode.setValue(StatusCode.REQUEST_UNSUPPORTED_URI);
-		status.setStatusCode(statusCode);
-		response.setStatus(status);
+        if (null == signerKeyPair) {
+            throw new IllegalArgumentException("signer key pair should not be null");
+        }
+        if (null == issuerName) {
+            throw new IllegalArgumentException("issuer name should not be null");
+        }
 
-		return signAuthnResponse(response, signerKeyPair);
-	}
+        Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
-	/**
-	 * Adds an assertion to the unsigned response.
-	 * 
-	 * @param response
-	 * @param subjectName
-	 * @param audienceName
-	 *            This can be or the application name authenticated for, or the
-	 *            device operation executed
-	 */
-	private static void addAssertion(Response response, String inResponseTo,
-			String audienceName, String subjectName, String issuerName,
-			String samlName, int validity, String target) {
+        DateTime now = new DateTime();
 
-		DateTime now = new DateTime();
-		DateTime notAfter = now.plusSeconds(validity);
+        SecureRandomIdentifierGenerator idGenerator;
+        try {
+            idGenerator = new SecureRandomIdentifierGenerator();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
+        }
+        response.setID(idGenerator.generateIdentifier());
+        response.setVersion(SAMLVersion.VERSION_20);
+        response.setInResponseTo(inResponseTo);
+        response.setIssueInstant(now);
 
-		SecureRandomIdentifierGenerator idGenerator;
-		try {
-			idGenerator = new SecureRandomIdentifierGenerator();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("secure random init error: "
-					+ e.getMessage(), e);
-		}
+        Issuer responseIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
+        responseIssuer.setValue(issuerName);
+        response.setIssuer(responseIssuer);
 
-		Assertion assertion = buildXMLObject(Assertion.class,
-				Assertion.DEFAULT_ELEMENT_NAME);
-		assertion.setID(idGenerator.generateIdentifier());
-		assertion.setIssueInstant(now);
-		response.getAssertions().add(assertion);
+        response.setDestination(target);
 
-		Issuer assertionIssuer = buildXMLObject(Issuer.class,
-				Issuer.DEFAULT_ELEMENT_NAME);
-		assertionIssuer.setValue(issuerName);
-		assertion.setIssuer(assertionIssuer);
+        Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
+        StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
+        statusCode.setValue(StatusCode.REQUEST_UNSUPPORTED_URI);
+        status.setStatusCode(statusCode);
+        response.setStatus(status);
 
-		Subject subject = buildXMLObject(Subject.class,
-				Subject.DEFAULT_ELEMENT_NAME);
-		NameID nameID = buildXMLObject(NameID.class,
-				NameID.DEFAULT_ELEMENT_NAME);
-		nameID.setValue(subjectName);
-		nameID
-				.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent");
-		subject.setNameID(nameID);
-		assertion.setSubject(subject);
+        return signAuthnResponse(response, signerKeyPair);
+    }
 
-		Conditions conditions = buildXMLObject(Conditions.class,
-				Conditions.DEFAULT_ELEMENT_NAME);
-		conditions.setNotBefore(now);
-		conditions.setNotOnOrAfter(notAfter);
-		List<AudienceRestriction> audienceRestrictions = conditions
-				.getAudienceRestrictions();
-		AudienceRestriction audienceRestriction = buildXMLObject(
-				AudienceRestriction.class,
-				AudienceRestriction.DEFAULT_ELEMENT_NAME);
-		audienceRestrictions.add(audienceRestriction);
-		List<Audience> audiences = audienceRestriction.getAudiences();
-		Audience audience = buildXMLObject(Audience.class,
-				Audience.DEFAULT_ELEMENT_NAME);
-		audiences.add(audience);
-		audience.setAudienceURI(audienceName);
-		assertion.setConditions(conditions);
+    /**
+     * Adds an assertion to the unsigned response.
+     * 
+     * @param response
+     * @param subjectName
+     * @param audienceName
+     *            This can be or the application name authenticated for, or the device operation executed
+     */
+    private static void addAssertion(Response response, String inResponseTo, String audienceName, String subjectName,
+            String issuerName, String samlName, int validity, String target) {
 
-		List<SubjectConfirmation> subjectConfirmations = subject
-				.getSubjectConfirmations();
-		SubjectConfirmation subjectConfirmation = buildXMLObject(
-				SubjectConfirmation.class,
-				SubjectConfirmation.DEFAULT_ELEMENT_NAME);
-		subjectConfirmation.setMethod("urn:oasis:names:tc:SAML:2.0:cm:bearer");
-		SubjectConfirmationData subjectConfirmationData = buildXMLObject(
-				SubjectConfirmationData.class,
-				SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
-		subjectConfirmationData.setRecipient(target);
-		subjectConfirmationData.setInResponseTo(inResponseTo);
-		subjectConfirmationData.setNotBefore(now);
-		subjectConfirmationData.setNotOnOrAfter(notAfter);
-		subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
-		subjectConfirmations.add(subjectConfirmation);
+        DateTime now = new DateTime();
+        DateTime notAfter = now.plusSeconds(validity);
 
-		AuthnStatement authnStatement = buildXMLObject(AuthnStatement.class,
-				AuthnStatement.DEFAULT_ELEMENT_NAME);
-		assertion.getAuthnStatements().add(authnStatement);
-		authnStatement.setAuthnInstant(now);
-		AuthnContext authnContext = buildXMLObject(AuthnContext.class,
-				AuthnContext.DEFAULT_ELEMENT_NAME);
-		authnStatement.setAuthnContext(authnContext);
+        SecureRandomIdentifierGenerator idGenerator;
+        try {
+            idGenerator = new SecureRandomIdentifierGenerator();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
+        }
 
-		AuthnContextClassRef authnContextClassRef = buildXMLObject(
-				AuthnContextClassRef.class,
-				AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
-		authnContext.setAuthnContextClassRef(authnContextClassRef);
-		authnContextClassRef.setAuthnContextClassRef(samlName);
-	}
+        Assertion assertion = buildXMLObject(Assertion.class, Assertion.DEFAULT_ELEMENT_NAME);
+        assertion.setID(idGenerator.generateIdentifier());
+        assertion.setIssueInstant(now);
+        response.getAssertions().add(assertion);
 
-	/**
-	 * Sign the unsigned authentication response.
-	 */
-	private static String signAuthnResponse(Response response,
-			KeyPair signerKeyPair) {
-		XMLObjectBuilderFactory builderFactory = Configuration
-				.getBuilderFactory();
-		SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
-				.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
-		Signature signature = signatureBuilder.buildObject();
-		signature
-				.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-		String algorithm = signerKeyPair.getPrivate().getAlgorithm();
-		if ("RSA".equals(algorithm)) {
-			signature
-					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
-		} else if ("DSA".equals(algorithm)) {
-			signature
-					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
-		}
-		response.setSignature(signature);
-		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
-				signerKeyPair.getPublic(), signerKeyPair.getPrivate());
-		signature.setSigningCredential(signingCredential);
+        Issuer assertionIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
+        assertionIssuer.setValue(issuerName);
+        assertion.setIssuer(assertionIssuer);
 
-		// marshalling
-		MarshallerFactory marshallerFactory = Configuration
-				.getMarshallerFactory();
-		Marshaller marshaller = marshallerFactory.getMarshaller(response);
-		Element requestElement;
-		try {
-			requestElement = marshaller.marshall(response);
-		} catch (MarshallingException e) {
-			throw new RuntimeException("opensaml2 marshalling error: "
-					+ e.getMessage(), e);
-		}
+        Subject subject = buildXMLObject(Subject.class, Subject.DEFAULT_ELEMENT_NAME);
+        NameID nameID = buildXMLObject(NameID.class, NameID.DEFAULT_ELEMENT_NAME);
+        nameID.setValue(subjectName);
+        nameID.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent");
+        subject.setNameID(nameID);
+        assertion.setSubject(subject);
 
-		// sign after marshaling of course
-		try {
-			Signer.signObject(signature);
-		} catch (SignatureException e) {
-			throw new RuntimeException("opensaml2 signing error: "
-					+ e.getMessage(), e);
-		}
+        Conditions conditions = buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
+        conditions.setNotBefore(now);
+        conditions.setNotOnOrAfter(notAfter);
+        List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
+        AudienceRestriction audienceRestriction = buildXMLObject(AudienceRestriction.class,
+                AudienceRestriction.DEFAULT_ELEMENT_NAME);
+        audienceRestrictions.add(audienceRestriction);
+        List<Audience> audiences = audienceRestriction.getAudiences();
+        Audience audience = buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
+        audiences.add(audience);
+        audience.setAudienceURI(audienceName);
+        assertion.setConditions(conditions);
 
-		String result;
-		try {
-			result = DomUtils.domToString(requestElement);
-		} catch (TransformerException e) {
-			throw new RuntimeException(
-					"DOM to string error: " + e.getMessage(), e);
-		}
-		return result;
-	}
+        List<SubjectConfirmation> subjectConfirmations = subject.getSubjectConfirmations();
+        SubjectConfirmation subjectConfirmation = buildXMLObject(SubjectConfirmation.class,
+                SubjectConfirmation.DEFAULT_ELEMENT_NAME);
+        subjectConfirmation.setMethod("urn:oasis:names:tc:SAML:2.0:cm:bearer");
+        SubjectConfirmationData subjectConfirmationData = buildXMLObject(SubjectConfirmationData.class,
+                SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
+        subjectConfirmationData.setRecipient(target);
+        subjectConfirmationData.setInResponseTo(inResponseTo);
+        subjectConfirmationData.setNotBefore(now);
+        subjectConfirmationData.setNotOnOrAfter(notAfter);
+        subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
+        subjectConfirmations.add(subjectConfirmation);
 
-	@SuppressWarnings("unused")
-	private static Document createPasswordDeclaration() {
-		ObjectFactory objectFactory = new ObjectFactory();
-		AuthnContextDeclarationBaseType authnContextDeclaration = objectFactory
-				.createAuthnContextDeclarationBaseType();
-		AuthnMethodBaseType authnMethod = objectFactory
-				.createAuthnMethodBaseType();
-		AuthenticatorBaseType authenticator = objectFactory
-				.createAuthenticatorBaseType();
-		authnMethod.setAuthenticator(authenticator);
-		AuthenticatorTransportProtocolType authenticatorTransportProtocol = objectFactory
-				.createAuthenticatorTransportProtocolType();
-		ExtensionOnlyType ssl = objectFactory.createExtensionOnlyType();
-		authenticatorTransportProtocol.setSSL(ssl);
-		authnMethod
-				.setAuthenticatorTransportProtocol(authenticatorTransportProtocol);
-		authnContextDeclaration.setAuthnMethod(authnMethod);
+        AuthnStatement authnStatement = buildXMLObject(AuthnStatement.class, AuthnStatement.DEFAULT_ELEMENT_NAME);
+        assertion.getAuthnStatements().add(authnStatement);
+        authnStatement.setAuthnInstant(now);
+        AuthnContext authnContext = buildXMLObject(AuthnContext.class, AuthnContext.DEFAULT_ELEMENT_NAME);
+        authnStatement.setAuthnContext(authnContext);
 
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-				.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder;
-		try {
-			documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("DOM error");
-		}
-		Document document = documentBuilder.newDocument();
+        AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class,
+                AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
+        authnContext.setAuthnContextClassRef(authnContextClassRef);
+        authnContextClassRef.setAuthnContextClassRef(samlName);
+    }
 
-		try {
-			JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-			javax.xml.bind.Marshaller marshaller = context.createMarshaller();
-			marshaller
-					.marshal(
-							objectFactory
-									.createAuthenticationContextDeclaration(authnContextDeclaration),
-							document);
-			return document;
-		} catch (JAXBException e) {
-			throw new RuntimeException("JAXB error: " + e.getMessage(), e);
-		}
-	}
+    /**
+     * Sign the unsigned authentication response.
+     */
+    private static String signAuthnResponse(Response response, KeyPair signerKeyPair) {
 
-	@SuppressWarnings("unchecked")
-	public static <Type extends SAMLObject> Type buildXMLObject(
-			@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
-		XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory()
-				.getBuilder(objectQName);
-		if (builder == null) {
-			throw new RuntimeException(
-					"Unable to retrieve builder for object QName "
-							+ objectQName);
-		}
-		Type object = builder.buildObject(objectQName.getNamespaceURI(),
-				objectQName.getLocalPart(), objectQName.getPrefix());
-		return object;
-	}
+        XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
+        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
+                .getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+        Signature signature = signatureBuilder.buildObject();
+        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+        String algorithm = signerKeyPair.getPrivate().getAlgorithm();
+        if ("RSA".equals(algorithm)) {
+            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
+        } else if ("DSA".equals(algorithm)) {
+            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
+        }
+        response.setSignature(signature);
+        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair
+                .getPrivate());
+        signature.setSigningCredential(signingCredential);
+
+        // marshalling
+        MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
+        Marshaller marshaller = marshallerFactory.getMarshaller(response);
+        Element requestElement;
+        try {
+            requestElement = marshaller.marshall(response);
+        } catch (MarshallingException e) {
+            throw new RuntimeException("opensaml2 marshalling error: " + e.getMessage(), e);
+        }
+
+        // sign after marshaling of course
+        try {
+            Signer.signObject(signature);
+        } catch (SignatureException e) {
+            throw new RuntimeException("opensaml2 signing error: " + e.getMessage(), e);
+        }
+
+        String result;
+        try {
+            result = DomUtils.domToString(requestElement);
+        } catch (TransformerException e) {
+            throw new RuntimeException("DOM to string error: " + e.getMessage(), e);
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unused")
+    private static Document createPasswordDeclaration() {
+
+        ObjectFactory objectFactory = new ObjectFactory();
+        AuthnContextDeclarationBaseType authnContextDeclaration = objectFactory.createAuthnContextDeclarationBaseType();
+        AuthnMethodBaseType authnMethod = objectFactory.createAuthnMethodBaseType();
+        AuthenticatorBaseType authenticator = objectFactory.createAuthenticatorBaseType();
+        authnMethod.setAuthenticator(authenticator);
+        AuthenticatorTransportProtocolType authenticatorTransportProtocol = objectFactory
+                .createAuthenticatorTransportProtocolType();
+        ExtensionOnlyType ssl = objectFactory.createExtensionOnlyType();
+        authenticatorTransportProtocol.setSSL(ssl);
+        authnMethod.setAuthenticatorTransportProtocol(authenticatorTransportProtocol);
+        authnContextDeclaration.setAuthnMethod(authnMethod);
+
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder documentBuilder;
+        try {
+            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException("DOM error");
+        }
+        Document document = documentBuilder.newDocument();
+
+        try {
+            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+            javax.xml.bind.Marshaller marshaller = context.createMarshaller();
+            marshaller.marshal(objectFactory.createAuthenticationContextDeclaration(authnContextDeclaration), document);
+            return document;
+        } catch (JAXBException e) {
+            throw new RuntimeException("JAXB error: " + e.getMessage(), e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz,
+            QName objectQName) {
+
+        XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
+        if (builder == null) {
+            throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
+        }
+        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
+                .getPrefix());
+        return object;
+    }
 }

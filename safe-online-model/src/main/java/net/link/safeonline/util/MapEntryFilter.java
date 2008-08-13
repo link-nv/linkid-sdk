@@ -9,6 +9,8 @@ package net.link.safeonline.util;
 
 import java.util.Map.Entry;
 
+
 public interface MapEntryFilter<KeyType, ValueType> {
-	boolean isAllowed(Entry<KeyType, ValueType> element);
+
+    boolean isAllowed(Entry<KeyType, ValueType> element);
 }

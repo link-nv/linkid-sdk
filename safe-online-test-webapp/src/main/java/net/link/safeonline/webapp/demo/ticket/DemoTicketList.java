@@ -10,17 +10,20 @@ package net.link.safeonline.webapp.demo.ticket;
 import net.link.safeonline.webapp.Page;
 import junit.framework.Assert;
 
+
 public class DemoTicketList extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX
-			+ "/list.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX + "/list.seam";
 
-	public DemoTicketList() {
-		super(PAGE_NAME);
-	}
 
-	public void checkTicketPresent(String text) {
-		Assert.assertTrue(Page.getSelenium().isTextPresent(text));
-	}
+    public DemoTicketList() {
+
+        super(PAGE_NAME);
+    }
+
+    public void checkTicketPresent(String text) {
+
+        Assert.assertTrue(Page.getSelenium().isTextPresent(text));
+    }
 
 }

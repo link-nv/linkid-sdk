@@ -11,12 +11,15 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class AttributeTypeDescriptionNotFoundException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public AttributeTypeDescriptionNotFoundException() {
-		super(null, SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
-	}
+
+    public AttributeTypeDescriptionNotFoundException() {
+
+        super(null, SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
+    }
 }

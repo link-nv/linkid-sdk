@@ -43,6 +43,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+
 @Stateful
 @Name("chart")
 @LocalBinding(jndiBinding = OwnerConstants.JNDI_PREFIX + "ChartsBean/local")
@@ -50,85 +51,84 @@ import org.joda.time.format.DateTimeFormatter;
 @Interceptors(ErrorMessageInterceptor.class)
 public class ChartsBean implements Charts {
 
-	private static final Log LOG = LogFactory.getLog(ChartsBean.class);
+    private static final Log      LOG            = LogFactory.getLog(ChartsBean.class);
 
-	@EJB
-	private StatisticService statisticService;
+    @EJB
+    private StatisticService      statisticService;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                 facesMessages;
 
-	@In(value = "selectedApplication")
-	private ApplicationEntity selectedApplication;
+    @In(value = "selectedApplication")
+    private ApplicationEntity     selectedApplication;
 
-	@SuppressWarnings("unused")
-	@Out(value = "chartURL", required = false)
-	private String chartURL;
+    @SuppressWarnings("unused")
+    @Out(value = "chartURL", required = false)
+    private String                chartURL;
 
-	public static final String STAT_LIST_NAME = "statList";
+    public static final String    STAT_LIST_NAME = "statList";
 
-	@SuppressWarnings("unused")
-	@DataModel(STAT_LIST_NAME)
-	private List<StatisticEntity> statList;
+    @SuppressWarnings("unused")
+    @DataModel(STAT_LIST_NAME)
+    private List<StatisticEntity> statList;
 
-	@DataModelSelection(STAT_LIST_NAME)
-	@Out(value = "selectedStat", required = false)
-	private StatisticEntity selectedStat;
+    @DataModelSelection(STAT_LIST_NAME)
+    @Out(value = "selectedStat", required = false)
+    private StatisticEntity       selectedStat;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	@Factory(STAT_LIST_NAME)
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public void statListFactory() throws PermissionDeniedException {
-		LOG.debug("selectedApplication: " + this.selectedApplication);
-		this.statList = this.statisticService
-				.getStatistics(this.selectedApplication);
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String viewStat() {
-		this.chartURL = "view.chart?chartname=" + this.selectedStat.getName()
-				+ "&domain=" + this.selectedStat.getDomain()
-				+ "&applicationname=" + this.selectedApplication.getName();
-		return "viewstat";
-	}
+    }
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-	public String export() throws IOException {
-		DateTime dt = new DateTime();
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
-		String filename = "accounting_" + this.selectedApplication.getName()
-				+ "_" + dt.toString(fmt) + ".xls";
+    @Factory(STAT_LIST_NAME)
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    public void statListFactory() throws PermissionDeniedException {
 
-		String exportURL = filename + "?applicationname="
-				+ this.selectedApplication.getName();
+        LOG.debug("selectedApplication: " + this.selectedApplication);
+        this.statList = this.statisticService.getStatistics(this.selectedApplication);
+    }
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		externalContext.redirect(exportURL);
-		return null;
-	}
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    public String viewStat() {
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-	public String exportStat() throws IOException {
-		DateTime dt = new DateTime();
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
-		String filename = "accounting_" + this.selectedApplication.getName()
-				+ "_" + this.selectedStat.getName() + "_" + dt.toString(fmt)
-				+ ".xls";
+        this.chartURL = "view.chart?chartname=" + this.selectedStat.getName() + "&domain="
+                + this.selectedStat.getDomain() + "&applicationname=" + this.selectedApplication.getName();
+        return "viewstat";
+    }
 
-		String exportURL = filename + "?chartname="
-				+ this.selectedStat.getName() + "&domain="
-				+ this.selectedStat.getDomain() + "&applicationname="
-				+ this.selectedApplication.getName();
+    @RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+    public String export() throws IOException {
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		externalContext.redirect(exportURL);
-		return null;
-	}
+        DateTime dt = new DateTime();
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
+        String filename = "accounting_" + this.selectedApplication.getName() + "_" + dt.toString(fmt) + ".xls";
+
+        String exportURL = filename + "?applicationname=" + this.selectedApplication.getName();
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        externalContext.redirect(exportURL);
+        return null;
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+    public String exportStat() throws IOException {
+
+        DateTime dt = new DateTime();
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
+        String filename = "accounting_" + this.selectedApplication.getName() + "_" + this.selectedStat.getName() + "_"
+                + dt.toString(fmt) + ".xls";
+
+        String exportURL = filename + "?chartname=" + this.selectedStat.getName() + "&domain="
+                + this.selectedStat.getDomain() + "&applicationname=" + this.selectedApplication.getName();
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        externalContext.redirect(exportURL);
+        return null;
+    }
 
 }

@@ -19,50 +19,52 @@ import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.IdentityProvider;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+
 public class IdentityStatementTest extends TestCase {
 
-	public void testVerify() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		String sessionId = UUID.randomUUID().toString();
-		String userId = "test-user";
-		String operation = DeviceOperationType.REGISTER.name();
-		final String givenName = "test-given-name";
-		final String surname = "test-surname";
+    public void testVerify() throws Exception {
 
-		IdentityProvider identityProvider = new IdentityProvider() {
-			public String getGivenName() {
-				return givenName;
-			}
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        String sessionId = UUID.randomUUID().toString();
+        String userId = "test-user";
+        String operation = DeviceOperationType.REGISTER.name();
+        final String givenName = "test-given-name";
+        final String surname = "test-surname";
 
-			public String getSurname() {
-				return surname;
-			}
-		};
+        IdentityProvider identityProvider = new IdentityProvider() {
 
-		Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
+            public String getGivenName() {
 
-		net.link.safeonline.shared.statement.IdentityStatement testIdentityStatement = new net.link.safeonline.shared.statement.IdentityStatement(
-				sessionId, userId, operation, identityProvider, signer);
+                return givenName;
+            }
 
-		byte[] encodedIdentityStatement = testIdentityStatement
-				.generateStatement();
+            public String getSurname() {
 
-		// operate
-		IdentityStatement identityStatement = new IdentityStatement(
-				encodedIdentityStatement);
+                return surname;
+            }
+        };
 
-		X509Certificate resultCertificate = identityStatement.verifyIntegrity();
+        Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
 
-		// verify
-		assertNotNull(resultCertificate);
-		assertEquals(certificate, resultCertificate);
-		assertEquals(sessionId, identityStatement.getSessionId());
-		assertEquals(userId, identityStatement.getUser());
-		assertEquals(operation, identityStatement.getOperation());
-		assertEquals(givenName, identityStatement.getGivenName());
-		assertEquals(surname, identityStatement.getSurname());
-	}
+        net.link.safeonline.shared.statement.IdentityStatement testIdentityStatement = new net.link.safeonline.shared.statement.IdentityStatement(
+                sessionId, userId, operation, identityProvider, signer);
+
+        byte[] encodedIdentityStatement = testIdentityStatement.generateStatement();
+
+        // operate
+        IdentityStatement identityStatement = new IdentityStatement(encodedIdentityStatement);
+
+        X509Certificate resultCertificate = identityStatement.verifyIntegrity();
+
+        // verify
+        assertNotNull(resultCertificate);
+        assertEquals(certificate, resultCertificate);
+        assertEquals(sessionId, identityStatement.getSessionId());
+        assertEquals(userId, identityStatement.getUser());
+        assertEquals(operation, identityStatement.getOperation());
+        assertEquals(givenName, identityStatement.getGivenName());
+        assertEquals(surname, identityStatement.getSurname());
+    }
 }

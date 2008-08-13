@@ -27,6 +27,7 @@ import net.sf.jmimemagic.MagicParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * <h2>{@link ApplicationLogoServlet} - [in short] (TODO).</h2>
  * <p>
@@ -41,8 +42,7 @@ import org.apache.commons.logging.LogFactory;
 public class ApplicationLogoServlet extends AbstractInjectionServlet {
 
     private static final long        serialVersionUID = 1L;
-    private static final Log         LOG              = LogFactory
-                                                              .getLog(ApplicationLogoServlet.class);
+    private static final Log         LOG              = LogFactory.getLog(ApplicationLogoServlet.class);
     private static final String      SPACER           = "/spacer.png";
 
     @EJB(mappedName = PublicApplicationService.JNDI_BINDING)
@@ -59,18 +59,16 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
      * @{inheritDoc
      */
     @Override
-    protected void invokeGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         boolean logoWritten = false;
         String applicationName = request.getParameter("applicationName");
         if (null == applicationName)
-            throw new IllegalArgumentException(
-                    "The application name must be provided.");
+            throw new IllegalArgumentException("The application name must be provided.");
 
         try {
-            PublicApplication application = this.publicApplicationService
-                    .findPublicApplication(applicationName);
+            PublicApplication application = this.publicApplicationService.findPublicApplication(applicationName);
             if (application == null) {
                 LOG.debug("No application found by name of " + applicationName);
                 return;
@@ -90,9 +88,8 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
             String noMime = request.getParameter("nomime");
             if (!mime.startsWith("image/"))
                 if (noMime == null)
-                    throw new IllegalStateException("Application logo for "
-                            + applicationName + " is not an image (it is "
-                            + mime + "); refusing to show.");
+                    throw new IllegalStateException("Application logo for " + applicationName
+                            + " is not an image (it is " + mime + "); refusing to show.");
 
             response.setContentType(magic.getMimeType());
             response.getOutputStream().write(logo);

@@ -16,11 +16,10 @@ package net.link.safeonline.p11sc;
  */
 public interface SmartCardPinCallback {
 
-	/**
-	 * Gives back the PIN code to unlock the smart card key store.
-	 * 
-	 * @return the PIN or <code>null</code> if the user canceled the PIN input
-	 *         operation.
-	 */
-	char[] getPin();
+    /**
+     * Gives back the PIN code to unlock the smart card key store.
+     * 
+     * @return the PIN or <code>null</code> if the user canceled the PIN input operation.
+     */
+    char[] getPin();
 }

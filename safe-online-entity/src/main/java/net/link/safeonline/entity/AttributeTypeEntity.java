@@ -48,339 +48,338 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.IndexColumn;
 
+
 @Entity
 @Table(name = "attribute_type")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_ALL, query = "FROM AttributeTypeEntity"),
-		@NamedQuery(name = QUERY_WHERE_NODE, query = "FROM AttributeTypeEntity a WHERE a.location = :location"),
-		@NamedQuery(name = QUERY_WHERE_VISIBLE, query = "FROM AttributeTypeEntity a WHERE a.userVisible = true"),
-		@NamedQuery(name = QUERY_CATEGORIZE_STRING, query = "SELECT a.stringValue, COUNT(a.stringValue) "
-				+ "FROM AttributeEntity a, SubscriptionEntity s, "
-				+ "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
-				+ "WHERE a.subject = s.subject "
-				+ "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-				+ "AND s.application = i.application "
-				+ "AND :application = s.application "
-				+ "AND aia.applicationIdentity = i "
-				+ "AND :attributeType = aia.attributeType "
-				+ "AND aia.attributeType = a.attributeType "
-				+ "AND a.stringValue IS NOT NULL GROUP BY a.stringValue"),
-		@NamedQuery(name = QUERY_CATEGORIZE_BOOLEAN, query = "SELECT a.booleanValue, COUNT(a.booleanValue) "
-				+ "FROM AttributeEntity a, SubscriptionEntity s, "
-				+ "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
-				+ "WHERE a.subject = s.subject "
-				+ "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-				+ "AND s.application = i.application "
-				+ "AND :application = s.application "
-				+ "AND aia.applicationIdentity = i "
-				+ "AND :attributeType = aia.attributeType "
-				+ "AND aia.attributeType = a.attributeType "
-				+ "AND a.booleanValue IS NOT NULL GROUP BY a.booleanValue"),
-		@NamedQuery(name = QUERY_CATEGORIZE_INTEGER, query = "SELECT a.integerValue, COUNT(a.integerValue) "
-				+ "FROM AttributeEntity a, SubscriptionEntity s, "
-				+ "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
-				+ "WHERE a.subject = s.subject "
-				+ "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-				+ "AND s.application = i.application "
-				+ "AND :application = s.application "
-				+ "AND aia.applicationIdentity = i "
-				+ "AND :attributeType = aia.attributeType "
-				+ "AND aia.attributeType = a.attributeType "
-				+ "AND a.integerValue IS NOT NULL GROUP BY a.integerValue"),
-		@NamedQuery(name = QUERY_CATEGORIZE_DOUBLE, query = "SELECT a.doubleValue, COUNT(a.doubleValue) "
-				+ "FROM AttributeEntity a, SubscriptionEntity s, "
-				+ "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
-				+ "WHERE a.subject = s.subject "
-				+ "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-				+ "AND s.application = i.application "
-				+ "AND :application = s.application "
-				+ "AND aia.applicationIdentity = i "
-				+ "AND :attributeType = aia.attributeType "
-				+ "AND aia.attributeType = a.attributeType "
-				+ "AND a.doubleValue IS NOT NULL GROUP BY a.doubleValue"),
-		@NamedQuery(name = QUERY_CATEGORIZE_DATE, query = "SELECT a.dateValue, COUNT(a.dateValue) "
-				+ "FROM AttributeEntity a, SubscriptionEntity s, "
-				+ "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
-				+ "WHERE a.subject = s.subject "
-				+ "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-				+ "AND s.application = i.application "
-				+ "AND :application = s.application "
-				+ "AND aia.applicationIdentity = i "
-				+ "AND :attributeType = aia.attributeType "
-				+ "AND aia.attributeType = a.attributeType "
-				+ "AND a.dateValue IS NOT NULL GROUP BY a.dateValue") })
+        @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM AttributeTypeEntity"),
+        @NamedQuery(name = QUERY_WHERE_NODE, query = "FROM AttributeTypeEntity a WHERE a.location = :location"),
+        @NamedQuery(name = QUERY_WHERE_VISIBLE, query = "FROM AttributeTypeEntity a WHERE a.userVisible = true"),
+        @NamedQuery(name = QUERY_CATEGORIZE_STRING, query = "SELECT a.stringValue, COUNT(a.stringValue) "
+                + "FROM AttributeEntity a, SubscriptionEntity s, "
+                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
+                + "AND s.application = i.application " + "AND :application = s.application "
+                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
+                + "AND aia.attributeType = a.attributeType " + "AND a.stringValue IS NOT NULL GROUP BY a.stringValue"),
+        @NamedQuery(name = QUERY_CATEGORIZE_BOOLEAN, query = "SELECT a.booleanValue, COUNT(a.booleanValue) "
+                + "FROM AttributeEntity a, SubscriptionEntity s, "
+                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
+                + "AND s.application = i.application " + "AND :application = s.application "
+                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
+                + "AND aia.attributeType = a.attributeType " + "AND a.booleanValue IS NOT NULL GROUP BY a.booleanValue"),
+        @NamedQuery(name = QUERY_CATEGORIZE_INTEGER, query = "SELECT a.integerValue, COUNT(a.integerValue) "
+                + "FROM AttributeEntity a, SubscriptionEntity s, "
+                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
+                + "AND s.application = i.application " + "AND :application = s.application "
+                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
+                + "AND aia.attributeType = a.attributeType " + "AND a.integerValue IS NOT NULL GROUP BY a.integerValue"),
+        @NamedQuery(name = QUERY_CATEGORIZE_DOUBLE, query = "SELECT a.doubleValue, COUNT(a.doubleValue) "
+                + "FROM AttributeEntity a, SubscriptionEntity s, "
+                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
+                + "AND s.application = i.application " + "AND :application = s.application "
+                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
+                + "AND aia.attributeType = a.attributeType " + "AND a.doubleValue IS NOT NULL GROUP BY a.doubleValue"),
+        @NamedQuery(name = QUERY_CATEGORIZE_DATE, query = "SELECT a.dateValue, COUNT(a.dateValue) "
+                + "FROM AttributeEntity a, SubscriptionEntity s, "
+                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
+                + "AND s.application = i.application " + "AND :application = s.application "
+                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
+                + "AND aia.attributeType = a.attributeType " + "AND a.dateValue IS NOT NULL GROUP BY a.dateValue") })
 public class AttributeTypeEntity implements Serializable {
 
-	public static final String QUERY_WHERE_ALL = "at.all";
+    public static final String                          QUERY_WHERE_ALL          = "at.all";
 
-	public static final String QUERY_WHERE_NODE = "at.node";
+    public static final String                          QUERY_WHERE_NODE         = "at.node";
 
-	public static final String QUERY_WHERE_VISIBLE = "at.visible";
+    public static final String                          QUERY_WHERE_VISIBLE      = "at.visible";
 
-	public static final String QUERY_CATEGORIZE_STRING = "at.cat.string";
+    public static final String                          QUERY_CATEGORIZE_STRING  = "at.cat.string";
 
-	public static final String QUERY_CATEGORIZE_BOOLEAN = "at.cat.boolean";
+    public static final String                          QUERY_CATEGORIZE_BOOLEAN = "at.cat.boolean";
 
-	public static final String QUERY_CATEGORIZE_INTEGER = "at.cat.integer";
+    public static final String                          QUERY_CATEGORIZE_INTEGER = "at.cat.integer";
 
-	public static final String QUERY_CATEGORIZE_DOUBLE = "at.cat.double";
+    public static final String                          QUERY_CATEGORIZE_DOUBLE  = "at.cat.double";
 
-	public static final String QUERY_CATEGORIZE_DATE = "at.cat.date";
+    public static final String                          QUERY_CATEGORIZE_DATE    = "at.cat.date";
 
-	private static final long serialVersionUID = 1L;
+    private static final long                           serialVersionUID         = 1L;
 
-	private String name;
+    private String                                      name;
 
-	private DatatypeType type;
+    private DatatypeType                                type;
 
-	private boolean userVisible;
+    private boolean                                     userVisible;
 
-	private boolean userEditable;
+    private boolean                                     userEditable;
 
-	private boolean multivalued;
+    private boolean                                     multivalued;
 
-	private boolean compoundMember;
+    private boolean                                     compoundMember;
 
-	private boolean deviceAttribute;
+    private boolean                                     deviceAttribute;
 
-	private Map<String, AttributeTypeDescriptionEntity> descriptions;
+    private Map<String, AttributeTypeDescriptionEntity> descriptions;
 
-	private List<CompoundedAttributeTypeMemberEntity> members;
+    private List<CompoundedAttributeTypeMemberEntity>   members;
 
-	private OlasEntity location;
+    private OlasEntity                                  location;
 
-	public AttributeTypeEntity() {
-		this(null, null, false, false, false);
-	}
 
-	public AttributeTypeEntity(String name, DatatypeType type,
-			boolean userVisible, boolean userEditable) {
-		this(name, type, userVisible, userEditable, false);
-	}
+    public AttributeTypeEntity() {
 
-	public AttributeTypeEntity(String name, DatatypeType type,
-			boolean userVisible, boolean userEditable, boolean deviceAttribute) {
-		this.name = name;
-		this.type = type;
-		this.userVisible = userVisible;
-		this.userEditable = userEditable;
-		this.deviceAttribute = deviceAttribute;
-		this.descriptions = new HashMap<String, AttributeTypeDescriptionEntity>();
-		this.members = new LinkedList<CompoundedAttributeTypeMemberEntity>();
-	}
+        this(null, null, false, false, false);
+    }
 
-	@Id
-	@Column(name = "name")
-	public String getName() {
-		return this.name;
-	}
+    public AttributeTypeEntity(String name, DatatypeType type, boolean userVisible, boolean userEditable) {
 
-	public void setName(String name) {
-		this.name = name;
-	}
+        this(name, type, userVisible, userEditable, false);
+    }
 
-	@Column(name = "type", nullable = false)
-	@Enumerated(EnumType.STRING)
-	public DatatypeType getType() {
-		return this.type;
-	}
+    public AttributeTypeEntity(String name, DatatypeType type, boolean userVisible, boolean userEditable,
+            boolean deviceAttribute) {
 
-	public void setType(DatatypeType type) {
-		this.type = type;
-	}
+        this.name = name;
+        this.type = type;
+        this.userVisible = userVisible;
+        this.userEditable = userEditable;
+        this.deviceAttribute = deviceAttribute;
+        this.descriptions = new HashMap<String, AttributeTypeDescriptionEntity>();
+        this.members = new LinkedList<CompoundedAttributeTypeMemberEntity>();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AttributeTypeEntity rhs = (AttributeTypeEntity) obj;
-		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
-	}
+    @Id
+    @Column(name = "name")
+    public String getName() {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.name).toHashCode();
-	}
+        return this.name;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("name", this.name).toString();
-	}
+    public void setName(String name) {
 
-	public boolean isUserVisible() {
-		return this.userVisible;
-	}
+        this.name = name;
+    }
 
-	public void setUserVisible(boolean userVisible) {
-		this.userVisible = userVisible;
-	}
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    public DatatypeType getType() {
 
-	public boolean isUserEditable() {
-		return this.userEditable;
-	}
+        return this.type;
+    }
 
-	public void setUserEditable(boolean userEditable) {
-		this.userEditable = userEditable;
-	}
+    public void setType(DatatypeType type) {
 
-	/**
-	 * Marks whether this attribute type belongs to a device or a user.
-	 */
-	public boolean isDeviceAttribute() {
-		return this.deviceAttribute;
-	}
+        this.type = type;
+    }
 
-	public void setDeviceAttribute(boolean deviceAttribute) {
-		this.deviceAttribute = deviceAttribute;
-	}
+    @Override
+    public boolean equals(Object obj) {
 
-	/**
-	 * Marks whether this attribute type allows for multivalued attributes.
-	 * 
-	 */
-	public boolean isMultivalued() {
-		return this.multivalued;
-	}
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final AttributeTypeEntity rhs = (AttributeTypeEntity) obj;
+        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+    }
 
-	public void setMultivalued(boolean multivalued) {
-		this.multivalued = multivalued;
-	}
+    @Override
+    public int hashCode() {
 
-	/**
-	 * Marks whether this attribute type is a member of a compounded attribute
-	 * type. This field is used to have a performant implementation of the
-	 * restriction that an attribute type can only participate in one compounded
-	 * attribute type.
-	 * 
-	 */
-	public boolean isCompoundMember() {
-		return this.compoundMember;
-	}
+        return new HashCodeBuilder().append(this.name).toHashCode();
+    }
 
-	public void setCompoundMember(boolean compoundMember) {
-		this.compoundMember = compoundMember;
-	}
+    @Override
+    public String toString() {
 
-	@OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-	@IndexColumn(name = CompoundedAttributeTypeMemberEntity.MEMBER_SEQUENCE_COLUMN_NAME)
-	public List<CompoundedAttributeTypeMemberEntity> getMembers() {
-		return this.members;
-	}
+        return new ToStringBuilder(this).append("name", this.name).toString();
+    }
 
-	public void setMembers(List<CompoundedAttributeTypeMemberEntity> members) {
-		this.members = members;
-	}
+    public boolean isUserVisible() {
 
-	/**
-	 * Adds a member to this compounded attribute type. This method also marks
-	 * the member attribute type as being such.
-	 * 
-	 * @param memberAttributeType
-	 * @param memberSequence
-	 * @param required
-	 */
-	public void addMember(AttributeTypeEntity memberAttributeType,
-			int memberSequence, boolean required) {
-		if (memberAttributeType.isCompoundMember()) {
-			throw new EJBException(
-					"attribute type cannot be member of more than one compounded: "
-							+ memberAttributeType.getName());
-		}
-		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
-				this, memberAttributeType, memberSequence, required);
-		getMembers().add(member);
-		memberAttributeType.setCompoundMember(true);
-	}
+        return this.userVisible;
+    }
 
-	@Transient
-	public boolean isCompounded() {
-		return false == this.members.isEmpty();
-	}
+    public void setUserVisible(boolean userVisible) {
 
-	@OneToMany(mappedBy = "attributeType")
-	@MapKey(name = "language")
-	public Map<String, AttributeTypeDescriptionEntity> getDescriptions() {
-		return this.descriptions;
-	}
+        this.userVisible = userVisible;
+    }
 
-	public void setDescriptions(
-			Map<String, AttributeTypeDescriptionEntity> descriptions) {
-		this.descriptions = descriptions;
-	}
+    public boolean isUserEditable() {
 
-	/**
-	 * Returns the OLAS node which holds the attribute values of this type.
-	 * 
-	 */
-	@ManyToOne
-	public OlasEntity getLocation() {
-		return this.location;
-	}
+        return this.userEditable;
+    }
 
-	public void setLocation(OlasEntity location) {
-		this.location = location;
-	}
+    public void setUserEditable(boolean userEditable) {
 
-	@Transient
-	public boolean isLocal() {
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        this.userEditable = userEditable;
+    }
 
-		if (null == getLocation()) {
-			return true;
-		}
+    /**
+     * Marks whether this attribute type belongs to a device or a user.
+     */
+    public boolean isDeviceAttribute() {
 
-		if (authIdentityServiceClient.getCertificate()
-				.getSubjectX500Principal().getName().equals(
-						getLocation().getAuthnCertificateSubject()))
-			return true;
+        return this.deviceAttribute;
+    }
 
-		return false;
-	}
+    public void setDeviceAttribute(boolean deviceAttribute) {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_ALL)
-		List<AttributeTypeEntity> listAttributeTypes();
+        this.deviceAttribute = deviceAttribute;
+    }
 
-		@QueryMethod(QUERY_WHERE_NODE)
-		List<AttributeTypeEntity> listAttributeTypes(
-				@QueryParam("location") OlasEntity node);
+    /**
+     * Marks whether this attribute type allows for multivalued attributes.
+     * 
+     */
+    public boolean isMultivalued() {
 
-		@QueryMethod(QUERY_WHERE_VISIBLE)
-		List<AttributeTypeEntity> listVisibleAttributeTypes();
+        return this.multivalued;
+    }
 
-		@QueryMethod(QUERY_CATEGORIZE_STRING)
-		Query createQueryCategorizeString(
-				@QueryParam("application") ApplicationEntity application,
-				@QueryParam("attributeType") AttributeTypeEntity attributeType);
+    public void setMultivalued(boolean multivalued) {
 
-		@QueryMethod(QUERY_CATEGORIZE_STRING)
-		Query createQueryCategorizeLogin(
-				@QueryParam("application") ApplicationEntity application,
-				@QueryParam("attributeType") AttributeTypeEntity attributeType);
+        this.multivalued = multivalued;
+    }
 
-		@QueryMethod(QUERY_CATEGORIZE_BOOLEAN)
-		Query createQueryCategorizeBoolean(
-				@QueryParam("application") ApplicationEntity application,
-				@QueryParam("attributeType") AttributeTypeEntity attributeType);
+    /**
+     * Marks whether this attribute type is a member of a compounded attribute type. This field is used to have a
+     * performant implementation of the restriction that an attribute type can only participate in one compounded
+     * attribute type.
+     * 
+     */
+    public boolean isCompoundMember() {
 
-		@QueryMethod(QUERY_CATEGORIZE_INTEGER)
-		Query createQueryCategorizeInteger(
-				@QueryParam("application") ApplicationEntity application,
-				@QueryParam("attributeType") AttributeTypeEntity attributeType);
+        return this.compoundMember;
+    }
 
-		@QueryMethod(QUERY_CATEGORIZE_DOUBLE)
-		Query createQueryCategorizeDouble(
-				@QueryParam("application") ApplicationEntity application,
-				@QueryParam("attributeType") AttributeTypeEntity attributeType);
+    public void setCompoundMember(boolean compoundMember) {
 
-		@QueryMethod(QUERY_CATEGORIZE_DATE)
-		Query createQueryCategorizeDate(
-				@QueryParam("application") ApplicationEntity application,
-				@QueryParam("attributeType") AttributeTypeEntity attributeType);
+        this.compoundMember = compoundMember;
+    }
 
-	}
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @IndexColumn(name = CompoundedAttributeTypeMemberEntity.MEMBER_SEQUENCE_COLUMN_NAME)
+    public List<CompoundedAttributeTypeMemberEntity> getMembers() {
+
+        return this.members;
+    }
+
+    public void setMembers(List<CompoundedAttributeTypeMemberEntity> members) {
+
+        this.members = members;
+    }
+
+    /**
+     * Adds a member to this compounded attribute type. This method also marks the member attribute type as being such.
+     * 
+     * @param memberAttributeType
+     * @param memberSequence
+     * @param required
+     */
+    public void addMember(AttributeTypeEntity memberAttributeType, int memberSequence, boolean required) {
+
+        if (memberAttributeType.isCompoundMember()) {
+            throw new EJBException("attribute type cannot be member of more than one compounded: "
+                    + memberAttributeType.getName());
+        }
+        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(this, memberAttributeType,
+                memberSequence, required);
+        getMembers().add(member);
+        memberAttributeType.setCompoundMember(true);
+    }
+
+    @Transient
+    public boolean isCompounded() {
+
+        return false == this.members.isEmpty();
+    }
+
+    @OneToMany(mappedBy = "attributeType")
+    @MapKey(name = "language")
+    public Map<String, AttributeTypeDescriptionEntity> getDescriptions() {
+
+        return this.descriptions;
+    }
+
+    public void setDescriptions(Map<String, AttributeTypeDescriptionEntity> descriptions) {
+
+        this.descriptions = descriptions;
+    }
+
+    /**
+     * Returns the OLAS node which holds the attribute values of this type.
+     * 
+     */
+    @ManyToOne
+    public OlasEntity getLocation() {
+
+        return this.location;
+    }
+
+    public void setLocation(OlasEntity location) {
+
+        this.location = location;
+    }
+
+    @Transient
+    public boolean isLocal() {
+
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+
+        if (null == getLocation()) {
+            return true;
+        }
+
+        if (authIdentityServiceClient.getCertificate().getSubjectX500Principal().getName().equals(
+                getLocation().getAuthnCertificateSubject()))
+            return true;
+
+        return false;
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_ALL)
+        List<AttributeTypeEntity> listAttributeTypes();
+
+        @QueryMethod(QUERY_WHERE_NODE)
+        List<AttributeTypeEntity> listAttributeTypes(@QueryParam("location") OlasEntity node);
+
+        @QueryMethod(QUERY_WHERE_VISIBLE)
+        List<AttributeTypeEntity> listVisibleAttributeTypes();
+
+        @QueryMethod(QUERY_CATEGORIZE_STRING)
+        Query createQueryCategorizeString(@QueryParam("application") ApplicationEntity application,
+                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+
+        @QueryMethod(QUERY_CATEGORIZE_STRING)
+        Query createQueryCategorizeLogin(@QueryParam("application") ApplicationEntity application,
+                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+
+        @QueryMethod(QUERY_CATEGORIZE_BOOLEAN)
+        Query createQueryCategorizeBoolean(@QueryParam("application") ApplicationEntity application,
+                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+
+        @QueryMethod(QUERY_CATEGORIZE_INTEGER)
+        Query createQueryCategorizeInteger(@QueryParam("application") ApplicationEntity application,
+                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+
+        @QueryMethod(QUERY_CATEGORIZE_DOUBLE)
+        Query createQueryCategorizeDouble(@QueryParam("application") ApplicationEntity application,
+                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+
+        @QueryMethod(QUERY_CATEGORIZE_DATE)
+        Query createQueryCategorizeDate(@QueryParam("application") ApplicationEntity application,
+                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+
+    }
 }

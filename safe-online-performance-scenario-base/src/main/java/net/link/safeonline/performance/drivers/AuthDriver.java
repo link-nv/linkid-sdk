@@ -62,6 +62,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.tidy.Tidy;
 
+
 /**
  * <h2>{@link AuthDriver}<br>
  * <sub>Logs a user in on OLAS for a given application.</sub></h2>
@@ -74,8 +75,7 @@ import org.w3c.tidy.Tidy;
  */
 public class AuthDriver extends ProfileDriver {
 
-    static final Log            LOG         = LogFactory
-                                                    .getLog(AuthDriver.class);
+    static final Log            LOG         = LogFactory.getLog(AuthDriver.class);
 
     public static final String  NAME        = "Authentication Driver";
     public static final String  DESCRIPTION = "<b>Authentication Driver:</b><br>"
@@ -102,8 +102,7 @@ public class AuthDriver extends ProfileDriver {
         this.tidy.setQuiet(true);
         this.tidy.setShowWarnings(false);
 
-        Protocol.registerProtocol("https", new Protocol("https",
-                new MySSLSocketFactory(), 443));
+        Protocol.registerProtocol("https", new Protocol("https", new MySSLSocketFactory(), 443));
 
         // MultiThreadedHttpConnectionManager manager = new
         // MultiThreadedHttpConnectionManager();
@@ -132,50 +131,41 @@ public class AuthDriver extends ProfileDriver {
             }
         }
 
-        public Socket createSocket(String host, int port) throws IOException,
-                UnknownHostException {
+        public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
 
             LOG.debug("createSocket: " + host + ":" + port);
             return this.sslSocketFactory.createSocket(host, port);
         }
 
-        public Socket createSocket(String host, int port,
-                InetAddress localAddress, int localPort) throws IOException,
+        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort) throws IOException,
                 UnknownHostException {
 
-            LOG.debug("createSocket: " + host + ":" + port + ", local: "
-                    + localAddress + ":" + localPort);
-            return this.sslSocketFactory.createSocket(host, port, localAddress,
-                    localPort);
+            LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort);
+            return this.sslSocketFactory.createSocket(host, port, localAddress, localPort);
         }
 
-        public Socket createSocket(String host, int port,
-                InetAddress localAddress, int localPort,
-                HttpConnectionParams params) throws IOException,
-                UnknownHostException, ConnectTimeoutException {
+        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort,
+                HttpConnectionParams params) throws IOException, UnknownHostException, ConnectTimeoutException {
 
-            LOG.debug("createSocket: " + host + ":" + port + ", local: "
-                    + localAddress + ":" + localPort + ", params: " + params);
+            LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort
+                    + ", params: " + params);
 
             if (null != params && params.getConnectionTimeout() != 0) {
                 throw new IllegalArgumentException("Timeout is not supported.");
             }
 
-            return this.sslSocketFactory.createSocket(host, port, localAddress,
-                    localPort);
+            return this.sslSocketFactory.createSocket(host, port, localAddress, localPort);
         }
     }
 
     static class MyTrustManager implements X509TrustManager {
 
-        public void checkClientTrusted(X509Certificate[] chain, String authType)
-                throws CertificateException {
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 
             throw new CertificateException("cannot verify client certificates");
         }
 
-        public void checkServerTrusted(X509Certificate[] chain, String authType)
-                throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 
             if (null == chain) {
                 throw new CertificateException("null certificate chain");
@@ -205,8 +195,7 @@ public class AuthDriver extends ProfileDriver {
      * 
      * @return The user's UUID.
      */
-    public String login(PrivateKeyEntry application, String applicationName,
-            String username, String password) {
+    public String login(PrivateKeyEntry application, String applicationName, String username, String password) {
 
         this.iterationDatas = new ArrayList<ProfileData>();
 
@@ -216,20 +205,16 @@ public class AuthDriver extends ProfileDriver {
             PrivateKey privateKey = application.getPrivateKey();
             KeyPair keyPair = new KeyPair(publicKey, privateKey);
             String uri = getHost() + "/olas-auth/entry";
-            String authnRequest = AuthnRequestFactory.createAuthnRequest(
-                    applicationName, applicationName, null, keyPair,
-                    "http://www.lin-k.net/" + applicationName, uri, null, null);
-            String encodedAuthnRequest = new String(Base64
-                    .encodeBase64(authnRequest.getBytes()));
+            String authnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
+                    keyPair, "http://www.lin-k.net/" + applicationName, uri, null, null);
+            String encodedAuthnRequest = new String(Base64.encodeBase64(authnRequest.getBytes()));
 
             // Request the JSessionID cookie.
             PostMethod postMethod = new PostMethod(uri);
             postMethod.setRequestHeader("Cookie", "deflowered=true");
-            postMethod.addParameter(new NameValuePair("SAMLRequest",
-                    encodedAuthnRequest));
+            postMethod.addParameter(new NameValuePair("SAMLRequest", encodedAuthnRequest));
 
-            LOG.debug("Making initial request: " + applicationName + " @ "
-                    + uri);
+            LOG.debug("Making initial request: " + applicationName + " @ " + uri);
             executeRequest(postMethod);
 
             try {
@@ -249,12 +234,9 @@ public class AuthDriver extends ProfileDriver {
                 formNode = findForm(USER_PASS, executeRequest(postMethod));
 
                 // Submit username & password.
-                String usernameKey = XPathAPI.eval(formNode,
-                        "//input[@type='text']/@name").str();
-                String passwordKey = XPathAPI.eval(formNode,
-                        "//input[@type='password']/@name").str();
-                postMethod = submitFormMethod(formNode, new NameValuePair[] {
-                        new NameValuePair(usernameKey, username),
+                String usernameKey = XPathAPI.eval(formNode, "//input[@type='text']/@name").str();
+                String passwordKey = XPathAPI.eval(formNode, "//input[@type='password']/@name").str();
+                postMethod = submitFormMethod(formNode, new NameValuePair[] { new NameValuePair(usernameKey, username),
                         new NameValuePair(passwordKey, password) });
                 executeRequest(postMethod);
 
@@ -278,33 +260,26 @@ public class AuthDriver extends ProfileDriver {
                     }
 
                 if (null == formNode
-                        || null == XPathAPI
-                                .selectSingleNode(formNode,
-                                        "//input[@type='hidden' and @name='SAMLResponse']")) {
+                        || null == XPathAPI.selectSingleNode(formNode,
+                                "//input[@type='hidden' and @name='SAMLResponse']")) {
                     LOG.error("Unexpected reply:\n" + this.response);
                     throw new DriverException("Expected a SAMLResponse!");
                 }
 
                 // Retrieve and decode the SAML response.
-                String encodedSamlResponseValue = XPathAPI.eval(formNode,
-                        "//input[@name='SAMLResponse']/@value").str();
-                String samlResponseValue = new String(Base64
-                        .decodeBase64(encodedSamlResponseValue.getBytes()));
+                String encodedSamlResponseValue = XPathAPI.eval(formNode, "//input[@name='SAMLResponse']/@value").str();
+                String samlResponseValue = new String(Base64.decodeBase64(encodedSamlResponseValue.getBytes()));
                 LOG.debug("SAML Response: " + samlResponseValue);
 
                 // Parse the subject name out of the SAML response.
-                Document samlResponse = DomUtils
-                        .parseDocument(samlResponseValue);
+                Document samlResponse = DomUtils.parseDocument(samlResponseValue);
                 Element nsElement = samlResponse.createElement("nsElement");
-                nsElement.setAttributeNS(Constants.NamespaceSpecNS,
-                        "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
-                nsElement.setAttributeNS(Constants.NamespaceSpecNS,
-                        "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
-                Node subjectNameNode = XPathAPI
-                        .selectSingleNode(
-                                samlResponse,
-                                "/samlp:Response/saml:Assertion/saml:Subject/saml:NameID",
-                                nsElement);
+                nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp",
+                        "urn:oasis:names:tc:SAML:2.0:protocol");
+                nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml",
+                        "urn:oasis:names:tc:SAML:2.0:assertion");
+                Node subjectNameNode = XPathAPI.selectSingleNode(samlResponse,
+                        "/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", nsElement);
 
                 String subjectName = subjectNameNode.getTextContent();
                 LOG.debug("subject name: " + subjectName);
@@ -324,15 +299,13 @@ public class AuthDriver extends ProfileDriver {
         finally {
             ProfileData iterationData = new ProfileData();
             for (ProfileData requestData : this.iterationDatas) {
-                for (Map.Entry<String, Long> measurement : requestData
-                        .getMeasurements().entrySet()) {
+                for (Map.Entry<String, Long> measurement : requestData.getMeasurements().entrySet()) {
                     try {
                         String key = measurement.getKey();
                         Long value = measurement.getValue();
 
                         // Sum non-request times and DELTA_TIME request time.
-                        if (!ProfileData.isRequestKey(key)
-                                || ProfileData.REQUEST_DELTA_TIME.equals(key)) {
+                        if (!ProfileData.isRequestKey(key) || ProfileData.REQUEST_DELTA_TIME.equals(key)) {
                             value += iterationData.getMeasurement(key);
                         }
 
@@ -346,14 +319,12 @@ public class AuthDriver extends ProfileDriver {
         }
     }
 
-    private GetMethod redirectGetMethod(HttpMethod postMethod)
-            throws DriverException {
+    private GetMethod redirectGetMethod(HttpMethod postMethod) throws DriverException {
 
         return new GetMethod(redirectMethod(postMethod));
     }
 
-    private PostMethod redirectPostMethod(HttpMethod postMethod)
-            throws DriverException {
+    private PostMethod redirectPostMethod(HttpMethod postMethod) throws DriverException {
 
         return new PostMethod(redirectMethod(postMethod));
     }
@@ -380,8 +351,7 @@ public class AuthDriver extends ProfileDriver {
         return this.jsessionid;
     }
 
-    private PostMethod submitFormMethod(Node formNode,
-            Node... additionalInputNodes) throws TransformerException {
+    private PostMethod submitFormMethod(Node formNode, Node... additionalInputNodes) throws TransformerException {
 
         NameValuePair[] additionalInputValues = new NameValuePair[additionalInputNodes.length];
         for (int i = 0; i < additionalInputNodes.length; ++i) {
@@ -396,12 +366,11 @@ public class AuthDriver extends ProfileDriver {
         return submitFormMethod(formNode, additionalInputValues);
     }
 
-    private PostMethod submitFormMethod(Node formNode,
-            NameValuePair[] additionalInputValues) throws TransformerException {
+    private PostMethod submitFormMethod(Node formNode, NameValuePair[] additionalInputValues)
+            throws TransformerException {
 
         // Create the post method off of the form's action value.
-        String uri = formNode.getAttributes().getNamedItem("action")
-                .getNodeValue();
+        String uri = formNode.getAttributes().getNamedItem("action").getNodeValue();
         if (!uri.startsWith("http")) {
             uri = getHost() + uri;
         }
@@ -411,8 +380,7 @@ public class AuthDriver extends ProfileDriver {
 
         // Enumerate hidden form fields.
         Node hiddenInputNode;
-        NodeIterator hiddenInputNodeIterator = XPathAPI.selectNodeIterator(
-                formNode, "//input[@type='hidden']");
+        NodeIterator hiddenInputNodeIterator = XPathAPI.selectNodeIterator(formNode, "//input[@type='hidden']");
 
         // Add all these fields as parameters to the post method.
         while (null != (hiddenInputNode = hiddenInputNodeIterator.nextNode())) {
@@ -425,8 +393,7 @@ public class AuthDriver extends ProfileDriver {
         }
 
         // Add the submit parameter.
-        String submitName = XPathAPI.eval(formNode,
-                "//input[@type='submit']/@name").str();
+        String submitName = XPathAPI.eval(formNode, "//input[@type='submit']/@name").str();
         if (null != submitName && submitName.length() > 0) {
             postMethod.addParameter(submitName, "");
         }
@@ -434,8 +401,7 @@ public class AuthDriver extends ProfileDriver {
         return postMethod;
     }
 
-    private Document executeRequest(HttpMethodBase method)
-            throws HttpException, IOException, TransformerException,
+    private Document executeRequest(HttpMethodBase method) throws HttpException, IOException, TransformerException,
             DriverException {
 
         try {
@@ -462,19 +428,15 @@ public class AuthDriver extends ProfileDriver {
             }
 
             // Parse response body as DOM and extract form node.
-            Document resultDocument = this.tidy.parseDOM(method
-                    .getResponseBodyAsStream(), null);
+            Document resultDocument = this.tidy.parseDOM(method.getResponseBodyAsStream(), null);
             if (null == resultDocument)
                 return null;
 
             // Parse out HTTP/AS errors and throw them as exceptions.
-            String error = XPathAPI.eval(resultDocument, "//*[@class='error']")
-                    .str();
+            String error = XPathAPI.eval(resultDocument, "//*[@class='error']").str();
             if (error.length() == 0) {
-                error = XPathAPI.eval(resultDocument,
-                        "//title[contains(text(),'Error')]/text()").str();
-                String errorReport = XPathAPI.eval(resultDocument, "//h1")
-                        .str();
+                error = XPathAPI.eval(resultDocument, "//title[contains(text(),'Error')]/text()").str();
+                String errorReport = XPathAPI.eval(resultDocument, "//h1").str();
                 if (error.endsWith("Error report") && errorReport.length() > 0) {
                     error = errorReport;
                 }
@@ -491,14 +453,12 @@ public class AuthDriver extends ProfileDriver {
         }
     }
 
-    private Node findForm(String formId, Document resultDocument)
-            throws TransformerException {
+    private Node findForm(String formId, Document resultDocument) throws TransformerException {
 
         if (formId == null)
             return XPathAPI.selectSingleNode(resultDocument, "//form");
 
-        return XPathAPI.selectSingleNode(resultDocument, "//form[@id='"
-                + formId + "']");
+        return XPathAPI.selectSingleNode(resultDocument, "//form[@id='" + formId + "']");
     }
 
     /**

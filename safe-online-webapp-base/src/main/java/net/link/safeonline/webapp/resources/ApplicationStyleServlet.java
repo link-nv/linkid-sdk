@@ -28,14 +28,14 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.Log4JLogChute;
 
+
 /**
  * <h2>{@link ApplicationStyleServlet}<br>
  * <sub>This servlet generates CSS style for colouring web applications.</sub></h2>
  * 
  * <p>
- * CSS is generated as declared in <code>style.css.vm</code> in this project's
- * resource folder. Color variables in there are calculated in this servlet
- * based off of the current application's configured base color.
+ * CSS is generated as declared in <code>style.css.vm</code> in this project's resource folder. Color variables in there
+ * are calculated in this servlet based off of the current application's configured base color.
  * </p>
  * 
  * <p>
@@ -60,8 +60,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
     private static final double      DARKER_FACTOR    = 1.26;
 
     private static final long        serialVersionUID = 1L;
-    private static final Log         LOG              = LogFactory
-                                                              .getLog(ApplicationStyleServlet.class);
+    private static final Log         LOG              = LogFactory.getLog(ApplicationStyleServlet.class);
 
     @EJB(mappedName = PublicApplicationService.JNDI_BINDING)
     private PublicApplicationService publicApplicationService;
@@ -82,13 +81,10 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
 
         Properties velocityProperties = new Properties();
         velocityProperties.put("resource.loader", "class");
-        velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-                Log4JLogChute.class.getName());
-        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER,
-                getClass().getName());
-        velocityProperties
-                .put("class.resource.loader.class",
-                        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, Log4JLogChute.class.getName());
+        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, getClass().getName());
+        velocityProperties.put("class.resource.loader.class",
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
         this.velocity = new VelocityEngine();
         try {
@@ -102,50 +98,41 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
      * @{inheritDoc
      */
     @Override
-    protected void invokeGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         String applicationName = request.getParameter("applicationName");
         if (null == applicationName) {
-            throw new IllegalArgumentException(
-                    "The application name must be provided.");
+            throw new IllegalArgumentException("The application name must be provided.");
         }
 
         // Figure out the base color for the style.
         Color baseColor = Color.decode("#5a7500"); // Default: Green.
         if (this.publicApplicationService != null) {
             try {
-                PublicApplication application = this.publicApplicationService
-                        .findPublicApplication(applicationName);
+                PublicApplication application = this.publicApplicationService.findPublicApplication(applicationName);
 
                 if (application == null)
-                    throw new IllegalStateException("Application not found: "
-                            + applicationName);
-                 
+                    throw new IllegalStateException("Application not found: " + applicationName);
+
                 if (application.getColor() != null) {
                     baseColor = application.getColor();
                 }
             } catch (Exception e) {
-                LOG.error("Couldn't retrieve application color for "
-                        + applicationName + ", reverting to defaults.", e);
+                LOG.error("Couldn't retrieve application color for " + applicationName + ", reverting to defaults.", e);
             }
         }
 
         // Merge the velocity style template with the color attributes.
-        OutputStreamWriter responseWriter = new OutputStreamWriter(response
-                .getOutputStream());
+        OutputStreamWriter responseWriter = new OutputStreamWriter(response.getOutputStream());
         try {
             VelocityContext velocityContext = new VelocityContext();
-            velocityContext.put(DARKER, getThemedColor(baseColor,
-                    DARKER_FACTOR, DARKER_OFFSET));
-            velocityContext.put(BRIGHT, getThemedColor(baseColor,
-                    BRIGHT_FACTOR, BRIGHT_OFFSET));
-            velocityContext.put(BRIGHTER, getThemedColor(baseColor,
-                    BRIGHTER_FACTOR, BRIGHTER_OFFSET));
+            velocityContext.put(DARKER, getThemedColor(baseColor, DARKER_FACTOR, DARKER_OFFSET));
+            velocityContext.put(BRIGHT, getThemedColor(baseColor, BRIGHT_FACTOR, BRIGHT_OFFSET));
+            velocityContext.put(BRIGHTER, getThemedColor(baseColor, BRIGHTER_FACTOR, BRIGHTER_OFFSET));
 
             response.setContentType("text/css");
-            this.velocity.mergeTemplate("theme.css.vm", velocityContext,
-                    responseWriter);
+            this.velocity.mergeTemplate("theme.css.vm", velocityContext, responseWriter);
         }
 
         catch (Exception e) {

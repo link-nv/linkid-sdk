@@ -26,76 +26,80 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+
 @Entity
-@NamedQueries( {
-		@NamedQuery(name = QUERY_ALL, query = "FROM MyTestEntity"),
-		@NamedQuery(name = QUERY_WHERE_NAME, query = "FROM MyTestEntity AS mte WHERE mte.name = :"
-				+ NAME_PARAM),
-		@NamedQuery(name = DELETE_ALL, query = "DELETE FROM MyTestEntity"),
-		@NamedQuery(name = COUNT_ALL, query = "SELECT COUNT(*) FROM MyTestEntity") })
+@NamedQueries( { @NamedQuery(name = QUERY_ALL, query = "FROM MyTestEntity"),
+        @NamedQuery(name = QUERY_WHERE_NAME, query = "FROM MyTestEntity AS mte WHERE mte.name = :" + NAME_PARAM),
+        @NamedQuery(name = DELETE_ALL, query = "DELETE FROM MyTestEntity"),
+        @NamedQuery(name = COUNT_ALL, query = "SELECT COUNT(*) FROM MyTestEntity") })
 public class MyTestEntity implements Serializable {
 
-	public static final String QUERY_ALL = "mte.all";
+    public static final String QUERY_ALL        = "mte.all";
 
-	public static final String QUERY_WHERE_NAME = "mte.name";
+    public static final String QUERY_WHERE_NAME = "mte.name";
 
-	public static final String DELETE_ALL = "mte.del.all";
+    public static final String DELETE_ALL       = "mte.del.all";
 
-	public static final String NAME_PARAM = "name";
+    public static final String NAME_PARAM       = "name";
 
-	public static final String COUNT_ALL = "count.all";
+    public static final String COUNT_ALL        = "count.all";
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-	public MyTestEntity() {
-		this(null);
-	}
 
-	public MyTestEntity(String name) {
-		this.name = name;
-	}
+    public MyTestEntity() {
 
-	private String name;
+        this(null);
+    }
 
-	@Id
-	public String getName() {
-		return this.name;
-	}
+    public MyTestEntity(String name) {
 
-	public void setName(String name) {
-		this.name = name;
-	}
+        this.name = name;
+    }
 
-	public interface MyQueryTestInterface {
 
-		@QueryMethod(QUERY_ALL)
-		List<MyTestEntity> listAll();
+    private String name;
 
-		@QueryMethod(QUERY_WHERE_NAME)
-		List<MyTestEntity> listAll(@QueryParam(NAME_PARAM)
-		String name);
 
-		@QueryMethod(QUERY_WHERE_NAME)
-		MyTestEntity get(@QueryParam(NAME_PARAM)
-		String name);
+    @Id
+    public String getName() {
 
-		@QueryMethod(value = QUERY_WHERE_NAME, nullable = true)
-		MyTestEntity find(@QueryParam(NAME_PARAM)
-		String name);
+        return this.name;
+    }
 
-		@UpdateMethod(DELETE_ALL)
-		void removeAll();
+    public void setName(String name) {
 
-		@UpdateMethod(DELETE_ALL)
-		int removeAllReturningInt();
+        this.name = name;
+    }
 
-		@QueryMethod(COUNT_ALL)
-		long countAll();
 
-		@UpdateMethod(DELETE_ALL)
-		Integer removeAllReturningInteger();
+    public interface MyQueryTestInterface {
 
-		@QueryMethod(QUERY_ALL)
-		Query listAllQuery();
-	}
+        @QueryMethod(QUERY_ALL)
+        List<MyTestEntity> listAll();
+
+        @QueryMethod(QUERY_WHERE_NAME)
+        List<MyTestEntity> listAll(@QueryParam(NAME_PARAM) String name);
+
+        @QueryMethod(QUERY_WHERE_NAME)
+        MyTestEntity get(@QueryParam(NAME_PARAM) String name);
+
+        @QueryMethod(value = QUERY_WHERE_NAME, nullable = true)
+        MyTestEntity find(@QueryParam(NAME_PARAM) String name);
+
+        @UpdateMethod(DELETE_ALL)
+        void removeAll();
+
+        @UpdateMethod(DELETE_ALL)
+        int removeAllReturningInt();
+
+        @QueryMethod(COUNT_ALL)
+        long countAll();
+
+        @UpdateMethod(DELETE_ALL)
+        Integer removeAllReturningInteger();
+
+        @QueryMethod(QUERY_ALL)
+        Query listAllQuery();
+    }
 }

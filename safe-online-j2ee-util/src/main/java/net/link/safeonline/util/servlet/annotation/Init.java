@@ -15,9 +15,9 @@ import java.lang.annotation.Target;
 
 import javax.servlet.UnavailableException;
 
+
 /**
- * Specifies that the field should be resolved from the servlet init parameter
- * list.
+ * Specifies that the field should be resolved from the servlet init parameter list.
  * 
  * @author wvdhaute
  * 
@@ -27,22 +27,22 @@ import javax.servlet.UnavailableException;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Init {
 
-	public String NOT_SPECIFIED = "Not Specified";
+    public String NOT_SPECIFIED = "Not Specified";
 
-	/**
-	 * The name of the init parameter.
-	 * 
-	 */
-	String name();
 
-	/**
-	 * Optional default value if missing.
-	 */
-	String defaultValue() default NOT_SPECIFIED;
+    /**
+     * The name of the init parameter.
+     * 
+     */
+    String name();
 
-	/**
-	 * If not optional {@link UnavailableException} will be thrown during
-	 * servlet initialization.
-	 */
-	boolean optional() default false;
+    /**
+     * Optional default value if missing.
+     */
+    String defaultValue() default NOT_SPECIFIED;
+
+    /**
+     * If not optional {@link UnavailableException} will be thrown during servlet initialization.
+     */
+    boolean optional() default false;
 }

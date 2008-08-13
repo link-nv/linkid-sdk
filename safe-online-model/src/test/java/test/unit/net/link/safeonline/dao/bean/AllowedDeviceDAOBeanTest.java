@@ -27,146 +27,135 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class AllowedDeviceDAOBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager       entityTestManager;
 
-	private AllowedDeviceDAOBean testedInstance;
+    private AllowedDeviceDAOBean    testedInstance;
 
-	private ApplicationDAOBean applicationDAO;
+    private ApplicationDAOBean      applicationDAO;
 
-	private DeviceDAOBean deviceDAO;
+    private DeviceDAOBean           deviceDAO;
 
-	private DeviceClassDAOBean deviceClassDAO;
+    private DeviceClassDAOBean      deviceClassDAO;
 
-	private ApplicationOwnerDAOBean applicationOwnerDAO;
+    private ApplicationOwnerDAOBean applicationOwnerDAO;
 
-	private SubjectDAOBean subjectDAO;
+    private SubjectDAOBean          subjectDAO;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.entityTestManager = new EntityTestManager();
-		/*
-		 * If you add entities to this list, also add them to
-		 * safe-online-sql-ddl.
-		 */
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-		this.testedInstance = new AllowedDeviceDAOBean();
-		this.deviceDAO = new DeviceDAOBean();
-		this.deviceClassDAO = new DeviceClassDAOBean();
-		this.applicationDAO = new ApplicationDAOBean();
-		this.applicationOwnerDAO = new ApplicationOwnerDAOBean();
-		this.subjectDAO = new SubjectDAOBean();
+    @Override
+    protected void setUp() throws Exception {
 
-		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.deviceDAO, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.deviceClassDAO, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.applicationDAO, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.applicationOwnerDAO, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.subjectDAO, this.entityTestManager
-				.getEntityManager());
+        super.setUp();
+        this.entityTestManager = new EntityTestManager();
+        /*
+         * If you add entities to this list, also add them to safe-online-sql-ddl.
+         */
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-		EJBTestUtils.init(this.deviceDAO);
-		EJBTestUtils.init(this.deviceClassDAO);
-		EJBTestUtils.init(this.applicationDAO);
-		EJBTestUtils.init(this.applicationOwnerDAO);
-		EJBTestUtils.init(this.subjectDAO);
-		EJBTestUtils.init(this.testedInstance);
+        this.testedInstance = new AllowedDeviceDAOBean();
+        this.deviceDAO = new DeviceDAOBean();
+        this.deviceClassDAO = new DeviceClassDAOBean();
+        this.applicationDAO = new ApplicationDAOBean();
+        this.applicationOwnerDAO = new ApplicationOwnerDAOBean();
+        this.subjectDAO = new SubjectDAOBean();
 
-	}
+        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.deviceDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.deviceClassDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.applicationDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.applicationOwnerDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.subjectDAO, this.entityTestManager.getEntityManager());
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+        EJBTestUtils.init(this.deviceDAO);
+        EJBTestUtils.init(this.deviceClassDAO);
+        EJBTestUtils.init(this.applicationDAO);
+        EJBTestUtils.init(this.applicationOwnerDAO);
+        EJBTestUtils.init(this.subjectDAO);
+        EJBTestUtils.init(this.testedInstance);
 
-	public void testAllowedDevice() {
-		this.subjectDAO.addSubject("testsubject");
-		SubjectEntity subject = this.subjectDAO.findSubject("testsubject");
+    }
 
-		this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
-		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
-				.findApplicationOwner("testowner");
-		ApplicationEntity application = this.applicationDAO
-				.addApplication("testapp", null, applicationOwner, null, null,
-						null, null, null);
+    @Override
+    protected void tearDown() throws Exception {
 
-		DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-		DeviceEntity device = this.deviceDAO.addDevice("testDevice",
-				deviceClass, null, null, null, null, null, null, null, null);
-		AllowedDeviceEntity allowedDevice = this.testedInstance
-				.addAllowedDevice(application, device, 0);
-		List<AllowedDeviceEntity> allowedDevices = this.testedInstance
-				.listAllowedDevices(application);
-		assertEquals(allowedDevice, allowedDevices.get(0));
-	}
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
 
-	public void testAllowedDeviceNoApplication() {
-		DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-		DeviceEntity device = this.deviceDAO.addDevice("testDevice",
-				deviceClass, null, null, null, null, null, null, null, null);
-		try {
-			this.testedInstance.addAllowedDevice(null, device, 0);
-			this.entityTestManager.getEntityManager().flush();
-			assertTrue(false);
-		} catch (Exception e) {
-			assertTrue(true);
-		}
-	}
+    public void testAllowedDevice() {
 
-	public void testAllowedDeviceNoDevice() {
-		this.subjectDAO.addSubject("testsubject");
-		SubjectEntity subject = this.subjectDAO.findSubject("testsubject");
+        this.subjectDAO.addSubject("testsubject");
+        SubjectEntity subject = this.subjectDAO.findSubject("testsubject");
 
-		this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
-		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
-				.findApplicationOwner("testowner");
-		ApplicationEntity application = this.applicationDAO
-				.addApplication("testapp", null, applicationOwner, null, null,
-						null, null, null);
+        this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
+        ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.findApplicationOwner("testowner");
+        ApplicationEntity application = this.applicationDAO.addApplication("testapp", null, applicationOwner, null,
+                null, null, null, null);
 
-		try {
-			this.testedInstance.addAllowedDevice(application, null, 0);
-			this.entityTestManager.getEntityManager().flush();
-			assertTrue(false);
-		} catch (Exception e) {
-			assertTrue(true);
-		}
-	}
+        DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+        DeviceEntity device = this.deviceDAO.addDevice("testDevice", deviceClass, null, null, null, null, null, null,
+                null, null);
+        AllowedDeviceEntity allowedDevice = this.testedInstance.addAllowedDevice(application, device, 0);
+        List<AllowedDeviceEntity> allowedDevices = this.testedInstance.listAllowedDevices(application);
+        assertEquals(allowedDevice, allowedDevices.get(0));
+    }
 
-	public void testDeleteDevices() {
-		this.subjectDAO.addSubject("testsubject");
-		SubjectEntity subject = this.subjectDAO.findSubject("testsubject");
+    public void testAllowedDeviceNoApplication() {
 
-		this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
-		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
-				.findApplicationOwner("testowner");
-		ApplicationEntity application = this.applicationDAO
-				.addApplication("testapp", null, applicationOwner, null, null,
-						null, null, null);
+        DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+        DeviceEntity device = this.deviceDAO.addDevice("testDevice", deviceClass, null, null, null, null, null, null,
+                null, null);
+        try {
+            this.testedInstance.addAllowedDevice(null, device, 0);
+            this.entityTestManager.getEntityManager().flush();
+            assertTrue(false);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
 
-		DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-		DeviceEntity device = this.deviceDAO.addDevice("testDevice",
-				deviceClass, null, null, null, null, null, null, null, null);
-		this.testedInstance.addAllowedDevice(application, device, 0);
-		this.testedInstance.deleteAllowedDevices(application);
-		List<AllowedDeviceEntity> allowedDevices = this.testedInstance
-				.listAllowedDevices(application);
-		assertEquals(0, allowedDevices.size());
-	}
+    public void testAllowedDeviceNoDevice() {
+
+        this.subjectDAO.addSubject("testsubject");
+        SubjectEntity subject = this.subjectDAO.findSubject("testsubject");
+
+        this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
+        ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.findApplicationOwner("testowner");
+        ApplicationEntity application = this.applicationDAO.addApplication("testapp", null, applicationOwner, null,
+                null, null, null, null);
+
+        try {
+            this.testedInstance.addAllowedDevice(application, null, 0);
+            this.entityTestManager.getEntityManager().flush();
+            assertTrue(false);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    public void testDeleteDevices() {
+
+        this.subjectDAO.addSubject("testsubject");
+        SubjectEntity subject = this.subjectDAO.findSubject("testsubject");
+
+        this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
+        ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.findApplicationOwner("testowner");
+        ApplicationEntity application = this.applicationDAO.addApplication("testapp", null, applicationOwner, null,
+                null, null, null, null);
+
+        DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+        DeviceEntity device = this.deviceDAO.addDevice("testDevice", deviceClass, null, null, null, null, null, null,
+                null, null);
+        this.testedInstance.addAllowedDevice(application, device, 0);
+        this.testedInstance.deleteAllowedDevices(application);
+        List<AllowedDeviceEntity> allowedDevices = this.testedInstance.listAllowedDevices(application);
+        assertEquals(0, allowedDevices.size());
+    }
 
 }

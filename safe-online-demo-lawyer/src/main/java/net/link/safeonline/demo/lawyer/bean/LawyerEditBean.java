@@ -28,12 +28,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("lawyerEdit")
 @LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerEditBean/local")
 @SecurityDomain(LawyerConstants.SECURITY_DOMAIN)
-public class LawyerEditBean extends AbstractLawyerDataClientBean implements
-        LawyerEdit {
+public class LawyerEditBean extends AbstractLawyerDataClientBean implements LawyerEdit {
 
     @Logger
     private Log          log;
@@ -51,22 +51,15 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements
     @RolesAllowed(LawyerConstants.ADMIN_ROLE)
     public String persist() {
 
-        this.log
-                .debug(
-                        "---------------------------------------- save #0 -----------------------------",
-                        this.name);
+        this.log.debug("---------------------------------------- save #0 -----------------------------", this.name);
 
         try {
-            createOrUpdateAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME,
-                    Boolean.valueOf(this.lawyerStatus.isLawyer()));
-            createOrUpdateAttribute(
-                    DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, Boolean
-                            .valueOf(this.lawyerStatus.isSuspended()));
-            createOrUpdateAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME,
-                    this.lawyerStatus.getBar());
-            createOrUpdateAttribute(
-                    DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean
-                            .valueOf(this.lawyerStatus.isBarAdmin()));
+            createOrUpdateAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME, Boolean.valueOf(this.lawyerStatus.isLawyer()));
+            createOrUpdateAttribute(DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, Boolean.valueOf(this.lawyerStatus
+                    .isSuspended()));
+            createOrUpdateAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, this.lawyerStatus.getBar());
+            createOrUpdateAttribute(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(this.lawyerStatus
+                    .isBarAdmin()));
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error");
             return null;
@@ -83,18 +76,15 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements
         return "success";
     }
 
-    private void createOrUpdateAttribute(String attributeName,
-            Object attributeValue) throws WSClientTransportException,
-            RequestDeniedException, SubjectNotFoundException,
+    private void createOrUpdateAttribute(String attributeName, Object attributeValue)
+            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException,
             AttributeNotFoundException {
 
         String userId = getNameIdentifierMappingClient().getUserId(this.name);
 
         DataClient dataClient = getDataClient();
-        if (null == dataClient.getAttributeValue(userId, attributeName,
-                attributeValue.getClass())) {
-            this.log.debug("create attribute #0 for #1", attributeName,
-                    this.name);
+        if (null == dataClient.getAttributeValue(userId, attributeName, attributeValue.getClass())) {
+            this.log.debug("create attribute #0 for #1", attributeName, this.name);
             dataClient.createAttribute(userId, attributeName, attributeValue);
         } else {
             this.log.debug("set attribute #0 for #1", attributeName, this.name);

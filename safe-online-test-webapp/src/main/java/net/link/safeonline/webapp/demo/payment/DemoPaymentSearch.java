@@ -9,21 +9,25 @@ package net.link.safeonline.webapp.demo.payment;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class DemoPaymentSearch extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX
-			+ "/search.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX + "/search.seam";
 
-	public DemoPaymentSearch() {
-		super(PAGE_NAME);
-	}
 
-	public void setName(String name) {
-		this.fillInputField("name", name);
-	}
+    public DemoPaymentSearch() {
 
-	public DemoPaymentSearchResult search() {
-		this.clickButtonAndWait("search");
-		return new DemoPaymentSearchResult();
-	}
+        super(PAGE_NAME);
+    }
+
+    public void setName(String name) {
+
+        this.fillInputField("name", name);
+    }
+
+    public DemoPaymentSearchResult search() {
+
+        this.clickButtonAndWait("search");
+        return new DemoPaymentSearchResult();
+    }
 }

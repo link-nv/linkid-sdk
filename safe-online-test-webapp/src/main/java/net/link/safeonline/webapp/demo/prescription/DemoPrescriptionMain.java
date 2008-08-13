@@ -9,12 +9,14 @@ package net.link.safeonline.webapp.demo.prescription;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class DemoPrescriptionMain extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX
-			+ "/main.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX + "/main.seam";
 
-	public DemoPrescriptionMain() {
-		super(PAGE_NAME);
-	}
+
+    public DemoPrescriptionMain() {
+
+        super(PAGE_NAME);
+    }
 }

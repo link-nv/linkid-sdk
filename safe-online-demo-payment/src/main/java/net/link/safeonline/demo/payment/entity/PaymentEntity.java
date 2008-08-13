@@ -23,109 +23,127 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "demo_payment")
 @NamedQueries(@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT payment FROM PaymentEntity AS payment "
-		+ "WHERE payment.owner = :owner " + "ORDER BY payment.paymentDate DESC"))
+        + "WHERE payment.owner = :owner " + "ORDER BY payment.paymentDate DESC"))
 public class PaymentEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID  = 1L;
 
-	public static final String QUERY_WHERE_OWNER = "ticket.where.owner";
+    public static final String QUERY_WHERE_OWNER = "ticket.where.owner";
 
-	private long id;
+    private long               id;
 
-	private UserEntity owner;
+    private UserEntity         owner;
 
-	private Date paymentDate;
+    private Date               paymentDate;
 
-	private String recipient;
+    private String             recipient;
 
-	private String message;
+    private String             message;
 
-	private String visa;
+    private String             visa;
 
-	private double amount;
+    private double             amount;
 
-	public PaymentEntity() {
-		// empty
-	}
 
-	public PaymentEntity(UserEntity owner, Date paymentDate, String visa,
-			double amount, String recipient, String message) {
-		this.owner = owner;
-		this.paymentDate = paymentDate;
-		this.visa = visa;
-		this.amount = amount;
-		this.recipient = recipient;
-		this.message = message;
-	}
+    public PaymentEntity() {
 
-	@ManyToOne
-	public UserEntity getOwner() {
-		return this.owner;
-	}
+        // empty
+    }
 
-	public void setOwner(UserEntity owner) {
-		this.owner = owner;
-	}
+    public PaymentEntity(UserEntity owner, Date paymentDate, String visa, double amount, String recipient,
+            String message) {
 
-	public Date getPaymentDate() {
-		return this.paymentDate;
-	}
+        this.owner = owner;
+        this.paymentDate = paymentDate;
+        this.visa = visa;
+        this.amount = amount;
+        this.recipient = recipient;
+        this.message = message;
+    }
 
-	public void setPaymentDate(Date paymentDate) {
-		this.paymentDate = paymentDate;
-	}
+    @ManyToOne
+    public UserEntity getOwner() {
 
-	@Id
-	@GeneratedValue
-	public long getId() {
-		return this.id;
-	}
+        return this.owner;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setOwner(UserEntity owner) {
 
-	public String getMessage() {
-		return this.message;
-	}
+        this.owner = owner;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public Date getPaymentDate() {
 
-	@Basic(optional = false)
-	public String getRecipient() {
-		return this.recipient;
-	}
+        return this.paymentDate;
+    }
 
-	public void setRecipient(String recipient) {
-		this.recipient = recipient;
-	}
+    public void setPaymentDate(Date paymentDate) {
 
-	@Basic(optional = false)
-	public String getVisa() {
-		return this.visa;
-	}
+        this.paymentDate = paymentDate;
+    }
 
-	public void setVisa(String visa) {
-		this.visa = visa;
-	}
+    @Id
+    @GeneratedValue
+    public long getId() {
 
-	public double getAmount() {
-		return this.amount;
-	}
+        return this.id;
+    }
 
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
+    public void setId(long id) {
 
-	public static Query createQueryWhereOwner(EntityManager entityManager,
-			UserEntity owner) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_OWNER);
-		query.setParameter("owner", owner);
-		return query;
-	}
+        this.id = id;
+    }
+
+    public String getMessage() {
+
+        return this.message;
+    }
+
+    public void setMessage(String message) {
+
+        this.message = message;
+    }
+
+    @Basic(optional = false)
+    public String getRecipient() {
+
+        return this.recipient;
+    }
+
+    public void setRecipient(String recipient) {
+
+        this.recipient = recipient;
+    }
+
+    @Basic(optional = false)
+    public String getVisa() {
+
+        return this.visa;
+    }
+
+    public void setVisa(String visa) {
+
+        this.visa = visa;
+    }
+
+    public double getAmount() {
+
+        return this.amount;
+    }
+
+    public void setAmount(double amount) {
+
+        this.amount = amount;
+    }
+
+    public static Query createQueryWhereOwner(EntityManager entityManager, UserEntity owner) {
+
+        Query query = entityManager.createNamedQuery(QUERY_WHERE_OWNER);
+        query.setParameter("owner", owner);
+        return query;
+    }
 }

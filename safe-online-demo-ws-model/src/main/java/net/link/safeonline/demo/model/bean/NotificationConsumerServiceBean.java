@@ -28,9 +28,9 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
-public class NotificationConsumerServiceBean implements
-        NotificationConsumerService {
+public class NotificationConsumerServiceBean implements NotificationConsumerService {
 
     private static final Log    LOG                           = LogFactory
                                                                       .getLog(NotificationConsumerServiceBean.class);
@@ -49,8 +49,7 @@ public class NotificationConsumerServiceBean implements
     private EntityManager       demoPaymentEntityManager;
 
 
-    public void handleMessage(String topic, String destination,
-            List<String> message) {
+    public void handleMessage(String topic, String destination, List<String> message) {
 
         String userId = message.get(0);
         try {
@@ -64,9 +63,7 @@ public class NotificationConsumerServiceBean implements
         } catch (WSClientTransportException e) {
             LOG.debug("WSClientTransportException thrown: " + e.getMessage());
         } catch (AttributeNotFoundException e) {
-            LOG
-                    .debug("AttributeNotFoundException thrown: "
-                            + e.getMessage(), e);
+            LOG.debug("AttributeNotFoundException thrown: " + e.getMessage(), e);
         } catch (RequestDeniedException e) {
             LOG.debug("RequestDeniedException thrown: " + e.getMessage());
         }
@@ -80,21 +77,17 @@ public class NotificationConsumerServiceBean implements
         return wsLocation;
     }
 
-    private void removeDemoTicketUser(String userId)
-            throws WSClientTransportException, AttributeNotFoundException,
+    private void removeDemoTicketUser(String userId) throws WSClientTransportException, AttributeNotFoundException,
             RequestDeniedException {
 
         LOG.debug("remove demo ticket user: " + userId);
 
-        PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils
-                .getPrivateKeyEntry();
-        X509Certificate certificate = (X509Certificate) privateKeyEntry
-                .getCertificate();
+        PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils.getPrivateKeyEntry();
+        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-        AttributeClient attributeClient = new AttributeClientImpl(
-                getWsLocation(), certificate, privateKey);
-        String username = attributeClient.getAttributeValue(userId,
-                DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+        AttributeClient attributeClient = new AttributeClientImpl(getWsLocation(), certificate, privateKey);
+        String username = attributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
+                String.class);
         LOG.debug("removing demo ticket user: " + username);
 
         User user = this.demoTicketEntityManager.find(User.class, username);
@@ -108,25 +101,20 @@ public class NotificationConsumerServiceBean implements
 
     }
 
-    private void removeDemoPaymentUser(String userId)
-            throws WSClientTransportException, AttributeNotFoundException,
+    private void removeDemoPaymentUser(String userId) throws WSClientTransportException, AttributeNotFoundException,
             RequestDeniedException {
 
         LOG.debug("remove demo payment user: " + userId);
 
-        PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils
-                .getPrivateKeyEntry();
-        X509Certificate certificate = (X509Certificate) privateKeyEntry
-                .getCertificate();
+        PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils.getPrivateKeyEntry();
+        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-        AttributeClient attributeClient = new AttributeClientImpl(
-                getWsLocation(), certificate, privateKey);
-        String username = attributeClient.getAttributeValue(userId,
-                DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+        AttributeClient attributeClient = new AttributeClientImpl(getWsLocation(), certificate, privateKey);
+        String username = attributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
+                String.class);
         LOG.debug("removing demo payment user: " + username);
 
-        UserEntity user = this.demoPaymentEntityManager.find(UserEntity.class,
-                username);
+        UserEntity user = this.demoPaymentEntityManager.find(UserEntity.class, username);
         if (null != user) {
             List<PaymentEntity> payments = user.getPayments();
             for (PaymentEntity payment : payments) {

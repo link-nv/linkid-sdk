@@ -32,73 +32,82 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("prescriptionCreate")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionCreateBean/local")
 @SecurityDomain(PrescriptionConstants.SECURITY_DOMAIN)
-public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean
-		implements PrescriptionCreate {
+public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean implements PrescriptionCreate {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log log;
 
-	@RolesAllowed(PrescriptionConstants.CARE_PROVIDER_ROLE)
-	@Factory("medicines")
-	public List<SelectItem> medicinesFactory() {
-		List<SelectItem> medicines = new LinkedList<SelectItem>();
-		medicines.add(new SelectItem("Acomplia"));
-		medicines.add(new SelectItem("Actilyse"));
-		medicines.add(new SelectItem("Advair"));
-		medicines.add(new SelectItem("Advil"));
-		medicines.add(new SelectItem("Buscopan"));
-		medicines.add(new SelectItem("Prozac"));
-		medicines.add(new SelectItem("Viagra"));
-		return medicines;
-	}
 
-	private List<String> selectedMedicines;
+    @RolesAllowed(PrescriptionConstants.CARE_PROVIDER_ROLE)
+    @Factory("medicines")
+    public List<SelectItem> medicinesFactory() {
 
-	public List<String> getSelectedMedicines() {
-		return this.selectedMedicines;
-	}
+        List<SelectItem> medicines = new LinkedList<SelectItem>();
+        medicines.add(new SelectItem("Acomplia"));
+        medicines.add(new SelectItem("Actilyse"));
+        medicines.add(new SelectItem("Advair"));
+        medicines.add(new SelectItem("Advil"));
+        medicines.add(new SelectItem("Buscopan"));
+        medicines.add(new SelectItem("Prozac"));
+        medicines.add(new SelectItem("Viagra"));
+        return medicines;
+    }
 
-	public void setSelectedMedicines(List<String> selectedMedicines) {
-		this.selectedMedicines = selectedMedicines;
-	}
 
-	@In(value = "patient", required = false)
-	private String patient;
+    private List<String> selectedMedicines;
 
-	@PersistenceContext(unitName = PrescriptionConstants.ENTITY_MANAGER)
-	private EntityManager entityManager;
 
-	@Resource
-	private SessionContext sessionContext;
+    public List<String> getSelectedMedicines() {
 
-	@RolesAllowed(PrescriptionConstants.CARE_PROVIDER_ROLE)
-	public String create() {
-		this.log.debug("create prescription for patient: #0", this.patient);
-		Principal careProviderPrincipal = this.sessionContext
-				.getCallerPrincipal();
-		String careProvider = careProviderPrincipal.getName();
-		String careProviderName = super.getUsername(careProvider);
-		String patientName = super.getUsername(this.patient);
+        return this.selectedMedicines;
+    }
 
-		PrescriptionEntity prescription = new PrescriptionEntity(this.patient,
-				patientName, careProvider, careProviderName);
-		this.entityManager.persist(prescription);
-		this.log.debug("prescription id: #0", prescription.getId());
-		for (String selectedMedicine : this.selectedMedicines) {
-			PrescriptionMedicineEntity prescriptionMedicine = new PrescriptionMedicineEntity(
-					prescription, selectedMedicine);
-			this.entityManager.persist(prescriptionMedicine);
-		}
-		return "created";
-	}
+    public void setSelectedMedicines(List<String> selectedMedicines) {
 
-	@Factory("patientName")
-	public String patientNameFactory() {
-		String patientName = super.getUsername(this.patient);
-		return patientName;
-	}
+        this.selectedMedicines = selectedMedicines;
+    }
+
+
+    @In(value = "patient", required = false)
+    private String         patient;
+
+    @PersistenceContext(unitName = PrescriptionConstants.ENTITY_MANAGER)
+    private EntityManager  entityManager;
+
+    @Resource
+    private SessionContext sessionContext;
+
+
+    @RolesAllowed(PrescriptionConstants.CARE_PROVIDER_ROLE)
+    public String create() {
+
+        this.log.debug("create prescription for patient: #0", this.patient);
+        Principal careProviderPrincipal = this.sessionContext.getCallerPrincipal();
+        String careProvider = careProviderPrincipal.getName();
+        String careProviderName = super.getUsername(careProvider);
+        String patientName = super.getUsername(this.patient);
+
+        PrescriptionEntity prescription = new PrescriptionEntity(this.patient, patientName, careProvider,
+                careProviderName);
+        this.entityManager.persist(prescription);
+        this.log.debug("prescription id: #0", prescription.getId());
+        for (String selectedMedicine : this.selectedMedicines) {
+            PrescriptionMedicineEntity prescriptionMedicine = new PrescriptionMedicineEntity(prescription,
+                    selectedMedicine);
+            this.entityManager.persist(prescriptionMedicine);
+        }
+        return "created";
+    }
+
+    @Factory("patientName")
+    public String patientNameFactory() {
+
+        String patientName = super.getUsername(this.patient);
+        return patientName;
+    }
 }

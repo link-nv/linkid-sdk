@@ -35,142 +35,144 @@ import net.link.safeonline.service.SubjectServiceRemote;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class SubjectServiceBean implements SubjectService, SubjectServiceRemote {
 
-	@EJB
-	private SubjectDAO subjectDAO;
+    @EJB
+    private SubjectDAO           subjectDAO;
 
-	@EJB
-	private DeviceSubjectDAO deviceSubjectDAO;
+    @EJB
+    private DeviceSubjectDAO     deviceSubjectDAO;
 
-	@EJB
-	private AttributeDAO attributeDAO;
+    @EJB
+    private AttributeDAO         attributeDAO;
 
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+    @EJB
+    private AttributeTypeDAO     attributeTypeDAO;
 
-	@EJB
-	private SubjectIdentifierDAO subjectIdentifierDAO;
+    @EJB
+    private SubjectIdentifierDAO subjectIdentifierDAO;
 
-	@EJB
-	private IdGenerator idGenerator;
+    @EJB
+    private IdGenerator          idGenerator;
 
-	private static final Log LOG = LogFactory.getLog(SubjectServiceBean.class);
+    private static final Log     LOG = LogFactory.getLog(SubjectServiceBean.class);
 
-	public SubjectEntity addSubject(String login)
-			throws AttributeTypeNotFoundException {
-		LOG.debug("add subject: " + login);
 
-		String userId = this.idGenerator.generateId();
+    public SubjectEntity addSubject(String login) throws AttributeTypeNotFoundException {
 
-		SubjectEntity subject = this.subjectDAO.addSubject(userId);
+        LOG.debug("add subject: " + login);
 
-		this.subjectIdentifierDAO.addSubjectIdentifier(
-				SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login, subject);
+        String userId = this.idGenerator.generateId();
 
-		AttributeTypeEntity attributeType = this.attributeTypeDAO
-				.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
+        SubjectEntity subject = this.subjectDAO.addSubject(userId);
 
-		this.attributeDAO.addAttribute(attributeType, subject, login);
+        this.subjectIdentifierDAO.addSubjectIdentifier(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login, subject);
 
-		return subject;
-	}
+        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
 
-	public DeviceSubjectEntity addDeviceSubject(String userId) {
-		LOG.debug("add device subject: " + userId);
-		return this.deviceSubjectDAO.addSubject(userId);
-	}
+        this.attributeDAO.addAttribute(attributeType, subject, login);
 
-	public SubjectEntity addDeviceRegistration() {
-		String id = this.idGenerator.generateId();
-		return this.subjectDAO.addSubject(id);
-	}
+        return subject;
+    }
 
-	public SubjectEntity findSubject(String userId) {
-		LOG.debug("find subject user ID: " + userId);
-		return this.subjectDAO.findSubject(userId);
-	}
+    public DeviceSubjectEntity addDeviceSubject(String userId) {
 
-	public SubjectEntity findSubjectFromUserName(String login) {
-		LOG.debug("find subject login: " + login);
-		return this.subjectIdentifierDAO.findSubject(
-				SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
-	}
+        LOG.debug("add device subject: " + userId);
+        return this.deviceSubjectDAO.addSubject(userId);
+    }
 
-	public SubjectEntity getSubject(String userId)
-			throws SubjectNotFoundException {
-		LOG.debug("get subject user id: " + userId);
-		return this.subjectDAO.getSubject(userId);
-	}
+    public SubjectEntity addDeviceRegistration() {
 
-	/*
-	 * This can be called from e.g. HelpdeskLogger after an exception has been
-	 * thrown so needs a transaction created
-	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public String getExceptionSubjectLogin(String userId) {
-		return this.getSubjectLogin(userId);
-	}
+        String id = this.idGenerator.generateId();
+        return this.subjectDAO.addSubject(id);
+    }
 
-	public String getSubjectLogin(String userId) {
-		LOG.debug("get subject user id: " + userId);
-		SubjectEntity subject = this.subjectDAO.findSubject(userId);
-		if (null == subject)
-			return null;
-		AttributeEntity loginAttribute;
-		try {
-			loginAttribute = this.attributeDAO.getAttribute(
-					SafeOnlineConstants.LOGIN_ATTRIBTUE, subject);
-		} catch (AttributeNotFoundException e) {
-			LOG.debug("login attribute not found", e);
-			return null;
-		}
-		return loginAttribute.getStringValue();
-	}
+    public SubjectEntity findSubject(String userId) {
 
-	public SubjectEntity getSubjectFromUserName(String login)
-			throws SubjectNotFoundException {
-		LOG.debug("get subject login: " + login);
-		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
-				SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
-		if (null == subject) {
-			throw new SubjectNotFoundException();
-		}
-		return subject;
-	}
+        LOG.debug("find subject user ID: " + userId);
+        return this.subjectDAO.findSubject(userId);
+    }
 
-	public List<String> listUsers(String prefix)
-			throws AttributeTypeNotFoundException {
-		List<String> userList = new LinkedList<String>();
+    public SubjectEntity findSubjectFromUserName(String login) {
 
-		AttributeTypeEntity loginAttributeType = this.attributeTypeDAO
-				.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
-		List<AttributeEntity> loginAttributes = this.attributeDAO
-				.listAttributes(prefix, loginAttributeType);
-		for (AttributeEntity loginAttribute : loginAttributes) {
-			userList.add(loginAttribute.getStringValue());
-		}
-		return userList;
-	}
+        LOG.debug("find subject login: " + login);
+        return this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
+    }
 
-	public DeviceSubjectEntity findDeviceSubject(String deviceUserId) {
-		LOG.debug("find device subject user ID: " + deviceUserId);
-		return this.deviceSubjectDAO.findSubject(deviceUserId);
-	}
+    public SubjectEntity getSubject(String userId) throws SubjectNotFoundException {
 
-	public DeviceSubjectEntity getDeviceSubject(SubjectEntity deviceRegistration)
-			throws SubjectNotFoundException {
-		LOG.debug("find device subject for registration: "
-				+ deviceRegistration.getUserId());
-		return this.deviceSubjectDAO.getSubject(deviceRegistration);
-	}
+        LOG.debug("get subject user id: " + userId);
+        return this.subjectDAO.getSubject(userId);
+    }
 
-	public DeviceSubjectEntity getDeviceSubject(String deviceUserId)
-			throws SubjectNotFoundException {
-		DeviceSubjectEntity deviceSubject = findDeviceSubject(deviceUserId);
-		if (null == deviceSubject)
-			throw new SubjectNotFoundException();
-		return deviceSubject;
-	}
+    /*
+     * This can be called from e.g. HelpdeskLogger after an exception has been thrown so needs a transaction created
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public String getExceptionSubjectLogin(String userId) {
+
+        return this.getSubjectLogin(userId);
+    }
+
+    public String getSubjectLogin(String userId) {
+
+        LOG.debug("get subject user id: " + userId);
+        SubjectEntity subject = this.subjectDAO.findSubject(userId);
+        if (null == subject)
+            return null;
+        AttributeEntity loginAttribute;
+        try {
+            loginAttribute = this.attributeDAO.getAttribute(SafeOnlineConstants.LOGIN_ATTRIBTUE, subject);
+        } catch (AttributeNotFoundException e) {
+            LOG.debug("login attribute not found", e);
+            return null;
+        }
+        return loginAttribute.getStringValue();
+    }
+
+    public SubjectEntity getSubjectFromUserName(String login) throws SubjectNotFoundException {
+
+        LOG.debug("get subject login: " + login);
+        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
+                login);
+        if (null == subject) {
+            throw new SubjectNotFoundException();
+        }
+        return subject;
+    }
+
+    public List<String> listUsers(String prefix) throws AttributeTypeNotFoundException {
+
+        List<String> userList = new LinkedList<String>();
+
+        AttributeTypeEntity loginAttributeType = this.attributeTypeDAO
+                .getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
+        List<AttributeEntity> loginAttributes = this.attributeDAO.listAttributes(prefix, loginAttributeType);
+        for (AttributeEntity loginAttribute : loginAttributes) {
+            userList.add(loginAttribute.getStringValue());
+        }
+        return userList;
+    }
+
+    public DeviceSubjectEntity findDeviceSubject(String deviceUserId) {
+
+        LOG.debug("find device subject user ID: " + deviceUserId);
+        return this.deviceSubjectDAO.findSubject(deviceUserId);
+    }
+
+    public DeviceSubjectEntity getDeviceSubject(SubjectEntity deviceRegistration) throws SubjectNotFoundException {
+
+        LOG.debug("find device subject for registration: " + deviceRegistration.getUserId());
+        return this.deviceSubjectDAO.getSubject(deviceRegistration);
+    }
+
+    public DeviceSubjectEntity getDeviceSubject(String deviceUserId) throws SubjectNotFoundException {
+
+        DeviceSubjectEntity deviceSubject = findDeviceSubject(deviceUserId);
+        if (null == deviceSubject)
+            throw new SubjectNotFoundException();
+        return deviceSubject;
+    }
 }

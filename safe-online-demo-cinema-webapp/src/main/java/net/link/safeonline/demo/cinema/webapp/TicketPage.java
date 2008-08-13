@@ -14,13 +14,13 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 
+
 /**
  * <h2>{@link TicketPage}<br>
  * <sub>Wicket backend for ticket overview page.</sub></h2>
  * 
  * <p>
- * On this page the user can see all the tickets he purchased in the past and
- * start the process of purchasing a new one.
+ * On this page the user can see all the tickets he purchased in the past and start the process of purchasing a new one.
  * </p>
  * 
  * <p>
@@ -38,11 +38,9 @@ public class TicketPage extends LayoutPage {
 
 
     /**
-     * If film and theatre are selected; continue to the time and room selection
-     * page.
+     * If film and theatre are selected; continue to the time and room selection page.
      * 
-     * If not, assign components to the HTML wicket elements so the user can
-     * select a film and theatre.
+     * If not, assign components to the HTML wicket elements so the user can select a film and theatre.
      */
     public TicketPage() {
 
@@ -82,8 +80,7 @@ public class TicketPage extends LayoutPage {
 
             super(id);
 
-            final List<TicketEntity> data = TicketPage.this.ticketService
-                    .getTickets(CinemaSession.get().getUser());
+            final List<TicketEntity> data = TicketPage.this.ticketService.getTickets(CinemaSession.get().getUser());
 
             add(new ListView<TicketEntity>("list", data) {
 
@@ -100,17 +97,11 @@ public class TicketPage extends LayoutPage {
                     final TicketEntity ticket = item.getModelObject();
 
                     /* Ticket Details. */
-                    item.add(new Label<String>("time", CinemaSession
-                            .format(new Date(ticket.getTime()))));
-                    item.add(new Label<String>("film",
-                            TicketPage.this.ticketService.getFilmName(ticket)));
-                    item.add(new Label<String>("theatre",
-                            TicketPage.this.ticketService
-                                    .getTheatreName(ticket)));
-                    item.add(new Label<String>("room",
-                            TicketPage.this.ticketService.getRoomName(ticket)));
-                    item.add(new Label<String>("price", CinemaSession
-                            .format(ticket.getPrice())));
+                    item.add(new Label<String>("time", CinemaSession.format(new Date(ticket.getTime()))));
+                    item.add(new Label<String>("film", TicketPage.this.ticketService.getFilmName(ticket)));
+                    item.add(new Label<String>("theatre", TicketPage.this.ticketService.getTheatreName(ticket)));
+                    item.add(new Label<String>("room", TicketPage.this.ticketService.getRoomName(ticket)));
+                    item.add(new Label<String>("price", CinemaSession.format(ticket.getPrice())));
                 }
             });
 

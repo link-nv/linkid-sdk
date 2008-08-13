@@ -15,6 +15,7 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
+
 /**
  * <h2>{@link AttribDriver}<br>
  * <sub>Provides access to the Attribute Request service.</sub></h2>
@@ -31,60 +32,55 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
  */
 public class AttribDriver extends ProfileDriver {
 
-	public static final String NAME = "User Attribute Driver";
-	public static final String DESCRIPTION = "<b>Attribute Driver:</b><br>"
-			+ "Retrieves all accessible attributes of the <i>'performance'</i> user for the <i>'performance-application'</i>.";
+    public static final String NAME        = "User Attribute Driver";
+    public static final String DESCRIPTION = "<b>Attribute Driver:</b><br>"
+                                                   + "Retrieves all accessible attributes of the <i>'performance'</i> user for the <i>'performance-application'</i>.";
 
-	public AttribDriver(ExecutionEntity execution,
-			ScenarioTimingEntity agentTime) {
 
-		super(NAME, execution, agentTime);
-	}
+    public AttribDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
-	/**
-	 * Retrieve the attributes for a given user.
-	 * 
-	 * @param applicationKey
-	 *            The certificate of the application making the request. This
-	 *            identifies the application and gives the request the
-	 *            application's authority.
-	 * @param userId
-	 *            The ID of the user whose attributes are being requested.
-	 * @return A map of attributes belonging to the user containing all
-	 *         attributes the application has access to.
-	 */
-	public Map<String, Object> getAttributes(PrivateKeyEntry applicationKey,
-			String userId) {
+        super(NAME, execution, agentTime);
+    }
 
-		if (!(applicationKey.getCertificate() instanceof X509Certificate))
-			throw new IllegalArgumentException(
-					"The certificate in the keystore needs to be of X509 format.");
+    /**
+     * Retrieve the attributes for a given user.
+     * 
+     * @param applicationKey
+     *            The certificate of the application making the request. This identifies the application and gives the
+     *            request the application's authority.
+     * @param userId
+     *            The ID of the user whose attributes are being requested.
+     * @return A map of attributes belonging to the user containing all attributes the application has access to.
+     */
+    public Map<String, Object> getAttributes(PrivateKeyEntry applicationKey, String userId) {
 
-		try {
-			AttributeClientImpl service = new AttributeClientImpl(getHost(),
-					(X509Certificate) applicationKey.getCertificate(),
-					applicationKey.getPrivateKey());
+        if (!(applicationKey.getCertificate() instanceof X509Certificate))
+            throw new IllegalArgumentException("The certificate in the keystore needs to be of X509 format.");
 
-			try {
-				return service.getAttributeValues(userId);
-			}
+        try {
+            AttributeClientImpl service = new AttributeClientImpl(getHost(), (X509Certificate) applicationKey
+                    .getCertificate(), applicationKey.getPrivateKey());
 
-			finally {
-				report(service);
-			}
-		}
+            try {
+                return service.getAttributeValues(userId);
+            }
 
-		catch (Throwable error) {
-			throw report(error);
-		}
-	}
+            finally {
+                report(service);
+            }
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDescription() {
+        catch (Throwable error) {
+            throw report(error);
+        }
+    }
 
-		return DESCRIPTION;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+
+        return DESCRIPTION;
+    }
 }

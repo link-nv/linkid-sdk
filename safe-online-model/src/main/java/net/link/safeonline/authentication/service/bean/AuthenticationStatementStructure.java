@@ -16,53 +16,56 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DERVisibleString;
 
-public class AuthenticationStatementStructure extends
-		AbstractStatementStructure {
 
-	private String sessionId;
+public class AuthenticationStatementStructure extends AbstractStatementStructure {
 
-	private String applicationId;
+    private String          sessionId;
 
-	private X509Certificate authCert;
+    private String          applicationId;
 
-	public AuthenticationStatementStructure(
-			byte[] encodedAuthenticationStatement) throws DecodingException {
-		super(encodedAuthenticationStatement);
-	}
+    private X509Certificate authCert;
 
-	public String getSessionId() {
-		return this.sessionId;
-	}
 
-	public String getApplicationId() {
-		return this.applicationId;
-	}
+    public AuthenticationStatementStructure(byte[] encodedAuthenticationStatement) throws DecodingException {
 
-	@Override
-	protected void decode(ASN1Sequence tbsSequence) throws DecodingException {
-		if (tbsSequence.size() != 4) {
-			throw new DecodingException();
-		}
-		DERInteger version = DERInteger.getInstance(tbsSequence
-				.getObjectAt(DERAuthenticationStatement.TBS_VERSION_IDX));
-		if (DERAuthenticationStatement.VERSION != version.getValue().intValue()) {
-			throw new DecodingException();
-		}
-		DERVisibleString derSessionId = DERVisibleString
-				.getInstance(tbsSequence
-						.getObjectAt(DERAuthenticationStatement.TBS_SESSION_IDX));
-		this.sessionId = derSessionId.getString();
-		DERVisibleString derApplicationId = DERVisibleString
-				.getInstance(tbsSequence
-						.getObjectAt(DERAuthenticationStatement.TBS_APPLICATION_IDX));
-		this.applicationId = derApplicationId.getString();
-		ASN1Sequence derAuthCert = ASN1Sequence.getInstance(tbsSequence
-				.getObjectAt(DERAuthenticationStatement.TBS_AUTH_CERT_IDX));
-		this.authCert = decodeCertificate(derAuthCert.getDEREncoded());
-	}
+        super(encodedAuthenticationStatement);
+    }
 
-	@Override
-	protected X509Certificate getCertificate() {
-		return this.authCert;
-	}
+    public String getSessionId() {
+
+        return this.sessionId;
+    }
+
+    public String getApplicationId() {
+
+        return this.applicationId;
+    }
+
+    @Override
+    protected void decode(ASN1Sequence tbsSequence) throws DecodingException {
+
+        if (tbsSequence.size() != 4) {
+            throw new DecodingException();
+        }
+        DERInteger version = DERInteger
+                .getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_VERSION_IDX));
+        if (DERAuthenticationStatement.VERSION != version.getValue().intValue()) {
+            throw new DecodingException();
+        }
+        DERVisibleString derSessionId = DERVisibleString.getInstance(tbsSequence
+                .getObjectAt(DERAuthenticationStatement.TBS_SESSION_IDX));
+        this.sessionId = derSessionId.getString();
+        DERVisibleString derApplicationId = DERVisibleString.getInstance(tbsSequence
+                .getObjectAt(DERAuthenticationStatement.TBS_APPLICATION_IDX));
+        this.applicationId = derApplicationId.getString();
+        ASN1Sequence derAuthCert = ASN1Sequence.getInstance(tbsSequence
+                .getObjectAt(DERAuthenticationStatement.TBS_AUTH_CERT_IDX));
+        this.authCert = decodeCertificate(derAuthCert.getDEREncoded());
+    }
+
+    @Override
+    protected X509Certificate getCertificate() {
+
+        return this.authCert;
+    }
 }

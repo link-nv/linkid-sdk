@@ -24,66 +24,76 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 import static net.link.safeonline.entity.SubjectEntity.QUERY_ALL;
 
+
 @Entity
 @Table(name = "subject")
 @NamedQueries( { @NamedQuery(name = QUERY_ALL, query = "SELECT userId FROM SubjectEntity") })
 public class SubjectEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-	private String userId;
+    private String             userId;
 
-	private Long confirmedUsageAgreementVersion;
+    private Long               confirmedUsageAgreementVersion;
 
-	public static final String QUERY_ALL = "sub.all";
+    public static final String QUERY_ALL        = "sub.all";
 
-	public SubjectEntity() {
-		// required
-	}
 
-	public SubjectEntity(String userId) {
-		this.userId = userId;
-		this.confirmedUsageAgreementVersion = GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION;
-	}
+    public SubjectEntity() {
 
-	@Id
-	public String getUserId() {
-		return this.userId;
-	}
+        // required
+    }
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+    public SubjectEntity(String userId) {
 
-	public Long getConfirmedUsageAgreementVersion() {
-		return this.confirmedUsageAgreementVersion;
-	}
+        this.userId = userId;
+        this.confirmedUsageAgreementVersion = GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION;
+    }
 
-	public void setConfirmedUsageAgreementVersion(
-			Long confirmedUsageAgreementVersion) {
-		this.confirmedUsageAgreementVersion = confirmedUsageAgreementVersion;
-	}
+    @Id
+    public String getUserId() {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof SubjectEntity) {
-			return false;
-		}
-		SubjectEntity rhs = (SubjectEntity) obj;
-		return new EqualsBuilder().append(this.userId, rhs.userId).isEquals();
-	}
+        return this.userId;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
-				"userId", this.userId).toString();
-	}
+    public void setUserId(String userId) {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_ALL)
-		List<String> listUsers();
-	}
+        this.userId = userId;
+    }
+
+    public Long getConfirmedUsageAgreementVersion() {
+
+        return this.confirmedUsageAgreementVersion;
+    }
+
+    public void setConfirmedUsageAgreementVersion(Long confirmedUsageAgreementVersion) {
+
+        this.confirmedUsageAgreementVersion = confirmedUsageAgreementVersion;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof SubjectEntity) {
+            return false;
+        }
+        SubjectEntity rhs = (SubjectEntity) obj;
+        return new EqualsBuilder().append(this.userId, rhs.userId).isEquals();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("userId", this.userId).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_ALL)
+        List<String> listUsers();
+    }
 }

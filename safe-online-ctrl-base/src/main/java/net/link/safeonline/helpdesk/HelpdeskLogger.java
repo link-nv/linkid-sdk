@@ -29,10 +29,10 @@ import net.link.safeonline.util.ee.EjbUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class HelpdeskLogger {
 
-    private static final Log    LOG                    = LogFactory
-                                                               .getLog(HelpdeskLogger.class);
+    private static final Log    LOG                    = LogFactory.getLog(HelpdeskLogger.class);
 
     private static final int    HELPDESK_CONTEXT_LIMIT = 50;
 
@@ -51,8 +51,7 @@ public class HelpdeskLogger {
 
         session.removeAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
         List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
-        session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
-                helpdeskContext);
+        session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT, helpdeskContext);
         LOG.debug("new volatile helpdesk context created");
         return helpdeskContext;
     }
@@ -72,8 +71,7 @@ public class HelpdeskLogger {
                 .getAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
         if (null == helpdeskContext) {
             helpdeskContext = new LinkedList<HelpdeskEventEntity>();
-            session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
-                    helpdeskContext);
+            session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT, helpdeskContext);
         }
         return helpdeskContext;
     }
@@ -86,8 +84,7 @@ public class HelpdeskLogger {
         add(getHttpSession(), message, logLevel);
     }
 
-    public static void add(HttpSession session, String message,
-            LogLevelType logLevel) {
+    public static void add(HttpSession session, String message, LogLevelType logLevel) {
 
         String principal = getPrincipal(session);
         add(session, message, principal, logLevel);
@@ -100,8 +97,7 @@ public class HelpdeskLogger {
             principal = UNKNOWN_USER;
         else {
             SubjectService subjectService = EjbUtils
-                    .getEJB("SafeOnline/SubjectServiceBean/local",
-                            SubjectService.class);
+                    .getEJB("SafeOnline/SubjectServiceBean/local", SubjectService.class);
             principal = subjectService.getExceptionSubjectLogin(principal);
             if (null == principal)
                 principal = UNKNOWN_USER;
@@ -111,27 +107,21 @@ public class HelpdeskLogger {
         return principal;
     }
 
-    private static void add(HttpSession session, String message,
-            String principal, LogLevelType logLevel) {
+    private static void add(HttpSession session, String message, String principal, LogLevelType logLevel) {
 
         List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
         if (helpdeskContext.size() >= HELPDESK_CONTEXT_LIMIT) {
-            SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(
-                    "SafeOnline/SecurityAuditLoggerBean/local",
+            SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB("SafeOnline/SecurityAuditLoggerBean/local",
                     SecurityAuditLogger.class);
-            securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION,
-                    principal, message);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION, principal, message);
             LOG.debug("helpdesk context max size exceeded !");
             return;
         }
 
-        HelpdeskEventEntity helpdeskEvent = new HelpdeskEventEntity(message,
-                principal, logLevel);
+        HelpdeskEventEntity helpdeskEvent = new HelpdeskEventEntity(message, principal, logLevel);
         helpdeskContext.add(helpdeskEvent);
-        session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
-                helpdeskContext);
-        LOG.debug("add helpdesk event ( context-size=" + helpdeskContext.size()
-                + " ) : " + message);
+        session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT, helpdeskContext);
+        LOG.debug("add helpdesk event ( context-size=" + helpdeskContext.size() + " ) : " + message);
     }
 
     /*
@@ -143,23 +133,19 @@ public class HelpdeskLogger {
 
         String principal = getPrincipal(session);
 
-        HelpdeskManager helpdeskManager = EjbUtils.getEJB(
-                "SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
+        HelpdeskManager helpdeskManager = EjbUtils
+                .getEJB("SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
 
-        SubjectManager subjectManager = EjbUtils.getEJB(
-                "SafeOnline/SubjectManagerBean/local", SubjectManager.class);
+        SubjectManager subjectManager = EjbUtils.getEJB("SafeOnline/SubjectManagerBean/local", SubjectManager.class);
 
-        HistoryDAO historyDAO = EjbUtils.getEJB(
-                "SafeOnline/HistoryDAOBean/local", HistoryDAO.class);
+        HistoryDAO historyDAO = EjbUtils.getEJB("SafeOnline/HistoryDAOBean/local", HistoryDAO.class);
 
-        LOG.debug("persisting volatile context for user " + principal
-                + " size=" + helpdeskContext.size());
+        LOG.debug("persisting volatile context for user " + principal + " size=" + helpdeskContext.size());
         Long id = helpdeskManager.persist(location, helpdeskContext);
 
         if (!principal.equals(UNKNOWN_USER)) {
-            historyDAO.addHistoryEntry(subjectManager.getCallerSubject(),
-                    HistoryEventType.HELPDESK_ID, Collections.singletonMap(
-                            SafeOnlineConstants.INFO_PROPERTY, id.toString()));
+            historyDAO.addHistoryEntry(subjectManager.getCallerSubject(), HistoryEventType.HELPDESK_ID, Collections
+                    .singletonMap(SafeOnlineConstants.INFO_PROPERTY, id.toString()));
         }
         return id;
     }
@@ -169,7 +155,6 @@ public class HelpdeskLogger {
      */
     private static HttpSession getHttpSession() {
 
-        return (HttpSession) FacesContext.getCurrentInstance()
-                .getExternalContext().getSession(false);
+        return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
     }
 }

@@ -14,45 +14,43 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 
+
 @Local
 public interface SubjectIdentifierDAO {
 
-	void addSubjectIdentifier(String domain, String subjectIdentifier,
-			SubjectEntity subject);
+    void addSubjectIdentifier(String domain, String subjectIdentifier, SubjectEntity subject);
 
-	SubjectEntity findSubject(String domain, String subjectIdentifier);
+    SubjectEntity findSubject(String domain, String subjectIdentifier);
 
-	/**
-	 * Removes subject identifiers within the given domain for the given user
-	 * that have a different identifier than the given identifier.
-	 * 
-	 * @param domain
-	 * @param identifier
-	 * @param subject
-	 */
-	void removeOtherSubjectIdentifiers(String domain, String identifier,
-			SubjectEntity subject);
+    /**
+     * Removes subject identifiers within the given domain for the given user that have a different identifier than the
+     * given identifier.
+     * 
+     * @param domain
+     * @param identifier
+     * @param subject
+     */
+    void removeOtherSubjectIdentifiers(String domain, String identifier, SubjectEntity subject);
 
-	/**
-	 * Removes all the subject identifiers for the given subject.
-	 * 
-	 * @param subject
-	 */
-	void removeSubjectIdentifiers(SubjectEntity subject);
+    /**
+     * Removes all the subject identifiers for the given subject.
+     * 
+     * @param subject
+     */
+    void removeSubjectIdentifiers(SubjectEntity subject);
 
-	/**
-	 * Remove specified subject identifier.
-	 * 
-	 * @param domain
-	 * @param identifier
-	 */
-	void removeSubjectIdentifier(SubjectEntity subject, String domain,
-			String identifier);
+    /**
+     * Remove specified subject identifier.
+     * 
+     * @param domain
+     * @param identifier
+     */
+    void removeSubjectIdentifier(SubjectEntity subject, String domain, String identifier);
 
-	/**
-	 * Returns list of subject identifiers for the given subject.
-	 * 
-	 * @param subject
-	 */
-	List<SubjectIdentifierEntity> getSubjectIdentifiers(SubjectEntity subject);
+    /**
+     * Returns list of subject identifiers for the given subject.
+     * 
+     * @param subject
+     */
+    List<SubjectIdentifierEntity> getSubjectIdentifiers(SubjectEntity subject);
 }

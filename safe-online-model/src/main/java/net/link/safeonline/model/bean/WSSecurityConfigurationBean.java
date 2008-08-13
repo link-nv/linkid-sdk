@@ -21,6 +21,7 @@ import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.sdk.ws.WSSecurityUtil;
 
+
 @Stateless
 public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
 
@@ -43,45 +44,34 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
 
         PkiResult result;
         try {
-            result = this.pkiValidator.validateCertificate(
-                    SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+            result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
                     certificate);
             if (PkiResult.VALID == result) {
-                String applicationId = this.applicationAuthenticationService
-                        .authenticate(certificate);
-                return this.applicationAuthenticationService
-                        .skipMessageIntegrityCheck(applicationId);
+                String applicationId = this.applicationAuthenticationService.authenticate(certificate);
+                return this.applicationAuthenticationService.skipMessageIntegrityCheck(applicationId);
             }
         } catch (TrustDomainNotFoundException e) {
-            throw WSSecurityUtil.createSOAPFaultException(
-                    "application trust domain not found",
-                    "FailedAuthentication");
+            throw WSSecurityUtil.createSOAPFaultException("application trust domain not found", "FailedAuthentication");
         } catch (ApplicationNotFoundException e) {
-            throw WSSecurityUtil.createSOAPFaultException(
-                    "unknown application", "FailedAuthentication");
+            throw WSSecurityUtil.createSOAPFaultException("unknown application", "FailedAuthentication");
         }
         if (PkiResult.VALID != result)
             try {
-                result = this.pkiValidator.validateCertificate(
-                        SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
+                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
                         certificate);
                 if (PkiResult.VALID == result)
                     return false;
             } catch (TrustDomainNotFoundException e) {
-                throw WSSecurityUtil.createSOAPFaultException(
-                        "devices trust domain not found",
-                        "FailedAuthentication");
+                throw WSSecurityUtil.createSOAPFaultException("devices trust domain not found", "FailedAuthentication");
             }
         if (PkiResult.VALID != result) {
             try {
-                result = this.pkiValidator.validateCertificate(
-                        SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
+                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
                         certificate);
                 if (PkiResult.VALID == result)
                     return false;
             } catch (TrustDomainNotFoundException e) {
-                throw WSSecurityUtil.createSOAPFaultException(
-                        "olas trust domain not found", "FailedAuthentication");
+                throw WSSecurityUtil.createSOAPFaultException("olas trust domain not found", "FailedAuthentication");
             }
         }
         return false;

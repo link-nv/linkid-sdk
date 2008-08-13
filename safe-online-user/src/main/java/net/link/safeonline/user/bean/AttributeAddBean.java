@@ -35,56 +35,58 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("attributeAdd")
-@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX
-		+ "AttributeAddBean/local")
+@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "AttributeAddBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AttributeAddBean implements AttributeAdd {
 
-	private static final Log LOG = LogFactory.getLog(AttributeAddBean.class);
+    private static final Log   LOG                   = LogFactory.getLog(AttributeAddBean.class);
 
-	@EJB
-	private IdentityService identityService;
+    @EJB
+    private IdentityService    identityService;
 
-	@In
-	private AttributeDO selectedAttribute;
+    @In
+    private AttributeDO        selectedAttribute;
 
-	public static final String ATTRIBUTE_ADD_CONTEXT = "attributeAddContext";
+    public static final String ATTRIBUTE_ADD_CONTEXT = "attributeAddContext";
 
-	@DataModel(value = ATTRIBUTE_ADD_CONTEXT)
-	private List<AttributeDO> attributeAddContext;
+    @DataModel(value = ATTRIBUTE_ADD_CONTEXT)
+    private List<AttributeDO>  attributeAddContext;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String commit() throws AttributeTypeNotFoundException {
-		LOG.debug("commit");
-		try {
-			this.identityService.addAttribute(this.attributeAddContext);
-		} catch (PermissionDeniedException e) {
-			String msg = "user not allowed to edit value for attribute";
-			LOG.error(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorUserNotAllowedToEditAttribute");
-			return null;
-		}
-		return "success";
-	}
+    }
 
-	@Factory(ATTRIBUTE_ADD_CONTEXT)
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public void attributeEditContextFactory()
-			throws AttributeTypeNotFoundException {
-		this.attributeAddContext = this.identityService
-				.getAttributeTemplate(this.selectedAttribute);
-	}
+
+    @In(create = true)
+    FacesMessages facesMessages;
+
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String commit() throws AttributeTypeNotFoundException {
+
+        LOG.debug("commit");
+        try {
+            this.identityService.addAttribute(this.attributeAddContext);
+        } catch (PermissionDeniedException e) {
+            String msg = "user not allowed to edit value for attribute";
+            LOG.error(msg);
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserNotAllowedToEditAttribute");
+            return null;
+        }
+        return "success";
+    }
+
+    @Factory(ATTRIBUTE_ADD_CONTEXT)
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public void attributeEditContextFactory() throws AttributeTypeNotFoundException {
+
+        this.attributeAddContext = this.identityService.getAttributeTemplate(this.selectedAttribute);
+    }
 }

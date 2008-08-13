@@ -35,142 +35,130 @@ import net.link.safeonline.util.servlet.annotation.Init;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Landing servlet on the remote device issuer side where OLAS posts its SAML
- * authentication request to for device registration, updating, removal.
+ * Landing servlet on the remote device issuer side where OLAS posts its SAML authentication request to for device
+ * registration, updating, removal.
  * 
  * @author wvdhaute
  * 
  */
 public class LandingServlet extends AbstractInjectionServlet {
 
-	private static final Log LOG = LogFactory.getLog(LandingServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(LandingServlet.class);
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Context(name = "KeyStoreResource", optional = true)
-	private String p12KeyStoreResourceName;
+    @Context(name = "KeyStoreResource", optional = true)
+    private String            p12KeyStoreResourceName;
 
-	@Context(name = "KeyStoreFile", optional = true)
-	private String p12KeyStoreFileName;
+    @Context(name = "KeyStoreFile", optional = true)
+    private String            p12KeyStoreFileName;
 
-	@Context(name = "KeyStorePassword", optional = true)
-	private String keyStorePassword;
+    @Context(name = "KeyStorePassword", optional = true)
+    private String            keyStorePassword;
 
-	@Context(name = "KeyStoreType", defaultValue = "pkcs12")
-	private String keyStoreType;
+    @Context(name = "KeyStoreType", defaultValue = "pkcs12")
+    private String            keyStoreType;
 
-	@Init(name = "ServletEndpointUrl", optional = true)
-	private String servletEndpointUrl;
+    @Init(name = "ServletEndpointUrl", optional = true)
+    private String            servletEndpointUrl;
 
-	@Init(name = "RegistrationUrl", optional = true)
-	private String registrationUrl;
+    @Init(name = "RegistrationUrl", optional = true)
+    private String            registrationUrl;
 
-	@Init(name = "RemovalUrl", optional = true)
-	private String removalUrl;
+    @Init(name = "RemovalUrl", optional = true)
+    private String            removalUrl;
 
-	@Init(name = "UpdateUrl", optional = true)
-	private String updateUrl;
+    @Init(name = "UpdateUrl", optional = true)
+    private String            updateUrl;
 
-	@Init(name = "ErrorPage", optional = true)
-	private String errorPage;
+    @Init(name = "ErrorPage", optional = true)
+    private String            errorPage;
 
-	private KeyPair applicationKeyPair;
+    private KeyPair           applicationKeyPair;
 
-	private X509Certificate applicationCertificate;
+    private X509Certificate   applicationCertificate;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		InputStream keyStoreInputStream = null;
-		if (null != this.p12KeyStoreResourceName) {
-			Thread currentThread = Thread.currentThread();
-			ClassLoader classLoader = currentThread.getContextClassLoader();
-			keyStoreInputStream = classLoader
-					.getResourceAsStream(this.p12KeyStoreResourceName);
-			if (null == keyStoreInputStream) {
-				throw new UnavailableException(
-						"PKCS12 keystore resource not found: "
-								+ this.p12KeyStoreResourceName);
-			}
-		} else if (null != this.p12KeyStoreFileName) {
-			try {
-				keyStoreInputStream = new FileInputStream(
-						this.p12KeyStoreFileName);
-			} catch (FileNotFoundException e) {
-				throw new UnavailableException(
-						"PKCS12 keystore resource not found: "
-								+ this.p12KeyStoreFileName);
-			}
-		}
-		if (null != keyStoreInputStream) {
-			PrivateKeyEntry privateKeyEntry = KeyStoreUtils
-					.loadPrivateKeyEntry(this.keyStoreType,
-							keyStoreInputStream, this.keyStorePassword,
-							this.keyStorePassword);
-			this.applicationKeyPair = new KeyPair(privateKeyEntry
-					.getCertificate().getPublicKey(), privateKeyEntry
-					.getPrivateKey());
-			this.applicationCertificate = (X509Certificate) privateKeyEntry
-					.getCertificate();
-		}
-	}
 
-	@Override
-	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("doPost");
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-		/**
-		 * Wrap the request to use the servlet endpoint url if defined. To
-		 * prevent failure when behind a reverse proxy or loadbalancer when
-		 * opensaml is checking the destination field.
-		 */
-		HttpServletRequestEndpointWrapper requestWrapper;
-		if (null != this.servletEndpointUrl) {
-			requestWrapper = new HttpServletRequestEndpointWrapper(request,
-					this.servletEndpointUrl);
-		} else {
-			requestWrapper = new HttpServletRequestEndpointWrapper(request,
-					request.getRequestURL().toString());
-		}
+        super.init(config);
+        InputStream keyStoreInputStream = null;
+        if (null != this.p12KeyStoreResourceName) {
+            Thread currentThread = Thread.currentThread();
+            ClassLoader classLoader = currentThread.getContextClassLoader();
+            keyStoreInputStream = classLoader.getResourceAsStream(this.p12KeyStoreResourceName);
+            if (null == keyStoreInputStream) {
+                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreResourceName);
+            }
+        } else if (null != this.p12KeyStoreFileName) {
+            try {
+                keyStoreInputStream = new FileInputStream(this.p12KeyStoreFileName);
+            } catch (FileNotFoundException e) {
+                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreFileName);
+            }
+        }
+        if (null != keyStoreInputStream) {
+            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
+                    this.keyStorePassword, this.keyStorePassword);
+            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry
+                    .getPrivateKey());
+            this.applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
+        }
+    }
 
-		DeviceOperationType deviceOperation;
-		try {
-			Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
-			handler.init(this.configParams, this.applicationCertificate,
-					this.applicationKeyPair);
-			deviceOperation = handler.initDeviceOperation(requestWrapper);
-			if (deviceOperation.equals(DeviceOperationType.REGISTER)) {
-				if (null == this.registrationUrl) {
-					handler.abortDeviceOperation(requestWrapper, response);
-				}
-				response.sendRedirect(this.registrationUrl);
-			} else if (deviceOperation.equals(DeviceOperationType.REMOVE)) {
-				if (null == this.removalUrl) {
-					handler.abortDeviceOperation(requestWrapper, response);
-				}
-				response.sendRedirect(this.removalUrl);
-			} else if (deviceOperation.equals(DeviceOperationType.UPDATE)) {
-				if (null == this.updateUrl) {
-					handler.abortDeviceOperation(requestWrapper, response);
-				}
-				response.sendRedirect(this.updateUrl);
-			} else {
-				handler.abortDeviceOperation(requestWrapper, response);
-			}
-		} catch (DeviceInitializationException e) {
-			LOG.debug("device initialization exception: " + e.getMessage());
-			redirectToErrorPage(requestWrapper, response, this.errorPage, null,
-					new ErrorMessage(e.getMessage()));
+    @Override
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-			return;
-		} catch (DeviceFinalizationException e) {
-			LOG.debug("device finalization exception: " + e.getMessage());
-			redirectToErrorPage(requestWrapper, response, this.errorPage, null,
-					new ErrorMessage(e.getMessage()));
+        LOG.debug("doPost");
 
-			return;
-		}
-	}
+        /**
+         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy
+         * or loadbalancer when opensaml is checking the destination field.
+         */
+        HttpServletRequestEndpointWrapper requestWrapper;
+        if (null != this.servletEndpointUrl) {
+            requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        } else {
+            requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
+        }
+
+        DeviceOperationType deviceOperation;
+        try {
+            Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
+            handler.init(this.configParams, this.applicationCertificate, this.applicationKeyPair);
+            deviceOperation = handler.initDeviceOperation(requestWrapper);
+            if (deviceOperation.equals(DeviceOperationType.REGISTER)) {
+                if (null == this.registrationUrl) {
+                    handler.abortDeviceOperation(requestWrapper, response);
+                }
+                response.sendRedirect(this.registrationUrl);
+            } else if (deviceOperation.equals(DeviceOperationType.REMOVE)) {
+                if (null == this.removalUrl) {
+                    handler.abortDeviceOperation(requestWrapper, response);
+                }
+                response.sendRedirect(this.removalUrl);
+            } else if (deviceOperation.equals(DeviceOperationType.UPDATE)) {
+                if (null == this.updateUrl) {
+                    handler.abortDeviceOperation(requestWrapper, response);
+                }
+                response.sendRedirect(this.updateUrl);
+            } else {
+                handler.abortDeviceOperation(requestWrapper, response);
+            }
+        } catch (DeviceInitializationException e) {
+            LOG.debug("device initialization exception: " + e.getMessage());
+            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(e.getMessage()));
+
+            return;
+        } catch (DeviceFinalizationException e) {
+            LOG.debug("device finalization exception: " + e.getMessage());
+            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(e.getMessage()));
+
+            return;
+        }
+    }
 }

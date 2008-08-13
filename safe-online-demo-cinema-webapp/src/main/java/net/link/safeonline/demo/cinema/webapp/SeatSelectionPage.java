@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 
+
 /**
  * <h2>{@link SeatSelectionPage}<br>
  * <sub>Wicket backend for seat selection page.</sub></h2>
@@ -40,8 +41,7 @@ public class SeatSelectionPage extends LayoutPage {
 
 
     /**
-     * If not, assign components to the HTML wicket elements so the user can
-     * select a seat in the theatre.
+     * If not, assign components to the HTML wicket elements so the user can select a seat in the theatre.
      */
     public SeatSelectionPage() {
 
@@ -77,13 +77,11 @@ public class SeatSelectionPage extends LayoutPage {
             super(id);
 
             // Room Name.
-            add(new Label<String>("name", CinemaSession.get().getRoom()
-                    .getName()));
+            add(new Label<String>("name", CinemaSession.get().getRoom().getName()));
 
             // Create a grid of seat occupations.
             List<List<SeatEntity>> rows = new ArrayList<List<SeatEntity>>();
-            List<SeatEntity> seats = SeatSelectionPage.this.seatService
-                    .getSeatsFor(CinemaSession.get().getRoom());
+            List<SeatEntity> seats = SeatSelectionPage.this.seatService.getSeatsFor(CinemaSession.get().getRoom());
             for (SeatEntity seat : seats) {
                 // Add empty rows.
                 while (rows.size() < seat.getY()) {
@@ -108,15 +106,13 @@ public class SeatSelectionPage extends LayoutPage {
                 @Override
                 protected void populateItem(ListItem<List<SeatEntity>> rowItem) {
 
-                    rowItem.add(new ListView<SeatEntity>("column", rowItem
-                            .getModelObject()) {
+                    rowItem.add(new ListView<SeatEntity>("column", rowItem.getModelObject()) {
 
                         private static final long serialVersionUID = 1L;
 
 
                         @Override
-                        protected void populateItem(
-                                final ListItem<SeatEntity> seatItem) {
+                        protected void populateItem(final ListItem<SeatEntity> seatItem) {
 
                             final SeatEntity seat = seatItem.getModelObject();
                             seatItem.add(new Link<String>("seat") {
@@ -135,10 +131,9 @@ public class SeatSelectionPage extends LayoutPage {
                                 protected void onComponentTag(ComponentTag tag) {
 
                                     super.onComponentTag(tag);
-                                    
-                                    if (SeatSelectionPage.this.seatService
-                                            .isOccupied(seat, CinemaSession
-                                                    .get().getTime())) {
+
+                                    if (SeatSelectionPage.this.seatService.isOccupied(seat, CinemaSession.get()
+                                            .getTime())) {
                                         tag.put("class", "disabled");
                                     }
                                     if (CinemaSession.isOccupied(seat)) {

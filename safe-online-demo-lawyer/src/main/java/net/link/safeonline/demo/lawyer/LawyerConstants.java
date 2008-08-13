@@ -9,13 +9,15 @@ package net.link.safeonline.demo.lawyer;
 
 public class LawyerConstants {
 
-	private LawyerConstants() {
-		// empty
-	}
+    private LawyerConstants() {
 
-	public static final String SECURITY_DOMAIN = "demo-lawyer";
+        // empty
+    }
 
-	public static final String USER_ROLE = "user";
 
-	public static final String ADMIN_ROLE = "admin";
+    public static final String SECURITY_DOMAIN = "demo-lawyer";
+
+    public static final String USER_ROLE       = "user";
+
+    public static final String ADMIN_ROLE      = "admin";
 }

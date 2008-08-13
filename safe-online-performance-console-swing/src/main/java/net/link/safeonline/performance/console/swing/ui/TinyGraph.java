@@ -28,6 +28,7 @@ import java.util.TreeSet;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+
 /**
  * <h2>{@link TinyGraph}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -44,108 +45,106 @@ import javax.swing.JPanel;
  */
 public class TinyGraph extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+    private static final long       serialVersionUID = 1L;
 
-	private int values;
-	private SortedMap<Long, Double> queue;
-	private SortedSet<Long> times;
+    private int                     values;
+    private SortedMap<Long, Double> queue;
+    private SortedSet<Long>         times;
 
-	public TinyGraph(int values) {
 
-		this.values = values;
-		this.queue = new TreeMap<Long, Double>();
-		this.times = new TreeSet<Long>();
+    public TinyGraph(int values) {
 
-		setBorder(BorderFactory.createLineBorder(Color.gray));
-		setBackground(Color.white);
-		setForeground(Color.red);
-	}
+        this.values = values;
+        this.queue = new TreeMap<Long, Double>();
+        this.times = new TreeSet<Long>();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void paintComponent(Graphics g) {
+        setBorder(BorderFactory.createLineBorder(Color.gray));
+        setBackground(Color.white);
+        setForeground(Color.red);
+    }
 
-		Graphics2D g2 = (Graphics2D) g;
-		if (isOpaque() && getBackground() != null) {
-			g2.setColor(getBackground());
-			g2.fillRect(0, 0, getWidth(), getHeight());
-		}
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void paintComponent(Graphics g) {
 
-		if (this.times.isEmpty())
-			return;
+        Graphics2D g2 = (Graphics2D) g;
+        if (isOpaque() && getBackground() != null) {
+            g2.setColor(getBackground());
+            g2.fillRect(0, 0, getWidth(), getHeight());
+        }
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		Long startTime = this.times.first();
-		Long endTime = this.times.last();
+        if (this.times.isEmpty())
+            return;
 
-		Double minValue = Double.MAX_VALUE;
-		Double maxValue = 0d;
-		for (Double value : this.queue.values()) {
-			minValue = Math.min(minValue, value);
-			maxValue = Math.max(maxValue, value);
-		}
+        Long startTime = this.times.first();
+        Long endTime = this.times.last();
 
-		if (startTime.equals(endTime) || minValue.equals(maxValue))
-			return;
+        Double minValue = Double.MAX_VALUE;
+        Double maxValue = 0d;
+        for (Double value : this.queue.values()) {
+            minValue = Math.min(minValue, value);
+            maxValue = Math.max(maxValue, value);
+        }
 
-		double timeToPx = getWidth() / (double) (endTime - startTime);
-		double valueToPx = getHeight() / (maxValue - minValue);
+        if (startTime.equals(endTime) || minValue.equals(maxValue))
+            return;
 
-		Long lastTime = startTime;
-		Double lastValue = this.queue.get(lastTime);
-		for (Long time : this.times) {
-			Double value = this.queue.get(time);
-			int currX = (int) ((time - startTime) * timeToPx);
-			int lastX = (int) ((lastTime - startTime) * timeToPx);
-			int currY = (int) ((value - minValue) * valueToPx);
-			int lastY = (int) ((lastValue - minValue) * valueToPx);
+        double timeToPx = getWidth() / (double) (endTime - startTime);
+        double valueToPx = getHeight() / (maxValue - minValue);
 
-			lastTime = time;
-			lastValue = value;
+        Long lastTime = startTime;
+        Double lastValue = this.queue.get(lastTime);
+        for (Long time : this.times) {
+            Double value = this.queue.get(time);
+            int currX = (int) ((time - startTime) * timeToPx);
+            int lastX = (int) ((lastTime - startTime) * timeToPx);
+            int currY = (int) ((value - minValue) * valueToPx);
+            int lastY = (int) ((lastValue - minValue) * valueToPx);
 
-			g2.setPaint(new GradientPaint(0, 0, Color.decode("#FFF5F5"), 0,
-					getHeight(), Color.decode("#F5FFF5")));
-			g2.fillPolygon(new int[] { lastX, lastX, currX, currX }, new int[] {
-					getHeight(), getHeight() - lastY, getHeight() - currY,
-					getHeight() }, 4);
-			
-			g2.setPaint(getForeground());
-			g2.drawLine(lastX, getHeight() - lastY, currX, getHeight() - currY);
-		}
-	}
+            lastTime = time;
+            lastValue = value;
 
-	/**
-	 * Update this graph with a new value.
-	 */
-	public void update(Double value) {
+            g2.setPaint(new GradientPaint(0, 0, Color.decode("#FFF5F5"), 0, getHeight(), Color.decode("#F5FFF5")));
+            g2.fillPolygon(new int[] { lastX, lastX, currX, currX }, new int[] { getHeight(), getHeight() - lastY,
+                    getHeight() - currY, getHeight() }, 4);
 
-		if (value == null)
-			return;
+            g2.setPaint(getForeground());
+            g2.drawLine(lastX, getHeight() - lastY, currX, getHeight() - currY);
+        }
+    }
 
-		long time = System.currentTimeMillis();
-		this.queue.put(time, value);
-		this.times.add(time);
+    /**
+     * Update this graph with a new value.
+     */
+    public void update(Double value) {
 
-		/* Clean up overflow. */
-		while (this.queue.size() > this.values) {
-			Long purgeTime = this.times.first();
+        if (value == null)
+            return;
 
-			this.queue.remove(purgeTime);
-			this.times.remove(purgeTime);
-		}
+        long time = System.currentTimeMillis();
+        this.queue.put(time, value);
+        this.times.add(time);
 
-		repaint();
-	}
+        /* Clean up overflow. */
+        while (this.queue.size() > this.values) {
+            Long purgeTime = this.times.first();
 
-	/**
-	 * Remove all graph values.
-	 */
-	public void reset() {
+            this.queue.remove(purgeTime);
+            this.times.remove(purgeTime);
+        }
 
-		this.queue.clear();
-		this.times.clear();
-	}
+        repaint();
+    }
+
+    /**
+     * Remove all graph values.
+     */
+    public void reset() {
+
+        this.queue.clear();
+        this.times.clear();
+    }
 }

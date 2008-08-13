@@ -26,6 +26,7 @@ import net.link.safeonline.model.HelpdeskContexts;
 
 import org.jboss.annotation.security.SecurityDomain;
 
+
 /**
  * Implementation of helpdesk service interface.
  * 
@@ -34,39 +35,43 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class HelpdeskServiceBean implements HelpdeskService,
-		HelpdeskServiceRemote {
+public class HelpdeskServiceBean implements HelpdeskService, HelpdeskServiceRemote {
 
-	@EJB
-	private HelpdeskContexts contexts;
+    @EJB
+    private HelpdeskContexts contexts;
 
-	@RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
-	public List<HelpdeskContextEntity> listContexts() {
-		return this.contexts.listContexts();
 
-	}
+    @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
+    public List<HelpdeskContextEntity> listContexts() {
 
-	@RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
-	public List<HelpdeskEventEntity> listEvents(Long contextId) {
-		return this.contexts.listEvents(contextId);
-	}
+        return this.contexts.listContexts();
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	@RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
-	public boolean removeLog(Long logId)
-			throws HelpdeskContextNotFoundException {
-		this.contexts.removeLog(logId);
-		return false;
-	}
+    }
 
-	@RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
-	public List<HelpdeskContextEntity> listUserContexts(String user) {
-		return this.contexts.listUserContexts(user);
-	}
+    @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
+    public List<HelpdeskEventEntity> listEvents(Long contextId) {
 
-	@RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
-	public List<String> listUsers() {
-		return this.contexts.listUsers();
-	}
+        return this.contexts.listEvents(contextId);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
+    public boolean removeLog(Long logId) throws HelpdeskContextNotFoundException {
+
+        this.contexts.removeLog(logId);
+        return false;
+    }
+
+    @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
+    public List<HelpdeskContextEntity> listUserContexts(String user) {
+
+        return this.contexts.listUserContexts(user);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
+    public List<String> listUsers() {
+
+        return this.contexts.listUsers();
+    }
 
 }

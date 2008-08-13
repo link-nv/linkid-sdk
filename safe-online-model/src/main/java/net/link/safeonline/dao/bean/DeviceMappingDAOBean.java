@@ -26,67 +26,69 @@ import net.link.safeonline.model.IdGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class DeviceMappingDAOBean implements DeviceMappingDAO {
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceMappingDAOBean.class);
+    private static final Log                   LOG = LogFactory.getLog(DeviceMappingDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                      entityManager;
 
-	@EJB
-	private IdGenerator idGenerator;
+    @EJB
+    private IdGenerator                        idGenerator;
 
-	private DeviceMappingEntity.QueryInterface queryObject;
+    private DeviceMappingEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, DeviceMappingEntity.QueryInterface.class);
-	}
 
-	public DeviceMappingEntity addDeviceMapping(SubjectEntity subject,
-			DeviceEntity device) {
+    @PostConstruct
+    public void postConstructCallback() {
 
-		String uuid = this.idGenerator.generateId();
-		LOG.debug("add device mapping: subject=" + subject.getUserId()
-				+ " uuid=" + uuid + " device=" + device.getName());
-		DeviceMappingEntity registeredDevice = new DeviceMappingEntity(subject,
-				uuid, device);
-		this.entityManager.persist(registeredDevice);
-		return registeredDevice;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                DeviceMappingEntity.QueryInterface.class);
+    }
 
-	public DeviceMappingEntity findDeviceMapping(SubjectEntity subject,
-			DeviceEntity device) {
-		return this.queryObject.findDeviceMapping(subject, device);
-	}
+    public DeviceMappingEntity addDeviceMapping(SubjectEntity subject, DeviceEntity device) {
 
-	public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject) {
+        String uuid = this.idGenerator.generateId();
+        LOG.debug("add device mapping: subject=" + subject.getUserId() + " uuid=" + uuid + " device="
+                + device.getName());
+        DeviceMappingEntity registeredDevice = new DeviceMappingEntity(subject, uuid, device);
+        this.entityManager.persist(registeredDevice);
+        return registeredDevice;
+    }
 
-		return this.queryObject.listDeviceMappings(subject);
-	}
+    public DeviceMappingEntity findDeviceMapping(SubjectEntity subject, DeviceEntity device) {
 
-	public DeviceMappingEntity findDeviceMapping(String id) {
-		return this.entityManager.find(DeviceMappingEntity.class, id);
-	}
+        return this.queryObject.findDeviceMapping(subject, device);
+    }
 
-	public DeviceMappingEntity getDeviceMapping(String id)
-			throws DeviceMappingNotFoundException {
-		DeviceMappingEntity deviceMapping = this.findDeviceMapping(id);
-		if (null == deviceMapping) {
-			throw new DeviceMappingNotFoundException();
-		}
-		return deviceMapping;
-	}
+    public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject) {
 
-	public void removeDeviceMappings(SubjectEntity subject) {
-		this.queryObject.deleteAll(subject);
-	}
+        return this.queryObject.listDeviceMappings(subject);
+    }
 
-	public List<DeviceMappingEntity> listDeviceMappings(DeviceEntity device) {
+    public DeviceMappingEntity findDeviceMapping(String id) {
 
-		return this.queryObject.listDeviceMappings(device);
-	}
+        return this.entityManager.find(DeviceMappingEntity.class, id);
+    }
+
+    public DeviceMappingEntity getDeviceMapping(String id) throws DeviceMappingNotFoundException {
+
+        DeviceMappingEntity deviceMapping = this.findDeviceMapping(id);
+        if (null == deviceMapping) {
+            throw new DeviceMappingNotFoundException();
+        }
+        return deviceMapping;
+    }
+
+    public void removeDeviceMappings(SubjectEntity subject) {
+
+        this.queryObject.deleteAll(subject);
+    }
+
+    public List<DeviceMappingEntity> listDeviceMappings(DeviceEntity device) {
+
+        return this.queryObject.listDeviceMappings(device);
+    }
 }

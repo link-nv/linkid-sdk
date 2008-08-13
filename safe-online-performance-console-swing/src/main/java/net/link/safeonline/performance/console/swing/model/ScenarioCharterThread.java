@@ -15,48 +15,49 @@ import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.ui.ChartWindow;
 
+
 /**
  * <h2>{@link ScenarioCharterThread}<br>
  * <sub>This thread generates charts on a given agent.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioCharterThread extends ScenarioThread {
 
-	boolean createPDF;
-	private Map<ConsoleAgent, ScenarioExecution> agentCharts;
+    boolean                                      createPDF;
+    private Map<ConsoleAgent, ScenarioExecution> agentCharts;
 
-	public ScenarioCharterThread(boolean createPDF) {
 
-		super(AgentState.CHART);
+    public ScenarioCharterThread(boolean createPDF) {
 
-		this.createPDF = createPDF;
-		this.agentCharts = new HashMap<ConsoleAgent, ScenarioExecution>();
-	}
+        super(AgentState.CHART);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void completed() {
+        this.createPDF = createPDF;
+        this.agentCharts = new HashMap<ConsoleAgent, ScenarioExecution>();
+    }
 
-		if (ScenarioCharterThread.this.createPDF)
-			PDF.generate(this.agentCharts);
-		else
-			ChartWindow.display(this.agentCharts);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void completed() {
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	void process(ConsoleAgent agent) throws Exception {
+        if (ScenarioCharterThread.this.createPDF)
+            PDF.generate(this.agentCharts);
+        else
+            ChartWindow.display(this.agentCharts);
+    }
 
-		this.agentCharts.put(agent, agent.getCharts(ConsoleData.getSelectedExecution()
-				.getStartTime()));
-	}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    void process(ConsoleAgent agent) throws Exception {
+
+        this.agentCharts.put(agent, agent.getCharts(ConsoleData.getSelectedExecution().getStartTime()));
+    }
 }

@@ -22,37 +22,39 @@ import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.dao.CachedOcspResponseDAO;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 
+
 @Stateless
 @Local(Task.class)
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/"
-		+ "CachedOcspResponseCleanerTaskBean")
+@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "CachedOcspResponseCleanerTaskBean")
 public class CachedOcspResponseCleanerTaskBean implements Task {
 
-	private static final String name = "Ocsp response cache cleaner";
+    private static final String   name = "Ocsp response cache cleaner";
 
-	@EJB
-	private TrustDomainDAO trustDomainDAO;
+    @EJB
+    private TrustDomainDAO        trustDomainDAO;
 
-	@EJB
-	private CachedOcspResponseDAO cachedOcspResponseDAO;
+    @EJB
+    private CachedOcspResponseDAO cachedOcspResponseDAO;
 
-	public CachedOcspResponseCleanerTaskBean() {
-		// empty
-	}
 
-	public String getName() {
-		return name;
-	}
+    public CachedOcspResponseCleanerTaskBean() {
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() {
-		List<TrustDomainEntity> trustDomains = this.trustDomainDAO
-				.listTrustDomains();
-		for (TrustDomainEntity trustDomain : trustDomains) {
-			this.cachedOcspResponseDAO
-					.clearOcspCachePerTrustDomain(trustDomain);
-		}
+        // empty
+    }
 
-	}
+    public String getName() {
+
+        return name;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void perform() {
+
+        List<TrustDomainEntity> trustDomains = this.trustDomainDAO.listTrustDomains();
+        for (TrustDomainEntity trustDomain : trustDomains) {
+            this.cachedOcspResponseDAO.clearOcspCachePerTrustDomain(trustDomain);
+        }
+
+    }
 
 }

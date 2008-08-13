@@ -14,17 +14,18 @@ import javax.ejb.TimerHandle;
 
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 
+
 @Local
 public interface SchedulingDAO {
 
-	SchedulingEntity findSchedulingByTimerHandle(TimerHandle timerHandle);
+    SchedulingEntity findSchedulingByTimerHandle(TimerHandle timerHandle);
 
-	SchedulingEntity findSchedulingByName(String name);
+    SchedulingEntity findSchedulingByName(String name);
 
-	List<SchedulingEntity> listSchedulings();
+    List<SchedulingEntity> listSchedulings();
 
-	SchedulingEntity addScheduling(String name, String cronExpression);
+    SchedulingEntity addScheduling(String name, String cronExpression);
 
-	void removeScheduling(String name);
+    void removeScheduling(String name);
 
 }

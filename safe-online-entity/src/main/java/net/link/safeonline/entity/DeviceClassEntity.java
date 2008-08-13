@@ -23,78 +23,91 @@ import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 
+
 @Entity
 @Table(name = "deviceClasses")
 @NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM DeviceClassEntity dc") })
 public class DeviceClassEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long                         serialVersionUID = 1L;
 
-	public static final String QUERY_LIST_ALL = "dc.all";
+    public static final String                        QUERY_LIST_ALL   = "dc.all";
 
-	private String name;
+    private String                                    name;
 
-	private String authenticationContextClass;
+    private String                                    authenticationContextClass;
 
-	private List<DeviceEntity> devices;
+    private List<DeviceEntity>                        devices;
 
-	private Map<String, DeviceClassDescriptionEntity> descriptions;
+    private Map<String, DeviceClassDescriptionEntity> descriptions;
 
-	public DeviceClassEntity() {
-		// empty
-	}
 
-	public DeviceClassEntity(String name, String authenticationContextClass) {
-		this.name = name;
-		this.authenticationContextClass = authenticationContextClass;
-	}
+    public DeviceClassEntity() {
 
-	@Id
-	public String getName() {
-		return this.name;
-	}
+        // empty
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public DeviceClassEntity(String name, String authenticationContextClass) {
 
-	public String getAuthenticationContextClass() {
-		return this.authenticationContextClass;
-	}
+        this.name = name;
+        this.authenticationContextClass = authenticationContextClass;
+    }
 
-	public void setAuthenticationContextClass(String authenticationContextClass) {
-		this.authenticationContextClass = authenticationContextClass;
-	}
+    @Id
+    public String getName() {
 
-	/**
-	 * Returns list of devices of this device class.
-	 */
-	@OneToMany
-	public List<DeviceEntity> getDevices() {
-		return this.devices;
-	}
+        return this.name;
+    }
 
-	public void setDevices(List<DeviceEntity> devices) {
-		this.devices = devices;
-	}
+    public void setName(String name) {
 
-	/**
-	 * Returns map of i18n device class descriptions.
-	 */
-	@OneToMany(mappedBy = "deviceClass")
-	@MapKey(name = "language")
-	public Map<String, DeviceClassDescriptionEntity> getDescriptions() {
-		return this.descriptions;
-	}
+        this.name = name;
+    }
 
-	public void setDescriptions(
-			Map<String, DeviceClassDescriptionEntity> descriptions) {
-		this.descriptions = descriptions;
-	}
+    public String getAuthenticationContextClass() {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_LIST_ALL)
-		List<DeviceClassEntity> listDeviceClasses();
-	}
+        return this.authenticationContextClass;
+    }
+
+    public void setAuthenticationContextClass(String authenticationContextClass) {
+
+        this.authenticationContextClass = authenticationContextClass;
+    }
+
+    /**
+     * Returns list of devices of this device class.
+     */
+    @OneToMany
+    public List<DeviceEntity> getDevices() {
+
+        return this.devices;
+    }
+
+    public void setDevices(List<DeviceEntity> devices) {
+
+        this.devices = devices;
+    }
+
+    /**
+     * Returns map of i18n device class descriptions.
+     */
+    @OneToMany(mappedBy = "deviceClass")
+    @MapKey(name = "language")
+    public Map<String, DeviceClassDescriptionEntity> getDescriptions() {
+
+        return this.descriptions;
+    }
+
+    public void setDescriptions(Map<String, DeviceClassDescriptionEntity> descriptions) {
+
+        this.descriptions = descriptions;
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_LIST_ALL)
+        List<DeviceClassEntity> listDeviceClasses();
+    }
 
 }

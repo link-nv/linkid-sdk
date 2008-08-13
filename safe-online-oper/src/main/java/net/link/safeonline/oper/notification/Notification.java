@@ -14,31 +14,32 @@ import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 
+
 @Local
 public interface Notification {
 
-	void destroyCallback();
+    void destroyCallback();
 
-	void topicListFactory();
+    void topicListFactory();
 
-	void subscriptionListFactory() throws SubscriptionNotFoundException;
+    void subscriptionListFactory() throws SubscriptionNotFoundException;
 
-	List<SelectItem> consumerListFactory();
+    List<SelectItem> consumerListFactory();
 
-	String view();
+    String view();
 
-	String add();
+    String add();
 
-	String addSubscription() throws SubscriptionNotFoundException;
+    String addSubscription() throws SubscriptionNotFoundException;
 
-	String remove() throws SubscriptionNotFoundException;
+    String remove() throws SubscriptionNotFoundException;
 
-	String getAddress();
+    String getAddress();
 
-	void setAddress(String address);
+    void setAddress(String address);
 
-	String getConsumer();
+    String getConsumer();
 
-	void setConsumer(String consumer);
+    void setConsumer(String consumer);
 
 }

@@ -21,62 +21,61 @@ import net.link.safeonline.util.ee.EjbUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class TicketServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(TicketServlet.class);
+    private static final Log   LOG              = LogFactory.getLog(TicketServlet.class);
 
-	public static final String NRN_PARAMETER = "NRN";
+    public static final String NRN_PARAMETER    = "NRN";
 
-	public static final String FROM_PARAMETER = "FROM";
+    public static final String FROM_PARAMETER   = "FROM";
 
-	public static final String TO_PARAMETER = "TO";
+    public static final String TO_PARAMETER     = "TO";
 
-	private TicketService ticketService;
+    private TicketService      ticketService;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		LOG.debug("init");
-		this.ticketService = getTicketService();
-	}
 
-	private TicketService getTicketService() {
-		return EjbUtils
-				.getEJB(TicketService.LOCAL_BINDING, TicketService.class);
-	}
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("do get");
-		String nrn = request.getParameter(NRN_PARAMETER);
-		if (null == nrn) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-					"No National Register Number passed as parameter.");
-			return;
-		}
+        super.init(config);
+        LOG.debug("init");
+        this.ticketService = getTicketService();
+    }
 
-		String from = request.getParameter(FROM_PARAMETER);
-		if (null == from) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-					"No FROM parameter");
-			return;
-		}
+    private TicketService getTicketService() {
 
-		String to = request.getParameter(TO_PARAMETER);
-		if (null == to) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-					"No TO parameter");
-			return;
-		}
+        return EjbUtils.getEJB(TicketService.LOCAL_BINDING, TicketService.class);
+    }
 
-		boolean result = this.ticketService.hasValidPass(nrn, from, to);
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		if (false == result) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-					"User has no valid pass.");
-		}
-	}
+        LOG.debug("do get");
+        String nrn = request.getParameter(NRN_PARAMETER);
+        if (null == nrn) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No National Register Number passed as parameter.");
+            return;
+        }
+
+        String from = request.getParameter(FROM_PARAMETER);
+        if (null == from) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No FROM parameter");
+            return;
+        }
+
+        String to = request.getParameter(TO_PARAMETER);
+        if (null == to) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No TO parameter");
+            return;
+        }
+
+        boolean result = this.ticketService.hasValidPass(nrn, from, to);
+
+        if (false == result) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User has no valid pass.");
+        }
+    }
 }

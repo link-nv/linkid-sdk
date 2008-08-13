@@ -9,6 +9,7 @@ package net.link.safeonline.performance.console.swing.model;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 
+
 /**
  * <h2>{@link AgentRefreshThread}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -25,25 +26,26 @@ import net.link.safeonline.performance.console.swing.data.ConsoleData;
  */
 public class AgentRefreshThread extends ScenarioThread {
 
-	private boolean reset;
+    private boolean reset;
 
-	public AgentRefreshThread(boolean reset) {
 
-		super(null);
+    public AgentRefreshThread(boolean reset) {
 
-		this.reset = reset;
-	}
+        super(null);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void process(ConsoleAgent agent) throws Exception {
+        this.reset = reset;
+    }
 
-		if (this.reset)
-			agent.resetTransit();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void process(ConsoleAgent agent) throws Exception {
 
-		agent.updateState();
-		ConsoleData.fireAgentStatus(agent);
-	}
+        if (this.reset)
+            agent.resetTransit();
+
+        agent.updateState();
+        ConsoleData.fireAgentStatus(agent);
+    }
 }

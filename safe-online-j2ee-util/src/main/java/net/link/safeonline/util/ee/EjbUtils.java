@@ -23,6 +23,7 @@ import javax.rmi.PortableRemoteObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Utils to ease the working with EJBs.
  * 
@@ -31,135 +32,136 @@ import org.apache.commons.logging.LogFactory;
  */
 public class EjbUtils {
 
-	private static final Log LOG = LogFactory.getLog(EjbUtils.class);
+    private static final Log LOG = LogFactory.getLog(EjbUtils.class);
 
-	private EjbUtils() {
-		// empty
-	}
 
-	/**
-	 * Lookup an EJB within JNDI.
-	 * 
-	 * @param <Type>
-	 * @param initialContext
-	 * @param jndiName
-	 * @param type
-	 */
-	public static <Type> Type getEJB(InitialContext initialContext,
-			String jndiName, Class<Type> type) {
-		try {
-			LOG.debug("ejb jndi lookup: " + jndiName);
-			Object object = initialContext.lookup(jndiName);
-			Type instance = type
-					.cast(PortableRemoteObject.narrow(object, type));
-			return instance;
-		} catch (NamingException e) {
-			throw new RuntimeException("naming error: " + e.getMessage(), e);
-		}
-	}
+    private EjbUtils() {
 
-	public static <Type> Type getEJB(String jndiName, Class<Type> type) {
-		InitialContext initialContext = getInitialContext();
-		return getEJB(initialContext, jndiName, type);
-	}
+        // empty
+    }
 
-	private static InitialContext getInitialContext() {
-		InitialContext initialContext;
-		try {
-			initialContext = new InitialContext();
-		} catch (NamingException e) {
-			throw new RuntimeException("naming error: " + e.getMessage(), e);
-		}
-		return initialContext;
-	}
+    /**
+     * Lookup an EJB within JNDI.
+     * 
+     * @param <Type>
+     * @param initialContext
+     * @param jndiName
+     * @param type
+     */
+    public static <Type> Type getEJB(InitialContext initialContext, String jndiName, Class<Type> type) {
 
-	public static <Type> List<Type> getComponents(
-			InitialContext initialContext, String jndiPrefix, Class<Type> type) {
-		LOG.debug("get components at " + jndiPrefix);
-		List<Type> components = new LinkedList<Type>();
-		try {
-			Context context;
-			try {
-				context = (Context) initialContext.lookup(jndiPrefix);
-			} catch (NameNotFoundException e) {
-				return components;
-			}
-			NamingEnumeration<NameClassPair> result = initialContext
-					.list(jndiPrefix);
-			while (result.hasMore()) {
-				NameClassPair nameClassPair = result.next();
-				String objectName = nameClassPair.getName();
-				LOG.debug(objectName + ":" + nameClassPair.getClassName());
-				Object object = context.lookup(objectName);
-				if (!type.isInstance(object)) {
-					String message = "object \"" + jndiPrefix + "/"
-							+ objectName + "\" is not a " + type.getName();
-					LOG.error(message);
-					throw new IllegalStateException(message);
-				}
-				Type component = type.cast(object);
-				components.add(component);
-			}
-			return components;
-		} catch (NamingException e) {
-			throw new RuntimeException("naming error: " + e.getMessage(), e);
-		}
-	}
+        try {
+            LOG.debug("ejb jndi lookup: " + jndiName);
+            Object object = initialContext.lookup(jndiName);
+            Type instance = type.cast(PortableRemoteObject.narrow(object, type));
+            return instance;
+        } catch (NamingException e) {
+            throw new RuntimeException("naming error: " + e.getMessage(), e);
+        }
+    }
 
-	public static <Type> List<Type> getComponents(String jndiPrefix,
-			Class<Type> type) {
-		InitialContext initialContext;
-		try {
-			initialContext = new InitialContext();
-		} catch (NamingException e) {
-			throw new RuntimeException("naming error: " + e.getMessage(), e);
-		}
-		return getComponents(initialContext, jndiPrefix, type);
-	}
+    public static <Type> Type getEJB(String jndiName, Class<Type> type) {
 
-	public static <Type> Map<String, Type> getComponentNames(
-			InitialContext initialContext, String jndiPrefix, Class<Type> type) {
-		LOG.debug("get component names at " + jndiPrefix);
-		HashMap<String, Type> names = new HashMap<String, Type>();
-		NamingEnumeration<NameClassPair> result;
-		try {
-			Context context;
-			try {
-				context = (Context) initialContext.lookup(jndiPrefix);
-				result = initialContext.list(jndiPrefix);
-			} catch (NameNotFoundException e) {
-				return names;
-			}
+        InitialContext initialContext = getInitialContext();
+        return getEJB(initialContext, jndiName, type);
+    }
 
-			while (result.hasMore()) {
-				NameClassPair nameClassPair = result.next();
-				String objectName = nameClassPair.getName();
-				LOG.debug(objectName + ":" + nameClassPair.getClassName());
-				Object object = context.lookup(objectName);
-				if (!type.isInstance(object)) {
-					String message = "object \"" + jndiPrefix + "/"
-							+ objectName + "\" is not a " + type.getName();
-					LOG.error(message);
-					throw new IllegalStateException(message);
-				}
-				Type component = type.cast(object);
-				names.put(objectName, component);
-			}
-			return names;
-		} catch (NamingException e) {
-			throw new RuntimeException("naming error: " + e.getMessage(), e);
-		}
-	}
+    private static InitialContext getInitialContext() {
 
-	public static <Type> Map<String, Type> getComponentNames(String jndiPrefix,
-			Class<Type> type) {
-		InitialContext initialContext;
-		try {
-			initialContext = new InitialContext();
-		} catch (NamingException e) {
-			throw new RuntimeException("naming error: " + e.getMessage(), e);
-		}
-		return getComponentNames(initialContext, jndiPrefix, type);
-	}
+        InitialContext initialContext;
+        try {
+            initialContext = new InitialContext();
+        } catch (NamingException e) {
+            throw new RuntimeException("naming error: " + e.getMessage(), e);
+        }
+        return initialContext;
+    }
+
+    public static <Type> List<Type> getComponents(InitialContext initialContext, String jndiPrefix, Class<Type> type) {
+
+        LOG.debug("get components at " + jndiPrefix);
+        List<Type> components = new LinkedList<Type>();
+        try {
+            Context context;
+            try {
+                context = (Context) initialContext.lookup(jndiPrefix);
+            } catch (NameNotFoundException e) {
+                return components;
+            }
+            NamingEnumeration<NameClassPair> result = initialContext.list(jndiPrefix);
+            while (result.hasMore()) {
+                NameClassPair nameClassPair = result.next();
+                String objectName = nameClassPair.getName();
+                LOG.debug(objectName + ":" + nameClassPair.getClassName());
+                Object object = context.lookup(objectName);
+                if (!type.isInstance(object)) {
+                    String message = "object \"" + jndiPrefix + "/" + objectName + "\" is not a " + type.getName();
+                    LOG.error(message);
+                    throw new IllegalStateException(message);
+                }
+                Type component = type.cast(object);
+                components.add(component);
+            }
+            return components;
+        } catch (NamingException e) {
+            throw new RuntimeException("naming error: " + e.getMessage(), e);
+        }
+    }
+
+    public static <Type> List<Type> getComponents(String jndiPrefix, Class<Type> type) {
+
+        InitialContext initialContext;
+        try {
+            initialContext = new InitialContext();
+        } catch (NamingException e) {
+            throw new RuntimeException("naming error: " + e.getMessage(), e);
+        }
+        return getComponents(initialContext, jndiPrefix, type);
+    }
+
+    public static <Type> Map<String, Type> getComponentNames(InitialContext initialContext, String jndiPrefix,
+            Class<Type> type) {
+
+        LOG.debug("get component names at " + jndiPrefix);
+        HashMap<String, Type> names = new HashMap<String, Type>();
+        NamingEnumeration<NameClassPair> result;
+        try {
+            Context context;
+            try {
+                context = (Context) initialContext.lookup(jndiPrefix);
+                result = initialContext.list(jndiPrefix);
+            } catch (NameNotFoundException e) {
+                return names;
+            }
+
+            while (result.hasMore()) {
+                NameClassPair nameClassPair = result.next();
+                String objectName = nameClassPair.getName();
+                LOG.debug(objectName + ":" + nameClassPair.getClassName());
+                Object object = context.lookup(objectName);
+                if (!type.isInstance(object)) {
+                    String message = "object \"" + jndiPrefix + "/" + objectName + "\" is not a " + type.getName();
+                    LOG.error(message);
+                    throw new IllegalStateException(message);
+                }
+                Type component = type.cast(object);
+                names.put(objectName, component);
+            }
+            return names;
+        } catch (NamingException e) {
+            throw new RuntimeException("naming error: " + e.getMessage(), e);
+        }
+    }
+
+    public static <Type> Map<String, Type> getComponentNames(String jndiPrefix, Class<Type> type) {
+
+        InitialContext initialContext;
+        try {
+            initialContext = new InitialContext();
+        } catch (NamingException e) {
+            throw new RuntimeException("naming error: " + e.getMessage(), e);
+        }
+        return getComponentNames(initialContext, jndiPrefix, type);
+    }
 
 }

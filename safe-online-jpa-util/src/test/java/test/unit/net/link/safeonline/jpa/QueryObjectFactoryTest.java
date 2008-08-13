@@ -27,197 +27,201 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class QueryObjectFactoryTest {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	private EntityManager entityManager;
+    private EntityManager     entityManager;
 
-	@Before
-	public void setUp() throws Exception {
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(MyTestEntity.class);
-		this.entityManager = this.entityTestManager.getEntityManager();
-	}
 
-	@After
-	public void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	@Test
-	public void createQueryObject() throws Exception {
-		// operate
-		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						MyTestEntity.MyQueryTestInterface.class);
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(MyTestEntity.class);
+        this.entityManager = this.entityTestManager.getEntityManager();
+    }
 
-		// verify
-		assertNotNull(queryObject);
-	}
+    @After
+    public void tearDown() throws Exception {
 
-	@Test
-	public void simpleQueryWithEmptyResult() throws Exception {
-		// setup
-		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						MyTestEntity.MyQueryTestInterface.class);
+        this.entityTestManager.tearDown();
+    }
 
-		// operate
-		List<MyTestEntity> result = queryObject.listAll();
+    @Test
+    public void createQueryObject() throws Exception {
 
-		// verify
-		assertNotNull(result);
-		assertTrue(result.isEmpty());
-	}
+        // operate
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                MyTestEntity.MyQueryTestInterface.class);
 
-	@Test
-	public void simpleQuery() throws Exception {
-		// setup
-		String testName = UUID.randomUUID().toString();
-		MyTestEntity myTestEntity = new MyTestEntity(testName);
-		this.entityManager.persist(myTestEntity);
+        // verify
+        assertNotNull(queryObject);
+    }
 
-		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						MyTestEntity.MyQueryTestInterface.class);
+    @Test
+    public void simpleQueryWithEmptyResult() throws Exception {
 
-		// operate
-		List<MyTestEntity> result = queryObject.listAll();
+        // setup
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                MyTestEntity.MyQueryTestInterface.class);
 
-		// verify
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertEquals(testName, result.get(0).getName());
-	}
+        // operate
+        List<MyTestEntity> result = queryObject.listAll();
 
-	@Test
-	public void queryWithParam() throws Exception {
-		// setup
-		String testName = UUID.randomUUID().toString();
-		MyTestEntity myTestEntity = new MyTestEntity(testName);
-		this.entityManager.persist(myTestEntity);
+        // verify
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
 
-		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						MyTestEntity.MyQueryTestInterface.class);
+    @Test
+    public void simpleQuery() throws Exception {
 
-		// operate
-		List<MyTestEntity> result = queryObject.listAll(testName);
+        // setup
+        String testName = UUID.randomUUID().toString();
+        MyTestEntity myTestEntity = new MyTestEntity(testName);
+        this.entityManager.persist(myTestEntity);
 
-		// verify
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertEquals(testName, result.get(0).getName());
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                MyTestEntity.MyQueryTestInterface.class);
 
-		// operate
-		result = queryObject.listAll(testName + "foobar");
+        // operate
+        List<MyTestEntity> result = queryObject.listAll();
 
-		// verify
-		assertNotNull(result);
-		assertTrue(result.isEmpty());
-	}
+        // verify
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(testName, result.get(0).getName());
+    }
 
-	@Test
-	public void singleResultQueryWithParam() throws Exception {
-		// setup
-		String testName = UUID.randomUUID().toString();
-		MyTestEntity myTestEntity = new MyTestEntity(testName);
-		this.entityManager.persist(myTestEntity);
+    @Test
+    public void queryWithParam() throws Exception {
 
-		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						MyTestEntity.MyQueryTestInterface.class);
+        // setup
+        String testName = UUID.randomUUID().toString();
+        MyTestEntity myTestEntity = new MyTestEntity(testName);
+        this.entityManager.persist(myTestEntity);
 
-		// operate
-		MyTestEntity result = queryObject.get(testName);
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                MyTestEntity.MyQueryTestInterface.class);
 
-		// verify
-		assertNotNull(result);
-		assertEquals(testName, result.getName());
+        // operate
+        List<MyTestEntity> result = queryObject.listAll(testName);
 
-		// operate
-		try {
-			queryObject.get(testName + "foobar");
-			fail();
-		} catch (NoResultException e) {
-			// expected
-		}
-	}
+        // verify
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(testName, result.get(0).getName());
 
-	@Test
-	public void nullableSingleResultQueryWithParam() throws Exception {
-		// setup
-		String testName = UUID.randomUUID().toString();
-		MyTestEntity myTestEntity = new MyTestEntity(testName);
-		this.entityManager.persist(myTestEntity);
+        // operate
+        result = queryObject.listAll(testName + "foobar");
 
-		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						MyTestEntity.MyQueryTestInterface.class);
+        // verify
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
 
-		// operate
-		MyTestEntity result = queryObject.get(testName);
+    @Test
+    public void singleResultQueryWithParam() throws Exception {
 
-		// verify
-		assertNotNull(result);
-		assertEquals(testName, result.getName());
+        // setup
+        String testName = UUID.randomUUID().toString();
+        MyTestEntity myTestEntity = new MyTestEntity(testName);
+        this.entityManager.persist(myTestEntity);
 
-		// operate
-		result = queryObject.find(testName + "foobar");
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                MyTestEntity.MyQueryTestInterface.class);
 
-		// verify
-		assertNull(result);
-	}
+        // operate
+        MyTestEntity result = queryObject.get(testName);
 
-	@Test
-	public void updateMethod() throws Exception {
-		// setup
-		String testName = UUID.randomUUID().toString();
-		MyTestEntity myTestEntity = new MyTestEntity(testName);
-		this.entityManager.persist(myTestEntity);
+        // verify
+        assertNotNull(result);
+        assertEquals(testName, result.getName());
 
-		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						MyTestEntity.MyQueryTestInterface.class);
+        // operate
+        try {
+            queryObject.get(testName + "foobar");
+            fail();
+        } catch (NoResultException e) {
+            // expected
+        }
+    }
 
-		// operate
-		queryObject.removeAll();
-		queryObject.removeAllReturningInt();
-		queryObject.removeAllReturningInteger();
+    @Test
+    public void nullableSingleResultQueryWithParam() throws Exception {
 
-		// operate
-		MyTestEntity result = queryObject.find(testName);
+        // setup
+        String testName = UUID.randomUUID().toString();
+        MyTestEntity myTestEntity = new MyTestEntity(testName);
+        this.entityManager.persist(myTestEntity);
 
-		// verify
-		assertNull(result);
-	}
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                MyTestEntity.MyQueryTestInterface.class);
 
-	@Test
-	public void queryQueryMethod() throws Exception {
-		// setup
-		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						MyTestEntity.MyQueryTestInterface.class);
+        // operate
+        MyTestEntity result = queryObject.get(testName);
 
-		// operate
-		Query result = queryObject.listAllQuery();
+        // verify
+        assertNotNull(result);
+        assertEquals(testName, result.getName());
 
-		// verify
-		assertNotNull(result);
-	}
+        // operate
+        result = queryObject.find(testName + "foobar");
 
-	@Test
-	public void countQuery() throws Exception {
-		// setup
-		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						MyTestEntity.MyQueryTestInterface.class);
+        // verify
+        assertNull(result);
+    }
 
-		// operate
-		long count = queryObject.countAll();
+    @Test
+    public void updateMethod() throws Exception {
 
-		// verify
-		assertTrue(0 == count);
-	}
+        // setup
+        String testName = UUID.randomUUID().toString();
+        MyTestEntity myTestEntity = new MyTestEntity(testName);
+        this.entityManager.persist(myTestEntity);
+
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                MyTestEntity.MyQueryTestInterface.class);
+
+        // operate
+        queryObject.removeAll();
+        queryObject.removeAllReturningInt();
+        queryObject.removeAllReturningInteger();
+
+        // operate
+        MyTestEntity result = queryObject.find(testName);
+
+        // verify
+        assertNull(result);
+    }
+
+    @Test
+    public void queryQueryMethod() throws Exception {
+
+        // setup
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                MyTestEntity.MyQueryTestInterface.class);
+
+        // operate
+        Query result = queryObject.listAllQuery();
+
+        // verify
+        assertNotNull(result);
+    }
+
+    @Test
+    public void countQuery() throws Exception {
+
+        // setup
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                MyTestEntity.MyQueryTestInterface.class);
+
+        // operate
+        long count = queryObject.countAll();
+
+        // verify
+        assertTrue(0 == count);
+    }
 }

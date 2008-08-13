@@ -58,22 +58,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.tidy.Tidy;
 
+
 public class AuthenticationWebApplicationTest {
 
-    static final Log LOG = LogFactory
-                                 .getLog(AuthenticationWebApplicationTest.class);
+    static final Log LOG = LogFactory.getLog(AuthenticationWebApplicationTest.class);
 
 
     @Test
     public void testLogin() throws Exception {
 
-        PrivateKeyEntry privateKeyEntry = PerformanceKeyStoreUtils
-                .getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = PerformanceKeyStoreUtils.getPrivateKeyEntry();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
         PublicKey publicKey = privateKeyEntry.getCertificate().getPublicKey();
 
-        Protocol.registerProtocol("https", new Protocol("https",
-                new MySSLSocketFactory(), 443));
+        Protocol.registerProtocol("https", new Protocol("https", new MySSLSocketFactory(), 443));
 
         HttpClient httpClient = new HttpClient();
 
@@ -83,16 +81,13 @@ public class AuthenticationWebApplicationTest {
         postMethod.setRequestHeader("Cookie", "deflowered=true");
 
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
-        String authnRequest = AuthnRequestFactory.createAuthnRequest(
-                "performance-application", "performance-application", null,
-                keyPair, "http://localhost:1234/performance-application", null,
-                null, null);
+        String authnRequest = AuthnRequestFactory.createAuthnRequest("performance-application",
+                "performance-application", null, keyPair, "http://localhost:1234/performance-application", null, null,
+                null);
         LOG.debug("authentication request: " + authnRequest);
-        String encodedAuthnRequest = new String(Base64
-                .encodeBase64(authnRequest.getBytes()));
+        String encodedAuthnRequest = new String(Base64.encodeBase64(authnRequest.getBytes()));
 
-        postMethod.addParameter(new NameValuePair("SAMLRequest",
-                encodedAuthnRequest));
+        postMethod.addParameter(new NameValuePair("SAMLRequest", encodedAuthnRequest));
 
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
@@ -115,42 +110,31 @@ public class AuthenticationWebApplicationTest {
         postMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
         statusCode = httpClient.executeMethod(postMethod);
         Tidy tidy = new Tidy();
-        Document resultDocument = tidy.parseDOM(postMethod
-                .getResponseBodyAsStream(), null);
-        LOG.debug("result document: "
-                + DomTestUtils.domToString(resultDocument));
+        Document resultDocument = tidy.parseDOM(postMethod.getResponseBodyAsStream(), null);
+        LOG.debug("result document: " + DomTestUtils.domToString(resultDocument));
 
         Node formNode = XPathAPI.selectSingleNode(resultDocument, "//form");
         assertNotNull(formNode);
 
-        Node passwordInputNode = XPathAPI.selectSingleNode(formNode,
-                "//input[@type='radio' and @value='password']");
-        String passwordFieldName = passwordInputNode.getAttributes()
-                .getNamedItem("name").getNodeValue();
-        String passwordFieldValue = passwordInputNode.getAttributes()
-                .getNamedItem("value").getNodeValue();
-        LOG.debug("radio attribute: " + passwordFieldName + "="
-                + passwordFieldValue);
+        Node passwordInputNode = XPathAPI.selectSingleNode(formNode, "//input[@type='radio' and @value='password']");
+        String passwordFieldName = passwordInputNode.getAttributes().getNamedItem("name").getNodeValue();
+        String passwordFieldValue = passwordInputNode.getAttributes().getNamedItem("value").getNodeValue();
+        LOG.debug("radio attribute: " + passwordFieldName + "=" + passwordFieldValue);
 
         postMethod = createFormPostMethod(formNode, jsessionId);
-        postMethod.addParameter(new NameValuePair(passwordFieldName,
-                passwordFieldValue));
+        postMethod.addParameter(new NameValuePair(passwordFieldName, passwordFieldValue));
 
         statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
 
         tidy = new Tidy();
-        resultDocument = tidy.parseDOM(postMethod.getResponseBodyAsStream(),
-                null);
-        LOG.debug("result document: "
-                + DomTestUtils.domToString(resultDocument));
+        resultDocument = tidy.parseDOM(postMethod.getResponseBodyAsStream(), null);
+        LOG.debug("result document: " + DomTestUtils.domToString(resultDocument));
     }
 
-    private PostMethod createFormPostMethod(Node formNode, String jsessionId)
-            throws TransformerException {
+    private PostMethod createFormPostMethod(Node formNode, String jsessionId) throws TransformerException {
 
-        NodeIterator hiddenInputNodeIterator = XPathAPI.selectNodeIterator(
-                formNode, "//input[@type='hidden']");
+        NodeIterator hiddenInputNodeIterator = XPathAPI.selectNodeIterator(formNode, "//input[@type='hidden']");
         Node hiddenInputNode;
         List<NameValuePair> submitFields = new LinkedList<NameValuePair>();
         while (null != (hiddenInputNode = hiddenInputNodeIterator.nextNode())) {
@@ -161,17 +145,13 @@ public class AuthenticationWebApplicationTest {
             submitFields.add(new NameValuePair(name, value));
         }
 
-        Node submitInputNode = XPathAPI.selectSingleNode(formNode,
-                "//input[@type='submit']");
-        String submitName = submitInputNode.getAttributes()
-                .getNamedItem("name").getNodeValue();
+        Node submitInputNode = XPathAPI.selectSingleNode(formNode, "//input[@type='submit']");
+        String submitName = submitInputNode.getAttributes().getNamedItem("name").getNodeValue();
         submitFields.add(new NameValuePair(submitName, ""));
 
-        String actionValue = formNode.getAttributes().getNamedItem("action")
-                .getNodeValue();
+        String actionValue = formNode.getAttributes().getNamedItem("action").getNodeValue();
         LOG.debug("action value: " + actionValue);
-        PostMethod postMethod = new PostMethod("https://localhost:8443"
-                + actionValue);
+        PostMethod postMethod = new PostMethod("https://localhost:8443" + actionValue);
         postMethod.addParameters(submitFields.toArray(new NameValuePair[] {}));
 
         postMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
@@ -201,46 +181,38 @@ public class AuthenticationWebApplicationTest {
             }
         }
 
-        public Socket createSocket(String host, int port) throws IOException,
-                UnknownHostException {
+        public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
 
             LOG.debug("createSocket: " + host + ":" + port);
             return null;
         }
 
-        public Socket createSocket(String host, int port,
-                InetAddress localAddress, int localPort) throws IOException,
+        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort) throws IOException,
                 UnknownHostException {
 
-            LOG.debug("createSocket: " + host + ":" + port + ", local: "
-                    + localAddress + ":" + localPort);
+            LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort);
             return null;
         }
 
-        public Socket createSocket(String host, int port,
-                InetAddress localAddress, int localPort,
-                HttpConnectionParams params) throws IOException,
-                UnknownHostException, ConnectTimeoutException {
+        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort,
+                HttpConnectionParams params) throws IOException, UnknownHostException, ConnectTimeoutException {
 
-            LOG.debug("createSocket: " + host + ":" + port + ", local: "
-                    + localAddress + ":" + localPort + ", params: " + params);
+            LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort
+                    + ", params: " + params);
 
-            Socket socket = this.sslSocketFactory.createSocket(host, port,
-                    localAddress, localPort);
+            Socket socket = this.sslSocketFactory.createSocket(host, port, localAddress, localPort);
             return socket;
         }
     }
 
     static class MyTrustManager implements X509TrustManager {
 
-        public void checkClientTrusted(X509Certificate[] chain, String authType)
-                throws CertificateException {
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 
             throw new CertificateException("cannot verify client certificates");
         }
 
-        public void checkServerTrusted(X509Certificate[] chain, String authType)
-                throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 
             if (null == chain) {
                 throw new CertificateException("null certificate chain");

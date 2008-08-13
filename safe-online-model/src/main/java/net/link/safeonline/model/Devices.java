@@ -14,14 +14,14 @@ import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 
+
 @Local
 public interface Devices {
 
-	List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application);
+    List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application);
 
-	List<DeviceEntity> listDevices();
+    List<DeviceEntity> listDevices();
 
-	void setAllowedDevices(ApplicationEntity application,
-			List<AllowedDeviceEntity> allowedDevices);
+    void setAllowedDevices(ApplicationEntity application, List<AllowedDeviceEntity> allowedDevices);
 
 }

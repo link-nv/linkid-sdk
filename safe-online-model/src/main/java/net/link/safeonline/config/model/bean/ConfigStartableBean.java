@@ -28,91 +28,91 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "ConfigStartableBean")
 public class ConfigStartableBean implements ConfigStartable {
 
-	private static final Log LOG = LogFactory.getLog(ConfigStartableBean.class);
+    private static final Log LOG = LogFactory.getLog(ConfigStartableBean.class);
 
-	@EJB
-	private ConfigItemDAO configItemDAO;
+    @EJB
+    private ConfigItemDAO    configItemDAO;
 
-	@EJB
-	private ConfigGroupDAO configGroupDAO;
+    @EJB
+    private ConfigGroupDAO   configGroupDAO;
 
-	public int getPriority() {
-		return Startable.PRIORITY_BOOTSTRAP;
-	}
 
-	public void postStart() {
-		LOG.debug("Starting configuration");
+    public int getPriority() {
 
-		ConfigurationDeploymentStrategy configurationDeploymentStrategy = new ConfigurationDeploymentStrategy();
-		configurationDeploymentStrategy.scan();
+        return Startable.PRIORITY_BOOTSTRAP;
+    }
 
-		for (Class<?> classObject : configurationDeploymentStrategy
-				.getScannedConfigurationClasses()) {
-			LOG.debug("found configurable class: " + classObject.getName());
-			configure(classObject);
-		}
-	}
+    public void postStart() {
 
-	public void preStop() {
-		// empty
-	}
+        LOG.debug("Starting configuration");
 
-	@SuppressWarnings("unchecked")
-	private void configure(Class classObject) {
-		try {
-			Object target = classObject.newInstance();
-			Field[] fields = classObject.getDeclaredFields();
+        ConfigurationDeploymentStrategy configurationDeploymentStrategy = new ConfigurationDeploymentStrategy();
+        configurationDeploymentStrategy.scan();
 
-			Configurable generalConfigurable = (Configurable) classObject
-					.getAnnotation(Configurable.class);
+        for (Class<?> classObject : configurationDeploymentStrategy.getScannedConfigurationClasses()) {
+            LOG.debug("found configurable class: " + classObject.getName());
+            configure(classObject);
+        }
+    }
 
-			String group = generalConfigurable.group();
+    public void preStop() {
 
-			LOG.debug("Configuring: " + classObject.getName());
+        // empty
+    }
 
-			for (Field field : fields) {
-				LOG.debug("Inspecting field: " + field.getName());
-				Configurable configurable = field
-						.getAnnotation(Configurable.class);
-				if (configurable != null) {
-					LOG.debug("Configuring field: " + field.getName());
-					String name = configurable.name();
-					if (name == null || name == "") {
-						name = field.getName();
-					}
+    @SuppressWarnings("unchecked")
+    private void configure(Class classObject) {
 
-					if (!configurable.group().equals(defaultGroup)) {
-						group = configurable.group();
-					}
-					ConfigGroupEntity configGroup = this.configGroupDAO
-							.findConfigGroup(group);
-					if (configGroup == null) {
-						LOG.debug("Adding configuration group: " + group);
-						configGroup = this.configGroupDAO.addConfigGroup(group);
-					}
+        try {
+            Object target = classObject.newInstance();
+            Field[] fields = classObject.getDeclaredFields();
 
-					ConfigItemEntity configItem = this.configItemDAO
-							.findConfigItem(name);
-					field.setAccessible(true);
-					if (configItem == null) {
-						LOG.debug("Adding configuration item: " + name);
-						Object value = field.get(target);
-						String valueType = value.getClass().getName();
-						String stringValue = value.toString();
-						configItem = this.configItemDAO.addConfigItem(name,
-								stringValue, valueType, configGroup);
-					} else {
-						configItem.setConfigGroup(configGroup);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new EJBException("Failed to execute @Configurable", e);
-		}
-	}
+            Configurable generalConfigurable = (Configurable) classObject.getAnnotation(Configurable.class);
+
+            String group = generalConfigurable.group();
+
+            LOG.debug("Configuring: " + classObject.getName());
+
+            for (Field field : fields) {
+                LOG.debug("Inspecting field: " + field.getName());
+                Configurable configurable = field.getAnnotation(Configurable.class);
+                if (configurable != null) {
+                    LOG.debug("Configuring field: " + field.getName());
+                    String name = configurable.name();
+                    if (name == null || name == "") {
+                        name = field.getName();
+                    }
+
+                    if (!configurable.group().equals(defaultGroup)) {
+                        group = configurable.group();
+                    }
+                    ConfigGroupEntity configGroup = this.configGroupDAO.findConfigGroup(group);
+                    if (configGroup == null) {
+                        LOG.debug("Adding configuration group: " + group);
+                        configGroup = this.configGroupDAO.addConfigGroup(group);
+                    }
+
+                    ConfigItemEntity configItem = this.configItemDAO.findConfigItem(name);
+                    field.setAccessible(true);
+                    if (configItem == null) {
+                        LOG.debug("Adding configuration item: " + name);
+                        Object value = field.get(target);
+                        String valueType = value.getClass().getName();
+                        String stringValue = value.toString();
+                        configItem = this.configItemDAO.addConfigItem(name, stringValue, valueType, configGroup);
+                    } else {
+                        configItem.setConfigGroup(configGroup);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new EJBException("Failed to execute @Configurable", e);
+        }
+    }
 
 }

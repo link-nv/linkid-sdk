@@ -15,24 +15,22 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
+
 @Local
 public interface DeviceMappingDAO {
 
-	public DeviceMappingEntity addDeviceMapping(SubjectEntity subject,
-			DeviceEntity device);
+    public DeviceMappingEntity addDeviceMapping(SubjectEntity subject, DeviceEntity device);
 
-	public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject);
+    public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject);
 
-	public DeviceMappingEntity findDeviceMapping(SubjectEntity subject,
-			DeviceEntity device);
+    public DeviceMappingEntity findDeviceMapping(SubjectEntity subject, DeviceEntity device);
 
-	public DeviceMappingEntity findDeviceMapping(String id);
+    public DeviceMappingEntity findDeviceMapping(String id);
 
-	public DeviceMappingEntity getDeviceMapping(String id)
-			throws DeviceMappingNotFoundException;
+    public DeviceMappingEntity getDeviceMapping(String id) throws DeviceMappingNotFoundException;
 
-	public void removeDeviceMappings(SubjectEntity subject);
+    public void removeDeviceMappings(SubjectEntity subject);
 
-	public List<DeviceMappingEntity> listDeviceMappings(DeviceEntity device);
+    public List<DeviceMappingEntity> listDeviceMappings(DeviceEntity device);
 
 }

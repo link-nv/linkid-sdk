@@ -17,6 +17,7 @@ import javax.ejb.EJBException;
 
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
+
 /**
  * PKIX utility methods.
  * 
@@ -25,36 +26,34 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
  */
 public class PkiUtils {
 
-	private PkiUtils() {
-		// empty
-	}
+    private PkiUtils() {
 
-	/**
-	 * Decodes a given DER encoded X509 certificate.
-	 * 
-	 * @param encodedCertificate
-	 * @throws CertificateEncodingException
-	 */
-	public static X509Certificate decodeCertificate(byte[] encodedCertificate)
-			throws CertificateEncodingException {
-		if (null == encodedCertificate) {
-			return null;
-		}
-		CertificateFactory certificateFactory;
-		try {
-			certificateFactory = CertificateFactory.getInstance("X.509");
-		} catch (CertificateException e) {
-			throw new EJBException("certificate factory error: "
-					+ e.getMessage());
-		}
-		InputStream certInputStream = new ByteArrayInputStream(
-				encodedCertificate);
-		try {
-			X509Certificate certificate = (X509Certificate) certificateFactory
-					.generateCertificate(certInputStream);
-			return certificate;
-		} catch (CertificateException e) {
-			throw new CertificateEncodingException();
-		}
-	}
+        // empty
+    }
+
+    /**
+     * Decodes a given DER encoded X509 certificate.
+     * 
+     * @param encodedCertificate
+     * @throws CertificateEncodingException
+     */
+    public static X509Certificate decodeCertificate(byte[] encodedCertificate) throws CertificateEncodingException {
+
+        if (null == encodedCertificate) {
+            return null;
+        }
+        CertificateFactory certificateFactory;
+        try {
+            certificateFactory = CertificateFactory.getInstance("X.509");
+        } catch (CertificateException e) {
+            throw new EJBException("certificate factory error: " + e.getMessage());
+        }
+        InputStream certInputStream = new ByteArrayInputStream(encodedCertificate);
+        try {
+            X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(certInputStream);
+            return certificate;
+        } catch (CertificateException e) {
+            throw new CertificateEncodingException();
+        }
+    }
 }

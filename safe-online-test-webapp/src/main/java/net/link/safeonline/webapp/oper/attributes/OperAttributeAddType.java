@@ -8,27 +8,32 @@ package net.link.safeonline.webapp.oper.attributes;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperAttributeAddType extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/attributes/attribute-add-type.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/attributes/attribute-add-type.seam";
 
-	public OperAttributeAddType() {
-		super(PAGE_NAME);
-	}
 
-	public OperAttributeAdd previous() {
-		clickButtonAndWait("previous");
-		return new OperAttributeAdd();
-	}
+    public OperAttributeAddType() {
 
-	public OperAttributes cancel() {
-		clickButtonAndWait("cancel");
-		return new OperAttributes();
-	}
+        super(PAGE_NAME);
+    }
 
-	public OperAttributeAddAc next() {
-		clickButtonAndWait("next");
-		return new OperAttributeAddAc();
-	}
+    public OperAttributeAdd previous() {
+
+        clickButtonAndWait("previous");
+        return new OperAttributeAdd();
+    }
+
+    public OperAttributes cancel() {
+
+        clickButtonAndWait("cancel");
+        return new OperAttributes();
+    }
+
+    public OperAttributeAddAc next() {
+
+        clickButtonAndWait("next");
+        return new OperAttributeAddAc();
+    }
 }

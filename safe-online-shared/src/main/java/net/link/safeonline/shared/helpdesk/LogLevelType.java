@@ -15,6 +15,6 @@ package net.link.safeonline.shared.helpdesk;
 
 public enum LogLevelType {
 
-	INFO, ERROR
+    INFO, ERROR
 
 }

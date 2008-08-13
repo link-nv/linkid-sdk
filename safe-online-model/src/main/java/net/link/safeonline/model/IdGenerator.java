@@ -9,8 +9,9 @@ package net.link.safeonline.model;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface IdGenerator {
 
-	String generateId();
+    String generateId();
 }

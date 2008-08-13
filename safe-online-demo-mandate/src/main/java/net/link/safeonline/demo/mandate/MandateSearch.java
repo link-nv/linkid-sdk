@@ -9,20 +9,21 @@ package net.link.safeonline.demo.mandate;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface MandateSearch extends AbstractMandateDataClient {
 
-	/*
-	 * Accessors.
-	 */
-	String getName();
+    /*
+     * Accessors.
+     */
+    String getName();
 
-	void setName(String name);
+    void setName(String name);
 
-	/*
-	 * Actions.
-	 */
-	String search();
+    /*
+     * Actions.
+     */
+    String search();
 
-	String removeMandate();
+    String removeMandate();
 }

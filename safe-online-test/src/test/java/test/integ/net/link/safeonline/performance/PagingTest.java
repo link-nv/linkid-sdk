@@ -26,199 +26,175 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 /**
  * @author mbillemo
- *
+ * 
  */
 public class PagingTest {
 
-	static final Log LOG = LogFactory.getLog(PagingTest.class);
+    static final Log          LOG = LogFactory.getLog(PagingTest.class);
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Before
-	public void setUp() {
 
-		this.entityTestManager = new EntityTestManager();
+    @Before
+    public void setUp() {
 
-		try {
-			this.entityTestManager.configureMySql("sebeco-dev-11", 3306,
-					"safeonline", "safeonline", "safeonline", true);
-			this.entityTestManager.setUp(ScenarioTimingEntity.class,
-					ExecutionEntity.class, DriverProfileEntity.class,
-					ProfileDataEntity.class, MeasurementEntity.class);
-		}
+        this.entityTestManager = new EntityTestManager();
 
-		catch (Exception e) {
-			LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
-			throw new RuntimeException("JPA annotations incorrect: "
-					+ e.getMessage(), e);
-		}
-	}
+        try {
+            this.entityTestManager
+                    .configureMySql("sebeco-dev-11", 3306, "safeonline", "safeonline", "safeonline", true);
+            this.entityTestManager.setUp(ScenarioTimingEntity.class, ExecutionEntity.class, DriverProfileEntity.class,
+                    ProfileDataEntity.class, MeasurementEntity.class);
+        }
 
-	@After
-	public void tearDown() throws Exception {
+        catch (Exception e) {
+            LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
+            throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
+        }
+    }
 
-		if (this.entityTestManager.getEntityManager() != null)
-			this.entityTestManager.tearDown();
-	}
+    @After
+    public void tearDown() throws Exception {
 
-	@Test
-	public void annotationCorrectness() throws Exception {
+        if (this.entityTestManager.getEntityManager() != null)
+            this.entityTestManager.tearDown();
+    }
 
-		assertNotNull("JPA annotations incorrect?", this.entityTestManager
-				.getEntityManager());
-	}
+    @Test
+    public void annotationCorrectness() throws Exception {
 
-	@Test
-	public void testPaging() throws Exception {
+        assertNotNull("JPA annotations incorrect?", this.entityTestManager.getEntityManager());
+    }
 
-		EntityManager em = this.entityTestManager.getEntityManager();
+    @Test
+    public void testPaging() throws Exception {
 
-		String driverName = "Authentication Driver";
-		Date startTime = new Date(1203519790000l);
-		int dataPoints = 10;
+        EntityManager em = this.entityTestManager.getEntityManager();
 
-		// Find the driver profile.
-		DriverProfileEntity profile = (DriverProfileEntity) em.createQuery(
-				"SELECT p FROM DriverProfileEntity p"
-						+ "    JOIN p.execution e"
-						+ "    WHERE e.startTime = :startTime"
-						+ "        AND p.driverName = :driverName")
-				.setParameter("startTime", startTime).setParameter(
-						"driverName", driverName).getSingleResult();
+        String driverName = "Authentication Driver";
+        Date startTime = new Date(1203519790000l);
+        int dataPoints = 10;
 
-		int repeat = 100;
-		long start = System.currentTimeMillis();
-		for (int i = 0; i < repeat; ++i)
-			testPagingOne(profile, dataPoints);
+        // Find the driver profile.
+        DriverProfileEntity profile = (DriverProfileEntity) em.createQuery(
+                "SELECT p FROM DriverProfileEntity p" + "    JOIN p.execution e" + "    WHERE e.startTime = :startTime"
+                        + "        AND p.driverName = :driverName").setParameter("startTime", startTime).setParameter(
+                "driverName", driverName).getSingleResult();
 
-		Set<ProfileDataEntity> pointData = testPagingOne(profile, dataPoints);
+        int repeat = 100;
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < repeat; ++i)
+            testPagingOne(profile, dataPoints);
 
-		System.err.println();
-		System.err.println("Duration: " + (System.currentTimeMillis() - start)
-				/ repeat);
-		System.err.println("ProfileDatas: " + pointData.size());
-		System.err.println();
+        Set<ProfileDataEntity> pointData = testPagingOne(profile, dataPoints);
 
-		for (ProfileDataEntity d : pointData) {
-			System.out.println("ProfileData: "
-					+ new Date(d.getScenarioTiming().getStart()));
-			for (MeasurementEntity m : d.getMeasurements())
-				System.out.println("  - " + m.getMeasurement() + " -> "
-						+ m.getDuration());
-		}
-	}
+        System.err.println();
+        System.err.println("Duration: " + (System.currentTimeMillis() - start) / repeat);
+        System.err.println("ProfileDatas: " + pointData.size());
+        System.err.println();
 
-	@SuppressWarnings("unchecked")
-	public Set<ProfileDataEntity> testPagingOne(DriverProfileEntity profile,
-			int dataPoints) throws Exception {
+        for (ProfileDataEntity d : pointData) {
+            System.out.println("ProfileData: " + new Date(d.getScenarioTiming().getStart()));
+            for (MeasurementEntity m : d.getMeasurements())
+                System.out.println("  - " + m.getMeasurement() + " -> " + m.getDuration());
+        }
+    }
 
-		EntityManager em = this.entityTestManager.getEntityManager();
+    @SuppressWarnings("unchecked")
+    public Set<ProfileDataEntity> testPagingOne(DriverProfileEntity profile, int dataPoints) throws Exception {
 
-		// Find the driver profile's profile data.
-		long dataCount = (Long) em.createQuery(
-				"SELECT COUNT(d) FROM ProfileDataEntity d"
-						+ "    WHERE d.profile = :profile").setParameter(
-				"profile", profile).getSingleResult();
-		int period = (int) Math.ceil((double) dataCount / dataPoints);
-		System.err.println("period = dataCount (" + dataCount
-				+ ") / dataPoints (" + dataPoints + ") = " + period);
+        EntityManager em = this.entityTestManager.getEntityManager();
 
-		Query profileDataQuery = em.createQuery(
-				"SELECT d FROM ProfileDataEntity d"
-						+ "    WHERE d.profile = :profile"
-						+ "    ORDER BY d.scenarioStart").setParameter(
-				"profile", profile).setMaxResults(period);
+        // Find the driver profile's profile data.
+        long dataCount = (Long) em.createQuery(
+                "SELECT COUNT(d) FROM ProfileDataEntity d" + "    WHERE d.profile = :profile").setParameter("profile",
+                profile).getSingleResult();
+        int period = (int) Math.ceil((double) dataCount / dataPoints);
+        System.err.println("period = dataCount (" + dataCount + ") / dataPoints (" + dataPoints + ") = " + period);
 
-		List<ProfileDataEntity> profileData;
-		Set<ProfileDataEntity> pointData = new HashSet<ProfileDataEntity>();
-		for (int point = 0; (profileData = profileDataQuery.setFirstResult(
-				point * period).getResultList()) != null; ++point) {
-			if (profileData.isEmpty())
-				break;
+        Query profileDataQuery = em
+                .createQuery(
+                        "SELECT d FROM ProfileDataEntity d" + "    WHERE d.profile = :profile"
+                                + "    ORDER BY d.scenarioStart").setParameter("profile", profile)
+                .setMaxResults(period);
 
-			Map<String, Long> durations = new HashMap<String, Long>();
-			Map<String, Integer> counts = new HashMap<String, Integer>();
-			for (ProfileDataEntity d : profileData)
-				for (MeasurementEntity m : d.getMeasurements())
-					if (!ProfileData.REQUEST_START_TIME.equals(m
-							.getMeasurement())) {
-						if (!durations.containsKey(m.getMeasurement())) {
-							durations.put(m.getMeasurement(), 0l);
-							counts.put(m.getMeasurement(), 0);
-						}
+        List<ProfileDataEntity> profileData;
+        Set<ProfileDataEntity> pointData = new HashSet<ProfileDataEntity>();
+        for (int point = 0; (profileData = profileDataQuery.setFirstResult(point * period).getResultList()) != null; ++point) {
+            if (profileData.isEmpty())
+                break;
 
-						durations.put(m.getMeasurement(), durations.get(m
-								.getMeasurement())
-								+ m.getDuration());
-						counts.put(m.getMeasurement(), counts.get(m
-								.getMeasurement()) + 1);
-					} else if (!durations.containsKey(m.getMeasurement())) {
-						durations.put(m.getMeasurement(), m.getDuration());
-						counts.put(m.getMeasurement(), 1);
-					}
+            Map<String, Long> durations = new HashMap<String, Long>();
+            Map<String, Integer> counts = new HashMap<String, Integer>();
+            for (ProfileDataEntity d : profileData)
+                for (MeasurementEntity m : d.getMeasurements())
+                    if (!ProfileData.REQUEST_START_TIME.equals(m.getMeasurement())) {
+                        if (!durations.containsKey(m.getMeasurement())) {
+                            durations.put(m.getMeasurement(), 0l);
+                            counts.put(m.getMeasurement(), 0);
+                        }
 
-			ProfileDataEntity data = new ProfileDataEntity(profileData.get(0)
-					.getProfile(), profileData.get(0).getScenarioTiming());
-			pointData.add(data);
+                        durations.put(m.getMeasurement(), durations.get(m.getMeasurement()) + m.getDuration());
+                        counts.put(m.getMeasurement(), counts.get(m.getMeasurement()) + 1);
+                    } else if (!durations.containsKey(m.getMeasurement())) {
+                        durations.put(m.getMeasurement(), m.getDuration());
+                        counts.put(m.getMeasurement(), 1);
+                    }
 
-			Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();
-			for (String measurement : durations.keySet())
-				measurements.add(new MeasurementEntity(data, measurement,
-						durations.get(measurement) / counts.get(measurement)));
+            ProfileDataEntity data = new ProfileDataEntity(profileData.get(0).getProfile(), profileData.get(0)
+                    .getScenarioTiming());
+            pointData.add(data);
 
-		}
+            Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();
+            for (String measurement : durations.keySet())
+                measurements.add(new MeasurementEntity(data, measurement, durations.get(measurement)
+                        / counts.get(measurement)));
 
-		return pointData;
-	}
+        }
 
-	@SuppressWarnings("unchecked")
-	public Set<ProfileDataEntity> testPagingTwo(DriverProfileEntity profile,
-			int dataPoints) throws Exception {
+        return pointData;
+    }
 
-		EntityManager em = this.entityTestManager.getEntityManager();
+    @SuppressWarnings("unchecked")
+    public Set<ProfileDataEntity> testPagingTwo(DriverProfileEntity profile, int dataPoints) throws Exception {
 
-		// Find the driver profile's profile data.
-		long dataDuration = (Long) em.createQuery(
-				"SELECT MAX(d.scenarioStart) - MIN(d.scenarioStart)"
-						+ "    FROM ProfileDataEntity d            "
-						+ "    WHERE d.profile = :profile          ")
-				.setParameter("profile", profile).getSingleResult();
-		long dataStart = (Long) em.createQuery(
-				"SELECT MIN(d.scenarioStart)                       "
-						+ "    FROM ProfileDataEntity d            "
-						+ "    WHERE d.profile = :profile          ")
-				.setParameter("profile", profile).getSingleResult();
-		int period = (int) Math.ceil((double) dataDuration / dataPoints);
-		System.err.println("period = dataDuration (" + dataDuration
-				+ ") / dataPoints (" + dataPoints + ") = " + period);
+        EntityManager em = this.entityTestManager.getEntityManager();
 
-		Set<ProfileDataEntity> pointData = new HashSet<ProfileDataEntity>();
-		for (long point = 0; point * period < dataDuration; ++point) {
+        // Find the driver profile's profile data.
+        long dataDuration = (Long) em.createQuery(
+                "SELECT MAX(d.scenarioStart) - MIN(d.scenarioStart)" + "    FROM ProfileDataEntity d            "
+                        + "    WHERE d.profile = :profile          ").setParameter("profile", profile)
+                .getSingleResult();
+        long dataStart = (Long) em.createQuery(
+                "SELECT MIN(d.scenarioStart)                       " + "    FROM ProfileDataEntity d            "
+                        + "    WHERE d.profile = :profile          ").setParameter("profile", profile)
+                .getSingleResult();
+        int period = (int) Math.ceil((double) dataDuration / dataPoints);
+        System.err
+                .println("period = dataDuration (" + dataDuration + ") / dataPoints (" + dataPoints + ") = " + period);
 
-			ProfileDataEntity data = new ProfileDataEntity(profile,
-					new ScenarioTimingEntity(profile.getExecution()));
-			pointData.add(data);
+        Set<ProfileDataEntity> pointData = new HashSet<ProfileDataEntity>();
+        for (long point = 0; point * period < dataDuration; ++point) {
 
-			List<MeasurementEntity> measurements = em.createQuery(
-					"SELECT NEW net.link.safeonline.performance.entity.MeasurementEntity("
-							+ "        m.measurement, AVG(m.duration)"
-							+ "    )                                 "
-							+ "    FROM ProfileDataEntity d          "
-							+ "        JOIN d.measurements m         "
-							+ "    WHERE d.profile = :profile        "
-							+ "    AND d.scenarioStart > :start      "
-							+ "    AND d.scenarioStart <= :stop      "
-							+ "    GROUP BY m.measurement            ")
-					.setParameter("profile", profile).setParameter("start",
-							dataStart + point * period).setParameter("stop",
-							dataStart + (point + 1) * period).getResultList();
+            ProfileDataEntity data = new ProfileDataEntity(profile, new ScenarioTimingEntity(profile.getExecution()));
+            pointData.add(data);
 
-			for (MeasurementEntity m : measurements)
-				m.setProfileData(data);
-		}
+            List<MeasurementEntity> measurements = em.createQuery(
+                    "SELECT NEW net.link.safeonline.performance.entity.MeasurementEntity("
+                            + "        m.measurement, AVG(m.duration)" + "    )                                 "
+                            + "    FROM ProfileDataEntity d          " + "        JOIN d.measurements m         "
+                            + "    WHERE d.profile = :profile        " + "    AND d.scenarioStart > :start      "
+                            + "    AND d.scenarioStart <= :stop      " + "    GROUP BY m.measurement            ")
+                    .setParameter("profile", profile).setParameter("start", dataStart + point * period).setParameter(
+                            "stop", dataStart + (point + 1) * period).getResultList();
 
-		return pointData;
-	}
+            for (MeasurementEntity m : measurements)
+                m.setProfileData(data);
+        }
+
+        return pointData;
+    }
 }

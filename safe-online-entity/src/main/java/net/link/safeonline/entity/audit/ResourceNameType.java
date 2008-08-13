@@ -15,5 +15,5 @@ package net.link.safeonline.entity.audit;
  */
 public enum ResourceNameType {
 
-	NTP, OCSP, WS;
+    NTP, OCSP, WS;
 }

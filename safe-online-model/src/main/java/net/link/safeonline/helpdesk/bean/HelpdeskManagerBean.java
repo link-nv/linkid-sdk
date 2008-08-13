@@ -21,32 +21,32 @@ import net.link.safeonline.helpdesk.dao.HelpdeskEventDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class HelpdeskManagerBean implements HelpdeskManager {
 
-	private final static Log LOG = LogFactory.getLog(HelpdeskManagerBean.class);
+    private final static Log   LOG = LogFactory.getLog(HelpdeskManagerBean.class);
 
-	@EJB
-	private HelpdeskContextDAO helpdeskContextDAO;
+    @EJB
+    private HelpdeskContextDAO helpdeskContextDAO;
 
-	@EJB
-	private HelpdeskEventDAO helpdeskEventDAO;
+    @EJB
+    private HelpdeskEventDAO   helpdeskEventDAO;
 
-	public Long persist(String location,
-			List<HelpdeskEventEntity> helpdeskEventList) {
 
-		HelpdeskContextEntity context = this.helpdeskContextDAO
-				.createHelpdeskContext(location);
+    public Long persist(String location, List<HelpdeskEventEntity> helpdeskEventList) {
 
-		LOG.debug("persist helpdeskcontext ( id=" + context.getId() + " )");
+        HelpdeskContextEntity context = this.helpdeskContextDAO.createHelpdeskContext(location);
 
-		for (HelpdeskEventEntity helpdeskEvent : helpdeskEventList) {
-			helpdeskEvent.setHelpdeskContext(context);
+        LOG.debug("persist helpdeskcontext ( id=" + context.getId() + " )");
 
-		}
-		this.helpdeskEventDAO.persist(helpdeskEventList);
-		return context.getId();
+        for (HelpdeskEventEntity helpdeskEvent : helpdeskEventList) {
+            helpdeskEvent.setHelpdeskContext(context);
 
-	}
+        }
+        this.helpdeskEventDAO.persist(helpdeskEventList);
+        return context.getId();
+
+    }
 
 }

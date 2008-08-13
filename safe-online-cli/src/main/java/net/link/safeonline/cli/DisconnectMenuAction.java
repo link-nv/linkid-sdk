@@ -9,17 +9,20 @@ package net.link.safeonline.cli;
 
 public class DisconnectMenuAction extends AbstractMenuAction {
 
-	public DisconnectMenuAction() {
-		super('d', "Disconnect from database");
-	}
+    public DisconnectMenuAction() {
 
-	public void run() {
-		System.out.println("Disconnection from database...");
-		DatabasePluginManager.disconnect();
-	}
+        super('d', "Disconnect from database");
+    }
 
-	@Override
-	public boolean isActive() {
-		return DatabasePluginManager.hasActiveConnection();
-	}
+    public void run() {
+
+        System.out.println("Disconnection from database...");
+        DatabasePluginManager.disconnect();
+    }
+
+    @Override
+    public boolean isActive() {
+
+        return DatabasePluginManager.hasActiveConnection();
+    }
 }

@@ -17,6 +17,7 @@ package test.spike.net.link.safeonline;
 
 import org.junit.Test;
 
+
 /**
  * <h2>{@link TinyTests} - [in short] (TODO).</h2>
  * <p>
@@ -25,43 +26,43 @@ import org.junit.Test;
  * <p>
  * <i>Dec 19, 2007</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class TinyTests {
 
-	@Test
-	public void testPrimitiveClassNames() {
+    @Test
+    public void testPrimitiveClassNames() {
 
-		for (java.lang.reflect.Method m : getClass().getMethods())
-			if (m.getName().equals("dummy")) {
+        for (java.lang.reflect.Method m : getClass().getMethods())
+            if (m.getName().equals("dummy")) {
 
-				System.out.println("Generic Paramter Types:");
-				print(m.getGenericParameterTypes());
+                System.out.println("Generic Paramter Types:");
+                print(m.getGenericParameterTypes());
 
-				System.out.println("Paramter Types:");
-				print(m.getParameterTypes());
+                System.out.println("Paramter Types:");
+                print(m.getParameterTypes());
 
-				System.out.println("Type Paramters:");
-				print(m.getTypeParameters());
-			}
-	}
+                System.out.println("Type Paramters:");
+                print(m.getTypeParameters());
+            }
+    }
 
-	private void print(Object[] array) {
+    private void print(Object[] array) {
 
-		boolean first = true;
-		for (Object element : array) {
-			if (!first)
-				System.out.print(", ");
-			first = false;
-			System.out.print(element);
-		}
+        boolean first = true;
+        for (Object element : array) {
+            if (!first)
+                System.out.print(", ");
+            first = false;
+            System.out.print(element);
+        }
 
-		System.out.println();
-	}
+        System.out.println();
+    }
 
-	@SuppressWarnings("unused")
-	public void dummy(boolean a, double[] b, byte[] c) {
+    @SuppressWarnings("unused")
+    public void dummy(boolean a, double[] b, byte[] c) {
 
-	}
+    }
 }

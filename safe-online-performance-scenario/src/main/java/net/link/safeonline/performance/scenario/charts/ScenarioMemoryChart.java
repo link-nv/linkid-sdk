@@ -28,90 +28,88 @@ import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
+
 /**
  * <h2>{@link ScenarioMemoryChart}<br>
  * <sub>TODO</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioMemoryChart extends AbstractChart {
 
-	private TimeSeries olasMemory;
-	private TimeSeries agentMemory;
+    private TimeSeries olasMemory;
+    private TimeSeries agentMemory;
 
-	/**
-	 * Create a new {@link ScenarioMemoryChart} instance.
-	 */
-	public ScenarioMemoryChart() {
 
-		super("Scenario Memory");
+    /**
+     * Create a new {@link ScenarioMemoryChart} instance.
+     */
+    public ScenarioMemoryChart() {
 
-		this.olasMemory = new TimeSeries("OLAS", FixedMillisecond.class);
-		this.agentMemory = new TimeSeries("Agent", FixedMillisecond.class);
-	}
+        super("Scenario Memory");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processData(ProfileDataEntity data) {
+        this.olasMemory = new TimeSeries("OLAS", FixedMillisecond.class);
+        this.agentMemory = new TimeSeries("Agent", FixedMillisecond.class);
+    }
 
-		if (data.getMeasurements().isEmpty())
-			return;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processData(ProfileDataEntity data) {
 
-		FixedMillisecond startTime = new FixedMillisecond(data
-				.getScenarioTiming().getStart());
+        if (data.getMeasurements().isEmpty())
+            return;
 
-		Long agentMem = data.getScenarioTiming().getStartFreeMem();
-		Long olasMem = getMeasurement(data.getMeasurements(),
-				ProfileData.REQUEST_START_FREE);
+        FixedMillisecond startTime = new FixedMillisecond(data.getScenarioTiming().getStart());
 
-		this.olasMemory.addOrUpdate(startTime, olasMem);
-		this.agentMemory.addOrUpdate(startTime, agentMem);
-	}
+        Long agentMem = data.getScenarioTiming().getStartFreeMem();
+        Long olasMem = getMeasurement(data.getMeasurements(), ProfileData.REQUEST_START_FREE);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isDataProcessed() {
+        this.olasMemory.addOrUpdate(startTime, olasMem);
+        this.agentMemory.addOrUpdate(startTime, agentMem);
+    }
 
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDataProcessed() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected XYPlot getPlot() {
+        return true;
+    }
 
-		if (this.olasMemory.isEmpty() && this.agentMemory.isEmpty())
-			return null;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected XYPlot getPlot() {
 
-		ValueAxis domainAxis = new DateAxis("Time");
+        if (this.olasMemory.isEmpty() && this.agentMemory.isEmpty())
+            return null;
 
-		TimeSeriesCollection olasSet, agentSet;
-		olasSet = new TimeSeriesCollection(this.olasMemory);
-		agentSet = new TimeSeriesCollection(this.agentMemory);
+        ValueAxis domainAxis = new DateAxis("Time");
 
-		XYPlot olasPlot = new XYPlot(olasSet, domainAxis, new NumberAxis(
-				"Available Memory (bytes)"), new XYLineAndShapeRenderer(true,
-				false));
-		XYPlot agentPlot = new XYPlot(agentSet, domainAxis, new NumberAxis(
-				"Available Memory (bytes)"), new XYLineAndShapeRenderer(true,
-				false));
+        TimeSeriesCollection olasSet, agentSet;
+        olasSet = new TimeSeriesCollection(this.olasMemory);
+        agentSet = new TimeSeriesCollection(this.agentMemory);
 
-		CombinedDomainXYPlot memoryPlot = new CombinedDomainXYPlot(domainAxis);
-		memoryPlot.add(olasPlot);
-		memoryPlot.add(agentPlot);
+        XYPlot olasPlot = new XYPlot(olasSet, domainAxis, new NumberAxis("Available Memory (bytes)"),
+                new XYLineAndShapeRenderer(true, false));
+        XYPlot agentPlot = new XYPlot(agentSet, domainAxis, new NumberAxis("Available Memory (bytes)"),
+                new XYLineAndShapeRenderer(true, false));
 
-		return memoryPlot;
-	}
+        CombinedDomainXYPlot memoryPlot = new CombinedDomainXYPlot(domainAxis);
+        memoryPlot.add(olasPlot);
+        memoryPlot.add(agentPlot);
+
+        return memoryPlot;
+    }
 }

@@ -29,11 +29,11 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class HistoryDAOBean implements HistoryDAO {
 
-    private static final Log                     LOG = LogFactory
-                                                             .getLog(HistoryDAOBean.class);
+    private static final Log                     LOG = LogFactory.getLog(HistoryDAOBean.class);
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
     private EntityManager                        entityManager;
@@ -46,30 +46,27 @@ public class HistoryDAOBean implements HistoryDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(
-                this.entityManager, HistoryEntity.QueryInterface.class);
-        this.propertyQueryObject = QueryObjectFactory.createQueryObject(
-                this.entityManager, HistoryPropertyEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, HistoryEntity.QueryInterface.class);
+        this.propertyQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                HistoryPropertyEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public HistoryEntity addHistoryEntry(Date when, SubjectEntity subject,
-            HistoryEventType event, Map<String, String> properties) {
+    public HistoryEntity addHistoryEntry(Date when, SubjectEntity subject, HistoryEventType event,
+            Map<String, String> properties) {
 
-        LOG.debug("add history entry: " + when + "; subject: "
-                + subject.getUserId() + "; event: " + event);
+        LOG.debug("add history entry: " + when + "; subject: " + subject.getUserId() + "; event: " + event);
         HistoryEntity history = new HistoryEntity(when, subject, event);
         this.entityManager.persist(history);
         this.entityManager.refresh(history);
         if (null != properties) {
             for (Map.Entry<String, String> property : properties.entrySet()) {
-                HistoryPropertyEntity propertyEntity = new HistoryPropertyEntity(
-                        history, property.getKey(), property.getValue());
+                HistoryPropertyEntity propertyEntity = new HistoryPropertyEntity(history, property.getKey(), property
+                        .getValue());
                 /*
                  * Manage relationships
                  */
-                history.getProperties().put(propertyEntity.getName(),
-                        propertyEntity);
+                history.getProperties().put(propertyEntity.getName(), propertyEntity);
                 /*
                  * Persist
                  */
@@ -79,16 +76,14 @@ public class HistoryDAOBean implements HistoryDAO {
         return history;
     }
 
-    public HistoryEntity addHistoryEntry(SubjectEntity subject,
-            HistoryEventType event, Map<String, String> properties) {
+    public HistoryEntity addHistoryEntry(SubjectEntity subject, HistoryEventType event, Map<String, String> properties) {
 
         Date when = new Date();
         return addHistoryEntry(when, subject, event, properties);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public HistoryEntity addHExceptionHistoryEntry(Date when,
-            SubjectEntity subject, HistoryEventType event,
+    public HistoryEntity addHExceptionHistoryEntry(Date when, SubjectEntity subject, HistoryEventType event,
             Map<String, String> properties) {
 
         return addHistoryEntry(when, subject, event, properties);
@@ -108,8 +103,7 @@ public class HistoryDAOBean implements HistoryDAO {
         // remove all history properties
         List<HistoryEntity> histories = this.queryObject.getHistory(ageLimit);
         for (HistoryEntity history : histories) {
-            List<HistoryPropertyEntity> historyProperties = this.propertyQueryObject
-                    .listProperties(history);
+            List<HistoryPropertyEntity> historyProperties = this.propertyQueryObject.listProperties(history);
             for (HistoryPropertyEntity historyProperty : historyProperties) {
                 removeProperty(historyProperty);
             }
@@ -125,8 +119,7 @@ public class HistoryDAOBean implements HistoryDAO {
         // remove all history properties
         List<HistoryEntity> histories = getHistory(subject);
         for (HistoryEntity history : histories) {
-            List<HistoryPropertyEntity> historyProperties = this.propertyQueryObject
-                    .listProperties(history);
+            List<HistoryPropertyEntity> historyProperties = this.propertyQueryObject.listProperties(history);
             for (HistoryPropertyEntity historyProperty : historyProperties) {
                 removeProperty(historyProperty);
             }

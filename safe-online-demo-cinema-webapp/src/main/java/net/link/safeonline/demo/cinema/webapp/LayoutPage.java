@@ -27,6 +27,7 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.request.target.basic.RedirectRequestTarget;
 
+
 public class LayoutPage extends WebPage<Object> {
 
     private static final long serialVersionUID = 1L;
@@ -77,8 +78,7 @@ public class LayoutPage extends WebPage<Object> {
             add(name);
             Label<String> nrn = new Label<String>("nrn");
             add(nrn);
-            Label<Boolean> junior = new Label<Boolean>("junior",
-                    new Model<Boolean>(false)) {
+            Label<Boolean> junior = new Label<Boolean>("junior", new Model<Boolean>(false)) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -94,23 +94,17 @@ public class LayoutPage extends WebPage<Object> {
                 }
 
                 @Override
-                protected void onComponentTagBody(MarkupStream markupStream,
-                        ComponentTag openTag) {
+                protected void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
 
-                    replaceComponentTagBody(markupStream, openTag,
-                            getModelObject() ? "Junior Discount"
-                                    : "No Discount");
+                    replaceComponentTagBody(markupStream, openTag, getModelObject()? "Junior Discount": "No Discount");
                 }
             };
             add(junior);
 
             if (CinemaSession.isUserSet()) {
-                name.setModel(new Model<String>(CinemaSession.get().getUser()
-                        .getName()));
-                nrn.setModel(new Model<String>(CinemaSession.get().getUser()
-                        .getNrn()));
-                junior.setModel(new Model<Boolean>(CinemaSession.get()
-                        .getUser().isJunior()));
+                name.setModel(new Model<String>(CinemaSession.get().getUser().getName()));
+                nrn.setModel(new Model<String>(CinemaSession.get().getUser().getNrn()));
+                junior.setModel(new Model<Boolean>(CinemaSession.get().getUser().isJunior()));
             } else {
                 setVisible(false);
             }
@@ -123,14 +117,9 @@ public class LayoutPage extends WebPage<Object> {
 
             super(id);
 
-            setVisible(LoginManager.isAuthenticated(((WebRequest) getRequest())
-                    .getHttpServletRequest())
-                    && (CinemaSession.isFilmSet()
-                            || CinemaSession.isTheaterSet()
-                            || CinemaSession.isRoomSet()
-                            || CinemaSession.isSeatSet()
-                            || CinemaSession.isTimeSet() || CinemaSession
-                            .isTicketSet()));
+            setVisible(LoginManager.isAuthenticated(((WebRequest) getRequest()).getHttpServletRequest())
+                    && (CinemaSession.isFilmSet() || CinemaSession.isTheaterSet() || CinemaSession.isRoomSet()
+                            || CinemaSession.isSeatSet() || CinemaSession.isTimeSet() || CinemaSession.isTicketSet()));
 
             add(new SelectedFilm("film"));
             add(new SelectedTheatre("theatre"));
@@ -170,8 +159,7 @@ public class LayoutPage extends WebPage<Object> {
 
             // Put film name in label or hide if no film selected.
             if (CinemaSession.isFilmSet()) {
-                name.setModel(new Model<String>(CinemaSession.get().getFilm()
-                        .getName()));
+                name.setModel(new Model<String>(CinemaSession.get().getFilm().getName()));
             } else {
                 setVisible(false);
             }
@@ -204,8 +192,7 @@ public class LayoutPage extends WebPage<Object> {
 
             // Put theatre name in label or hide if no theatre selected.
             if (CinemaSession.isTheaterSet()) {
-                name.setModel(new Model<String>(CinemaSession.get()
-                        .getTheatre().getName()));
+                name.setModel(new Model<String>(CinemaSession.get().getTheatre().getName()));
             } else {
                 setVisible(false);
             }
@@ -238,8 +225,7 @@ public class LayoutPage extends WebPage<Object> {
 
             // Put time in label (formatted) or hide if no time selected.
             if (CinemaSession.isTimeSet()) {
-                time.setModel(new Model<String>(CinemaSession
-                        .format(CinemaSession.get().getTime())));
+                time.setModel(new Model<String>(CinemaSession.format(CinemaSession.get().getTime())));
             } else {
                 setVisible(false);
             }
@@ -272,8 +258,7 @@ public class LayoutPage extends WebPage<Object> {
 
             // Put name of the room in label or hide if no room selected.
             if (CinemaSession.isRoomSet()) {
-                name.setModel(new Model<String>(CinemaSession.get().getRoom()
-                        .getName()));
+                name.setModel(new Model<String>(CinemaSession.get().getRoom().getName()));
             } else {
                 setVisible(false);
             }
@@ -295,11 +280,8 @@ public class LayoutPage extends WebPage<Object> {
 
             // Put name of the room in label or hide if no room selected.
             if (CinemaSession.isTicketSet()) {
-                price.setModel(new Model<String>(
-                        CinemaSession
-                                .format(LayoutPage.this.ticketService
-                                        .calculatePrice(CinemaSession.get()
-                                                .getTicket()))));
+                price.setModel(new Model<String>(CinemaSession.format(LayoutPage.this.ticketService
+                        .calculatePrice(CinemaSession.get().getTicket()))));
             } else {
                 setVisible(false);
             }
@@ -323,62 +305,49 @@ public class LayoutPage extends WebPage<Object> {
                     return;
 
                 // Redirect the user to demo-payment
-                HttpServletRequest request = ((WebRequest) getRequest())
-                        .getHttpServletRequest();
-                HttpServletResponse response = ((WebResponse) getResponse())
-                        .getHttpServletResponse();
+                HttpServletRequest request = ((WebRequest) getRequest()).getHttpServletRequest();
+                HttpServletResponse response = ((WebResponse) getResponse()).getHttpServletResponse();
 
-                String target = response.encodeRedirectURL(request
-                        .getRequestURL().toString());
+                String target = response.encodeRedirectURL(request.getRequestURL().toString());
 
                 try {
                     String username = CinemaSession.get().getUser().getName();
                     TicketEntity ticket = CinemaSession.get().getTicket();
                     double price = ticket.getPrice();
-                    String message = String.format(
-                            "Viewing of %s at %s in %s.",
-                            LayoutPage.this.ticketService.getFilmName(ticket),
-                            CinemaSession.format(new Date(ticket.getTime())),
-                            LayoutPage.this.ticketService
-                                    .getTheatreName(ticket));
+                    String message = String.format("Viewing of %s at %s in %s.", LayoutPage.this.ticketService
+                            .getFilmName(ticket), CinemaSession.format(new Date(ticket.getTime())),
+                            LayoutPage.this.ticketService.getTheatreName(ticket));
 
-                    String redirectUrl = String
-                            .format(
-                                    "%s/%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
+                    String redirectUrl = String.format("%s/%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
 
-                                    // Demo-Payment Host. (same as ours)
-                                    target.replaceFirst("[^/]*/$", ""),
+                    // Demo-Payment Host. (same as ours)
+                            target.replaceFirst("[^/]*/$", ""),
 
-                                    // Demo-Payment application.
-                                    "demo-payment/entry.seam",
+                            // Demo-Payment application.
+                            "demo-payment/entry.seam",
 
-                                    // Paying user's OLAS name.
-                                    URLEncoder.encode(username, "UTF-8"),
+                            // Paying user's OLAS name.
+                            URLEncoder.encode(username, "UTF-8"),
 
-                                    // Payment Recipient.
-                                    URLEncoder.encode(
-                                            CinemaConstants.PAYMENT_RECIPIENT,
-                                            "UTF-8"),
+                            // Payment Recipient.
+                            URLEncoder.encode(CinemaConstants.PAYMENT_RECIPIENT, "UTF-8"),
 
-                                    // Payment Amount.
-                                    URLEncoder.encode(Double.toString(price),
-                                            "UTF-8"),
+                            // Payment Amount.
+                            URLEncoder.encode(Double.toString(price), "UTF-8"),
 
-                                    // Payment Message.
-                                    URLEncoder.encode(message, "UTF-8"),
+                            // Payment Message.
+                            URLEncoder.encode(message, "UTF-8"),
 
-                                    // Return page after payment completion.
-                                    URLEncoder.encode(target, "UTF-8"));
+                            // Return page after payment completion.
+                            URLEncoder.encode(target, "UTF-8"));
 
                     // FIXME: Cheat by reserving ticket before payment has
                     // actually been completed.
-                    LayoutPage.this.ticketService.reserve(CinemaSession.get()
-                            .getTicket());
+                    LayoutPage.this.ticketService.reserve(CinemaSession.get().getTicket());
                     CinemaSession.get().resetTicket();
 
                     // Redirect user to demo-payment.
-                    getRequestCycle().setRequestTarget(
-                            new RedirectRequestTarget(redirectUrl));
+                    getRequestCycle().setRequestTarget(new RedirectRequestTarget(redirectUrl));
                 }
 
                 catch (UnsupportedEncodingException e) {

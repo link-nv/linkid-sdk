@@ -14,18 +14,19 @@ import javax.faces.model.SelectItem;
 
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 
+
 @Local
 public interface Transaction extends AbstractPaymentDataClient {
 
-	/*
-	 * Factories.
-	 */
-	PaymentEntity newPaymentEntityFactory();
+    /*
+     * Factories.
+     */
+    PaymentEntity newPaymentEntityFactory();
 
-	List<SelectItem> visasFactory();
+    List<SelectItem> visasFactory();
 
-	/*
-	 * Actions.
-	 */
-	String confirm();
+    /*
+     * Actions.
+     */
+    String confirm();
 }

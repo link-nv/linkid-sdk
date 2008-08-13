@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.helpdesk;
 
 import net.link.safeonline.webapp.user.UserTemplate;
 
+
 public class HelpdeskLogView extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_HELPDESK_WEBAPP_PREFIX
-			+ "/log-view.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_HELPDESK_WEBAPP_PREFIX + "/log-view.seam";
 
-	public HelpdeskLogView() {
-		super(PAGE_NAME);
-	}
+
+    public HelpdeskLogView() {
+
+        super(PAGE_NAME);
+    }
 }

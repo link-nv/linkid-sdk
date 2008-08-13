@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Exception filter that handles all GUI exceptions.
  * 
@@ -36,40 +37,43 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ExceptionFilter implements Filter {
 
-	private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID      = 1L;
 
-	private static final Log LOG = LogFactory.getLog(ExceptionFilter.class);
+    private static final Log    LOG                   = LogFactory.getLog(ExceptionFilter.class);
 
-	private static final String INIT_PARAM_ERROR_PAGE = "ErrorPage";
+    private static final String INIT_PARAM_ERROR_PAGE = "ErrorPage";
 
-	private String errorPage;
+    private String              errorPage;
 
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
-		try {
-			chain.doFilter(request, response);
-		} catch (Throwable e) {
-			((HttpServletResponse) response).sendRedirect(this.errorPage);
-		}
-	}
 
-	public void init(FilterConfig config) throws ServletException {
-		LOG.debug("init");
-		this.errorPage = getInitParameter(config, INIT_PARAM_ERROR_PAGE);
-		LOG.debug("errorpage path: " + this.errorPage);
-	}
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+            ServletException {
 
-	private String getInitParameter(FilterConfig config, String parameterName)
-			throws UnavailableException {
-		String value = config.getInitParameter(parameterName);
-		if (null == value) {
-			throw new UnavailableException("missing init parameter: "
-					+ parameterName);
-		}
-		return value;
-	}
+        try {
+            chain.doFilter(request, response);
+        } catch (Throwable e) {
+            ((HttpServletResponse) response).sendRedirect(this.errorPage);
+        }
+    }
 
-	public void destroy() {
-		LOG.debug("destroy");
-	}
+    public void init(FilterConfig config) throws ServletException {
+
+        LOG.debug("init");
+        this.errorPage = getInitParameter(config, INIT_PARAM_ERROR_PAGE);
+        LOG.debug("errorpage path: " + this.errorPage);
+    }
+
+    private String getInitParameter(FilterConfig config, String parameterName) throws UnavailableException {
+
+        String value = config.getInitParameter(parameterName);
+        if (null == value) {
+            throw new UnavailableException("missing init parameter: " + parameterName);
+        }
+        return value;
+    }
+
+    public void destroy() {
+
+        LOG.debug("destroy");
+    }
 }

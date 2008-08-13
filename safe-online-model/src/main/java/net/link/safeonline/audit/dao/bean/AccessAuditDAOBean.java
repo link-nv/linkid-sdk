@@ -27,54 +27,62 @@ import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.OperationStateType;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+
 @Stateless
 public class AccessAuditDAOBean implements AccessAuditDAO {
 
-	private static final Log LOG = LogFactory.getLog(AccessAuditDAOBean.class);
+    private static final Log                 LOG = LogFactory.getLog(AccessAuditDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                    entityManager;
 
-	private AccessAuditEntity.QueryInterface queryObject;
+    private AccessAuditEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, AccessAuditEntity.QueryInterface.class);
-	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addAccessAudit(AuditContextEntity auditContext,
-			String operation, OperationStateType operationState,
-			String principal) {
-		AccessAuditEntity accessAudit = new AccessAuditEntity(auditContext,
-				operation, operationState, principal);
-		this.entityManager.persist(accessAudit);
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public void cleanup(Long id) {
-		this.queryObject.deleteRecords(id);
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                AccessAuditEntity.QueryInterface.class);
+    }
 
-	public List<AccessAuditEntity> listRecords(Long id) {
-		return this.queryObject.listRecords(id);
-	}
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addAccessAudit(AuditContextEntity auditContext, String operation, OperationStateType operationState,
+            String principal) {
 
-	public List<AccessAuditEntity> listRecordsSince(Date ageLimit) {
-		return this.queryObject.listRecordsSince(ageLimit);
-	}
+        AccessAuditEntity accessAudit = new AccessAuditEntity(auditContext, operation, operationState, principal);
+        this.entityManager.persist(accessAudit);
+    }
 
-	public List<String> listUsers() {
-		return this.queryObject.listUsers();
-	}
+    public void cleanup(Long id) {
 
-	public List<AccessAuditEntity> listRecords(String principal) {
-		return this.queryObject.listUserRecords(principal);
-	}
+        this.queryObject.deleteRecords(id);
+    }
 
-	public boolean hasErrorRecords(long id) {
-		long count = this.queryObject.countErrorRecords(id);
-		LOG.debug("# error records: " + count);
-		return 0 != count;
-	}
+    public List<AccessAuditEntity> listRecords(Long id) {
+
+        return this.queryObject.listRecords(id);
+    }
+
+    public List<AccessAuditEntity> listRecordsSince(Date ageLimit) {
+
+        return this.queryObject.listRecordsSince(ageLimit);
+    }
+
+    public List<String> listUsers() {
+
+        return this.queryObject.listUsers();
+    }
+
+    public List<AccessAuditEntity> listRecords(String principal) {
+
+        return this.queryObject.listUserRecords(principal);
+    }
+
+    public boolean hasErrorRecords(long id) {
+
+        long count = this.queryObject.countErrorRecords(id);
+        LOG.debug("# error records: " + count);
+        return 0 != count;
+    }
 }

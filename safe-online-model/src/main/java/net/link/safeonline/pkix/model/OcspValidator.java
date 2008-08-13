@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.Local;
 
+
 /**
  * Validator for certificates through OCSP
  * 
@@ -21,36 +22,33 @@ import javax.ejb.Local;
 @Local
 public interface OcspValidator {
 
-	public enum OcspResult {
-		FAILED, UNKNOWN, REVOKED, SUSPENDED, GOOD
-	}
+    public enum OcspResult {
+        FAILED, UNKNOWN, REVOKED, SUSPENDED, GOOD
+    }
 
-	/**
-	 * Given an X509 certificate and its issuerCertificate, validates the
-	 * certificate using OCSP
-	 * 
-	 * @param certificate
-	 * @param issuerCertificate
-	 */
-	boolean performOcspCheck(X509Certificate certificate,
-			X509Certificate issuerCertificate);
 
-	/**
-	 * Extracts a OCSP URI from a certificate
-	 * 
-	 * @param certificate
-	 */
-	URI getOcspUri(X509Certificate certificate);
+    /**
+     * Given an X509 certificate and its issuerCertificate, validates the certificate using OCSP
+     * 
+     * @param certificate
+     * @param issuerCertificate
+     */
+    boolean performOcspCheck(X509Certificate certificate, X509Certificate issuerCertificate);
 
-	/**
-	 * Performs an OCSP check just like performOcspCheck but returns a finer
-	 * grained response
-	 * 
-	 * @param ocspUri
-	 * @param certificate
-	 * @param issuerCertificate
-	 */
-	OcspResult verifyOcspStatus(URI ocspUri, X509Certificate certificate,
-			X509Certificate issuerCertificate);
+    /**
+     * Extracts a OCSP URI from a certificate
+     * 
+     * @param certificate
+     */
+    URI getOcspUri(X509Certificate certificate);
+
+    /**
+     * Performs an OCSP check just like performOcspCheck but returns a finer grained response
+     * 
+     * @param ocspUri
+     * @param certificate
+     * @param issuerCertificate
+     */
+    OcspResult verifyOcspStatus(URI ocspUri, X509Certificate certificate, X509Certificate issuerCertificate);
 
 }

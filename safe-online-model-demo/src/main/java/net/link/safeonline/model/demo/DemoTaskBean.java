@@ -20,20 +20,24 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 import net.link.safeonline.Task;
 
+
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DemoTaskBean")
 public class DemoTaskBean implements Task {
 
-	private static final Log LOG = LogFactory.getLog(DemoTaskBean.class);
+    private static final Log LOG = LogFactory.getLog(DemoTaskBean.class);
 
-	public String getName() {
-		return "Human readable demo task";
-	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() {
-		Date now = new Date();
-		LOG.debug("Demo task perform: " + now);
-	}
+    public String getName() {
+
+        return "Human readable demo task";
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void perform() {
+
+        Date now = new Date();
+        LOG.debug("Demo task perform: " + now);
+    }
 }

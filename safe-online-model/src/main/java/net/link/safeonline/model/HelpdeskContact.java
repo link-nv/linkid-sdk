@@ -2,15 +2,16 @@ package net.link.safeonline.model;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface HelpdeskContact {
 
-	String getPhone();
+    String getPhone();
 
-	void setPhone(String phone);
+    void setPhone(String phone);
 
-	String getEmail();
+    String getEmail();
 
-	void setEmail(String email);
+    void setEmail(String email);
 
 }

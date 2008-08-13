@@ -17,11 +17,12 @@ import java.lang.annotation.Target;
 
 import net.link.safeonline.validation.validator.NonEmptyStringValidator;
 
+
 @Documented
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @ValidatorAnnotation(NonEmptyStringValidator.class)
 public @interface NonEmptyString {
 
-	String value() default "";
+    String value() default "";
 }

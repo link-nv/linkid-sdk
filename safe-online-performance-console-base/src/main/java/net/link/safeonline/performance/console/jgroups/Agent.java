@@ -22,50 +22,51 @@ import javax.naming.NamingException;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 
+
 /**
  * <h2>{@link Agent}<br>
  * <sub>Interface to all actions that can be remotely performed on an agent.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface Agent {
 
-	/**
-	 * Retrieve the current state of the agent.
-	 */
-	public AgentState getState();
+    /**
+     * Retrieve the current state of the agent.
+     */
+    public AgentState getState();
 
-	/**
-	 * Retrieve the current state transition action of the agent.
-	 */
-	public AgentState getTransit();
+    /**
+     * Retrieve the current state transition action of the agent.
+     */
+    public AgentState getTransit();
 
-	/**
-	 * Retrieve charts created by this {@link Agent}'s scenario.
-	 */
-	public ScenarioExecution getCharts(Date startTime);
+    /**
+     * Retrieve charts created by this {@link Agent}'s scenario.
+     */
+    public ScenarioExecution getCharts(Date startTime);
 
-	/**
-	 * The executionIds for which metadata is available.
-	 */
-	public Set<ScenarioExecution> getExecutions() throws NamingException;
+    /**
+     * The executionIds for which metadata is available.
+     */
+    public Set<ScenarioExecution> getExecutions() throws NamingException;
 
-	/**
-	 * Retrieve all scenarios registered for use.
-	 */
-	public Set<String> getScenarios() throws NamingException;
+    /**
+     * Retrieve all scenarios registered for use.
+     */
+    public Set<String> getScenarios() throws NamingException;
 
-	/**
-	 * Reset the transition state, abort the action.
-	 */
-	public void resetTransit();
+    /**
+     * Reset the transition state, abort the action.
+     */
+    public void resetTransit();
 
-	/**
-	 * @return An error that occurred while interacting with this client.
-	 */
-	public Throwable getError();
+    /**
+     * @return An error that occurred while interacting with this client.
+     */
+    public Throwable getError();
 }

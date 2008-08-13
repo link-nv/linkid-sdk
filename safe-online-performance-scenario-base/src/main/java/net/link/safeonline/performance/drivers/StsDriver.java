@@ -16,6 +16,7 @@ import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.w3c.dom.Element;
 
+
 /**
  * <h2>{@link StsDriver}<br>
  * <sub>Driver for the Security Token validation service.</sub></h2>
@@ -42,25 +43,21 @@ public class StsDriver extends ProfileDriver {
      * Validate the given SAML token.
      * 
      * @param applicationKey
-     *            The certificate of the application making the request. This
-     *            identifies the application and gives the request the
-     *            application's authority.
+     *            The certificate of the application making the request. This identifies the application and gives the
+     *            request the application's authority.
      * @param token
      *            The SAML token that needs to be validated.
      * @param trustDomain
      *            The trusted party that released the certificate of the token.
      */
-    public void validate(PrivateKeyEntry applicationKey, Element token,
-            TrustDomainType trustDomain) {
+    public void validate(PrivateKeyEntry applicationKey, Element token, TrustDomainType trustDomain) {
 
         if (!(applicationKey.getCertificate() instanceof X509Certificate))
-            throw new IllegalArgumentException(
-                    "The certificate in the keystore needs to be of X509 format.");
+            throw new IllegalArgumentException("The certificate in the keystore needs to be of X509 format.");
 
         try {
-            SecurityTokenServiceClientImpl service = new SecurityTokenServiceClientImpl(
-                    getHost(), (X509Certificate) applicationKey
-                            .getCertificate(), applicationKey.getPrivateKey());
+            SecurityTokenServiceClientImpl service = new SecurityTokenServiceClientImpl(getHost(),
+                    (X509Certificate) applicationKey.getCertificate(), applicationKey.getPrivateKey());
 
             try {
                 service.validate(token, trustDomain);

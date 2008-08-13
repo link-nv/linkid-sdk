@@ -11,21 +11,22 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 
+
 @Local
 public interface AttributeEdit {
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Actions.
-	 */
-	String save() throws AttributeTypeNotFoundException;
+    /*
+     * Actions.
+     */
+    String save() throws AttributeTypeNotFoundException;
 
-	/*
-	 * Factories.
-	 */
-	void attributeEditContextFactory() throws AttributeTypeNotFoundException;
+    /*
+     * Factories.
+     */
+    void attributeEditContextFactory() throws AttributeTypeNotFoundException;
 }

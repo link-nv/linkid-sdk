@@ -23,50 +23,53 @@ import net.link.safeonline.notification.dao.NotificationProducerDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class NotificationProducerDAOBean implements NotificationProducerDAO {
 
-	private static final Log LOG = LogFactory
-			.getLog(NotificationProducerDAOBean.class);
+    private static final Log                                      LOG = LogFactory
+                                                                              .getLog(NotificationProducerDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                                         entityManager;
 
-	private NotificationProducerSubscriptionEntity.QueryInterface queryObject;
+    private NotificationProducerSubscriptionEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager,
-				NotificationProducerSubscriptionEntity.QueryInterface.class);
-	}
 
-	public NotificationProducerSubscriptionEntity addSubscription(String topic) {
-		LOG.debug("add subscription for topic " + topic);
-		NotificationProducerSubscriptionEntity subscription = new NotificationProducerSubscriptionEntity(
-				topic);
-		this.entityManager.persist(subscription);
-		return subscription;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public NotificationProducerSubscriptionEntity findSubscription(String topic) {
-		LOG.debug("find subscription: " + topic);
-		return this.entityManager.find(
-				NotificationProducerSubscriptionEntity.class, topic);
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                NotificationProducerSubscriptionEntity.QueryInterface.class);
+    }
 
-	public NotificationProducerSubscriptionEntity getSubscription(String topic)
-			throws SubscriptionNotFoundException {
-		LOG.debug("get subscription: " + topic);
-		NotificationProducerSubscriptionEntity subscription = findSubscription(topic);
-		if (null == subscription)
-			throw new SubscriptionNotFoundException();
-		return subscription;
-	}
+    public NotificationProducerSubscriptionEntity addSubscription(String topic) {
 
-	public List<NotificationProducerSubscriptionEntity> listTopics() {
-		LOG.debug("list topics");
-		return this.queryObject.listTopics();
-	}
+        LOG.debug("add subscription for topic " + topic);
+        NotificationProducerSubscriptionEntity subscription = new NotificationProducerSubscriptionEntity(topic);
+        this.entityManager.persist(subscription);
+        return subscription;
+    }
+
+    public NotificationProducerSubscriptionEntity findSubscription(String topic) {
+
+        LOG.debug("find subscription: " + topic);
+        return this.entityManager.find(NotificationProducerSubscriptionEntity.class, topic);
+    }
+
+    public NotificationProducerSubscriptionEntity getSubscription(String topic) throws SubscriptionNotFoundException {
+
+        LOG.debug("get subscription: " + topic);
+        NotificationProducerSubscriptionEntity subscription = findSubscription(topic);
+        if (null == subscription)
+            throw new SubscriptionNotFoundException();
+        return subscription;
+    }
+
+    public List<NotificationProducerSubscriptionEntity> listTopics() {
+
+        LOG.debug("list topics");
+        return this.queryObject.listTopics();
+    }
 
 }

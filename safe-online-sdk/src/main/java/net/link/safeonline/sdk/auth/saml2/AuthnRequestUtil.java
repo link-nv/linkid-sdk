@@ -40,6 +40,7 @@ import org.opensaml.xml.security.SecurityException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+
 /**
  * Utility class for SAML2 authentication requests.
  * 
@@ -54,8 +55,8 @@ public class AuthnRequestUtil {
     }
 
     /**
-     * Sends a SAML2 authentication Request using the specified Velocity
-     * template. The SAML2 Token should already be Base64 encoded.
+     * Sends a SAML2 authentication Request using the specified Velocity template. The SAML2 Token should already be
+     * Base64 encoded.
      * 
      * @param targetUrl
      * @param encodedSamlRequestToken
@@ -64,18 +65,15 @@ public class AuthnRequestUtil {
      * @throws ServletException
      * @throws IOException
      */
-    public static void sendAuthnRequest(String targetUrl,
-            String encodedSamlRequestToken, String templateResourceName,
-            HttpServletResponse httpResponse) throws ServletException,
-            IOException {
+    public static void sendAuthnRequest(String targetUrl, String encodedSamlRequestToken, String templateResourceName,
+            HttpServletResponse httpResponse) throws ServletException, IOException {
 
-        sendAuthnRequest(targetUrl, encodedSamlRequestToken, null,
-                templateResourceName, httpResponse);
+        sendAuthnRequest(targetUrl, encodedSamlRequestToken, null, templateResourceName, httpResponse);
     }
 
     /**
-     * Sends a SAML2 authentication Request using the specified Velocity
-     * template. The SAML2 Token should already be Base64 encoded.
+     * Sends a SAML2 authentication Request using the specified Velocity template. The SAML2 Token should already be
+     * Base64 encoded.
      * 
      * @param targetUrl
      * @param encodedSamlRequestToken
@@ -85,25 +83,19 @@ public class AuthnRequestUtil {
      * @throws ServletException
      * @throws IOException
      */
-    public static void sendAuthnRequest(String targetUrl,
-            String encodedSamlRequestToken, String language,
-            String templateResourceName, HttpServletResponse httpResponse)
-            throws ServletException, IOException {
+    public static void sendAuthnRequest(String targetUrl, String encodedSamlRequestToken, String language,
+            String templateResourceName, HttpServletResponse httpResponse) throws ServletException, IOException {
 
         /*
-         * We could use the opensaml2 HTTPPostEncoderBuilder here to construct
-         * the HTTP response. But this code is just too complex in usage. It's
-         * easier to do all these things ourselves.
+         * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just
+         * too complex in usage. It's easier to do all these things ourselves.
          */
         Properties velocityProperties = new Properties();
         velocityProperties.put("resource.loader", "class");
-        velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-                Log4JLogChute.class.getName());
-        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER,
-                AuthnRequestUtil.class.getName());
-        velocityProperties
-                .put("class.resource.loader.class",
-                        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, Log4JLogChute.class.getName());
+        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, AuthnRequestUtil.class.getName());
+        velocityProperties.put("class.resource.loader.class",
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         VelocityEngine velocityEngine;
         try {
             velocityEngine = new VelocityEngine(velocityProperties);
@@ -122,8 +114,7 @@ public class AuthnRequestUtil {
         try {
             template = velocityEngine.getTemplate(templateResourceName);
         } catch (Exception e) {
-            throw new ServletException("Velocity template error: "
-                    + e.getMessage(), e);
+            throw new ServletException("Velocity template error: " + e.getMessage(), e);
         }
 
         httpResponse.setContentType("text/html");
@@ -140,9 +131,8 @@ public class AuthnRequestUtil {
      * @param applicationPrivateKey
      * @throws ServletException
      */
-    public static AuthnRequest validateAuthnRequest(HttpServletRequest request,
-            String stsWsLocation, X509Certificate applicationCertificate,
-            PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
+    public static AuthnRequest validateAuthnRequest(HttpServletRequest request, String stsWsLocation,
+            X509Certificate applicationCertificate, PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
             throws ServletException {
 
         String encodedSamlRequest = request.getParameter("SAMLRequest");
@@ -158,14 +148,13 @@ public class AuthnRequestUtil {
         }
         Document samlDocument;
         try {
-            samlDocument = DomUtils.parseDocument(new String(
-                    decodedSamlResponse));
+            samlDocument = DomUtils.parseDocument(new String(decodedSamlResponse));
         } catch (Exception e) {
             throw new ServletException("DOM parsing error");
         }
         Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(
-                stsWsLocation, applicationCertificate, applicationPrivateKey);
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation,
+                applicationCertificate, applicationPrivateKey);
         try {
             stsClient.validate(samlElement, trustDomain);
         } catch (RuntimeException e) {
@@ -175,12 +164,9 @@ public class AuthnRequestUtil {
         }
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
-        messageContext
-                .setInboundMessageTransport(new HttpServletRequestAdapter(
-                        request));
+        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(request));
 
-        messageContext
-                .setSecurityPolicyResolver(new SamlRequestSecurityPolicyResolver());
+        messageContext.setSecurityPolicyResolver(new SamlRequestSecurityPolicyResolver());
 
         HTTPPostDecoder decoder = new HTTPPostDecoder();
         try {
@@ -195,8 +181,7 @@ public class AuthnRequestUtil {
 
         SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
         if (false == samlMessage instanceof AuthnRequest)
-            throw new ServletException(
-                    "SAML message not an authentication request message");
+            throw new ServletException("SAML message not an authentication request message");
         AuthnRequest samlAuthnRequest = (AuthnRequest) samlMessage;
         return samlAuthnRequest;
     }

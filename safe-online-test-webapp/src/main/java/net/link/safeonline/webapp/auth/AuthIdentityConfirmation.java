@@ -8,21 +8,25 @@ package net.link.safeonline.webapp.auth;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class AuthIdentityConfirmation extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/identity-confirmation.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/identity-confirmation.seam";
 
-	public AuthIdentityConfirmation() {
-		super(PAGE_NAME);
-	}
 
-	public void agree() {
-		clickButtonAndWait("agree");
-	}
+    public AuthIdentityConfirmation() {
 
-	public AuthIdentityRejection reject() {
-		clickButtonAndWait("reject");
-		return new AuthIdentityRejection();
-	}
+        super(PAGE_NAME);
+    }
+
+    public void agree() {
+
+        clickButtonAndWait("agree");
+    }
+
+    public AuthIdentityRejection reject() {
+
+        clickButtonAndWait("reject");
+        return new AuthIdentityRejection();
+    }
 }

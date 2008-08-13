@@ -26,10 +26,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class JavaVersionServletTest {
 
-    private static final Log   LOG = LogFactory
-                                           .getLog(JavaVersionServletTest.class);
+    private static final Log   LOG = LogFactory.getLog(JavaVersionServletTest.class);
 
     private ServletTestManager servletTestManager;
 
@@ -64,10 +64,8 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.LINUX, this.servletTestManager
-                .getSessionAttribute("platform"));
-        String resultLocation = postMethod.getResponseHeader("Location")
-                .getValue();
+        assertEquals(JavaVersionServlet.PLATFORM.LINUX, this.servletTestManager.getSessionAttribute("platform"));
+        String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
         assertEquals(this.location + "beid-applet.seam", resultLocation);
     }
@@ -86,10 +84,8 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS,
-                this.servletTestManager.getSessionAttribute("platform"));
-        String resultLocation = postMethod.getResponseHeader("Location")
-                .getValue();
+        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, this.servletTestManager.getSessionAttribute("platform"));
+        String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
         assertEquals(this.location + "beid-applet.seam", resultLocation);
     }
@@ -108,10 +104,8 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.MAC, this.servletTestManager
-                .getSessionAttribute("platform"));
-        String resultLocation = postMethod.getResponseHeader("Location")
-                .getValue();
+        assertEquals(JavaVersionServlet.PLATFORM.MAC, this.servletTestManager.getSessionAttribute("platform"));
+        String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
         assertEquals(this.location + "beid-applet.seam", resultLocation);
     }
@@ -130,13 +124,10 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.UNSUPPORTED,
-                this.servletTestManager.getSessionAttribute("platform"));
-        String resultLocation = postMethod.getResponseHeader("Location")
-                .getValue();
+        assertEquals(JavaVersionServlet.PLATFORM.UNSUPPORTED, this.servletTestManager.getSessionAttribute("platform"));
+        String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(this.location + "unsupported-platform.seam",
-                resultLocation);
+        assertEquals(this.location + "unsupported-platform.seam", resultLocation);
     }
 
     @Test
@@ -153,10 +144,8 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS,
-                this.servletTestManager.getSessionAttribute("platform"));
-        String resultLocation = postMethod.getResponseHeader("Location")
-                .getValue();
+        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, this.servletTestManager.getSessionAttribute("platform"));
+        String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
         assertEquals(this.location + "java-disabled.seam", resultLocation);
     }
@@ -175,10 +164,8 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS,
-                this.servletTestManager.getSessionAttribute("platform"));
-        String resultLocation = postMethod.getResponseHeader("Location")
-                .getValue();
+        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, this.servletTestManager.getSessionAttribute("platform"));
+        String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
         assertEquals(this.location + "java-version.seam", resultLocation);
     }
@@ -186,11 +173,8 @@ public class JavaVersionServletTest {
     @Test
     public void testRegExpression() throws Exception {
 
-        assertTrue(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR,
-                "1.6.0_04"));
-        assertTrue(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR,
-                "1.5.0_12"));
-        assertFalse(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR,
-                "1.4.1"));
+        assertTrue(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR, "1.6.0_04"));
+        assertTrue(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR, "1.5.0_12"));
+        assertFalse(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR, "1.4.1"));
     }
 }

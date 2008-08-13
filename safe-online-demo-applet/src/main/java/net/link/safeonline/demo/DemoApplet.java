@@ -11,19 +11,22 @@ import javax.swing.JApplet;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+
 public class DemoApplet extends JApplet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public DemoApplet() {
-		JTextArea outputArea = new JTextArea();
-		JScrollPane scrollPane = new JScrollPane(outputArea);
-		add(scrollPane);
 
-		outputArea.append("Hello World\n");
+    public DemoApplet() {
 
-		String sessionId = this.getParameter("sessionid");
-		outputArea.append("session id: " + sessionId + "\n");
+        JTextArea outputArea = new JTextArea();
+        JScrollPane scrollPane = new JScrollPane(outputArea);
+        add(scrollPane);
 
-	}
+        outputArea.append("Hello World\n");
+
+        String sessionId = this.getParameter("sessionid");
+        outputArea.append("session id: " + sessionId + "\n");
+
+    }
 }

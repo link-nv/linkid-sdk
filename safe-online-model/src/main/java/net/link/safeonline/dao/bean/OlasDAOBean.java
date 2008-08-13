@@ -21,69 +21,72 @@ import net.link.safeonline.dao.OlasDAO;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+
 @Stateless
 public class OlasDAOBean implements OlasDAO {
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager             entityManager;
 
-	private OlasEntity.QueryInterface queryObject;
+    private OlasEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, OlasEntity.QueryInterface.class);
-	}
 
-	public OlasEntity addNode(String name, String protocol, String hostname,
-			int port, int sslPort, X509Certificate authnCertificate,
-			X509Certificate signingCertificate) {
-		OlasEntity olas = new OlasEntity(name, protocol, hostname, port,
-				sslPort, authnCertificate, signingCertificate);
-		this.entityManager.persist(olas);
-		return olas;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public List<OlasEntity> listNodes() {
-		List<OlasEntity> result = this.queryObject.listOlasEntities();
-		return result;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, OlasEntity.QueryInterface.class);
+    }
 
-	public OlasEntity findNode(String name) {
-		OlasEntity node = this.entityManager.find(OlasEntity.class, name);
-		return node;
-	}
+    public OlasEntity addNode(String name, String protocol, String hostname, int port, int sslPort,
+            X509Certificate authnCertificate, X509Certificate signingCertificate) {
 
-	public OlasEntity getNode(String name) throws NodeNotFoundException {
-		OlasEntity node = findNode(name);
-		if (null == node)
-			throw new NodeNotFoundException();
-		return node;
-	}
+        OlasEntity olas = new OlasEntity(name, protocol, hostname, port, sslPort, authnCertificate, signingCertificate);
+        this.entityManager.persist(olas);
+        return olas;
+    }
 
-	public OlasEntity getNodeFromAuthnCertificate(
-			X509Certificate authnCertificate) throws NodeNotFoundException {
-		List<OlasEntity> nodes = this.queryObject
-				.listOlasEntitiesWhereAuthnCertificateSubject(authnCertificate
-						.getSubjectX500Principal().getName());
-		if (nodes.isEmpty())
-			throw new NodeNotFoundException();
-		OlasEntity node = nodes.get(0);
-		return node;
-	}
+    public List<OlasEntity> listNodes() {
 
-	public OlasEntity getNodeFromSigningCertificate(
-			X509Certificate signingCertificate) throws NodeNotFoundException {
-		List<OlasEntity> nodes = this.queryObject
-				.listOlasEntitiesWhereSigningCertificateSubject(signingCertificate
-						.getSubjectX500Principal().getName());
-		if (nodes.isEmpty())
-			throw new NodeNotFoundException();
-		OlasEntity node = nodes.get(0);
-		return node;
-	}
+        List<OlasEntity> result = this.queryObject.listOlasEntities();
+        return result;
+    }
 
-	public void removeNode(OlasEntity node) {
-		this.entityManager.remove(node);
-	}
+    public OlasEntity findNode(String name) {
+
+        OlasEntity node = this.entityManager.find(OlasEntity.class, name);
+        return node;
+    }
+
+    public OlasEntity getNode(String name) throws NodeNotFoundException {
+
+        OlasEntity node = findNode(name);
+        if (null == node)
+            throw new NodeNotFoundException();
+        return node;
+    }
+
+    public OlasEntity getNodeFromAuthnCertificate(X509Certificate authnCertificate) throws NodeNotFoundException {
+
+        List<OlasEntity> nodes = this.queryObject.listOlasEntitiesWhereAuthnCertificateSubject(authnCertificate
+                .getSubjectX500Principal().getName());
+        if (nodes.isEmpty())
+            throw new NodeNotFoundException();
+        OlasEntity node = nodes.get(0);
+        return node;
+    }
+
+    public OlasEntity getNodeFromSigningCertificate(X509Certificate signingCertificate) throws NodeNotFoundException {
+
+        List<OlasEntity> nodes = this.queryObject.listOlasEntitiesWhereSigningCertificateSubject(signingCertificate
+                .getSubjectX500Principal().getName());
+        if (nodes.isEmpty())
+            throw new NodeNotFoundException();
+        OlasEntity node = nodes.get(0);
+        return node;
+    }
+
+    public void removeNode(OlasEntity node) {
+
+        this.entityManager.remove(node);
+    }
 }

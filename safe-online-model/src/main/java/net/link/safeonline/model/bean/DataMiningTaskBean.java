@@ -22,69 +22,65 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DataMiningTaskBean")
 public class DataMiningTaskBean implements Task {
 
-	public final static Log LOG = LogFactory.getLog(DataMiningTaskBean.class);
+    public final static Log       LOG              = LogFactory.getLog(DataMiningTaskBean.class);
 
-	public static final String name = "Data mining task";
+    public static final String    name             = "Data mining task";
 
-	public static final String dataMiningDomain = "Data Mining Domain";
+    public static final String    dataMiningDomain = "Data Mining Domain";
 
-	@EJB
-	private StatisticDAO statisticDAO;
+    @EJB
+    private StatisticDAO          statisticDAO;
 
-	@EJB
-	private StatisticDataPointDAO statisticDataPointDAO;
+    @EJB
+    private StatisticDataPointDAO statisticDataPointDAO;
 
-	@EJB
-	private Applications applications;
+    @EJB
+    private Applications          applications;
 
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+    @EJB
+    private AttributeTypeDAO      attributeTypeDAO;
 
-	public String getName() {
-		return name;
-	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() throws Exception {
+    public String getName() {
 
-		LOG.debug("cleanDomain: " + dataMiningDomain);
-		this.statisticDAO.cleanDomain(dataMiningDomain);
+        return name;
+    }
 
-		for (ApplicationEntity application : this.applications
-				.listApplications()) {
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void perform() throws Exception {
 
-			for (ApplicationIdentityAttributeEntity attribute : this.applications
-					.getCurrentApplicationIdentity(application)) {
+        LOG.debug("cleanDomain: " + dataMiningDomain);
+        this.statisticDAO.cleanDomain(dataMiningDomain);
 
-				LOG.debug("findOrAddStatisticByNameDomainAndApplication: "
-						+ attribute.getAttributeTypeName() + ","
-						+ application.getName());
-				StatisticEntity statistic = this.statisticDAO
-						.findOrAddStatisticByNameDomainAndApplication(attribute
-								.getAttributeTypeName(), dataMiningDomain,
-								application);
+        for (ApplicationEntity application : this.applications.listApplications()) {
 
-				LOG.debug("categorize " + application.getName() + " - "
-						+ attribute.getAttributeTypeName());
-				Map<Object, Long> result = this.attributeTypeDAO.categorize(
-						application, attribute.getAttributeType());
-				LOG.debug("result.size: " + result.size());
+            for (ApplicationIdentityAttributeEntity attribute : this.applications
+                    .getCurrentApplicationIdentity(application)) {
 
-				for (Object key : result.keySet()) {
-					LOG.debug("key.toString: " + key.toString());
-					StatisticDataPointEntity datapoint = this.statisticDataPointDAO
-							.findOrAddStatisticDataPoint(key.toString(),
-									statistic);
-					datapoint.setX(result.get(key));
-				}
+                LOG.debug("findOrAddStatisticByNameDomainAndApplication: " + attribute.getAttributeTypeName() + ","
+                        + application.getName());
+                StatisticEntity statistic = this.statisticDAO.findOrAddStatisticByNameDomainAndApplication(attribute
+                        .getAttributeTypeName(), dataMiningDomain, application);
 
-			}
-		}
+                LOG.debug("categorize " + application.getName() + " - " + attribute.getAttributeTypeName());
+                Map<Object, Long> result = this.attributeTypeDAO.categorize(application, attribute.getAttributeType());
+                LOG.debug("result.size: " + result.size());
 
-	}
+                for (Object key : result.keySet()) {
+                    LOG.debug("key.toString: " + key.toString());
+                    StatisticDataPointEntity datapoint = this.statisticDataPointDAO.findOrAddStatisticDataPoint(key
+                            .toString(), statistic);
+                    datapoint.setX(result.get(key));
+                }
+
+            }
+        }
+
+    }
 }

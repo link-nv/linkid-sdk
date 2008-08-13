@@ -9,9 +9,11 @@ package net.link.safeonline.encap;
 
 public class EncapConstants {
 
-	private EncapConstants() {
-		// empty
-	}
+    private EncapConstants() {
 
-	public static final String JNDI_PREFIX = "SafeOnlineEncap/";
+        // empty
+    }
+
+
+    public static final String JNDI_PREFIX = "SafeOnlineEncap/";
 }

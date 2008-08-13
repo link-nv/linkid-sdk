@@ -46,6 +46,7 @@ import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
 
+
 @Stateless
 public class PkiValidatorBean implements PkiValidator {
 
@@ -61,25 +62,21 @@ public class PkiValidatorBean implements PkiValidator {
     private CachedOcspValidator cachedOcspValidator;
 
 
-    public PkiResult validateCertificate(TrustDomainEntity trustDomain,
-            X509Certificate certificate) {
+    public PkiResult validateCertificate(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
         /*
-         * We don't use the JDK certificate path builder API here, since it
-         * doesn't bring anything but unnecessary complexity. Keep It Simple,
-         * Stupid.
+         * We don't use the JDK certificate path builder API here, since it doesn't bring anything but unnecessary
+         * complexity. Keep It Simple, Stupid.
          */
 
         if (null == certificate) {
             throw new IllegalArgumentException("certificate is null");
         }
 
-        LOG.debug("validate certificate "
-                + certificate.getSubjectX500Principal() + " in domain "
+        LOG.debug("validate certificate " + certificate.getSubjectX500Principal() + " in domain "
                 + trustDomain.getName());
 
-        List<TrustPointEntity> trustPointPath = buildTrustPointPath(
-                trustDomain, certificate);
+        List<TrustPointEntity> trustPointPath = buildTrustPointPath(trustDomain, certificate);
 
         return verifyPath(trustDomain, certificate, trustPointPath);
     }
@@ -105,11 +102,9 @@ public class PkiValidatorBean implements PkiValidator {
      * @param certificate
      * @return the path, or an empty list otherwise.
      */
-    private List<TrustPointEntity> buildTrustPointPath(
-            TrustDomainEntity trustDomain, X509Certificate certificate) {
+    private List<TrustPointEntity> buildTrustPointPath(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
-        List<TrustPointEntity> trustPoints = this.trustPointDAO
-                .listTrustPoints(trustDomain);
+        List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(trustDomain);
         HashMap<TrustPointPK, TrustPointEntity> trustPointMap = new HashMap<TrustPointPK, TrustPointEntity>();
         for (TrustPointEntity trustPoint : trustPoints) {
             trustPointMap.put(trustPoint.getPk(), trustPoint);
@@ -117,21 +112,18 @@ public class PkiValidatorBean implements PkiValidator {
 
         List<TrustPointEntity> trustPointPath = new LinkedList<TrustPointEntity>();
 
-        LOG.debug("build path for cert: "
-                + certificate.getSubjectX500Principal());
+        LOG.debug("build path for cert: " + certificate.getSubjectX500Principal());
 
         X509Certificate currentRootCertificate = certificate;
         while (true) {
             byte[] authorityKeyIdentifierData = currentRootCertificate
-                    .getExtensionValue(X509Extensions.AuthorityKeyIdentifier
-                            .getId());
+                    .getExtensionValue(X509Extensions.AuthorityKeyIdentifier.getId());
             String keyId;
             if (null == authorityKeyIdentifierData) {
                 /*
                  * PKIX RFC allows this for the root CA certificate.
                  */
-                LOG
-                        .warn("certificate has no authority key identifier extension");
+                LOG.warn("certificate has no authority key identifier extension");
                 /*
                  * NULL is not allowed for persistence.
                  */
@@ -139,32 +131,23 @@ public class PkiValidatorBean implements PkiValidator {
             } else {
                 AuthorityKeyIdentifierStructure authorityKeyIdentifierStructure;
                 try {
-                    authorityKeyIdentifierStructure = new AuthorityKeyIdentifierStructure(
-                            authorityKeyIdentifierData);
+                    authorityKeyIdentifierStructure = new AuthorityKeyIdentifierStructure(authorityKeyIdentifierData);
                 } catch (IOException e) {
-                    LOG
-                            .error("error parsing authority key identifier structure");
+                    LOG.error("error parsing authority key identifier structure");
                     break;
                 }
-                keyId = new String(Hex
-                        .encodeHex(authorityKeyIdentifierStructure
-                                .getKeyIdentifier()));
+                keyId = new String(Hex.encodeHex(authorityKeyIdentifierStructure.getKeyIdentifier()));
             }
-            String issuer = currentRootCertificate.getIssuerX500Principal()
-                    .getName();
+            String issuer = currentRootCertificate.getIssuerX500Principal().getName();
             LOG.debug("issuer: " + issuer);
             LOG.debug("keyId: " + keyId);
-            TrustPointPK trustPointPK = new TrustPointPK(trustDomain, issuer,
-                    keyId);
-            TrustPointEntity matchingTrustPoint = trustPointMap
-                    .get(trustPointPK);
+            TrustPointPK trustPointPK = new TrustPointPK(trustDomain, issuer, keyId);
+            TrustPointEntity matchingTrustPoint = trustPointMap.get(trustPointPK);
             if (null == matchingTrustPoint) {
                 LOG.debug("no matching trust point found");
                 break;
             }
-            LOG.debug("found path node: "
-                    + matchingTrustPoint.getCertificate()
-                            .getSubjectX500Principal());
+            LOG.debug("found path node: " + matchingTrustPoint.getCertificate().getSubjectX500Principal());
             trustPointPath.add(0, matchingTrustPoint);
             currentRootCertificate = matchingTrustPoint.getCertificate();
             if (isSelfIssued(currentRootCertificate)) {
@@ -184,8 +167,8 @@ public class PkiValidatorBean implements PkiValidator {
         return result;
     }
 
-    PkiResult verifyPath(TrustDomainEntity trustDomain,
-            X509Certificate certificate, List<TrustPointEntity> trustPointPath) {
+    PkiResult verifyPath(TrustDomainEntity trustDomain, X509Certificate certificate,
+            List<TrustPointEntity> trustPointPath) {
 
         if (trustPointPath.isEmpty()) {
             LOG.debug("trust point path is empty");
@@ -194,15 +177,13 @@ public class PkiValidatorBean implements PkiValidator {
 
         boolean performOcspCheck = trustDomain.isPerformOcspCheck();
 
-        X509Certificate rootCertificate = trustPointPath.get(0)
-                .getCertificate();
+        X509Certificate rootCertificate = trustPointPath.get(0).getCertificate();
         X509Certificate issuerCertificate = rootCertificate;
         PublicKey issuerPublicKey = issuerCertificate.getPublicKey();
 
         for (TrustPointEntity trustPoint : trustPointPath) {
             X509Certificate trustPointCertificate = trustPoint.getCertificate();
-            LOG.debug("verifying: "
-                    + trustPointCertificate.getSubjectX500Principal());
+            LOG.debug("verifying: " + trustPointCertificate.getSubjectX500Principal());
             PkiResult checkValidityResult = checkValidity(trustPointCertificate);
             if (PkiResult.VALID != checkValidityResult) {
                 return checkValidityResult;
@@ -227,9 +208,8 @@ public class PkiValidatorBean implements PkiValidator {
         }
         if (true == performOcspCheck) {
             LOG.debug("performing OCSP check");
-            return convertOcspResult(this.cachedOcspValidator
-                    .performCachedOcspCheck(trustDomain, certificate,
-                            issuerCertificate));
+            return convertOcspResult(this.cachedOcspValidator.performCachedOcspCheck(trustDomain, certificate,
+                    issuerCertificate));
         }
 
         return PkiResult.VALID;
@@ -250,8 +230,7 @@ public class PkiValidatorBean implements PkiValidator {
 
     private boolean verifyConstraints(X509Certificate certificate) {
 
-        byte[] basicConstraintsValue = certificate
-                .getExtensionValue(X509Extensions.BasicConstraints.getId());
+        byte[] basicConstraintsValue = certificate.getExtensionValue(X509Extensions.BasicConstraints.getId());
         if (null == basicConstraintsValue) {
             LOG.debug("no basic contraints extension present");
             /*
@@ -261,8 +240,7 @@ public class PkiValidatorBean implements PkiValidator {
         }
         ASN1Encodable basicConstraintsDecoded;
         try {
-            basicConstraintsDecoded = X509ExtensionUtil
-                    .fromExtensionValue(basicConstraintsValue);
+            basicConstraintsDecoded = X509ExtensionUtil.fromExtensionValue(basicConstraintsValue);
         } catch (IOException e) {
             LOG.error("IO error: " + e.getMessage(), e);
             return false;
@@ -272,8 +250,7 @@ public class PkiValidatorBean implements PkiValidator {
             return false;
         }
         ASN1Sequence basicConstraintsSequence = (ASN1Sequence) basicConstraintsDecoded;
-        BasicConstraints basicConstraints = new BasicConstraints(
-                basicConstraintsSequence);
+        BasicConstraints basicConstraints = new BasicConstraints(basicConstraintsSequence);
         if (false == basicConstraints.isCA()) {
             LOG.debug("basic contraints says not a CA");
             return false;
@@ -281,8 +258,7 @@ public class PkiValidatorBean implements PkiValidator {
         return true;
     }
 
-    private boolean verifySignature(X509Certificate certificate,
-            PublicKey issuerPublicKey) {
+    private boolean verifySignature(X509Certificate certificate, PublicKey issuerPublicKey) {
 
         try {
             certificate.verify(issuerPublicKey);
@@ -308,11 +284,10 @@ public class PkiValidatorBean implements PkiValidator {
         return true;
     }
 
-    public PkiResult validateCertificate(String trustDomainName,
-            X509Certificate certificate) throws TrustDomainNotFoundException {
+    public PkiResult validateCertificate(String trustDomainName, X509Certificate certificate)
+            throws TrustDomainNotFoundException {
 
-        TrustDomainEntity trustDomain = this.trustDomainDAO
-                .getTrustDomain(trustDomainName);
+        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(trustDomainName);
         return validateCertificate(trustDomain, certificate);
     }
 }

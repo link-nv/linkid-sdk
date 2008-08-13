@@ -29,115 +29,127 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import static net.link.safeonline.entity.tasks.TaskEntity.QUERY_LIST_ALL;
 import static net.link.safeonline.entity.tasks.TaskEntity.QUERY_WHERE_JNDINAME;
 
+
 @Entity
 @Table(name = "task")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_JNDINAME, query = "SELECT task "
-				+ "FROM TaskEntity AS task "
-				+ "WHERE task.jndiName = :jndiName"),
-		@NamedQuery(name = QUERY_LIST_ALL, query = "SELECT task "
-				+ "FROM TaskEntity AS task") })
+        @NamedQuery(name = QUERY_WHERE_JNDINAME, query = "SELECT task " + "FROM TaskEntity AS task "
+                + "WHERE task.jndiName = :jndiName"),
+        @NamedQuery(name = QUERY_LIST_ALL, query = "SELECT task " + "FROM TaskEntity AS task") })
 public class TaskEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long       serialVersionUID     = 1L;
 
-	public static final String QUERY_WHERE_JNDINAME = "task.jndiName";
+    public static final String      QUERY_WHERE_JNDINAME = "task.jndiName";
 
-	public static final String QUERY_LIST_ALL = "task.all";
+    public static final String      QUERY_LIST_ALL       = "task.all";
 
-	private String jndiName;
+    private String                  jndiName;
 
-	private String name;
+    private String                  name;
 
-	private SchedulingEntity scheduling;
+    private SchedulingEntity        scheduling;
 
-	private List<TaskHistoryEntity> taskHistory;
+    private List<TaskHistoryEntity> taskHistory;
 
-	public TaskEntity() {
-		this(null, null, null);
-	}
 
-	public TaskEntity(String jndiName, String name,
-			SchedulingEntity schedulingEntity) {
-		this.name = name;
-		this.jndiName = jndiName;
-		this.scheduling = schedulingEntity;
-		this.taskHistory = new LinkedList<TaskHistoryEntity>();
-	}
+    public TaskEntity() {
 
-	public String getName() {
-		return this.name;
-	}
+        this(null, null, null);
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public TaskEntity(String jndiName, String name, SchedulingEntity schedulingEntity) {
 
-	@Id
-	public String getJndiName() {
-		return this.jndiName;
-	}
+        this.name = name;
+        this.jndiName = jndiName;
+        this.scheduling = schedulingEntity;
+        this.taskHistory = new LinkedList<TaskHistoryEntity>();
+    }
 
-	public void setJndiName(String jndiName) {
-		this.jndiName = jndiName;
-	}
+    public String getName() {
 
-	@ManyToOne
-	public SchedulingEntity getScheduling() {
-		return this.scheduling;
-	}
+        return this.name;
+    }
 
-	public void setScheduling(SchedulingEntity schedulingEntity) {
-		this.scheduling = schedulingEntity;
-	}
+    public void setName(String name) {
 
-	@OneToMany(mappedBy = "task")
-	public List<TaskHistoryEntity> getTaskHistory() {
-		return this.taskHistory;
-	}
+        this.name = name;
+    }
 
-	public void setTaskHistory(List<TaskHistoryEntity> taskHistory) {
-		this.taskHistory = taskHistory;
-	}
+    @Id
+    public String getJndiName() {
 
-	public void addTaskHistoryEntity(TaskHistoryEntity taskHistoryEntity) {
-		this.taskHistory.add(taskHistoryEntity);
-	}
+        return this.jndiName;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("jndiName", this.jndiName)
-				.append("name", this.name).append("schedulingEntity",
-						this.scheduling.getName()).toString();
-	}
+    public void setJndiName(String jndiName) {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (null == obj) {
-			return false;
-		}
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof TaskEntity) {
-			return false;
-		}
-		TaskEntity rhs = (TaskEntity) obj;
-		return new EqualsBuilder().append(this.jndiName, rhs.jndiName)
-				.isEquals();
-	}
+        this.jndiName = jndiName;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.jndiName).toHashCode();
-	}
+    @ManyToOne
+    public SchedulingEntity getScheduling() {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_LIST_ALL)
-		List<TaskEntity> listTaskEntities();
+        return this.scheduling;
+    }
 
-		@QueryMethod(value = QUERY_WHERE_JNDINAME, nullable = true)
-		TaskEntity findTaskEntity(@QueryParam("jndiName")
-		String jndiName);
-	}
+    public void setScheduling(SchedulingEntity schedulingEntity) {
+
+        this.scheduling = schedulingEntity;
+    }
+
+    @OneToMany(mappedBy = "task")
+    public List<TaskHistoryEntity> getTaskHistory() {
+
+        return this.taskHistory;
+    }
+
+    public void setTaskHistory(List<TaskHistoryEntity> taskHistory) {
+
+        this.taskHistory = taskHistory;
+    }
+
+    public void addTaskHistoryEntity(TaskHistoryEntity taskHistoryEntity) {
+
+        this.taskHistory.add(taskHistoryEntity);
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("jndiName", this.jndiName).append("name", this.name).append(
+                "schedulingEntity", this.scheduling.getName()).toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof TaskEntity) {
+            return false;
+        }
+        TaskEntity rhs = (TaskEntity) obj;
+        return new EqualsBuilder().append(this.jndiName, rhs.jndiName).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.jndiName).toHashCode();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_LIST_ALL)
+        List<TaskEntity> listTaskEntities();
+
+        @QueryMethod(value = QUERY_WHERE_JNDINAME, nullable = true)
+        TaskEntity findTaskEntity(@QueryParam("jndiName") String jndiName);
+    }
 }

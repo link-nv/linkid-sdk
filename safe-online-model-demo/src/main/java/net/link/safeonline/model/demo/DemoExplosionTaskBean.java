@@ -20,22 +20,25 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DemoExplosionTaskBean")
 public class DemoExplosionTaskBean {
 
-	private static final Log LOG = LogFactory
-			.getLog(DemoExplosionTaskBean.class);
+    private static final Log LOG = LogFactory.getLog(DemoExplosionTaskBean.class);
 
-	public String getName() {
-		return "Explosion demo task";
-	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() {
-		Date now = new Date();
-		LOG.debug("Demo explosion task perform: " + now);
-		throw new RuntimeException("explosion");
-	}
+    public String getName() {
+
+        return "Explosion demo task";
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void perform() {
+
+        Date now = new Date();
+        LOG.debug("Demo explosion task perform: " + now);
+        throw new RuntimeException("explosion");
+    }
 }

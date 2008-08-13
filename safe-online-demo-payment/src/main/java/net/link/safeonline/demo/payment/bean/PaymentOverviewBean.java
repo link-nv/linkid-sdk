@@ -29,45 +29,47 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("paymentOverview")
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/PaymentOverviewBean/local")
 @SecurityDomain("demo-payment")
-public class PaymentOverviewBean extends AbstractPaymentDataClientBean
-		implements PaymentOverview {
+public class PaymentOverviewBean extends AbstractPaymentDataClientBean implements PaymentOverview {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                 log;
 
-	@Resource
-	private SessionContext sessionContext;
+    @Resource
+    private SessionContext      sessionContext;
 
-	@PersistenceContext(unitName = "DemoPaymentEntityManager")
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = "DemoPaymentEntityManager")
+    private EntityManager       entityManager;
 
-	public static final String PAYMENT_LIST_NAME = "paymentList";
+    public static final String  PAYMENT_LIST_NAME = "paymentList";
 
-	@DataModel(PAYMENT_LIST_NAME)
-	@SuppressWarnings("unused")
-	private List<PaymentEntity> paymentList;
+    @DataModel(PAYMENT_LIST_NAME)
+    @SuppressWarnings("unused")
+    private List<PaymentEntity> paymentList;
 
-	@Factory(PAYMENT_LIST_NAME)
-	@RolesAllowed("user")
-	public void paymentListFactory() {
-		UserEntity user = this.entityManager.find(UserEntity.class,
-				getUsername());
-		if (user == null) {
-			user = new UserEntity(this.getUsername());
-			this.entityManager.persist(user);
-		}
-		this.paymentList = user.getPayments();
-	}
 
-	private String getUsername() {
-		Principal principal = this.sessionContext.getCallerPrincipal();
-		String userId = principal.getName();
-		String username = getUsername(userId);
-		this.log.debug("username #0", username);
-		return username;
-	}
+    @Factory(PAYMENT_LIST_NAME)
+    @RolesAllowed("user")
+    public void paymentListFactory() {
+
+        UserEntity user = this.entityManager.find(UserEntity.class, getUsername());
+        if (user == null) {
+            user = new UserEntity(this.getUsername());
+            this.entityManager.persist(user);
+        }
+        this.paymentList = user.getPayments();
+    }
+
+    private String getUsername() {
+
+        Principal principal = this.sessionContext.getCallerPrincipal();
+        String userId = principal.getName();
+        String username = getUsername(userId);
+        this.log.debug("username #0", username);
+        return username;
+    }
 }

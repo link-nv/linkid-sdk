@@ -32,112 +32,118 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+
 @Entity
-@Table(name = "deviceMappings", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"subject", "device" }))
+@Table(name = "deviceMappings", uniqueConstraints = @UniqueConstraint(columnNames = { "subject", "device" }))
 @NamedQueries( {
-		@NamedQuery(name = QUERY_LIST_SUBJECT, query = "SELECT d "
-				+ "FROM DeviceMappingEntity AS d "
-				+ "WHERE d.subject = :subject"),
-		@NamedQuery(name = QUERY_LIST_DEVICE, query = "SELECT d "
-				+ "FROM DeviceMappingEntity AS d " + "WHERE d.device = :device"),
-		@NamedQuery(name = QUERY_SUBJECT_DEVICE, query = "SELECT d "
-				+ "FROM DeviceMappingEntity AS d "
-				+ "WHERE d.subject = :subject AND d.device = :device"),
-		@NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM DeviceMappingEntity AS d "
-				+ "WHERE d.subject = :subject") })
+        @NamedQuery(name = QUERY_LIST_SUBJECT, query = "SELECT d " + "FROM DeviceMappingEntity AS d "
+                + "WHERE d.subject = :subject"),
+        @NamedQuery(name = QUERY_LIST_DEVICE, query = "SELECT d " + "FROM DeviceMappingEntity AS d "
+                + "WHERE d.device = :device"),
+        @NamedQuery(name = QUERY_SUBJECT_DEVICE, query = "SELECT d " + "FROM DeviceMappingEntity AS d "
+                + "WHERE d.subject = :subject AND d.device = :device"),
+        @NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM DeviceMappingEntity AS d "
+                + "WHERE d.subject = :subject") })
 public class DeviceMappingEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID     = 1L;
 
-	public static final String QUERY_LIST_SUBJECT = "dev.map.sub";
+    public static final String QUERY_LIST_SUBJECT   = "dev.map.sub";
 
-	public static final String QUERY_LIST_DEVICE = "dev.map.dev";
+    public static final String QUERY_LIST_DEVICE    = "dev.map.dev";
 
-	public static final String QUERY_SUBJECT_DEVICE = "dev.map.subdev";
+    public static final String QUERY_SUBJECT_DEVICE = "dev.map.subdev";
 
-	public static final String DELETE_ALL_SUBJECT = "dev.map.del.sub";
+    public static final String DELETE_ALL_SUBJECT   = "dev.map.del.sub";
 
-	private SubjectEntity subject;
+    private SubjectEntity      subject;
 
-	private DeviceEntity device;
+    private DeviceEntity       device;
 
-	private String id;
+    private String             id;
 
-	public DeviceMappingEntity() {
-		// empty
-	}
 
-	public DeviceMappingEntity(SubjectEntity subject, String id,
-			DeviceEntity device) {
-		this.subject = subject;
-		this.id = id;
-		this.device = device;
-	}
+    public DeviceMappingEntity() {
 
-	@ManyToOne
-	@JoinColumn(name = "subject", nullable = false)
-	public SubjectEntity getSubject() {
-		return this.subject;
-	}
+        // empty
+    }
 
-	public void setSubject(SubjectEntity subject) {
-		this.subject = subject;
-	}
+    public DeviceMappingEntity(SubjectEntity subject, String id, DeviceEntity device) {
 
-	@Id
-	public String getId() {
-		return this.id;
-	}
+        this.subject = subject;
+        this.id = id;
+        this.device = device;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    @ManyToOne
+    @JoinColumn(name = "subject", nullable = false)
+    public SubjectEntity getSubject() {
 
-	@ManyToOne
-	@JoinColumn(name = "device", nullable = false)
-	public DeviceEntity getDevice() {
-		return this.device;
-	}
+        return this.subject;
+    }
 
-	public void setDevice(DeviceEntity device) {
-		this.device = device;
-	}
+    public void setSubject(SubjectEntity subject) {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof DeviceMappingEntity) {
-			return false;
-		}
-		DeviceMappingEntity rhs = (DeviceMappingEntity) obj;
-		return new EqualsBuilder().append(this.id, rhs.id).isEquals();
-	}
+        this.subject = subject;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
-				"id", this.id).append("subject", this.subject.getUserId())
-				.append("device", this.device.getName()).toString();
-	}
+    @Id
+    public String getId() {
 
-	public interface QueryInterface {
-		@QueryMethod(value = QUERY_SUBJECT_DEVICE, nullable = true)
-		DeviceMappingEntity findDeviceMapping(
-				@QueryParam("subject") SubjectEntity subject,
-				@QueryParam("device") DeviceEntity device);
+        return this.id;
+    }
 
-		@QueryMethod(QUERY_LIST_SUBJECT)
-		List<DeviceMappingEntity> listDeviceMappings(
-				@QueryParam("subject") SubjectEntity subject);
+    public void setId(String id) {
 
-		@UpdateMethod(DELETE_ALL_SUBJECT)
-		void deleteAll(@QueryParam("subject") SubjectEntity subject);
+        this.id = id;
+    }
 
-		@QueryMethod(QUERY_LIST_DEVICE)
-		List<DeviceMappingEntity> listDeviceMappings(
-				@QueryParam("device") DeviceEntity device);
-	}
+    @ManyToOne
+    @JoinColumn(name = "device", nullable = false)
+    public DeviceEntity getDevice() {
+
+        return this.device;
+    }
+
+    public void setDevice(DeviceEntity device) {
+
+        this.device = device;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof DeviceMappingEntity) {
+            return false;
+        }
+        DeviceMappingEntity rhs = (DeviceMappingEntity) obj;
+        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", this.id).append("subject",
+                this.subject.getUserId()).append("device", this.device.getName()).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(value = QUERY_SUBJECT_DEVICE, nullable = true)
+        DeviceMappingEntity findDeviceMapping(@QueryParam("subject") SubjectEntity subject,
+                @QueryParam("device") DeviceEntity device);
+
+        @QueryMethod(QUERY_LIST_SUBJECT)
+        List<DeviceMappingEntity> listDeviceMappings(@QueryParam("subject") SubjectEntity subject);
+
+        @UpdateMethod(DELETE_ALL_SUBJECT)
+        void deleteAll(@QueryParam("subject") SubjectEntity subject);
+
+        @QueryMethod(QUERY_LIST_DEVICE)
+        List<DeviceMappingEntity> listDeviceMappings(@QueryParam("device") DeviceEntity device);
+    }
 }

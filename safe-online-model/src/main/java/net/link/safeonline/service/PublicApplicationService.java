@@ -11,6 +11,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.model.application.PublicApplication;
 
+
 /**
  * Interface to service for retrieving public information about applications.
  * 
@@ -24,8 +25,7 @@ public interface PublicApplicationService {
 
 
     /**
-     * Gives back a stub for an application that contains the application's data
-     * that's available to the public.
+     * Gives back a stub for an application that contains the application's data that's available to the public.
      * 
      * @param applicationName
      */

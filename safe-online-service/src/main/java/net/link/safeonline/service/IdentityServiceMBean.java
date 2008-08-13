@@ -11,6 +11,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
+
 /**
  * Interface for Identity Service JMX bean.
  * 
@@ -19,33 +20,33 @@ import java.security.cert.X509Certificate;
  */
 public interface IdentityServiceMBean {
 
-	/*
-	 * Operations.
-	 */
-	PrivateKey getPrivateKey();
+    /*
+     * Operations.
+     */
+    PrivateKey getPrivateKey();
 
-	PublicKey getPublicKey();
+    PublicKey getPublicKey();
 
-	X509Certificate getCertificate();
+    X509Certificate getCertificate();
 
-	void loadKeyPair();
+    void loadKeyPair();
 
-	/*
-	 * Attributes.
-	 */
-	void setKeyStoreResource(String keyStoreResource);
+    /*
+     * Attributes.
+     */
+    void setKeyStoreResource(String keyStoreResource);
 
-	String getKeyStoreResource();
+    String getKeyStoreResource();
 
-	void setKeyStoreFile(String keyStoreFile);
+    void setKeyStoreFile(String keyStoreFile);
 
-	String getKeyStoreFile();
+    String getKeyStoreFile();
 
-	void setKeyStorePassword(String keyStorePassword);
+    void setKeyStorePassword(String keyStorePassword);
 
-	String getKeyStorePassword();
+    String getKeyStorePassword();
 
-	void setKeyStoreType(String keyStoreType);
+    void setKeyStoreType(String keyStoreType);
 
-	String getKeyStoreType();
+    String getKeyStoreType();
 }

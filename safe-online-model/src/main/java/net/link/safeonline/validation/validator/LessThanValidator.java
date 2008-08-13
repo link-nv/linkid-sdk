@@ -11,22 +11,22 @@ package net.link.safeonline.validation.validator;
 
 import net.link.safeonline.validation.annotation.LessThan;
 
+
 public class LessThanValidator implements Validator<LessThan> {
 
-	public void validate(Object value, int parameterIdx,
-			LessThan parameterAnnotation, ValidatorResult result) {
-		String name = parameterAnnotation.name();
-		if ("".equals(name)) {
-			name = "parameter " + (parameterIdx + 1);
-		}
-		if (!(value instanceof Integer)) {
-			throw new IllegalStateException("parameter is not an integer");
-		}
-		double numValue = ((Integer) (value)).doubleValue();
-		double lessThanValue = parameterAnnotation.value();
-		if (numValue >= lessThanValue) {
-			result.addResult("the given parameter \"" + name
-					+ "\" is not less than " + numValue);
-		}
-	}
+    public void validate(Object value, int parameterIdx, LessThan parameterAnnotation, ValidatorResult result) {
+
+        String name = parameterAnnotation.name();
+        if ("".equals(name)) {
+            name = "parameter " + (parameterIdx + 1);
+        }
+        if (!(value instanceof Integer)) {
+            throw new IllegalStateException("parameter is not an integer");
+        }
+        double numValue = ((Integer) (value)).doubleValue();
+        double lessThanValue = parameterAnnotation.value();
+        if (numValue >= lessThanValue) {
+            result.addResult("the given parameter \"" + name + "\" is not less than " + numValue);
+        }
+    }
 }

@@ -27,32 +27,32 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.model.ApplicationManager;
 
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
 public class ApplicationManagerBean implements ApplicationManager {
 
-	private static final Log LOG = LogFactory
-			.getLog(ApplicationManagerBean.class);
+    private static final Log LOG = LogFactory.getLog(ApplicationManagerBean.class);
 
-	@Resource
-	private SessionContext context;
+    @Resource
+    private SessionContext   context;
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO   applicationDAO;
 
-	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public ApplicationEntity getCallerApplication() {
-		Principal callerPrincipal = this.context.getCallerPrincipal();
-		String applicationName = callerPrincipal.getName();
-		LOG.debug("get caller application: " + applicationName);
-		ApplicationEntity callerApplication;
-		try {
-			callerApplication = this.applicationDAO
-					.getApplication(applicationName);
-		} catch (ApplicationNotFoundException e) {
-			throw new EJBException("application not found: " + e.getMessage(),
-					e);
-		}
-		return callerApplication;
-	}
+
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public ApplicationEntity getCallerApplication() {
+
+        Principal callerPrincipal = this.context.getCallerPrincipal();
+        String applicationName = callerPrincipal.getName();
+        LOG.debug("get caller application: " + applicationName);
+        ApplicationEntity callerApplication;
+        try {
+            callerApplication = this.applicationDAO.getApplication(applicationName);
+        } catch (ApplicationNotFoundException e) {
+            throw new EJBException("application not found: " + e.getMessage(), e);
+        }
+        return callerApplication;
+    }
 }

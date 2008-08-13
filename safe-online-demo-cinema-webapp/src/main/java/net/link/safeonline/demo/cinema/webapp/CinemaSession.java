@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 
+
 /**
  * <h2>{@link CinemaSession}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -43,19 +44,18 @@ import org.apache.wicket.Session;
  */
 public class CinemaSession extends Session {
 
-    private static final long        serialVersionUID = 1L;
-    private static final Log         LOG              = LogFactory
-                                                              .getLog(CinemaSession.class);
+    private static final long       serialVersionUID = 1L;
+    private static final Log        LOG              = LogFactory.getLog(CinemaSession.class);
 
-    private transient TicketService  ticketService;
+    private transient TicketService ticketService;
 
-    private UserEntity               user;
-    private FilmEntity               film;
-    private TheatreEntity            theatre;
-    private Date                     time;
-    private RoomEntity               room;
-    private SeatOccupationEntity     occupation;
-    private TicketEntity             ticket;
+    private UserEntity              user;
+    private FilmEntity              film;
+    private TheatreEntity           theatre;
+    private Date                    time;
+    private RoomEntity              room;
+    private SeatOccupationEntity    occupation;
+    private TicketEntity            ticket;
 
 
     public CinemaSession(Request request) {
@@ -65,8 +65,7 @@ public class CinemaSession extends Session {
         try {
             InitialContext context = new InitialContext();
 
-            this.ticketService = (TicketService) context
-                    .lookup(TicketService.BINDING);
+            this.ticketService = (TicketService) context.lookup(TicketService.BINDING);
         }
 
         catch (NamingException e) {
@@ -161,18 +160,15 @@ public class CinemaSession extends Session {
     }
 
     /**
-     * @return The complete ticket for the selections made by the user or
-     *         <code>null</code> if not all required selections have been made
-     *         yet.
+     * @return The complete ticket for the selections made by the user or <code>null</code> if not all required
+     *         selections have been made yet.
      */
     public TicketEntity getTicket() {
 
         if (this.ticket == null) {
-            if (getUser() != null && getFilm() != null && getTime() != null
-                    && getOccupation() != null) {
+            if (getUser() != null && getFilm() != null && getTime() != null && getOccupation() != null) {
                 try {
-                    this.ticket = this.ticketService.createTicket(getUser(),
-                            getFilm(), getTime(), getOccupation());
+                    this.ticket = this.ticketService.createTicket(getUser(), getFilm(), getTime(), getOccupation());
                 }
 
                 catch (IllegalStateException e) {
@@ -186,8 +182,7 @@ public class CinemaSession extends Session {
     }
 
     /**
-     * Change the seat occupation to the given seat, or unoccupy that seat if it
-     * was the seat currently occupied by us.
+     * Change the seat occupation to the given seat, or unoccupy that seat if it was the seat currently occupied by us.
      * 
      * @param seat
      *            The seat to occupy or unoccupy.
@@ -277,8 +272,7 @@ public class CinemaSession extends Session {
     /**
      * Operates on the current session.
      * 
-     * @return <code>true</code> when the given seat is occupied by the user in
-     *         this session.
+     * @return <code>true</code> when the given seat is occupied by the user in this session.
      */
     public static boolean isOccupied(SeatEntity seat) {
 
@@ -306,8 +300,7 @@ public class CinemaSession extends Session {
     /**
      * Operates on the current session.
      * 
-     * @return <code>true</code> if the user has selected both a film and
-     *         theatre.
+     * @return <code>true</code> if the user has selected both a film and theatre.
      */
     public static boolean isFilmAndTheaterSet() {
 
@@ -337,8 +330,7 @@ public class CinemaSession extends Session {
     /**
      * Operates on the current session.
      * 
-     * @return <code>true</code> if the user has selected both a film and
-     *         theatre.
+     * @return <code>true</code> if the user has selected both a film and theatre.
      */
     public static boolean isTimeAndRoomSet() {
 
@@ -368,8 +360,7 @@ public class CinemaSession extends Session {
     /**
      * Operates on the current session.
      * 
-     * @return <code>true</code> if the user has made all selections required
-     *         for a complete ticket.
+     * @return <code>true</code> if the user has made all selections required for a complete ticket.
      */
     public static boolean isTicketSet() {
 
@@ -379,8 +370,7 @@ public class CinemaSession extends Session {
     /**
      * Operates on the current session.
      * 
-     * @return <code>true</code> if there is a user logged in and has a
-     *         {@link UserEntity} set.
+     * @return <code>true</code> if there is a user logged in and has a {@link UserEntity} set.
      */
     public static boolean isUserSet() {
 
@@ -388,23 +378,21 @@ public class CinemaSession extends Session {
     }
 
     /**
-     * @return A string that is the formatted representation of the given date
-     *         according to the user's locale in short form.
+     * @return A string that is the formatted representation of the given date according to the user's locale in short
+     *         form.
      */
     public static String format(Date date) {
 
-        return DateFormat.getDateTimeInstance(DateFormat.SHORT,
-                DateFormat.SHORT, get().getLocale()).format(date);
+        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, get().getLocale()).format(date);
     }
 
     /**
-     * @return A string that is the formatted representation of the given amount
-     *         of currency according to the user's locale.
+     * @return A string that is the formatted representation of the given amount of currency according to the user's
+     *         locale.
      */
     public static String format(Number number) {
 
-        return NumberFormat.getCurrencyInstance(get().getLocale()).format(
-                number);
+        return NumberFormat.getCurrencyInstance(get().getLocale()).format(number);
     }
 
     /**

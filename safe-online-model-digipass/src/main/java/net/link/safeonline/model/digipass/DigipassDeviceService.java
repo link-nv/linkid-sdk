@@ -16,20 +16,18 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 
+
 @Local
 public interface DigipassDeviceService {
 
-	String authenticate(String loginName, String token)
-			throws SubjectNotFoundException, PermissionDeniedException;
+    String authenticate(String loginName, String token) throws SubjectNotFoundException, PermissionDeniedException;
 
-	String register(String loginName, String serialNumber)
-			throws ArgumentIntegrityException, SubjectNotFoundException,
-			PermissionDeniedException;
+    String register(String loginName, String serialNumber) throws ArgumentIntegrityException, SubjectNotFoundException,
+            PermissionDeniedException;
 
-	void remove(String loginName, String serialNumber)
-			throws SubjectNotFoundException, DigipassException,
-			PermissionDeniedException;
+    void remove(String loginName, String serialNumber) throws SubjectNotFoundException, DigipassException,
+            PermissionDeniedException;
 
-	List<AttributeDO> getDigipasses(String loginName, Locale locale)
-			throws SubjectNotFoundException, PermissionDeniedException;
+    List<AttributeDO> getDigipasses(String loginName, Locale locale) throws SubjectNotFoundException,
+            PermissionDeniedException;
 }

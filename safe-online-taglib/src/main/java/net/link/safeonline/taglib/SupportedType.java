@@ -15,9 +15,11 @@ import java.lang.annotation.Target;
 
 import net.link.safeonline.entity.DatatypeType;
 
+
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @interface SupportedType {
-	DatatypeType value();
+
+    DatatypeType value();
 }

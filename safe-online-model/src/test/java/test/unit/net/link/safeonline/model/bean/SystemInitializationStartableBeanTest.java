@@ -24,56 +24,54 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class SystemInitializationStartableBeanTest extends TestCase {
 
-	public void testPostStart() throws Exception {
-		// setup
-		EntityTestManager entityTestManager = new EntityTestManager();
-		entityTestManager.setUp(SafeOnlineTestContainer.entities);
-		EntityManager entityManager = entityTestManager.getEntityManager();
+    public void testPostStart() throws Exception {
 
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        // setup
+        EntityTestManager entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return certificate;
-					}
-				});
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		Startable testedInstance = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+                        return authCertificate;
+                    }
+                });
 
-		// operate
-		testedInstance.postStart();
-		entityManager.getTransaction().commit();
-		entityManager.getTransaction().begin();
-		/*
-		 * We run postStart twice since the system must be capable of rebooting
-		 * using an persistent database.
-		 */
-		testedInstance.postStart();
-		entityTestManager.tearDown();
-	}
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
+
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+
+                        return certificate;
+                    }
+                });
+
+        Startable testedInstance = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+
+        // operate
+        testedInstance.postStart();
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        /*
+         * We run postStart twice since the system must be capable of rebooting using an persistent database.
+         */
+        testedInstance.postStart();
+        entityTestManager.tearDown();
+    }
 }

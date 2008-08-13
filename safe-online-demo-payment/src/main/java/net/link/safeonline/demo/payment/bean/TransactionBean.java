@@ -38,16 +38,15 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("transactionBean")
 @Scope(ScopeType.CONVERSATION)
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/TransactionBean/local")
 @SecurityDomain("demo-payment")
-public class TransactionBean extends AbstractPaymentDataClientBean implements
-        Transaction {
+public class TransactionBean extends AbstractPaymentDataClientBean implements Transaction {
 
-    private static final org.apache.commons.logging.Log LOG              = LogFactory
-                                                                                 .getLog(TransactionBean.class);
+    private static final org.apache.commons.logging.Log LOG              = LogFactory.getLog(TransactionBean.class);
 
     @Logger
     private Log                                         log;
@@ -82,8 +81,7 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements
 
         this.log.debug("confirm");
         LOG.debug("confirm");
-        UserEntity user = this.entityManager.find(UserEntity.class, this
-                .getUsername());
+        UserEntity user = this.entityManager.find(UserEntity.class, this.getUsername());
         if (user == null) {
             user = new UserEntity(this.getUsername());
             this.entityManager.persist(user);
@@ -114,8 +112,7 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements
         String[] values;
         try {
             values = this.getAttributeClient().getAttributeValue(userId,
-                    "urn:net:lin-k:safe-online:attribute:visaCardNumber",
-                    String[].class);
+                    "urn:net:lin-k:safe-online:attribute:visaCardNumber", String[].class);
         } catch (AttributeNotFoundException e) {
             String msg = "attribute not found: " + e.getMessage();
             this.log.debug(msg);

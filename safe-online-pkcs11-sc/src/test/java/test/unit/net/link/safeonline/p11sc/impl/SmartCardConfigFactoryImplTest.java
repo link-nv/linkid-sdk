@@ -18,79 +18,78 @@ import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 import net.link.safeonline.test.util.TestClassLoader;
 
+
 public class SmartCardConfigFactoryImplTest extends TestCase {
 
-	private SmartCardConfigFactoryImpl testedInstance;
+    private SmartCardConfigFactoryImpl testedInstance;
 
-	private TestClassLoader testClassLoader;
+    private TestClassLoader            testClassLoader;
 
-	private ClassLoader originalClassLoader;
+    private ClassLoader                originalClassLoader;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		Thread currentThread = Thread.currentThread();
-		this.originalClassLoader = currentThread.getContextClassLoader();
-		this.testClassLoader = new TestClassLoader();
-		currentThread.setContextClassLoader(this.testClassLoader);
+    @Override
+    protected void setUp() throws Exception {
 
-		this.testedInstance = new SmartCardConfigFactoryImpl();
-	}
+        super.setUp();
 
-	@Override
-	protected void tearDown() throws Exception {
-		Thread currentThread = Thread.currentThread();
-		currentThread.setContextClassLoader(this.originalClassLoader);
+        Thread currentThread = Thread.currentThread();
+        this.originalClassLoader = currentThread.getContextClassLoader();
+        this.testClassLoader = new TestClassLoader();
+        currentThread.setContextClassLoader(this.testClassLoader);
 
-		super.tearDown();
-	}
+        this.testedInstance = new SmartCardConfigFactoryImpl();
+    }
 
-	public void testDefaultGetSmartCardConfigsIsEmpty() throws Exception {
-		// operate
-		List<SmartCardConfig> results = this.testedInstance
-				.getSmartCardConfigs();
+    @Override
+    protected void tearDown() throws Exception {
 
-		// verify
-		assertNotNull(results);
-		assertTrue(results.isEmpty());
-	}
+        Thread currentThread = Thread.currentThread();
+        currentThread.setContextClassLoader(this.originalClassLoader);
 
-	public void testGetSmartCardConfigs() throws Exception {
-		// setup
-		URL testConfigResource = SmartCardConfigFactoryImpl.class
-				.getResource("/test-safe-online-pkcs11-sc-config.properties");
+        super.tearDown();
+    }
 
-		this.testClassLoader.addResource(
-				"META-INF/safe-online-pkcs11-sc-config.properties",
-				testConfigResource);
+    public void testDefaultGetSmartCardConfigsIsEmpty() throws Exception {
 
-		// operate
-		List<SmartCardConfig> results = this.testedInstance
-				.getSmartCardConfigs();
+        // operate
+        List<SmartCardConfig> results = this.testedInstance.getSmartCardConfigs();
 
-		// verify
-		assertNotNull(results);
-		assertFalse(results.isEmpty());
-		assertEquals(1, results.size());
-		SmartCardConfig resultConfig = results.get(0);
-		assertEquals("test-alias", resultConfig.getCardAlias());
+        // verify
+        assertNotNull(results);
+        assertTrue(results.isEmpty());
+    }
 
-		assertEquals("test-auth-alias", resultConfig
-				.getAuthenticationKeyAlias());
-		assertEquals("test-sign-alias", resultConfig.getSignatureKeyAlias());
+    public void testGetSmartCardConfigs() throws Exception {
 
-		List<File> resultDriverLocations = resultConfig
-				.getPkcs11DriverLocations("test-platform");
-		assertNotNull(resultDriverLocations);
-		assertEquals(2, resultDriverLocations.size());
+        // setup
+        URL testConfigResource = SmartCardConfigFactoryImpl.class
+                .getResource("/test-safe-online-pkcs11-sc-config.properties");
 
-		List<File> expectedDriverLocations = new LinkedList<File>();
-		expectedDriverLocations.add(new File("/test/location"));
-		expectedDriverLocations.add(new File("C:\\another\\test\\location"));
-		ListAssert.assertEquals(expectedDriverLocations, resultDriverLocations);
+        this.testClassLoader.addResource("META-INF/safe-online-pkcs11-sc-config.properties", testConfigResource);
 
-		assertEquals("test.net.link.safeonline.IdentityExtractor", resultConfig
-				.getIdentityExtractorClassname());
-	}
+        // operate
+        List<SmartCardConfig> results = this.testedInstance.getSmartCardConfigs();
+
+        // verify
+        assertNotNull(results);
+        assertFalse(results.isEmpty());
+        assertEquals(1, results.size());
+        SmartCardConfig resultConfig = results.get(0);
+        assertEquals("test-alias", resultConfig.getCardAlias());
+
+        assertEquals("test-auth-alias", resultConfig.getAuthenticationKeyAlias());
+        assertEquals("test-sign-alias", resultConfig.getSignatureKeyAlias());
+
+        List<File> resultDriverLocations = resultConfig.getPkcs11DriverLocations("test-platform");
+        assertNotNull(resultDriverLocations);
+        assertEquals(2, resultDriverLocations.size());
+
+        List<File> expectedDriverLocations = new LinkedList<File>();
+        expectedDriverLocations.add(new File("/test/location"));
+        expectedDriverLocations.add(new File("C:\\another\\test\\location"));
+        ListAssert.assertEquals(expectedDriverLocations, resultDriverLocations);
+
+        assertEquals("test.net.link.safeonline.IdentityExtractor", resultConfig.getIdentityExtractorClassname());
+    }
 }

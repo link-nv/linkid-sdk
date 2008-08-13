@@ -9,8 +9,9 @@ package net.link.safeonline.demo.payment;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface PaymentOverview extends AbstractPaymentDataClient {
 
-	void paymentListFactory();
+    void paymentListFactory();
 }

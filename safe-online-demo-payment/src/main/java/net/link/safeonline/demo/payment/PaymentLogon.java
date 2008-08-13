@@ -9,12 +9,13 @@ package net.link.safeonline.demo.payment;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface PaymentLogon extends AbstractPaymentDataClient {
 
-	String login();
+    String login();
 
-	String logout();
+    String logout();
 
-	String getUsername();
+    String getUsername();
 }

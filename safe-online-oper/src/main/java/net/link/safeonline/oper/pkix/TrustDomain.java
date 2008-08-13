@@ -13,32 +13,33 @@ import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.ExistingTrustDomainException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
+
 @Local
 public interface TrustDomain {
 
-	/*
-	 * Factories.
-	 */
-	void trustDomainListFactory();
+    /*
+     * Factories.
+     */
+    void trustDomainListFactory();
 
-	TrustDomainEntity getNewTrustDomain();
+    TrustDomainEntity getNewTrustDomain();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Actions.
-	 */
-	String view();
+    /*
+     * Actions.
+     */
+    String view();
 
-	String add() throws ExistingTrustDomainException;
+    String add() throws ExistingTrustDomainException;
 
-	String removeTrustDomain() throws TrustDomainNotFoundException;
+    String removeTrustDomain() throws TrustDomainNotFoundException;
 
-	String clearOcspCache();
+    String clearOcspCache();
 
-	String clearOcspCachePerTrustDomain();
+    String clearOcspCachePerTrustDomain();
 
 }

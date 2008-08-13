@@ -9,13 +9,15 @@ package net.link.safeonline.webapp.demo.mandate.admin;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class DemoMandateMandateSearch extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_MANDATE_WEBAPP_PREFIX
-			+ "/admin/mandate-search.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_MANDATE_WEBAPP_PREFIX + "/admin/mandate-search.seam";
 
-	public DemoMandateMandateSearch() {
-		super(PAGE_NAME);
-	}
+
+    public DemoMandateMandateSearch() {
+
+        super(PAGE_NAME);
+    }
 
 }

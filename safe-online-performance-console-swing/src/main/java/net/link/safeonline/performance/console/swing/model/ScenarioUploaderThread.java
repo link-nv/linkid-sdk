@@ -11,39 +11,42 @@ import java.io.File;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 
+
 /**
  * <h2>{@link ScenarioUploaderThread}<br>
  * <sub>This thread uploads a scenario to a given agent.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioUploaderThread extends ScenarioThread {
 
-	private File application;
+    private File application;
 
-	public ScenarioUploaderThread(File application) {
 
-		super(AgentState.UPLOAD);
-		this.application = application;
-	}
+    public ScenarioUploaderThread(File application) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void process(ConsoleAgent agent) throws Exception {
-		try {
-			agent.setAutoUpdate(false);
+        super(AgentState.UPLOAD);
+        this.application = application;
+    }
 
-			this.scenarioDeployer.upload(agent.getAddress(), this.application);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void process(ConsoleAgent agent) throws Exception {
 
-		finally {
-			agent.setAutoUpdate(true);
-		}
-	}
+        try {
+            agent.setAutoUpdate(false);
+
+            this.scenarioDeployer.upload(agent.getAddress(), this.application);
+        }
+
+        finally {
+            agent.setAutoUpdate(true);
+        }
+    }
 }

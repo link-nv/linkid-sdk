@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.helpdesk;
 
 import net.link.safeonline.webapp.user.UserTemplate;
 
+
 public class HelpdeskMain extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_HELPDESK_WEBAPP_PREFIX
-			+ "/main.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_HELPDESK_WEBAPP_PREFIX + "/main.seam";
 
-	public HelpdeskMain() {
-		super(PAGE_NAME);
-	}
+
+    public HelpdeskMain() {
+
+        super(PAGE_NAME);
+    }
 }

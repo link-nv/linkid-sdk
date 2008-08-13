@@ -20,56 +20,62 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class TestClassLoader extends ClassLoader {
 
-	private static final Log LOG = LogFactory.getLog(TestClassLoader.class);
+    private static final Log             LOG = LogFactory.getLog(TestClassLoader.class);
 
-	private final Map<String, List<URL>> resources;
+    private final Map<String, List<URL>> resources;
 
-	public TestClassLoader() {
-		this.resources = new HashMap<String, List<URL>>();
-	}
 
-	@Override
-	public Enumeration<URL> getResources(String name) throws IOException {
-		LOG.debug("get resources for resource name: " + name);
-		List<URL> resourceList = this.resources.get(name);
-		if (null == resourceList) {
-			return super.getResources(name);
-		}
-		LOG.debug("found test resources");
-		Enumeration<URL> enumeration = Collections.enumeration(resourceList);
-		return enumeration;
-	}
+    public TestClassLoader() {
 
-	@Override
-	public InputStream getResourceAsStream(String name) {
-		LOG.debug("getResourceAsStream: " + name);
-		List<URL> resourceList = this.resources.get(name);
-		if (null == resourceList) {
-			return super.getResourceAsStream(name);
-		}
-		for (URL resource : resourceList) {
-			LOG.debug("found resource: " + resource);
-			try {
-				InputStream inputStream = resource.openStream();
-				return inputStream;
-			} catch (IOException e) {
-				LOG.debug("error opening resource: " + resource);
-			}
-		}
-		return null;
-	}
+        this.resources = new HashMap<String, List<URL>>();
+    }
 
-	public void addResource(String name, URL resource) {
-		if (null == resource) {
-			throw new IllegalArgumentException("resource is null");
-		}
-		List<URL> resourceList = this.resources.get(name);
-		if (null == resourceList) {
-			resourceList = new LinkedList<URL>();
-			this.resources.put(name, resourceList);
-		}
-		resourceList.add(resource);
-	}
+    @Override
+    public Enumeration<URL> getResources(String name) throws IOException {
+
+        LOG.debug("get resources for resource name: " + name);
+        List<URL> resourceList = this.resources.get(name);
+        if (null == resourceList) {
+            return super.getResources(name);
+        }
+        LOG.debug("found test resources");
+        Enumeration<URL> enumeration = Collections.enumeration(resourceList);
+        return enumeration;
+    }
+
+    @Override
+    public InputStream getResourceAsStream(String name) {
+
+        LOG.debug("getResourceAsStream: " + name);
+        List<URL> resourceList = this.resources.get(name);
+        if (null == resourceList) {
+            return super.getResourceAsStream(name);
+        }
+        for (URL resource : resourceList) {
+            LOG.debug("found resource: " + resource);
+            try {
+                InputStream inputStream = resource.openStream();
+                return inputStream;
+            } catch (IOException e) {
+                LOG.debug("error opening resource: " + resource);
+            }
+        }
+        return null;
+    }
+
+    public void addResource(String name, URL resource) {
+
+        if (null == resource) {
+            throw new IllegalArgumentException("resource is null");
+        }
+        List<URL> resourceList = this.resources.get(name);
+        if (null == resourceList) {
+            resourceList = new LinkedList<URL>();
+            this.resources.put(name, resourceList);
+        }
+        resourceList.add(resource);
+    }
 }

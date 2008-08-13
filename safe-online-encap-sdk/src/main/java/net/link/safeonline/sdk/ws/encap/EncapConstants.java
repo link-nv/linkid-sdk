@@ -15,14 +15,16 @@ package net.link.safeonline.sdk.ws.encap;
  */
 public class EncapConstants {
 
-	public final static int ENCAP_SUCCES = 0;
+    public final static int ENCAP_SUCCES          = 0;
 
-	public final static int ENCAP_FAILURE_NO_INFO = 1;
+    public final static int ENCAP_FAILURE_NO_INFO = 1;
 
-	public final static int ENCAP_FAILURE = 3;
+    public final static int ENCAP_FAILURE         = 3;
 
-	private EncapConstants() {
-		// empty
-	}
+
+    private EncapConstants() {
+
+        // empty
+    }
 
 }

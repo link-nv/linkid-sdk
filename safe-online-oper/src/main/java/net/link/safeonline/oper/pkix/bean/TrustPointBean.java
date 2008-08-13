@@ -49,150 +49,160 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("trustPoint")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "TrustPointBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "TrustPointBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class TrustPointBean implements TrustPoint {
 
-	private static final Log LOG = LogFactory.getLog(TrustPointBean.class);
+    private static final Log   LOG               = LogFactory.getLog(TrustPointBean.class);
 
-	private UploadedFile upFile;
+    private UploadedFile       upFile;
 
-	public static final String DEFAULT_NODE_TYPE = "node";
+    public static final String DEFAULT_NODE_TYPE = "node";
 
-	public static final String ROOT_NODE_TYPE = "root";
+    public static final String ROOT_NODE_TYPE    = "root";
 
-	@In(value = "selectedTrustDomain")
-	private TrustDomainEntity selectedTrustDomain;
+    @In(value = "selectedTrustDomain")
+    private TrustDomainEntity  selectedTrustDomain;
 
-	@EJB
-	private PkiService pkiService;
+    @EJB
+    private PkiService         pkiService;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages              facesMessages;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		// empty
-	}
 
-	@SuppressWarnings("unchecked")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public TreeModel getTreeModel() {
-		LOG.debug("get tree model for domain: " + this.selectedTrustDomain);
-		String domainName = this.selectedTrustDomain.getName();
-		List<TrustPointEntity> trustPoints;
-		try {
-			trustPoints = this.pkiService.listTrustPoints(domainName);
-		} catch (TrustDomainNotFoundException e) {
-			LOG.error("trust domain not found");
-			TreeNode rootNode = new TreeNodeBase(ROOT_NODE_TYPE,
-					"ERROR: trust domain not found", true);
-			TreeModel treeModel = new TreeModelBase(rootNode);
-			return treeModel;
-		}
-		TreeNode rootNode = new TreeNodeBase(ROOT_NODE_TYPE, domainName, false);
-		TreeModel treeModel = new TreeModelBase(rootNode);
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-		HashMap<String, TreeNode> nodes = new HashMap<String, TreeNode>();
+        // empty
+    }
 
-		for (TrustPointEntity trustPoint : trustPoints) {
-			String nodeDescription = trustPoint.getPk().getSubjectName();
-			LOG.debug("adding node: " + nodeDescription);
-			TreeNode newNode = new TrustPointTreeNode(DEFAULT_NODE_TYPE,
-					nodeDescription, true, trustPoint);
-			TreeNode parentNode = nodes.get(trustPoint.getIssuerName());
-			if (null != parentNode) {
-				LOG.debug("to parent node: " + parentNode.getDescription());
-				parentNode.getChildren().add(newNode);
-				parentNode.setLeaf(false);
-			} else {
-				LOG.debug("to root node: " + rootNode.getDescription());
-				rootNode.getChildren().add(newNode);
-				rootNode.setLeaf(false);
-			}
-			// be careful for self-signed certs here
-			nodes.put(nodeDescription, newNode);
-		}
-		return treeModel;
-	}
+    @SuppressWarnings("unchecked")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public TreeModel getTreeModel() {
 
-	private byte[] getUpFileContent() throws IOException {
-		InputStream inputStream = this.upFile.getInputStream();
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		IOUtils.copy(inputStream, byteArrayOutputStream);
-		return byteArrayOutputStream.toByteArray();
-	}
+        LOG.debug("get tree model for domain: " + this.selectedTrustDomain);
+        String domainName = this.selectedTrustDomain.getName();
+        List<TrustPointEntity> trustPoints;
+        try {
+            trustPoints = this.pkiService.listTrustPoints(domainName);
+        } catch (TrustDomainNotFoundException e) {
+            LOG.error("trust domain not found");
+            TreeNode rootNode = new TreeNodeBase(ROOT_NODE_TYPE, "ERROR: trust domain not found", true);
+            TreeModel treeModel = new TreeModelBase(rootNode);
+            return treeModel;
+        }
+        TreeNode rootNode = new TreeNodeBase(ROOT_NODE_TYPE, domainName, false);
+        TreeModel treeModel = new TreeModelBase(rootNode);
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@ErrorHandling( {
-			@Error(exceptionClass = TrustDomainNotFoundException.class, messageId = "errorTrustDomainNotFound", fieldId = "fileupload"),
-			@Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
-			@Error(exceptionClass = ExistingTrustPointException.class, messageId = "errorTrustPointAlreadyExists", fieldId = "fileupload"),
-			@Error(exceptionClass = IOException.class, messageId = "errorIO", fieldId = "fileupload") })
-	public String add() throws IOException, TrustDomainNotFoundException,
-			ExistingTrustPointException, CertificateEncodingException {
-		String domainName = this.selectedTrustDomain.getName();
-		LOG.debug("adding trust point to domain " + domainName);
-		byte[] content = getUpFileContent();
-		this.pkiService.addTrustPoint(domainName, content);
-		return "success";
-	}
+        HashMap<String, TreeNode> nodes = new HashMap<String, TreeNode>();
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public UploadedFile getUpFile() {
-		return this.upFile;
-	}
+        for (TrustPointEntity trustPoint : trustPoints) {
+            String nodeDescription = trustPoint.getPk().getSubjectName();
+            LOG.debug("adding node: " + nodeDescription);
+            TreeNode newNode = new TrustPointTreeNode(DEFAULT_NODE_TYPE, nodeDescription, true, trustPoint);
+            TreeNode parentNode = nodes.get(trustPoint.getIssuerName());
+            if (null != parentNode) {
+                LOG.debug("to parent node: " + parentNode.getDescription());
+                parentNode.getChildren().add(newNode);
+                parentNode.setLeaf(false);
+            } else {
+                LOG.debug("to root node: " + rootNode.getDescription());
+                rootNode.getChildren().add(newNode);
+                rootNode.setLeaf(false);
+            }
+            // be careful for self-signed certs here
+            nodes.put(nodeDescription, newNode);
+        }
+        return treeModel;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setUpFile(UploadedFile uploadedFile) {
-		this.upFile = uploadedFile;
-	}
+    private byte[] getUpFileContent() throws IOException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		TrustPointTreeNode selectedNode = (TrustPointTreeNode) FacesContext
-				.getCurrentInstance().getExternalContext().getRequestMap().get(
-						"node");
-		TrustPointEntity selectedTrustPoint = selectedNode.getTrustPoint();
-		LOG.debug("view: " + selectedTrustPoint);
-		FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.put("selectedTrustPoint", selectedTrustPoint);
-		return "view";
-	}
+        InputStream inputStream = this.upFile.getInputStream();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        IOUtils.copy(inputStream, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
 
-	public static class TrustPointTreeNode extends TreeNodeBase {
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @ErrorHandling( {
+            @Error(exceptionClass = TrustDomainNotFoundException.class, messageId = "errorTrustDomainNotFound", fieldId = "fileupload"),
+            @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
+            @Error(exceptionClass = ExistingTrustPointException.class, messageId = "errorTrustPointAlreadyExists", fieldId = "fileupload"),
+            @Error(exceptionClass = IOException.class, messageId = "errorIO", fieldId = "fileupload") })
+    public String add() throws IOException, TrustDomainNotFoundException, ExistingTrustPointException,
+            CertificateEncodingException {
 
-		private static final long serialVersionUID = 1L;
+        String domainName = this.selectedTrustDomain.getName();
+        LOG.debug("adding trust point to domain " + domainName);
+        byte[] content = getUpFileContent();
+        this.pkiService.addTrustPoint(domainName, content);
+        return "success";
+    }
 
-		private final TrustPointEntity trustPoint;
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public UploadedFile getUpFile() {
 
-		public TrustPointTreeNode(String type, String description,
-				boolean leaf, TrustPointEntity trustPoint) {
-			super(type, description, leaf);
-			this.trustPoint = trustPoint;
-		}
+        return this.upFile;
+    }
 
-		public TrustPointEntity getTrustPoint() {
-			return this.trustPoint;
-		}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setUpFile(UploadedFile uploadedFile) {
 
-		public BigInteger getSerialNumber() {
-			return this.trustPoint.getCertificate().getSerialNumber();
-		}
-	}
+        this.upFile = uploadedFile;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeTrustPoint() throws TrustPointNotFoundException {
-		TrustPointEntity selectedTrustPoint = (TrustPointEntity) FacesContext
-				.getCurrentInstance().getExternalContext().getSessionMap().get(
-						"selectedTrustPoint");
-		LOG.debug("remove trust point: " + selectedTrustPoint);
-		this.pkiService.removeTrustPoint(selectedTrustPoint);
-		return "removed";
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String view() {
+
+        TrustPointTreeNode selectedNode = (TrustPointTreeNode) FacesContext.getCurrentInstance().getExternalContext()
+                .getRequestMap().get("node");
+        TrustPointEntity selectedTrustPoint = selectedNode.getTrustPoint();
+        LOG.debug("view: " + selectedTrustPoint);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedTrustPoint",
+                selectedTrustPoint);
+        return "view";
+    }
+
+
+    public static class TrustPointTreeNode extends TreeNodeBase {
+
+        private static final long      serialVersionUID = 1L;
+
+        private final TrustPointEntity trustPoint;
+
+
+        public TrustPointTreeNode(String type, String description, boolean leaf, TrustPointEntity trustPoint) {
+
+            super(type, description, leaf);
+            this.trustPoint = trustPoint;
+        }
+
+        public TrustPointEntity getTrustPoint() {
+
+            return this.trustPoint;
+        }
+
+        public BigInteger getSerialNumber() {
+
+            return this.trustPoint.getCertificate().getSerialNumber();
+        }
+    }
+
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String removeTrustPoint() throws TrustPointNotFoundException {
+
+        TrustPointEntity selectedTrustPoint = (TrustPointEntity) FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().get("selectedTrustPoint");
+        LOG.debug("remove trust point: " + selectedTrustPoint);
+        this.pkiService.removeTrustPoint(selectedTrustPoint);
+        return "removed";
+    }
 }

@@ -81,738 +81,715 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("operApplication")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "ApplicationBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "ApplicationBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class ApplicationBean implements Application {
 
-	private static final Log LOG = LogFactory.getLog(ApplicationBean.class);
+    private static final Log           LOG                                         = LogFactory
+                                                                                           .getLog(ApplicationBean.class);
 
-	private static final String NEW_IDENTITY_ATTRIBUTES_NAME = "newIdentityAttributes";
+    private static final String        NEW_IDENTITY_ATTRIBUTES_NAME                = "newIdentityAttributes";
 
-	private static final String IDENTITY_ATTRIBUTES_NAME = "identityAttributes";
+    private static final String        IDENTITY_ATTRIBUTES_NAME                    = "identityAttributes";
 
-	private static final String OPER_APPLICATION_LIST_NAME = "operApplicationList";
+    private static final String        OPER_APPLICATION_LIST_NAME                  = "operApplicationList";
 
-	private static final String APPLICATION_IDENTITY_ATTRIBUTES_NAME = "applicationIdentityAttributes";
+    private static final String        APPLICATION_IDENTITY_ATTRIBUTES_NAME        = "applicationIdentityAttributes";
 
-	private static final String OPER_APPLICATION_ALLOWED_DEVICES_NAME = "operAllowedDevices";
+    private static final String        OPER_APPLICATION_ALLOWED_DEVICES_NAME       = "operAllowedDevices";
 
-	private static final String SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL = "operSelectedApplicationUsageAgreements";
+    private static final String        SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL = "operSelectedApplicationUsageAgreements";
 
-	@EJB
-	private ApplicationService applicationService;
+    @EJB
+    private ApplicationService         applicationService;
 
-	@EJB
-	private SubscriptionService subscriptionService;
+    @EJB
+    private SubscriptionService        subscriptionService;
 
-	@EJB
-	private AttributeTypeService attributeTypeService;
+    @EJB
+    private AttributeTypeService       attributeTypeService;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService             subjectService;
 
-	@EJB
-	private UsageAgreementService usageAgreementService;
+    @EJB
+    private UsageAgreementService      usageAgreementService;
 
-	@EJB
-	private DeviceService deviceService;
+    @EJB
+    private DeviceService              deviceService;
 
-	@EJB
-	private DevicePolicyService devicePolicyService;
+    @EJB
+    private DevicePolicyService        devicePolicyService;
 
-	private String name;
+    private String                     name;
 
-	private String friendlyName;
+    private String                     friendlyName;
 
-	private String description;
+    private String                     description;
 
-	private String applicationUrl;
+    private String                     applicationUrl;
 
-	private UploadedFile applicationLogoFile;
+    private UploadedFile               applicationLogoFile;
 
-	private byte[] applicationLogo;
+    private byte[]                     applicationLogo;
 
-	private String applicationColor;
+    private String                     applicationColor;
 
-	private String applicationOwner;
+    private String                     applicationOwner;
 
-	private UploadedFile upFile;
+    private UploadedFile               upFile;
 
-	private boolean idmapping;
+    private boolean                    idmapping;
 
-	private String applicationIdScope;
+    private String                     applicationIdScope;
 
-	private boolean skipMessageIntegrityCheck;
+    private boolean                    skipMessageIntegrityCheck;
 
-	private boolean deviceRestriction;
+    private boolean                    deviceRestriction;
 
-	@SuppressWarnings("unused")
-	@Out
-	private long numberOfSubscriptions;
+    @SuppressWarnings("unused")
+    @Out
+    private long                       numberOfSubscriptions;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                      facesMessages;
 
-	@DataModel(NEW_IDENTITY_ATTRIBUTES_NAME)
-	private List<IdentityAttribute> newIdentityAttributes;
+    @DataModel(NEW_IDENTITY_ATTRIBUTES_NAME)
+    private List<IdentityAttribute>    newIdentityAttributes;
 
-	@DataModel(IDENTITY_ATTRIBUTES_NAME)
-	private List<IdentityAttribute> identityAttributes;
+    @DataModel(IDENTITY_ATTRIBUTES_NAME)
+    private List<IdentityAttribute>    identityAttributes;
 
-	@DataModel(OPER_APPLICATION_ALLOWED_DEVICES_NAME)
-	private List<DeviceEntry> allowedDevices;
+    @DataModel(OPER_APPLICATION_ALLOWED_DEVICES_NAME)
+    private List<DeviceEntry>          allowedDevices;
 
-	@SuppressWarnings("unused")
-	@DataModel(value = SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
-	private List<UsageAgreementEntity> selectedApplicationUsageAgreements;
+    @SuppressWarnings("unused")
+    @DataModel(value = SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
+    private List<UsageAgreementEntity> selectedApplicationUsageAgreements;
 
-	@DataModelSelection(SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
-	@Out(required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private UsageAgreementEntity operSelectedUsageAgreement;
-
-	@SuppressWarnings("unused")
-	@Out(required = false, scope = ScopeType.SESSION)
-	private UsageAgreementEntity draftUsageAgreement;
-
-	@SuppressWarnings("unused")
-	@Out(required = false, scope = ScopeType.SESSION)
-	private UsageAgreementEntity currentUsageAgreement;
-
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		this.name = null;
-		this.description = null;
-		this.applicationUrl = null;
-		this.applicationLogo = null;
-		this.applicationColor = null;
-		this.skipMessageIntegrityCheck = false;
-	}
-
-	@SuppressWarnings("unused")
-	@DataModel(OPER_APPLICATION_LIST_NAME)
-	private List<ApplicationEntity> operApplicationList;
-
-	@DataModelSelection(OPER_APPLICATION_LIST_NAME)
-	@Out(value = "selectedApplication", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private ApplicationEntity selectedApplication;
-
-	@SuppressWarnings("unused")
-	@Out(required = false)
-	private String ownerAdminName;
-
-	@SuppressWarnings("unused")
-	@DataModel(value = APPLICATION_IDENTITY_ATTRIBUTES_NAME)
-	private Set<ApplicationIdentityAttributeEntity> applicationIdentityAttributes;
-
-	@Factory(OPER_APPLICATION_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void applicationListFactory() {
-		LOG.debug("application list factory");
-		this.operApplicationList = this.applicationService.listApplications();
-	}
-
-	@Factory(APPLICATION_IDENTITY_ATTRIBUTES_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void applicationIdentityAttributesFactory()
-			throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException {
-		LOG.debug("application identity attributes factory");
-		String applicationName = this.selectedApplication.getName();
-
-		this.applicationIdentityAttributes = this.applicationService
-				.getCurrentApplicationIdentity(applicationName);
-		this.numberOfSubscriptions = this.subscriptionService
-				.getNumberOfSubscriptions(applicationName);
-		this.ownerAdminName = this.subjectService
-				.getSubjectLogin(this.selectedApplication.getApplicationOwner()
-						.getAdmin().getUserId());
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() throws AttributeTypeNotFoundException, IOException,
-			ApplicationNotFoundException {
-
-		LOG.debug("add application: " + this.name);
-		if (null != this.friendlyName)
-			LOG.debug("user friendly name: " + this.friendlyName);
-		if (null != this.applicationUrl)
-			LOG.debug("application url: " + this.applicationUrl);
-
-		URL newApplicationUrl = null;
-		Color newApplicationColor = null;
-		byte[] newApplicationLogo = null;
-		if (null != this.applicationUrl && this.applicationUrl.length() != 0)
-			try {
-				newApplicationUrl = new URL(this.applicationUrl);
-			} catch (MalformedURLException e) {
-				LOG.debug("illegal URL format: " + this.applicationUrl);
-				this.facesMessages.addToControlFromResourceBundle(
-						"applicationUrl", FacesMessage.SEVERITY_ERROR,
-						"errorIllegalUrl", this.applicationUrl);
-				return null;
-			}
-		if (null != this.applicationLogoFile)
-			try {
-				newApplicationLogo = getUpFileContent(this.applicationLogoFile);
-				if (!Magic.getMagicMatch(newApplicationLogo).getMimeType()
-						.startsWith("image/"))
-					throw new MagicException(
-							"Application logo requires an image/* MIME type.");
-			} catch (IOException e) {
-				LOG.debug("couldn't fetch uploaded data for application logo.");
-				this.facesMessages.addToControlFromResourceBundle(
-						"applicationLogo", FacesMessage.SEVERITY_ERROR,
-						"errorUploadLogoFetch");
-				return null;
-			} catch (MagicParseException e) {
-				LOG.debug("uploaded logo is not an image.");
-				this.facesMessages.addToControlFromResourceBundle(
-						"applicationLogo", FacesMessage.SEVERITY_ERROR,
-						"errorUploadLogoType");
-				return null;
-			} catch (MagicMatchNotFoundException e) {
-				LOG.debug("uploaded logo is not an image.");
-				this.facesMessages.addToControlFromResourceBundle(
-						"applicationLogo", FacesMessage.SEVERITY_ERROR,
-						"errorUploadLogoType");
-				return null;
-			} catch (MagicException e) {
-				LOG.debug("uploaded logo is not an image.");
-				this.facesMessages.addToControlFromResourceBundle(
-						"applicationLogo", FacesMessage.SEVERITY_ERROR,
-						"errorUploadLogoType");
-				return null;
-			}
-		if (null != this.applicationColor
-				&& this.applicationColor.length() != 0)
-			try {
-				newApplicationColor = Color.decode(this.applicationColor);
-			} catch (NumberFormatException e) {
-				LOG.debug("illegal Color format: " + this.applicationColor);
-				this.facesMessages.addToControlFromResourceBundle(
-						"applicationColor", FacesMessage.SEVERITY_ERROR,
-						"errorIllegalColor", this.applicationColor);
-				return null;
-			}
-
-		List<IdentityAttributeTypeDO> tempIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
-		for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
-			if (false == viewIdentityAttribute.isIncluded())
-				continue;
-			LOG.debug("include attribute: " + viewIdentityAttribute.getName());
-			IdentityAttributeTypeDO identityAttribute = new IdentityAttributeTypeDO(
-					viewIdentityAttribute.getName(), viewIdentityAttribute
-							.isRequired(), viewIdentityAttribute.isDataMining());
-			tempIdentityAttributes.add(identityAttribute);
-		}
-		try {
-			byte[] encodedCertificate;
-			if (null != this.upFile)
-				encodedCertificate = getUpFileContent(this.upFile);
-			else
-				encodedCertificate = null;
-			this.applicationService.addApplication(this.name,
-					this.friendlyName, this.applicationOwner, this.description,
-					this.idmapping, IdScopeType
-							.valueOf(this.applicationIdScope),
-					newApplicationUrl, newApplicationLogo, newApplicationColor,
-					encodedCertificate, tempIdentityAttributes,
-					this.skipMessageIntegrityCheck, this.deviceRestriction);
-
-		} catch (ExistingApplicationException e) {
-			LOG.debug("application already exists: " + this.name);
-			this.facesMessages.addToControlFromResourceBundle("name",
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationAlreadyExists", this.name);
-			return null;
-		} catch (ApplicationOwnerNotFoundException e) {
-			LOG.debug("application owner not found: " + this.applicationOwner);
-			this.facesMessages.addToControlFromResourceBundle("owner",
-					FacesMessage.SEVERITY_ERROR,
-					"errorApplicationOwnerNotFound", this.applicationOwner);
-			return null;
-		} catch (CertificateEncodingException e) {
-			LOG.debug("X509 certificate encoding error");
-			this.facesMessages.addToControlFromResourceBundle("fileupload",
-					FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
-			return null;
-		}
-
-		// fetch new application
-		this.selectedApplication = this.applicationService
-				.getApplication(this.name);
-
-		// device restriction
-		List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
-		for (DeviceEntry deviceEntry : this.allowedDevices) {
-			if (deviceEntry.isAllowed() == true) {
-				AllowedDeviceEntity device = new AllowedDeviceEntity(
-						this.selectedApplication, deviceEntry.getDevice(),
-						deviceEntry.getWeight());
-				allowedDeviceList.add(device);
-			}
-		}
-		this.deviceService.setAllowedDevices(this.selectedApplication,
-				allowedDeviceList);
-
-		applicationListFactory();
-		return "success";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public UploadedFile getUpFile() {
-		return this.upFile;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setUpFile(UploadedFile uploadedFile) {
-		this.upFile = uploadedFile;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getApplicationUrl() {
-		return this.applicationUrl;
-	}
-
-	public void setApplicationUrl(String applicationUrl) {
-		this.applicationUrl = applicationUrl;
-	}
-
-	public byte[] getApplicationLogo() {
-
-		return this.applicationLogo;
-	}
-
-	public void setApplicationLogo(byte[] applicationLogo) {
-
-		this.applicationLogo = applicationLogo;
-	}
-
-	public void setApplicationLogoFile(UploadedFile applicationLogoFile) {
-
-		this.applicationLogoFile = applicationLogoFile;
-	}
-
-	public UploadedFile getApplicationLogoFile() {
-
-		return this.applicationLogoFile;
-	}
-
-	public String getApplicationColor() {
-
-		return this.applicationColor;
-	}
-
-	public void setApplicationColor(String applicationColor) {
-
-		this.applicationColor = applicationColor;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getFriendlyName() {
-		return this.friendlyName;
-	}
-
-	public void setFriendlyName(String friendlyName) {
-		this.friendlyName = friendlyName;
-	}
-
-	public String getApplicationOwner() {
-		return this.applicationOwner;
-	}
-
-	public void setApplicationOwner(String applicationOwner) {
-		this.applicationOwner = applicationOwner;
-	}
-
-	public boolean isIdmapping() {
-		return this.idmapping;
-	}
-
-	public void setIdmapping(boolean idmapping) {
-		this.idmapping = idmapping;
-	}
-
-	public String getApplicationIdScope() {
-		return this.applicationIdScope;
-	}
-
-	public void setApplicationIdScope(String applicationIdScope) {
-		this.applicationIdScope = applicationIdScope;
-	}
-
-	public boolean isSkipMessageIntegrityCheck() {
-		return this.skipMessageIntegrityCheck;
-	}
-
-	public void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck) {
-		this.skipMessageIntegrityCheck = skipMessageIntegrityCheck;
-	}
-
-	public boolean isDeviceRestriction() {
-		return this.deviceRestriction;
-	}
-
-	public void setDeviceRestriction(boolean deviceRestriction) {
-		this.deviceRestriction = deviceRestriction;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeApplication() throws ApplicationNotFoundException {
-		/*
-		 * http://jira.jboss.com/jira/browse/EJBTHREE-786
-		 */
-		String applicationName = this.selectedApplication.getName();
-		LOG.debug("remove application: " + applicationName);
-		try {
-			this.applicationService.removeApplication(applicationName);
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied to remove: " + applicationName);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
-							.getResourceArgs());
-			return null;
-		}
-		applicationListFactory();
-		return "success";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory(NEW_IDENTITY_ATTRIBUTES_NAME)
-	public void newIdentityAttributesFactory() {
-		this.newIdentityAttributes = new LinkedList<IdentityAttribute>();
-		List<AttributeTypeEntity> attributeTypes = this.attributeTypeService
-				.listAttributeTypes();
-		for (AttributeTypeEntity attributeType : attributeTypes) {
-			IdentityAttribute identityAttribute = new IdentityAttribute(
-					attributeType.getName());
-			this.newIdentityAttributes.add(identityAttribute);
-		}
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory(IDENTITY_ATTRIBUTES_NAME)
-	public void identityAttributesFactory()
-			throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException {
-		Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes = this.applicationService
-				.getCurrentApplicationIdentity(this.selectedApplication
-						.getName());
-
-		/*
-		 * Construct a map for fast lookup. The key is the attribute type name.
-		 */
-		Map<String, ApplicationIdentityAttributeEntity> currentIdentity = new HashMap<String, ApplicationIdentityAttributeEntity>();
-		for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : currentIdentityAttributes)
-			currentIdentity.put(applicationIdentityAttribute
-					.getAttributeTypeName(), applicationIdentityAttribute);
-
-		/*
-		 * The view receives a full attribute list, annotated with included and
-		 * required flags.
-		 */
-		this.identityAttributes = new LinkedList<IdentityAttribute>();
-		List<AttributeTypeEntity> attributeTypes = this.attributeTypeService
-				.listAttributeTypes();
-		for (AttributeTypeEntity attributeType : attributeTypes) {
-			boolean included = false;
-			boolean required = false;
-			boolean dataMining = false;
-			ApplicationIdentityAttributeEntity currentIdentityAttribute = currentIdentity
-					.get(attributeType.getName());
-			if (null != currentIdentityAttribute) {
-				included = true;
-				if (currentIdentityAttribute.isRequired())
-					required = true;
-				if (currentIdentityAttribute.isDataMining())
-					dataMining = true;
-			}
-			IdentityAttribute identityAttribute = new IdentityAttribute(
-					attributeType.getName(), included, required, dataMining);
-			this.identityAttributes.add(identityAttribute);
-		}
-	}
-
-	private byte[] getUpFileContent(UploadedFile file) throws IOException {
-		InputStream inputStream = file.getInputStream();
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		IOUtils.copy(inputStream, byteArrayOutputStream);
-		return byteArrayOutputStream.toByteArray();
-	}
-
-	@Factory("applicationIdScopes")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<SelectItem> appliactionIdScopeFactory() {
-		List<SelectItem> applicationIdScopes = new LinkedList<SelectItem>();
-		for (IdScopeType currentType : IdScopeType.values())
-			applicationIdScopes.add(new SelectItem(currentType.name(),
-					currentType.name()));
-		return applicationIdScopes;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() throws CertificateEncodingException,
-			ApplicationNotFoundException, IOException,
-			ApplicationIdentityNotFoundException,
-			AttributeTypeNotFoundException, PermissionDeniedException {
-		String applicationId = this.selectedApplication.getName();
-		LOG.debug("save application: " + applicationId);
-
-		URL newApplicationUrl = null;
-		byte[] newApplicationLogo = null;
-		Color newApplicationColor = null;
-		if (null != this.applicationUrl && this.applicationUrl.length() != 0)
-			try {
-				newApplicationUrl = new URL(this.applicationUrl);
-			} catch (MalformedURLException e) {
-				LOG.debug("illegal URL format: " + this.applicationUrl);
-				this.facesMessages.addToControlFromResourceBundle(
-						"applicationUrl", FacesMessage.SEVERITY_ERROR,
-						"errorIllegalUrl", this.applicationUrl);
-				return null;
-			}
-		if (null != this.applicationLogoFile)
-			try {
-				newApplicationLogo = getUpFileContent(this.applicationLogoFile);
-			} catch (IOException e) {
-				LOG.debug("couldn't fetch uploaded data for application logo.");
-				this.facesMessages.addToControlFromResourceBundle(
-						"applicationLogo", FacesMessage.SEVERITY_ERROR,
-						"errorUploadLogo");
-				return null;
-			}
-		if (null != this.applicationColor
-				&& this.applicationColor.length() != 0)
-			try {
-				newApplicationColor = Color.decode(this.applicationColor);
-			} catch (NumberFormatException e) {
-				LOG.debug("illegal Color format: " + this.applicationColor);
-				this.facesMessages.addToControlFromResourceBundle(
-						"applicationColor", FacesMessage.SEVERITY_ERROR,
-						"errorIllegalColor", this.applicationColor);
-				return null;
-			}
-
-		if (null != this.upFile) {
-			LOG.debug("updating application certificate");
-			this.applicationService.updateApplicationCertificate(applicationId,
-					getUpFileContent(this.upFile));
-		}
-
-		List<IdentityAttributeTypeDO> tempNewIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
-		for (IdentityAttribute identityAttribute : this.identityAttributes) {
-			if (false == identityAttribute.isIncluded())
-				continue;
-			IdentityAttributeTypeDO newIdentityAttribute = new IdentityAttributeTypeDO(
-					identityAttribute.getName(),
-					identityAttribute.isRequired(), identityAttribute
-							.isDataMining());
-			tempNewIdentityAttributes.add(newIdentityAttribute);
-		}
-
-		this.applicationService.updateApplicationIdentity(applicationId,
-				tempNewIdentityAttributes);
-		this.applicationService.updateApplicationUrl(applicationId,
-				newApplicationUrl);
-		if (newApplicationLogo != null)
-			this.applicationService.updateApplicationLogo(applicationId,
-					newApplicationLogo);
-		this.applicationService.updateApplicationColor(applicationId,
-				newApplicationColor);
-		this.applicationService.setIdentifierMappingServiceAccess(
-				applicationId, this.idmapping);
-		if (null != this.applicationIdScope)
-			this.applicationService.setIdScope(applicationId, IdScopeType
-					.valueOf(this.applicationIdScope));
-		this.applicationService.setSkipMessageIntegrityCheck(applicationId,
-				this.skipMessageIntegrityCheck);
-
-		// device restriction
-		List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
-		for (DeviceEntry deviceEntry : this.allowedDevices) {
-			if (deviceEntry.isAllowed() == true) {
-				AllowedDeviceEntity device = new AllowedDeviceEntity(
-						this.selectedApplication, deviceEntry.getDevice(),
-						deviceEntry.getWeight());
-				allowedDeviceList.add(device);
-			}
-		}
-		this.applicationService.setApplicationDescription(applicationId,
-				this.description);
-		this.applicationService.setApplicationDeviceRestriction(applicationId,
-				this.deviceRestriction);
-		this.deviceService.setAllowedDevices(this.selectedApplication,
-				allowedDeviceList);
-
-		/*
-		 * Refresh the selected application.
-		 */
-		this.selectedApplication = this.applicationService
-				.getApplication(applicationId);
-		this.applicationIdentityAttributes = this.applicationService
-				.getCurrentApplicationIdentity(applicationId);
-
-		applicationListFactory();
-		return "success";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		/*
-		 * To set the selected application.
-		 */
-		LOG.debug("view application: " + this.selectedApplication.getName());
-		return "view";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String edit() {
-		/*
-		 * To set the selected application.
-		 */
-		LOG.debug("edit application: " + this.selectedApplication.getName());
-
-		if (null != this.selectedApplication.getApplicationUrl())
-			this.applicationUrl = this.selectedApplication.getApplicationUrl()
-					.toExternalForm();
-		if (null != this.selectedApplication.getApplicationLogo())
-			this.applicationLogo = this.selectedApplication
-					.getApplicationLogo();
-		if (null != this.selectedApplication.getApplicationColor())
-			this.applicationColor = String.format("#%02x%02x%02x",
-					this.selectedApplication.getApplicationColor().getRed(),
-					this.selectedApplication.getApplicationColor().getGreen(),
-					this.selectedApplication.getApplicationColor().getBlue());
-		this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
-
-		this.skipMessageIntegrityCheck = this.selectedApplication
-				.isSkipMessageIntegrityCheck();
-
-		this.applicationIdScope = this.selectedApplication.getIdScope().name();
-
-		this.description = this.selectedApplication.getDescription();
-
-		this.deviceRestriction = this.selectedApplication.isDeviceRestriction();
-
-		return "edit";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory("availableApplicationOwners")
-	public List<SelectItem> availableApplicationOwnersFactory() {
-		List<ApplicationOwnerEntity> applicationOwners = this.applicationService
-				.listApplicationOwners();
-		List<SelectItem> availableApplicationOwners = ConvertorUtil.convert(
-				applicationOwners, new ApplicationOwnerSelectItemConvertor());
-		return availableApplicationOwners;
-	}
-
-	static class ApplicationOwnerSelectItemConvertor implements
-			Convertor<ApplicationOwnerEntity, SelectItem> {
-
-		public SelectItem convert(ApplicationOwnerEntity input) {
-			SelectItem output = new SelectItem(input.getName());
-			return output;
-		}
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getUsageAgreement() throws ApplicationNotFoundException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-
-		String text = this.usageAgreementService.getUsageAgreementText(
-				this.selectedApplication.getName(), viewLocale.getLanguage());
-		if (null == text)
-			return "";
-		return text;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory(OPER_APPLICATION_ALLOWED_DEVICES_NAME)
-	public void allowedDevices() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-
-		this.allowedDevices = new ArrayList<DeviceEntry>();
-		boolean defaultValue = false;
-
-		List<DeviceEntity> deviceList = this.deviceService.listDevices();
-		for (DeviceEntity deviceEntity : deviceList) {
-			String deviceDescription = this.devicePolicyService
-					.getDeviceDescription(deviceEntity.getName(), viewLocale);
-			this.allowedDevices.add(new DeviceEntry(deviceEntity,
-					deviceDescription, defaultValue, 0));
-		}
-
-		if (this.selectedApplication == null) {
-			return;
-		}
-
-		List<AllowedDeviceEntity> allowedDeviceList = this.deviceService
-				.listAllowedDevices(this.selectedApplication);
-
-		for (AllowedDeviceEntity allowedDevice : allowedDeviceList) {
-			for (DeviceEntry deviceEntry : this.allowedDevices) {
-				if (deviceEntry.getDevice().equals(allowedDevice.getDevice())) {
-					deviceEntry.setAllowed(true);
-					deviceEntry.setWeight(allowedDevice.getWeight());
-				}
-			}
-		}
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory(SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
-	public void usageAgreementListFactory()
-			throws ApplicationNotFoundException, PermissionDeniedException {
-		if (null == this.selectedApplication) {
-			return;
-		}
-		LOG.debug("usage agreement list factory");
-		this.selectedApplicationUsageAgreements = this.usageAgreementService
-				.getUsageAgreements(this.selectedApplication.getName());
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String viewUsageAgreement() {
-		LOG.debug("view usage agreement for application: "
-				+ this.selectedApplication.getName() + ", version="
-				+ this.operSelectedUsageAgreement.getUsageAgreementVersion());
-		return "view-usage-agreement";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String editUsageAgreement() throws ApplicationNotFoundException,
-			PermissionDeniedException {
-		LOG.debug("edit usage agreement for application: "
-				+ this.selectedApplication.getName());
-		this.draftUsageAgreement = this.usageAgreementService
-				.getDraftUsageAgreement(this.selectedApplication.getName());
-		this.currentUsageAgreement = this.usageAgreementService
-				.getCurrentUsageAgreement(this.selectedApplication.getName());
-		return "edit-usage-agreement";
-	}
+    @DataModelSelection(SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
+    @Out(required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private UsageAgreementEntity       operSelectedUsageAgreement;
+
+    @SuppressWarnings("unused")
+    @Out(required = false, scope = ScopeType.SESSION)
+    private UsageAgreementEntity       draftUsageAgreement;
+
+    @SuppressWarnings("unused")
+    @Out(required = false, scope = ScopeType.SESSION)
+    private UsageAgreementEntity       currentUsageAgreement;
+
+
+    @Remove
+    @Destroy
+    public void destroyCallback() {
+
+        this.name = null;
+        this.description = null;
+        this.applicationUrl = null;
+        this.applicationLogo = null;
+        this.applicationColor = null;
+        this.skipMessageIntegrityCheck = false;
+    }
+
+
+    @SuppressWarnings("unused")
+    @DataModel(OPER_APPLICATION_LIST_NAME)
+    private List<ApplicationEntity>                 operApplicationList;
+
+    @DataModelSelection(OPER_APPLICATION_LIST_NAME)
+    @Out(value = "selectedApplication", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private ApplicationEntity                       selectedApplication;
+
+    @SuppressWarnings("unused")
+    @Out(required = false)
+    private String                                  ownerAdminName;
+
+    @SuppressWarnings("unused")
+    @DataModel(value = APPLICATION_IDENTITY_ATTRIBUTES_NAME)
+    private Set<ApplicationIdentityAttributeEntity> applicationIdentityAttributes;
+
+
+    @Factory(OPER_APPLICATION_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void applicationListFactory() {
+
+        LOG.debug("application list factory");
+        this.operApplicationList = this.applicationService.listApplications();
+    }
+
+    @Factory(APPLICATION_IDENTITY_ATTRIBUTES_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void applicationIdentityAttributesFactory() throws ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException, PermissionDeniedException {
+
+        LOG.debug("application identity attributes factory");
+        String applicationName = this.selectedApplication.getName();
+
+        this.applicationIdentityAttributes = this.applicationService.getCurrentApplicationIdentity(applicationName);
+        this.numberOfSubscriptions = this.subscriptionService.getNumberOfSubscriptions(applicationName);
+        this.ownerAdminName = this.subjectService.getSubjectLogin(this.selectedApplication.getApplicationOwner()
+                .getAdmin().getUserId());
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String add() throws AttributeTypeNotFoundException, IOException, ApplicationNotFoundException {
+
+        LOG.debug("add application: " + this.name);
+        if (null != this.friendlyName)
+            LOG.debug("user friendly name: " + this.friendlyName);
+        if (null != this.applicationUrl)
+            LOG.debug("application url: " + this.applicationUrl);
+
+        URL newApplicationUrl = null;
+        Color newApplicationColor = null;
+        byte[] newApplicationLogo = null;
+        if (null != this.applicationUrl && this.applicationUrl.length() != 0)
+            try {
+                newApplicationUrl = new URL(this.applicationUrl);
+            } catch (MalformedURLException e) {
+                LOG.debug("illegal URL format: " + this.applicationUrl);
+                this.facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR,
+                        "errorIllegalUrl", this.applicationUrl);
+                return null;
+            }
+        if (null != this.applicationLogoFile)
+            try {
+                newApplicationLogo = getUpFileContent(this.applicationLogoFile);
+                if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/"))
+                    throw new MagicException("Application logo requires an image/* MIME type.");
+            } catch (IOException e) {
+                LOG.debug("couldn't fetch uploaded data for application logo.");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
+                        "errorUploadLogoFetch");
+                return null;
+            } catch (MagicParseException e) {
+                LOG.debug("uploaded logo is not an image.");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
+                        "errorUploadLogoType");
+                return null;
+            } catch (MagicMatchNotFoundException e) {
+                LOG.debug("uploaded logo is not an image.");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
+                        "errorUploadLogoType");
+                return null;
+            } catch (MagicException e) {
+                LOG.debug("uploaded logo is not an image.");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
+                        "errorUploadLogoType");
+                return null;
+            }
+        if (null != this.applicationColor && this.applicationColor.length() != 0)
+            try {
+                newApplicationColor = Color.decode(this.applicationColor);
+            } catch (NumberFormatException e) {
+                LOG.debug("illegal Color format: " + this.applicationColor);
+                this.facesMessages.addToControlFromResourceBundle("applicationColor", FacesMessage.SEVERITY_ERROR,
+                        "errorIllegalColor", this.applicationColor);
+                return null;
+            }
+
+        List<IdentityAttributeTypeDO> tempIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+        for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
+            if (false == viewIdentityAttribute.isIncluded())
+                continue;
+            LOG.debug("include attribute: " + viewIdentityAttribute.getName());
+            IdentityAttributeTypeDO identityAttribute = new IdentityAttributeTypeDO(viewIdentityAttribute.getName(),
+                    viewIdentityAttribute.isRequired(), viewIdentityAttribute.isDataMining());
+            tempIdentityAttributes.add(identityAttribute);
+        }
+        try {
+            byte[] encodedCertificate;
+            if (null != this.upFile)
+                encodedCertificate = getUpFileContent(this.upFile);
+            else
+                encodedCertificate = null;
+            this.applicationService.addApplication(this.name, this.friendlyName, this.applicationOwner,
+                    this.description, this.idmapping, IdScopeType.valueOf(this.applicationIdScope), newApplicationUrl,
+                    newApplicationLogo, newApplicationColor, encodedCertificate, tempIdentityAttributes,
+                    this.skipMessageIntegrityCheck, this.deviceRestriction);
+
+        } catch (ExistingApplicationException e) {
+            LOG.debug("application already exists: " + this.name);
+            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR,
+                    "errorApplicationAlreadyExists", this.name);
+            return null;
+        } catch (ApplicationOwnerNotFoundException e) {
+            LOG.debug("application owner not found: " + this.applicationOwner);
+            this.facesMessages.addToControlFromResourceBundle("owner", FacesMessage.SEVERITY_ERROR,
+                    "errorApplicationOwnerNotFound", this.applicationOwner);
+            return null;
+        } catch (CertificateEncodingException e) {
+            LOG.debug("X509 certificate encoding error");
+            this.facesMessages.addToControlFromResourceBundle("fileupload", FacesMessage.SEVERITY_ERROR,
+                    "errorX509Encoding");
+            return null;
+        }
+
+        // fetch new application
+        this.selectedApplication = this.applicationService.getApplication(this.name);
+
+        // device restriction
+        List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
+        for (DeviceEntry deviceEntry : this.allowedDevices) {
+            if (deviceEntry.isAllowed() == true) {
+                AllowedDeviceEntity device = new AllowedDeviceEntity(this.selectedApplication, deviceEntry.getDevice(),
+                        deviceEntry.getWeight());
+                allowedDeviceList.add(device);
+            }
+        }
+        this.deviceService.setAllowedDevices(this.selectedApplication, allowedDeviceList);
+
+        applicationListFactory();
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public UploadedFile getUpFile() {
+
+        return this.upFile;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setUpFile(UploadedFile uploadedFile) {
+
+        this.upFile = uploadedFile;
+    }
+
+    public String getDescription() {
+
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+
+        this.description = description;
+    }
+
+    public String getApplicationUrl() {
+
+        return this.applicationUrl;
+    }
+
+    public void setApplicationUrl(String applicationUrl) {
+
+        this.applicationUrl = applicationUrl;
+    }
+
+    public byte[] getApplicationLogo() {
+
+        return this.applicationLogo;
+    }
+
+    public void setApplicationLogo(byte[] applicationLogo) {
+
+        this.applicationLogo = applicationLogo;
+    }
+
+    public void setApplicationLogoFile(UploadedFile applicationLogoFile) {
+
+        this.applicationLogoFile = applicationLogoFile;
+    }
+
+    public UploadedFile getApplicationLogoFile() {
+
+        return this.applicationLogoFile;
+    }
+
+    public String getApplicationColor() {
+
+        return this.applicationColor;
+    }
+
+    public void setApplicationColor(String applicationColor) {
+
+        this.applicationColor = applicationColor;
+    }
+
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    public String getFriendlyName() {
+
+        return this.friendlyName;
+    }
+
+    public void setFriendlyName(String friendlyName) {
+
+        this.friendlyName = friendlyName;
+    }
+
+    public String getApplicationOwner() {
+
+        return this.applicationOwner;
+    }
+
+    public void setApplicationOwner(String applicationOwner) {
+
+        this.applicationOwner = applicationOwner;
+    }
+
+    public boolean isIdmapping() {
+
+        return this.idmapping;
+    }
+
+    public void setIdmapping(boolean idmapping) {
+
+        this.idmapping = idmapping;
+    }
+
+    public String getApplicationIdScope() {
+
+        return this.applicationIdScope;
+    }
+
+    public void setApplicationIdScope(String applicationIdScope) {
+
+        this.applicationIdScope = applicationIdScope;
+    }
+
+    public boolean isSkipMessageIntegrityCheck() {
+
+        return this.skipMessageIntegrityCheck;
+    }
+
+    public void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck) {
+
+        this.skipMessageIntegrityCheck = skipMessageIntegrityCheck;
+    }
+
+    public boolean isDeviceRestriction() {
+
+        return this.deviceRestriction;
+    }
+
+    public void setDeviceRestriction(boolean deviceRestriction) {
+
+        this.deviceRestriction = deviceRestriction;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String removeApplication() throws ApplicationNotFoundException {
+
+        /*
+         * http://jira.jboss.com/jira/browse/EJBTHREE-786
+         */
+        String applicationName = this.selectedApplication.getName();
+        LOG.debug("remove application: " + applicationName);
+        try {
+            this.applicationService.removeApplication(applicationName);
+        } catch (PermissionDeniedException e) {
+            LOG.debug("permission denied to remove: " + applicationName);
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
+                    .getResourceArgs());
+            return null;
+        }
+        applicationListFactory();
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(NEW_IDENTITY_ATTRIBUTES_NAME)
+    public void newIdentityAttributesFactory() {
+
+        this.newIdentityAttributes = new LinkedList<IdentityAttribute>();
+        List<AttributeTypeEntity> attributeTypes = this.attributeTypeService.listAttributeTypes();
+        for (AttributeTypeEntity attributeType : attributeTypes) {
+            IdentityAttribute identityAttribute = new IdentityAttribute(attributeType.getName());
+            this.newIdentityAttributes.add(identityAttribute);
+        }
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(IDENTITY_ATTRIBUTES_NAME)
+    public void identityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+            PermissionDeniedException {
+
+        Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes = this.applicationService
+                .getCurrentApplicationIdentity(this.selectedApplication.getName());
+
+        /*
+         * Construct a map for fast lookup. The key is the attribute type name.
+         */
+        Map<String, ApplicationIdentityAttributeEntity> currentIdentity = new HashMap<String, ApplicationIdentityAttributeEntity>();
+        for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : currentIdentityAttributes)
+            currentIdentity.put(applicationIdentityAttribute.getAttributeTypeName(), applicationIdentityAttribute);
+
+        /*
+         * The view receives a full attribute list, annotated with included and required flags.
+         */
+        this.identityAttributes = new LinkedList<IdentityAttribute>();
+        List<AttributeTypeEntity> attributeTypes = this.attributeTypeService.listAttributeTypes();
+        for (AttributeTypeEntity attributeType : attributeTypes) {
+            boolean included = false;
+            boolean required = false;
+            boolean dataMining = false;
+            ApplicationIdentityAttributeEntity currentIdentityAttribute = currentIdentity.get(attributeType.getName());
+            if (null != currentIdentityAttribute) {
+                included = true;
+                if (currentIdentityAttribute.isRequired())
+                    required = true;
+                if (currentIdentityAttribute.isDataMining())
+                    dataMining = true;
+            }
+            IdentityAttribute identityAttribute = new IdentityAttribute(attributeType.getName(), included, required,
+                    dataMining);
+            this.identityAttributes.add(identityAttribute);
+        }
+    }
+
+    private byte[] getUpFileContent(UploadedFile file) throws IOException {
+
+        InputStream inputStream = file.getInputStream();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        IOUtils.copy(inputStream, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    @Factory("applicationIdScopes")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> appliactionIdScopeFactory() {
+
+        List<SelectItem> applicationIdScopes = new LinkedList<SelectItem>();
+        for (IdScopeType currentType : IdScopeType.values())
+            applicationIdScopes.add(new SelectItem(currentType.name(), currentType.name()));
+        return applicationIdScopes;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String save() throws CertificateEncodingException, ApplicationNotFoundException, IOException,
+            ApplicationIdentityNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException {
+
+        String applicationId = this.selectedApplication.getName();
+        LOG.debug("save application: " + applicationId);
+
+        URL newApplicationUrl = null;
+        byte[] newApplicationLogo = null;
+        Color newApplicationColor = null;
+        if (null != this.applicationUrl && this.applicationUrl.length() != 0)
+            try {
+                newApplicationUrl = new URL(this.applicationUrl);
+            } catch (MalformedURLException e) {
+                LOG.debug("illegal URL format: " + this.applicationUrl);
+                this.facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR,
+                        "errorIllegalUrl", this.applicationUrl);
+                return null;
+            }
+        if (null != this.applicationLogoFile)
+            try {
+                newApplicationLogo = getUpFileContent(this.applicationLogoFile);
+            } catch (IOException e) {
+                LOG.debug("couldn't fetch uploaded data for application logo.");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
+                        "errorUploadLogo");
+                return null;
+            }
+        if (null != this.applicationColor && this.applicationColor.length() != 0)
+            try {
+                newApplicationColor = Color.decode(this.applicationColor);
+            } catch (NumberFormatException e) {
+                LOG.debug("illegal Color format: " + this.applicationColor);
+                this.facesMessages.addToControlFromResourceBundle("applicationColor", FacesMessage.SEVERITY_ERROR,
+                        "errorIllegalColor", this.applicationColor);
+                return null;
+            }
+
+        if (null != this.upFile) {
+            LOG.debug("updating application certificate");
+            this.applicationService.updateApplicationCertificate(applicationId, getUpFileContent(this.upFile));
+        }
+
+        List<IdentityAttributeTypeDO> tempNewIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+        for (IdentityAttribute identityAttribute : this.identityAttributes) {
+            if (false == identityAttribute.isIncluded())
+                continue;
+            IdentityAttributeTypeDO newIdentityAttribute = new IdentityAttributeTypeDO(identityAttribute.getName(),
+                    identityAttribute.isRequired(), identityAttribute.isDataMining());
+            tempNewIdentityAttributes.add(newIdentityAttribute);
+        }
+
+        this.applicationService.updateApplicationIdentity(applicationId, tempNewIdentityAttributes);
+        this.applicationService.updateApplicationUrl(applicationId, newApplicationUrl);
+        if (newApplicationLogo != null)
+            this.applicationService.updateApplicationLogo(applicationId, newApplicationLogo);
+        this.applicationService.updateApplicationColor(applicationId, newApplicationColor);
+        this.applicationService.setIdentifierMappingServiceAccess(applicationId, this.idmapping);
+        if (null != this.applicationIdScope)
+            this.applicationService.setIdScope(applicationId, IdScopeType.valueOf(this.applicationIdScope));
+        this.applicationService.setSkipMessageIntegrityCheck(applicationId, this.skipMessageIntegrityCheck);
+
+        // device restriction
+        List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
+        for (DeviceEntry deviceEntry : this.allowedDevices) {
+            if (deviceEntry.isAllowed() == true) {
+                AllowedDeviceEntity device = new AllowedDeviceEntity(this.selectedApplication, deviceEntry.getDevice(),
+                        deviceEntry.getWeight());
+                allowedDeviceList.add(device);
+            }
+        }
+        this.applicationService.setApplicationDescription(applicationId, this.description);
+        this.applicationService.setApplicationDeviceRestriction(applicationId, this.deviceRestriction);
+        this.deviceService.setAllowedDevices(this.selectedApplication, allowedDeviceList);
+
+        /*
+         * Refresh the selected application.
+         */
+        this.selectedApplication = this.applicationService.getApplication(applicationId);
+        this.applicationIdentityAttributes = this.applicationService.getCurrentApplicationIdentity(applicationId);
+
+        applicationListFactory();
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String view() {
+
+        /*
+         * To set the selected application.
+         */
+        LOG.debug("view application: " + this.selectedApplication.getName());
+        return "view";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String edit() {
+
+        /*
+         * To set the selected application.
+         */
+        LOG.debug("edit application: " + this.selectedApplication.getName());
+
+        if (null != this.selectedApplication.getApplicationUrl())
+            this.applicationUrl = this.selectedApplication.getApplicationUrl().toExternalForm();
+        if (null != this.selectedApplication.getApplicationLogo())
+            this.applicationLogo = this.selectedApplication.getApplicationLogo();
+        if (null != this.selectedApplication.getApplicationColor())
+            this.applicationColor = String.format("#%02x%02x%02x", this.selectedApplication.getApplicationColor()
+                    .getRed(), this.selectedApplication.getApplicationColor().getGreen(), this.selectedApplication
+                    .getApplicationColor().getBlue());
+        this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
+
+        this.skipMessageIntegrityCheck = this.selectedApplication.isSkipMessageIntegrityCheck();
+
+        this.applicationIdScope = this.selectedApplication.getIdScope().name();
+
+        this.description = this.selectedApplication.getDescription();
+
+        this.deviceRestriction = this.selectedApplication.isDeviceRestriction();
+
+        return "edit";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory("availableApplicationOwners")
+    public List<SelectItem> availableApplicationOwnersFactory() {
+
+        List<ApplicationOwnerEntity> applicationOwners = this.applicationService.listApplicationOwners();
+        List<SelectItem> availableApplicationOwners = ConvertorUtil.convert(applicationOwners,
+                new ApplicationOwnerSelectItemConvertor());
+        return availableApplicationOwners;
+    }
+
+
+    static class ApplicationOwnerSelectItemConvertor implements Convertor<ApplicationOwnerEntity, SelectItem> {
+
+        public SelectItem convert(ApplicationOwnerEntity input) {
+
+            SelectItem output = new SelectItem(input.getName());
+            return output;
+        }
+    }
+
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getUsageAgreement() throws ApplicationNotFoundException {
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+
+        String text = this.usageAgreementService.getUsageAgreementText(this.selectedApplication.getName(), viewLocale
+                .getLanguage());
+        if (null == text)
+            return "";
+        return text;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(OPER_APPLICATION_ALLOWED_DEVICES_NAME)
+    public void allowedDevices() {
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+
+        this.allowedDevices = new ArrayList<DeviceEntry>();
+        boolean defaultValue = false;
+
+        List<DeviceEntity> deviceList = this.deviceService.listDevices();
+        for (DeviceEntity deviceEntity : deviceList) {
+            String deviceDescription = this.devicePolicyService
+                    .getDeviceDescription(deviceEntity.getName(), viewLocale);
+            this.allowedDevices.add(new DeviceEntry(deviceEntity, deviceDescription, defaultValue, 0));
+        }
+
+        if (this.selectedApplication == null) {
+            return;
+        }
+
+        List<AllowedDeviceEntity> allowedDeviceList = this.deviceService.listAllowedDevices(this.selectedApplication);
+
+        for (AllowedDeviceEntity allowedDevice : allowedDeviceList) {
+            for (DeviceEntry deviceEntry : this.allowedDevices) {
+                if (deviceEntry.getDevice().equals(allowedDevice.getDevice())) {
+                    deviceEntry.setAllowed(true);
+                    deviceEntry.setWeight(allowedDevice.getWeight());
+                }
+            }
+        }
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
+    public void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException {
+
+        if (null == this.selectedApplication) {
+            return;
+        }
+        LOG.debug("usage agreement list factory");
+        this.selectedApplicationUsageAgreements = this.usageAgreementService
+                .getUsageAgreements(this.selectedApplication.getName());
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String viewUsageAgreement() {
+
+        LOG.debug("view usage agreement for application: " + this.selectedApplication.getName() + ", version="
+                + this.operSelectedUsageAgreement.getUsageAgreementVersion());
+        return "view-usage-agreement";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException {
+
+        LOG.debug("edit usage agreement for application: " + this.selectedApplication.getName());
+        this.draftUsageAgreement = this.usageAgreementService
+                .getDraftUsageAgreement(this.selectedApplication.getName());
+        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication
+                .getName());
+        return "edit-usage-agreement";
+    }
 
 }

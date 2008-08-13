@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Entry-point for identification web application service.
  * 
@@ -26,28 +27,29 @@ import org.apache.commons.logging.LogFactory;
  */
 public class IdentificationServlet extends HttpServlet {
 
-	private static final Log LOG = LogFactory
-			.getLog(IdentificationServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(IdentificationServlet.class);
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		String targetParameter = request.getParameter("target");
-		if (null == targetParameter) {
-			response.sendRedirect("identification.seam");
-		} else {
-			LOG.debug("target: " + targetParameter);
-			HttpSession session = request.getSession();
-			session.setAttribute("target", targetParameter);
-			response.sendRedirect("identification-pcsc.seam");
-		}
-	}
 
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String targetParameter = request.getParameter("target");
+        if (null == targetParameter) {
+            response.sendRedirect("identification.seam");
+        } else {
+            LOG.debug("target: " + targetParameter);
+            HttpSession session = request.getSession();
+            session.setAttribute("target", targetParameter);
+            response.sendRedirect("identification-pcsc.seam");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+
+        doGet(request, response);
+    }
 }

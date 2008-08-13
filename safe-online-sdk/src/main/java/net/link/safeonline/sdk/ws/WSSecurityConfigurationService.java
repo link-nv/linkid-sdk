@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.ws;
 
 import java.security.cert.X509Certificate;
 
+
 /**
  * WS-Security configuration service interface.
  * 
@@ -17,18 +18,18 @@ import java.security.cert.X509Certificate;
  */
 public interface WSSecurityConfigurationService {
 
-	/**
-	 * Returns the maximum offset of the WS-Security timestamp.
-	 * 
-	 */
-	public long getMaximumWsSecurityTimestampOffset();
+    /**
+     * Returns the maximum offset of the WS-Security timestamp.
+     * 
+     */
+    public long getMaximumWsSecurityTimestampOffset();
 
-	/**
-     * Given the calling entity's certificate, skip or perform a verification of
-     * the digestion of the SOAP body element by the WS-Security signature.
+    /**
+     * Given the calling entity's certificate, skip or perform a verification of the digestion of the SOAP body element
+     * by the WS-Security signature.
      * 
      * @param certificate
      */
-	public boolean skipMessageIntegrityCheck(X509Certificate certificate);
+    public boolean skipMessageIntegrityCheck(X509Certificate certificate);
 
 }

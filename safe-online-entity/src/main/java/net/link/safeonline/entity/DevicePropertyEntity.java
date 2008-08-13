@@ -30,114 +30,128 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Entity
 @Table(name = "device_property")
 @NamedQueries( { @NamedQuery(name = QUERY_WHERE_DEVICE, query = "SELECT deviceProp "
-		+ "FROM DevicePropertyEntity AS deviceProp "
-		+ "WHERE deviceProp.device = :device") })
+        + "FROM DevicePropertyEntity AS deviceProp " + "WHERE deviceProp.device = :device") })
 public class DevicePropertyEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID          = 1L;
 
-	public static final String QUERY_WHERE_DEVICE = "dp.dev";
+    public static final String QUERY_WHERE_DEVICE        = "dp.dev";
 
-	public static final String DEVICE_COLUMN_NAME = "device";
+    public static final String DEVICE_COLUMN_NAME        = "device";
 
-	public static final String PROPERTY_NAME_COLUMN_NAME = "name";
+    public static final String PROPERTY_NAME_COLUMN_NAME = "name";
 
-	private DevicePropertyPK pk;
+    private DevicePropertyPK   pk;
 
-	private DeviceEntity device;
+    private DeviceEntity       device;
 
-	private String name;
+    private String             name;
 
-	private String value;
+    private String             value;
 
-	public DevicePropertyEntity() {
-		// empty
-	}
 
-	public DevicePropertyEntity(DeviceEntity device, String name, String value) {
-		this.device = device;
-		this.name = name;
-		this.value = value;
-		this.pk = new DevicePropertyPK(device.getName(), name);
-	}
+    public DevicePropertyEntity() {
 
-	@Column(name = PROPERTY_NAME_COLUMN_NAME, insertable = false, updatable = false)
-	public String getName() {
-		return this.name;
-	}
+        // empty
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public DevicePropertyEntity(DeviceEntity device, String name, String value) {
 
-	public String getValue() {
-		return this.value;
-	}
+        this.device = device;
+        this.name = name;
+        this.value = value;
+        this.pk = new DevicePropertyPK(device.getName(), name);
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    @Column(name = PROPERTY_NAME_COLUMN_NAME, insertable = false, updatable = false)
+    public String getName() {
 
-	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "deviceName", column = @Column(name = DEVICE_COLUMN_NAME)),
-			@AttributeOverride(name = "name", column = @Column(name = PROPERTY_NAME_COLUMN_NAME)) })
-	public DevicePropertyPK getPk() {
-		return this.pk;
-	}
+        return this.name;
+    }
 
-	public void setPk(DevicePropertyPK pk) {
-		this.pk = pk;
-	}
+    public void setName(String name) {
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = DEVICE_COLUMN_NAME, insertable = false, updatable = false)
-	public DeviceEntity getDevice() {
-		return this.device;
-	}
+        this.name = name;
+    }
 
-	public void setDevice(DeviceEntity device) {
-		this.device = device;
-	}
+    public String getValue() {
 
-	@Transient
-	public String getDeviceName() {
-		return this.pk.getDeviceName();
-	}
+        return this.value;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == obj instanceof DevicePropertyEntity) {
-			return false;
-		}
-		DevicePropertyEntity rhs = (DevicePropertyEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+    public void setValue(String value) {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.pk).toHashCode();
-	}
+        this.value = value;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("pk", this.pk).append("value",
-				this.value).toString();
-	}
+    @EmbeddedId
+    @AttributeOverrides( { @AttributeOverride(name = "deviceName", column = @Column(name = DEVICE_COLUMN_NAME)),
+            @AttributeOverride(name = "name", column = @Column(name = PROPERTY_NAME_COLUMN_NAME)) })
+    public DevicePropertyPK getPk() {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_DEVICE)
-		List<DevicePropertyEntity> listProperties(@QueryParam("device")
-		DeviceEntity device);
-	}
+        return this.pk;
+    }
+
+    public void setPk(DevicePropertyPK pk) {
+
+        this.pk = pk;
+    }
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = DEVICE_COLUMN_NAME, insertable = false, updatable = false)
+    public DeviceEntity getDevice() {
+
+        return this.device;
+    }
+
+    public void setDevice(DeviceEntity device) {
+
+        this.device = device;
+    }
+
+    @Transient
+    public String getDeviceName() {
+
+        return this.pk.getDeviceName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == obj instanceof DevicePropertyEntity) {
+            return false;
+        }
+        DevicePropertyEntity rhs = (DevicePropertyEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.pk).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("pk", this.pk).append("value", this.value).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_DEVICE)
+        List<DevicePropertyEntity> listProperties(@QueryParam("device") DeviceEntity device);
+    }
 
 }

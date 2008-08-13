@@ -21,126 +21,130 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Servlet that processes the data that comes from the client-side
- * identification applet.
+ * Servlet that processes the data that comes from the client-side identification applet.
  * 
  * @author fcorneli
  * 
  */
 public class IdentificationDataServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID                         = 1L;
 
-	private static final Log LOG = LogFactory
-			.getLog(IdentificationDataServlet.class);
+    private static final Log    LOG                                      = LogFactory
+                                                                                 .getLog(IdentificationDataServlet.class);
 
-	public static final String NAME_SESSION_ATTRIBUTE = "id-name";
+    public static final String  NAME_SESSION_ATTRIBUTE                   = "id-name";
 
-	@RequestParameter("name")
-	@Out(NAME_SESSION_ATTRIBUTE)
-	private String name;
+    @RequestParameter("name")
+    @Out(NAME_SESSION_ATTRIBUTE)
+    private String              name;
 
-	public static final String FIRST_NAME_SESSION_ATTRIBUTE = "id-firstname";
+    public static final String  FIRST_NAME_SESSION_ATTRIBUTE             = "id-firstname";
 
-	@RequestParameter("firstname")
-	@Out(FIRST_NAME_SESSION_ATTRIBUTE)
-	private String firstName;
+    @RequestParameter("firstname")
+    @Out(FIRST_NAME_SESSION_ATTRIBUTE)
+    private String              firstName;
 
-	public static final String DOB_SESSION_ATTRIBUTE = "id-dob";
+    public static final String  DOB_SESSION_ATTRIBUTE                    = "id-dob";
 
-	@RequestParameter("dob")
-	@Out(DOB_SESSION_ATTRIBUTE)
-	private String dob;
+    @RequestParameter("dob")
+    @Out(DOB_SESSION_ATTRIBUTE)
+    private String              dob;
 
-	public static final String NATIONALITY_SESSION_ATTRIBUTE = "id-nationality";
+    public static final String  NATIONALITY_SESSION_ATTRIBUTE            = "id-nationality";
 
-	@RequestParameter("nationality")
-	@Out(NATIONALITY_SESSION_ATTRIBUTE)
-	private String nationality;
+    @RequestParameter("nationality")
+    @Out(NATIONALITY_SESSION_ATTRIBUTE)
+    private String              nationality;
 
-	public static final String SEX_SESSION_ATTRIBUTE = "id-sex";
+    public static final String  SEX_SESSION_ATTRIBUTE                    = "id-sex";
 
-	@RequestParameter("sex")
-	@Out(SEX_SESSION_ATTRIBUTE)
-	private String sex;
+    @RequestParameter("sex")
+    @Out(SEX_SESSION_ATTRIBUTE)
+    private String              sex;
 
-	@RequestParameter("street")
-	private String street;
+    @RequestParameter("street")
+    private String              street;
 
-	public static final String STREET_SESSION_ATTRIBUTE = "id-street";
+    public static final String  STREET_SESSION_ATTRIBUTE                 = "id-street";
 
-	public static final String HOUSE_NR_SESSION_ATTRIBUTE = "id-housenr";
+    public static final String  HOUSE_NR_SESSION_ATTRIBUTE               = "id-housenr";
 
-	@Out(STREET_SESSION_ATTRIBUTE)
-	private String outStreet;
+    @Out(STREET_SESSION_ATTRIBUTE)
+    private String              outStreet;
 
-	@Out(HOUSE_NR_SESSION_ATTRIBUTE)
-	private String houseNumber;
+    @Out(HOUSE_NR_SESSION_ATTRIBUTE)
+    private String              houseNumber;
 
-	public static final String CITY_SESSION_ATTRIBUTE = "id-city";
+    public static final String  CITY_SESSION_ATTRIBUTE                   = "id-city";
 
-	@RequestParameter("city")
-	@Out(CITY_SESSION_ATTRIBUTE)
-	private String city;
+    @RequestParameter("city")
+    @Out(CITY_SESSION_ATTRIBUTE)
+    private String              city;
 
-	public static final String ZIP_SESSION_ATTRIBUTE = "id-zip";
+    public static final String  ZIP_SESSION_ATTRIBUTE                    = "id-zip";
 
-	@RequestParameter("zip")
-	@Out(ZIP_SESSION_ATTRIBUTE)
-	private String zip;
+    @RequestParameter("zip")
+    @Out(ZIP_SESSION_ATTRIBUTE)
+    private String              zip;
 
-	@RequestParameter("nnr")
-	private String nationalNumber;
+    @RequestParameter("nnr")
+    private String              nationalNumber;
 
-	public static final String HASHED_NATIONAL_NUMBER_SESSION_ATTRIBUTE = "id-hash-nnr";
+    public static final String  HASHED_NATIONAL_NUMBER_SESSION_ATTRIBUTE = "id-hash-nnr";
 
-	@Out(HASHED_NATIONAL_NUMBER_SESSION_ATTRIBUTE)
-	private String hashedNationalNumber;
+    @Out(HASHED_NATIONAL_NUMBER_SESSION_ATTRIBUTE)
+    private String              hashedNationalNumber;
 
-	private static final String NATIONAL_NUMBER_SEED = "00cd4de51be6d556f98f40a1a69f7bcbd4fb75c1";
+    private static final String NATIONAL_NUMBER_SEED                     = "00cd4de51be6d556f98f40a1a69f7bcbd4fb75c1";
 
-	@Override
-	protected void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		invoke(request, response);
-	}
 
-	@Override
-	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		invoke(request, response);
-	}
+    @Override
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-	private void invoke(@SuppressWarnings("unused") HttpServletRequest request,
-			@SuppressWarnings("unused") HttpServletResponse response) {
-		LOG.debug("name: " + this.name);
-		LOG.debug("first name: " + this.firstName);
-		LOG.debug("dob: " + this.dob);
-		LOG.debug("nationality: " + this.nationality);
-		LOG.debug("sex: " + this.sex);
-		LOG.debug("street: " + this.street);
-		LOG.debug("city: " + this.city);
-		LOG.debug("zip: " + this.zip);
+        invoke(request, response);
+    }
 
-		this.hashedNationalNumber = DigestUtils.shaHex(this.nationalNumber
-				+ NATIONAL_NUMBER_SEED);
-		LOG.debug("hashed national number: " + this.hashedNationalNumber);
+    @Override
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		int digitIdx = getFirstDigitIndex(this.street);
-		this.outStreet = this.street.substring(0, digitIdx).trim();
-		this.houseNumber = this.street.substring(digitIdx);
-		LOG.debug("street: " + this.outStreet);
-		LOG.debug("house number: " + this.houseNumber);
-	}
+        invoke(request, response);
+    }
 
-	private int getFirstDigitIndex(String str) {
-		char[] chars = str.toCharArray();
-		int length = chars.length;
-		for (int idx = 0; idx < length; idx++) {
-			if (Character.isDigit(chars[idx]))
+    private void invoke(@SuppressWarnings("unused") HttpServletRequest request,
+            @SuppressWarnings("unused") HttpServletResponse response) {
+
+        LOG.debug("name: " + this.name);
+        LOG.debug("first name: " + this.firstName);
+        LOG.debug("dob: " + this.dob);
+        LOG.debug("nationality: " + this.nationality);
+        LOG.debug("sex: " + this.sex);
+        LOG.debug("street: " + this.street);
+        LOG.debug("city: " + this.city);
+        LOG.debug("zip: " + this.zip);
+
+        this.hashedNationalNumber = DigestUtils.shaHex(this.nationalNumber + NATIONAL_NUMBER_SEED);
+        LOG.debug("hashed national number: " + this.hashedNationalNumber);
+
+        int digitIdx = getFirstDigitIndex(this.street);
+        this.outStreet = this.street.substring(0, digitIdx).trim();
+        this.houseNumber = this.street.substring(digitIdx);
+        LOG.debug("street: " + this.outStreet);
+        LOG.debug("house number: " + this.houseNumber);
+    }
+
+    private int getFirstDigitIndex(String str) {
+
+        char[] chars = str.toCharArray();
+        int length = chars.length;
+        for (int idx = 0; idx < length; idx++) {
+            if (Character.isDigit(chars[idx]))
                 return idx;
-		}
-		return -1;
-	}
+        }
+        return -1;
+    }
 }

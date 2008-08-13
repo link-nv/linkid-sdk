@@ -31,6 +31,7 @@ import oasis.names.tc.saml._2_0.assertion.SubjectType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * SOAP Handler for TargetIdentity SOAP Header handling.
  * 
@@ -41,115 +42,110 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class TargetIdentityClientHandler implements
-		SOAPHandler<SOAPMessageContext> {
+public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory
-			.getLog(TargetIdentityClientHandler.class);
+    private static final Log   LOG        = LogFactory.getLog(TargetIdentityClientHandler.class);
 
-	public static final String WSU_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
+    public static final String WSU_NS     = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
 
-	public static final String WSU_PREFIX = "wsu";
+    public static final String WSU_PREFIX = "wsu";
 
-	public static final String XMLNS_NS = "http://www.w3.org/2000/xmlns/";
+    public static final String XMLNS_NS   = "http://www.w3.org/2000/xmlns/";
 
-	private String targetIdentity;
+    private String             targetIdentity;
 
-	/**
-	 * Sets the target identity, i.e. the user Id.
-	 * 
-	 * @param targetIdentity
-	 */
-	public void setTargetIdentity(String targetIdentity) {
-		this.targetIdentity = targetIdentity;
-	}
 
-	public Set<QName> getHeaders() {
-		return null;
-	}
+    /**
+     * Sets the target identity, i.e. the user Id.
+     * 
+     * @param targetIdentity
+     */
+    public void setTargetIdentity(String targetIdentity) {
 
-	public void close(MessageContext context) {
-	}
+        this.targetIdentity = targetIdentity;
+    }
 
-	public boolean handleFault(SOAPMessageContext soapContext) {
-		return true;
-	}
+    public Set<QName> getHeaders() {
 
-	public boolean handleMessage(SOAPMessageContext soapContext) {
-		Boolean outboundProperty = (Boolean) soapContext
-				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-		if (false == outboundProperty.booleanValue()) {
-			/*
-			 * We only need to add the TargetIdentity SOAP header to the
-			 * outbound messages.
-			 */
-			return true;
-		}
+        return null;
+    }
 
-		SOAPMessage soapMessage = soapContext.getMessage();
-		SOAPHeader soapHeader;
-		try {
-			soapHeader = soapMessage.getSOAPHeader();
-			if (soapHeader == null) {
-				/*
-				 * This can happen in the case that we're the first one to add a
-				 * SOAP header element.
-				 */
-				soapHeader = soapMessage.getSOAPPart().getEnvelope()
-						.addHeader();
-			}
-			addTargetIdentityHeader(soapHeader, soapContext);
-		} catch (SOAPException e) {
-			throw new RuntimeException("SOAP error: " + e.getMessage(), e);
-		} catch (JAXBException e) {
-			throw new RuntimeException("JAXB error: " + e.getMessage(), e);
-		}
-		return true;
-	}
+    public void close(MessageContext context) {
 
-	private void addTargetIdentityHeader(SOAPHeader soapHeader,
-			SOAPMessageContext soapContext) throws SOAPException, JAXBException {
-		if (null == this.targetIdentity) {
-			throw new IllegalStateException("TargetIdentity is null");
-		}
-		LOG.debug("adding TargetIdentity: " + this.targetIdentity);
+    }
 
-		/*
-		 * Add SOAP Header.
-		 */
-		QName targetIdentityName = new QName(
-				DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
-				"TargetIdentity");
-		SOAPHeaderElement targetIdentityHeaderElement = soapHeader
-				.addHeaderElement(targetIdentityName);
-		targetIdentityHeaderElement.setMustUnderstand(true);
+    public boolean handleFault(SOAPMessageContext soapContext) {
 
-		/*
-		 * Make sure that the WS-Security JAX-WS handler will include the
-		 * TargetIdentity SOAP header element in the signature digest.
-		 */
-		String id = "id-" + UUID.randomUUID().toString();
-		targetIdentityHeaderElement.setAttributeNS(XMLNS_NS, "xmlns:"
-				+ WSU_PREFIX, WSU_NS);
-		targetIdentityHeaderElement.setAttributeNS(WSU_NS, WSU_PREFIX + ":Id",
-				id);
-		WSSecurityClientHandler.addToBeSignedId(id, soapContext);
+        return true;
+    }
 
-		/*
-		 * Create header content in JAXB.
-		 */
-		ObjectFactory objectFactory = new ObjectFactory();
-		SubjectType subject = objectFactory.createSubjectType();
-		NameIDType subjectName = new NameIDType();
-		subjectName.setValue(this.targetIdentity);
-		subject.getContent().add(objectFactory.createNameID(subjectName));
+    public boolean handleMessage(SOAPMessageContext soapContext) {
 
-		/*
-		 * Add header element content to header element.
-		 */
-		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-		Marshaller marshaller = context.createMarshaller();
-		marshaller.marshal(objectFactory.createSubject(subject),
-				targetIdentityHeaderElement);
-	}
+        Boolean outboundProperty = (Boolean) soapContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+        if (false == outboundProperty.booleanValue()) {
+            /*
+             * We only need to add the TargetIdentity SOAP header to the outbound messages.
+             */
+            return true;
+        }
+
+        SOAPMessage soapMessage = soapContext.getMessage();
+        SOAPHeader soapHeader;
+        try {
+            soapHeader = soapMessage.getSOAPHeader();
+            if (soapHeader == null) {
+                /*
+                 * This can happen in the case that we're the first one to add a SOAP header element.
+                 */
+                soapHeader = soapMessage.getSOAPPart().getEnvelope().addHeader();
+            }
+            addTargetIdentityHeader(soapHeader, soapContext);
+        } catch (SOAPException e) {
+            throw new RuntimeException("SOAP error: " + e.getMessage(), e);
+        } catch (JAXBException e) {
+            throw new RuntimeException("JAXB error: " + e.getMessage(), e);
+        }
+        return true;
+    }
+
+    private void addTargetIdentityHeader(SOAPHeader soapHeader, SOAPMessageContext soapContext) throws SOAPException,
+            JAXBException {
+
+        if (null == this.targetIdentity) {
+            throw new IllegalStateException("TargetIdentity is null");
+        }
+        LOG.debug("adding TargetIdentity: " + this.targetIdentity);
+
+        /*
+         * Add SOAP Header.
+         */
+        QName targetIdentityName = new QName(DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE, "TargetIdentity");
+        SOAPHeaderElement targetIdentityHeaderElement = soapHeader.addHeaderElement(targetIdentityName);
+        targetIdentityHeaderElement.setMustUnderstand(true);
+
+        /*
+         * Make sure that the WS-Security JAX-WS handler will include the TargetIdentity SOAP header element in the
+         * signature digest.
+         */
+        String id = "id-" + UUID.randomUUID().toString();
+        targetIdentityHeaderElement.setAttributeNS(XMLNS_NS, "xmlns:" + WSU_PREFIX, WSU_NS);
+        targetIdentityHeaderElement.setAttributeNS(WSU_NS, WSU_PREFIX + ":Id", id);
+        WSSecurityClientHandler.addToBeSignedId(id, soapContext);
+
+        /*
+         * Create header content in JAXB.
+         */
+        ObjectFactory objectFactory = new ObjectFactory();
+        SubjectType subject = objectFactory.createSubjectType();
+        NameIDType subjectName = new NameIDType();
+        subjectName.setValue(this.targetIdentity);
+        subject.getContent().add(objectFactory.createNameID(subjectName));
+
+        /*
+         * Add header element content to header element.
+         */
+        JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.marshal(objectFactory.createSubject(subject), targetIdentityHeaderElement);
+    }
 }

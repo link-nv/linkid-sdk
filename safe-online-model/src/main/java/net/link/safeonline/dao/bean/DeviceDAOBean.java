@@ -30,191 +30,199 @@ import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+
 @Stateless
 public class DeviceDAOBean implements DeviceDAO {
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                          entityManager;
 
-	private DeviceEntity.QueryInterface queryObject;
+    private DeviceEntity.QueryInterface            queryObject;
 
-	private DeviceDescriptionEntity.QueryInterface descriptionQueryObject;
+    private DeviceDescriptionEntity.QueryInterface descriptionQueryObject;
 
-	private DevicePropertyEntity.QueryInterface propertyQueryObject;
+    private DevicePropertyEntity.QueryInterface    propertyQueryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, DeviceEntity.QueryInterface.class);
-		this.descriptionQueryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager,
-				DeviceDescriptionEntity.QueryInterface.class);
-		this.propertyQueryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, DevicePropertyEntity.QueryInterface.class);
-	}
 
-	public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass,
-			OlasEntity node, String authenticationURL, String registrationURL,
-			String removalURL, String updateURL, X509Certificate certificate,
-			AttributeTypeEntity attributeType,
-			AttributeTypeEntity userAttributeType) {
-		DeviceEntity device = new DeviceEntity(name, deviceClass, node,
-				authenticationURL, registrationURL, removalURL, updateURL,
-				certificate);
-		device.setAttributeType(attributeType);
-		device.setUserAttributeType(userAttributeType);
-		this.entityManager.persist(device);
-		return device;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public List<DeviceEntity> listDevices() {
-		List<DeviceEntity> result = this.queryObject.listDevices();
-		return result;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, DeviceEntity.QueryInterface.class);
+        this.descriptionQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                DeviceDescriptionEntity.QueryInterface.class);
+        this.propertyQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                DevicePropertyEntity.QueryInterface.class);
+    }
 
-	public List<DeviceEntity> listDevices(DeviceClassEntity deviceClass) {
-		return this.queryObject.listDevices(deviceClass);
-	}
+    public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, OlasEntity node,
+            String authenticationURL, String registrationURL, String removalURL, String updateURL,
+            X509Certificate certificate, AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType) {
 
-	public DeviceEntity findDevice(String deviceName) {
-		return this.entityManager.find(DeviceEntity.class, deviceName);
-	}
+        DeviceEntity device = new DeviceEntity(name, deviceClass, node, authenticationURL, registrationURL, removalURL,
+                updateURL, certificate);
+        device.setAttributeType(attributeType);
+        device.setUserAttributeType(userAttributeType);
+        this.entityManager.persist(device);
+        return device;
+    }
 
-	public DeviceEntity getDevice(String name) throws DeviceNotFoundException {
-		DeviceEntity device = this.entityManager.find(DeviceEntity.class, name);
-		if (null == device) {
-			throw new DeviceNotFoundException();
-		}
-		return device;
-	}
+    public List<DeviceEntity> listDevices() {
 
-	public void removeDevice(String deviceName) {
-		DeviceEntity device = findDevice(deviceName);
-		this.entityManager.remove(device);
-	}
+        List<DeviceEntity> result = this.queryObject.listDevices();
+        return result;
+    }
 
-	public List<DeviceDescriptionEntity> listDescriptions(DeviceEntity device) {
-		return this.descriptionQueryObject.listDescriptions(device);
-	}
+    public List<DeviceEntity> listDevices(DeviceClassEntity deviceClass) {
 
-	public List<DevicePropertyEntity> listProperties(DeviceEntity device) {
-		return this.propertyQueryObject.listProperties(device);
-	}
+        return this.queryObject.listDevices(deviceClass);
+    }
 
-	public void addDescription(DeviceEntity device,
-			DeviceDescriptionEntity description) {
-		/*
-		 * Manage relationships.
-		 */
-		description.setDevice(device);
-		device.getDescriptions().put(description.getLanguage(), description);
-		/*
-		 * Persist.
-		 */
-		this.entityManager.persist(description);
-	}
+    public DeviceEntity findDevice(String deviceName) {
 
-	public void removeDescription(DeviceDescriptionEntity description) {
-		/*
-		 * Manage relationships.
-		 */
-		String language = description.getLanguage();
-		description.getDevice().getDescriptions().remove(language);
-		/*
-		 * Remove from database.
-		 */
-		this.entityManager.remove(description);
-	}
+        return this.entityManager.find(DeviceEntity.class, deviceName);
+    }
 
-	public void saveDescription(DeviceDescriptionEntity description) {
-		this.entityManager.merge(description);
-	}
+    public DeviceEntity getDevice(String name) throws DeviceNotFoundException {
 
-	public DeviceDescriptionEntity getDescription(
-			DeviceDescriptionPK descriptionPK)
-			throws DeviceDescriptionNotFoundException {
-		DeviceDescriptionEntity description = this.entityManager.find(
-				DeviceDescriptionEntity.class, descriptionPK);
-		if (null == description) {
-			throw new DeviceDescriptionNotFoundException();
-		}
-		return description;
-	}
+        DeviceEntity device = this.entityManager.find(DeviceEntity.class, name);
+        if (null == device) {
+            throw new DeviceNotFoundException();
+        }
+        return device;
+    }
 
-	public DeviceDescriptionEntity findDescription(
-			DeviceDescriptionPK descriptionPK) {
-		DeviceDescriptionEntity description = this.entityManager.find(
-				DeviceDescriptionEntity.class, descriptionPK);
-		return description;
-	}
+    public void removeDevice(String deviceName) {
 
-	public void addProperty(DeviceEntity device, DevicePropertyEntity property) {
-		/*
-		 * Manage relationships.
-		 */
-		property.setDevice(device);
-		device.getProperties().put(property.getName(), property);
-		/*
-		 * Persist.
-		 */
-		this.entityManager.persist(property);
-	}
+        DeviceEntity device = findDevice(deviceName);
+        this.entityManager.remove(device);
+    }
 
-	public void removeProperty(DevicePropertyEntity property) {
-		/*
-		 * Manage relationships.
-		 */
-		String name = property.getName();
-		property.getDevice().getProperties().remove(name);
-		/*
-		 * Remove from database.
-		 */
-		this.entityManager.remove(property);
-	}
+    public List<DeviceDescriptionEntity> listDescriptions(DeviceEntity device) {
 
-	public void saveProperty(DevicePropertyEntity property) {
-		this.entityManager.merge(property);
-	}
+        return this.descriptionQueryObject.listDescriptions(device);
+    }
 
-	public DevicePropertyEntity getProperty(DevicePropertyPK propertyPK)
-			throws DevicePropertyNotFoundException {
-		DevicePropertyEntity property = this.entityManager.find(
-				DevicePropertyEntity.class, propertyPK);
-		if (null == property) {
-			throw new DevicePropertyNotFoundException();
-		}
-		return property;
-	}
+    public List<DevicePropertyEntity> listProperties(DeviceEntity device) {
 
-	public DevicePropertyEntity findProperty(DevicePropertyPK propertyPK) {
-		DevicePropertyEntity property = this.entityManager.find(
-				DevicePropertyEntity.class, propertyPK);
-		return property;
-	}
+        return this.propertyQueryObject.listProperties(device);
+    }
 
-	public List<DeviceEntity> listDevices(String authenticationContextClass) {
-		return this.queryObject.listDevices(authenticationContextClass);
-	}
+    public void addDescription(DeviceEntity device, DeviceDescriptionEntity description) {
 
-	public DeviceEntity getDevice(X509Certificate certificate)
-			throws DeviceNotFoundException {
-		List<DeviceEntity> devices = this.queryObject
-				.listDevicesWhereCertificateSubject(certificate
-						.getSubjectX500Principal().getName());
-		if (devices.isEmpty())
-			throw new DeviceNotFoundException();
-		DeviceEntity device = devices.get(0);
-		return device;
-	}
+        /*
+         * Manage relationships.
+         */
+        description.setDevice(device);
+        device.getDescriptions().put(description.getLanguage(), description);
+        /*
+         * Persist.
+         */
+        this.entityManager.persist(description);
+    }
 
-	public DeviceEntity findDevice(X509Certificate certificate) {
-		List<DeviceEntity> devices = this.queryObject
-				.listDevicesWhereCertificateSubject(certificate
-						.getSubjectX500Principal().getName());
-		if (devices.isEmpty())
-			return null;
-		DeviceEntity device = devices.get(0);
-		return device;
-	}
+    public void removeDescription(DeviceDescriptionEntity description) {
+
+        /*
+         * Manage relationships.
+         */
+        String language = description.getLanguage();
+        description.getDevice().getDescriptions().remove(language);
+        /*
+         * Remove from database.
+         */
+        this.entityManager.remove(description);
+    }
+
+    public void saveDescription(DeviceDescriptionEntity description) {
+
+        this.entityManager.merge(description);
+    }
+
+    public DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK)
+            throws DeviceDescriptionNotFoundException {
+
+        DeviceDescriptionEntity description = this.entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
+        if (null == description) {
+            throw new DeviceDescriptionNotFoundException();
+        }
+        return description;
+    }
+
+    public DeviceDescriptionEntity findDescription(DeviceDescriptionPK descriptionPK) {
+
+        DeviceDescriptionEntity description = this.entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
+        return description;
+    }
+
+    public void addProperty(DeviceEntity device, DevicePropertyEntity property) {
+
+        /*
+         * Manage relationships.
+         */
+        property.setDevice(device);
+        device.getProperties().put(property.getName(), property);
+        /*
+         * Persist.
+         */
+        this.entityManager.persist(property);
+    }
+
+    public void removeProperty(DevicePropertyEntity property) {
+
+        /*
+         * Manage relationships.
+         */
+        String name = property.getName();
+        property.getDevice().getProperties().remove(name);
+        /*
+         * Remove from database.
+         */
+        this.entityManager.remove(property);
+    }
+
+    public void saveProperty(DevicePropertyEntity property) {
+
+        this.entityManager.merge(property);
+    }
+
+    public DevicePropertyEntity getProperty(DevicePropertyPK propertyPK) throws DevicePropertyNotFoundException {
+
+        DevicePropertyEntity property = this.entityManager.find(DevicePropertyEntity.class, propertyPK);
+        if (null == property) {
+            throw new DevicePropertyNotFoundException();
+        }
+        return property;
+    }
+
+    public DevicePropertyEntity findProperty(DevicePropertyPK propertyPK) {
+
+        DevicePropertyEntity property = this.entityManager.find(DevicePropertyEntity.class, propertyPK);
+        return property;
+    }
+
+    public List<DeviceEntity> listDevices(String authenticationContextClass) {
+
+        return this.queryObject.listDevices(authenticationContextClass);
+    }
+
+    public DeviceEntity getDevice(X509Certificate certificate) throws DeviceNotFoundException {
+
+        List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate
+                .getSubjectX500Principal().getName());
+        if (devices.isEmpty())
+            throw new DeviceNotFoundException();
+        DeviceEntity device = devices.get(0);
+        return device;
+    }
+
+    public DeviceEntity findDevice(X509Certificate certificate) {
+
+        List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate
+                .getSubjectX500Principal().getName());
+        if (devices.isEmpty())
+            return null;
+        DeviceEntity device = devices.get(0);
+        return device;
+    }
 
 }

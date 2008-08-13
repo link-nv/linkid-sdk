@@ -31,14 +31,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @LocalBinding(jndiBinding = AuthorizationService.JNDI_BINDING)
 public class AuthorizationServiceBean implements AuthorizationService {
 
     private final String     WEBSERVICE_CONFIG = "ws_config";
 
-    private static final Log LOG               = LogFactory
-                                                       .getLog(AuthorizationServiceBean.class);
+    private static final Log LOG               = LogFactory.getLog(AuthorizationServiceBean.class);
 
     @PersistenceContext(unitName = MandateConstants.ENTITY_MANAGER_NAME)
     private EntityManager    entityManager;
@@ -49,8 +49,7 @@ public class AuthorizationServiceBean implements AuthorizationService {
         String username;
         AttributeClient attributeClient = getAttributeClient();
         try {
-            username = attributeClient.getAttributeValue(userId,
-                    DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+            username = attributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
         } catch (WSClientTransportException e) {
             LOG.debug("connection error: " + e.getMessage());
             return null;
@@ -69,20 +68,16 @@ public class AuthorizationServiceBean implements AuthorizationService {
 
     private AttributeClient getAttributeClient() {
 
-        ResourceBundle config = ResourceBundle
-                .getBundle(this.WEBSERVICE_CONFIG);
+        ResourceBundle config = ResourceBundle.getBundle(this.WEBSERVICE_CONFIG);
         String wsLocation = config.getString("WsLocation");
 
         LOG.debug("Webservice: " + wsLocation);
 
-        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils
-                .getPrivateKeyEntry();
-        X509Certificate certificate = (X509Certificate) privateKeyEntry
-                .getCertificate();
+        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils.getPrivateKeyEntry();
+        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
-        AttributeClient attributeClient = new AttributeClientImpl(wsLocation,
-                certificate, privateKey);
+        AttributeClient attributeClient = new AttributeClientImpl(wsLocation, certificate, privateKey);
         return attributeClient;
     }
 
@@ -102,18 +97,15 @@ public class AuthorizationServiceBean implements AuthorizationService {
     public void bootstrap() {
 
         LOG.debug("bootstrapping...");
-        UserEntity defaultAdminUser = this.entityManager.find(UserEntity.class,
-                AuthorizationService.DEFAULT_ADMIN_USER);
+        UserEntity defaultAdminUser = this.entityManager
+                .find(UserEntity.class, AuthorizationService.DEFAULT_ADMIN_USER);
         if (null == defaultAdminUser) {
-            LOG.debug("adding default admin user: "
-                    + AuthorizationService.DEFAULT_ADMIN_USER);
-            defaultAdminUser = new UserEntity(
-                    AuthorizationService.DEFAULT_ADMIN_USER);
+            LOG.debug("adding default admin user: " + AuthorizationService.DEFAULT_ADMIN_USER);
+            defaultAdminUser = new UserEntity(AuthorizationService.DEFAULT_ADMIN_USER);
             this.entityManager.persist(defaultAdminUser);
         }
         if (false == defaultAdminUser.isAdmin()) {
-            LOG.debug("resetting default admin user to admin privilege: "
-                    + defaultAdminUser.getName());
+            LOG.debug("resetting default admin user to admin privilege: " + defaultAdminUser.getName());
             defaultAdminUser.setAdmin(true);
         }
     }

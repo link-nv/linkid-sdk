@@ -23,61 +23,63 @@ import net.link.safeonline.demo.mandate.MandateConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class LoginServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long    serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(LoginServlet.class);
+    private static final Log     LOG              = LogFactory.getLog(LoginServlet.class);
 
-	private AuthorizationService authorizationService;
+    private AuthorizationService authorizationService;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		LOG.debug("init");
-		this.authorizationService = AuthorizationServiceFactory.newInstance();
-	}
 
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		/*
-		 * Since the SAML protocol can enter the application via an HTTP POST we
-		 * also need to implement the doPost method.
-		 */
-		doGet(request, response);
-	}
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+        super.init(config);
+        LOG.debug("init");
+        this.authorizationService = AuthorizationServiceFactory.newInstance();
+    }
 
-		HttpSession session = request.getSession();
-		String userId = (String) session.getAttribute("username");
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		LOG.debug("userId: " + userId);
-		boolean admin = this.authorizationService.isAdmin(userId);
+        /*
+         * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost
+         * method.
+         */
+        doGet(request, response);
+    }
 
-		if (admin) {
-			redirectToAdminPage(session, response);
-		} else {
-			redirectToOverviewPage(session, response);
-		}
-	}
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-	private void redirectToOverviewPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", MandateConstants.USER_ROLE);
-		/*
-		 * The role attribute is used by the LawyerLoginModule for
-		 * authorization.
-		 */
-		response.sendRedirect("./overview.seam");
-	}
+        HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("username");
 
-	private void redirectToAdminPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", MandateConstants.ADMIN_ROLE);
-		response.sendRedirect("./admin/search.seam");
-	}
+        LOG.debug("userId: " + userId);
+        boolean admin = this.authorizationService.isAdmin(userId);
+
+        if (admin) {
+            redirectToAdminPage(session, response);
+        } else {
+            redirectToOverviewPage(session, response);
+        }
+    }
+
+    private void redirectToOverviewPage(HttpSession session, HttpServletResponse response) throws IOException {
+
+        session.setAttribute("role", MandateConstants.USER_ROLE);
+        /*
+         * The role attribute is used by the LawyerLoginModule for authorization.
+         */
+        response.sendRedirect("./overview.seam");
+    }
+
+    private void redirectToAdminPage(HttpSession session, HttpServletResponse response) throws IOException {
+
+        session.setAttribute("role", MandateConstants.ADMIN_ROLE);
+        response.sendRedirect("./admin/search.seam");
+    }
 }

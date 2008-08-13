@@ -23,6 +23,7 @@ import net.link.safeonline.dao.HistoryDAO;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "HistoryCleanerTaskBean")
@@ -30,27 +31,31 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Configurable
 public class HistoryCleanerTaskBean implements Task {
 
-	private static final String name = "Subject history cleaner";
+    private static final String name              = "Subject history cleaner";
 
-	@EJB
-	private HistoryDAO historyDAO;
+    @EJB
+    private HistoryDAO          historyDAO;
 
-	@Configurable(name = "History Age (ms)", group = "User history cleaner")
-	private Integer configAgeInMillis = 10 * 60 * 1000;
+    @Configurable(name = "History Age (ms)", group = "User history cleaner")
+    private Integer             configAgeInMillis = 10 * 60 * 1000;
 
-	public HistoryCleanerTaskBean() {
-		// empty
-	}
 
-	public String getName() {
-		return name;
-	}
+    public HistoryCleanerTaskBean() {
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() throws Exception {
-		long ageInMillis = this.configAgeInMillis;
-		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
-		this.historyDAO.clearAllHistory(ageLimit);
-	}
+        // empty
+    }
+
+    public String getName() {
+
+        return name;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void perform() throws Exception {
+
+        long ageInMillis = this.configAgeInMillis;
+        Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
+        this.historyDAO.clearAllHistory(ageLimit);
+    }
 
 }

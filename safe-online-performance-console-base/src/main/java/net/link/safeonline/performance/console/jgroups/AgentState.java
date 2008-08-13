@@ -17,6 +17,7 @@ package net.link.safeonline.performance.console.jgroups;
 
 import java.awt.Color;
 
+
 /**
  * <h2>{@link AgentState}<br>
  * <sub>Describes the different states an agent can be in.</sub></h2>
@@ -29,39 +30,40 @@ import java.awt.Color;
  */
 public enum AgentState {
 
-	RESET(Color.gray, "Ready", "Idle"),
+    RESET(Color.gray, "Ready", "Idle"),
 
-	UPLOAD(Color.blue, "Uploaded", "Receiving"),
+    UPLOAD(Color.blue, "Uploaded", "Receiving"),
 
-	DEPLOY(Color.blue.darker(), "Deployed", "Deploying"),
+    DEPLOY(Color.blue.darker(), "Deployed", "Deploying"),
 
-	EXECUTE(Color.green.darker(), "Completed", "Executing"),
+    EXECUTE(Color.green.darker(), "Completed", "Executing"),
 
-	CHART(Color.yellow.darker(), "Charted", "Charting");
+    CHART(Color.yellow.darker(), "Charted", "Charting");
 
-	private Color color;
-	private String state;
-	private String transitioning;
+    private Color  color;
+    private String state;
+    private String transitioning;
 
-	private AgentState(Color color, String state, String transitioning) {
 
-		this.color = color;
-		this.state = state;
-		this.transitioning = transitioning;
-	}
+    private AgentState(Color color, String state, String transitioning) {
 
-	public String getState() {
+        this.color = color;
+        this.state = state;
+        this.transitioning = transitioning;
+    }
 
-		return this.state;
-	}
+    public String getState() {
 
-	public String getTransitioning() {
+        return this.state;
+    }
 
-		return this.transitioning;
-	}
+    public String getTransitioning() {
 
-	public Color getColor() {
+        return this.transitioning;
+    }
 
-		return this.color;
-	}
+    public Color getColor() {
+
+        return this.color;
+    }
 }

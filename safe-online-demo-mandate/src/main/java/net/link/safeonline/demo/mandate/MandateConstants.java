@@ -9,16 +9,18 @@ package net.link.safeonline.demo.mandate;
 
 public class MandateConstants {
 
-	private MandateConstants() {
-		// empty
-	}
+    private MandateConstants() {
 
-	public static final String SECURITY_DOMAIN = "demo-mandate";
+        // empty
+    }
 
-	public static final String USER_ROLE = "user";
 
-	public static final String ADMIN_ROLE = "admin";
+    public static final String SECURITY_DOMAIN     = "demo-mandate";
 
-	public static final String ENTITY_MANAGER_NAME = "DemoMandateEntityManager";
+    public static final String USER_ROLE           = "user";
+
+    public static final String ADMIN_ROLE          = "admin";
+
+    public static final String ENTITY_MANAGER_NAME = "DemoMandateEntityManager";
 
 }

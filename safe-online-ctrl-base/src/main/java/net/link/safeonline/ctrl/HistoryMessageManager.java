@@ -16,6 +16,7 @@ import javax.faces.context.FacesContext;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.HistoryEntity;
 
+
 /**
  * Takes a history entity and formats an internationalized message from it.
  * 
@@ -28,8 +29,8 @@ public class HistoryMessageManager {
 
 
     /**
-     * Returns the i18n history message. The history properties are used to
-     * format this message. Following order is to be used in the resource bundle :
+     * Returns the i18n history message. The history properties are used to format this message. Following order is to
+     * be used in the resource bundle :
      * <ol>
      * <li>Application</li>
      * <li>Device</li>
@@ -41,12 +42,10 @@ public class HistoryMessageManager {
      * @param historyEntity
      * @return
      */
-    public static String getMessage(FacesContext context,
-            HistoryEntity historyEntity) {
+    public static String getMessage(FacesContext context, HistoryEntity historyEntity) {
 
         Locale locale = context.getExternalContext().getRequestLocale();
-        ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BASE,
-                locale);
+        ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BASE, locale);
 
         String message = messages.getString(historyEntity.getEvent().getKey());
 
@@ -55,28 +54,20 @@ public class HistoryMessageManager {
         String device = null;
         String info = null;
 
-        if (historyEntity.getProperties().get(
-                SafeOnlineConstants.APPLICATION_PROPERTY) != null) {
-            application = historyEntity.getProperties().get(
-                    SafeOnlineConstants.APPLICATION_PROPERTY).getValue();
+        if (historyEntity.getProperties().get(SafeOnlineConstants.APPLICATION_PROPERTY) != null) {
+            application = historyEntity.getProperties().get(SafeOnlineConstants.APPLICATION_PROPERTY).getValue();
         }
-        if (historyEntity.getProperties().get(
-                SafeOnlineConstants.ATTRIBUTE_PROPERTY) != null) {
-            attribute = historyEntity.getProperties().get(
-                    SafeOnlineConstants.ATTRIBUTE_PROPERTY).getValue();
+        if (historyEntity.getProperties().get(SafeOnlineConstants.ATTRIBUTE_PROPERTY) != null) {
+            attribute = historyEntity.getProperties().get(SafeOnlineConstants.ATTRIBUTE_PROPERTY).getValue();
         }
-        if (historyEntity.getProperties().get(
-                SafeOnlineConstants.DEVICE_PROPERTY) != null) {
-            device = historyEntity.getProperties().get(
-                    SafeOnlineConstants.DEVICE_PROPERTY).getValue();
+        if (historyEntity.getProperties().get(SafeOnlineConstants.DEVICE_PROPERTY) != null) {
+            device = historyEntity.getProperties().get(SafeOnlineConstants.DEVICE_PROPERTY).getValue();
         }
-        if (historyEntity.getProperties()
-                .get(SafeOnlineConstants.INFO_PROPERTY) != null) {
-            info = historyEntity.getProperties().get(
-                    SafeOnlineConstants.INFO_PROPERTY).getValue();
+        if (historyEntity.getProperties().get(SafeOnlineConstants.INFO_PROPERTY) != null) {
+            info = historyEntity.getProperties().get(SafeOnlineConstants.INFO_PROPERTY).getValue();
         }
 
-        return MessageFormat.format(message, historyEntity.getSubject()
-                .getUserId(), application, device, attribute, info);
+        return MessageFormat.format(message, historyEntity.getSubject().getUserId(), application, device, attribute,
+                info);
     }
 }

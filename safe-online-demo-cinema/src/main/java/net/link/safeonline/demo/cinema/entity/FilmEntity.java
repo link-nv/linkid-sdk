@@ -22,6 +22,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+
 @Entity
 @NamedQueries( {
         @NamedQuery(name = FilmEntity.getAll, query = "SELECT f FROM FilmEntity f"),
@@ -62,8 +63,7 @@ public class FilmEntity implements Serializable {
      * @param duration
      *            The duration of the film in seconds.
      */
-    public FilmEntity(String name, String description, long duration,
-            int price, Collection<ShowTimeEntity> times,
+    public FilmEntity(String name, String description, long duration, int price, Collection<ShowTimeEntity> times,
             Collection<RoomEntity> rooms) {
 
         this.name = name;

@@ -30,92 +30,105 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Entity
 @Table(name = "application_owner")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationOwnerEntity"),
-		@NamedQuery(name = QUERY_WHERE_ADMIN, query = "SELECT applicationOwner "
-				+ "FROM ApplicationOwnerEntity AS applicationOwner "
-				+ "WHERE applicationOwner.admin = :admin") })
+        @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationOwnerEntity"),
+        @NamedQuery(name = QUERY_WHERE_ADMIN, query = "SELECT applicationOwner "
+                + "FROM ApplicationOwnerEntity AS applicationOwner " + "WHERE applicationOwner.admin = :admin") })
 public class ApplicationOwnerEntity implements Serializable {
 
-	public static final String QUERY_WHERE_ALL = "owner.all";
+    public static final String      QUERY_WHERE_ALL   = "owner.all";
 
-	public static final String QUERY_WHERE_ADMIN = "owner.admin";
+    public static final String      QUERY_WHERE_ADMIN = "owner.admin";
 
-	private static final long serialVersionUID = 1L;
+    private static final long       serialVersionUID  = 1L;
 
-	private String name;
+    private String                  name;
 
-	private SubjectEntity admin;
+    private SubjectEntity           admin;
 
-	private List<ApplicationEntity> applications;
+    private List<ApplicationEntity> applications;
 
-	public ApplicationOwnerEntity() {
-		// empty
-	}
 
-	public ApplicationOwnerEntity(String name, SubjectEntity admin) {
-		this.name = name;
-		this.admin = admin;
-	}
+    public ApplicationOwnerEntity() {
 
-	@Id
-	public String getName() {
-		return this.name;
-	}
+        // empty
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public ApplicationOwnerEntity(String name, SubjectEntity admin) {
 
-	@OneToOne(optional = false)
-	public SubjectEntity getAdmin() {
-		return this.admin;
-	}
+        this.name = name;
+        this.admin = admin;
+    }
 
-	public void setAdmin(SubjectEntity admin) {
-		this.admin = admin;
-	}
+    @Id
+    public String getName() {
 
-	@OneToMany(mappedBy = "applicationOwner", fetch = FetchType.EAGER)
-	@OrderBy("name")
-	public List<ApplicationEntity> getApplications() {
-		return this.applications;
-	}
+        return this.name;
+    }
 
-	public void setApplications(List<ApplicationEntity> applications) {
-		this.applications = applications;
-	}
+    public void setName(String name) {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.name).toHashCode();
-	}
+        this.name = name;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final ApplicationOwnerEntity rhs = (ApplicationOwnerEntity) obj;
-		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
-	}
+    @OneToOne(optional = false)
+    public SubjectEntity getAdmin() {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append(this.name).toString();
-	}
+        return this.admin;
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_ALL)
-		List<ApplicationOwnerEntity> listApplicationOwners();
+    public void setAdmin(SubjectEntity admin) {
 
-		@QueryMethod(value = QUERY_WHERE_ADMIN, nullable = true)
-		ApplicationOwnerEntity getApplicationOwner(
-				@QueryParam("admin") SubjectEntity adminSubject);
-	}
+        this.admin = admin;
+    }
+
+    @OneToMany(mappedBy = "applicationOwner", fetch = FetchType.EAGER)
+    @OrderBy("name")
+    public List<ApplicationEntity> getApplications() {
+
+        return this.applications;
+    }
+
+    public void setApplications(List<ApplicationEntity> applications) {
+
+        this.applications = applications;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.name).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final ApplicationOwnerEntity rhs = (ApplicationOwnerEntity) obj;
+        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append(this.name).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_ALL)
+        List<ApplicationOwnerEntity> listApplicationOwners();
+
+        @QueryMethod(value = QUERY_WHERE_ADMIN, nullable = true)
+        ApplicationOwnerEntity getApplicationOwner(@QueryParam("admin") SubjectEntity adminSubject);
+    }
 }

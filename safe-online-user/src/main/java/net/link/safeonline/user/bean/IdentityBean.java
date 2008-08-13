@@ -46,6 +46,7 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("identityBean")
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "IdentityBean/local")
@@ -53,85 +54,91 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class IdentityBean implements Identity {
 
-	private static final Log LOG = LogFactory.getLog(IdentityBean.class);
+    private static final Log   LOG                 = LogFactory.getLog(IdentityBean.class);
 
-	@EJB
-	private IdentityService identityService;
+    @EJB
+    private IdentityService    identityService;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService     subjectService;
 
-	public static final String ATTRIBUTE_LIST_NAME = "attributeList";
+    public static final String ATTRIBUTE_LIST_NAME = "attributeList";
 
-	@SuppressWarnings("unused")
-	@DataModel(ATTRIBUTE_LIST_NAME)
-	private List<AttributeDO> attributeList;
+    @SuppressWarnings("unused")
+    @DataModel(ATTRIBUTE_LIST_NAME)
+    private List<AttributeDO>  attributeList;
 
-	@DataModelSelection(ATTRIBUTE_LIST_NAME)
-	@Out(required = false, scope = ScopeType.SESSION)
-	private AttributeDO selectedAttribute;
+    @DataModelSelection(ATTRIBUTE_LIST_NAME)
+    @Out(required = false, scope = ScopeType.SESSION)
+    private AttributeDO        selectedAttribute;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages              facesMessages;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	@Factory(ATTRIBUTE_LIST_NAME)
-	@ErrorHandling( { @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeNotFoundSpecific") })
-	public void attributeListFactory() throws AttributeTypeNotFoundException,
-			PermissionDeniedException, ApplicationIdentityNotFoundException {
-		LOG.debug("attributeListFactory");
-		Locale viewLocale = getViewLocale();
-		this.attributeList = this.identityService.listAttributes(viewLocale);
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	private Locale getViewLocale() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		return viewLocale;
-	}
+    }
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String edit() {
-		LOG.debug("edit attribute: " + this.selectedAttribute.getName());
-		return "edit";
-	}
+    @RolesAllowed(UserConstants.USER_ROLE)
+    @Factory(ATTRIBUTE_LIST_NAME)
+    @ErrorHandling( { @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeNotFoundSpecific") })
+    public void attributeListFactory() throws AttributeTypeNotFoundException, PermissionDeniedException,
+            ApplicationIdentityNotFoundException {
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String add() {
-		LOG.debug("add attribute of type: " + this.selectedAttribute.getName());
-		return "add";
-	}
+        LOG.debug("attributeListFactory");
+        Locale viewLocale = getViewLocale();
+        this.attributeList = this.identityService.listAttributes(viewLocale);
+    }
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String removeAttribute() throws AttributeTypeNotFoundException,
-			PermissionDeniedException, AttributeNotFoundException,
-			ApplicationIdentityNotFoundException {
-		LOG.debug("remove attribute: " + this.selectedAttribute);
-		try {
-			this.identityService.removeAttribute(this.selectedAttribute);
-		} catch (PermissionDeniedException e) {
-			String msg = "user not allowed to remove the attribute";
-			LOG.error(msg);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorUserNotAllowedToRemoveAttribute");
-			return null;
-		}
-		attributeListFactory();
-		return "removed";
-	}
+    private Locale getViewLocale() {
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String getUsername() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = facesContext.getExternalContext();
-		String userId = externalContext.getUserPrincipal().getName();
-		String username = this.subjectService.getSubjectLogin(userId);
-		return username;
-	}
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        return viewLocale;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String edit() {
+
+        LOG.debug("edit attribute: " + this.selectedAttribute.getName());
+        return "edit";
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String add() {
+
+        LOG.debug("add attribute of type: " + this.selectedAttribute.getName());
+        return "add";
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String removeAttribute() throws AttributeTypeNotFoundException, PermissionDeniedException,
+            AttributeNotFoundException, ApplicationIdentityNotFoundException {
+
+        LOG.debug("remove attribute: " + this.selectedAttribute);
+        try {
+            this.identityService.removeAttribute(this.selectedAttribute);
+        } catch (PermissionDeniedException e) {
+            String msg = "user not allowed to remove the attribute";
+            LOG.error(msg);
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+                    "errorUserNotAllowedToRemoveAttribute");
+            return null;
+        }
+        attributeListFactory();
+        return "removed";
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String getUsername() {
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        String userId = externalContext.getUserPrincipal().getName();
+        String username = this.subjectService.getSubjectLogin(userId);
+        return username;
+    }
 }

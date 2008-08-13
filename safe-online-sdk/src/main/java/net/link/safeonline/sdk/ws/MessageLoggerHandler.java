@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
+
 /**
  * JAX-WS SOAP handler to log the SOAP messages.
  * 
@@ -28,82 +29,89 @@ import org.w3c.dom.Document;
  */
 public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory
-			.getLog(MessageLoggerHandler.class);
+    private static final Log LOG = LogFactory.getLog(MessageLoggerHandler.class);
 
-	private boolean captureMessages;
+    private boolean          captureMessages;
 
-	private Document inboundMessage;
+    private Document         inboundMessage;
 
-	private Document outboundMessage;
+    private Document         outboundMessage;
 
-	public MessageLoggerHandler() {
-		this.captureMessages = true;
-	}
 
-	/**
-	 * Set to <code>true</code> if you want to log the inbound and outbound
-	 * SOAP messages.
-	 * 
-	 * @param captureMessages
-	 */
-	public void setCaptureMessages(boolean captureMessages) {
-		this.captureMessages = captureMessages;
-	}
+    public MessageLoggerHandler() {
 
-	/**
-	 * Returns <code>true</code> if this handler will capture the inbound and
-	 * outbound SOAP messages during following web service invocations.
-	 * 
-	 */
-	public boolean isCaptureMessages() {
-		return this.captureMessages;
-	}
+        this.captureMessages = true;
+    }
 
-	public Set<QName> getHeaders() {
-		return null;
-	}
+    /**
+     * Set to <code>true</code> if you want to log the inbound and outbound SOAP messages.
+     * 
+     * @param captureMessages
+     */
+    public void setCaptureMessages(boolean captureMessages) {
 
-	public void close(MessageContext messageContext) {
-	}
+        this.captureMessages = captureMessages;
+    }
 
-	public boolean handleFault(SOAPMessageContext soapMessageContext) {
-		return true;
-	}
+    /**
+     * Returns <code>true</code> if this handler will capture the inbound and outbound SOAP messages during following
+     * web service invocations.
+     * 
+     */
+    public boolean isCaptureMessages() {
 
-	public boolean handleMessage(SOAPMessageContext soapMessageContext) {
-		if (false == this.captureMessages) {
-			/*
-			 * Nothing to do.
-			 */
-			return true;
-		}
-		LOG.debug("logging message");
+        return this.captureMessages;
+    }
 
-		Boolean outboundProperty = (Boolean) soapMessageContext
-				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+    public Set<QName> getHeaders() {
 
-		try {
-			SOAPMessage soapMessage = soapMessageContext.getMessage();
-			SOAPPart soapPart = soapMessage.getSOAPPart();
+        return null;
+    }
 
-			if (outboundProperty) {
-				this.outboundMessage = soapPart;
-			} else {
-				this.inboundMessage = soapPart;
-			}
-		} catch (Exception e) {
-			LOG.debug("exception caught: " + e.getMessage(), e);
-		}
+    public void close(MessageContext messageContext) {
 
-		return true;
-	}
+    }
 
-	public Document getInboundMessage() {
-		return this.inboundMessage;
-	}
+    public boolean handleFault(SOAPMessageContext soapMessageContext) {
 
-	public Document getOutboundMessage() {
-		return this.outboundMessage;
-	}
+        return true;
+    }
+
+    public boolean handleMessage(SOAPMessageContext soapMessageContext) {
+
+        if (false == this.captureMessages) {
+            /*
+             * Nothing to do.
+             */
+            return true;
+        }
+        LOG.debug("logging message");
+
+        Boolean outboundProperty = (Boolean) soapMessageContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+
+        try {
+            SOAPMessage soapMessage = soapMessageContext.getMessage();
+            SOAPPart soapPart = soapMessage.getSOAPPart();
+
+            if (outboundProperty) {
+                this.outboundMessage = soapPart;
+            } else {
+                this.inboundMessage = soapPart;
+            }
+        } catch (Exception e) {
+            LOG.debug("exception caught: " + e.getMessage(), e);
+        }
+
+        return true;
+    }
+
+    public Document getInboundMessage() {
+
+        return this.inboundMessage;
+    }
+
+    public Document getOutboundMessage() {
+
+        return this.outboundMessage;
+    }
 }

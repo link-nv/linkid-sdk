@@ -28,12 +28,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("prescriptionEdit")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionEditBean/local")
 @SecurityDomain(PrescriptionConstants.SECURITY_DOMAIN)
-public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
-        implements PrescriptionEdit {
+public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean implements PrescriptionEdit {
 
     @Logger
     private Log        log;
@@ -47,17 +47,12 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
     public String persist() {
 
         try {
-            createOrUpdateAttribute(
-                    DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean
-                            .valueOf(this.userStatus.isAdmin()), Boolean.class);
-            createOrUpdateAttribute(
-                    DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
-                    Boolean.valueOf(this.userStatus.isCareProvider()),
-                    Boolean.class);
-            createOrUpdateAttribute(
-                    DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
-                    Boolean.valueOf(this.userStatus.isPharmacist()),
-                    Boolean.class);
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(this.userStatus
+                    .isAdmin()), Boolean.class);
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME, Boolean
+                    .valueOf(this.userStatus.isCareProvider()), Boolean.class);
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, Boolean
+                    .valueOf(this.userStatus.isPharmacist()), Boolean.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error");
             return null;
@@ -65,8 +60,7 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
             this.facesMessages.add("request denied");
             return null;
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.add("subject not found: "
-                    + this.userStatus.getName());
+            this.facesMessages.add("subject not found: " + this.userStatus.getName());
             return null;
         } catch (AttributeNotFoundException e) {
             this.facesMessages.add("attribute not found");
@@ -75,15 +69,13 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
         return "success";
     }
 
-    private void createOrUpdateAttribute(String attributeName,
-            Object attributeValue, Class<?> expectedClass)
-            throws WSClientTransportException, RequestDeniedException,
-            SubjectNotFoundException, AttributeNotFoundException {
+    private void createOrUpdateAttribute(String attributeName, Object attributeValue, Class<?> expectedClass)
+            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException,
+            AttributeNotFoundException {
 
         DataClient dataClient = getDataClient();
         String userId = this.userStatus.getUserId();
-        if (null == dataClient.getAttributeValue(userId, attributeName,
-                expectedClass)) {
+        if (null == dataClient.getAttributeValue(userId, attributeName, expectedClass)) {
             this.log.debug("create attribute #0 for #1", attributeName, userId);
             dataClient.createAttribute(userId, attributeName, attributeValue);
         } else {

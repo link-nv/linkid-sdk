@@ -13,9 +13,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+
 /**
- * Is used to specify a mapped compounded attribute member attribute for a
- * property or field.
+ * Is used to specify a mapped compounded attribute member attribute for a property or field.
  * 
  * @author fcorneli
  * 
@@ -25,9 +25,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CompoundMember {
 
-	/**
-	 * The name of the member attribute.
-	 * 
-	 */
-	String value();
+    /**
+     * The name of the member attribute.
+     * 
+     */
+    String value();
 }

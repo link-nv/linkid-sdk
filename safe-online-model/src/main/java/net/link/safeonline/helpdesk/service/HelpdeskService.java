@@ -15,6 +15,7 @@ import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 
+
 /**
  * Interface to service for retrieving information about helpdesk logs.
  * 
@@ -24,38 +25,37 @@ import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 @Local
 public interface HelpdeskService {
 
-	/**
-	 * Gives back all available helpdesk log contexts.
-	 * 
-	 */
-	List<HelpdeskContextEntity> listContexts();
+    /**
+     * Gives back all available helpdesk log contexts.
+     * 
+     */
+    List<HelpdeskContextEntity> listContexts();
 
-	/**
-	 * Gives all helpdesk events logs for the specified log id.
-	 * 
-	 * @param logId
-	 */
-	List<HelpdeskEventEntity> listEvents(Long logId);
+    /**
+     * Gives all helpdesk events logs for the specified log id.
+     * 
+     * @param logId
+     */
+    List<HelpdeskEventEntity> listEvents(Long logId);
 
-	/**
-	 * Gives all users with helpdesk event logs
-	 * 
-	 */
-	List<String> listUsers();
+    /**
+     * Gives all users with helpdesk event logs
+     * 
+     */
+    List<String> listUsers();
 
-	/**
-	 * Gives all helpdesk logs for a specific user
-	 * 
-	 * @param user
-	 */
-	List<HelpdeskContextEntity> listUserContexts(String user);
+    /**
+     * Gives all helpdesk logs for a specific user
+     * 
+     * @param user
+     */
+    List<HelpdeskContextEntity> listUserContexts(String user);
 
-	/**
-	 * Removes the helpdesk context log and its associated events for the
-	 * specified log id.
-	 * 
-	 * @param logId
-	 */
-	boolean removeLog(Long logId) throws HelpdeskContextNotFoundException;
+    /**
+     * Removes the helpdesk context log and its associated events for the specified log id.
+     * 
+     * @param logId
+     */
+    boolean removeLog(Long logId) throws HelpdeskContextNotFoundException;
 
 }

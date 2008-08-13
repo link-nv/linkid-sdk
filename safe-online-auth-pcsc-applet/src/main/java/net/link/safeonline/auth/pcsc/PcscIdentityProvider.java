@@ -12,29 +12,33 @@ import javax.smartcardio.CardException;
 
 import net.link.safeonline.shared.statement.IdentityProvider;
 
+
 public class PcscIdentityProvider extends Pcsc implements IdentityProvider {
 
-	public PcscIdentityProvider(CardChannel cardChannel) {
-		super(cardChannel);
-	}
+    public PcscIdentityProvider(CardChannel cardChannel) {
 
-	public String getGivenName() {
-		IdentityFile identityFile;
-		try {
-			identityFile = getIdentityFile();
-		} catch (CardException e) {
-			throw new RuntimeException("error");
-		}
-		return identityFile.getName();
-	}
+        super(cardChannel);
+    }
 
-	public String getSurname() {
-		IdentityFile identityFile;
-		try {
-			identityFile = getIdentityFile();
-		} catch (CardException e) {
-			throw new RuntimeException("error");
-		}
-		return identityFile.getFirstName();
-	}
+    public String getGivenName() {
+
+        IdentityFile identityFile;
+        try {
+            identityFile = getIdentityFile();
+        } catch (CardException e) {
+            throw new RuntimeException("error");
+        }
+        return identityFile.getName();
+    }
+
+    public String getSurname() {
+
+        IdentityFile identityFile;
+        try {
+            identityFile = getIdentityFile();
+        } catch (CardException e) {
+            throw new RuntimeException("error");
+        }
+        return identityFile.getFirstName();
+    }
 }

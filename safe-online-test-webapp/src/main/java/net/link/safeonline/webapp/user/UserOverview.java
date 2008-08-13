@@ -7,14 +7,14 @@
 
 package net.link.safeonline.webapp.user;
 
-
 public class UserOverview extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/overview.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/overview.seam";
 
-	public UserOverview() {
-		super(PAGE_NAME);
-	}
+
+    public UserOverview() {
+
+        super(PAGE_NAME);
+    }
 
 }

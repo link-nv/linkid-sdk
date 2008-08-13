@@ -11,10 +11,12 @@ import net.link.safeonline.taglib.AttributeValidator;
 
 import org.junit.Test;
 
+
 public class AttributeValidatorTest {
 
-	@Test
-	public void instance() throws Exception {
-		new AttributeValidator();
-	}
+    @Test
+    public void instance() throws Exception {
+
+        new AttributeValidator();
+    }
 }

@@ -23,83 +23,74 @@ import net.link.safeonline.util.servlet.annotation.Init;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Device registration landing page.
  * 
- * This landing servlet handles the SAML requests sent out by an external device
- * provider, and sends back a response containing the UUID for the registrating
- * OLAS subject for this device. This landing is used for registration, updating
- * and removal.
+ * This landing servlet handles the SAML requests sent out by an external device provider, and sends back a response
+ * containing the UUID for the registrating OLAS subject for this device. This landing is used for registration,
+ * updating and removal.
  * 
  * @author wvdhaute
  * 
  */
 public class DeviceLandingServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID               = 1L;
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceLandingServlet.class);
+    private static final Log   LOG                            = LogFactory.getLog(DeviceLandingServlet.class);
 
-	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
+    public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
-	@Init(name = "DevicesPage")
-	private String devicesPage;
+    @Init(name = "DevicesPage")
+    private String             devicesPage;
 
-	@Init(name = "ServletEndpointUrl")
-	private String servletEndpointUrl;
+    @Init(name = "ServletEndpointUrl")
+    private String             servletEndpointUrl;
 
-	@Init(name = "ErrorPage", optional = true)
-	private String errorPage;
+    @Init(name = "ErrorPage", optional = true)
+    private String             errorPage;
 
-	@Init(name = "ResourceBundle", optional = true)
-	private String resourceBundleName;
+    @Init(name = "ResourceBundle", optional = true)
+    private String             resourceBundleName;
 
-	@Override
-	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("doPost");
 
-		/**
-		 * Wrap the request to use the servlet endpoint url. To prevent failure
-		 * when behind a reverse proxy or loadbalancer when opensaml is checking
-		 * the destination field.
-		 */
-		HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
-				request, this.servletEndpointUrl);
+    @Override
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		DeviceOperationService deviceOperationService = (DeviceOperationService) requestWrapper
-				.getSession()
-				.getAttribute(
-						DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
-		if (null == deviceOperationService) {
-			redirectToErrorPage(requestWrapper, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(
-							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-							"errorProtocolHandlerFinalization"));
-			return;
-		}
+        LOG.debug("doPost");
 
-		try {
-			deviceOperationService.finalize(requestWrapper);
-		} catch (NodeNotFoundException e) {
-			redirectToErrorPage(requestWrapper, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(
-							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-							"errorProtocolHandlerFinalization"));
-			return;
-		} catch (DeviceMappingNotFoundException e) {
-			redirectToErrorPage(requestWrapper, response, this.errorPage,
-					this.resourceBundleName, new ErrorMessage(
-							DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-							"errorDeviceRegistrationNotFound"));
-			return;
-		}
+        /**
+         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or
+         * loadbalancer when opensaml is checking the destination field.
+         */
+        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request,
+                this.servletEndpointUrl);
 
-		// remove the device operation service from the HttpSession
-		requestWrapper.getSession().removeAttribute(
-				DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
+        DeviceOperationService deviceOperationService = (DeviceOperationService) requestWrapper.getSession()
+                .getAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
+        if (null == deviceOperationService) {
+            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            return;
+        }
 
-		response.sendRedirect(this.devicesPage);
-	}
+        try {
+            deviceOperationService.finalize(requestWrapper);
+        } catch (NodeNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            return;
+        } catch (DeviceMappingNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
+            return;
+        }
+
+        // remove the device operation service from the HttpSession
+        requestWrapper.getSession().removeAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
+
+        response.sendRedirect(this.devicesPage);
+    }
 }

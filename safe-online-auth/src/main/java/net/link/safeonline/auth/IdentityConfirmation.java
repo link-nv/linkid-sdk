@@ -18,25 +18,24 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 
+
 @Local
 public interface IdentityConfirmation {
 
-	/*
-	 * Actions.
-	 */
-	String agree() throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException, SubscriptionNotFoundException;
+    /*
+     * Actions.
+     */
+    String agree() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException, SubscriptionNotFoundException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Factory.
-	 */
-	List<AttributeDO> identityConfirmationListFactory()
-			throws SubscriptionNotFoundException, ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException;
+    /*
+     * Factory.
+     */
+    List<AttributeDO> identityConfirmationListFactory() throws SubscriptionNotFoundException,
+            ApplicationNotFoundException, ApplicationIdentityNotFoundException;
 }

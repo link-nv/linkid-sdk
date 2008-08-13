@@ -37,14 +37,14 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 import com.sun.xml.ws.client.ClientTransportException;
 
+
 /**
  * Implementation WS-Notification producer service.
  * 
  * @author wvdhaute
  * 
  */
-public class NotificationSubscriptionManagerClientImpl extends
-        AbstractMessageAccessor implements
+public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAccessor implements
         NotificationSubscriptionManagerClient {
 
     private static final Log                          LOG = LogFactory
@@ -65,25 +65,22 @@ public class NotificationSubscriptionManagerClientImpl extends
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public NotificationSubscriptionManagerClientImpl(String location,
-            X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
+    public NotificationSubscriptionManagerClientImpl(String location, X509Certificate clientCertificate,
+            PrivateKey clientPrivateKey) {
 
-        NotificationSubscriptionManagerService service = NotificationSubscriptionManagerServiceFactory
-                .newInstance();
+        NotificationSubscriptionManagerService service = NotificationSubscriptionManagerServiceFactory.newInstance();
         this.port = service.getNotificationSubscriptionManagerPort();
         this.location = location + "/safe-online-ws/subscription";
         setEndpointAddress();
 
         registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
-                clientPrivateKey);
+        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
     }
 
     private void setEndpointAddress() {
 
         BindingProvider bindingProvider = (BindingProvider) this.port;
-        bindingProvider.getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
     private W3CEndpointReference getEndpointReference(String address) {
@@ -93,8 +90,7 @@ public class NotificationSubscriptionManagerClientImpl extends
         return builder.build();
     }
 
-    public void unsubscribe(String topic, String address)
-            throws SubscriptionNotFoundException, RequestDeniedException,
+    public void unsubscribe(String topic, String address) throws SubscriptionNotFoundException, RequestDeniedException,
             WSClientTransportException {
 
         LOG.debug("unsubscribe");
@@ -122,14 +118,12 @@ public class NotificationSubscriptionManagerClientImpl extends
         checkStatus(response);
     }
 
-    private void checkStatus(UnsubscribeResponse response)
-            throws SubscriptionNotFoundException, RequestDeniedException {
+    private void checkStatus(UnsubscribeResponse response) throws SubscriptionNotFoundException, RequestDeniedException {
 
         StatusType status = response.getStatus();
         StatusCodeType statusCode = status.getStatusCode();
         String statusCodeValue = statusCode.getValue();
-        NotificationErrorCode errorCode = NotificationErrorCode
-                .getNotificationErrorCode(statusCodeValue);
+        NotificationErrorCode errorCode = NotificationErrorCode.getNotificationErrorCode(statusCodeValue);
         if (NotificationErrorCode.SUBSCRIPTION_NOT_FOUND == errorCode) {
             throw new SubscriptionNotFoundException();
         } else if (NotificationErrorCode.PERMISSION_DENIED == errorCode) {

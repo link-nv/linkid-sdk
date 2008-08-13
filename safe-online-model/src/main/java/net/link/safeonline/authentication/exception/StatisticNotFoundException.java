@@ -11,13 +11,16 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class StatisticNotFoundException extends NotFoundException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public StatisticNotFoundException() {
-		super(SharedConstants.STATISTIC_NOT_FOUND_ERROR);
-	}
+
+    public StatisticNotFoundException() {
+
+        super(SharedConstants.STATISTIC_NOT_FOUND_ERROR);
+    }
 
 }

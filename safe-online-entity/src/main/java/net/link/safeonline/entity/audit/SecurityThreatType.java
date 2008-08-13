@@ -17,5 +17,5 @@ package net.link.safeonline.entity.audit;
  */
 public enum SecurityThreatType {
 
-	DISCLOSURE, DECEPTION, DISRUPTION, USURPATION
+    DISCLOSURE, DECEPTION, DISRUPTION, USURPATION
 }

@@ -14,22 +14,23 @@ import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
+
 public class NotificationProducerTest {
 
-	@Test
-	public void testW3CEndpointReference() throws Exception {
-		String address = "test-address";
+    @Test
+    public void testW3CEndpointReference() throws Exception {
 
-		W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
-		builder.address(address);
-		W3CEndpointReference endpoint = builder.build();
-		Assert.assertNotNull(endpoint);
+        String address = "test-address";
 
-		DOMResult domResult = new DOMResult();
-		endpoint.writeTo(domResult);
-		String resultAddress = domResult.getNode().getFirstChild()
-				.getFirstChild().getFirstChild().getNodeValue();
-		Assert.assertEquals(address, resultAddress);
+        W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
+        builder.address(address);
+        W3CEndpointReference endpoint = builder.build();
+        Assert.assertNotNull(endpoint);
 
-	}
+        DOMResult domResult = new DOMResult();
+        endpoint.writeTo(domResult);
+        String resultAddress = domResult.getNode().getFirstChild().getFirstChild().getFirstChild().getNodeValue();
+        Assert.assertEquals(address, resultAddress);
+
+    }
 }

@@ -42,16 +42,15 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("identityConfirmation")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-        + "IdentityConfirmationBean/local")
+@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "IdentityConfirmationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class IdentityConfirmationBean implements IdentityConfirmation {
 
-    private static final Log LOG = LogFactory
-                                         .getLog(IdentityConfirmationBean.class);
+    private static final Log LOG = LogFactory.getLog(IdentityConfirmationBean.class);
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
     private String           application;
@@ -64,16 +63,13 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String agree() throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException, SubscriptionNotFoundException {
+    public String agree() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException, SubscriptionNotFoundException {
 
         LOG.debug("agree");
         this.identityService.confirmIdentity(this.application);
-        boolean hasMissingAttributes = this.identityService
-                .hasMissingAttributes(this.application);
-        HelpdeskLogger.add("confirmed application identity for "
-                + this.application, LogLevelType.INFO);
+        boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.application);
+        HelpdeskLogger.add("confirmed application identity for " + this.application, LogLevelType.INFO);
 
         if (true == hasMissingAttributes) {
             return "missing-attributes";
@@ -92,16 +88,15 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 
     @Factory("identityConfirmationList")
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public List<AttributeDO> identityConfirmationListFactory()
-            throws SubscriptionNotFoundException, ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException {
+    public List<AttributeDO> identityConfirmationListFactory() throws SubscriptionNotFoundException,
+            ApplicationNotFoundException, ApplicationIdentityNotFoundException {
 
         LOG.debug("identityConfirmationList factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        List<AttributeDO> confirmationList = this.identityService
-                .listIdentityAttributesToConfirm(this.application, viewLocale);
+        List<AttributeDO> confirmationList = this.identityService.listIdentityAttributesToConfirm(this.application,
+                viewLocale);
         LOG.debug("confirmation list: " + confirmationList);
         return confirmationList;
     }

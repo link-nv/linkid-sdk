@@ -26,22 +26,18 @@ import net.link.safeonline.performance.scenario.ScenarioController;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * <h2>{@link AgentService}<br>
- * <sub>This class provides all functionality of the agent that is available to
- * the console.</sub></h2>
+ * <sub>This class provides all functionality of the agent that is available to the console.</sub></h2>
  * 
  * <p>
- * This MBean launches the broadcaster service that provides agent visibility in
- * JGroups and the deployer service that is used for deploying uploaded
- * scenarios. It also keeps the current state of the agent (see
- * {@link AgentState}).<br>
+ * This MBean launches the broadcaster service that provides agent visibility in JGroups and the deployer service that
+ * is used for deploying uploaded scenarios. It also keeps the current state of the agent (see {@link AgentState}).<br>
  * <br>
- * The agent service delegates requests for uploading, deploying, executing and
- * charting scenarios.<br>
+ * The agent service delegates requests for uploading, deploying, executing and charting scenarios.<br>
  * <br>
- * Metadata on previously performed executions are also cached by this agent as
- * they are requested by the console.
+ * Metadata on previously performed executions are also cached by this agent as they are requested by the console.
  * </p>
  * 
  * <p>
@@ -52,278 +48,269 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AgentService implements AgentServiceMBean {
 
-	static final Log LOG = LogFactory.getLog(AgentService.class);
+    static final Log                         LOG = LogFactory.getLog(AgentService.class);
 
-	private Map<Date, Map<String, byte[][]>> charts;
-	private AgentBroadcaster broadcaster;
-	private ScenarioDeployer deployer;
-	private ScenarioExecutor executor;
-	private Throwable error;
+    private Map<Date, Map<String, byte[][]>> charts;
+    private AgentBroadcaster                 broadcaster;
+    private ScenarioDeployer                 deployer;
+    private ScenarioExecutor                 executor;
+    private Throwable                        error;
 
-	private boolean charting;
+    private boolean                          charting;
 
-	public AgentService() {
 
-		this.charts = new HashMap<Date, Map<String, byte[][]>>();
-		this.deployer = new ScenarioDeployer();
-		this.broadcaster = new AgentBroadcaster();
-	}
+    public AgentService() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void start() {
+        this.charts = new HashMap<Date, Map<String, byte[][]>>();
+        this.deployer = new ScenarioDeployer();
+        this.broadcaster = new AgentBroadcaster();
+    }
 
-		this.broadcaster.start();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void start() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void stop() {
+        this.broadcaster.start();
+    }
 
-		this.broadcaster.stop();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void stop() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isStarted() {
+        this.broadcaster.stop();
+    }
 
-		return this.broadcaster.isConnected();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isStarted() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getGroup() {
+        return this.broadcaster.isConnected();
+    }
 
-		return this.broadcaster.getGroup();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getGroup() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setGroup(String group) {
+        return this.broadcaster.getGroup();
+    }
 
-		this.broadcaster.setGroup(group);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setGroup(String group) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AgentState getState() {
+        this.broadcaster.setGroup(group);
+    }
 
-		try {
-			if (getScenarioController() == null)
-				throw new NamingException("ScenarioController not available.");
+    /**
+     * {@inheritDoc}
+     */
+    public AgentState getState() {
 
-			Set<Date> executions = getScenarioController().getExecutions();
-			if (executions == null || executions.isEmpty())
-				return AgentState.DEPLOY;
+        try {
+            if (getScenarioController() == null)
+                throw new NamingException("ScenarioController not available.");
 
-			else if (this.charts.isEmpty())
-				return AgentState.EXECUTE;
+            Set<Date> executions = getScenarioController().getExecutions();
+            if (executions == null || executions.isEmpty())
+                return AgentState.DEPLOY;
 
-			else
-				return AgentState.CHART;
-		}
+            else if (this.charts.isEmpty())
+                return AgentState.EXECUTE;
 
-		catch (NamingException e) {
-			return this.deployer.isUploaded() ? AgentState.UPLOAD
-					: AgentState.RESET;
-		}
-	}
+            else
+                return AgentState.CHART;
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AgentState getTransit() {
+        catch (NamingException e) {
+            return this.deployer.isUploaded()? AgentState.UPLOAD: AgentState.RESET;
+        }
+    }
 
-		if (this.deployer.isUploading())
-			return AgentState.UPLOAD;
+    /**
+     * {@inheritDoc}
+     */
+    public AgentState getTransit() {
 
-		if (this.deployer.isDeploying())
-			return AgentState.DEPLOY;
+        if (this.deployer.isUploading())
+            return AgentState.UPLOAD;
 
-		if (this.executor != null && this.executor.isAlive())
-			return AgentState.EXECUTE;
+        if (this.deployer.isDeploying())
+            return AgentState.DEPLOY;
 
-		if (this.charting)
-			return AgentState.CHART;
+        if (this.executor != null && this.executor.isAlive())
+            return AgentState.EXECUTE;
 
-		return AgentState.RESET;
-	}
+        if (this.charting)
+            return AgentState.CHART;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void resetTransit() {
+        return AgentState.RESET;
+    }
 
-		if (this.executor != null) {
-			this.executor.halt();
-			this.executor = null;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void resetTransit() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public ScenarioExecution getCharts(Date startTime) {
+        if (this.executor != null) {
+            this.executor.halt();
+            this.executor = null;
+        }
+    }
 
-		try {
-			return getExecution(startTime, true);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public ScenarioExecution getCharts(Date startTime) {
 
-		catch (Throwable e) {
-			setError(e);
-			return null;
-		}
-	}
+        try {
+            return getExecution(startTime, true);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Throwable getError() {
+        catch (Throwable e) {
+            setError(e);
+            return null;
+        }
+    }
 
-		return this.error;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Throwable getError() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<String> getScenarios() {
+        return this.error;
+    }
 
-		try {
-			return getScenarioController().getScenarios();
-		} catch (NamingException e) {
-			return new HashSet<String>();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Set<String> getScenarios() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<ScenarioExecution> getExecutions() throws NamingException {
+        try {
+            return getScenarioController().getScenarios();
+        } catch (NamingException e) {
+            return new HashSet<String>();
+        }
+    }
 
-		Set<ScenarioExecution> executions = new HashSet<ScenarioExecution>();
-		for (Date startTime : getScenarioController().getExecutions())
-			executions.add(getExecution(startTime, false));
+    /**
+     * {@inheritDoc}
+     */
+    public Set<ScenarioExecution> getExecutions() throws NamingException {
 
-		return executions;
-	}
+        Set<ScenarioExecution> executions = new HashSet<ScenarioExecution>();
+        for (Date startTime : getScenarioController().getExecutions())
+            executions.add(getExecution(startTime, false));
 
-	/**
-	 * @param error
-	 *            An error that occurred while interacting with this client.
-	 */
-	public void setError(Throwable error) {
+        return executions;
+    }
 
-		this.error = error;
+    /**
+     * @param error
+     *            An error that occurred while interacting with this client.
+     */
+    public void setError(Throwable error) {
 
-		if (error != null)
-			LOG.error("The following occurred during " + getTransit(), error);
-	}
+        this.error = error;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void upload(byte[] application) {
+        if (error != null)
+            LOG.error("The following occurred during " + getTransit(), error);
+    }
 
-		try {
-			this.deployer.upload(application);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public void upload(byte[] application) {
 
-		catch (Throwable e) {
-			setError(e);
-		}
-	}
+        try {
+            this.deployer.upload(application);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void deploy() {
+        catch (Throwable e) {
+            setError(e);
+        }
+    }
 
-		try {
-			this.deployer.deploy();
-			this.charts.clear();
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public void deploy() {
 
-		catch (Throwable e) {
-			setError(e);
-		}
-	}
+        try {
+            this.deployer.deploy();
+            this.charts.clear();
+        }
 
-	public void execute(String scenarioName, Integer agents, Integer workers,
-			Long duration, String hostname, Boolean useSsl, Date startTime) {
+        catch (Throwable e) {
+            setError(e);
+        }
+    }
 
-		try {
-			ExecutionMetadata request = ExecutionMetadata.createRequest(
-					scenarioName, agents, workers, startTime, duration,
-					hostname, useSsl);
+    public void execute(String scenarioName, Integer agents, Integer workers, Long duration, String hostname,
+            Boolean useSsl, Date startTime) {
 
-			(this.executor = new ScenarioExecutor(request, this)).start();
-		}
+        try {
+            ExecutionMetadata request = ExecutionMetadata.createRequest(scenarioName, agents, workers, startTime,
+                    duration, hostname, useSsl);
 
-		catch (Throwable e) {
-			setError(e);
-		}
-	}
+            (this.executor = new ScenarioExecutor(request, this)).start();
+        }
 
-	/**
-	 * Returns execution metadata for the execution started at the given time.
-	 * Previously generated charts for this execution are cached in a map.
-	 */
-	private ScenarioExecution getExecution(Date startTime, boolean useCharts) {
+        catch (Throwable e) {
+            setError(e);
+        }
+    }
 
-		if (startTime == null)
-			return null;
+    /**
+     * Returns execution metadata for the execution started at the given time. Previously generated charts for this
+     * execution are cached in a map.
+     */
+    private ScenarioExecution getExecution(Date startTime, boolean useCharts) {
 
-		try {
-			this.charting = useCharts;
-			ExecutionMetadata metaData = getScenarioController()
-					.getExecutionMetadata(startTime);
+        if (startTime == null)
+            return null;
 
-			ScenarioExecution execution = new ScenarioExecution(metaData
-					.getScenarioName(), metaData.getScenarioDescription(),
-					metaData.getAgents(), metaData.getWorkers(), metaData
-							.getStartTime(), metaData.getDuration(), metaData
-							.getHostname(), metaData.isSsl(), metaData
-							.getSpeed());
+        try {
+            this.charting = useCharts;
+            ExecutionMetadata metaData = getScenarioController().getExecutionMetadata(startTime);
 
-			if (useCharts) {
-				LOG.debug("Looking for charts on id: " + startTime);
-				LOG.debug(" - Chart keys are: " + this.charts.keySet());
-				Map<String, byte[][]> chart = this.charts.get(startTime);
+            ScenarioExecution execution = new ScenarioExecution(metaData.getScenarioName(), metaData
+                    .getScenarioDescription(), metaData.getAgents(), metaData.getWorkers(), metaData.getStartTime(),
+                    metaData.getDuration(), metaData.getHostname(), metaData.isSsl(), metaData.getSpeed());
 
-				if (chart == null) {
-					this.charts.put(startTime, chart = getScenarioController()
-							.createCharts(startTime));
-					LOG.debug("Put chart on cache for id: " + startTime
-							+ ", chart == null? " + chart == null);
-					LOG.debug(" - Chart keys are: " + this.charts.keySet());
-				}
+            if (useCharts) {
+                LOG.debug("Looking for charts on id: " + startTime);
+                LOG.debug(" - Chart keys are: " + this.charts.keySet());
+                Map<String, byte[][]> chart = this.charts.get(startTime);
 
-				execution.setCharts(chart);
-			}
+                if (chart == null) {
+                    this.charts.put(startTime, chart = getScenarioController().createCharts(startTime));
+                    LOG.debug("Put chart on cache for id: " + startTime + ", chart == null? " + chart == null);
+                    LOG.debug(" - Chart keys are: " + this.charts.keySet());
+                }
 
-			return execution;
-		}
+                execution.setCharts(chart);
+            }
 
-		catch (NamingException e) {
-			throw new RuntimeException(
-					"Can't query stats without a scenario deployed.", e);
-		}
+            return execution;
+        }
 
-		finally {
-			this.charting = false;
-		}
-	}
+        catch (NamingException e) {
+            throw new RuntimeException("Can't query stats without a scenario deployed.", e);
+        }
 
-	private ScenarioController getScenarioController() throws NamingException {
+        finally {
+            this.charting = false;
+        }
+    }
 
-		return (ScenarioController) new InitialContext()
-				.lookup(ScenarioController.BINDING);
-	}
+    private ScenarioController getScenarioController() throws NamingException {
+
+        return (ScenarioController) new InitialContext().lookup(ScenarioController.BINDING);
+    }
 }

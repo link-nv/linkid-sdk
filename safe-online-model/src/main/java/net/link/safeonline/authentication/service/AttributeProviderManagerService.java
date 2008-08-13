@@ -18,17 +18,14 @@ import net.link.safeonline.authentication.exception.ExistingAttributeProviderExc
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.AttributeProviderEntity;
 
+
 @Local
 public interface AttributeProviderManagerService {
 
-	List<AttributeProviderEntity> getAttributeProviders(String attributeName)
-			throws AttributeTypeNotFoundException;
+    List<AttributeProviderEntity> getAttributeProviders(String attributeName) throws AttributeTypeNotFoundException;
 
-	void removeAttributeProvider(AttributeProviderEntity attributeProvider)
-			throws AttributeProviderNotFoundException;
+    void removeAttributeProvider(AttributeProviderEntity attributeProvider) throws AttributeProviderNotFoundException;
 
-	void addAttributeProvider(String applicationName, String attributeName)
-			throws ApplicationNotFoundException,
-			AttributeTypeNotFoundException, ExistingAttributeProviderException,
-			PermissionDeniedException;
+    void addAttributeProvider(String applicationName, String attributeName) throws ApplicationNotFoundException,
+            AttributeTypeNotFoundException, ExistingAttributeProviderException, PermissionDeniedException;
 }

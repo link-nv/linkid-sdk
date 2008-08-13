@@ -26,64 +26,65 @@ import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class TrustPointDAOBean implements TrustPointDAO {
 
-	private static final Log LOG = LogFactory.getLog(TrustPointDAOBean.class);
+    private static final Log                LOG = LogFactory.getLog(TrustPointDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                   entityManager;
 
-	private TrustPointEntity.QueryInterface queryObject;
+    private TrustPointEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, TrustPointEntity.QueryInterface.class);
-	}
 
-	public void addTrustPoint(TrustDomainEntity trustDomain,
-			X509Certificate certificate) {
-		LOG.debug("add trust point to domain: " + trustDomain.getName()
-				+ " with subject " + certificate.getSubjectX500Principal());
-		TrustPointEntity trustPoint = new TrustPointEntity(trustDomain,
-				certificate);
-		this.entityManager.persist(trustPoint);
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain) {
-		LOG.debug("get trust points for domain: " + trustDomain.getName());
-		List<TrustPointEntity> trustPoints = this.queryObject
-				.listTrustPoints(trustDomain);
-		return trustPoints;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                TrustPointEntity.QueryInterface.class);
+    }
 
-	public void removeTrustPoint(TrustPointEntity trustPoint) {
-		LOG.debug("remove trust point: " + trustPoint);
-		this.entityManager.remove(trustPoint);
-	}
+    public void addTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
-	public TrustPointEntity findTrustPoint(TrustDomainEntity trustDomain,
-			X509Certificate certificate) {
-		TrustPointPK pk = new TrustPointPK(trustDomain, certificate);
-		TrustPointEntity trustPoint = this.entityManager.find(
-				TrustPointEntity.class, pk);
-		return trustPoint;
-	}
+        LOG.debug("add trust point to domain: " + trustDomain.getName() + " with subject "
+                + certificate.getSubjectX500Principal());
+        TrustPointEntity trustPoint = new TrustPointEntity(trustDomain, certificate);
+        this.entityManager.persist(trustPoint);
+    }
 
-	public TrustPointEntity getTrustPoint(TrustPointPK pk)
-			throws TrustPointNotFoundException {
-		TrustPointEntity trustPoint = this.entityManager.find(
-				TrustPointEntity.class, pk);
-		if (null == trustPoint) {
-			throw new TrustPointNotFoundException();
-		}
-		return trustPoint;
-	}
+    public List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain) {
 
-	public List<TrustPointEntity> listTrustPoints(String certificateSubject) {
-		LOG.debug("get trust points with certificate subject: "
-				+ certificateSubject);
-		return this.queryObject.listTrustPoints(certificateSubject);
-	}
+        LOG.debug("get trust points for domain: " + trustDomain.getName());
+        List<TrustPointEntity> trustPoints = this.queryObject.listTrustPoints(trustDomain);
+        return trustPoints;
+    }
+
+    public void removeTrustPoint(TrustPointEntity trustPoint) {
+
+        LOG.debug("remove trust point: " + trustPoint);
+        this.entityManager.remove(trustPoint);
+    }
+
+    public TrustPointEntity findTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate) {
+
+        TrustPointPK pk = new TrustPointPK(trustDomain, certificate);
+        TrustPointEntity trustPoint = this.entityManager.find(TrustPointEntity.class, pk);
+        return trustPoint;
+    }
+
+    public TrustPointEntity getTrustPoint(TrustPointPK pk) throws TrustPointNotFoundException {
+
+        TrustPointEntity trustPoint = this.entityManager.find(TrustPointEntity.class, pk);
+        if (null == trustPoint) {
+            throw new TrustPointNotFoundException();
+        }
+        return trustPoint;
+    }
+
+    public List<TrustPointEntity> listTrustPoints(String certificateSubject) {
+
+        LOG.debug("get trust points with certificate subject: " + certificateSubject);
+        return this.queryObject.listTrustPoints(certificateSubject);
+    }
 }

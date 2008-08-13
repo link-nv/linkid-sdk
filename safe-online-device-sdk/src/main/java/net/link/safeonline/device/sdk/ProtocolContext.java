@@ -13,112 +13,133 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 
+
 public class ProtocolContext implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID = 1L;
 
-	private String wantedDevice;
+    private String              wantedDevice;
 
-	private String subject;
+    private String              subject;
 
-	private DeviceOperationType deviceOperation;
+    private DeviceOperationType deviceOperation;
 
-	private String issuer;
+    private String              issuer;
 
-	private String inResponseTo;
+    private String              inResponseTo;
 
-	private String targetUrl;
+    private String              targetUrl;
 
-	private String nodeName;
+    private String              nodeName;
 
-	private int validity;
+    private int                 validity;
 
-	private boolean success = false;
+    private boolean             success          = false;
 
-	public static final String PROTOCOL_CONTEXT = "ProtocolContext";
+    public static final String  PROTOCOL_CONTEXT = "ProtocolContext";
 
-	private ProtocolContext() {
-	}
 
-	public static ProtocolContext getProtocolContext(HttpSession session) {
-		ProtocolContext instance = (ProtocolContext) session
-				.getAttribute(PROTOCOL_CONTEXT);
-		if (null == instance) {
-			instance = new ProtocolContext();
-			session.setAttribute(PROTOCOL_CONTEXT, instance);
-		}
-		return instance;
-	}
+    private ProtocolContext() {
 
-	public String getSubject() {
-		return this.subject;
-	}
+    }
 
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+    public static ProtocolContext getProtocolContext(HttpSession session) {
 
-	public String getWantedDevice() {
-		return this.wantedDevice;
-	}
+        ProtocolContext instance = (ProtocolContext) session.getAttribute(PROTOCOL_CONTEXT);
+        if (null == instance) {
+            instance = new ProtocolContext();
+            session.setAttribute(PROTOCOL_CONTEXT, instance);
+        }
+        return instance;
+    }
 
-	public void setWantedDevice(String wantedDevice) {
-		this.wantedDevice = wantedDevice;
-	}
+    public String getSubject() {
 
-	public String getIssuer() {
-		return this.issuer;
-	}
+        return this.subject;
+    }
 
-	public void setIssuer(String issuer) {
-		this.issuer = issuer;
-	}
+    public void setSubject(String subject) {
 
-	public String getInResponseTo() {
-		return this.inResponseTo;
-	}
+        this.subject = subject;
+    }
 
-	public void setInResponseTo(String inResponseTo) {
-		this.inResponseTo = inResponseTo;
-	}
+    public String getWantedDevice() {
 
-	public String getTargetUrl() {
-		return this.targetUrl;
-	}
+        return this.wantedDevice;
+    }
 
-	public void setTargetUrl(String targetUrl) {
-		this.targetUrl = targetUrl;
-	}
+    public void setWantedDevice(String wantedDevice) {
 
-	public String getNodeName() {
-		return this.nodeName;
-	}
+        this.wantedDevice = wantedDevice;
+    }
 
-	public void setNodeName(String nodeName) {
-		this.nodeName = nodeName;
-	}
+    public String getIssuer() {
 
-	public int getValidity() {
-		return this.validity;
-	}
+        return this.issuer;
+    }
 
-	public void setValidity(int validity) {
-		this.validity = validity;
-	}
+    public void setIssuer(String issuer) {
 
-	public void setDeviceOperation(DeviceOperationType deviceOperation) {
-		this.deviceOperation = deviceOperation;
-	}
+        this.issuer = issuer;
+    }
 
-	public DeviceOperationType getDeviceOperation() {
-		return this.deviceOperation;
-	}
+    public String getInResponseTo() {
 
-	public boolean getSuccess() {
-		return this.success;
-	}
+        return this.inResponseTo;
+    }
 
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
+    public void setInResponseTo(String inResponseTo) {
+
+        this.inResponseTo = inResponseTo;
+    }
+
+    public String getTargetUrl() {
+
+        return this.targetUrl;
+    }
+
+    public void setTargetUrl(String targetUrl) {
+
+        this.targetUrl = targetUrl;
+    }
+
+    public String getNodeName() {
+
+        return this.nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+
+        this.nodeName = nodeName;
+    }
+
+    public int getValidity() {
+
+        return this.validity;
+    }
+
+    public void setValidity(int validity) {
+
+        this.validity = validity;
+    }
+
+    public void setDeviceOperation(DeviceOperationType deviceOperation) {
+
+        this.deviceOperation = deviceOperation;
+    }
+
+    public DeviceOperationType getDeviceOperation() {
+
+        return this.deviceOperation;
+    }
+
+    public boolean getSuccess() {
+
+        return this.success;
+    }
+
+    public void setSuccess(boolean success) {
+
+        this.success = success;
+    }
 }

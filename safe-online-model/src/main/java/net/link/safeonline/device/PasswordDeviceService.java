@@ -13,27 +13,23 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
 
+
 @Local
 public interface PasswordDeviceService {
 
-	SubjectEntity authenticate(String loginName, String password)
-			throws DeviceNotFoundException, SubjectNotFoundException;
+    SubjectEntity authenticate(String loginName, String password) throws DeviceNotFoundException,
+            SubjectNotFoundException;
 
-	void register(String userId, String password)
-			throws SubjectNotFoundException, DeviceNotFoundException;
+    void register(String userId, String password) throws SubjectNotFoundException, DeviceNotFoundException;
 
-	void register(SubjectEntity subject, String password)
-			throws SubjectNotFoundException, DeviceNotFoundException;
+    void register(SubjectEntity subject, String password) throws SubjectNotFoundException, DeviceNotFoundException;
 
-	void update(SubjectEntity subject, String oldPassword, String newPassword)
-			throws PermissionDeniedException, DeviceNotFoundException,
-			SubjectNotFoundException;
+    void update(SubjectEntity subject, String oldPassword, String newPassword) throws PermissionDeniedException,
+            DeviceNotFoundException, SubjectNotFoundException;
 
-	void remove(SubjectEntity subject, String password)
-			throws DeviceNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException;
+    void remove(SubjectEntity subject, String password) throws DeviceNotFoundException, PermissionDeniedException,
+            SubjectNotFoundException;
 
-	boolean isPasswordConfigured(SubjectEntity subject)
-			throws SubjectNotFoundException, DeviceNotFoundException;
+    boolean isPasswordConfigured(SubjectEntity subject) throws SubjectNotFoundException, DeviceNotFoundException;
 
 }

@@ -15,15 +15,14 @@ package net.link.safeonline.applet;
  */
 public interface AppletController extends Runnable {
 
-	/**
-	 * Initializes the controller component. Thus injects its dependencies.
-	 * 
-	 * @param appletView
-	 * @param runtimeContext
-	 * @param statementProvider
-	 */
-	void init(AppletView appletView, RuntimeContext runtimeContext,
-			StatementProvider statementProvider);
+    /**
+     * Initializes the controller component. Thus injects its dependencies.
+     * 
+     * @param appletView
+     * @param runtimeContext
+     * @param statementProvider
+     */
+    void init(AppletView appletView, RuntimeContext runtimeContext, StatementProvider statementProvider);
 
-	void abort();
+    void abort();
 }

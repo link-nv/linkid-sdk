@@ -9,9 +9,10 @@ package net.link.safeonline.sdk.auth.filter;
 
 import java.util.Observable;
 
+
 /**
- * This class manages the logging buffers sent by LogFilter. Other observers can
- * subscribe to this class to get updates of those messages.
+ * This class manages the logging buffers sent by LogFilter. Other observers can subscribe to this class to get updates
+ * of those messages.
  * 
  * 
  * @author wvdhaute
@@ -19,16 +20,19 @@ import java.util.Observable;
  */
 public class LogManager extends Observable {
 
-	private static LogManager logManager = null;
+    private static LogManager logManager = null;
 
-	public static LogManager getInstance() {
-		if (null == logManager)
-			logManager = new LogManager();
-		return logManager;
-	}
 
-	public void postLogBuffer(StringBuffer logBuffer) {
-		setChanged();
-		notifyObservers(logBuffer);
-	}
+    public static LogManager getInstance() {
+
+        if (null == logManager)
+            logManager = new LogManager();
+        return logManager;
+    }
+
+    public void postLogBuffer(StringBuffer logBuffer) {
+
+        setChanged();
+        notifyObservers(logBuffer);
+    }
 }

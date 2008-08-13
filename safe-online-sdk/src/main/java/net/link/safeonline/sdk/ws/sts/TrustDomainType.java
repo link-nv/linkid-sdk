@@ -9,5 +9,5 @@ package net.link.safeonline.sdk.ws.sts;
 
 public enum TrustDomainType {
 
-	APPLICATION, DEVICE, NODE;
+    APPLICATION, DEVICE, NODE;
 }

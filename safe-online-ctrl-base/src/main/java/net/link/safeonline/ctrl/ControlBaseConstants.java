@@ -9,10 +9,12 @@ package net.link.safeonline.ctrl;
 
 public class ControlBaseConstants {
 
-	private ControlBaseConstants() {
-		// empty
-	}
+    private ControlBaseConstants() {
 
-	public final static String HELPDESK_CONTEXT = "helpdeskContext";
+        // empty
+    }
+
+
+    public final static String HELPDESK_CONTEXT = "helpdeskContext";
 
 }

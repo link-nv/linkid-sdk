@@ -22,57 +22,60 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class DeviceSubjectDAOBean implements DeviceSubjectDAO {
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceSubjectDAOBean.class);
+    private static final Log                   LOG = LogFactory.getLog(DeviceSubjectDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                      entityManager;
 
-	private DeviceSubjectEntity.QueryInterface queryObject;
+    private DeviceSubjectEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, DeviceSubjectEntity.QueryInterface.class);
-	}
 
-	public DeviceSubjectEntity findSubject(String userId) {
-		LOG.debug("find device subject: " + userId);
-		DeviceSubjectEntity subject = this.entityManager.find(
-				DeviceSubjectEntity.class, userId);
-		return subject;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public DeviceSubjectEntity addSubject(String userId) {
-		LOG.debug("add device subject: " + userId);
-		DeviceSubjectEntity subject = new DeviceSubjectEntity(userId);
-		this.entityManager.persist(subject);
-		return subject;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                DeviceSubjectEntity.QueryInterface.class);
+    }
 
-	public DeviceSubjectEntity getSubject(String userId)
-			throws SubjectNotFoundException {
-		LOG.debug("get device subject: " + userId);
-		DeviceSubjectEntity subject = findSubject(userId);
-		if (null == subject) {
-			throw new SubjectNotFoundException();
-		}
-		return subject;
-	}
+    public DeviceSubjectEntity findSubject(String userId) {
 
-	public void removeSubject(DeviceSubjectEntity subject) {
-		this.entityManager.remove(subject);
-	}
+        LOG.debug("find device subject: " + userId);
+        DeviceSubjectEntity subject = this.entityManager.find(DeviceSubjectEntity.class, userId);
+        return subject;
+    }
 
-	public DeviceSubjectEntity getSubject(SubjectEntity deviceRegistration)
-			throws SubjectNotFoundException {
-		DeviceSubjectEntity deviceSubject = this.queryObject
-				.findSubject(deviceRegistration);
-		if (null == deviceSubject)
-			throw new SubjectNotFoundException();
-		return deviceSubject;
-	}
+    public DeviceSubjectEntity addSubject(String userId) {
+
+        LOG.debug("add device subject: " + userId);
+        DeviceSubjectEntity subject = new DeviceSubjectEntity(userId);
+        this.entityManager.persist(subject);
+        return subject;
+    }
+
+    public DeviceSubjectEntity getSubject(String userId) throws SubjectNotFoundException {
+
+        LOG.debug("get device subject: " + userId);
+        DeviceSubjectEntity subject = findSubject(userId);
+        if (null == subject) {
+            throw new SubjectNotFoundException();
+        }
+        return subject;
+    }
+
+    public void removeSubject(DeviceSubjectEntity subject) {
+
+        this.entityManager.remove(subject);
+    }
+
+    public DeviceSubjectEntity getSubject(SubjectEntity deviceRegistration) throws SubjectNotFoundException {
+
+        DeviceSubjectEntity deviceSubject = this.queryObject.findSubject(deviceRegistration);
+        if (null == deviceSubject)
+            throw new SubjectNotFoundException();
+        return deviceSubject;
+    }
 }

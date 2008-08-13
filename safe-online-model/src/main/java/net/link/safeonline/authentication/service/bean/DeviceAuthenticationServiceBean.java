@@ -27,6 +27,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Implementation of device authentication service.
  * 
@@ -34,49 +35,46 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
-public class DeviceAuthenticationServiceBean implements
-		DeviceAuthenticationService {
+public class DeviceAuthenticationServiceBean implements DeviceAuthenticationService {
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceAuthenticationServiceBean.class);
+    private static final Log LOG = LogFactory.getLog(DeviceAuthenticationServiceBean.class);
 
-	@EJB
-	private DeviceDAO deviceDAO;
+    @EJB
+    private DeviceDAO        deviceDAO;
 
-	@EJB
-	private TrustDomainDAO trustDomainDAO;
+    @EJB
+    private TrustDomainDAO   trustDomainDAO;
 
-	@EJB
-	private TrustPointDAO trustPointDAO;
+    @EJB
+    private TrustPointDAO    trustPointDAO;
 
-	public String authenticate(X509Certificate certificate)
-			throws DeviceNotFoundException {
-		DeviceEntity device = this.deviceDAO.getDevice(certificate);
-		LOG.debug("authenticated device: " + device.getName());
-		return device.getName();
-	}
 
-	public List<X509Certificate> getCertificates(String deviceName)
-			throws DeviceNotFoundException {
-		LOG.debug("get certificates for device: " + deviceName);
-		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		List<TrustPointEntity> trustPoints = this.trustPointDAO
-				.listTrustPoints(device.getCertificateSubject());
-		List<X509Certificate> certificates = new LinkedList<X509Certificate>();
-		for (TrustPointEntity trustPoint : trustPoints) {
-			certificates.add(trustPoint.getCertificate());
+    public String authenticate(X509Certificate certificate) throws DeviceNotFoundException {
 
-		}
-		return certificates;
-	}
+        DeviceEntity device = this.deviceDAO.getDevice(certificate);
+        LOG.debug("authenticated device: " + device.getName());
+        return device.getName();
+    }
 
-	public TrustPointEntity findTrustPoint(String domainName,
-			X509Certificate certificate) throws TrustDomainNotFoundException {
-		LOG.debug("find trust point: domain=" + domainName + " cert="
-				+ certificate);
-		TrustDomainEntity trustDomain = this.trustDomainDAO
-				.getTrustDomain(domainName);
-		return this.trustPointDAO.findTrustPoint(trustDomain, certificate);
-	}
+    public List<X509Certificate> getCertificates(String deviceName) throws DeviceNotFoundException {
+
+        LOG.debug("get certificates for device: " + deviceName);
+        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(device.getCertificateSubject());
+        List<X509Certificate> certificates = new LinkedList<X509Certificate>();
+        for (TrustPointEntity trustPoint : trustPoints) {
+            certificates.add(trustPoint.getCertificate());
+
+        }
+        return certificates;
+    }
+
+    public TrustPointEntity findTrustPoint(String domainName, X509Certificate certificate)
+            throws TrustDomainNotFoundException {
+
+        LOG.debug("find trust point: domain=" + domainName + " cert=" + certificate);
+        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(domainName);
+        return this.trustPointDAO.findTrustPoint(trustDomain, certificate);
+    }
 
 }

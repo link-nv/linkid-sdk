@@ -28,6 +28,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 /**
  * WS-Notification producer subscription.
  * 
@@ -39,68 +40,80 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM NotificationProducerSubscriptionEntity s") })
 public class NotificationProducerSubscriptionEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long            serialVersionUID = 1L;
 
-	public static final String QUERY_LIST_ALL = "not.sub.list.all";
+    public static final String           QUERY_LIST_ALL   = "not.sub.list.all";
 
-	private String topic;
+    private String                       topic;
 
-	private Set<EndpointReferenceEntity> consumers;
+    private Set<EndpointReferenceEntity> consumers;
 
-	public NotificationProducerSubscriptionEntity() {
-		// empty
-	}
 
-	public NotificationProducerSubscriptionEntity(String topic) {
-		this.topic = topic;
-		this.consumers = new HashSet<EndpointReferenceEntity>();
-	}
+    public NotificationProducerSubscriptionEntity() {
 
-	@Id
-	public String getTopic() {
-		return this.topic;
-	}
+        // empty
+    }
 
-	public void setTopic(String topic) {
-		this.topic = topic;
-	}
+    public NotificationProducerSubscriptionEntity(String topic) {
 
-	@OneToMany(fetch = FetchType.EAGER)
-	public Set<EndpointReferenceEntity> getConsumers() {
-		return this.consumers;
-	}
+        this.topic = topic;
+        this.consumers = new HashSet<EndpointReferenceEntity>();
+    }
 
-	public void setConsumers(Set<EndpointReferenceEntity> consumers) {
-		this.consumers = consumers;
-	}
+    @Id
+    public String getTopic() {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("topic", this.topic).toString();
-	}
+        return this.topic;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (null == obj) {
-			return false;
-		}
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof NotificationProducerSubscriptionEntity) {
-			return false;
-		}
-		NotificationProducerSubscriptionEntity rhs = (NotificationProducerSubscriptionEntity) obj;
-		return new EqualsBuilder().append(this.topic, rhs.topic).isEquals();
-	}
+    public void setTopic(String topic) {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.topic).toHashCode();
-	}
+        this.topic = topic;
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(value = QUERY_LIST_ALL)
-		List<NotificationProducerSubscriptionEntity> listTopics();
-	}
+    @OneToMany(fetch = FetchType.EAGER)
+    public Set<EndpointReferenceEntity> getConsumers() {
+
+        return this.consumers;
+    }
+
+    public void setConsumers(Set<EndpointReferenceEntity> consumers) {
+
+        this.consumers = consumers;
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("topic", this.topic).toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof NotificationProducerSubscriptionEntity) {
+            return false;
+        }
+        NotificationProducerSubscriptionEntity rhs = (NotificationProducerSubscriptionEntity) obj;
+        return new EqualsBuilder().append(this.topic, rhs.topic).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.topic).toHashCode();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(value = QUERY_LIST_ALL)
+        List<NotificationProducerSubscriptionEntity> listTopics();
+    }
 }

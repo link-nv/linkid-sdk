@@ -8,13 +8,15 @@ package net.link.safeonline.webapp.auth;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class AuthIdentityRejection extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/identity-rejection.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/identity-rejection.seam";
 
-	public AuthIdentityRejection() {
-		super(PAGE_NAME);
-	}
+
+    public AuthIdentityRejection() {
+
+        super(PAGE_NAME);
+    }
 
 }

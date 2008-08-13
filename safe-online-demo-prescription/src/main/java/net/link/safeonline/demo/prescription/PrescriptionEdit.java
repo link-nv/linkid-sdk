@@ -9,8 +9,9 @@ package net.link.safeonline.demo.prescription;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface PrescriptionEdit extends AbstractPrescriptionDataClient {
 
-	String persist();
+    String persist();
 }

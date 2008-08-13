@@ -13,23 +13,24 @@ import javax.xml.namespace.QName;
 
 import liberty.dst._2006_08.ref.safe_online.DataService;
 
+
 public class DataServiceFactory {
 
-	private DataServiceFactory() {
-		// empty
-	}
+    private DataServiceFactory() {
 
-	public static DataService newInstance() {
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
-		URL wsdlUrl = classLoader
-				.getResource("liberty-idwsf-dst-ref-v2.1-link.wsdl");
-		if (null == wsdlUrl) {
-			throw new RuntimeException("Liberty ID-WSF DST Ref WSDL not found");
-		}
+        // empty
+    }
 
-		DataService dataService = new DataService(wsdlUrl, new QName(
-				"urn:liberty:dst:2006-08:ref:safe-online", "DataService"));
-		return dataService;
-	}
+    public static DataService newInstance() {
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URL wsdlUrl = classLoader.getResource("liberty-idwsf-dst-ref-v2.1-link.wsdl");
+        if (null == wsdlUrl) {
+            throw new RuntimeException("Liberty ID-WSF DST Ref WSDL not found");
+        }
+
+        DataService dataService = new DataService(wsdlUrl, new QName("urn:liberty:dst:2006-08:ref:safe-online",
+                "DataService"));
+        return dataService;
+    }
 }

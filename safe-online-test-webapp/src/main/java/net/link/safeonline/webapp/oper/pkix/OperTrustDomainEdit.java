@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.pkix;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperTrustDomainEdit extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/pkix/trust-domain-edit.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/pkix/trust-domain-edit.seam";
 
-	public OperTrustDomainEdit() {
-		super(PAGE_NAME);
-	}
+
+    public OperTrustDomainEdit() {
+
+        super(PAGE_NAME);
+    }
 }

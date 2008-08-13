@@ -32,11 +32,10 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Login handling servlet. After SafeOnline performed its authentication it will
- * redirect to this servlet. This servlet will retrieve the 'bar admin'
- * attribute. Depending on the value of this attribute we redirect to a
- * different page.
+ * Login handling servlet. After SafeOnline performed its authentication it will redirect to this servlet. This servlet
+ * will retrieve the 'bar admin' attribute. Depending on the value of this attribute we redirect to a different page.
  * 
  * @author fcorneli
  * 
@@ -45,8 +44,7 @@ public class LoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Log  LOG              = LogFactory
-                                                       .getLog(LoginServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(LoginServlet.class);
 
     private DataClient        dataClient;
 
@@ -60,33 +58,29 @@ public class LoginServlet extends HttpServlet {
 
         String wsLocation = config.getInitParameter("WsLocation");
 
-        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils
-                .getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils.getPrivateKeyEntry();
 
-        X509Certificate clientCertificate = (X509Certificate) privateKeyEntry
-                .getCertificate();
+        X509Certificate clientCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
 
         LOG.debug("creating dataclient to: " + wsLocation);
 
-        this.dataClient = new DataClientImpl(wsLocation, clientCertificate,
-                clientPrivateKey);
+        this.dataClient = new DataClientImpl(wsLocation, clientCertificate, clientPrivateKey);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         /*
-         * Since the SAML protocol can enter the application via an HTTP POST we
-         * also need to implement the doPost method.
+         * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost
+         * method.
          */
         doGet(request, response);
     }
 
     @Override
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
@@ -95,8 +89,7 @@ public class LoginServlet extends HttpServlet {
         Attribute<Boolean> barAdminAttribute;
         try {
             barAdminAttribute = this.dataClient.getAttributeValue(username,
-                    DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
-                    Boolean.class);
+                    DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
         } catch (RequestDeniedException e) {
             throw new ServletException("count not retrieve baradmin attribute");
         } catch (SubjectNotFoundException e) {
@@ -124,19 +117,16 @@ public class LoginServlet extends HttpServlet {
         redirectToOverviewPage(session, response);
     }
 
-    private void redirectToStatusPage(HttpSession session,
-            HttpServletResponse response) throws IOException {
+    private void redirectToStatusPage(HttpSession session, HttpServletResponse response) throws IOException {
 
         session.setAttribute("role", LawyerConstants.USER_ROLE);
         /*
-         * The role attribute is used by the LawyerLoginModule for
-         * authorization.
+         * The role attribute is used by the LawyerLoginModule for authorization.
          */
         response.sendRedirect("./status.seam");
     }
 
-    private void redirectToOverviewPage(HttpSession session,
-            HttpServletResponse response) throws IOException {
+    private void redirectToOverviewPage(HttpSession session, HttpServletResponse response) throws IOException {
 
         session.setAttribute("role", LawyerConstants.ADMIN_ROLE);
         response.sendRedirect("./overview.seam");

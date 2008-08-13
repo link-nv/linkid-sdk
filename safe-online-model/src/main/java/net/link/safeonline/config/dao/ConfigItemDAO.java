@@ -14,17 +14,17 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
+
 @Local
 public interface ConfigItemDAO {
 
-	ConfigItemEntity addConfigItem(String name, String value, String valueType,
-			ConfigGroupEntity configGroup);
+    ConfigItemEntity addConfigItem(String name, String value, String valueType, ConfigGroupEntity configGroup);
 
-	void removeConfigItem(ConfigItemEntity configItem);
+    void removeConfigItem(ConfigItemEntity configItem);
 
-	void saveConfigItem(ConfigItemEntity configItem);
+    void saveConfigItem(ConfigItemEntity configItem);
 
-	ConfigItemEntity findConfigItem(String name);
+    ConfigItemEntity findConfigItem(String name);
 
-	List<ConfigItemEntity> listConfigItems();
+    List<ConfigItemEntity> listConfigItems();
 }

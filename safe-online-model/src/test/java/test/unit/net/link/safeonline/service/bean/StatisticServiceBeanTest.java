@@ -50,207 +50,174 @@ import org.jfree.chart.JFreeChart;
 
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class StatisticServiceBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
 
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
+    @Override
+    public void setUp() throws Exception {
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+        super.setUp();
 
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(
-							@SuppressWarnings("unused") Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(
-							@SuppressWarnings("unused") Object[] arguments) {
-						return certificate;
-					}
-				});
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		Startable systemStartable = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		systemStartable.postStart();
-		this.entityTestManager.refreshEntityManager();
-	}
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-	@Override
-	public void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+                        return authCertificate;
+                    }
+                });
 
-	public void testChartGeneration() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		String testChartName = "test-chart-name-"
-				+ UUID.randomUUID().toString();
-		String testDomain = "test-domain-" + UUID.randomUUID().toString();
-		String testApplicationName = "test-application-name-"
-				+ UUID.randomUUID().toString();
-		String testAdminLogin = "test-admin-login-"
-				+ UUID.randomUUID().toString();
-		String testApplicationOwnerName = "test-application-owner-name-"
-				+ UUID.randomUUID().toString();
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", "operator");
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		UserRegistrationService userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
-				PasswordDeviceServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+                        return certificate;
+                    }
+                });
 
-		SubjectEntity testAdminSubject = userRegistrationService
-				.registerUser(testAdminLogin);
-		passwordDeviceService.register(testAdminSubject, "secret");
-		applicationService.registerApplicationOwner(testApplicationOwnerName,
-				testAdminLogin);
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        systemStartable.postStart();
+        this.entityTestManager.refreshEntityManager();
+    }
 
-		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, null, null, null, null,
-				false, false);
-		ApplicationEntity application = applicationService
-				.getApplication(testApplicationName);
-		StatisticDAO statisticDAO = EJBTestUtils.newInstance(
-				StatisticDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
+    @Override
+    public void tearDown() throws Exception {
 
-		StatisticEntity statistic = statisticDAO.addStatistic(testChartName,
-				testDomain, application);
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
 
-		Random generator = new Random();
-		StatisticDataPointEntity dp = new StatisticDataPointEntity("Cat A",
-				statistic, new Date(), generator.nextInt(),
-				generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-		dp = new StatisticDataPointEntity("Cat B", statistic, new Date(),
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-		dp = new StatisticDataPointEntity("Cat C", statistic, new Date(),
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-		dp = new StatisticDataPointEntity("Cat D", statistic, new Date(),
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
+    public void testChartGeneration() throws Exception {
 
-		// operate
-		StatisticService statisticService = EJBTestUtils.newInstance(
-				StatisticServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE,
-				SafeOnlineRoles.OPERATOR_ROLE);
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		JFreeChart chart = statisticService.getChart(testChartName, testDomain,
-				testApplicationName);
+        String testChartName = "test-chart-name-" + UUID.randomUUID().toString();
+        String testDomain = "test-domain-" + UUID.randomUUID().toString();
+        String testApplicationName = "test-application-name-" + UUID.randomUUID().toString();
+        String testAdminLogin = "test-admin-login-" + UUID.randomUUID().toString();
+        String testApplicationOwnerName = "test-application-owner-name-" + UUID.randomUUID().toString();
 
-		// verify
-		File file = File.createTempFile("tempchart-", ".png");
-		FileOutputStream out = new FileOutputStream(file);
-		out.write(ChartUtilities.encodeAsPNG(chart
-				.createBufferedImage(800, 600)));
-	}
+        ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
 
-	public void testExport() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+        UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		String testChartName = "test-chart-name";
-		String testDomain = "test-domain-" + UUID.randomUUID().toString();
-		String testApplicationName = "test-application-name-"
-				+ UUID.randomUUID().toString();
-		String testAdminLogin = "test-admin-login-"
-				+ UUID.randomUUID().toString();
-		String testApplicationOwnerName = "test-application-owner-name-"
-				+ UUID.randomUUID().toString();
+        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
+        passwordDeviceService.register(testAdminSubject, "secret");
+        applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
-		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", "operator");
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null,
+                null, null, null, null, false, false);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        StatisticDAO statisticDAO = EJBTestUtils.newInstance(StatisticDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		UserRegistrationService userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
-				PasswordDeviceServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+        StatisticEntity statistic = statisticDAO.addStatistic(testChartName, testDomain, application);
 
-		SubjectEntity testAdminSubject = userRegistrationService
-				.registerUser(testAdminLogin);
-		passwordDeviceService.register(testAdminSubject, "secret");
-		applicationService.registerApplicationOwner(testApplicationOwnerName,
-				testAdminLogin);
+        Random generator = new Random();
+        StatisticDataPointEntity dp = new StatisticDataPointEntity("Cat A", statistic, new Date(), generator.nextInt(),
+                generator.nextInt(), generator.nextInt());
+        statistic.getStatisticDataPoints().add(dp);
+        dp = new StatisticDataPointEntity("Cat B", statistic, new Date(), generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+        statistic.getStatisticDataPoints().add(dp);
+        dp = new StatisticDataPointEntity("Cat C", statistic, new Date(), generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+        statistic.getStatisticDataPoints().add(dp);
+        dp = new StatisticDataPointEntity("Cat D", statistic, new Date(), generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+        statistic.getStatisticDataPoints().add(dp);
 
-		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, null, null, null, null,
-				false, false);
-		ApplicationEntity application = applicationService
-				.getApplication(testApplicationName);
-		StatisticDAO statisticDAO = EJBTestUtils.newInstance(
-				StatisticDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
+        // operate
+        StatisticService statisticService = EJBTestUtils.newInstance(StatisticServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator",
+                SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
 
-		StatisticEntity statistic = statisticDAO.addStatistic(testChartName,
-				testDomain, application);
+        JFreeChart chart = statisticService.getChart(testChartName, testDomain, testApplicationName);
 
-		Random generator = new Random();
-		StatisticDataPointEntity dp = new StatisticDataPointEntity("Cat A",
-				statistic, new Date(), generator.nextInt(),
-				generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-		dp = new StatisticDataPointEntity("Cat B", statistic, new Date(),
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-		dp = new StatisticDataPointEntity("Cat C", statistic, new Date(),
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
-		dp = new StatisticDataPointEntity("Cat D", statistic, new Date(),
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		statistic.getStatisticDataPoints().add(dp);
+        // verify
+        File file = File.createTempFile("tempchart-", ".png");
+        FileOutputStream out = new FileOutputStream(file);
+        out.write(ChartUtilities.encodeAsPNG(chart.createBufferedImage(800, 600)));
+    }
 
-		// operate
-		StatisticService statisticService = EJBTestUtils.newInstance(
-				StatisticServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE,
-				SafeOnlineRoles.OPERATOR_ROLE);
+    public void testExport() throws Exception {
 
-		HSSFWorkbook workbook = statisticService.exportStatistic(testChartName,
-				testDomain, testApplicationName);
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		// verify
-		assertNotNull(workbook);
-	}
+        String testChartName = "test-chart-name";
+        String testDomain = "test-domain-" + UUID.randomUUID().toString();
+        String testApplicationName = "test-application-name-" + UUID.randomUUID().toString();
+        String testAdminLogin = "test-admin-login-" + UUID.randomUUID().toString();
+        String testApplicationOwnerName = "test-application-owner-name-" + UUID.randomUUID().toString();
+
+        ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
+
+        UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+
+        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
+        passwordDeviceService.register(testAdminSubject, "secret");
+        applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
+
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null,
+                null, null, null, null, false, false);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        StatisticDAO statisticDAO = EJBTestUtils.newInstance(StatisticDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+
+        StatisticEntity statistic = statisticDAO.addStatistic(testChartName, testDomain, application);
+
+        Random generator = new Random();
+        StatisticDataPointEntity dp = new StatisticDataPointEntity("Cat A", statistic, new Date(), generator.nextInt(),
+                generator.nextInt(), generator.nextInt());
+        statistic.getStatisticDataPoints().add(dp);
+        dp = new StatisticDataPointEntity("Cat B", statistic, new Date(), generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+        statistic.getStatisticDataPoints().add(dp);
+        dp = new StatisticDataPointEntity("Cat C", statistic, new Date(), generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+        statistic.getStatisticDataPoints().add(dp);
+        dp = new StatisticDataPointEntity("Cat D", statistic, new Date(), generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+        statistic.getStatisticDataPoints().add(dp);
+
+        // operate
+        StatisticService statisticService = EJBTestUtils.newInstance(StatisticServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator",
+                SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
+
+        HSSFWorkbook workbook = statisticService.exportStatistic(testChartName, testDomain, testApplicationName);
+
+        // verify
+        assertNotNull(workbook);
+    }
 }

@@ -12,58 +12,59 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
+
 @Local
 public interface Scheduling {
 
-	/*
-	 * Factories.
-	 */
-	void schedulingListFactory();
+    /*
+     * Factories.
+     */
+    void schedulingListFactory();
 
-	void taskListFactory();
+    void taskListFactory();
 
-	void taskHistoryListFactory();
+    void taskHistoryListFactory();
 
-	void newSchedulingFactory();
+    void newSchedulingFactory();
 
-	List<SelectItem> selectSchedulingListFactory();
+    List<SelectItem> selectSchedulingListFactory();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Actions.
-	 */
-	String schedulingListView();
+    /*
+     * Actions.
+     */
+    String schedulingListView();
 
-	String schedulingView();
+    String schedulingView();
 
-	String taskListView();
+    String taskListView();
 
-	String taskView();
+    String taskView();
 
-	String taskHistoryView();
+    String taskHistoryView();
 
-	String performTask();
+    String performTask();
 
-	String performScheduling();
+    String performScheduling();
 
-	String clearTaskHistory();
+    String clearTaskHistory();
 
-	String clearAllTasksHistory();
+    String clearAllTasksHistory();
 
-	String saveScheduling();
+    String saveScheduling();
 
-	String saveTask();
+    String saveTask();
 
-	String editSchedulingView();
+    String editSchedulingView();
 
-	String addSchedulingView();
+    String addSchedulingView();
 
-	String addScheduling();
+    String addScheduling();
 
-	String taskEditView();
+    String taskEditView();
 
 }

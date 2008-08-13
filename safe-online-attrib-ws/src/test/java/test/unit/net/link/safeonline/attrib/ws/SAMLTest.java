@@ -44,91 +44,85 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+
 public class SAMLTest {
 
-	private static final Log LOG = LogFactory.getLog(SAMLTest.class);
+    private static final Log LOG = LogFactory.getLog(SAMLTest.class);
 
-	@SuppressWarnings("unchecked")
-	@Test
-	public void attributeValueXsiType() throws Exception {
-		// setup
-		LOG.debug("xsi:type test");
 
-		ObjectFactory objectFactory = new ObjectFactory();
-		AssertionType assertion = objectFactory.createAssertionType();
+    @SuppressWarnings("unchecked")
+    @Test
+    public void attributeValueXsiType() throws Exception {
 
-		List<StatementAbstractType> statements = assertion
-				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-		AttributeStatementType attributeStatement = objectFactory
-				.createAttributeStatementType();
-		statements.add(attributeStatement);
+        // setup
+        LOG.debug("xsi:type test");
 
-		List<Object> attributes = attributeStatement
-				.getAttributeOrEncryptedAttribute();
-		AttributeType attribute = objectFactory.createAttributeType();
-		attributes.add(attribute);
+        ObjectFactory objectFactory = new ObjectFactory();
+        AssertionType assertion = objectFactory.createAssertionType();
 
-		attribute.setName("test-attribute-name");
-		List<Object> attributeValue = attribute.getAttributeValue();
+        List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        AttributeStatementType attributeStatement = objectFactory.createAttributeStatementType();
+        statements.add(attributeStatement);
 
-		AttributeType memberAttribute = objectFactory.createAttributeType();
-		memberAttribute.setName("member-attribute-name");
-		memberAttribute.getAttributeValue().add("value");
-		attributeValue.add(memberAttribute);
+        List<Object> attributes = attributeStatement.getAttributeOrEncryptedAttribute();
+        AttributeType attribute = objectFactory.createAttributeType();
+        attributes.add(attribute);
 
-		attributeValue.add("hello world");
-		attributeValue.add(5);
-		attributeValue.add(true);
-		attributeValue.add(new Date());
-		attributeValue.add(3.14);
+        attribute.setName("test-attribute-name");
+        List<Object> attributeValue = attribute.getAttributeValue();
 
-		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-		Marshaller marshaller = context.createMarshaller();
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-				.newInstance();
-		DocumentBuilder documentBuilder = documentBuilderFactory
-				.newDocumentBuilder();
-		Document document = documentBuilder.newDocument();
+        AttributeType memberAttribute = objectFactory.createAttributeType();
+        memberAttribute.setName("member-attribute-name");
+        memberAttribute.getAttributeValue().add("value");
+        attributeValue.add(memberAttribute);
 
-		// operate
-		marshaller.marshal(objectFactory.createAssertion(assertion), document);
+        attributeValue.add("hello world");
+        attributeValue.add(5);
+        attributeValue.add(true);
+        attributeValue.add(new Date());
+        attributeValue.add(3.14);
 
-		// verify
-		LOG.debug("result document: " + domToString(document));
+        JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+        Marshaller marshaller = context.createMarshaller();
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.newDocument();
 
-		Element nsElement = document.createElement("nsElement");
-		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
-				"xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
-		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
-				"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		Node resultNode = XPathAPI
-				.selectSingleNode(
-						document,
-						"/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue[@xsi:type='AttributeType']/saml:AttributeValue",
-						nsElement);
-		assertNotNull(resultNode);
+        // operate
+        marshaller.marshal(objectFactory.createAssertion(assertion), document);
 
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		JAXBElement<AssertionType> assertionElement = (JAXBElement<AssertionType>) unmarshaller
-				.unmarshal(document);
+        // verify
+        LOG.debug("result document: " + domToString(document));
 
-		assertEquals(AttributeType.class,
-				((AttributeType) ((AttributeStatementType) assertionElement
-						.getValue()
-						.getStatementOrAuthnStatementOrAuthzDecisionStatement()
-						.get(0)).getAttributeOrEncryptedAttribute().get(0))
-						.getAttributeValue().get(0).getClass());
-	}
+        Element nsElement = document.createElement("nsElement");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
+                "urn:oasis:names:tc:SAML:2.0:assertion");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi",
+                "http://www.w3.org/2001/XMLSchema-instance");
+        Node resultNode = XPathAPI
+                .selectSingleNode(
+                        document,
+                        "/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue[@xsi:type='AttributeType']/saml:AttributeValue",
+                        nsElement);
+        assertNotNull(resultNode);
 
-	public static String domToString(Node domNode) throws TransformerException {
-		Source source = new DOMSource(domNode);
-		StringWriter stringWriter = new StringWriter();
-		Result result = new StreamResult(stringWriter);
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		transformer.transform(source, result);
-		return stringWriter.toString();
-	}
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        JAXBElement<AssertionType> assertionElement = (JAXBElement<AssertionType>) unmarshaller.unmarshal(document);
+
+        assertEquals(AttributeType.class, ((AttributeType) ((AttributeStatementType) assertionElement.getValue()
+                .getStatementOrAuthnStatementOrAuthzDecisionStatement().get(0)).getAttributeOrEncryptedAttribute().get(
+                0)).getAttributeValue().get(0).getClass());
+    }
+
+    public static String domToString(Node domNode) throws TransformerException {
+
+        Source source = new DOMSource(domNode);
+        StringWriter stringWriter = new StringWriter();
+        Result result = new StreamResult(stringWriter);
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.transform(source, result);
+        return stringWriter.toString();
+    }
 }

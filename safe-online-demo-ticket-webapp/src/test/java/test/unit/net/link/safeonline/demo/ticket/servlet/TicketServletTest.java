@@ -29,111 +29,111 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.easymock.EasyMock.expect;
 
+
 public class TicketServletTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(TicketServletTest.class);
+    private static final Log   LOG = LogFactory.getLog(TicketServletTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager servletTestManager;
 
-	private String servletLocation;
+    private String             servletLocation;
 
-	private JndiTestUtils jndiTestUtils;
+    private JndiTestUtils      jndiTestUtils;
 
-	private TicketService mockTicketService;
+    private TicketService      mockTicketService;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
-		this.mockTicketService = createMock(TicketService.class);
-		this.jndiTestUtils.bindComponent(TicketService.LOCAL_BINDING,
-				this.mockTicketService);
+    @Override
+    protected void setUp() throws Exception {
 
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(TicketServlet.class);
+        super.setUp();
 
-		this.servletLocation = this.servletTestManager.getServletLocation();
-	}
+        this.jndiTestUtils = new JndiTestUtils();
+        this.jndiTestUtils.setUp();
+        this.mockTicketService = createMock(TicketService.class);
+        this.jndiTestUtils.bindComponent(TicketService.LOCAL_BINDING, this.mockTicketService);
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-		this.jndiTestUtils.tearDown();
-		super.tearDown();
-	}
+        this.servletTestManager = new ServletTestManager();
+        this.servletTestManager.setUp(TicketServlet.class);
 
-	public void testDoGetWithValidPass() throws Exception {
-		// setup
-		String testNrn = UUID.randomUUID().toString();
-		String testFrom = Site.GENT.name();
-		String testTo = Site.BRUSSEL.name();
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletLocation);
-		getMethod.setQueryString(new NameValuePair[] {
-				new NameValuePair("NRN", testNrn),
-				new NameValuePair("FROM", testFrom),
-				new NameValuePair("TO", testTo) });
+        this.servletLocation = this.servletTestManager.getServletLocation();
+    }
 
-		// setup
-		expect(this.mockTicketService.hasValidPass(testNrn, testFrom, testTo))
-				.andReturn(true);
+    @Override
+    protected void tearDown() throws Exception {
 
-		// prepare
-		replay(this.mockTicketService);
+        this.servletTestManager.tearDown();
+        this.jndiTestUtils.tearDown();
+        super.tearDown();
+    }
 
-		// operate
-		int result = httpClient.executeMethod(getMethod);
+    public void testDoGetWithValidPass() throws Exception {
 
-		// verify
-		LOG.debug("result: " + result);
-		verify(this.mockTicketService);
-		assertEquals(HttpServletResponse.SC_OK, result);
-	}
+        // setup
+        String testNrn = UUID.randomUUID().toString();
+        String testFrom = Site.GENT.name();
+        String testTo = Site.BRUSSEL.name();
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletLocation);
+        getMethod.setQueryString(new NameValuePair[] { new NameValuePair("NRN", testNrn),
+                new NameValuePair("FROM", testFrom), new NameValuePair("TO", testTo) });
 
-	public void testDoGetWithInvalidPass() throws Exception {
-		// setup
-		String testNrn = UUID.randomUUID().toString();
-		String testFrom = Site.GENT.name();
-		String testTo = Site.BRUSSEL.name();
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletLocation);
-		getMethod.setQueryString(new NameValuePair[] {
-				new NameValuePair("NRN", testNrn),
-				new NameValuePair("FROM", testFrom),
-				new NameValuePair("TO", testTo) });
+        // setup
+        expect(this.mockTicketService.hasValidPass(testNrn, testFrom, testTo)).andReturn(true);
 
-		// setup
-		expect(this.mockTicketService.hasValidPass(testNrn, testFrom, testTo))
-				.andReturn(false);
+        // prepare
+        replay(this.mockTicketService);
 
-		// prepare
-		replay(this.mockTicketService);
+        // operate
+        int result = httpClient.executeMethod(getMethod);
 
-		// operate
-		int result = httpClient.executeMethod(getMethod);
+        // verify
+        LOG.debug("result: " + result);
+        verify(this.mockTicketService);
+        assertEquals(HttpServletResponse.SC_OK, result);
+    }
 
-		// verify
-		LOG.debug("result: " + result);
-		verify(this.mockTicketService);
-		assertEquals(HttpServletResponse.SC_UNAUTHORIZED, result);
-	}
+    public void testDoGetWithInvalidPass() throws Exception {
 
-	public void testDoGetWithoutValidParams() throws Exception {
-		// setup
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletLocation);
+        // setup
+        String testNrn = UUID.randomUUID().toString();
+        String testFrom = Site.GENT.name();
+        String testTo = Site.BRUSSEL.name();
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletLocation);
+        getMethod.setQueryString(new NameValuePair[] { new NameValuePair("NRN", testNrn),
+                new NameValuePair("FROM", testFrom), new NameValuePair("TO", testTo) });
 
-		// prepare
-		replay(this.mockTicketService);
+        // setup
+        expect(this.mockTicketService.hasValidPass(testNrn, testFrom, testTo)).andReturn(false);
 
-		// operate
-		int result = httpClient.executeMethod(getMethod);
+        // prepare
+        replay(this.mockTicketService);
 
-		// verify
-		LOG.debug("result: " + result);
-		verify(this.mockTicketService);
-		assertEquals(HttpServletResponse.SC_BAD_REQUEST, result);
-	}
+        // operate
+        int result = httpClient.executeMethod(getMethod);
+
+        // verify
+        LOG.debug("result: " + result);
+        verify(this.mockTicketService);
+        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, result);
+    }
+
+    public void testDoGetWithoutValidParams() throws Exception {
+
+        // setup
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletLocation);
+
+        // prepare
+        replay(this.mockTicketService);
+
+        // operate
+        int result = httpClient.executeMethod(getMethod);
+
+        // verify
+        LOG.debug("result: " + result);
+        verify(this.mockTicketService);
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, result);
+    }
 }

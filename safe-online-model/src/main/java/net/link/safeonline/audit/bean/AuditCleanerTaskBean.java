@@ -21,6 +21,7 @@ import net.link.safeonline.config.model.ConfigurationInterceptor;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 /**
  * Task for cleaning up audit contexts.
  * 
@@ -35,27 +36,31 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Configurable
 public class AuditCleanerTaskBean implements Task {
 
-	private static final String name = "Audit cleaner";
+    private static final String name               = "Audit cleaner";
 
-	@EJB
-	private AuditContextDAO auditContextDAO;
+    @EJB
+    private AuditContextDAO     auditContextDAO;
 
-	@Configurable(name = "Audit Record Age (min)", group = "Audit cleaner")
-	private Integer configAgeInMinutes = 7 * 24 * 60;
+    @Configurable(name = "Audit Record Age (min)", group = "Audit cleaner")
+    private Integer             configAgeInMinutes = 7 * 24 * 60;
 
-	public AuditCleanerTaskBean() {
-		// empty
-	}
 
-	public String getName() {
-		return name;
-	}
+    public AuditCleanerTaskBean() {
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() throws Exception {
-		long ageInMinutes = this.configAgeInMinutes;
+        // empty
+    }
 
-		this.auditContextDAO.cleanup(ageInMinutes);
-	}
+    public String getName() {
+
+        return name;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void perform() throws Exception {
+
+        long ageInMinutes = this.configAgeInMinutes;
+
+        this.auditContextDAO.cleanup(ageInMinutes);
+    }
 
 }

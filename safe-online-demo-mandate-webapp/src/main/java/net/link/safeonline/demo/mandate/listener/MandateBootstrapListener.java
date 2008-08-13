@@ -16,21 +16,24 @@ import net.link.safeonline.demo.mandate.AuthorizationServiceFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class MandateBootstrapListener implements ServletContextListener {
 
-	private static final Log LOG = LogFactory
-			.getLog(MandateBootstrapListener.class);
+    private static final Log     LOG = LogFactory.getLog(MandateBootstrapListener.class);
 
-	private AuthorizationService authorizationService;
+    private AuthorizationService authorizationService;
 
-	public void contextInitialized(ServletContextEvent event) {
-		LOG.debug("context initialized");
 
-		this.authorizationService = AuthorizationServiceFactory.newInstance();
-		this.authorizationService.bootstrap();
-	}
+    public void contextInitialized(ServletContextEvent event) {
 
-	public void contextDestroyed(ServletContextEvent event) {
-		LOG.debug("context destroyed");
-	}
+        LOG.debug("context initialized");
+
+        this.authorizationService = AuthorizationServiceFactory.newInstance();
+        this.authorizationService.bootstrap();
+    }
+
+    public void contextDestroyed(ServletContextEvent event) {
+
+        LOG.debug("context destroyed");
+    }
 }

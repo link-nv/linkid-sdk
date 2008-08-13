@@ -62,6 +62,7 @@ import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 
+
 /**
  * Implementation of device operation service interface.
  * 
@@ -69,14 +70,11 @@ import org.opensaml.saml2.core.Subject;
  * 
  */
 @Stateful
-@Interceptors( { AuditContextManager.class, AccessAuditLogger.class,
-        InputValidation.class })
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class DeviceOperationServiceBean implements DeviceOperationService,
-        DeviceOperationServiceRemote {
+public class DeviceOperationServiceBean implements DeviceOperationService, DeviceOperationServiceRemote {
 
-    private static final Log          LOG = LogFactory
-                                                  .getLog(DeviceOperationServiceBean.class);
+    private static final Log          LOG = LogFactory.getLog(DeviceOperationServiceBean.class);
 
     @EJB
     private NodeAuthenticationService nodeAuthenticationService;
@@ -108,12 +106,9 @@ public class DeviceOperationServiceBean implements DeviceOperationService,
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public String redirect(@NonEmptyString String serviceUrl,
-            @NonEmptyString String targetUrl,
-            @NotNull DeviceOperationType deviceOperation,
-            @NonEmptyString String device, @NonEmptyString String userId)
-            throws NodeNotFoundException, SubjectNotFoundException,
-            DeviceNotFoundException {
+    public String redirect(@NonEmptyString String serviceUrl, @NonEmptyString String targetUrl,
+            @NotNull DeviceOperationType deviceOperation, @NonEmptyString String device, @NonEmptyString String userId)
+            throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException {
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -124,16 +119,12 @@ public class DeviceOperationServiceBean implements DeviceOperationService,
 
         Challenge<String> challenge = new Challenge<String>();
 
-        DeviceMappingEntity deviceMapping = this.deviceMappingService
-                .getDeviceMapping(userId, device);
+        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(userId, device);
 
-        String samlRequestToken = AuthnRequestFactory
-                .createDeviceOperationAuthnRequest(node.getName(),
-                        deviceMapping.getId(), keyPair, serviceUrl, targetUrl,
-                        deviceOperation, challenge, device);
+        String samlRequestToken = AuthnRequestFactory.createDeviceOperationAuthnRequest(node.getName(), deviceMapping
+                .getId(), keyPair, serviceUrl, targetUrl, deviceOperation, challenge, device);
 
-        String encodedSamlRequestToken = Base64.encode(samlRequestToken
-                .getBytes());
+        String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
         this.expectedChallengeId = challenge.getValue();
         this.expectedDeviceOperation = deviceOperation;
@@ -143,9 +134,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService,
 
     @Remove
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public DeviceMappingEntity finalize(@NotNull HttpServletRequest request)
-            throws NodeNotFoundException, ServletException,
-            DeviceMappingNotFoundException {
+    public DeviceMappingEntity finalize(@NotNull HttpServletRequest request) throws NodeNotFoundException,
+            ServletException, DeviceMappingNotFoundException {
 
         LOG.debug("finalize");
         LOG.debug("expected challenge id: " + this.expectedChallengeId);
@@ -156,23 +146,19 @@ public class DeviceOperationServiceBean implements DeviceOperationService,
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         OlasEntity node = this.nodeAuthenticationService.getLocalNode();
 
-        Response samlResponse = AuthnResponseUtil.validateResponse(now,
-                request, this.expectedChallengeId, this.expectedDeviceOperation
-                        .name(), node.getLocation(), authIdentityServiceClient
-                        .getCertificate(), authIdentityServiceClient
-                        .getPrivateKey(), TrustDomainType.DEVICE);
+        Response samlResponse = AuthnResponseUtil.validateResponse(now, request, this.expectedChallengeId,
+                this.expectedDeviceOperation.name(), node.getLocation(), authIdentityServiceClient.getCertificate(),
+                authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
         if (null == samlResponse)
             return null;
 
-        if (samlResponse.getStatus().getStatusCode().getValue().equals(
-                StatusCode.AUTHN_FAILED_URI)) {
+        if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)) {
             /*
              * Registration failed, reset the state
              */
             this.expectedChallengeId = null;
             return null;
-        } else if (samlResponse.getStatus().getStatusCode().getValue().equals(
-                StatusCode.REQUEST_UNSUPPORTED_URI)) {
+        } else if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
             // TODO: add security audit
             /*
              * Registration not supported by this device, reset the state
@@ -189,13 +175,10 @@ public class DeviceOperationServiceBean implements DeviceOperationService,
 
         AuthnStatement authStatement = authStatements.get(0);
         if (null == authStatement.getAuthnContext())
-            throw new ServletException(
-                    "missing authentication context in authentication statement");
+            throw new ServletException("missing authentication context in authentication statement");
 
-        AuthnContextClassRef authnContextClassRef = authStatement
-                .getAuthnContext().getAuthnContextClassRef();
-        String authenticatedDevice = authnContextClassRef
-                .getAuthnContextClassRef();
+        AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
+        String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
         LOG.debug("used device: " + authenticatedDevice);
 
         Subject subject = assertion.getSubject();
@@ -206,26 +189,17 @@ public class DeviceOperationServiceBean implements DeviceOperationService,
         /**
          * Check if this device mapping truly exists.
          */
-        DeviceMappingEntity deviceMapping = this.deviceMappingService
-                .getDeviceMapping(subjectNameValue);
+        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subjectNameValue);
 
         if (this.expectedDeviceOperation.equals(DeviceOperationType.REGISTER)) {
-            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(),
-                    HistoryEventType.DEVICE_REGISTRATION, Collections
-                            .singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
-                                    deviceMapping.getDevice().getName()));
-        } else if (this.expectedDeviceOperation
-                .equals(DeviceOperationType.UPDATE)) {
-            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(),
-                    HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
-                            SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping
-                                    .getDevice().getName()));
-        } else if (this.expectedDeviceOperation
-                .equals(DeviceOperationType.REMOVE)) {
-            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(),
-                    HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
-                            SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping
-                                    .getDevice().getName()));
+            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(), HistoryEventType.DEVICE_REGISTRATION,
+                    Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping.getDevice().getName()));
+        } else if (this.expectedDeviceOperation.equals(DeviceOperationType.UPDATE)) {
+            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(), HistoryEventType.DEVICE_UPDATE, Collections
+                    .singletonMap(SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping.getDevice().getName()));
+        } else if (this.expectedDeviceOperation.equals(DeviceOperationType.REMOVE)) {
+            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(), HistoryEventType.DEVICE_REMOVAL, Collections
+                    .singletonMap(SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping.getDevice().getName()));
         }
 
         return deviceMapping;

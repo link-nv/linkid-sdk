@@ -21,118 +21,125 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
+
 @Embeddable
 public class TrustPointPK implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String subjectName;
+    private String            subjectName;
 
-	private String keyId;
+    private String            keyId;
 
-	private long domain;
+    private long              domain;
 
-	public TrustPointPK() {
-		// empty
-	}
 
-	public TrustPointPK(TrustDomainEntity trustDomain, String subjectName,
-			String keyId) {
-		this.domain = trustDomain.getId();
-		this.subjectName = subjectName;
-		if (null == keyId || keyId.equals(""))
-			this.keyId = subjectName;
-		else
-			this.keyId = keyId;
-	}
+    public TrustPointPK() {
 
-	public TrustPointPK(TrustDomainEntity trustDomain,
-			X509Certificate certificate) {
-		String newSubjectName = getSubjectName(certificate);
-		String newKeyId = getSubjectKeyId(certificate);
+        // empty
+    }
 
-		this.domain = trustDomain.getId();
-		this.subjectName = newSubjectName;
-		if (null == newKeyId || newKeyId.equals(""))
-			this.keyId = newSubjectName;
-		else
-			this.keyId = newKeyId;
-	}
+    public TrustPointPK(TrustDomainEntity trustDomain, String subjectName, String keyId) {
 
-	private String getSubjectName(X509Certificate certificate) {
-		return certificate.getSubjectX500Principal().getName();
-	}
+        this.domain = trustDomain.getId();
+        this.subjectName = subjectName;
+        if (null == keyId || keyId.equals(""))
+            this.keyId = subjectName;
+        else
+            this.keyId = keyId;
+    }
 
-	public static String getSubjectKeyId(X509Certificate certificate) {
-		byte[] subjectKeyIdData = certificate
-				.getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId());
-		if (null == subjectKeyIdData) {
-			/*
-			 * NULL is not allowed as value for persistence.
-			 */
-			return "";
-		}
-		SubjectKeyIdentifierStructure subjectKeyIdentifierStructure;
-		try {
-			subjectKeyIdentifierStructure = new SubjectKeyIdentifierStructure(
-					subjectKeyIdData);
-		} catch (IOException e) {
-			throw new EJBException(
-					"error parsing the subject key identifier certificate extension");
-		}
-		String keyId = new String(Hex.encodeHex(subjectKeyIdentifierStructure
-				.getKeyIdentifier()));
-		return keyId;
-	}
+    public TrustPointPK(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
-	public String getSubjectName() {
-		return this.subjectName;
-	}
+        String newSubjectName = getSubjectName(certificate);
+        String newKeyId = getSubjectKeyId(certificate);
 
-	public void setSubjectName(String application) {
-		this.subjectName = application;
-	}
+        this.domain = trustDomain.getId();
+        this.subjectName = newSubjectName;
+        if (null == newKeyId || newKeyId.equals(""))
+            this.keyId = newSubjectName;
+        else
+            this.keyId = newKeyId;
+    }
 
-	public long getDomain() {
-		return this.domain;
-	}
+    private String getSubjectName(X509Certificate certificate) {
 
-	public void setDomain(long domain) {
-		this.domain = domain;
-	}
+        return certificate.getSubjectX500Principal().getName();
+    }
 
-	public String getKeyId() {
-		return this.keyId;
-	}
+    public static String getSubjectKeyId(X509Certificate certificate) {
 
-	public void setKeyId(String keyId) {
-		this.keyId = keyId;
-	}
+        byte[] subjectKeyIdData = certificate.getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId());
+        if (null == subjectKeyIdData) {
+            /*
+             * NULL is not allowed as value for persistence.
+             */
+            return "";
+        }
+        SubjectKeyIdentifierStructure subjectKeyIdentifierStructure;
+        try {
+            subjectKeyIdentifierStructure = new SubjectKeyIdentifierStructure(subjectKeyIdData);
+        } catch (IOException e) {
+            throw new EJBException("error parsing the subject key identifier certificate extension");
+        }
+        String keyId = new String(Hex.encodeHex(subjectKeyIdentifierStructure.getKeyIdentifier()));
+        return keyId;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof TrustPointPK) {
-			return false;
-		}
-		TrustPointPK rhs = (TrustPointPK) obj;
-		return new EqualsBuilder().append(this.domain, rhs.domain).append(
-				this.subjectName, rhs.subjectName)
-				.append(this.keyId, rhs.keyId).isEquals();
-	}
+    public String getSubjectName() {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.domain).append(
-				this.subjectName).append(this.keyId).toHashCode();
-	}
+        return this.subjectName;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("domain", this.domain).append(
-				"subject name", this.subjectName).append("key id", this.keyId)
-				.toString();
-	}
+    public void setSubjectName(String application) {
+
+        this.subjectName = application;
+    }
+
+    public long getDomain() {
+
+        return this.domain;
+    }
+
+    public void setDomain(long domain) {
+
+        this.domain = domain;
+    }
+
+    public String getKeyId() {
+
+        return this.keyId;
+    }
+
+    public void setKeyId(String keyId) {
+
+        this.keyId = keyId;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof TrustPointPK) {
+            return false;
+        }
+        TrustPointPK rhs = (TrustPointPK) obj;
+        return new EqualsBuilder().append(this.domain, rhs.domain).append(this.subjectName, rhs.subjectName).append(
+                this.keyId, rhs.keyId).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.domain).append(this.subjectName).append(this.keyId).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("domain", this.domain).append("subject name", this.subjectName).append(
+                "key id", this.keyId).toString();
+    }
 }

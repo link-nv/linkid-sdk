@@ -29,91 +29,95 @@ import net.link.safeonline.tasks.model.TaskScheduler;
 import net.link.safeonline.tasks.service.SchedulingService;
 import net.link.safeonline.tasks.service.SchedulingServiceRemote;
 
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class SchedulingServiceBean implements SchedulingService,
-		SchedulingServiceRemote {
+public class SchedulingServiceBean implements SchedulingService, SchedulingServiceRemote {
 
-	@EJB
-	private TaskDAO taskDAO;
+    @EJB
+    private TaskDAO        taskDAO;
 
-	@EJB
-	private SchedulingDAO schedulingDAO;
+    @EJB
+    private SchedulingDAO  schedulingDAO;
 
-	@EJB
-	private TaskHistoryDAO taskHistoryDAO;
+    @EJB
+    private TaskHistoryDAO taskHistoryDAO;
 
-	@EJB
-	private TaskScheduler taskScheduler;
+    @EJB
+    private TaskScheduler  taskScheduler;
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<TaskEntity> listTaskList() {
-		List<TaskEntity> taskList = this.taskDAO.listTaskEntities();
-		return taskList;
-	}
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<SchedulingEntity> getSchedulingList() {
-		return this.schedulingDAO.listSchedulings();
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public List<TaskEntity> listTaskList() {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<TaskHistoryEntity> getTaskHistoryList(TaskEntity task) {
-		return this.taskHistoryDAO.listTaskHistory(task);
-	}
+        List<TaskEntity> taskList = this.taskDAO.listTaskEntities();
+        return taskList;
+    }
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void performTask(TaskEntity task) {
-		TaskEntity attachedEntity = this.taskDAO.findTaskEntity(task
-				.getJndiName());
-		this.taskScheduler.performTask(attachedEntity);
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public List<SchedulingEntity> getSchedulingList() {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void performScheduling(SchedulingEntity scheduling) {
-		SchedulingEntity attachedEntity = this.schedulingDAO
-				.findSchedulingByName(scheduling.getName());
-		this.taskScheduler.performScheduling(attachedEntity);
-	}
+        return this.schedulingDAO.listSchedulings();
+    }
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void clearTaskHistory(TaskEntity task) {
-		this.taskHistoryDAO.clearTaskHistory(task);
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public List<TaskHistoryEntity> getTaskHistoryList(TaskEntity task) {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void clearAllTasksHistory() {
-		this.taskHistoryDAO.clearAllTasksHistory();
-	}
+        return this.taskHistoryDAO.listTaskHistory(task);
+    }
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void saveScheduling(SchedulingEntity scheduling)
-			throws InvalidCronExpressionException {
-		SchedulingEntity attachedScheduling = this.schedulingDAO
-				.findSchedulingByName(scheduling.getName());
-		attachedScheduling.setCronExpression(scheduling.getCronExpression());
-		attachedScheduling.setName(scheduling.getName());
-		this.taskScheduler.setTimer(scheduling);
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void performTask(TaskEntity task) {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void addScheduling(SchedulingEntity scheduling)
-			throws InvalidCronExpressionException, ExistingSchedulingException {
-		SchedulingEntity existingScheduling = this.schedulingDAO
-				.findSchedulingByName(scheduling.getName());
-		if (null != existingScheduling) {
-			throw new ExistingSchedulingException();
-		}
+        TaskEntity attachedEntity = this.taskDAO.findTaskEntity(task.getJndiName());
+        this.taskScheduler.performTask(attachedEntity);
+    }
 
-		this.schedulingDAO.addScheduling(scheduling.getName(), scheduling
-				.getCronExpression());
-		this.taskScheduler.setTimer(scheduling);
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void performScheduling(SchedulingEntity scheduling) {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void saveTask(TaskEntity task) {
-		TaskEntity attachedTask = this.taskDAO.findTaskEntity(task
-				.getJndiName());
-		attachedTask.setScheduling(task.getScheduling());
-	}
+        SchedulingEntity attachedEntity = this.schedulingDAO.findSchedulingByName(scheduling.getName());
+        this.taskScheduler.performScheduling(attachedEntity);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void clearTaskHistory(TaskEntity task) {
+
+        this.taskHistoryDAO.clearTaskHistory(task);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void clearAllTasksHistory() {
+
+        this.taskHistoryDAO.clearAllTasksHistory();
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void saveScheduling(SchedulingEntity scheduling) throws InvalidCronExpressionException {
+
+        SchedulingEntity attachedScheduling = this.schedulingDAO.findSchedulingByName(scheduling.getName());
+        attachedScheduling.setCronExpression(scheduling.getCronExpression());
+        attachedScheduling.setName(scheduling.getName());
+        this.taskScheduler.setTimer(scheduling);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void addScheduling(SchedulingEntity scheduling) throws InvalidCronExpressionException,
+            ExistingSchedulingException {
+
+        SchedulingEntity existingScheduling = this.schedulingDAO.findSchedulingByName(scheduling.getName());
+        if (null != existingScheduling) {
+            throw new ExistingSchedulingException();
+        }
+
+        this.schedulingDAO.addScheduling(scheduling.getName(), scheduling.getCronExpression());
+        this.taskScheduler.setTimer(scheduling);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void saveTask(TaskEntity task) {
+
+        TaskEntity attachedTask = this.taskDAO.findTaskEntity(task.getJndiName());
+        attachedTask.setScheduling(task.getScheduling());
+    }
 }

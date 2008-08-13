@@ -26,16 +26,16 @@ import org.apache.commons.logging.LogFactory;
 
 import com.thoughtworks.xstream.XStream;
 
+
 public class CinemaTicketServlet extends HttpServlet {
 
-    private static final long  serialVersionUID  = 1L;
-    private static final Log   LOG               = LogFactory
-                                                         .getLog(CinemaTicketServlet.class);
+    private static final long  serialVersionUID = 1L;
+    private static final Log   LOG              = LogFactory.getLog(CinemaTicketServlet.class);
 
-    public static final String NRN     = "nrn";
-    public static final String TIME    = "time";
-    public static final String FILM    = "film";
-    public static final String THEATRE = "theatre";
+    public static final String NRN              = "nrn";
+    public static final String TIME             = "time";
+    public static final String FILM             = "film";
+    public static final String THEATRE          = "theatre";
 
     private TicketService      ticketService;
 
@@ -46,13 +46,11 @@ public class CinemaTicketServlet extends HttpServlet {
         LOG.debug("init");
         super.init(config);
 
-        this.ticketService = EjbUtils.getEJB(TicketService.BINDING,
-                TicketService.class);
+        this.ticketService = EjbUtils.getEJB(TicketService.BINDING, TicketService.class);
     }
 
     @Override
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         LOG.debug("do get");
 
@@ -64,24 +62,21 @@ public class CinemaTicketServlet extends HttpServlet {
 
         // Validate parameters.
         if (null == nrn) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    "No National Register Number passed as parameter.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No National Register Number passed as parameter.");
             return;
         }
         if (null == time) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    "No Time passed as parameter.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No Time passed as parameter.");
             return;
         }
         try {
             date = new Date(Long.valueOf(time) * 1000);
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    "Time parameter does not contain a valid timestamp: "
-                            + time);
+                    "Time parameter does not contain a valid timestamp: " + time);
             return;
         }
-        
+
         // Feed the log.
         LOG.debug("---- Start Cinema Ticket Validation:");
         LOG.debug("NRN: " + nrn);
@@ -98,7 +93,7 @@ public class CinemaTicketServlet extends HttpServlet {
             } else {
                 tickets = this.ticketService.getTickets(nrn, date, theatre);
             }
-            
+
             // Feed the log.
             LOG.debug("Found " + tickets.size() + " tickets:");
             LOG.debug(tickets);

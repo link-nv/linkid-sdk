@@ -13,13 +13,13 @@ import javax.ejb.Local;
 import net.link.safeonline.demo.cinema.entity.FilmEntity;
 import net.link.safeonline.demo.cinema.entity.TheatreEntity;
 
+
 /**
  * <h2>{@link FilmService}<br>
  * <sub>Service bean for {@link FilmEntity}.</sub></h2>
  * 
  * <p>
- * Provide access to either all {@link FilmEntity}s or those that play in a
- * given theatre.
+ * Provide access to either all {@link FilmEntity}s or those that play in a given theatre.
  * </p>
  * 
  * <p>

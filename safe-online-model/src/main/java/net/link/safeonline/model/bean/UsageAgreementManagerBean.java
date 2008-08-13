@@ -22,83 +22,72 @@ import net.link.safeonline.model.UsageAgreementManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class UsageAgreementManagerBean implements UsageAgreementManager {
 
-	private final static Log LOG = LogFactory
-			.getLog(UsageAgreementManagerBean.class);
+    private final static Log  LOG = LogFactory.getLog(UsageAgreementManagerBean.class);
 
-	@EJB
-	private UsageAgreementDAO usageAgreementDAO;
+    @EJB
+    private UsageAgreementDAO usageAgreementDAO;
 
-	public void setUsageAgreement(ApplicationEntity application,
-			Long usageAgreementVersion) throws UsageAgreementNotFoundException {
-		LOG.debug("set usage agreement for application: "
-				+ application.getName() + " to version: "
-				+ usageAgreementVersion);
-		this.usageAgreementDAO.findUsageAgreement(application,
-				usageAgreementVersion);
-		application.setCurrentApplicationUsageAgreement(usageAgreementVersion);
-	}
 
-	public void updateUsageAgreement(ApplicationEntity application) {
-		LOG.debug("update usage agreement for application: "
-				+ application.getName());
-		UsageAgreementEntity draftUsageAgreement = this.usageAgreementDAO
-				.getUsageAgreement(application,
-						UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
-		long newUsageAgreementVersion;
-		if (application.getCurrentApplicationUsageAgreement() == UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION)
-			newUsageAgreementVersion = UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION;
-		else
-			newUsageAgreementVersion = application
-					.getCurrentApplicationUsageAgreement() + 1;
+    public void setUsageAgreement(ApplicationEntity application, Long usageAgreementVersion)
+            throws UsageAgreementNotFoundException {
 
-		UsageAgreementEntity newUsageAgreement = this.usageAgreementDAO
-				.addUsageAgreement(application, newUsageAgreementVersion);
+        LOG.debug("set usage agreement for application: " + application.getName() + " to version: "
+                + usageAgreementVersion);
+        this.usageAgreementDAO.findUsageAgreement(application, usageAgreementVersion);
+        application.setCurrentApplicationUsageAgreement(usageAgreementVersion);
+    }
 
-		for (UsageAgreementTextEntity draftUsageAgreementText : draftUsageAgreement
-				.getUsageAgreementTexts()) {
-			this.usageAgreementDAO.addUsageAgreementText(newUsageAgreement,
-					draftUsageAgreementText.getText(), draftUsageAgreementText
-							.getLanguage());
-		}
+    public void updateUsageAgreement(ApplicationEntity application) {
 
-		this.usageAgreementDAO.removeUsageAgreement(application,
-				UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
+        LOG.debug("update usage agreement for application: " + application.getName());
+        UsageAgreementEntity draftUsageAgreement = this.usageAgreementDAO.getUsageAgreement(application,
+                UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
+        long newUsageAgreementVersion;
+        if (application.getCurrentApplicationUsageAgreement() == UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION)
+            newUsageAgreementVersion = UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION;
+        else
+            newUsageAgreementVersion = application.getCurrentApplicationUsageAgreement() + 1;
 
-		LOG.debug("update application to version: " + newUsageAgreementVersion);
-		application
-				.setCurrentApplicationUsageAgreement(newUsageAgreementVersion);
-	}
+        UsageAgreementEntity newUsageAgreement = this.usageAgreementDAO.addUsageAgreement(application,
+                newUsageAgreementVersion);
 
-	public void updateGlobalUsageAgreement() {
-		LOG.debug("update global usage agreement");
-		GlobalUsageAgreementEntity draftUsageAgreement = this.usageAgreementDAO
-				.getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
-		GlobalUsageAgreementEntity currentUsageAgreement = this.usageAgreementDAO
-				.getGlobalUsageAgreement();
-		long newUsageAgreementVersion;
-		long currentUsageAgreementVersion = currentUsageAgreement
-				.getUsageAgreementVersion().longValue();
-		if (currentUsageAgreementVersion == GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION
-				.longValue()
-				|| currentUsageAgreementVersion == GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
-						.longValue())
-			newUsageAgreementVersion = GlobalUsageAgreementEntity.INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION;
-		else
-			newUsageAgreementVersion = currentUsageAgreement
-					.getUsageAgreementVersion() + 1;
-		GlobalUsageAgreementEntity newUsageAgreement = this.usageAgreementDAO
-				.addGlobalUsageAgreement(newUsageAgreementVersion);
-		for (UsageAgreementTextEntity draftUsageAgreementText : draftUsageAgreement
-				.getUsageAgreementTexts()) {
-			this.usageAgreementDAO.addGlobalUsageAgreementText(
-					newUsageAgreement, draftUsageAgreementText.getText(),
-					draftUsageAgreementText.getLanguage());
-		}
+        for (UsageAgreementTextEntity draftUsageAgreementText : draftUsageAgreement.getUsageAgreementTexts()) {
+            this.usageAgreementDAO.addUsageAgreementText(newUsageAgreement, draftUsageAgreementText.getText(),
+                    draftUsageAgreementText.getLanguage());
+        }
 
-		this.usageAgreementDAO
-				.removeGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
-	}
+        this.usageAgreementDAO.removeUsageAgreement(application, UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
+
+        LOG.debug("update application to version: " + newUsageAgreementVersion);
+        application.setCurrentApplicationUsageAgreement(newUsageAgreementVersion);
+    }
+
+    public void updateGlobalUsageAgreement() {
+
+        LOG.debug("update global usage agreement");
+        GlobalUsageAgreementEntity draftUsageAgreement = this.usageAgreementDAO
+                .getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+        GlobalUsageAgreementEntity currentUsageAgreement = this.usageAgreementDAO.getGlobalUsageAgreement();
+        long newUsageAgreementVersion;
+        long currentUsageAgreementVersion = currentUsageAgreement.getUsageAgreementVersion().longValue();
+        if (currentUsageAgreementVersion == GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION.longValue()
+                || currentUsageAgreementVersion == GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
+                        .longValue())
+            newUsageAgreementVersion = GlobalUsageAgreementEntity.INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION;
+        else
+            newUsageAgreementVersion = currentUsageAgreement.getUsageAgreementVersion() + 1;
+        GlobalUsageAgreementEntity newUsageAgreement = this.usageAgreementDAO
+                .addGlobalUsageAgreement(newUsageAgreementVersion);
+        for (UsageAgreementTextEntity draftUsageAgreementText : draftUsageAgreement.getUsageAgreementTexts()) {
+            this.usageAgreementDAO.addGlobalUsageAgreementText(newUsageAgreement, draftUsageAgreementText.getText(),
+                    draftUsageAgreementText.getLanguage());
+        }
+
+        this.usageAgreementDAO
+                .removeGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+    }
 }

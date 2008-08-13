@@ -21,6 +21,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 
+
 public class HistoryDAOBeanTest extends TestCase {
 
     private EntityTestManager entityTestManager;
@@ -36,19 +37,15 @@ public class HistoryDAOBeanTest extends TestCase {
         super.setUp();
         this.entityTestManager = new EntityTestManager();
         /*
-         * If you add entities to this list, also add them to
-         * safe-online-sql-ddl.
+         * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(HistoryEntity.class,
-                HistoryPropertyEntity.class, SubjectEntity.class);
+        this.entityTestManager.setUp(HistoryEntity.class, HistoryPropertyEntity.class, SubjectEntity.class);
 
         this.testedInstance = new HistoryDAOBean();
         this.subjectDAO = new SubjectDAOBean();
 
-        EJBTestUtils.inject(this.testedInstance, this.entityTestManager
-                .getEntityManager());
-        EJBTestUtils.inject(this.subjectDAO, this.entityTestManager
-                .getEntityManager());
+        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.subjectDAO, this.entityTestManager.getEntityManager());
 
         EJBTestUtils.init(this.testedInstance);
     }
@@ -65,26 +62,23 @@ public class HistoryDAOBeanTest extends TestCase {
         SubjectEntity subject = this.subjectDAO.addSubject("testsubject");
 
         Map<String, String> historyProperties = new HashMap<String, String>();
-        historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY,
-                "test-application");
-        historyProperties.put(SafeOnlineConstants.DEVICE_PROPERTY,
-                "test-device");
-        HistoryEntity history = this.testedInstance.addHistoryEntry(subject,
-                HistoryEventType.LOGIN_SUCCESS, historyProperties);
+        historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY, "test-application");
+        historyProperties.put(SafeOnlineConstants.DEVICE_PROPERTY, "test-device");
+        HistoryEntity history = this.testedInstance.addHistoryEntry(subject, HistoryEventType.LOGIN_SUCCESS,
+                historyProperties);
 
         this.entityTestManager.getEntityManager().getTransaction().commit();
         this.entityTestManager.getEntityManager().getTransaction().begin();
 
-        HistoryEntity resultHistory = this.entityTestManager.getEntityManager()
-                .find(HistoryEntity.class, history.getId());
+        HistoryEntity resultHistory = this.entityTestManager.getEntityManager().find(HistoryEntity.class,
+                history.getId());
         assertEquals(history, resultHistory);
 
         this.testedInstance.clearAllHistory(subject);
 
         this.entityTestManager.refreshEntityManager();
 
-        resultHistory = this.entityTestManager.getEntityManager().find(
-                HistoryEntity.class, history.getId());
+        resultHistory = this.entityTestManager.getEntityManager().find(HistoryEntity.class, history.getId());
         assertNull(resultHistory);
     }
 }

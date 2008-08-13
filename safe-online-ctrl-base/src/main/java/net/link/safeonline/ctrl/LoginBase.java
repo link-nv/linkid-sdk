@@ -9,13 +9,13 @@ package net.link.safeonline.ctrl;
 
 public interface LoginBase {
 
-	String login();
+    String login();
 
-	String logout();
+    String logout();
 
-	boolean isLoggedIn();
+    boolean isLoggedIn();
 
-	String getLoggedInUsername();
+    String getLoggedInUsername();
 
-	void destroyCallback();
+    void destroyCallback();
 }

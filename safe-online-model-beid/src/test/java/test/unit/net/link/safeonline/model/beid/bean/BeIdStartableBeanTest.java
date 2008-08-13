@@ -31,90 +31,83 @@ import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.easymock.EasyMock;
 
+
 public class BeIdStartableBeanTest extends TestCase {
 
-	private BeIdStartableBean testedInstance;
+    private BeIdStartableBean testedInstance;
 
-	private TrustDomainDAO mockTrustDomainDAO;
+    private TrustDomainDAO    mockTrustDomainDAO;
 
-	private TrustPointDAO mockTrustPointDAO;
+    private TrustPointDAO     mockTrustPointDAO;
 
-	private Object[] mockObjects;
+    private Object[]          mockObjects;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+    @Override
+    protected void setUp() throws Exception {
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        super.setUp();
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return certificate;
-					}
-				});
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		this.testedInstance = new BeIdStartableBean();
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		this.mockTrustDomainDAO = createMock(TrustDomainDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockTrustDomainDAO);
+                        return authCertificate;
+                    }
+                });
 
-		this.mockTrustPointDAO = createMock(TrustPointDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockTrustPointDAO);
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		EJBTestUtils.init(this.testedInstance);
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		this.mockObjects = new Object[] { this.mockTrustDomainDAO,
-				this.mockTrustPointDAO };
-	}
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-	public void testInitTrustDomain() throws Exception {
-		// setup
-		TrustDomainEntity trustDomain = new TrustDomainEntity(
-				BeIdPkiProvider.TRUST_DOMAIN_NAME, true);
+                        return certificate;
+                    }
+                });
 
-		// stubs
-		expect(
-				this.mockTrustDomainDAO
-						.findTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME))
-				.andStubReturn(null);
+        this.testedInstance = new BeIdStartableBean();
 
-		// expectations
-		expect(
-				this.mockTrustDomainDAO.addTrustDomain(
-						BeIdPkiProvider.TRUST_DOMAIN_NAME, true)).andReturn(
-				trustDomain);
-		this.mockTrustPointDAO.addTrustPoint(EasyMock.eq(trustDomain),
-				(X509Certificate) EasyMock.anyObject());
-		expectLastCall().times(1 + 2 + 1 + 15 + 20 + 1 + 1 + 1 + 1 + 1);
+        this.mockTrustDomainDAO = createMock(TrustDomainDAO.class);
+        EJBTestUtils.inject(this.testedInstance, this.mockTrustDomainDAO);
 
-		// prepare
-		replay(this.mockObjects);
+        this.mockTrustPointDAO = createMock(TrustPointDAO.class);
+        EJBTestUtils.inject(this.testedInstance, this.mockTrustPointDAO);
 
-		// operate
-		this.testedInstance.initTrustDomain();
+        EJBTestUtils.init(this.testedInstance);
 
-		// verify
-		verify(this.mockObjects);
-	}
+        this.mockObjects = new Object[] { this.mockTrustDomainDAO, this.mockTrustPointDAO };
+    }
+
+    public void testInitTrustDomain() throws Exception {
+
+        // setup
+        TrustDomainEntity trustDomain = new TrustDomainEntity(BeIdPkiProvider.TRUST_DOMAIN_NAME, true);
+
+        // stubs
+        expect(this.mockTrustDomainDAO.findTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME)).andStubReturn(null);
+
+        // expectations
+        expect(this.mockTrustDomainDAO.addTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME, true)).andReturn(trustDomain);
+        this.mockTrustPointDAO.addTrustPoint(EasyMock.eq(trustDomain), (X509Certificate) EasyMock.anyObject());
+        expectLastCall().times(1 + 2 + 1 + 15 + 20 + 1 + 1 + 1 + 1 + 1);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        this.testedInstance.initTrustDomain();
+
+        // verify
+        verify(this.mockObjects);
+    }
 }

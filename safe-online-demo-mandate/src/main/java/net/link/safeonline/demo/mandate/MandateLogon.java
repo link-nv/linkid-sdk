@@ -9,18 +9,19 @@ package net.link.safeonline.demo.mandate;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface MandateLogon extends AbstractMandateDataClient {
 
-	/*
-	 * Actions.
-	 */
-	String login();
+    /*
+     * Actions.
+     */
+    String login();
 
-	String logout();
+    String logout();
 
-	/*
-	 * Accessors
-	 */
-	String getUsername();
+    /*
+     * Accessors
+     */
+    String getUsername();
 }

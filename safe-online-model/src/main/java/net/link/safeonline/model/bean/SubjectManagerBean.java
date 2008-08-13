@@ -27,10 +27,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 /**
- * Implementation of subject manager interface. This component really must live
- * within the SafeOnline core security domain since it depends on the caller
- * principal to retrieve its data.
+ * Implementation of subject manager interface. This component really must live within the SafeOnline core security
+ * domain since it depends on the caller principal to retrieve its data.
  * 
  * @author fcorneli
  * 
@@ -39,31 +39,34 @@ import org.jboss.annotation.security.SecurityDomain;
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class SubjectManagerBean implements SubjectManager {
 
-	private static final Log LOG = LogFactory.getLog(SubjectManagerBean.class);
+    private static final Log LOG = LogFactory.getLog(SubjectManagerBean.class);
 
-	@Resource
-	private SessionContext context;
+    @Resource
+    private SessionContext   context;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService   subjectService;
 
-	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })
-	public SubjectEntity getCallerSubject() {
-		String login = getCallerLogin();
-		try {
-			SubjectEntity subject = this.subjectService.getSubject(login);
-			return subject;
-		} catch (SubjectNotFoundException e) {
-			String msg = "subject not found for called principal: " + login;
-			LOG.fatal(msg, e);
-			throw new EJBException(msg, e);
-		}
-	}
 
-	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })
-	public String getCallerLogin() {
-		Principal principal = this.context.getCallerPrincipal();
-		String login = principal.getName();
-		return login;
-	}
+    @RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })
+    public SubjectEntity getCallerSubject() {
+
+        String login = getCallerLogin();
+        try {
+            SubjectEntity subject = this.subjectService.getSubject(login);
+            return subject;
+        } catch (SubjectNotFoundException e) {
+            String msg = "subject not found for called principal: " + login;
+            LOG.fatal(msg, e);
+            throw new EJBException(msg, e);
+        }
+    }
+
+    @RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })
+    public String getCallerLogin() {
+
+        Principal principal = this.context.getCallerPrincipal();
+        String login = principal.getName();
+        return login;
+    }
 }

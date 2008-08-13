@@ -23,121 +23,122 @@ import net.link.safeonline.test.util.EntityTestManager;
 
 import org.joda.time.DateTime;
 
+
 public class TicketServiceBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(Ticket.class, User.class);
-	}
+    @Override
+    protected void setUp() throws Exception {
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+        super.setUp();
 
-	public void testValidPass() throws Exception {
-		// setup
-		String testNrn = UUID.randomUUID().toString();
-		String testFrom = Site.GENT.name();
-		String testTo = Site.BRUSSEL.name();
-		String testUser = "test-user";
-		Date beginDate = new Date();
-		Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(Ticket.class, User.class);
+    }
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		TicketService ticketService = EJBTestUtils.newInstance(
-				TicketServiceBean.class, null, entityManager);
+    @Override
+    protected void tearDown() throws Exception {
 
-		User user = new User(testUser, testNrn);
-		entityManager.persist(user);
-		Ticket ticket = new Ticket(user, Site.GENT, Site.BRUSSEL, beginDate,
-				endDate, false);
-		entityManager.persist(ticket);
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
 
-		// operate
-		boolean result = ticketService.hasValidPass(testNrn, testFrom, testTo);
+    public void testValidPass() throws Exception {
 
-		// verify
-		assertTrue(result);
-	}
+        // setup
+        String testNrn = UUID.randomUUID().toString();
+        String testFrom = Site.GENT.name();
+        String testTo = Site.BRUSSEL.name();
+        String testUser = "test-user";
+        Date beginDate = new Date();
+        Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
 
-	public void testExpiredPass() throws Exception {
-		// setup
-		String testNrn = UUID.randomUUID().toString();
-		String testFrom = Site.GENT.name();
-		String testTo = Site.BRUSSEL.name();
-		String testUser = "test-user-" + getName();
-		DateTime now = new DateTime();
-		Date beginDate = now.minusMonths(2).toDate();
-		Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		TicketService ticketService = EJBTestUtils.newInstance(
-				TicketServiceBean.class, null, entityManager);
+        User user = new User(testUser, testNrn);
+        entityManager.persist(user);
+        Ticket ticket = new Ticket(user, Site.GENT, Site.BRUSSEL, beginDate, endDate, false);
+        entityManager.persist(ticket);
 
-		User user = new User(testUser, testNrn);
-		entityManager.persist(user);
-		Ticket ticket = new Ticket(user, Site.GENT, Site.BRUSSEL, beginDate,
-				endDate, false);
-		entityManager.persist(ticket);
+        // operate
+        boolean result = ticketService.hasValidPass(testNrn, testFrom, testTo);
 
-		// operate
-		boolean result = ticketService.hasValidPass(testNrn, testFrom, testTo);
+        // verify
+        assertTrue(result);
+    }
 
-		// verify
-		assertFalse(result);
-	}
+    public void testExpiredPass() throws Exception {
 
-	public void testBidirectionalPass() throws Exception {
-		// setup
-		String testNrn = UUID.randomUUID().toString();
-		String testFrom = Site.GENT.name();
-		String testTo = Site.BRUSSEL.name();
-		String testUser = "test-user";
-		Date beginDate = new Date();
-		Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
+        // setup
+        String testNrn = UUID.randomUUID().toString();
+        String testFrom = Site.GENT.name();
+        String testTo = Site.BRUSSEL.name();
+        String testUser = "test-user-" + getName();
+        DateTime now = new DateTime();
+        Date beginDate = now.minusMonths(2).toDate();
+        Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		TicketService ticketService = EJBTestUtils.newInstance(
-				TicketServiceBean.class, null, entityManager);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
-		User user = new User(testUser, testNrn);
-		entityManager.persist(user);
-		Ticket ticket = new Ticket(user, Site.GENT, Site.BRUSSEL, beginDate,
-				endDate, true);
-		entityManager.persist(ticket);
+        User user = new User(testUser, testNrn);
+        entityManager.persist(user);
+        Ticket ticket = new Ticket(user, Site.GENT, Site.BRUSSEL, beginDate, endDate, false);
+        entityManager.persist(ticket);
 
-		// operate
-		boolean result = ticketService.hasValidPass(testNrn, testTo, testFrom);
+        // operate
+        boolean result = ticketService.hasValidPass(testNrn, testFrom, testTo);
 
-		// verify
-		assertTrue(result);
-	}
+        // verify
+        assertFalse(result);
+    }
 
-	public void testInvalidFrom() throws Exception {
-		// setup
-		String testNrn = UUID.randomUUID().toString();
-		String testFrom = "foobar-from";
-		String testTo = Site.BRUSSEL.name();
-		String testUser = "test-user";
+    public void testBidirectionalPass() throws Exception {
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		TicketService ticketService = EJBTestUtils.newInstance(
-				TicketServiceBean.class, null, entityManager);
+        // setup
+        String testNrn = UUID.randomUUID().toString();
+        String testFrom = Site.GENT.name();
+        String testTo = Site.BRUSSEL.name();
+        String testUser = "test-user";
+        Date beginDate = new Date();
+        Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
 
-		User user = new User(testUser, testNrn);
-		entityManager.persist(user);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
-		// operate
-		boolean result = ticketService.hasValidPass(testNrn, testTo, testFrom);
+        User user = new User(testUser, testNrn);
+        entityManager.persist(user);
+        Ticket ticket = new Ticket(user, Site.GENT, Site.BRUSSEL, beginDate, endDate, true);
+        entityManager.persist(ticket);
 
-		// verify
-		assertFalse(result);
-	}
+        // operate
+        boolean result = ticketService.hasValidPass(testNrn, testTo, testFrom);
+
+        // verify
+        assertTrue(result);
+    }
+
+    public void testInvalidFrom() throws Exception {
+
+        // setup
+        String testNrn = UUID.randomUUID().toString();
+        String testFrom = "foobar-from";
+        String testTo = Site.BRUSSEL.name();
+        String testUser = "test-user";
+
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
+
+        User user = new User(testUser, testNrn);
+        entityManager.persist(user);
+
+        // operate
+        boolean result = ticketService.hasValidPass(testNrn, testTo, testFrom);
+
+        // verify
+        assertFalse(result);
+    }
 }

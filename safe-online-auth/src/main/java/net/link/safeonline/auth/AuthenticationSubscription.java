@@ -16,20 +16,18 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 
+
 @Local
 public interface AuthenticationSubscription {
 
-	/*
-	 * Actions.
-	 */
-	String subscribe() throws ApplicationNotFoundException,
-			AlreadySubscribedException, PermissionDeniedException,
-			SubscriptionNotFoundException,
-			ApplicationIdentityNotFoundException,
-			AttributeTypeNotFoundException;
+    /*
+     * Actions.
+     */
+    String subscribe() throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException,
+            SubscriptionNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException;
 
-	/*
-	 * Accessors
-	 */
-	String getUsageAgreement();
+    /*
+     * Accessors
+     */
+    String getUsageAgreement();
 }

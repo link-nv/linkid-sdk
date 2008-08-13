@@ -30,6 +30,7 @@ import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
+
 /**
  * <h2>{@link ScenarioExceptionsChart}<br>
  * <sub>TODO</sub></h2>
@@ -45,91 +46,87 @@ import org.jfree.data.time.TimeSeriesCollection;
  */
 public class ScenarioExceptionsChart extends AbstractChart {
 
-	private Map<String, Map<String, TimeSeries>> errorMaps;
+    private Map<String, Map<String, TimeSeries>> errorMaps;
 
-	/**
-	 * Create a new {@link ScenarioExceptionsChart} instance.
-	 */
-	public ScenarioExceptionsChart() {
 
-		super("Scenario Errors");
+    /**
+     * Create a new {@link ScenarioExceptionsChart} instance.
+     */
+    public ScenarioExceptionsChart() {
 
-		this.errorMaps = new HashMap<String, Map<String, TimeSeries>>();
-	}
+        super("Scenario Errors");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processError(DriverExceptionEntity error) {
+        this.errorMaps = new HashMap<String, Map<String, TimeSeries>>();
+    }
 
-		TimeSeries errorSet = getErrorSet(error);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processError(DriverExceptionEntity error) {
 
-		FixedMillisecond startTime = new FixedMillisecond(error
-				.getOccurredTime());
+        TimeSeries errorSet = getErrorSet(error);
 
-		errorSet.addOrUpdate(startTime, 1);
-	}
+        FixedMillisecond startTime = new FixedMillisecond(error.getOccurredTime());
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isErrorProcessed() {
+        errorSet.addOrUpdate(startTime, 1);
+    }
 
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isErrorProcessed() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected XYPlot getPlot() {
+        return true;
+    }
 
-		if (isEmpty())
-			return null;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected XYPlot getPlot() {
 
-		ValueAxis domainAxis = new DateAxis("Time");
-		CombinedDomainXYPlot errorPlot = new CombinedDomainXYPlot(domainAxis);
+        if (isEmpty())
+            return null;
 
-		for (Map.Entry<String, Map<String, TimeSeries>> driver : this.errorMaps
-				.entrySet()) {
+        ValueAxis domainAxis = new DateAxis("Time");
+        CombinedDomainXYPlot errorPlot = new CombinedDomainXYPlot(domainAxis);
 
-			TimeSeriesCollection errorCollection = new TimeSeriesCollection();
-			for (TimeSeries errorSet : driver.getValue().values())
-				errorCollection.addSeries(errorSet);
+        for (Map.Entry<String, Map<String, TimeSeries>> driver : this.errorMaps.entrySet()) {
 
-			errorPlot.add(new XYPlot(errorCollection, null, new NumberAxis(
-					driver.getKey() + " (errors)"), new XYBarRenderer()));
-		}
+            TimeSeriesCollection errorCollection = new TimeSeriesCollection();
+            for (TimeSeries errorSet : driver.getValue().values())
+                errorCollection.addSeries(errorSet);
 
-		return errorPlot;
-	}
+            errorPlot.add(new XYPlot(errorCollection, null, new NumberAxis(driver.getKey() + " (errors)"),
+                    new XYBarRenderer()));
+        }
 
-	private boolean isEmpty() {
+        return errorPlot;
+    }
 
-		for (Map<String, TimeSeries> data : this.errorMaps.values())
-			if (!isEmpty(data))
-				return false;
+    private boolean isEmpty() {
 
-		return true;
-	}
+        for (Map<String, TimeSeries> data : this.errorMaps.values())
+            if (!isEmpty(data))
+                return false;
 
-	private TimeSeries getErrorSet(DriverExceptionEntity error) {
+        return true;
+    }
 
-		String profile = error.getProfile().getDriverClassName().replaceFirst(
-				".*\\.", "");
+    private TimeSeries getErrorSet(DriverExceptionEntity error) {
 
-		Map<String, TimeSeries> driverMap = this.errorMaps.get(profile);
-		if (driverMap == null)
-			this.errorMaps.put(profile,
-					driverMap = new HashMap<String, TimeSeries>());
+        String profile = error.getProfile().getDriverClassName().replaceFirst(".*\\.", "");
 
-		TimeSeries errorSet = driverMap.get(error.getMessage());
-		if (errorSet == null)
-			driverMap.put(error.getMessage(), errorSet = new TimeSeries(error
-					.getMessage(), FixedMillisecond.class));
+        Map<String, TimeSeries> driverMap = this.errorMaps.get(profile);
+        if (driverMap == null)
+            this.errorMaps.put(profile, driverMap = new HashMap<String, TimeSeries>());
 
-		return errorSet;
-	}
+        TimeSeries errorSet = driverMap.get(error.getMessage());
+        if (errorSet == null)
+            driverMap.put(error.getMessage(), errorSet = new TimeSeries(error.getMessage(), FixedMillisecond.class));
+
+        return errorSet;
+    }
 }

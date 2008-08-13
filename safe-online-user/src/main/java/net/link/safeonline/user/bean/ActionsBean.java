@@ -31,6 +31,7 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.web.Session;
 
+
 @Stateful
 @Name("actions")
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "ActionsBean/local")
@@ -38,33 +39,35 @@ import org.jboss.seam.web.Session;
 @Interceptors(ErrorMessageInterceptor.class)
 public class ActionsBean implements Actions {
 
-	@In
-	Context sessionContext;
+    @In
+    Context                sessionContext;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages          facesMessages;
 
-	@EJB
-	private AccountService accountService;
+    @EJB
+    private AccountService accountService;
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log            log;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String removeAccount() throws SubscriptionNotFoundException,
-			MessageHandlerNotFoundException {
-		this.log.debug("remove account");
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-		this.accountService.removeAccount();
+    }
 
-		this.sessionContext.set("login-processing", null);
-		this.sessionContext.set("username", null);
-		Session.instance().invalidate();
-		return "logout-success";
-	}
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String removeAccount() throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
+
+        this.log.debug("remove account");
+
+        this.accountService.removeAccount();
+
+        this.sessionContext.set("login-processing", null);
+        this.sessionContext.set("username", null);
+        Session.instance().invalidate();
+        return "logout-success";
+    }
 }

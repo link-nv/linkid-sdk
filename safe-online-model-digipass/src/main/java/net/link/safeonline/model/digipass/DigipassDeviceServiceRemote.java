@@ -8,6 +8,7 @@ package net.link.safeonline.model.digipass;
 
 import javax.ejb.Remote;
 
+
 @Remote
 public interface DigipassDeviceServiceRemote extends DigipassDeviceService {
 

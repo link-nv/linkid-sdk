@@ -37,12 +37,11 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Stateless
-public class ProxyAttributeServiceBean implements ProxyAttributeService,
-        ProxyAttributeServiceRemote {
 
-    private static final Log    LOG = LogFactory
-                                            .getLog(ProxyAttributeServiceBean.class);
+@Stateless
+public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAttributeServiceRemote {
+
+    private static final Log    LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);
 
     @EJB
     private AttributeTypeDAO    attributeTypeDAO;
@@ -60,27 +59,21 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
     private ResourceAuditLogger resourceAuditLogger;
 
 
-    public Object findDeviceAttributeValue(String deviceMappingId,
-            String attributeName) throws AttributeTypeNotFoundException,
-            PermissionDeniedException {
+    public Object findDeviceAttributeValue(String deviceMappingId, String attributeName)
+            throws AttributeTypeNotFoundException, PermissionDeniedException {
 
-        LOG.debug("find device attribute " + attributeName + " for "
-                + deviceMappingId);
-        AttributeTypeEntity attributeType = this.attributeTypeDAO
-                .getAttributeType(attributeName);
+        LOG.debug("find device attribute " + attributeName + " for " + deviceMappingId);
+        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
 
         if (attributeType.isLocal()) {
-            DeviceSubjectEntity deviceSubject = this.subjectService
-                    .findDeviceSubject(deviceMappingId);
+            DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceMappingId);
             if (null == deviceSubject)
                 return null;
-            Object[] deviceRegistrationAttributes = new Object[deviceSubject
-                    .getRegistrations().size()];
+            Object[] deviceRegistrationAttributes = new Object[deviceSubject.getRegistrations().size()];
             int idx = 0;
-            for (SubjectEntity deviceRegistration : deviceSubject
-                    .getRegistrations()) {
-                Object[] deviceRegistrationAttribute = (Object[]) findLocalAttribute(
-                        deviceRegistration.getUserId(), attributeType);
+            for (SubjectEntity deviceRegistration : deviceSubject.getRegistrations()) {
+                Object[] deviceRegistrationAttribute = (Object[]) findLocalAttribute(deviceRegistration.getUserId(),
+                        attributeType);
                 deviceRegistrationAttributes[idx] = deviceRegistrationAttribute[0];
                 idx++;
             }
@@ -91,21 +84,19 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
 
     }
 
-    public Object findAttributeValue(String userId, String attributeName)
-            throws PermissionDeniedException, AttributeTypeNotFoundException {
+    public Object findAttributeValue(String userId, String attributeName) throws PermissionDeniedException,
+            AttributeTypeNotFoundException {
 
         LOG.debug("find attribute " + attributeName + " for " + userId);
 
-        AttributeTypeEntity attributeType = this.attributeTypeDAO
-                .getAttributeType(attributeName);
+        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
 
         SubjectEntity subject = this.subjectService.findSubject(userId);
         if (null == subject)
             return null;
 
         if (attributeType.isDeviceAttribute()) {
-            return findDeviceAttributeValue(
-                    getDeviceId(subject, attributeType), attributeName);
+            return findDeviceAttributeValue(getDeviceId(subject, attributeType), attributeName);
         }
 
         if (attributeType.isLocal())
@@ -115,55 +106,45 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
     }
 
     /**
-     * Returns the device mapping id for this device attribute type and
-     * specified subject.
+     * Returns the device mapping id for this device attribute type and specified subject.
      * 
      * @param subject
      * @param attributeType
      * @return device mapping ID
      */
-    private String getDeviceId(SubjectEntity subject,
-            AttributeTypeEntity attributeType) {
+    private String getDeviceId(SubjectEntity subject, AttributeTypeEntity attributeType) {
 
-        List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO
-                .listDeviceMappings(subject);
+        List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO.listDeviceMappings(subject);
 
         for (DeviceMappingEntity deviceMapping : deviceMappings) {
-            AttributeTypeEntity deviceAttributeType = deviceMapping.getDevice()
-                    .getAttributeType();
+            AttributeTypeEntity deviceAttributeType = deviceMapping.getDevice().getAttributeType();
 
             if (deviceAttributeType.getName().equals(attributeType.getName())) {
                 return deviceMapping.getId();
             }
 
             if (deviceAttributeType.isCompounded()) {
-                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType
-                        .getMembers();
+                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
                 for (CompoundedAttributeTypeMemberEntity member : members) {
-                    if (member.getMember().getName().equals(
-                            attributeType.getName())) {
+                    if (member.getMember().getName().equals(attributeType.getName())) {
                         return deviceMapping.getId();
                     }
                 }
             }
 
-            AttributeTypeEntity deviceUserAttributeType = deviceMapping
-                    .getDevice().getUserAttributeType();
+            AttributeTypeEntity deviceUserAttributeType = deviceMapping.getDevice().getUserAttributeType();
             if (null == deviceUserAttributeType) {
                 continue;
             }
 
-            if (deviceUserAttributeType.getName().equals(
-                    attributeType.getName())) {
+            if (deviceUserAttributeType.getName().equals(attributeType.getName())) {
                 return deviceMapping.getId();
             }
 
             if (deviceUserAttributeType.isCompounded()) {
-                List<CompoundedAttributeTypeMemberEntity> members = deviceUserAttributeType
-                        .getMembers();
+                List<CompoundedAttributeTypeMemberEntity> members = deviceUserAttributeType.getMembers();
                 for (CompoundedAttributeTypeMemberEntity member : members) {
-                    if (member.getMember().getName().equals(
-                            attributeType.getName())) {
+                    if (member.getMember().getName().equals(attributeType.getName())) {
                         return deviceMapping.getId();
                     }
                 }
@@ -174,26 +155,22 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
     }
 
     /**
-     * Find local attribute. Subject ID can refer to a regular OLAS subject or
-     * an OLAS device registration subject.
+     * Find local attribute. Subject ID can refer to a regular OLAS subject or an OLAS device registration subject.
      * 
      * @param subjectId
      * @param attributeType
      * @return attribute value
      */
-    private Object findLocalAttribute(String subjectId,
-            AttributeTypeEntity attributeType) {
+    private Object findLocalAttribute(String subjectId, AttributeTypeEntity attributeType) {
 
-        LOG.debug("find local attribute " + attributeType.getName() + " for "
-                + subjectId);
+        LOG.debug("find local attribute " + attributeType.getName() + " for " + subjectId);
 
         SubjectEntity subject = this.subjectService.findSubject(subjectId);
         if (null == subject)
             return null;
 
         // filter out the empty attributes
-        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
-                subject, attributeType);
+        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
         List<AttributeEntity> nonEmptyAttributes = new LinkedList<AttributeEntity>();
         for (AttributeEntity attribute : attributes)
             if (attribute.getAttributeType().isCompounded())
@@ -210,23 +187,20 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
     }
 
     /**
-     * Find remote attribute. Subject ID can refer to a regular OLAS subject or
-     * an OLAS device registration subject.
+     * Find remote attribute. Subject ID can refer to a regular OLAS subject or an OLAS device registration subject.
      * 
      * @param subjectId
      * @param attributeType
      * @return attribute value
      */
-    private Object findRemoteAttribute(String subjectId,
-            AttributeTypeEntity attributeType) throws PermissionDeniedException {
+    private Object findRemoteAttribute(String subjectId, AttributeTypeEntity attributeType)
+            throws PermissionDeniedException {
 
-        LOG.debug("find remote attribute " + attributeType.getName() + " for "
-                + subjectId);
+        LOG.debug("find remote attribute " + attributeType.getName() + " for " + subjectId);
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        AttributeClient attributeClient = new AttributeClientImpl(attributeType
-                .getLocation().getLocation(), authIdentityServiceClient
-                .getCertificate(), authIdentityServiceClient.getPrivateKey());
+        AttributeClient attributeClient = new AttributeClientImpl(attributeType.getLocation().getLocation(),
+                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
 
         DatatypeType datatype = attributeType.getType();
         Class<?> attributeClass;
@@ -253,8 +227,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
                     attributeClass = Map[].class;
                 break;
                 default:
-                    throw new EJBException("datatype not supported: "
-                            + datatype);
+                    throw new EJBException("datatype not supported: " + datatype);
             }
         else
             switch (datatype) {
@@ -278,21 +251,17 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
                     attributeClass = Map.class;
                 break;
                 default:
-                    throw new EJBException("datatype not supported: "
-                            + datatype);
+                    throw new EJBException("datatype not supported: " + datatype);
             }
 
         try {
-            return attributeClient.getAttributeValue(subjectId, attributeType
-                    .getName(), attributeClass);
+            return attributeClient.getAttributeValue(subjectId, attributeType.getName(), attributeClass);
         }
 
         catch (WSClientTransportException e) {
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS,
-                    ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
-                    "Failed to get attribute value of type "
-                            + attributeType.getName() + " for subject "
-                            + subjectId);
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e
+                    .getLocation(), "Failed to get attribute value of type " + attributeType.getName()
+                    + " for subject " + subjectId);
             throw new PermissionDeniedException(e.getMessage());
         } catch (RequestDeniedException e) {
             throw new PermissionDeniedException(e.getMessage());
@@ -302,8 +271,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
     }
 
     @SuppressWarnings("unchecked")
-    private Object getValue(List<AttributeEntity> attributes,
-            AttributeTypeEntity attributeType, SubjectEntity subject) {
+    private Object getValue(List<AttributeEntity> attributes, AttributeTypeEntity attributeType, SubjectEntity subject) {
 
         DatatypeType datatype = attributeType.getType();
         if (attributeType.isMultivalued())
@@ -341,14 +309,11 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
                 }
                 case COMPOUNDED: {
                     Map[] values = new Map[attributes.size()];
-                    for (CompoundedAttributeTypeMemberEntity member : attributeType
-                            .getMembers()) {
-                        AttributeTypeEntity memberAttributeType = member
-                                .getMember();
+                    for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
+                        AttributeTypeEntity memberAttributeType = member.getMember();
                         for (int idx = 0; idx < attributes.size(); idx++) {
-                            AttributeEntity attribute = this.attributeDAO
-                                    .findAttribute(subject,
-                                            memberAttributeType, idx);
+                            AttributeEntity attribute = this.attributeDAO.findAttribute(subject, memberAttributeType,
+                                    idx);
                             Map<String, Object> memberMap = values[idx];
                             if (null == memberMap) {
                                 memberMap = new HashMap<String, Object>();
@@ -359,15 +324,13 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService,
                                 memberValue = attribute.getValue();
                             else
                                 memberValue = null;
-                            memberMap.put(memberAttributeType.getName(),
-                                    memberValue);
+                            memberMap.put(memberAttributeType.getName(), memberValue);
                         }
                     }
                     return values;
                 }
                 default:
-                    throw new EJBException("datatype not supported: "
-                            + datatype);
+                    throw new EJBException("datatype not supported: " + datatype);
             }
 
         /*

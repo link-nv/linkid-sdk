@@ -38,15 +38,14 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 /**
- * Abstract class for data client beans. Inherit from this class if you need a
- * {@link DataClient} component.
+ * Abstract class for data client beans. Inherit from this class if you need a {@link DataClient} component.
  * 
  * @author fcorneli
  * 
  */
-public abstract class AbstractMandateDataClientBean implements
-        AbstractMandateDataClient {
+public abstract class AbstractMandateDataClientBean implements AbstractMandateDataClient {
 
     @Logger
     private Log                                   log;
@@ -74,8 +73,7 @@ public abstract class AbstractMandateDataClientBean implements
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         this.wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils
-                .getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils.getPrivateKeyEntry();
         this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
         this.privateKey = privateKeyEntry.getPrivateKey();
         postActivateCallback();
@@ -85,12 +83,9 @@ public abstract class AbstractMandateDataClientBean implements
     public void postActivateCallback() {
 
         this.log.debug("postActivate");
-        this.dataClient = new DataClientImpl(this.wsLocation, this.certificate,
-                this.privateKey);
-        this.attributeClient = new AttributeClientImpl(this.wsLocation,
-                this.certificate, this.privateKey);
-        this.mappingClient = new NameIdentifierMappingClientImpl(
-                this.wsLocation, this.certificate, this.privateKey);
+        this.dataClient = new DataClientImpl(this.wsLocation, this.certificate, this.privateKey);
+        this.attributeClient = new AttributeClientImpl(this.wsLocation, this.certificate, this.privateKey);
+        this.mappingClient = new NameIdentifierMappingClientImpl(this.wsLocation, this.certificate, this.privateKey);
     }
 
     @PrePassivate
@@ -138,8 +133,7 @@ public abstract class AbstractMandateDataClientBean implements
     }
 
     /**
-     * Returns the username for this user Id. Sets {@link FacesMessages} in case
-     * something goes wrong.
+     * Returns the username for this user Id. Sets {@link FacesMessages} in case something goes wrong.
      * 
      * @param userId
      */
@@ -148,8 +142,8 @@ public abstract class AbstractMandateDataClientBean implements
         String username = null;
         AttributeClient currentAttributeClient = getAttributeClient();
         try {
-            username = currentAttributeClient.getAttributeValue(userId,
-                    DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+            username = currentAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
+                    String.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;

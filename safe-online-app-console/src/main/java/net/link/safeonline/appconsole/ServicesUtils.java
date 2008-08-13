@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingworker.SwingWorker;
 
+
 /**
  * SafeOnline services util class
  * 
@@ -38,13 +39,11 @@ import org.jdesktop.swingworker.SwingWorker;
  */
 public class ServicesUtils extends Observable {
 
-    static final Log                    LOG                   = LogFactory
-                                                                      .getLog(ServicesUtils.class);
+    static final Log                    LOG                   = LogFactory.getLog(ServicesUtils.class);
 
     private static ServicesUtils        servicesUtilsInstance = null;
 
-    private ApplicationConsoleManager   consoleManager        = ApplicationConsoleManager
-                                                                      .getInstance();
+    private ApplicationConsoleManager   consoleManager        = ApplicationConsoleManager.getInstance();
 
     private NameIdentifierMappingClient nameClient            = null;
     private AttributeClient             attributeClient       = null;
@@ -65,21 +64,18 @@ public class ServicesUtils extends Observable {
     /*
      * 
      * Name Identifier web service methods
-     * 
      */
     NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
         if (null == this.nameClient)
-            this.nameClient = new NameIdentifierMappingClientImpl(
-                    this.consoleManager.getLocation(),
-                    (X509Certificate) this.consoleManager.getIdentity()
-                            .getCertificate(), this.consoleManager
+            this.nameClient = new NameIdentifierMappingClientImpl(this.consoleManager.getLocation(),
+                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager
                             .getIdentity().getPrivateKey());
         return this.nameClient;
     }
 
-    public String getUserId(String username) throws SubjectNotFoundException,
-            RequestDeniedException, WSClientTransportException {
+    public String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException,
+            WSClientTransportException {
 
         return getNameIdentifierMappingClient().getUserId(username);
     }
@@ -87,15 +83,13 @@ public class ServicesUtils extends Observable {
     /*
      * 
      * Attribute web service methods
-     * 
      */
     AttributeClient getAttributeClient() {
 
         if (null == this.attributeClient)
-            this.attributeClient = new AttributeClientImpl(this.consoleManager
-                    .getLocation(), (X509Certificate) this.consoleManager
-                    .getIdentity().getCertificate(), this.consoleManager
-                    .getIdentity().getPrivateKey());
+            this.attributeClient = new AttributeClientImpl(this.consoleManager.getLocation(),
+                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager
+                            .getIdentity().getPrivateKey());
 
         this.consoleManager.setMessageAccessor(this.attributeClient);
         return this.attributeClient;
@@ -109,8 +103,7 @@ public class ServicesUtils extends Observable {
             protected Map<String, Object> doInBackground() throws Exception {
 
                 Map<String, Object> attributes = null;
-                attributes = getAttributeClient().getAttributeValues(
-                        getUserId(user));
+                attributes = getAttributeClient().getAttributeValues(getUserId(user));
                 return attributes;
             }
 
@@ -142,30 +135,26 @@ public class ServicesUtils extends Observable {
     /*
      * 
      * Data web service methods
-     * 
      */
     DataClient getDataClient() {
 
         if (null == this.dataClient)
-            this.dataClient = new DataClientImpl(this.consoleManager
-                    .getLocation(), (X509Certificate) this.consoleManager
-                    .getIdentity().getCertificate(), this.consoleManager
-                    .getIdentity().getPrivateKey());
+            this.dataClient = new DataClientImpl(this.consoleManager.getLocation(),
+                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager
+                            .getIdentity().getPrivateKey());
 
         this.consoleManager.setMessageAccessor(this.dataClient);
         return this.dataClient;
     }
 
-    public void setAttributeValue(final String userName,
-            final String attributeName, final Object attributeValue) {
+    public void setAttributeValue(final String userName, final String attributeName, final Object attributeValue) {
 
         SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
 
             @Override
             protected Boolean doInBackground() throws Exception {
 
-                getDataClient().setAttributeValue(getUserId(userName),
-                        attributeName, attributeValue);
+                getDataClient().setAttributeValue(getUserId(userName), attributeName, attributeValue);
                 return Boolean.TRUE;
             }
 
@@ -194,16 +183,14 @@ public class ServicesUtils extends Observable {
         worker.execute();
     }
 
-    public void removeAttribute(final String userName,
-            final String attributeName, final String attributeId) {
+    public void removeAttribute(final String userName, final String attributeName, final String attributeId) {
 
         SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
 
             @Override
             protected Boolean doInBackground() throws Exception {
 
-                getDataClient().removeAttribute(getUserId(userName),
-                        attributeName, attributeId);
+                getDataClient().removeAttribute(getUserId(userName), attributeName, attributeId);
                 return Boolean.TRUE;
             }
 
@@ -233,16 +220,14 @@ public class ServicesUtils extends Observable {
         worker.execute();
     }
 
-    public void createAttribute(final String userName,
-            final String attributeName, final Object attributeValue) {
+    public void createAttribute(final String userName, final String attributeName, final Object attributeValue) {
 
         SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
 
             @Override
             protected Boolean doInBackground() throws Exception {
 
-                getDataClient().createAttribute(getUserId(userName),
-                        attributeName, attributeValue);
+                getDataClient().createAttribute(getUserId(userName), attributeName, attributeValue);
                 return Boolean.TRUE;
             }
 

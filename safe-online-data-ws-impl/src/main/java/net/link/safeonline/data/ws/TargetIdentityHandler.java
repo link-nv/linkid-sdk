@@ -39,10 +39,10 @@ import oasis.names.tc.saml._2_0.protocol.ObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * SOAP Handler for TargetIdentity SOAP Header handling. This SOAP handler will
- * check for the presence of the TargetIdentity SOAP Header. If present it will
- * push the found subject name onto the messaging context.
+ * SOAP Handler for TargetIdentity SOAP Header handling. This SOAP handler will check for the presence of the
+ * TargetIdentity SOAP Header. If present it will push the found subject name onto the messaging context.
  * 
  * <p>
  * Specifications: Liberty ID-WSF SOAP Binding Specification 2.0
@@ -52,171 +52,161 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory
-			.getLog(TargetIdentityHandler.class);
+    private static final Log   LOG                         = LogFactory.getLog(TargetIdentityHandler.class);
 
-	public static final String TARGET_IDENTITY_CONTEXT_VAR = TargetIdentityHandler.class
-			.getName()
-			+ ".TargetIdentity";
+    public static final String TARGET_IDENTITY_CONTEXT_VAR = TargetIdentityHandler.class.getName() + ".TargetIdentity";
 
-	public static final String WSU_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
+    public static final String WSU_NS                      = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
 
-	private static final QName TARGET_IDENTITY_NAME = new QName(
-			DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
-			"TargetIdentity");
+    private static final QName TARGET_IDENTITY_NAME        = new QName(
+                                                                   DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
+                                                                   "TargetIdentity");
 
-	public Set<QName> getHeaders() {
-		Set<QName> headers = new HashSet<QName>();
-		/*
-		 * Communicate to the JAX-WS web service stack that this handler can
-		 * handle the TargetIdentity SOAP header element.
-		 */
-		headers.add(TARGET_IDENTITY_NAME);
-		return headers;
-	}
 
-	public void close(@SuppressWarnings("unused") MessageContext context) {
-		LOG.debug("close");
-	}
+    public Set<QName> getHeaders() {
 
-	public boolean handleFault(
-			@SuppressWarnings("unused") SOAPMessageContext soapContext) {
-		return true;
-	}
+        Set<QName> headers = new HashSet<QName>();
+        /*
+         * Communicate to the JAX-WS web service stack that this handler can handle the TargetIdentity SOAP header
+         * element.
+         */
+        headers.add(TARGET_IDENTITY_NAME);
+        return headers;
+    }
 
-	public boolean handleMessage(SOAPMessageContext soapContext) {
-		Boolean outboundProperty = (Boolean) soapContext
-				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-		if (true == outboundProperty.booleanValue()) {
-			/*
-			 * We only need to verify the TargetIdentity SOAP header on inbound
-			 * messages.
-			 */
-			return true;
-		}
+    public void close(@SuppressWarnings("unused") MessageContext context) {
 
-		SOAPMessage soapMessage = soapContext.getMessage();
-		try {
-			SOAPHeader soapHeader = soapMessage.getSOAPHeader();
-			processHeaders(soapHeader, soapContext);
-		} catch (SOAPException e) {
-			throw new RuntimeException("SOAP error: " + e.getMessage(), e);
-		} catch (JAXBException e) {
-			throw new RuntimeException("JAXB error: " + e.getMessage(), e);
-		}
+        LOG.debug("close");
+    }
 
-		LOG.debug("done.");
-		return true;
-	}
+    public boolean handleFault(@SuppressWarnings("unused") SOAPMessageContext soapContext) {
 
-	private void processHeaders(SOAPHeader soapHeader,
-			SOAPMessageContext soapContext) throws JAXBException {
-		LOG.debug("processing headers");
-		Iterator<?> iterator = soapHeader.examineAllHeaderElements();
-		while (iterator.hasNext()) {
-			SOAPHeaderElement headerElement = (SOAPHeaderElement) iterator
-					.next();
-			QName elementName = headerElement.getElementQName();
-			if (true == TARGET_IDENTITY_NAME.equals(elementName)) {
-				processTargetIdentityHeader(headerElement, soapContext);
-			}
-		}
-	}
+        return true;
+    }
 
-	private void processTargetIdentityHeader(
-			SOAPHeaderElement targetIdentityHeaderElement,
-			SOAPMessageContext soapContext) throws JAXBException {
-		LOG.debug("processing TargetIdentity header");
+    public boolean handleMessage(SOAPMessageContext soapContext) {
 
-		/*
-		 * First check whether the TargetIdentity SOAP header has been digested
-		 * correctly by the WS-Security XML signature.
-		 */
-		String id = targetIdentityHeaderElement.getAttributeNS(WSU_NS, "Id");
-		if (null == id) {
-			throw new RuntimeException("wsu:Id attribute not found");
-		}
-		boolean signed = WSSecurityServerHandler.isSignedElement(id,
-				soapContext);
-		if (false == signed) {
-			throw new RuntimeException(
-					"TargetIdentity SOAP header not signed by WS-Security");
-		}
+        Boolean outboundProperty = (Boolean) soapContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+        if (true == outboundProperty.booleanValue()) {
+            /*
+             * We only need to verify the TargetIdentity SOAP header on inbound messages.
+             */
+            return true;
+        }
 
-		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		JAXBElement<?> jaxbElement = (JAXBElement<?>) unmarshaller
-				.unmarshal(targetIdentityHeaderElement.getFirstChild());
+        SOAPMessage soapMessage = soapContext.getMessage();
+        try {
+            SOAPHeader soapHeader = soapMessage.getSOAPHeader();
+            processHeaders(soapHeader, soapContext);
+        } catch (SOAPException e) {
+            throw new RuntimeException("SOAP error: " + e.getMessage(), e);
+        } catch (JAXBException e) {
+            throw new RuntimeException("JAXB error: " + e.getMessage(), e);
+        }
 
-		Object element = jaxbElement.getValue();
-		if (false == element instanceof SubjectType) {
-			throw new RuntimeException("samlp:Subject expected");
-		}
+        LOG.debug("done.");
+        return true;
+    }
 
-		SubjectType subject = (SubjectType) element;
-		String login = findSubjectLogin(subject);
+    private void processHeaders(SOAPHeader soapHeader, SOAPMessageContext soapContext) throws JAXBException {
 
-		String applicationName = CertificateMapperHandler.getId(soapContext);
-		String userId = null;
-		try {
-			userId = findUserId(applicationName, login);
-		} catch (ApplicationNotFoundException e) {
-			throw new RuntimeException(
-					"application on JAX-WS context not found");
-		}
+        LOG.debug("processing headers");
+        Iterator<?> iterator = soapHeader.examineAllHeaderElements();
+        while (iterator.hasNext()) {
+            SOAPHeaderElement headerElement = (SOAPHeaderElement) iterator.next();
+            QName elementName = headerElement.getElementQName();
+            if (true == TARGET_IDENTITY_NAME.equals(elementName)) {
+                processTargetIdentityHeader(headerElement, soapContext);
+            }
+        }
+    }
 
-		LOG.debug("TargetIdentity: " + userId);
-		soapContext.put(TARGET_IDENTITY_CONTEXT_VAR, userId);
-		LOG
-				.debug("scope: "
-						+ soapContext.getScope(TARGET_IDENTITY_CONTEXT_VAR));
-		/*
-		 * We need to set the scope to APPLICATION, else the port implementation
-		 * will not be able to retrieve the value via its web service context.
-		 */
-		soapContext.setScope(TARGET_IDENTITY_CONTEXT_VAR, Scope.APPLICATION);
-	}
+    private void processTargetIdentityHeader(SOAPHeaderElement targetIdentityHeaderElement,
+            SOAPMessageContext soapContext) throws JAXBException {
 
-	private String findSubjectLogin(SubjectType subject) {
-		List<JAXBElement<?>> subjectContent = subject.getContent();
-		for (JAXBElement<?> subjectItem : subjectContent) {
-			Object value = subjectItem.getValue();
-			if (false == value instanceof NameIDType) {
-				continue;
-			}
-			NameIDType nameId = (NameIDType) value;
-			String subjectLogin = nameId.getValue();
-			return subjectLogin;
-		}
-		return null;
-	}
+        LOG.debug("processing TargetIdentity header");
 
-	private String findUserId(String applicationName, String applicationUserId)
-			throws ApplicationNotFoundException {
-		ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils
-				.getEJB(
-						"SafeOnline/ApplicationIdentifierMappingServiceBean/local",
-						ApplicationIdentifierMappingService.class);
-		return applicationIdentifierMappingService.findUserId(applicationName,
-				applicationUserId);
-	}
+        /*
+         * First check whether the TargetIdentity SOAP header has been digested correctly by the WS-Security XML
+         * signature.
+         */
+        String id = targetIdentityHeaderElement.getAttributeNS(WSU_NS, "Id");
+        if (null == id) {
+            throw new RuntimeException("wsu:Id attribute not found");
+        }
+        boolean signed = WSSecurityServerHandler.isSignedElement(id, soapContext);
+        if (false == signed) {
+            throw new RuntimeException("TargetIdentity SOAP header not signed by WS-Security");
+        }
 
-	/**
-	 * Gives back the target identity. This target identity has been extracted
-	 * before by this handler from the TargetIdentity SOAP header.
-	 * 
-	 * @param context
-	 * @throws TargetIdentityException
-	 *             in case of a missing TargetIdentity SOAP header.
-	 */
-	public static String getTargetIdentity(WebServiceContext context)
-			throws TargetIdentityException {
-		MessageContext messageContext = context.getMessageContext();
-		String targetIdentity = (String) messageContext
-				.get(TargetIdentityHandler.TARGET_IDENTITY_CONTEXT_VAR);
-		if (null == targetIdentity) {
-			throw new TargetIdentityException();
-		}
-		return targetIdentity;
-	}
+        JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        JAXBElement<?> jaxbElement = (JAXBElement<?>) unmarshaller.unmarshal(targetIdentityHeaderElement
+                .getFirstChild());
+
+        Object element = jaxbElement.getValue();
+        if (false == element instanceof SubjectType) {
+            throw new RuntimeException("samlp:Subject expected");
+        }
+
+        SubjectType subject = (SubjectType) element;
+        String login = findSubjectLogin(subject);
+
+        String applicationName = CertificateMapperHandler.getId(soapContext);
+        String userId = null;
+        try {
+            userId = findUserId(applicationName, login);
+        } catch (ApplicationNotFoundException e) {
+            throw new RuntimeException("application on JAX-WS context not found");
+        }
+
+        LOG.debug("TargetIdentity: " + userId);
+        soapContext.put(TARGET_IDENTITY_CONTEXT_VAR, userId);
+        LOG.debug("scope: " + soapContext.getScope(TARGET_IDENTITY_CONTEXT_VAR));
+        /*
+         * We need to set the scope to APPLICATION, else the port implementation will not be able to retrieve the value
+         * via its web service context.
+         */
+        soapContext.setScope(TARGET_IDENTITY_CONTEXT_VAR, Scope.APPLICATION);
+    }
+
+    private String findSubjectLogin(SubjectType subject) {
+
+        List<JAXBElement<?>> subjectContent = subject.getContent();
+        for (JAXBElement<?> subjectItem : subjectContent) {
+            Object value = subjectItem.getValue();
+            if (false == value instanceof NameIDType) {
+                continue;
+            }
+            NameIDType nameId = (NameIDType) value;
+            String subjectLogin = nameId.getValue();
+            return subjectLogin;
+        }
+        return null;
+    }
+
+    private String findUserId(String applicationName, String applicationUserId) throws ApplicationNotFoundException {
+
+        ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
+                "SafeOnline/ApplicationIdentifierMappingServiceBean/local", ApplicationIdentifierMappingService.class);
+        return applicationIdentifierMappingService.findUserId(applicationName, applicationUserId);
+    }
+
+    /**
+     * Gives back the target identity. This target identity has been extracted before by this handler from the
+     * TargetIdentity SOAP header.
+     * 
+     * @param context
+     * @throws TargetIdentityException
+     *             in case of a missing TargetIdentity SOAP header.
+     */
+    public static String getTargetIdentity(WebServiceContext context) throws TargetIdentityException {
+
+        MessageContext messageContext = context.getMessageContext();
+        String targetIdentity = (String) messageContext.get(TargetIdentityHandler.TARGET_IDENTITY_CONTEXT_VAR);
+        if (null == targetIdentity) {
+            throw new TargetIdentityException();
+        }
+        return targetIdentity;
+    }
 }

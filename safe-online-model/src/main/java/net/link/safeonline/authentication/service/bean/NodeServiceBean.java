@@ -37,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 /**
  * Implementation of node service interface.
  * 
@@ -48,105 +49,96 @@ import org.jboss.annotation.security.SecurityDomain;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class NodeServiceBean implements NodeService, NodeServiceRemote {
 
-	private static final Log LOG = LogFactory.getLog(NodeServiceBean.class);
+    private static final Log LOG = LogFactory.getLog(NodeServiceBean.class);
 
-	@EJB
-	private OlasDAO olasDAO;
+    @EJB
+    private OlasDAO          olasDAO;
 
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+    @EJB
+    private AttributeTypeDAO attributeTypeDAO;
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<OlasEntity> listNodes() {
-		return this.olasDAO.listNodes();
-	}
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void addNode(String name, String protocol, String hostname,
-			int port, int sslPort, byte[] encodedAuthnCertificate,
-			byte[] encodedSigningCertificate) throws ExistingNodeException,
-			CertificateEncodingException {
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public List<OlasEntity> listNodes() {
 
-		LOG.debug("add olas node: " + name);
-		checkExistingNode(name);
+        return this.olasDAO.listNodes();
+    }
 
-		X509Certificate authnCertificate = PkiUtils
-				.decodeCertificate(encodedAuthnCertificate);
-		X509Certificate signingCertificate = PkiUtils
-				.decodeCertificate(encodedSigningCertificate);
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void addNode(String name, String protocol, String hostname, int port, int sslPort,
+            byte[] encodedAuthnCertificate, byte[] encodedSigningCertificate) throws ExistingNodeException,
+            CertificateEncodingException {
 
-		this.olasDAO.addNode(name, protocol, hostname, port, sslPort,
-				authnCertificate, signingCertificate);
-	}
+        LOG.debug("add olas node: " + name);
+        checkExistingNode(name);
 
-	private void checkExistingNode(String name) throws ExistingNodeException {
+        X509Certificate authnCertificate = PkiUtils.decodeCertificate(encodedAuthnCertificate);
+        X509Certificate signingCertificate = PkiUtils.decodeCertificate(encodedSigningCertificate);
 
-		OlasEntity existingNode = this.olasDAO.findNode(name);
-		if (null != existingNode)
-			throw new ExistingNodeException();
-	}
+        this.olasDAO.addNode(name, protocol, hostname, port, sslPort, authnCertificate, signingCertificate);
+    }
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void removeNode(String name) throws NodeNotFoundException,
-			PermissionDeniedException {
+    private void checkExistingNode(String name) throws ExistingNodeException {
 
-		LOG.debug("remove node: " + name);
-		OlasEntity node = this.olasDAO.getNode(name);
+        OlasEntity existingNode = this.olasDAO.findNode(name);
+        if (null != existingNode)
+            throw new ExistingNodeException();
+    }
 
-		// check if present in an attribute type
-		List<AttributeTypeEntity> nodeAttributeTypes = this.attributeTypeDAO
-				.listAttributeTypes(node);
-		if (nodeAttributeTypes.size() > 0)
-			throw new PermissionDeniedException(
-					"Still attribute types attached to this node",
-					"errorPermissionNodeHasAttributes");
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void removeNode(String name) throws NodeNotFoundException, PermissionDeniedException {
 
-		this.olasDAO.removeNode(node);
-	}
+        LOG.debug("remove node: " + name);
+        OlasEntity node = this.olasDAO.getNode(name);
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public OlasEntity getNode(String nodeName) throws NodeNotFoundException {
+        // check if present in an attribute type
+        List<AttributeTypeEntity> nodeAttributeTypes = this.attributeTypeDAO.listAttributeTypes(node);
+        if (nodeAttributeTypes.size() > 0)
+            throw new PermissionDeniedException("Still attribute types attached to this node",
+                    "errorPermissionNodeHasAttributes");
 
-		return this.olasDAO.getNode(nodeName);
-	}
+        this.olasDAO.removeNode(node);
+    }
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateAuthnCertificate(String nodeName, byte[] certificateData)
-			throws CertificateEncodingException, NodeNotFoundException {
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public OlasEntity getNode(String nodeName) throws NodeNotFoundException {
 
-		LOG.debug("updating olas node authentication certificate for "
-				+ nodeName);
-		X509Certificate certificate = PkiUtils
-				.decodeCertificate(certificateData);
+        return this.olasDAO.getNode(nodeName);
+    }
 
-		OlasEntity node = this.olasDAO.getNode(nodeName);
-		node.setAuthnCertificate(certificate);
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateAuthnCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException,
+            NodeNotFoundException {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateSigningCertificate(String nodeName, byte[] certificateData)
-			throws CertificateEncodingException, NodeNotFoundException {
+        LOG.debug("updating olas node authentication certificate for " + nodeName);
+        X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
 
-		LOG.debug("updating olas node certificate for " + nodeName);
-		X509Certificate certificate = PkiUtils
-				.decodeCertificate(certificateData);
+        OlasEntity node = this.olasDAO.getNode(nodeName);
+        node.setAuthnCertificate(certificate);
+    }
 
-		OlasEntity node = this.olasDAO.getNode(nodeName);
-		node.setSigningCertificate(certificate);
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateSigningCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException,
+            NodeNotFoundException {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateLocation(String nodeName, String protocol,
-			String hostname, int port, int sslPort)
-			throws NodeNotFoundException {
+        LOG.debug("updating olas node certificate for " + nodeName);
+        X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
 
-		LOG.debug("update olas node location for " + nodeName);
-		OlasEntity node = this.olasDAO.getNode(nodeName);
-		node.setProtocol(protocol);
-		node.setHostname(hostname);
-		node.setPort(port);
-		node.setSslPort(sslPort);
-	}
+        OlasEntity node = this.olasDAO.getNode(nodeName);
+        node.setSigningCertificate(certificate);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateLocation(String nodeName, String protocol, String hostname, int port, int sslPort)
+            throws NodeNotFoundException {
+
+        LOG.debug("update olas node location for " + nodeName);
+        OlasEntity node = this.olasDAO.getNode(nodeName);
+        node.setProtocol(protocol);
+        node.setHostname(hostname);
+        node.setPort(port);
+        node.setSslPort(sslPort);
+    }
 }

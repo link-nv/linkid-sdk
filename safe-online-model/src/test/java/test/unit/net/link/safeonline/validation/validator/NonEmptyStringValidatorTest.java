@@ -19,66 +19,68 @@ import net.link.safeonline.validation.validator.ValidatorResult;
 
 import org.easymock.EasyMock;
 
+
 public class NonEmptyStringValidatorTest extends TestCase {
 
-	private NonEmptyStringValidator testedInstance;
+    private NonEmptyStringValidator testedInstance;
 
-	private ValidatorResult mockValidatorResult;
+    private ValidatorResult         mockValidatorResult;
 
-	private NonEmptyString nonEmptyStringSampleAnnotation;
+    private NonEmptyString          nonEmptyStringSampleAnnotation;
 
-	@SuppressWarnings("unused")
-	private void sampleFunc(@NonEmptyString("sample")
-	String parameter) {
-		// empty
-	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+    @SuppressWarnings("unused")
+    private void sampleFunc(@NonEmptyString("sample") String parameter) {
 
-		this.testedInstance = new NonEmptyStringValidator();
+        // empty
+    }
 
-		this.mockValidatorResult = createMock(ValidatorResult.class);
+    @Override
+    protected void setUp() throws Exception {
 
-		this.nonEmptyStringSampleAnnotation = (NonEmptyString) NonEmptyStringValidatorTest.class
-				.getDeclaredMethod("sampleFunc", String.class)
-				.getParameterAnnotations()[0][0];
-	}
+        super.setUp();
 
-	public void testNullStringIsInvalid() throws Exception {
-		// setup
-		String sampleString = null;
+        this.testedInstance = new NonEmptyStringValidator();
 
-		// expectations
-		this.mockValidatorResult.addResult(EasyMock.matches(".*sample.*"));
+        this.mockValidatorResult = createMock(ValidatorResult.class);
 
-		// prepare
-		replay(this.mockValidatorResult);
+        this.nonEmptyStringSampleAnnotation = (NonEmptyString) NonEmptyStringValidatorTest.class.getDeclaredMethod(
+                "sampleFunc", String.class).getParameterAnnotations()[0][0];
+    }
 
-		// operate
-		this.testedInstance.validate(sampleString, 1,
-				this.nonEmptyStringSampleAnnotation, this.mockValidatorResult);
+    public void testNullStringIsInvalid() throws Exception {
 
-		// verify
-		verify(this.mockValidatorResult);
-	}
+        // setup
+        String sampleString = null;
 
-	public void testEmptyStringIsInvalid() throws Exception {
-		// setup
-		String sampleString = "";
+        // expectations
+        this.mockValidatorResult.addResult(EasyMock.matches(".*sample.*"));
 
-		// expectations
-		this.mockValidatorResult.addResult(EasyMock.matches(".*sample.*"));
+        // prepare
+        replay(this.mockValidatorResult);
 
-		// prepare
-		replay(this.mockValidatorResult);
+        // operate
+        this.testedInstance.validate(sampleString, 1, this.nonEmptyStringSampleAnnotation, this.mockValidatorResult);
 
-		// operate
-		this.testedInstance.validate(sampleString, 1,
-				this.nonEmptyStringSampleAnnotation, this.mockValidatorResult);
+        // verify
+        verify(this.mockValidatorResult);
+    }
 
-		// verify
-		verify(this.mockValidatorResult);
-	}
+    public void testEmptyStringIsInvalid() throws Exception {
+
+        // setup
+        String sampleString = "";
+
+        // expectations
+        this.mockValidatorResult.addResult(EasyMock.matches(".*sample.*"));
+
+        // prepare
+        replay(this.mockValidatorResult);
+
+        // operate
+        this.testedInstance.validate(sampleString, 1, this.nonEmptyStringSampleAnnotation, this.mockValidatorResult);
+
+        // verify
+        verify(this.mockValidatorResult);
+    }
 }

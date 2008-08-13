@@ -17,50 +17,48 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;
 
+
 public class SchedulingDAOBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	private SchedulingDAOBean testedInstance;
+    private SchedulingDAOBean testedInstance;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.entityTestManager = new EntityTestManager();
-		/*
-		 * If you add entities to this list, also add them to
-		 * safe-online-sql-ddl.
-		 */
-		this.entityTestManager.setUp(TaskEntity.class, SchedulingEntity.class,
-				TaskHistoryEntity.class);
 
-		this.testedInstance = new SchedulingDAOBean();
+    @Override
+    protected void setUp() throws Exception {
 
-		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
-				.getEntityManager());
+        super.setUp();
+        this.entityTestManager = new EntityTestManager();
+        /*
+         * If you add entities to this list, also add them to safe-online-sql-ddl.
+         */
+        this.entityTestManager.setUp(TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class);
 
-		EJBTestUtils.init(this.testedInstance);
-	}
+        this.testedInstance = new SchedulingDAOBean();
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
 
-	public void testSchedulingDAO() {
-		SchedulingEntity scheduling = this.testedInstance.addScheduling(
-				"test scheduling", "0 0 3 * * ?");
-		SchedulingEntity resultScheduling = this.testedInstance
-				.findSchedulingByName("test scheduling");
-		assertEquals(scheduling, resultScheduling);
-		List<SchedulingEntity> schedulingEntities = this.testedInstance
-				.listSchedulings();
-		assertEquals(scheduling, schedulingEntities.get(0));
-		this.testedInstance.removeScheduling("test scheduling");
-		resultScheduling = this.testedInstance
-				.findSchedulingByName("test scheduling");
-		assertNull(resultScheduling);
-	}
+        EJBTestUtils.init(this.testedInstance);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
+
+    public void testSchedulingDAO() {
+
+        SchedulingEntity scheduling = this.testedInstance.addScheduling("test scheduling", "0 0 3 * * ?");
+        SchedulingEntity resultScheduling = this.testedInstance.findSchedulingByName("test scheduling");
+        assertEquals(scheduling, resultScheduling);
+        List<SchedulingEntity> schedulingEntities = this.testedInstance.listSchedulings();
+        assertEquals(scheduling, schedulingEntities.get(0));
+        this.testedInstance.removeScheduling("test scheduling");
+        resultScheduling = this.testedInstance.findSchedulingByName("test scheduling");
+        assertNull(resultScheduling);
+    }
 
 }

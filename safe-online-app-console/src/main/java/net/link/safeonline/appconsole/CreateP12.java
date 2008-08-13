@@ -42,6 +42,7 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Panel for creating p12 keystores.
  * 
@@ -50,183 +51,183 @@ import org.apache.commons.logging.LogFactory;
  */
 public class CreateP12 extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID      = 1L;
 
-	private static final Log LOG = LogFactory.getLog(CreateP12.class);
+    private static final Log   LOG                   = LogFactory.getLog(CreateP12.class);
 
-	private JTextField keyStoreField = new JTextField(20);
-	private JComboBox keyStoreExt = new JComboBox();
-	private JTextField nameField = new JTextField(20);
-	private JPasswordField keyStorePasswordField = new JPasswordField(20);
-	private JPasswordField keyEntryPasswordField = new JPasswordField(20);
+    private JTextField         keyStoreField         = new JTextField(20);
+    private JComboBox          keyStoreExt           = new JComboBox();
+    private JTextField         nameField             = new JTextField(20);
+    private JPasswordField     keyStorePasswordField = new JPasswordField(20);
+    private JPasswordField     keyEntryPasswordField = new JPasswordField(20);
 
-	private JButton createButton = new JButton(CREATE_P12.getMessage());
-	private JButton cancelButton = new JButton(CANCEL.getMessage());
+    private JButton            createButton          = new JButton(CREATE_P12.getMessage());
+    private JButton            cancelButton          = new JButton(CANCEL.getMessage());
 
-	private ApplicationConsole parent = null;
+    private ApplicationConsole parent                = null;
 
-	public CreateP12(ApplicationConsole applicationConsole) {
-		this.parent = applicationConsole;
-		buildWindow();
-		handleEvents();
-	}
 
-	private void buildWindow() {
-		JPanel infoPanel = new JPanel();
-		JPanel controlPanel = new JPanel();
+    public CreateP12(ApplicationConsole applicationConsole) {
 
-		GridBagLayout gbl = new GridBagLayout();
-		GridBagConstraints gbc = new GridBagConstraints();
-		infoPanel.setLayout(gbl);
+        this.parent = applicationConsole;
+        buildWindow();
+        handleEvents();
+    }
 
-		JLabel keyStoreLabel = new JLabel(KEYSTORE.getMessage());
-		this.keyStoreExt.addItem(".p12");
-		this.keyStoreExt.addItem(".pfx");
-		this.keyStoreExt.setSelectedIndex(0);
-		JLabel keyStorePwLabel = new JLabel(KEYSTORE_PW.getMessage());
-		JLabel keyEntryPasswordLabel = new JLabel(KEYENTRY_PW.getMessage());
-		JLabel nameLabel = new JLabel(CERT_DN.getMessage());
+    private void buildWindow() {
 
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.fill = 1;
-		gbc.insets = new Insets(5, 2, 5, 2);
+        JPanel infoPanel = new JPanel();
+        JPanel controlPanel = new JPanel();
 
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbl.setConstraints(keyStoreLabel, gbc);
-		infoPanel.add(keyStoreLabel, gbc);
+        GridBagLayout gbl = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
+        infoPanel.setLayout(gbl);
 
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbl.setConstraints(this.keyStoreField, gbc);
-		infoPanel.add(this.keyStoreField, gbc);
+        JLabel keyStoreLabel = new JLabel(KEYSTORE.getMessage());
+        this.keyStoreExt.addItem(".p12");
+        this.keyStoreExt.addItem(".pfx");
+        this.keyStoreExt.setSelectedIndex(0);
+        JLabel keyStorePwLabel = new JLabel(KEYSTORE_PW.getMessage());
+        JLabel keyEntryPasswordLabel = new JLabel(KEYENTRY_PW.getMessage());
+        JLabel nameLabel = new JLabel(CERT_DN.getMessage());
 
-		gbc.gridx = 2;
-		gbc.gridy = 0;
-		gbl.setConstraints(this.keyStoreExt, gbc);
-		infoPanel.add(this.keyStoreExt, gbc);
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = 1;
+        gbc.insets = new Insets(5, 2, 5, 2);
 
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbl.setConstraints(nameLabel, gbc);
-		infoPanel.add(nameLabel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbl.setConstraints(keyStoreLabel, gbc);
+        infoPanel.add(keyStoreLabel, gbc);
 
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbl.setConstraints(this.nameField, gbc);
-		infoPanel.add(this.nameField, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbl.setConstraints(this.keyStoreField, gbc);
+        infoPanel.add(this.keyStoreField, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbl.setConstraints(keyStorePwLabel, gbc);
-		infoPanel.add(keyStorePwLabel, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbl.setConstraints(this.keyStoreExt, gbc);
+        infoPanel.add(this.keyStoreExt, gbc);
 
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbl.setConstraints(this.keyStorePasswordField, gbc);
-		infoPanel.add(this.keyStorePasswordField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbl.setConstraints(nameLabel, gbc);
+        infoPanel.add(nameLabel, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbl.setConstraints(keyEntryPasswordLabel, gbc);
-		infoPanel.add(keyEntryPasswordLabel, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbl.setConstraints(this.nameField, gbc);
+        infoPanel.add(this.nameField, gbc);
 
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		gbl.setConstraints(this.keyEntryPasswordField, gbc);
-		infoPanel.add(this.keyEntryPasswordField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbl.setConstraints(keyStorePwLabel, gbc);
+        infoPanel.add(keyStorePwLabel, gbc);
 
-		controlPanel.add(this.createButton);
-		controlPanel.add(this.cancelButton);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbl.setConstraints(this.keyStorePasswordField, gbc);
+        infoPanel.add(this.keyStorePasswordField, gbc);
 
-		this.setLayout(new BorderLayout());
-		this.add(infoPanel, BorderLayout.CENTER);
-		this.add(controlPanel, BorderLayout.SOUTH);
-	}
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbl.setConstraints(keyEntryPasswordLabel, gbc);
+        infoPanel.add(keyEntryPasswordLabel, gbc);
 
-	private void handleEvents() {
-		this.createButton.addActionListener(new ActionListener() {
-			public void actionPerformed(@SuppressWarnings("unused")
-			ActionEvent evt) {
-				if (!checkInput())
-					return;
-				onCreate();
-			}
-		});
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbl.setConstraints(this.keyEntryPasswordField, gbc);
+        infoPanel.add(this.keyEntryPasswordField, gbc);
 
-		this.cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(@SuppressWarnings("unused")
-			ActionEvent evt) {
-				onCancel();
-			}
-		});
-	}
+        controlPanel.add(this.createButton);
+        controlPanel.add(this.cancelButton);
 
-	protected boolean checkInput() {
-		if (null == this.keyStoreField.getText()
-				|| this.keyStoreField.getText().length() == 0) {
-			LOG.error("Please provide a keystore name...");
-			JOptionPane.showMessageDialog(this, ERROR_MISSING_FIELDS
-					.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		if (null == this.nameField.getText()
-				|| this.nameField.getText().length() == 0) {
-			LOG.error("Please provide a distinguished name...");
-			JOptionPane.showMessageDialog(this, ERROR_MISSING_FIELDS
-					.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		return true;
-	}
+        this.setLayout(new BorderLayout());
+        this.add(infoPanel, BorderLayout.CENTER);
+        this.add(controlPanel, BorderLayout.SOUTH);
+    }
 
-	protected void onCreate() {
-		try {
-			// get information
-			String keyStoreName = this.keyStoreField.getText().trim();
-			String certDN = this.nameField.getText().trim();
-			char[] keyStorePassword = this.keyStorePasswordField.getPassword();
-			char[] keyEntryPassword = this.keyEntryPasswordField.getPassword();
+    private void handleEvents() {
 
-			// generate keypair
-			KeyPair keyPair = KeyStoreUtils.generateKeyPair();
+        this.createButton.addActionListener(new ActionListener() {
 
-			// generate X509 certificate
-			X509Certificate certificate = KeyStoreUtils
-					.generateSelfSignedCertificate(keyPair, "CN=" + certDN);
+            public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-			// persist P12 to keystore in /tmp
-			File pkcs12keyStore = File.createTempFile(keyStoreName,
-					(String) this.keyStoreExt.getSelectedItem());
-			KeyStoreUtils.persistKey(pkcs12keyStore, keyPair.getPrivate(),
-					certificate, keyStorePassword, keyEntryPassword);
+                if (!checkInput())
+                    return;
+                onCreate();
+            }
+        });
 
-			// load generated identity
-			InputStream keyStoreInputStream = new FileInputStream(
-					pkcs12keyStore);
-			PrivateKeyEntry privateKeyEntry = KeyStoreUtils
-					.loadPrivateKeyEntry("pkcs12", keyStoreInputStream,
-							keyStorePassword, keyEntryPassword);
+        this.cancelButton.addActionListener(new ActionListener() {
 
-			String msg = "Successfully created P12 " + "\""
-					+ pkcs12keyStore.getAbsolutePath() + "\"";
-			LOG.info(msg);
-			JOptionPane.showMessageDialog(this, msg);
+            public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-			this.parent.consoleManager.setIdentity(privateKeyEntry, "", "", "");
-			this.parent.resetContent();
+                onCancel();
+            }
+        });
+    }
 
-		} catch (Exception ex) {
-			LOG.error("Failed to generate a P12", ex);
-			JOptionPane.showMessageDialog(this, ERROR_CREATE_P12.getMessage(),
-					ERROR_CREATE_P12.getMessage(), JOptionPane.ERROR_MESSAGE);
-		}
-	}
+    protected boolean checkInput() {
 
-	protected void onCancel() {
-		this.parent.resetContent();
-	}
+        if (null == this.keyStoreField.getText() || this.keyStoreField.getText().length() == 0) {
+            LOG.error("Please provide a keystore name...");
+            JOptionPane.showMessageDialog(this, ERROR_MISSING_FIELDS.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (null == this.nameField.getText() || this.nameField.getText().length() == 0) {
+            LOG.error("Please provide a distinguished name...");
+            JOptionPane.showMessageDialog(this, ERROR_MISSING_FIELDS.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    protected void onCreate() {
+
+        try {
+            // get information
+            String keyStoreName = this.keyStoreField.getText().trim();
+            String certDN = this.nameField.getText().trim();
+            char[] keyStorePassword = this.keyStorePasswordField.getPassword();
+            char[] keyEntryPassword = this.keyEntryPasswordField.getPassword();
+
+            // generate keypair
+            KeyPair keyPair = KeyStoreUtils.generateKeyPair();
+
+            // generate X509 certificate
+            X509Certificate certificate = KeyStoreUtils.generateSelfSignedCertificate(keyPair, "CN=" + certDN);
+
+            // persist P12 to keystore in /tmp
+            File pkcs12keyStore = File.createTempFile(keyStoreName, (String) this.keyStoreExt.getSelectedItem());
+            KeyStoreUtils.persistKey(pkcs12keyStore, keyPair.getPrivate(), certificate, keyStorePassword,
+                    keyEntryPassword);
+
+            // load generated identity
+            InputStream keyStoreInputStream = new FileInputStream(pkcs12keyStore);
+            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry("pkcs12", keyStoreInputStream,
+                    keyStorePassword, keyEntryPassword);
+
+            String msg = "Successfully created P12 " + "\"" + pkcs12keyStore.getAbsolutePath() + "\"";
+            LOG.info(msg);
+            JOptionPane.showMessageDialog(this, msg);
+
+            this.parent.consoleManager.setIdentity(privateKeyEntry, "", "", "");
+            this.parent.resetContent();
+
+        } catch (Exception ex) {
+            LOG.error("Failed to generate a P12", ex);
+            JOptionPane.showMessageDialog(this, ERROR_CREATE_P12.getMessage(), ERROR_CREATE_P12.getMessage(),
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    protected void onCancel() {
+
+        this.parent.resetContent();
+    }
 }

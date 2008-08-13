@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+
 /**
  * <h2>{@link ScenarioExecution}<br>
  * <sub>A data structure that holds the results of a scenario execution.</sub></h2>
@@ -21,194 +22,184 @@ import java.util.Map;
  * 
  * @author mbillemo
  */
-public class ScenarioExecution implements Serializable,
-		Comparable<ScenarioExecution>, Cloneable {
+public class ScenarioExecution implements Serializable, Comparable<ScenarioExecution>, Cloneable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long     serialVersionUID = 1L;
 
-	private Map<String, byte[][]> charts;
-	private String hostname;
-	private Boolean ssl;
-	private Double speed;
-	private Long duration;
-	private Integer workers;
-	private Integer agents;
-	private String scenarioName;
-	private String scenarioDescription;
-	private Date startTime;
+    private Map<String, byte[][]> charts;
+    private String                hostname;
+    private Boolean               ssl;
+    private Double                speed;
+    private Long                  duration;
+    private Integer               workers;
+    private Integer               agents;
+    private String                scenarioName;
+    private String                scenarioDescription;
+    private Date                  startTime;
 
-	public ScenarioExecution(String scenarioName, String scenarioDescription,
-			Integer agents, Integer workers, Date startTime, Long duration,
-			String hostname, Boolean useSsl, Double speed) {
 
-		this.scenarioName = scenarioName;
-		this.scenarioDescription = scenarioDescription;
-		this.agents = agents;
-		this.workers = workers;
-		this.startTime = startTime;
-		this.duration = duration;
-		this.hostname = hostname;
-		this.ssl = useSsl;
-		this.speed = speed;
-	}
+    public ScenarioExecution(String scenarioName, String scenarioDescription, Integer agents, Integer workers,
+            Date startTime, Long duration, String hostname, Boolean useSsl, Double speed) {
 
-	public Map<String, byte[][]> getCharts() {
+        this.scenarioName = scenarioName;
+        this.scenarioDescription = scenarioDescription;
+        this.agents = agents;
+        this.workers = workers;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.hostname = hostname;
+        this.ssl = useSsl;
+        this.speed = speed;
+    }
 
-		return this.charts;
-	}
+    public Map<String, byte[][]> getCharts() {
 
-	public void setCharts(Map<String, byte[][]> charts) {
+        return this.charts;
+    }
 
-		this.charts = charts;
-	}
+    public void setCharts(Map<String, byte[][]> charts) {
 
-	public String getHostname() {
+        this.charts = charts;
+    }
 
-		return this.hostname;
-	}
+    public String getHostname() {
 
-	public Boolean isSsl() {
+        return this.hostname;
+    }
 
-		return this.ssl;
-	}
+    public Boolean isSsl() {
 
-	public Double getSpeed() {
+        return this.ssl;
+    }
 
-		return this.speed;
-	}
+    public Double getSpeed() {
 
-	public Long getDuration() {
+        return this.speed;
+    }
 
-		return this.duration;
-	}
+    public Long getDuration() {
 
-	public Integer getWorkers() {
+        return this.duration;
+    }
 
-		return this.workers;
-	}
+    public Integer getWorkers() {
 
-	public Integer getAgents() {
+        return this.workers;
+    }
 
-		return this.agents;
-	}
+    public Integer getAgents() {
 
-	public String getScenarioName() {
+        return this.agents;
+    }
 
-		return this.scenarioName;
-	}
+    public String getScenarioName() {
 
-	public String getScenarioDescription() {
+        return this.scenarioName;
+    }
 
-		return this.scenarioDescription;
-	}
+    public String getScenarioDescription() {
 
-	public Date getStartTime() {
+        return this.scenarioDescription;
+    }
 
-		return this.startTime;
-	}
+    public Date getStartTime() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
+        return this.startTime;
+    }
 
-		String formattedStartTime = null;
-		if (this.startTime != null)
-			formattedStartTime = new SimpleDateFormat("HH:mm")
-					.format(this.startTime);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
 
-		return String.format("%s: [%s] %sx%s (%s min): %s #/s",
-				this.scenarioName == null ? "N/A" : this.scenarioName
-						.replaceFirst(".*\\.", ""),
-				formattedStartTime == null ? "N/A" : formattedStartTime,
-				this.agents == null ? "N/A" : this.agents,
-				this.workers == null ? "N/A" : this.workers,
-				this.duration == null ? "N/A" : this.duration / 60000,
-				this.speed == null ? "N/A" : String.format("%.2f", this.speed));
-	}
+        String formattedStartTime = null;
+        if (this.startTime != null)
+            formattedStartTime = new SimpleDateFormat("HH:mm").format(this.startTime);
 
-	/**
-	 * <b>NOTE</b>: The clone will <b>NOT</b> contain no charts even if this
-	 * instance does!
-	 * 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ScenarioExecution clone() {
+        return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName
+                .replaceFirst(".*\\.", ""), formattedStartTime == null? "N/A": formattedStartTime,
+                this.agents == null? "N/A": this.agents, this.workers == null? "N/A": this.workers,
+                this.duration == null? "N/A": this.duration / 60000, this.speed == null? "N/A": String.format("%.2f",
+                        this.speed));
+    }
 
-		return new ScenarioExecution(this.scenarioName,
-				this.scenarioDescription, this.agents, this.workers,
-				this.startTime, this.duration, this.hostname, this.ssl,
-				this.speed);
-	}
+    /**
+     * <b>NOTE</b>: The clone will <b>NOT</b> contain no charts even if this instance does!
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public ScenarioExecution clone() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object o) {
+        return new ScenarioExecution(this.scenarioName, this.scenarioDescription, this.agents, this.workers,
+                this.startTime, this.duration, this.hostname, this.ssl, this.speed);
+    }
 
-		if (!(o instanceof ScenarioExecution))
-			return false;
-		if (o == this)
-			return true;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object o) {
 
-		ScenarioExecution other = (ScenarioExecution) o;
-		return this.startTime.equals(other.startTime)
-				&& hashCode() == other.hashCode();
-	}
+        if (!(o instanceof ScenarioExecution))
+            return false;
+        if (o == this)
+            return true;
 
-	/**
-	 * @return <code>true</code> If this execution and the other execution
-	 *         were executed in the same execution request by the console.
-	 */
-	public boolean equalRequest(ScenarioExecution o) {
+        ScenarioExecution other = (ScenarioExecution) o;
+        return this.startTime.equals(other.startTime) && hashCode() == other.hashCode();
+    }
 
-		return this.startTime.equals(o.startTime);
-	}
+    /**
+     * @return <code>true</code> If this execution and the other execution were executed in the same execution request
+     *         by the console.
+     */
+    public boolean equalRequest(ScenarioExecution o) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
+        return this.startTime.equals(o.startTime);
+    }
 
-		double hashCode = this.startTime.hashCode();
-		if (this.scenarioName != null)
-			hashCode += this.scenarioName.hashCode();
-		if (this.hostname != null)
-			hashCode += this.hostname.hashCode();
-		if (this.duration != null)
-			hashCode += this.duration.hashCode();
-		if (this.workers != null)
-			hashCode += this.workers.hashCode();
-		if (this.agents != null)
-			hashCode += this.agents.hashCode();
-		if (this.speed != null)
-			hashCode += this.speed.hashCode();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
 
-		// Our hash is the integer average of all hashes.
-		hashCode /= 7;
-		if ((int) hashCode == 0)
-			hashCode = Math.signum(hashCode);
+        double hashCode = this.startTime.hashCode();
+        if (this.scenarioName != null)
+            hashCode += this.scenarioName.hashCode();
+        if (this.hostname != null)
+            hashCode += this.hostname.hashCode();
+        if (this.duration != null)
+            hashCode += this.duration.hashCode();
+        if (this.workers != null)
+            hashCode += this.workers.hashCode();
+        if (this.agents != null)
+            hashCode += this.agents.hashCode();
+        if (this.speed != null)
+            hashCode += this.speed.hashCode();
 
-		return (int) hashCode;
-	}
+        // Our hash is the integer average of all hashes.
+        hashCode /= 7;
+        if ((int) hashCode == 0)
+            hashCode = Math.signum(hashCode);
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * Assure contract with equals; for {@link ScenarioExecution}s with the
-	 * same startTime (execution id) compare hashCode to differentiate other
-	 * possible differences (like speed).
-	 */
-	public int compareTo(ScenarioExecution o) {
+        return (int) hashCode;
+    }
 
-		int difference = this.startTime.compareTo(o.startTime);
-		if (difference == 0)
-			difference = hashCode() - o.hashCode();
+    /**
+     * {@inheritDoc}
+     * 
+     * Assure contract with equals; for {@link ScenarioExecution}s with the same startTime (execution id) compare
+     * hashCode to differentiate other possible differences (like speed).
+     */
+    public int compareTo(ScenarioExecution o) {
 
-		return difference;
-	}
+        int difference = this.startTime.compareTo(o.startTime);
+        if (difference == 0)
+            difference = hashCode() - o.hashCode();
+
+        return difference;
+    }
 }

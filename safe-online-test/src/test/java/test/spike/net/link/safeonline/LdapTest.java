@@ -20,25 +20,26 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class LdapTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(LdapTest.class);
+    private static final Log LOG = LogFactory.getLog(LdapTest.class);
 
-	public void testLdapServerConnection() throws Exception {
-		Hashtable<String, String> environment = new Hashtable<String, String>();
-		environment.put(Context.INITIAL_CONTEXT_FACTORY,
-				"com.sun.jndi.ldap.LdapCtxFactory");
-		environment.put(Context.PROVIDER_URL, "ldap://localhost:389/");
 
-		LdapContext ldapContext = new InitialLdapContext(environment, null);
+    public void testLdapServerConnection() throws Exception {
 
-		NamingEnumeration<NameClassPair> list = ldapContext.getSchema("").list(
-				"");
-		while (list.hasMore()) {
-			NameClassPair nameClassPair = list.next();
-			LOG.debug("name: " + nameClassPair.getName());
-		}
+        Hashtable<String, String> environment = new Hashtable<String, String>();
+        environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        environment.put(Context.PROVIDER_URL, "ldap://localhost:389/");
 
-		ldapContext.search("", "(objectClass=*)", null);
-	}
+        LdapContext ldapContext = new InitialLdapContext(environment, null);
+
+        NamingEnumeration<NameClassPair> list = ldapContext.getSchema("").list("");
+        while (list.hasMore()) {
+            NameClassPair nameClassPair = list.next();
+            LOG.debug("name: " + nameClassPair.getName());
+        }
+
+        ldapContext.search("", "(objectClass=*)", null);
+    }
 }

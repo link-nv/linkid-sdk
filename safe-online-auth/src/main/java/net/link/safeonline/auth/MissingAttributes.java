@@ -14,27 +14,26 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
+
 @Local
 public interface MissingAttributes {
 
-	/*
-	 * Factories.
-	 */
-	void missingAttributeListFactory() throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException;
+    /*
+     * Factories.
+     */
+    void missingAttributeListFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException;
 
-	void optionalAttributeListFactory() throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException;
+    void optionalAttributeListFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException;
 
-	/*
-	 * Actions.
-	 */
-	String save();
+    /*
+     * Actions.
+     */
+    String save();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

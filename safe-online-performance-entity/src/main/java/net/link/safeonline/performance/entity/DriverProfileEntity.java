@@ -13,65 +13,66 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
+
 /**
  * <h2>{@link DriverProfileEntity}<br>
- * <sub>Links the {@link ProfileDataEntity}s that belong to a certain driver in
- * a certain execution.</sub></h2>
- *
+ * <sub>Links the {@link ProfileDataEntity}s that belong to a certain driver in a certain execution.</sub></h2>
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity
-@NamedQuery(name = DriverProfileEntity.findByExecution, query = "SELECT p"
-		+ "    FROM DriverProfileEntity p"
-		+ "    WHERE p.driverClassName = :driverClassName AND p.execution = :execution")
+@NamedQuery(name = DriverProfileEntity.findByExecution, query = "SELECT p" + "    FROM DriverProfileEntity p"
+        + "    WHERE p.driverClassName = :driverClassName AND p.execution = :execution")
 public class DriverProfileEntity implements Comparable<DriverProfileEntity> {
 
-	public static final String findByExecution = "DriverProfileEntity.findByExecution";
+    public static final String findByExecution = "DriverProfileEntity.findByExecution";
 
-	@Id
-	@SuppressWarnings("unused")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+    @Id
+    @SuppressWarnings("unused")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int                id;
 
-	private String driverClassName;
+    private String             driverClassName;
 
-	@ManyToOne
-	private ExecutionEntity execution;
+    @ManyToOne
+    private ExecutionEntity    execution;
 
-	public DriverProfileEntity() {
-	}
 
-	public DriverProfileEntity(String driverClassName, ExecutionEntity execution) {
+    public DriverProfileEntity() {
 
-		this.driverClassName = driverClassName;
-		this.execution = execution;
-	}
+    }
 
-	/**
-	 * @return The name of the driver class that this profile applies to.
-	 */
-	public String getDriverClassName() {
+    public DriverProfileEntity(String driverClassName, ExecutionEntity execution) {
 
-		return this.driverClassName;
-	}
+        this.driverClassName = driverClassName;
+        this.execution = execution;
+    }
 
-	/**
-	 * @return The execution of this {@link DriverProfileEntity}.
-	 */
-	public ExecutionEntity getExecution() {
+    /**
+     * @return The name of the driver class that this profile applies to.
+     */
+    public String getDriverClassName() {
 
-		return this.execution;
-	}
+        return this.driverClassName;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int compareTo(DriverProfileEntity o) {
+    /**
+     * @return The execution of this {@link DriverProfileEntity}.
+     */
+    public ExecutionEntity getExecution() {
 
-		return this.driverClassName.compareTo(o.driverClassName);
-	}
+        return this.execution;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compareTo(DriverProfileEntity o) {
+
+        return this.driverClassName.compareTo(o.driverClassName);
+    }
 }

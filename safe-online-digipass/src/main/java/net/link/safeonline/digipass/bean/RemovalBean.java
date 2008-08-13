@@ -40,79 +40,81 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("digipassRemoval")
 @LocalBinding(jndiBinding = DigipassConstants.JNDI_PREFIX + "RemovalBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class RemovalBean implements Removal {
 
-	private static final String DIGIPASS_ATTRIBUTE_LIST_NAME = "digipassAttributes";
+    private static final String   DIGIPASS_ATTRIBUTE_LIST_NAME = "digipassAttributes";
 
-	@EJB
-	private DigipassDeviceService digipassDeviceService;
+    @EJB
+    private DigipassDeviceService digipassDeviceService;
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                   log;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                 facesMessages;
 
-	@Out(required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private String loginName;
+    @Out(required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private String                loginName;
 
-	@DataModel(DIGIPASS_ATTRIBUTE_LIST_NAME)
-	List<AttributeDO> digipassAttributes;
+    @DataModel(DIGIPASS_ATTRIBUTE_LIST_NAME)
+    List<AttributeDO>             digipassAttributes;
 
-	@DataModelSelection(DIGIPASS_ATTRIBUTE_LIST_NAME)
-	private AttributeDO selectedDigipass;
+    @DataModelSelection(DIGIPASS_ATTRIBUTE_LIST_NAME)
+    private AttributeDO           selectedDigipass;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		this.log.debug("destroy");
-	}
 
-	private Locale getViewLocale() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		return viewLocale;
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@Factory(DIGIPASS_ATTRIBUTE_LIST_NAME)
-	@ErrorHandling( { @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login") })
-	public List<AttributeDO> digipassAttributesFactory()
-			throws SubjectNotFoundException, PermissionDeniedException {
-		Locale locale = getViewLocale();
-		this.digipassAttributes = this.digipassDeviceService.getDigipasses(
-				this.loginName, locale);
-		return this.digipassAttributes;
-	}
+        this.log.debug("destroy");
+    }
 
-	@ErrorHandling( { @Error(exceptionClass = DigipassException.class, messageId = "errorDeviceRegistrationNotFound") })
-	public String remove() throws SubjectNotFoundException, DigipassException,
-			PermissionDeniedException {
-		this.log.debug("remove digipass: "
-				+ this.selectedDigipass.getStringValue() + " for user "
-				+ this.loginName);
-		this.digipassDeviceService.remove(this.loginName, this.selectedDigipass
-				.getStringValue());
-		return "success";
-	}
+    private Locale getViewLocale() {
 
-	public String getRegistrations() throws SubjectNotFoundException,
-			PermissionDeniedException {
-		this.log.debug("get digipasses for: " + this.loginName);
-		digipassAttributesFactory();
-		return "";
-	}
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        return viewLocale;
+    }
 
-	public String getLoginName() {
-		return this.loginName;
-	}
+    @Factory(DIGIPASS_ATTRIBUTE_LIST_NAME)
+    @ErrorHandling( { @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login") })
+    public List<AttributeDO> digipassAttributesFactory() throws SubjectNotFoundException, PermissionDeniedException {
 
-	public void setLoginName(String loginName) {
-		this.log.debug("set login name: " + loginName);
-		this.loginName = loginName;
-	}
+        Locale locale = getViewLocale();
+        this.digipassAttributes = this.digipassDeviceService.getDigipasses(this.loginName, locale);
+        return this.digipassAttributes;
+    }
+
+    @ErrorHandling( { @Error(exceptionClass = DigipassException.class, messageId = "errorDeviceRegistrationNotFound") })
+    public String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException {
+
+        this.log.debug("remove digipass: " + this.selectedDigipass.getStringValue() + " for user " + this.loginName);
+        this.digipassDeviceService.remove(this.loginName, this.selectedDigipass.getStringValue());
+        return "success";
+    }
+
+    public String getRegistrations() throws SubjectNotFoundException, PermissionDeniedException {
+
+        this.log.debug("get digipasses for: " + this.loginName);
+        digipassAttributesFactory();
+        return "";
+    }
+
+    public String getLoginName() {
+
+        return this.loginName;
+    }
+
+    public void setLoginName(String loginName) {
+
+        this.log.debug("set login name: " + loginName);
+        this.loginName = loginName;
+    }
 }

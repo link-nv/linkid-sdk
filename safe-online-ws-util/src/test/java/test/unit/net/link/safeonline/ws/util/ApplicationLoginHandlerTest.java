@@ -36,108 +36,111 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimplePrincipal;
 
+
 public class ApplicationLoginHandlerTest extends TestCase {
 
-	private LoginHandler testedInstance;
+    private LoginHandler testedInstance;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.testedInstance = new LoginHandler();
-	}
+    @Override
+    protected void setUp() throws Exception {
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+        super.setUp();
 
-	public void testHandleMessagePerformsJAASLoginLogout() throws Exception {
-		// setup
-		SOAPMessageContext context = new TestSOAPMessageContext(null, false);
+        this.testedInstance = new LoginHandler();
+    }
 
-		String testApplicationName = "test-application-name-" + getName();
-		context.put(CertificateMapperHandler.ID_PROPERTY,
-				testApplicationName);
+    @Override
+    protected void tearDown() throws Exception {
 
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		context.put(WSSecurityServerHandler.CERTIFICATE_PROPERTY, certificate);
-		context
-				.put(
-						CertificateValidatorHandler.CERTIFICATE_DOMAIN_PROPERTY,
-						CertificateValidatorHandler.CertificateDomain.APPLICATION);
+        super.tearDown();
+    }
 
-		JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
+    public void testHandleMessagePerformsJAASLoginLogout() throws Exception {
 
-		// operate
-		this.testedInstance.handleMessage(context);
-		context.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, true);
-		this.testedInstance.handleMessage(context);
+        // setup
+        SOAPMessageContext context = new TestSOAPMessageContext(null, false);
 
-		// verify
-	}
+        String testApplicationName = "test-application-name-" + getName();
+        context.put(CertificateMapperHandler.ID_PROPERTY, testApplicationName);
 
-	public static class TestLoginModule implements LoginModule {
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        context.put(WSSecurityServerHandler.CERTIFICATE_PROPERTY, certificate);
+        context.put(CertificateValidatorHandler.CERTIFICATE_DOMAIN_PROPERTY,
+                CertificateValidatorHandler.CertificateDomain.APPLICATION);
 
-		private static final Log LOG = LogFactory.getLog(TestLoginModule.class);
+        JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
 
-		private CallbackHandler callbackHandler;
+        // operate
+        this.testedInstance.handleMessage(context);
+        context.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, true);
+        this.testedInstance.handleMessage(context);
 
-		private Subject subject;
+        // verify
+    }
 
-		private Principal authenticatedPrincipal;
 
-		public boolean abort() {
-			LOG.debug("abort");
-			return false;
-		}
+    public static class TestLoginModule implements LoginModule {
 
-		public boolean commit() {
-			LOG.debug("commit");
-			this.subject.getPrincipals().add(this.authenticatedPrincipal);
-			return true;
-		}
+        private static final Log LOG = LogFactory.getLog(TestLoginModule.class);
 
-		public void initialize(Subject newSubject,
-				CallbackHandler newCallbackHandler, @SuppressWarnings("unused")
-				Map<String, ?> sharedState, @SuppressWarnings("unused")
-				Map<String, ?> options) {
-			LOG.debug("initialize");
-			this.subject = newSubject;
-			this.callbackHandler = newCallbackHandler;
-		}
+        private CallbackHandler  callbackHandler;
 
-		public boolean login() throws LoginException {
-			LOG.debug("login");
-			PasswordCallback passwordCallback = new PasswordCallback("X509",
-					false);
-			Callback[] callbacks = new Callback[] { passwordCallback };
-			try {
-				this.callbackHandler.handle(callbacks);
-			} catch (IOException e) {
-				throw new LoginException("IO error: " + e.getMessage());
-			} catch (UnsupportedCallbackException e) {
-				throw new LoginException("unsupported callback: "
-						+ e.getMessage());
-			}
-			this.authenticatedPrincipal = new SimplePrincipal("test");
-			return true;
-		}
+        private Subject          subject;
 
-		public boolean logout() throws LoginException {
-			LOG.debug("logout");
-			if (null == this.authenticatedPrincipal) {
-				throw new LoginException("no auth principal");
-			}
-			boolean result = this.subject.getPrincipals().remove(
-					this.authenticatedPrincipal);
-			if (false == result) {
-				throw new LoginException(
-						"subject did not contain auth principal");
-			}
-			return true;
-		}
-	}
+        private Principal        authenticatedPrincipal;
+
+
+        public boolean abort() {
+
+            LOG.debug("abort");
+            return false;
+        }
+
+        public boolean commit() {
+
+            LOG.debug("commit");
+            this.subject.getPrincipals().add(this.authenticatedPrincipal);
+            return true;
+        }
+
+        public void initialize(Subject newSubject, CallbackHandler newCallbackHandler,
+                @SuppressWarnings("unused") Map<String, ?> sharedState,
+                @SuppressWarnings("unused") Map<String, ?> options) {
+
+            LOG.debug("initialize");
+            this.subject = newSubject;
+            this.callbackHandler = newCallbackHandler;
+        }
+
+        public boolean login() throws LoginException {
+
+            LOG.debug("login");
+            PasswordCallback passwordCallback = new PasswordCallback("X509", false);
+            Callback[] callbacks = new Callback[] { passwordCallback };
+            try {
+                this.callbackHandler.handle(callbacks);
+            } catch (IOException e) {
+                throw new LoginException("IO error: " + e.getMessage());
+            } catch (UnsupportedCallbackException e) {
+                throw new LoginException("unsupported callback: " + e.getMessage());
+            }
+            this.authenticatedPrincipal = new SimplePrincipal("test");
+            return true;
+        }
+
+        public boolean logout() throws LoginException {
+
+            LOG.debug("logout");
+            if (null == this.authenticatedPrincipal) {
+                throw new LoginException("no auth principal");
+            }
+            boolean result = this.subject.getPrincipals().remove(this.authenticatedPrincipal);
+            if (false == result) {
+                throw new LoginException("subject did not contain auth principal");
+            }
+            return true;
+        }
+    }
 }

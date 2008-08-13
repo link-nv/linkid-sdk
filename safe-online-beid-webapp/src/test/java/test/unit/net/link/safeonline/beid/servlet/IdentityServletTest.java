@@ -37,139 +37,134 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class IdentityServletTest {
 
-	private static final Log LOG = LogFactory.getLog(IdentityServletTest.class);
+    private static final Log     LOG = LogFactory.getLog(IdentityServletTest.class);
 
-	private String location;
+    private String               location;
 
-	private HttpClient httpClient;
+    private HttpClient           httpClient;
 
-	private BeIdDeviceService mockBeIdDeviceServiceBean;
+    private BeIdDeviceService    mockBeIdDeviceServiceBean;
 
-	private SamlAuthorityService mockSamlAuthorityService;
+    private SamlAuthorityService mockSamlAuthorityService;
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager   servletTestManager;
 
-	private JndiTestUtils jndiTestUtils;
+    private JndiTestUtils        jndiTestUtils;
 
-	@Before
-	public void setUp() throws Exception {
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
 
-		this.mockBeIdDeviceServiceBean = createMock(BeIdDeviceService.class);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnlineBeid/BeIdDeviceServiceBean/local",
-				this.mockBeIdDeviceServiceBean);
+    @Before
+    public void setUp() throws Exception {
 
-		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/SamlAuthorityServiceBean/local",
-				this.mockSamlAuthorityService);
+        this.jndiTestUtils = new JndiTestUtils();
+        this.jndiTestUtils.setUp();
 
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(IdentityServlet.class);
-		this.location = this.servletTestManager.getServletLocation();
+        this.mockBeIdDeviceServiceBean = createMock(BeIdDeviceService.class);
+        this.jndiTestUtils.bindComponent("SafeOnlineBeid/BeIdDeviceServiceBean/local", this.mockBeIdDeviceServiceBean);
 
-		this.httpClient = new HttpClient();
-	}
+        this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        this.jndiTestUtils.bindComponent("SafeOnline/SamlAuthorityServiceBean/local", this.mockSamlAuthorityService);
 
-	@After
-	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-		this.jndiTestUtils.tearDown();
-	}
+        this.servletTestManager = new ServletTestManager();
+        this.servletTestManager.setUp(IdentityServlet.class);
+        this.location = this.servletTestManager.getServletLocation();
 
-	@Test
-	public void testWrongContentTypeGivesBadRequestResult() throws Exception {
-		// setup
-		PostMethod postMethod = new PostMethod(this.location);
+        this.httpClient = new HttpClient();
+    }
 
-		// operate
-		int result = this.httpClient.executeMethod(postMethod);
+    @After
+    public void tearDown() throws Exception {
 
-		// verify
-		LOG.debug("result: " + result);
-		assertEquals(HttpServletResponse.SC_BAD_REQUEST, result);
-	}
+        this.servletTestManager.tearDown();
+        this.jndiTestUtils.tearDown();
+    }
 
-	@Test
-	public void testGetNotAllowed() throws Exception {
-		// setup
-		GetMethod getMethod = new GetMethod(this.location);
+    @Test
+    public void testWrongContentTypeGivesBadRequestResult() throws Exception {
 
-		// operate
-		int result = this.httpClient.executeMethod(getMethod);
+        // setup
+        PostMethod postMethod = new PostMethod(this.location);
 
-		// verify
-		LOG.debug("result: " + result);
-		assertEquals(HttpServletResponse.SC_METHOD_NOT_ALLOWED, result);
-	}
+        // operate
+        int result = this.httpClient.executeMethod(postMethod);
 
-	@Test
-	public void testDoPost() throws Exception {
-		// setup
-		PostMethod postMethod = new PostMethod(this.location);
-		RequestEntity requestEntity = new StringRequestEntity("test-message",
-				"application/octet-stream", null);
-		postMethod.setRequestEntity(requestEntity);
+        // verify
+        LOG.debug("result: " + result);
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, result);
+    }
 
-		// expectations
-		this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(),
-				(String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
-				EasyMock.aryEq("test-message".getBytes()));
-		EasyMock.expect(
-				this.mockSamlAuthorityService.getAuthnAssertionValidity())
-				.andStubReturn(Integer.MAX_VALUE);
+    @Test
+    public void testGetNotAllowed() throws Exception {
 
-		// prepare
-		replay(this.mockBeIdDeviceServiceBean);
+        // setup
+        GetMethod getMethod = new GetMethod(this.location);
 
-		// operate
-		int result = this.httpClient.executeMethod(postMethod);
+        // operate
+        int result = this.httpClient.executeMethod(getMethod);
 
-		// verify
-		assertEquals(HttpServletResponse.SC_OK, result);
-		verify(this.mockBeIdDeviceServiceBean);
-	}
+        // verify
+        LOG.debug("result: " + result);
+        assertEquals(HttpServletResponse.SC_METHOD_NOT_ALLOWED, result);
+    }
 
-	@Test
-	public void testJREOnlyClient() throws Exception {
-		// setup
-		URL url = new URL(this.location);
-		HttpURLConnection httpURLConnection = (HttpURLConnection) url
-				.openConnection();
+    @Test
+    public void testDoPost() throws Exception {
 
-		httpURLConnection.setRequestMethod("POST");
-		httpURLConnection.setAllowUserInteraction(false);
-		httpURLConnection.setRequestProperty("Content-type",
-				"application/octet-stream");
-		httpURLConnection.setDoOutput(true);
-		OutputStream outputStream = httpURLConnection.getOutputStream();
-		IOUtils.write("test-message", outputStream, null);
-		outputStream.close();
-		httpURLConnection.connect();
+        // setup
+        PostMethod postMethod = new PostMethod(this.location);
+        RequestEntity requestEntity = new StringRequestEntity("test-message", "application/octet-stream", null);
+        postMethod.setRequestEntity(requestEntity);
 
-		httpURLConnection.disconnect();
+        // expectations
+        this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
+                (String) EasyMock.anyObject(), EasyMock.aryEq("test-message".getBytes()));
+        EasyMock.expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
-		// expectations
-		this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(),
-				(String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
-				EasyMock.aryEq("test-message".getBytes()));
-		EasyMock.expect(
-				this.mockSamlAuthorityService.getAuthnAssertionValidity())
-				.andStubReturn(Integer.MAX_VALUE);
+        // prepare
+        replay(this.mockBeIdDeviceServiceBean);
 
-		// prepare
-		replay(this.mockBeIdDeviceServiceBean);
+        // operate
+        int result = this.httpClient.executeMethod(postMethod);
 
-		// operate
-		int responseCode = httpURLConnection.getResponseCode();
+        // verify
+        assertEquals(HttpServletResponse.SC_OK, result);
+        verify(this.mockBeIdDeviceServiceBean);
+    }
 
-		// verify
-		LOG.debug("response code: " + responseCode);
-		assertEquals(HttpServletResponse.SC_OK, responseCode);
-		verify(this.mockBeIdDeviceServiceBean);
-	}
+    @Test
+    public void testJREOnlyClient() throws Exception {
+
+        // setup
+        URL url = new URL(this.location);
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+        httpURLConnection.setRequestMethod("POST");
+        httpURLConnection.setAllowUserInteraction(false);
+        httpURLConnection.setRequestProperty("Content-type", "application/octet-stream");
+        httpURLConnection.setDoOutput(true);
+        OutputStream outputStream = httpURLConnection.getOutputStream();
+        IOUtils.write("test-message", outputStream, null);
+        outputStream.close();
+        httpURLConnection.connect();
+
+        httpURLConnection.disconnect();
+
+        // expectations
+        this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
+                (String) EasyMock.anyObject(), EasyMock.aryEq("test-message".getBytes()));
+        EasyMock.expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+
+        // prepare
+        replay(this.mockBeIdDeviceServiceBean);
+
+        // operate
+        int responseCode = httpURLConnection.getResponseCode();
+
+        // verify
+        LOG.debug("response code: " + responseCode);
+        assertEquals(HttpServletResponse.SC_OK, responseCode);
+        verify(this.mockBeIdDeviceServiceBean);
+    }
 }

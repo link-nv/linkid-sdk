@@ -16,21 +16,22 @@ import net.link.safeonline.entity.audit.AccessAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.OperationStateType;
 
+
 @Local
 public interface AccessAuditDAO {
 
-	void addAccessAudit(AuditContextEntity auditContext, String operation,
-			OperationStateType operationState, String principal);
+    void addAccessAudit(AuditContextEntity auditContext, String operation, OperationStateType operationState,
+            String principal);
 
-	void cleanup(Long id);
+    void cleanup(Long id);
 
-	List<AccessAuditEntity> listRecords(Long id);
+    List<AccessAuditEntity> listRecords(Long id);
 
-	boolean hasErrorRecords(long id);
+    boolean hasErrorRecords(long id);
 
-	List<AccessAuditEntity> listRecords(String principal);
+    List<AccessAuditEntity> listRecords(String principal);
 
-	List<AccessAuditEntity> listRecordsSince(Date ageLimit);
+    List<AccessAuditEntity> listRecordsSince(Date ageLimit);
 
-	List<String> listUsers();
+    List<String> listUsers();
 }

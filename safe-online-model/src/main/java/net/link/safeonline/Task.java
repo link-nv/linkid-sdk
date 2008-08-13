@@ -15,16 +15,17 @@ package net.link.safeonline;
  */
 public interface Task {
 
-	public static final String JNDI_PREFIX = "SafeOnline/task";
+    public static final String JNDI_PREFIX = "SafeOnline/task";
 
-	/**
-	 * Return a name by which the task can be identified
-	 * 
-	 */
-	String getName();
 
-	/**
-	 * Perform the task
-	 */
-	void perform() throws Exception;
+    /**
+     * Return a name by which the task can be identified
+     * 
+     */
+    String getName();
+
+    /**
+     * Perform the task
+     */
+    void perform() throws Exception;
 }

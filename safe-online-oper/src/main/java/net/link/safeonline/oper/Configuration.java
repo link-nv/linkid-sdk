@@ -9,22 +9,23 @@ package net.link.safeonline.oper;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface Configuration {
 
-	/*
-	 * Factories.
-	 */
-	void configGroupListFactory();
+    /*
+     * Factories.
+     */
+    void configGroupListFactory();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Actions.
-	 */
-	String save();
+    /*
+     * Actions.
+     */
+    String save();
 
 }

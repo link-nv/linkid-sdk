@@ -17,10 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+
 @Entity
 @NamedQueries( {
 
-        @NamedQuery(name = SeatEntity.getById, query = "SELECT s FROM SeatEntity s WHERE s.id = :id"),
+@NamedQuery(name = SeatEntity.getById, query = "SELECT s FROM SeatEntity s WHERE s.id = :id"),
         @NamedQuery(name = SeatEntity.getFor, query = "SELECT s FROM SeatEntity s WHERE s.room = :room") })
 public class SeatEntity implements Serializable {
 
@@ -94,8 +95,7 @@ public class SeatEntity implements Serializable {
             return true;
 
         SeatEntity other = (SeatEntity) obj;
-        return this.x == other.x && this.y == other.y
-                && this.room.getId() == other.room.getId();
+        return this.x == other.x && this.y == other.y && this.room.getId() == other.room.getId();
     }
 
     /**
@@ -104,7 +104,6 @@ public class SeatEntity implements Serializable {
     @Override
     public String toString() {
 
-        return String.format("{id: %d - room %d: %d, %d}", this.id, this.room
-                .getId(), this.x, this.y);
+        return String.format("{id: %d - room %d: %d, %d}", this.id, this.room.getId(), this.x, this.y);
     }
 }

@@ -29,51 +29,51 @@ import org.junit.Test;
 import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
 
+
 public class EmailBeanTest {
 
-	private final static Log LOG = LogFactory.getLog(EmailBeanTest.class);
+    private final static Log LOG = LogFactory.getLog(EmailBeanTest.class);
 
-	private EmailBean testedInstance;
+    private EmailBean        testedInstance;
 
-	@Before
-	public void setUp() throws Exception {
-		this.testedInstance = new EmailBean();
 
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	@Test
-	public void testEmail() throws Exception {
-		LOG.debug("starting test SMTP server...");
-		int freePort = WebServiceTestUtils.getFreePort();
-		LOG.debug("using free port: " + freePort);
-		SimpleSmtpServer server = SimpleSmtpServer.start(freePort);
-		LOG.debug("test SMTP server running");
+        this.testedInstance = new EmailBean();
 
-		ConfigurationTestUtils.configure(this.testedInstance,
-				"Mail server port", freePort);
+    }
 
-		Message message = createMock(Message.class);
-		expect(message.getStringProperty("destination")).andReturn(
-				"test@test.test");
-		expect(message.getStringProperty("subject")).andReturn("testsubject");
-		expect(message.getStringProperty("messagetext")).andReturn(
-				"testmessage");
-		replay(message);
+    @Test
+    public void testEmail() throws Exception {
 
-		// operate
-		this.testedInstance.onMessage(message);
+        LOG.debug("starting test SMTP server...");
+        int freePort = WebServiceTestUtils.getFreePort();
+        LOG.debug("using free port: " + freePort);
+        SimpleSmtpServer server = SimpleSmtpServer.start(freePort);
+        LOG.debug("test SMTP server running");
 
-		server.stop();
+        ConfigurationTestUtils.configure(this.testedInstance, "Mail server port", freePort);
 
-		// verify
-		verify(message);
-		assertTrue(server.getReceivedEmailSize() == 1);
-		Iterator<?> emailIter = server.getReceivedEmail();
-		SmtpMessage email = (SmtpMessage) emailIter.next();
-		assertTrue(email.getHeaderValue("Subject").equals(
-				"[Safe Online] testsubject"));
-		LOG.debug(email.getBody());
-		assertTrue(email.getBody().contains("testmessage"));
-	}
+        Message message = createMock(Message.class);
+        expect(message.getStringProperty("destination")).andReturn("test@test.test");
+        expect(message.getStringProperty("subject")).andReturn("testsubject");
+        expect(message.getStringProperty("messagetext")).andReturn("testmessage");
+        replay(message);
+
+        // operate
+        this.testedInstance.onMessage(message);
+
+        server.stop();
+
+        // verify
+        verify(message);
+        assertTrue(server.getReceivedEmailSize() == 1);
+        Iterator<?> emailIter = server.getReceivedEmail();
+        SmtpMessage email = (SmtpMessage) emailIter.next();
+        assertTrue(email.getHeaderValue("Subject").equals("[Safe Online] testsubject"));
+        LOG.debug(email.getBody());
+        assertTrue(email.getBody().contains("testmessage"));
+    }
 
 }

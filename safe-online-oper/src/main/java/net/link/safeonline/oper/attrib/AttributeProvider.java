@@ -18,35 +18,34 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
+
 @Local
 public interface AttributeProvider {
 
-	/*
-	 * factories
-	 */
-	void attributeProvidersFactory() throws AttributeTypeNotFoundException;
+    /*
+     * factories
+     */
+    void attributeProvidersFactory() throws AttributeTypeNotFoundException;
 
-	List<SelectItem> getApplicationList();
+    List<SelectItem> getApplicationList();
 
-	/*
-	 * actions
-	 */
-	String removeProvider() throws AttributeTypeNotFoundException,
-			AttributeProviderNotFoundException;
+    /*
+     * actions
+     */
+    String removeProvider() throws AttributeTypeNotFoundException, AttributeProviderNotFoundException;
 
-	String add() throws ExistingAttributeProviderException,
-			ApplicationNotFoundException, AttributeTypeNotFoundException,
-			PermissionDeniedException;
+    String add() throws ExistingAttributeProviderException, ApplicationNotFoundException,
+            AttributeTypeNotFoundException, PermissionDeniedException;
 
-	/*
-	 * accessors
-	 */
-	String getApplication();
+    /*
+     * accessors
+     */
+    String getApplication();
 
-	void setApplication(String application);
+    void setApplication(String application);
 
-	/*
-	 * lifecycle
-	 */
-	void destroyCallback();
+    /*
+     * lifecycle
+     */
+    void destroyCallback();
 }

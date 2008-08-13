@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.trust;
 
 import java.security.cert.X509Certificate;
 
+
 /**
  * Interface for OLAS PKI client.
  * 
@@ -17,9 +18,8 @@ import java.security.cert.X509Certificate;
  */
 public interface PkiClient {
 
-	/**
-	 * Gives back the OLAS signing certificate that is used to sign the SAML
-	 * authentication tokens.
-	 */
-	X509Certificate getSigningCertificate();
+    /**
+     * Gives back the OLAS signing certificate that is used to sign the SAML authentication tokens.
+     */
+    X509Certificate getSigningCertificate();
 }

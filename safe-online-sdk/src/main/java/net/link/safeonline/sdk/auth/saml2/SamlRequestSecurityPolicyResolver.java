@@ -21,28 +21,26 @@ import org.opensaml.xml.security.SecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SamlRequestSecurityPolicyResolver implements
-		SecurityPolicyResolver {
 
-	private final static Logger LOGGER = LoggerFactory
-			.getLogger(SamlRequestSecurityPolicyResolver.class);
+public class SamlRequestSecurityPolicyResolver implements SecurityPolicyResolver {
 
-	public Iterable<SecurityPolicy> resolve(MessageContext messageContext)
-			throws SecurityException {
-		SecurityPolicy securityPolicy = resolveSingle(messageContext);
-		List<SecurityPolicy> securityPolicyList = Collections
-				.singletonList(securityPolicy);
-		return securityPolicyList;
-	}
+    private final static Logger LOGGER = LoggerFactory.getLogger(SamlRequestSecurityPolicyResolver.class);
 
-	public SecurityPolicy resolveSingle(MessageContext messageContext)
-			throws SecurityException {
-		LOGGER.debug("resolveSingle via slf4j");
-		SecurityPolicy securityPolicy = new BasicSecurityPolicy();
-		List<SecurityPolicyRule> securityPolicyRules = securityPolicy
-				.getPolicyRules();
-		securityPolicyRules.add(new HTTPRule(null, "POST", false));
-		securityPolicyRules.add(new MandatoryIssuerRule());
-		return securityPolicy;
-	}
+
+    public Iterable<SecurityPolicy> resolve(MessageContext messageContext) throws SecurityException {
+
+        SecurityPolicy securityPolicy = resolveSingle(messageContext);
+        List<SecurityPolicy> securityPolicyList = Collections.singletonList(securityPolicy);
+        return securityPolicyList;
+    }
+
+    public SecurityPolicy resolveSingle(MessageContext messageContext) throws SecurityException {
+
+        LOGGER.debug("resolveSingle via slf4j");
+        SecurityPolicy securityPolicy = new BasicSecurityPolicy();
+        List<SecurityPolicyRule> securityPolicyRules = securityPolicy.getPolicyRules();
+        securityPolicyRules.add(new HTTPRule(null, "POST", false));
+        securityPolicyRules.add(new MandatoryIssuerRule());
+        return securityPolicy;
+    }
 }

@@ -9,12 +9,14 @@ package net.link.safeonline.webapp.demo.prescription;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class DemoPrescriptionPharmacist extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX
-			+ "/pharmacist.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX + "/pharmacist.seam";
 
-	public DemoPrescriptionPharmacist() {
-		super(PAGE_NAME);
-	}
+
+    public DemoPrescriptionPharmacist() {
+
+        super(PAGE_NAME);
+    }
 }

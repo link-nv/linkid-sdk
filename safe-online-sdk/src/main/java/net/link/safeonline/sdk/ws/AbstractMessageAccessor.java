@@ -21,9 +21,9 @@ import net.link.safeonline.util.filter.ProfiledException;
 
 import org.w3c.dom.Document;
 
+
 /**
- * Abstract base implementation of the message accessor interface. Used by the
- * different web service client components.
+ * Abstract base implementation of the message accessor interface. Used by the different web service client components.
  * 
  * @author fcorneli
  * 
@@ -61,8 +61,7 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
     }
 
     /**
-     * Registers the SOAP handler that this instance manages on the given JAX-WS
-     * port component.
+     * Registers the SOAP handler that this instance manages on the given JAX-WS port component.
      * 
      * @param port
      */
@@ -77,8 +76,7 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
     }
 
     /**
-     * Call this method after your service request to set the response context
-     * of the response.<br>
+     * Call this method after your service request to set the response context of the response.<br>
      * <br>
      * For example:<br>
      * <code>finally {
@@ -89,23 +87,18 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
     protected void retrieveHeadersFromPort(Object port) {
 
         if (!(port instanceof BindingProvider))
-            throw new IllegalArgumentException(
-                    "Can only retrieve result HTTP headers from a JAX-WS proxy object.");
+            throw new IllegalArgumentException("Can only retrieve result HTTP headers from a JAX-WS proxy object.");
 
-        Map<String, Object> context = ((BindingProvider) port)
-                .getResponseContext();
-        if (context == null
-                || !context.containsKey(MessageContext.HTTP_RESPONSE_HEADERS))
+        Map<String, Object> context = ((BindingProvider) port).getResponseContext();
+        if (context == null || !context.containsKey(MessageContext.HTTP_RESPONSE_HEADERS))
             return;
 
-        this.responseHeaders = (Map<String, List<String>>) context
-                .get(MessageContext.HTTP_RESPONSE_HEADERS);
+        this.responseHeaders = (Map<String, List<String>>) context.get(MessageContext.HTTP_RESPONSE_HEADERS);
     }
 
     /**
-     * Call this method when your service request failed with a
-     * {@link ProfiledException}. This will extract the profile headers from the
-     * exception..<br>
+     * Call this method when your service request failed with a {@link ProfiledException}. This will extract the profile
+     * headers from the exception..<br>
      * <br>
      * For example:<br>
      * <code>catch (ProfiledException e) {
@@ -117,10 +110,8 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
         Throwable cause = e;
 
         if (e instanceof ProfiledException) {
-            for (Map.Entry<String, String> header : ((ProfiledException) e)
-                    .getHeaders().entrySet()) {
-                this.responseHeaders.put(header.getKey(), Arrays
-                        .asList(new String[] { header.getValue() }));
+            for (Map.Entry<String, String> header : ((ProfiledException) e).getHeaders().entrySet()) {
+                this.responseHeaders.put(header.getKey(), Arrays.asList(new String[] { header.getValue() }));
             }
 
             // Throw the exception wrapped in the ProfiledException.

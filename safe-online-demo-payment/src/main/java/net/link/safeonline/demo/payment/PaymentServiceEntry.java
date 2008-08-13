@@ -9,16 +9,17 @@ package net.link.safeonline.demo.payment;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface PaymentServiceEntry {
 
-	/*
-	 * Actions.
-	 */
-	void init();
+    /*
+     * Actions.
+     */
+    void init();
 
-	/*
-	 * Lifecycle methods.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle methods.
+     */
+    void destroyCallback();
 }

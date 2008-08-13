@@ -8,5 +8,6 @@
 package net.link.safeonline.util;
 
 public interface Filter<Type> {
-	boolean isAllowed(Type element);
+
+    boolean isAllowed(Type element);
 }

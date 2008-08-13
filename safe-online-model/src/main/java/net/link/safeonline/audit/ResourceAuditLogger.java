@@ -12,11 +12,11 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 
+
 @Local
 public interface ResourceAuditLogger {
 
-	void addResourceAudit(ResourceNameType resourceName,
-			ResourceLevelType resourceLevel, String sourceComponent,
-			String message);
+    void addResourceAudit(ResourceNameType resourceName, ResourceLevelType resourceLevel, String sourceComponent,
+            String message);
 
 }

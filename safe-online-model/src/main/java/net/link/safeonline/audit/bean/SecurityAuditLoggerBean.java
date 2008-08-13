@@ -24,63 +24,60 @@ import net.link.safeonline.authentication.exception.SafeOnlineSecurityException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 
+
 @Stateless
 public class SecurityAuditLoggerBean implements SecurityAuditLogger {
 
-	@EJB
-	private AuditAuditDAO auditAuditDAO;
+    @EJB
+    private AuditAuditDAO    auditAuditDAO;
 
-	@EJB
-	private AuditContextDAO auditContextDAO;
+    @EJB
+    private AuditContextDAO  auditContextDAO;
 
-	@EJB
-	private SecurityAuditDAO securityAuditDAO;
+    @EJB
+    private SecurityAuditDAO securityAuditDAO;
 
-	@AroundInvoke
-	public Object interceptor(InvocationContext context) throws Exception {
-		Object result;
-		try {
-			result = context.proceed();
-			return result;
-		} catch (SafeOnlineSecurityException e) {
-			addSecurityAudit(e.getSecurityThreat(), e.getTargetPrincipal(), e
-					.getMessage());
-			throw e;
-		}
-	}
 
-	public void addSecurityAudit(SecurityThreatType securityThreat,
-			String targetPrincipal, String message) {
-		Long auditContextId;
-		try {
-			auditContextId = (Long) PolicyContext
-					.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
-		} catch (PolicyContextException e) {
-			this.auditAuditDAO
-					.addAuditAudit("audit context policy context error: "
-							+ e.getMessage());
-			return;
-		}
-		if (null == auditContextId) {
-			this.auditAuditDAO.addAuditAudit("no audit context available");
-			return;
-		}
+    @AroundInvoke
+    public Object interceptor(InvocationContext context) throws Exception {
 
-		AuditContextEntity auditContext;
-		try {
-			auditContext = this.auditContextDAO.getAuditContext(auditContextId);
-		} catch (AuditContextNotFoundException e) {
-			this.auditAuditDAO.addAuditAudit("audit context not found: "
-					+ auditContextId);
-			return;
-		}
+        Object result;
+        try {
+            result = context.proceed();
+            return result;
+        } catch (SafeOnlineSecurityException e) {
+            addSecurityAudit(e.getSecurityThreat(), e.getTargetPrincipal(), e.getMessage());
+            throw e;
+        }
+    }
 
-		this.securityAuditDAO.addSecurityAudit(auditContext, securityThreat,
-				targetPrincipal, message);
-	}
+    public void addSecurityAudit(SecurityThreatType securityThreat, String targetPrincipal, String message) {
 
-	public void addSecurityAudit(SecurityThreatType securityThreat,
-			String message) {
-		addSecurityAudit(securityThreat, null, message);
-	}
+        Long auditContextId;
+        try {
+            auditContextId = (Long) PolicyContext.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
+        } catch (PolicyContextException e) {
+            this.auditAuditDAO.addAuditAudit("audit context policy context error: " + e.getMessage());
+            return;
+        }
+        if (null == auditContextId) {
+            this.auditAuditDAO.addAuditAudit("no audit context available");
+            return;
+        }
+
+        AuditContextEntity auditContext;
+        try {
+            auditContext = this.auditContextDAO.getAuditContext(auditContextId);
+        } catch (AuditContextNotFoundException e) {
+            this.auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
+            return;
+        }
+
+        this.securityAuditDAO.addSecurityAudit(auditContext, securityThreat, targetPrincipal, message);
+    }
+
+    public void addSecurityAudit(SecurityThreatType securityThreat, String message) {
+
+        addSecurityAudit(securityThreat, null, message);
+    }
 }

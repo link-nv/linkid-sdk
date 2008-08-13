@@ -14,61 +14,68 @@ import javax.persistence.Embeddable;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+
 @Embeddable
 public class CompoundedAttributeTypeMemberPK implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String parent;
+    private String            parent;
 
-	private String member;
+    private String            member;
 
-	public CompoundedAttributeTypeMemberPK() {
-		// empty
-	}
 
-	public CompoundedAttributeTypeMemberPK(
-			AttributeTypeEntity parentAttributeType,
-			AttributeTypeEntity memberAttributeType) {
-		this.parent = parentAttributeType.getName();
-		this.member = memberAttributeType.getName();
-	}
+    public CompoundedAttributeTypeMemberPK() {
 
-	public String getMember() {
-		return this.member;
-	}
+        // empty
+    }
 
-	public void setMember(String member) {
-		this.member = member;
-	}
+    public CompoundedAttributeTypeMemberPK(AttributeTypeEntity parentAttributeType,
+            AttributeTypeEntity memberAttributeType) {
 
-	public String getParent() {
-		return this.parent;
-	}
+        this.parent = parentAttributeType.getName();
+        this.member = memberAttributeType.getName();
+    }
 
-	public void setParent(String parent) {
-		this.parent = parent;
-	}
+    public String getMember() {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == obj instanceof CompoundedAttributeTypeMemberPK) {
-			return false;
-		}
-		CompoundedAttributeTypeMemberPK rhs = (CompoundedAttributeTypeMemberPK) obj;
-		return new EqualsBuilder().append(this.parent, rhs.parent).append(
-				this.member, rhs.member).isEquals();
-	}
+        return this.member;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.parent).append(this.member)
-				.toHashCode();
-	}
+    public void setMember(String member) {
+
+        this.member = member;
+    }
+
+    public String getParent() {
+
+        return this.parent;
+    }
+
+    public void setParent(String parent) {
+
+        this.parent = parent;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == obj instanceof CompoundedAttributeTypeMemberPK) {
+            return false;
+        }
+        CompoundedAttributeTypeMemberPK rhs = (CompoundedAttributeTypeMemberPK) obj;
+        return new EqualsBuilder().append(this.parent, rhs.parent).append(this.member, rhs.member).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.parent).append(this.member).toHashCode();
+    }
 }

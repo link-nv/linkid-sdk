@@ -23,51 +23,60 @@ import net.link.safeonline.entity.audit.AuditAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+
 @Stateless
 public class AuditAuditDAOBean implements AuditAuditDAO {
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                   entityManager;
 
-	private AuditAuditEntity.QueryInterface queryObject;
+    private AuditAuditEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, AuditAuditEntity.QueryInterface.class);
-	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addAuditAudit(AuditContextEntity auditContext, String message) {
-		AuditAuditEntity auditAudit = new AuditAuditEntity(auditContext,
-				message);
-		this.entityManager.persist(auditAudit);
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addAuditAudit(String message) {
-		AuditAuditEntity auditAudit = new AuditAuditEntity(message);
-		this.entityManager.persist(auditAudit);
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                AuditAuditEntity.QueryInterface.class);
+    }
 
-	public void cleanup(Long id) {
-		this.queryObject.deleteRecords(id);
-	}
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addAuditAudit(AuditContextEntity auditContext, String message) {
 
-	public List<AuditAuditEntity> listRecords(Long id) {
-		return this.queryObject.listRecords(id);
-	}
+        AuditAuditEntity auditAudit = new AuditAuditEntity(auditContext, message);
+        this.entityManager.persist(auditAudit);
+    }
 
-	public List<AuditAuditEntity> listRecordsSince(Date ageLimit) {
-		return this.queryObject.listRecordsSince(ageLimit);
-	}
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addAuditAudit(String message) {
 
-	public boolean hasRecords(long id) {
-		long count = this.queryObject.countRecords(id);
-		return 0 != count;
-	}
+        AuditAuditEntity auditAudit = new AuditAuditEntity(message);
+        this.entityManager.persist(auditAudit);
+    }
 
-	public List<AuditAuditEntity> listRecords() {
-		return this.queryObject.listRecords();
-	}
+    public void cleanup(Long id) {
+
+        this.queryObject.deleteRecords(id);
+    }
+
+    public List<AuditAuditEntity> listRecords(Long id) {
+
+        return this.queryObject.listRecords(id);
+    }
+
+    public List<AuditAuditEntity> listRecordsSince(Date ageLimit) {
+
+        return this.queryObject.listRecordsSince(ageLimit);
+    }
+
+    public boolean hasRecords(long id) {
+
+        long count = this.queryObject.countRecords(id);
+        return 0 != count;
+    }
+
+    public List<AuditAuditEntity> listRecords() {
+
+        return this.queryObject.listRecords();
+    }
 }

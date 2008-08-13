@@ -32,115 +32,112 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class PkiServiceBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+    @Override
+    protected void setUp() throws Exception {
 
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        super.setUp();
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return certificate;
-					}
-				});
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		Startable systemStartable = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		systemStartable.postStart();
-		this.entityTestManager.refreshEntityManager();
-	}
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+                        return authCertificate;
+                    }
+                });
 
-	public void testAddRemoveTrustDomain() throws Exception {
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		pkiService.addTrustDomain("test-trust-domain", true);
-		TrustDomainEntity trustDomain = pkiService
-				.getTrustDomain("test-trust-domain");
-		assertEquals("test-trust-domain", trustDomain.getName());
-		pkiService.removeTrustDomain("test-trust-domain");
-		try {
-			pkiService.getTrustDomain("test-trust-domain");
-			fail();
-		} catch (TrustDomainNotFoundException e) {
-			// expected
-		}
-	}
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-	public void testAddTrustPointWithFakeCertificateThrowsException()
-			throws Exception {
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		pkiService.addTrustDomain("test-trust-domain", true);
-		try {
-			pkiService.addTrustPoint("test-trust-domain", "foobar".getBytes());
-			fail();
-		} catch (CertificateEncodingException e) {
-			// expected
-		}
-	}
+                        return certificate;
+                    }
+                });
 
-	public void testAddRemoveTrustPoint() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        systemStartable.postStart();
+        this.entityTestManager.refreshEntityManager();
+    }
 
-		PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+    @Override
+    protected void tearDown() throws Exception {
 
-		pkiService.addTrustDomain("test-trust-domain", true);
-		List<TrustPointEntity> result = pkiService
-				.listTrustPoints("test-trust-domain");
-		assertNotNull(result);
-		assertTrue(result.isEmpty());
-		pkiService.addTrustPoint("test-trust-domain", certificate.getEncoded());
-		pkiService.listTrustPoints("test-trust-domain");
-		result = pkiService.listTrustPoints("test-trust-domain");
-		assertEquals(1, result.size());
-		assertEquals(certificate, result.get(0).getCertificate());
-	}
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
+
+    public void testAddRemoveTrustDomain() throws Exception {
+
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+
+        pkiService.addTrustDomain("test-trust-domain", true);
+        TrustDomainEntity trustDomain = pkiService.getTrustDomain("test-trust-domain");
+        assertEquals("test-trust-domain", trustDomain.getName());
+        pkiService.removeTrustDomain("test-trust-domain");
+        try {
+            pkiService.getTrustDomain("test-trust-domain");
+            fail();
+        } catch (TrustDomainNotFoundException e) {
+            // expected
+        }
+    }
+
+    public void testAddTrustPointWithFakeCertificateThrowsException() throws Exception {
+
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+
+        pkiService.addTrustDomain("test-trust-domain", true);
+        try {
+            pkiService.addTrustPoint("test-trust-domain", "foobar".getBytes());
+            fail();
+        } catch (CertificateEncodingException e) {
+            // expected
+        }
+    }
+
+    public void testAddRemoveTrustPoint() throws Exception {
+
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+
+        PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+
+        pkiService.addTrustDomain("test-trust-domain", true);
+        List<TrustPointEntity> result = pkiService.listTrustPoints("test-trust-domain");
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        pkiService.addTrustPoint("test-trust-domain", certificate.getEncoded());
+        pkiService.listTrustPoints("test-trust-domain");
+        result = pkiService.listTrustPoints("test-trust-domain");
+        assertEquals(1, result.size());
+        assertEquals(certificate, result.get(0).getCertificate());
+    }
 }

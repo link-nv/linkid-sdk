@@ -27,154 +27,146 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.jms.server.messagecounter.MessageCounter;
 
+
 /**
- * Servlet Filter profiles the request and adds the results as headers of the
- * response.<br>
- *
+ * Servlet Filter profiles the request and adds the results as headers of the response.<br>
+ * 
  * @author mbillemo
- *
+ * 
  */
 public class ProfileFilter implements Filter {
 
-	private static final Log LOG = LogFactory.getLog(ProfileFilter.class);
-	private static MBeanServerConnection rmi;
+    private static final Log             LOG = LogFactory.getLog(ProfileFilter.class);
+    private static MBeanServerConnection rmi;
 
-	static {
-		try {
-			rmi = (MBeanServerConnection) getInitialContext().lookup(
-					"jmx/invoker/RMIAdaptor");
-		} catch (NamingException e) {
-			LOG.error("JMX unavailable.", e);
-		}
-	}
+    static {
+        try {
+            rmi = (MBeanServerConnection) getInitialContext().lookup("jmx/invoker/RMIAdaptor");
+        } catch (NamingException e) {
+            LOG.error("JMX unavailable.", e);
+        }
+    }
 
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
 
-		// Only attempt to profile HTTP requests.
-		if (!(response instanceof HttpServletResponse)) {
-			chain.doFilter(request, response);
-			return;
-		}
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+            ServletException {
 
-		LOG.debug("Enabling profiler.");
-		ProfileData profileData = new ProfileData();
-		// publish the profile data on JACC
-		ProfilingPolicyContextHandler.setProfileData(profileData);
+        // Only attempt to profile HTTP requests.
+        if (!(response instanceof HttpServletResponse)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-		// Buffer the response so we can add our own headers.
-		BufferedServletResponseWrapper responseWrapper = new BufferedServletResponseWrapper(
-				(HttpServletResponse) response);
+        LOG.debug("Enabling profiler.");
+        ProfileData profileData = new ProfileData();
+        // publish the profile data on JACC
+        ProfilingPolicyContextHandler.setProfileData(profileData);
 
-		long startFreeMem = getFreeMemory();
-		long startTime = System.currentTimeMillis();
+        // Buffer the response so we can add our own headers.
+        BufferedServletResponseWrapper responseWrapper = new BufferedServletResponseWrapper(
+                (HttpServletResponse) response);
 
-		try {
-			try {
-				chain.doFilter(request, responseWrapper);
-			}
+        long startFreeMem = getFreeMemory();
+        long startTime = System.currentTimeMillis();
 
-			finally {
-				long deltaTime = System.currentTimeMillis() - startTime;
-				long endFreeMem = getFreeMemory();
-				long auditSize = getAuditQueueSize();
+        try {
+            try {
+                chain.doFilter(request, responseWrapper);
+            }
+
+            finally {
+                long deltaTime = System.currentTimeMillis() - startTime;
+                long endFreeMem = getFreeMemory();
+                long auditSize = getAuditQueueSize();
                 LOG.info("AUDIT QUEUE SIZE: " + auditSize);
 
-				try {
-					profileData.addMeasurement(ProfileData.AUDIT_SIZE,
-							auditSize);
-					profileData.addMeasurement(ProfileData.REQUEST_START_TIME,
-							startTime);
-					profileData.addMeasurement(ProfileData.REQUEST_DELTA_TIME,
-							deltaTime);
-					profileData.addMeasurement(ProfileData.REQUEST_START_FREE,
-							startFreeMem);
-					profileData.addMeasurement(ProfileData.REQUEST_END_FREE,
-							endFreeMem);
-				} catch (ProfileDataLockedException e) {
-				}
-
-				// Add our profiling results as HTTP headers.
-				for (Map.Entry<String, String> header : profileData
-						.getHeaders().entrySet()) {
-                    responseWrapper.addHeader(header.getKey(), header
-							.getValue());
+                try {
+                    profileData.addMeasurement(ProfileData.AUDIT_SIZE, auditSize);
+                    profileData.addMeasurement(ProfileData.REQUEST_START_TIME, startTime);
+                    profileData.addMeasurement(ProfileData.REQUEST_DELTA_TIME, deltaTime);
+                    profileData.addMeasurement(ProfileData.REQUEST_START_FREE, startFreeMem);
+                    profileData.addMeasurement(ProfileData.REQUEST_END_FREE, endFreeMem);
+                } catch (ProfileDataLockedException e) {
                 }
 
-				if (profileData.isLocked()) {
-					LOG.debug("someone forgot to unlock the profile data");
-					profileData.unlock();
-				}
-			}
-		}
+                // Add our profiling results as HTTP headers.
+                for (Map.Entry<String, String> header : profileData.getHeaders().entrySet()) {
+                    responseWrapper.addHeader(header.getKey(), header.getValue());
+                }
 
-		catch (Throwable e) {
-			throw new ProfiledException(e, profileData.getHeaders());
-		}
+                if (profileData.isLocked()) {
+                    LOG.debug("someone forgot to unlock the profile data");
+                    profileData.unlock();
+                }
+            }
+        }
 
-		finally {
-			responseWrapper.commit();
-		}
-	}
+        catch (Throwable e) {
+            throw new ProfiledException(e, profileData.getHeaders());
+        }
+
+        finally {
+            responseWrapper.commit();
+        }
+    }
 
     private long getAuditQueueSize() {
 
-		try {
-		    @SuppressWarnings("unchecked")
+        try {
+            @SuppressWarnings("unchecked")
             List<MessageCounter> queues = (List<MessageCounter>) rmi.getAttribute(new ObjectName(
-					"jboss.messaging:service=ServerPeer"), "MessageCounters");
+                    "jboss.messaging:service=ServerPeer"), "MessageCounters");
 
             try {
-                for(MessageCounter queue : queues)
-                    if(queue.getDestinationName().equals("Queue.auditBackend"))
+                for (MessageCounter queue : queues)
+                    if (queue.getDestinationName().equals("Queue.auditBackend"))
                         return queue.getMessageCount();
 
                 LOG.error("Audit queue not found.");
             } catch (Exception e) {
                 LOG.error("Couldn't access audit queue stats in JMS queue counters.", e);
             }
-		} catch (Exception e) {
-			LOG.error("Failed to read in JMS queue counters through JMX.", e);
-		}
+        } catch (Exception e) {
+            LOG.error("Failed to read in JMS queue counters through JMX.", e);
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 
-	private long getFreeMemory() {
+    private long getFreeMemory() {
 
-		try {
-			return (Long) rmi.getAttribute(new ObjectName(
-					"jboss.system:type=ServerInfo"), "FreeMemory");
-		} catch (Exception e) {
-			LOG.error("Failed to read in free memory through JMX.", e);
-		}
+        try {
+            return (Long) rmi.getAttribute(new ObjectName("jboss.system:type=ServerInfo"), "FreeMemory");
+        } catch (Exception e) {
+            LOG.error("Failed to read in free memory through JMX.", e);
+        }
 
-		return -1;
-	}
+        return -1;
+    }
 
-	private static InitialContext getInitialContext() throws NamingException {
+    private static InitialContext getInitialContext() throws NamingException {
 
-		Hashtable<String, String> environment = new Hashtable<String, String>();
+        Hashtable<String, String> environment = new Hashtable<String, String>();
 
-		environment.put(Context.INITIAL_CONTEXT_FACTORY,
-				"org.jnp.interfaces.NamingContextFactory");
-		environment.put(Context.PROVIDER_URL, "localhost:1099");
+        environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
+        environment.put(Context.PROVIDER_URL, "localhost:1099");
 
-		return new InitialContext(environment);
-	}
+        return new InitialContext(environment);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(@SuppressWarnings("unused")
-	FilterConfig filterConfig) {
-		// empty
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void init(@SuppressWarnings("unused") FilterConfig filterConfig) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void destroy() {
-		// empty
-	}
+        // empty
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void destroy() {
+
+        // empty
+    }
 }

@@ -50,13 +50,12 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("accountRegistration")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-        + "AccountRegistrationBean/local")
+@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "AccountRegistrationBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
-public class AccountRegistrationBean extends AbstractLoginBean implements
-        AccountRegistration {
+public class AccountRegistrationBean extends AbstractLoginBean implements AccountRegistration {
 
     @EJB
     private UserRegistrationService userRegistrationService;
@@ -98,32 +97,28 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
             @Error(exceptionClass = ExistingUserException.class, messageId = "errorLoginTaken", fieldId = "login"),
             @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorLoginTaken", fieldId = "login"),
             @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorPermissionDenied", fieldId = "login") })
-    public String loginNext() throws ExistingUserException,
-            AttributeTypeNotFoundException, PermissionDeniedException {
+    public String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException {
 
         this.log.debug("loginNext");
 
-        HelpdeskLogger.add("account creation: login=" + this.login,
-                LogLevelType.INFO);
+        HelpdeskLogger.add("account creation: login=" + this.login, LogLevelType.INFO);
 
         this.log.debug("valid captcha: " + this.validCaptcha);
         this.log.debug("given captcha: " + this.givenCaptcha);
 
         if (null == this.validCaptcha) {
-            this.facesMessages.addFromResourceBundle(
-                    FacesMessage.SEVERITY_ERROR, "errorNoCaptcha");
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorNoCaptcha");
             return null;
         }
 
         if (!this.validCaptcha.equals(this.givenCaptcha)) {
-            this.facesMessages.addToControlFromResourceBundle("captcha",
-                    FacesMessage.SEVERITY_ERROR, "errorInvalidCaptcha");
+            this.facesMessages.addToControlFromResourceBundle("captcha", FacesMessage.SEVERITY_ERROR,
+                    "errorInvalidCaptcha");
             this.givenCaptcha = null;
             return null;
         }
 
-        SubjectEntity subject = this.userRegistrationService
-                .registerUser(this.login);
+        SubjectEntity subject = this.userRegistrationService.registerUser(this.login);
 
         this.userId = subject.getUserId();
         return "next";
@@ -133,11 +128,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
         this.log.debug("deviceNext: " + this.device);
 
-        HelpdeskLogger.add("account creation: register device: " + this.device,
-                LogLevelType.INFO);
+        HelpdeskLogger.add("account creation: register device: " + this.device, LogLevelType.INFO);
 
-        String registrationURL = this.devicePolicyService
-                .getRegistrationURL(this.device);
+        String registrationURL = this.devicePolicyService.getRegistrationURL(this.device);
 
         if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -180,8 +173,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
     }
 
     @Factory("allDevicesAccountRegistration")
-    public List<SelectItem> allDevicesFactory()
-            throws ApplicationNotFoundException, EmptyDevicePolicyException {
+    public List<SelectItem> allDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         this.log.debug("all devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -191,10 +183,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
         List<DeviceEntity> devices = this.devicePolicyService.getDevices();
 
         for (DeviceEntity deviceEntity : devices) {
-            String deviceName = this.devicePolicyService.getDeviceDescription(
-                    deviceEntity.getName(), viewLocale);
-            SelectItem allDevice = new SelectItem(deviceEntity.getName(),
-                    deviceName);
+            String deviceName = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
+            SelectItem allDevice = new SelectItem(deviceEntity.getName(), deviceName);
             allDevices.add(allDevice);
         }
         return allDevices;

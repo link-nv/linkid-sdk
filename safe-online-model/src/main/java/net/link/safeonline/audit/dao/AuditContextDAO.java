@@ -14,19 +14,19 @@ import javax.ejb.Local;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 
+
 @Local
 public interface AuditContextDAO {
 
-	AuditContextEntity createAuditContext();
+    AuditContextEntity createAuditContext();
 
-	AuditContextEntity getAuditContext(long auditContextId)
-			throws AuditContextNotFoundException;
+    AuditContextEntity getAuditContext(long auditContextId) throws AuditContextNotFoundException;
 
-	void cleanup(long ageInMinutes);
+    void cleanup(long ageInMinutes);
 
-	List<AuditContextEntity> listContexts();
+    List<AuditContextEntity> listContexts();
 
-	boolean removeAuditContext(Long id) throws AuditContextNotFoundException;
+    boolean removeAuditContext(Long id) throws AuditContextNotFoundException;
 
-	List<AuditContextEntity> listLastContexts();
+    List<AuditContextEntity> listLastContexts();
 }

@@ -37,95 +37,100 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("trustDomain")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "TrustDomainBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "TrustDomainBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class TrustDomainBean implements TrustDomain {
 
-	private static final Log LOG = LogFactory.getLog(TrustDomainBean.class);
+    private static final Log        LOG = LogFactory.getLog(TrustDomainBean.class);
 
-	@In(required = false)
-	private TrustDomainEntity newTrustDomain;
+    @In(required = false)
+    private TrustDomainEntity       newTrustDomain;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                   facesMessages;
 
-	@DataModel
-	@SuppressWarnings("unused")
-	private List<TrustDomainEntity> trustDomainList;
+    @DataModel
+    @SuppressWarnings("unused")
+    private List<TrustDomainEntity> trustDomainList;
 
-	@EJB
-	private PkiService pkiService;
+    @EJB
+    private PkiService              pkiService;
 
-	@DataModelSelection("trustDomainList")
-	@Out(value = "selectedTrustDomain", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private TrustDomainEntity selectedTrustDomain;
+    @DataModelSelection("trustDomainList")
+    @Out(value = "selectedTrustDomain", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private TrustDomainEntity       selectedTrustDomain;
 
-	@Factory("trustDomainList")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void trustDomainListFactory() {
-		LOG.debug("application list factory");
-		this.trustDomainList = this.pkiService.listTrustDomains();
-	}
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@ErrorHandling( { @Error(exceptionClass = ExistingTrustDomainException.class, messageId = "errorTrustDomainAlreadyExists", fieldId = "name") })
-	public String add() throws ExistingTrustDomainException {
-		LOG.debug("add trust domain");
-		/*
-		 * this.pkiService.addTrustDomain(this.name, this.performOcspCheck,
-		 * this.ocspCacheTimeOutMillis);
-		 */
-		String name = this.newTrustDomain.getName();
-		boolean performOcspCheck = this.newTrustDomain.isPerformOcspCheck();
-		long ocspCacheTimeOutMillis = this.newTrustDomain
-				.getOcspCacheTimeOutMillis();
-		this.pkiService.addTrustDomain(name, performOcspCheck,
-				ocspCacheTimeOutMillis);
-		return "success";
-	}
+    @Factory("trustDomainList")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void trustDomainListFactory() {
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		// empty
-	}
+        LOG.debug("application list factory");
+        this.trustDomainList = this.pkiService.listTrustDomains();
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
-		return "view";
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @ErrorHandling( { @Error(exceptionClass = ExistingTrustDomainException.class, messageId = "errorTrustDomainAlreadyExists", fieldId = "name") })
+    public String add() throws ExistingTrustDomainException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeTrustDomain() throws TrustDomainNotFoundException {
-		LOG.debug("remove trust domain: " + this.selectedTrustDomain);
-		this.pkiService.removeTrustDomain(this.selectedTrustDomain.getName());
-		trustDomainListFactory();
-		return "removed";
-	}
+        LOG.debug("add trust domain");
+        /*
+         * this.pkiService.addTrustDomain(this.name, this.performOcspCheck, this.ocspCacheTimeOutMillis);
+         */
+        String name = this.newTrustDomain.getName();
+        boolean performOcspCheck = this.newTrustDomain.isPerformOcspCheck();
+        long ocspCacheTimeOutMillis = this.newTrustDomain.getOcspCacheTimeOutMillis();
+        this.pkiService.addTrustDomain(name, performOcspCheck, ocspCacheTimeOutMillis);
+        return "success";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String clearOcspCache() {
-		LOG.debug("Clearing OCSP cache for all trust domains");
-		this.pkiService.clearOcspCache();
-		return "clear-cache";
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String clearOcspCachePerTrustDomain() {
-		LOG.debug("Clearing OCSP cache for trust domain: "
-				+ this.selectedTrustDomain.getName());
-		this.pkiService.clearOcspCachePerTrustDomain(this.selectedTrustDomain);
-		return "clear-cache";
-	}
+        // empty
+    }
 
-	@Factory
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public TrustDomainEntity getNewTrustDomain() {
-		return new TrustDomainEntity();
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String view() {
+
+        LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
+        return "view";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String removeTrustDomain() throws TrustDomainNotFoundException {
+
+        LOG.debug("remove trust domain: " + this.selectedTrustDomain);
+        this.pkiService.removeTrustDomain(this.selectedTrustDomain.getName());
+        trustDomainListFactory();
+        return "removed";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String clearOcspCache() {
+
+        LOG.debug("Clearing OCSP cache for all trust domains");
+        this.pkiService.clearOcspCache();
+        return "clear-cache";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String clearOcspCachePerTrustDomain() {
+
+        LOG.debug("Clearing OCSP cache for trust domain: " + this.selectedTrustDomain.getName());
+        this.pkiService.clearOcspCachePerTrustDomain(this.selectedTrustDomain);
+        return "clear-cache";
+    }
+
+    @Factory
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public TrustDomainEntity getNewTrustDomain() {
+
+        return new TrustDomainEntity();
+    }
 }

@@ -68,6 +68,7 @@ import be.belgium.eid.BEID_Long;
 import be.belgium.eid.BEID_Status;
 import be.belgium.eid.eidlib;
 
+
 public class SmartCardTest {
 
     private static final Log LOG = LogFactory.getLog(SmartCardTest.class);
@@ -85,8 +86,7 @@ public class SmartCardTest {
         // operate
         smartCard.open("beid");
         try {
-            List<X509Certificate> resultPath = smartCard
-                    .getAuthenticationCertificatePath();
+            List<X509Certificate> resultPath = smartCard.getAuthenticationCertificatePath();
 
             // verify
             assertNotNull(resultPath);
@@ -94,11 +94,9 @@ public class SmartCardTest {
             assertTrue(resultPath.size() > 1);
 
             for (X509Certificate resultCert : resultPath) {
-                LOG.debug("cert subject: "
-                        + resultCert.getSubjectX500Principal().toString());
+                LOG.debug("cert subject: " + resultCert.getSubjectX500Principal().toString());
                 File tmpFile = File.createTempFile("cert-", ".crt");
-                FileUtils
-                        .writeByteArrayToFile(tmpFile, resultCert.getEncoded());
+                FileUtils.writeByteArrayToFile(tmpFile, resultCert.getEncoded());
             }
         } finally {
             smartCard.close();
@@ -119,10 +117,8 @@ public class SmartCardTest {
 
         try {
             // verify
-            X509Certificate authCertResult = smartCard
-                    .getAuthenticationCertificate();
-            X509Certificate signCertResult = smartCard
-                    .getSignatureCertificate();
+            X509Certificate authCertResult = smartCard.getAuthenticationCertificate();
+            X509Certificate signCertResult = smartCard.getSignatureCertificate();
             PrivateKey authPrivateKey = smartCard.getAuthenticationPrivateKey();
             PrivateKey signPrivateKey = smartCard.getSignaturePrivateKey();
             LOG.debug("authentication certificate: " + authCertResult);
@@ -159,18 +155,14 @@ public class SmartCardTest {
     @Test
     public void testAvailabilityOfBeIDConfiguration() throws Exception {
 
-        URL url = SmartCardTest.class
-                .getResource("/META-INF/safe-online-pkcs11-sc-config.properties");
+        URL url = SmartCardTest.class.getResource("/META-INF/safe-online-pkcs11-sc-config.properties");
         LOG.debug("URL: " + url);
         assertNotNull(url);
-        assertTrue(url
-                .toString()
-                .matches(
-                        "jar:file:.*safe-online-pkcs11-sc-beid.*\\.jar!/META-INF/safe-online-pkcs11-sc-config.properties"));
+        assertTrue(url.toString().matches(
+                "jar:file:.*safe-online-pkcs11-sc-beid.*\\.jar!/META-INF/safe-online-pkcs11-sc-config.properties"));
 
-        Enumeration<URL> enumerationResult = Thread.currentThread()
-                .getContextClassLoader().getResources(
-                        "META-INF/safe-online-pkcs11-sc-config.properties");
+        Enumeration<URL> enumerationResult = Thread.currentThread().getContextClassLoader().getResources(
+                "META-INF/safe-online-pkcs11-sc-config.properties");
         assertTrue(enumerationResult.hasMoreElements());
     }
 
@@ -183,8 +175,7 @@ public class SmartCardTest {
 
         String osName = System.getProperty("os.name");
         LOG.debug("os name: " + osName);
-        List<File> driverLocations = beidConfig
-                .getPkcs11DriverLocations(osName);
+        List<File> driverLocations = beidConfig.getPkcs11DriverLocations(osName);
         File existingDriverLocation = null;
         for (File driverLocation : driverLocations) {
             LOG.debug("driver location: " + driverLocation);
@@ -197,8 +188,7 @@ public class SmartCardTest {
         if (null == existingDriverLocation) {
             throw new Exception("driver location is null");
         }
-        PKCS11 pkcs11 = PKCS11.getInstance(existingDriverLocation
-                .getAbsolutePath(), "C_GetFunctionList", null, false);
+        PKCS11 pkcs11 = PKCS11.getInstance(existingDriverLocation.getAbsolutePath(), "C_GetFunctionList", null, false);
         assertNotNull(pkcs11);
         try {
             CK_INFO info = pkcs11.C_GetInfo();
@@ -208,8 +198,7 @@ public class SmartCardTest {
             long[] slotIds = pkcs11.C_GetSlotList(true);
             for (long slotId : slotIds) {
                 CK_SLOT_INFO slotInfo = pkcs11.C_GetSlotInfo(slotId);
-                LOG.debug("slot description: "
-                        + new String(slotInfo.slotDescription));
+                LOG.debug("slot description: " + new String(slotInfo.slotDescription));
 
             }
         } finally {
@@ -234,10 +223,8 @@ public class SmartCardTest {
         LOG.debug("surname: " + surname);
 
         LOG.debug("Creating identity statement...");
-        byte[] identityStatement = IdentityStatementFactory
-                .createIdentityStatement("", "fcorneli",
-                        DeviceOperationType.UPDATE.name(), new Pkcs11Signer(
-                                smartCard), new BeIdIdentityProvider(smartCard));
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli",
+                DeviceOperationType.UPDATE.name(), new Pkcs11Signer(smartCard), new BeIdIdentityProvider(smartCard));
 
         LOG.debug("Disconnecting from smart card...");
         smartCard.close();
@@ -261,8 +248,7 @@ public class SmartCardTest {
 
         LOG.debug("Connecting to smart card...");
 
-        JOptionPane.showMessageDialog(null,
-                "Please insert your BeID smart card.");
+        JOptionPane.showMessageDialog(null, "Please insert your BeID smart card.");
 
         smartCard.open("beid");
 
@@ -272,30 +258,24 @@ public class SmartCardTest {
         LOG.debug("surname: " + surname);
 
         LOG.debug("Creating identity statement...");
-        byte[] identityStatement = IdentityStatementFactory
-                .createIdentityStatement("", "fcorneli",
-                        DeviceOperationType.REMOVE.name(), new Pkcs11Signer(
-                                smartCard), new BeIdIdentityProvider(smartCard));
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli",
+                DeviceOperationType.REMOVE.name(), new Pkcs11Signer(smartCard), new BeIdIdentityProvider(smartCard));
 
         LOG.debug("Disconnecting from smart card...");
         smartCard.close();
         assertNotNull(identityStatement);
 
         /*
-         * Try to create an identity statement after removing/reinserting the
-         * smart card.
+         * Try to create an identity statement after removing/reinserting the smart card.
          */
-        JOptionPane.showMessageDialog(null,
-                "Please remove and reinsert your BeID smart card.");
+        JOptionPane.showMessageDialog(null, "Please remove and reinsert your BeID smart card.");
         smartCard.open("beid");
         PrivateKey privateKey = smartCard.getAuthenticationPrivateKey();
         LOG.debug("private key type: " + privateKey.getClass().getName());
         try {
             identityStatement = IdentityStatementFactory
-                    .createIdentityStatement("", "fcorneli",
-                            DeviceOperationType.REMOVE.name(),
-                            new Pkcs11Signer(smartCard),
-                            new BeIdIdentityProvider(smartCard));
+                    .createIdentityStatement("", "fcorneli", DeviceOperationType.REMOVE.name(), new Pkcs11Signer(
+                            smartCard), new BeIdIdentityProvider(smartCard));
         } catch (ProviderException e) {
             Throwable t = e.getCause();
             if (t instanceof PKCS11Exception) {
@@ -303,11 +283,9 @@ public class SmartCardTest {
                 resetPKCS11Driver();
                 smartCard.open("beid");
                 privateKey = smartCard.getAuthenticationPrivateKey();
-                identityStatement = IdentityStatementFactory
-                        .createIdentityStatement("", "fcorneli",
-                                DeviceOperationType.REMOVE.name(),
-                                new Pkcs11Signer(smartCard),
-                                new BeIdIdentityProvider(smartCard));
+                identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli",
+                        DeviceOperationType.REMOVE.name(), new Pkcs11Signer(smartCard), new BeIdIdentityProvider(
+                                smartCard));
             }
         }
         smartCard.close();
@@ -317,8 +295,7 @@ public class SmartCardTest {
     public void testSmartCardConfigForWindowsXP() throws Exception {
 
         SmartCardConfigFactory smartCardConfigFactory = new SmartCardConfigFactoryImpl();
-        List<SmartCardConfig> smartCardConfigs = smartCardConfigFactory
-                .getSmartCardConfigs();
+        List<SmartCardConfig> smartCardConfigs = smartCardConfigFactory.getSmartCardConfigs();
         LOG.debug("number of smart card configs: " + smartCardConfigs.size());
         assertEquals(1, smartCardConfigs.size());
         SmartCardConfig smartCardConfig = smartCardConfigs.get(0);
@@ -326,13 +303,10 @@ public class SmartCardTest {
         assertEquals("beid", smartCardConfig.getCardAlias());
 
         String testPlatform = "Windows XP";
-        List<File> pkcs11DriverLocations = smartCardConfig
-                .getPkcs11DriverLocations(testPlatform);
-        LOG.debug("number of PKCS11 driver for platform " + testPlatform
-                + " = " + pkcs11DriverLocations.size());
+        List<File> pkcs11DriverLocations = smartCardConfig.getPkcs11DriverLocations(testPlatform);
+        LOG.debug("number of PKCS11 driver for platform " + testPlatform + " = " + pkcs11DriverLocations.size());
         for (File pkcs11DriverLocation : pkcs11DriverLocations) {
-            LOG.debug("PKCS#11 driver location: " + pkcs11DriverLocation
-                    + " exists " + pkcs11DriverLocation.exists());
+            LOG.debug("PKCS#11 driver location: " + pkcs11DriverLocation + " exists " + pkcs11DriverLocation.exists());
         }
     }
 
@@ -377,23 +351,18 @@ public class SmartCardTest {
     @Test
     public void testNoBeIDCard() throws Exception {
 
-        JOptionPane.showMessageDialog(null,
-                "Reader driver active, card removed.");
+        JOptionPane.showMessageDialog(null, "Reader driver active, card removed.");
         String pkcs11Library = "/usr/local/lib/libbeidpkcs11.so";
         CK_C_INITIALIZE_ARGS ck_c_initialize_args = new CK_C_INITIALIZE_ARGS();
-        PKCS11 pkcs11 = PKCS11.getInstance(pkcs11Library, "C_GetFunctionList",
-                ck_c_initialize_args, false);
+        PKCS11 pkcs11 = PKCS11.getInstance(pkcs11Library, "C_GetFunctionList", ck_c_initialize_args, false);
 
         long[] slotIds = pkcs11.C_GetSlotList(false);
         LOG.debug("# slot Ids: " + slotIds.length);
         for (long slotId : slotIds) {
             LOG.debug("slot Id: " + slotId);
             CK_SLOT_INFO slotInfo = pkcs11.C_GetSlotInfo(slotId);
-            LOG.debug("slot description: "
-                    + new String(slotInfo.slotDescription));
-            LOG
-                    .debug("token present: "
-                            + (0 != (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)));
+            LOG.debug("slot description: " + new String(slotInfo.slotDescription));
+            LOG.debug("token present: " + (0 != (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)));
             while (0 == (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)) {
                 LOG.debug("waiting...");
                 Thread.sleep(1000);
@@ -407,8 +376,7 @@ public class SmartCardTest {
 
         File tmpConfigFile = File.createTempFile("pkcs11", "conf");
         tmpConfigFile.deleteOnExit();
-        PrintWriter configWriter = new PrintWriter(new FileOutputStream(
-                tmpConfigFile), true);
+        PrintWriter configWriter = new PrintWriter(new FileOutputStream(tmpConfigFile), true);
         String name = "TestSmartCard";
         configWriter.println("name=" + name);
         // configWriter.println("library=/usr/lib/opensc-pkcs11.so");
@@ -419,8 +387,7 @@ public class SmartCardTest {
 
         JOptionPane.showMessageDialog(null, "Start APDU signature");
 
-        SunPKCS11 provider = (SunPKCS11) Security.getProvider("SunPKCS11-"
-                + name);
+        SunPKCS11 provider = (SunPKCS11) Security.getProvider("SunPKCS11-" + name);
         if (null != provider) {
             throw new RuntimeException("Smart Card provider already active");
         }
@@ -432,17 +399,14 @@ public class SmartCardTest {
         String providerName = provider.getName();
 
         CallbackHandler callbackHandler = new TestCallbackHandler();
-        ProtectionParameter protectionParameter = new KeyStore.CallbackHandlerProtection(
-                callbackHandler);
-        KeyStore.Builder builder = KeyStore.Builder.newInstance("PKCS11",
-                provider, protectionParameter);
+        ProtectionParameter protectionParameter = new KeyStore.CallbackHandlerProtection(callbackHandler);
+        KeyStore.Builder builder = KeyStore.Builder.newInstance("PKCS11", provider, protectionParameter);
 
         KeyStore keyStore = builder.getKeyStore();
         keyStore.load(null, null);
 
         Signature signature = Signature.getInstance("SHA1withRSA");
-        PrivateKey privateKey = (PrivateKey) keyStore.getKey("Authentication",
-                null);
+        PrivateKey privateKey = (PrivateKey) keyStore.getKey("Authentication", null);
         LOG.debug("private key: " + privateKey);
         signature.initSign(privateKey);
         String plain = "Hello World";
@@ -454,8 +418,7 @@ public class SmartCardTest {
 
         Security.removeProvider(providerName);
 
-        JOptionPane.showMessageDialog(null,
-                "Please remove and reinsert your BeID smart card.");
+        JOptionPane.showMessageDialog(null, "Please remove and reinsert your BeID smart card.");
 
         // resetPKCS11Driver();
 
@@ -467,10 +430,8 @@ public class SmartCardTest {
         // provider.login(null, callbackHandler);
 
         callbackHandler = new TestCallbackHandler();
-        protectionParameter = new KeyStore.CallbackHandlerProtection(
-                callbackHandler);
-        builder = KeyStore.Builder.newInstance("PKCS11", provider,
-                protectionParameter);
+        protectionParameter = new KeyStore.CallbackHandlerProtection(callbackHandler);
+        builder = KeyStore.Builder.newInstance("PKCS11", provider, protectionParameter);
 
         keyStore = builder.getKeyStore();
         keyStore.load(null, null);
@@ -491,18 +452,15 @@ public class SmartCardTest {
                 resetPKCS11Driver();
                 provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
                 if (-1 == Security.addProvider(provider)) {
-                    throw new RuntimeException(
-                            "could not add the security provider");
+                    throw new RuntimeException("could not add the security provider");
                 }
-                builder = KeyStore.Builder.newInstance("PKCS11", provider,
-                        protectionParameter);
+                builder = KeyStore.Builder.newInstance("PKCS11", provider, protectionParameter);
 
                 keyStore = builder.getKeyStore();
                 keyStore.load(null, null);
 
                 signature = Signature.getInstance("SHA1withRSA");
-                privateKey = (PrivateKey) keyStore.getKey("Authentication",
-                        null);
+                privateKey = (PrivateKey) keyStore.getKey("Authentication", null);
                 LOG.debug("private key: " + privateKey);
                 signature.initSign(privateKey);
                 plainData = plain.getBytes();
@@ -515,8 +473,7 @@ public class SmartCardTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void resetPKCS11Driver() throws NoSuchFieldException,
-            IllegalAccessException, NoSuchMethodException,
+    private void resetPKCS11Driver() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException,
             InvocationTargetException, PKCS11Exception {
 
         Field moduleMapField = PKCS11.class.getDeclaredField("moduleMap");
@@ -528,8 +485,7 @@ public class SmartCardTest {
             PKCS11 pkcs11 = (PKCS11) entry.getValue();
             CK_INFO info = pkcs11.C_GetInfo();
             if ("Zetes".equals(new String(info.manufacturerID).trim())) {
-                Method disconnectMethod = PKCS11.class.getDeclaredMethod(
-                        "disconnect", new Class[] {});
+                Method disconnectMethod = PKCS11.class.getDeclaredMethod("disconnect", new Class[] {});
                 disconnectMethod.setAccessible(true);
                 disconnectMethod.invoke(pkcs11, new Object[] {});
             } else {
@@ -543,23 +499,19 @@ public class SmartCardTest {
 
     static class TestCallbackHandler implements CallbackHandler {
 
-        private static final Log HandlerLOG = LogFactory
-                                                    .getLog(TestCallbackHandler.class);
+        private static final Log HandlerLOG = LogFactory.getLog(TestCallbackHandler.class);
 
 
-        public void handle(Callback[] callbacks)
-                throws UnsupportedCallbackException {
+        public void handle(Callback[] callbacks) throws UnsupportedCallbackException {
 
             for (Callback callback : callbacks) {
-                HandlerLOG.debug("callback type: "
-                        + callback.getClass().getName());
+                HandlerLOG.debug("callback type: " + callback.getClass().getName());
                 if (callback instanceof PasswordCallback) {
                     PasswordCallback passwordCallback = (PasswordCallback) callback;
                     HandlerLOG.debug("password required");
                     char[] pin = getPin();
                     if (null == pin) {
-                        throw new UnsupportedCallbackException(callback,
-                                "User canceled PIN input.");
+                        throw new UnsupportedCallbackException(callback, "User canceled PIN input.");
                     }
                     passwordCallback.setPassword(pin);
                 }
@@ -580,8 +532,7 @@ public class SmartCardTest {
         passwordPanel.add(Box.createHorizontalStrut(5));
         passwordPanel.add(passwordField);
 
-        int result = JOptionPane.showOptionDialog(null, passwordPanel,
-                "PIN Required", JOptionPane.OK_CANCEL_OPTION,
+        int result = JOptionPane.showOptionDialog(null, passwordPanel, "PIN Required", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
             char[] pin = passwordField.getPassword();

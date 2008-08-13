@@ -22,73 +22,69 @@ import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERBitString;
 
+
 abstract public class AbstractStatementStructure {
 
-	private static final Log LOG = LogFactory
-			.getLog(AbstractStatementStructure.class);
+    private static final Log LOG = LogFactory.getLog(AbstractStatementStructure.class);
 
-	private final byte[] signature;
+    private final byte[]     signature;
 
-	private final byte[] toBeSignedData;
+    private final byte[]     toBeSignedData;
 
-	public AbstractStatementStructure(byte[] encodedStatement)
-			throws DecodingException {
-		ASN1Sequence sequence;
-		try {
-			sequence = ASN1Sequence.getInstance(ASN1Object
-					.fromByteArray(encodedStatement));
-		} catch (IOException e) {
-			LOG.debug("identity statement IO error: " + e.getMessage(), e);
-			throw new DecodingException();
-		}
 
-		if (null == sequence) {
-			LOG.debug("sequence is null");
-			throw new DecodingException();
-		}
+    public AbstractStatementStructure(byte[] encodedStatement) throws DecodingException {
 
-		if (sequence.size() != 2) {
-			LOG.error("sequence size: " + sequence.size());
-			throw new DecodingException();
-		}
-		ASN1Sequence tbsSequence = ASN1Sequence.getInstance(sequence
-				.getObjectAt(AbstractDERStatement.TBS_IDX));
+        ASN1Sequence sequence;
+        try {
+            sequence = ASN1Sequence.getInstance(ASN1Object.fromByteArray(encodedStatement));
+        } catch (IOException e) {
+            LOG.debug("identity statement IO error: " + e.getMessage(), e);
+            throw new DecodingException();
+        }
 
-		this.toBeSignedData = tbsSequence.getDEREncoded();
+        if (null == sequence) {
+            LOG.debug("sequence is null");
+            throw new DecodingException();
+        }
 
-		this.decode(tbsSequence);
+        if (sequence.size() != 2) {
+            LOG.error("sequence size: " + sequence.size());
+            throw new DecodingException();
+        }
+        ASN1Sequence tbsSequence = ASN1Sequence.getInstance(sequence.getObjectAt(AbstractDERStatement.TBS_IDX));
 
-		DERBitString derSignature = DERBitString.getInstance(sequence
-				.getObjectAt(AbstractDERStatement.SIGNATURE_IDX));
-		this.signature = derSignature.getBytes();
-	}
+        this.toBeSignedData = tbsSequence.getDEREncoded();
 
-	protected abstract void decode(ASN1Sequence tbsSequence)
-			throws DecodingException;
+        this.decode(tbsSequence);
 
-	protected abstract X509Certificate getCertificate();
+        DERBitString derSignature = DERBitString.getInstance(sequence.getObjectAt(AbstractDERStatement.SIGNATURE_IDX));
+        this.signature = derSignature.getBytes();
+    }
 
-	public byte[] getSignature() {
-		return this.signature;
-	}
+    protected abstract void decode(ASN1Sequence tbsSequence) throws DecodingException;
 
-	public byte[] getToBeSignedData() {
-		return this.toBeSignedData;
-	}
+    protected abstract X509Certificate getCertificate();
 
-	protected X509Certificate decodeCertificate(byte[] certificate)
-			throws DecodingException {
-		try {
-			CertificateFactory certificateFactory = CertificateFactory
-					.getInstance("X.509");
-			ByteArrayInputStream inputStream = new ByteArrayInputStream(
-					certificate);
-			X509Certificate x509Certificate = (X509Certificate) certificateFactory
-					.generateCertificate(inputStream);
-			return x509Certificate;
-		} catch (CertificateException e) {
-			LOG.debug("certificate exception: " + e.getMessage(), e);
-			throw new DecodingException();
-		}
-	}
+    public byte[] getSignature() {
+
+        return this.signature;
+    }
+
+    public byte[] getToBeSignedData() {
+
+        return this.toBeSignedData;
+    }
+
+    protected X509Certificate decodeCertificate(byte[] certificate) throws DecodingException {
+
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(certificate);
+            X509Certificate x509Certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+            return x509Certificate;
+        } catch (CertificateException e) {
+            LOG.debug("certificate exception: " + e.getMessage(), e);
+            throw new DecodingException();
+        }
+    }
 }

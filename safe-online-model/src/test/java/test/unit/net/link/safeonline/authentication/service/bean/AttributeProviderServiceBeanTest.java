@@ -55,298 +55,262 @@ import org.junit.Test;
 
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class AttributeProviderServiceBeanTest {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Before
-	public void setUp() throws Exception {
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+    @Before
+    public void setUp() throws Exception {
 
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return certificate;
-					}
-				});
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		Startable systemStartable = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		systemStartable.postStart();
-		this.entityTestManager.refreshEntityManager();
-	}
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-	@After
-	public void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-	}
+                        return authCertificate;
+                    }
+                });
 
-	@Test
-	public void testCreateAttributeRequiresAttributeProvider() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		String testLogin = "test-subject-login";
-		String testAttributeName = "test-attribute-name";
-		String[] testAttributeValue = { "hello", "world" };
-		String testApplicationName = "test-application";
-		String testApplicationOwner = "test-application-owner";
-		String testApplicationAdmin = "test-application-admin";
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		SubjectDAO subjectDAO = EJBTestUtils.newInstance(SubjectDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		SubjectEntity applicationAdminSubject = subjectDAO
-				.addSubject(testApplicationAdmin);
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(
-				ApplicationOwnerDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		ApplicationOwnerEntity testApplicationOwnerEntity = applicationOwnerDAO
-				.addApplicationOwner(testApplicationOwner,
-						applicationAdminSubject);
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(
-				AttributeTypeDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		AttributeTypeEntity testAttributeType = new AttributeTypeEntity(
-				testAttributeName, DatatypeType.STRING, true, false);
-		attributeTypeDAO.addAttributeType(testAttributeType);
+                        return certificate;
+                    }
+                });
 
-		ApplicationDAO applicationDAO = EJBTestUtils.newInstance(
-				ApplicationDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
-		applicationDAO.addApplication(testApplicationName, null,
-				testApplicationOwnerEntity, null, null, null, null, null);
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        systemStartable.postStart();
+        this.entityTestManager.refreshEntityManager();
+    }
 
-		AttributeProviderService attributeProviderService = EJBTestUtils
-				.newInstance(AttributeProviderServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager,
-						"test-application",
-						SafeOnlineApplicationRoles.APPLICATION_ROLE);
+    @After
+    public void tearDown() throws Exception {
 
-		// operate & verify
-		try {
-			attributeProviderService.createAttribute(testLogin,
-					testAttributeName, testAttributeValue);
-			fail();
-		} catch (PermissionDeniedException e) {
-			// expected
-		}
-	}
+        this.entityTestManager.tearDown();
+    }
 
-	@Test
-	public void testMultivaluedAttribute() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		String testLogin = "test-subject-login";
-		String testAttributeName = "test-attribute-name";
-		String value1 = "hello";
-		String value2 = "world";
-		String[] testAttributeValue = { value1, value2 };
-		String testApplicationName = "test-application";
-		String testApplicationOwner = "test-application-owner";
-		String testApplicationAdmin = "test-application-admin";
+    @Test
+    public void testCreateAttributeRequiresAttributeProvider() throws Exception {
 
-		SubjectService subjectService = EJBTestUtils.newInstance(
-				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
-		SubjectEntity applicationAdminSubject = subjectService
-				.addSubject(testApplicationAdmin);
-		SubjectEntity testLoginSubject = subjectService.addSubject(testLogin);
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        String testLogin = "test-subject-login";
+        String testAttributeName = "test-attribute-name";
+        String[] testAttributeValue = { "hello", "world" };
+        String testApplicationName = "test-application";
+        String testApplicationOwner = "test-application-owner";
+        String testApplicationAdmin = "test-application-admin";
 
-		ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(
-				ApplicationOwnerDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		ApplicationOwnerEntity testApplicationOwnerEntity = applicationOwnerDAO
-				.addApplicationOwner(testApplicationOwner,
-						applicationAdminSubject);
+        SubjectDAO subjectDAO = EJBTestUtils.newInstance(SubjectDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
+        SubjectEntity applicationAdminSubject = subjectDAO.addSubject(testApplicationAdmin);
 
-		AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(
-				AttributeTypeDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		AttributeTypeEntity testAttributeType = new AttributeTypeEntity(
-				testAttributeName, DatatypeType.STRING, true, false);
-		testAttributeType.setMultivalued(true);
-		attributeTypeDAO.addAttributeType(testAttributeType);
+        ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        ApplicationOwnerEntity testApplicationOwnerEntity = applicationOwnerDAO.addApplicationOwner(
+                testApplicationOwner, applicationAdminSubject);
 
-		ApplicationDAO applicationDAO = EJBTestUtils.newInstance(
-				ApplicationDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
-		ApplicationEntity testApplication = applicationDAO.addApplication(
-				testApplicationName, null, testApplicationOwnerEntity, null,
-				null, null, null, null);
+        AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        AttributeTypeEntity testAttributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.STRING, true,
+                false);
+        attributeTypeDAO.addAttributeType(testAttributeType);
 
-		AttributeProviderDAO attributeProviderDAO = EJBTestUtils.newInstance(
-				AttributeProviderDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		attributeProviderDAO.addAttributeProvider(testApplication,
-				testAttributeType);
+        ApplicationDAO applicationDAO = EJBTestUtils.newInstance(ApplicationDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        applicationDAO.addApplication(testApplicationName, null, testApplicationOwnerEntity, null, null, null, null,
+                null);
 
-		AttributeProviderService attributeProviderService = EJBTestUtils
-				.newInstance(AttributeProviderServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager,
-						"test-application",
-						SafeOnlineApplicationRoles.APPLICATION_ROLE);
+        AttributeProviderService attributeProviderService = EJBTestUtils.newInstance(
+                AttributeProviderServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
+                "test-application", SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
-		try {
-			attributeProviderService.setAttribute(testLoginSubject.getUserId(),
-					testAttributeName, null);
-			fail();
-		} catch (AttributeNotFoundException e) {
-			/*
-			 * Expected: cannot set an unexisting attribute value.
-			 */
-		}
+        // operate & verify
+        try {
+            attributeProviderService.createAttribute(testLogin, testAttributeName, testAttributeValue);
+            fail();
+        } catch (PermissionDeniedException e) {
+            // expected
+        }
+    }
 
-		try {
-			attributeProviderService.setAttribute(testLoginSubject.getUserId(),
-					testAttributeName, testAttributeValue);
-			fail();
-		} catch (AttributeNotFoundException e) {
-			/*
-			 * Cannot create a nonexisting attribute via setAttribute.
-			 */
-		}
+    @Test
+    public void testMultivaluedAttribute() throws Exception {
 
-		// operate
-		attributeProviderService.createAttribute(testLoginSubject.getUserId(),
-				testAttributeName, testAttributeValue);
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        String testLogin = "test-subject-login";
+        String testAttributeName = "test-attribute-name";
+        String value1 = "hello";
+        String value2 = "world";
+        String[] testAttributeValue = { value1, value2 };
+        String testApplicationName = "test-application";
+        String testApplicationOwner = "test-application-owner";
+        String testApplicationAdmin = "test-application-admin";
 
-		// verify
-		List<AttributeEntity> resultAttributes = attributeProviderService
-				.getAttributes(testLoginSubject.getUserId(), testAttributeName);
-		assertEquals(testAttributeValue.length, resultAttributes.size());
-		assertEquals(value1, resultAttributes.get(0).getStringValue());
-		assertEquals(value2, resultAttributes.get(1).getStringValue());
+        SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        SubjectEntity applicationAdminSubject = subjectService.addSubject(testApplicationAdmin);
+        SubjectEntity testLoginSubject = subjectService.addSubject(testLogin);
 
-		// operate
-		attributeProviderService.setAttribute(testLoginSubject.getUserId(),
-				testAttributeName, new String[] { value2 });
+        ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        ApplicationOwnerEntity testApplicationOwnerEntity = applicationOwnerDAO.addApplicationOwner(
+                testApplicationOwner, applicationAdminSubject);
 
-		// verify
-		resultAttributes = attributeProviderService.getAttributes(
-				testLoginSubject.getUserId(), testAttributeName);
-		assertEquals(1, resultAttributes.size());
-		assertEquals(value2, resultAttributes.get(0).getStringValue());
+        AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        AttributeTypeEntity testAttributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.STRING, true,
+                false);
+        testAttributeType.setMultivalued(true);
+        attributeTypeDAO.addAttributeType(testAttributeType);
 
-		// operate
-		attributeProviderService.setAttribute(testLoginSubject.getUserId(),
-				testAttributeName, new String[] { value1, value2, value1 });
+        ApplicationDAO applicationDAO = EJBTestUtils.newInstance(ApplicationDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        ApplicationEntity testApplication = applicationDAO.addApplication(testApplicationName, null,
+                testApplicationOwnerEntity, null, null, null, null, null);
 
-		// verify
-		resultAttributes = attributeProviderService.getAttributes(
-				testLoginSubject.getUserId(), testAttributeName);
-		assertEquals(3, resultAttributes.size());
-		assertEquals(value1, resultAttributes.get(0).getStringValue());
-		assertEquals(value2, resultAttributes.get(1).getStringValue());
-		assertEquals(value1, resultAttributes.get(2).getStringValue());
-	}
+        AttributeProviderDAO attributeProviderDAO = EJBTestUtils.newInstance(AttributeProviderDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        attributeProviderDAO.addAttributeProvider(testApplication, testAttributeType);
 
-	@Test
-	public void testCreateSingleValuedAttributes() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		String testLogin = "test-subject-login";
-		String testAttributeName = "test-attribute-name";
-		String testAttributeValue = "test-value";
-		String testApplicationName = "test-application";
-		String testApplicationOwner = "test-application-owner";
-		String testApplicationAdmin = "test-application-admin";
+        AttributeProviderService attributeProviderService = EJBTestUtils.newInstance(
+                AttributeProviderServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
+                "test-application", SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
-		SubjectService subjectService = EJBTestUtils.newInstance(
-				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
-		SubjectEntity applicationAdminSubject = subjectService
-				.addSubject(testApplicationAdmin);
-		SubjectEntity testLoginSubject = subjectService.addSubject(testLogin);
+        try {
+            attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, null);
+            fail();
+        } catch (AttributeNotFoundException e) {
+            /*
+             * Expected: cannot set an unexisting attribute value.
+             */
+        }
 
-		ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(
-				ApplicationOwnerDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		ApplicationOwnerEntity testApplicationOwnerEntity = applicationOwnerDAO
-				.addApplicationOwner(testApplicationOwner,
-						applicationAdminSubject);
+        try {
+            attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, testAttributeValue);
+            fail();
+        } catch (AttributeNotFoundException e) {
+            /*
+             * Cannot create a nonexisting attribute via setAttribute.
+             */
+        }
 
-		AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(
-				AttributeTypeDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		AttributeTypeEntity testAttributeType = new AttributeTypeEntity(
-				testAttributeName, DatatypeType.STRING, true, false);
-		attributeTypeDAO.addAttributeType(testAttributeType);
+        // operate
+        attributeProviderService.createAttribute(testLoginSubject.getUserId(), testAttributeName, testAttributeValue);
 
-		ApplicationDAO applicationDAO = EJBTestUtils.newInstance(
-				ApplicationDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
-		ApplicationEntity testApplication = applicationDAO.addApplication(
-				testApplicationName, null, testApplicationOwnerEntity, null,
-				null, null, null, null);
+        // verify
+        List<AttributeEntity> resultAttributes = attributeProviderService.getAttributes(testLoginSubject.getUserId(),
+                testAttributeName);
+        assertEquals(testAttributeValue.length, resultAttributes.size());
+        assertEquals(value1, resultAttributes.get(0).getStringValue());
+        assertEquals(value2, resultAttributes.get(1).getStringValue());
 
-		AttributeProviderDAO attributeProviderDAO = EJBTestUtils.newInstance(
-				AttributeProviderDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		attributeProviderDAO.addAttributeProvider(testApplication,
-				testAttributeType);
+        // operate
+        attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, new String[] { value2 });
 
-		AttributeProviderService attributeProviderService = EJBTestUtils
-				.newInstance(AttributeProviderServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager,
-						"test-application",
-						SafeOnlineApplicationRoles.APPLICATION_ROLE);
+        // verify
+        resultAttributes = attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
+        assertEquals(1, resultAttributes.size());
+        assertEquals(value2, resultAttributes.get(0).getStringValue());
 
-		try {
-			attributeProviderService.setAttribute(testLoginSubject.getUserId(),
-					testAttributeName, null);
-			fail();
-		} catch (AttributeNotFoundException e) {
-			/*
-			 * Expected: cannot set an unexisting attribute value.
-			 */
-		}
+        // operate
+        attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, new String[] { value1,
+                value2, value1 });
 
-		try {
-			attributeProviderService.setAttribute(testLoginSubject.getUserId(),
-					testAttributeName, testAttributeValue);
-			fail();
-		} catch (AttributeNotFoundException e) {
-			/*
-			 * Cannot create a nonexisting attribute via setAttribute.
-			 */
-		}
+        // verify
+        resultAttributes = attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
+        assertEquals(3, resultAttributes.size());
+        assertEquals(value1, resultAttributes.get(0).getStringValue());
+        assertEquals(value2, resultAttributes.get(1).getStringValue());
+        assertEquals(value1, resultAttributes.get(2).getStringValue());
+    }
 
-		// operate
-		attributeProviderService.createAttribute(testLoginSubject.getUserId(),
-				testAttributeName, testAttributeValue);
+    @Test
+    public void testCreateSingleValuedAttributes() throws Exception {
 
-		// verify
-		List<AttributeEntity> resultAttributes = attributeProviderService
-				.getAttributes(testLoginSubject.getUserId(), testAttributeName);
-		assertEquals(testAttributeValue, resultAttributes.get(0)
-				.getStringValue());
-	}
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        String testLogin = "test-subject-login";
+        String testAttributeName = "test-attribute-name";
+        String testAttributeValue = "test-value";
+        String testApplicationName = "test-application";
+        String testApplicationOwner = "test-application-owner";
+        String testApplicationAdmin = "test-application-admin";
+
+        SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        SubjectEntity applicationAdminSubject = subjectService.addSubject(testApplicationAdmin);
+        SubjectEntity testLoginSubject = subjectService.addSubject(testLogin);
+
+        ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        ApplicationOwnerEntity testApplicationOwnerEntity = applicationOwnerDAO.addApplicationOwner(
+                testApplicationOwner, applicationAdminSubject);
+
+        AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        AttributeTypeEntity testAttributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.STRING, true,
+                false);
+        attributeTypeDAO.addAttributeType(testAttributeType);
+
+        ApplicationDAO applicationDAO = EJBTestUtils.newInstance(ApplicationDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        ApplicationEntity testApplication = applicationDAO.addApplication(testApplicationName, null,
+                testApplicationOwnerEntity, null, null, null, null, null);
+
+        AttributeProviderDAO attributeProviderDAO = EJBTestUtils.newInstance(AttributeProviderDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        attributeProviderDAO.addAttributeProvider(testApplication, testAttributeType);
+
+        AttributeProviderService attributeProviderService = EJBTestUtils.newInstance(
+                AttributeProviderServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
+                "test-application", SafeOnlineApplicationRoles.APPLICATION_ROLE);
+
+        try {
+            attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, null);
+            fail();
+        } catch (AttributeNotFoundException e) {
+            /*
+             * Expected: cannot set an unexisting attribute value.
+             */
+        }
+
+        try {
+            attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, testAttributeValue);
+            fail();
+        } catch (AttributeNotFoundException e) {
+            /*
+             * Cannot create a nonexisting attribute via setAttribute.
+             */
+        }
+
+        // operate
+        attributeProviderService.createAttribute(testLoginSubject.getUserId(), testAttributeName, testAttributeValue);
+
+        // verify
+        List<AttributeEntity> resultAttributes = attributeProviderService.getAttributes(testLoginSubject.getUserId(),
+                testAttributeName);
+        assertEquals(testAttributeValue, resultAttributes.get(0).getStringValue());
+    }
 }

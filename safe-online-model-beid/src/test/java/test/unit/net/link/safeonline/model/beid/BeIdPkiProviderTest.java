@@ -17,57 +17,60 @@ import net.link.safeonline.model.beid.BeIdPkiProvider;
 import net.link.safeonline.test.util.PkiTestUtils;
 import junit.framework.TestCase;
 
+
 public class BeIdPkiProviderTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(BeIdPkiProviderTest.class);
+    private static final Log LOG = LogFactory.getLog(BeIdPkiProviderTest.class);
 
-	private BeIdPkiProvider testedInstance;
+    private BeIdPkiProvider  testedInstance;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.testedInstance = new BeIdPkiProvider();
-	}
+    @Override
+    protected void setUp() throws Exception {
 
-	public void testAcceptBeIDCertificate() throws Exception {
-		// setup
-		X509Certificate certificate = PkiTestUtils
-				.loadCertificateFromResource("/fcorneli-auth.crt");
+        super.setUp();
 
-		// operate
-		boolean result = this.testedInstance.accept(certificate);
+        this.testedInstance = new BeIdPkiProvider();
+    }
 
-		// verify
-		LOG.debug("certificate: " + certificate);
-		LOG.debug("certificate size: " + certificate.getEncoded().length);
-		assertTrue(result);
-	}
+    public void testAcceptBeIDCertificate() throws Exception {
 
-	public void testDoNotAcceptAnotherCertificate() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
+        // setup
+        X509Certificate certificate = PkiTestUtils.loadCertificateFromResource("/fcorneli-auth.crt");
 
-		// operate
-		boolean result = this.testedInstance.accept(certificate);
+        // operate
+        boolean result = this.testedInstance.accept(certificate);
 
-		// verify
-		assertFalse(result);
-	}
+        // verify
+        LOG.debug("certificate: " + certificate);
+        LOG.debug("certificate size: " + certificate.getEncoded().length);
+        assertTrue(result);
+    }
 
-	public void testSubjectIdentifier() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
+    public void testDoNotAcceptAnotherCertificate() throws Exception {
 
-		// operate
-		String result = this.testedInstance.getSubjectIdentifier(certificate);
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-		// verify
-		assertNotNull(result);
-		LOG.debug("subject identifier: " + result);
-	}
+        // operate
+        boolean result = this.testedInstance.accept(certificate);
+
+        // verify
+        assertFalse(result);
+    }
+
+    public void testSubjectIdentifier() throws Exception {
+
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+
+        // operate
+        String result = this.testedInstance.getSubjectIdentifier(certificate);
+
+        // verify
+        assertNotNull(result);
+        LOG.debug("subject identifier: " + result);
+    }
 }

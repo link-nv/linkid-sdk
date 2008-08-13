@@ -13,26 +13,27 @@ import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotF
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
+
 @Local
 public interface Attributes {
 
-	/*
-	 * Factory.
-	 */
-	void attributeTypeListFactory();
+    /*
+     * Factory.
+     */
+    void attributeTypeListFactory();
 
-	/*
-	 * Actions.
-	 */
-	String view();
+    /*
+     * Actions.
+     */
+    String view();
 
-	String remove();
+    String remove();
 
-	String removeConfirm() throws AttributeTypeDescriptionNotFoundException,
-			PermissionDeniedException, AttributeTypeNotFoundException;
+    String removeConfirm() throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

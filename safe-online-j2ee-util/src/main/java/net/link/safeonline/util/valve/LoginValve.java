@@ -23,54 +23,57 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimplePrincipal;
 
+
 /**
- * Tomcat Login Valve. This valve will set the Tomcat servlet container user
- * principal based on a HTTP session context attribute.
+ * Tomcat Login Valve. This valve will set the Tomcat servlet container user principal based on a HTTP session context
+ * attribute.
  * 
  * @author fcorneli
  * 
  */
 public class LoginValve extends ValveBase {
 
-	private static final Log LOG = LogFactory.getLog(LoginValve.class);
+    private static final Log LOG = LogFactory.getLog(LoginValve.class);
 
-	public LoginValve() {
-		LOG.debug("login valve construction");
-	}
 
-	@Override
-	public void invoke(Request request, Response response) throws IOException,
-			ServletException {
-		LOG.debug("login valve invoked");
+    public LoginValve() {
 
-		HttpServletRequest httpServletRequest = request.getRequest();
+        LOG.debug("login valve construction");
+    }
 
-		HttpSession httpSession = httpServletRequest.getSession(false);
-		if (null != httpSession) {
-			LOG.debug("http session present");
-			String username = (String) httpSession.getAttribute("username");
-			if (null != username) {
-				LOG.debug("setting user principal to " + username);
-				request.setUserPrincipal(new SimplePrincipal(username));
-			}
-		}
+    @Override
+    public void invoke(Request request, Response response) throws IOException, ServletException {
 
-		LOG.debug("checking for context presence");
-		Context context = request.getContext();
-		if (null != context) {
-			LOG.debug("context name: " + context.getName());
-			LOG.debug("context info: " + context.getInfo());
-			LOG.debug("context type: " + context.getClass().getName());
-			Realm realm = context.getRealm();
-			if (null != realm) {
-				LOG.debug("realm info: " + realm.getInfo());
-				LOG.debug("realm type: " + realm.getClass().getName());
-			}
-		}
+        LOG.debug("login valve invoked");
 
-		Valve valve = this.getNext();
-		if (null != valve) {
-			valve.invoke(request, response);
-		}
-	}
+        HttpServletRequest httpServletRequest = request.getRequest();
+
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        if (null != httpSession) {
+            LOG.debug("http session present");
+            String username = (String) httpSession.getAttribute("username");
+            if (null != username) {
+                LOG.debug("setting user principal to " + username);
+                request.setUserPrincipal(new SimplePrincipal(username));
+            }
+        }
+
+        LOG.debug("checking for context presence");
+        Context context = request.getContext();
+        if (null != context) {
+            LOG.debug("context name: " + context.getName());
+            LOG.debug("context info: " + context.getInfo());
+            LOG.debug("context type: " + context.getClass().getName());
+            Realm realm = context.getRealm();
+            if (null != realm) {
+                LOG.debug("realm info: " + realm.getInfo());
+                LOG.debug("realm type: " + realm.getClass().getName());
+            }
+        }
+
+        Valve valve = this.getNext();
+        if (null != valve) {
+            valve.invoke(request, response);
+        }
+    }
 }

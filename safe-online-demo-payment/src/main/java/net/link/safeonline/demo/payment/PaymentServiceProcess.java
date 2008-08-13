@@ -9,25 +9,26 @@ package net.link.safeonline.demo.payment;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface PaymentServiceProcess extends AbstractPaymentDataClient {
 
-	/*
-	 * Actions.
-	 */
-	String authenticate();
+    /*
+     * Actions.
+     */
+    String authenticate();
 
-	String commit();
+    String commit();
 
-	String done();
+    String done();
 
-	/*
-	 * Accessors.
-	 */
-	String getVisa();
+    /*
+     * Accessors.
+     */
+    String getVisa();
 
-	void setVisa(String visa);
+    void setVisa(String visa);
 
-	String getUsername();
+    String getUsername();
 
 }

@@ -22,13 +22,13 @@ import org.jgroups.Message;
 import org.jgroups.Receiver;
 import org.jgroups.View;
 
+
 /**
  * <h2>{@link AgentRemoting}<br>
  * <sub>Takes care of locating and maintaining a list of available agents.</sub></h2>
  * 
  * <p>
- * Utility class to locate performance testing agents using JGroups and monitor
- * any changes in their availability.
+ * Utility class to locate performance testing agents using JGroups and monitor any changes in their availability.
  * </p>
  * 
  * <p>
@@ -39,236 +39,233 @@ import org.jgroups.View;
  */
 public class AgentRemoting implements Receiver, ChannelListener {
 
-	static final Log LOG = LogFactory.getLog(AgentRemoting.class);
+    static final Log                 LOG = LogFactory.getLog(AgentRemoting.class);
 
-	private List<AgentStateListener> agentStateListeners;
+    private List<AgentStateListener> agentStateListeners;
 
-	JChannel channel;
-	String group;
+    JChannel                         channel;
+    String                           group;
 
-	/**
-	 * Join the Profiler's JGroup using the package name as group name.
-	 */
-	public AgentRemoting() {
 
-		ResourceBundle properties = ResourceBundle.getBundle("console");
-		this.group = properties.getString("jgroups.group");
-		LOG.debug("jgroups.group: " + this.group);
+    /**
+     * Join the Profiler's JGroup using the package name as group name.
+     */
+    public AgentRemoting() {
 
-		this.agentStateListeners = new ArrayList<AgentStateListener>();
+        ResourceBundle properties = ResourceBundle.getBundle("console");
+        this.group = properties.getString("jgroups.group");
+        LOG.debug("jgroups.group: " + this.group);
 
-		try {
-			if (null == this.channel || !this.channel.isOpen())
-				this.channel = new JChannel(getClass().getResource(
-						"/jgroups.xml"));
-		}
+        this.agentStateListeners = new ArrayList<AgentStateListener>();
 
-		catch (ChannelException e) {
-			String msg = "Couldn't establish the JGroups channel.";
-			LOG.fatal(msg, e);
-			throw new RuntimeException(msg, e);
-		}
+        try {
+            if (null == this.channel || !this.channel.isOpen())
+                this.channel = new JChannel(getClass().getResource("/jgroups.xml"));
+        }
 
-		this.channel.addChannelListener(AgentRemoting.this);
-		this.channel.setReceiver(AgentRemoting.this);
+        catch (ChannelException e) {
+            String msg = "Couldn't establish the JGroups channel.";
+            LOG.fatal(msg, e);
+            throw new RuntimeException(msg, e);
+        }
 
-		Runtime.getRuntime().addShutdownHook(
-				new Thread("JGroups ShutdownHook") {
+        this.channel.addChannelListener(AgentRemoting.this);
+        this.channel.setReceiver(AgentRemoting.this);
 
-					@Override
-					public void run() {
+        Runtime.getRuntime().addShutdownHook(new Thread("JGroups ShutdownHook") {
 
-						close();
-					}
-				});
+            @Override
+            public void run() {
 
-		Thread thread = new Thread() {
-			@Override
-			public void run() {
+                close();
+            }
+        });
 
-				try {
-					if (!AgentRemoting.this.channel.isConnected())
-						AgentRemoting.this.channel
-								.connect(AgentRemoting.this.group);
-				}
+        Thread thread = new Thread() {
 
-				catch (ChannelException e) {
-					String msg = "Couldn't establish the JGroups channel.";
-					LOG.error(msg, e);
-					throw new RuntimeException(msg, e);
-				}
-			}
-		};
+            @Override
+            public void run() {
 
-		thread.setDaemon(true);
-		thread.start();
-	}
+                try {
+                    if (!AgentRemoting.this.channel.isConnected())
+                        AgentRemoting.this.channel.connect(AgentRemoting.this.group);
+                }
 
-	/**
-	 * Add an object that'll listen agent and channel events.
-	 */
-	public void addAgentStateListener(AgentStateListener listener) {
+                catch (ChannelException e) {
+                    String msg = "Couldn't establish the JGroups channel.";
+                    LOG.error(msg, e);
+                    throw new RuntimeException(msg, e);
+                }
+            }
+        };
 
-		this.agentStateListeners.add(listener);
-	}
+        thread.setDaemon(true);
+        thread.start();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void block() {
+    /**
+     * Add an object that'll listen agent and channel events.
+     */
+    public void addAgentStateListener(AgentStateListener listener) {
 
-		this.channel.blockOk();
-	}
+        this.agentStateListeners.add(listener);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelClosed(Channel c) {
+    /**
+     * {@inheritDoc}
+     */
+    public void block() {
 
-		if (c.equals(this.channel))
-			for (AgentStateListener listener : this.agentStateListeners)
-				listener.channelClosed();
-	}
+        this.channel.blockOk();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelConnected(Channel c) {
+    /**
+     * {@inheritDoc}
+     */
+    public void channelClosed(Channel c) {
 
-		if (c.equals(this.channel))
-			for (AgentStateListener listener : this.agentStateListeners)
-				listener.channelConnected();
-	}
+        if (c.equals(this.channel))
+            for (AgentStateListener listener : this.agentStateListeners)
+                listener.channelClosed();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelDisconnected(Channel c) {
+    /**
+     * {@inheritDoc}
+     */
+    public void channelConnected(Channel c) {
 
-		if (c.equals(this.channel))
-			for (AgentStateListener listener : this.agentStateListeners)
-				listener.channelDisconnected();
-	}
+        if (c.equals(this.channel))
+            for (AgentStateListener listener : this.agentStateListeners)
+                listener.channelConnected();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelReconnected(Address agent) {
+    /**
+     * {@inheritDoc}
+     */
+    public void channelDisconnected(Channel c) {
 
-		for (AgentStateListener listener : this.agentStateListeners)
-			listener.channelReconnected(agent);
-	}
+        if (c.equals(this.channel))
+            for (AgentStateListener listener : this.agentStateListeners)
+                listener.channelDisconnected();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelShunned() {
+    /**
+     * {@inheritDoc}
+     */
+    public void channelReconnected(Address agent) {
 
-		for (AgentStateListener listener : this.agentStateListeners)
-			listener.channelShunned();
-	}
+        for (AgentStateListener listener : this.agentStateListeners)
+            listener.channelReconnected(agent);
+    }
 
-	public void close() {
+    /**
+     * {@inheritDoc}
+     */
+    public void channelShunned() {
 
-		this.channel.close();
-	}
+        for (AgentStateListener listener : this.agentStateListeners)
+            listener.channelShunned();
+    }
 
-	/**
-	 * @return The members in the current view.
-	 */
-	public List<Address> getMembers() {
+    public void close() {
 
-		if (this.channel.getView() == null)
-			return null;
+        this.channel.close();
+    }
 
-		return Collections
-				.unmodifiableList(this.channel.getView().getMembers());
-	}
+    /**
+     * @return The members in the current view.
+     */
+    public List<Address> getMembers() {
 
-	/**
-	 * @return <code>true</code> if the current view contains the given
-	 *         member.
-	 */
-	public boolean hasMember(Address member) {
+        if (this.channel.getView() == null)
+            return null;
 
-		if (this.channel.getView() == null)
-			return false;
+        return Collections.unmodifiableList(this.channel.getView().getMembers());
+    }
 
-		return this.channel.getView().containsMember(member);
-	}
+    /**
+     * @return <code>true</code> if the current view contains the given member.
+     */
+    public boolean hasMember(Address member) {
 
-	/**
-	 * @return the name of the JGroups group of agents.
-	 */
-	public String getGroupName() {
+        if (this.channel.getView() == null)
+            return false;
 
-		if (this.channel.getClusterName() == null)
-			return this.group;
+        return this.channel.getView().containsMember(member);
+    }
 
-		return this.channel.getClusterName();
-	}
+    /**
+     * @return the name of the JGroups group of agents.
+     */
+    public String getGroupName() {
 
-	/**
-	 * Retrieve the {@link Address} that this client has in the group.
-	 */
-	public Address getSelf() {
+        if (this.channel.getClusterName() == null)
+            return this.group;
 
-		return this.channel.getLocalAddress();
-	}
+        return this.channel.getClusterName();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public byte[] getState() {
+    /**
+     * Retrieve the {@link Address} that this client has in the group.
+     */
+    public Address getSelf() {
 
-		// We dont't care about state.
-		return null;
-	}
+        return this.channel.getLocalAddress();
+    }
 
-	/**
-	 * Check whether the {@link AgentRemoting} is still connected to the group.
-	 */
-	public boolean isConnected() {
+    /**
+     * {@inheritDoc}
+     */
+    public byte[] getState() {
 
-		return this.channel.isConnected();
-	}
+        // We dont't care about state.
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void receive(Message m) {
+    /**
+     * Check whether the {@link AgentRemoting} is still connected to the group.
+     */
+    public boolean isConnected() {
 
-		// We dont't care about messages.
-	}
+        return this.channel.isConnected();
+    }
 
-	public void removeAgentStateListener(AgentStateListener listener) {
+    /**
+     * {@inheritDoc}
+     */
+    public void receive(Message m) {
 
-		this.agentStateListeners.remove(listener);
-	}
+        // We dont't care about messages.
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setState(byte[] s) {
+    public void removeAgentStateListener(AgentStateListener listener) {
 
-		// We dont't care about state.
-	}
+        this.agentStateListeners.remove(listener);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void suspect(Address suspected_mbr) {
+    /**
+     * {@inheritDoc}
+     */
+    public void setState(byte[] s) {
 
-		for (AgentStateListener listener : this.agentStateListeners)
-			listener.agentSuspected(suspected_mbr);
-	}
+        // We dont't care about state.
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void viewAccepted(View new_view) {
+    /**
+     * {@inheritDoc}
+     */
+    public void suspect(Address suspected_mbr) {
 
-		for (AgentStateListener listener : this.agentStateListeners)
-			listener.membersChanged(new_view.getMembers());
-	}
+        for (AgentStateListener listener : this.agentStateListeners)
+            listener.agentSuspected(suspected_mbr);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void viewAccepted(View new_view) {
+
+        for (AgentStateListener listener : this.agentStateListeners)
+            listener.membersChanged(new_view.getMembers());
+    }
 }

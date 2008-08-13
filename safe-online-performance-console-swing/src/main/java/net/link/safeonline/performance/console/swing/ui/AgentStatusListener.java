@@ -8,6 +8,7 @@ package net.link.safeonline.performance.console.swing.ui;
 
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 
+
 /**
  * <h2>{@link AgentStatusListener}<br>
  * <sub>A listener for agent status changes.</sub></h2>
@@ -20,5 +21,5 @@ import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
  */
 public interface AgentStatusListener {
 
-	public void statusChanged(ConsoleAgent agent);
+    public void statusChanged(ConsoleAgent agent);
 }

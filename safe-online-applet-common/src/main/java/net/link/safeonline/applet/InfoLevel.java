@@ -13,5 +13,5 @@ package net.link.safeonline.applet;
  * @author fcorneli
  */
 public enum InfoLevel {
-	NORMAL, ERROR
+    NORMAL, ERROR
 }

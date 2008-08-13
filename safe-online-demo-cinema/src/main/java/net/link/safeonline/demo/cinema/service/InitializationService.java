@@ -10,13 +10,13 @@ import javax.ejb.Local;
 
 import net.link.safeonline.demo.cinema.entity.ShowTimeEntity;
 
+
 /**
  * <h2>{@link InitializationService}<br>
  * <sub>Service that executes after application deployment.</sub></h2>
  * 
  * <p>
- * Creates some initial dummy entities to fill up the database with theatres,
- * films, rooms and seats.
+ * Creates some initial dummy entities to fill up the database with theatres, films, rooms and seats.
  * </p>
  * 
  * <p>
@@ -28,8 +28,7 @@ import net.link.safeonline.demo.cinema.entity.ShowTimeEntity;
 @Local
 public interface InitializationService extends CinemaService {
 
-    public static final String             BINDING          = JNDI_PREFIX
-                                                                    + "InitializationServiceBean/local";
+    public static final String             BINDING          = JNDI_PREFIX + "InitializationServiceBean/local";
 
     static final int                       H                = 3600, M = 60;
 
@@ -55,52 +54,32 @@ public interface InitializationService extends CinemaService {
             // Knight
             "Batman and James Gordon join forces with Gotham's new District Attorney, "
                     + "Harvey Dent, to take on a psychotic bank robber known as The Joker, "
-                    + "whilst other forces plot against them, and Joker's crimes grow more "
-                    + "and more deadly..",
+                    + "whilst other forces plot against them, and Joker's crimes grow more " + "and more deadly..",
             // Shaun
             "A man decides to turn his moribund life around by winning back his ex-"
                     + "girlfriend, reconciling his relationship with his mother, "
-                    + "and dealing with an entire community that has returned "
-                    + "from the dead to eat the living.",
+                    + "and dealing with an entire community that has returned " + "from the dead to eat the living.",
             // Hellboy
             "The mythical world starts a rebellion against humanity in order to rule "
-                    + "the Earth, so Hellboy and his team must save the world from "
-                    + "the rebellious creatures.."         };
+                    + "the Earth, so Hellboy and his team must save the world from " + "the rebellious creatures.." };
     public static final ShowTimeEntity[][] filmTimes        = {
                                                             // Journey
-            {
-            new ShowTimeEntity(14 * H, 14 * H, 15 * H, 14 * H, 14 * H + 30 * M,
-                    16 * H, 16 * H),
-            new ShowTimeEntity(20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 20 * H,
-                    22 * H, 22 * H) },
+            { new ShowTimeEntity(14 * H, 14 * H, 15 * H, 14 * H, 14 * H + 30 * M, 16 * H, 16 * H),
+            new ShowTimeEntity(20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 20 * H, 22 * H, 22 * H) },
             // Happening
-            {
-            new ShowTimeEntity(14 * H, 14 * H, 15 * H, 14 * H, 14 * H + 30 * M,
-                    16 * H, 16 * H),
-            new ShowTimeEntity(20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 20 * H,
-                    22 * H, 22 * H) },
+            { new ShowTimeEntity(14 * H, 14 * H, 15 * H, 14 * H, 14 * H + 30 * M, 16 * H, 16 * H),
+            new ShowTimeEntity(20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 20 * H, 22 * H, 22 * H) },
             // Knight
-            {
-            new ShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H,
-                    22 * H, 22 * H),
-            new ShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null,
-                    null) },
+            { new ShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
+            new ShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) },
             // Shaun
-            {
-            new ShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H,
-                    22 * H, 22 * H),
-            new ShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null,
-                    null) },
+            { new ShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
+            new ShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) },
             // Hellboy
-            {
-            new ShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H,
-                    22 * H, 22 * H),
-            new ShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null,
-                    null) }                                };
-    public static final long[]             filmDurations    = { 92 * M, 91 * M,
-            97 * M, 99 * M, 90 * M                         };
-    public static final int[]              filmPrices       = { 30, 30, 25, 20,
-            20                                             };
+            { new ShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
+            new ShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) } };
+    public static final long[]             filmDurations    = { 92 * M, 91 * M, 97 * M, 99 * M, 90 * M };
+    public static final int[]              filmPrices       = { 30, 30, 25, 20, 20 };
     public static final int[][]            filmTheatres     = {
                                                             // Journey
             { 0, 2, 4 },

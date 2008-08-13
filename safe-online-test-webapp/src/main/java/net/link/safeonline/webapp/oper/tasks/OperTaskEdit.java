@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.tasks;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperTaskEdit extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/tasks/task-edit.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/tasks/task-edit.seam";
 
-	public OperTaskEdit() {
-		super(PAGE_NAME);
-	}
+
+    public OperTaskEdit() {
+
+        super(PAGE_NAME);
+    }
 }

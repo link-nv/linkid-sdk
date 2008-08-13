@@ -11,13 +11,15 @@ import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardFactory;
 import junit.framework.TestCase;
 
+
 public class SmartCardFactoryTest extends TestCase {
 
-	public void testNewInstance() throws Exception {
-		// operate
-		SmartCard smartCard = SmartCardFactory.newInstance();
+    public void testNewInstance() throws Exception {
 
-		// verify
-		assertNotNull(smartCard);
-	}
+        // operate
+        SmartCard smartCard = SmartCardFactory.newInstance();
+
+        // verify
+        assertNotNull(smartCard);
+    }
 }

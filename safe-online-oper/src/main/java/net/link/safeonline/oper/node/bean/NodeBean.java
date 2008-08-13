@@ -48,6 +48,7 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("operNode")
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "NodeBean/local")
@@ -55,221 +56,235 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class NodeBean implements Node {
 
-	private static final Log LOG = LogFactory.getLog(NodeBean.class);
+    private static final Log    LOG                 = LogFactory.getLog(NodeBean.class);
 
-	private static final String OPER_NODE_LIST_NAME = "operOlasNodeList";
+    private static final String OPER_NODE_LIST_NAME = "operOlasNodeList";
 
-	private String name;
+    private String              name;
 
-	private String protocol;
+    private String              protocol;
 
-	private String hostname;
+    private String              hostname;
 
-	private int port;
+    private int                 port;
 
-	private int sslPort;
+    private int                 sslPort;
 
-	private UploadedFile authnUpFile;
+    private UploadedFile        authnUpFile;
 
-	private UploadedFile signingUpFile;
+    private UploadedFile        signingUpFile;
 
-	@EJB
-	private NodeService nodeService;
+    @EJB
+    private NodeService         nodeService;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages               facesMessages;
 
-	@SuppressWarnings("unused")
-	@DataModel(OPER_NODE_LIST_NAME)
-	private List<OlasEntity> operNodeList;
+    @SuppressWarnings("unused")
+    @DataModel(OPER_NODE_LIST_NAME)
+    private List<OlasEntity>    operNodeList;
 
-	@DataModelSelection(OPER_NODE_LIST_NAME)
-	@Out(value = "selectedNode", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private OlasEntity selectedNode;
+    @DataModelSelection(OPER_NODE_LIST_NAME)
+    @Out(value = "selectedNode", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private OlasEntity          selectedNode;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		this.name = null;
-		this.protocol = null;
-		this.hostname = null;
-		this.authnUpFile = null;
-		this.signingUpFile = null;
-	}
 
-	@Factory(OPER_NODE_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void nodeListFactory() {
-		LOG.debug("node list factory");
-		this.operNodeList = this.nodeService.listNodes();
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@ErrorHandling( { @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload") })
-	public String add() throws CertificateEncodingException, IOException {
-		LOG.debug("add olas node: " + this.name);
+        this.name = null;
+        this.protocol = null;
+        this.hostname = null;
+        this.authnUpFile = null;
+        this.signingUpFile = null;
+    }
 
-		try {
-			byte[] encodedAuthnCertificate;
-			if (null != this.authnUpFile)
-				encodedAuthnCertificate = getUpFileContent(this.authnUpFile);
-			else
-				encodedAuthnCertificate = null;
-			byte[] encodedSigningCertificate;
-			if (null != this.signingUpFile)
-				encodedSigningCertificate = getUpFileContent(this.signingUpFile);
-			else
-				encodedSigningCertificate = null;
-			this.nodeService.addNode(this.name, this.protocol, this.hostname,
-					this.port, this.sslPort, encodedAuthnCertificate,
-					encodedSigningCertificate);
-		} catch (ExistingNodeException e) {
-			LOG.debug("node already exists: " + this.name);
-			this.facesMessages.addToControlFromResourceBundle("name",
-					FacesMessage.SEVERITY_ERROR, "errorNodeAlreadyExists",
-					this.name);
-			return null;
-		}
-		nodeListFactory();
-		return "success";
-	}
+    @Factory(OPER_NODE_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void nodeListFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public UploadedFile getAuthnUpFile() {
-		return this.authnUpFile;
-	}
+        LOG.debug("node list factory");
+        this.operNodeList = this.nodeService.listNodes();
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setAuthnUpFile(UploadedFile uploadedFile) {
-		this.authnUpFile = uploadedFile;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @ErrorHandling( { @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload") })
+    public String add() throws CertificateEncodingException, IOException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public UploadedFile getSigningUpFile() {
-		return this.signingUpFile;
-	}
+        LOG.debug("add olas node: " + this.name);
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setSigningUpFile(UploadedFile uploadedFile) {
-		this.signingUpFile = uploadedFile;
-	}
+        try {
+            byte[] encodedAuthnCertificate;
+            if (null != this.authnUpFile)
+                encodedAuthnCertificate = getUpFileContent(this.authnUpFile);
+            else
+                encodedAuthnCertificate = null;
+            byte[] encodedSigningCertificate;
+            if (null != this.signingUpFile)
+                encodedSigningCertificate = getUpFileContent(this.signingUpFile);
+            else
+                encodedSigningCertificate = null;
+            this.nodeService.addNode(this.name, this.protocol, this.hostname, this.port, this.sslPort,
+                    encodedAuthnCertificate, encodedSigningCertificate);
+        } catch (ExistingNodeException e) {
+            LOG.debug("node already exists: " + this.name);
+            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR,
+                    "errorNodeAlreadyExists", this.name);
+            return null;
+        }
+        nodeListFactory();
+        return "success";
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public UploadedFile getAuthnUpFile() {
 
-	public void setName(String name) {
-		this.name = name;
-	}
+        return this.authnUpFile;
+    }
 
-	public String getProtocol() {
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setAuthnUpFile(UploadedFile uploadedFile) {
 
-		return this.protocol;
-	}
+        this.authnUpFile = uploadedFile;
+    }
 
-	public void setProtocol(String protocol) {
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public UploadedFile getSigningUpFile() {
 
-		this.protocol = protocol;
-	}
+        return this.signingUpFile;
+    }
 
-	public String getHostname() {
-		return this.hostname;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setSigningUpFile(UploadedFile uploadedFile) {
 
-	public void setHostname(String hostname) {
-		this.hostname = hostname;
-	}
+        this.signingUpFile = uploadedFile;
+    }
 
-	public int getPort() {
-		return this.port;
-	}
+    public String getName() {
 
-	public void setPort(int port) {
-		this.port = port;
-	}
+        return this.name;
+    }
 
-	public int getSslPort() {
-		return this.sslPort;
-	}
+    public void setName(String name) {
 
-	public void setSslPort(int sslPort) {
-		this.sslPort = sslPort;
-	}
+        this.name = name;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() throws NodeNotFoundException {
-		String nodeName = this.selectedNode.getName();
-		LOG.debug("remove node: " + nodeName);
-		try {
-			this.nodeService.removeNode(nodeName);
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied to remove: " + nodeName);
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
-							.getResourceArgs());
-			return null;
-		}
-		nodeListFactory();
-		return "success";
-	}
+    public String getProtocol() {
 
-	private byte[] getUpFileContent(UploadedFile file) throws IOException {
-		InputStream inputStream = file.getInputStream();
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		IOUtils.copy(inputStream, byteArrayOutputStream);
-		return byteArrayOutputStream.toByteArray();
-	}
+        return this.protocol;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() throws CertificateEncodingException,
-			NodeNotFoundException, IOException, GenericJDBCException {
-		String nodeName = this.selectedNode.getName();
-		LOG.debug("save node: " + nodeName);
+    public void setProtocol(String protocol) {
 
-		if (null != this.authnUpFile) {
-			LOG.debug("updating node authentication certificate");
-			this.nodeService.updateAuthnCertificate(nodeName,
-					getUpFileContent(this.authnUpFile));
-		}
+        this.protocol = protocol;
+    }
 
-		if (null != this.signingUpFile) {
-			LOG.debug("updating node signing certificate");
-			this.nodeService.updateSigningCertificate(nodeName,
-					getUpFileContent(this.signingUpFile));
-		}
-		this.nodeService.updateLocation(nodeName, this.hostname, this.protocol,
-				this.port, this.sslPort);
+    public String getHostname() {
 
-		/*
-		 * Refresh the selected application.
-		 */
-		this.selectedNode = this.nodeService.getNode(nodeName);
+        return this.hostname;
+    }
 
-		nodeListFactory();
-		return "success";
-	}
+    public void setHostname(String hostname) {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		/*
-		 * To set the selected node.
-		 */
-		LOG.debug("view node: " + this.selectedNode.getName());
-		return "view";
-	}
+        this.hostname = hostname;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String edit() {
-		/*
-		 * To set the selected application.
-		 */
-		LOG.debug("edit application: " + this.selectedNode.getName());
+    public int getPort() {
 
-		this.protocol = this.selectedNode.getProtocol();
-		this.hostname = this.selectedNode.getHostname();
-		this.port = this.selectedNode.getPort();
-		this.sslPort = this.selectedNode.getSslPort();
-		return "edit";
-	}
+        return this.port;
+    }
+
+    public void setPort(int port) {
+
+        this.port = port;
+    }
+
+    public int getSslPort() {
+
+        return this.sslPort;
+    }
+
+    public void setSslPort(int sslPort) {
+
+        this.sslPort = sslPort;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String remove() throws NodeNotFoundException {
+
+        String nodeName = this.selectedNode.getName();
+        LOG.debug("remove node: " + nodeName);
+        try {
+            this.nodeService.removeNode(nodeName);
+        } catch (PermissionDeniedException e) {
+            LOG.debug("permission denied to remove: " + nodeName);
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
+                    .getResourceArgs());
+            return null;
+        }
+        nodeListFactory();
+        return "success";
+    }
+
+    private byte[] getUpFileContent(UploadedFile file) throws IOException {
+
+        InputStream inputStream = file.getInputStream();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        IOUtils.copy(inputStream, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String save() throws CertificateEncodingException, NodeNotFoundException, IOException, GenericJDBCException {
+
+        String nodeName = this.selectedNode.getName();
+        LOG.debug("save node: " + nodeName);
+
+        if (null != this.authnUpFile) {
+            LOG.debug("updating node authentication certificate");
+            this.nodeService.updateAuthnCertificate(nodeName, getUpFileContent(this.authnUpFile));
+        }
+
+        if (null != this.signingUpFile) {
+            LOG.debug("updating node signing certificate");
+            this.nodeService.updateSigningCertificate(nodeName, getUpFileContent(this.signingUpFile));
+        }
+        this.nodeService.updateLocation(nodeName, this.hostname, this.protocol, this.port, this.sslPort);
+
+        /*
+         * Refresh the selected application.
+         */
+        this.selectedNode = this.nodeService.getNode(nodeName);
+
+        nodeListFactory();
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String view() {
+
+        /*
+         * To set the selected node.
+         */
+        LOG.debug("view node: " + this.selectedNode.getName());
+        return "view";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String edit() {
+
+        /*
+         * To set the selected application.
+         */
+        LOG.debug("edit application: " + this.selectedNode.getName());
+
+        this.protocol = this.selectedNode.getProtocol();
+        this.hostname = this.selectedNode.getHostname();
+        this.port = this.selectedNode.getPort();
+        this.sslPort = this.selectedNode.getSslPort();
+        return "edit";
+    }
 }

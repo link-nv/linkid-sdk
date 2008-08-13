@@ -14,28 +14,34 @@ import java.util.List;
 
 import net.link.safeonline.validation.validator.ValidatorResult;
 
+
 public class InputValidationValidatorResult implements ValidatorResult {
 
-	private List<String> results;
+    private List<String> results;
 
-	InputValidationValidatorResult() {
-		this.results = new LinkedList<String>();
-	}
 
-	public void addResult(String result) {
-		this.results.add(result);
-	}
+    InputValidationValidatorResult() {
 
-	boolean isEmpty() {
-		return this.results.isEmpty();
-	}
+        this.results = new LinkedList<String>();
+    }
 
-	@Override
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		for (String result : this.results) {
-			buffer.append(result);
-		}
-		return buffer.toString();
-	}
+    public void addResult(String result) {
+
+        this.results.add(result);
+    }
+
+    boolean isEmpty() {
+
+        return this.results.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuffer buffer = new StringBuffer();
+        for (String result : this.results) {
+            buffer.append(result);
+        }
+        return buffer.toString();
+    }
 }

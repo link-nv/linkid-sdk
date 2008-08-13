@@ -25,63 +25,66 @@ import org.jboss.seam.contexts.Context;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("paymentServiceEntry")
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/PaymentServiceEntryBean/local")
 public class PaymentServiceEntryBean implements PaymentServiceEntry {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log     log;
 
-	@RequestParameter("target")
-	@Out(value = "target", scope = ScopeType.SESSION, required = false)
-	private String target;
+    @RequestParameter("target")
+    @Out(value = "target", scope = ScopeType.SESSION, required = false)
+    private String  target;
 
-	@RequestParameter("user")
-	@Out(value = "user", scope = ScopeType.SESSION, required = false)
-	private String user;
+    @RequestParameter("user")
+    @Out(value = "user", scope = ScopeType.SESSION, required = false)
+    private String  user;
 
-	@RequestParameter("recipient")
-	@Out(value = "recipient", scope = ScopeType.SESSION, required = false)
-	private String recipient;
+    @RequestParameter("recipient")
+    @Out(value = "recipient", scope = ScopeType.SESSION, required = false)
+    private String  recipient;
 
-	@RequestParameter("amount")
-	@Out(value = "amount", scope = ScopeType.SESSION, required = false)
-	private Double amount;
+    @RequestParameter("amount")
+    @Out(value = "amount", scope = ScopeType.SESSION, required = false)
+    private Double  amount;
 
-	@SuppressWarnings("unused")
-	@RequestParameter("message")
-	@Out(value = "message", scope = ScopeType.SESSION, required = false)
-	private String message;
+    @SuppressWarnings("unused")
+    @RequestParameter("message")
+    @Out(value = "message", scope = ScopeType.SESSION, required = false)
+    private String  message;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages   facesMessages;
 
-	@In
-	private Context sessionContext;
+    @In
+    private Context sessionContext;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	public void init() {
-		this.log.debug("init; username #0; recipient #1; amount #2", this.user,
-				this.recipient, this.amount);
-		if (null == this.user) {
-			this.facesMessages.add("user request parameter is null");
-		}
-		if (null == this.target) {
-			this.facesMessages.add("target request parameter is null");
-		}
-		if (null == this.recipient) {
-			this.facesMessages.add("recipient request parameter is null");
-		}
-		if (null == this.amount) {
-			this.facesMessages.add("amount request parameter is null");
-		}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-		this.sessionContext.set("role", PaymentConstants.USER_ROLE);
+    }
 
-	}
+    public void init() {
+
+        this.log.debug("init; username #0; recipient #1; amount #2", this.user, this.recipient, this.amount);
+        if (null == this.user) {
+            this.facesMessages.add("user request parameter is null");
+        }
+        if (null == this.target) {
+            this.facesMessages.add("target request parameter is null");
+        }
+        if (null == this.recipient) {
+            this.facesMessages.add("recipient request parameter is null");
+        }
+        if (null == this.amount) {
+            this.facesMessages.add("amount request parameter is null");
+        }
+
+        this.sessionContext.set("role", PaymentConstants.USER_ROLE);
+
+    }
 }

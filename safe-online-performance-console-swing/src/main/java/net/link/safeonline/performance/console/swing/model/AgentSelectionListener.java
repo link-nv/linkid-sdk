@@ -19,6 +19,7 @@ import java.util.Set;
 
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 
+
 /**
  * <h2>{@link AgentSelectionListener}<br>
  * <sub>A listener that is triggered when an agent is selected in the interface.</sub></h2>
@@ -35,5 +36,5 @@ import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
  */
 public interface AgentSelectionListener {
 
-	public void agentsSelected(Set<ConsoleAgent> selectedAgents);
+    public void agentsSelected(Set<ConsoleAgent> selectedAgents);
 }

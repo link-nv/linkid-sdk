@@ -9,8 +9,9 @@ package net.link.safeonline.audit;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface AuditContextFinalizer {
 
-	void finalizeAuditContext(Long auditContextId);
+    void finalizeAuditContext(Long auditContextId);
 }

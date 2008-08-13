@@ -28,15 +28,15 @@ import net.link.safeonline.util.servlet.annotation.Init;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Abstract Injection Filter.
  * 
  * <ul>
  * <li>Injects EJBs.
- * <li>Injects filter init parameters. If no defaultValue is specified, an
- * {@link UnavailableException} will be thrown.
- * <li>Injects filter context parameters. If no defaultValue is specified, an
- * {@link UnavailableException} will be thrown.
+ * <li>Injects filter init parameters. If no defaultValue is specified, an {@link UnavailableException} will be thrown.
+ * <li>Injects filter context parameters. If no defaultValue is specified, an {@link UnavailableException} will be
+ * thrown.
  * </ul>
  * 
  * @author wvdhaute
@@ -44,8 +44,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractInjectionFilter implements Filter {
 
-    private static final Log      LOG              = LogFactory
-                                                           .getLog(AbstractInjectionFilter.class);
+    private static final Log      LOG              = LogFactory.getLog(AbstractInjectionFilter.class);
 
     private static final long     serialVersionUID = 1L;
 
@@ -80,18 +79,15 @@ public abstract class AbstractInjectionFilter implements Filter {
             try {
                 field.set(this, ejbRef);
             } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: "
-                        + e.getMessage(), e);
+                throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(),
-                        e);
+                throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void initInitParameters(FilterConfig config)
-            throws ServletException {
+    private void initInitParameters(FilterConfig config) throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -109,8 +105,7 @@ public abstract class AbstractInjectionFilter implements Filter {
             String value = config.getInitParameter(name);
             if (null == value) {
                 if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional)
-                    throw new UnavailableException("missing init parameter: "
-                            + name);
+                    throw new UnavailableException("missing init parameter: " + name);
                 if (Init.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
                 }
@@ -120,11 +115,9 @@ public abstract class AbstractInjectionFilter implements Filter {
             try {
                 field.set(this, value);
             } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: "
-                        + e.getMessage(), e);
+                throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(),
-                        e);
+                throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
         this.configParams = new HashMap<String, String>();
@@ -137,8 +130,7 @@ public abstract class AbstractInjectionFilter implements Filter {
         }
     }
 
-    private void initContextParameters(FilterConfig config)
-            throws ServletException {
+    private void initContextParameters(FilterConfig config) throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -156,8 +148,7 @@ public abstract class AbstractInjectionFilter implements Filter {
             String value = config.getServletContext().getInitParameter(name);
             if (null == value) {
                 if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional)
-                    throw new UnavailableException("missing init parameter: "
-                            + name);
+                    throw new UnavailableException("missing init parameter: " + name);
                 if (Context.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
                 }
@@ -167,29 +158,25 @@ public abstract class AbstractInjectionFilter implements Filter {
             try {
                 field.set(this, value);
             } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: "
-                        + e.getMessage(), e);
+                throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(),
-                        e);
+                throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
     }
 
-    protected static void addCookie(String name, String value, String path,
-            HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    protected static void addCookie(String name, String value, String path, HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse) {
 
         if (true == hasCookie(name, httpRequest))
             return;
         Cookie cookie = new Cookie(name, value);
         cookie.setPath(path);
-        LOG.debug("adding cookie: " + name + "=" + value + " path="
-                + cookie.getPath());
+        LOG.debug("adding cookie: " + name + "=" + value + " path=" + cookie.getPath());
         httpResponse.addCookie(cookie);
     }
 
-    protected static void setCookie(String name, String value, String path,
-            HttpServletResponse httpResponse) {
+    protected static void setCookie(String name, String value, String path, HttpServletResponse httpResponse) {
 
         Cookie cookie = new Cookie(name, value);
         cookie.setPath(path);
@@ -197,8 +184,8 @@ public abstract class AbstractInjectionFilter implements Filter {
         httpResponse.addCookie(cookie);
     }
 
-    protected static void removeCookie(String name, String path,
-            HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    protected static void removeCookie(String name, String path, HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse) {
 
         if (false == hasCookie(name, httpRequest))
             return;
@@ -210,8 +197,7 @@ public abstract class AbstractInjectionFilter implements Filter {
 
     }
 
-    protected static boolean hasCookie(String name,
-            HttpServletRequest httpRequest) {
+    protected static boolean hasCookie(String name, HttpServletRequest httpRequest) {
 
         Cookie[] cookies = httpRequest.getCookies();
         if (null == cookies)
@@ -223,8 +209,7 @@ public abstract class AbstractInjectionFilter implements Filter {
         return false;
     }
 
-    protected static String findCookieValue(String name,
-            HttpServletRequest httpRequest) {
+    protected static String findCookieValue(String name, HttpServletRequest httpRequest) {
 
         Cookie[] cookies = httpRequest.getCookies();
         if (null == cookies)

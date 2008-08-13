@@ -12,25 +12,26 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
+
 @Local
 public interface PrescriptionCreate extends AbstractPrescriptionDataClient {
 
-	/*
-	 * Factory.
-	 */
-	List<SelectItem> medicinesFactory();
+    /*
+     * Factory.
+     */
+    List<SelectItem> medicinesFactory();
 
-	String patientNameFactory();
+    String patientNameFactory();
 
-	/*
-	 * Accessors.
-	 */
-	List<String> getSelectedMedicines();
+    /*
+     * Accessors.
+     */
+    List<String> getSelectedMedicines();
 
-	void setSelectedMedicines(List<String> selectedMedicines);
+    void setSelectedMedicines(List<String> selectedMedicines);
 
-	/*
-	 * Actions.
-	 */
-	String create();
+    /*
+     * Actions.
+     */
+    String create();
 }

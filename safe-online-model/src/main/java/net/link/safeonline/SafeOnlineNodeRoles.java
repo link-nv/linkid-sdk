@@ -15,12 +15,14 @@ package net.link.safeonline;
  */
 public class SafeOnlineNodeRoles {
 
-	private SafeOnlineNodeRoles() {
-		// empty
-	}
+    private SafeOnlineNodeRoles() {
 
-	/**
-	 * Role for regular SafeOnline Nodes.
-	 */
-	public static final String NODE_ROLE = "node";
+        // empty
+    }
+
+
+    /**
+     * Role for regular SafeOnline Nodes.
+     */
+    public static final String NODE_ROLE = "node";
 }

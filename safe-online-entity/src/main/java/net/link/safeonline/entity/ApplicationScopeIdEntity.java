@@ -30,104 +30,113 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+
 @Entity
-@Table(name = "app_scope_id", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"application", "subject" }))
+@Table(name = "app_scope_id", uniqueConstraints = @UniqueConstraint(columnNames = { "application", "subject" }))
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_SUBJECT_APPLICATION, query = "SELECT applicationScopeId "
-				+ "FROM ApplicationScopeIdEntity AS applicationScopeId "
-				+ "WHERE applicationScopeId.subject = :subject AND applicationScopeId.application = :application"),
-		@NamedQuery(name = DELETE_ALL_WHERE_SUBJECT, query = "DELETE FROM ApplicationScopeIdEntity AS applicationScopeId "
-				+ "WHERE applicationScopeId.subject = :subject"),
-		@NamedQuery(name = DELETE_ALL_WHERE_APPLICATION, query = "DELETE FROM ApplicationScopeIdEntity AS applicationScopeId "
-				+ "WHERE applicationScopeId.application = :application") })
+        @NamedQuery(name = QUERY_WHERE_SUBJECT_APPLICATION, query = "SELECT applicationScopeId "
+                + "FROM ApplicationScopeIdEntity AS applicationScopeId "
+                + "WHERE applicationScopeId.subject = :subject AND applicationScopeId.application = :application"),
+        @NamedQuery(name = DELETE_ALL_WHERE_SUBJECT, query = "DELETE FROM ApplicationScopeIdEntity AS applicationScopeId "
+                + "WHERE applicationScopeId.subject = :subject"),
+        @NamedQuery(name = DELETE_ALL_WHERE_APPLICATION, query = "DELETE FROM ApplicationScopeIdEntity AS applicationScopeId "
+                + "WHERE applicationScopeId.application = :application") })
 public class ApplicationScopeIdEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID                = 1L;
 
-	public static final String QUERY_WHERE_SUBJECT_APPLICATION = "appscope.subapp";
+    public static final String QUERY_WHERE_SUBJECT_APPLICATION = "appscope.subapp";
 
-	public static final String DELETE_ALL_WHERE_SUBJECT = "appscope.del.sub";
+    public static final String DELETE_ALL_WHERE_SUBJECT        = "appscope.del.sub";
 
-	public static final String DELETE_ALL_WHERE_APPLICATION = "appscope.del.app";
+    public static final String DELETE_ALL_WHERE_APPLICATION    = "appscope.del.app";
 
-	private SubjectEntity subject;
+    private SubjectEntity      subject;
 
-	private ApplicationEntity application;
+    private ApplicationEntity  application;
 
-	private String id;
+    private String             id;
 
-	public ApplicationScopeIdEntity() {
-		// empty
-	}
 
-	public ApplicationScopeIdEntity(SubjectEntity subject, String id,
-			ApplicationEntity application) {
-		this.subject = subject;
-		this.id = id;
-		this.application = application;
-	}
+    public ApplicationScopeIdEntity() {
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "application", updatable = false)
-	public ApplicationEntity getApplication() {
-		return this.application;
-	}
+        // empty
+    }
 
-	public void setApplication(ApplicationEntity application) {
-		this.application = application;
-	}
+    public ApplicationScopeIdEntity(SubjectEntity subject, String id, ApplicationEntity application) {
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "subject", updatable = false)
-	public SubjectEntity getSubject() {
-		return this.subject;
-	}
+        this.subject = subject;
+        this.id = id;
+        this.application = application;
+    }
 
-	public void setSubject(SubjectEntity subject) {
-		this.subject = subject;
-	}
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "application", updatable = false)
+    public ApplicationEntity getApplication() {
 
-	@Id
-	public String getId() {
-		return this.id;
-	}
+        return this.application;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setApplication(ApplicationEntity application) {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof ApplicationScopeIdEntity) {
-			return false;
-		}
-		ApplicationScopeIdEntity rhs = (ApplicationScopeIdEntity) obj;
-		return new EqualsBuilder().append(this.id, rhs.id).isEquals();
-	}
+        this.application = application;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
-				"subject", this.subject)
-				.append("application", this.application).append("id", this.id)
-				.toString();
-	}
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "subject", updatable = false)
+    public SubjectEntity getSubject() {
 
-	public interface QueryInterface {
-		@QueryMethod(value = QUERY_WHERE_SUBJECT_APPLICATION, nullable = true)
-		ApplicationScopeIdEntity findApplicationScopeId(
-				@QueryParam("subject") SubjectEntity subject,
-				@QueryParam("application") ApplicationEntity application);
+        return this.subject;
+    }
 
-		@UpdateMethod(value = DELETE_ALL_WHERE_SUBJECT)
-		void deleteAll(@QueryParam("subject") SubjectEntity subject);
+    public void setSubject(SubjectEntity subject) {
 
-		@UpdateMethod(value = DELETE_ALL_WHERE_APPLICATION)
-		void deleteAll(@QueryParam("application") ApplicationEntity application);
-	}
+        this.subject = subject;
+    }
+
+    @Id
+    public String getId() {
+
+        return this.id;
+    }
+
+    public void setId(String id) {
+
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof ApplicationScopeIdEntity) {
+            return false;
+        }
+        ApplicationScopeIdEntity rhs = (ApplicationScopeIdEntity) obj;
+        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("subject", this.subject).append(
+                "application", this.application).append("id", this.id).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(value = QUERY_WHERE_SUBJECT_APPLICATION, nullable = true)
+        ApplicationScopeIdEntity findApplicationScopeId(@QueryParam("subject") SubjectEntity subject,
+                @QueryParam("application") ApplicationEntity application);
+
+        @UpdateMethod(value = DELETE_ALL_WHERE_SUBJECT)
+        void deleteAll(@QueryParam("subject") SubjectEntity subject);
+
+        @UpdateMethod(value = DELETE_ALL_WHERE_APPLICATION)
+        void deleteAll(@QueryParam("application") ApplicationEntity application);
+    }
 
 }

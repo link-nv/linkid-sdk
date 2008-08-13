@@ -17,6 +17,7 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.application.Application;
 
+
 /**
  * Domain Model class for Subject.
  * 
@@ -25,81 +26,81 @@ import net.link.safeonline.model.application.Application;
  */
 public class Subject {
 
-	private final SubjectEntity entity;
+    private final SubjectEntity  entity;
 
-	private final SubjectContext context;
+    private final SubjectContext context;
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param context
-	 * @param entity
-	 */
-	public Subject(SubjectContext context, SubjectEntity entity) {
-		this.context = context;
-		this.entity = entity;
-	}
 
-	public SubjectEntity getSubjectEntity() {
-		return this.entity;
-	}
+    /**
+     * Main constructor.
+     * 
+     * @param context
+     * @param entity
+     */
+    public Subject(SubjectContext context, SubjectEntity entity) {
 
-	/**
-	 * Subscribes this subject on the given application.
-	 * 
-	 * @param application
-	 * @throws PermissionDeniedException
-	 * @throws AlreadySubscribedException
-	 */
-	public void subscribe(Application application)
-			throws PermissionDeniedException, AlreadySubscribedException {
+        this.context = context;
+        this.entity = entity;
+    }
 
-		application.checkUserSubscriptionPermission();
-		checkAlreadySubscribed(application);
+    public SubjectEntity getSubjectEntity() {
 
-		this.context.getSubscriptionDAO().addSubscription(
-				SubscriptionOwnerType.SUBJECT, this.entity,
-				application.getEntity());
-	}
+        return this.entity;
+    }
 
-	private void checkAlreadySubscribed(Application application)
-			throws AlreadySubscribedException {
-		if (isSubscribed(application)) {
-			throw new AlreadySubscribedException();
-		}
-	}
+    /**
+     * Subscribes this subject on the given application.
+     * 
+     * @param application
+     * @throws PermissionDeniedException
+     * @throws AlreadySubscribedException
+     */
+    public void subscribe(Application application) throws PermissionDeniedException, AlreadySubscribedException {
 
-	/**
-	 * Unsubscribes this subject from the given application.
-	 * 
-	 * @param application
-	 * @throws SubscriptionNotFoundException
-	 * @throws PermissionDeniedException
-	 */
-	public void unsubscribe(Application application)
-			throws SubscriptionNotFoundException, PermissionDeniedException {
-		SubscriptionDAO subscriptionDAO = this.context.getSubscriptionDAO();
-		ApplicationEntity applicationEntity = application.getEntity();
-		SubscriptionEntity subscription = subscriptionDAO.findSubscription(
-				this.entity, applicationEntity);
-		if (null == subscription) {
-			throw new SubscriptionNotFoundException();
-		}
-		if (!SubscriptionOwnerType.SUBJECT.equals(subscription
-				.getSubscriptionOwnerType())) {
-			throw new PermissionDeniedException("subject cannot unsubscribe");
-		}
-		subscriptionDAO.removeSubscription(this.entity, applicationEntity);
-	}
+        application.checkUserSubscriptionPermission();
+        checkAlreadySubscribed(application);
 
-	/**
-	 * Checks whether this subject is subscribed onto the given application.
-	 * 
-	 * @param application
-	 */
-	public boolean isSubscribed(Application application) {
-		SubscriptionEntity subscription = this.context.getSubscriptionDAO()
-				.findSubscription(this.entity, application.getEntity());
-		return null != subscription;
-	}
+        this.context.getSubscriptionDAO().addSubscription(SubscriptionOwnerType.SUBJECT, this.entity,
+                application.getEntity());
+    }
+
+    private void checkAlreadySubscribed(Application application) throws AlreadySubscribedException {
+
+        if (isSubscribed(application)) {
+            throw new AlreadySubscribedException();
+        }
+    }
+
+    /**
+     * Unsubscribes this subject from the given application.
+     * 
+     * @param application
+     * @throws SubscriptionNotFoundException
+     * @throws PermissionDeniedException
+     */
+    public void unsubscribe(Application application) throws SubscriptionNotFoundException, PermissionDeniedException {
+
+        SubscriptionDAO subscriptionDAO = this.context.getSubscriptionDAO();
+        ApplicationEntity applicationEntity = application.getEntity();
+        SubscriptionEntity subscription = subscriptionDAO.findSubscription(this.entity, applicationEntity);
+        if (null == subscription) {
+            throw new SubscriptionNotFoundException();
+        }
+        if (!SubscriptionOwnerType.SUBJECT.equals(subscription.getSubscriptionOwnerType())) {
+            throw new PermissionDeniedException("subject cannot unsubscribe");
+        }
+        subscriptionDAO.removeSubscription(this.entity, applicationEntity);
+    }
+
+    /**
+     * Checks whether this subject is subscribed onto the given application.
+     * 
+     * @param application
+     */
+    public boolean isSubscribed(Application application) {
+
+        SubscriptionEntity subscription = this.context.getSubscriptionDAO().findSubscription(this.entity,
+                application.getEntity());
+        return null != subscription;
+    }
 }

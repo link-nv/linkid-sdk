@@ -41,130 +41,126 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class DeviceLandingServletTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceLandingServletTest.class);
+    private static final Log       LOG                = LogFactory.getLog(DeviceLandingServletTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager     servletTestManager;
 
-	private HttpClient httpClient;
+    private HttpClient             httpClient;
 
-	private String location;
+    private String                 location;
 
-	private String errorPage = "error-page";
+    private String                 errorPage          = "error-page";
 
-	private String devicesPage = "devices-page";
+    private String                 devicesPage        = "devices-page";
 
-	private String servletEndpointUrl = "http://test.user/servlet";
+    private String                 servletEndpointUrl = "http://test.user/servlet";
 
-	private DeviceOperationService mockDeviceOperationService;
+    private DeviceOperationService mockDeviceOperationService;
 
-	private Object[] mockObjects;
+    private Object[]               mockObjects;
 
-	@Before
-	public void setUp() throws Exception {
 
-		this.mockDeviceOperationService = createMock(DeviceOperationService.class);
+    @Before
+    public void setUp() throws Exception {
 
-		this.servletTestManager = new ServletTestManager();
-		Map<String, String> initParams = new HashMap<String, String>();
-		initParams.put("ErrorPage", this.errorPage);
-		initParams.put("DevicesPage", this.devicesPage);
-		initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
-		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-		initialSessionAttributes.put(
-				DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE,
-				this.mockDeviceOperationService);
+        this.mockDeviceOperationService = createMock(DeviceOperationService.class);
 
-		this.servletTestManager.setUp(DeviceLandingServlet.class, initParams,
-				null, null, initialSessionAttributes);
-		this.location = this.servletTestManager.getServletLocation();
-		this.httpClient = new HttpClient();
+        this.servletTestManager = new ServletTestManager();
+        Map<String, String> initParams = new HashMap<String, String>();
+        initParams.put("ErrorPage", this.errorPage);
+        initParams.put("DevicesPage", this.devicesPage);
+        initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
+        Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
+        initialSessionAttributes.put(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE,
+                this.mockDeviceOperationService);
 
-		this.mockObjects = new Object[] { this.mockDeviceOperationService };
-	}
+        this.servletTestManager.setUp(DeviceLandingServlet.class, initParams, null, null, initialSessionAttributes);
+        this.location = this.servletTestManager.getServletLocation();
+        this.httpClient = new HttpClient();
 
-	@After
-	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-	}
+        this.mockObjects = new Object[] { this.mockDeviceOperationService };
+    }
 
-	@Test
-	public void getNotAllowed() throws Exception {
-		// setup
-		GetMethod getMethod = new GetMethod(this.location);
+    @After
+    public void tearDown() throws Exception {
 
-		// operate
-		int result = this.httpClient.executeMethod(getMethod);
+        this.servletTestManager.tearDown();
+    }
 
-		// verify
-		LOG.debug("result: " + result);
-		assertEquals(HttpServletResponse.SC_METHOD_NOT_ALLOWED, result);
-	}
+    @Test
+    public void getNotAllowed() throws Exception {
 
-	@Test
-	public void deviceOperationFailed() throws Exception {
-		// setup
-		PostMethod postMethod = new PostMethod(this.location);
+        // setup
+        GetMethod getMethod = new GetMethod(this.location);
 
-		// expectations
-		expect(
-				this.mockDeviceOperationService
-						.finalize((HttpServletRequest) EasyMock.anyObject()))
-				.andThrow(new DeviceMappingNotFoundException());
+        // operate
+        int result = this.httpClient.executeMethod(getMethod);
 
-		// prepare
-		replay(this.mockObjects);
+        // verify
+        LOG.debug("result: " + result);
+        assertEquals(HttpServletResponse.SC_METHOD_NOT_ALLOWED, result);
+    }
 
-		// operate
-		int statusCode = this.httpClient.executeMethod(postMethod);
+    @Test
+    public void deviceOperationFailed() throws Exception {
 
-		// verify
-		verify(this.mockObjects);
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
-		String resultLocation = postMethod.getResponseHeader("Location")
-				.getValue();
-		LOG.debug("location: " + resultLocation);
-		assertTrue(resultLocation.endsWith(this.errorPage));
-	}
+        // setup
+        PostMethod postMethod = new PostMethod(this.location);
 
-	@Test
-	public void authenticationSuccess() throws Exception {
-		// setup
-		String userId = UUID.randomUUID().toString();
-		String deviceMappingId = UUID.randomUUID().toString();
-		SubjectEntity subject = new SubjectEntity(userId);
-		DeviceEntity device = new DeviceEntity();
-		DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject,
-				deviceMappingId, device);
+        // expectations
+        expect(this.mockDeviceOperationService.finalize((HttpServletRequest) EasyMock.anyObject())).andThrow(
+                new DeviceMappingNotFoundException());
 
-		PostMethod postMethod = new PostMethod(this.location);
+        // prepare
+        replay(this.mockObjects);
 
-		// expectations
-		expect(
-				this.mockDeviceOperationService
-						.finalize((HttpServletRequest) EasyMock.anyObject()))
-				.andStubReturn(deviceMapping);
+        // operate
+        int statusCode = this.httpClient.executeMethod(postMethod);
 
-		// prepare
-		replay(this.mockObjects);
+        // verify
+        verify(this.mockObjects);
+        LOG.debug("status code: " + statusCode);
+        assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
+        String resultLocation = postMethod.getResponseHeader("Location").getValue();
+        LOG.debug("location: " + resultLocation);
+        assertTrue(resultLocation.endsWith(this.errorPage));
+    }
 
-		// operate
-		int statusCode = this.httpClient.executeMethod(postMethod);
+    @Test
+    public void authenticationSuccess() throws Exception {
 
-		// verify
-		verify(this.mockObjects);
-		LOG.debug("status code: " + statusCode);
-		LOG.debug("result body: " + postMethod.getResponseBodyAsString());
-		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
-		String resultLocation = postMethod.getResponseHeader("Location")
-				.getValue();
-		LOG.debug("location: " + resultLocation);
-		assertTrue(resultLocation.endsWith(this.devicesPage));
-		DeviceOperationService deviceOperationService = (DeviceOperationService) this.servletTestManager
-				.getSessionAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
-		assertNull(deviceOperationService);
-	}
+        // setup
+        String userId = UUID.randomUUID().toString();
+        String deviceMappingId = UUID.randomUUID().toString();
+        SubjectEntity subject = new SubjectEntity(userId);
+        DeviceEntity device = new DeviceEntity();
+        DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject, deviceMappingId, device);
+
+        PostMethod postMethod = new PostMethod(this.location);
+
+        // expectations
+        expect(this.mockDeviceOperationService.finalize((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
+                deviceMapping);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        int statusCode = this.httpClient.executeMethod(postMethod);
+
+        // verify
+        verify(this.mockObjects);
+        LOG.debug("status code: " + statusCode);
+        LOG.debug("result body: " + postMethod.getResponseBodyAsString());
+        assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
+        String resultLocation = postMethod.getResponseHeader("Location").getValue();
+        LOG.debug("location: " + resultLocation);
+        assertTrue(resultLocation.endsWith(this.devicesPage));
+        DeviceOperationService deviceOperationService = (DeviceOperationService) this.servletTestManager
+                .getSessionAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
+        assertNull(deviceOperationService);
+    }
 }

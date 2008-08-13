@@ -46,10 +46,10 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("device")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-        + "DeviceBean/local")
+@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "DeviceBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceBean implements Device {
 
@@ -91,17 +91,13 @@ public class DeviceBean implements Device {
     public String next() throws IOException, DeviceNotFoundException {
 
         this.log.debug("next: " + this.deviceSelection);
-        HelpdeskLogger.add("selected authentication device: "
-                + this.deviceSelection, LogLevelType.INFO);
+        HelpdeskLogger.add("selected authentication device: " + this.deviceSelection, LogLevelType.INFO);
 
-        String authenticationPath = this.devicePolicyService
-                .getAuthenticationURL(this.deviceSelection);
+        String authenticationPath = this.devicePolicyService.getAuthenticationURL(this.deviceSelection);
         this.log.debug("authenticationPath: " + authenticationPath);
 
-        if (!this.deviceSelection
-                .equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
-            return AuthenticationUtils.redirectAuthentication(
-                    authenticationPath, this.deviceSelection);
+        if (!this.deviceSelection.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
+            return AuthenticationUtils.redirectAuthentication(authenticationPath, this.deviceSelection);
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
@@ -110,21 +106,18 @@ public class DeviceBean implements Device {
     }
 
     @Factory("applicationDevices")
-    public List<SelectItem> applicationDevicesFactory()
-            throws ApplicationNotFoundException, EmptyDevicePolicyException {
+    public List<SelectItem> applicationDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         this.log.debug("application devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
 
-        List<DeviceEntity> devicePolicy = this.devicePolicyService
-                .getDevicePolicy(this.application, this.requiredDevicePolicy);
+        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.application,
+                this.requiredDevicePolicy);
         for (DeviceEntity device : devicePolicy) {
-            String deviceName = this.devicePolicyService.getDeviceDescription(
-                    device.getName(), viewLocale);
-            SelectItem applicationDevice = new SelectItem(device.getName(),
-                    deviceName);
+            String deviceName = this.devicePolicyService.getDeviceDescription(device.getName(), viewLocale);
+            SelectItem applicationDevice = new SelectItem(device.getName(), deviceName);
             applicationDevices.add(applicationDevice);
         }
         return applicationDevices;
@@ -141,8 +134,7 @@ public class DeviceBean implements Device {
         List<DeviceEntity> devices = this.devicePolicyService.getDevices();
 
         for (DeviceEntity device : devices) {
-            String deviceName = this.devicePolicyService.getDeviceDescription(
-                    device.getName(), viewLocale);
+            String deviceName = this.devicePolicyService.getDeviceDescription(device.getName(), viewLocale);
             SelectItem allDevice = new SelectItem(device.getName(), deviceName);
             allDevices.add(allDevice);
         }

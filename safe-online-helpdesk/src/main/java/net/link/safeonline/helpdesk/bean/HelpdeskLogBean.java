@@ -40,16 +40,15 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("helpdeskLog")
-@LocalBinding(jndiBinding = HelpdeskConstants.JNDI_PREFIX
-        + "HelpdeskLogBean/local")
+@LocalBinding(jndiBinding = HelpdeskConstants.JNDI_PREFIX + "HelpdeskLogBean/local")
 @SecurityDomain(HelpdeskConstants.SAFE_ONLINE_HELPDESK_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class HelpdeskLogBean implements HelpdeskLog {
 
-    private static final Log            LOG                             = LogFactory
-                                                                                .getLog(HelpdeskLogBean.class);
+    private static final Log            LOG                             = LogFactory.getLog(HelpdeskLogBean.class);
 
     private static final String         HELPDESK_CONTEXT_LIST_NAME      = "helpdeskContextList";
 
@@ -159,8 +158,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
             user = this.selectedUser;
         }
         LOG.debug("helpdesk user context list factory (" + user + ")");
-        this.helpdeskUserContextList = this.helpdeskService
-                .listUserContexts(user);
+        this.helpdeskUserContextList = this.helpdeskService.listUserContexts(user);
     }
 
     /*
@@ -288,11 +286,9 @@ public class HelpdeskLogBean implements HelpdeskLog {
     /*
      * 
      * Validators
-     * 
      */
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
-    public void validateId(FacesContext contextIn, UIComponent toValidate,
-            Object value) {
+    public void validateId(FacesContext contextIn, UIComponent toValidate, Object value) {
 
         Long id = (Long) value;
         LOG.debug("validateId: " + id);
@@ -308,16 +304,14 @@ public class HelpdeskLogBean implements HelpdeskLog {
     }
 
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
-    public void validateUser(FacesContext contextIn, UIComponent toValidate,
-            Object value) {
+    public void validateUser(FacesContext contextIn, UIComponent toValidate, Object value) {
 
         String user = (String) value;
         LOG.debug("validateUser: " + user);
         this.helpdeskUserList = this.helpdeskService.listUsers();
         if (!this.helpdeskUserList.contains(user)) {
             ((UIInput) toValidate).setValid(false);
-            this.facesMessages
-                    .addFromResourceBundle("errorHelpdeskUserNotFound");
+            this.facesMessages.addFromResourceBundle("errorHelpdeskUserNotFound");
         }
     }
 }

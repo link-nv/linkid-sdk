@@ -24,83 +24,82 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
+
 @Local
 public interface Device {
 
-	/*
-	 * Actions
-	 */
-	String view();
+    /*
+     * Actions
+     */
+    String view();
 
-	String add() throws ExistingDeviceException, CertificateEncodingException,
-			DeviceClassNotFoundException, AttributeTypeNotFoundException,
-			NodeNotFoundException, IOException;
+    String add() throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException,
+            AttributeTypeNotFoundException, NodeNotFoundException, IOException;
 
-	String remove() throws DeviceNotFoundException,
-			DeviceDescriptionNotFoundException, DevicePropertyNotFoundException;
+    String remove() throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException;
 
-	String edit();
+    String edit();
 
-	String save() throws DeviceNotFoundException, CertificateEncodingException,
-			IOException, AttributeTypeNotFoundException;
+    String save() throws DeviceNotFoundException, CertificateEncodingException, IOException,
+            AttributeTypeNotFoundException;
 
-	/*
-	 * Accessors
-	 */
-	String getName();
+    /*
+     * Accessors
+     */
+    String getName();
 
-	void setName(String name);
+    void setName(String name);
 
-	String getDeviceClass();
+    String getDeviceClass();
 
-	void setDeviceClass(String deviceClass);
+    void setDeviceClass(String deviceClass);
 
-	String getNode();
+    String getNode();
 
-	void setNode(String node);
+    void setNode(String node);
 
-	String getAuthenticationPath();
+    String getAuthenticationPath();
 
-	void setAuthenticationPath(String authenticationPath);
+    void setAuthenticationPath(String authenticationPath);
 
-	String getRegistrationPath();
+    String getRegistrationPath();
 
-	void setRegistrationPath(String registrationPath);
+    void setRegistrationPath(String registrationPath);
 
-	String getRemovalPath();
+    String getRemovalPath();
 
-	void setRemovalPath(String removalPath);
+    void setRemovalPath(String removalPath);
 
-	String getUpdatePath();
+    String getUpdatePath();
 
-	void setUpdatePath(String updatePath);
+    void setUpdatePath(String updatePath);
 
-	UploadedFile getCertificate();
+    UploadedFile getCertificate();
 
-	void setCertificate(UploadedFile certificate);
+    void setCertificate(UploadedFile certificate);
 
-	String getAttributeType();
+    String getAttributeType();
 
-	void setAttributeType(String attributeType);
+    void setAttributeType(String attributeType);
 
-	String getUserAttributeType();
+    String getUserAttributeType();
 
-	void setUserAttributeType(String userAttributeType);
+    void setUserAttributeType(String userAttributeType);
 
-	/*
-	 * Factories
-	 */
-	void deviceListFactory();
+    /*
+     * Factories
+     */
+    void deviceListFactory();
 
-	List<SelectItem> deviceClassesFactory();
+    List<SelectItem> deviceClassesFactory();
 
-	List<SelectItem> attributeTypesFactory();
+    List<SelectItem> attributeTypesFactory();
 
-	List<SelectItem> nodeFactory();
+    List<SelectItem> nodeFactory();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
 }

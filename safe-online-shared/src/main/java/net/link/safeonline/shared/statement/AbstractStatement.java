@@ -10,6 +10,7 @@ package net.link.safeonline.shared.statement;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.asn1.statement.AbstractDERStatement;
 
+
 abstract public class AbstractStatement {
 
     private final AbstractDERStatement derStatement;

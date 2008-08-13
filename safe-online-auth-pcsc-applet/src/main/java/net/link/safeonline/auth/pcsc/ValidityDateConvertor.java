@@ -11,16 +11,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+
 public class ValidityDateConvertor implements Convertor<Date> {
 
     public Date convert(byte[] value) throws ConvertorException {
-		int day = Integer.parseInt(new String(Arrays.copyOfRange(value, 0, 2)));
-		int month = Integer
-				.parseInt(new String(Arrays.copyOfRange(value, 3, 5)));
-		int year = Integer
-				.parseInt(new String(Arrays.copyOfRange(value, 6, 10)));
-		GregorianCalendar calendar = new GregorianCalendar(year, month, day);
-		Date date = calendar.getTime();
-		return date;
-	}
+
+        int day = Integer.parseInt(new String(Arrays.copyOfRange(value, 0, 2)));
+        int month = Integer.parseInt(new String(Arrays.copyOfRange(value, 3, 5)));
+        int year = Integer.parseInt(new String(Arrays.copyOfRange(value, 6, 10)));
+        GregorianCalendar calendar = new GregorianCalendar(year, month, day);
+        Date date = calendar.getTime();
+        return date;
+    }
 }

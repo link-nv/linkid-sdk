@@ -19,82 +19,92 @@ import org.apache.commons.logging.LogFactory;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+
 public class BeIdentityExtractorTest extends TestCase {
 
-	private static final Log LOG = LogFactory
-			.getLog(BeIdentityExtractorTest.class);
+    private static final Log          LOG = LogFactory.getLog(BeIdentityExtractorTest.class);
 
-	private BeIdentityExtractor testedInstance;
+    private BeIdentityExtractor       testedInstance;
 
-	private TestIdentityDataCollector testIdentityDataCollector;
+    private TestIdentityDataCollector testIdentityDataCollector;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.testedInstance = new BeIdentityExtractor();
+    @Override
+    protected void setUp() throws Exception {
 
-		this.testIdentityDataCollector = new TestIdentityDataCollector();
-		this.testedInstance.init(this.testIdentityDataCollector);
-	}
+        super.setUp();
 
-	static class TestIdentityDataCollector implements IdentityDataCollector {
+        this.testedInstance = new BeIdentityExtractor();
 
-		String countryCode;
+        this.testIdentityDataCollector = new TestIdentityDataCollector();
+        this.testedInstance.init(this.testIdentityDataCollector);
+    }
 
-		String givenName;
 
-		String surname;
+    static class TestIdentityDataCollector implements IdentityDataCollector {
 
-		public void setCountryCode(String countryCode) {
-			this.countryCode = countryCode;
-		}
+        String countryCode;
 
-		public void setGivenName(String givenName) {
-			this.givenName = givenName;
-		}
+        String givenName;
 
-		public void setSurname(String surname) {
-			this.surname = surname;
-		}
+        String surname;
 
-		public void setCity(String city) {
-			throw new NotImplementedException();
-		}
 
-		public void setPostalCode(String postalCode) {
-			throw new NotImplementedException();
-		}
+        public void setCountryCode(String countryCode) {
 
-		public void setStreet(String street) {
-			throw new NotImplementedException();
-		}
-	}
+            this.countryCode = countryCode;
+        }
 
-	public void testPostPkcs11() throws Exception {
-		// setup
-		X509Certificate authCert2006 = PkiTestUtils
-				.loadCertificateFromResource("/fcorneli-auth.crt");
-		LOG.debug("test authentication certificate 2006: " + authCert2006);
-		X509Certificate authCert2004 = PkiTestUtils
-				.loadCertificateFromResource("/gdesmedt-auth.crt");
-		LOG.debug("test authentication certificate 2004: " + authCert2004);
+        public void setGivenName(String givenName) {
 
-		// operate
-		this.testedInstance.postPkcs11(authCert2006);
+            this.givenName = givenName;
+        }
 
-		// verify
-		LOG.debug("given name: " + this.testIdentityDataCollector.givenName);
-		assertEquals("Frank Henri", this.testIdentityDataCollector.givenName);
-		assertEquals("Cornelis", this.testIdentityDataCollector.surname);
-		assertEquals("BE", this.testIdentityDataCollector.countryCode);
+        public void setSurname(String surname) {
 
-		// operate
-		this.testedInstance.postPkcs11(authCert2004);
+            this.surname = surname;
+        }
 
-		// verify
-		LOG.debug("given name: " + this.testIdentityDataCollector.givenName);
-		assertEquals("Griet", this.testIdentityDataCollector.givenName);
-		assertEquals("De Smedt", this.testIdentityDataCollector.surname);
-	}
+        public void setCity(String city) {
+
+            throw new NotImplementedException();
+        }
+
+        public void setPostalCode(String postalCode) {
+
+            throw new NotImplementedException();
+        }
+
+        public void setStreet(String street) {
+
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public void testPostPkcs11() throws Exception {
+
+        // setup
+        X509Certificate authCert2006 = PkiTestUtils.loadCertificateFromResource("/fcorneli-auth.crt");
+        LOG.debug("test authentication certificate 2006: " + authCert2006);
+        X509Certificate authCert2004 = PkiTestUtils.loadCertificateFromResource("/gdesmedt-auth.crt");
+        LOG.debug("test authentication certificate 2004: " + authCert2004);
+
+        // operate
+        this.testedInstance.postPkcs11(authCert2006);
+
+        // verify
+        LOG.debug("given name: " + this.testIdentityDataCollector.givenName);
+        assertEquals("Frank Henri", this.testIdentityDataCollector.givenName);
+        assertEquals("Cornelis", this.testIdentityDataCollector.surname);
+        assertEquals("BE", this.testIdentityDataCollector.countryCode);
+
+        // operate
+        this.testedInstance.postPkcs11(authCert2004);
+
+        // verify
+        LOG.debug("given name: " + this.testIdentityDataCollector.givenName);
+        assertEquals("Griet", this.testIdentityDataCollector.givenName);
+        assertEquals("De Smedt", this.testIdentityDataCollector.surname);
+    }
 }

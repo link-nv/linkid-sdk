@@ -13,9 +13,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+
 /**
- * Detects the Java runtime. This covers the Java version and the availability
- * of PKCS#11 drivers.
+ * Detects the Java runtime. This covers the Java version and the availability of PKCS#11 drivers.
  * 
  * @author fcorneli
  * 
@@ -57,15 +57,12 @@ public class JavaVersionApplet extends Applet {
 
         List windowsDrivers = new LinkedList();
         windowsDrivers.add("C:\\WINDOWS\\system32\\beidpkcs11.dll");
-        windowsDrivers
-                .add("C:\\WINDOWS\\system32\\Belgium Identity Card PKCS11.dll");
+        windowsDrivers.add("C:\\WINDOWS\\system32\\Belgium Identity Card PKCS11.dll");
         platformsDrivers.add(new PlatformDrivers("Windows XP", windowsDrivers));
 
         List macDrivers = new LinkedList();
-        macDrivers
-                .add("/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.2.1.0.dylib");
-        macDrivers
-                .add("/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.dylib");
+        macDrivers.add("/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.2.1.0.dylib");
+        macDrivers.add("/usr/local/lib/beid-pkcs11.bundle/Contents/MacOS/libbeidpkcs11.dylib");
         macDrivers.add("/Library/OpenSC/lib/opensc-pkcs11.so");
         platformsDrivers.add(new PlatformDrivers("Mac OS X", macDrivers));
     }
@@ -78,8 +75,7 @@ public class JavaVersionApplet extends Applet {
         Iterator platformIterator = platformsDrivers.iterator();
         this.hasPkcs11 = false;
         while (platformIterator.hasNext()) {
-            PlatformDrivers platformDrivers = (PlatformDrivers) platformIterator
-                    .next();
+            PlatformDrivers platformDrivers = (PlatformDrivers) platformIterator.next();
             if (true == osName.matches(platformDrivers.platform)) {
                 List driverLocations = platformDrivers.driverLocations;
                 Iterator driverIterator = driverLocations.iterator();

@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.pkix;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperTrustPointView extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/pkix/trust-point-view.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/pkix/trust-point-view.seam";
 
-	public OperTrustPointView() {
-		super(PAGE_NAME);
-	}
+
+    public OperTrustPointView() {
+
+        super(PAGE_NAME);
+    }
 }

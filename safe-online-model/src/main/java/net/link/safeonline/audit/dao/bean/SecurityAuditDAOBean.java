@@ -24,55 +24,65 @@ import net.link.safeonline.entity.audit.SecurityAuditEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+
 @Stateless
 public class SecurityAuditDAOBean implements SecurityAuditDAO {
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                      entityManager;
 
-	private SecurityAuditEntity.QueryInterface queryObject;
+    private SecurityAuditEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, SecurityAuditEntity.QueryInterface.class);
-	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addSecurityAudit(AuditContextEntity auditContext,
-			SecurityThreatType securityThreat, String targetPrincipal,
-			String message) {
-		SecurityAuditEntity securityAudit = new SecurityAuditEntity(
-				auditContext, securityThreat, targetPrincipal, message);
-		this.entityManager.persist(securityAudit);
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public void cleanup(Long id) {
-		this.queryObject.deleteRecords(id);
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                SecurityAuditEntity.QueryInterface.class);
+    }
 
-	public List<SecurityAuditEntity> listRecords(Long id) {
-		return this.queryObject.listRecords(id);
-	}
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addSecurityAudit(AuditContextEntity auditContext, SecurityThreatType securityThreat,
+            String targetPrincipal, String message) {
 
-	public List<SecurityAuditEntity> listRecordsSince(Date ageLimit) {
-		return this.queryObject.listRecordsSince(ageLimit);
-	}
+        SecurityAuditEntity securityAudit = new SecurityAuditEntity(auditContext, securityThreat, targetPrincipal,
+                message);
+        this.entityManager.persist(securityAudit);
+    }
 
-	public List<SecurityAuditEntity> listRecords() {
-		return this.queryObject.listRecords();
-	}
+    public void cleanup(Long id) {
 
-	public List<String> listUsers() {
-		return this.queryObject.listUsers();
-	}
+        this.queryObject.deleteRecords(id);
+    }
 
-	public List<SecurityAuditEntity> listRecords(String principal) {
-		return this.queryObject.listUserRecords(principal);
-	}
+    public List<SecurityAuditEntity> listRecords(Long id) {
 
-	public boolean hasRecords(long id) {
-		long count = this.queryObject.countRecords(id);
-		return 0 != count;
-	}
+        return this.queryObject.listRecords(id);
+    }
+
+    public List<SecurityAuditEntity> listRecordsSince(Date ageLimit) {
+
+        return this.queryObject.listRecordsSince(ageLimit);
+    }
+
+    public List<SecurityAuditEntity> listRecords() {
+
+        return this.queryObject.listRecords();
+    }
+
+    public List<String> listUsers() {
+
+        return this.queryObject.listUsers();
+    }
+
+    public List<SecurityAuditEntity> listRecords(String principal) {
+
+        return this.queryObject.listUserRecords(principal);
+    }
+
+    public boolean hasRecords(long id) {
+
+        long count = this.queryObject.countRecords(id);
+        return 0 != count;
+    }
 }

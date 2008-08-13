@@ -24,54 +24,50 @@ import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 
+
 /**
- * Implementation of user registration service interface. This component does
- * not live within the SafeOnline core security domain. This because a user that
- * is about to register himself is not yet logged on into the system.
+ * Implementation of user registration service interface. This component does not live within the SafeOnline core
+ * security domain. This because a user that is about to register himself is not yet logged on into the system.
  * 
  * @author fcorneli
  * 
  */
 @Stateless
-public class UserRegistrationServiceBean implements UserRegistrationService,
-		UserRegistrationServiceRemote {
+public class UserRegistrationServiceBean implements UserRegistrationService, UserRegistrationServiceRemote {
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService          subjectService;
 
-	@EJB
-	private UserRegistrationManager userRegistrationManager;
+    @EJB
+    private UserRegistrationManager userRegistrationManager;
 
-	@EJB
-	private DeviceMappingService deviceMappingService;
+    @EJB
+    private DeviceMappingService    deviceMappingService;
 
-	@EJB
-	private ProxyAttributeService proxyAttributeService;
+    @EJB
+    private ProxyAttributeService   proxyAttributeService;
 
-	public SubjectEntity registerUser(String login)
-			throws ExistingUserException, AttributeTypeNotFoundException,
-			PermissionDeniedException {
-		SubjectEntity subject = this.subjectService
-				.findSubjectFromUserName(login);
-		if (null == subject)
-			return this.userRegistrationManager.registerUser(login);
 
-		// Subject already exists, check for attached registered devices
-		List<DeviceMappingEntity> deviceMappings = this.deviceMappingService
-				.listDeviceMappings(subject);
-		if (deviceMappings.isEmpty())
-			return subject;
+    public SubjectEntity registerUser(String login) throws ExistingUserException, AttributeTypeNotFoundException,
+            PermissionDeniedException {
 
-		// For each device mapping, poll device issuer if registration
-		// actually completed
-		for (DeviceMappingEntity deviceMapping : deviceMappings) {
-			Object deviceAttribute = this.proxyAttributeService
-					.findDeviceAttributeValue(deviceMapping.getId(),
-							deviceMapping.getDevice().getAttributeType()
-									.getName());
-			if (null != deviceAttribute)
-				throw new ExistingUserException();
-		}
-		return subject;
-	}
+        SubjectEntity subject = this.subjectService.findSubjectFromUserName(login);
+        if (null == subject)
+            return this.userRegistrationManager.registerUser(login);
+
+        // Subject already exists, check for attached registered devices
+        List<DeviceMappingEntity> deviceMappings = this.deviceMappingService.listDeviceMappings(subject);
+        if (deviceMappings.isEmpty())
+            return subject;
+
+        // For each device mapping, poll device issuer if registration
+        // actually completed
+        for (DeviceMappingEntity deviceMapping : deviceMappings) {
+            Object deviceAttribute = this.proxyAttributeService.findDeviceAttributeValue(deviceMapping.getId(),
+                    deviceMapping.getDevice().getAttributeType().getName());
+            if (null != deviceAttribute)
+                throw new ExistingUserException();
+        }
+        return subject;
+    }
 }

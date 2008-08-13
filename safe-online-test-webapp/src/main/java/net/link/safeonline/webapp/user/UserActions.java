@@ -8,10 +8,11 @@ package net.link.safeonline.webapp.user;
 
 public class UserActions extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/actions.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/actions.seam";
 
-	public UserActions() {
-		super(PAGE_NAME);
-	}
+
+    public UserActions() {
+
+        super(PAGE_NAME);
+    }
 }

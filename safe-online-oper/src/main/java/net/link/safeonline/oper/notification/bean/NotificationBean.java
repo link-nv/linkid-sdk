@@ -47,166 +47,172 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Name("operNotification")
 @Stateful
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "NotificationBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "NotificationBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class NotificationBean implements Notification {
 
-	private static final Log LOG = LogFactory.getLog(NotificationBean.class);
+    private static final Log                             LOG                         = LogFactory
+                                                                                             .getLog(NotificationBean.class);
 
-	private static final String OPER_TOPIC_LIST_NAME = "operTopicList";
+    private static final String                          OPER_TOPIC_LIST_NAME        = "operTopicList";
 
-	private static final String OPER_SUBSCRIPTION_LIST_NAME = "operSubscriptionList";
+    private static final String                          OPER_SUBSCRIPTION_LIST_NAME = "operSubscriptionList";
 
-	private static final String OPER_CONSUMERS_LIST_NAME = "consumers";
+    private static final String                          OPER_CONSUMERS_LIST_NAME    = "consumers";
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                                        facesMessages;
 
-	@EJB
-	private NotificationSubscriptionService notificationSubscriptionService;
+    @EJB
+    private NotificationSubscriptionService              notificationSubscriptionService;
 
-	@EJB
-	private ApplicationService applicationService;
+    @EJB
+    private ApplicationService                           applicationService;
 
-	@EJB
-	private DeviceService deviceService;
+    @EJB
+    private DeviceService                                deviceService;
 
-	private String address;
+    private String                                       address;
 
-	private String consumer;
+    private String                                       consumer;
 
-	@SuppressWarnings("unused")
-	@DataModel(OPER_TOPIC_LIST_NAME)
-	private List<NotificationProducerSubscriptionEntity> topicList;
+    @SuppressWarnings("unused")
+    @DataModel(OPER_TOPIC_LIST_NAME)
+    private List<NotificationProducerSubscriptionEntity> topicList;
 
-	@Out(value = "selectedTopic", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	@DataModelSelection(OPER_TOPIC_LIST_NAME)
-	private NotificationProducerSubscriptionEntity selectedTopic;
+    @Out(value = "selectedTopic", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    @DataModelSelection(OPER_TOPIC_LIST_NAME)
+    private NotificationProducerSubscriptionEntity       selectedTopic;
 
-	@SuppressWarnings("unused")
-	@DataModel(OPER_SUBSCRIPTION_LIST_NAME)
-	private Set<EndpointReferenceEntity> subscriptionList;
+    @SuppressWarnings("unused")
+    @DataModel(OPER_SUBSCRIPTION_LIST_NAME)
+    private Set<EndpointReferenceEntity>                 subscriptionList;
 
-	@Out(value = "selectedSubscription", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	@DataModelSelection(OPER_SUBSCRIPTION_LIST_NAME)
-	private EndpointReferenceEntity selectedSubscription;
+    @Out(value = "selectedSubscription", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    @DataModelSelection(OPER_SUBSCRIPTION_LIST_NAME)
+    private EndpointReferenceEntity                      selectedSubscription;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		this.address = null;
-	}
 
-	@Factory(OPER_TOPIC_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void topicListFactory() {
-		LOG.debug("topic list factory");
-		this.topicList = this.notificationSubscriptionService.listTopics();
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@Factory(OPER_SUBSCRIPTION_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void subscriptionListFactory() throws SubscriptionNotFoundException {
-		LOG.debug("subscription list factory for topic: " + this.selectedTopic);
-		this.subscriptionList = this.notificationSubscriptionService
-				.listSubscriptions(this.selectedTopic.getTopic());
-	}
+        this.address = null;
+    }
 
-	@Factory(OPER_CONSUMERS_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<SelectItem> consumerListFactory() {
-		LOG.debug("consumer list factory");
-		List<SelectItem> consumerList = new LinkedList<SelectItem>();
-		List<ApplicationEntity> applications = this.applicationService
-				.listApplications();
-		for (ApplicationEntity application : applications) {
-			consumerList.add(new SelectItem(application.getName()));
-		}
-		List<DeviceEntity> devices = this.deviceService.listDevices();
-		for (DeviceEntity device : devices) {
-			consumerList.add(new SelectItem(device.getName()));
-		}
-		return consumerList;
-	}
+    @Factory(OPER_TOPIC_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void topicListFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		LOG.debug("view subscriptions on topic: "
-				+ this.selectedTopic.getTopic());
-		return "view";
-	}
+        LOG.debug("topic list factory");
+        this.topicList = this.notificationSubscriptionService.listTopics();
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() {
-		LOG.debug("add subscription");
-		return "add";
-	}
+    @Factory(OPER_SUBSCRIPTION_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void subscriptionListFactory() throws SubscriptionNotFoundException {
 
-	public String addSubscription() throws SubscriptionNotFoundException {
-		LOG.debug("add subscription for consumer " + this.consumer);
-		try {
-			this.notificationSubscriptionService.addSubscription(
-					this.selectedTopic.getTopic(), this.address, this.consumer);
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, e.getResourceMessage(),
-					this.consumer);
-			return null;
-		}
-		subscriptionListFactory();
-		return "success";
-	}
+        LOG.debug("subscription list factory for topic: " + this.selectedTopic);
+        this.subscriptionList = this.notificationSubscriptionService.listSubscriptions(this.selectedTopic.getTopic());
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() throws SubscriptionNotFoundException {
-		LOG.debug("remove subscription for topic "
-				+ this.selectedTopic.getTopic());
-		try {
-			this.notificationSubscriptionService.removeSubscription(
-					this.selectedTopic.getTopic(), this.selectedSubscription);
-		} catch (EndpointReferenceNotFoundException e) {
-			LOG.debug("endpoint not found: "
-					+ this.selectedSubscription.getName());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorConsumerNotFound",
-					this.selectedSubscription.getName());
-			return null;
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, e.getResourceMessage(),
-					this.selectedSubscription.getName());
-			return null;
-		}
-		subscriptionListFactory();
-		return "success";
-	}
+    @Factory(OPER_CONSUMERS_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> consumerListFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getAddress() {
-		return this.address;
-	}
+        LOG.debug("consumer list factory");
+        List<SelectItem> consumerList = new LinkedList<SelectItem>();
+        List<ApplicationEntity> applications = this.applicationService.listApplications();
+        for (ApplicationEntity application : applications) {
+            consumerList.add(new SelectItem(application.getName()));
+        }
+        List<DeviceEntity> devices = this.deviceService.listDevices();
+        for (DeviceEntity device : devices) {
+            consumerList.add(new SelectItem(device.getName()));
+        }
+        return consumerList;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String view() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getConsumer() {
-		return this.consumer;
-	}
+        LOG.debug("view subscriptions on topic: " + this.selectedTopic.getTopic());
+        return "view";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setConsumer(String consumer) {
-		this.consumer = consumer;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String add() {
+
+        LOG.debug("add subscription");
+        return "add";
+    }
+
+    public String addSubscription() throws SubscriptionNotFoundException {
+
+        LOG.debug("add subscription for consumer " + this.consumer);
+        try {
+            this.notificationSubscriptionService.addSubscription(this.selectedTopic.getTopic(), this.address,
+                    this.consumer);
+        } catch (PermissionDeniedException e) {
+            LOG.debug("permission denied: " + e.getMessage());
+            this.facesMessages
+                    .addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), this.consumer);
+            return null;
+        }
+        subscriptionListFactory();
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String remove() throws SubscriptionNotFoundException {
+
+        LOG.debug("remove subscription for topic " + this.selectedTopic.getTopic());
+        try {
+            this.notificationSubscriptionService.removeSubscription(this.selectedTopic.getTopic(),
+                    this.selectedSubscription);
+        } catch (EndpointReferenceNotFoundException e) {
+            LOG.debug("endpoint not found: " + this.selectedSubscription.getName());
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorConsumerNotFound",
+                    this.selectedSubscription.getName());
+            return null;
+        } catch (PermissionDeniedException e) {
+            LOG.debug("permission denied: " + e.getMessage());
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(),
+                    this.selectedSubscription.getName());
+            return null;
+        }
+        subscriptionListFactory();
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getAddress() {
+
+        return this.address;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setAddress(String address) {
+
+        this.address = address;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getConsumer() {
+
+        return this.consumer;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setConsumer(String consumer) {
+
+        this.consumer = consumer;
+    }
 
 }

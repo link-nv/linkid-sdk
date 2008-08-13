@@ -22,6 +22,7 @@ import net.link.safeonline.validation.validator.ValidatorCatalog;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Basic input validation interceptor for EJB3.
  * 
@@ -30,38 +31,35 @@ import org.apache.commons.logging.LogFactory;
  */
 public class InputValidation {
 
-	private static final Log LOG = LogFactory.getLog(InputValidation.class);
+    private static final Log LOG = LogFactory.getLog(InputValidation.class);
 
-	@SuppressWarnings("unchecked")
-	@AroundInvoke
-	public Object inputValidationInterceptor(InvocationContext context)
-			throws Exception {
-		Method method = context.getMethod();
-		LOG.debug("input validation on " + method.getName());
-		InputValidationValidatorResult validatorResult = new InputValidationValidatorResult();
-		Annotation[][] allParameterAnnotations = method
-				.getParameterAnnotations();
-		Object[] parameters = context.getParameters();
-		for (int parameterIdx = 0; parameterIdx < allParameterAnnotations.length; parameterIdx++) {
-			Annotation[] parameterAnnotations = allParameterAnnotations[parameterIdx];
-			for (Annotation parameterAnnotation : parameterAnnotations) {
-				ValidatorAnnotation validatorClassAnnotation = parameterAnnotation
-						.annotationType().getAnnotation(ValidatorAnnotation.class);
-				if (null == validatorClassAnnotation) {
-					continue;
-				}
-				Class<? extends Validator> validatorClass = validatorClassAnnotation
-						.value();
-				Validator validator = ValidatorCatalog
-						.getInstance(validatorClass);
-				Object parameter = parameters[parameterIdx];
-				validator.validate(parameter, parameterIdx,
-						parameterAnnotation, validatorResult);
-			}
-		}
-		if (validatorResult.isEmpty()) {
-			return context.proceed();
-		}
-		throw new IllegalArgumentException(validatorResult.toString());
-	}
+
+    @SuppressWarnings("unchecked")
+    @AroundInvoke
+    public Object inputValidationInterceptor(InvocationContext context) throws Exception {
+
+        Method method = context.getMethod();
+        LOG.debug("input validation on " + method.getName());
+        InputValidationValidatorResult validatorResult = new InputValidationValidatorResult();
+        Annotation[][] allParameterAnnotations = method.getParameterAnnotations();
+        Object[] parameters = context.getParameters();
+        for (int parameterIdx = 0; parameterIdx < allParameterAnnotations.length; parameterIdx++) {
+            Annotation[] parameterAnnotations = allParameterAnnotations[parameterIdx];
+            for (Annotation parameterAnnotation : parameterAnnotations) {
+                ValidatorAnnotation validatorClassAnnotation = parameterAnnotation.annotationType().getAnnotation(
+                        ValidatorAnnotation.class);
+                if (null == validatorClassAnnotation) {
+                    continue;
+                }
+                Class<? extends Validator> validatorClass = validatorClassAnnotation.value();
+                Validator validator = ValidatorCatalog.getInstance(validatorClass);
+                Object parameter = parameters[parameterIdx];
+                validator.validate(parameter, parameterIdx, parameterAnnotation, validatorResult);
+            }
+        }
+        if (validatorResult.isEmpty()) {
+            return context.proceed();
+        }
+        throw new IllegalArgumentException(validatorResult.toString());
+    }
 }

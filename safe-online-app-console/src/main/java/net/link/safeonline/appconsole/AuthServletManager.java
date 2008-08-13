@@ -42,6 +42,7 @@ import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
+
 /**
  * Jetty servlet to load the application authentication page
  * 
@@ -50,133 +51,132 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  */
 public class AuthServletManager extends Observable {
 
-	static final Log LOG = LogFactory.getLog(AuthServletManager.class);
+    static final Log                  LOG = LogFactory.getLog(AuthServletManager.class);
 
-	private static AuthServletManager authServletManager;
+    private static AuthServletManager authServletManager;
 
-	private Server server;
+    private Server                    server;
 
-	private Connector connector;
+    private Connector                 connector;
 
-	private Context context;
+    private Context                   context;
 
-	public static AuthServletManager getInstance() {
-		if (null == authServletManager)
-			authServletManager = new AuthServletManager();
-		return authServletManager;
-	}
 
-	private AuthServletManager() {
-	}
+    public static AuthServletManager getInstance() {
 
-	public void authenticate(String applicationName, String protocol)
-			throws Exception {
-		this.server = new Server();
-		this.connector = new SelectChannelConnector();
-		this.connector.setPort(0);
-		this.server.addConnector(this.connector);
+        if (null == authServletManager)
+            authServletManager = new AuthServletManager();
+        return authServletManager;
+    }
 
-		SessionManager sessionManager = new HashSessionManager();
-		SessionHandler sessionHandler = new SessionHandler(sessionManager);
+    private AuthServletManager() {
 
-		this.context = new Context(null, sessionHandler, null, null, null);
-		this.context.setContextPath("/");
-		this.server.addHandler(this.context);
+    }
 
-		this.context.addFilter(LogFilter.class, "/", Handler.DEFAULT);
+    public void authenticate(String applicationName, String protocol) throws Exception {
 
-		this.context.addFilter(AuthnResponseFilter.class, "/", Handler.DEFAULT);
+        this.server = new Server();
+        this.connector = new SelectChannelConnector();
+        this.connector.setPort(0);
+        this.server.addConnector(this.connector);
 
-		FilterHolder authenticationFilterHoldder = this.context.addFilter(
-				AuthnRequestFilter.class, "/", Handler.DEFAULT);
-		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put("AuthenticationServiceUrl", "http://"
-				+ ApplicationConsoleManager.getInstance().getLocation()
-				+ ":8080/olas-auth");
-		filterInitParameters.put("ApplicationName", applicationName);
-		filterInitParameters.put("AuthenticationProtocol", protocol);
-		if (protocol.equals(AuthenticationProtocol.SAML2_BROWSER_POST
-				.toString())) {
-			filterInitParameters.put("KeyStoreFile", ApplicationConsoleManager
-					.getInstance().getKeyStorePath());
-			filterInitParameters.put("KeyStoreType", ApplicationConsoleManager
-					.getInstance().getKeyStoreType());
-			filterInitParameters.put("KeyStorePassword",
-					ApplicationConsoleManager.getInstance()
-							.getKeyStorePassword());
-		}
+        SessionManager sessionManager = new HashSessionManager();
+        SessionHandler sessionHandler = new SessionHandler(sessionManager);
 
-		authenticationFilterHoldder.setInitParameters(filterInitParameters);
+        this.context = new Context(null, sessionHandler, null, null, null);
+        this.context.setContextPath("/");
+        this.server.addHandler(this.context);
 
-		ServletHandler handler = this.context.getServletHandler();
+        this.context.addFilter(LogFilter.class, "/", Handler.DEFAULT);
 
-		ServletHolder servletHolder = new ServletHolder();
-		String servletClassName = ApplicationServlet.class.getName();
-		servletHolder.setClassName(servletClassName);
-		String servletName = "AuthServlet";
-		servletHolder.setName(servletName);
-		handler.addServlet(servletHolder);
+        this.context.addFilter(AuthnResponseFilter.class, "/", Handler.DEFAULT);
 
-		ServletMapping servletMapping = new ServletMapping();
-		servletMapping.setServletName(servletName);
-		servletMapping.setPathSpecs(new String[] { "/*" });
-		handler.addServletMapping(servletMapping);
+        FilterHolder authenticationFilterHoldder = this.context.addFilter(AuthnRequestFilter.class, "/",
+                Handler.DEFAULT);
+        Map<String, String> filterInitParameters = new HashMap<String, String>();
+        filterInitParameters.put("AuthenticationServiceUrl", "http://"
+                + ApplicationConsoleManager.getInstance().getLocation() + ":8080/olas-auth");
+        filterInitParameters.put("ApplicationName", applicationName);
+        filterInitParameters.put("AuthenticationProtocol", protocol);
+        if (protocol.equals(AuthenticationProtocol.SAML2_BROWSER_POST.toString())) {
+            filterInitParameters.put("KeyStoreFile", ApplicationConsoleManager.getInstance().getKeyStorePath());
+            filterInitParameters.put("KeyStoreType", ApplicationConsoleManager.getInstance().getKeyStoreType());
+            filterInitParameters.put("KeyStorePassword", ApplicationConsoleManager.getInstance().getKeyStorePassword());
+        }
 
-		this.server.start();
+        authenticationFilterHoldder.setInitParameters(filterInitParameters);
 
-		int port = this.connector.getLocalPort();
+        ServletHandler handler = this.context.getServletHandler();
 
-		String servletLocation = "http://localhost:" + port + "/";
+        ServletHolder servletHolder = new ServletHolder();
+        String servletClassName = ApplicationServlet.class.getName();
+        servletHolder.setClassName(servletClassName);
+        String servletName = "AuthServlet";
+        servletHolder.setName(servletName);
+        handler.addServlet(servletHolder);
 
-		BrowserLauncher browserLauncher;
-		try {
-			browserLauncher = new BrowserLauncher();
-			browserLauncher.openURLinBrowser(servletLocation);
-		} catch (BrowserLaunchingInitializingException e) {
-			LOG.error("BrowserLaunchingInitializingException thrown ...", e);
-		} catch (UnsupportedOperatingSystemException e) {
-			LOG.error("UnsupportedOperatingSystemException thrown ...", e);
-		}
+        ServletMapping servletMapping = new ServletMapping();
+        servletMapping.setServletName(servletName);
+        servletMapping.setPathSpecs(new String[] { "/*" });
+        handler.addServletMapping(servletMapping);
 
-	}
+        this.server.start();
 
-	public static class ApplicationServlet extends HttpServlet {
+        int port = this.connector.getLocalPort();
 
-		private static final long serialVersionUID = 1L;
+        String servletLocation = "http://localhost:" + port + "/";
 
-		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-				throws IOException {
-			LOG.debug("doGet");
-			HttpSession session = req.getSession();
-			String username = (String) session
-					.getAttribute(LoginManager.USERNAME_SESSION_ATTRIBUTE);
-			LOG.debug("username: " + username);
-			resp.getWriter().println(
-					"Success authenticating user " + username
-							+ ".\nYou may close this browser now...");
-			resp.flushBuffer();
-			if (null != username) {
-				AuthServletManager.getInstance().shutDownJetty();
-			}
-		}
+        BrowserLauncher browserLauncher;
+        try {
+            browserLauncher = new BrowserLauncher();
+            browserLauncher.openURLinBrowser(servletLocation);
+        } catch (BrowserLaunchingInitializingException e) {
+            LOG.error("BrowserLaunchingInitializingException thrown ...", e);
+        } catch (UnsupportedOperatingSystemException e) {
+            LOG.error("UnsupportedOperatingSystemException thrown ...", e);
+        }
 
-		@Override
-		protected void doPost(HttpServletRequest request,
-				HttpServletResponse response) throws IOException {
-			doGet(request, response);
-		}
-	}
+    }
 
-	public void shutDownJetty() {
-		LOG.info("Shutting down Jetty ......");
-		try {
-			this.connector.stop();
-		} catch (Exception e) {
-			LOG.error("Failed to shutdown Jetty", e);
-		}
-		this.context.setShutdown(true);
-		setChanged();
-		notifyObservers(Boolean.TRUE);
-	}
+
+    public static class ApplicationServlet extends HttpServlet {
+
+        private static final long serialVersionUID = 1L;
+
+
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+            LOG.debug("doGet");
+            HttpSession session = req.getSession();
+            String username = (String) session.getAttribute(LoginManager.USERNAME_SESSION_ATTRIBUTE);
+            LOG.debug("username: " + username);
+            resp.getWriter()
+                    .println("Success authenticating user " + username + ".\nYou may close this browser now...");
+            resp.flushBuffer();
+            if (null != username) {
+                AuthServletManager.getInstance().shutDownJetty();
+            }
+        }
+
+        @Override
+        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+            doGet(request, response);
+        }
+    }
+
+
+    public void shutDownJetty() {
+
+        LOG.info("Shutting down Jetty ......");
+        try {
+            this.connector.stop();
+        } catch (Exception e) {
+            LOG.error("Failed to shutdown Jetty", e);
+        }
+        this.context.setShutdown(true);
+        setChanged();
+        notifyObservers(Boolean.TRUE);
+    }
 }

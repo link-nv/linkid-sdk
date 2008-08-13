@@ -12,10 +12,10 @@ import org.apache.commons.logging.LogFactory;
 import org.jgroups.ChannelException;
 import org.jgroups.JChannel;
 
+
 /**
  * <h2>{@link AgentBroadcaster}<br>
- * <sub>Takes care of providing visibility of this agent on the network using
- * JGroups.</sub></h2>
+ * <sub>Takes care of providing visibility of this agent on the network using JGroups.</sub></h2>
  * 
  * <p>
  * <i>Feb 19, 2008</i>
@@ -25,56 +25,57 @@ import org.jgroups.JChannel;
  */
 public class AgentBroadcaster {
 
-	private static final Log LOG = LogFactory.getLog(AgentBroadcaster.class);
+    private static final Log LOG = LogFactory.getLog(AgentBroadcaster.class);
 
-	private JChannel channel;
-	private String group;
+    private JChannel         channel;
+    private String           group;
 
-	/**
-	 * Connect to the JGroups channel and join the performance agents group.
-	 */
-	public void start() {
 
-		try {
-			this.channel = new JChannel(getClass().getResource("/jgroups.xml"));
-			this.channel.connect(getGroup());
-		}
+    /**
+     * Connect to the JGroups channel and join the performance agents group.
+     */
+    public void start() {
 
-		catch (ChannelException e) {
-			LOG.error("Couldn't establish the JGroups channel.", e);
-		}
-	}
+        try {
+            this.channel = new JChannel(getClass().getResource("/jgroups.xml"));
+            this.channel.connect(getGroup());
+        }
 
-	/**
-	 * Disconnect from the JGroups group and close the channel.
-	 */
-	public void stop() {
+        catch (ChannelException e) {
+            LOG.error("Couldn't establish the JGroups channel.", e);
+        }
+    }
 
-		this.channel.close();
-	}
+    /**
+     * Disconnect from the JGroups group and close the channel.
+     */
+    public void stop() {
 
-	/**
-	 * @return the JGroups group to join.
-	 */
-	public String getGroup() {
+        this.channel.close();
+    }
 
-		return this.group;
-	}
+    /**
+     * @return the JGroups group to join.
+     */
+    public String getGroup() {
 
-	/**
-	 * @param group
-	 *            the JGroups group to join.
-	 */
-	public void setGroup(String group) {
+        return this.group;
+    }
 
-		this.group = group;
-	}
+    /**
+     * @param group
+     *            the JGroups group to join.
+     */
+    public void setGroup(String group) {
 
-	/**
-	 * @return true if we are connected to the JGroups group.
-	 */
-	public boolean isConnected() {
+        this.group = group;
+    }
 
-		return this.channel.isConnected();
-	}
+    /**
+     * @return true if we are connected to the JGroups group.
+     */
+    public boolean isConnected() {
+
+        return this.channel.isConnected();
+    }
 }

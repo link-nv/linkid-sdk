@@ -48,369 +48,369 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("audit")
 @Scope(ScopeType.CONVERSATION)
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "AuditSearchBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "AuditSearchBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AuditSearchBean implements AuditSearch {
 
-	private static final Log LOG = LogFactory.getLog(AuditSearchBean.class);
+    private static final Log    LOG                      = LogFactory.getLog(AuditSearchBean.class);
 
-	private static final String AUDIT_CONTEXT_LIST_NAME = "auditContextList";
+    private static final String AUDIT_CONTEXT_LIST_NAME  = "auditContextList";
 
-	private static final String ACCESS_AUDIT_LIST_NAME = "accessAuditRecordList";
-	private static final String SECURITY_AUDIT_LIST_NAME = "securityAuditRecordList";
-	private static final String RESOURCE_AUDIT_LIST_NAME = "resourceAuditRecordList";
-	private static final String AUDIT_AUDIT_LIST_NAME = "auditAuditRecordList";
+    private static final String ACCESS_AUDIT_LIST_NAME   = "accessAuditRecordList";
+    private static final String SECURITY_AUDIT_LIST_NAME = "securityAuditRecordList";
+    private static final String RESOURCE_AUDIT_LIST_NAME = "resourceAuditRecordList";
+    private static final String AUDIT_AUDIT_LIST_NAME    = "auditAuditRecordList";
 
-	private enum SearchMode {
-		ID, USER, TIME, ALL
-	}
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    private enum SearchMode {
+        ID, USER, TIME, ALL
+    }
 
-	@EJB
-	private AuditService auditService;
 
-	private Long searchContextId;
+    @In(create = true)
+    FacesMessages        facesMessages;
 
-	private Integer searchLastTimeDays = 0;
+    @EJB
+    private AuditService auditService;
 
-	private Integer searchLastTimeHours = 0;
+    private Long         searchContextId;
 
-	private Integer searchLastTimeMinutes = 0;
+    private Integer      searchLastTimeDays    = 0;
 
-	@Out(required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private SearchMode searchMode;
+    private Integer      searchLastTimeHours   = 0;
 
-	@Out(required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private String searchAuditUser;
+    private Integer      searchLastTimeMinutes = 0;
 
-	@Out(required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private Date ageLimit;
+    @Out(required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private SearchMode   searchMode;
 
-	@Out(value = "principal", required = false, scope = ScopeType.SESSION)
-	private String auditPrincipal;
+    @Out(required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private String       searchAuditUser;
 
-	private void setMode(SearchMode searchMode) {
-		this.searchMode = searchMode;
-	}
+    @Out(required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private Date         ageLimit;
 
-	/*
-	 * 
-	 * Datamodels
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	@DataModel(AUDIT_CONTEXT_LIST_NAME)
-	private List<AuditContextEntity> auditContextList;
+    @Out(value = "principal", required = false, scope = ScopeType.SESSION)
+    private String       auditPrincipal;
 
-	@DataModelSelection(AUDIT_CONTEXT_LIST_NAME)
-	@Out(value = "auditContext", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private AuditContextEntity auditContext;
 
-	@SuppressWarnings("unused")
-	@DataModel(ACCESS_AUDIT_LIST_NAME)
-	private List<AccessAuditEntity> accessAuditRecordList;
+    private void setMode(SearchMode searchMode) {
 
-	@DataModelSelection(ACCESS_AUDIT_LIST_NAME)
-	@In(required = false)
-	private AccessAuditEntity accessAuditEntity;
+        this.searchMode = searchMode;
+    }
 
-	@SuppressWarnings("unused")
-	@DataModel(SECURITY_AUDIT_LIST_NAME)
-	private List<SecurityAuditEntity> securityAuditRecordList;
 
-	@DataModelSelection(SECURITY_AUDIT_LIST_NAME)
-	@In(required = false)
-	private SecurityAuditEntity securityAuditEntity;
+    /*
+     * 
+     * Datamodels
+     */
+    @SuppressWarnings("unused")
+    @DataModel(AUDIT_CONTEXT_LIST_NAME)
+    private List<AuditContextEntity>  auditContextList;
 
-	@SuppressWarnings("unused")
-	@DataModel(RESOURCE_AUDIT_LIST_NAME)
-	private List<ResourceAuditEntity> resourceAuditRecordList;
+    @DataModelSelection(AUDIT_CONTEXT_LIST_NAME)
+    @Out(value = "auditContext", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private AuditContextEntity        auditContext;
 
-	@SuppressWarnings("unused")
-	@DataModel(AUDIT_AUDIT_LIST_NAME)
-	private List<AuditAuditEntity> auditAuditRecordList;
+    @SuppressWarnings("unused")
+    @DataModel(ACCESS_AUDIT_LIST_NAME)
+    private List<AccessAuditEntity>   accessAuditRecordList;
 
-	/*
-	 * 
-	 * Accessors
-	 * 
-	 */
-	public Long getSearchContextId() {
-		return this.searchContextId;
-	}
+    @DataModelSelection(ACCESS_AUDIT_LIST_NAME)
+    @In(required = false)
+    private AccessAuditEntity         accessAuditEntity;
 
-	public void setSearchContextId(Long searchContextId) {
-		this.searchContextId = searchContextId;
-	}
+    @SuppressWarnings("unused")
+    @DataModel(SECURITY_AUDIT_LIST_NAME)
+    private List<SecurityAuditEntity> securityAuditRecordList;
 
-	public String getSearchAuditUser() {
-		return this.searchAuditUser;
-	}
+    @DataModelSelection(SECURITY_AUDIT_LIST_NAME)
+    @In(required = false)
+    private SecurityAuditEntity       securityAuditEntity;
 
-	public void setSearchAuditUser(String searchAuditUser) {
-		this.searchAuditUser = searchAuditUser;
-	}
+    @SuppressWarnings("unused")
+    @DataModel(RESOURCE_AUDIT_LIST_NAME)
+    private List<ResourceAuditEntity> resourceAuditRecordList;
 
-	public Integer getSearchLastTimeDays() {
-		return this.searchLastTimeDays;
-	}
+    @SuppressWarnings("unused")
+    @DataModel(AUDIT_AUDIT_LIST_NAME)
+    private List<AuditAuditEntity>    auditAuditRecordList;
 
-	public void setSearchLastTimeDays(Integer searchLastTimeDays) {
-		this.searchLastTimeDays = searchLastTimeDays;
-	}
 
-	public Integer getSearchLastTimeHours() {
-		return this.searchLastTimeHours;
-	}
+    /*
+     * 
+     * Accessors
+     */
+    public Long getSearchContextId() {
 
-	public void setSearchLastTimeHours(Integer searchLastTimeHours) {
-		this.searchLastTimeHours = searchLastTimeHours;
-	}
+        return this.searchContextId;
+    }
 
-	public Integer getSearchLastTimeMinutes() {
-		return this.searchLastTimeMinutes;
-	}
+    public void setSearchContextId(Long searchContextId) {
 
-	public void setSearchLastTimeMinutes(Integer searchLastTimeMinutes) {
-		this.searchLastTimeMinutes = searchLastTimeMinutes;
-	}
+        this.searchContextId = searchContextId;
+    }
 
-	/*
-	 * 
-	 * Factories
-	 * 
-	 */
-	@Factory(AUDIT_CONTEXT_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void auditContextListFactory() {
-		LOG.debug("Retrieve audit contexts");
-		this.auditContextList = this.auditService.listLastContexts();
-	}
+    public String getSearchAuditUser() {
 
-	@Factory(ACCESS_AUDIT_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void accessAuditRecordListFactory() {
-		if (SearchMode.ID == this.searchMode) {
-			LOG.debug("Retrieve access audit records for context "
-					+ this.auditContext.getId());
-			this.accessAuditRecordList = this.auditService
-					.listAccessAuditRecords(this.auditContext.getId());
-		} else if (SearchMode.USER == this.searchMode) {
-			LOG.debug("Retrieve access audit records for user "
-					+ this.searchAuditUser);
-			this.accessAuditRecordList = this.auditService
-					.listAccessAuditRecords(this.searchAuditUser);
-		} else if (SearchMode.TIME == this.searchMode) {
-			LOG.debug("Retrieve access audit records since " + this.ageLimit);
-			this.accessAuditRecordList = this.auditService
-					.listAccessAuditRecordsSince(this.ageLimit);
+        return this.searchAuditUser;
+    }
 
-		}
-	}
+    public void setSearchAuditUser(String searchAuditUser) {
 
-	@Factory(SECURITY_AUDIT_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void securityAuditRecordListFactory() {
-		if (SearchMode.ID == this.searchMode) {
-			LOG.debug("Retrieve security audit records for context "
-					+ this.auditContext.getId());
-			this.securityAuditRecordList = this.auditService
-					.listSecurityAuditRecords(this.auditContext.getId());
-		} else if (SearchMode.USER == this.searchMode) {
-			LOG.debug("Retrieve security audit records for user "
-					+ this.searchAuditUser);
-			this.securityAuditRecordList = this.auditService
-					.listSecurityAuditRecords(this.searchAuditUser);
-		} else if (SearchMode.TIME == this.searchMode) {
-			LOG.debug("Retrieve security audit records since " + this.ageLimit);
-			this.securityAuditRecordList = this.auditService
-					.listSecurityAuditRecordsSince(this.ageLimit);
-		} else if (SearchMode.ALL == this.searchMode) {
-			LOG.debug("Show all security audit records");
-			this.securityAuditRecordList = this.auditService
-					.listSecurityAuditRecords();
-		}
-	}
+        this.searchAuditUser = searchAuditUser;
+    }
 
-	@Factory(RESOURCE_AUDIT_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void resourceAuditRecordListFactory() {
-		if (SearchMode.ID == this.searchMode) {
-			LOG.debug("Retrieve resource audit records for context "
-					+ this.auditContext.getId());
-			this.resourceAuditRecordList = this.auditService
-					.listResourceAuditRecords(this.auditContext.getId());
-		} else if (SearchMode.TIME == this.searchMode) {
-			LOG.debug("Retrieve resource audit records since " + this.ageLimit);
-			this.resourceAuditRecordList = this.auditService
-					.listResourceAuditRecordsSince(this.ageLimit);
-		} else if (SearchMode.ALL == this.searchMode) {
-			LOG.debug("Show all resource audit records");
-			this.resourceAuditRecordList = this.auditService
-					.listResourceAuditRecords();
-		}
-	}
+    public Integer getSearchLastTimeDays() {
 
-	@Factory(AUDIT_AUDIT_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void auditAuditRecordListFactory() {
-		if (SearchMode.ID == this.searchMode) {
-			LOG.debug("Retrieve audit audit records for context "
-					+ this.auditContext.getId());
-			this.auditAuditRecordList = this.auditService
-					.listAuditAuditRecords(this.auditContext.getId());
-		} else if (SearchMode.TIME == this.searchMode) {
-			LOG.debug("Retrieve audit audit records since " + this.ageLimit);
-			this.auditAuditRecordList = this.auditService
-					.listAuditAuditRecordsSince(this.ageLimit);
-		} else if (SearchMode.ALL == this.searchMode) {
-			LOG.debug("retrieving all audit audit");
-			this.auditAuditRecordList = this.auditService
-					.listAuditAuditRecords();
-		}
-	}
+        return this.searchLastTimeDays;
+    }
 
-	/*
-	 * 
-	 * Actions
-	 * 
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		LOG.debug("View context " + this.auditContext.getId());
+    public void setSearchLastTimeDays(Integer searchLastTimeDays) {
 
-		setMode(SearchMode.ID);
-		return "view";
-	}
+        this.searchLastTimeDays = searchLastTimeDays;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String viewSecurityRecords() {
-		LOG.debug("View all security records");
-		setMode(SearchMode.ALL);
-		return "view-security";
-	}
+    public Integer getSearchLastTimeHours() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String viewResourceRecords() {
-		LOG.debug("View all resource records");
-		setMode(SearchMode.ALL);
-		return "view-resource";
-	}
+        return this.searchLastTimeHours;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String viewAuditRecords() {
-		LOG.debug("view all audit records");
-		setMode(SearchMode.ALL);
-		return "view-audit";
-	}
+    public void setSearchLastTimeHours(Integer searchLastTimeHours) {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeContext() throws AuditContextNotFoundException {
-		LOG.debug("Remove context " + this.auditContext.getId());
-		this.auditService.removeAuditContext(this.auditContext.getId());
-		auditContextListFactory();
-		return "success";
-	}
+        this.searchLastTimeHours = searchLastTimeHours;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String search() {
-		LOG.debug("audit search: id=" + this.searchContextId + " user="
-				+ this.searchAuditUser);
-		if (null != this.searchContextId) {
-			LOG.debug("Search context id " + this.searchContextId);
-			setMode(SearchMode.ID);
-			return "search-id";
-		} else if (null != this.searchAuditUser
-				&& this.searchAuditUser.length() > 0) {
-			LOG.debug("Search user " + this.searchAuditUser);
-			setMode(SearchMode.USER);
-			return "search-user";
-		} else {
-			LOG.debug("No search input specified");
-			return null;
-		}
-	}
+    public Integer getSearchLastTimeMinutes() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String searchLastTime() {
-		Long timeLimitInMillis = System.currentTimeMillis()
-				- ((this.searchLastTimeMinutes
-						+ (this.searchLastTimeHours * 60) + (this.searchLastTimeDays * 60 * 24)) * 60 * 1000);
-		this.ageLimit = new Date(timeLimitInMillis);
-		LOG.debug("Search audit records since " + this.ageLimit);
-		setMode(SearchMode.TIME);
-		return "search-time";
-	}
+        return this.searchLastTimeMinutes;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String viewPrincipal() {
-		if (null != this.accessAuditEntity)
-			this.auditPrincipal = this.accessAuditEntity.getPrincipal();
-		else if (null != this.securityAuditEntity)
-			this.auditPrincipal = this.securityAuditEntity.getTargetPrincipal();
-		if (null == this.auditPrincipal)
-			this.auditPrincipal = OperatorConstants.UNKNOWN_PRINCIPAL;
-		LOG.debug("view principal: " + this.auditPrincipal);
-		return "view-principal";
-	}
+    public void setSearchLastTimeMinutes(Integer searchLastTimeMinutes) {
 
-	/*
-	 * 
-	 * Validators
-	 * 
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void validateId(FacesContext context, UIComponent toValidate,
-			Object value) {
-		Long id = (Long) value;
-		LOG.debug("validateId = " + id);
-		try {
-			this.auditContext = this.auditService.getAuditContext(id);
-		} catch (AuditContextNotFoundException e) {
-			((UIInput) toValidate).setValid(false);
-			String errorMsg = ResourceBundle.instance().getString(
-					"errorNoAuditRecordsFound");
-			FacesMessage message = new FacesMessage(errorMsg);
-			context.addMessage(toValidate.getClientId(context), message);
-		}
-		if (null == this.auditContext) {
-			((UIInput) toValidate).setValid(false);
-			String errorMsg = ResourceBundle.instance().getString(
-					"errorNoAuditRecordsFound");
-			FacesMessage message = new FacesMessage(errorMsg);
-			context.addMessage(toValidate.getClientId(context), message);
-		}
-	}
+        this.searchLastTimeMinutes = searchLastTimeMinutes;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void validateUser(FacesContext context, UIComponent toValidate,
-			Object value) {
-		String userName = (String) value;
-		Set<String> users = this.auditService.listUsers();
-		if (!users.contains(userName)) {
-			((UIInput) toValidate).setValid(false);
-			String errorMsg = ResourceBundle.instance().getString(
-					"errorNoAuditRecordsFound");
-			FacesMessage message = new FacesMessage(errorMsg);
-			context.addMessage(toValidate.getClientId(context), message);
-		}
-	}
+    /*
+     * 
+     * Factories
+     */
+    @Factory(AUDIT_CONTEXT_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void auditContextListFactory() {
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		LOG.debug("destroy");
-	}
+        LOG.debug("Retrieve audit contexts");
+        this.auditContextList = this.auditService.listLastContexts();
+    }
+
+    @Factory(ACCESS_AUDIT_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void accessAuditRecordListFactory() {
+
+        if (SearchMode.ID == this.searchMode) {
+            LOG.debug("Retrieve access audit records for context " + this.auditContext.getId());
+            this.accessAuditRecordList = this.auditService.listAccessAuditRecords(this.auditContext.getId());
+        } else if (SearchMode.USER == this.searchMode) {
+            LOG.debug("Retrieve access audit records for user " + this.searchAuditUser);
+            this.accessAuditRecordList = this.auditService.listAccessAuditRecords(this.searchAuditUser);
+        } else if (SearchMode.TIME == this.searchMode) {
+            LOG.debug("Retrieve access audit records since " + this.ageLimit);
+            this.accessAuditRecordList = this.auditService.listAccessAuditRecordsSince(this.ageLimit);
+
+        }
+    }
+
+    @Factory(SECURITY_AUDIT_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void securityAuditRecordListFactory() {
+
+        if (SearchMode.ID == this.searchMode) {
+            LOG.debug("Retrieve security audit records for context " + this.auditContext.getId());
+            this.securityAuditRecordList = this.auditService.listSecurityAuditRecords(this.auditContext.getId());
+        } else if (SearchMode.USER == this.searchMode) {
+            LOG.debug("Retrieve security audit records for user " + this.searchAuditUser);
+            this.securityAuditRecordList = this.auditService.listSecurityAuditRecords(this.searchAuditUser);
+        } else if (SearchMode.TIME == this.searchMode) {
+            LOG.debug("Retrieve security audit records since " + this.ageLimit);
+            this.securityAuditRecordList = this.auditService.listSecurityAuditRecordsSince(this.ageLimit);
+        } else if (SearchMode.ALL == this.searchMode) {
+            LOG.debug("Show all security audit records");
+            this.securityAuditRecordList = this.auditService.listSecurityAuditRecords();
+        }
+    }
+
+    @Factory(RESOURCE_AUDIT_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void resourceAuditRecordListFactory() {
+
+        if (SearchMode.ID == this.searchMode) {
+            LOG.debug("Retrieve resource audit records for context " + this.auditContext.getId());
+            this.resourceAuditRecordList = this.auditService.listResourceAuditRecords(this.auditContext.getId());
+        } else if (SearchMode.TIME == this.searchMode) {
+            LOG.debug("Retrieve resource audit records since " + this.ageLimit);
+            this.resourceAuditRecordList = this.auditService.listResourceAuditRecordsSince(this.ageLimit);
+        } else if (SearchMode.ALL == this.searchMode) {
+            LOG.debug("Show all resource audit records");
+            this.resourceAuditRecordList = this.auditService.listResourceAuditRecords();
+        }
+    }
+
+    @Factory(AUDIT_AUDIT_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void auditAuditRecordListFactory() {
+
+        if (SearchMode.ID == this.searchMode) {
+            LOG.debug("Retrieve audit audit records for context " + this.auditContext.getId());
+            this.auditAuditRecordList = this.auditService.listAuditAuditRecords(this.auditContext.getId());
+        } else if (SearchMode.TIME == this.searchMode) {
+            LOG.debug("Retrieve audit audit records since " + this.ageLimit);
+            this.auditAuditRecordList = this.auditService.listAuditAuditRecordsSince(this.ageLimit);
+        } else if (SearchMode.ALL == this.searchMode) {
+            LOG.debug("retrieving all audit audit");
+            this.auditAuditRecordList = this.auditService.listAuditAuditRecords();
+        }
+    }
+
+    /*
+     * 
+     * Actions
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String view() {
+
+        LOG.debug("View context " + this.auditContext.getId());
+
+        setMode(SearchMode.ID);
+        return "view";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String viewSecurityRecords() {
+
+        LOG.debug("View all security records");
+        setMode(SearchMode.ALL);
+        return "view-security";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String viewResourceRecords() {
+
+        LOG.debug("View all resource records");
+        setMode(SearchMode.ALL);
+        return "view-resource";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String viewAuditRecords() {
+
+        LOG.debug("view all audit records");
+        setMode(SearchMode.ALL);
+        return "view-audit";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String removeContext() throws AuditContextNotFoundException {
+
+        LOG.debug("Remove context " + this.auditContext.getId());
+        this.auditService.removeAuditContext(this.auditContext.getId());
+        auditContextListFactory();
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String search() {
+
+        LOG.debug("audit search: id=" + this.searchContextId + " user=" + this.searchAuditUser);
+        if (null != this.searchContextId) {
+            LOG.debug("Search context id " + this.searchContextId);
+            setMode(SearchMode.ID);
+            return "search-id";
+        } else if (null != this.searchAuditUser && this.searchAuditUser.length() > 0) {
+            LOG.debug("Search user " + this.searchAuditUser);
+            setMode(SearchMode.USER);
+            return "search-user";
+        } else {
+            LOG.debug("No search input specified");
+            return null;
+        }
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String searchLastTime() {
+
+        Long timeLimitInMillis = System.currentTimeMillis()
+                - ((this.searchLastTimeMinutes + (this.searchLastTimeHours * 60) + (this.searchLastTimeDays * 60 * 24)) * 60 * 1000);
+        this.ageLimit = new Date(timeLimitInMillis);
+        LOG.debug("Search audit records since " + this.ageLimit);
+        setMode(SearchMode.TIME);
+        return "search-time";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String viewPrincipal() {
+
+        if (null != this.accessAuditEntity)
+            this.auditPrincipal = this.accessAuditEntity.getPrincipal();
+        else if (null != this.securityAuditEntity)
+            this.auditPrincipal = this.securityAuditEntity.getTargetPrincipal();
+        if (null == this.auditPrincipal)
+            this.auditPrincipal = OperatorConstants.UNKNOWN_PRINCIPAL;
+        LOG.debug("view principal: " + this.auditPrincipal);
+        return "view-principal";
+    }
+
+    /*
+     * 
+     * Validators
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void validateId(FacesContext context, UIComponent toValidate, Object value) {
+
+        Long id = (Long) value;
+        LOG.debug("validateId = " + id);
+        try {
+            this.auditContext = this.auditService.getAuditContext(id);
+        } catch (AuditContextNotFoundException e) {
+            ((UIInput) toValidate).setValid(false);
+            String errorMsg = ResourceBundle.instance().getString("errorNoAuditRecordsFound");
+            FacesMessage message = new FacesMessage(errorMsg);
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+        if (null == this.auditContext) {
+            ((UIInput) toValidate).setValid(false);
+            String errorMsg = ResourceBundle.instance().getString("errorNoAuditRecordsFound");
+            FacesMessage message = new FacesMessage(errorMsg);
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void validateUser(FacesContext context, UIComponent toValidate, Object value) {
+
+        String userName = (String) value;
+        Set<String> users = this.auditService.listUsers();
+        if (!users.contains(userName)) {
+            ((UIInput) toValidate).setValid(false);
+            String errorMsg = ResourceBundle.instance().getString("errorNoAuditRecordsFound");
+            FacesMessage message = new FacesMessage(errorMsg);
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+
+    @Remove
+    @Destroy
+    public void destroyCallback() {
+
+        LOG.debug("destroy");
+    }
 
 }

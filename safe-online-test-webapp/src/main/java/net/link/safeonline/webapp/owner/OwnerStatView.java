@@ -8,10 +8,11 @@ package net.link.safeonline.webapp.owner;
 
 public class OwnerStatView extends OwnerTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OWNER_WEBAPP_PREFIX
-			+ "/stat-view.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OWNER_WEBAPP_PREFIX + "/stat-view.seam";
 
-	public OwnerStatView() {
-		super(PAGE_NAME);
-	}
+
+    public OwnerStatView() {
+
+        super(PAGE_NAME);
+    }
 }

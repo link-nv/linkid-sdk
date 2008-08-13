@@ -9,29 +9,30 @@ package net.link.safeonline.auth;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface UsernamePasswordLogon {
 
-	/*
-	 * Accessors.
-	 */
-	String getUsername();
+    /*
+     * Accessors.
+     */
+    String getUsername();
 
-	void setUsername(String username);
+    void setUsername(String username);
 
-	String getPassword();
+    String getPassword();
 
-	void setPassword(String password);
+    void setPassword(String password);
 
-	/*
-	 * Actions.
-	 */
-	String login();
+    /*
+     * Actions.
+     */
+    String login();
 
-	/*
-	 * Lifecycle.
-	 */
-	void init();
+    /*
+     * Lifecycle.
+     */
+    void init();
 
-	void destroyCallback();
+    void destroyCallback();
 }

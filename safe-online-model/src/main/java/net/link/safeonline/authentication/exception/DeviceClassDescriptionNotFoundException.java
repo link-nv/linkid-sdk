@@ -11,12 +11,15 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class DeviceClassDescriptionNotFoundException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public DeviceClassDescriptionNotFoundException() {
-		super(null, SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
-	}
+
+    public DeviceClassDescriptionNotFoundException() {
+
+        super(null, SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
+    }
 }

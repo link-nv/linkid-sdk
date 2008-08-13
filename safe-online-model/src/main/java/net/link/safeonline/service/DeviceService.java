@@ -30,114 +30,96 @@ import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
+
 @Local
 public interface DeviceService {
 
-	List<DeviceEntity> listDevices();
+    List<DeviceEntity> listDevices();
 
-	List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application);
+    List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application);
 
-	void setAllowedDevices(ApplicationEntity application,
-			List<AllowedDeviceEntity> allowedDeviceList);
+    void setAllowedDevices(ApplicationEntity application, List<AllowedDeviceEntity> allowedDeviceList);
 
-	List<DeviceClassEntity> listDeviceClasses();
+    List<DeviceClassEntity> listDeviceClasses();
 
-	List<DeviceDescriptionEntity> listDeviceDescriptions(String deviceName)
-			throws DeviceNotFoundException;
+    List<DeviceDescriptionEntity> listDeviceDescriptions(String deviceName) throws DeviceNotFoundException;
 
-	List<DevicePropertyEntity> listDeviceProperties(String deviceName)
-			throws DeviceNotFoundException;
+    List<DevicePropertyEntity> listDeviceProperties(String deviceName) throws DeviceNotFoundException;
 
-	void addDeviceDescription(DeviceDescriptionEntity newDeviceDescription)
-			throws DeviceNotFoundException, ExistingDeviceDescriptionException;
+    void addDeviceDescription(DeviceDescriptionEntity newDeviceDescription) throws DeviceNotFoundException,
+            ExistingDeviceDescriptionException;
 
-	void removeDeviceDescription(DeviceDescriptionEntity description)
-			throws DeviceDescriptionNotFoundException;
+    void removeDeviceDescription(DeviceDescriptionEntity description) throws DeviceDescriptionNotFoundException;
 
-	void addDeviceProperty(DevicePropertyEntity newDeviceProperty)
-			throws DeviceNotFoundException, ExistingDevicePropertyException;
+    void addDeviceProperty(DevicePropertyEntity newDeviceProperty) throws DeviceNotFoundException,
+            ExistingDevicePropertyException;
 
-	void removeDeviceProperty(DevicePropertyEntity property)
-			throws DevicePropertyNotFoundException;
+    void removeDeviceProperty(DevicePropertyEntity property) throws DevicePropertyNotFoundException;
 
-	void addDevice(String name, String deviceClassName, String nodeName,
-			String authenticationPath, String registrationPath,
-			String removalPath, String updatePath, byte[] encodedCertificate,
-			String attributeTypeName, String userAttributeTypeName)
-			throws CertificateEncodingException, DeviceClassNotFoundException,
-			ExistingDeviceException, AttributeTypeNotFoundException,
-			NodeNotFoundException;
+    void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath,
+            String registrationPath, String removalPath, String updatePath, byte[] encodedCertificate,
+            String attributeTypeName, String userAttributeTypeName) throws CertificateEncodingException,
+            DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
+            NodeNotFoundException;
 
-	void removeDevice(String name) throws DeviceNotFoundException,
-			DeviceDescriptionNotFoundException,
-			DevicePropertyNotFoundException, PermissionDeniedException;
+    void removeDevice(String name) throws DeviceNotFoundException, DeviceDescriptionNotFoundException,
+            DevicePropertyNotFoundException, PermissionDeniedException;
 
-	List<DeviceClassDescriptionEntity> listDeviceClassDescriptions(
-			String deviceClassName) throws DeviceClassNotFoundException;
+    List<DeviceClassDescriptionEntity> listDeviceClassDescriptions(String deviceClassName)
+            throws DeviceClassNotFoundException;
 
-	void addDeviceClassDescription(
-			DeviceClassDescriptionEntity newDeviceClassDescription)
-			throws DeviceClassNotFoundException,
-			ExistingDeviceClassDescriptionException;
+    void addDeviceClassDescription(DeviceClassDescriptionEntity newDeviceClassDescription)
+            throws DeviceClassNotFoundException, ExistingDeviceClassDescriptionException;
 
-	void removeDeviceClassDescription(DeviceClassDescriptionEntity description)
-			throws DeviceClassDescriptionNotFoundException;
+    void removeDeviceClassDescription(DeviceClassDescriptionEntity description)
+            throws DeviceClassDescriptionNotFoundException;
 
-	void addDeviceClass(String name, String authenticationContextClass)
-			throws ExistingDeviceClassException;
+    void addDeviceClass(String name, String authenticationContextClass) throws ExistingDeviceClassException;
 
-	void removeDeviceClass(String name) throws PermissionDeniedException;
+    void removeDeviceClass(String name) throws PermissionDeniedException;
 
-	void updateAuthenticationPath(String deviceName, String authenticationPath)
-			throws DeviceNotFoundException;
+    void updateAuthenticationPath(String deviceName, String authenticationPath) throws DeviceNotFoundException;
 
-	void updateRegistrationPath(String deviceName, String registrationPath)
-			throws DeviceNotFoundException;
+    void updateRegistrationPath(String deviceName, String registrationPath) throws DeviceNotFoundException;
 
-	void updateRemovalPath(String deviceName, String removalPath)
-			throws DeviceNotFoundException;
+    void updateRemovalPath(String deviceName, String removalPath) throws DeviceNotFoundException;
 
-	void updateDeviceCertificate(String deviceName, byte[] encodedCertificate)
-			throws DeviceNotFoundException, CertificateEncodingException;
+    void updateDeviceCertificate(String deviceName, byte[] encodedCertificate) throws DeviceNotFoundException,
+            CertificateEncodingException;
 
-	void saveDeviceDescription(DeviceDescriptionEntity description);
+    void saveDeviceDescription(DeviceDescriptionEntity description);
 
-	void saveDeviceProperty(DevicePropertyEntity property);
+    void saveDeviceProperty(DevicePropertyEntity property);
 
-	void saveDeviceClassDescription(DeviceClassDescriptionEntity description);
+    void saveDeviceClassDescription(DeviceClassDescriptionEntity description);
 
-	void updateAuthenticationContextClass(String deviceClassName,
-			String authenticationContextClass)
-			throws DeviceClassNotFoundException;
+    void updateAuthenticationContextClass(String deviceClassName, String authenticationContextClass)
+            throws DeviceClassNotFoundException;
 
-	DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException;
+    DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException;
 
-	DeviceClassEntity getDeviceClass(String deviceClassName)
-			throws DeviceClassNotFoundException;
+    DeviceClassEntity getDeviceClass(String deviceClassName) throws DeviceClassNotFoundException;
 
-	void updateUpdatePath(String deviceName, String updatePath)
-			throws DeviceNotFoundException;
+    void updateUpdatePath(String deviceName, String updatePath) throws DeviceNotFoundException;
 
-	void updateAttributeType(String deviceName, String attributeType)
-			throws DeviceNotFoundException, AttributeTypeNotFoundException;
+    void updateAttributeType(String deviceName, String attributeType) throws DeviceNotFoundException,
+            AttributeTypeNotFoundException;
 
-	void updateUserAttributeType(String deviceName, String userAttributeType)
-			throws DeviceNotFoundException, AttributeTypeNotFoundException;
+    void updateUserAttributeType(String deviceName, String userAttributeType) throws DeviceNotFoundException,
+            AttributeTypeNotFoundException;
 
-	/**
-	 * Returns the list of device registrations for the specified subject.
-	 * 
-	 * @param subject
-	 * @param locale
-	 * @return list of device registration data objects.
-	 * @throws AttributeTypeNotFoundException
-	 * @throws PermissionDeniedException
-	 * @throws DeviceNotFoundException
-	 * @throws SubjectNotFoundException
-	 */
-	List<DeviceMappingDO> getDeviceRegistrations(SubjectEntity subject,
-			Locale locale) throws SubjectNotFoundException,
-			DeviceNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException;
+    /**
+     * Returns the list of device registrations for the specified subject.
+     * 
+     * @param subject
+     * @param locale
+     * @return list of device registration data objects.
+     * @throws AttributeTypeNotFoundException
+     * @throws PermissionDeniedException
+     * @throws DeviceNotFoundException
+     * @throws SubjectNotFoundException
+     */
+    List<DeviceMappingDO> getDeviceRegistrations(SubjectEntity subject, Locale locale) throws SubjectNotFoundException,
+            DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
 }

@@ -32,14 +32,13 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateless
 @Name("globalAgreementConfirmation")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-        + "GlobalUsageAgreementConfirmationBean/local")
+@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "GlobalUsageAgreementConfirmationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
-public class GlobalUsageAgreementConfirmationBean implements
-        GlobalUsageAgreementConfirmation {
+public class GlobalUsageAgreementConfirmationBean implements GlobalUsageAgreementConfirmation {
 
     @Logger
     private Log                   log;
@@ -61,38 +60,31 @@ public class GlobalUsageAgreementConfirmationBean implements
 
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String confirm() throws ApplicationNotFoundException,
-            SubscriptionNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+    public String confirm() throws ApplicationNotFoundException, SubscriptionNotFoundException,
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         this.log.debug("confirm global usage agreement");
         this.usageAgreementService.confirmGlobalUsageAgreementVersion();
-        HelpdeskLogger.add("confirmed global usage agreement",
-                LogLevelType.INFO);
+        HelpdeskLogger.add("confirmed global usage agreement", LogLevelType.INFO);
 
         /*
          * After successful confirmation we continue the workflow as usual.
          */
-        boolean subscriptionRequired = !this.subscriptionService
-                .isSubscribed(this.applicationId);
+        boolean subscriptionRequired = !this.subscriptionService.isSubscribed(this.applicationId);
         if (!subscriptionRequired) {
-            subscriptionRequired = this.usageAgreementService
-                    .requiresUsageAgreementAcceptation(this.applicationId);
+            subscriptionRequired = this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId);
         }
         this.log.debug("subscription required: " + subscriptionRequired);
         if (true == subscriptionRequired)
             return "subscription-required";
 
-        boolean confirmationRequired = this.identityService
-                .isConfirmationRequired(this.applicationId);
+        boolean confirmationRequired = this.identityService.isConfirmationRequired(this.applicationId);
         this.log.debug("confirmation required: " + confirmationRequired);
         if (true == confirmationRequired) {
             return "confirmation-required";
         }
 
-        boolean hasMissingAttributes = this.identityService
-                .hasMissingAttributes(this.applicationId);
+        boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.applicationId);
 
         if (true == hasMissingAttributes) {
             return "missing-attributes";
@@ -108,7 +100,6 @@ public class GlobalUsageAgreementConfirmationBean implements
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        return this.usageAgreementService
-                .getGlobalUsageAgreementText(viewLocale.getLanguage());
+        return this.usageAgreementService.getGlobalUsageAgreementText(viewLocale.getLanguage());
     }
 }

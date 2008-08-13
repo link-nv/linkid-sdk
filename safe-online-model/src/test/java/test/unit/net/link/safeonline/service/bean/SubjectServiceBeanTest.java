@@ -31,64 +31,65 @@ import org.junit.Test;
 
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class SubjectServiceBeanTest {
 
-	private SubjectService testedInstance;
+    private SubjectService    testedInstance;
 
-	private AttributeTypeDAO attributeTypeDAO;
+    private AttributeTypeDAO  attributeTypeDAO;
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Before
-	public void setUp() throws Exception {
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		this.testedInstance = EJBTestUtils.newInstance(
-				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
 
-		this.attributeTypeDAO = new AttributeTypeDAOBean();
-		EJBTestUtils.inject(this.attributeTypeDAO, entityManager);
-		EJBTestUtils.init(this.attributeTypeDAO);
+    @Before
+    public void setUp() throws Exception {
 
-		this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(
-				SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.LOGIN, false,
-				false));
-	}
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        this.testedInstance = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
 
-	@After
-	public void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-	}
+        this.attributeTypeDAO = new AttributeTypeDAOBean();
+        EJBTestUtils.inject(this.attributeTypeDAO, entityManager);
+        EJBTestUtils.init(this.attributeTypeDAO);
 
-	@Test
-	public void testFindNonExistingSubjectReturnsNull() throws Exception {
-		// setup
-		String nonExistingSubjectLogin = UUID.randomUUID().toString();
+        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE,
+                DatatypeType.LOGIN, false, false));
+    }
 
-		// operate
-		SubjectEntity result = this.testedInstance
-				.findSubject(nonExistingSubjectLogin);
+    @After
+    public void tearDown() throws Exception {
 
-		// verify
-		assertNull(result);
-	}
+        this.entityTestManager.tearDown();
+    }
 
-	@Test
-	public void testAddSubjectAndGet() throws Exception {
-		// setup
-		String subjectLogin = UUID.randomUUID().toString();
+    @Test
+    public void testFindNonExistingSubjectReturnsNull() throws Exception {
 
-		// operate
-		this.testedInstance.addSubject(subjectLogin);
-		SubjectEntity resultSubject = this.testedInstance
-				.findSubjectFromUserName(subjectLogin);
-		String resultSubjectLogin = this.testedInstance
-				.getSubjectLogin(resultSubject.getUserId());
+        // setup
+        String nonExistingSubjectLogin = UUID.randomUUID().toString();
 
-		// verify
-		assertEquals(subjectLogin, resultSubjectLogin);
-	}
+        // operate
+        SubjectEntity result = this.testedInstance.findSubject(nonExistingSubjectLogin);
+
+        // verify
+        assertNull(result);
+    }
+
+    @Test
+    public void testAddSubjectAndGet() throws Exception {
+
+        // setup
+        String subjectLogin = UUID.randomUUID().toString();
+
+        // operate
+        this.testedInstance.addSubject(subjectLogin);
+        SubjectEntity resultSubject = this.testedInstance.findSubjectFromUserName(subjectLogin);
+        String resultSubjectLogin = this.testedInstance.getSubjectLogin(resultSubject.getUserId());
+
+        // verify
+        assertEquals(subjectLogin, resultSubjectLogin);
+    }
 
 }

@@ -13,17 +13,18 @@ import javax.ejb.Local;
 
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 
+
 @Local
 public interface ConfigGroupDAO {
 
-	ConfigGroupEntity addConfigGroup(String name);
+    ConfigGroupEntity addConfigGroup(String name);
 
-	void removeConfigGroup(ConfigGroupEntity configGroup);
+    void removeConfigGroup(ConfigGroupEntity configGroup);
 
-	void saveConfigGroup(ConfigGroupEntity configGroup);
+    void saveConfigGroup(ConfigGroupEntity configGroup);
 
-	ConfigGroupEntity findConfigGroup(String name);
+    ConfigGroupEntity findConfigGroup(String name);
 
-	List<ConfigGroupEntity> listConfigGroups();
+    List<ConfigGroupEntity> listConfigGroups();
 
 }

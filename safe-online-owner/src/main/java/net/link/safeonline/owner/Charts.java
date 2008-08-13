@@ -13,25 +13,26 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
+
 @Local
 public interface Charts {
 
-	/*
-	 * Factories
-	 */
-	void statListFactory() throws PermissionDeniedException;
+    /*
+     * Factories
+     */
+    void statListFactory() throws PermissionDeniedException;
 
-	/*
-	 * Actions.
-	 */
-	String viewStat();
+    /*
+     * Actions.
+     */
+    String viewStat();
 
-	String export() throws IOException;
+    String export() throws IOException;
 
-	String exportStat() throws IOException;
+    String exportStat() throws IOException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

@@ -60,6 +60,7 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("operDevice")
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "DeviceBean/local")
@@ -67,345 +68,368 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceBean implements Device {
 
-	private static final Log LOG = LogFactory.getLog(DeviceBean.class);
+    private static final Log     LOG                                  = LogFactory.getLog(DeviceBean.class);
 
-	public static final String OPER_DEVICE_LIST_NAME = "operDeviceList";
+    public static final String   OPER_DEVICE_LIST_NAME                = "operDeviceList";
 
-	public static final String OPER_DEVICE_CLASS_LIST_NAME = "deviceClasses";
+    public static final String   OPER_DEVICE_CLASS_LIST_NAME          = "deviceClasses";
 
-	public static final String OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME = "attributeTypes";
+    public static final String   OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME = "attributeTypes";
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                facesMessages;
 
-	@EJB
-	private DeviceService deviceService;
-
-	@EJB
-	private AttributeTypeService attributeTypeService;
-
-	@EJB
-	private NodeService nodeService;
-
-	private String name;
-
-	private String deviceClass;
-
-	private String node;
-
-	private String authenticationPath;
-
-	private String registrationPath;
-
-	private String removalPath;
-
-	private String updatePath;
-
-	private UploadedFile certificate;
-
-	private String attributeType;
-
-	private String userAttributeType;
-
-	/*
-	 * Seam Data models
-	 */
-	@DataModel(OPER_DEVICE_LIST_NAME)
-	public List<DeviceEntity> deviceList;
-
-	@DataModelSelection(OPER_DEVICE_LIST_NAME)
-	@Out(value = "selectedDevice", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private DeviceEntity selectedDevice;
-
-	/*
-	 * Lifecyle
-	 */
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		LOG.debug("destroy");
-	}
-
-	/*
-	 * Factories
-	 */
-	@Factory(OPER_DEVICE_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void deviceListFactory() {
-		LOG.debug("device list factory");
-		this.deviceList = this.deviceService.listDevices();
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory(OPER_DEVICE_CLASS_LIST_NAME)
-	public List<SelectItem> deviceClassesFactory() {
-		List<DeviceClassEntity> deviceClassesList = this.deviceService
-				.listDeviceClasses();
-		List<SelectItem> deviceClasses = ConvertorUtil.convert(
-				deviceClassesList, new DeviceClassSelectItemConvertor());
-		return deviceClasses;
-	}
-
-	static class DeviceClassSelectItemConvertor implements
-			Convertor<DeviceClassEntity, SelectItem> {
-
-		public SelectItem convert(DeviceClassEntity input) {
-			SelectItem output = new SelectItem(input.getName());
-			return output;
-		}
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory(OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME)
-	public List<SelectItem> attributeTypesFactory() {
-		List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService
-				.listAttributeTypes();
-		List<SelectItem> attributeTypes = ConvertorUtil.convert(
-				attributeTypesList, new AttributeTypeSelectItemConvertor());
-		return attributeTypes;
-	}
-
-	static class AttributeTypeSelectItemConvertor implements
-			Convertor<AttributeTypeEntity, SelectItem> {
-
-		public SelectItem convert(AttributeTypeEntity input) {
-			SelectItem output = new SelectItem(input.getName());
-			return output;
-		}
-	}
-
-	@Factory("deviceNodes")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<SelectItem> nodeFactory() {
-		List<OlasEntity> nodeList = this.nodeService.listNodes();
-		List<SelectItem> nodes = ConvertorUtil.convert(nodeList,
-				new OlasEntitySelectItemConvertor());
-		return nodes;
-	}
-
-	static class OlasEntitySelectItemConvertor implements
-			Convertor<OlasEntity, SelectItem> {
-
-		public SelectItem convert(OlasEntity input) {
-			SelectItem output = new SelectItem(input.getName());
-			return output;
-		}
-	}
-
-	private byte[] getUpFileContent(UploadedFile file) throws IOException {
-		InputStream inputStream = file.getInputStream();
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		IOUtils.copy(inputStream, byteArrayOutputStream);
-		return byteArrayOutputStream.toByteArray();
-	}
-
-	/*
-	 * Actions
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@ErrorHandling( {
-			@Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
-			@Error(exceptionClass = IOException.class, messageId = "errorUploadCertificate") })
-	public String add() throws ExistingDeviceException,
-			CertificateEncodingException, DeviceClassNotFoundException,
-			AttributeTypeNotFoundException, NodeNotFoundException, IOException {
-		LOG.debug("add device: " + this.name);
-
-		byte[] encodedCertificate = null;
-		if (null != this.certificate) {
-			encodedCertificate = getUpFileContent(this.certificate);
-		}
-
-		this.deviceService.addDevice(this.name, this.deviceClass, this.node,
-				this.authenticationPath, this.registrationPath,
-				this.removalPath, this.updatePath, encodedCertificate,
-				this.attributeType, this.userAttributeType);
-		return "success";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() throws DeviceNotFoundException,
-			DeviceDescriptionNotFoundException, DevicePropertyNotFoundException {
-		LOG.debug("remove device: " + this.selectedDevice.getName());
-		try {
-			this.deviceService.removeDevice(this.selectedDevice.getName());
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
-							.getResourceArgs());
-			return null;
-		}
-		deviceListFactory();
-		return "success";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String edit() {
-		LOG.debug("edit device: " + this.selectedDevice.getName());
-
-		this.authenticationPath = this.selectedDevice.getAuthenticationPath();
-		this.registrationPath = this.selectedDevice.getRegistrationPath();
-		this.removalPath = this.selectedDevice.getRemovalPath();
-		if (null != this.selectedDevice.getAttributeType())
-			this.attributeType = this.selectedDevice.getAttributeType()
-					.getName();
-		if (null != this.selectedDevice.getUserAttributeType())
-			this.userAttributeType = this.selectedDevice.getUserAttributeType()
-					.getName();
-
-		return "edit";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() throws DeviceNotFoundException,
-			CertificateEncodingException, IOException,
-			AttributeTypeNotFoundException {
-		LOG.debug("save device: " + this.selectedDevice.getName());
-		String deviceName = this.selectedDevice.getName();
-
-		this.deviceService.updateAuthenticationPath(deviceName,
-				this.authenticationPath);
-		if (null != this.registrationPath)
-			this.deviceService.updateRegistrationPath(deviceName,
-					this.registrationPath);
-		if (null != this.removalPath)
-			this.deviceService.updateRemovalPath(deviceName, this.removalPath);
-		if (null != this.updatePath)
-			this.deviceService.updateUpdatePath(deviceName, this.updatePath);
-
-		if (null != this.certificate) {
-			LOG.debug("updating device certificate");
-			this.deviceService.updateDeviceCertificate(deviceName,
-					getUpFileContent(this.certificate));
-		}
-
-		if (null != this.attributeType) {
-			LOG.debug("updating attribute type");
-			this.deviceService.updateAttributeType(deviceName,
-					this.attributeType);
-		}
-
-		if (null != this.userAttributeType) {
-			LOG.debug("updating user attribute type");
-			this.deviceService.updateUserAttributeType(deviceName,
-					this.userAttributeType);
-		}
-
-		/*
-		 * Refresh the device
-		 */
-		this.selectedDevice = this.deviceService.getDevice(deviceName);
-		return "success";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		LOG.debug("view device: " + this.selectedDevice.getName());
-		return "view";
-	}
-
-	/*
-	 * Accessors
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getName() {
-		return this.name;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getDeviceClass() {
-		return this.deviceClass;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setDeviceClass(String deviceClass) {
-		this.deviceClass = deviceClass;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getNode() {
-		return this.node;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setNode(String node) {
-		this.node = node;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getAuthenticationPath() {
-		return this.authenticationPath;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setAuthenticationPath(String authenticationPath) {
-		this.authenticationPath = authenticationPath;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getRegistrationPath() {
-		return this.registrationPath;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setRegistrationPath(String registrationPath) {
-		this.registrationPath = registrationPath;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getRemovalPath() {
-		return this.removalPath;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setRemovalPath(String removalPath) {
-		this.removalPath = removalPath;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getUpdatePath() {
-		return this.updatePath;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setUpdatePath(String updatePath) {
-		this.updatePath = updatePath;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public UploadedFile getCertificate() {
-		return this.certificate;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setCertificate(UploadedFile certificate) {
-		this.certificate = certificate;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getAttributeType() {
-		return this.attributeType;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setAttributeType(String attributeType) {
-		this.attributeType = attributeType;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getUserAttributeType() {
-		return this.userAttributeType;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setUserAttributeType(String userAttributeType) {
-		this.userAttributeType = userAttributeType;
-	}
+    @EJB
+    private DeviceService        deviceService;
+
+    @EJB
+    private AttributeTypeService attributeTypeService;
+
+    @EJB
+    private NodeService          nodeService;
+
+    private String               name;
+
+    private String               deviceClass;
+
+    private String               node;
+
+    private String               authenticationPath;
+
+    private String               registrationPath;
+
+    private String               removalPath;
+
+    private String               updatePath;
+
+    private UploadedFile         certificate;
+
+    private String               attributeType;
+
+    private String               userAttributeType;
+
+    /*
+     * Seam Data models
+     */
+    @DataModel(OPER_DEVICE_LIST_NAME)
+    public List<DeviceEntity>    deviceList;
+
+    @DataModelSelection(OPER_DEVICE_LIST_NAME)
+    @Out(value = "selectedDevice", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private DeviceEntity         selectedDevice;
+
+
+    /*
+     * Lifecyle
+     */
+    @Remove
+    @Destroy
+    public void destroyCallback() {
+
+        LOG.debug("destroy");
+    }
+
+    /*
+     * Factories
+     */
+    @Factory(OPER_DEVICE_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void deviceListFactory() {
+
+        LOG.debug("device list factory");
+        this.deviceList = this.deviceService.listDevices();
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(OPER_DEVICE_CLASS_LIST_NAME)
+    public List<SelectItem> deviceClassesFactory() {
+
+        List<DeviceClassEntity> deviceClassesList = this.deviceService.listDeviceClasses();
+        List<SelectItem> deviceClasses = ConvertorUtil.convert(deviceClassesList, new DeviceClassSelectItemConvertor());
+        return deviceClasses;
+    }
+
+
+    static class DeviceClassSelectItemConvertor implements Convertor<DeviceClassEntity, SelectItem> {
+
+        public SelectItem convert(DeviceClassEntity input) {
+
+            SelectItem output = new SelectItem(input.getName());
+            return output;
+        }
+    }
+
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME)
+    public List<SelectItem> attributeTypesFactory() {
+
+        List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService.listAttributeTypes();
+        List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList,
+                new AttributeTypeSelectItemConvertor());
+        return attributeTypes;
+    }
+
+
+    static class AttributeTypeSelectItemConvertor implements Convertor<AttributeTypeEntity, SelectItem> {
+
+        public SelectItem convert(AttributeTypeEntity input) {
+
+            SelectItem output = new SelectItem(input.getName());
+            return output;
+        }
+    }
+
+
+    @Factory("deviceNodes")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> nodeFactory() {
+
+        List<OlasEntity> nodeList = this.nodeService.listNodes();
+        List<SelectItem> nodes = ConvertorUtil.convert(nodeList, new OlasEntitySelectItemConvertor());
+        return nodes;
+    }
+
+
+    static class OlasEntitySelectItemConvertor implements Convertor<OlasEntity, SelectItem> {
+
+        public SelectItem convert(OlasEntity input) {
+
+            SelectItem output = new SelectItem(input.getName());
+            return output;
+        }
+    }
+
+
+    private byte[] getUpFileContent(UploadedFile file) throws IOException {
+
+        InputStream inputStream = file.getInputStream();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        IOUtils.copy(inputStream, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    /*
+     * Actions
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @ErrorHandling( {
+            @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
+            @Error(exceptionClass = IOException.class, messageId = "errorUploadCertificate") })
+    public String add() throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException,
+            AttributeTypeNotFoundException, NodeNotFoundException, IOException {
+
+        LOG.debug("add device: " + this.name);
+
+        byte[] encodedCertificate = null;
+        if (null != this.certificate) {
+            encodedCertificate = getUpFileContent(this.certificate);
+        }
+
+        this.deviceService.addDevice(this.name, this.deviceClass, this.node, this.authenticationPath,
+                this.registrationPath, this.removalPath, this.updatePath, encodedCertificate, this.attributeType,
+                this.userAttributeType);
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String remove() throws DeviceNotFoundException, DeviceDescriptionNotFoundException,
+            DevicePropertyNotFoundException {
+
+        LOG.debug("remove device: " + this.selectedDevice.getName());
+        try {
+            this.deviceService.removeDevice(this.selectedDevice.getName());
+        } catch (PermissionDeniedException e) {
+            LOG.debug("permission denied: " + e.getMessage());
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
+                    .getResourceArgs());
+            return null;
+        }
+        deviceListFactory();
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String edit() {
+
+        LOG.debug("edit device: " + this.selectedDevice.getName());
+
+        this.authenticationPath = this.selectedDevice.getAuthenticationPath();
+        this.registrationPath = this.selectedDevice.getRegistrationPath();
+        this.removalPath = this.selectedDevice.getRemovalPath();
+        if (null != this.selectedDevice.getAttributeType())
+            this.attributeType = this.selectedDevice.getAttributeType().getName();
+        if (null != this.selectedDevice.getUserAttributeType())
+            this.userAttributeType = this.selectedDevice.getUserAttributeType().getName();
+
+        return "edit";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String save() throws DeviceNotFoundException, CertificateEncodingException, IOException,
+            AttributeTypeNotFoundException {
+
+        LOG.debug("save device: " + this.selectedDevice.getName());
+        String deviceName = this.selectedDevice.getName();
+
+        this.deviceService.updateAuthenticationPath(deviceName, this.authenticationPath);
+        if (null != this.registrationPath)
+            this.deviceService.updateRegistrationPath(deviceName, this.registrationPath);
+        if (null != this.removalPath)
+            this.deviceService.updateRemovalPath(deviceName, this.removalPath);
+        if (null != this.updatePath)
+            this.deviceService.updateUpdatePath(deviceName, this.updatePath);
+
+        if (null != this.certificate) {
+            LOG.debug("updating device certificate");
+            this.deviceService.updateDeviceCertificate(deviceName, getUpFileContent(this.certificate));
+        }
+
+        if (null != this.attributeType) {
+            LOG.debug("updating attribute type");
+            this.deviceService.updateAttributeType(deviceName, this.attributeType);
+        }
+
+        if (null != this.userAttributeType) {
+            LOG.debug("updating user attribute type");
+            this.deviceService.updateUserAttributeType(deviceName, this.userAttributeType);
+        }
+
+        /*
+         * Refresh the device
+         */
+        this.selectedDevice = this.deviceService.getDevice(deviceName);
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String view() {
+
+        LOG.debug("view device: " + this.selectedDevice.getName());
+        return "view";
+    }
+
+    /*
+     * Accessors
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getName() {
+
+        return this.name;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getDeviceClass() {
+
+        return this.deviceClass;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setDeviceClass(String deviceClass) {
+
+        this.deviceClass = deviceClass;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getNode() {
+
+        return this.node;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setNode(String node) {
+
+        this.node = node;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getAuthenticationPath() {
+
+        return this.authenticationPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setAuthenticationPath(String authenticationPath) {
+
+        this.authenticationPath = authenticationPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getRegistrationPath() {
+
+        return this.registrationPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setRegistrationPath(String registrationPath) {
+
+        this.registrationPath = registrationPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getRemovalPath() {
+
+        return this.removalPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setRemovalPath(String removalPath) {
+
+        this.removalPath = removalPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getUpdatePath() {
+
+        return this.updatePath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setUpdatePath(String updatePath) {
+
+        this.updatePath = updatePath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public UploadedFile getCertificate() {
+
+        return this.certificate;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setCertificate(UploadedFile certificate) {
+
+        this.certificate = certificate;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getAttributeType() {
+
+        return this.attributeType;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setAttributeType(String attributeType) {
+
+        this.attributeType = attributeType;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getUserAttributeType() {
+
+        return this.userAttributeType;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setUserAttributeType(String userAttributeType) {
+
+        this.userAttributeType = userAttributeType;
+    }
 }

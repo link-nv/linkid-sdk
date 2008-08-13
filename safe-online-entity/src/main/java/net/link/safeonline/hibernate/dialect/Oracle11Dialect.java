@@ -11,18 +11,19 @@ import java.sql.Types;
 
 import org.hibernate.dialect.OracleDialect;
 
+
 /**
- * Custom Oracle Dialect to resolve the issue with Double mapping to Oracle's
- * Double precision
+ * Custom Oracle Dialect to resolve the issue with Double mapping to Oracle's Double precision
  * 
  * @author wvdhaute
  * 
  */
 public class Oracle11Dialect extends OracleDialect {
 
-	public Oracle11Dialect() {
-		super();
-		registerColumnType(Types.DOUBLE, "binary_double");
-	}
+    public Oracle11Dialect() {
+
+        super();
+        registerColumnType(Types.DOUBLE, "binary_double");
+    }
 
 }

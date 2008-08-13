@@ -26,11 +26,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class CachedOcspValidatorBean implements CachedOcspValidator {
 
-    private static final Log LOG = LogFactory
-                                         .getLog(CachedOcspValidatorBean.class);
+    private static final Log LOG = LogFactory.getLog(CachedOcspValidatorBean.class);
 
     @EJB
     OcspValidator            ocspValidator;
@@ -39,8 +39,8 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
     CachedOcspResponseDAO    cachedOcspResponseDAO;
 
 
-    public OcspResult performCachedOcspCheck(TrustDomainEntity trustDomain,
-            X509Certificate certificate, X509Certificate issuerCertificate) {
+    public OcspResult performCachedOcspCheck(TrustDomainEntity trustDomain, X509Certificate certificate,
+            X509Certificate issuerCertificate) {
 
         LOG.debug("performing cached OCSP lookup");
 
@@ -55,24 +55,20 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
 
         if (key == null) {
             LOG.debug("Unable to generate cache key, skipping cache");
-            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI,
-                    certificate, issuerCertificate);
+            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI, certificate, issuerCertificate);
             return ocspResult;
         }
 
         // Cache lookup
-        CachedOcspResponseEntity cachedOcspResponse = this.cachedOcspResponseDAO
-                .findCachedOcspResponse(key);
+        CachedOcspResponseEntity cachedOcspResponse = this.cachedOcspResponseDAO.findCachedOcspResponse(key);
 
         // The response is not cached
         if (cachedOcspResponse == null) {
             LOG.debug("No cache entry found for key: " + key);
-            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI,
-                    certificate, issuerCertificate);
+            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI, certificate, issuerCertificate);
             CachedOcspResultType result = convertOcspResult(ocspResult);
             if (cacheResult(ocspResult)) {
-                this.cachedOcspResponseDAO.addCachedOcspResponse(key, result,
-                        trustDomain);
+                this.cachedOcspResponseDAO.addCachedOcspResponse(key, result, trustDomain);
                 LOG.debug("OCSP response cached for key: " + key);
             }
             return ocspResult;
@@ -88,21 +84,17 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
         LOG.debug("cache entry time: " + cachedTime);
         LOG.debug("current time: " + currentTime);
         LOG.debug("timediff: " + timediff);
-        LOG.debug("trust domain timeout: "
-                + trustDomain.getOcspCacheTimeOutMillis());
+        LOG.debug("trust domain timeout: " + trustDomain.getOcspCacheTimeOutMillis());
         if (timediff > trustDomain.getOcspCacheTimeOutMillis()) {
             LOG.debug("Cache entry expired for key: " + key);
-            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI,
-                    certificate, issuerCertificate);
+            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI, certificate, issuerCertificate);
             CachedOcspResultType result = convertOcspResult(ocspResult);
             if (cacheResult(ocspResult)) {
-                cachedOcspResponse.setEntryDate(new Date(System
-                        .currentTimeMillis()));
+                cachedOcspResponse.setEntryDate(new Date(System.currentTimeMillis()));
                 cachedOcspResponse.setResult(result);
                 LOG.debug("OCSP response updated for key: " + key);
             } else {
-                this.cachedOcspResponseDAO
-                        .removeCachedOcspResponse(cachedOcspResponse);
+                this.cachedOcspResponseDAO.removeCachedOcspResponse(cachedOcspResponse);
                 LOG.debug("Cache entry removed");
             }
             return ocspResult;
@@ -124,8 +116,7 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
         return false;
     }
 
-    private OcspResult convertCachedOcspResultType(
-            CachedOcspResultType cachedOcspResult) {
+    private OcspResult convertCachedOcspResultType(CachedOcspResultType cachedOcspResult) {
 
         if (cachedOcspResult == CachedOcspResultType.GOOD) {
             return OcspResult.GOOD;

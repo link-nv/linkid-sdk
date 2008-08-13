@@ -16,6 +16,7 @@ import net.link.safeonline.util.performance.ProfilingPolicyContextHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * EJB3 Interceptor for profiling method invocations.
  * 
@@ -23,33 +24,33 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ProfileInterceptor {
 
-	private static final Log LOG = LogFactory.getLog(ProfileInterceptor.class);
+    private static final Log LOG = LogFactory.getLog(ProfileInterceptor.class);
 
-	@AroundInvoke
-	public Object aroundInvoke(InvocationContext context) throws Exception {
 
-		ProfileData profileData = ProfilingPolicyContextHandler
-				.getProfileData();
+    @AroundInvoke
+    public Object aroundInvoke(InvocationContext context) throws Exception {
 
-		if (null == profileData || profileData.isLocked())
-			return context.proceed();
+        ProfileData profileData = ProfilingPolicyContextHandler.getProfileData();
 
-		LOG.debug("Profiler Intercepting: " + context.getMethod());
+        if (null == profileData || profileData.isLocked())
+            return context.proceed();
 
-		profileData.lock();
+        LOG.debug("Profiler Intercepting: " + context.getMethod());
 
-		// Make the call that needs profiling.
-		long startTime = System.currentTimeMillis();
-		try {
-			Object result = context.proceed();
-			return result;
-		} finally {
-			long endTime = System.currentTimeMillis();
-			long duration = endTime - startTime;
+        profileData.lock();
 
-			// Record the stats for the call and release the lock.
-			profileData.unlock();
-			profileData.addMeasurement(context.getMethod(), duration);
-		}
-	}
+        // Make the call that needs profiling.
+        long startTime = System.currentTimeMillis();
+        try {
+            Object result = context.proceed();
+            return result;
+        } finally {
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+
+            // Record the stats for the call and release the lock.
+            profileData.unlock();
+            profileData.addMeasurement(context.getMethod(), duration);
+        }
+    }
 }

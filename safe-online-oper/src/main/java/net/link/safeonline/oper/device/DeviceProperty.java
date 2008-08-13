@@ -13,42 +13,41 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
 
+
 @Local
 public interface DeviceProperty {
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Factories
-	 */
-	void devicePropertiesListFactory() throws DeviceNotFoundException;
+    /*
+     * Factories
+     */
+    void devicePropertiesListFactory() throws DeviceNotFoundException;
 
-	/*
-	 * Actions.
-	 */
-	String add() throws ExistingDevicePropertyException,
-			DeviceNotFoundException;
+    /*
+     * Actions.
+     */
+    String add() throws ExistingDevicePropertyException, DeviceNotFoundException;
 
-	String edit();
+    String edit();
 
-	String save();
+    String save();
 
-	String remove() throws DevicePropertyNotFoundException,
-			DeviceNotFoundException;
+    String remove() throws DevicePropertyNotFoundException, DeviceNotFoundException;
 
-	String cancelEdit();
+    String cancelEdit();
 
-	/*
-	 * Acccessors
-	 */
-	String getName();
+    /*
+     * Acccessors
+     */
+    String getName();
 
-	void setName(String name);
+    void setName(String name);
 
-	String getValue();
+    String getValue();
 
-	void setValue(String value);
+    void setValue(String value);
 }

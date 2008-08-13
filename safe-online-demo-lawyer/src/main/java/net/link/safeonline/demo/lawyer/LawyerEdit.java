@@ -9,8 +9,9 @@ package net.link.safeonline.demo.lawyer;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface LawyerEdit extends AbstractLawyerDataClient {
 
-	String persist();
+    String persist();
 }

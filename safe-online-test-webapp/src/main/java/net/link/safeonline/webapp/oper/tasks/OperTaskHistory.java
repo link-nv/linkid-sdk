@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.tasks;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperTaskHistory extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/tasks/task-history.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/tasks/task-history.seam";
 
-	public OperTaskHistory() {
-		super(PAGE_NAME);
-	}
+
+    public OperTaskHistory() {
+
+        super(PAGE_NAME);
+    }
 }

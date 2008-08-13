@@ -18,14 +18,14 @@ package net.link.safeonline.performance.console.swing.model;
 /**
  * <h2>{@link ExecutionSettingsListener}<br>
  * <sub>A listener for changes made to execution setting in the interface.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 18, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface ExecutionSettingsListener {
 
-	public void executionSettingsChanged();
+    public void executionSettingsChanged();
 }

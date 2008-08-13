@@ -11,9 +11,10 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.authentication.exception.ExistingException;
 
+
 @ApplicationException(rollback = true)
 public class ExistingTrustDomainException extends ExistingException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

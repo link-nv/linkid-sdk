@@ -19,30 +19,31 @@ import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.apache.myfaces.custom.tree2.TreeModel;
 
+
 @Local
 public interface TrustPoint {
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Accessors.
-	 */
-	TreeModel getTreeModel();
+    /*
+     * Accessors.
+     */
+    TreeModel getTreeModel();
 
-	void setUpFile(UploadedFile uploadedFile);
+    void setUpFile(UploadedFile uploadedFile);
 
-	UploadedFile getUpFile();
+    UploadedFile getUpFile();
 
-	/*
-	 * Actions.
-	 */
-	String add() throws IOException, TrustDomainNotFoundException,
-			ExistingTrustPointException, CertificateEncodingException;
+    /*
+     * Actions.
+     */
+    String add() throws IOException, TrustDomainNotFoundException, ExistingTrustPointException,
+            CertificateEncodingException;
 
-	String view();
+    String view();
 
-	String removeTrustPoint() throws TrustPointNotFoundException;
+    String removeTrustPoint() throws TrustPointNotFoundException;
 }

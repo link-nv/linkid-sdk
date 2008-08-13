@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.sun.tools.ws.WsImport;
 
+
 /**
  * Unit test for testing the (missing) off-line features of WsImport.
  * 
@@ -19,8 +20,9 @@ import com.sun.tools.ws.WsImport;
  */
 public class WsImportTest {
 
-	@Test
-	public void testCompile() throws Exception {
-		WsImport wsImport = new WsImport();
-	}
+    @Test
+    public void testCompile() throws Exception {
+
+        WsImport wsImport = new WsImport();
+    }
 }

@@ -9,9 +9,11 @@ package net.link.safeonline.digipass;
 
 public class DigipassConstants {
 
-	private DigipassConstants() {
-		// empty
-	}
+    private DigipassConstants() {
 
-	public static final String JNDI_PREFIX = "SafeOnlineDigipass/";
+        // empty
+    }
+
+
+    public static final String JNDI_PREFIX = "SafeOnlineDigipass/";
 }

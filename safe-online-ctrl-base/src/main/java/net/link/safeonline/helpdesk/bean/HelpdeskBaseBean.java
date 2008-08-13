@@ -26,6 +26,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
 
+
 public class HelpdeskBaseBean implements HelpdeskBase {
 
     @Logger
@@ -52,20 +53,17 @@ public class HelpdeskBaseBean implements HelpdeskBase {
 
         if (null == this.location) {
 
-            Map<?, ?> params = FacesContext.getCurrentInstance()
-                    .getExternalContext().getRequestParameterMap();
+            Map<?, ?> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
             this.location = (String) params.get("location");
             if (null == this.location) {
-                this.location = FacesContext.getCurrentInstance()
-                        .getExternalContext().getRequestServletPath();
+                this.location = FacesContext.getCurrentInstance().getExternalContext().getRequestServletPath();
             }
         }
         this.LOG.debug("helpdesk location: " + this.location);
 
         this.LOG.debug("create helpdesk ticket");
-        this.id = HelpdeskLogger.persistContext(this.location,
-                (HttpSession) FacesContext.getCurrentInstance()
-                        .getExternalContext().getSession(false));
+        this.id = HelpdeskLogger.persistContext(this.location, (HttpSession) FacesContext.getCurrentInstance()
+                .getExternalContext().getSession(false));
         return "create-ticket";
     }
 
@@ -93,8 +91,7 @@ public class HelpdeskBaseBean implements HelpdeskBase {
 
     public String getDummy() {
 
-        Map<?, ?> params = FacesContext.getCurrentInstance()
-                .getExternalContext().getRequestParameterMap();
+        Map<?, ?> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         this.location = (String) params.get("location");
         this.LOG.debug("helpdesk location: " + this.location);
 

@@ -7,12 +7,13 @@
 
 package net.link.safeonline.auth.pcsc;
 
-public class IdentityApplet extends
-	net.link.safeonline.identity.IdentityApplet {
+public class IdentityApplet extends net.link.safeonline.identity.IdentityApplet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public IdentityApplet() {
-		super(new PcscAppletController());
-	}
+
+    public IdentityApplet() {
+
+        super(new PcscAppletController());
+    }
 }

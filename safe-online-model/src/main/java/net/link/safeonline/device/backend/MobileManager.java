@@ -12,19 +12,17 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.MobileException;
 
+
 @Local
 public interface MobileManager {
 
-	String requestOTP(String mobile) throws MalformedURLException,
-			MobileException;
+    String requestOTP(String mobile) throws MalformedURLException, MobileException;
 
-	boolean verifyOTP(String challengeId, String OTPValue)
-			throws MalformedURLException, MobileException;
+    boolean verifyOTP(String challengeId, String OTPValue) throws MalformedURLException, MobileException;
 
-	String activate(String mobile, String sessionInfo)
-			throws MalformedURLException, MobileException;
+    String activate(String mobile, String sessionInfo) throws MalformedURLException, MobileException;
 
-	void remove(String mobile) throws MalformedURLException, MobileException;
+    void remove(String mobile) throws MalformedURLException, MobileException;
 
-	String getClientDownloadLink();
+    String getClientDownloadLink();
 }

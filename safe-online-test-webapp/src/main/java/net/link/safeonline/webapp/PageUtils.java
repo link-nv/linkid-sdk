@@ -33,203 +33,192 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Utility class providing some standard webapp operations like login, register,
- * ...
+ * Utility class providing some standard webapp operations like login, register, ...
  * 
  * @author wvdhaute
  * 
  */
 public class PageUtils {
 
-	private static final Log LOG = LogFactory.getLog(PageUtils.class);
+    private static final Log LOG           = LogFactory.getLog(PageUtils.class);
 
-	private static final int PAUSE = 1000;
+    private static final int PAUSE         = 1000;
 
-	private static final int PAUSE_TIMEOUT = 20;
+    private static final int PAUSE_TIMEOUT = 20;
 
-	public static void registerUserWithPassword(
-			AcceptanceTestManager acceptanceTestManager, String login,
-			String password) {
-		UserMain userMain = new UserMain();
-		userMain.open();
 
-		AuthFirstTime authFirstTime = userMain.loginFirstTime();
+    public static void registerUserWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
+            String password) {
 
-		AuthMain authMain = authFirstTime.newUser();
+        UserMain userMain = new UserMain();
+        userMain.open();
 
-		AuthNewUser authNewUser = authMain.newUser();
-		authNewUser.setLogin(login);
-		authNewUser.setCaptcha(acceptanceTestManager);
+        AuthFirstTime authFirstTime = userMain.loginFirstTime();
 
-		AuthNewUserDevice authNewUserDevice = authNewUser.register();
-		authNewUserDevice
-				.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        AuthMain authMain = authFirstTime.newUser();
 
-		AuthRegisterPassword authRegisterPassword = (AuthRegisterPassword) authNewUserDevice
-				.next();
-		authRegisterPassword.setPassword1(password);
-		authRegisterPassword.setPassword2(password);
-		authRegisterPassword.register();
+        AuthNewUser authNewUser = authMain.newUser();
+        authNewUser.setLogin(login);
+        authNewUser.setCaptcha(acceptanceTestManager);
 
-		UserOverview userOverview = new UserOverview();
+        AuthNewUserDevice authNewUserDevice = authNewUser.register();
+        authNewUserDevice.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 
-		// verify
-		Assert.assertTrue(acceptanceTestManager.getLocation().endsWith(
-				UserOverview.PAGE_NAME));
+        AuthRegisterPassword authRegisterPassword = (AuthRegisterPassword) authNewUserDevice.next();
+        authRegisterPassword.setPassword1(password);
+        authRegisterPassword.setPassword2(password);
+        authRegisterPassword.register();
 
-		userOverview.logout();
-	}
+        UserOverview userOverview = new UserOverview();
 
-	public static UserOverview loginUserWithPassword(
-			AcceptanceTestManager acceptanceTestManager, String login,
-			String password) {
-		UserMain userMain = new UserMain();
-		userMain.open();
-		userMain.login();
+        // verify
+        Assert.assertTrue(acceptanceTestManager.getLocation().endsWith(UserOverview.PAGE_NAME));
 
-		loginWithPassword(login, password);
+        userOverview.logout();
+    }
 
-		waitForRedirect(acceptanceTestManager, UserOverview.PAGE_NAME);
-		return new UserOverview();
-	}
+    public static UserOverview loginUserWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
+            String password) {
 
-	public static UserOverview loginFirstTimeUserWithPassword(
-			AcceptanceTestManager acceptanceTestManager, String login,
-			String password) {
-		UserMain userMain = new UserMain();
-		userMain.open();
-		userMain.loginFirstTime();
+        UserMain userMain = new UserMain();
+        userMain.open();
+        userMain.login();
 
-		loginFirstTimeWithPassword(login, password);
+        loginWithPassword(login, password);
 
-		waitForRedirect(acceptanceTestManager, UserOverview.PAGE_NAME);
-		return new UserOverview();
-	}
+        waitForRedirect(acceptanceTestManager, UserOverview.PAGE_NAME);
+        return new UserOverview();
+    }
 
-	public static OperOverview loginOperWithPassword(
-			AcceptanceTestManager acceptanceTestManager, String login,
-			String password) {
-		OperMain operMain = new OperMain();
-		operMain.open();
-		operMain.login();
+    public static UserOverview loginFirstTimeUserWithPassword(AcceptanceTestManager acceptanceTestManager,
+            String login, String password) {
 
-		loginWithPassword(login, password);
+        UserMain userMain = new UserMain();
+        userMain.open();
+        userMain.loginFirstTime();
 
-		waitForRedirect(acceptanceTestManager, OperOverview.PAGE_NAME);
-		return new OperOverview();
-	}
+        loginFirstTimeWithPassword(login, password);
 
-	public static OperOverview loginFirstTimeOperWithPassword(
-			AcceptanceTestManager acceptanceTestManager, String login,
-			String password) {
-		OperMain operMain = new OperMain();
-		operMain.open();
-		operMain.loginFirstTime();
+        waitForRedirect(acceptanceTestManager, UserOverview.PAGE_NAME);
+        return new UserOverview();
+    }
 
-		loginFirstTimeWithPassword(login, password);
+    public static OperOverview loginOperWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
+            String password) {
 
-		waitForRedirect(acceptanceTestManager, OperOverview.PAGE_NAME);
-		return new OperOverview();
-	}
+        OperMain operMain = new OperMain();
+        operMain.open();
+        operMain.login();
 
-	public static OwnerOverview loginOwnerWithPassword(
-			AcceptanceTestManager acceptanceTestManager, String login,
-			String password) {
-		OwnerMain ownerMain = new OwnerMain();
-		ownerMain.open();
-		ownerMain.login();
+        loginWithPassword(login, password);
 
-		loginWithPassword(login, password);
+        waitForRedirect(acceptanceTestManager, OperOverview.PAGE_NAME);
+        return new OperOverview();
+    }
 
-		waitForRedirect(acceptanceTestManager, OwnerOverview.PAGE_NAME);
-		return new OwnerOverview();
-	}
+    public static OperOverview loginFirstTimeOperWithPassword(AcceptanceTestManager acceptanceTestManager,
+            String login, String password) {
 
-	public static HelpdeskOverview loginHelpdeskWithPassword(
-			AcceptanceTestManager acceptanceTestManager, String login,
-			String password) {
-		HelpdeskMain helpdeskMain = new HelpdeskMain();
-		helpdeskMain.open();
-		helpdeskMain.login();
+        OperMain operMain = new OperMain();
+        operMain.open();
+        operMain.loginFirstTime();
 
-		loginWithPassword(login, password);
+        loginFirstTimeWithPassword(login, password);
 
-		waitForRedirect(acceptanceTestManager, HelpdeskOverview.PAGE_NAME);
-		return new HelpdeskOverview();
-	}
+        waitForRedirect(acceptanceTestManager, OperOverview.PAGE_NAME);
+        return new OperOverview();
+    }
 
-	private static void loginFirstTimeWithPassword(String login, String password) {
-		AuthFirstTime authFirstTime = new AuthFirstTime();
-		authFirstTime.existingUser();
+    public static OwnerOverview loginOwnerWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
+            String password) {
 
-		loginWithPassword(login, password);
-	}
+        OwnerMain ownerMain = new OwnerMain();
+        ownerMain.open();
+        ownerMain.login();
 
-	private static void loginWithPassword(String login, String password) {
-		AuthMain authMain = new AuthMain();
-		authMain.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        loginWithPassword(login, password);
 
-		AuthUserNamePassword authUserNamePassword = (AuthUserNamePassword) authMain
-				.next();
-		authUserNamePassword.setLogin(login);
-		authUserNamePassword.setPassword(password);
-		authUserNamePassword.logon();
-	}
+        waitForRedirect(acceptanceTestManager, OwnerOverview.PAGE_NAME);
+        return new OwnerOverview();
+    }
 
-	public static DemoPaymentSearch loginPaymentAdmin(
-			AcceptanceTestManager acceptanceTestManager) {
-		DemoPaymentMain demoPaymentMain = new DemoPaymentMain();
-		demoPaymentMain.open();
-		AuthMain authMain = demoPaymentMain.login();
-		authMain.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+    public static HelpdeskOverview loginHelpdeskWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
+            String password) {
 
-		AuthUserNamePassword authUserNamePassword = (AuthUserNamePassword) authMain
-				.next();
-		authUserNamePassword.setLogin(WebappConstants.DEMO_PAYMENT_ADMIN);
-		authUserNamePassword.setPassword("secret");
-		authUserNamePassword.logon();
+        HelpdeskMain helpdeskMain = new HelpdeskMain();
+        helpdeskMain.open();
+        helpdeskMain.login();
 
-		// payment admin subscription
-		if (StringUtils.contains(acceptanceTestManager.getLocation(),
-				AuthSubscription.PAGE_NAME)) {
-			AuthSubscription authSubscription = new AuthSubscription();
-			AuthIdentityConfirmation authIdentityConfirmation = authSubscription
-					.confirm();
-			authIdentityConfirmation.agree();
-			AuthMissingAttributes authMissingAttributes = new AuthMissingAttributes();
-			authMissingAttributes
-					.setAttributeValue(WebappConstants.DEMO_PAYMENT_VISA_LABEL,
-							"9999888877776666");
-			authMissingAttributes.save();
-		}
-		PageUtils.waitForRedirect(acceptanceTestManager,
-				DemoPaymentSearch.PAGE_NAME);
-		return new DemoPaymentSearch();
-	}
+        loginWithPassword(login, password);
 
-	/**
-	 * Causes the thread to sleep and every now and then check if we have landed
-	 * on the specified page yet. Timeouts after a while.
-	 * 
-	 * @param redirectPage
-	 */
-	public static void waitForRedirect(
-			AcceptanceTestManager acceptanceTestManager, String redirectPage) {
-		int timeout = 0;
-		while (!StringUtils.contains(acceptanceTestManager.getLocation(),
-				redirectPage)
-				&& timeout != PAUSE_TIMEOUT) {
-			LOG.debug("page(" + timeout + ") : "
-					+ acceptanceTestManager.getLocation());
-			try {
-				Thread.sleep(PAUSE);
-			} catch (InterruptedException e) {
-				Assert.fail("Thread interrupted");
-			}
-			timeout++;
-		}
-		Assert.assertTrue(StringUtils.contains(acceptanceTestManager
-				.getLocation(), redirectPage));
-	}
+        waitForRedirect(acceptanceTestManager, HelpdeskOverview.PAGE_NAME);
+        return new HelpdeskOverview();
+    }
+
+    private static void loginFirstTimeWithPassword(String login, String password) {
+
+        AuthFirstTime authFirstTime = new AuthFirstTime();
+        authFirstTime.existingUser();
+
+        loginWithPassword(login, password);
+    }
+
+    private static void loginWithPassword(String login, String password) {
+
+        AuthMain authMain = new AuthMain();
+        authMain.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+
+        AuthUserNamePassword authUserNamePassword = (AuthUserNamePassword) authMain.next();
+        authUserNamePassword.setLogin(login);
+        authUserNamePassword.setPassword(password);
+        authUserNamePassword.logon();
+    }
+
+    public static DemoPaymentSearch loginPaymentAdmin(AcceptanceTestManager acceptanceTestManager) {
+
+        DemoPaymentMain demoPaymentMain = new DemoPaymentMain();
+        demoPaymentMain.open();
+        AuthMain authMain = demoPaymentMain.login();
+        authMain.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+
+        AuthUserNamePassword authUserNamePassword = (AuthUserNamePassword) authMain.next();
+        authUserNamePassword.setLogin(WebappConstants.DEMO_PAYMENT_ADMIN);
+        authUserNamePassword.setPassword("secret");
+        authUserNamePassword.logon();
+
+        // payment admin subscription
+        if (StringUtils.contains(acceptanceTestManager.getLocation(), AuthSubscription.PAGE_NAME)) {
+            AuthSubscription authSubscription = new AuthSubscription();
+            AuthIdentityConfirmation authIdentityConfirmation = authSubscription.confirm();
+            authIdentityConfirmation.agree();
+            AuthMissingAttributes authMissingAttributes = new AuthMissingAttributes();
+            authMissingAttributes.setAttributeValue(WebappConstants.DEMO_PAYMENT_VISA_LABEL, "9999888877776666");
+            authMissingAttributes.save();
+        }
+        PageUtils.waitForRedirect(acceptanceTestManager, DemoPaymentSearch.PAGE_NAME);
+        return new DemoPaymentSearch();
+    }
+
+    /**
+     * Causes the thread to sleep and every now and then check if we have landed on the specified page yet. Timeouts
+     * after a while.
+     * 
+     * @param redirectPage
+     */
+    public static void waitForRedirect(AcceptanceTestManager acceptanceTestManager, String redirectPage) {
+
+        int timeout = 0;
+        while (!StringUtils.contains(acceptanceTestManager.getLocation(), redirectPage) && timeout != PAUSE_TIMEOUT) {
+            LOG.debug("page(" + timeout + ") : " + acceptanceTestManager.getLocation());
+            try {
+                Thread.sleep(PAUSE);
+            } catch (InterruptedException e) {
+                Assert.fail("Thread interrupted");
+            }
+            timeout++;
+        }
+        Assert.assertTrue(StringUtils.contains(acceptanceTestManager.getLocation(), redirectPage));
+    }
 }

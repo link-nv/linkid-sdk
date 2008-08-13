@@ -42,162 +42,163 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("authentication")
-@LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX
-		+ "AuthenticationBean/local")
+@LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "AuthenticationBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class AuthenticationBean implements Authentication {
 
-	private static final Log LOG = LogFactory.getLog(AuthenticationBean.class);
+    private static final Log     LOG = LogFactory.getLog(AuthenticationBean.class);
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                facesMessages;
 
-	@In(value = AuthenticationContext.AUTHENTICATION_CONTEXT)
-	AuthenticationContext authenticationContext;
+    @In(value = AuthenticationContext.AUTHENTICATION_CONTEXT)
+    AuthenticationContext        authenticationContext;
 
-	@EJB
-	private EncapDeviceService encapDeviceService;
+    @EJB
+    private EncapDeviceService   encapDeviceService;
 
-	@EJB
-	private SamlAuthorityService samlAuthorityService;
+    @EJB
+    private SamlAuthorityService samlAuthorityService;
 
-	private String challengeId;
+    private String               challengeId;
 
-	private String mobile;
+    private String               mobile;
 
-	private String mobileOTP;
+    private String               mobileOTP;
 
-	public String getMobileOTP() {
-		return this.mobileOTP;
-	}
 
-	public void setMobileOTP(String mobileOTP) {
-		this.mobileOTP = mobileOTP;
-	}
+    public String getMobileOTP() {
 
-	public String getMobile() {
-		return this.mobile;
-	}
+        return this.mobileOTP;
+    }
 
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
+    public void setMobileOTP(String mobileOTP) {
 
-	public String getChallengeId() {
-		return this.challengeId;
-	}
+        this.mobileOTP = mobileOTP;
+    }
 
-	public void setChallengeId(String challengeId) {
-		this.challengeId = challengeId;
-	}
+    public String getMobile() {
 
-	@End
-	public String login() throws MobileAuthenticationException, IOException {
-		LOG.debug("login: " + this.mobile);
-		HelpdeskLogger.add("login: " + this.mobile, LogLevelType.INFO);
-		try {
-			String deviceUserId = this.encapDeviceService.authenticate(
-					this.mobile, this.challengeId, this.mobileOTP);
-			if (null == deviceUserId) {
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-				HelpdeskLogger.add("login failed: " + this.mobile,
-						LogLevelType.ERROR);
-				return null;
-			}
-			login(deviceUserId);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
-			HelpdeskLogger.add("login: subject not found for " + this.mobile,
-					LogLevelType.ERROR);
-			return null;
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			HelpdeskLogger.add("login: encap webservice not available",
-					LogLevelType.ERROR);
-			return null;
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-			HelpdeskLogger.add("login: failed to contact encap webservice for "
-					+ this.mobile, LogLevelType.ERROR);
-			return null;
-		}
-		HelpdeskLogger.clear();
-		destroyCallback();
-		return null;
-	}
+        return this.mobile;
+    }
 
-	private void login(String deviceUserId) throws IOException {
-		this.authenticationContext.setUserId(deviceUserId);
-		this.authenticationContext.setValidity(this.samlAuthorityService
-				.getAuthnAssertionValidity());
-		this.authenticationContext
-				.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
-		this.authenticationContext
-				.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+    public void setMobile(String mobile) {
 
-		exit();
-	}
+        this.mobile = mobile;
+    }
 
-	@Begin
-	@ErrorHandling( {
-			@Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
-			@Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
-	public String requestOTP() throws MalformedURLException, MobileException {
-		LOG.debug("request OTP: mobile=" + this.mobile);
-		this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
-		LOG.debug("received challengeId: " + this.challengeId);
-		return "success";
-	}
+    public String getChallengeId() {
 
-	@ErrorHandling( {
-			@Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
-			@Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
-	public String requestNewOTP() throws MalformedURLException, MobileException {
-		LOG.debug("request new OTP: mobile=" + this.mobile);
-		this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
-		LOG.debug("received new challengeId: " + this.challengeId);
-		return "success";
+        return this.challengeId;
+    }
 
-	}
+    public void setChallengeId(String challengeId) {
 
-	public String cancel() throws IOException {
-		exit();
-		return null;
-	}
+        this.challengeId = challengeId;
+    }
 
-	public String tryAnotherDevice() throws IOException {
-		this.authenticationContext
-				.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
-		exit();
-		return null;
-	}
+    @End
+    public String login() throws MobileAuthenticationException, IOException {
 
-	private void exit() throws IOException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = facesContext.getExternalContext();
+        LOG.debug("login: " + this.mobile);
+        HelpdeskLogger.add("login: " + this.mobile, LogLevelType.INFO);
+        try {
+            String deviceUserId = this.encapDeviceService.authenticate(this.mobile, this.challengeId, this.mobileOTP);
+            if (null == deviceUserId) {
+                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+                HelpdeskLogger.add("login failed: " + this.mobile, LogLevelType.ERROR);
+                return null;
+            }
+            login(deviceUserId);
+        } catch (SubjectNotFoundException e) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
+            HelpdeskLogger.add("login: subject not found for " + this.mobile, LogLevelType.ERROR);
+            return null;
+        } catch (MalformedURLException e) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
+            HelpdeskLogger.add("login: encap webservice not available", LogLevelType.ERROR);
+            return null;
+        } catch (MobileException e) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
+            HelpdeskLogger.add("login: failed to contact encap webservice for " + this.mobile, LogLevelType.ERROR);
+            return null;
+        }
+        HelpdeskLogger.clear();
+        destroyCallback();
+        return null;
+    }
 
-		String redirectUrl = "authenticationexit";
-		LOG.debug("redirecting to: " + redirectUrl);
-		externalContext.redirect(redirectUrl);
-	}
+    private void login(String deviceUserId) throws IOException {
 
-	@PostConstruct
-	public void init() {
-		HelpdeskLogger.clear();
-	}
+        this.authenticationContext.setUserId(deviceUserId);
+        this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        this.authenticationContext.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+        this.authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		LOG.debug("destroy");
-		this.mobileOTP = null;
-		this.mobile = null;
-	}
+        exit();
+    }
+
+    @Begin
+    @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
+            @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
+    public String requestOTP() throws MalformedURLException, MobileException {
+
+        LOG.debug("request OTP: mobile=" + this.mobile);
+        this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
+        LOG.debug("received challengeId: " + this.challengeId);
+        return "success";
+    }
+
+    @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
+            @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
+    public String requestNewOTP() throws MalformedURLException, MobileException {
+
+        LOG.debug("request new OTP: mobile=" + this.mobile);
+        this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
+        LOG.debug("received new challengeId: " + this.challengeId);
+        return "success";
+
+    }
+
+    public String cancel() throws IOException {
+
+        exit();
+        return null;
+    }
+
+    public String tryAnotherDevice() throws IOException {
+
+        this.authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+        exit();
+        return null;
+    }
+
+    private void exit() throws IOException {
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+
+        String redirectUrl = "authenticationexit";
+        LOG.debug("redirecting to: " + redirectUrl);
+        externalContext.redirect(redirectUrl);
+    }
+
+    @PostConstruct
+    public void init() {
+
+        HelpdeskLogger.clear();
+    }
+
+    @Remove
+    @Destroy
+    public void destroyCallback() {
+
+        LOG.debug("destroy");
+        this.mobileOTP = null;
+        this.mobile = null;
+    }
 
 }

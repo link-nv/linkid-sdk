@@ -14,6 +14,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Embeddable
 public class HistoryPropertyPK implements Serializable {
 
@@ -63,21 +64,18 @@ public class HistoryPropertyPK implements Serializable {
         if (false == obj instanceof HistoryPropertyPK)
             return false;
         HistoryPropertyPK rhs = (HistoryPropertyPK) obj;
-        return new EqualsBuilder().append(this.id, rhs.id).append(this.name,
-                rhs.name).isEquals();
+        return new EqualsBuilder().append(this.id, rhs.id).append(this.name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.id).append(this.name)
-                .toHashCode();
+        return new HashCodeBuilder().append(this.id).append(this.name).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).append("name",
-                this.name).toString();
+        return new ToStringBuilder(this).append("id", this.id).append("name", this.name).toString();
     }
 }

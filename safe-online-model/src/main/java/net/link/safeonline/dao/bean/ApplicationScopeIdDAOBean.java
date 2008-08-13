@@ -24,62 +24,60 @@ import net.link.safeonline.model.IdGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class ApplicationScopeIdDAOBean implements ApplicationScopeIdDAO {
 
-	private static final Log LOG = LogFactory
-			.getLog(ApplicationScopeIdDAOBean.class);
+    private static final Log                        LOG = LogFactory.getLog(ApplicationScopeIdDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                           entityManager;
 
-	private ApplicationScopeIdEntity.QueryInterface queryObject;
+    private ApplicationScopeIdEntity.QueryInterface queryObject;
 
-	@EJB
-	private IdGenerator idGenerator;
+    @EJB
+    private IdGenerator                             idGenerator;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager,
-				ApplicationScopeIdEntity.QueryInterface.class);
-	}
 
-	public ApplicationScopeIdEntity addApplicationScopeId(
-			SubjectEntity subject, ApplicationEntity application) {
-		String id = this.idGenerator.generateId();
-		LOG.debug("add application scope id=" + id + " for "
-				+ subject.getUserId() + " and application "
-				+ application.getName());
-		ApplicationScopeIdEntity applicationScopeId = new ApplicationScopeIdEntity(
-				subject, id, application);
-		this.entityManager.persist(applicationScopeId);
-		return applicationScopeId;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public ApplicationScopeIdEntity findApplicationScopeId(
-			SubjectEntity subject, ApplicationEntity application) {
-		LOG.debug("find application scope id for " + subject.getUserId()
-				+ " application=" + application.getName());
-		return this.queryObject.findApplicationScopeId(subject, application);
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                ApplicationScopeIdEntity.QueryInterface.class);
+    }
 
-	public ApplicationScopeIdEntity findApplicationScopeId(String id) {
-		LOG.debug("find application scope id: id=" + id);
-		ApplicationScopeIdEntity applicationScopeId = this.entityManager.find(
-				ApplicationScopeIdEntity.class, id);
-		return applicationScopeId;
-	}
+    public ApplicationScopeIdEntity addApplicationScopeId(SubjectEntity subject, ApplicationEntity application) {
 
-	public void removeApplicationScopeIds(SubjectEntity subject) {
-		LOG.debug("remove application scope id's for subject: "
-				+ subject.getUserId());
-		this.queryObject.deleteAll(subject);
-	}
+        String id = this.idGenerator.generateId();
+        LOG.debug("add application scope id=" + id + " for " + subject.getUserId() + " and application "
+                + application.getName());
+        ApplicationScopeIdEntity applicationScopeId = new ApplicationScopeIdEntity(subject, id, application);
+        this.entityManager.persist(applicationScopeId);
+        return applicationScopeId;
+    }
 
-	public void removeApplicationScopeIds(ApplicationEntity application) {
-		LOG.debug("remove application scope id's for application: "
-				+ application);
-		this.queryObject.deleteAll(application);
-	}
+    public ApplicationScopeIdEntity findApplicationScopeId(SubjectEntity subject, ApplicationEntity application) {
+
+        LOG.debug("find application scope id for " + subject.getUserId() + " application=" + application.getName());
+        return this.queryObject.findApplicationScopeId(subject, application);
+    }
+
+    public ApplicationScopeIdEntity findApplicationScopeId(String id) {
+
+        LOG.debug("find application scope id: id=" + id);
+        ApplicationScopeIdEntity applicationScopeId = this.entityManager.find(ApplicationScopeIdEntity.class, id);
+        return applicationScopeId;
+    }
+
+    public void removeApplicationScopeIds(SubjectEntity subject) {
+
+        LOG.debug("remove application scope id's for subject: " + subject.getUserId());
+        this.queryObject.deleteAll(subject);
+    }
+
+    public void removeApplicationScopeIds(ApplicationEntity application) {
+
+        LOG.debug("remove application scope id's for application: " + application);
+        this.queryObject.deleteAll(application);
+    }
 }

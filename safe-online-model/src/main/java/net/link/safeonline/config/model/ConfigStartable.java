@@ -11,6 +11,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.Startable;
 
+
 @Local
 public interface ConfigStartable extends Startable {
 

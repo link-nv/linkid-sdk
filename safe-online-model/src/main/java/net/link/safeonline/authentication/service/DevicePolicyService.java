@@ -18,6 +18,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.entity.DeviceEntity;
 
+
 /**
  * Interface for device policy service bean.
  * 
@@ -26,82 +27,78 @@ import net.link.safeonline.entity.DeviceEntity;
 @Local
 public interface DevicePolicyService {
 
-	/**
-	 * Gives back the device policy for the given application. The device policy
-	 * is a set of device entities which the application accepts as
-	 * authentication devices. The method signature has been optimized for ease
-	 * of use in the authentication web application.
-	 * 
-	 * @param applicationId
-	 * @param requiredDevicePolicy
-	 *            the optional required device policy as communicated by the
-	 *            application via the authentication protocol.
-	 * @throws ApplicationNotFoundException
-	 * @throws EmptyDevicePolicyException
-	 */
-	List<DeviceEntity> getDevicePolicy(String applicationId,
-			Set<DeviceEntity> requiredDevicePolicy)
-			throws ApplicationNotFoundException, EmptyDevicePolicyException;
+    /**
+     * Gives back the device policy for the given application. The device policy is a set of device entities which the
+     * application accepts as authentication devices. The method signature has been optimized for ease of use in the
+     * authentication web application.
+     * 
+     * @param applicationId
+     * @param requiredDevicePolicy
+     *            the optional required device policy as communicated by the application via the authentication
+     *            protocol.
+     * @throws ApplicationNotFoundException
+     * @throws EmptyDevicePolicyException
+     */
+    List<DeviceEntity> getDevicePolicy(String applicationId, Set<DeviceEntity> requiredDevicePolicy)
+            throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
-	/**
-	 * Returns all devices
-	 * 
-	 */
-	List<DeviceEntity> getDevices();
+    /**
+     * Returns all devices
+     * 
+     */
+    List<DeviceEntity> getDevices();
 
-	/**
-	 * Gives back device description according to the specified locale.
-	 * 
-	 * @param deviceName
-	 * @param locale
-	 */
-	String getDeviceDescription(String deviceName, Locale locale);
+    /**
+     * Gives back device description according to the specified locale.
+     * 
+     * @param deviceName
+     * @param locale
+     */
+    String getDeviceDescription(String deviceName, Locale locale);
 
-	/**
-	 * Returns the authentication URL for the specified device.
-	 * 
-	 * @param deviceName
-	 * @throws DeviceNotFoundException
-	 */
-	String getAuthenticationURL(String deviceName)
-			throws DeviceNotFoundException;
+    /**
+     * Returns the authentication URL for the specified device.
+     * 
+     * @param deviceName
+     * @throws DeviceNotFoundException
+     */
+    String getAuthenticationURL(String deviceName) throws DeviceNotFoundException;
 
-	/**
-	 * Returns the registration URL for the specified device.
-	 * 
-	 * @param deviceName
-	 * @throws DeviceNotFoundException
-	 */
-	String getRegistrationURL(String deviceName) throws DeviceNotFoundException;
+    /**
+     * Returns the registration URL for the specified device.
+     * 
+     * @param deviceName
+     * @throws DeviceNotFoundException
+     */
+    String getRegistrationURL(String deviceName) throws DeviceNotFoundException;
 
-	/**
-	 * Returns the removal URL for the specified device.
-	 * 
-	 * @param deviceName
-	 * @throws DeviceNotFoundException
-	 */
-	String getRemovalURL(String deviceName) throws DeviceNotFoundException;
+    /**
+     * Returns the removal URL for the specified device.
+     * 
+     * @param deviceName
+     * @throws DeviceNotFoundException
+     */
+    String getRemovalURL(String deviceName) throws DeviceNotFoundException;
 
-	/**
-	 * Returns the update URL for the specified device.
-	 * 
-	 * @param deviceName
-	 * @throws DeviceNotFoundException
-	 */
-	String getUpdateURL(String deviceName) throws DeviceNotFoundException;
+    /**
+     * Returns the update URL for the specified device.
+     * 
+     * @param deviceName
+     * @throws DeviceNotFoundException
+     */
+    String getUpdateURL(String deviceName) throws DeviceNotFoundException;
 
-	/**
-	 * Returns list of devices matching the specified authentication context
-	 * class.
-	 * 
-	 * @param authnContextClassRefValue
-	 */
-	List<DeviceEntity> listDevices(String authenticationContextClass);
+    /**
+     * Returns list of devices matching the specified authentication context class.
+     * 
+     * @param authnContextClassRefValue
+     */
+    List<DeviceEntity> listDevices(String authenticationContextClass);
 
-	/**
-	 * @param deviceName
-	 * @throws DeviceNotFoundException
-	 */
-	DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException;
+    /**
+     * @param deviceName
+     * @throws DeviceNotFoundException
+     */
+    DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException;
 
 }

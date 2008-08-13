@@ -10,7 +10,9 @@ package net.link.safeonline.auth.pcsc;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Convert {
-	Class<? extends Convertor<?>> value();
+
+    Class<? extends Convertor<?>> value();
 }

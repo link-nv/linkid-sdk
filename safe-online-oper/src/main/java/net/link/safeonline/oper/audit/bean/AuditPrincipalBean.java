@@ -28,39 +28,42 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("audit_principal")
 @Scope(ScopeType.CONVERSATION)
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "AuditPrincipalBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "AuditPrincipalBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class AuditPrincipalBean implements AuditPrincipal {
 
-	private static final Log LOG = LogFactory.getLog(AuditPrincipalBean.class);
+    private static final Log LOG = LogFactory.getLog(AuditPrincipalBean.class);
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages            facesMessages;
 
-	@In(required = true)
-	@Out(required = true)
-	String principal;
+    @In(required = true)
+    @Out(required = true)
+    String                   principal;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService   subjectService;
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getName() {
-		String name;
-		if (!this.principal.equals(OperatorConstants.UNKNOWN_PRINCIPAL))
-			name = this.subjectService.getSubjectLogin(this.principal);
-		else
-			name = OperatorConstants.UNKNOWN_PRINCIPAL;
-		return name;
-	}
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		LOG.debug("destroy");
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getName() {
+
+        String name;
+        if (!this.principal.equals(OperatorConstants.UNKNOWN_PRINCIPAL))
+            name = this.subjectService.getSubjectLogin(this.principal);
+        else
+            name = OperatorConstants.UNKNOWN_PRINCIPAL;
+        return name;
+    }
+
+    @Remove
+    @Destroy
+    public void destroyCallback() {
+
+        LOG.debug("destroy");
+    }
 }

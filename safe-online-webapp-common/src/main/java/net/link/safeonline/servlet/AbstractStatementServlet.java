@@ -22,9 +22,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Abstract statement servlet. Helpdesk events are handled by the helpdesk
- * servlet.
+ * Abstract statement servlet. Helpdesk events are handled by the helpdesk servlet.
  * 
  * @author wvdhaute
  * @see HelpdeskServlet
@@ -32,49 +32,49 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractStatementServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory
-			.getLog(AbstractStatementServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(AbstractStatementServlet.class);
 
-	protected abstract void processStatement(byte[] statementData,
-			HttpSession session, HttpServletResponse response)
-			throws ServletException, IOException;
 
-	@Override
-	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ServletException {
-		LOG.debug("doPost");
-		String contentType = request.getContentType();
-		if (false == "application/octet-stream".equals(contentType)) {
-			LOG.error("content-type should be application/octet-stream");
-			LOG.debug("content type: " + contentType);
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
+    protected abstract void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
+            throws ServletException, IOException;
 
-		byte[] statementData = extractStatement(request);
-		if (null == statementData) {
-			response.setStatus(HttpServletResponse.SC_OK);
-			return;
-		}
+    @Override
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException,
+            ServletException {
 
-		HttpSession session = request.getSession();
+        LOG.debug("doPost");
+        String contentType = request.getContentType();
+        if (false == "application/octet-stream".equals(contentType)) {
+            LOG.error("content-type should be application/octet-stream");
+            LOG.debug("content type: " + contentType);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
 
-		processStatement(statementData, session, response);
-	}
+        byte[] statementData = extractStatement(request);
+        if (null == statementData) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
 
-	private byte[] extractStatement(HttpServletRequest request)
-			throws IOException {
-		int size = request.getContentLength();
-		if (0 == size) {
-			LOG.debug("no statement present");
-			return null;
-		}
-		InputStream contentInputStream = request.getInputStream();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		IOUtils.copy(contentInputStream, outputStream);
-		byte[] statementData = outputStream.toByteArray();
-		return statementData;
-	}
+        HttpSession session = request.getSession();
+
+        processStatement(statementData, session, response);
+    }
+
+    private byte[] extractStatement(HttpServletRequest request) throws IOException {
+
+        int size = request.getContentLength();
+        if (0 == size) {
+            LOG.debug("no statement present");
+            return null;
+        }
+        InputStream contentInputStream = request.getInputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        IOUtils.copy(contentInputStream, outputStream);
+        byte[] statementData = outputStream.toByteArray();
+        return statementData;
+    }
 }

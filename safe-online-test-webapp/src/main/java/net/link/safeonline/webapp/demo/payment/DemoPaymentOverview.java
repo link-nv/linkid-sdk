@@ -10,17 +10,20 @@ package net.link.safeonline.webapp.demo.payment;
 import junit.framework.Assert;
 import net.link.safeonline.webapp.Page;
 
+
 public class DemoPaymentOverview extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX
-			+ "/overview.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX + "/overview.seam";
 
-	public DemoPaymentOverview() {
-		super(PAGE_NAME);
-	}
 
-	public void checkLoggedIn(String login) {
-		Assert.assertTrue(checkTextPresent("Welcome " + login));
-	}
+    public DemoPaymentOverview() {
+
+        super(PAGE_NAME);
+    }
+
+    public void checkLoggedIn(String login) {
+
+        Assert.assertTrue(checkTextPresent("Welcome " + login));
+    }
 
 }

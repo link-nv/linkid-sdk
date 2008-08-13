@@ -9,14 +9,14 @@ package net.link.safeonline.demo.prescription;
 
 public interface AbstractPrescriptionDataClient {
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	void postConstructCallback();
+    void postConstructCallback();
 
-	void postActivateCallback();
+    void postActivateCallback();
 
-	void prePassivateCallback();
+    void prePassivateCallback();
 }

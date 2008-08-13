@@ -17,31 +17,31 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 
+
 @Local
 public interface Device {
 
-	/*
-	 * Accessors.
-	 */
-	String getSelection();
+    /*
+     * Accessors.
+     */
+    String getSelection();
 
-	void setSelection(String deviceSelection);
+    void setSelection(String deviceSelection);
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Actions.
-	 */
-	String next() throws IOException, DeviceNotFoundException;
+    /*
+     * Actions.
+     */
+    String next() throws IOException, DeviceNotFoundException;
 
-	/*
-	 * Factories.
-	 */
-	List<SelectItem> applicationDevicesFactory()
-			throws ApplicationNotFoundException, EmptyDevicePolicyException;
+    /*
+     * Factories.
+     */
+    List<SelectItem> applicationDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
-	List<SelectItem> allDevicesFactory();
+    List<SelectItem> allDevicesFactory();
 }

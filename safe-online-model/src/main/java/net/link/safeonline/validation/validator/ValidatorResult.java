@@ -11,5 +11,5 @@ package net.link.safeonline.validation.validator;
 
 public interface ValidatorResult {
 
-	void addResult(String result);
+    void addResult(String result);
 }

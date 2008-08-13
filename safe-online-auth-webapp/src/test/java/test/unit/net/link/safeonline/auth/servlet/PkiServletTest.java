@@ -32,73 +32,79 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class PkiServletTest {
 
-	private static final Log LOG = LogFactory.getLog(PkiServletTest.class);
+    private static final Log   LOG = LogFactory.getLog(PkiServletTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager servletTestManager;
 
-	private JmxTestUtils jmxTestUtils;
+    private JmxTestUtils       jmxTestUtils;
 
-	private X509Certificate certificate;
+    private X509Certificate    certificate;
 
-	@Before
-	public void setUp() throws Exception {
-		this.jmxTestUtils = new JmxTestUtils();
-		this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
-				"CN=Test");
+    @Before
+    public void setUp() throws Exception {
 
-		GetCertificateMBeanActionHandler actionHandler = new GetCertificateMBeanActionHandler(
-				this.certificate);
-		this.jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				actionHandler);
+        this.jmxTestUtils = new JmxTestUtils();
+        this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(PkiServlet.class);
-	}
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-	@After
-	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-		this.jmxTestUtils.tearDown();
-	}
+        GetCertificateMBeanActionHandler actionHandler = new GetCertificateMBeanActionHandler(this.certificate);
+        this.jmxTestUtils
+                .registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", actionHandler);
 
-	static class GetCertificateMBeanActionHandler implements MBeanActionHandler {
+        this.servletTestManager = new ServletTestManager();
+        this.servletTestManager.setUp(PkiServlet.class);
+    }
 
-		private final X509Certificate certificate;
+    @After
+    public void tearDown() throws Exception {
 
-		public GetCertificateMBeanActionHandler(X509Certificate certificate) {
-			this.certificate = certificate;
-		}
+        this.servletTestManager.tearDown();
+        this.jmxTestUtils.tearDown();
+    }
 
-		public Object invoke(Object[] arguments) {
-			return this.certificate;
-		}
-	}
 
-	@Test
-	public void testGetCertificate() throws Exception {
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletTestManager
-				.getServletLocation());
+    static class GetCertificateMBeanActionHandler implements MBeanActionHandler {
 
-		int statusCode = httpClient.executeMethod(getMethod);
+        private final X509Certificate certificate;
 
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpServletResponse.SC_OK, statusCode);
-		String responseBody = getMethod.getResponseBodyAsString();
-		LOG.debug("response body: " + responseBody);
 
-		StringReader stringReader = new StringReader(responseBody);
-		PEMReader pemReader = new PEMReader(stringReader);
-		Object obj = pemReader.readObject();
-		LOG.debug("obj class: " + obj.getClass().getName());
-		assertTrue(obj instanceof X509Certificate);
-		X509Certificate resultCertificate = (X509Certificate) obj;
-		assertEquals(this.certificate, resultCertificate);
-	}
+        public GetCertificateMBeanActionHandler(X509Certificate certificate) {
+
+            this.certificate = certificate;
+        }
+
+        public Object invoke(Object[] arguments) {
+
+            return this.certificate;
+        }
+    }
+
+
+    @Test
+    public void testGetCertificate() throws Exception {
+
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+
+        int statusCode = httpClient.executeMethod(getMethod);
+
+        LOG.debug("status code: " + statusCode);
+        assertEquals(HttpServletResponse.SC_OK, statusCode);
+        String responseBody = getMethod.getResponseBodyAsString();
+        LOG.debug("response body: " + responseBody);
+
+        StringReader stringReader = new StringReader(responseBody);
+        PEMReader pemReader = new PEMReader(stringReader);
+        Object obj = pemReader.readObject();
+        LOG.debug("obj class: " + obj.getClass().getName());
+        assertTrue(obj instanceof X509Certificate);
+        X509Certificate resultCertificate = (X509Certificate) obj;
+        assertEquals(this.certificate, resultCertificate);
+    }
 }

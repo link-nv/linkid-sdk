@@ -8,24 +8,29 @@
 package net.link.safeonline.auth.pcsc;
 
 public class AddressFile {
-	@Tag(1)
-	String streetAndNumber;
 
-	@Tag(2)
-	String zip;
+    @Tag(1)
+    String streetAndNumber;
 
-	@Tag(3)
-	String municipality;
+    @Tag(2)
+    String zip;
 
-	public String getStreetAndNumber() {
-		return this.streetAndNumber;
-	}
+    @Tag(3)
+    String municipality;
 
-	public String getZip() {
-		return this.zip;
-	}
 
-	public String getMunicipality() {
-		return this.municipality;
-	}
+    public String getStreetAndNumber() {
+
+        return this.streetAndNumber;
+    }
+
+    public String getZip() {
+
+        return this.zip;
+    }
+
+    public String getMunicipality() {
+
+        return this.municipality;
+    }
 }

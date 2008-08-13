@@ -9,6 +9,7 @@ package net.link.safeonline.p11sc;
 
 import java.io.IOException;
 
+
 /**
  * Signals that the smart card is not supported for authentication.
  * 
@@ -17,13 +18,16 @@ import java.io.IOException;
  */
 public class UnsupportedSmartCardException extends IOException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public UnsupportedSmartCardException() {
-		super();
-	}
 
-	public UnsupportedSmartCardException(String s) {
-		super(s);
-	}
+    public UnsupportedSmartCardException() {
+
+        super();
+    }
+
+    public UnsupportedSmartCardException(String s) {
+
+        super(s);
+    }
 }

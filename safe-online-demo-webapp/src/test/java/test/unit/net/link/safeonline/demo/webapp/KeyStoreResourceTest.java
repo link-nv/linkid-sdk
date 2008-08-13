@@ -13,19 +13,20 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+
 public class KeyStoreResourceTest {
 
-	@Test
-	public void keystoreAvailability() throws Exception {
-		// setup
-		Thread currenThread = Thread.currentThread();
-		ClassLoader classLoader = currenThread.getContextClassLoader();
+    @Test
+    public void keystoreAvailability() throws Exception {
 
-		// operate
-		InputStream result = classLoader
-				.getResourceAsStream("safe-online-demo-keystore.jks");
+        // setup
+        Thread currenThread = Thread.currentThread();
+        ClassLoader classLoader = currenThread.getContextClassLoader();
 
-		// verify
-		assertNotNull(result);
-	}
+        // operate
+        InputStream result = classLoader.getResourceAsStream("safe-online-demo-keystore.jks");
+
+        // verify
+        assertNotNull(result);
+    }
 }

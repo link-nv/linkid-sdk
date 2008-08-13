@@ -9,22 +9,26 @@ package net.link.safeonline.webapp.oper;
 import net.link.safeonline.webapp.oper.applications.OperApplications;
 import net.link.safeonline.webapp.oper.owners.OperOwners;
 
+
 public class OperApplicationsMain extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/applications-main.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/applications-main.seam";
 
-	public OperApplicationsMain() {
-		super(PAGE_NAME);
-	}
 
-	public OperApplications gotoApplications() {
-		clickLinkAndWait("goto_applications");
-		return new OperApplications();
-	}
+    public OperApplicationsMain() {
 
-	public OperOwners gotoOwners() {
-		clickLinkAndWait("owners");
-		return new OperOwners();
-	}
+        super(PAGE_NAME);
+    }
+
+    public OperApplications gotoApplications() {
+
+        clickLinkAndWait("goto_applications");
+        return new OperApplications();
+    }
+
+    public OperOwners gotoOwners() {
+
+        clickLinkAndWait("owners");
+        return new OperOwners();
+    }
 }

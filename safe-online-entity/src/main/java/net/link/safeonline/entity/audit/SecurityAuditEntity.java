@@ -36,150 +36,156 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+
 @Entity
 @Table(name = "security_audit")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
-				+ "FROM SecurityAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = QUERY_ALL, query = "FROM SecurityAuditEntity"),
-		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record "
-				+ "FROM SecurityAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) "
-				+ "FROM SecurityAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.targetPrincipal "
-				+ "FROM SecurityAuditEntity AS record "
-				+ "WHERE record.targetPrincipal IS NOT NULL"),
-		@NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record "
-				+ "FROM SecurityAuditEntity AS record "
-				+ "WHERE record.targetPrincipal = :principal"),
-		@NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record "
-				+ "FROM SecurityAuditEntity AS record "
-				+ "WHERE record.eventDate > :ageLimit") })
+        @NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE " + "FROM SecurityAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = QUERY_ALL, query = "FROM SecurityAuditEntity"),
+        @NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record " + "FROM SecurityAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) " + "FROM SecurityAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.targetPrincipal "
+                + "FROM SecurityAuditEntity AS record " + "WHERE record.targetPrincipal IS NOT NULL"),
+        @NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record " + "FROM SecurityAuditEntity AS record "
+                + "WHERE record.targetPrincipal = :principal"),
+        @NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record " + "FROM SecurityAuditEntity AS record "
+                + "WHERE record.eventDate > :ageLimit") })
 public class SecurityAuditEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID             = 1L;
 
-	public static final String QUERY_DELETE_WHERE_CONTEXTID = "sa.del.id";
+    public static final String QUERY_DELETE_WHERE_CONTEXTID = "sa.del.id";
 
-	public static final String QUERY_ALL = "sa.all";
+    public static final String QUERY_ALL                    = "sa.all";
 
-	public static final String QUERY_WHERE_CONTEXTID = "sa.id";
+    public static final String QUERY_WHERE_CONTEXTID        = "sa.id";
 
-	public static final String QUERY_WHERE_AGELIMIT = "sa.age";
+    public static final String QUERY_WHERE_AGELIMIT         = "sa.age";
 
-	public static final String QUERY_LIST_USER = "sa.list.user";
+    public static final String QUERY_LIST_USER              = "sa.list.user";
 
-	public static final String QUERY_WHERE_USER = "sa.user";
+    public static final String QUERY_WHERE_USER             = "sa.user";
 
-	public static final String COUNT_WHERE_CONTEXTID = "sa.count.id";
+    public static final String COUNT_WHERE_CONTEXTID        = "sa.count.id";
 
-	private Long id;
+    private Long               id;
 
-	private AuditContextEntity auditContext;
+    private AuditContextEntity auditContext;
 
-	private String message;
+    private String             message;
 
-	private SecurityThreatType securityThreat;
+    private SecurityThreatType securityThreat;
 
-	private String targetPrincipal;
+    private String             targetPrincipal;
 
-	private Date eventDate;
+    private Date               eventDate;
 
-	public SecurityAuditEntity() {
-		// empty
-	}
 
-	public SecurityAuditEntity(AuditContextEntity auditContext,
-			SecurityThreatType securityThreat, String targetPrincipal,
-			String message) {
-		this.auditContext = auditContext;
-		this.securityThreat = securityThreat;
-		this.message = message;
-		this.targetPrincipal = targetPrincipal;
-		this.eventDate = new Date();
-	}
+    public SecurityAuditEntity() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return this.id;
-	}
+        // empty
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public SecurityAuditEntity(AuditContextEntity auditContext, SecurityThreatType securityThreat,
+            String targetPrincipal, String message) {
 
-	public String getMessage() {
-		return this.message;
-	}
+        this.auditContext = auditContext;
+        this.securityThreat = securityThreat;
+        this.message = message;
+        this.targetPrincipal = targetPrincipal;
+        this.eventDate = new Date();
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
 
-	@Enumerated(EnumType.STRING)
-	public SecurityThreatType getSecurityThreat() {
-		return this.securityThreat;
-	}
+        return this.id;
+    }
 
-	public void setSecurityThreat(SecurityThreatType securityThreat) {
-		this.securityThreat = securityThreat;
-	}
+    public void setId(Long id) {
 
-	@ManyToOne
-	public AuditContextEntity getAuditContext() {
-		return this.auditContext;
-	}
+        this.id = id;
+    }
 
-	public void setAuditContext(AuditContextEntity auditContext) {
-		this.auditContext = auditContext;
-	}
+    public String getMessage() {
 
-	public String getTargetPrincipal() {
-		return this.targetPrincipal;
-	}
+        return this.message;
+    }
 
-	public void setTargetPrincipal(String targetPrincipal) {
-		this.targetPrincipal = targetPrincipal;
-	}
+    public void setMessage(String message) {
 
-	@Temporal(value = TemporalType.TIMESTAMP)
-	public Date getEventDate() {
-		return this.eventDate;
-	}
+        this.message = message;
+    }
 
-	public void setEventDate(Date eventDate) {
-		this.eventDate = eventDate;
-	}
+    @Enumerated(EnumType.STRING)
+    public SecurityThreatType getSecurityThreat() {
 
-	public interface QueryInterface {
-		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
-		void deleteRecords(@QueryParam("contextId")
-		Long contextId);
+        return this.securityThreat;
+    }
 
-		@QueryMethod(QUERY_WHERE_CONTEXTID)
-		List<SecurityAuditEntity> listRecords(@QueryParam("contextId")
-		Long id);
+    public void setSecurityThreat(SecurityThreatType securityThreat) {
 
-		@QueryMethod(COUNT_WHERE_CONTEXTID)
-		long countRecords(@QueryParam("contextId")
-		long id);
+        this.securityThreat = securityThreat;
+    }
 
-		@QueryMethod(QUERY_ALL)
-		List<SecurityAuditEntity> listRecords();
+    @ManyToOne
+    public AuditContextEntity getAuditContext() {
 
-		@QueryMethod(QUERY_WHERE_AGELIMIT)
-		List<SecurityAuditEntity> listRecordsSince(@QueryParam("ageLimit")
-		Date ageLimit);
+        return this.auditContext;
+    }
 
-		@QueryMethod(QUERY_LIST_USER)
-		List<String> listUsers();
+    public void setAuditContext(AuditContextEntity auditContext) {
 
-		@QueryMethod(QUERY_WHERE_USER)
-		List<SecurityAuditEntity> listUserRecords(@QueryParam("principal")
-		String principal);
-	}
+        this.auditContext = auditContext;
+    }
+
+    public String getTargetPrincipal() {
+
+        return this.targetPrincipal;
+    }
+
+    public void setTargetPrincipal(String targetPrincipal) {
+
+        this.targetPrincipal = targetPrincipal;
+    }
+
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getEventDate() {
+
+        return this.eventDate;
+    }
+
+    public void setEventDate(Date eventDate) {
+
+        this.eventDate = eventDate;
+    }
+
+
+    public interface QueryInterface {
+
+        @UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
+        void deleteRecords(@QueryParam("contextId") Long contextId);
+
+        @QueryMethod(QUERY_WHERE_CONTEXTID)
+        List<SecurityAuditEntity> listRecords(@QueryParam("contextId") Long id);
+
+        @QueryMethod(COUNT_WHERE_CONTEXTID)
+        long countRecords(@QueryParam("contextId") long id);
+
+        @QueryMethod(QUERY_ALL)
+        List<SecurityAuditEntity> listRecords();
+
+        @QueryMethod(QUERY_WHERE_AGELIMIT)
+        List<SecurityAuditEntity> listRecordsSince(@QueryParam("ageLimit") Date ageLimit);
+
+        @QueryMethod(QUERY_LIST_USER)
+        List<String> listUsers();
+
+        @QueryMethod(QUERY_WHERE_USER)
+        List<SecurityAuditEntity> listUserRecords(@QueryParam("principal") String principal);
+    }
 }

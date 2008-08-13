@@ -17,10 +17,10 @@ package net.link.safeonline.performance.console.swing.model;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 
+
 /**
  * <h2>{@link ExecutionSelectionListener}<br>
- * <sub>A listener that is triggered when an execution is selected in the
- * interface.</sub></h2>
+ * <sub>A listener that is triggered when an execution is selected in the interface.</sub></h2>
  * 
  * <p>
  * <i>Feb 14, 2008</i>
@@ -30,5 +30,5 @@ import net.link.safeonline.performance.console.ScenarioExecution;
  */
 public interface ExecutionSelectionListener {
 
-	public void executionSelected(ScenarioExecution execution);
+    public void executionSelected(ScenarioExecution execution);
 }

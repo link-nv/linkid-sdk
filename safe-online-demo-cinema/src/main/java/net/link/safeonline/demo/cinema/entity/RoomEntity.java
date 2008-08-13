@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+
 @Entity
 @NamedQueries( {
         @NamedQuery(name = RoomEntity.getById, query = "SELECT r FROM RoomEntity r WHERE r.id = :id"),

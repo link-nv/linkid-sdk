@@ -44,131 +44,135 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("deviceDesc")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "DeviceDescriptionBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "DeviceDescriptionBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceDescriptionBean implements DeviceDescription {
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceDescriptionBean.class);
+    private static final Log             LOG                         = LogFactory.getLog(DeviceDescriptionBean.class);
 
-	public static final String OPER_DEVICE_DESCR_LIST_NAME = "deviceDescriptions";
+    public static final String           OPER_DEVICE_DESCR_LIST_NAME = "deviceDescriptions";
 
-	private String language;
+    private String                       language;
 
-	private String description;
+    private String                       description;
 
-	@In(value = "selectedDevice", required = true)
-	private DeviceEntity selectedDevice;
+    @In(value = "selectedDevice", required = true)
+    private DeviceEntity                 selectedDevice;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                        facesMessages;
 
-	@EJB
-	private DeviceService deviceService;
+    @EJB
+    private DeviceService                deviceService;
 
-	@DataModel(OPER_DEVICE_DESCR_LIST_NAME)
-	public List<DeviceDescriptionEntity> deviceDescriptions;
+    @DataModel(OPER_DEVICE_DESCR_LIST_NAME)
+    public List<DeviceDescriptionEntity> deviceDescriptions;
 
-	@DataModelSelection(OPER_DEVICE_DESCR_LIST_NAME)
-	@Out(value = "selectedDeviceDescription", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private DeviceDescriptionEntity selectedDeviceDescription;
+    @DataModelSelection(OPER_DEVICE_DESCR_LIST_NAME)
+    @Out(value = "selectedDeviceDescription", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private DeviceDescriptionEntity      selectedDeviceDescription;
 
-	/*
-	 * Lifecycle
-	 */
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	/*
-	 * Factories
-	 */
-	@Factory(OPER_DEVICE_DESCR_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void deviceDescriptionsListFactory() throws DeviceNotFoundException {
-		LOG.debug("device description list factory for device: "
-				+ this.selectedDevice.getName());
-		this.deviceDescriptions = this.deviceService
-				.listDeviceDescriptions(this.selectedDevice.getName());
-	}
+    /*
+     * Lifecycle
+     */
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	/*
-	 * Actions
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@ErrorHandling( { @Error(exceptionClass = ExistingDeviceDescriptionException.class, messageId = "errorDeviceDescriptionAlreadyExists", fieldId = "language") })
-	public String add() throws ExistingDeviceDescriptionException,
-			DeviceNotFoundException {
-		LOG.debug("add: " + this.language);
+    }
 
-		DeviceDescriptionEntity newDeviceDescription = new DeviceDescriptionEntity();
-		DeviceDescriptionPK pk = new DeviceDescriptionPK(this.selectedDevice
-				.getName(), this.language);
-		newDeviceDescription.setPk(pk);
-		newDeviceDescription.setDescription(this.description);
-		this.deviceService.addDeviceDescription(newDeviceDescription);
-		return "success";
-	}
+    /*
+     * Factories
+     */
+    @Factory(OPER_DEVICE_DESCR_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void deviceDescriptionsListFactory() throws DeviceNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Begin
-	public String edit() {
-		LOG.debug("edit: " + this.selectedDeviceDescription);
-		return "edit-desc";
-	}
+        LOG.debug("device description list factory for device: " + this.selectedDevice.getName());
+        this.deviceDescriptions = this.deviceService.listDeviceDescriptions(this.selectedDevice.getName());
+    }
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() throws DeviceNotFoundException,
-			DeviceDescriptionNotFoundException {
-		LOG.debug("remove: " + this.selectedDeviceDescription);
-		this.deviceService
-				.removeDeviceDescription(this.selectedDeviceDescription);
-		deviceDescriptionsListFactory();
-		return "removed";
-	}
+    /*
+     * Actions
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @ErrorHandling( { @Error(exceptionClass = ExistingDeviceDescriptionException.class, messageId = "errorDeviceDescriptionAlreadyExists", fieldId = "language") })
+    public String add() throws ExistingDeviceDescriptionException, DeviceNotFoundException {
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() {
-		LOG.debug("save: " + this.selectedDeviceDescription);
-		this.deviceService
-				.saveDeviceDescription(this.selectedDeviceDescription);
-		return "saved";
-	}
+        LOG.debug("add: " + this.language);
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String cancelEdit() {
-		return "cancel";
-	}
+        DeviceDescriptionEntity newDeviceDescription = new DeviceDescriptionEntity();
+        DeviceDescriptionPK pk = new DeviceDescriptionPK(this.selectedDevice.getName(), this.language);
+        newDeviceDescription.setPk(pk);
+        newDeviceDescription.setDescription(this.description);
+        this.deviceService.addDeviceDescription(newDeviceDescription);
+        return "success";
+    }
 
-	/*
-	 * Accessors
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getLanguage() {
-		return this.language;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Begin
+    public String edit() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+        LOG.debug("edit: " + this.selectedDeviceDescription);
+        return "edit-desc";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getDescription() {
-		return this.description;
-	}
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String remove() throws DeviceNotFoundException, DeviceDescriptionNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setDescription(String description) {
-		this.description = description;
-	}
+        LOG.debug("remove: " + this.selectedDeviceDescription);
+        this.deviceService.removeDeviceDescription(this.selectedDeviceDescription);
+        deviceDescriptionsListFactory();
+        return "removed";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String save() {
+
+        LOG.debug("save: " + this.selectedDeviceDescription);
+        this.deviceService.saveDeviceDescription(this.selectedDeviceDescription);
+        return "saved";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String cancelEdit() {
+
+        return "cancel";
+    }
+
+    /*
+     * Accessors
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getLanguage() {
+
+        return this.language;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setLanguage(String language) {
+
+        this.language = language;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getDescription() {
+
+        return this.description;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setDescription(String description) {
+
+        this.description = description;
+    }
 }

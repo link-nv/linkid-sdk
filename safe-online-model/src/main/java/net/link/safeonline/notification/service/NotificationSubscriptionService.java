@@ -18,18 +18,16 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 
+
 @Local
 public interface NotificationSubscriptionService {
 
-	List<NotificationProducerSubscriptionEntity> listTopics();
+    List<NotificationProducerSubscriptionEntity> listTopics();
 
-	void removeSubscription(String topic, EndpointReferenceEntity subscription)
-			throws SubscriptionNotFoundException,
-			EndpointReferenceNotFoundException, PermissionDeniedException;
+    void removeSubscription(String topic, EndpointReferenceEntity subscription) throws SubscriptionNotFoundException,
+            EndpointReferenceNotFoundException, PermissionDeniedException;
 
-	Set<EndpointReferenceEntity> listSubscriptions(String topic)
-			throws SubscriptionNotFoundException;
+    Set<EndpointReferenceEntity> listSubscriptions(String topic) throws SubscriptionNotFoundException;
 
-	void addSubscription(String topic, String address, String consumer)
-			throws PermissionDeniedException;
+    void addSubscription(String topic, String address, String consumer) throws PermissionDeniedException;
 }

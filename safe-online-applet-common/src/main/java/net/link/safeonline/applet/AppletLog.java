@@ -9,94 +9,110 @@ package net.link.safeonline.applet;
 
 import org.apache.commons.logging.Log;
 
+
 /**
  * Implementation of Logger using the applet view as output.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AppletLog implements Log {
 
-	private final AppletView appletView;
+    private final AppletView appletView;
 
-	public AppletLog(final AppletView appletView) {
-		this.appletView = appletView;
-	}
 
-	public void debug(Object message) {
-		this.appletView.outputDetailMessage("DEBUG: " + message);
-	}
+    public AppletLog(final AppletView appletView) {
 
-	public void debug(Object message, Throwable t) {
-		this.appletView.outputDetailMessage("DEBUG: " + message);
-	}
+        this.appletView = appletView;
+    }
 
-	public void error(Object message) {
-		this.appletView.outputDetailMessage("ERROR: " + message);
-	}
+    public void debug(Object message) {
 
-	public void error(Object message, @SuppressWarnings("unused")
-	Throwable t) {
-		this.appletView.outputDetailMessage("ERROR: " + message);
-	}
+        this.appletView.outputDetailMessage("DEBUG: " + message);
+    }
 
-	public void fatal(Object message) {
-		this.appletView.outputDetailMessage("FATAL: " + message);
-	}
+    public void debug(Object message, Throwable t) {
 
-	public void fatal(Object message, @SuppressWarnings("unused")
-	Throwable t) {
-		this.appletView.outputDetailMessage("FATAL: " + message);
-	}
+        this.appletView.outputDetailMessage("DEBUG: " + message);
+    }
 
-	public void info(Object message) {
-		this.appletView.outputDetailMessage("INFO: " + message);
-	}
+    public void error(Object message) {
 
-	public void info(Object message, @SuppressWarnings("unused")
-	Throwable t) {
-		this.appletView.outputDetailMessage("INFO: " + message);
-	}
+        this.appletView.outputDetailMessage("ERROR: " + message);
+    }
 
-	public boolean isDebugEnabled() {
-		return true;
-	}
+    public void error(Object message, @SuppressWarnings("unused") Throwable t) {
 
-	public boolean isErrorEnabled() {
-		return true;
-	}
+        this.appletView.outputDetailMessage("ERROR: " + message);
+    }
 
-	public boolean isFatalEnabled() {
-		return true;
-	}
+    public void fatal(Object message) {
 
-	public boolean isInfoEnabled() {
-		return true;
-	}
+        this.appletView.outputDetailMessage("FATAL: " + message);
+    }
 
-	public boolean isTraceEnabled() {
-		return true;
-	}
+    public void fatal(Object message, @SuppressWarnings("unused") Throwable t) {
 
-	public boolean isWarnEnabled() {
-		return true;
-	}
+        this.appletView.outputDetailMessage("FATAL: " + message);
+    }
 
-	public void trace(Object message) {
-		this.appletView.outputDetailMessage("TRACE: " + message);
-	}
+    public void info(Object message) {
 
-	public void trace(Object message, @SuppressWarnings("unused")
-	Throwable t) {
-		this.appletView.outputDetailMessage("TRACE: " + message);
-	}
+        this.appletView.outputDetailMessage("INFO: " + message);
+    }
 
-	public void warn(Object message) {
-		this.appletView.outputDetailMessage("WARN: " + message);
-	}
+    public void info(Object message, @SuppressWarnings("unused") Throwable t) {
 
-	public void warn(Object message, @SuppressWarnings("unused")
-	Throwable t) {
-		this.appletView.outputDetailMessage("WARN: " + message);
-	}
+        this.appletView.outputDetailMessage("INFO: " + message);
+    }
+
+    public boolean isDebugEnabled() {
+
+        return true;
+    }
+
+    public boolean isErrorEnabled() {
+
+        return true;
+    }
+
+    public boolean isFatalEnabled() {
+
+        return true;
+    }
+
+    public boolean isInfoEnabled() {
+
+        return true;
+    }
+
+    public boolean isTraceEnabled() {
+
+        return true;
+    }
+
+    public boolean isWarnEnabled() {
+
+        return true;
+    }
+
+    public void trace(Object message) {
+
+        this.appletView.outputDetailMessage("TRACE: " + message);
+    }
+
+    public void trace(Object message, @SuppressWarnings("unused") Throwable t) {
+
+        this.appletView.outputDetailMessage("TRACE: " + message);
+    }
+
+    public void warn(Object message) {
+
+        this.appletView.outputDetailMessage("WARN: " + message);
+    }
+
+    public void warn(Object message, @SuppressWarnings("unused") Throwable t) {
+
+        this.appletView.outputDetailMessage("WARN: " + message);
+    }
 }

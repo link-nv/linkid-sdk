@@ -16,6 +16,7 @@ import net.link.safeonline.demo.cinema.service.TheatreService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 /**
  * <h2>{@link TheatreServiceBean}<br>
  * <sub>Service bean for {@link TheatreService}.</sub></h2>
@@ -29,9 +30,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = TheatreService.BINDING)
-public class TheatreServiceBean extends AbstractCinemaServiceBean implements
-        TheatreService {
-
+public class TheatreServiceBean extends AbstractCinemaServiceBean implements TheatreService {
 
     /**
      * {@inheritDoc}
@@ -48,8 +47,7 @@ public class TheatreServiceBean extends AbstractCinemaServiceBean implements
     @SuppressWarnings("unchecked")
     public List<TheatreEntity> getTheatresThatPlay(FilmEntity film) {
 
-        return this.em.createNamedQuery(TheatreEntity.getAllFor).setParameter(
-                "film", film).getResultList();
+        return this.em.createNamedQuery(TheatreEntity.getAllFor).setParameter("film", film).getResultList();
     }
 
     /**
@@ -60,7 +58,7 @@ public class TheatreServiceBean extends AbstractCinemaServiceBean implements
         if (theatre == null)
             return null;
 
-        return (TheatreEntity) this.em.createNamedQuery(TheatreEntity.getById)
-                .setParameter("id", theatre.getId()).getSingleResult();
+        return (TheatreEntity) this.em.createNamedQuery(TheatreEntity.getById).setParameter("id", theatre.getId())
+                .getSingleResult();
     }
 }

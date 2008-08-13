@@ -39,18 +39,15 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 
+
 @Entity
 @Table(name = "hist")
 @NamedQueries( {
-        @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history "
-                + "FROM HistoryEntity AS history "
-                + "WHERE history.subject = :subject "
-                + "ORDER BY history.when DESC"),
-        @NamedQuery(name = QUERY_WHERE_OLDER, query = "SELECT history "
-                + "FROM HistoryEntity AS history "
+        @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history " + "FROM HistoryEntity AS history "
+                + "WHERE history.subject = :subject " + "ORDER BY history.when DESC"),
+        @NamedQuery(name = QUERY_WHERE_OLDER, query = "SELECT history " + "FROM HistoryEntity AS history "
                 + "WHERE history.when < :ageLimit "),
-        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE "
-                + "FROM HistoryEntity AS history "
+        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE " + "FROM HistoryEntity AS history "
                 + "WHERE history.when < :ageLimit"),
         @NamedQuery(name = QUERY_DELETE_ALL, query = "DELETE FROM HistoryEntity AS history "
                 + "WHERE history.subject = :subject") })
@@ -82,8 +79,7 @@ public class HistoryEntity implements Serializable {
         // empty
     }
 
-    public HistoryEntity(Date when, SubjectEntity subject,
-            HistoryEventType event) {
+    public HistoryEntity(Date when, SubjectEntity subject, HistoryEventType event) {
 
         this.subject = subject;
         this.event = event;
@@ -165,8 +161,7 @@ public class HistoryEntity implements Serializable {
     public interface QueryInterface {
 
         @QueryMethod(QUERY_WHERE_SUBJECT)
-        List<HistoryEntity> getHistory(
-                @QueryParam("subject") SubjectEntity subject);
+        List<HistoryEntity> getHistory(@QueryParam("subject") SubjectEntity subject);
 
         @QueryMethod(QUERY_WHERE_OLDER)
         List<HistoryEntity> getHistory(@QueryParam("ageLimit") Date ageLimit);

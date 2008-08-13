@@ -18,153 +18,168 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+
 @Entity
 @Table(name = "application_identity_attr")
 public class ApplicationIdentityAttributeEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long              serialVersionUID        = 1L;
 
-	private ApplicationIdentityAttributePK pk;
+    private ApplicationIdentityAttributePK pk;
 
-	private boolean required;
+    private boolean                        required;
 
-	private boolean dataMining;
+    private boolean                        dataMining;
 
-	private ApplicationIdentityEntity applicationIdentity;
+    private ApplicationIdentityEntity      applicationIdentity;
 
-	private AttributeTypeEntity attributeType;
+    private AttributeTypeEntity            attributeType;
 
-	public static final String APPLICATION_COLUMN_NAME = "application";
+    public static final String             APPLICATION_COLUMN_NAME = "application";
 
-	public static final String ATTRIBUTE_TYPE_NAME = "attributeType";
+    public static final String             ATTRIBUTE_TYPE_NAME     = "attributeType";
 
-	public static final String IDENTITY_VERSION_NAME = "identityVersion";
+    public static final String             IDENTITY_VERSION_NAME   = "identityVersion";
 
-	public ApplicationIdentityAttributeEntity() {
-		// empty
-	}
 
-	public ApplicationIdentityAttributeEntity(
-			ApplicationIdentityEntity applicationIdentity,
-			AttributeTypeEntity attributeType, boolean required,
-			boolean dataMining) {
-		String applicationName = applicationIdentity.getApplication().getName();
-		long identityVersion = applicationIdentity.getIdentityVersion();
-		String attributeTypeName = attributeType.getName();
-		this.pk = new ApplicationIdentityAttributePK(applicationName,
-				identityVersion, attributeTypeName);
-		this.attributeType = attributeType;
-		this.required = required;
-		this.dataMining = dataMining;
-	}
+    public ApplicationIdentityAttributeEntity() {
 
-	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
-			@AttributeOverride(name = "identityVersion", column = @Column(name = IDENTITY_VERSION_NAME)),
-			@AttributeOverride(name = "attributeTypeName", column = @Column(name = ATTRIBUTE_TYPE_NAME)) })
-	public ApplicationIdentityAttributePK getPk() {
-		return this.pk;
-	}
+        // empty
+    }
 
-	public void setPk(ApplicationIdentityAttributePK pk) {
-		this.pk = pk;
-	}
+    public ApplicationIdentityAttributeEntity(ApplicationIdentityEntity applicationIdentity,
+            AttributeTypeEntity attributeType, boolean required, boolean dataMining) {
 
-	public boolean isRequired() {
-		return this.required;
-	}
+        String applicationName = applicationIdentity.getApplication().getName();
+        long identityVersion = applicationIdentity.getIdentityVersion();
+        String attributeTypeName = attributeType.getName();
+        this.pk = new ApplicationIdentityAttributePK(applicationName, identityVersion, attributeTypeName);
+        this.attributeType = attributeType;
+        this.required = required;
+        this.dataMining = dataMining;
+    }
 
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
+    @EmbeddedId
+    @AttributeOverrides( { @AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
+            @AttributeOverride(name = "identityVersion", column = @Column(name = IDENTITY_VERSION_NAME)),
+            @AttributeOverride(name = "attributeTypeName", column = @Column(name = ATTRIBUTE_TYPE_NAME)) })
+    public ApplicationIdentityAttributePK getPk() {
 
-	@ManyToOne(optional = false)
-	@JoinColumns( {
-			@JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false, referencedColumnName = ApplicationIdentityEntity.APPLICATION_COLUMN_NAME),
-			@JoinColumn(name = IDENTITY_VERSION_NAME, insertable = false, updatable = false, referencedColumnName = ApplicationIdentityEntity.IDENTITY_VERSION_COLUMN_NAME) })
-	public ApplicationIdentityEntity getApplicationIdentity() {
-		return this.applicationIdentity;
-	}
+        return this.pk;
+    }
 
-	public void setApplicationIdentity(
-			ApplicationIdentityEntity applicationIdentity) {
-		this.applicationIdentity = applicationIdentity;
-	}
+    public void setPk(ApplicationIdentityAttributePK pk) {
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = ATTRIBUTE_TYPE_NAME, insertable = false, updatable = false)
-	public AttributeTypeEntity getAttributeType() {
-		return this.attributeType;
-	}
+        this.pk = pk;
+    }
 
-	public void setAttributeType(AttributeTypeEntity attributeType) {
-		this.attributeType = attributeType;
-	}
+    public boolean isRequired() {
 
-	@Transient
-	public String getApplicationName() {
-		return this.pk.getApplication();
-	}
+        return this.required;
+    }
 
-	@Transient
-	public long getIdentityVersion() {
-		return this.pk.getIdentityVersion();
-	}
+    public void setRequired(boolean required) {
 
-	@Transient
-	public String getAttributeTypeName() {
-		return this.pk.getAttributeTypeName();
-	}
+        this.required = required;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == obj instanceof ApplicationIdentityAttributeEntity) {
-			return false;
-		}
-		ApplicationIdentityAttributeEntity rhs = (ApplicationIdentityAttributeEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+    @ManyToOne(optional = false)
+    @JoinColumns( {
+            @JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false, referencedColumnName = ApplicationIdentityEntity.APPLICATION_COLUMN_NAME),
+            @JoinColumn(name = IDENTITY_VERSION_NAME, insertable = false, updatable = false, referencedColumnName = ApplicationIdentityEntity.IDENTITY_VERSION_COLUMN_NAME) })
+    public ApplicationIdentityEntity getApplicationIdentity() {
 
-        public boolean equivalent(ApplicationIdentityAttributeEntity attr) {
-            if (! this.getApplicationName().equals(attr.getApplicationName())) {
-                return false;
-            }
-            if (! this.getAttributeTypeName().equals(attr.getAttributeTypeName())) {
-                return false;
-            }
-            if (this.isDataMining() != attr.isDataMining()) {
-                return false;
-            }
-            if (this.isRequired() != attr.isRequired()) {
-                return false;
-            }
+        return this.applicationIdentity;
+    }
+
+    public void setApplicationIdentity(ApplicationIdentityEntity applicationIdentity) {
+
+        this.applicationIdentity = applicationIdentity;
+    }
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = ATTRIBUTE_TYPE_NAME, insertable = false, updatable = false)
+    public AttributeTypeEntity getAttributeType() {
+
+        return this.attributeType;
+    }
+
+    public void setAttributeType(AttributeTypeEntity attributeType) {
+
+        this.attributeType = attributeType;
+    }
+
+    @Transient
+    public String getApplicationName() {
+
+        return this.pk.getApplication();
+    }
+
+    @Transient
+    public long getIdentityVersion() {
+
+        return this.pk.getIdentityVersion();
+    }
+
+    @Transient
+    public String getAttributeTypeName() {
+
+        return this.pk.getAttributeTypeName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
             return true;
         }
-        
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.pk).toHashCode();
-	}
+        if (null == obj) {
+            return false;
+        }
+        if (false == obj instanceof ApplicationIdentityAttributeEntity) {
+            return false;
+        }
+        ApplicationIdentityAttributeEntity rhs = (ApplicationIdentityAttributeEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
 
-	public boolean isDataMining() {
-		return this.dataMining;
-	}
+    public boolean equivalent(ApplicationIdentityAttributeEntity attr) {
 
-	public void setDataMining(boolean dataMining) {
-		this.dataMining = dataMining;
-	}
+        if (!this.getApplicationName().equals(attr.getApplicationName())) {
+            return false;
+        }
+        if (!this.getAttributeTypeName().equals(attr.getAttributeTypeName())) {
+            return false;
+        }
+        if (this.isDataMining() != attr.isDataMining()) {
+            return false;
+        }
+        if (this.isRequired() != attr.isRequired()) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append("pk", this.pk).append("required", this.required)
-				.toString();
-	}
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.pk).toHashCode();
+    }
+
+    public boolean isDataMining() {
+
+        return this.dataMining;
+    }
+
+    public void setDataMining(boolean dataMining) {
+
+        this.dataMining = dataMining;
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", this.pk).append("required",
+                this.required).toString();
+    }
 }

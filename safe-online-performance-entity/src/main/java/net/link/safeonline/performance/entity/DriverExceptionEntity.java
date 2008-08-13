@@ -14,92 +14,89 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+
 /**
  * <h2>{@link DriverExceptionEntity}<br>
  * <sub>Holds problems encountered during driver execution.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity
 @NamedQueries( {
-		@NamedQuery(name = DriverExceptionEntity.getByProfile, query = "SELECT e"
-				+ "    FROM DriverExceptionEntity e"
-				+ "    WHERE e.profile = :profile"),
-		@NamedQuery(name = DriverExceptionEntity.getExecutionStart, query = "SELECT MIN(e.occurredTime)"
-				+ "    FROM DriverExceptionEntity e            "
-				+ "    WHERE e.profile = :profile          "),
-		@NamedQuery(name = DriverExceptionEntity.getExecutionDuration, query = "SELECT MAX(e.occurredTime) - MIN(e.occurredTime)"
-				+ "    FROM DriverExceptionEntity e            "
-				+ "    WHERE e.profile = :profile          "),
-		@NamedQuery(name = DriverExceptionEntity.createAverage, query = "SELECT NEW net.link.safeonline.performance.entity.DriverExceptionEntity("
-				+ "        e.profile, AVG(e.occurredTime), e.message"
-				+ "    )                                 "
-				+ "    FROM DriverExceptionEntity e          "
-				+ "    WHERE e.profile = :profile        "
-				+ "        AND e.occurredTime >= :start      "
-				+ "        AND e.occurredTime < :stop      "
-				+ "    GROUP BY e.message            ") })
+        @NamedQuery(name = DriverExceptionEntity.getByProfile, query = "SELECT e" + "    FROM DriverExceptionEntity e"
+                + "    WHERE e.profile = :profile"),
+        @NamedQuery(name = DriverExceptionEntity.getExecutionStart, query = "SELECT MIN(e.occurredTime)"
+                + "    FROM DriverExceptionEntity e            " + "    WHERE e.profile = :profile          "),
+        @NamedQuery(name = DriverExceptionEntity.getExecutionDuration, query = "SELECT MAX(e.occurredTime) - MIN(e.occurredTime)"
+                + "    FROM DriverExceptionEntity e            " + "    WHERE e.profile = :profile          "),
+        @NamedQuery(name = DriverExceptionEntity.createAverage, query = "SELECT NEW net.link.safeonline.performance.entity.DriverExceptionEntity("
+                + "        e.profile, AVG(e.occurredTime), e.message"
+                + "    )                                 "
+                + "    FROM DriverExceptionEntity e          "
+                + "    WHERE e.profile = :profile        "
+                + "        AND e.occurredTime >= :start      "
+                + "        AND e.occurredTime < :stop      "
+                + "    GROUP BY e.message            ") })
 public class DriverExceptionEntity {
 
-	public static final String getByProfile = "DriverExceptionEntity.getByProfile";
-	public static final String createAverage = "DriverExceptionEntity.createAverage";
-	public static final String getExecutionStart = "DriverExceptionEntity.getExecutionStart";
-	public static final String getExecutionDuration = "DriverExceptionEntity.getExecutionDuration";
+    public static final String  getByProfile         = "DriverExceptionEntity.getByProfile";
+    public static final String  createAverage        = "DriverExceptionEntity.createAverage";
+    public static final String  getExecutionStart    = "DriverExceptionEntity.getExecutionStart";
+    public static final String  getExecutionDuration = "DriverExceptionEntity.getExecutionDuration";
 
-	@Id
-	@SuppressWarnings("unused")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+    @Id
+    @SuppressWarnings("unused")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int                 id;
 
-	@ManyToOne
-	private DriverProfileEntity profile;
+    @ManyToOne
+    private DriverProfileEntity profile;
 
-	private long occurredTime;
-	private String message;
+    private long                occurredTime;
+    private String              message;
 
-	public DriverExceptionEntity() {
-	}
 
-	public DriverExceptionEntity(DriverProfileEntity profile,
-			Double occurredTime, String message) {
+    public DriverExceptionEntity() {
 
-		this(profile, occurredTime.longValue(), message);
-	}
+    }
 
-	public DriverExceptionEntity(DriverProfileEntity profile,
-			long occurredTime, String message) {
+    public DriverExceptionEntity(DriverProfileEntity profile, Double occurredTime, String message) {
 
-		this.profile = profile;
-		this.occurredTime = occurredTime;
-		this.message = message;
-	}
+        this(profile, occurredTime.longValue(), message);
+    }
 
-	/**
-	 * @return The {@link DriverProfileEntity} that generated this
-	 *         {@link DriverExceptionEntity}.
-	 */
-	public DriverProfileEntity getProfile() {
+    public DriverExceptionEntity(DriverProfileEntity profile, long occurredTime, String message) {
 
-		return this.profile;
-	}
+        this.profile = profile;
+        this.occurredTime = occurredTime;
+        this.message = message;
+    }
 
-	/**
-	 * @return The time the exception occurred.
-	 */
-	public long getOccurredTime() {
+    /**
+     * @return The {@link DriverProfileEntity} that generated this {@link DriverExceptionEntity}.
+     */
+    public DriverProfileEntity getProfile() {
 
-		return this.occurredTime;
-	}
+        return this.profile;
+    }
 
-	/**
-	 * @return A message describing problem that occurred.
-	 */
-	public String getMessage() {
+    /**
+     * @return The time the exception occurred.
+     */
+    public long getOccurredTime() {
 
-		return this.message;
-	}
+        return this.occurredTime;
+    }
+
+    /**
+     * @return A message describing problem that occurred.
+     */
+    public String getMessage() {
+
+        return this.message;
+    }
 }

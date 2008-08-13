@@ -14,15 +14,15 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 
+
 @Local
 public interface NotificationProducerDAO {
 
-	NotificationProducerSubscriptionEntity addSubscription(String topic);
+    NotificationProducerSubscriptionEntity addSubscription(String topic);
 
-	NotificationProducerSubscriptionEntity findSubscription(String topic);
+    NotificationProducerSubscriptionEntity findSubscription(String topic);
 
-	NotificationProducerSubscriptionEntity getSubscription(String topic)
-			throws SubscriptionNotFoundException;
+    NotificationProducerSubscriptionEntity getSubscription(String topic) throws SubscriptionNotFoundException;
 
-	List<NotificationProducerSubscriptionEntity> listTopics();
+    List<NotificationProducerSubscriptionEntity> listTopics();
 }

@@ -18,21 +18,20 @@ import org.opensaml.ws.security.provider.HTTPRule;
 import org.opensaml.ws.security.provider.MandatoryIssuerRule;
 import org.opensaml.xml.security.SecurityException;
 
-public class SamlResponseSecurityPolicyResolver implements
-		SecurityPolicyResolver {
 
-	public Iterable<SecurityPolicy> resolve(MessageContext messageContext)
-			throws SecurityException {
-		return null;
-	}
+public class SamlResponseSecurityPolicyResolver implements SecurityPolicyResolver {
 
-	public SecurityPolicy resolveSingle(MessageContext messageContext)
-			throws SecurityException {
-		SecurityPolicy securityPolicy = new BasicSecurityPolicy();
-		List<SecurityPolicyRule> securityPolicyRules = securityPolicy
-				.getPolicyRules();
-		securityPolicyRules.add(new HTTPRule(null, "POST", false));
-		securityPolicyRules.add(new MandatoryIssuerRule());
-		return securityPolicy;
-	}
+    public Iterable<SecurityPolicy> resolve(MessageContext messageContext) throws SecurityException {
+
+        return null;
+    }
+
+    public SecurityPolicy resolveSingle(MessageContext messageContext) throws SecurityException {
+
+        SecurityPolicy securityPolicy = new BasicSecurityPolicy();
+        List<SecurityPolicyRule> securityPolicyRules = securityPolicy.getPolicyRules();
+        securityPolicyRules.add(new HTTPRule(null, "POST", false));
+        securityPolicyRules.add(new MandatoryIssuerRule());
+        return securityPolicy;
+    }
 }

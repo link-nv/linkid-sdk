@@ -18,34 +18,38 @@ package net.link.safeonline.sdk.ws.data;
  */
 public class Attribute<Type> {
 
-	private final String name;
+    private final String name;
 
-	private final Type value;
+    private final Type   value;
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param name
-	 * @param value
-	 */
-	public Attribute(String name, Type value) {
-		this.name = name;
-		this.value = value;
-	}
 
-	/**
-	 * Gives back the name of the attribute.
-	 * 
-	 */
-	public String getName() {
-		return this.name;
-	}
+    /**
+     * Main constructor.
+     * 
+     * @param name
+     * @param value
+     */
+    public Attribute(String name, Type value) {
 
-	/**
-	 * Gives back the value of the attribute.
-	 * 
-	 */
-	public Type getValue() {
-		return this.value;
-	}
+        this.name = name;
+        this.value = value;
+    }
+
+    /**
+     * Gives back the name of the attribute.
+     * 
+     */
+    public String getName() {
+
+        return this.name;
+    }
+
+    /**
+     * Gives back the value of the attribute.
+     * 
+     */
+    public Type getValue() {
+
+        return this.value;
+    }
 }

@@ -9,5 +9,5 @@ package net.link.safeonline.sdk.auth.saml2;
 
 public enum DeviceOperationType {
 
-	REGISTER, REMOVE, UPDATE;
+    REGISTER, REMOVE, UPDATE;
 }

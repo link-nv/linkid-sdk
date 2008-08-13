@@ -36,18 +36,17 @@ import org.apache.commons.logging.LogFactory;
 
 import com.sun.xml.ws.client.ClientTransportException;
 
+
 /**
- * Implementation of the name identifier mapping interface. This class is using
- * JAX-WS, secured via WS-Security and server-side SSL.
+ * Implementation of the name identifier mapping interface. This class is using JAX-WS, secured via WS-Security and
+ * server-side SSL.
  * 
  * @author fcorneli
  * 
  */
-public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
-        implements NameIdentifierMappingClient {
+public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor implements NameIdentifierMappingClient {
 
-    private static final Log                LOG = LogFactory
-                                                        .getLog(NameIdentifierMappingClientImpl.class);
+    private static final Log                LOG = LogFactory.getLog(NameIdentifierMappingClientImpl.class);
 
     private final NameIdentifierMappingPort port;
 
@@ -64,30 +63,27 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public NameIdentifierMappingClientImpl(String location,
-            X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
+    public NameIdentifierMappingClientImpl(String location, X509Certificate clientCertificate,
+            PrivateKey clientPrivateKey) {
 
-        NameIdentifierMappingService service = NameIdentifierMappingServiceFactory
-                .newInstance();
+        NameIdentifierMappingService service = NameIdentifierMappingServiceFactory.newInstance();
         this.port = service.getNameIdentifierMappingPort();
         this.location = location + "/safe-online-ws/idmapping";
         setEndpointAddress();
 
         registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
-                clientPrivateKey);
+        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
     }
 
     private void setEndpointAddress() {
 
         BindingProvider bindingProvider = (BindingProvider) this.port;
 
-        bindingProvider.getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
-    public String getUserId(String username) throws SubjectNotFoundException,
-            RequestDeniedException, WSClientTransportException {
+    public String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException,
+            WSClientTransportException {
 
         LOG.debug("getUserId: " + username);
 
@@ -95,8 +91,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
         NameIDType nameId = new NameIDType();
         nameId.setValue(username);
         NameIDPolicyType nameIdPolicy = new NameIDPolicyType();
-        nameIdPolicy
-                .setFormat(NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT);
+        nameIdPolicy.setFormat(NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT);
         request.setNameIDPolicy(nameIdPolicy);
         request.setNameID(nameId);
 
@@ -116,8 +111,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
         StatusType status = response.getStatus();
         StatusCodeType statusCode = status.getStatusCode();
         String errorCode = statusCode.getValue();
-        SamlpTopLevelErrorCode topLevelErrorCode = SamlpTopLevelErrorCode
-                .getSamlpTopLevelErrorCode(errorCode);
+        SamlpTopLevelErrorCode topLevelErrorCode = SamlpTopLevelErrorCode.getSamlpTopLevelErrorCode(errorCode);
         if (SamlpTopLevelErrorCode.SUCCESS != topLevelErrorCode) {
             // throw new RuntimeException("error occured on identifier mapping
             // service");
@@ -132,9 +126,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
                     throw new SubjectNotFoundException();
                 if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode)
                     throw new RequestDeniedException();
-                throw new RuntimeException(
-                        "error occurred on identifier mapping service: "
-                                + secondErrorCode);
+                throw new RuntimeException("error occurred on identifier mapping service: " + secondErrorCode);
             }
         }
 

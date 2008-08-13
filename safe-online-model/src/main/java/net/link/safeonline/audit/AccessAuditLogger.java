@@ -32,6 +32,7 @@ import net.link.safeonline.entity.audit.SecurityThreatType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * EJB3 access audit logger.
  * 
@@ -89,30 +90,25 @@ public class AccessAuditLogger {
     private void auditSecurity(String message) {
 
         String principalName = getCallerPrincipalName();
-        LOG.debug("security audit: " + message + " for principal "
-                + principalName);
+        LOG.debug("security audit: " + message + " for principal " + principalName);
 
         AuditContextEntity auditContext = findAuditContext();
         if (null != auditContext) {
-            this.securityAuditDAO.addSecurityAudit(auditContext,
-                    SecurityThreatType.DECEPTION, principalName, message);
+            this.securityAuditDAO.addSecurityAudit(auditContext, SecurityThreatType.DECEPTION, principalName, message);
         }
     }
 
-    private void auditAccess(InvocationContext context,
-            OperationStateType operationState) {
+    private void auditAccess(InvocationContext context, OperationStateType operationState) {
 
         Method method = context.getMethod();
         String methodName = method.getName();
         String principalName = getCallerPrincipalName();
 
-        LOG.debug("access audit: " + methodName + " as " + principalName
-                + " at " + operationState);
+        LOG.debug("access audit: " + methodName + " as " + principalName + " at " + operationState);
 
         AuditContextEntity auditContext = findAuditContext();
         if (null != auditContext) {
-            this.accessAuditDAO.addAccessAudit(auditContext, methodName,
-                    operationState, principalName);
+            this.accessAuditDAO.addAccessAudit(auditContext, methodName, operationState, principalName);
         }
     }
 
@@ -120,12 +116,9 @@ public class AccessAuditLogger {
 
         Long auditContextId;
         try {
-            auditContextId = (Long) PolicyContext
-                    .getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
+            auditContextId = (Long) PolicyContext.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
         } catch (PolicyContextException e) {
-            this.auditAuditDAO
-                    .addAuditAudit("audit context policy context error: "
-                            + e.getMessage());
+            this.auditAuditDAO.addAuditAudit("audit context policy context error: " + e.getMessage());
             return null;
         }
         if (null == auditContextId) {
@@ -134,12 +127,10 @@ public class AccessAuditLogger {
         }
 
         try {
-            AuditContextEntity auditContext = this.auditContextDAO
-                    .getAuditContext(auditContextId);
+            AuditContextEntity auditContext = this.auditContextDAO.getAuditContext(auditContextId);
             return auditContext;
         } catch (AuditContextNotFoundException e) {
-            this.auditAuditDAO.addAuditAudit("audit context not found: "
-                    + auditContextId);
+            this.auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
             return null;
         }
     }
@@ -156,8 +147,8 @@ public class AccessAuditLogger {
             callerPrincipal = this.sessionContext.getCallerPrincipal();
         } catch (IllegalStateException e) {
             /*
-             * Under JBoss we get an IllegalStateException instead of a null
-             * principal if there is no identifiable caller principal.
+             * Under JBoss we get an IllegalStateException instead of a null principal if there is no identifiable
+             * caller principal.
              */
             LOG.debug("getCallerPrincipal throws IllegalStateException");
             return null;

@@ -56,171 +56,169 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("removal")
 @LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "RemovalBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class RemovalBean implements Removal {
 
-	private static final String MOBILE_ATTRIBUTE_LIST_NAME = "mobileAttributes";
+    private static final String  MOBILE_ATTRIBUTE_LIST_NAME = "mobileAttributes";
 
-	@EJB
-	private EncapDeviceService encapDeviceService;
+    @EJB
+    private EncapDeviceService   encapDeviceService;
 
-	@EJB
-	private DeviceDAO deviceDAO;
+    @EJB
+    private DeviceDAO            deviceDAO;
 
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+    @EJB
+    private AttributeTypeDAO     attributeTypeDAO;
 
-	@EJB
-	private AttributeDAO attributeDAO;
+    @EJB
+    private AttributeDAO         attributeDAO;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService       subjectService;
 
-	@EJB
-	private SamlAuthorityService samlAuthorityService;
+    @EJB
+    private SamlAuthorityService samlAuthorityService;
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                  log;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                facesMessages;
 
-	@In
-	private String userId;
+    @In
+    private String               userId;
 
-	@In(value = ProtocolContext.PROTOCOL_CONTEXT)
-	private ProtocolContext protocolContext;
+    @In(value = ProtocolContext.PROTOCOL_CONTEXT)
+    private ProtocolContext      protocolContext;
 
-	@DataModel(MOBILE_ATTRIBUTE_LIST_NAME)
-	List<AttributeDO> mobileAttributes;
+    @DataModel(MOBILE_ATTRIBUTE_LIST_NAME)
+    List<AttributeDO>            mobileAttributes;
 
-	@DataModelSelection(MOBILE_ATTRIBUTE_LIST_NAME)
-	private AttributeDO selectedMobile;
+    @DataModelSelection(MOBILE_ATTRIBUTE_LIST_NAME)
+    private AttributeDO          selectedMobile;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		this.log.debug("destroy");
-	}
 
-	public String mobileCancel() throws IOException {
-		this.protocolContext.setSuccess(false);
-		exit();
-		return null;
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	private void exit() throws IOException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = facesContext.getExternalContext();
-		externalContext.redirect("./deviceexit");
-		this.protocolContext.setValidity(this.samlAuthorityService
-				.getAuthnAssertionValidity());
-	}
+        this.log.debug("destroy");
+    }
 
-	private Locale getViewLocale() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		return viewLocale;
-	}
+    public String mobileCancel() throws IOException {
 
-	@Factory(MOBILE_ATTRIBUTE_LIST_NAME)
-	public List<AttributeDO> mobileAttributesFactory()
-			throws SubjectNotFoundException, DeviceNotFoundException {
-		Locale locale = getViewLocale();
-		this.mobileAttributes = listAttributes(
-				net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID,
-				locale);
-		return this.mobileAttributes;
-	}
+        this.protocolContext.setSuccess(false);
+        exit();
+        return null;
+    }
 
-	private List<AttributeDO> listAttributes(String deviceId, Locale locale)
-			throws DeviceNotFoundException, SubjectNotFoundException {
-		this.log.debug("list attributes for device: " + deviceId);
-		DeviceEntity device = this.deviceDAO.getDevice(deviceId);
-		List<AttributeTypeEntity> deviceAttributeTypes = new LinkedList<AttributeTypeEntity>();
-		deviceAttributeTypes.add(device.getAttributeType());
-		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
+    private void exit() throws IOException {
 
-		DeviceSubjectEntity deviceSubject = this.subjectService
-				.getDeviceSubject(this.userId);
-		for (SubjectEntity deviceRegistration : deviceSubject
-				.getRegistrations()) {
-			List<AttributeDO> mobileAttribute = listAttributes(
-					deviceRegistration, deviceAttributeTypes, locale);
-			attributes.addAll(mobileAttribute);
-		}
-		return attributes;
-	}
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.redirect("./deviceexit");
+        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+    }
 
-	private List<AttributeDO> listAttributes(SubjectEntity deviceRegistration,
-			List<AttributeTypeEntity> deviceAttributeTypes, Locale locale) {
-		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
+    private Locale getViewLocale() {
 
-		String language;
-		if (null == locale) {
-			language = null;
-		} else {
-			language = locale.getLanguage();
-		}
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        return viewLocale;
+    }
 
-		this.log.debug("# device attributes: " + deviceAttributeTypes.size());
-		for (AttributeTypeEntity attributeType : deviceAttributeTypes) {
-			this.log.debug("attribute type: " + attributeType.getName());
-			if (false == attributeType.isUserVisible()) {
-				continue;
-			}
+    @Factory(MOBILE_ATTRIBUTE_LIST_NAME)
+    public List<AttributeDO> mobileAttributesFactory() throws SubjectNotFoundException, DeviceNotFoundException {
 
-			boolean multivalued = attributeType.isMultivalued();
-			String name = attributeType.getName();
-			DatatypeType type = attributeType.getType();
-			boolean editable = attributeType.isUserEditable();
-			boolean dataMining = false;
-			String humanReabableName = null;
-			String description = null;
-			if (null != language) {
-				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
-						.findDescription(new AttributeTypeDescriptionPK(name,
-								language));
-				if (null != attributeTypeDescription) {
-					humanReabableName = attributeTypeDescription.getName();
-					description = attributeTypeDescription.getDescription();
-				}
-			}
-			List<AttributeEntity> attributeList = this.attributeDAO
-					.listAttributes(deviceRegistration, attributeType);
-			for (AttributeEntity attribute : attributeList) {
-				String stringValue;
-				Boolean booleanValue;
-				long index;
-				if (null != attribute) {
-					stringValue = attribute.getStringValue();
-					booleanValue = attribute.getBooleanValue();
-					index = attribute.getAttributeIndex();
-				} else {
-					stringValue = null;
-					booleanValue = null;
-					index = 0;
-				}
-				AttributeDO attributeView = new AttributeDO(name, type,
-						multivalued, index, humanReabableName, description,
-						editable, dataMining, stringValue, booleanValue);
-				attributes.add(attributeView);
-			}
-		}
-		return attributes;
-	}
+        Locale locale = getViewLocale();
+        this.mobileAttributes = listAttributes(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID, locale);
+        return this.mobileAttributes;
+    }
 
-	@ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
-	public String mobileRemove() throws SubjectNotFoundException,
-			MobileException, IOException {
-		this.encapDeviceService.remove(this.userId, this.selectedMobile
-				.getStringValue());
-		this.protocolContext.setSuccess(true);
-		exit();
-		return null;
-	}
+    private List<AttributeDO> listAttributes(String deviceId, Locale locale) throws DeviceNotFoundException,
+            SubjectNotFoundException {
+
+        this.log.debug("list attributes for device: " + deviceId);
+        DeviceEntity device = this.deviceDAO.getDevice(deviceId);
+        List<AttributeTypeEntity> deviceAttributeTypes = new LinkedList<AttributeTypeEntity>();
+        deviceAttributeTypes.add(device.getAttributeType());
+        List<AttributeDO> attributes = new LinkedList<AttributeDO>();
+
+        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(this.userId);
+        for (SubjectEntity deviceRegistration : deviceSubject.getRegistrations()) {
+            List<AttributeDO> mobileAttribute = listAttributes(deviceRegistration, deviceAttributeTypes, locale);
+            attributes.addAll(mobileAttribute);
+        }
+        return attributes;
+    }
+
+    private List<AttributeDO> listAttributes(SubjectEntity deviceRegistration,
+            List<AttributeTypeEntity> deviceAttributeTypes, Locale locale) {
+
+        List<AttributeDO> attributes = new LinkedList<AttributeDO>();
+
+        String language;
+        if (null == locale) {
+            language = null;
+        } else {
+            language = locale.getLanguage();
+        }
+
+        this.log.debug("# device attributes: " + deviceAttributeTypes.size());
+        for (AttributeTypeEntity attributeType : deviceAttributeTypes) {
+            this.log.debug("attribute type: " + attributeType.getName());
+            if (false == attributeType.isUserVisible()) {
+                continue;
+            }
+
+            boolean multivalued = attributeType.isMultivalued();
+            String name = attributeType.getName();
+            DatatypeType type = attributeType.getType();
+            boolean editable = attributeType.isUserEditable();
+            boolean dataMining = false;
+            String humanReabableName = null;
+            String description = null;
+            if (null != language) {
+                AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+                        .findDescription(new AttributeTypeDescriptionPK(name, language));
+                if (null != attributeTypeDescription) {
+                    humanReabableName = attributeTypeDescription.getName();
+                    description = attributeTypeDescription.getDescription();
+                }
+            }
+            List<AttributeEntity> attributeList = this.attributeDAO.listAttributes(deviceRegistration, attributeType);
+            for (AttributeEntity attribute : attributeList) {
+                String stringValue;
+                Boolean booleanValue;
+                long index;
+                if (null != attribute) {
+                    stringValue = attribute.getStringValue();
+                    booleanValue = attribute.getBooleanValue();
+                    index = attribute.getAttributeIndex();
+                } else {
+                    stringValue = null;
+                    booleanValue = null;
+                    index = 0;
+                }
+                AttributeDO attributeView = new AttributeDO(name, type, multivalued, index, humanReabableName,
+                        description, editable, dataMining, stringValue, booleanValue);
+                attributes.add(attributeView);
+            }
+        }
+        return attributes;
+    }
+
+    @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
+    public String mobileRemove() throws SubjectNotFoundException, MobileException, IOException {
+
+        this.encapDeviceService.remove(this.userId, this.selectedMobile.getStringValue());
+        this.protocolContext.setSuccess(true);
+        exit();
+        return null;
+    }
 
 }

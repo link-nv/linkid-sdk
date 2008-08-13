@@ -31,133 +31,129 @@ import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
 
+
 /**
  * <h2>{@link ScenarioDriverDurationsChart}<br>
  * <sub>A chart module that renders a detail of driver activity.</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Mar 4, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioDriverDurationsChart extends AbstractChart {
 
-	private Map<String, Map<String, XYSeries>> driverMaps;
+    private Map<String, Map<String, XYSeries>> driverMaps;
 
-	/**
-	 * Create a new {@link ScenarioDriverDurationsChart} instance.
-	 */
-	public ScenarioDriverDurationsChart() {
 
-		super("Scenario Driver Duration");
+    /**
+     * Create a new {@link ScenarioDriverDurationsChart} instance.
+     */
+    public ScenarioDriverDurationsChart() {
 
-		this.driverMaps = new HashMap<String, Map<String, XYSeries>>();
-	}
+        super("Scenario Driver Duration");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processData(ProfileDataEntity data) {
+        this.driverMaps = new HashMap<String, Map<String, XYSeries>>();
+    }
 
-		// Process all method (non-request) measurements.
-		long sum_methodTime = 0;
-		for (MeasurementEntity measurement : data.getMeasurements()) {
-			if (ProfileData.isRequestKey(measurement.getMeasurement()))
-				continue;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processData(ProfileDataEntity data) {
 
-			XYSeries measurementSet = getMeasurementSet(measurement);
+        // Process all method (non-request) measurements.
+        long sum_methodTime = 0;
+        for (MeasurementEntity measurement : data.getMeasurements()) {
+            if (ProfileData.isRequestKey(measurement.getMeasurement()))
+                continue;
 
-			Long startTime = data.getScenarioTiming().getStart();
-			Long duration = measurement.getDuration();
-			sum_methodTime += duration;
+            XYSeries measurementSet = getMeasurementSet(measurement);
 
-			measurementSet.addOrUpdate(startTime, duration);
-		}
+            Long startTime = data.getScenarioTiming().getStart();
+            Long duration = measurement.getDuration();
+            sum_methodTime += duration;
 
-		// Process the request time measurement.
-		// Subtract total time spent in method measurements.
-		for (MeasurementEntity measurement : data.getMeasurements())
-			if (ProfileData.REQUEST_DELTA_TIME.equals(measurement
-					.getMeasurement())) {
-				XYSeries measurementSet = getMeasurementSet(measurement);
+            measurementSet.addOrUpdate(startTime, duration);
+        }
 
-				Long startTime = data.getScenarioTiming().getStart();
-				Long duration = measurement.getDuration();
-				long overhead = duration - sum_methodTime;
+        // Process the request time measurement.
+        // Subtract total time spent in method measurements.
+        for (MeasurementEntity measurement : data.getMeasurements())
+            if (ProfileData.REQUEST_DELTA_TIME.equals(measurement.getMeasurement())) {
+                XYSeries measurementSet = getMeasurementSet(measurement);
 
-				if (overhead > 0)
-					measurementSet.addOrUpdate(startTime, overhead);
+                Long startTime = data.getScenarioTiming().getStart();
+                Long duration = measurement.getDuration();
+                long overhead = duration - sum_methodTime;
 
-				break;
-			}
-	}
+                if (overhead > 0)
+                    measurementSet.addOrUpdate(startTime, overhead);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isDataProcessed() {
+                break;
+            }
+    }
 
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDataProcessed() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected XYPlot getPlot() {
+        return true;
+    }
 
-		if (isEmpty())
-			return null;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected XYPlot getPlot() {
 
-		ValueAxis domainAxis = new DateAxis("Time");
-		CombinedDomainXYPlot plot = new CombinedDomainXYPlot(domainAxis);
+        if (isEmpty())
+            return null;
 
-		for (Map.Entry<String, Map<String, XYSeries>> driverSet : this.driverMaps
-				.entrySet()) {
-			NumberAxis valueAxis = new NumberAxis(driverSet.getKey() + " (ms)");
-			DefaultTableXYDataset driverMeasurements = new DefaultTableXYDataset();
+        ValueAxis domainAxis = new DateAxis("Time");
+        CombinedDomainXYPlot plot = new CombinedDomainXYPlot(domainAxis);
 
-			for (XYSeries measurements : driverSet.getValue().values())
-				driverMeasurements.addSeries(measurements);
+        for (Map.Entry<String, Map<String, XYSeries>> driverSet : this.driverMaps.entrySet()) {
+            NumberAxis valueAxis = new NumberAxis(driverSet.getKey() + " (ms)");
+            DefaultTableXYDataset driverMeasurements = new DefaultTableXYDataset();
 
-			plot.add(new XYPlot(driverMeasurements, null, valueAxis,
-					new StackedXYBarRenderer()));
-		}
+            for (XYSeries measurements : driverSet.getValue().values())
+                driverMeasurements.addSeries(measurements);
 
-		return plot;
-	}
+            plot.add(new XYPlot(driverMeasurements, null, valueAxis, new StackedXYBarRenderer()));
+        }
 
-	private boolean isEmpty() {
+        return plot;
+    }
 
-		for (Map<String, XYSeries> data : this.driverMaps.values())
-			if (!isEmpty(data))
-				return false;
+    private boolean isEmpty() {
 
-		return true;
-	}
+        for (Map<String, XYSeries> data : this.driverMaps.values())
+            if (!isEmpty(data))
+                return false;
 
-	private XYSeries getMeasurementSet(MeasurementEntity measurement) {
+        return true;
+    }
 
-		String profile = measurement.getProfileData().getProfile()
-				.getDriverClassName().replaceFirst(".*\\.", "");
+    private XYSeries getMeasurementSet(MeasurementEntity measurement) {
 
-		Map<String, XYSeries> driverMap = this.driverMaps.get(profile);
-		if (driverMap == null)
-			this.driverMaps.put(profile,
-					driverMap = new HashMap<String, XYSeries>());
+        String profile = measurement.getProfileData().getProfile().getDriverClassName().replaceFirst(".*\\.", "");
 
-		XYSeries measurementSet = driverMap.get(measurement.getMeasurement());
-		if (measurementSet == null)
-			driverMap.put(measurement.getMeasurement(),
-					measurementSet = new XYSeries(measurement.getMeasurement(),
-							true, false));
+        Map<String, XYSeries> driverMap = this.driverMaps.get(profile);
+        if (driverMap == null)
+            this.driverMaps.put(profile, driverMap = new HashMap<String, XYSeries>());
 
-		return measurementSet;
-	}
+        XYSeries measurementSet = driverMap.get(measurement.getMeasurement());
+        if (measurementSet == null)
+            driverMap.put(measurement.getMeasurement(), measurementSet = new XYSeries(measurement.getMeasurement(),
+                    true, false));
+
+        return measurementSet;
+    }
 }

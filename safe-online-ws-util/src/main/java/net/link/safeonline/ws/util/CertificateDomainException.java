@@ -9,8 +9,9 @@ package net.link.safeonline.ws.util;
 
 import java.security.GeneralSecurityException;
 
+
 public class CertificateDomainException extends GeneralSecurityException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

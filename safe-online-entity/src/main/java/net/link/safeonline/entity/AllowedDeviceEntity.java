@@ -29,98 +29,105 @@ import static net.link.safeonline.entity.AllowedDeviceEntity.QUERY_WHERE_APPLICA
 import static net.link.safeonline.entity.AllowedDeviceEntity.DELETE_WHERE_APPLICATION;
 import static net.link.safeonline.entity.AllowedDeviceEntity.QUERY_WHERE_APPLICATION_DEVICE;
 
+
 @Entity
-@Table(name = "alloweddevices", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"application", "device" }))
+@Table(name = "alloweddevices", uniqueConstraints = @UniqueConstraint(columnNames = { "application", "device" }))
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT allowedDevice "
-				+ "FROM AllowedDeviceEntity AS allowedDevice "
-				+ "WHERE allowedDevice.application = :application"),
-		@NamedQuery(name = DELETE_WHERE_APPLICATION, query = "DELETE FROM AllowedDeviceEntity "
-				+ "AS allowedDevice WHERE allowedDevice.application = :application"),
-		@NamedQuery(name = QUERY_WHERE_APPLICATION_DEVICE, query = "SELECT allowedDevice "
-				+ "FROM AllowedDeviceEntity AS allowedDevice "
-				+ "WHERE allowedDevice.application = :application AND "
-				+ "allowedDevice.device = :device") })
+        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT allowedDevice "
+                + "FROM AllowedDeviceEntity AS allowedDevice " + "WHERE allowedDevice.application = :application"),
+        @NamedQuery(name = DELETE_WHERE_APPLICATION, query = "DELETE FROM AllowedDeviceEntity "
+                + "AS allowedDevice WHERE allowedDevice.application = :application"),
+        @NamedQuery(name = QUERY_WHERE_APPLICATION_DEVICE, query = "SELECT allowedDevice "
+                + "FROM AllowedDeviceEntity AS allowedDevice " + "WHERE allowedDevice.application = :application AND "
+                + "allowedDevice.device = :device") })
 public class AllowedDeviceEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID               = 1L;
 
-	public static final String QUERY_WHERE_APPLICATION = "alloweddevice.app";
+    public static final String QUERY_WHERE_APPLICATION        = "alloweddevice.app";
 
-	public static final String DELETE_WHERE_APPLICATION = "alloweddevice.del";
+    public static final String DELETE_WHERE_APPLICATION       = "alloweddevice.del";
 
-	public static final String QUERY_WHERE_APPLICATION_DEVICE = "alloweddevice.app.dev";
+    public static final String QUERY_WHERE_APPLICATION_DEVICE = "alloweddevice.app.dev";
 
-	private long id;
+    private long               id;
 
-	private ApplicationEntity application;
+    private ApplicationEntity  application;
 
-	private DeviceEntity device;
+    private DeviceEntity       device;
 
-	private int weight;
+    private int                weight;
 
-	public AllowedDeviceEntity() {
-		// empty
-	}
 
-	public AllowedDeviceEntity(ApplicationEntity application,
-			DeviceEntity device, int weight) {
-		this.application = application;
-		this.device = device;
-		this.weight = weight;
-	}
+    public AllowedDeviceEntity() {
 
-	@ManyToOne
-	@JoinColumn(name = "application", nullable = false)
-	public ApplicationEntity getApplication() {
-		return this.application;
-	}
+        // empty
+    }
 
-	public void setApplication(ApplicationEntity application) {
-		this.application = application;
-	}
+    public AllowedDeviceEntity(ApplicationEntity application, DeviceEntity device, int weight) {
 
-	@ManyToOne
-	@JoinColumn(name = "device", nullable = false)
-	public DeviceEntity getDevice() {
-		return this.device;
-	}
+        this.application = application;
+        this.device = device;
+        this.weight = weight;
+    }
 
-	public void setDevice(DeviceEntity device) {
-		this.device = device;
-	}
+    @ManyToOne
+    @JoinColumn(name = "application", nullable = false)
+    public ApplicationEntity getApplication() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long getId() {
-		return this.id;
-	}
+        return this.application;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setApplication(ApplicationEntity application) {
 
-	public int getWeight() {
-		return this.weight;
-	}
+        this.application = application;
+    }
 
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
+    @ManyToOne
+    @JoinColumn(name = "device", nullable = false)
+    public DeviceEntity getDevice() {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_APPLICATION)
-		List<AllowedDeviceEntity> listAllowedDevices(@QueryParam("application")
-		ApplicationEntity application);
+        return this.device;
+    }
 
-		@UpdateMethod(DELETE_WHERE_APPLICATION)
-		void deleteAllowedDevices(@QueryParam("application")
-		ApplicationEntity application);
+    public void setDevice(DeviceEntity device) {
 
-		@QueryMethod(value = QUERY_WHERE_APPLICATION_DEVICE, nullable = true)
-		AllowedDeviceEntity find(@QueryParam("application")
-		ApplicationEntity application, @QueryParam("device")
-		DeviceEntity device);
-	}
+        this.device = device;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
+
+        return this.id;
+    }
+
+    public void setId(long id) {
+
+        this.id = id;
+    }
+
+    public int getWeight() {
+
+        return this.weight;
+    }
+
+    public void setWeight(int weight) {
+
+        this.weight = weight;
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_APPLICATION)
+        List<AllowedDeviceEntity> listAllowedDevices(@QueryParam("application") ApplicationEntity application);
+
+        @UpdateMethod(DELETE_WHERE_APPLICATION)
+        void deleteAllowedDevices(@QueryParam("application") ApplicationEntity application);
+
+        @QueryMethod(value = QUERY_WHERE_APPLICATION_DEVICE, nullable = true)
+        AllowedDeviceEntity find(@QueryParam("application") ApplicationEntity application,
+                @QueryParam("device") DeviceEntity device);
+    }
 }

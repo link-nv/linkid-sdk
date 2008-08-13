@@ -8,6 +8,7 @@ package net.link.safeonline.device;
 
 import javax.ejb.Remote;
 
+
 @Remote
 public interface PasswordDeviceServiceRemote extends PasswordDeviceService {
 

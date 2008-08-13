@@ -15,9 +15,11 @@ import net.link.safeonline.shared.SharedConstants;
 @ApplicationException(rollback = true)
 public class ApplicationOwnerNotFoundException extends NotFoundException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public ApplicationOwnerNotFoundException() {
-		super(SharedConstants.APPLICATION_OWNER_NOT_FOUND_ERROR);
-	}
+
+    public ApplicationOwnerNotFoundException() {
+
+        super(SharedConstants.APPLICATION_OWNER_NOT_FOUND_ERROR);
+    }
 }

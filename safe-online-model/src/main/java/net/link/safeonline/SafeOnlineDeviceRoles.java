@@ -15,12 +15,14 @@ package net.link.safeonline;
  */
 public class SafeOnlineDeviceRoles {
 
-	private SafeOnlineDeviceRoles() {
-		// empty
-	}
+    private SafeOnlineDeviceRoles() {
 
-	/**
-	 * Role for regular SafeOnline Devices.
-	 */
-	public static final String DEVICE_ROLE = "device";
+        // empty
+    }
+
+
+    /**
+     * Role for regular SafeOnline Devices.
+     */
+    public static final String DEVICE_ROLE = "device";
 }

@@ -17,6 +17,7 @@ import java.lang.annotation.Target;
 
 import net.link.safeonline.validation.validator.Validator;
 
+
 /**
  * Validator meta-annotation.
  * 
@@ -28,10 +29,10 @@ import net.link.safeonline.validation.validator.Validator;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidatorAnnotation {
 
-	/**
-	 * The validator class that implements the validator semantics.
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	Class<? extends Validator> value();
+    /**
+     * The validator class that implements the validator semantics.
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    Class<? extends Validator> value();
 }

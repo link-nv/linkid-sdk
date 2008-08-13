@@ -23,97 +23,116 @@ import net.link.safeonline.identity.IdentityApplet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class IdentityAppletTest extends TestCase {
 
-	static final Log LOG = LogFactory.getLog(IdentityAppletTest.class);
+    static final Log LOG = LogFactory.getLog(IdentityAppletTest.class);
 
-	private static class AppletFrame extends JFrame {
 
-		private static final long serialVersionUID = 1L;
+    private static class AppletFrame extends JFrame {
 
-		public AppletFrame(Applet applet) {
-			super(applet.getName());
+        private static final long serialVersionUID = 1L;
 
-			add(applet);
 
-			setSize(500, 500);
-			setVisible(true);
-		}
-	}
+        public AppletFrame(Applet applet) {
 
-	private static class TestAppletStub implements AppletStub {
+            super(applet.getName());
 
-		private Map<String, String> parameters;
+            add(applet);
 
-		public TestAppletStub() {
-			this.parameters = new HashMap<String, String>();
-		}
+            setSize(500, 500);
+            setVisible(true);
+        }
+    }
 
-		public void setParameter(String name, String value) {
-			this.parameters.put(name, value);
-		}
+    private static class TestAppletStub implements AppletStub {
 
-		@SuppressWarnings("unused")
-		public void appletResize(int width, int height) {
-			// empty
-		}
+        private Map<String, String> parameters;
 
-		public AppletContext getAppletContext() {
-			return null;
-		}
 
-		public URL getCodeBase() {
-			return null;
-		}
+        public TestAppletStub() {
 
-		public URL getDocumentBase() {
-			return null;
-		}
+            this.parameters = new HashMap<String, String>();
+        }
 
-		public String getParameter(String name) {
-			LOG.debug("get parameter: " + name);
-			String value = this.parameters.get(name);
-			if (null == value) {
-				throw new IllegalStateException("parameter not set: " + name);
-			}
-			return value;
-		}
+        public void setParameter(String name, String value) {
 
-		public boolean isActive() {
-			return false;
-		}
-	}
+            this.parameters.put(name, value);
+        }
 
-	public void testLayout() throws Exception {
-		final IdentityApplet identityApplet = new IdentityApplet();
+        @SuppressWarnings("unused")
+        public void appletResize(int width, int height) {
 
-		SwingUtilities.invokeAndWait(new Runnable() {
-			public void run() {
-				new AppletFrame(identityApplet);
-			}
-		});
+            // empty
+        }
 
-		final TestAppletStub appletStub = new TestAppletStub();
-		appletStub.setParameter("SmartCardConfig", "beid");
-		appletStub.setParameter("User", "test-user");
-		appletStub.setParameter("ServletPath", "/whereever");
+        public AppletContext getAppletContext() {
 
-		SwingUtilities.invokeAndWait(new Runnable() {
-			public void run() {
-				identityApplet.setStub(appletStub);
-				identityApplet.init();
-				identityApplet.start();
-			}
-		});
+            return null;
+        }
 
-		LOG.debug("number of threads: " + Thread.activeCount());
-		Thread[] threads = new Thread[8];
-		Thread.enumerate(threads);
-		for (Thread thread : threads) {
-			LOG.debug("thread: " + thread.getName());
-		}
+        public URL getCodeBase() {
 
-		Thread currentThread = Thread.currentThread();
-		currentThread.join();
-	}
+            return null;
+        }
+
+        public URL getDocumentBase() {
+
+            return null;
+        }
+
+        public String getParameter(String name) {
+
+            LOG.debug("get parameter: " + name);
+            String value = this.parameters.get(name);
+            if (null == value) {
+                throw new IllegalStateException("parameter not set: " + name);
+            }
+            return value;
+        }
+
+        public boolean isActive() {
+
+            return false;
+        }
+    }
+
+
+    public void testLayout() throws Exception {
+
+        final IdentityApplet identityApplet = new IdentityApplet();
+
+        SwingUtilities.invokeAndWait(new Runnable() {
+
+            public void run() {
+
+                new AppletFrame(identityApplet);
+            }
+        });
+
+        final TestAppletStub appletStub = new TestAppletStub();
+        appletStub.setParameter("SmartCardConfig", "beid");
+        appletStub.setParameter("User", "test-user");
+        appletStub.setParameter("ServletPath", "/whereever");
+
+        SwingUtilities.invokeAndWait(new Runnable() {
+
+            public void run() {
+
+                identityApplet.setStub(appletStub);
+                identityApplet.init();
+                identityApplet.start();
+            }
+        });
+
+        LOG.debug("number of threads: " + Thread.activeCount());
+        Thread[] threads = new Thread[8];
+        Thread.enumerate(threads);
+        for (Thread thread : threads) {
+            LOG.debug("thread: " + thread.getName());
+        }
+
+        Thread currentThread = Thread.currentThread();
+        currentThread.join();
+    }
 }

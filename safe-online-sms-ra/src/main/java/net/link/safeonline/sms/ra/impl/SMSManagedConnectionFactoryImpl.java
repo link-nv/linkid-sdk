@@ -24,68 +24,70 @@ import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.sms.ra.SMSManagedConnectionFactory;
 
-public class SMSManagedConnectionFactoryImpl implements
-		SMSManagedConnectionFactory {
 
-	private static final Log LOG = LogFactory
-			.getLog(SMSManagedConnectionFactoryImpl.class);
+public class SMSManagedConnectionFactoryImpl implements SMSManagedConnectionFactory {
 
-	private static final long serialVersionUID = 1L;
+    private static final Log       LOG              = LogFactory.getLog(SMSManagedConnectionFactoryImpl.class);
 
-	private transient List<String> serialPorts;
+    private static final long      serialVersionUID = 1L;
 
-	public SMSManagedConnectionFactoryImpl() {
-		LOG.debug("Factory created");
-		this.serialPorts = new ArrayList<String>();
-	}
+    private transient List<String> serialPorts;
 
-	public Object createConnectionFactory() {
-		throw new UnsupportedOperationException(
-				"Cannot be used in unmanaged env");
-	}
 
-	public Object createConnectionFactory(ConnectionManager connectionManager) {
-		LOG.debug("Creating a ConnectionFactory");
-		return new SMSConnectionFactoryImpl(connectionManager, this);
-	}
+    public SMSManagedConnectionFactoryImpl() {
 
-	public ManagedConnection createManagedConnection(
-			@SuppressWarnings("unused")
-			Subject arg0, @SuppressWarnings("unused")
-			ConnectionRequestInfo arg1) throws ResourceException {
-		LOG.debug("Creating a managed connection");
-		if (this.serialPorts.size() == 0) {
-			LOG.debug("Failed");
-			throw new ResourceAllocationException();
-		}
-		LOG.debug("Success");
-		ManagedConnection managedConnection = new SMSManagedConnectionImpl(
-				this.serialPorts.get(0));
-		this.serialPorts.remove(0);
-		return managedConnection;
-	}
+        LOG.debug("Factory created");
+        this.serialPorts = new ArrayList<String>();
+    }
 
-	public PrintWriter getLogWriter() {
-		return null;
-	}
+    public Object createConnectionFactory() {
 
-	@SuppressWarnings("unused")
-	public void setLogWriter(PrintWriter arg0) {
-		// empty
-	}
+        throw new UnsupportedOperationException("Cannot be used in unmanaged env");
+    }
 
-	@SuppressWarnings("unchecked")
-	public ManagedConnection matchManagedConnections(Set set,
-			@SuppressWarnings("unused")
-			Subject subject, @SuppressWarnings("unused")
-			ConnectionRequestInfo connectionRequestInfo) {
-		LOG.debug("Matching connections");
-		return (ManagedConnection) set.iterator().next();
-	}
+    public Object createConnectionFactory(ConnectionManager connectionManager) {
 
-	public void addSerialPort(String serialPort) {
-		LOG.debug("Adding a serial port");
-		this.serialPorts.add(serialPort);
-	}
+        LOG.debug("Creating a ConnectionFactory");
+        return new SMSConnectionFactoryImpl(connectionManager, this);
+    }
+
+    public ManagedConnection createManagedConnection(@SuppressWarnings("unused") Subject arg0,
+            @SuppressWarnings("unused") ConnectionRequestInfo arg1) throws ResourceException {
+
+        LOG.debug("Creating a managed connection");
+        if (this.serialPorts.size() == 0) {
+            LOG.debug("Failed");
+            throw new ResourceAllocationException();
+        }
+        LOG.debug("Success");
+        ManagedConnection managedConnection = new SMSManagedConnectionImpl(this.serialPorts.get(0));
+        this.serialPorts.remove(0);
+        return managedConnection;
+    }
+
+    public PrintWriter getLogWriter() {
+
+        return null;
+    }
+
+    @SuppressWarnings("unused")
+    public void setLogWriter(PrintWriter arg0) {
+
+        // empty
+    }
+
+    @SuppressWarnings("unchecked")
+    public ManagedConnection matchManagedConnections(Set set, @SuppressWarnings("unused") Subject subject,
+            @SuppressWarnings("unused") ConnectionRequestInfo connectionRequestInfo) {
+
+        LOG.debug("Matching connections");
+        return (ManagedConnection) set.iterator().next();
+    }
+
+    public void addSerialPort(String serialPort) {
+
+        LOG.debug("Adding a serial port");
+        this.serialPorts.add(serialPort);
+    }
 
 }

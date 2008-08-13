@@ -36,15 +36,14 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 /**
- * Abstract class for data client beans. Inherit from this class if you need a
- * {@link DataClient} component.
+ * Abstract class for data client beans. Inherit from this class if you need a {@link DataClient} component.
  * 
  * @author wvdhaute
  * 
  */
-public abstract class AbstractTicketDataClientBean implements
-        AbstractTicketDataClient {
+public abstract class AbstractTicketDataClientBean implements AbstractTicketDataClient {
 
     @Logger
     private Log                       log;
@@ -75,8 +74,7 @@ public abstract class AbstractTicketDataClientBean implements
         this.demoHostName = externalContext.getInitParameter("DemoHostName");
         this.demoHostPort = externalContext.getInitParameter("DemoHostPort");
         this.wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils
-                .getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils.getPrivateKeyEntry();
         this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
         this.privateKey = privateKeyEntry.getPrivateKey();
         postActivateCallback();
@@ -86,10 +84,8 @@ public abstract class AbstractTicketDataClientBean implements
     public void postActivateCallback() {
 
         this.log.debug("postActivate");
-        this.dataClient = new DataClientImpl(this.wsLocation, this.certificate,
-                this.privateKey);
-        this.attributeClient = new AttributeClientImpl(this.wsLocation,
-                this.certificate, this.privateKey);
+        this.dataClient = new DataClientImpl(this.wsLocation, this.certificate, this.privateKey);
+        this.attributeClient = new AttributeClientImpl(this.wsLocation, this.certificate, this.privateKey);
     }
 
     @PrePassivate
@@ -129,8 +125,7 @@ public abstract class AbstractTicketDataClientBean implements
     }
 
     /**
-     * Returns the username for this user Id. Sets {@link FacesMessages} in case
-     * something goes wrong.
+     * Returns the username for this user Id. Sets {@link FacesMessages} in case something goes wrong.
      * 
      * @param userId
      */
@@ -139,8 +134,8 @@ public abstract class AbstractTicketDataClientBean implements
         String username = null;
         AttributeClient tempAttributeClient = getAttributeClient();
         try {
-            username = tempAttributeClient.getAttributeValue(userId,
-                    DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+            username = tempAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
+                    String.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;

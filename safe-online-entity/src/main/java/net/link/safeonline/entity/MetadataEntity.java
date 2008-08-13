@@ -13,39 +13,47 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = TABLE_NAME)
 public class MetadataEntity {
 
-	public static final String TABLE_NAME = "metadata";
+    public static final String TABLE_NAME = "metadata";
 
-	private String name;
+    private String             name;
 
-	private String value;
+    private String             value;
 
-	public MetadataEntity() {
-		// empty
-	}
 
-	public MetadataEntity(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}
+    public MetadataEntity() {
 
-	@Id
-	public String getName() {
-		return this.name;
-	}
+        // empty
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public MetadataEntity(String name, String value) {
 
-	public String getValue() {
-		return this.value;
-	}
+        this.name = name;
+        this.value = value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    @Id
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    public String getValue() {
+
+        return this.value;
+    }
+
+    public void setValue(String value) {
+
+        this.value = value;
+    }
 }

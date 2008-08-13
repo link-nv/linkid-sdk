@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.user.device.password;
 
 import net.link.safeonline.webapp.user.UserTemplate;
 
+
 public class UserRemovePassword extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/device/password/remove-password.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/device/password/remove-password.seam";
 
-	public UserRemovePassword() {
-		super(PAGE_NAME);
-	}
+
+    public UserRemovePassword() {
+
+        super(PAGE_NAME);
+    }
 }

@@ -12,6 +12,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
+
 /**
  * Interface for device identifier mapping service component.
  * 
@@ -21,14 +22,12 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 @Local
 public interface DeviceIdentifierMappingService {
 
-	/**
-	 * Returns the device mapping id for the specified user and authenticating
-	 * remote device.
-	 * 
-	 * @param username
-	 * @throws DeviceNotFoundException
-	 * @throws SubjectNotFoundException
-	 */
-	String getDeviceMappingId(String username) throws DeviceNotFoundException,
-			SubjectNotFoundException;
+    /**
+     * Returns the device mapping id for the specified user and authenticating remote device.
+     * 
+     * @param username
+     * @throws DeviceNotFoundException
+     * @throws SubjectNotFoundException
+     */
+    String getDeviceMappingId(String username) throws DeviceNotFoundException, SubjectNotFoundException;
 }

@@ -30,141 +30,155 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Entity
 @Table(name = "task_history")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_DELETE_WHERE_TASK, query = "DELETE "
-				+ "FROM TaskHistoryEntity AS taskHistory "
-				+ "WHERE taskHistory.task = :task"),
-		@NamedQuery(name = QUERY_DELETE, query = "DELETE "
-				+ "FROM TaskHistoryEntity"),
-		@NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE "
-				+ "FROM TaskHistoryEntity AS taskHistory "
-				+ "WHERE taskHistory.executionDate < :ageLimit") })
+        @NamedQuery(name = QUERY_DELETE_WHERE_TASK, query = "DELETE " + "FROM TaskHistoryEntity AS taskHistory "
+                + "WHERE taskHistory.task = :task"),
+        @NamedQuery(name = QUERY_DELETE, query = "DELETE " + "FROM TaskHistoryEntity"),
+        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE " + "FROM TaskHistoryEntity AS taskHistory "
+                + "WHERE taskHistory.executionDate < :ageLimit") })
 public class TaskHistoryEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID         = 1L;
 
-	public static final String QUERY_DELETE_WHERE_TASK = "the.deltask";
+    public static final String QUERY_DELETE_WHERE_TASK  = "the.deltask";
 
-	public static final String QUERY_DELETE = "the.del";
+    public static final String QUERY_DELETE             = "the.del";
 
-	public static final String QUERY_DELETE_WHERE_OLDER = "the.old";
+    public static final String QUERY_DELETE_WHERE_OLDER = "the.old";
 
-	private long id;
+    private long               id;
 
-	private String message;
+    private String             message;
 
-	private boolean result;
+    private boolean            result;
 
-	private Date executionDate;
+    private Date               executionDate;
 
-	private long executionTime;
+    private long               executionTime;
 
-	private TaskEntity task;
+    private TaskEntity         task;
 
-	public TaskHistoryEntity() {
-		// empty
-	}
 
-	public TaskHistoryEntity(TaskEntity task, String message, boolean result,
-			Date startDate, Date endDate) {
-		this.task = task;
-		this.message = message;
-		this.executionDate = startDate;
-		this.result = result;
-		this.executionTime = endDate.getTime() - startDate.getTime();
-	}
+    public TaskHistoryEntity() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long getId() {
-		return this.id;
-	}
+        // empty
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public TaskHistoryEntity(TaskEntity task, String message, boolean result, Date startDate, Date endDate) {
 
-	public Date getExecutionDate() {
-		return this.executionDate;
-	}
+        this.task = task;
+        this.message = message;
+        this.executionDate = startDate;
+        this.result = result;
+        this.executionTime = endDate.getTime() - startDate.getTime();
+    }
 
-	public void setExecutionDate(Date executionDate) {
-		this.executionDate = executionDate;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
 
-	public long getExecutionTime() {
-		return this.executionTime;
-	}
+        return this.id;
+    }
 
-	public void setExecutionTime(long executionTime) {
-		this.executionTime = executionTime;
-	}
+    public void setId(long id) {
 
-	public String getMessage() {
-		return this.message;
-	}
+        this.id = id;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public Date getExecutionDate() {
 
-	public boolean isResult() {
-		return this.result;
-	}
+        return this.executionDate;
+    }
 
-	public void setResult(boolean result) {
-		this.result = result;
-	}
+    public void setExecutionDate(Date executionDate) {
 
-	@ManyToOne
-	public TaskEntity getTask() {
-		return this.task;
-	}
+        this.executionDate = executionDate;
+    }
 
-	public void setTask(TaskEntity task) {
-		this.task = task;
-	}
+    public long getExecutionTime() {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("id", this.id).append("task",
-				this.task.getName()).append("result", this.result).append(
-				"message", this.message).append("date", this.executionDate)
-				.append("time", this.executionTime).toString();
-	}
+        return this.executionTime;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (null == obj) {
-			return false;
-		}
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof TaskHistoryEntity) {
-			return false;
-		}
-		TaskHistoryEntity rhs = (TaskHistoryEntity) obj;
-		return new EqualsBuilder().append(this.id, rhs.id).isEquals();
-	}
+    public void setExecutionTime(long executionTime) {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.id).toHashCode();
-	}
+        this.executionTime = executionTime;
+    }
 
-	public interface QueryInterface {
-		@UpdateMethod(QUERY_DELETE)
-		void clearAllTasksHistory();
+    public String getMessage() {
 
-		@UpdateMethod(QUERY_DELETE_WHERE_TASK)
-		void clearTaskHistory(@QueryParam("task")
-		TaskEntity task);
+        return this.message;
+    }
 
-		@UpdateMethod(QUERY_DELETE_WHERE_OLDER)
-		void clearAllTasksHistory(@QueryParam("ageLimit")
-		Date ageLimit);
-	}
+    public void setMessage(String message) {
+
+        this.message = message;
+    }
+
+    public boolean isResult() {
+
+        return this.result;
+    }
+
+    public void setResult(boolean result) {
+
+        this.result = result;
+    }
+
+    @ManyToOne
+    public TaskEntity getTask() {
+
+        return this.task;
+    }
+
+    public void setTask(TaskEntity task) {
+
+        this.task = task;
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("id", this.id).append("task", this.task.getName()).append("result",
+                this.result).append("message", this.message).append("date", this.executionDate).append("time",
+                this.executionTime).toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof TaskHistoryEntity) {
+            return false;
+        }
+        TaskHistoryEntity rhs = (TaskHistoryEntity) obj;
+        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.id).toHashCode();
+    }
+
+
+    public interface QueryInterface {
+
+        @UpdateMethod(QUERY_DELETE)
+        void clearAllTasksHistory();
+
+        @UpdateMethod(QUERY_DELETE_WHERE_TASK)
+        void clearTaskHistory(@QueryParam("task") TaskEntity task);
+
+        @UpdateMethod(QUERY_DELETE_WHERE_OLDER)
+        void clearAllTasksHistory(@QueryParam("ageLimit") Date ageLimit);
+    }
 }

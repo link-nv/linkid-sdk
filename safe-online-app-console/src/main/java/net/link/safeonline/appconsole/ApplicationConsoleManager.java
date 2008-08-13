@@ -19,6 +19,7 @@ import net.link.safeonline.sdk.ws.MessageAccessor;
 
 import org.w3c.dom.Document;
 
+
 /**
  * 
  * Application console data class, observable for other registered observers
@@ -27,120 +28,134 @@ import org.w3c.dom.Document;
  */
 public class ApplicationConsoleManager extends Observable {
 
-	private static ApplicationConsoleManager manager = null;
+    private static ApplicationConsoleManager manager             = null;
 
-	private String identityLabelPrefix = IDENTITY.getMessage() + " : ";
-	private String locationLabelPrefix = LOCATION.getMessage() + " : ";
+    private String                           identityLabelPrefix = IDENTITY.getMessage() + " : ";
+    private String                           locationLabelPrefix = LOCATION.getMessage() + " : ";
 
-	private String identityLabel = null;
-	private String locationLabel = null;
-	private String location = "localhost";
+    private String                           identityLabel       = null;
+    private String                           locationLabel       = null;
+    private String                           location            = "localhost";
 
-	private String keyStorePath = null;
-	private String keyStoreType = null;
-	private String keyStorePassword = null;
-	private PrivateKeyEntry identity = null;
+    private String                           keyStorePath        = null;
+    private String                           keyStoreType        = null;
+    private String                           keyStorePassword    = null;
+    private PrivateKeyEntry                  identity            = null;
 
-	/*
-	 * For SOAP message viewing
-	 */
-	private boolean captureMessages = true;
-	private MessageAccessor messageAccessor = null;
+    /*
+     * For SOAP message viewing
+     */
+    private boolean                          captureMessages     = true;
+    private MessageAccessor                  messageAccessor     = null;
 
-	public static ApplicationConsoleManager getInstance() {
-		if (null == manager)
-			manager = new ApplicationConsoleManager();
-		return manager;
-	}
 
-	/*
-	 * Constructor ( singleton )
-	 */
-	private ApplicationConsoleManager() {
-		this.identityLabel = this.identityLabelPrefix;
-		this.locationLabel = this.locationLabelPrefix + this.location;
-	}
+    public static ApplicationConsoleManager getInstance() {
 
-	public String getIdentityLabel() {
-		return this.identityLabel;
-	}
+        if (null == manager)
+            manager = new ApplicationConsoleManager();
+        return manager;
+    }
 
-	public String getLocationLabel() {
-		return this.locationLabel;
-	}
+    /*
+     * Constructor ( singleton )
+     */
+    private ApplicationConsoleManager() {
 
-	public String getLocation() {
-		return this.location;
-	}
+        this.identityLabel = this.identityLabelPrefix;
+        this.locationLabel = this.locationLabelPrefix + this.location;
+    }
 
-	public void setLocation(String location) {
-		this.location = location;
-		this.locationLabel = this.locationLabelPrefix + location;
-		setChanged();
-		notifyObservers();
+    public String getIdentityLabel() {
 
-	}
+        return this.identityLabel;
+    }
 
-	public PrivateKeyEntry getIdentity() {
-		return this.identity;
-	}
+    public String getLocationLabel() {
 
-	public void setIdentity(PrivateKeyEntry identity, String keyStorePath,
-			String keyStoreType, String keyStorePassword) {
-		if (null == identity) {
-			this.identity = null;
-			this.keyStorePath = null;
-			this.keyStoreType = null;
-			this.keyStorePassword = null;
-			this.identityLabel = this.identityLabelPrefix;
-		} else {
-			this.identity = identity;
-			this.keyStorePath = keyStorePath;
-			this.keyStoreType = keyStoreType;
-			this.keyStorePassword = keyStorePassword;
-			this.identityLabel = this.identityLabelPrefix
-					+ ((X509Certificate) identity.getCertificate())
-							.getSubjectX500Principal().getName() + " ( "
-					+ new File(this.keyStorePath).getName() + " )";
-		}
-		setChanged();
-		notifyObservers();
-	}
+        return this.locationLabel;
+    }
 
-	public void setMessageAccessor(MessageAccessor messageAccessor) {
-		this.messageAccessor = messageAccessor;
-		if (this.captureMessages) {
-			setChanged();
-			notifyObservers(messageAccessor);
-		}
-	}
+    public String getLocation() {
 
-	public void setCaptureMessages(boolean captureMessages) {
-		this.captureMessages = captureMessages;
-	}
+        return this.location;
+    }
 
-	public Document getInboundMessage() {
-		if (!this.captureMessages)
-			return null;
-		return this.messageAccessor.getInboundMessage();
-	}
+    public void setLocation(String location) {
 
-	public Document getOutboundMessage() {
-		if (!this.captureMessages)
-			return null;
-		return this.messageAccessor.getOutboundMessage();
-	}
+        this.location = location;
+        this.locationLabel = this.locationLabelPrefix + location;
+        setChanged();
+        notifyObservers();
 
-	public String getKeyStorePath() {
-		return this.keyStorePath;
-	}
+    }
 
-	public String getKeyStoreType() {
-		return this.keyStoreType;
-	}
+    public PrivateKeyEntry getIdentity() {
 
-	public String getKeyStorePassword() {
-		return this.keyStorePassword;
-	}
+        return this.identity;
+    }
+
+    public void setIdentity(PrivateKeyEntry identity, String keyStorePath, String keyStoreType, String keyStorePassword) {
+
+        if (null == identity) {
+            this.identity = null;
+            this.keyStorePath = null;
+            this.keyStoreType = null;
+            this.keyStorePassword = null;
+            this.identityLabel = this.identityLabelPrefix;
+        } else {
+            this.identity = identity;
+            this.keyStorePath = keyStorePath;
+            this.keyStoreType = keyStoreType;
+            this.keyStorePassword = keyStorePassword;
+            this.identityLabel = this.identityLabelPrefix
+                    + ((X509Certificate) identity.getCertificate()).getSubjectX500Principal().getName() + " ( "
+                    + new File(this.keyStorePath).getName() + " )";
+        }
+        setChanged();
+        notifyObservers();
+    }
+
+    public void setMessageAccessor(MessageAccessor messageAccessor) {
+
+        this.messageAccessor = messageAccessor;
+        if (this.captureMessages) {
+            setChanged();
+            notifyObservers(messageAccessor);
+        }
+    }
+
+    public void setCaptureMessages(boolean captureMessages) {
+
+        this.captureMessages = captureMessages;
+    }
+
+    public Document getInboundMessage() {
+
+        if (!this.captureMessages)
+            return null;
+        return this.messageAccessor.getInboundMessage();
+    }
+
+    public Document getOutboundMessage() {
+
+        if (!this.captureMessages)
+            return null;
+        return this.messageAccessor.getOutboundMessage();
+    }
+
+    public String getKeyStorePath() {
+
+        return this.keyStorePath;
+    }
+
+    public String getKeyStoreType() {
+
+        return this.keyStoreType;
+    }
+
+    public String getKeyStorePassword() {
+
+        return this.keyStorePassword;
+    }
 
 }

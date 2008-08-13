@@ -33,62 +33,64 @@ import org.oasis_open.docs.wsn.b_2.SubscribeCreationFailedFaultType;
 import org.oasis_open.docs.wsn.b_2.SubscribeResponse;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
+
 @WebService(endpointInterface = "net.lin_k.safe_online.notification.producer.NotificationProducerPort")
 @HandlerChain(file = "auth-ws-handlers.xml")
 @Injection
 public class NotificationProducerPortImpl implements NotificationProducerPort {
 
-	private final static Log LOG = LogFactory
-			.getLog(NotificationProducerPortImpl.class);
+    private final static Log            LOG = LogFactory.getLog(NotificationProducerPortImpl.class);
 
-	@Resource
-	private WebServiceContext context;
+    @Resource
+    private WebServiceContext           context;
 
-	@EJB(mappedName = "SafeOnline/NotificationProducerServiceBean/local")
-	private NotificationProducerService notificationProducerService;
+    @EJB(mappedName = "SafeOnline/NotificationProducerServiceBean/local")
+    private NotificationProducerService notificationProducerService;
 
-	public SubscribeResponse subscribe(SubscribeRequest request) {
-		LOG.debug("subscribe");
 
-		X509Certificate certificate = WSSecurityServerHandler
-				.getCertificate(this.context);
+    public SubscribeResponse subscribe(SubscribeRequest request) {
 
-		W3CEndpointReference consumerReference = request.getConsumerReference();
-		DOMResult consumerReferenceDom = new DOMResult();
-		consumerReference.writeTo(consumerReferenceDom);
-		String address = consumerReferenceDom.getNode().getFirstChild()
-				.getFirstChild().getFirstChild().getNodeValue();
+        LOG.debug("subscribe");
 
-		FilterType filter = request.getFilter();
-		TopicExpressionType topicExpression = filter.getTopic();
-		String topic = (String) topicExpression.getContent().get(0);
+        X509Certificate certificate = WSSecurityServerHandler.getCertificate(this.context);
 
-		try {
-			this.notificationProducerService.subscribe(topic, address,
-					certificate);
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied: " + e.getMessage());
-			return createSubscribeCreationFailedResponse();
-		}
+        W3CEndpointReference consumerReference = request.getConsumerReference();
+        DOMResult consumerReferenceDom = new DOMResult();
+        consumerReference.writeTo(consumerReferenceDom);
+        String address = consumerReferenceDom.getNode().getFirstChild().getFirstChild().getFirstChild().getNodeValue();
 
-		return createGenericResponse();
-	}
+        FilterType filter = request.getFilter();
+        TopicExpressionType topicExpression = filter.getTopic();
+        String topic = (String) topicExpression.getContent().get(0);
 
-	private SubscribeResponse createGenericResponse() {
-		SubscribeResponse response = new SubscribeResponse();
-		return response;
-	}
+        try {
+            this.notificationProducerService.subscribe(topic, address, certificate);
+        } catch (PermissionDeniedException e) {
+            LOG.debug("permission denied: " + e.getMessage());
+            return createSubscribeCreationFailedResponse();
+        }
 
-	private SubscribeResponse createSubscribeCreationFailedResponse() {
-		SubscribeResponse response = createGenericResponse();
-		SubscribeCreationFailedFaultType error = new SubscribeCreationFailedFaultType();
-		response.getAny().add(error);
-		return response;
-	}
+        return createGenericResponse();
+    }
 
-	public GetCurrentMessageResponse getCurrentMessage(GetCurrentMessage request) {
-		LOG.debug("getCurrentMessage");
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private SubscribeResponse createGenericResponse() {
+
+        SubscribeResponse response = new SubscribeResponse();
+        return response;
+    }
+
+    private SubscribeResponse createSubscribeCreationFailedResponse() {
+
+        SubscribeResponse response = createGenericResponse();
+        SubscribeCreationFailedFaultType error = new SubscribeCreationFailedFaultType();
+        response.getAny().add(error);
+        return response;
+    }
+
+    public GetCurrentMessageResponse getCurrentMessage(GetCurrentMessage request) {
+
+        LOG.debug("getCurrentMessage");
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

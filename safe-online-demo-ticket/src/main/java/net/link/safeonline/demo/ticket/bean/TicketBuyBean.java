@@ -48,13 +48,13 @@ import org.jboss.seam.log.Log;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
+
 @Stateful
 @Name("ticketBuy")
 @Scope(ScopeType.CONVERSATION)
 @LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketBuyBean/local")
 @SecurityDomain("demo-ticket")
-public class TicketBuyBean extends AbstractTicketDataClientBean implements
-        TicketBuy {
+public class TicketBuyBean extends AbstractTicketDataClientBean implements TicketBuy {
 
     @Logger
     private Log            log;
@@ -79,8 +79,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
 
 
     public enum TicketPeriod {
-        DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH(
-                "one month", Period.months(1));
+        DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH("one month", Period.months(1));
 
         private final String name;
 
@@ -203,11 +202,9 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
         String userId = getUserId();
         try {
             this.nrn = this.getAttributeClient().getAttributeValue(userId,
-                    "urn:net:lin-k:safe-online:attribute:beid:nrn",
-                    String[].class)[0];
-            Boolean juniorValue = this.getAttributeClient().getAttributeValue(
-                    userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-                    Boolean.class);
+                    "urn:net:lin-k:safe-online:attribute:beid:nrn", String[].class)[0];
+            Boolean juniorValue = this.getAttributeClient().getAttributeValue(userId,
+                    DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
             if (juniorValue != null && juniorValue.booleanValue() == true) {
                 this.juniorReduction = 10;
             }
@@ -250,8 +247,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
             this.entityManager.persist(user);
         }
         user.setNrn(this.nrn);
-        Ticket ticket = new Ticket(user, Site.valueOf(this.from), Site
-                .valueOf(this.to), this.startDate, this.endDate,
+        Ticket ticket = new Ticket(user, Site.valueOf(this.from), Site.valueOf(this.to), this.startDate, this.endDate,
                 this.returnTicket);
         user.getTickets().add(ticket);
         this.entityManager.persist(ticket);
@@ -269,26 +265,16 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
         String user = getUsername();
         String recipient = "De Lijn";
         String message = "Ticket " + ticket.getId();
-        String target = "http://" + this.demoHostName + ":" + this.demoHostPort
-                + "/demo-ticket/list.seam";
-        HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
-                .getResponse();
+        String target = "http://" + this.demoHostName + ":" + this.demoHostPort + "/demo-ticket/list.seam";
+        HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext.getResponse();
         target = httpServletResponse.encodeRedirectURL(target);
 
         String redirectUrl;
         try {
-            redirectUrl = "http://"
-                    + this.demoHostName
-                    + ":"
-                    + this.demoHostPort
-                    + "/demo-payment/entry.seam?user="
-                    + URLEncoder.encode(user, "UTF-8")
-                    + "&recipient="
-                    + URLEncoder.encode(recipient, "UTF-8")
-                    + "&amount="
-                    + URLEncoder.encode(Double.toString(this.ticketPrice
-                            - this.juniorReduction), "UTF-8") + "&message="
-                    + URLEncoder.encode(message, "UTF-8") + "&target="
+            redirectUrl = "http://" + this.demoHostName + ":" + this.demoHostPort + "/demo-payment/entry.seam?user="
+                    + URLEncoder.encode(user, "UTF-8") + "&recipient=" + URLEncoder.encode(recipient, "UTF-8")
+                    + "&amount=" + URLEncoder.encode(Double.toString(this.ticketPrice - this.juniorReduction), "UTF-8")
+                    + "&message=" + URLEncoder.encode(message, "UTF-8") + "&target="
                     + URLEncoder.encode(target, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             String msg = "URL encoding error";

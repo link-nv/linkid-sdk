@@ -7,5 +7,5 @@
 package net.link.safeonline.entity.audit;
 
 public enum ResourceLevelType {
-	RESOURCE_UNAVAILABLE, RESOURCE_UNKNOWN
+    RESOURCE_UNAVAILABLE, RESOURCE_UNKNOWN
 }

@@ -8,10 +8,11 @@ package net.link.safeonline.webapp.owner;
 
 public class OwnerApplicationEdit extends OwnerTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OWNER_WEBAPP_PREFIX
-			+ "/application-edit.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OWNER_WEBAPP_PREFIX + "/application-edit.seam";
 
-	public OwnerApplicationEdit() {
-		super(PAGE_NAME);
-	}
+
+    public OwnerApplicationEdit() {
+
+        super(PAGE_NAME);
+    }
 }

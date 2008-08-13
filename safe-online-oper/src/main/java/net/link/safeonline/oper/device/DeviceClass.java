@@ -11,41 +11,42 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 
+
 @Local
 public interface DeviceClass {
 
-	/*
-	 * Actions
-	 */
-	String view();
+    /*
+     * Actions
+     */
+    String view();
 
-	String add();
+    String add();
 
-	String edit();
+    String edit();
 
-	String save() throws DeviceClassNotFoundException;
+    String save() throws DeviceClassNotFoundException;
 
-	String remove();
+    String remove();
 
-	/*
-	 * Accessors
-	 */
-	String getName();
+    /*
+     * Accessors
+     */
+    String getName();
 
-	void setName(String name);
+    void setName(String name);
 
-	String getAuthenticationContextClass();
+    String getAuthenticationContextClass();
 
-	void setAuthenticationContextClass(String authenticationContextClass);
+    void setAuthenticationContextClass(String authenticationContextClass);
 
-	/*
-	 * Factories
-	 */
-	void deviceClassListFactory();
+    /*
+     * Factories
+     */
+    void deviceClassListFactory();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
 }

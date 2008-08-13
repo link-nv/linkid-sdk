@@ -15,24 +15,22 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.entity.OlasEntity;
 
+
 @Local
 public interface OlasDAO {
 
-	OlasEntity addNode(String name, String protocol, String hostname, int port,
-			int sslPort, X509Certificate authnCertificate,
-			X509Certificate signingCertificate);
+    OlasEntity addNode(String name, String protocol, String hostname, int port, int sslPort,
+            X509Certificate authnCertificate, X509Certificate signingCertificate);
 
-	List<OlasEntity> listNodes();
+    List<OlasEntity> listNodes();
 
-	OlasEntity findNode(String name);
+    OlasEntity findNode(String name);
 
-	OlasEntity getNode(String name) throws NodeNotFoundException;
+    OlasEntity getNode(String name) throws NodeNotFoundException;
 
-	OlasEntity getNodeFromAuthnCertificate(X509Certificate authnCertificate)
-			throws NodeNotFoundException;
+    OlasEntity getNodeFromAuthnCertificate(X509Certificate authnCertificate) throws NodeNotFoundException;
 
-	OlasEntity getNodeFromSigningCertificate(X509Certificate signingCertificate)
-			throws NodeNotFoundException;
+    OlasEntity getNodeFromSigningCertificate(X509Certificate signingCertificate) throws NodeNotFoundException;
 
-	void removeNode(OlasEntity node);
+    void removeNode(OlasEntity node);
 }

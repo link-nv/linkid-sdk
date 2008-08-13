@@ -26,6 +26,7 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 /**
  * <h2>{@link UserServiceBean}<br>
  * <sub>Service bean for {@link UserService}.</sub></h2>
@@ -38,8 +39,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = UserService.BINDING)
-public class UserServiceBean extends AbstractCinemaServiceBean implements
-        UserService {
+public class UserServiceBean extends AbstractCinemaServiceBean implements UserService {
 
     private static final String WS_LOCATION = "WsLocation";
 
@@ -51,8 +51,7 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements
 
         UserEntity user;
         try {
-            user = (UserEntity) this.em.createNamedQuery(UserEntity.getById)
-                    .setParameter("id", id).getSingleResult();
+            user = (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("id", id).getSingleResult();
         }
 
         catch (NoResultException e) {
@@ -73,8 +72,8 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements
             UserEntity userEntity = attach(user);
 
             // National registry number of user.
-            String nrn = attributeClient.getAttributeValue(userEntity.getId(),
-                    BeIdConstants.NRN_ATTRIBUTE, String[].class)[0];
+            String nrn = attributeClient.getAttributeValue(userEntity.getId(), BeIdConstants.NRN_ATTRIBUTE,
+                    String[].class)[0];
             userEntity.setNrn(nrn);
 
             // National registry number of user.
@@ -83,11 +82,9 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements
             userEntity.setName(name);
 
             // Does user have a junior account?
-            Boolean juniorValue = attributeClient.getAttributeValue(userEntity
-                    .getId(), DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-                    Boolean.class);
-            userEntity.setJunior(juniorValue != null
-                    && juniorValue.booleanValue() == true);
+            Boolean juniorValue = attributeClient.getAttributeValue(userEntity.getId(),
+                    DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
+            userEntity.setJunior(juniorValue != null && juniorValue.booleanValue() == true);
         }
 
         catch (AttributeNotFoundException e) {
@@ -102,18 +99,14 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements
     /**
      * Retrieve a proxy to the OLAS attribute web service.
      */
-    private AttributeClientImpl getOLASAttributeService(
-            HttpServletRequest loginRequest) {
+    private AttributeClientImpl getOLASAttributeService(HttpServletRequest loginRequest) {
 
         // Find the location of the OLAS web services to use.
-        String wsLocation = loginRequest.getSession().getServletContext()
-                .getInitParameter(WS_LOCATION);
+        String wsLocation = loginRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
 
         // Find the key and certificate of the cinema application.
-        PrivateKeyEntry privateKeyEntry = DemoCinemaKeyStoreUtils
-                .getPrivateKeyEntry();
-        X509Certificate certificate = (X509Certificate) privateKeyEntry
-                .getCertificate();
+        PrivateKeyEntry privateKeyEntry = DemoCinemaKeyStoreUtils.getPrivateKeyEntry();
+        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         // Create the attribute service client.
@@ -128,7 +121,7 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements
         if (user == null)
             return null;
 
-        return (UserEntity) this.em.createNamedQuery(UserEntity.getById)
-                .setParameter("id", user.getId()).getSingleResult();
+        return (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("id", user.getId())
+                .getSingleResult();
     }
 }

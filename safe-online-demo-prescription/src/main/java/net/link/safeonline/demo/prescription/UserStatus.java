@@ -9,71 +9,84 @@ package net.link.safeonline.demo.prescription;
 
 import java.io.Serializable;
 
+
 public class UserStatus implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String name;
+    private String            name;
 
-	private String userId;
+    private String            userId;
 
-	private boolean admin;
+    private boolean           admin;
 
-	private boolean careProvider;
+    private boolean           careProvider;
 
-	private boolean pharmacist;
+    private boolean           pharmacist;
 
-	public UserStatus() {
-		this(null, null, false, false, false);
-	}
 
-	public UserStatus(String name, String userId, boolean admin,
-			boolean careProvider, boolean pharmacist) {
-		super();
-		this.name = name;
-		this.userId = userId;
-		this.admin = admin;
-		this.careProvider = careProvider;
-		this.pharmacist = pharmacist;
-	}
+    public UserStatus() {
 
-	public boolean isAdmin() {
-		return this.admin;
-	}
+        this(null, null, false, false, false);
+    }
 
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
-	}
+    public UserStatus(String name, String userId, boolean admin, boolean careProvider, boolean pharmacist) {
 
-	public boolean isCareProvider() {
-		return this.careProvider;
-	}
+        super();
+        this.name = name;
+        this.userId = userId;
+        this.admin = admin;
+        this.careProvider = careProvider;
+        this.pharmacist = pharmacist;
+    }
 
-	public void setCareProvider(boolean careProvider) {
-		this.careProvider = careProvider;
-	}
+    public boolean isAdmin() {
 
-	public boolean isPharmacist() {
-		return this.pharmacist;
-	}
+        return this.admin;
+    }
 
-	public void setPharmacist(boolean pharmacist) {
-		this.pharmacist = pharmacist;
-	}
+    public void setAdmin(boolean admin) {
 
-	public String getName() {
-		return this.name;
-	}
+        this.admin = admin;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public boolean isCareProvider() {
 
-	public String getUserId() {
-		return this.userId;
-	}
+        return this.careProvider;
+    }
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+    public void setCareProvider(boolean careProvider) {
+
+        this.careProvider = careProvider;
+    }
+
+    public boolean isPharmacist() {
+
+        return this.pharmacist;
+    }
+
+    public void setPharmacist(boolean pharmacist) {
+
+        this.pharmacist = pharmacist;
+    }
+
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    public String getUserId() {
+
+        return this.userId;
+    }
+
+    public void setUserId(String userId) {
+
+        this.userId = userId;
+    }
 }

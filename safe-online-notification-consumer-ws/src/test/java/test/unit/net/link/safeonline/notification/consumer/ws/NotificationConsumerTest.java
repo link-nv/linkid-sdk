@@ -40,73 +40,66 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+
 public class NotificationConsumerTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(NotificationConsumerTest.class);
+    private static final Log LOG = LogFactory.getLog(NotificationConsumerTest.class);
 
-	@Test
-	public void notification() throws Exception {
-		// setup
-		LOG.debug("notify test");
 
-		ObjectFactory objectFactory = new ObjectFactory();
-		Notify notify = objectFactory.createNotify();
-		List<NotificationMessageHolderType> notifications = notify
-				.getNotificationMessage();
+    @Test
+    public void notification() throws Exception {
 
-		NotificationMessageHolderType notification = objectFactory
-				.createNotificationMessageHolderType();
-		TopicExpressionType topic = objectFactory.createTopicExpressionType();
-		topic
-				.setDialect("http://docs.oasis-open.org/wsn/2004/06/TopicExpression/Simple");
-		notification.setTopic(topic);
+        // setup
+        LOG.debug("notify test");
 
-		Message message = objectFactory
-				.createNotificationMessageHolderTypeMessage();
-		notification.setMessage(message);
+        ObjectFactory objectFactory = new ObjectFactory();
+        Notify notify = objectFactory.createNotify();
+        List<NotificationMessageHolderType> notifications = notify.getNotificationMessage();
 
-		notifications.add(notification);
+        NotificationMessageHolderType notification = objectFactory.createNotificationMessageHolderType();
+        TopicExpressionType topic = objectFactory.createTopicExpressionType();
+        topic.setDialect("http://docs.oasis-open.org/wsn/2004/06/TopicExpression/Simple");
+        notification.setTopic(topic);
 
-		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-		Marshaller marshaller = context.createMarshaller();
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-				.newInstance();
-		DocumentBuilder documentBuilder = documentBuilderFactory
-				.newDocumentBuilder();
-		Document document = documentBuilder.newDocument();
+        Message message = objectFactory.createNotificationMessageHolderTypeMessage();
+        notification.setMessage(message);
 
-		// operate
-		marshaller.marshal(notify, document);
+        notifications.add(notification);
 
-		// verify
-		LOG.debug("result document: " + domToString(document));
+        JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+        Marshaller marshaller = context.createMarshaller();
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.newDocument();
 
-		Element nsElement = document.createElement("nsElement");
-		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
-				"xmlns:wsnt", "http://docs.oasis-open.org/wsn/b-2");
-		Node resultNode = XPathAPI
-				.selectSingleNode(document,
-						"/wsnt:Notify/wsnt:NotificationMessage/wsnt:Message",
-						nsElement);
-		assertNotNull(resultNode);
+        // operate
+        marshaller.marshal(notify, document);
 
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		Notify notifyElement = (Notify) unmarshaller.unmarshal(document);
+        // verify
+        LOG.debug("result document: " + domToString(document));
 
-		assertNotNull(notifyElement.getNotificationMessage().get(0)
-				.getMessage());
-	}
+        Element nsElement = document.createElement("nsElement");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:wsnt",
+                "http://docs.oasis-open.org/wsn/b-2");
+        Node resultNode = XPathAPI.selectSingleNode(document, "/wsnt:Notify/wsnt:NotificationMessage/wsnt:Message",
+                nsElement);
+        assertNotNull(resultNode);
 
-	public static String domToString(Node domNode) throws TransformerException {
-		Source source = new DOMSource(domNode);
-		StringWriter stringWriter = new StringWriter();
-		Result result = new StreamResult(stringWriter);
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		transformer.transform(source, result);
-		return stringWriter.toString();
-	}
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        Notify notifyElement = (Notify) unmarshaller.unmarshal(document);
+
+        assertNotNull(notifyElement.getNotificationMessage().get(0).getMessage());
+    }
+
+    public static String domToString(Node domNode) throws TransformerException {
+
+        Source source = new DOMSource(domNode);
+        StringWriter stringWriter = new StringWriter();
+        Result result = new StreamResult(stringWriter);
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.transform(source, result);
+        return stringWriter.toString();
+    }
 }

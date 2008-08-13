@@ -15,32 +15,36 @@ import net.link.safeonline.auth.LoginManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class LoginSessionListener implements HttpSessionAttributeListener {
 
-	private static final Log LOG = LogFactory
-			.getLog(LoginSessionListener.class);
+    private static final Log LOG = LogFactory.getLog(LoginSessionListener.class);
 
-	public void attributeAdded(HttpSessionBindingEvent event) {
-		String attributeName = event.getName();
-		if (LoginManager.USERID_ATTRIBUTE.equals(attributeName)) {
-			String username = (String) event.getValue();
-			LOG.debug("attribute username added: " + username);
-		}
-	}
 
-	public void attributeRemoved(HttpSessionBindingEvent event) {
-		String attributeName = event.getName();
-		if (LoginManager.USERID_ATTRIBUTE.equals(attributeName)) {
-			String username = (String) event.getValue();
-			LOG.debug("attribute username removed: " + username);
-		}
-	}
+    public void attributeAdded(HttpSessionBindingEvent event) {
 
-	public void attributeReplaced(HttpSessionBindingEvent event) {
-		String attributeName = event.getName();
-		if (LoginManager.USERID_ATTRIBUTE.equals(attributeName)) {
-			String username = (String) event.getValue();
-			LOG.debug("attribute username replaced: " + username);
-		}
-	}
+        String attributeName = event.getName();
+        if (LoginManager.USERID_ATTRIBUTE.equals(attributeName)) {
+            String username = (String) event.getValue();
+            LOG.debug("attribute username added: " + username);
+        }
+    }
+
+    public void attributeRemoved(HttpSessionBindingEvent event) {
+
+        String attributeName = event.getName();
+        if (LoginManager.USERID_ATTRIBUTE.equals(attributeName)) {
+            String username = (String) event.getValue();
+            LOG.debug("attribute username removed: " + username);
+        }
+    }
+
+    public void attributeReplaced(HttpSessionBindingEvent event) {
+
+        String attributeName = event.getName();
+        if (LoginManager.USERID_ATTRIBUTE.equals(attributeName)) {
+            String username = (String) event.getValue();
+            LOG.debug("attribute username replaced: " + username);
+        }
+    }
 }

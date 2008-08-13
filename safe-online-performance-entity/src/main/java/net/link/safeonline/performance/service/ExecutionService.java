@@ -16,13 +16,13 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 
+
 /**
  * <h2>{@link ExecutionServiceBean}<br>
  * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
  * 
  * <p>
- * Create {@link ExecutionEntity}s and manage the {@link ScenarioTimingEntity}s
- * that they're linked with.
+ * Create {@link ExecutionEntity}s and manage the {@link ScenarioTimingEntity}s that they're linked with.
  * </p>
  * 
  * <p>
@@ -34,41 +34,39 @@ import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 @Local
 public interface ExecutionService {
 
-	public static final String BINDING = "SafeOnline/ExecutionService";
+    public static final String BINDING = "SafeOnline/ExecutionService";
 
-	/**
-	 * Add an entry for a new scenario execution to the database.
-	 */
-	public ExecutionEntity addExecution(String scenarioName, Integer agents,
-			Integer workers, Date startTime, Long duration, String hostname,
-			Boolean useSsl);
 
-	/**
-	 * Retrieve an already created execution by its Id.
-	 */
-	public ExecutionEntity getExecution(Date startTime);
+    /**
+     * Add an entry for a new scenario execution to the database.
+     */
+    public ExecutionEntity addExecution(String scenarioName, Integer agents, Integer workers, Date startTime,
+            Long duration, String hostname, Boolean useSsl);
 
-	/**
-	 * Retrieve all driver profiles that were created for execution with the
-	 * given Id.
-	 */
-	public Set<DriverProfileEntity> getProfiles(Date startTime);
+    /**
+     * Retrieve an already created execution by its Id.
+     */
+    public ExecutionEntity getExecution(Date startTime);
 
-	/**
-	 * Signal a new start of a scenario in the given execution. A
-	 * {@link ScenarioTimingEntity} will be created and returned.
-	 */
-	public ScenarioTimingEntity start(ExecutionEntity execution);
+    /**
+     * Retrieve all driver profiles that were created for execution with the given Id.
+     */
+    public Set<DriverProfileEntity> getProfiles(Date startTime);
 
-	/**
-	 * Retrieve all available execution IDs (which is the date at which they
-	 * were initiated).
-	 */
-	public Set<Date> getExecutions();
+    /**
+     * Signal a new start of a scenario in the given execution. A {@link ScenarioTimingEntity} will be created and
+     * returned.
+     */
+    public ScenarioTimingEntity start(ExecutionEntity execution);
 
-	/**
-	 * Force a recalculation of the speed in the given {@link ExecutionEntity}.
-	 */
-	public void updateSpeed(ExecutionEntity execution);
+    /**
+     * Retrieve all available execution IDs (which is the date at which they were initiated).
+     */
+    public Set<Date> getExecutions();
+
+    /**
+     * Force a recalculation of the speed in the given {@link ExecutionEntity}.
+     */
+    public void updateSpeed(ExecutionEntity execution);
 
 }

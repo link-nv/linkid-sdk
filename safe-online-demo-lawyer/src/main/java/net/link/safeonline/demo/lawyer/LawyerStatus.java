@@ -9,60 +9,71 @@ package net.link.safeonline.demo.lawyer;
 
 import java.io.Serializable;
 
+
 public class LawyerStatus implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private boolean lawyer;
+    private boolean           lawyer;
 
-	private boolean suspended;
+    private boolean           suspended;
 
-	private boolean barAdmin;
+    private boolean           barAdmin;
 
-	private String bar;
+    private String            bar;
 
-	public String getBar() {
-		return this.bar;
-	}
 
-	public boolean isLawyer() {
-		return this.lawyer;
-	}
+    public String getBar() {
 
-	public boolean isSuspended() {
-		return this.suspended;
-	}
+        return this.bar;
+    }
 
-	public boolean isBarAdmin() {
-		return this.barAdmin;
-	}
+    public boolean isLawyer() {
 
-	public LawyerStatus() {
-		this(false, false, null, false);
-	}
+        return this.lawyer;
+    }
 
-	public void setBar(String bar) {
-		this.bar = bar;
-	}
+    public boolean isSuspended() {
 
-	public void setBarAdmin(boolean barAdmin) {
-		this.barAdmin = barAdmin;
-	}
+        return this.suspended;
+    }
 
-	public void setLawyer(boolean lawyer) {
-		this.lawyer = lawyer;
-	}
+    public boolean isBarAdmin() {
 
-	public void setSuspended(boolean suspended) {
-		this.suspended = suspended;
-	}
+        return this.barAdmin;
+    }
 
-	public LawyerStatus(final boolean lawyer, final boolean suspended,
-			final String bar, final boolean barAdmin) {
-		super();
-		this.lawyer = lawyer;
-		this.suspended = suspended;
-		this.bar = bar;
-		this.barAdmin = barAdmin;
-	}
+    public LawyerStatus() {
+
+        this(false, false, null, false);
+    }
+
+    public void setBar(String bar) {
+
+        this.bar = bar;
+    }
+
+    public void setBarAdmin(boolean barAdmin) {
+
+        this.barAdmin = barAdmin;
+    }
+
+    public void setLawyer(boolean lawyer) {
+
+        this.lawyer = lawyer;
+    }
+
+    public void setSuspended(boolean suspended) {
+
+        this.suspended = suspended;
+    }
+
+    public LawyerStatus(final boolean lawyer, final boolean suspended, final String bar, final boolean barAdmin) {
+
+        super();
+        this.lawyer = lawyer;
+        this.suspended = suspended;
+        this.bar = bar;
+        this.barAdmin = barAdmin;
+    }
 }

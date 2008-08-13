@@ -27,9 +27,9 @@ import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
 
+
 /**
- * Device landing servlet. Landing page to finalize the authentication process
- * between OLAS and a device provider.
+ * Device landing servlet. Landing page to finalize the authentication process between OLAS and a device provider.
  * 
  * @author wvdhaute
  * 
@@ -59,16 +59,15 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokePost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure
-         * when behind a reverse proxy or loadbalancer when opensaml is checking
-         * the destination field.
+         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or
+         * loadbalancer when opensaml is checking the destination field.
          */
-        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(
-                request, this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request,
+                this.servletEndpointUrl);
 
         /*
          * Authenticate
@@ -79,26 +78,20 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
         try {
             deviceMapping = authenticationService.authenticate(requestWrapper);
         } catch (NodeNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
-                    RESOURCE_BASE, new ErrorMessage(
-                            DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                            "errorProtocolHandlerFinalization"));
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         } catch (DeviceMappingNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl,
-                    RESOURCE_BASE, new ErrorMessage(
-                            DEVICE_ERROR_MESSAGE_ATTRIBUTE,
-                            "errorDeviceRegistrationNotFound"));
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
             return;
         }
         if (null == deviceMapping
-                && authenticationService.getAuthenticationState().equals(
-                        AuthenticationState.REDIRECTED)) {
+                && authenticationService.getAuthenticationState().equals(AuthenticationState.REDIRECTED)) {
             /*
              * Authentication failed but user requested to try another device
              */
-            HelpdeskLogger.add(requestWrapper.getSession(),
-                    "authentication failed, request to try another device",
+            HelpdeskLogger.add(requestWrapper.getSession(), "authentication failed, request to try another device",
                     LogLevelType.ERROR);
 
             response.sendRedirect(this.tryAnotherDeviceUrl);
@@ -106,20 +99,17 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
             /*
              * Authentication failed, redirect to start page
              */
-            HelpdeskLogger.add(requestWrapper.getSession(),
-                    "authentication failed", LogLevelType.ERROR);
+            HelpdeskLogger.add(requestWrapper.getSession(), "authentication failed", LogLevelType.ERROR);
             response.sendRedirect(this.startUrl);
         } else {
             /*
              * Authentication success, redirect to login servlet
              */
-            LoginManager.login(requestWrapper.getSession(), deviceMapping
-                    .getSubject().getUserId(), deviceMapping.getDevice());
+            LoginManager.login(requestWrapper.getSession(), deviceMapping.getSubject().getUserId(), deviceMapping
+                    .getDevice());
 
-            HelpdeskLogger.add(requestWrapper.getSession(),
-                    "logged in successfully with device: "
-                            + deviceMapping.getDevice().getName(),
-                    LogLevelType.INFO);
+            HelpdeskLogger.add(requestWrapper.getSession(), "logged in successfully with device: "
+                    + deviceMapping.getDevice().getName(), LogLevelType.INFO);
 
             response.sendRedirect(this.loginUrl);
         }

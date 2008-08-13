@@ -52,6 +52,7 @@ import net.link.safeonline.performance.console.swing.model.AgentSelectionListene
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
+
 /**
  * <h2>{@link ExecutionInfo}<br>
  * <sub>Display available executions and information about them.</sub></h2>
@@ -62,12 +63,11 @@ import com.jgoodies.forms.layout.FormLayout;
  * 
  * @author mbillemo
  */
-public class ExecutionInfo extends JPanel implements ChangeListener,
-        AgentSelectionListener, Scrollable, AgentStatusListener {
+public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelectionListener, Scrollable,
+        AgentStatusListener {
 
     private static final long       serialVersionUID = 1L;
-    static final SimpleDateFormat   labelTimeFormat  = new SimpleDateFormat(
-                                                             "HH:mm");
+    static final SimpleDateFormat   labelTimeFormat  = new SimpleDateFormat("HH:mm");
 
     private List<ScenarioExecution> executions;
     private JSlider                 executionSelection;
@@ -89,8 +89,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
         this.executions = new ArrayList<ScenarioExecution>();
 
-        this.executionSelection = new JSlider(SwingConstants.HORIZONTAL, 0, 0,
-                0);
+        this.executionSelection = new JSlider(SwingConstants.HORIZONTAL, 0, 0, 0);
 
         FormLayout layout = new FormLayout("r:0dlu:g, 10dlu, 0dlu:g");
         layout.setColumnGroups(new int[][] { { 1, 3 } });
@@ -115,8 +114,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
         builder.append("Initiated:", this.startTime = new JLabel());
         builder.append("Agents Used:", this.agents = new JLabel());
         builder.append("Workers Used:", this.workers = new JLabel());
-        builder.append(this.durationLabel = new JLabel(),
-                this.duration = new JLabel());
+        builder.append(this.durationLabel = new JLabel(), this.duration = new JLabel());
         builder.append("Average Speed:", this.speed = new JLabel());
         builder.append("OLAS Server Hostname:", this.hostname = new JLabel());
         builder.append("Transport:", this.transport = new JLabel());
@@ -164,10 +162,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
     void updateExecutionSelection() {
 
         synchronized (this.executions) {
-            if (this.executionSelection.getValue() < this.executions.size()
-                    && this.executionSelection.getValue() > -1) {
-                setExecution(this.executions.get(this.executionSelection
-                        .getValue()));
+            if (this.executionSelection.getValue() < this.executions.size() && this.executionSelection.getValue() > -1) {
+                setExecution(this.executions.get(this.executionSelection.getValue()));
             } else {
                 setExecution(null);
             }
@@ -194,17 +190,13 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
             this.durationLabel.setText("Duration:");
         } else {
             this.executionSelection.setToolTipText(execution.toString());
-            this.scenarioName
-                    .setText(execution.getScenarioName() == null ? "N/A"
-                            : execution.getScenarioName().replaceFirst(".*\\.",
-                                    ""));
+            this.scenarioName.setText(execution.getScenarioName() == null? "N/A": execution.getScenarioName()
+                    .replaceFirst(".*\\.", ""));
 
             Caret descriptionCaret = this.description.getCaret();
             descriptionCaret.deinstall(this.description);
-            this.description
-                    .setText(execution.getDuration() == null ? "<pre>N/A</pre>"
-                            : execution.getScenarioDescription().replaceAll(
-                                    "\n", "<br>"));
+            this.description.setText(execution.getDuration() == null? "<pre>N/A</pre>": execution
+                    .getScenarioDescription().replaceAll("\n", "<br>"));
             descriptionCaret.install(this.description);
 
             Double totalSpeed = null;
@@ -213,10 +205,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
                 totalSpeed = 0d;
 
                 for (ConsoleAgent agent : ConsoleData.getAgents().values()) {
-                    for (ScenarioExecution agentExecution : agent
-                            .getExecutions())
-                        if (agentExecution.equalRequest(ConsoleData
-                                .getSelectedExecution())
+                    for (ScenarioExecution agentExecution : agent.getExecutions())
+                        if (agentExecution.equalRequest(ConsoleData.getSelectedExecution())
                                 && agentExecution.getSpeed() != null) {
                             totalSpeedAgents++;
                             totalSpeed += agentExecution.getSpeed();
@@ -225,27 +215,21 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
                 if (totalSpeedAgents == 0) {
                     totalSpeed = 0d;
                 } else {
-                    totalSpeed *= ConsoleData.getSelectedExecution()
-                            .getAgents()
-                            / totalSpeedAgents;
+                    totalSpeed *= ConsoleData.getSelectedExecution().getAgents() / totalSpeedAgents;
                 }
             }
 
-            this.startTime.setText(DateFormat.getDateTimeInstance().format(
-                    execution.getStartTime()));
-            this.agents.setText(String.format("%s agent%s", execution
-                    .getAgents(), execution.getAgents() == 1 ? "" : "s"));
-            this.workers.setText(String.format("%s worker%s", execution
-                    .getWorkers(), execution.getWorkers() == 1 ? "" : "s"));
-            this.speed.setText(totalSpeed == null ? "N/A" : String
-                    .format("%.2f scenario%s/s", totalSpeed,
-                            totalSpeed == 1 ? "" : "s"));
+            this.startTime.setText(DateFormat.getDateTimeInstance().format(execution.getStartTime()));
+            this.agents
+                    .setText(String.format("%s agent%s", execution.getAgents(), execution.getAgents() == 1? "": "s"));
+            this.workers.setText(String.format("%s worker%s", execution.getWorkers(), execution.getWorkers() == 1? ""
+                    : "s"));
+            this.speed.setText(totalSpeed == null? "N/A": String.format("%.2f scenario%s/s", totalSpeed,
+                    totalSpeed == 1? "": "s"));
             this.hostname.setText(execution.getHostname());
-            this.transport.setText(execution.isSsl() == null ? "N/A"
-                    : execution.isSsl() ? "HTTPS" : "HTTP");
+            this.transport.setText(execution.isSsl() == null? "N/A": execution.isSsl()? "HTTPS": "HTTP");
 
-            long timeLeft = execution.getStartTime().getTime()
-                    + execution.getDuration() - System.currentTimeMillis();
+            long timeLeft = execution.getStartTime().getTime() + execution.getDuration() - System.currentTimeMillis();
             if (timeLeft > 0) {
                 this.durationLabel.setText("Time Remaining:");
                 this.duration.setText(formatDuration(timeLeft));
@@ -315,8 +299,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
         int selectedExecution = maxValue;
         Date selectedExecutionTime = null;
         if (ConsoleData.getSelectedExecution() != null) {
-            selectedExecutionTime = ConsoleData.getSelectedExecution()
-                    .getStartTime();
+            selectedExecutionTime = ConsoleData.getSelectedExecution().getStartTime();
         }
 
         synchronized (sliderExecutions) {
@@ -333,8 +316,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
                         selectedExecution = i;
                     }
 
-                    dictionary.put(i, new JLabel(labelTimeFormat
-                            .format(execution.getStartTime())));
+                    dictionary.put(i, new JLabel(labelTimeFormat.format(execution.getStartTime())));
                 }
             }
 
@@ -343,13 +325,11 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
             slider.setPaintLabels(!sliderExecutions.isEmpty());
         }
 
-        slider.getModel().setRangeProperties(selectedExecution, 0, 0, maxValue,
-                false);
+        slider.getModel().setRangeProperties(selectedExecution, 0, 0, maxValue, false);
         updateExecutionSelection();
     }
 
-    private boolean containsExecution(Set<ScenarioExecution> set,
-            ScenarioExecution element) {
+    private boolean containsExecution(Set<ScenarioExecution> set, ScenarioExecution element) {
 
         for (ScenarioExecution entry : set)
             if (entry.getStartTime() == null && element.getStartTime() == null
@@ -386,18 +366,16 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
         StringBuffer output = new StringBuffer();
         if (weeks > 0) {
-            output.append(weeks + " week" + (weeks > 1 ? "s" : "") + ", ");
+            output.append(weeks + " week" + (weeks > 1? "s": "") + ", ");
         }
         if (days > 0) {
-            output.append(days + " day" + (days > 1 ? "s" : "") + ", ");
+            output.append(days + " day" + (days > 1? "s": "") + ", ");
         }
         if (hours > 0) {
-            output.append(hours + " hour" + (hours > 1 ? "s" : "") + ", ");
+            output.append(hours + " hour" + (hours > 1? "s": "") + ", ");
         }
         if (minutes > 0) {
-            output
-                    .append(minutes + " minute" + (minutes > 1 ? "s" : "")
-                            + ", ");
+            output.append(minutes + " minute" + (minutes > 1? "s": "") + ", ");
         }
         if (seconds > 0) {
             output.append(seconds + "s" + ", ");
@@ -426,8 +404,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
     /**
      * {@inheritDoc}
      */
-    public int getScrollableBlockIncrement(Rectangle visibleRect,
-            int orientation, int direction) {
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
 
         return 100;
     }
@@ -451,8 +428,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
     /**
      * {@inheritDoc}
      */
-    public int getScrollableUnitIncrement(Rectangle visibleRect,
-            int orientation, int direction) {
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
 
         return 10;
     }

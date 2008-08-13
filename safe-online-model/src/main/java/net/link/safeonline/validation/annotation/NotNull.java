@@ -15,11 +15,12 @@ import java.lang.annotation.Target;
 
 import net.link.safeonline.validation.validator.NotNullValidator;
 
+
 @Documented
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @ValidatorAnnotation(NotNullValidator.class)
 public @interface NotNull {
 
-	String value() default "";
+    String value() default "";
 }

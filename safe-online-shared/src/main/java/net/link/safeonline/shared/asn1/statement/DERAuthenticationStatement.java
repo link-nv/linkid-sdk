@@ -16,6 +16,7 @@ import net.link.safeonline.shared.asn1.DERInteger;
 import net.link.safeonline.shared.asn1.DERSequence;
 import net.link.safeonline.shared.asn1.DERVisibleString;
 
+
 public class DERAuthenticationStatement extends AbstractDERStatement {
 
     public static final int       VERSION             = 1;
@@ -35,8 +36,7 @@ public class DERAuthenticationStatement extends AbstractDERStatement {
     private final X509Certificate authenticationCertificate;
 
 
-    public DERAuthenticationStatement(String sessionId, String applicationId,
-            X509Certificate authenticationCertificate) {
+    public DERAuthenticationStatement(String sessionId, String applicationId, X509Certificate authenticationCertificate) {
 
         this.sessionId = sessionId;
         this.applicationId = applicationId;
@@ -55,8 +55,7 @@ public class DERAuthenticationStatement extends AbstractDERStatement {
         tbsSequence.add(application);
         DEREncodedData encodedCert;
         try {
-            encodedCert = new DEREncodedData(this.authenticationCertificate
-                    .getEncoded());
+            encodedCert = new DEREncodedData(this.authenticationCertificate.getEncoded());
         } catch (CertificateEncodingException e) {
             throw new RuntimeException("cert encoding error: " + e.getMessage());
         }

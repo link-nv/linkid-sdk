@@ -12,14 +12,16 @@ import net.link.safeonline.sdk.ws.ping.PingClientImpl;
 
 import org.junit.Test;
 
+
 public class PingWebServiceTest {
 
-	@Test
-	public void testInvocation() throws Exception {
-		// setup
-		PingClient client = new PingClientImpl("http://localhost:8080");
+    @Test
+    public void testInvocation() throws Exception {
 
-		// operate
-		client.ping();
-	}
+        // setup
+        PingClient client = new PingClientImpl("http://localhost:8080");
+
+        // operate
+        client.ping();
+    }
 }

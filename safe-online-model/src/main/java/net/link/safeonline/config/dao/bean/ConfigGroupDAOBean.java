@@ -19,41 +19,49 @@ import net.link.safeonline.config.dao.ConfigGroupDAO;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+
 @Stateless
 public class ConfigGroupDAOBean implements ConfigGroupDAO {
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                    entityManager;
 
-	private ConfigGroupEntity.QueryInterface queryObject;
+    private ConfigGroupEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, ConfigGroupEntity.QueryInterface.class);
-	}
 
-	public ConfigGroupEntity addConfigGroup(String name) {
-		ConfigGroupEntity configGroup = new ConfigGroupEntity(name);
-		this.entityManager.persist(configGroup);
-		return configGroup;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public void removeConfigGroup(ConfigGroupEntity configGroup) {
-		this.entityManager.remove(configGroup);
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                ConfigGroupEntity.QueryInterface.class);
+    }
 
-	public void saveConfigGroup(ConfigGroupEntity configGroup) {
-		this.entityManager.merge(configGroup);
-	}
+    public ConfigGroupEntity addConfigGroup(String name) {
 
-	public ConfigGroupEntity findConfigGroup(String name) {
-		return this.entityManager.find(ConfigGroupEntity.class, name);
-	}
+        ConfigGroupEntity configGroup = new ConfigGroupEntity(name);
+        this.entityManager.persist(configGroup);
+        return configGroup;
+    }
 
-	public List<ConfigGroupEntity> listConfigGroups() {
-		List<ConfigGroupEntity> result = this.queryObject.listConfigGroups();
-		return result;
-	}
+    public void removeConfigGroup(ConfigGroupEntity configGroup) {
+
+        this.entityManager.remove(configGroup);
+    }
+
+    public void saveConfigGroup(ConfigGroupEntity configGroup) {
+
+        this.entityManager.merge(configGroup);
+    }
+
+    public ConfigGroupEntity findConfigGroup(String name) {
+
+        return this.entityManager.find(ConfigGroupEntity.class, name);
+    }
+
+    public List<ConfigGroupEntity> listConfigGroups() {
+
+        List<ConfigGroupEntity> result = this.queryObject.listConfigGroups();
+        return result;
+    }
 
 }

@@ -18,77 +18,76 @@ import net.link.safeonline.authentication.exception.ExistingAttributeTypeExcepti
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
+
 @Local
 public interface AddAttribute {
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Accessors.
-	 */
-	String getName();
+    /*
+     * Accessors.
+     */
+    String getName();
 
-	void setName(String name);
+    void setName(String name);
 
-	String getNode();
+    String getNode();
 
-	void setNode(String node);
+    void setNode(String node);
 
-	String getCategory();
+    String getCategory();
 
-	void setCategory(String category);
+    void setCategory(String category);
 
-	String getType();
+    String getType();
 
-	void setType(String type);
+    void setType(String type);
 
-	boolean isUserVisible();
+    boolean isUserVisible();
 
-	void setUserVisible(boolean userVisible);
+    void setUserVisible(boolean userVisible);
 
-	boolean isUserEditable();
+    boolean isUserEditable();
 
-	void setUserEditable(boolean userEditable);
+    void setUserEditable(boolean userEditable);
 
-	boolean isDeviceAttribute();
+    boolean isDeviceAttribute();
 
-	void setDeviceAttribute(boolean deviceAttribute);
+    void setDeviceAttribute(boolean deviceAttribute);
 
-	List<AttributeTypeEntity> getSourceMemberAttributes();
+    List<AttributeTypeEntity> getSourceMemberAttributes();
 
-	void setSourceMemberAttributes(
-			List<AttributeTypeEntity> sourceMemberAttributes);
+    void setSourceMemberAttributes(List<AttributeTypeEntity> sourceMemberAttributes);
 
-	List<AttributeTypeEntity> getTargetMemberAttributes();
+    List<AttributeTypeEntity> getTargetMemberAttributes();
 
-	void setTargetMemberAttributes(
-			List<AttributeTypeEntity> targetMemberAttributes);
+    void setTargetMemberAttributes(List<AttributeTypeEntity> targetMemberAttributes);
 
-	/*
-	 * Actions.
-	 */
-	String next();
+    /*
+     * Actions.
+     */
+    String next();
 
-	String typeNext();
+    String typeNext();
 
-	String add() throws NodeNotFoundException, ExistingAttributeTypeException,
-			AttributeTypeNotFoundException, AttributeTypeDefinitionException;
+    String add() throws NodeNotFoundException, ExistingAttributeTypeException, AttributeTypeNotFoundException,
+            AttributeTypeDefinitionException;
 
-	String cancel();
+    String cancel();
 
-	String membersNext();
+    String membersNext();
 
-	String membersAccessControlNext();
+    String membersAccessControlNext();
 
-	/*
-	 * Factory.
-	 */
-	List<SelectItem> datatypesFactory();
+    /*
+     * Factory.
+     */
+    List<SelectItem> datatypesFactory();
 
-	void memberAccessControlAttributesFactory();
+    void memberAccessControlAttributesFactory();
 
-	List<SelectItem> nodeFactory();
+    List<SelectItem> nodeFactory();
 }

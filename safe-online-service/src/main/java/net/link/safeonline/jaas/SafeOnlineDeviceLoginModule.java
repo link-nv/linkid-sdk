@@ -39,198 +39,191 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 
+
 /**
- * JAAS login module that performs authentication and authorization for devices.
- * This module is used by the SafeOnline core device security domain. The login
- * module links an X509 certificate with a device principal.
+ * JAAS login module that performs authentication and authorization for devices. This module is used by the SafeOnline
+ * core device security domain. The login module links an X509 certificate with a device principal.
  * 
  * @author wvdhaute
  * 
  */
 public class SafeOnlineDeviceLoginModule implements LoginModule {
 
-	private static final Log LOG = LogFactory
-			.getLog(SafeOnlineDeviceLoginModule.class);
+    private static final Log   LOG                                      = LogFactory
+                                                                                .getLog(SafeOnlineDeviceLoginModule.class);
 
-	private Subject subject;
+    private Subject            subject;
 
-	private CallbackHandler callbackHandler;
+    private CallbackHandler    callbackHandler;
 
-	public static final String OPTION_AUTHENTICATION_SERVICE_JNDI_NAME = "authenticationServiceJndiName";
+    public static final String OPTION_AUTHENTICATION_SERVICE_JNDI_NAME  = "authenticationServiceJndiName";
 
-	public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = "SafeOnline/DeviceAuthenticationServiceBean/local";
+    public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = "SafeOnline/DeviceAuthenticationServiceBean/local";
 
-	private String authenticationServiceJndiName;
+    private String             authenticationServiceJndiName;
 
-	private Principal authenticatedPrincipal;
+    private Principal          authenticatedPrincipal;
 
-	public boolean abort() {
-		LOG.debug("abort");
 
-		this.authenticatedPrincipal = null;
+    public boolean abort() {
 
-		return true;
-	}
+        LOG.debug("abort");
 
-	public boolean commit() throws LoginException {
-		LOG.debug("commit: " + this);
+        this.authenticatedPrincipal = null;
 
-		Set<Principal> principals = this.subject.getPrincipals();
-		if (null == this.authenticatedPrincipal) {
-			throw new LoginException(
-					"authenticated principal should be not null");
-		}
-		// authenticate
-		principals.add(this.authenticatedPrincipal);
+        return true;
+    }
 
-		// authorize
-		Group rolesGroup = getGroup("Roles", principals);
-		rolesGroup.addMember(new SimplePrincipal(
-				SafeOnlineDeviceRoles.DEVICE_ROLE));
+    public boolean commit() throws LoginException {
 
-		LOG.debug("commit: " + this.authenticatedPrincipal.getName());
+        LOG.debug("commit: " + this);
 
-		return true;
-	}
+        Set<Principal> principals = this.subject.getPrincipals();
+        if (null == this.authenticatedPrincipal) {
+            throw new LoginException("authenticated principal should be not null");
+        }
+        // authenticate
+        principals.add(this.authenticatedPrincipal);
 
-	private String getOptionValue(Map<?, ?> options, String optionName,
-			String defaultOptionValue) {
-		String optionValue = (String) options.get(optionName);
-		if (null == optionValue) {
-			optionValue = defaultOptionValue;
-			LOG.debug("using default option value for " + optionName + " = "
-					+ defaultOptionValue);
-		}
-		return optionValue;
-	}
+        // authorize
+        Group rolesGroup = getGroup("Roles", principals);
+        rolesGroup.addMember(new SimplePrincipal(SafeOnlineDeviceRoles.DEVICE_ROLE));
 
-	public void initialize(Subject newSubject,
-			CallbackHandler newCallbackHandler, @SuppressWarnings("unchecked")
-			Map sharedState, @SuppressWarnings("unchecked")
-			Map options) {
-		LOG.debug("initialize: " + this);
+        LOG.debug("commit: " + this.authenticatedPrincipal.getName());
 
-		this.authenticationServiceJndiName = getOptionValue(options,
-				OPTION_AUTHENTICATION_SERVICE_JNDI_NAME,
-				DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME);
+        return true;
+    }
 
-		this.subject = newSubject;
-		this.callbackHandler = newCallbackHandler;
-		LOG.debug("subject: " + newSubject);
-		LOG.debug("callback handler type: "
-				+ this.callbackHandler.getClass().getName());
-	}
+    private String getOptionValue(Map<?, ?> options, String optionName, String defaultOptionValue) {
 
-	private Group getGroup(String groupName, Set<Principal> principals) {
-		for (Principal principal : principals) {
-			if (false == principal instanceof Group) {
-				continue;
-			}
-			Group group = (Group) principal;
-			if (group.getName().equals(groupName)) {
-				return group;
-			}
-		}
-		// If we did not find a group create one
-		Group group = new SimpleGroup(groupName);
-		principals.add(group);
-		return group;
-	}
+        String optionValue = (String) options.get(optionName);
+        if (null == optionValue) {
+            optionValue = defaultOptionValue;
+            LOG.debug("using default option value for " + optionName + " = " + defaultOptionValue);
+        }
+        return optionValue;
+    }
 
-	public boolean login() throws LoginException {
-		LOG.debug("login: " + this);
-		// retrieve the certificate credential
-		PasswordCallback passwordCallback = new PasswordCallback(
-				"X509 device certificate in Hex", false);
-		NameCallback nameCallback = new NameCallback("device name");
-		Callback[] callbacks = new Callback[] { passwordCallback, nameCallback };
+    public void initialize(Subject newSubject, CallbackHandler newCallbackHandler,
+            @SuppressWarnings("unchecked") Map sharedState, @SuppressWarnings("unchecked") Map options) {
 
-		try {
-			this.callbackHandler.handle(callbacks);
-		} catch (IOException e) {
-			String msg = "IO error: " + e.getMessage();
-			LOG.error(msg);
-			throw new LoginException(msg);
-		} catch (UnsupportedCallbackException e) {
-			String msg = "unsupported callback: " + e.getMessage();
-			LOG.error(msg);
-			throw new LoginException(msg);
-		}
+        LOG.debug("initialize: " + this);
 
-		char[] password = passwordCallback.getPassword();
-		X509Certificate certificate;
-		try {
-			certificate = toX509Certificate(password);
-		} catch (Exception e) {
-			throw new LoginException("X509 decoding error: " + e.getMessage());
-		}
+        this.authenticationServiceJndiName = getOptionValue(options, OPTION_AUTHENTICATION_SERVICE_JNDI_NAME,
+                DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME);
 
-		// authenticate
-		DeviceAuthenticationService deviceAuthenticationService = getDeviceAuthenticationService();
-		String deviceName;
-		try {
-			deviceName = deviceAuthenticationService.authenticate(certificate);
-		} catch (DeviceNotFoundException e) {
-			throw new FailedLoginException(
-					"certificate is not a device certificate");
-		}
+        this.subject = newSubject;
+        this.callbackHandler = newCallbackHandler;
+        LOG.debug("subject: " + newSubject);
+        LOG.debug("callback handler type: " + this.callbackHandler.getClass().getName());
+    }
 
-		String expectedDeviceName = nameCallback.getName();
-		if (false == deviceName.equals(expectedDeviceName)) {
-			throw new FailedLoginException("device name not correct");
-		}
+    private Group getGroup(String groupName, Set<Principal> principals) {
 
-		this.authenticatedPrincipal = new SimplePrincipal(deviceName);
-		LOG.debug("login: " + deviceName);
-		LOG.debug("login subject: " + this.subject);
+        for (Principal principal : principals) {
+            if (false == principal instanceof Group) {
+                continue;
+            }
+            Group group = (Group) principal;
+            if (group.getName().equals(groupName)) {
+                return group;
+            }
+        }
+        // If we did not find a group create one
+        Group group = new SimpleGroup(groupName);
+        principals.add(group);
+        return group;
+    }
 
-		return true;
-	}
+    public boolean login() throws LoginException {
 
-	private DeviceAuthenticationService getDeviceAuthenticationService()
-			throws LoginException {
-		try {
-			DeviceAuthenticationService deviceAuthenticationService = EjbUtils
-					.getEJB(this.authenticationServiceJndiName,
-							DeviceAuthenticationService.class);
-			return deviceAuthenticationService;
-		} catch (RuntimeException e) {
-			throw new LoginException("JNDI lookup error: " + e.getMessage());
-		}
-	}
+        LOG.debug("login: " + this);
+        // retrieve the certificate credential
+        PasswordCallback passwordCallback = new PasswordCallback("X509 device certificate in Hex", false);
+        NameCallback nameCallback = new NameCallback("device name");
+        Callback[] callbacks = new Callback[] { passwordCallback, nameCallback };
 
-	public boolean logout() throws LoginException {
-		LOG.debug("logout: " + this);
-		Set<Principal> principals = this.subject.getPrincipals();
-		if (null == this.authenticatedPrincipal) {
-			throw new LoginException(
-					"authenticated principal should not be null");
-		}
-		boolean result = principals.remove(this.authenticatedPrincipal);
-		if (!result) {
-			throw new LoginException("could not remove authenticated principal");
-		}
-		/*
-		 * Despite the fact that JBoss AbstractServerLoginModule is not removing
-		 * the roles on the subject, we clear here all data on the subject.
-		 */
-		this.subject.getPrincipals().clear();
-		this.subject.getPublicCredentials().clear();
-		this.subject.getPrivateCredentials().clear();
-		LOG.debug("logout: " + this.authenticatedPrincipal.getName());
-		LOG.debug("logout subject: " + this.subject);
-		return true;
-	}
+        try {
+            this.callbackHandler.handle(callbacks);
+        } catch (IOException e) {
+            String msg = "IO error: " + e.getMessage();
+            LOG.error(msg);
+            throw new LoginException(msg);
+        } catch (UnsupportedCallbackException e) {
+            String msg = "unsupported callback: " + e.getMessage();
+            LOG.error(msg);
+            throw new LoginException(msg);
+        }
 
-	private static X509Certificate toX509Certificate(char[] password)
-			throws DecoderException, CertificateException {
-		byte[] encodedCertificate = Hex.decodeHex(password);
-		CertificateFactory certificateFactory = CertificateFactory
-				.getInstance("X.509");
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(
-				encodedCertificate);
-		X509Certificate certificate = (X509Certificate) certificateFactory
-				.generateCertificate(inputStream);
-		return certificate;
-	}
+        char[] password = passwordCallback.getPassword();
+        X509Certificate certificate;
+        try {
+            certificate = toX509Certificate(password);
+        } catch (Exception e) {
+            throw new LoginException("X509 decoding error: " + e.getMessage());
+        }
+
+        // authenticate
+        DeviceAuthenticationService deviceAuthenticationService = getDeviceAuthenticationService();
+        String deviceName;
+        try {
+            deviceName = deviceAuthenticationService.authenticate(certificate);
+        } catch (DeviceNotFoundException e) {
+            throw new FailedLoginException("certificate is not a device certificate");
+        }
+
+        String expectedDeviceName = nameCallback.getName();
+        if (false == deviceName.equals(expectedDeviceName)) {
+            throw new FailedLoginException("device name not correct");
+        }
+
+        this.authenticatedPrincipal = new SimplePrincipal(deviceName);
+        LOG.debug("login: " + deviceName);
+        LOG.debug("login subject: " + this.subject);
+
+        return true;
+    }
+
+    private DeviceAuthenticationService getDeviceAuthenticationService() throws LoginException {
+
+        try {
+            DeviceAuthenticationService deviceAuthenticationService = EjbUtils.getEJB(
+                    this.authenticationServiceJndiName, DeviceAuthenticationService.class);
+            return deviceAuthenticationService;
+        } catch (RuntimeException e) {
+            throw new LoginException("JNDI lookup error: " + e.getMessage());
+        }
+    }
+
+    public boolean logout() throws LoginException {
+
+        LOG.debug("logout: " + this);
+        Set<Principal> principals = this.subject.getPrincipals();
+        if (null == this.authenticatedPrincipal) {
+            throw new LoginException("authenticated principal should not be null");
+        }
+        boolean result = principals.remove(this.authenticatedPrincipal);
+        if (!result) {
+            throw new LoginException("could not remove authenticated principal");
+        }
+        /*
+         * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here
+         * all data on the subject.
+         */
+        this.subject.getPrincipals().clear();
+        this.subject.getPublicCredentials().clear();
+        this.subject.getPrivateCredentials().clear();
+        LOG.debug("logout: " + this.authenticatedPrincipal.getName());
+        LOG.debug("logout subject: " + this.subject);
+        return true;
+    }
+
+    private static X509Certificate toX509Certificate(char[] password) throws DecoderException, CertificateException {
+
+        byte[] encodedCertificate = Hex.decodeHex(password);
+        CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(encodedCertificate);
+        X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+        return certificate;
+    }
 }

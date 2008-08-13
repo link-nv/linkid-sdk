@@ -19,87 +19,87 @@ import java.util.LinkedList;
 
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 
+
 /**
  * <h2>{@link ScenarioSpeedCorrelationChart}<br>
  * <sub>TODO</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
 
-	private LinkedList<Long> activeScenarios;
+    private LinkedList<Long> activeScenarios;
 
-	/**
-	 * Create a new {@link ScenarioSpeedCorrelationChart} instance.
-	 */
-	public ScenarioSpeedCorrelationChart(int period) {
 
-		super("Correlation: Scenario Speed - Agent Duration",
-				"Correlation (-1 ~ 1)", period);
+    /**
+     * Create a new {@link ScenarioSpeedCorrelationChart} instance.
+     */
+    public ScenarioSpeedCorrelationChart(int period) {
 
-		this.activeScenarios = new LinkedList<Long>();
-	}
+        super("Correlation: Scenario Speed - Agent Duration", "Correlation (-1 ~ 1)", period);
 
-	/**
-	 * Active Scenarios: Amount of scenarios currently running.
-	 *
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected double getCorrelationX(Long startTime) {
+        this.activeScenarios = new LinkedList<Long>();
+    }
 
-		return this.activeScenarios.size();
-	}
+    /**
+     * Active Scenarios: Amount of scenarios currently running.
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    protected double getCorrelationX(Long startTime) {
 
-	/**
-	 * Agent Duration: Time (in seconds) of a single scenario execution on the
-	 * agent.
-	 *
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected double getCorrelationY(Long startTime) {
+        return this.activeScenarios.size();
+    }
 
-		ScenarioTimingEntity timing = this.averageTimings.get(startTime);
+    /**
+     * Agent Duration: Time (in seconds) of a single scenario execution on the agent.
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    protected double getCorrelationY(Long startTime) {
 
-		return timing.getAgentDuration() / 1000d;
-	}
+        ScenarioTimingEntity timing = this.averageTimings.get(startTime);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isTimingProcessed() {
+        return timing.getAgentDuration() / 1000d;
+    }
 
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isTimingProcessed() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Number getMovingAverage() {
+        return true;
+    }
 
-		// Add the end time of the latest timing to the active scenarios list.
-		Long current = this.averageTimes.getLast();
-		ScenarioTimingEntity timing = this.averageTimings.get(current);
-		this.activeScenarios.offer(current + timing.getAgentDuration());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Number getMovingAverage() {
 
-		// Poll all active scenarios that ended before the start of the current.
-		while (this.activeScenarios.peek() < current)
-			this.activeScenarios.poll();
+        // Add the end time of the latest timing to the active scenarios list.
+        Long current = this.averageTimes.getLast();
+        ScenarioTimingEntity timing = this.averageTimings.get(current);
+        this.activeScenarios.offer(current + timing.getAgentDuration());
 
-		// Use a static mean for X, not the mean of the current period.
-		if (this.customMeanX == null)
-			this.customMeanX = (double) timing.getExecution().getWorkers();
+        // Poll all active scenarios that ended before the start of the current.
+        while (this.activeScenarios.peek() < current)
+            this.activeScenarios.poll();
 
-		return super.getMovingAverage();
-	}
+        // Use a static mean for X, not the mean of the current period.
+        if (this.customMeanX == null)
+            this.customMeanX = (double) timing.getExecution().getWorkers();
+
+        return super.getMovingAverage();
+    }
 }

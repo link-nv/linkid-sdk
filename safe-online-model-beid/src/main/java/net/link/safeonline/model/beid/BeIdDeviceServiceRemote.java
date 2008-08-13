@@ -9,7 +9,6 @@ package net.link.safeonline.model.beid;
 import javax.ejb.Remote;
 
 
-
 @Remote
 public interface BeIdDeviceServiceRemote extends BeIdDeviceService {
 

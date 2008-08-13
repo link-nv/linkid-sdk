@@ -11,8 +11,9 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 
+
 @ApplicationException(rollback = true)
 public class MissingAuditContextException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 }

@@ -10,6 +10,7 @@ package net.link.safeonline.model.application;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 
+
 /**
  * Factory for domain model Application objects.
  * 
@@ -18,24 +19,23 @@ import net.link.safeonline.entity.ApplicationEntity;
  */
 public class ApplicationFactory {
 
-	private ApplicationFactory() {
-		// empty
-	}
+    private ApplicationFactory() {
 
-	/**
-	 * Gives back the domain model object corresponding with the given
-	 * application name.
-	 * 
-	 * @param applicationContext
-	 * @param applicationName
-	 * @throws ApplicationNotFoundException
-	 */
-	public static Application getApplication(
-			ApplicationContext applicationContext, String applicationName)
-			throws ApplicationNotFoundException {
-		ApplicationEntity applicationEntity = applicationContext
-				.getApplicationDAO().getApplication(applicationName);
-		Application application = new Application(applicationEntity);
-		return application;
-	}
+        // empty
+    }
+
+    /**
+     * Gives back the domain model object corresponding with the given application name.
+     * 
+     * @param applicationContext
+     * @param applicationName
+     * @throws ApplicationNotFoundException
+     */
+    public static Application getApplication(ApplicationContext applicationContext, String applicationName)
+            throws ApplicationNotFoundException {
+
+        ApplicationEntity applicationEntity = applicationContext.getApplicationDAO().getApplication(applicationName);
+        Application application = new Application(applicationEntity);
+        return application;
+    }
 }

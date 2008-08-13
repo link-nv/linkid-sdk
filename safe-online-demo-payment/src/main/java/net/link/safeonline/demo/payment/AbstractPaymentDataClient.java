@@ -8,14 +8,15 @@
 package net.link.safeonline.demo.payment;
 
 public interface AbstractPaymentDataClient {
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
 
-	void postConstructCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	void postActivateCallback();
+    void postConstructCallback();
 
-	void prePassivateCallback();
+    void postActivateCallback();
+
+    void prePassivateCallback();
 }

@@ -21,17 +21,17 @@ import net.link.safeonline.shared.helpdesk.LogLevelType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class HelpdeskServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Log  LOG              = LogFactory
-                                                       .getLog(HelpdeskServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(HelpdeskServlet.class);
 
 
     @Override
-    protected void doPost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         LOG.debug("doPost");
         String contentType = request.getContentType();
@@ -44,8 +44,7 @@ public class HelpdeskServlet extends HttpServlet {
         processHelpdeskHeaders(request, response);
     }
 
-    private boolean processHelpdeskHeaders(HttpServletRequest request,
-            HttpServletResponse response) {
+    private boolean processHelpdeskHeaders(HttpServletRequest request, HttpServletResponse response) {
 
         if (null == request.getHeader(HelpdeskCodes.HELPDESK_START)) {
             return false;
@@ -57,10 +56,8 @@ public class HelpdeskServlet extends HttpServlet {
         }
 
         if (null != request.getHeader(HelpdeskCodes.HELPDESK_ADD)) {
-            String message = request
-                    .getHeader(HelpdeskCodes.HELPDESK_ADD_MESSAGE);
-            String logLevelString = request
-                    .getHeader(HelpdeskCodes.HELPDESK_ADD_LEVEL);
+            String message = request.getHeader(HelpdeskCodes.HELPDESK_ADD_MESSAGE);
+            String logLevelString = request.getHeader(HelpdeskCodes.HELPDESK_ADD_LEVEL);
             if (null == message || null == logLevelString) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
@@ -71,17 +68,14 @@ public class HelpdeskServlet extends HttpServlet {
         }
 
         if (null != request.getHeader(HelpdeskCodes.HELPDESK_PERSIST)) {
-            String location = request
-                    .getHeader(HelpdeskCodes.HELPDESK_PERSIST_LOCATION);
+            String location = request.getHeader(HelpdeskCodes.HELPDESK_PERSIST_LOCATION);
             if (null == location) {
                 location = "unknown";
             }
 
-            Long id = HelpdeskLogger.persistContext(location, request
-                    .getSession());
+            Long id = HelpdeskLogger.persistContext(location, request.getSession());
 
-            response.setHeader(HelpdeskCodes.HELPDESK_PERSIST_RETURN_ID, id
-                    .toString());
+            response.setHeader(HelpdeskCodes.HELPDESK_PERSIST_RETURN_ID, id.toString());
         }
         return true;
     }

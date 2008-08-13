@@ -35,151 +35,154 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+
 @Entity
-@Table(name = "statistic", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"name", "application" }))
+@Table(name = "statistic", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "application" }))
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION, query = "SELECT Statistic "
-				+ "FROM StatisticEntity AS Statistic "
-				+ "WHERE Statistic.name = :name AND Statistic.application = :application "
-				+ "AND Statistic.domain = :domain"),
-		@NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_NULL, query = "SELECT Statistic "
-				+ "FROM StatisticEntity AS Statistic "
-				+ "WHERE Statistic.name = :name AND Statistic.application IS NULL "
-				+ "AND Statistic.domain = :domain"),
-		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT Statistic "
-				+ "FROM StatisticEntity AS Statistic "
-				+ "WHERE Statistic.application = :application"),
-		@NamedQuery(name = QUERY_WHERE_DOMAIN, query = "SELECT Statistic "
-				+ "FROM StatisticEntity AS Statistic "
-				+ "WHERE Statistic.domain = :domain"),
-		@NamedQuery(name = QUERY_ALL, query = "SELECT Statistic "
-				+ "FROM StatisticEntity AS Statistic"),
-		@NamedQuery(name = QUERY_DELETE_WHERE_DOMAIN, query = "DELETE "
-				+ "FROM StatisticEntity AS Statistic "
-				+ "WHERE Statistic.domain = :domain") })
+        @NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION, query = "SELECT Statistic "
+                + "FROM StatisticEntity AS Statistic "
+                + "WHERE Statistic.name = :name AND Statistic.application = :application "
+                + "AND Statistic.domain = :domain"),
+        @NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_NULL, query = "SELECT Statistic "
+                + "FROM StatisticEntity AS Statistic "
+                + "WHERE Statistic.name = :name AND Statistic.application IS NULL " + "AND Statistic.domain = :domain"),
+        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT Statistic " + "FROM StatisticEntity AS Statistic "
+                + "WHERE Statistic.application = :application"),
+        @NamedQuery(name = QUERY_WHERE_DOMAIN, query = "SELECT Statistic " + "FROM StatisticEntity AS Statistic "
+                + "WHERE Statistic.domain = :domain"),
+        @NamedQuery(name = QUERY_ALL, query = "SELECT Statistic " + "FROM StatisticEntity AS Statistic"),
+        @NamedQuery(name = QUERY_DELETE_WHERE_DOMAIN, query = "DELETE " + "FROM StatisticEntity AS Statistic "
+                + "WHERE Statistic.domain = :domain") })
 public class StatisticEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long              serialVersionUID                        = 1L;
 
-	public static final String QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION = "stat.naa";
+    public static final String             QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION = "stat.naa";
 
-	public static final String QUERY_WHERE_NAME_DOMAIN_AND_NULL = "stat.nan";
+    public static final String             QUERY_WHERE_NAME_DOMAIN_AND_NULL        = "stat.nan";
 
-	public static final String QUERY_WHERE_APPLICATION = "stat.app";
+    public static final String             QUERY_WHERE_APPLICATION                 = "stat.app";
 
-	public static final String QUERY_ALL = "stat.all";
+    public static final String             QUERY_ALL                               = "stat.all";
 
-	public static final String QUERY_DELETE_WHERE_DOMAIN = "stat.deldomain";
+    public static final String             QUERY_DELETE_WHERE_DOMAIN               = "stat.deldomain";
 
-	public static final String QUERY_WHERE_DOMAIN = "stat.domain";
+    public static final String             QUERY_WHERE_DOMAIN                      = "stat.domain";
 
-	private long id;
+    private long                           id;
 
-	private String name;
+    private String                         name;
 
-	private String domain;
+    private String                         domain;
 
-	private ApplicationEntity application;
+    private ApplicationEntity              application;
 
-	private List<StatisticDataPointEntity> statisticDataPoints;
+    private List<StatisticDataPointEntity> statisticDataPoints;
 
-	private Date creationTime;
+    private Date                           creationTime;
 
-	public StatisticEntity() {
-		this(null, null, null, null);
-	}
 
-	public StatisticEntity(String name, String domain,
-			ApplicationEntity application, Date creationTime) {
-		this.name = name;
-		this.domain = domain;
-		this.application = application;
-		this.creationTime = creationTime;
-		this.statisticDataPoints = new LinkedList<StatisticDataPointEntity>();
-	}
+    public StatisticEntity() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long getId() {
-		return this.id;
-	}
+        this(null, null, null, null);
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public StatisticEntity(String name, String domain, ApplicationEntity application, Date creationTime) {
 
-	public Date getCreationTime() {
-		return this.creationTime;
-	}
+        this.name = name;
+        this.domain = domain;
+        this.application = application;
+        this.creationTime = creationTime;
+        this.statisticDataPoints = new LinkedList<StatisticDataPointEntity>();
+    }
 
-	public void setCreationTime(Date creationTime) {
-		this.creationTime = creationTime;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
 
-	@OneToMany(mappedBy = "statistic")
-	public List<StatisticDataPointEntity> getStatisticDataPoints() {
-		return this.statisticDataPoints;
-	}
+        return this.id;
+    }
 
-	public void setStatisticDataPoints(
-			List<StatisticDataPointEntity> statisticDataPoints) {
-		this.statisticDataPoints = statisticDataPoints;
-	}
+    public void setId(long id) {
 
-	@ManyToOne
-	@JoinColumn(name = "application")
-	public ApplicationEntity getApplication() {
-		return this.application;
-	}
+        this.id = id;
+    }
 
-	public void setApplication(ApplicationEntity application) {
-		this.application = application;
-	}
+    public Date getCreationTime() {
 
-	public String getName() {
-		return this.name;
-	}
+        return this.creationTime;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setCreationTime(Date creationTime) {
 
-	public String getDomain() {
-		return this.domain;
-	}
+        this.creationTime = creationTime;
+    }
 
-	public void setDomain(String domain) {
-		this.domain = domain;
-	}
+    @OneToMany(mappedBy = "statistic")
+    public List<StatisticDataPointEntity> getStatisticDataPoints() {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_ALL)
-		List<StatisticEntity> listStatistics();
+        return this.statisticDataPoints;
+    }
 
-		@QueryMethod(QUERY_WHERE_DOMAIN)
-		List<StatisticEntity> listStatistics(@QueryParam("domain")
-		String domain);
+    public void setStatisticDataPoints(List<StatisticDataPointEntity> statisticDataPoints) {
 
-		@QueryMethod(QUERY_WHERE_APPLICATION)
-		List<StatisticEntity> listStatistics(@QueryParam("application")
-		ApplicationEntity application);
+        this.statisticDataPoints = statisticDataPoints;
+    }
 
-		@QueryMethod(QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION)
-		StatisticEntity findStatisticWhereNameDomainAndApplication(
-				@QueryParam("name")
-				String name, @QueryParam("domain")
-				String domain, @QueryParam("application")
-				ApplicationEntity application);
+    @ManyToOne
+    @JoinColumn(name = "application")
+    public ApplicationEntity getApplication() {
 
-		@QueryMethod(QUERY_WHERE_NAME_DOMAIN_AND_NULL)
-		StatisticEntity findStatisticWhereNameAndDomain(@QueryParam("name")
-		String name, @QueryParam("domain")
-		String domain);
+        return this.application;
+    }
 
-		@UpdateMethod(QUERY_DELETE_WHERE_DOMAIN)
-		void deleteWhereDomain(@QueryParam("domain")
-		String domain);
-	}
+    public void setApplication(ApplicationEntity application) {
+
+        this.application = application;
+    }
+
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    public String getDomain() {
+
+        return this.domain;
+    }
+
+    public void setDomain(String domain) {
+
+        this.domain = domain;
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_ALL)
+        List<StatisticEntity> listStatistics();
+
+        @QueryMethod(QUERY_WHERE_DOMAIN)
+        List<StatisticEntity> listStatistics(@QueryParam("domain") String domain);
+
+        @QueryMethod(QUERY_WHERE_APPLICATION)
+        List<StatisticEntity> listStatistics(@QueryParam("application") ApplicationEntity application);
+
+        @QueryMethod(QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION)
+        StatisticEntity findStatisticWhereNameDomainAndApplication(@QueryParam("name") String name,
+                @QueryParam("domain") String domain, @QueryParam("application") ApplicationEntity application);
+
+        @QueryMethod(QUERY_WHERE_NAME_DOMAIN_AND_NULL)
+        StatisticEntity findStatisticWhereNameAndDomain(@QueryParam("name") String name,
+                @QueryParam("domain") String domain);
+
+        @UpdateMethod(QUERY_DELETE_WHERE_DOMAIN)
+        void deleteWhereDomain(@QueryParam("domain") String domain);
+    }
 
 }

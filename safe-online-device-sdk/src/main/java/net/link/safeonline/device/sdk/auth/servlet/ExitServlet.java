@@ -19,43 +19,45 @@ import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
 
+
 public class ExitServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Init(name = "ErrorPage", optional = true)
-	private String errorPage;
+    @Init(name = "ErrorPage", optional = true)
+    private String            errorPage;
 
-	@Override
-	protected void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleExit(request, response);
-	}
 
-	@Override
-	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleExit(request, response);
-	}
+    @Override
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-	protected void handleExit(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		Saml2Handler handler = Saml2Handler.findSaml2Handler(request);
-		if (null == handler) {
-			/*
-			 * If no protocol handler is active at this point then something
-			 * must be going wrong here.
-			 */
-			redirectToErrorPage(request, response, this.errorPage, null,
-					new ErrorMessage("No protocol handler is active"));
-			return;
+        handleExit(request, response);
+    }
 
-		}
-		try {
-			handler.finalizeAuthentication(request, response);
-		} catch (AuthenticationFinalizationException e) {
-			redirectToErrorPage(request, response, this.errorPage, null,
-					new ErrorMessage(e.getMessage()));
-		}
-	}
+    @Override
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+
+        handleExit(request, response);
+    }
+
+    protected void handleExit(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        Saml2Handler handler = Saml2Handler.findSaml2Handler(request);
+        if (null == handler) {
+            /*
+             * If no protocol handler is active at this point then something must be going wrong here.
+             */
+            redirectToErrorPage(request, response, this.errorPage, null, new ErrorMessage(
+                    "No protocol handler is active"));
+            return;
+
+        }
+        try {
+            handler.finalizeAuthentication(request, response);
+        } catch (AuthenticationFinalizationException e) {
+            redirectToErrorPage(request, response, this.errorPage, null, new ErrorMessage(e.getMessage()));
+        }
+    }
 }

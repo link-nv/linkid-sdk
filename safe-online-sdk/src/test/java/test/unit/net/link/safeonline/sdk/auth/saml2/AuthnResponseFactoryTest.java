@@ -30,169 +30,163 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+
 public class AuthnResponseFactoryTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthnResponseFactoryTest.class);
+    private static final Log LOG = LogFactory.getLog(AuthnResponseFactoryTest.class);
 
-	@Test
-	public void createAuthnResponse() throws Exception {
-		// setup
-		String inResponseTo = "id-in-response-to-test-id";
-		String issuerName = "test-issuer-name";
-		String subjectName = "test-subject-name";
-		String samlName = "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport";
-		int validity = 60 * 10;
-		String applicationName = "test-application-name";
-		String target = "https://sp.test.com";
-		KeyPair signerKeyPair = PkiTestUtils.generateKeyPair();
 
-		// operate
-		long begin = System.currentTimeMillis();
-		String result = AuthnResponseFactory.createAuthResponse(inResponseTo,
-				applicationName, issuerName, subjectName, samlName,
-				signerKeyPair, validity, target);
-		long end = System.currentTimeMillis();
+    @Test
+    public void createAuthnResponse() throws Exception {
 
-		// verify
-		assertNotNull(result);
-		LOG.debug("duration: " + (end - begin) + " ms");
-		LOG.debug("result message: " + result);
-		File tmpFile = File.createTempFile("saml-response-", ".xml");
-		FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
-		IOUtils.write(result, tmpOutput);
-		IOUtils.closeQuietly(tmpOutput);
+        // setup
+        String inResponseTo = "id-in-response-to-test-id";
+        String issuerName = "test-issuer-name";
+        String subjectName = "test-subject-name";
+        String samlName = "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport";
+        int validity = 60 * 10;
+        String applicationName = "test-application-name";
+        String target = "https://sp.test.com";
+        KeyPair signerKeyPair = PkiTestUtils.generateKeyPair();
 
-		Document resultDocument = DomTestUtils.parseDocument(result);
+        // operate
+        long begin = System.currentTimeMillis();
+        String result = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationName, issuerName, subjectName,
+                samlName, signerKeyPair, validity, target);
+        long end = System.currentTimeMillis();
 
-		Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument,
-				"/samlp:Response/@InResponseTo");
-		assertNotNull(inResponseToNode);
-		assertEquals(inResponseTo, inResponseToNode.getTextContent());
+        // verify
+        assertNotNull(result);
+        LOG.debug("duration: " + (end - begin) + " ms");
+        LOG.debug("result message: " + result);
+        File tmpFile = File.createTempFile("saml-response-", ".xml");
+        FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
+        IOUtils.write(result, tmpOutput);
+        IOUtils.closeQuietly(tmpOutput);
 
-		// Document document = responseElement.getOwnerDocument();
-		Element nsElement = resultDocument.createElement("nsElement");
-		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
-				"xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
-		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
-				"xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+        Document resultDocument = DomTestUtils.parseDocument(result);
 
-		Node issuerNode = XPathAPI.selectSingleNode(resultDocument,
-				"/samlp:Response/saml:Issuer", nsElement);
-		assertNotNull(issuerNode);
-		assertEquals(issuerName, issuerNode.getTextContent());
+        Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:Response/@InResponseTo");
+        assertNotNull(inResponseToNode);
+        assertEquals(inResponseTo, inResponseToNode.getTextContent());
 
-		Node audienceNode = XPathAPI.selectSingleNode(resultDocument,
-				"//saml:Audience", nsElement);
-		assertNotNull(audienceNode);
-		assertEquals(applicationName, audienceNode.getTextContent());
+        // Document document = responseElement.getOwnerDocument();
+        Element nsElement = resultDocument.createElement("nsElement");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
+                "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
+                "urn:oasis:names:tc:SAML:2.0:assertion");
 
-		Node recipientNode = XPathAPI
-				.selectSingleNode(
-						resultDocument,
-						"/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient",
-						nsElement);
-		assertNotNull(recipientNode);
-		LOG.debug("recipient: " + recipientNode.getTextContent());
-		assertEquals(target, recipientNode.getTextContent());
+        Node issuerNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:Response/saml:Issuer", nsElement);
+        assertNotNull(issuerNode);
+        assertEquals(issuerName, issuerNode.getTextContent());
 
-	}
+        Node audienceNode = XPathAPI.selectSingleNode(resultDocument, "//saml:Audience", nsElement);
+        assertNotNull(audienceNode);
+        assertEquals(applicationName, audienceNode.getTextContent());
 
-	@Test
-	public void createAuthnResponseFailed() throws Exception {
-		// setup
-		String inResponseTo = "id-in-response-to-test-id";
-		String issuerName = "test-issuer-name";
-		String target = "https://sp.test.com";
-		KeyPair signerKeyPair = PkiTestUtils.generateKeyPair();
+        Node recipientNode = XPathAPI
+                .selectSingleNode(
+                        resultDocument,
+                        "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient",
+                        nsElement);
+        assertNotNull(recipientNode);
+        LOG.debug("recipient: " + recipientNode.getTextContent());
+        assertEquals(target, recipientNode.getTextContent());
 
-		// operate
-		long begin = System.currentTimeMillis();
-		String result = AuthnResponseFactory.createAuthResponseFailed(
-				inResponseTo, issuerName, signerKeyPair, target);
-		long end = System.currentTimeMillis();
+    }
 
-		// verify
-		assertNotNull(result);
-		LOG.debug("duration: " + (end - begin) + " ms");
-		LOG.debug("result message: " + result);
-		File tmpFile = File.createTempFile("saml-response-failed-", ".xml");
-		FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
-		IOUtils.write(result, tmpOutput);
-		IOUtils.closeQuietly(tmpOutput);
+    @Test
+    public void createAuthnResponseFailed() throws Exception {
 
-		Document resultDocument = DomTestUtils.parseDocument(result);
+        // setup
+        String inResponseTo = "id-in-response-to-test-id";
+        String issuerName = "test-issuer-name";
+        String target = "https://sp.test.com";
+        KeyPair signerKeyPair = PkiTestUtils.generateKeyPair();
 
-		Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument,
-				"/samlp:Response/@InResponseTo");
-		assertNotNull(inResponseToNode);
-		assertEquals(inResponseTo, inResponseToNode.getTextContent());
+        // operate
+        long begin = System.currentTimeMillis();
+        String result = AuthnResponseFactory.createAuthResponseFailed(inResponseTo, issuerName, signerKeyPair, target);
+        long end = System.currentTimeMillis();
 
-		Node statusNode = XPathAPI.selectSingleNode(resultDocument,
-				"/samlp:Response/samlp:Status/samlp:StatusCode/@Value");
-		assertNotNull(statusNode);
-		assertEquals(StatusCode.AUTHN_FAILED_URI, statusNode.getTextContent());
+        // verify
+        assertNotNull(result);
+        LOG.debug("duration: " + (end - begin) + " ms");
+        LOG.debug("result message: " + result);
+        File tmpFile = File.createTempFile("saml-response-failed-", ".xml");
+        FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
+        IOUtils.write(result, tmpOutput);
+        IOUtils.closeQuietly(tmpOutput);
 
-		// Document document = responseElement.getOwnerDocument();
-		Element nsElement = resultDocument.createElement("nsElement");
-		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
-				"xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
-		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
-				"xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+        Document resultDocument = DomTestUtils.parseDocument(result);
 
-		Node issuerNode = XPathAPI.selectSingleNode(resultDocument,
-				"/samlp:Response/saml:Issuer", nsElement);
-		assertNotNull(issuerNode);
-		assertEquals(issuerName, issuerNode.getTextContent());
-	}
+        Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:Response/@InResponseTo");
+        assertNotNull(inResponseToNode);
+        assertEquals(inResponseTo, inResponseToNode.getTextContent());
 
-	@Test
-	public void createAuthnResponseUnsupported() throws Exception {
-		// setup
-		String inResponseTo = "id-in-response-to-test-id";
-		String issuerName = "test-issuer-name";
-		String target = "https://sp.test.com";
-		KeyPair signerKeyPair = PkiTestUtils.generateKeyPair();
+        Node statusNode = XPathAPI.selectSingleNode(resultDocument,
+                "/samlp:Response/samlp:Status/samlp:StatusCode/@Value");
+        assertNotNull(statusNode);
+        assertEquals(StatusCode.AUTHN_FAILED_URI, statusNode.getTextContent());
 
-		// operate
-		long begin = System.currentTimeMillis();
-		String result = AuthnResponseFactory.createAuthResponseUnsupported(
-				inResponseTo, issuerName, signerKeyPair, target);
-		long end = System.currentTimeMillis();
+        // Document document = responseElement.getOwnerDocument();
+        Element nsElement = resultDocument.createElement("nsElement");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
+                "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
+                "urn:oasis:names:tc:SAML:2.0:assertion");
 
-		// verify
-		assertNotNull(result);
-		LOG.debug("duration: " + (end - begin) + " ms");
-		LOG.debug("result message: " + result);
-		File tmpFile = File.createTempFile("saml-response-failed-", ".xml");
-		FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
-		IOUtils.write(result, tmpOutput);
-		IOUtils.closeQuietly(tmpOutput);
+        Node issuerNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:Response/saml:Issuer", nsElement);
+        assertNotNull(issuerNode);
+        assertEquals(issuerName, issuerNode.getTextContent());
+    }
 
-		Document resultDocument = DomTestUtils.parseDocument(result);
+    @Test
+    public void createAuthnResponseUnsupported() throws Exception {
 
-		Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument,
-				"/samlp:Response/@InResponseTo");
-		assertNotNull(inResponseToNode);
-		assertEquals(inResponseTo, inResponseToNode.getTextContent());
+        // setup
+        String inResponseTo = "id-in-response-to-test-id";
+        String issuerName = "test-issuer-name";
+        String target = "https://sp.test.com";
+        KeyPair signerKeyPair = PkiTestUtils.generateKeyPair();
 
-		Node statusNode = XPathAPI.selectSingleNode(resultDocument,
-				"/samlp:Response/samlp:Status/samlp:StatusCode/@Value");
-		assertNotNull(statusNode);
-		assertEquals(StatusCode.REQUEST_UNSUPPORTED_URI, statusNode
-				.getTextContent());
+        // operate
+        long begin = System.currentTimeMillis();
+        String result = AuthnResponseFactory.createAuthResponseUnsupported(inResponseTo, issuerName, signerKeyPair,
+                target);
+        long end = System.currentTimeMillis();
 
-		// Document document = responseElement.getOwnerDocument();
-		Element nsElement = resultDocument.createElement("nsElement");
-		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
-				"xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
-		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
-				"xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+        // verify
+        assertNotNull(result);
+        LOG.debug("duration: " + (end - begin) + " ms");
+        LOG.debug("result message: " + result);
+        File tmpFile = File.createTempFile("saml-response-failed-", ".xml");
+        FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
+        IOUtils.write(result, tmpOutput);
+        IOUtils.closeQuietly(tmpOutput);
 
-		Node issuerNode = XPathAPI.selectSingleNode(resultDocument,
-				"/samlp:Response/saml:Issuer", nsElement);
-		assertNotNull(issuerNode);
-		assertEquals(issuerName, issuerNode.getTextContent());
-	}
+        Document resultDocument = DomTestUtils.parseDocument(result);
+
+        Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:Response/@InResponseTo");
+        assertNotNull(inResponseToNode);
+        assertEquals(inResponseTo, inResponseToNode.getTextContent());
+
+        Node statusNode = XPathAPI.selectSingleNode(resultDocument,
+                "/samlp:Response/samlp:Status/samlp:StatusCode/@Value");
+        assertNotNull(statusNode);
+        assertEquals(StatusCode.REQUEST_UNSUPPORTED_URI, statusNode.getTextContent());
+
+        // Document document = responseElement.getOwnerDocument();
+        Element nsElement = resultDocument.createElement("nsElement");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
+                "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
+                "urn:oasis:names:tc:SAML:2.0:assertion");
+
+        Node issuerNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:Response/saml:Issuer", nsElement);
+        assertNotNull(issuerNode);
+        assertEquals(issuerName, issuerNode.getTextContent());
+    }
 
 }

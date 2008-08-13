@@ -27,85 +27,84 @@ import net.link.safeonline.test.util.EntityTestManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * @author mbillemo
- *
+ * 
  */
 @SuppressWarnings("unused")
 public abstract class AbstractDataTest {
 
-	protected final Log LOG = LogFactory.getLog(getClass());
+    protected final Log              LOG      = LogFactory.getLog(getClass());
 
-	protected String DB_NAME = "safeonline";
-	protected String DB_USER = "safeonline";
-	protected String DB_PASS = "safeonline";
-	protected String DB_HOST = "sebeco-dev-11";
-	protected int DB_PORT = 3306;
-	protected boolean SHOW_SQL = true;
+    protected String                 DB_NAME  = "safeonline";
+    protected String                 DB_USER  = "safeonline";
+    protected String                 DB_PASS  = "safeonline";
+    protected String                 DB_HOST  = "sebeco-dev-11";
+    protected int                    DB_PORT  = 3306;
+    protected boolean                SHOW_SQL = true;
 
-	protected final Class<?>[] entities = new Class[] {
-			ScenarioTimingEntity.class, ExecutionEntity.class,
-			DriverProfileEntity.class, DriverExceptionEntity.class,
-			ProfileDataEntity.class, MeasurementEntity.class };
+    protected final Class<?>[]       entities = new Class[] { ScenarioTimingEntity.class, ExecutionEntity.class,
+            DriverProfileEntity.class, DriverExceptionEntity.class, ProfileDataEntity.class, MeasurementEntity.class };
 
-	protected ExecutionService executionService;
-	protected ProfileDataService profileDataService;
-	protected DriverExceptionService driverExceptionService;
-	protected DriverProfileService driverProfileService;
-	protected ScenarioTimingService scenarioTimingService;
+    protected ExecutionService       executionService;
+    protected ProfileDataService     profileDataService;
+    protected DriverExceptionService driverExceptionService;
+    protected DriverProfileService   driverProfileService;
+    protected ScenarioTimingService  scenarioTimingService;
 
-	protected EntityManager em;
-	protected EntityTestManager entityTestManager;
+    protected EntityManager          em;
+    protected EntityTestManager      entityTestManager;
 
-	{
-		configure();
+    {
+        configure();
 
-		this.entityTestManager = new EntityTestManager();
+        this.entityTestManager = new EntityTestManager();
 
-		try {
-			this.entityTestManager.configureMySql(this.DB_HOST, this.DB_PORT,
-					this.DB_NAME, this.DB_USER, this.DB_PASS, this.SHOW_SQL);
-			this.entityTestManager.setUp(this.entities);
+        try {
+            this.entityTestManager.configureMySql(this.DB_HOST, this.DB_PORT, this.DB_NAME, this.DB_USER, this.DB_PASS,
+                    this.SHOW_SQL);
+            this.entityTestManager.setUp(this.entities);
 
-			this.em = this.entityTestManager.getEntityManager();
-			AbstractProfilingServiceBean.setDefaultEntityManager(this.em);
+            this.em = this.entityTestManager.getEntityManager();
+            AbstractProfilingServiceBean.setDefaultEntityManager(this.em);
 
-			this.executionService = new ExecutionServiceBean();
-			this.profileDataService = new ProfileDataServiceBean();
-			this.driverExceptionService = new DriverExceptionServiceBean();
-			this.driverProfileService = new DriverProfileServiceBean();
-			this.scenarioTimingService = new ScenarioTimingServiceBean();
-		}
+            this.executionService = new ExecutionServiceBean();
+            this.profileDataService = new ProfileDataServiceBean();
+            this.driverExceptionService = new DriverExceptionServiceBean();
+            this.driverProfileService = new DriverProfileServiceBean();
+            this.scenarioTimingService = new ScenarioTimingServiceBean();
+        }
 
-		catch (Exception e) {
-			this.LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
-			throw new RuntimeException("JPA annotations incorrect: "
-					+ e.getMessage(), e);
-		}
-	}
+        catch (Exception e) {
+            this.LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
+            throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
+        }
+    }
 
-	/**
-	 * Get the most recent execution.
-	 */
-	public ExecutionEntity getLatestExecution() {
 
-		Date executionId = new TreeSet<Date>(this.executionService
-				.getExecutions()).last();
+    /**
+     * Get the most recent execution.
+     */
+    public ExecutionEntity getLatestExecution() {
 
-		return this.executionService.getExecution(executionId);
-	}
+        Date executionId = new TreeSet<Date>(this.executionService.getExecutions()).last();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void finalize() throws Throwable {
+        return this.executionService.getExecution(executionId);
+    }
 
-		if (this.entityTestManager.getEntityManager() != null) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void finalize() throws Throwable {
+
+        if (this.entityTestManager.getEntityManager() != null) {
             this.entityTestManager.tearDown();
         }
-	}
+    }
 
-	protected void configure() {
-	}
+    protected void configure() {
+
+    }
 }

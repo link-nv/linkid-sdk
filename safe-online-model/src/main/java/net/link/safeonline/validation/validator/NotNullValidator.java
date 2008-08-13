@@ -9,18 +9,19 @@ package net.link.safeonline.validation.validator;
 
 import net.link.safeonline.validation.annotation.NotNull;
 
+
 public class NotNullValidator implements Validator<NotNull> {
 
-	public void validate(Object value, int parameterIdx,
-			NotNull parameterAnnotation, ValidatorResult result) {
-		String name = parameterAnnotation.value();
-		if ("".equals(name)) {
-			name = "parameter " + (parameterIdx + 1);
-		}
+    public void validate(Object value, int parameterIdx, NotNull parameterAnnotation, ValidatorResult result) {
 
-		if (null == value) {
-			result.addResult("the given parameter \"" + name + "\" is null");
-			return;
-		}
-	}
+        String name = parameterAnnotation.value();
+        if ("".equals(name)) {
+            name = "parameter " + (parameterIdx + 1);
+        }
+
+        if (null == value) {
+            result.addResult("the given parameter \"" + name + "\" is null");
+            return;
+        }
+    }
 }

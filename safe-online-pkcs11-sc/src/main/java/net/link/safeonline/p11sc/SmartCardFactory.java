@@ -9,14 +9,17 @@ package net.link.safeonline.p11sc;
 
 import net.link.safeonline.p11sc.impl.SmartCardImpl;
 
+
 public class SmartCardFactory {
 
-	private SmartCardFactory() {
-		// empty
-	}
+    private SmartCardFactory() {
 
-	public static SmartCard newInstance() {
-		SmartCard instance = new SmartCardImpl();
-		return instance;
-	}
+        // empty
+    }
+
+    public static SmartCard newInstance() {
+
+        SmartCard instance = new SmartCardImpl();
+        return instance;
+    }
 }

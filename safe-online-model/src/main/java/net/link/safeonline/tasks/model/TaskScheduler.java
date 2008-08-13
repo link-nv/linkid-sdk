@@ -15,21 +15,21 @@ import net.link.safeonline.authentication.exception.InvalidCronExpressionExcepti
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 
+
 @Local
 public interface TaskScheduler extends Startable {
 
-	/**
-	 * Performs the task related to the timer
-	 * 
-	 * @param timer
-	 */
-	void timeOut(Timer timer);
+    /**
+     * Performs the task related to the timer
+     * 
+     * @param timer
+     */
+    void timeOut(Timer timer);
 
-	void performTask(TaskEntity task);
+    void performTask(TaskEntity task);
 
-	void performScheduling(SchedulingEntity scheduling);
+    void performScheduling(SchedulingEntity scheduling);
 
-	void setTimer(SchedulingEntity scheduling)
-			throws InvalidCronExpressionException;
+    void setTimer(SchedulingEntity scheduling) throws InvalidCronExpressionException;
 
 }

@@ -54,6 +54,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class NameIdentifierMappingPortImplTest {
 
     private WebServiceTestUtils                 webServiceTestUtils;
@@ -89,8 +90,7 @@ public class NameIdentifierMappingPortImplTest {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent(
-                "java:comp/env/wsSecurityConfigurationServiceJndiName",
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
@@ -101,74 +101,53 @@ public class NameIdentifierMappingPortImplTest {
         this.mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
         this.mockDeviceIdentifierMappingService = createMock(DeviceIdentifierMappingService.class);
 
-        this.mockObjects = new Object[] {
-                this.mockWSSecurityConfigurationService,
-                this.mockApplicationAuthenticationService,
-                this.mockDeviceAuthenticationService, this.mockPkiValidator,
-                this.mockApplicationIdentifierMappingService,
-                this.mockDeviceIdentifierMappingService };
+        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService,
+                this.mockApplicationAuthenticationService, this.mockDeviceAuthenticationService, this.mockPkiValidator,
+                this.mockApplicationIdentifierMappingService, this.mockDeviceIdentifierMappingService };
 
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/WSSecurityConfigurationBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
                 this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/ApplicationAuthenticationServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local",
                 this.mockApplicationAuthenticationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/DeviceAuthenticationServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local",
                 this.mockDeviceAuthenticationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/NodeAuthenticationServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local",
                 this.mockNodeAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
-                this.mockPkiValidator);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/ApplicationIdentifierMappingServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
+        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local",
                 this.mockApplicationIdentifierMappingService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/DeviceIdentifierMappingServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/DeviceIdentifierMappingServiceBean/local",
                 this.mockDeviceIdentifierMappingService);
 
         this.webServiceTestUtils = new WebServiceTestUtils();
         NameIdentifierMappingPort wsPort = new NameIdentifierMappingPortImpl();
         this.webServiceTestUtils.setUp(wsPort);
 
-        NameIdentifierMappingService service = NameIdentifierMappingServiceFactory
-                .newInstance();
+        NameIdentifierMappingService service = NameIdentifierMappingServiceFactory.newInstance();
         this.clientPort = service.getNameIdentifierMappingPort();
         this.webServiceTestUtils.setEndpointAddress(this.clientPort);
 
         this.keyPair = PkiTestUtils.generateKeyPair();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(
-                this.keyPair, "CN=Test");
+        this.certificate = PkiTestUtils.generateSelfSignedCertificate(this.keyPair, "CN=Test");
 
         BindingProvider bindingProvider = (BindingProvider) this.clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
-        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
-                this.certificate, this.keyPair.getPrivate());
+        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, this.keyPair
+                .getPrivate());
         handlerChain.add(wsSecurityHandler);
         LoggingHandler loggingHandler = new LoggingHandler();
         handlerChain.add(loggingHandler);
         binding.setHandlerChain(handlerChain);
 
         String testApplicationName = "test-application-name";
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .getMaximumWsSecurityTimestampOffset()).andStubReturn(
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
                 Long.MAX_VALUE);
         expect(
-                this.mockPkiValidator.validateCertificate((String) EasyMock
-                        .anyObject(), (X509Certificate) EasyMock.anyObject()))
-                .andStubReturn(PkiResult.VALID);
-        expect(
-                this.mockApplicationAuthenticationService
-                        .authenticate(this.certificate)).andReturn(
-                testApplicationName);
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .skipMessageIntegrityCheck(this.certificate))
-                .andReturn(false);
+                this.mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock
+                        .anyObject())).andStubReturn(PkiResult.VALID);
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(testApplicationName);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
     }
@@ -190,23 +169,19 @@ public class NameIdentifierMappingPortImplTest {
         NameIDType nameId = new NameIDType();
         nameId.setValue(username);
         NameIDPolicyType nameIdPolicy = new NameIDPolicyType();
-        nameIdPolicy
-                .setFormat(NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT);
+        nameIdPolicy.setFormat(NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT);
         request.setNameIDPolicy(nameIdPolicy);
         request.setNameID(nameId);
         String userId = "test-user-id";
 
         // expectations
-        expect(
-                this.mockApplicationIdentifierMappingService
-                        .getApplicationUserId(username)).andReturn(userId);
+        expect(this.mockApplicationIdentifierMappingService.getApplicationUserId(username)).andReturn(userId);
 
         // prepare
         replay(this.mockObjects);
 
         // operate
-        NameIDMappingResponseType response = this.clientPort
-                .nameIdentifierMappingQuery(request);
+        NameIDMappingResponseType response = this.clientPort.nameIdentifierMappingQuery(request);
 
         // verify
         verify(this.mockObjects);

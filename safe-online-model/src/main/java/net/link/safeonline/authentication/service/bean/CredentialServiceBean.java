@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 /**
  * Implementation of the credential service interface.
  * 
@@ -39,11 +40,9 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
-public class CredentialServiceBean implements CredentialService,
-        CredentialServiceRemote {
+public class CredentialServiceBean implements CredentialService, CredentialServiceRemote {
 
-    private static Log            LOG = LogFactory
-                                              .getLog(CredentialServiceBean.class);
+    private static Log            LOG = LogFactory.getLog(CredentialServiceBean.class);
 
     @EJB
     private SubjectManager        subjectManager;
@@ -53,47 +52,41 @@ public class CredentialServiceBean implements CredentialService,
 
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void changePassword(String oldPassword, String newPassword)
-            throws PermissionDeniedException, DeviceNotFoundException,
-            SubjectNotFoundException {
+    public void changePassword(String oldPassword, String newPassword) throws PermissionDeniedException,
+            DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("change password");
         SubjectEntity subject = this.subjectManager.getCallerSubject();
 
         this.passwordDeviceService.update(subject, oldPassword, newPassword);
 
-        SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
-                SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+        SecurityManagerUtils.flushCredentialCache(subject.getUserId(), SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
     }
 
-    public void registerPassword(String password)
-            throws SubjectNotFoundException, DeviceNotFoundException {
+    public void registerPassword(String password) throws SubjectNotFoundException, DeviceNotFoundException {
 
         LOG.debug("register password");
         SubjectEntity subject = this.subjectManager.getCallerSubject();
 
         this.passwordDeviceService.register(subject, password);
 
-        SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
-                SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+        SecurityManagerUtils.flushCredentialCache(subject.getUserId(), SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void removePassword(String password) throws DeviceNotFoundException,
-            PermissionDeniedException, SubjectNotFoundException {
+    public void removePassword(String password) throws DeviceNotFoundException, PermissionDeniedException,
+            SubjectNotFoundException {
 
         LOG.debug("remove password");
         SubjectEntity subject = this.subjectManager.getCallerSubject();
 
         this.passwordDeviceService.remove(subject, password);
 
-        SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
-                SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+        SecurityManagerUtils.flushCredentialCache(subject.getUserId(), SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean isPasswordConfigured() throws SubjectNotFoundException,
-            DeviceNotFoundException {
+    public boolean isPasswordConfigured() throws SubjectNotFoundException, DeviceNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         return this.passwordDeviceService.isPasswordConfigured(subject);

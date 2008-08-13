@@ -32,171 +32,162 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Login handling servlet. After SafeOnline performed its authentication it will
- * redirect to this servlet. This servlet will retrieve the 'admin' attribute.
- * Depending on the value of this attribute we redirect to a different page.
+ * Login handling servlet. After SafeOnline performed its authentication it will redirect to this servlet. This servlet
+ * will retrieve the 'admin' attribute. Depending on the value of this attribute we redirect to a different page.
  * 
- * If the user has multiple roles active this servlet will redirect to a page
- * where the user can select the role under which he would like to operate.
+ * If the user has multiple roles active this servlet will redirect to a page where the user can select the role under
+ * which he would like to operate.
  * 
  * @author fcorneli
  * 
  */
 public class LoginServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(LoginServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(LoginServlet.class);
 
-	private DataClient dataClient;
+    private DataClient        dataClient;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
 
-		LOG.debug("init");
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-		String wsLocation = config.getInitParameter("WsLocation");
+        super.init(config);
 
-		PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStoreUtils
-				.getPrivateKeyEntry();
+        LOG.debug("init");
 
-		X509Certificate clientCertificate = (X509Certificate) privateKeyEntry
-				.getCertificate();
-		PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
+        String wsLocation = config.getInitParameter("WsLocation");
 
-		this.dataClient = new DataClientImpl(wsLocation, clientCertificate,
-				clientPrivateKey);
-	}
+        PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStoreUtils.getPrivateKeyEntry();
 
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		/*
-		 * Since the SAML protocol can enter the application via an HTTP POST we
-		 * also need to implement the doPost method.
-		 */
-		doGet(request, response);
-	}
+        X509Certificate clientCertificate = (X509Certificate) privateKeyEntry.getCertificate();
+        PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
 
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+        this.dataClient = new DataClientImpl(wsLocation, clientCertificate, clientPrivateKey);
+    }
 
-		HttpSession session = request.getSession();
-		String username = (String) session.getAttribute("username");
-		/*
-		 * The "username" attribute has been set by the SafeOnline login filter.
-		 */
-		LOG.debug("username: " + username);
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		boolean admin = getBoolean(username,
-				DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
-		boolean careProvider = getBoolean(username,
-				DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
-		boolean pharmacist = getBoolean(username,
-				DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
+        /*
+         * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost
+         * method.
+         */
+        doGet(request, response);
+    }
 
-		int rolesCount = 0;
-		if (admin) {
-			session.setAttribute("adminRole", "true");
-			rolesCount++;
-		}
-		if (careProvider) {
-			session.setAttribute("careProviderRole", "true");
-			rolesCount++;
-		}
-		if (pharmacist) {
-			session.setAttribute("pharmacistRole", "true");
-			rolesCount++;
-		}
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		if (rolesCount == 0) {
-			redirectToPatientPage(session, response);
-			return;
-		}
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+        /*
+         * The "username" attribute has been set by the SafeOnline login filter.
+         */
+        LOG.debug("username: " + username);
 
-		if (rolesCount > 1) {
-			/*
-			 * In this case we let the user first pick the role under which he
-			 * wants to operate.
-			 */
-			redirectToRolesPage(session, response);
-			return;
-		}
+        boolean admin = getBoolean(username, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
+        boolean careProvider = getBoolean(username, DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
+        boolean pharmacist = getBoolean(username, DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
 
-		if (admin) {
-			redirectToAdminPage(session, response);
-			return;
-		}
-		if (careProvider) {
-			redirectToCareProviderPage(session, response);
-			return;
-		}
-		if (pharmacist) {
-			redirectToPharmacistPage(session, response);
-			return;
-		}
-	}
+        int rolesCount = 0;
+        if (admin) {
+            session.setAttribute("adminRole", "true");
+            rolesCount++;
+        }
+        if (careProvider) {
+            session.setAttribute("careProviderRole", "true");
+            rolesCount++;
+        }
+        if (pharmacist) {
+            session.setAttribute("pharmacistRole", "true");
+            rolesCount++;
+        }
 
-	private boolean getBoolean(String username, String attributeName)
-			throws ServletException {
-		Attribute<Boolean> attribute;
-		try {
-			attribute = this.dataClient.getAttributeValue(username,
-					attributeName, Boolean.class);
-		} catch (RequestDeniedException e) {
-			throw new ServletException(
-					"count not retrieve prescription admin attribute");
-		} catch (SubjectNotFoundException e) {
-			throw new ServletException("subject not found");
-		} catch (WSClientTransportException e) {
+        if (rolesCount == 0) {
+            redirectToPatientPage(session, response);
+            return;
+        }
+
+        if (rolesCount > 1) {
+            /*
+             * In this case we let the user first pick the role under which he wants to operate.
+             */
+            redirectToRolesPage(session, response);
+            return;
+        }
+
+        if (admin) {
+            redirectToAdminPage(session, response);
+            return;
+        }
+        if (careProvider) {
+            redirectToCareProviderPage(session, response);
+            return;
+        }
+        if (pharmacist) {
+            redirectToPharmacistPage(session, response);
+            return;
+        }
+    }
+
+    private boolean getBoolean(String username, String attributeName) throws ServletException {
+
+        Attribute<Boolean> attribute;
+        try {
+            attribute = this.dataClient.getAttributeValue(username, attributeName, Boolean.class);
+        } catch (RequestDeniedException e) {
+            throw new ServletException("count not retrieve prescription admin attribute");
+        } catch (SubjectNotFoundException e) {
+            throw new ServletException("subject not found");
+        } catch (WSClientTransportException e) {
             throw new ServletException("connection failed");
         }
 
-		if (null == attribute)
+        if (null == attribute)
             return false;
 
-		Boolean value = attribute.getValue();
-		if (null == value)
+        Boolean value = attribute.getValue();
+        if (null == value)
             return false;
 
-		return attribute.getValue();
-	}
+        return attribute.getValue();
+    }
 
-	private void redirectToPage(String page, String role, HttpSession session,
-			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", role);
-		response.sendRedirect(page);
-	}
+    private void redirectToPage(String page, String role, HttpSession session, HttpServletResponse response)
+            throws IOException {
 
-	private void redirectToCareProviderPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		redirectToPage("./care-provider.seam",
-				PrescriptionConstants.CARE_PROVIDER_ROLE, session, response);
-	}
+        session.setAttribute("role", role);
+        response.sendRedirect(page);
+    }
 
-	private void redirectToPharmacistPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		redirectToPage("./pharmacist.seam",
-				PrescriptionConstants.PHARMACIST_ROLE, session, response);
-	}
+    private void redirectToCareProviderPage(HttpSession session, HttpServletResponse response) throws IOException {
 
-	private void redirectToPatientPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		redirectToPage("./patient.seam", PrescriptionConstants.PATIENT_ROLE,
-				session, response);
-	}
+        redirectToPage("./care-provider.seam", PrescriptionConstants.CARE_PROVIDER_ROLE, session, response);
+    }
 
-	private void redirectToRolesPage(@SuppressWarnings("unused")
-	HttpSession session, HttpServletResponse response) throws IOException {
-		response.sendRedirect("./roles.seam");
-	}
+    private void redirectToPharmacistPage(HttpSession session, HttpServletResponse response) throws IOException {
 
-	private void redirectToAdminPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		redirectToPage("./admin.seam", PrescriptionConstants.ADMIN_ROLE,
-				session, response);
-	}
+        redirectToPage("./pharmacist.seam", PrescriptionConstants.PHARMACIST_ROLE, session, response);
+    }
+
+    private void redirectToPatientPage(HttpSession session, HttpServletResponse response) throws IOException {
+
+        redirectToPage("./patient.seam", PrescriptionConstants.PATIENT_ROLE, session, response);
+    }
+
+    private void redirectToRolesPage(@SuppressWarnings("unused") HttpSession session, HttpServletResponse response)
+            throws IOException {
+
+        response.sendRedirect("./roles.seam");
+    }
+
+    private void redirectToAdminPage(HttpSession session, HttpServletResponse response) throws IOException {
+
+        redirectToPage("./admin.seam", PrescriptionConstants.ADMIN_ROLE, session, response);
+    }
 }

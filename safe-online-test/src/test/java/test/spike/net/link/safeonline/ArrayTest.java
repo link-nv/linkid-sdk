@@ -11,34 +11,38 @@ import java.lang.reflect.Array;
 
 import junit.framework.TestCase;
 
+
 public class ArrayTest extends TestCase {
 
-	public void testArrayType() throws Exception {
-		assertFalse(Object[].class.equals(String[].class));
+    public void testArrayType() throws Exception {
 
-		assertTrue(Object[].class.isAssignableFrom(String[].class));
+        assertFalse(Object[].class.equals(String[].class));
 
-		assertFalse(String[].class.isAssignableFrom(Object[].class));
-	}
+        assertTrue(Object[].class.isAssignableFrom(String[].class));
 
-	public void testNewInstance() throws Exception {
-		Class<String[]> clazz = String[].class;
+        assertFalse(String[].class.isAssignableFrom(Object[].class));
+    }
 
-		String[] result = getNewInstance(clazz);
+    public void testNewInstance() throws Exception {
 
-		assertNotNull(result);
-		assertEquals(2, result.length);
-	}
+        Class<String[]> clazz = String[].class;
 
-	@SuppressWarnings("unchecked")
-	private <Type> Type getNewInstance(Class<Type> clazz) {
-		assertTrue(clazz.isArray());
+        String[] result = getNewInstance(clazz);
 
-		Class componentType = clazz.getComponentType();
-		assertEquals(String.class, componentType);
+        assertNotNull(result);
+        assertEquals(2, result.length);
+    }
 
-		Type result = (Type) Array.newInstance(componentType, 2);
+    @SuppressWarnings("unchecked")
+    private <Type> Type getNewInstance(Class<Type> clazz) {
 
-		return result;
-	}
+        assertTrue(clazz.isArray());
+
+        Class componentType = clazz.getComponentType();
+        assertEquals(String.class, componentType);
+
+        Type result = (Type) Array.newInstance(componentType, 2);
+
+        return result;
+    }
 }

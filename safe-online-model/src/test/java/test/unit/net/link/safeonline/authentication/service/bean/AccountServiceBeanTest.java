@@ -31,83 +31,81 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class AccountServiceBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+    @Override
+    protected void setUp() throws Exception {
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+        super.setUp();
 
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return certificate;
-					}
-				});
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		SystemInitializationStartableBean systemInit = EJBTestUtils
-				.newInstance(SystemInitializationStartableBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		systemInit.postStart();
-		this.entityTestManager.refreshEntityManager();
-	}
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+                        return authCertificate;
+                    }
+                });
 
-	public void testRemoveAccount() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		String testLogin = "test-login";
-		String testPassword = "test-password";
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		UserRegistrationService userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
-				PasswordDeviceServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		// operate
-		SubjectEntity resultSubject = userRegistrationService
-				.registerUser(testLogin);
-		passwordDeviceService.register(resultSubject, testPassword);
+                        return certificate;
+                    }
+                });
 
-		AccountService accountService = EJBTestUtils.newInstance(
-				AccountServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager, testLogin, SafeOnlineRoles.USER_ROLE);
-		accountService.removeAccount(resultSubject.getUserId());
-	}
+        SystemInitializationStartableBean systemInit = EJBTestUtils.newInstance(
+                SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        systemInit.postStart();
+        this.entityTestManager.refreshEntityManager();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
+
+    public void testRemoveAccount() throws Exception {
+
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+        String testLogin = "test-login";
+        String testPassword = "test-password";
+
+        UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+
+        // operate
+        SubjectEntity resultSubject = userRegistrationService.registerUser(testLogin);
+        passwordDeviceService.register(resultSubject, testPassword);
+
+        AccountService accountService = EJBTestUtils.newInstance(AccountServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, testLogin, SafeOnlineRoles.USER_ROLE);
+        accountService.removeAccount(resultSubject.getUserId());
+    }
 }

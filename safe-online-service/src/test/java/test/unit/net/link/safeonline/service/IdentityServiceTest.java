@@ -23,77 +23,78 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class IdentityServiceTest {
 
-	private TestClassLoader testClassLoader;
+    private TestClassLoader testClassLoader;
 
-	private ClassLoader origClassLoader;
+    private ClassLoader     origClassLoader;
 
-	@Before
-	public void setUp() throws Exception {
-		Thread currentThread = Thread.currentThread();
-		this.origClassLoader = currentThread.getContextClassLoader();
 
-		this.testClassLoader = new TestClassLoader();
-		currentThread.setContextClassLoader(this.testClassLoader);
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	@After
-	public void tearDown() throws Exception {
-		Thread currentThread = Thread.currentThread();
-		currentThread.setContextClassLoader(this.origClassLoader);
-	}
+        Thread currentThread = Thread.currentThread();
+        this.origClassLoader = currentThread.getContextClassLoader();
 
-	@Test
-	public void testGetPrivateKeyFromResource() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		File tmpPkcs12KeyStore = File.createTempFile("test-keystore-", ".p12");
-		tmpPkcs12KeyStore.deleteOnExit();
-		PrivateKey privateKey = keyPair.getPrivate();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		String password = "secret";
-		PkiTestUtils.persistKey(tmpPkcs12KeyStore, privateKey, certificate,
-				password, password);
-		String resourceName = "test-keystore-resource-name";
-		this.testClassLoader.addResource(resourceName, tmpPkcs12KeyStore
-                .toURI().toURL());
+        this.testClassLoader = new TestClassLoader();
+        currentThread.setContextClassLoader(this.testClassLoader);
+    }
 
-		// operate
-		IdentityServiceMBean testedInstance = new IdentityService();
-		testedInstance.setKeyStoreResource(resourceName);
-		testedInstance.setKeyStorePassword(password);
-		testedInstance.setKeyStoreType("pkcs12");
-		testedInstance.loadKeyPair();
-		PrivateKey resultPrivateKey = testedInstance.getPrivateKey();
+    @After
+    public void tearDown() throws Exception {
 
-		// verify
-		assertEquals(privateKey, resultPrivateKey);
-	}
+        Thread currentThread = Thread.currentThread();
+        currentThread.setContextClassLoader(this.origClassLoader);
+    }
 
-	@Test
-	public void testGetPrivateKeyFromFile() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		File tmpPkcs12KeyStore = File.createTempFile("test-keystore-", ".p12");
-		tmpPkcs12KeyStore.deleteOnExit();
-		PrivateKey privateKey = keyPair.getPrivate();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		String password = "secret";
-		PkiTestUtils.persistKey(tmpPkcs12KeyStore, privateKey, certificate,
-				password, password);
+    @Test
+    public void testGetPrivateKeyFromResource() throws Exception {
 
-		// operate
-		IdentityServiceMBean testedInstance = new IdentityService();
-		testedInstance.setKeyStoreFile(tmpPkcs12KeyStore.getAbsolutePath());
-		testedInstance.setKeyStorePassword(password);
-		testedInstance.setKeyStoreType("pkcs12");
-		testedInstance.loadKeyPair();
-		PrivateKey resultPrivateKey = testedInstance.getPrivateKey();
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        File tmpPkcs12KeyStore = File.createTempFile("test-keystore-", ".p12");
+        tmpPkcs12KeyStore.deleteOnExit();
+        PrivateKey privateKey = keyPair.getPrivate();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        String password = "secret";
+        PkiTestUtils.persistKey(tmpPkcs12KeyStore, privateKey, certificate, password, password);
+        String resourceName = "test-keystore-resource-name";
+        this.testClassLoader.addResource(resourceName, tmpPkcs12KeyStore.toURI().toURL());
 
-		// verify
-		assertEquals(privateKey, resultPrivateKey);
-	}
+        // operate
+        IdentityServiceMBean testedInstance = new IdentityService();
+        testedInstance.setKeyStoreResource(resourceName);
+        testedInstance.setKeyStorePassword(password);
+        testedInstance.setKeyStoreType("pkcs12");
+        testedInstance.loadKeyPair();
+        PrivateKey resultPrivateKey = testedInstance.getPrivateKey();
+
+        // verify
+        assertEquals(privateKey, resultPrivateKey);
+    }
+
+    @Test
+    public void testGetPrivateKeyFromFile() throws Exception {
+
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        File tmpPkcs12KeyStore = File.createTempFile("test-keystore-", ".p12");
+        tmpPkcs12KeyStore.deleteOnExit();
+        PrivateKey privateKey = keyPair.getPrivate();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        String password = "secret";
+        PkiTestUtils.persistKey(tmpPkcs12KeyStore, privateKey, certificate, password, password);
+
+        // operate
+        IdentityServiceMBean testedInstance = new IdentityService();
+        testedInstance.setKeyStoreFile(tmpPkcs12KeyStore.getAbsolutePath());
+        testedInstance.setKeyStorePassword(password);
+        testedInstance.setKeyStoreType("pkcs12");
+        testedInstance.loadKeyPair();
+        PrivateKey resultPrivateKey = testedInstance.getPrivateKey();
+
+        // verify
+        assertEquals(privateKey, resultPrivateKey);
+    }
 }

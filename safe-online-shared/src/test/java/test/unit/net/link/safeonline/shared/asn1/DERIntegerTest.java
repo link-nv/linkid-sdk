@@ -12,20 +12,22 @@ import org.bouncycastle.asn1.ASN1Object;
 import net.link.safeonline.shared.asn1.DERInteger;
 import junit.framework.TestCase;
 
+
 public class DERIntegerTest extends TestCase {
 
-	public void testDERInteger() throws Exception {
-		// setup
-		int value = 12345678;
+    public void testDERInteger() throws Exception {
 
-		// operate
-		DERInteger derInteger = new DERInteger(value);
-		byte[] result = derInteger.getEncoded();
+        // setup
+        int value = 12345678;
 
-		// verify
-		assertNotNull(result);
-		org.bouncycastle.asn1.DERInteger resultInteger = (org.bouncycastle.asn1.DERInteger) ASN1Object
-				.fromByteArray(result);
-		assertEquals(value, resultInteger.getValue().intValue());
-	}
+        // operate
+        DERInteger derInteger = new DERInteger(value);
+        byte[] result = derInteger.getEncoded();
+
+        // verify
+        assertNotNull(result);
+        org.bouncycastle.asn1.DERInteger resultInteger = (org.bouncycastle.asn1.DERInteger) ASN1Object
+                .fromByteArray(result);
+        assertEquals(value, resultInteger.getValue().intValue());
+    }
 }

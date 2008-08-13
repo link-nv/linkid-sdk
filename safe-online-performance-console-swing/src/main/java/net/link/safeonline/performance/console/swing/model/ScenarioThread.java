@@ -18,14 +18,14 @@ import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * <h2>{@link ScenarioThread}<br>
  * <sub>Wrap long-running agent tasks in threads.</sub></h2>
  * 
  * <p>
- * Threads that extend this class are used for delegating actions that should be
- * performed on {@link ConsoleAgent}s and can take a long time in order to
- * prevent hanging the UI during this operation.
+ * Threads that extend this class are used for delegating actions that should be performed on {@link ConsoleAgent}s and
+ * can take a long time in order to prevent hanging the UI during this operation.
  * </p>
  * 
  * <p>
@@ -36,99 +36,101 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class ScenarioThread extends Thread {
 
-	AgentState state;
-	ScenarioRemoting scenarioDeployer;
-	private ExecutorService pool;
+    AgentState              state;
+    ScenarioRemoting        scenarioDeployer;
+    private ExecutorService pool;
 
-	public ScenarioThread(AgentState state) {
 
-		super("Scenario Invoker");
-		setDaemon(true);
+    public ScenarioThread(AgentState state) {
 
-		this.state = state;
-		this.scenarioDeployer = ConsoleData.getRemoting();
-	}
+        super("Scenario Invoker");
+        setDaemon(true);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void run() {
+        this.state = state;
+        this.scenarioDeployer = ConsoleData.getRemoting();
+    }
 
-		this.pool = Executors.newCachedThreadPool();
-		for (final ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
-			this.pool.submit(new Worker(agent));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
 
-			agent.setError(null);
-			if (this.state != null)
-				agent.setTransit(this.state);
-		}
+        this.pool = Executors.newCachedThreadPool();
+        for (final ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
+            this.pool.submit(new Worker(agent));
 
-		try {
-			this.pool.shutdown();
-			while (!this.pool.awaitTermination(10, TimeUnit.SECONDS))
-				Thread.yield();
+            agent.setError(null);
+            if (this.state != null)
+                agent.setTransit(this.state);
+        }
 
-			completed();
-		} catch (InterruptedException e) {
-		}
-	}
+        try {
+            this.pool.shutdown();
+            while (!this.pool.awaitTermination(10, TimeUnit.SECONDS))
+                Thread.yield();
 
-	/**
-	 * Attempt to abort the current operation if one is running.
-	 */
-	public void shutdown() {
+            completed();
+        } catch (InterruptedException e) {
+        }
+    }
 
-		if (!isAlive())
-			return;
+    /**
+     * Attempt to abort the current operation if one is running.
+     */
+    public void shutdown() {
 
-		interrupt();
-		this.pool.shutdownNow();
-	}
+        if (!isAlive())
+            return;
 
-	/**
-	 * This method is called after all agents have completed the task.
-	 */
-	protected void completed() {
+        interrupt();
+        this.pool.shutdownNow();
+    }
 
-		/* Feel free to override. */
-	}
+    /**
+     * This method is called after all agents have completed the task.
+     */
+    protected void completed() {
 
-	/**
-	 * Perform the action that needs to be performed on each selected agent.
-	 */
-	abstract void process(ConsoleAgent agent) throws Exception;
+        /* Feel free to override. */
+    }
 
-	class Worker implements Runnable {
+    /**
+     * Perform the action that needs to be performed on each selected agent.
+     */
+    abstract void process(ConsoleAgent agent) throws Exception;
 
-		final Log LOG = LogFactory.getLog(ScenarioThread.Worker.class);
 
-		private ConsoleAgent agent;
+    class Worker implements Runnable {
 
-		public Worker(ConsoleAgent agent) {
+        final Log            LOG = LogFactory.getLog(ScenarioThread.Worker.class);
 
-			this.agent = agent;
-		}
+        private ConsoleAgent agent;
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void run() {
 
-			this.agent.registerAction(ScenarioThread.this);
+        public Worker(ConsoleAgent agent) {
 
-			try {
-				process(this.agent);
-			}
+            this.agent = agent;
+        }
 
-			catch (Exception e) {
-				this.LOG.error(
-						"Couldn't perform requested operation on agent.", e);
-			}
+        /**
+         * {@inheritDoc}
+         */
+        public void run() {
 
-			finally {
-				this.agent.unregisterAction(ScenarioThread.this);
-			}
-		}
-	}
+            this.agent.registerAction(ScenarioThread.this);
+
+            try {
+                process(this.agent);
+            }
+
+            catch (Exception e) {
+                this.LOG.error("Couldn't perform requested operation on agent.", e);
+            }
+
+            finally {
+                this.agent.unregisterAction(ScenarioThread.this);
+            }
+        }
+    }
 }

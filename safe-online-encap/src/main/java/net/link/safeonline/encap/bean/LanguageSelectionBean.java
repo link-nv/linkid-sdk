@@ -9,11 +9,10 @@ import net.link.safeonline.encap.LanguageSelection;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.annotations.Name;
 
+
 @Stateless
 @Name("encapLanguage")
-@LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX
-		+ "LanguageSelectionBean/local")
-public class LanguageSelectionBean extends LanguageSelectionBaseBean implements
-		LanguageSelection {
+@LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "LanguageSelectionBean/local")
+public class LanguageSelectionBean extends LanguageSelectionBaseBean implements LanguageSelection {
 
 }

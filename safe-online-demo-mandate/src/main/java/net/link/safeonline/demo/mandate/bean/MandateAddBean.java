@@ -28,12 +28,12 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("mandateAdd")
 @LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateAddBean/local")
 @SecurityDomain(MandateConstants.SECURITY_DOMAIN)
-public class MandateAddBean extends AbstractMandateDataClientBean implements
-        MandateAdd {
+public class MandateAddBean extends AbstractMandateDataClientBean implements MandateAdd {
 
     @In
     private String             mandateUser;
@@ -69,8 +69,7 @@ public class MandateAddBean extends AbstractMandateDataClientBean implements
 
         DataClient dataClient = getDataClient();
         try {
-            dataClient.createAttribute(mandateUserId,
-                    DemoConstants.MANDATE_ATTRIBUTE_NAME, this.newMandate);
+            dataClient.createAttribute(mandateUserId, DemoConstants.MANDATE_ATTRIBUTE_NAME, this.newMandate);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error");
             return null;

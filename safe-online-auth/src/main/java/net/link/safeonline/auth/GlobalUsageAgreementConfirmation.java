@@ -8,20 +8,19 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 
+
 @Local
 public interface GlobalUsageAgreementConfirmation {
 
-	/*
-	 * Actions.
-	 */
-	String confirm() throws ApplicationNotFoundException,
-			SubscriptionNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException;
+    /*
+     * Actions.
+     */
+    String confirm() throws ApplicationNotFoundException, SubscriptionNotFoundException,
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
-	/*
-	 * Accessors
-	 */
-	String getUsageAgreement();
+    /*
+     * Accessors
+     */
+    String getUsageAgreement();
 
 }

@@ -33,6 +33,7 @@ import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.Options;
 
+
 /**
  * <h2>{@link ChartWindow}<br>
  * <sub>A window that displays charts.</sub></h2>
@@ -45,164 +46,156 @@ import com.jgoodies.looks.Options;
  */
 public class ChartWindow extends WindowAdapter {
 
-	private static ChartWindow instance;
+    private static ChartWindow instance;
 
-	private JTabbedPane agents;
-	private JFrame frame;
+    private JTabbedPane        agents;
+    private JFrame             frame;
 
-	private ChartWindow() {
 
-		// Tabs.
-		this.agents = new JTabbedPane();
-		this.agents.setBorder(Borders.DLU4_BORDER);
-		this.agents.putClientProperty(Options.EMBEDDED_TABS_KEY, true);
+    private ChartWindow() {
 
-		// Frame.
-		this.frame = new JFrame("Performance Testing Charts");
-		this.frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.frame.setContentPane(this.agents);
-		this.frame.addWindowListener(this);
-	}
+        // Tabs.
+        this.agents = new JTabbedPane();
+        this.agents.setBorder(Borders.DLU4_BORDER);
+        this.agents.putClientProperty(Options.EMBEDDED_TABS_KEY, true);
 
-	private void addTab(ConsoleAgent agent, ScenarioExecution scenarioExecution) {
+        // Frame.
+        this.frame = new JFrame("Performance Testing Charts");
+        this.frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        this.frame.setContentPane(this.agents);
+        this.frame.addWindowListener(this);
+    }
 
-		String tabTitle = String.format("%s (%d worker%s)", agent.getAddress()
-				.toString(), scenarioExecution.getWorkers(), scenarioExecution
-				.getWorkers() > 1 ? "s" : "");
+    private void addTab(ConsoleAgent agent, ScenarioExecution scenarioExecution) {
 
-		AgentCharts agentCharts = new AgentCharts(scenarioExecution);
-		JScrollPane scrollPane = new JScrollPane(agentCharts);
-		scrollPane.setBackground(agentCharts.getBackground());
-		scrollPane.getViewport().setBackground(agentCharts.getBackground());
+        String tabTitle = String.format("%s (%d worker%s)", agent.getAddress().toString(), scenarioExecution
+                .getWorkers(), scenarioExecution.getWorkers() > 1? "s": "");
 
-		this.agents.addTab(tabTitle, scrollPane);
-	}
+        AgentCharts agentCharts = new AgentCharts(scenarioExecution);
+        JScrollPane scrollPane = new JScrollPane(agentCharts);
+        scrollPane.setBackground(agentCharts.getBackground());
+        scrollPane.getViewport().setBackground(agentCharts.getBackground());
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public void windowClosed(WindowEvent e) {
+        this.agents.addTab(tabTitle, scrollPane);
+    }
 
-		this.frame = null;
-		instance = null;
-	}
+    /**
+     * @{inheritDoc
+     */
+    @Override
+    public void windowClosed(WindowEvent e) {
 
-	public static void display(Map<ConsoleAgent, ScenarioExecution> agentCharts) {
+        this.frame = null;
+        instance = null;
+    }
 
-		if (instance == null)
-			instance = new ChartWindow();
+    public static void display(Map<ConsoleAgent, ScenarioExecution> agentCharts) {
 
-		for (Map.Entry<ConsoleAgent, ScenarioExecution> agentChart : agentCharts
-				.entrySet())
-			if (agentChart.getValue() != null)
-				instance.addTab(agentChart.getKey(), agentChart.getValue());
+        if (instance == null)
+            instance = new ChartWindow();
 
-		instance.show();
-	}
+        for (Map.Entry<ConsoleAgent, ScenarioExecution> agentChart : agentCharts.entrySet())
+            if (agentChart.getValue() != null)
+                instance.addTab(agentChart.getKey(), agentChart.getValue());
 
-	private void show() {
+        instance.show();
+    }
 
-		this.frame.setPreferredSize(new Dimension(1024, 768));
-		this.frame.pack();
-		this.frame.setLocationRelativeTo(null);
-		this.frame.setVisible(true);
-	}
+    private void show() {
 
-	private static class AgentCharts extends JPanel implements Scrollable {
+        this.frame.setPreferredSize(new Dimension(1024, 768));
+        this.frame.pack();
+        this.frame.setLocationRelativeTo(null);
+        this.frame.setVisible(true);
+    }
 
-		private static final long serialVersionUID = 1L;
-		private static final int INCREMENT = 50;
 
-		public AgentCharts(ScenarioExecution execution) {
+    private static class AgentCharts extends JPanel implements Scrollable {
 
-			FormLayout layout = new FormLayout("p");
-			DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
-			builder.setDefaultDialogBorder();
-			setBackground(Color.WHITE);
+        private static final long serialVersionUID = 1L;
+        private static final int  INCREMENT        = 50;
 
-			Box header = new Box(BoxLayout.PAGE_AXIS);
-			builder.append(header);
-			JLabel label;
 
-			header.add(label = new JLabel(String.format(
-					"[%s] %d worker%s x %d agent%s", execution.getHostname(),
-					execution.getWorkers(), execution.getWorkers() > 1 ? "s"
-							: "", execution.getAgents(),
-					execution.getAgents() > 1 ? "s" : "")));
-			label.setFont(label.getFont().deriveFont(30f));
+        public AgentCharts(ScenarioExecution execution) {
 
-			header.add(label = new JLabel(String.format(
-					"Scenario: %s            ", execution.getScenarioName())));
-			label.setFont(label.getFont().deriveFont(20f));
+            FormLayout layout = new FormLayout("p");
+            DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
+            builder.setDefaultDialogBorder();
+            setBackground(Color.WHITE);
 
-			header.add(label = new JLabel(execution.getSpeed() == null ? "N/A"
-					: String.format("Average Speed: %.2f scenarios/s",
-							execution.getSpeed())));
-			label.setFont(label.getFont().deriveFont(20f));
+            Box header = new Box(BoxLayout.PAGE_AXIS);
+            builder.append(header);
+            JLabel label;
 
-			header.add(label = new JLabel(String.format(
-					"Duration: %.2f minutes  ",
-					execution.getDuration() / 60000f)));
-			label.setFont(label.getFont().deriveFont(20f));
+            header.add(label = new JLabel(String.format("[%s] %d worker%s x %d agent%s", execution.getHostname(),
+                    execution.getWorkers(), execution.getWorkers() > 1? "s": "", execution.getAgents(), execution
+                            .getAgents() > 1? "s": "")));
+            label.setFont(label.getFont().deriveFont(30f));
 
-			builder.appendSeparator();
-			builder.appendUnrelatedComponentsGapRow();
-			builder.nextLine(2);
+            header.add(label = new JLabel(String.format("Scenario: %s            ", execution.getScenarioName())));
+            label.setFont(label.getFont().deriveFont(20f));
 
-			for (Map.Entry<String, byte[][]> charts : execution.getCharts()
-					.entrySet()) {
-				builder.append(label = new JLabel(charts.getKey()));
-				label.setHorizontalAlignment(SwingConstants.CENTER);
-				label.setFont(label.getFont().deriveFont(20f));
+            header.add(label = new JLabel(execution.getSpeed() == null? "N/A": String.format(
+                    "Average Speed: %.2f scenarios/s", execution.getSpeed())));
+            label.setFont(label.getFont().deriveFont(20f));
 
-				for (byte[] chart : charts.getValue())
-					builder.append(new JLabel(new ImageIcon(chart)));
+            header.add(label = new JLabel(String.format("Duration: %.2f minutes  ", execution.getDuration() / 60000f)));
+            label.setFont(label.getFont().deriveFont(20f));
 
-				builder.appendSeparator();
-			}
-		}
+            builder.appendSeparator();
+            builder.appendUnrelatedComponentsGapRow();
+            builder.nextLine(2);
 
-		/**
-		 * @{inheritDoc}
-		 */
-		public Dimension getPreferredScrollableViewportSize() {
+            for (Map.Entry<String, byte[][]> charts : execution.getCharts().entrySet()) {
+                builder.append(label = new JLabel(charts.getKey()));
+                label.setHorizontalAlignment(SwingConstants.CENTER);
+                label.setFont(label.getFont().deriveFont(20f));
 
-			return getPreferredSize();
-		}
+                for (byte[] chart : charts.getValue())
+                    builder.append(new JLabel(new ImageIcon(chart)));
 
-		/**
-		 * @{inheritDoc}
-		 */
-		public int getScrollableBlockIncrement(Rectangle visibleRect,
-				int orientation, int direction) {
+                builder.appendSeparator();
+            }
+        }
 
-			return INCREMENT * 10;
-		}
+        /**
+         * @{inheritDoc
+         */
+        public Dimension getPreferredScrollableViewportSize() {
 
-		/**
-		 * @{inheritDoc}
-		 */
-		public boolean getScrollableTracksViewportHeight() {
+            return getPreferredSize();
+        }
 
-			return false;
-		}
+        /**
+         * @{inheritDoc
+         */
+        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
 
-		/**
-		 * @{inheritDoc}
-		 */
-		public boolean getScrollableTracksViewportWidth() {
+            return INCREMENT * 10;
+        }
 
-			return false;
-		}
+        /**
+         * @{inheritDoc
+         */
+        public boolean getScrollableTracksViewportHeight() {
 
-		/**
-		 * @{inheritDoc}
-		 */
-		public int getScrollableUnitIncrement(Rectangle visibleRect,
-				int orientation, int direction) {
+            return false;
+        }
 
-			return INCREMENT;
-		}
-	}
+        /**
+         * @{inheritDoc
+         */
+        public boolean getScrollableTracksViewportWidth() {
+
+            return false;
+        }
+
+        /**
+         * @{inheritDoc
+         */
+        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+
+            return INCREMENT;
+        }
+    }
 }

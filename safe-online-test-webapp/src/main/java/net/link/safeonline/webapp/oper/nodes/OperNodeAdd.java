@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.nodes;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperNodeAdd extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/nodes/node-add.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/nodes/node-add.seam";
 
-	public OperNodeAdd() {
-		super(PAGE_NAME);
-	}
+
+    public OperNodeAdd() {
+
+        super(PAGE_NAME);
+    }
 }

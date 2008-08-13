@@ -39,6 +39,7 @@ import org.apache.ws.security.message.token.Timestamp;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 
+
 /**
  * JAX-WS SOAP Handler that provides WS-Security server-side verification.
  * 
@@ -47,223 +48,202 @@ import org.joda.time.Instant;
  */
 public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private static final Log LOG = LogFactory
-			.getLog(WSSecurityServerHandler.class);
+    private static final Log               LOG                         = LogFactory
+                                                                               .getLog(WSSecurityServerHandler.class);
 
-	public static final String CERTIFICATE_PROPERTY = WSSecurityServerHandler.class
-			+ ".x509";
+    public static final String             CERTIFICATE_PROPERTY        = WSSecurityServerHandler.class + ".x509";
 
-	public static final String SIGNED_ELEMENTS_CONTEXT_KEY = WSSecurityServerHandler.class
-			+ ".signed.elements";
+    public static final String             SIGNED_ELEMENTS_CONTEXT_KEY = WSSecurityServerHandler.class
+                                                                               + ".signed.elements";
 
-	private WSSecurityConfigurationService wsSecurityConfigurationService;
+    private WSSecurityConfigurationService wsSecurityConfigurationService;
 
-	private String wsSecurityConfigurationServiceJndiName;
+    private String                         wsSecurityConfigurationServiceJndiName;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		loadDependencies();
-		System
-				.setProperty(
-						"com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace",
-						"true");
-		this.wsSecurityConfigurationService = EjbUtils.getEJB(
-				this.wsSecurityConfigurationServiceJndiName,
-				WSSecurityConfigurationService.class);
-	}
 
-	private void loadDependencies() {
-		try {
-			Context ctx = new javax.naming.InitialContext();
-			Context env = (Context) ctx.lookup("java:comp/env");
-			this.wsSecurityConfigurationServiceJndiName = (String) env
-					.lookup("wsSecurityConfigurationServiceJndiName");
-		} catch (NamingException e) {
-			LOG.debug("naming exception: " + e.getMessage());
-			throw new RuntimeException(
-					"WS Security Configuration JNDI path not specified");
-		}
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public Set<QName> getHeaders() {
-		Set<QName> headers = new HashSet<QName>();
-		headers
-				.add(new QName(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-						"Security"));
-		return headers;
-	}
+        loadDependencies();
+        System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "true");
+        this.wsSecurityConfigurationService = EjbUtils.getEJB(this.wsSecurityConfigurationServiceJndiName,
+                WSSecurityConfigurationService.class);
+    }
 
-	public void close(@SuppressWarnings("unused") MessageContext messageContext) {
-		// empty
-	}
+    private void loadDependencies() {
 
-	public boolean handleFault(
-			@SuppressWarnings("unused") SOAPMessageContext soapMessageContext) {
-		return true;
-	}
+        try {
+            Context ctx = new javax.naming.InitialContext();
+            Context env = (Context) ctx.lookup("java:comp/env");
+            this.wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
+        } catch (NamingException e) {
+            LOG.debug("naming exception: " + e.getMessage());
+            throw new RuntimeException("WS Security Configuration JNDI path not specified");
+        }
+    }
 
-	public boolean handleMessage(SOAPMessageContext soapMessageContext) {
-		Boolean outboundProperty = (Boolean) soapMessageContext
-				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+    public Set<QName> getHeaders() {
 
-		SOAPMessage soapMessage = soapMessageContext.getMessage();
-		SOAPPart soapPart = soapMessage.getSOAPPart();
+        Set<QName> headers = new HashSet<QName>();
+        headers.add(new QName("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+                "Security"));
+        return headers;
+    }
 
-		if (true == outboundProperty.booleanValue()) {
-			handleOutboundDocument(soapPart);
-			return true;
-		}
+    public void close(@SuppressWarnings("unused") MessageContext messageContext) {
 
-		handleInboundDocument(soapPart, soapMessageContext);
+        // empty
+    }
 
-		return true;
-	}
+    public boolean handleFault(@SuppressWarnings("unused") SOAPMessageContext soapMessageContext) {
 
-	/**
-	 * Handles the outbound SOAP message. This method will simply add an
-	 * unsigned WS-Security Timestamp in the SOAP header. This is required for
-	 * .NET 2/3 clients.
-	 * 
-	 * @param document
-	 */
-	private void handleOutboundDocument(SOAPPart document) {
-		LOG.debug("handle outbound document");
-		WSSecHeader wsSecHeader = new WSSecHeader();
-		wsSecHeader.insertSecurityHeader(document);
-		WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
-		wsSecTimeStamp.setTimeToLive(0);
-		wsSecTimeStamp.prepare(document);
-		wsSecTimeStamp.prependToHeader(wsSecHeader);
-	}
+        return true;
+    }
 
-	@SuppressWarnings("unchecked")
-	private void handleInboundDocument(SOAPPart document,
-			SOAPMessageContext soapMessageContext) {
-		LOG.debug("WS-Security header validation");
-		WSSecurityEngine securityEngine = WSSecurityEngine.getInstance();
-		Crypto crypto = new ServerCrypto();
+    public boolean handleMessage(SOAPMessageContext soapMessageContext) {
 
-		Vector<WSSecurityEngineResult> wsSecurityEngineResults;
-		try {
-			wsSecurityEngineResults = securityEngine.processSecurityHeader(
-					document, null, null, crypto);
-		} catch (WSSecurityException e) {
-			LOG.debug("WS-Security error: " + e.getMessage(), e);
-			throw WSSecurityUtil.createSOAPFaultException(
-					"The signature or decryption was invalid", "FailedCheck");
-		}
-		LOG.debug("results: " + wsSecurityEngineResults);
-		if (null == wsSecurityEngineResults) {
-			throw WSSecurityUtil
-					.createSOAPFaultException(
-							"An error was discovered processing the <wsse:Security> header.",
-							"InvalidSecurity");
-		}
-		Timestamp timestamp = null;
-		Set<String> signedElements = null;
-		for (WSSecurityEngineResult result : wsSecurityEngineResults) {
-			Set<String> resultSignedElements = (Set<String>) result
-					.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
-			if (null != resultSignedElements) {
-				signedElements = resultSignedElements;
-			}
-			X509Certificate certificate = (X509Certificate) result
-					.get(WSSecurityEngineResult.TAG_X509_CERTIFICATE);
-			if (null != certificate) {
-				setCertificate(soapMessageContext, certificate);
-			}
+        Boolean outboundProperty = (Boolean) soapMessageContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
-			Timestamp resultTimestamp = (Timestamp) result
-					.get(WSSecurityEngineResult.TAG_TIMESTAMP);
-			if (null != resultTimestamp) {
-				timestamp = resultTimestamp;
-			}
-		}
+        SOAPMessage soapMessage = soapMessageContext.getMessage();
+        SOAPPart soapPart = soapMessage.getSOAPPart();
 
-		if (null == signedElements) {
-			throw WSSecurityUtil.createSOAPFaultException(
-					"The signature or decryption was invalid", "FailedCheck");
-		}
-		LOG.debug("signed elements: " + signedElements);
-		soapMessageContext.put(SIGNED_ELEMENTS_CONTEXT_KEY, signedElements);
+        if (true == outboundProperty.booleanValue()) {
+            handleOutboundDocument(soapPart);
+            return true;
+        }
 
-		/*
-		 * Check timestamp.
-		 */
-		if (null == timestamp) {
-			throw WSSecurityUtil.createSOAPFaultException(
-					"missing Timestamp in WS-Security header",
-					"InvalidSecurity");
-		}
-		String timestampId = timestamp.getID();
-		if (false == signedElements.contains(timestampId)) {
-			throw WSSecurityUtil.createSOAPFaultException(
-					"Timestamp not signed", "FailedCheck");
-		}
-		Calendar created = timestamp.getCreated();
-		long maxOffset = this.wsSecurityConfigurationService
-				.getMaximumWsSecurityTimestampOffset();
-		DateTime createdDateTime = new DateTime(created);
-		Instant createdInstant = createdDateTime.toInstant();
-		Instant nowInstant = new DateTime().toInstant();
-		long offset = Math.abs(createdInstant.getMillis()
-				- nowInstant.getMillis());
-		if (offset > maxOffset) {
-			LOG.debug("timestamp offset: " + offset);
-			LOG.debug("maximum allowed offset: " + maxOffset);
-			throw WSSecurityUtil.createSOAPFaultException(
-					"WS-Security Created Timestamp offset exceeded",
-					"FailedCheck");
-		}
-	}
+        handleInboundDocument(soapPart, soapMessageContext);
 
-	private static void setCertificate(SOAPMessageContext context,
-			X509Certificate certificate) {
-		context.put(CERTIFICATE_PROPERTY, certificate);
-		context.setScope(CERTIFICATE_PROPERTY, Scope.APPLICATION);
-	}
+        return true;
+    }
 
-	/**
-	 * Gives back the X509 certificate that was set previously by a WS-Security
-	 * handler.
-	 * 
-	 * @param context
-	 */
-	public static X509Certificate getCertificate(SOAPMessageContext context) {
-		X509Certificate certificate = (X509Certificate) context
-				.get(CERTIFICATE_PROPERTY);
-		return certificate;
-	}
+    /**
+     * Handles the outbound SOAP message. This method will simply add an unsigned WS-Security Timestamp in the SOAP
+     * header. This is required for .NET 2/3 clients.
+     * 
+     * @param document
+     */
+    private void handleOutboundDocument(SOAPPart document) {
 
-	/**
-	 * Gives back the X509 certificate that was set previously by a WS-Security
-	 * handler.
-	 * 
-	 * @param context
-	 */
-	public static X509Certificate getCertificate(WebServiceContext context) {
-		MessageContext messageContext = context.getMessageContext();
-		X509Certificate certificate = (X509Certificate) messageContext
-				.get(CERTIFICATE_PROPERTY);
-		return certificate;
-	}
+        LOG.debug("handle outbound document");
+        WSSecHeader wsSecHeader = new WSSecHeader();
+        wsSecHeader.insertSecurityHeader(document);
+        WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
+        wsSecTimeStamp.setTimeToLive(0);
+        wsSecTimeStamp.prepare(document);
+        wsSecTimeStamp.prependToHeader(wsSecHeader);
+    }
 
-	/**
-	 * Checks whether a WS-Security handler did verify that the element with
-	 * given Id was signed correctly.
-	 * 
-	 * @param id
-	 * @param context
-	 */
-	@SuppressWarnings("unchecked")
-	public static boolean isSignedElement(String id, SOAPMessageContext context) {
-		Set<String> signedElements = (Set<String>) context
-				.get(SIGNED_ELEMENTS_CONTEXT_KEY);
-		if (null == signedElements) {
-			return false;
-		}
-		boolean result = signedElements.contains(id);
-		return result;
-	}
+    @SuppressWarnings("unchecked")
+    private void handleInboundDocument(SOAPPart document, SOAPMessageContext soapMessageContext) {
+
+        LOG.debug("WS-Security header validation");
+        WSSecurityEngine securityEngine = WSSecurityEngine.getInstance();
+        Crypto crypto = new ServerCrypto();
+
+        Vector<WSSecurityEngineResult> wsSecurityEngineResults;
+        try {
+            wsSecurityEngineResults = securityEngine.processSecurityHeader(document, null, null, crypto);
+        } catch (WSSecurityException e) {
+            LOG.debug("WS-Security error: " + e.getMessage(), e);
+            throw WSSecurityUtil.createSOAPFaultException("The signature or decryption was invalid", "FailedCheck");
+        }
+        LOG.debug("results: " + wsSecurityEngineResults);
+        if (null == wsSecurityEngineResults) {
+            throw WSSecurityUtil.createSOAPFaultException(
+                    "An error was discovered processing the <wsse:Security> header.", "InvalidSecurity");
+        }
+        Timestamp timestamp = null;
+        Set<String> signedElements = null;
+        for (WSSecurityEngineResult result : wsSecurityEngineResults) {
+            Set<String> resultSignedElements = (Set<String>) result.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
+            if (null != resultSignedElements) {
+                signedElements = resultSignedElements;
+            }
+            X509Certificate certificate = (X509Certificate) result.get(WSSecurityEngineResult.TAG_X509_CERTIFICATE);
+            if (null != certificate) {
+                setCertificate(soapMessageContext, certificate);
+            }
+
+            Timestamp resultTimestamp = (Timestamp) result.get(WSSecurityEngineResult.TAG_TIMESTAMP);
+            if (null != resultTimestamp) {
+                timestamp = resultTimestamp;
+            }
+        }
+
+        if (null == signedElements) {
+            throw WSSecurityUtil.createSOAPFaultException("The signature or decryption was invalid", "FailedCheck");
+        }
+        LOG.debug("signed elements: " + signedElements);
+        soapMessageContext.put(SIGNED_ELEMENTS_CONTEXT_KEY, signedElements);
+
+        /*
+         * Check timestamp.
+         */
+        if (null == timestamp) {
+            throw WSSecurityUtil.createSOAPFaultException("missing Timestamp in WS-Security header", "InvalidSecurity");
+        }
+        String timestampId = timestamp.getID();
+        if (false == signedElements.contains(timestampId)) {
+            throw WSSecurityUtil.createSOAPFaultException("Timestamp not signed", "FailedCheck");
+        }
+        Calendar created = timestamp.getCreated();
+        long maxOffset = this.wsSecurityConfigurationService.getMaximumWsSecurityTimestampOffset();
+        DateTime createdDateTime = new DateTime(created);
+        Instant createdInstant = createdDateTime.toInstant();
+        Instant nowInstant = new DateTime().toInstant();
+        long offset = Math.abs(createdInstant.getMillis() - nowInstant.getMillis());
+        if (offset > maxOffset) {
+            LOG.debug("timestamp offset: " + offset);
+            LOG.debug("maximum allowed offset: " + maxOffset);
+            throw WSSecurityUtil.createSOAPFaultException("WS-Security Created Timestamp offset exceeded",
+                    "FailedCheck");
+        }
+    }
+
+    private static void setCertificate(SOAPMessageContext context, X509Certificate certificate) {
+
+        context.put(CERTIFICATE_PROPERTY, certificate);
+        context.setScope(CERTIFICATE_PROPERTY, Scope.APPLICATION);
+    }
+
+    /**
+     * Gives back the X509 certificate that was set previously by a WS-Security handler.
+     * 
+     * @param context
+     */
+    public static X509Certificate getCertificate(SOAPMessageContext context) {
+
+        X509Certificate certificate = (X509Certificate) context.get(CERTIFICATE_PROPERTY);
+        return certificate;
+    }
+
+    /**
+     * Gives back the X509 certificate that was set previously by a WS-Security handler.
+     * 
+     * @param context
+     */
+    public static X509Certificate getCertificate(WebServiceContext context) {
+
+        MessageContext messageContext = context.getMessageContext();
+        X509Certificate certificate = (X509Certificate) messageContext.get(CERTIFICATE_PROPERTY);
+        return certificate;
+    }
+
+    /**
+     * Checks whether a WS-Security handler did verify that the element with given Id was signed correctly.
+     * 
+     * @param id
+     * @param context
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean isSignedElement(String id, SOAPMessageContext context) {
+
+        Set<String> signedElements = (Set<String>) context.get(SIGNED_ELEMENTS_CONTEXT_KEY);
+        if (null == signedElements) {
+            return false;
+        }
+        boolean result = signedElements.contains(id);
+        return result;
+    }
 }

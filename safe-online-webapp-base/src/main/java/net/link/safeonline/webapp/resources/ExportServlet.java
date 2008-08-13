@@ -25,67 +25,63 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+
 public class ExportServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(ExportServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(ExportServlet.class);
 
-	@EJB(mappedName = "SafeOnline/StatisticServiceBean/local")
-	private StatisticService statisticService;
+    @EJB(mappedName = "SafeOnline/StatisticServiceBean/local")
+    private StatisticService  statisticService;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-	}
 
-	@Override
-	public void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-		response.setContentType("application/vnd.ms-excel");
-		OutputStream out = response.getOutputStream();
+        super.init(config);
+    }
 
-		String chartName = request.getParameter("chartname");
-		String domainName = request.getParameter("domain");
-		String applicationName = request.getParameter("applicationname");
+    @Override
+    public void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		LOG.debug("export: chartName=" + chartName + " domain=" + domainName
-				+ " applicationName=" + applicationName);
+        response.setContentType("application/vnd.ms-excel");
+        OutputStream out = response.getOutputStream();
 
-		if (null == applicationName) {
-			throw new ServletException(
-					"aplicationname request parameter missing");
-		}
+        String chartName = request.getParameter("chartname");
+        String domainName = request.getParameter("domain");
+        String applicationName = request.getParameter("applicationname");
 
-		HSSFWorkbook workbook;
+        LOG.debug("export: chartName=" + chartName + " domain=" + domainName + " applicationName=" + applicationName);
 
-		if (null != chartName && null != domainName) {
-			try {
-				workbook = this.statisticService.exportStatistic(chartName,
-						domainName, applicationName);
-			} catch (StatisticNotFoundException e) {
-				LOG.debug("Statistic not found: " + chartName + ", "
-						+ domainName + ", " + applicationName);
-				throw new ServletException("Statistic not found: "
-						+ e.getMessage());
-			}
-		} else {
-			try {
-				workbook = this.statisticService
-						.exportStatistics(applicationName);
-			} catch (ApplicationNotFoundException e) {
-				LOG.debug("application not found: " + applicationName);
-				throw new ServletException(e.getMessage());
-			} catch (StatisticNotFoundException e) {
-				LOG.debug("statistic not found: " + e.getMessage());
-				throw new ServletException("Statistic not found: "
-						+ e.getMessage());
-			}
-		}
+        if (null == applicationName) {
+            throw new ServletException("aplicationname request parameter missing");
+        }
 
-		workbook.write(out);
-		out.close();
-	}
+        HSSFWorkbook workbook;
+
+        if (null != chartName && null != domainName) {
+            try {
+                workbook = this.statisticService.exportStatistic(chartName, domainName, applicationName);
+            } catch (StatisticNotFoundException e) {
+                LOG.debug("Statistic not found: " + chartName + ", " + domainName + ", " + applicationName);
+                throw new ServletException("Statistic not found: " + e.getMessage());
+            }
+        } else {
+            try {
+                workbook = this.statisticService.exportStatistics(applicationName);
+            } catch (ApplicationNotFoundException e) {
+                LOG.debug("application not found: " + applicationName);
+                throw new ServletException(e.getMessage());
+            } catch (StatisticNotFoundException e) {
+                LOG.debug("statistic not found: " + e.getMessage());
+                throw new ServletException("Statistic not found: " + e.getMessage());
+            }
+        }
+
+        workbook.write(out);
+        out.close();
+    }
 
 }

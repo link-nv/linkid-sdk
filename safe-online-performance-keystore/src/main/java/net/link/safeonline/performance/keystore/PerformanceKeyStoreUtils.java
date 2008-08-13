@@ -13,13 +13,14 @@ import java.security.KeyStoreException;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Enumeration;
 
+
 /**
  * <h2>{@link PerformanceKeyStoreUtils}<br>
  * <sub>Access to performance-application keys from the keystore.</sub></h2>
  * 
  * <p>
- * The private key and certificate will be lazily loaded from the default
- * keystore file if not yet available upon the first request for it.
+ * The private key and certificate will be lazily loaded from the default keystore file if not yet available upon the
+ * first request for it.
  * </p>
  * 
  * <p>
@@ -30,73 +31,67 @@ import java.util.Enumeration;
  */
 public class PerformanceKeyStoreUtils {
 
-	private static PrivateKeyEntry privateKeyEntry;
+    private static PrivateKeyEntry privateKeyEntry;
 
-	private PerformanceKeyStoreUtils() {
-		// empty
-	}
 
-	public static PrivateKeyEntry getPrivateKeyEntry() {
+    private PerformanceKeyStoreUtils() {
 
-		if (privateKeyEntry == null)
-			privateKeyEntry = loadPrivateKeyEntry("jks", "secret", "secret");
+        // empty
+    }
 
-		return privateKeyEntry;
-	}
+    public static PrivateKeyEntry getPrivateKeyEntry() {
 
-	private static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType,
-			String keyStorePassword, String keyEntryPassword) {
+        if (privateKeyEntry == null)
+            privateKeyEntry = loadPrivateKeyEntry("jks", "secret", "secret");
 
-		/* Find the keystore. */
-		String keyStoreResource = "safe-online-performance-keystore.jks";
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
-		InputStream keyStoreInputStream = classLoader
-				.getResourceAsStream(keyStoreResource);
-		if (null == keyStoreInputStream)
-			throw new RuntimeException("keystore not found: "
-					+ keyStoreResource);
+        return privateKeyEntry;
+    }
 
-		KeyStore keyStore;
-		try {
-			keyStore = KeyStore.getInstance(keystoreType);
-		} catch (Exception e) {
-			throw new RuntimeException("keystore instance not available: "
-					+ e.getMessage(), e);
-		}
+    private static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType, String keyStorePassword,
+            String keyEntryPassword) {
 
-		/* Open the keystore and find the key entry. */
-		try {
-			keyStore.load(keyStoreInputStream, keyStorePassword.toCharArray());
-		} catch (Exception e) {
-			throw new RuntimeException(
-					"keystore load error: " + e.getMessage(), e);
-		}
-		Enumeration<String> aliases;
-		try {
-			aliases = keyStore.aliases();
-		} catch (KeyStoreException e) {
-			throw new RuntimeException("could not get aliases: "
-					+ e.getMessage(), e);
-		}
-		if (!aliases.hasMoreElements())
-			throw new RuntimeException("keystore is empty");
-		String alias = aliases.nextElement();
-		try {
-			if (!keyStore.isKeyEntry(alias))
-				throw new RuntimeException("not key entry: " + alias);
-		} catch (KeyStoreException e) {
-			throw new RuntimeException("key store error: " + e.getMessage(), e);
-		}
+        /* Find the keystore. */
+        String keyStoreResource = "safe-online-performance-keystore.jks";
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream keyStoreInputStream = classLoader.getResourceAsStream(keyStoreResource);
+        if (null == keyStoreInputStream)
+            throw new RuntimeException("keystore not found: " + keyStoreResource);
 
-		/* Get the private key entry. */
-		try {
-			return (PrivateKeyEntry) keyStore.getEntry(alias,
-					new KeyStore.PasswordProtection(keyEntryPassword
-							.toCharArray()));
-		} catch (Exception e) {
-			throw new RuntimeException("error retrieving key: "
-					+ e.getMessage(), e);
-		}
-	}
+        KeyStore keyStore;
+        try {
+            keyStore = KeyStore.getInstance(keystoreType);
+        } catch (Exception e) {
+            throw new RuntimeException("keystore instance not available: " + e.getMessage(), e);
+        }
+
+        /* Open the keystore and find the key entry. */
+        try {
+            keyStore.load(keyStoreInputStream, keyStorePassword.toCharArray());
+        } catch (Exception e) {
+            throw new RuntimeException("keystore load error: " + e.getMessage(), e);
+        }
+        Enumeration<String> aliases;
+        try {
+            aliases = keyStore.aliases();
+        } catch (KeyStoreException e) {
+            throw new RuntimeException("could not get aliases: " + e.getMessage(), e);
+        }
+        if (!aliases.hasMoreElements())
+            throw new RuntimeException("keystore is empty");
+        String alias = aliases.nextElement();
+        try {
+            if (!keyStore.isKeyEntry(alias))
+                throw new RuntimeException("not key entry: " + alias);
+        } catch (KeyStoreException e) {
+            throw new RuntimeException("key store error: " + e.getMessage(), e);
+        }
+
+        /* Get the private key entry. */
+        try {
+            return (PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(keyEntryPassword
+                    .toCharArray()));
+        } catch (Exception e) {
+            throw new RuntimeException("error retrieving key: " + e.getMessage(), e);
+        }
+    }
 }

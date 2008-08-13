@@ -7,31 +7,31 @@
 package net.link.safeonline.ctrl.error;
 
 /**
- * Used by {@link ErrorMessageInterceptor} for some default exception-error
- * message handlers.
+ * Used by {@link ErrorMessageInterceptor} for some default exception-error message handlers.
  * 
  * @author wvdhaute
  * 
  */
 public class ErrorHandle {
 
-	public Class<? extends Exception> exceptionClass;
+    public Class<? extends Exception> exceptionClass;
 
-	public String messageId;
+    public String                     messageId;
 
-	public String fieldId = null;
+    public String                     fieldId = null;
 
-	public ErrorHandle(Class<? extends Exception> exceptionClass,
-			String messageId) {
-		this.exceptionClass = exceptionClass;
-		this.messageId = messageId;
-	}
 
-	public ErrorHandle(Class<? extends Exception> exceptionClass,
-			String messageId, String fieldId) {
-		this.exceptionClass = exceptionClass;
-		this.messageId = messageId;
-		this.fieldId = fieldId;
-	}
+    public ErrorHandle(Class<? extends Exception> exceptionClass, String messageId) {
+
+        this.exceptionClass = exceptionClass;
+        this.messageId = messageId;
+    }
+
+    public ErrorHandle(Class<? extends Exception> exceptionClass, String messageId, String fieldId) {
+
+        this.exceptionClass = exceptionClass;
+        this.messageId = messageId;
+        this.fieldId = fieldId;
+    }
 
 }

@@ -33,89 +33,94 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class TimeoutFilterTest {
 
-	private static final Log LOG = LogFactory.getLog(TimeoutFilterTest.class);
+    private static final Log   LOG = LogFactory.getLog(TimeoutFilterTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager servletTestManager;
 
-	@Before
-	public void setUp() throws Exception {
-		this.servletTestManager = new ServletTestManager();
-		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put("TimeoutPath", "timeout");
-		filterInitParameters.put("LoginSessionAttribute", "username");
-		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-		initialSessionAttributes.put("username", "alice");
-		this.servletTestManager.setUp(TestServlet.class, TimeoutFilter.class,
-				filterInitParameters, initialSessionAttributes);
-	}
 
-	@After
-	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	public static class TestServlet extends HttpServlet {
+        this.servletTestManager = new ServletTestManager();
+        Map<String, String> filterInitParameters = new HashMap<String, String>();
+        filterInitParameters.put("TimeoutPath", "timeout");
+        filterInitParameters.put("LoginSessionAttribute", "username");
+        Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
+        initialSessionAttributes.put("username", "alice");
+        this.servletTestManager.setUp(TestServlet.class, TimeoutFilter.class, filterInitParameters,
+                initialSessionAttributes);
+    }
 
-		private static final long serialVersionUID = 1L;
+    @After
+    public void tearDown() throws Exception {
 
-		private static final Log testServletLOG = LogFactory
-				.getLog(TestServlet.class);
+        this.servletTestManager.tearDown();
+    }
 
-		@Override
-		protected void doGet(HttpServletRequest request,
-				HttpServletResponse response) throws IOException {
-			testServletLOG.debug("writing to print writer");
 
-			HttpSession session = request.getSession();
-			String username = (String) session.getAttribute("username");
-			testServletLOG.debug("username: " + username);
+    public static class TestServlet extends HttpServlet {
 
-			PrintWriter out = response.getWriter();
-			out.println("hello world: " + username);
-		}
-	}
+        private static final long serialVersionUID = 1L;
 
-	@Test
-	public void testGet() throws Exception {
-		// setup
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletTestManager
-				.getServletLocation());
-		int statusCode;
-		String body;
+        private static final Log  testServletLOG   = LogFactory.getLog(TestServlet.class);
 
-		// operate
-		LOG.debug("operate: create new session");
-		statusCode = httpClient.executeMethod(getMethod);
 
-		// verify
-		assertEquals(HttpServletResponse.SC_OK, statusCode);
-		logHeaders(getMethod);
-		body = getMethod.getResponseBodyAsString();
-		LOG.debug("body: " + body);
-		assertTrue(body.startsWith("hello world: alice"));
-		// session cookie
-		assertNotNull(getMethod.getResponseHeader("Set-Cookie"));
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		// operate
-		LOG.debug("operate: continue on existing session");
-		statusCode = httpClient.executeMethod(getMethod);
-		logHeaders(getMethod);
-		// login cookie
-		body = getMethod.getResponseBodyAsString();
-		LOG.debug("body: " + body);
-		assertTrue(body.startsWith("hello world: alice"));
-		assertNotNull(getMethod.getResponseHeader("Set-Cookie"));
-	}
+            testServletLOG.debug("writing to print writer");
 
-	private void logHeaders(GetMethod getMethod) {
-		Header[] headers = getMethod.getResponseHeaders();
-		for (Header header : headers) {
-			LOG
-					.debug("header: " + header.getName() + " = "
-							+ header.getValue());
-		}
-	}
+            HttpSession session = request.getSession();
+            String username = (String) session.getAttribute("username");
+            testServletLOG.debug("username: " + username);
+
+            PrintWriter out = response.getWriter();
+            out.println("hello world: " + username);
+        }
+    }
+
+
+    @Test
+    public void testGet() throws Exception {
+
+        // setup
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        int statusCode;
+        String body;
+
+        // operate
+        LOG.debug("operate: create new session");
+        statusCode = httpClient.executeMethod(getMethod);
+
+        // verify
+        assertEquals(HttpServletResponse.SC_OK, statusCode);
+        logHeaders(getMethod);
+        body = getMethod.getResponseBodyAsString();
+        LOG.debug("body: " + body);
+        assertTrue(body.startsWith("hello world: alice"));
+        // session cookie
+        assertNotNull(getMethod.getResponseHeader("Set-Cookie"));
+
+        // operate
+        LOG.debug("operate: continue on existing session");
+        statusCode = httpClient.executeMethod(getMethod);
+        logHeaders(getMethod);
+        // login cookie
+        body = getMethod.getResponseBodyAsString();
+        LOG.debug("body: " + body);
+        assertTrue(body.startsWith("hello world: alice"));
+        assertNotNull(getMethod.getResponseHeader("Set-Cookie"));
+    }
+
+    private void logHeaders(GetMethod getMethod) {
+
+        Header[] headers = getMethod.getResponseHeaders();
+        for (Header header : headers) {
+            LOG.debug("header: " + header.getName() + " = " + header.getValue());
+        }
+    }
 }

@@ -14,24 +14,23 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticEntity;
 
+
 @Local
 public interface StatisticDAO {
 
-	StatisticEntity addStatistic(String name, String domain,
-			ApplicationEntity application);
+    StatisticEntity addStatistic(String name, String domain, ApplicationEntity application);
 
-	StatisticEntity findStatisticById(long statisticId);
+    StatisticEntity findStatisticById(long statisticId);
 
-	StatisticEntity findStatisticByNameDomainAndApplication(String name,
-			String domain, ApplicationEntity application);
+    StatisticEntity findStatisticByNameDomainAndApplication(String name, String domain, ApplicationEntity application);
 
-	StatisticEntity findOrAddStatisticByNameDomainAndApplication(String name,
-			String domain, ApplicationEntity application);
+    StatisticEntity findOrAddStatisticByNameDomainAndApplication(String name, String domain,
+            ApplicationEntity application);
 
-	List<StatisticEntity> listStatistics(ApplicationEntity application);
+    List<StatisticEntity> listStatistics(ApplicationEntity application);
 
-	void removeStatistics(ApplicationEntity application);
+    void removeStatistics(ApplicationEntity application);
 
-	void cleanDomain(String domain);
+    void cleanDomain(String domain);
 
 }

@@ -23,6 +23,7 @@ import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 
+
 public class PasswordDeviceServiceBeanTest extends TestCase {
 
     private PasswordDeviceServiceBean testedInstance;
@@ -64,8 +65,7 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 
         EJBTestUtils.init(this.testedInstance);
 
-        this.mockObjects = new Object[] { this.mockSubjectService,
-                this.mockPasswordManager, this.mockHistoryDAO,
+        this.mockObjects = new Object[] { this.mockSubjectService, this.mockPasswordManager, this.mockHistoryDAO,
                 this.mockSecurityAuditLogger, this.mockDeviceMappingService };
     }
 
@@ -79,42 +79,30 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 
         // stubs
         SubjectEntity subject = new SubjectEntity(login);
-        expect(this.mockSubjectService.getSubjectFromUserName(login))
-                .andStubReturn(subject);
+        expect(this.mockSubjectService.getSubjectFromUserName(login)).andStubReturn(subject);
 
-        DeviceClassEntity deviceClass = new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+        DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-        DeviceEntity device = new DeviceEntity(
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass,
-                null, null, null, null, null, null);
+        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass, null,
+                null, null, null, null, null);
 
-        DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject,
-                deviceMappingId, device);
-        expect(
-                this.mockDeviceMappingService.getDeviceMapping(subject
-                        .getUserId(), device.getName())).andStubReturn(
+        DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject, deviceMappingId, device);
+        expect(this.mockDeviceMappingService.getDeviceMapping(subject.getUserId(), device.getName())).andStubReturn(
                 deviceMapping);
 
-        DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
-                deviceMappingId);
-        SubjectEntity deviceRegistration = new SubjectEntity(
-                deviceRegistrationId);
+        DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(deviceMappingId);
+        SubjectEntity deviceRegistration = new SubjectEntity(deviceRegistrationId);
         deviceSubject.getRegistrations().add(deviceRegistration);
 
-        expect(this.mockSubjectService.getDeviceSubject(deviceMappingId))
-                .andStubReturn(deviceSubject);
+        expect(this.mockSubjectService.getDeviceSubject(deviceMappingId)).andStubReturn(deviceSubject);
 
-        expect(
-                this.mockPasswordManager.validatePassword(deviceRegistration,
-                        password)).andStubReturn(true);
+        expect(this.mockPasswordManager.validatePassword(deviceRegistration, password)).andStubReturn(true);
 
         // prepare
         replay(this.mockObjects);
 
         // operate
-        SubjectEntity resultSubject = this.testedInstance.authenticate(login,
-                password);
+        SubjectEntity resultSubject = this.testedInstance.authenticate(login, password);
 
         // verify
         verify(this.mockObjects);
@@ -132,45 +120,32 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 
         // stubs
         SubjectEntity subject = new SubjectEntity(login);
-        expect(this.mockSubjectService.getSubjectFromUserName(login))
-                .andStubReturn(subject);
-        DeviceClassEntity deviceClass = new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+        expect(this.mockSubjectService.getSubjectFromUserName(login)).andStubReturn(subject);
+        DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-        DeviceEntity device = new DeviceEntity(
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass,
-                null, null, null, null, null, null);
+        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass, null,
+                null, null, null, null, null);
 
-        DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject,
-                deviceMappingId, device);
-        expect(
-                this.mockDeviceMappingService.getDeviceMapping(subject
-                        .getUserId(), device.getName())).andStubReturn(
+        DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject, deviceMappingId, device);
+        expect(this.mockDeviceMappingService.getDeviceMapping(subject.getUserId(), device.getName())).andStubReturn(
                 deviceMapping);
 
-        DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(
-                deviceMappingId);
-        SubjectEntity deviceRegistration = new SubjectEntity(
-                deviceRegistrationId);
+        DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(deviceMappingId);
+        SubjectEntity deviceRegistration = new SubjectEntity(deviceRegistrationId);
         deviceSubject.getRegistrations().add(deviceRegistration);
 
-        expect(this.mockSubjectService.getDeviceSubject(deviceMappingId))
-                .andStubReturn(deviceSubject);
+        expect(this.mockSubjectService.getDeviceSubject(deviceMappingId)).andStubReturn(deviceSubject);
 
-        expect(
-                this.mockPasswordManager.validatePassword(deviceRegistration,
-                        wrongPassword)).andStubReturn(false);
+        expect(this.mockPasswordManager.validatePassword(deviceRegistration, wrongPassword)).andStubReturn(false);
 
         // expectations
-        this.mockSecurityAuditLogger.addSecurityAudit(
-                SecurityThreatType.DECEPTION, login, "incorrect password");
+        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, login, "incorrect password");
 
         // prepare
         replay(this.mockObjects);
 
         // operate
-        SubjectEntity resultSubject = this.testedInstance.authenticate(login,
-                wrongPassword);
+        SubjectEntity resultSubject = this.testedInstance.authenticate(login, wrongPassword);
 
         // verify
         verify(this.mockObjects);

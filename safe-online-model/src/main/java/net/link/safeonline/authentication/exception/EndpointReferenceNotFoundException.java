@@ -15,9 +15,11 @@ import net.link.safeonline.shared.SharedConstants;
 @ApplicationException(rollback = true)
 public class EndpointReferenceNotFoundException extends NotFoundException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public EndpointReferenceNotFoundException() {
-		super(SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR);
-	}
+
+    public EndpointReferenceNotFoundException() {
+
+        super(SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR);
+    }
 }

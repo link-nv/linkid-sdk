@@ -22,40 +22,39 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
+
 @WebService(endpointInterface = "net.lin_k.safe_online.notification.consumer.NotificationConsumerPort")
 @HandlerChain(file = "demo-ws-handlers.xml")
 public class NotificationConsumerPortImpl implements NotificationConsumerPort {
 
-	private final static Log LOG = LogFactory
-			.getLog(NotificationConsumerPortImpl.class);
+    private final static Log            LOG = LogFactory.getLog(NotificationConsumerPortImpl.class);
 
-	private NotificationConsumerService notificationConsumerService;
+    private NotificationConsumerService notificationConsumerService;
 
-	public void notify(Notify notify) {
-		LOG.debug("demo received notification");
 
-		loadDependencies();
+    public void notify(Notify notify) {
 
-		List<NotificationMessageHolderType> notifications = notify
-				.getNotificationMessage();
-		for (NotificationMessageHolderType notification : notifications) {
-			TopicExpressionType topicExpression = notification.getTopic();
-			List<Object> topics = topicExpression.getContent();
-			for (Object topic : topics) {
-				String topicString = (String) topic;
-				LOG.debug("topic: " + topicString + " destination: "
-						+ notification.getMessage().getDestination());
-				this.notificationConsumerService.handleMessage(topicString,
-						notification.getMessage().getDestination(),
-						notification.getMessage().getContent());
-			}
-		}
-	}
+        LOG.debug("demo received notification");
 
-	private void loadDependencies() {
-		this.notificationConsumerService = EjbUtils.getEJB(
-				"SafeOnlineDemo/NotificationConsumerServiceBean/local",
-				NotificationConsumerService.class);
-	}
+        loadDependencies();
+
+        List<NotificationMessageHolderType> notifications = notify.getNotificationMessage();
+        for (NotificationMessageHolderType notification : notifications) {
+            TopicExpressionType topicExpression = notification.getTopic();
+            List<Object> topics = topicExpression.getContent();
+            for (Object topic : topics) {
+                String topicString = (String) topic;
+                LOG.debug("topic: " + topicString + " destination: " + notification.getMessage().getDestination());
+                this.notificationConsumerService.handleMessage(topicString, notification.getMessage().getDestination(),
+                        notification.getMessage().getContent());
+            }
+        }
+    }
+
+    private void loadDependencies() {
+
+        this.notificationConsumerService = EjbUtils.getEJB("SafeOnlineDemo/NotificationConsumerServiceBean/local",
+                NotificationConsumerService.class);
+    }
 
 }

@@ -13,6 +13,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationScopeIdEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
+
 /**
  * Application Scope Id entity data access object interface definition.
  * 
@@ -22,16 +23,14 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface ApplicationScopeIdDAO {
 
-	ApplicationScopeIdEntity findApplicationScopeId(SubjectEntity subject,
-			ApplicationEntity application);
+    ApplicationScopeIdEntity findApplicationScopeId(SubjectEntity subject, ApplicationEntity application);
 
-	ApplicationScopeIdEntity addApplicationScopeId(SubjectEntity subject,
-			ApplicationEntity application);
+    ApplicationScopeIdEntity addApplicationScopeId(SubjectEntity subject, ApplicationEntity application);
 
-	ApplicationScopeIdEntity findApplicationScopeId(String applicationUserId);
+    ApplicationScopeIdEntity findApplicationScopeId(String applicationUserId);
 
-	void removeApplicationScopeIds(SubjectEntity subject);
+    void removeApplicationScopeIds(SubjectEntity subject);
 
-	void removeApplicationScopeIds(ApplicationEntity application);
+    void removeApplicationScopeIds(ApplicationEntity application);
 
 }

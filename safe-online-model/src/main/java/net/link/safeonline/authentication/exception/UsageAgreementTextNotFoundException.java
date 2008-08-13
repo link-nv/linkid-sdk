@@ -10,14 +10,16 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class UsageAgreementTextNotFoundException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public UsageAgreementTextNotFoundException(Long usageAgreementVersion) {
-		super("Usage agreement (version:" + usageAgreementVersion
-				+ ") not found",
-				SharedConstants.USAGE_AGREEMENT_NOT_FOUND_ERROR);
-	}
+
+    public UsageAgreementTextNotFoundException(Long usageAgreementVersion) {
+
+        super("Usage agreement (version:" + usageAgreementVersion + ") not found",
+                SharedConstants.USAGE_AGREEMENT_NOT_FOUND_ERROR);
+    }
 }

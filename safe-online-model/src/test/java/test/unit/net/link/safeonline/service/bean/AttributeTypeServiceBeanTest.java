@@ -33,174 +33,162 @@ import org.junit.Test;
 
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class AttributeTypeServiceBeanTest {
 
-	private AttributeTypeService testedInstance;
+    private AttributeTypeService testedInstance;
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager    entityTestManager;
 
-	@Before
-	public void setUp() throws Exception {
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		this.testedInstance = EJBTestUtils.newInstance(
-				AttributeTypeServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE,
-				SafeOnlineRoles.OPERATOR_ROLE);
-	}
 
-	@After
-	public void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	@Test
-	public void addAndList() throws Exception {
-		// setup
-		String attributeName = "test-attribute-type-name-"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, DatatypeType.STRING, true, true);
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        this.testedInstance = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator",
+                SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
+    }
 
-		// operate
-		this.testedInstance.add(attributeType);
+    @After
+    public void tearDown() throws Exception {
 
-		List<AttributeTypeEntity> result = this.testedInstance
-				.listAttributeTypes();
+        this.entityTestManager.tearDown();
+    }
 
-		// verify
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertEquals(attributeType, result.get(0));
-	}
+    @Test
+    public void addAndList() throws Exception {
 
-	@Test
-	public void addCompoundedAndListAvailableMembers() throws Exception {
-		// setup
-		String memberAttributeName = "test-attribute-type-name-"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
-				memberAttributeName, DatatypeType.STRING, true, true);
+        // setup
+        String attributeName = "test-attribute-type-name-" + UUID.randomUUID().toString();
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(attributeName, DatatypeType.STRING, true, true);
 
-		String nonMemberAttributeName = "test-attribute-type-name"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity nonMemberAttributeType = new AttributeTypeEntity(
-				nonMemberAttributeName, DatatypeType.STRING, true, true);
-		nonMemberAttributeType.setMultivalued(true);
+        // operate
+        this.testedInstance.add(attributeType);
 
-		String compoundedAttributeTypeName = "test-attribute-type-name"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
-				compoundedAttributeTypeName, DatatypeType.STRING, true, true);
+        List<AttributeTypeEntity> result = this.testedInstance.listAttributeTypes();
 
-		// operate
-		this.testedInstance.add(memberAttributeType);
-		this.testedInstance.add(nonMemberAttributeType);
+        // verify
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(attributeType, result.get(0));
+    }
 
-		/*
-		 * Next is important in order to emulate correct behaviour of the
-		 * entities. They should be detached since addMember is setting fields
-		 * on the detached entities that should not directly be visible in the
-		 * database itself.
-		 */
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		EntityTransaction transaction = entityManager.getTransaction();
-		transaction.commit();
-		transaction.begin();
-		entityManager.clear();
+    @Test
+    public void addCompoundedAndListAvailableMembers() throws Exception {
 
-		compoundedAttributeType.addMember(memberAttributeType, 0, true);
-		this.testedInstance.add(compoundedAttributeType);
+        // setup
+        String memberAttributeName = "test-attribute-type-name-" + UUID.randomUUID().toString();
+        AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING,
+                true, true);
 
-		List<AttributeTypeEntity> allResult = this.testedInstance
-				.listAttributeTypes();
+        String nonMemberAttributeName = "test-attribute-type-name" + UUID.randomUUID().toString();
+        AttributeTypeEntity nonMemberAttributeType = new AttributeTypeEntity(nonMemberAttributeName,
+                DatatypeType.STRING, true, true);
+        nonMemberAttributeType.setMultivalued(true);
 
-		List<AttributeTypeEntity> availableMemberResult = this.testedInstance
-				.listAvailableMemberAttributeTypes();
+        String compoundedAttributeTypeName = "test-attribute-type-name" + UUID.randomUUID().toString();
+        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName,
+                DatatypeType.STRING, true, true);
 
-		// verify
-		assertNotNull(allResult);
-		assertEquals(3, allResult.size());
+        // operate
+        this.testedInstance.add(memberAttributeType);
+        this.testedInstance.add(nonMemberAttributeType);
 
-		assertNotNull(availableMemberResult);
-		assertEquals(1, availableMemberResult.size());
-		assertEquals(nonMemberAttributeType, availableMemberResult.get(0));
-	}
+        /*
+         * Next is important in order to emulate correct behaviour of the entities. They should be detached since
+         * addMember is setting fields on the detached entities that should not directly be visible in the database
+         * itself.
+         */
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.commit();
+        transaction.begin();
+        entityManager.clear();
 
-	@Test
-	public void compoundedOfCompoundedNotAllowed() throws Exception {
-		// setup
-		String memberAttributeName = "test-attribute-type-name-"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
-				memberAttributeName, DatatypeType.STRING, true, true);
+        compoundedAttributeType.addMember(memberAttributeType, 0, true);
+        this.testedInstance.add(compoundedAttributeType);
 
-		String compoundedAttributeTypeName = "test-attribute-type-name"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
-				compoundedAttributeTypeName, DatatypeType.STRING, true, true);
-		this.testedInstance.add(memberAttributeType);
+        List<AttributeTypeEntity> allResult = this.testedInstance.listAttributeTypes();
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		EntityTransaction transaction = entityManager.getTransaction();
-		transaction.commit();
-		transaction.begin();
-		entityManager.clear();
-		compoundedAttributeType.addMember(memberAttributeType, 0, true);
+        List<AttributeTypeEntity> availableMemberResult = this.testedInstance.listAvailableMemberAttributeTypes();
 
-		String compoundedCompoundedAttributeTypeName = "test-attribute-type-name"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity compoundedCompoundedAttributeType = new AttributeTypeEntity(
-				compoundedCompoundedAttributeTypeName, DatatypeType.STRING,
-				true, true);
+        // verify
+        assertNotNull(allResult);
+        assertEquals(3, allResult.size());
 
-		compoundedCompoundedAttributeType.addMember(compoundedAttributeType, 0,
-				true);
+        assertNotNull(availableMemberResult);
+        assertEquals(1, availableMemberResult.size());
+        assertEquals(nonMemberAttributeType, availableMemberResult.get(0));
+    }
 
-		// operate
-		this.testedInstance.add(compoundedAttributeType);
+    @Test
+    public void compoundedOfCompoundedNotAllowed() throws Exception {
 
-		try {
-			this.testedInstance.add(compoundedCompoundedAttributeType);
-			fail();
-		} catch (AttributeTypeDefinitionException e) {
-			// expected
-		}
-	}
+        // setup
+        String memberAttributeName = "test-attribute-type-name-" + UUID.randomUUID().toString();
+        AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING,
+                true, true);
 
-	@Test
-	public void compoundedOfExistingCompoundMemberNotAllowed() throws Exception {
-		// setup
-		String memberAttributeName = "test-member-attribute-type-name-"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
-				memberAttributeName, DatatypeType.STRING, true, true);
-		this.testedInstance.add(memberAttributeType);
+        String compoundedAttributeTypeName = "test-attribute-type-name" + UUID.randomUUID().toString();
+        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName,
+                DatatypeType.STRING, true, true);
+        this.testedInstance.add(memberAttributeType);
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		EntityTransaction transaction = entityManager.getTransaction();
-		transaction.commit();
-		transaction.begin();
-		entityManager.clear();
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.commit();
+        transaction.begin();
+        entityManager.clear();
+        compoundedAttributeType.addMember(memberAttributeType, 0, true);
 
-		String compoundedAttributeTypeName = "test-compounded-attribute-type-name"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
-				compoundedAttributeTypeName, DatatypeType.STRING, true, true);
-		compoundedAttributeType.addMember(memberAttributeType, 0, true);
+        String compoundedCompoundedAttributeTypeName = "test-attribute-type-name" + UUID.randomUUID().toString();
+        AttributeTypeEntity compoundedCompoundedAttributeType = new AttributeTypeEntity(
+                compoundedCompoundedAttributeTypeName, DatatypeType.STRING, true, true);
 
-		String compoundedCompoundedAttributeTypeName = "test-attribute-type-name"
-				+ UUID.randomUUID().toString();
-		AttributeTypeEntity compounded2AttributeType = new AttributeTypeEntity(
-				compoundedCompoundedAttributeTypeName, DatatypeType.STRING,
-				true, true);
-		try {
-			compounded2AttributeType.addMember(memberAttributeType, 0, true);
-			fail();
-		} catch (EJBException e) {
-			// expected
-		}
-	}
+        compoundedCompoundedAttributeType.addMember(compoundedAttributeType, 0, true);
+
+        // operate
+        this.testedInstance.add(compoundedAttributeType);
+
+        try {
+            this.testedInstance.add(compoundedCompoundedAttributeType);
+            fail();
+        } catch (AttributeTypeDefinitionException e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void compoundedOfExistingCompoundMemberNotAllowed() throws Exception {
+
+        // setup
+        String memberAttributeName = "test-member-attribute-type-name-" + UUID.randomUUID().toString();
+        AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING,
+                true, true);
+        this.testedInstance.add(memberAttributeType);
+
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.commit();
+        transaction.begin();
+        entityManager.clear();
+
+        String compoundedAttributeTypeName = "test-compounded-attribute-type-name" + UUID.randomUUID().toString();
+        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName,
+                DatatypeType.STRING, true, true);
+        compoundedAttributeType.addMember(memberAttributeType, 0, true);
+
+        String compoundedCompoundedAttributeTypeName = "test-attribute-type-name" + UUID.randomUUID().toString();
+        AttributeTypeEntity compounded2AttributeType = new AttributeTypeEntity(compoundedCompoundedAttributeTypeName,
+                DatatypeType.STRING, true, true);
+        try {
+            compounded2AttributeType.addMember(memberAttributeType, 0, true);
+            fail();
+        } catch (EJBException e) {
+            // expected
+        }
+    }
 }

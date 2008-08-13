@@ -11,13 +11,15 @@ import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import oasis.names.tc.saml._2_0.protocol.SAMLAttributeService;
 import junit.framework.TestCase;
 
+
 public class SAMLAttributeServiceFactoryTest extends TestCase {
 
-	public void testNewInstance() throws Exception {
-		// operate
-		SAMLAttributeService result = SAMLAttributeServiceFactory.newInstance();
+    public void testNewInstance() throws Exception {
 
-		// verify
-		assertNotNull(result);
-	}
+        // operate
+        SAMLAttributeService result = SAMLAttributeServiceFactory.newInstance();
+
+        // verify
+        assertNotNull(result);
+    }
 }

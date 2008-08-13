@@ -9,12 +9,15 @@ package net.link.safeonline.authentication.exception;
 
 import javax.ejb.ApplicationException;
 
+
 @ApplicationException(rollback = true)
 public class RoleNotFoundException extends NotFoundException {
 
-	public RoleNotFoundException() {
-		super("ROLE_NOT_FOUND");
-	}
+    public RoleNotFoundException() {
 
-	private static final long serialVersionUID = 1L;
+        super("ROLE_NOT_FOUND");
+    }
+
+
+    private static final long serialVersionUID = 1L;
 }

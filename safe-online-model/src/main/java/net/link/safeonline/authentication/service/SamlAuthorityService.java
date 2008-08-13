@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+
 /**
  * Interface for SAML authority service.
  * 
@@ -18,16 +19,15 @@ import javax.ejb.Local;
 @Local
 public interface SamlAuthorityService {
 
-	/**
-	 * Gives back the name of the SAML assertion issuer.
-	 * 
-	 */
-	String getIssuerName();
+    /**
+     * Gives back the name of the SAML assertion issuer.
+     * 
+     */
+    String getIssuerName();
 
-	/**
-	 * Gives back the validity of the authentication assertions issued by this
-	 * party.
-	 * 
-	 */
-	int getAuthnAssertionValidity();
+    /**
+     * Gives back the validity of the authentication assertions issued by this party.
+     * 
+     */
+    int getAuthnAssertionValidity();
 }

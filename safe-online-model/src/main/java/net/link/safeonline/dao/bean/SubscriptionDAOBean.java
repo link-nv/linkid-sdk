@@ -30,117 +30,119 @@ import net.link.safeonline.model.IdGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class SubscriptionDAOBean implements SubscriptionDAO {
 
-	private static final Log LOG = LogFactory.getLog(SubscriptionDAOBean.class);
+    private static final Log                  LOG = LogFactory.getLog(SubscriptionDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                     entityManager;
 
-	private SubscriptionEntity.QueryInterface queryObject;
+    private SubscriptionEntity.QueryInterface queryObject;
 
-	@EJB
-	private IdGenerator idGenerator;
+    @EJB
+    private IdGenerator                       idGenerator;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, SubscriptionEntity.QueryInterface.class);
-	}
 
-	public SubscriptionEntity findSubscription(SubjectEntity subject,
-			ApplicationEntity application) {
-		LOG.debug("find subscription for: " + subject.getUserId() + " to "
-				+ application.getName());
-		SubscriptionPK subscriptionPK = new SubscriptionPK(subject, application);
-		SubscriptionEntity subscription = this.entityManager.find(
-				SubscriptionEntity.class, subscriptionPK);
-		return subscription;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
-			SubjectEntity subject, ApplicationEntity application) {
-		String subscriptionUserId = this.idGenerator.generateId();
-		LOG.debug("add subscription for " + subject.getUserId() + " to "
-				+ application.getName() + "  subscriptionUserId = "
-				+ subscriptionUserId);
-		SubscriptionEntity subscription = new SubscriptionEntity(
-				subscriptionOwnerType, subject, subscriptionUserId, application);
-		this.entityManager.persist(subscription);
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                SubscriptionEntity.QueryInterface.class);
+    }
 
-	public void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
-			SubjectEntity subject, ApplicationEntity application,
-			String subscriptionUserId) {
-		LOG.debug("add subscription for " + subject.getUserId() + " to "
-				+ application.getName() + "  subscriptionUserId = "
-				+ subscriptionUserId);
-		SubscriptionEntity subscription = new SubscriptionEntity(
-				subscriptionOwnerType, subject, subscriptionUserId, application);
-		this.entityManager.persist(subscription);
-	}
+    public SubscriptionEntity findSubscription(SubjectEntity subject, ApplicationEntity application) {
 
-	public List<SubscriptionEntity> listSubsciptions(SubjectEntity subject) {
-		LOG.debug("get subscriptions for subject: " + subject.getUserId());
-		List<SubscriptionEntity> subscriptions = this.queryObject
-				.listSubsciptions(subject);
-		return subscriptions;
-	}
+        LOG.debug("find subscription for: " + subject.getUserId() + " to " + application.getName());
+        SubscriptionPK subscriptionPK = new SubscriptionPK(subject, application);
+        SubscriptionEntity subscription = this.entityManager.find(SubscriptionEntity.class, subscriptionPK);
+        return subscription;
+    }
 
-	public void removeSubscription(SubjectEntity subject,
-			ApplicationEntity application) throws SubscriptionNotFoundException {
-		SubscriptionEntity subscription = findSubscription(subject, application);
-		if (null == subscription)
-			throw new SubscriptionNotFoundException();
-		this.entityManager.remove(subscription);
-	}
+    public void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject,
+            ApplicationEntity application) {
 
-	public long getNumberOfSubscriptions(ApplicationEntity application) {
-		long countResult = this.queryObject
-				.getNumberOfSubscriptions(application);
-		return countResult;
-	}
+        String subscriptionUserId = this.idGenerator.generateId();
+        LOG.debug("add subscription for " + subject.getUserId() + " to " + application.getName()
+                + "  subscriptionUserId = " + subscriptionUserId);
+        SubscriptionEntity subscription = new SubscriptionEntity(subscriptionOwnerType, subject, subscriptionUserId,
+                application);
+        this.entityManager.persist(subscription);
+    }
 
-	public List<SubscriptionEntity> listSubscriptions(
-			ApplicationEntity application) {
-		LOG
-				.debug("get subscriptions for application: "
-						+ application.getName());
-		List<SubscriptionEntity> subscriptions = this.queryObject
-				.listSubscriptions(application);
-		return subscriptions;
-	}
+    public void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject,
+            ApplicationEntity application, String subscriptionUserId) {
 
-	public void removeSubscription(SubscriptionEntity subscriptionEntity) {
-		LOG.debug("remove subscription: " + subscriptionEntity);
-		this.entityManager.remove(subscriptionEntity);
-	}
+        LOG.debug("add subscription for " + subject.getUserId() + " to " + application.getName()
+                + "  subscriptionUserId = " + subscriptionUserId);
+        SubscriptionEntity subscription = new SubscriptionEntity(subscriptionOwnerType, subject, subscriptionUserId,
+                application);
+        this.entityManager.persist(subscription);
+    }
 
-	public SubscriptionEntity getSubscription(SubjectEntity subject,
-			ApplicationEntity application) throws SubscriptionNotFoundException {
-		SubscriptionEntity subscription = findSubscription(subject, application);
-		if (null == subscription)
-			throw new SubscriptionNotFoundException();
-		return subscription;
-	}
+    public List<SubscriptionEntity> listSubsciptions(SubjectEntity subject) {
 
-	public long getActiveNumberOfSubscriptions(ApplicationEntity application,
-			Date activeLimit) {
-		return this.queryObject.getNumberOfActiveSubscriptions(application,
-				activeLimit);
-	}
+        LOG.debug("get subscriptions for subject: " + subject.getUserId());
+        List<SubscriptionEntity> subscriptions = this.queryObject.listSubsciptions(subject);
+        return subscriptions;
+    }
 
-	public void loggedIn(SubscriptionEntity subscription) {
-		subscription.setLastLogin(new Date());
-	}
+    public void removeSubscription(SubjectEntity subject, ApplicationEntity application)
+            throws SubscriptionNotFoundException {
 
-	public void removeAllSubscriptions(SubjectEntity subject) {
-		this.queryObject.deleteAll(subject);
-	}
+        SubscriptionEntity subscription = findSubscription(subject, application);
+        if (null == subscription)
+            throw new SubscriptionNotFoundException();
+        this.entityManager.remove(subscription);
+    }
 
-	public SubscriptionEntity findSubscription(String subscriptionUserId) {
-		LOG.debug("get subscriptions for : " + subscriptionUserId);
-		return this.queryObject.findSubscription(subscriptionUserId);
-	}
+    public long getNumberOfSubscriptions(ApplicationEntity application) {
+
+        long countResult = this.queryObject.getNumberOfSubscriptions(application);
+        return countResult;
+    }
+
+    public List<SubscriptionEntity> listSubscriptions(ApplicationEntity application) {
+
+        LOG.debug("get subscriptions for application: " + application.getName());
+        List<SubscriptionEntity> subscriptions = this.queryObject.listSubscriptions(application);
+        return subscriptions;
+    }
+
+    public void removeSubscription(SubscriptionEntity subscriptionEntity) {
+
+        LOG.debug("remove subscription: " + subscriptionEntity);
+        this.entityManager.remove(subscriptionEntity);
+    }
+
+    public SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application)
+            throws SubscriptionNotFoundException {
+
+        SubscriptionEntity subscription = findSubscription(subject, application);
+        if (null == subscription)
+            throw new SubscriptionNotFoundException();
+        return subscription;
+    }
+
+    public long getActiveNumberOfSubscriptions(ApplicationEntity application, Date activeLimit) {
+
+        return this.queryObject.getNumberOfActiveSubscriptions(application, activeLimit);
+    }
+
+    public void loggedIn(SubscriptionEntity subscription) {
+
+        subscription.setLastLogin(new Date());
+    }
+
+    public void removeAllSubscriptions(SubjectEntity subject) {
+
+        this.queryObject.deleteAll(subject);
+    }
+
+    public SubscriptionEntity findSubscription(String subscriptionUserId) {
+
+        LOG.debug("get subscriptions for : " + subscriptionUserId);
+        return this.queryObject.findSubscription(subscriptionUserId);
+    }
 }

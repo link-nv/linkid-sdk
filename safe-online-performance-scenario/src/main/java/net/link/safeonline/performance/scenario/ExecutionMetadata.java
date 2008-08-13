@@ -20,23 +20,20 @@ import java.util.Date;
 
 import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
 
+
 /**
  * <h2>{@link ExecutionMetadata}<br>
- * <sub>Holds execution metadata for communication between the agent and the
- * scenario.</sub></h2>
+ * <sub>Holds execution metadata for communication between the agent and the scenario.</sub></h2>
  * 
  * <p>
- * This object can be used by the agent for making a scenario execution request
- * to the {@link ScenarioControllerBean}. In this case, use
- * {@link #createRequest(String, Integer, Integer, Date, Long, String, Boolean)} to
- * obtain the object. Only the fields required for making a request will be
- * filled in, the others will remain <code>null</code>.<br>
+ * This object can be used by the agent for making a scenario execution request to the {@link ScenarioControllerBean}.
+ * In this case, use {@link #createRequest(String, Integer, Integer, Date, Long, String, Boolean)} to obtain the object.
+ * Only the fields required for making a request will be filled in, the others will remain <code>null</code>.<br>
  * <br>
- * This object can also be used by the scenario to describe a previously
- * completed scenario execution on request of the agent. In this case, use
- * {@link #createResponse(String, String, Integer, Integer, Date, Long, String, Boolean, Double)}.
- * All available fields can be set providing the agent with as much information
- * about the result of the execution as available.
+ * This object can also be used by the scenario to describe a previously completed scenario execution on request of the
+ * agent. In this case, use
+ * {@link #createResponse(String, String, Integer, Integer, Date, Long, String, Boolean, Double)} . All available fields
+ * can be set providing the agent with as much information about the result of the execution as available.
  * </p>
  * 
  * <p>
@@ -47,125 +44,117 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
  */
 public class ExecutionMetadata {
 
-	private Integer agents;
-	private Integer workers;
-	private Date startTime;
-	private Long duration;
-	private String hostname;
-	private Boolean ssl;
-	private Double speed;
-	private String scenarioName;
-	private String scenarioDescription;
+    private Integer agents;
+    private Integer workers;
+    private Date    startTime;
+    private Long    duration;
+    private String  hostname;
+    private Boolean ssl;
+    private Double  speed;
+    private String  scenarioName;
+    private String  scenarioDescription;
 
-	/**
-	 * Use this constructor to create an execution initiation request.
-	 */
-	public static ExecutionMetadata createRequest(String scenarioName,
-			Integer agents, Integer workers, Date startTime, Long duration,
-			String hostname, Boolean useSsl) {
 
-		return new ExecutionMetadata(scenarioName, null, agents, workers,
-				startTime, duration, hostname, useSsl, null);
-	}
+    /**
+     * Use this constructor to create an execution initiation request.
+     */
+    public static ExecutionMetadata createRequest(String scenarioName, Integer agents, Integer workers, Date startTime,
+            Long duration, String hostname, Boolean useSsl) {
 
-	/**
-	 * Use this constructor to create an execution result response.
-	 */
-	public static ExecutionMetadata createResponse(String scenarioName,
-			String scenarioDescription, Integer agents, Integer workers,
-			Date startTime, Long duration, String hostname, Boolean useSsl,
-			Double speed) {
+        return new ExecutionMetadata(scenarioName, null, agents, workers, startTime, duration, hostname, useSsl, null);
+    }
 
-		return new ExecutionMetadata(scenarioName, scenarioDescription, agents,
-				workers, startTime, duration, hostname, useSsl, speed);
-	}
+    /**
+     * Use this constructor to create an execution result response.
+     */
+    public static ExecutionMetadata createResponse(String scenarioName, String scenarioDescription, Integer agents,
+            Integer workers, Date startTime, Long duration, String hostname, Boolean useSsl, Double speed) {
 
-	/**
-	 * Complete constructor.
-	 */
-	private ExecutionMetadata(String scenarioName, String scenarioDescription,
-			Integer agents, Integer workers, Date startTime, Long duration,
-			String hostname, Boolean useSsl, Double speed) {
+        return new ExecutionMetadata(scenarioName, scenarioDescription, agents, workers, startTime, duration, hostname,
+                useSsl, speed);
+    }
 
-		this.scenarioName = scenarioName;
-		this.scenarioDescription = scenarioDescription;
-		this.agents = agents;
-		this.workers = workers;
-		this.startTime = startTime;
-		this.duration = duration;
-		this.hostname = hostname;
-		this.ssl = useSsl;
-		this.speed = speed;
-	}
+    /**
+     * Complete constructor.
+     */
+    private ExecutionMetadata(String scenarioName, String scenarioDescription, Integer agents, Integer workers,
+            Date startTime, Long duration, String hostname, Boolean useSsl, Double speed) {
 
-	public String getScenarioName() {
+        this.scenarioName = scenarioName;
+        this.scenarioDescription = scenarioDescription;
+        this.agents = agents;
+        this.workers = workers;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.hostname = hostname;
+        this.ssl = useSsl;
+        this.speed = speed;
+    }
 
-		return this.scenarioName;
-	}
+    public String getScenarioName() {
 
-	public String getScenarioDescription() {
+        return this.scenarioName;
+    }
 
-		return this.scenarioDescription;
-	}
+    public String getScenarioDescription() {
 
-	public void setScenarioName(String scenarioName) {
+        return this.scenarioDescription;
+    }
 
-		this.scenarioName = scenarioName;
-	}
+    public void setScenarioName(String scenarioName) {
 
-	public Integer getAgents() {
+        this.scenarioName = scenarioName;
+    }
 
-		return this.agents;
-	}
+    public Integer getAgents() {
 
-	public Integer getWorkers() {
+        return this.agents;
+    }
 
-		return this.workers;
-	}
+    public Integer getWorkers() {
 
-	public Date getStartTime() {
+        return this.workers;
+    }
 
-		return this.startTime;
-	}
+    public Date getStartTime() {
 
-	public Long getDuration() {
+        return this.startTime;
+    }
 
-		return this.duration;
-	}
+    public Long getDuration() {
 
-	public String getHostname() {
+        return this.duration;
+    }
 
-		return this.hostname;
-	}
+    public String getHostname() {
 
-	public Boolean isSsl() {
+        return this.hostname;
+    }
 
-		return this.ssl;
-	}
+    public Boolean isSsl() {
 
-	public Double getSpeed() {
+        return this.ssl;
+    }
 
-		return this.speed;
-	}
+    public Double getSpeed() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
+        return this.speed;
+    }
 
-		String formattedStartTime = null;
-		if (this.startTime != null)
-			formattedStartTime = new SimpleDateFormat("HH:mm")
-					.format(this.startTime);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
 
-		return String.format("%s: [%s] %sx%s (%s min): %s #/s",
-				this.scenarioName == null ? "N/A" : this.scenarioName
-						.replaceFirst(".*\\.", ""),
-				formattedStartTime == null ? "N/A" : formattedStartTime,
-				this.agents == null ? "N/A" : this.agents,
-				this.workers == null ? "N/A" : this.workers,
-				this.duration == null ? "N/A" : this.duration / 60000,
-				this.speed == null ? "N/A" : String.format("%.2f", this.speed));
-	}
+        String formattedStartTime = null;
+        if (this.startTime != null)
+            formattedStartTime = new SimpleDateFormat("HH:mm").format(this.startTime);
+
+        return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName
+                .replaceFirst(".*\\.", ""), formattedStartTime == null? "N/A": formattedStartTime,
+                this.agents == null? "N/A": this.agents, this.workers == null? "N/A": this.workers,
+                this.duration == null? "N/A": this.duration / 60000, this.speed == null? "N/A": String.format("%.2f",
+                        this.speed));
+    }
 }

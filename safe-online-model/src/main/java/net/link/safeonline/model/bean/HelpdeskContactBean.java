@@ -14,31 +14,37 @@ import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.model.HelpdeskContact;
 
+
 @Stateless
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable
 public class HelpdeskContactBean implements HelpdeskContact {
 
-	@Configurable(name = "Phone number", group = "Helpdesk contact information")
-	private String phone = "911";
+    @Configurable(name = "Phone number", group = "Helpdesk contact information")
+    private String phone = "911";
 
-	@Configurable(name = "E-mail", group = "Helpdesk contact information")
-	private String email = "help@lin-k.net";
+    @Configurable(name = "E-mail", group = "Helpdesk contact information")
+    private String email = "help@lin-k.net";
 
-	public String getPhone() {
-		return this.phone;
-	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public String getPhone() {
 
-	public String getEmail() {
-		return this.email;
-	}
+        return this.phone;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setPhone(String phone) {
+
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+
+        this.email = email;
+    }
 
 }

@@ -25,21 +25,19 @@ import net.link.safeonline.util.ee.EjbUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Manager class for the protocol handlers registered within the authentication
- * web application.
+ * Manager class for the protocol handlers registered within the authentication web application.
  * 
  * @author fcorneli
  * 
  */
 public class ProtocolHandlerManager {
 
-    public static final String PROTOCOL_HANDLER_ID_ATTRIBUTE              = ProtocolHandlerManager.class
-                                                                                  .getName()
+    public static final String PROTOCOL_HANDLER_ID_ATTRIBUTE              = ProtocolHandlerManager.class.getName()
                                                                                   + ".ProtocolHandlerName";
 
-    public static final String PROTOCOL_DONT_INVALIDATE_SESSION_ATTRIBUTE = ProtocolHandlerManager.class
-                                                                                  .getName()
+    public static final String PROTOCOL_DONT_INVALIDATE_SESSION_ATTRIBUTE = ProtocolHandlerManager.class.getName()
                                                                                   + ".DontInvalidateSession";
 
     private static final Log   LOG                                        = LogFactory
@@ -61,57 +59,46 @@ public class ProtocolHandlerManager {
     }
 
 
-    private static void registerProtocolHandler(
-            Class<? extends ProtocolHandler> protocolHandlerClass) {
+    private static void registerProtocolHandler(Class<? extends ProtocolHandler> protocolHandlerClass) {
 
         try {
-            ProtocolHandler protocolHandler = protocolHandlerClass
-                    .newInstance();
+            ProtocolHandler protocolHandler = protocolHandlerClass.newInstance();
             String protocolId = protocolHandlerClass.getName();
             if (protocolHandlerMap.containsKey(protocolId)) {
-                throw new RuntimeException(
-                        "protocol handler already registered for Id: "
-                                + protocolId);
+                throw new RuntimeException("protocol handler already registered for Id: " + protocolId);
             }
             protocolHandlerMap.put(protocolId, protocolHandler);
             protocolHandlers.add(protocolHandler);
         } catch (Exception e) {
-            throw new RuntimeException(
-                    "could not initialize protocol handler: "
-                            + protocolHandlerClass.getName() + "; message: "
-                            + e.getMessage(), e);
+            throw new RuntimeException("could not initialize protocol handler: " + protocolHandlerClass.getName()
+                    + "; message: " + e.getMessage(), e);
         }
     }
 
     /**
-     * Handles the authentication protocol request. This method return a
-     * protocol context in case of a successful initiation of the authentication
-     * procedure. The method returns <code>null</code> if no appropriate
-     * authentication protocol handler has been found.
+     * Handles the authentication protocol request. This method return a protocol context in case of a successful
+     * initiation of the authentication procedure. The method returns <code>null</code> if no appropriate authentication
+     * protocol handler has been found.
      * 
      * @param request
      * @return a protocol context or <code>null</code>.
      * @throws ProtocolException
      *             in case of a protocol error.
      */
-    public static ProtocolContext handleRequest(HttpServletRequest request)
-            throws ProtocolException {
+    public static ProtocolContext handleRequest(HttpServletRequest request) throws ProtocolException {
 
         for (ProtocolHandler protocolHandler : protocolHandlers) {
-            LOG.debug("trying protocol handler: "
-                    + protocolHandler.getClass().getSimpleName());
+            LOG.debug("trying protocol handler: " + protocolHandler.getClass().getSimpleName());
             ProtocolContext protocolContext;
             try {
                 protocolContext = protocolHandler.handleRequest(request);
             } catch (ProtocolException e) {
                 String protocolName = protocolHandler.getName();
                 e.setProtocolName(protocolName);
-                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(
-                        "SafeOnline/SecurityAuditLoggerBean/local",
+                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB("SafeOnline/SecurityAuditLoggerBean/local",
                         SecurityAuditLogger.class);
-                securityAuditLogger.addSecurityAudit(
-                        SecurityThreatType.DECEPTION, "Protocol: "
-                                + protocolName + " : " + e.getMessage());
+                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : "
+                        + e.getMessage());
                 throw e;
             }
             if (null != protocolContext) {
@@ -125,25 +112,22 @@ public class ProtocolHandlerManager {
     }
 
     /**
-     * Handles the authentication response according to the authentication
-     * protocol by which the current authentication procedure was initiated.
+     * Handles the authentication response according to the authentication protocol by which the current authentication
+     * procedure was initiated.
      * 
      * @param session
      * @param response
      * @throws ProtocolException
      */
-    public static void authnResponse(HttpSession session,
-            HttpServletResponse response) throws ProtocolException {
+    public static void authnResponse(HttpSession session, HttpServletResponse response) throws ProtocolException {
 
-        String protocolId = (String) session
-                .getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
+        String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
         if (null == protocolId) {
             throw new ProtocolException("incorrect request handling detected");
         }
         ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
         if (null == protocolHandler) {
-            throw new ProtocolException(
-                    "unsupported protocol for protocol Id: " + protocolId);
+            throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
         }
 
         try {
@@ -157,11 +141,8 @@ public class ProtocolHandlerManager {
         HelpdeskLogger.clear(session);
 
         /*
-         * It's important to invalidate the session here. Else we spill
-         * resources and we prevent a user to login twice since the
-         * authentication service instance was already removed from the session
-         * context.
-         * 
+         * It's important to invalidate the session here. Else we spill resources and we prevent a user to login twice
+         * since the authentication service instance was already removed from the session context.
          */
         session.invalidate();
     }

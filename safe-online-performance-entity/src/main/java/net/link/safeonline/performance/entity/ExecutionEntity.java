@@ -31,6 +31,7 @@ import net.link.safeonline.performance.service.ExecutionService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * <h2>{@link ExecutionEntity}<br>
  * <sub>Holds the global metadata for a scenario execution.</sub></h2>
@@ -43,18 +44,14 @@ import org.apache.commons.logging.LogFactory;
  */
 @Entity
 @NamedQueries( {
-        @NamedQuery(name = ExecutionEntity.findAll, query = "SELECT e"
-                + "    FROM ExecutionEntity e"),
-        @NamedQuery(name = ExecutionEntity.findById, query = "SELECT e"
-                + "    FROM ExecutionEntity e"
+        @NamedQuery(name = ExecutionEntity.findAll, query = "SELECT e" + "    FROM ExecutionEntity e"),
+        @NamedQuery(name = ExecutionEntity.findById, query = "SELECT e" + "    FROM ExecutionEntity e"
                 + "    WHERE e.startTime = :startTime"),
         @NamedQuery(name = ExecutionEntity.calcSpeed, query = "SELECT 1000d * COUNT(t) / ( MAX(t.startTime) - MIN(t.startTime) )"
-                + "    FROM ScenarioTimingEntity t"
-                + "    WHERE t.execution = :execution") })
+                + "    FROM ScenarioTimingEntity t" + "    WHERE t.execution = :execution") })
 public class ExecutionEntity {
 
-    private static final Log         LOG       = LogFactory
-                                                       .getLog(ExecutionEntity.class);
+    private static final Log         LOG       = LogFactory.getLog(ExecutionEntity.class);
 
     public static final String       findAll   = "ExecutionEntity.findAll";
     public static final String       findById  = "ExecutionEntity.findById";
@@ -87,8 +84,8 @@ public class ExecutionEntity {
         this.dirtySpeed = false;
     }
 
-    public ExecutionEntity(String scenarioName, Integer agents, int workers,
-            Date startTime, long duration, String hostname, Boolean ssl) {
+    public ExecutionEntity(String scenarioName, Integer agents, int workers, Date startTime, long duration,
+            String hostname, Boolean ssl) {
 
         this();
 
@@ -138,9 +135,7 @@ public class ExecutionEntity {
             LOG.error("Couldn't deserialize charts!", e);
 
         } catch (ClassNotFoundException e) {
-            LOG.error(
-                    "Charts object is in a class that could not be resolved!",
-                    e);
+            LOG.error("Charts object is in a class that could not be resolved!", e);
         }
 
         return null;
@@ -182,8 +177,7 @@ public class ExecutionEntity {
     }
 
     /**
-     * @return <code>true</code> If we want to use SSL for communication with
-     *         OLAS.
+     * @return <code>true</code> If we want to use SSL for communication with OLAS.
      */
     public Boolean isSsl() {
 
@@ -231,8 +225,8 @@ public class ExecutionEntity {
     }
 
     /**
-     * The speed will only be recalculated if it has been set as dirty (which
-     * automatically happens each time a scenario has been completed for it).
+     * The speed will only be recalculated if it has been set as dirty (which automatically happens each time a scenario
+     * has been completed for it).
      * 
      * @return The average scenario execution speed (#/s) in this execution.
      */
@@ -240,8 +234,7 @@ public class ExecutionEntity {
 
         if (this.dirtySpeed || this.speed == null) {
             try {
-                ((ExecutionService) new InitialContext()
-                        .lookup(ExecutionService.BINDING)).updateSpeed(this);
+                ((ExecutionService) new InitialContext().lookup(ExecutionService.BINDING)).updateSpeed(this);
             } catch (NamingException e) {
             }
         }
@@ -260,8 +253,8 @@ public class ExecutionEntity {
     }
 
     /**
-     * Signal that the speed value currently contained in this
-     * {@link ExecutionEntity} is dirty and needs to be recalculated.
+     * Signal that the speed value currently contained in this {@link ExecutionEntity} is dirty and needs to be
+     * recalculated.
      */
     public void dirtySpeed() {
 

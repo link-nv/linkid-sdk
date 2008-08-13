@@ -51,285 +51,237 @@ import org.apache.commons.logging.LogFactory;
 
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class ApplicationServiceBeanTest extends TestCase {
 
-	private static final Log LOG = LogFactory
-			.getLog(ApplicationServiceBeanTest.class);
+    private static final Log  LOG = LogFactory.getLog(ApplicationServiceBeanTest.class);
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
+    @Override
+    protected void setUp() throws Exception {
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+        super.setUp();
 
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(
-							@SuppressWarnings("unused") Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(
-							@SuppressWarnings("unused") Object[] arguments) {
-						return certificate;
-					}
-				});
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		Startable systemStartable = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		systemStartable.postStart();
-		this.entityTestManager.refreshEntityManager();
-	}
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+                        return authCertificate;
+                    }
+                });
 
-	public void testApplicationIdentityUseCase() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		// operate
-		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
-		Set<ApplicationIdentityAttributeEntity> result = applicationService
-				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		// verify
-		assertTrue(result.isEmpty());
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		// operate
-		IdentityAttributeTypeDO[] applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-				SafeOnlineConstants.NAME_ATTRIBUTE, false, false) };
-		LOG.debug("---------- UPDATING APPLICATION IDENTITY ----------");
-		applicationService.updateApplicationIdentity(
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, Arrays
-						.asList(applicationIdentityAttributes));
-		result = applicationService
-				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+                        return certificate;
+                    }
+                });
 
-		// verify
-		assertEquals(1, result.size());
-		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.iterator()
-				.next().getAttributeTypeName());
-		assertFalse(result.iterator().next().isRequired());
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        systemStartable.postStart();
+        this.entityTestManager.refreshEntityManager();
+    }
 
-		// operate
-		applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-				SafeOnlineConstants.NAME_ATTRIBUTE, true, false) };
-		entityManager.getTransaction().commit();
-		entityManager.getTransaction().begin();
-		applicationService.updateApplicationIdentity(
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, Arrays
-						.asList(applicationIdentityAttributes));
-		entityManager.getTransaction().commit();
-		entityManager.getTransaction().begin();
-		result = applicationService
-				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+    @Override
+    protected void tearDown() throws Exception {
 
-		// verify
-		assertEquals(1, result.size());
-		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.iterator()
-				.next().getAttributeTypeName());
-		assertTrue(result.iterator().next().isRequired());
-	}
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
 
-	public void testRemoveApplication() throws Exception {
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+    public void testApplicationIdentityUseCase() throws Exception {
 
-		String testApplicationName = "test-application-name-"
-				+ UUID.randomUUID().toString();
-		String testApplicationFriendlyName = "test-application-friendly-name"
-				+ UUID.randomUUID().toString();
-		String testApplicationOwnerName = "test-application-owner-name-"
-				+ UUID.randomUUID().toString();
-		String testAdminLogin = "test-admin-login-"
-				+ UUID.randomUUID().toString();
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		UserRegistrationService userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
-				PasswordDeviceServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+        // operate
+        ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+        Set<ApplicationIdentityAttributeEntity> result = applicationService
+                .getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
-		SubjectEntity testAdminSubject = userRegistrationService
-				.registerUser(testAdminLogin);
-		passwordDeviceService.register(testAdminSubject, "secret");
-		applicationService.registerApplicationOwner(testApplicationOwnerName,
-				testAdminLogin);
+        // verify
+        assertTrue(result.isEmpty());
 
-		List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
-		initialIdentity.add(new IdentityAttributeTypeDO(
-				SafeOnlineConstants.NAME_ATTRIBUTE));
+        // operate
+        IdentityAttributeTypeDO[] applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                SafeOnlineConstants.NAME_ATTRIBUTE, false, false) };
+        LOG.debug("---------- UPDATING APPLICATION IDENTITY ----------");
+        applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, Arrays
+                .asList(applicationIdentityAttributes));
+        result = applicationService
+                .getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
-		applicationService.addApplication(testApplicationName,
-				testApplicationFriendlyName, testApplicationOwnerName, null,
-				false, IdScopeType.USER, null, null, null, null,
-				initialIdentity, false, false);
-		ApplicationEntity application = applicationService
-				.getApplication(testApplicationName);
+        // verify
+        assertEquals(1, result.size());
+        assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.iterator().next().getAttributeTypeName());
+        assertFalse(result.iterator().next().isRequired());
 
-		ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(
-				ApplicationOwnerDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		ApplicationOwnerEntity applicationOwner = applicationOwnerDAO
-				.getApplicationOwner(testApplicationOwnerName);
-		List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
-		applications.add(application);
-		applicationOwner.setApplications(applications);
+        // operate
+        applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                SafeOnlineConstants.NAME_ATTRIBUTE, true, false) };
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, Arrays
+                .asList(applicationIdentityAttributes));
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        result = applicationService
+                .getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
-		EntityTransaction entityTransaction = entityManager.getTransaction();
-		entityTransaction.commit();
-		entityTransaction.begin();
+        // verify
+        assertEquals(1, result.size());
+        assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.iterator().next().getAttributeTypeName());
+        assertTrue(result.iterator().next().isRequired());
+    }
 
-		applicationService.removeApplication(testApplicationName);
+    public void testRemoveApplication() throws Exception {
 
-		entityManager.getTransaction().commit();
-	}
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
 
-	public void testRemoveApplicationOwnerFails() throws Exception {
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
-		String testApplicationName = "test-application-name-"
-				+ UUID.randomUUID().toString();
-		String testApplicationOwnerName = "test-application-owner-name-"
-				+ UUID.randomUUID().toString();
-		String testAdminLogin = "test-admin-login-"
-				+ UUID.randomUUID().toString();
-		UserRegistrationService userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
-				PasswordDeviceServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+        String testApplicationName = "test-application-name-" + UUID.randomUUID().toString();
+        String testApplicationFriendlyName = "test-application-friendly-name" + UUID.randomUUID().toString();
+        String testApplicationOwnerName = "test-application-owner-name-" + UUID.randomUUID().toString();
+        String testAdminLogin = "test-admin-login-" + UUID.randomUUID().toString();
 
-		SubjectEntity testAdminSubject = userRegistrationService
-				.registerUser(testAdminLogin);
-		passwordDeviceService.register(testAdminSubject, "secret");
-		applicationService.registerApplicationOwner(testApplicationOwnerName,
-				testAdminLogin);
+        UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
-		initialIdentity.add(new IdentityAttributeTypeDO(
-				SafeOnlineConstants.NAME_ATTRIBUTE));
+        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
+        passwordDeviceService.register(testAdminSubject, "secret");
+        applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
-		applicationService.addApplication(testApplicationName, null,
-				testApplicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialIdentity, false, false);
+        List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
+        initialIdentity.add(new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE));
 
-		EntityTransaction entityTransaction = entityManager.getTransaction();
-		entityTransaction.commit();
-		entityTransaction.begin();
+        applicationService.addApplication(testApplicationName, testApplicationFriendlyName, testApplicationOwnerName,
+                null, false, IdScopeType.USER, null, null, null, null, initialIdentity, false, false);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
-		/*
-		 * Add the application manually to the application owner, at runtime
-		 * hibernate takes care of this transparantly
-		 */
-		ApplicationEntity application = applicationService
-				.getApplication(testApplicationName);
-		ApplicationOwnerEntity applicationOwner = application
-				.getApplicationOwner();
-		assertNull(applicationOwner.getApplications());
-		List<ApplicationEntity> ownerApplications = new LinkedList<ApplicationEntity>();
-		ownerApplications.add(application);
-		applicationOwner.setApplications(ownerApplications);
+        ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        ApplicationOwnerEntity applicationOwner = applicationOwnerDAO.getApplicationOwner(testApplicationOwnerName);
+        List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
+        applications.add(application);
+        applicationOwner.setApplications(applications);
 
-		try {
-			applicationService.removeApplicationOwner(testApplicationOwnerName,
-					testAdminLogin);
-		} catch (PermissionDeniedException e) {
-			// should fail, it still owns an application
-			return;
-		}
-		fail();
-	}
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.commit();
+        entityTransaction.begin();
 
-	public void testRemoveApplicationOwner() throws Exception {
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
-		String testApplicationName = "test-application-name-"
-				+ UUID.randomUUID().toString();
-		String testApplicationOwnerName = "test-application-owner-name-"
-				+ UUID.randomUUID().toString();
-		String testAdminLogin = "test-admin-login-"
-				+ UUID.randomUUID().toString();
-		UserRegistrationService userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
-				PasswordDeviceServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+        applicationService.removeApplication(testApplicationName);
 
-		SubjectEntity testAdminSubject = userRegistrationService
-				.registerUser(testAdminLogin);
-		passwordDeviceService.register(testAdminSubject, "secret");
-		applicationService.registerApplicationOwner(testApplicationOwnerName,
-				testAdminLogin);
+        entityManager.getTransaction().commit();
+    }
 
-		List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
-		initialIdentity.add(new IdentityAttributeTypeDO(
-				SafeOnlineConstants.NAME_ATTRIBUTE));
+    public void testRemoveApplicationOwnerFails() throws Exception {
 
-		applicationService.addApplication(testApplicationName, null,
-				testApplicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialIdentity, false, false);
-		ApplicationEntity application = applicationService
-				.getApplication(testApplicationName);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+        String testApplicationName = "test-application-name-" + UUID.randomUUID().toString();
+        String testApplicationOwnerName = "test-application-owner-name-" + UUID.randomUUID().toString();
+        String testAdminLogin = "test-admin-login-" + UUID.randomUUID().toString();
+        UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(
-				ApplicationOwnerDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		ApplicationOwnerEntity applicationOwner = applicationOwnerDAO
-				.getApplicationOwner(testApplicationOwnerName);
-		List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
-		applications.add(application);
-		applicationOwner.setApplications(applications);
+        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
+        passwordDeviceService.register(testAdminSubject, "secret");
+        applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
-		EntityTransaction entityTransaction = entityManager.getTransaction();
-		entityTransaction.commit();
-		entityTransaction.begin();
+        List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
+        initialIdentity.add(new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE));
 
-		applicationService.removeApplication(testApplicationName);
+        applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false,
+                IdScopeType.USER, null, null, null, null, initialIdentity, false, false);
 
-		applicationService.removeApplicationOwner(testApplicationOwnerName,
-				testAdminLogin);
-	}
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.commit();
+        entityTransaction.begin();
+
+        /*
+         * Add the application manually to the application owner, at runtime hibernate takes care of this transparantly
+         */
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
+        assertNull(applicationOwner.getApplications());
+        List<ApplicationEntity> ownerApplications = new LinkedList<ApplicationEntity>();
+        ownerApplications.add(application);
+        applicationOwner.setApplications(ownerApplications);
+
+        try {
+            applicationService.removeApplicationOwner(testApplicationOwnerName, testAdminLogin);
+        } catch (PermissionDeniedException e) {
+            // should fail, it still owns an application
+            return;
+        }
+        fail();
+    }
+
+    public void testRemoveApplicationOwner() throws Exception {
+
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+        String testApplicationName = "test-application-name-" + UUID.randomUUID().toString();
+        String testApplicationOwnerName = "test-application-owner-name-" + UUID.randomUUID().toString();
+        String testAdminLogin = "test-admin-login-" + UUID.randomUUID().toString();
+        UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+
+        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
+        passwordDeviceService.register(testAdminSubject, "secret");
+        applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
+
+        List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
+        initialIdentity.add(new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE));
+
+        applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false,
+                IdScopeType.USER, null, null, null, null, initialIdentity, false, false);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+
+        ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        ApplicationOwnerEntity applicationOwner = applicationOwnerDAO.getApplicationOwner(testApplicationOwnerName);
+        List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
+        applications.add(application);
+        applicationOwner.setApplications(applications);
+
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.commit();
+        entityTransaction.begin();
+
+        applicationService.removeApplication(testApplicationName);
+
+        applicationService.removeApplicationOwner(testApplicationOwnerName, testAdminLogin);
+    }
 }

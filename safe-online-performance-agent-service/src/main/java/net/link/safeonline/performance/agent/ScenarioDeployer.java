@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.mx.util.MBeanServerLocator;
 
+
 /**
  * <h2>{@link ScenarioDeployer}<br>
  * <sub>Deploys an application (EAR) that is contained in a byte array.</sub></h2>
@@ -34,90 +35,85 @@ import org.jboss.mx.util.MBeanServerLocator;
  */
 public class ScenarioDeployer {
 
-	private static final Log LOG = LogFactory.getLog(ScenarioDeployer.class);
+    private static final Log LOG = LogFactory.getLog(ScenarioDeployer.class);
 
-	private File applicationFile;
+    private File             applicationFile;
 
-	private boolean uploading;
-	private boolean deploying;
+    private boolean          uploading;
+    private boolean          deploying;
 
-	public void upload(byte[] application) throws IOException {
 
-		try {
-			this.uploading = true;
-			
-		// Undeploy any existing scenario first.
-		if (null != this.applicationFile && this.applicationFile.exists())
-			try {
-				undeploy();
-			} catch (Exception e) {
-				LOG.error("Couldn't undeploy existing scenario: "
-						+ this.applicationFile, e);
-			}
+    public void upload(byte[] application) throws IOException {
 
-		// Create a temporary file to write the scenario into.
-		this.applicationFile = File.createTempFile("scenario", ".ear");
-		this.applicationFile.deleteOnExit();
+        try {
+            this.uploading = true;
 
-		BufferedOutputStream out = new BufferedOutputStream(
-				new FileOutputStream(this.applicationFile));
-		out.write(application);
-		out.close();
-		}
+            // Undeploy any existing scenario first.
+            if (null != this.applicationFile && this.applicationFile.exists())
+                try {
+                    undeploy();
+                } catch (Exception e) {
+                    LOG.error("Couldn't undeploy existing scenario: " + this.applicationFile, e);
+                }
 
-		finally {
-			this.uploading = false;
-		}
-	}
+            // Create a temporary file to write the scenario into.
+            this.applicationFile = File.createTempFile("scenario", ".ear");
+            this.applicationFile.deleteOnExit();
 
-	public void deploy() throws JMException, MalformedURLException, IOException {
+            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(this.applicationFile));
+            out.write(application);
+            out.close();
+        }
 
-		invokeDeployer("deploy", new URL[] { this.applicationFile.toURI()
-				.toURL() }, new String[] { URL.class.getName() });
-	}
+        finally {
+            this.uploading = false;
+        }
+    }
 
-	public void undeploy() throws JMException, MalformedURLException,
-			IOException {
+    public void deploy() throws JMException, MalformedURLException, IOException {
 
-		try {
-			invokeDeployer("undeploy", new URL[] { this.applicationFile.toURI()
-					.toURL() }, new String[] { URL.class.getName() });
-		} finally {
-			if (null != this.applicationFile && this.applicationFile.exists())
-				this.applicationFile.delete();
-		}
-	}
+        invokeDeployer("deploy", new URL[] { this.applicationFile.toURI().toURL() },
+                new String[] { URL.class.getName() });
+    }
 
-	public boolean isUploaded() {
+    public void undeploy() throws JMException, MalformedURLException, IOException {
 
-		return this.applicationFile != null && this.applicationFile.canRead();
-	}
+        try {
+            invokeDeployer("undeploy", new URL[] { this.applicationFile.toURI().toURL() }, new String[] { URL.class
+                    .getName() });
+        } finally {
+            if (null != this.applicationFile && this.applicationFile.exists())
+                this.applicationFile.delete();
+        }
+    }
 
-	public boolean isUploading() {
+    public boolean isUploaded() {
 
-		return this.uploading;
-	}
+        return this.applicationFile != null && this.applicationFile.canRead();
+    }
 
-	public boolean isDeploying() {
+    public boolean isUploading() {
 
-		return this.deploying;
-	}
+        return this.uploading;
+    }
 
-	private Object invokeDeployer(String methodName, Object[] parameters,
-			String[] signature) throws JMException {
+    public boolean isDeploying() {
 
-		try {
-			this.deploying = true;
+        return this.deploying;
+    }
 
-			MBeanServer applicationServer = MBeanServerLocator.locateJBoss();
-			ObjectName mainDeployer = new ObjectName(
-					"jboss.system:service=MainDeployer");
-			return applicationServer.invoke(mainDeployer, methodName,
-					parameters, signature);
-		}
+    private Object invokeDeployer(String methodName, Object[] parameters, String[] signature) throws JMException {
 
-		finally {
-			this.deploying = false;
-		}
-	}
+        try {
+            this.deploying = true;
+
+            MBeanServer applicationServer = MBeanServerLocator.locateJBoss();
+            ObjectName mainDeployer = new ObjectName("jboss.system:service=MainDeployer");
+            return applicationServer.invoke(mainDeployer, methodName, parameters, signature);
+        }
+
+        finally {
+            this.deploying = false;
+        }
+    }
 }

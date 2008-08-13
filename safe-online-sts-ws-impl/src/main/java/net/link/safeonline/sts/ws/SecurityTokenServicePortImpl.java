@@ -44,11 +44,11 @@ import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallingException;
 import org.w3c.dom.Element;
 
+
 /**
- * Implementation of WS-Trust 1.3 STS JAX-WS web service endpoint. Beware that
- * we validate both the WS-Security and SAML token signature via SOAP handlers.
- * The signature validation cannot be done within the endpoint implementation
- * since JAXB somehow breaks the signature digests.
+ * Implementation of WS-Trust 1.3 STS JAX-WS web service endpoint. Beware that we validate both the WS-Security and SAML
+ * token signature via SOAP handlers. The signature validation cannot be done within the endpoint implementation since
+ * JAXB somehow breaks the signature digests.
  * 
  * @author fcorneli
  */
@@ -57,254 +57,226 @@ import org.w3c.dom.Element;
 @Injection
 public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 
-	private static final Log LOG = LogFactory
-			.getLog(SecurityTokenServicePortImpl.class);
+    private static final Log   LOG                = LogFactory.getLog(SecurityTokenServicePortImpl.class);
 
-	private final static QName TOKEN_TYPE_QNAME = new QName(
-			"http://docs.oasis-open.org/ws-sx/ws-trust/200512/", "TokenType");
+    private final static QName TOKEN_TYPE_QNAME   = new QName("http://docs.oasis-open.org/ws-sx/ws-trust/200512/",
+                                                          "TokenType");
 
-	private final static QName REQUEST_TYPE_QNAME = new QName(
-			"http://docs.oasis-open.org/ws-sx/ws-trust/200512/", "RequestType");
+    private final static QName REQUEST_TYPE_QNAME = new QName("http://docs.oasis-open.org/ws-sx/ws-trust/200512/",
+                                                          "RequestType");
 
-	@Resource
-	private WebServiceContext context;
+    @Resource
+    private WebServiceContext  context;
 
-	public RequestSecurityTokenResponseType requestSecurityToken(
-			RequestSecurityTokenType request) {
-		LOG.debug("request security token");
-		String requestType = null;
-		String tokenType = null;
-		ValidateTargetType validateTarget = null;
-		List<Object> content = request.getAny();
-		for (Object contentObject : content) {
-			if (contentObject instanceof JAXBElement) {
-				JAXBElement<?> contentElement = (JAXBElement<?>) contentObject;
-				Object value = contentElement.getValue();
-				if (value instanceof String) {
-					QName elementName = contentElement.getName();
-					if (TOKEN_TYPE_QNAME.equals(elementName)) {
-						tokenType = (String) value;
-					} else if (REQUEST_TYPE_QNAME.equals(elementName)) {
-						requestType = (String) value;
-					}
-				} else if (value instanceof ValidateTargetType) {
-					validateTarget = (ValidateTargetType) value;
-				}
-			}
-		}
-		if (null == requestType) {
-			throw new RuntimeException("RequestType is required");
-		}
-		if (false == requestType
-				.startsWith("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate")) {
-			throw new RuntimeException("only supporting the validation binding");
-		}
-		if (null != tokenType
-				&& false == SecurityTokenServiceConstants.TOKEN_TYPE_STATUS
-						.equals(tokenType)) {
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"optional TokenType should be Status");
-			return response;
-		}
-		if (null == validateTarget) {
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"ValidateTarget is required");
-			return response;
-		}
-		Element tokenElement = (Element) validateTarget.getAny();
-		if (null == tokenElement) {
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"missing token to validate");
-			return response;
-		}
 
-		boolean result = TokenValidationHandler.getValidity(this.context);
-		if (false == result) {
-			LOG.debug("token signature not valid");
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"token signature not valid");
-			return response;
-		}
+    public RequestSecurityTokenResponseType requestSecurityToken(RequestSecurityTokenType request) {
 
-		Unmarshaller unmarshaller = Configuration.getUnmarshallerFactory()
-				.getUnmarshaller(tokenElement);
-		XMLObject tokenXmlObject;
-		try {
-			tokenXmlObject = unmarshaller.unmarshall(tokenElement);
-		} catch (UnmarshallingException e) {
-			LOG.debug("error parsing token: " + e.getMessage(), e);
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"error parsing token");
-			return response;
-		}
+        LOG.debug("request security token");
+        String requestType = null;
+        String tokenType = null;
+        ValidateTargetType validateTarget = null;
+        List<Object> content = request.getAny();
+        for (Object contentObject : content) {
+            if (contentObject instanceof JAXBElement) {
+                JAXBElement<?> contentElement = (JAXBElement<?>) contentObject;
+                Object value = contentElement.getValue();
+                if (value instanceof String) {
+                    QName elementName = contentElement.getName();
+                    if (TOKEN_TYPE_QNAME.equals(elementName)) {
+                        tokenType = (String) value;
+                    } else if (REQUEST_TYPE_QNAME.equals(elementName)) {
+                        requestType = (String) value;
+                    }
+                } else if (value instanceof ValidateTargetType) {
+                    validateTarget = (ValidateTargetType) value;
+                }
+            }
+        }
+        if (null == requestType) {
+            throw new RuntimeException("RequestType is required");
+        }
+        if (false == requestType.startsWith("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate")) {
+            throw new RuntimeException("only supporting the validation binding");
+        }
+        if (null != tokenType && false == SecurityTokenServiceConstants.TOKEN_TYPE_STATUS.equals(tokenType)) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "optional TokenType should be Status");
+            return response;
+        }
+        if (null == validateTarget) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "ValidateTarget is required");
+            return response;
+        }
+        Element tokenElement = (Element) validateTarget.getAny();
+        if (null == tokenElement) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing token to validate");
+            return response;
+        }
 
-		if (tokenXmlObject instanceof Response) {
-			RequestSecurityTokenResponseType response = validateSaml2Response((Response) tokenXmlObject);
-			if (null != response)
-				return response;
-		} else if (tokenXmlObject instanceof AuthnRequest) {
-			RequestSecurityTokenResponseType response = validateSaml2AuthnRequest((AuthnRequest) tokenXmlObject);
-			if (null != response)
-				return response;
-		} else {
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"token not a SAML2 Response or AuthnRequest");
-			return response;
+        boolean result = TokenValidationHandler.getValidity(this.context);
+        if (false == result) {
+            LOG.debug("token signature not valid");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "token signature not valid");
+            return response;
+        }
 
-		}
+        Unmarshaller unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller(tokenElement);
+        XMLObject tokenXmlObject;
+        try {
+            tokenXmlObject = unmarshaller.unmarshall(tokenElement);
+        } catch (UnmarshallingException e) {
+            LOG.debug("error parsing token: " + e.getMessage(), e);
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "error parsing token");
+            return response;
+        }
 
-		if (null == tokenType) {
-			tokenType = SecurityTokenServiceConstants.TOKEN_TYPE_STATUS;
-		}
-		RequestSecurityTokenResponseType response = createResponse(
-				SecurityTokenServiceConstants.STATUS_VALID, tokenType, null);
-		return response;
-	}
+        if (tokenXmlObject instanceof Response) {
+            RequestSecurityTokenResponseType response = validateSaml2Response((Response) tokenXmlObject);
+            if (null != response)
+                return response;
+        } else if (tokenXmlObject instanceof AuthnRequest) {
+            RequestSecurityTokenResponseType response = validateSaml2AuthnRequest((AuthnRequest) tokenXmlObject);
+            if (null != response)
+                return response;
+        } else {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "token not a SAML2 Response or AuthnRequest");
+            return response;
 
-	private RequestSecurityTokenResponseType validateSaml2AuthnRequest(
-			AuthnRequest samlAuthnRequest) {
-		Issuer issuer = samlAuthnRequest.getIssuer();
-		String issuerName = issuer.getValue();
-		LOG.debug("issuer name: " + issuerName);
+        }
 
-		String assertionConsumerURL = samlAuthnRequest
-				.getAssertionConsumerServiceURL();
-		if (null == assertionConsumerURL) {
-			LOG.debug("missing assertion consumer URL");
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"missing assertion consumer URL");
-			return response;
-		}
-		LOG.debug("assertionConsumerURL: " + assertionConsumerURL);
+        if (null == tokenType) {
+            tokenType = SecurityTokenServiceConstants.TOKEN_TYPE_STATUS;
+        }
+        RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_VALID,
+                tokenType, null);
+        return response;
+    }
 
-		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
-				.getRequestedAuthnContext();
-		if (null == requestedAuthnContext) {
-			LOG.debug("missing requested authentication context");
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"missing requested authentication context");
-			return response;
-		}
-		List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
-				.getAuthnContextClassRefs();
-		for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
-			LOG.debug("requested authentication context: "
-					+ authnContextClassRef.getAuthnContextClassRef());
+    private RequestSecurityTokenResponseType validateSaml2AuthnRequest(AuthnRequest samlAuthnRequest) {
 
-		return null;
-	}
+        Issuer issuer = samlAuthnRequest.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer name: " + issuerName);
 
-	private RequestSecurityTokenResponseType validateSaml2Response(
-			Response samlResponse) {
+        String assertionConsumerURL = samlAuthnRequest.getAssertionConsumerServiceURL();
+        if (null == assertionConsumerURL) {
+            LOG.debug("missing assertion consumer URL");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing assertion consumer URL");
+            return response;
+        }
+        LOG.debug("assertionConsumerURL: " + assertionConsumerURL);
 
-		String samlStatusCode = samlResponse.getStatus().getStatusCode()
-				.getValue();
-		if (samlStatusCode.equals(StatusCode.AUTHN_FAILED_URI)) {
-			/**
-			 * Authentication failed but response was valid.
-			 */
-			return null;
-		} else if (samlStatusCode.equals(StatusCode.UNKNOWN_PRINCIPAL_URI)) {
-			/**
-			 * Authentication failed, response valid, user requested to try
-			 * another device.
-			 */
-			return null;
-		} else if (samlStatusCode.equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
-			/**
-			 * Unsupported device operation authentication request but response
-			 * was valid.
-			 */
-			return null;
-		} else if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
-			LOG.debug("SAML status code: " + samlStatusCode);
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"invalid SAML2 token status code");
-			return response;
-		}
+        RequestedAuthnContext requestedAuthnContext = samlAuthnRequest.getRequestedAuthnContext();
+        if (null == requestedAuthnContext) {
+            LOG.debug("missing requested authentication context");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing requested authentication context");
+            return response;
+        }
+        List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
+        for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
+            LOG.debug("requested authentication context: " + authnContextClassRef.getAuthnContextClassRef());
 
-		List<Assertion> assertions = samlResponse.getAssertions();
-		if (assertions.isEmpty()) {
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"missing Assertion in SAML2 Response");
-			return response;
-		}
-		Assertion assertion = assertions.get(0);
+        return null;
+    }
 
-		Conditions conditions = assertion.getConditions();
-		DateTime notBefore = conditions.getNotBefore();
-		DateTime notOnOrAfter = conditions.getNotOnOrAfter();
-		DateTime now = new DateTime();
-		if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"invalid SAML message timeframe");
-			return response;
-		}
+    private RequestSecurityTokenResponseType validateSaml2Response(Response samlResponse) {
 
-		Subject subject = assertion.getSubject();
-		if (null == subject) {
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"missing Assertion Subject");
-			return response;
-		}
-		NameID subjectName = subject.getNameID();
-		String subjectNameValue = subjectName.getValue();
-		LOG.debug("subject name value: " + subjectNameValue);
+        String samlStatusCode = samlResponse.getStatus().getStatusCode().getValue();
+        if (samlStatusCode.equals(StatusCode.AUTHN_FAILED_URI)) {
+            /**
+             * Authentication failed but response was valid.
+             */
+            return null;
+        } else if (samlStatusCode.equals(StatusCode.UNKNOWN_PRINCIPAL_URI)) {
+            /**
+             * Authentication failed, response valid, user requested to try another device.
+             */
+            return null;
+        } else if (samlStatusCode.equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
+            /**
+             * Unsupported device operation authentication request but response was valid.
+             */
+            return null;
+        } else if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
+            LOG.debug("SAML status code: " + samlStatusCode);
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "invalid SAML2 token status code");
+            return response;
+        }
 
-		List<AuthnStatement> authnStatements = assertion.getAuthnStatements();
-		if (authnStatements.isEmpty()) {
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"no authentication statement present");
-			return response;
-		}
-		AuthnStatement authnStatement = authnStatements.get(0);
-		AuthnContextClassRef authnContextClassRef = authnStatement
-				.getAuthnContext().getAuthnContextClassRef();
-		String authnDevice = authnContextClassRef.getAuthnContextClassRef();
-		if (null == authnDevice) {
-			RequestSecurityTokenResponseType response = createResponse(
-					SecurityTokenServiceConstants.STATUS_INVALID,
-					"authentication device cannot be null");
-			return response;
-		}
-		LOG.debug("authentication device: " + authnDevice);
-		return null;
+        List<Assertion> assertions = samlResponse.getAssertions();
+        if (assertions.isEmpty()) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing Assertion in SAML2 Response");
+            return response;
+        }
+        Assertion assertion = assertions.get(0);
 
-	}
+        Conditions conditions = assertion.getConditions();
+        DateTime notBefore = conditions.getNotBefore();
+        DateTime notOnOrAfter = conditions.getNotOnOrAfter();
+        DateTime now = new DateTime();
+        if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "invalid SAML message timeframe");
+            return response;
+        }
 
-	private RequestSecurityTokenResponseType createResponse(String statusCode,
-			String reason) {
-		RequestSecurityTokenResponseType response = createResponse(statusCode,
-				null, reason);
-		return response;
-	}
+        Subject subject = assertion.getSubject();
+        if (null == subject) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing Assertion Subject");
+            return response;
+        }
+        NameID subjectName = subject.getNameID();
+        String subjectNameValue = subjectName.getValue();
+        LOG.debug("subject name value: " + subjectNameValue);
 
-	private RequestSecurityTokenResponseType createResponse(String statusCode,
-			String tokenType, String reason) {
-		ObjectFactory objectFactory = new ObjectFactory();
-		RequestSecurityTokenResponseType response = new RequestSecurityTokenResponseType();
-		StatusType status = objectFactory.createStatusType();
-		status.setCode(statusCode);
-		if (null != reason) {
-			status.setReason(reason);
-		}
-		if (null != tokenType) {
-			response.getAny().add(objectFactory.createTokenType(tokenType));
-		}
-		response.getAny().add(objectFactory.createStatus(status));
-		return response;
-	}
+        List<AuthnStatement> authnStatements = assertion.getAuthnStatements();
+        if (authnStatements.isEmpty()) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "no authentication statement present");
+            return response;
+        }
+        AuthnStatement authnStatement = authnStatements.get(0);
+        AuthnContextClassRef authnContextClassRef = authnStatement.getAuthnContext().getAuthnContextClassRef();
+        String authnDevice = authnContextClassRef.getAuthnContextClassRef();
+        if (null == authnDevice) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "authentication device cannot be null");
+            return response;
+        }
+        LOG.debug("authentication device: " + authnDevice);
+        return null;
+
+    }
+
+    private RequestSecurityTokenResponseType createResponse(String statusCode, String reason) {
+
+        RequestSecurityTokenResponseType response = createResponse(statusCode, null, reason);
+        return response;
+    }
+
+    private RequestSecurityTokenResponseType createResponse(String statusCode, String tokenType, String reason) {
+
+        ObjectFactory objectFactory = new ObjectFactory();
+        RequestSecurityTokenResponseType response = new RequestSecurityTokenResponseType();
+        StatusType status = objectFactory.createStatusType();
+        status.setCode(statusCode);
+        if (null != reason) {
+            status.setReason(reason);
+        }
+        if (null != tokenType) {
+            response.getAny().add(objectFactory.createTokenType(tokenType));
+        }
+        response.getAny().add(objectFactory.createStatus(status));
+        return response;
+    }
 }

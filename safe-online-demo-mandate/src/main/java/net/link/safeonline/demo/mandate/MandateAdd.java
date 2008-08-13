@@ -9,16 +9,17 @@ package net.link.safeonline.demo.mandate;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface MandateAdd extends AbstractMandateDataClient {
 
-	/*
-	 * Actions.
-	 */
-	String add();
+    /*
+     * Actions.
+     */
+    String add();
 
-	/*
-	 * Factory
-	 */
-	Mandate newMandateFactory();
+    /*
+     * Factory
+     */
+    Mandate newMandateFactory();
 }

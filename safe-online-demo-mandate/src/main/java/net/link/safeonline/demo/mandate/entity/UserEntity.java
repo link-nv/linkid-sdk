@@ -13,38 +13,46 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "demo_mandate_user")
 public class UserEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String name;
+    private String            name;
 
-	private boolean admin;
+    private boolean           admin;
 
-	public UserEntity() {
-		this(null);
-	}
 
-	public UserEntity(String name) {
-		this.name = name;
-	}
+    public UserEntity() {
 
-	@Id
-	public String getName() {
-		return this.name;
-	}
+        this(null);
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public UserEntity(String name) {
 
-	public boolean isAdmin() {
-		return this.admin;
-	}
+        this.name = name;
+    }
 
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
-	}
+    @Id
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    public boolean isAdmin() {
+
+        return this.admin;
+    }
+
+    public void setAdmin(boolean admin) {
+
+        this.admin = admin;
+    }
 }

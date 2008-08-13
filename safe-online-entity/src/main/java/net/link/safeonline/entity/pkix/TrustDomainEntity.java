@@ -29,122 +29,135 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Entity
 @Table(name = "trust_domain")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_NAME, query = "SELECT trustDomain "
-				+ "FROM TrustDomainEntity AS trustDomain "
-				+ "WHERE trustDomain.name = :name"),
-		@NamedQuery(name = QUERY_ALL, query = "FROM TrustDomainEntity") })
+        @NamedQuery(name = QUERY_WHERE_NAME, query = "SELECT trustDomain " + "FROM TrustDomainEntity AS trustDomain "
+                + "WHERE trustDomain.name = :name"), @NamedQuery(name = QUERY_ALL, query = "FROM TrustDomainEntity") })
 public class TrustDomainEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-	public static final int NAME_SIZE = 64;
+    public static final int    NAME_SIZE        = 64;
 
-	public static final String QUERY_WHERE_NAME = "td.name";
+    public static final String QUERY_WHERE_NAME = "td.name";
 
-	public static final String QUERY_ALL = "td.all";
+    public static final String QUERY_ALL        = "td.all";
 
-	private long id;
+    private long               id;
 
-	private String name;
+    private String             name;
 
-	private boolean performOcspCheck;
+    private boolean            performOcspCheck;
 
-	private long ocspCacheTimeOutMillis;
+    private long               ocspCacheTimeOutMillis;
 
-	public TrustDomainEntity() {
-		// empty
-	}
 
-	public TrustDomainEntity(String name, boolean performOcspCheck) {
-		this(name, performOcspCheck, 0);
-	}
+    public TrustDomainEntity() {
 
-	public TrustDomainEntity(String name, boolean performOcspCheck,
-			long ocspCacheTimeOutMillis) {
-		this.name = name;
-		this.performOcspCheck = performOcspCheck;
-		this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
-	}
+        // empty
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long getId() {
-		return this.id;
-	}
+    public TrustDomainEntity(String name, boolean performOcspCheck) {
 
-	public void setId(long id) {
-		this.id = id;
-	}
+        this(name, performOcspCheck, 0);
+    }
 
-	@Column(unique = true, nullable = false, length = NAME_SIZE)
-	public String getName() {
-		return this.name;
-	}
+    public TrustDomainEntity(String name, boolean performOcspCheck, long ocspCacheTimeOutMillis) {
 
-	public void setName(String name) {
-		this.name = name;
-	}
+        this.name = name;
+        this.performOcspCheck = performOcspCheck;
+        this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
+    }
 
-	/**
-	 * Marks whether the certificate validator should perform an OCSP check when
-	 * OCSP access location information is available within a certificate.
-	 * 
-	 */
-	public boolean isPerformOcspCheck() {
-		return this.performOcspCheck;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
 
-	public void setPerformOcspCheck(boolean performOcspCheck) {
-		this.performOcspCheck = performOcspCheck;
-	}
+        return this.id;
+    }
 
-	/**
-	 * Indicates how long a cached OCSP lookup stays valid.
-	 * 
-	 */
-	public long getOcspCacheTimeOutMillis() {
-		return this.ocspCacheTimeOutMillis;
-	}
+    public void setId(long id) {
 
-	public void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis) {
-		this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
-	}
+        this.id = id;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("id", this.id).append("name",
-				this.name).toString();
-	}
+    @Column(unique = true, nullable = false, length = NAME_SIZE)
+    public String getName() {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (null == obj) {
-			return false;
-		}
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof TrustDomainEntity) {
-			return false;
-		}
-		TrustDomainEntity rhs = (TrustDomainEntity) obj;
-		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
-	}
+        return this.name;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.name).toHashCode();
-	}
+    public void setName(String name) {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_ALL)
-		List<TrustDomainEntity> listTrustDomains();
+        this.name = name;
+    }
 
-		@QueryMethod(value = QUERY_WHERE_NAME, nullable = true)
-		TrustDomainEntity findTrustDomain(@QueryParam("name")
-		String name);
-	}
+    /**
+     * Marks whether the certificate validator should perform an OCSP check when OCSP access location information is
+     * available within a certificate.
+     * 
+     */
+    public boolean isPerformOcspCheck() {
+
+        return this.performOcspCheck;
+    }
+
+    public void setPerformOcspCheck(boolean performOcspCheck) {
+
+        this.performOcspCheck = performOcspCheck;
+    }
+
+    /**
+     * Indicates how long a cached OCSP lookup stays valid.
+     * 
+     */
+    public long getOcspCacheTimeOutMillis() {
+
+        return this.ocspCacheTimeOutMillis;
+    }
+
+    public void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis) {
+
+        this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("id", this.id).append("name", this.name).toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof TrustDomainEntity) {
+            return false;
+        }
+        TrustDomainEntity rhs = (TrustDomainEntity) obj;
+        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.name).toHashCode();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_ALL)
+        List<TrustDomainEntity> listTrustDomains();
+
+        @QueryMethod(value = QUERY_WHERE_NAME, nullable = true)
+        TrustDomainEntity findTrustDomain(@QueryParam("name") String name);
+    }
 }

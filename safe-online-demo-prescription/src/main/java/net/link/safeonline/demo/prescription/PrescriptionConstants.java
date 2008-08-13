@@ -9,19 +9,21 @@ package net.link.safeonline.demo.prescription;
 
 public class PrescriptionConstants {
 
-	private PrescriptionConstants() {
-		// empty
-	}
+    private PrescriptionConstants() {
 
-	public static final String SECURITY_DOMAIN = "demo-prescription";
+        // empty
+    }
 
-	public static final String PATIENT_ROLE = "patient";
 
-	public static final String ADMIN_ROLE = "admin";
+    public static final String SECURITY_DOMAIN    = "demo-prescription";
 
-	public static final String CARE_PROVIDER_ROLE = "care-provider";
+    public static final String PATIENT_ROLE       = "patient";
 
-	public static final String PHARMACIST_ROLE = "pharmacist";
+    public static final String ADMIN_ROLE         = "admin";
 
-	public static final String ENTITY_MANAGER = "DemoPrescriptionEntityManager";
+    public static final String CARE_PROVIDER_ROLE = "care-provider";
+
+    public static final String PHARMACIST_ROLE    = "pharmacist";
+
+    public static final String ENTITY_MANAGER     = "DemoPrescriptionEntityManager";
 }

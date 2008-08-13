@@ -30,53 +30,53 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+
 public class DomTestUtils {
 
-	private DomTestUtils() {
-		// empty
-	}
+    private DomTestUtils() {
 
-	public static Document parseDocument(String documentString)
-			throws Exception {
-		DocumentBuilderFactory domFactory = DocumentBuilderFactory
-				.newInstance();
-		domFactory.setNamespaceAware(true);
-		DocumentBuilder domBuilder = domFactory.newDocumentBuilder();
-		StringReader stringReader = new StringReader(documentString);
-		InputSource inputSource = new InputSource(stringReader);
-		return domBuilder.parse(inputSource);
-	}
+        // empty
+    }
 
-	public static void saveDocument(Document document, File outputFile)
-			throws TransformerException {
-		Source source = new DOMSource(document);
-		Result streamResult = new StreamResult(outputFile);
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		transformer.transform(source, streamResult);
-	}
+    public static Document parseDocument(String documentString) throws Exception {
 
-	public static Document loadDocument(InputStream documentInputStream)
-			throws ParserConfigurationException, SAXException, IOException {
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-				.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder;
-		documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.parse(documentInputStream);
-		return document;
-	}
+        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+        domFactory.setNamespaceAware(true);
+        DocumentBuilder domBuilder = domFactory.newDocumentBuilder();
+        StringReader stringReader = new StringReader(documentString);
+        InputSource inputSource = new InputSource(stringReader);
+        return domBuilder.parse(inputSource);
+    }
 
-	public static String domToString(Node domNode) throws TransformerException {
-		Source source = new DOMSource(domNode);
-		StringWriter stringWriter = new StringWriter();
-		Result result = new StreamResult(stringWriter);
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		transformer.transform(source, result);
-		return stringWriter.toString();
-	}
+    public static void saveDocument(Document document, File outputFile) throws TransformerException {
+
+        Source source = new DOMSource(document);
+        Result streamResult = new StreamResult(outputFile);
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.transform(source, streamResult);
+    }
+
+    public static Document loadDocument(InputStream documentInputStream) throws ParserConfigurationException,
+            SAXException, IOException {
+
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder documentBuilder;
+        documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.parse(documentInputStream);
+        return document;
+    }
+
+    public static String domToString(Node domNode) throws TransformerException {
+
+        Source source = new DOMSource(domNode);
+        StringWriter stringWriter = new StringWriter();
+        Result result = new StreamResult(stringWriter);
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.transform(source, result);
+        return stringWriter.toString();
+    }
 }

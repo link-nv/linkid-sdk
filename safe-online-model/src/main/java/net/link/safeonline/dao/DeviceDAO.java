@@ -24,55 +24,51 @@ import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.OlasEntity;
 
+
 @Local
 public interface DeviceDAO {
 
-	DeviceEntity addDevice(String name, DeviceClassEntity deviceClass,
-			OlasEntity node, String authenticationURL, String registrationURL,
-			String removalURL, String updateURL, X509Certificate certificate,
-			AttributeTypeEntity attributeType,
-			AttributeTypeEntity userAttributeType);
+    DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, OlasEntity node, String authenticationURL,
+            String registrationURL, String removalURL, String updateURL, X509Certificate certificate,
+            AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType);
 
-	List<DeviceEntity> listDevices();
+    List<DeviceEntity> listDevices();
 
-	List<DeviceEntity> listDevices(DeviceClassEntity deviceClass);
+    List<DeviceEntity> listDevices(DeviceClassEntity deviceClass);
 
-	DeviceEntity findDevice(String name);
+    DeviceEntity findDevice(String name);
 
-	DeviceEntity getDevice(String name) throws DeviceNotFoundException;
+    DeviceEntity getDevice(String name) throws DeviceNotFoundException;
 
-	void removeDevice(String name);
+    void removeDevice(String name);
 
-	List<DeviceDescriptionEntity> listDescriptions(DeviceEntity device);
+    List<DeviceDescriptionEntity> listDescriptions(DeviceEntity device);
 
-	List<DevicePropertyEntity> listProperties(DeviceEntity device);
+    List<DevicePropertyEntity> listProperties(DeviceEntity device);
 
-	void addDescription(DeviceEntity device, DeviceDescriptionEntity description);
+    void addDescription(DeviceEntity device, DeviceDescriptionEntity description);
 
-	void removeDescription(DeviceDescriptionEntity description);
+    void removeDescription(DeviceDescriptionEntity description);
 
-	void saveDescription(DeviceDescriptionEntity description);
+    void saveDescription(DeviceDescriptionEntity description);
 
-	DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK)
-			throws DeviceDescriptionNotFoundException;
+    DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK) throws DeviceDescriptionNotFoundException;
 
-	DeviceDescriptionEntity findDescription(DeviceDescriptionPK descriptionPK);
+    DeviceDescriptionEntity findDescription(DeviceDescriptionPK descriptionPK);
 
-	void addProperty(DeviceEntity device, DevicePropertyEntity property);
+    void addProperty(DeviceEntity device, DevicePropertyEntity property);
 
-	void removeProperty(DevicePropertyEntity property);
+    void removeProperty(DevicePropertyEntity property);
 
-	void saveProperty(DevicePropertyEntity property);
+    void saveProperty(DevicePropertyEntity property);
 
-	DevicePropertyEntity getProperty(DevicePropertyPK propertyPK)
-			throws DevicePropertyNotFoundException;
+    DevicePropertyEntity getProperty(DevicePropertyPK propertyPK) throws DevicePropertyNotFoundException;
 
-	DevicePropertyEntity findProperty(DevicePropertyPK propertyPK);
+    DevicePropertyEntity findProperty(DevicePropertyPK propertyPK);
 
-	List<DeviceEntity> listDevices(String authenticationContextClass);
+    List<DeviceEntity> listDevices(String authenticationContextClass);
 
-	DeviceEntity getDevice(X509Certificate certificate)
-			throws DeviceNotFoundException;
+    DeviceEntity getDevice(X509Certificate certificate) throws DeviceNotFoundException;
 
-	DeviceEntity findDevice(X509Certificate certificate);
+    DeviceEntity findDevice(X509Certificate certificate);
 }

@@ -9,15 +9,18 @@ package net.link.safeonline.demo.mandate;
 
 import net.link.safeonline.util.ee.EjbUtils;
 
+
 public class AuthorizationServiceFactory {
 
-	private AuthorizationServiceFactory() {
-		// empty
-	}
+    private AuthorizationServiceFactory() {
 
-	public static AuthorizationService newInstance() {
-		AuthorizationService authorizationService = EjbUtils.getEJB(
-				AuthorizationService.JNDI_BINDING, AuthorizationService.class);
-		return authorizationService;
-	}
+        // empty
+    }
+
+    public static AuthorizationService newInstance() {
+
+        AuthorizationService authorizationService = EjbUtils.getEJB(AuthorizationService.JNDI_BINDING,
+                AuthorizationService.class);
+        return authorizationService;
+    }
 }

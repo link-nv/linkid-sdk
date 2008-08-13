@@ -38,14 +38,14 @@ import net.link.safeonline.entity.audit.AuditContextEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_BACKEND_QUEUE_NAME),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class AuditBackendProcessorBean implements MessageListener {
 
-    private static final Log LOG = LogFactory
-                                         .getLog(AuditBackendProcessorBean.class);
+    private static final Log LOG = LogFactory.getLog(AuditBackendProcessorBean.class);
 
     @EJB
     private AuditAuditDAO    auditAuditDAO;
@@ -100,8 +100,7 @@ public class AuditBackendProcessorBean implements MessageListener {
         try {
             this.auditContextDAO.removeAuditContext(auditContextId);
         } catch (AuditContextNotFoundException e) {
-            throw new EJBException(
-                    "audit context not found: " + auditContextId, e);
+            throw new EJBException("audit context not found: " + auditContextId, e);
         }
     }
 
@@ -134,8 +133,7 @@ public class AuditBackendProcessorBean implements MessageListener {
             auditContext = this.auditContextDAO.getAuditContext(auditContextId);
         } catch (AuditContextNotFoundException e) {
             this.auditAuditDAO
-                    .addAuditAudit("audit backend error for audit context "
-                            + auditContextId + ": " + message);
+                    .addAuditAudit("audit backend error for audit context " + auditContextId + ": " + message);
             return;
         }
         this.auditAuditDAO.addAuditAudit(auditContext, message);
@@ -144,10 +142,8 @@ public class AuditBackendProcessorBean implements MessageListener {
     public List<AuditBackend> getAuditBackends() throws NamingException {
 
         InitialContext initialContext = new InitialContext();
-        Context context = (Context) initialContext
-                .lookup(AuditBackend.JNDI_CONTEXT);
-        NamingEnumeration<NameClassPair> result = initialContext
-                .list(AuditBackend.JNDI_CONTEXT);
+        Context context = (Context) initialContext.lookup(AuditBackend.JNDI_CONTEXT);
+        NamingEnumeration<NameClassPair> result = initialContext.list(AuditBackend.JNDI_CONTEXT);
         List<AuditBackend> auditBackends = new LinkedList<AuditBackend>();
         while (result.hasMore()) {
             NameClassPair nameClassPair = result.next();
@@ -155,14 +151,12 @@ public class AuditBackendProcessorBean implements MessageListener {
             LOG.debug(objectName + ":" + nameClassPair.getClassName());
             Object object = context.lookup(objectName);
             if (!(object instanceof AuditBackend)) {
-                String message = "object \"" + AuditBackend.JNDI_CONTEXT + "/"
-                        + objectName + "\" is not a "
+                String message = "object \"" + AuditBackend.JNDI_CONTEXT + "/" + objectName + "\" is not a "
                         + AuditBackend.class.getName();
                 LOG.error(message);
                 throw new IllegalStateException(message);
             }
-            AuditBackend auditBackend = (AuditBackend) PortableRemoteObject
-                    .narrow(object, AuditBackend.class);
+            AuditBackend auditBackend = (AuditBackend) PortableRemoteObject.narrow(object, AuditBackend.class);
             auditBackends.add(auditBackend);
         }
         return auditBackends;

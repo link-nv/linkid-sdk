@@ -17,6 +17,7 @@ import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
 import net.link.safeonline.demo.cinema.entity.TicketEntity;
 import net.link.safeonline.demo.cinema.entity.UserEntity;
 
+
 /**
  * <h2>{@link TicketService}<br>
  * <sub>Service bean for {@link TicketEntity}.</sub></h2>
@@ -34,22 +35,18 @@ import net.link.safeonline.demo.cinema.entity.UserEntity;
 @Local
 public interface TicketService extends CinemaService {
 
-    public static final String BINDING = JNDI_PREFIX
-                                               + "TicketServiceBean/local";
+    public static final String BINDING = JNDI_PREFIX + "TicketServiceBean/local";
 
 
     /**
-     * @return A ticket with all information on the movie viewing that can be
-     *         purchased.
+     * @return A ticket with all information on the movie viewing that can be purchased.
      * @throws IllegalStateException
      *             When the occupation is already taken.
      */
-    public TicketEntity createTicket(UserEntity user, FilmEntity film,
-            Date time, SeatOccupationEntity occupation);
+    public TicketEntity createTicket(UserEntity user, FilmEntity film, Date time, SeatOccupationEntity occupation);
 
     /**
-     * Mark the given ticket as reserved. The user has completed the reservation
-     * process for it.
+     * Mark the given ticket as reserved. The user has completed the reservation process for it.
      */
     public TicketEntity reserve(TicketEntity ticket);
 
@@ -60,38 +57,33 @@ public interface TicketService extends CinemaService {
 
     /**
      * @param time
-     *            All valid tickets at this moment in time are returned. That
-     *            means, all tickets for films that start at or before this time
-     *            AND end end at or after this time.
+     *            All valid tickets at this moment in time are returned. That means, all tickets for films that start at
+     *            or before this time AND end end at or after this time.
      * 
-     * @return All tickets purchased by the subject with the given national
-     *         registry number that are valid for the given time.
+     * @return All tickets purchased by the subject with the given national registry number that are valid for the given
+     *         time.
      */
     public List<TicketEntity> getTickets(String nrn, Date time);
 
     /**
      * @param time
-     *            All valid tickets at this moment in time are returned. That
-     *            means, all tickets for films that start at or before this time
-     *            AND end end at or after this time.
+     *            All valid tickets at this moment in time are returned. That means, all tickets for films that start at
+     *            or before this time AND end end at or after this time.
      * 
-     * @return All tickets purchased by the subject with the given national
-     *         registry number that are valid for the given time.
+     * @return All tickets purchased by the subject with the given national registry number that are valid for the given
+     *         time.
      */
-    public List<TicketEntity> getTickets(String nrn, Date time,
-            String theatreName);
+    public List<TicketEntity> getTickets(String nrn, Date time, String theatreName);
 
     /**
      * @param time
-     *            All valid tickets at this moment in time are returned. That
-     *            means, all tickets for films that start at or before this time
-     *            AND end end at or after this time.
+     *            All valid tickets at this moment in time are returned. That means, all tickets for films that start at
+     *            or before this time AND end end at or after this time.
      * 
-     * @return All tickets purchased by the subject with the given national
-     *         registry number that are valid for the given time.
+     * @return All tickets purchased by the subject with the given national registry number that are valid for the given
+     *         time.
      */
-    public boolean isValid(String nrn, Date time, String theatreName,
-            String filmName);
+    public boolean isValid(String nrn, Date time, String theatreName, String filmName);
 
     /**
      * @return All tickets purchased by the given user.

@@ -13,6 +13,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+
 /**
  * Used to mark a method as being a JPA update query execution method.
  * 
@@ -24,9 +25,9 @@ import java.lang.annotation.Target;
 @Documented
 public @interface UpdateMethod {
 
-	/**
-	 * The name of the named query to execute.
-	 * 
-	 */
-	String value();
+    /**
+     * The name of the named query to execute.
+     * 
+     */
+    String value();
 }

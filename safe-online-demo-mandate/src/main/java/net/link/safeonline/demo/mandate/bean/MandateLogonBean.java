@@ -20,34 +20,38 @@ import org.jboss.seam.contexts.Context;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.web.Session;
 
+
 @Stateful
 @Name("mandateLogon")
 @LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateLogonBean/local")
-public class MandateLogonBean extends AbstractMandateDataClientBean implements
-		MandateLogon {
+public class MandateLogonBean extends AbstractMandateDataClientBean implements MandateLogon {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log log;
 
-	@In
-	Context sessionContext;
+    @In
+    Context     sessionContext;
 
-	public String login() {
-		this.log.debug("login");
-		String result = SafeOnlineLoginUtils.login("login");
-		return result;
-	}
 
-	public String logout() {
-		this.log.debug("logout");
-		this.sessionContext.set("username", null);
-		Session.getInstance().invalidate();
-		return "logout-success";
-	}
+    public String login() {
 
-	public String getUsername() {
-		String userId = (String) this.sessionContext.get("username");
-		return getUsername(userId);
-	}
+        this.log.debug("login");
+        String result = SafeOnlineLoginUtils.login("login");
+        return result;
+    }
+
+    public String logout() {
+
+        this.log.debug("logout");
+        this.sessionContext.set("username", null);
+        Session.getInstance().invalidate();
+        return "logout-success";
+    }
+
+    public String getUsername() {
+
+        String userId = (String) this.sessionContext.get("username");
+        return getUsername(userId);
+    }
 
 }

@@ -15,9 +15,11 @@ import net.link.safeonline.shared.SharedConstants;
 @ApplicationException(rollback = true)
 public class SubjectNotFoundException extends NotFoundException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public SubjectNotFoundException() {
-		super(SharedConstants.SUBJECT_NOT_FOUND_ERROR);
-	}
+
+    public SubjectNotFoundException() {
+
+        super(SharedConstants.SUBJECT_NOT_FOUND_ERROR);
+    }
 }

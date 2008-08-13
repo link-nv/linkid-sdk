@@ -12,81 +12,81 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+
 /**
  * <h2>{@link MeasurementEntity}<br>
  * <sub>Holds a description and duration for a single measurement.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 14, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity
 public class MeasurementEntity {
 
-	@Id
-	@SuppressWarnings("unused")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+    @Id
+    @SuppressWarnings("unused")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int               id;
 
-	@ManyToOne
-	private ProfileDataEntity profileData;
+    @ManyToOne
+    private ProfileDataEntity profileData;
 
-	private String measurement;
-	private Long duration;
+    private String            measurement;
+    private Long              duration;
 
-	public MeasurementEntity() {
-	}
 
-	public MeasurementEntity(String measurement, Double duration) {
+    public MeasurementEntity() {
 
-		this(null, measurement, duration.longValue());
-	}
+    }
 
-	public MeasurementEntity(ProfileDataEntity profileData, String measurement,
-			Long duration) {
+    public MeasurementEntity(String measurement, Double duration) {
 
-		this.profileData = profileData;
-		this.measurement = measurement;
-		this.duration = duration;
-	}
+        this(null, measurement, duration.longValue());
+    }
 
-	/**
-	 * @return The measurement of this {@link MeasurementEntity}.
-	 */
-	public String getMeasurement() {
+    public MeasurementEntity(ProfileDataEntity profileData, String measurement, Long duration) {
 
-		return this.measurement;
-	}
+        this.profileData = profileData;
+        this.measurement = measurement;
+        this.duration = duration;
+    }
 
-	/**
-	 * @return The duration of this {@link MeasurementEntity}.
-	 */
-	public Long getDuration() {
+    /**
+     * @return The measurement of this {@link MeasurementEntity}.
+     */
+    public String getMeasurement() {
 
-		return this.duration;
-	}
+        return this.measurement;
+    }
 
-	/**
-	 * @return The {@link ProfileDataEntity} linking to this
-	 *         {@link MeasurementEntity}.
-	 */
-	public ProfileDataEntity getProfileData() {
+    /**
+     * @return The duration of this {@link MeasurementEntity}.
+     */
+    public Long getDuration() {
 
-		return this.profileData;
-	}
+        return this.duration;
+    }
 
-	/**
-	 * Only to be used for when this entity was created using
-	 * {@link #MeasurementEntity(String, Double)}.
-	 */
-	public void setProfileData(ProfileDataEntity profileData) {
+    /**
+     * @return The {@link ProfileDataEntity} linking to this {@link MeasurementEntity}.
+     */
+    public ProfileDataEntity getProfileData() {
 
-		this.profileData = profileData;
-	}
-	
-	/**
+        return this.profileData;
+    }
+
+    /**
+     * Only to be used for when this entity was created using {@link #MeasurementEntity(String, Double)}.
+     */
+    public void setProfileData(ProfileDataEntity profileData) {
+
+        this.profileData = profileData;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

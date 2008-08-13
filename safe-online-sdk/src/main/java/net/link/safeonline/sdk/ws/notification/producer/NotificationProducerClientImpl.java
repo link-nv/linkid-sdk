@@ -34,17 +34,16 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 import com.sun.xml.ws.client.ClientTransportException;
 
+
 /**
  * Implementation WS-Notification producer service.
  * 
  * @author wvdhaute
  * 
  */
-public class NotificationProducerClientImpl extends AbstractMessageAccessor
-        implements NotificationProducerClient {
+public class NotificationProducerClientImpl extends AbstractMessageAccessor implements NotificationProducerClient {
 
-    private static final Log               LOG = LogFactory
-                                                       .getLog(NotificationProducerClientImpl.class);
+    private static final Log               LOG = LogFactory.getLog(NotificationProducerClientImpl.class);
 
     private final NotificationProducerPort port;
 
@@ -61,11 +60,10 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public NotificationProducerClientImpl(String location,
-            X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
+    public NotificationProducerClientImpl(String location, X509Certificate clientCertificate,
+            PrivateKey clientPrivateKey) {
 
-        NotificationProducerService service = NotificationProducerServiceFactory
-                .newInstance();
+        NotificationProducerService service = NotificationProducerServiceFactory.newInstance();
         this.port = service.getNotificationProducerPort();
         this.location = location + "/safe-online-ws/producer";
         setEndpointAddress();
@@ -73,16 +71,14 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor
         LOG.debug("endpoint: " + this.location);
 
         registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
-                clientPrivateKey);
+        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
     }
 
     private void setEndpointAddress() {
 
         BindingProvider bindingProvider = (BindingProvider) this.port;
 
-        bindingProvider.getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
     private W3CEndpointReference getEndpointReference(String address) {
@@ -92,9 +88,7 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor
         return builder.build();
     }
 
-    public void subscribe(String topic, String address)
-            throws SubscriptionFailedException,
-            WSClientTransportException {
+    public void subscribe(String topic, String address) throws SubscriptionFailedException, WSClientTransportException {
 
         LOG.debug("subscribe " + address + " to " + topic);
         SubscribeRequest request = new SubscribeRequest();
@@ -121,8 +115,7 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor
         checkStatus(response);
     }
 
-    private void checkStatus(SubscribeResponse response)
-            throws SubscriptionFailedException {
+    private void checkStatus(SubscribeResponse response) throws SubscriptionFailedException {
 
         for (Object errorObject : response.getAny()) {
             if (errorObject instanceof SubscribeCreationFailedFaultType)

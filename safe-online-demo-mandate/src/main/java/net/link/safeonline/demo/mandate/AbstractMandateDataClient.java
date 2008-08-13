@@ -9,14 +9,14 @@ package net.link.safeonline.demo.mandate;
 
 public interface AbstractMandateDataClient {
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	void postConstructCallback();
+    void postConstructCallback();
 
-	void postActivateCallback();
+    void postActivateCallback();
 
-	void prePassivateCallback();
+    void prePassivateCallback();
 }

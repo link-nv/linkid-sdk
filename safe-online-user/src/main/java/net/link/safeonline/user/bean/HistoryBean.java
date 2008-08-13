@@ -26,6 +26,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Name;
 
+
 @Stateless
 @Name("history")
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "HistoryBean/local")
@@ -44,10 +45,8 @@ public class HistoryBean implements History {
         List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
 
         for (HistoryEntity historyEntity : result) {
-            String historyMessage = HistoryMessageManager.getMessage(
-                    FacesContext.getCurrentInstance(), historyEntity);
-            messageList.add(new HistoryMessage(historyEntity.getWhen(),
-                    historyMessage));
+            String historyMessage = HistoryMessageManager.getMessage(FacesContext.getCurrentInstance(), historyEntity);
+            messageList.add(new HistoryMessage(historyEntity.getWhen(), historyMessage));
         }
 
         return messageList;

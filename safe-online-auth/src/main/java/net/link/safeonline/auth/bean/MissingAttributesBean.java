@@ -43,16 +43,15 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("missingAttributes")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-        + "MissingAttributesBean/local")
+@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "MissingAttributesBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class MissingAttributesBean implements MissingAttributes {
 
-    private static final Log   LOG                     = LogFactory
-                                                               .getLog(MissingAttributesBean.class);
+    private static final Log   LOG                     = LogFactory.getLog(MissingAttributesBean.class);
 
     @EJB
     private IdentityService    identityService;
@@ -76,30 +75,24 @@ public class MissingAttributesBean implements MissingAttributes {
 
     @Factory(MISSING_ATTRIBUTE_LIST)
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public void missingAttributeListFactory()
-            throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+    public void missingAttributeListFactory() throws ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("missing attribute list factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        this.missingAttributeList = this.identityService.listMissingAttributes(
-                this.application, viewLocale);
+        this.missingAttributeList = this.identityService.listMissingAttributes(this.application, viewLocale);
     }
 
     @Factory(OPTIONAL_ATTRIBUTE_LIST)
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public void optionalAttributeListFactory()
-            throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+    public void optionalAttributeListFactory() throws ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("optional attribute list factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        this.optionalAttributeList = this.identityService
-                .listOptionalAttributes(this.application, viewLocale);
+        this.optionalAttributeList = this.identityService.listOptionalAttributes(this.application, viewLocale);
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
@@ -111,19 +104,14 @@ public class MissingAttributesBean implements MissingAttributes {
             try {
                 this.identityService.saveAttribute(attribute);
             } catch (PermissionDeniedException e) {
-                LOG.debug("permission denied for attribute: "
-                        + attribute.getName());
-                this.facesMessages.addFromResourceBundle(
-                        FacesMessage.SEVERITY_ERROR,
-                        "errorPermissionDeniedForAttribute", attribute
-                                .getName());
+                LOG.debug("permission denied for attribute: " + attribute.getName());
+                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+                        "errorPermissionDeniedForAttribute", attribute.getName());
                 return null;
             } catch (AttributeTypeNotFoundException e) {
                 LOG.debug("attribute type not found: " + attribute.getName());
-                this.facesMessages.addFromResourceBundle(
-                        FacesMessage.SEVERITY_ERROR,
-                        "errorAttributeTypeNotFoundSpecific", attribute
-                                .getName());
+                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+                        "errorAttributeTypeNotFoundSpecific", attribute.getName());
                 return null;
             }
         }
@@ -132,25 +120,19 @@ public class MissingAttributesBean implements MissingAttributes {
             try {
                 this.identityService.saveAttribute(attribute);
             } catch (PermissionDeniedException e) {
-                LOG.debug("permission denied for attribute: "
-                        + attribute.getName());
-                this.facesMessages.addFromResourceBundle(
-                        FacesMessage.SEVERITY_ERROR,
-                        "errorPermissionDeniedForAttribute", attribute
-                                .getName());
+                LOG.debug("permission denied for attribute: " + attribute.getName());
+                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+                        "errorPermissionDeniedForAttribute", attribute.getName());
                 return null;
             } catch (AttributeTypeNotFoundException e) {
                 LOG.debug("attribute type not found: " + attribute.getName());
-                this.facesMessages.addFromResourceBundle(
-                        FacesMessage.SEVERITY_ERROR,
-                        "errorAttributeTypeNotFoundSpecific", attribute
-                                .getName());
+                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+                        "errorAttributeTypeNotFoundSpecific", attribute.getName());
                 return null;
             }
         }
 
-        HelpdeskLogger.add("missing attributes saved for application: "
-                + this.application, LogLevelType.INFO);
+        HelpdeskLogger.add("missing attributes saved for application: " + this.application, LogLevelType.INFO);
 
         AuthenticationUtils.commitAuthentication(this.facesMessages);
 

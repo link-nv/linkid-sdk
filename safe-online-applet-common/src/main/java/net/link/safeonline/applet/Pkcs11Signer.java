@@ -10,6 +10,7 @@ package net.link.safeonline.applet;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.shared.JceSigner;
 
+
 /**
  * PKCS#11 signer implementation.
  * 
@@ -18,8 +19,8 @@ import net.link.safeonline.shared.JceSigner;
  */
 public class Pkcs11Signer extends JceSigner {
 
-	public Pkcs11Signer(SmartCard smartCard) {
-		super(smartCard.getAuthenticationPrivateKey(), smartCard
-				.getAuthenticationCertificate());
-	}
+    public Pkcs11Signer(SmartCard smartCard) {
+
+        super(smartCard.getAuthenticationPrivateKey(), smartCard.getAuthenticationCertificate());
+    }
 }

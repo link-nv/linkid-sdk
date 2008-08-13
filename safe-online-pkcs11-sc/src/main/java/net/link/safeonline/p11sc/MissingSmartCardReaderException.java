@@ -9,6 +9,7 @@ package net.link.safeonline.p11sc;
 
 import java.io.IOException;
 
+
 /**
  * Signals that no smart card reader is present on the system.
  * 
@@ -17,13 +18,16 @@ import java.io.IOException;
  */
 public class MissingSmartCardReaderException extends IOException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public MissingSmartCardReaderException() {
-		super();
-	}
 
-	public MissingSmartCardReaderException(String s) {
-		super(s);
-	}
+    public MissingSmartCardReaderException() {
+
+        super();
+    }
+
+    public MissingSmartCardReaderException(String s) {
+
+        super(s);
+    }
 }

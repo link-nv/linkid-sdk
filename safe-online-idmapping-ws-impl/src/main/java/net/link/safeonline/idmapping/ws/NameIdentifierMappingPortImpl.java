@@ -46,12 +46,12 @@ import oasis.names.tc.saml._2_0.protocol.StatusType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Implementation of SAML Name Identifier Mapping Service.
  * 
  * <p>
- * Specification: Assertions and Protocols for the OASIS Security Assertion
- * Markup Language (SAML) V2.0.
+ * Specification: Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0.
  * </p>
  * 
  * @author fcorneli
@@ -62,166 +62,164 @@ import org.apache.commons.logging.LogFactory;
 @Injection
 public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort {
 
-	private static final Log LOG = LogFactory
-			.getLog(NameIdentifierMappingPortImpl.class);
+    private static final Log                    LOG = LogFactory.getLog(NameIdentifierMappingPortImpl.class);
 
-	@Resource
-	private WebServiceContext context;
+    @Resource
+    private WebServiceContext                   context;
 
-	@EJB(mappedName = "SafeOnline/ApplicationIdentifierMappingServiceBean/local")
-	private ApplicationIdentifierMappingService applicationIdentifierMappingService;
+    @EJB(mappedName = "SafeOnline/ApplicationIdentifierMappingServiceBean/local")
+    private ApplicationIdentifierMappingService applicationIdentifierMappingService;
 
-	@EJB(mappedName = "SafeOnline/DeviceIdentifierMappingServiceBean/local")
-	private DeviceIdentifierMappingService deviceIdentifierMappingService;
+    @EJB(mappedName = "SafeOnline/DeviceIdentifierMappingServiceBean/local")
+    private DeviceIdentifierMappingService      deviceIdentifierMappingService;
 
-	public NameIDMappingResponseType nameIdentifierMappingQuery(
-			NameIDMappingRequestType request) {
-		LOG.debug("name identifier mapping query");
 
-		NameIDPolicyType nameIdPolicy = request.getNameIDPolicy();
-		if (null == nameIdPolicy) {
-			String msg = "missing NameIDPolicy element";
-			LOG.debug(msg);
-			NameIDMappingResponseType response = createErrorResponse(null, msg);
-			return response;
-		}
-		String nameIdFormat = nameIdPolicy.getFormat();
-		if (null == nameIdFormat
-				|| false == NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT
-						.equals(nameIdFormat)) {
-			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.INVALID_NAMEID_POLICY);
-			return response;
-		}
+    public NameIDMappingResponseType nameIdentifierMappingQuery(NameIDMappingRequestType request) {
 
-		NameIDType nameId = request.getNameID();
-		if (null == nameId) {
-			String msg = "missing NameID element";
-			LOG.debug(msg);
-			NameIDMappingResponseType response = createErrorResponse(null, msg);
-			return response;
-		}
+        LOG.debug("name identifier mapping query");
 
-		String username = nameId.getValue();
-		if (null == username) {
-			String msg = "missing NameID value";
-			LOG.debug(msg);
-			NameIDMappingResponseType response = createErrorResponse(null, msg);
-			return response;
-		}
-		LOG.debug("username: " + username);
+        NameIDPolicyType nameIdPolicy = request.getNameIDPolicy();
+        if (null == nameIdPolicy) {
+            String msg = "missing NameIDPolicy element";
+            LOG.debug(msg);
+            NameIDMappingResponseType response = createErrorResponse(null, msg);
+            return response;
+        }
+        String nameIdFormat = nameIdPolicy.getFormat();
+        if (null == nameIdFormat
+                || false == NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT.equals(nameIdFormat)) {
+            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.INVALID_NAMEID_POLICY);
+            return response;
+        }
 
-		CertificateDomain certificateDomain;
-		try {
-			certificateDomain = CertificateValidatorHandler
-					.getCertificateDomain(this.context);
-		} catch (CertificateDomainException e) {
-			LOG.debug("certificate domain exception: " + e.getMessage());
-			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
-			return response;
-		}
+        NameIDType nameId = request.getNameID();
+        if (null == nameId) {
+            String msg = "missing NameID element";
+            LOG.debug(msg);
+            NameIDMappingResponseType response = createErrorResponse(null, msg);
+            return response;
+        }
 
-		String userId;
-		try {
-			if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
-				userId = this.applicationIdentifierMappingService
-						.getApplicationUserId(username);
-			} else if (certificateDomain.equals(CertificateDomain.DEVICE)) {
-				userId = this.deviceIdentifierMappingService
-						.getDeviceMappingId(username);
-			} else {
-				LOG.debug("security domain not supported: "
-						+ certificateDomain.toString());
-				NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
-				return response;
-			}
-		} catch (PermissionDeniedException e) {
-			LOG.debug("permission denied: " + e.getMessage());
-			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
-			return response;
-		} catch (SubscriptionNotFoundException e) {
-			LOG.debug("subscription not found: " + username);
-			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
-			return response;
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found");
-			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
-			return response;
-		} catch (SubjectNotFoundException e) {
-			LOG.debug("subject not found: " + username);
-			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
-			return response;
-		} catch (DeviceNotFoundException e) {
-			LOG.debug("device not found");
-			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
-			return response;
-		}
-		LOG.debug("userId: " + userId);
+        String username = nameId.getValue();
+        if (null == username) {
+            String msg = "missing NameID value";
+            LOG.debug(msg);
+            NameIDMappingResponseType response = createErrorResponse(null, msg);
+            return response;
+        }
+        LOG.debug("username: " + username);
 
-		NameIDMappingResponseType response = createGenericResponse(SamlpTopLevelErrorCode.SUCCESS);
-		NameIDType responseNameId = new NameIDType();
-		responseNameId.setValue(userId);
-		response.setNameID(responseNameId);
+        CertificateDomain certificateDomain;
+        try {
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(this.context);
+        } catch (CertificateDomainException e) {
+            LOG.debug("certificate domain exception: " + e.getMessage());
+            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+            return response;
+        }
 
-		return response;
-	}
+        String userId;
+        try {
+            if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                userId = this.applicationIdentifierMappingService.getApplicationUserId(username);
+            } else if (certificateDomain.equals(CertificateDomain.DEVICE)) {
+                userId = this.deviceIdentifierMappingService.getDeviceMappingId(username);
+            } else {
+                LOG.debug("security domain not supported: " + certificateDomain.toString());
+                NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+                return response;
+            }
+        } catch (PermissionDeniedException e) {
+            LOG.debug("permission denied: " + e.getMessage());
+            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+            return response;
+        } catch (SubscriptionNotFoundException e) {
+            LOG.debug("subscription not found: " + username);
+            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+            return response;
+        } catch (ApplicationNotFoundException e) {
+            LOG.debug("application not found");
+            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+            return response;
+        } catch (SubjectNotFoundException e) {
+            LOG.debug("subject not found: " + username);
+            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+            return response;
+        } catch (DeviceNotFoundException e) {
+            LOG.debug("device not found");
+            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+            return response;
+        }
+        LOG.debug("userId: " + userId);
 
-	private NameIDMappingResponseType createGenericResponse(
-			SamlpTopLevelErrorCode topLevelErrorCode) {
-		NameIDMappingResponseType response = new NameIDMappingResponseType();
-		String responseId = "urn:uuid:" + UUID.randomUUID().toString();
-		response.setID(responseId);
-		response.setVersion("2.0");
-		XMLGregorianCalendar currentXmlGregorianCalendar = getCurrentXmlGregorianCalendar();
-		response.setIssueInstant(currentXmlGregorianCalendar);
-		StatusCodeType statusCode = new StatusCodeType();
-		statusCode.setValue(topLevelErrorCode.getErrorCode());
-		StatusType status = new StatusType();
-		status.setStatusCode(statusCode);
-		response.setStatus(status);
-		return response;
-	}
+        NameIDMappingResponseType response = createGenericResponse(SamlpTopLevelErrorCode.SUCCESS);
+        NameIDType responseNameId = new NameIDType();
+        responseNameId.setValue(userId);
+        response.setNameID(responseNameId);
 
-	private NameIDMappingResponseType createErrorResponse(
-			SamlpSecondLevelErrorCode secondLevelErrorCode, String statusMessage) {
-		NameIDMappingResponseType response = createGenericResponse(SamlpTopLevelErrorCode.RESPONDER);
-		if (null != secondLevelErrorCode) {
-			StatusCodeType secondLevelStatusCode = new StatusCodeType();
-			secondLevelStatusCode.setValue(secondLevelErrorCode.getErrorCode());
-			response.getStatus().getStatusCode().setStatusCode(
-					secondLevelStatusCode);
-		}
-		if (null != statusMessage) {
-			StatusType status = response.getStatus();
-			status.setStatusMessage(statusMessage);
-		}
-		return response;
-	}
+        return response;
+    }
 
-	private NameIDMappingResponseType createErrorResponse(
-			SamlpSecondLevelErrorCode secondLevelErrorCode) {
-		NameIDMappingResponseType response = createErrorResponse(
-				secondLevelErrorCode, null);
-		return response;
-	}
+    private NameIDMappingResponseType createGenericResponse(SamlpTopLevelErrorCode topLevelErrorCode) {
 
-	private XMLGregorianCalendar getCurrentXmlGregorianCalendar() {
-		GregorianCalendar gregorianCalendar = new GregorianCalendar();
-		Date now = new Date();
-		gregorianCalendar.setTime(now);
-		XMLGregorianCalendar currentXmlGregorianCalendar = this.datatypeFactory
-				.newXMLGregorianCalendar(gregorianCalendar);
-		return currentXmlGregorianCalendar;
-	}
+        NameIDMappingResponseType response = new NameIDMappingResponseType();
+        String responseId = "urn:uuid:" + UUID.randomUUID().toString();
+        response.setID(responseId);
+        response.setVersion("2.0");
+        XMLGregorianCalendar currentXmlGregorianCalendar = getCurrentXmlGregorianCalendar();
+        response.setIssueInstant(currentXmlGregorianCalendar);
+        StatusCodeType statusCode = new StatusCodeType();
+        statusCode.setValue(topLevelErrorCode.getErrorCode());
+        StatusType status = new StatusType();
+        status.setStatusCode(statusCode);
+        response.setStatus(status);
+        return response;
+    }
 
-	private DatatypeFactory datatypeFactory;
+    private NameIDMappingResponseType createErrorResponse(SamlpSecondLevelErrorCode secondLevelErrorCode,
+            String statusMessage) {
 
-	@PostConstruct
-	public void postConstructCallback() {
-		try {
-			this.datatypeFactory = DatatypeFactory.newInstance();
-		} catch (DatatypeConfigurationException e) {
-			throw new EJBException("datatype config error");
-		}
-		LOG.debug("ready");
-	}
+        NameIDMappingResponseType response = createGenericResponse(SamlpTopLevelErrorCode.RESPONDER);
+        if (null != secondLevelErrorCode) {
+            StatusCodeType secondLevelStatusCode = new StatusCodeType();
+            secondLevelStatusCode.setValue(secondLevelErrorCode.getErrorCode());
+            response.getStatus().getStatusCode().setStatusCode(secondLevelStatusCode);
+        }
+        if (null != statusMessage) {
+            StatusType status = response.getStatus();
+            status.setStatusMessage(statusMessage);
+        }
+        return response;
+    }
+
+    private NameIDMappingResponseType createErrorResponse(SamlpSecondLevelErrorCode secondLevelErrorCode) {
+
+        NameIDMappingResponseType response = createErrorResponse(secondLevelErrorCode, null);
+        return response;
+    }
+
+    private XMLGregorianCalendar getCurrentXmlGregorianCalendar() {
+
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        Date now = new Date();
+        gregorianCalendar.setTime(now);
+        XMLGregorianCalendar currentXmlGregorianCalendar = this.datatypeFactory
+                .newXMLGregorianCalendar(gregorianCalendar);
+        return currentXmlGregorianCalendar;
+    }
+
+
+    private DatatypeFactory datatypeFactory;
+
+
+    @PostConstruct
+    public void postConstructCallback() {
+
+        try {
+            this.datatypeFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new EJBException("datatype config error");
+        }
+        LOG.debug("ready");
+    }
 }

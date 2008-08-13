@@ -61,6 +61,7 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("devicesBean")
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "DevicesBean/local")
@@ -68,282 +69,279 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class DevicesBean implements Devices {
 
-	private static final Log LOG = LogFactory.getLog(DevicesBean.class);
+    private static final Log    LOG                       = LogFactory.getLog(DevicesBean.class);
 
-	private static final String DEVICES_LIST_NAME = "devices";
+    private static final String DEVICES_LIST_NAME         = "devices";
 
-	private static final String DEVICE_MAPPINGS_LIST_NAME = "deviceMappings";
+    private static final String DEVICE_MAPPINGS_LIST_NAME = "deviceMappings";
 
-	private String oldPassword;
+    private String              oldPassword;
 
-	private String newPassword;
+    private String              newPassword;
 
-	private boolean credentialCacheFlushRequired;
+    private boolean             credentialCacheFlushRequired;
 
-	@DataModel(DEVICES_LIST_NAME)
-	List<DeviceEntry> devices;
+    @DataModel(DEVICES_LIST_NAME)
+    List<DeviceEntry>           devices;
 
-	@DataModelSelection(DEVICES_LIST_NAME)
-	private DeviceEntry selectedDevice;
+    @DataModelSelection(DEVICES_LIST_NAME)
+    private DeviceEntry         selectedDevice;
 
-	@DataModel(DEVICE_MAPPINGS_LIST_NAME)
-	List<DeviceMappingDO> deviceMappings;
+    @DataModel(DEVICE_MAPPINGS_LIST_NAME)
+    List<DeviceMappingDO>       deviceMappings;
 
-	@DataModelSelection(DEVICE_MAPPINGS_LIST_NAME)
-	private DeviceMappingDO selectedDeviceMapping;
+    @DataModelSelection(DEVICE_MAPPINGS_LIST_NAME)
+    private DeviceMappingDO     selectedDeviceMapping;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.credentialCacheFlushRequired = false;
-	}
 
-	@EJB
-	private SubjectManager subjectManager;
+    @PostConstruct
+    public void postConstructCallback() {
 
-	@EJB
-	private DeviceService deviceService;
+        this.credentialCacheFlushRequired = false;
+    }
 
-	@EJB
-	private CredentialService credentialService;
 
-	@EJB
-	private DevicePolicyService devicePolicyService;
+    @EJB
+    private SubjectManager      subjectManager;
 
-	@In
-	Context sessionContext;
+    @EJB
+    private DeviceService       deviceService;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @EJB
+    private CredentialService   credentialService;
 
-	public String getNewPassword() {
-		return this.newPassword;
-	}
+    @EJB
+    private DevicePolicyService devicePolicyService;
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public void setNewPassword(String newPassword) {
-		this.newPassword = newPassword;
-	}
+    @In
+    Context                     sessionContext;
 
-	public String getOldPassword() {
-		return this.oldPassword;
-	}
+    @In(create = true)
+    FacesMessages               facesMessages;
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public void setOldPassword(String oldPassword) {
-		this.oldPassword = oldPassword;
-	}
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	@ErrorHandling( {
-			@Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "newpassword"),
-			@Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "newpassword") })
-	public String registerPassword() throws SubjectNotFoundException,
-			PermissionDeniedException, DeviceNotFoundException {
-		this.credentialService.registerPassword(this.newPassword);
-		this.credentialCacheFlushRequired = true;
-		LOG.debug("returning success");
-		return "success";
+    public String getNewPassword() {
 
-	}
+        return this.newPassword;
+    }
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	@ErrorHandling( {
-			@Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
-			@Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
-	public String changePassword() throws SubjectNotFoundException,
-			PermissionDeniedException, DeviceNotFoundException {
-		this.credentialService.changePassword(this.oldPassword,
-				this.newPassword);
-		this.credentialCacheFlushRequired = true;
-		LOG.debug("returning success");
-		return "success";
-	}
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public void setNewPassword(String newPassword) {
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	@ErrorHandling( {
-			@Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
-			@Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
-	public String removePassword() throws SubjectNotFoundException,
-			DeviceNotFoundException, PermissionDeniedException {
-		this.credentialService.removePassword(this.oldPassword);
-		this.credentialCacheFlushRequired = true;
-		return "success";
-	}
+        this.newPassword = newPassword;
+    }
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		LOG.debug("destroy callback");
-		if (this.credentialCacheFlushRequired) {
-			/*
-			 * We will set a HTTP session attribute to communicate to the JAAS
-			 * Login Filter that the credential cache for the caller principal
-			 * needs to be flushed.
-			 */
-			try {
-				/*
-				 * The JACC spec is not really clear here whether we can
-				 * retrieve the HttpServletRequest also from within the EJB
-				 * container, or only from within the Servlet container.
-				 */
-				HttpServletRequest httpServletRequest = (HttpServletRequest) PolicyContext
-						.getContext(HttpServletRequest.class.getName());
-				if (null != httpServletRequest) {
-					HttpSession session = httpServletRequest.getSession();
-					String attributeName = "FlushJBossCredentialCache";
-					session.setAttribute(attributeName,
-							UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN);
-					LOG.debug("setting " + attributeName);
-				} else {
-					LOG.debug("JACC HttpServletRequest is null");
-				}
-			} catch (PolicyContextException e) {
-				LOG.error("JACC policy context error: " + e.getMessage());
-				throw new EJBException("JACC policy context error: "
-						+ e.getMessage());
-			}
-		}
-		this.oldPassword = null;
-		this.newPassword = null;
-		this.credentialCacheFlushRequired = false;
-	}
+    public String getOldPassword() {
 
-	private Locale getViewLocale() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		return viewLocale;
-	}
+        return this.oldPassword;
+    }
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	@Factory(DEVICE_MAPPINGS_LIST_NAME)
-	public List<DeviceMappingDO> deviceRegistrationsFactory()
-			throws SubjectNotFoundException, DeviceNotFoundException,
-			PermissionDeniedException, AttributeTypeNotFoundException {
-		Locale locale = getViewLocale();
-		LOG.debug("device registrations factory");
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		this.deviceMappings = this.deviceService.getDeviceRegistrations(
-				subject, locale);
-		return this.deviceMappings;
-	}
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public void setOldPassword(String oldPassword) {
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	@Factory(DEVICES_LIST_NAME)
-	public List<DeviceEntry> devicesFactory() throws SubjectNotFoundException,
-			DeviceNotFoundException {
-		Locale locale = getViewLocale();
-		this.devices = new LinkedList<DeviceEntry>();
-		List<DeviceEntity> deviceList = this.devicePolicyService.getDevices();
-		for (DeviceEntity device : deviceList) {
-			String deviceDescription = this.devicePolicyService
-					.getDeviceDescription(device.getName(), locale);
-			if (device.getName().equals(
-					SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)
-					&& isPasswordConfigured()) {
-				this.devices.add(new DeviceEntry(device, deviceDescription,
-						false));
-			} else {
-				this.devices.add(new DeviceEntry(device, deviceDescription));
-			}
-		}
-		return this.devices;
-	}
+        this.oldPassword = oldPassword;
+    }
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String register() throws DeviceNotFoundException, IOException {
-		LOG.debug("register device: " + this.selectedDevice.getFriendlyName());
-		String userId = this.subjectManager.getCallerSubject().getUserId();
+    @RolesAllowed(UserConstants.USER_ROLE)
+    @ErrorHandling( {
+            @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "newpassword"),
+            @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "newpassword") })
+    public String registerPassword() throws SubjectNotFoundException, PermissionDeniedException,
+            DeviceNotFoundException {
 
-		String registrationURL = this.devicePolicyService
-				.getRegistrationURL(this.selectedDevice.getDevice().getName());
-		if (this.selectedDevice.getDevice().getName().equals(
-				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = context.getExternalContext();
-			externalContext.redirect(registrationURL);
-			return null;
-		}
-		DeviceOperationUtils.redirect(registrationURL,
-				DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
-						.getName(), userId);
-		return null;
-	}
+        this.credentialService.registerPassword(this.newPassword);
+        this.credentialCacheFlushRequired = true;
+        LOG.debug("returning success");
+        return "success";
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String removeDevice() throws DeviceNotFoundException, IOException {
-		if (!deviceRemovalAllowed()) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
-		LOG.debug("remove device: "
-				+ this.selectedDeviceMapping.getFriendlyName());
-		return redirectRemove(this.selectedDeviceMapping.getDeviceMapping()
-				.getDevice().getName());
-	}
+    }
 
-	private boolean deviceRemovalAllowed() {
-		if (this.deviceMappings.size() == 1)
-			return false;
-		return true;
-	}
+    @RolesAllowed(UserConstants.USER_ROLE)
+    @ErrorHandling( {
+            @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
+            @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
+    public String changePassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String remove() throws DeviceNotFoundException, IOException {
-		LOG.debug("remove device: " + this.selectedDevice.getFriendlyName());
-		return redirectRemove(this.selectedDevice.getDevice().getName());
-	}
+        this.credentialService.changePassword(this.oldPassword, this.newPassword);
+        this.credentialCacheFlushRequired = true;
+        LOG.debug("returning success");
+        return "success";
+    }
 
-	private String redirectRemove(String deviceName)
-			throws DeviceNotFoundException, IOException {
-		String userId = this.subjectManager.getCallerSubject().getUserId();
+    @RolesAllowed(UserConstants.USER_ROLE)
+    @ErrorHandling( {
+            @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
+            @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
+    public String removePassword() throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException {
 
-		String removalURL = this.devicePolicyService.getRemovalURL(deviceName);
-		if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = context.getExternalContext();
-			externalContext.redirect(removalURL);
-			return null;
-		}
-		DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE,
-				deviceName, userId);
-		return null;
-	}
+        this.credentialService.removePassword(this.oldPassword);
+        this.credentialCacheFlushRequired = true;
+        return "success";
+    }
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String updateDevice() throws DeviceNotFoundException, IOException {
-		LOG.debug("update device: "
-				+ this.selectedDeviceMapping.getFriendlyName());
-		return redirectUpdate(this.selectedDeviceMapping.getDeviceMapping()
-				.getDevice().getName());
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	}
+        LOG.debug("destroy callback");
+        if (this.credentialCacheFlushRequired) {
+            /*
+             * We will set a HTTP session attribute to communicate to the JAAS Login Filter that the credential cache
+             * for the caller principal needs to be flushed.
+             */
+            try {
+                /*
+                 * The JACC spec is not really clear here whether we can retrieve the HttpServletRequest also from
+                 * within the EJB container, or only from within the Servlet container.
+                 */
+                HttpServletRequest httpServletRequest = (HttpServletRequest) PolicyContext
+                        .getContext(HttpServletRequest.class.getName());
+                if (null != httpServletRequest) {
+                    HttpSession session = httpServletRequest.getSession();
+                    String attributeName = "FlushJBossCredentialCache";
+                    session.setAttribute(attributeName, UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN);
+                    LOG.debug("setting " + attributeName);
+                } else {
+                    LOG.debug("JACC HttpServletRequest is null");
+                }
+            } catch (PolicyContextException e) {
+                LOG.error("JACC policy context error: " + e.getMessage());
+                throw new EJBException("JACC policy context error: " + e.getMessage());
+            }
+        }
+        this.oldPassword = null;
+        this.newPassword = null;
+        this.credentialCacheFlushRequired = false;
+    }
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String update() throws DeviceNotFoundException, IOException {
-		LOG.debug("update device: " + this.selectedDevice.getFriendlyName());
-		return redirectUpdate(this.selectedDevice.getDevice().getName());
-	}
+    private Locale getViewLocale() {
 
-	private String redirectUpdate(String deviceName) throws IOException,
-			DeviceNotFoundException {
-		String userId = this.subjectManager.getCallerSubject().getUserId();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        return viewLocale;
+    }
 
-		String updateURL = this.devicePolicyService.getUpdateURL(deviceName);
-		if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = context.getExternalContext();
-			externalContext.redirect(updateURL);
-			return null;
-		}
-		DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE,
-				deviceName, userId);
-		return null;
-	}
+    @RolesAllowed(UserConstants.USER_ROLE)
+    @Factory(DEVICE_MAPPINGS_LIST_NAME)
+    public List<DeviceMappingDO> deviceRegistrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException {
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public boolean isPasswordConfigured() throws SubjectNotFoundException,
-			DeviceNotFoundException {
-		return this.credentialService.isPasswordConfigured();
-	}
+        Locale locale = getViewLocale();
+        LOG.debug("device registrations factory");
+        SubjectEntity subject = this.subjectManager.getCallerSubject();
+        this.deviceMappings = this.deviceService.getDeviceRegistrations(subject, locale);
+        return this.deviceMappings;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    @Factory(DEVICES_LIST_NAME)
+    public List<DeviceEntry> devicesFactory() throws SubjectNotFoundException, DeviceNotFoundException {
+
+        Locale locale = getViewLocale();
+        this.devices = new LinkedList<DeviceEntry>();
+        List<DeviceEntity> deviceList = this.devicePolicyService.getDevices();
+        for (DeviceEntity device : deviceList) {
+            String deviceDescription = this.devicePolicyService.getDeviceDescription(device.getName(), locale);
+            if (device.getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID) && isPasswordConfigured()) {
+                this.devices.add(new DeviceEntry(device, deviceDescription, false));
+            } else {
+                this.devices.add(new DeviceEntry(device, deviceDescription));
+            }
+        }
+        return this.devices;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String register() throws DeviceNotFoundException, IOException {
+
+        LOG.debug("register device: " + this.selectedDevice.getFriendlyName());
+        String userId = this.subjectManager.getCallerSubject().getUserId();
+
+        String registrationURL = this.devicePolicyService.getRegistrationURL(this.selectedDevice.getDevice().getName());
+        if (this.selectedDevice.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(registrationURL);
+            return null;
+        }
+        DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
+                .getName(), userId);
+        return null;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String removeDevice() throws DeviceNotFoundException, IOException {
+
+        if (!deviceRemovalAllowed()) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+            return null;
+        }
+        LOG.debug("remove device: " + this.selectedDeviceMapping.getFriendlyName());
+        return redirectRemove(this.selectedDeviceMapping.getDeviceMapping().getDevice().getName());
+    }
+
+    private boolean deviceRemovalAllowed() {
+
+        if (this.deviceMappings.size() == 1)
+            return false;
+        return true;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String remove() throws DeviceNotFoundException, IOException {
+
+        LOG.debug("remove device: " + this.selectedDevice.getFriendlyName());
+        return redirectRemove(this.selectedDevice.getDevice().getName());
+    }
+
+    private String redirectRemove(String deviceName) throws DeviceNotFoundException, IOException {
+
+        String userId = this.subjectManager.getCallerSubject().getUserId();
+
+        String removalURL = this.devicePolicyService.getRemovalURL(deviceName);
+        if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(removalURL);
+            return null;
+        }
+        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, deviceName, userId);
+        return null;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String updateDevice() throws DeviceNotFoundException, IOException {
+
+        LOG.debug("update device: " + this.selectedDeviceMapping.getFriendlyName());
+        return redirectUpdate(this.selectedDeviceMapping.getDeviceMapping().getDevice().getName());
+
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String update() throws DeviceNotFoundException, IOException {
+
+        LOG.debug("update device: " + this.selectedDevice.getFriendlyName());
+        return redirectUpdate(this.selectedDevice.getDevice().getName());
+    }
+
+    private String redirectUpdate(String deviceName) throws IOException, DeviceNotFoundException {
+
+        String userId = this.subjectManager.getCallerSubject().getUserId();
+
+        String updateURL = this.devicePolicyService.getUpdateURL(deviceName);
+        if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(updateURL);
+            return null;
+        }
+        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, deviceName, userId);
+        return null;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public boolean isPasswordConfigured() throws SubjectNotFoundException, DeviceNotFoundException {
+
+        return this.credentialService.isPasswordConfigured();
+    }
 }

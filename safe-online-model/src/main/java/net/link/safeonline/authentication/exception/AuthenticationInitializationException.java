@@ -11,13 +11,16 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class AuthenticationInitializationException extends SafeOnlineException {
 
-	public AuthenticationInitializationException(String message) {
-		super(message, SharedConstants.UNDEFINED_ERROR);
-	}
+    public AuthenticationInitializationException(String message) {
 
-	private static final long serialVersionUID = 1L;
+        super(message, SharedConstants.UNDEFINED_ERROR);
+    }
+
+
+    private static final long serialVersionUID = 1L;
 
 }

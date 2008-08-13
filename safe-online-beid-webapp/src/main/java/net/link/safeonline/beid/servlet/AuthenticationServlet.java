@@ -34,9 +34,9 @@ import net.link.safeonline.shared.SharedConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Authentication Servlet that accepts authentication statements from the
- * client-side browser applet.
+ * Authentication Servlet that accepts authentication statements from the client-side browser applet.
  * 
  * @author fcorneli
  * 
@@ -45,8 +45,7 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 
     private static final long    serialVersionUID = 1L;
 
-    private static final Log     LOG              = LogFactory
-                                                          .getLog(AuthenticationServlet.class);
+    private static final Log     LOG              = LogFactory.getLog(AuthenticationServlet.class);
 
     @EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
     private BeIdDeviceService    beIdDeviceService;
@@ -56,63 +55,50 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 
 
     @Override
-    protected void processStatement(byte[] statementData, HttpSession session,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
+            throws ServletException, IOException {
 
         String sessionId = session.getId();
         LOG.debug("session Id: " + sessionId);
 
         try {
-            AuthenticationContext authenticationContext = AuthenticationContext
-                    .getAuthenticationContext(session);
+            AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(session);
             authenticationContext.setUsedDevice(BeIdConstants.BEID_DEVICE_ID);
 
-            AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-                    statementData);
-            String deviceUserId = this.beIdDeviceService.authenticate(
-                    sessionId, authenticationContext.getApplication(),
-                    authenticationStatement);
+            AuthenticationStatement authenticationStatement = new AuthenticationStatement(statementData);
+            String deviceUserId = this.beIdDeviceService.authenticate(sessionId,
+                    authenticationContext.getApplication(), authenticationStatement);
 
             authenticationContext.setUserId(deviceUserId);
-            authenticationContext.setValidity(this.samlAuthorityService
-                    .getAuthnAssertionValidity());
+            authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
 
         } catch (DecodingException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (TrustDomainNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (SubjectNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (ArgumentIntegrityException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiRevokedException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiSuspendedException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiExpiredException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiNotYetValidException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiInvalidException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         }
     }
 }

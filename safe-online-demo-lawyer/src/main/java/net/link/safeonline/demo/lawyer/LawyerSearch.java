@@ -9,11 +9,12 @@ package net.link.safeonline.demo.lawyer;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface LawyerSearch extends AbstractLawyerDataClient {
 
-	/*
-	 * Actions.
-	 */
-	String search();
+    /*
+     * Actions.
+     */
+    String search();
 }

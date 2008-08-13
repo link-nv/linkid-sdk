@@ -11,6 +11,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.ctrl.LoginBase;
 
+
 @Local
 public interface Login extends LoginBase {
 }

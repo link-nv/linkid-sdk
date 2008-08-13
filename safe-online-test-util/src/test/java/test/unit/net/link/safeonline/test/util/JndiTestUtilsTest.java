@@ -13,6 +13,7 @@ import javax.naming.NameNotFoundException;
 import junit.framework.TestCase;
 import net.link.safeonline.test.util.JndiTestUtils;
 
+
 /**
  * Who will guard the guards.
  * 
@@ -21,53 +22,55 @@ import net.link.safeonline.test.util.JndiTestUtils;
  */
 public class JndiTestUtilsTest extends TestCase {
 
-	public void testBindComponent() throws Exception {
-		// setup
-		Object testComponent = new Object();
-		String testJndiName = "test/jndi/name";
+    public void testBindComponent() throws Exception {
 
-		// operate
-		JndiTestUtils testedInstance = new JndiTestUtils();
-		testedInstance.setUp();
-		testedInstance.bindComponent(testJndiName, testComponent);
+        // setup
+        Object testComponent = new Object();
+        String testJndiName = "test/jndi/name";
 
-		// verify
-		InitialContext initialContext = new InitialContext();
-		Object result = initialContext.lookup(testJndiName);
-		assertEquals(testComponent, result);
+        // operate
+        JndiTestUtils testedInstance = new JndiTestUtils();
+        testedInstance.setUp();
+        testedInstance.bindComponent(testJndiName, testComponent);
 
-		// operate & verify
-		testedInstance.tearDown();
-		try {
-			initialContext.lookup(testJndiName);
-			fail();
-		} catch (NameNotFoundException e) {
-			// expected
-		}
-	}
+        // verify
+        InitialContext initialContext = new InitialContext();
+        Object result = initialContext.lookup(testJndiName);
+        assertEquals(testComponent, result);
 
-	public void testBindComponentWithSimpleName() throws Exception {
-		// setup
-		Object testComponent = new Object();
-		String testSimpleJndiName = "simpleName";
+        // operate & verify
+        testedInstance.tearDown();
+        try {
+            initialContext.lookup(testJndiName);
+            fail();
+        } catch (NameNotFoundException e) {
+            // expected
+        }
+    }
 
-		// operate
-		JndiTestUtils testedInstance = new JndiTestUtils();
-		testedInstance.setUp();
-		testedInstance.bindComponent(testSimpleJndiName, testComponent);
+    public void testBindComponentWithSimpleName() throws Exception {
 
-		// verify
-		InitialContext initialContext = new InitialContext();
-		Object result = initialContext.lookup(testSimpleJndiName);
-		assertEquals(testComponent, result);
+        // setup
+        Object testComponent = new Object();
+        String testSimpleJndiName = "simpleName";
 
-		// operate & verify
-		testedInstance.tearDown();
-		try {
-			initialContext.lookup(testSimpleJndiName);
-			fail();
-		} catch (NameNotFoundException e) {
-			// expected
-		}
-	}
+        // operate
+        JndiTestUtils testedInstance = new JndiTestUtils();
+        testedInstance.setUp();
+        testedInstance.bindComponent(testSimpleJndiName, testComponent);
+
+        // verify
+        InitialContext initialContext = new InitialContext();
+        Object result = initialContext.lookup(testSimpleJndiName);
+        assertEquals(testComponent, result);
+
+        // operate & verify
+        testedInstance.tearDown();
+        try {
+            initialContext.lookup(testSimpleJndiName);
+            fail();
+        } catch (NameNotFoundException e) {
+            // expected
+        }
+    }
 }

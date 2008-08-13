@@ -26,108 +26,122 @@ import net.link.safeonline.validation.validator.ValidatorResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class InputValidationTest extends TestCase {
 
-	private InputValidation testedInstance;
+    private InputValidation testedInstance;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.testedInstance = new InputValidation();
-	}
+    @Override
+    protected void setUp() throws Exception {
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.PARAMETER)
-	@ValidatorAnnotation(TestValidator.class)
-	public @interface TestAnnotation {
+        super.setUp();
 
-	}
+        this.testedInstance = new InputValidation();
+    }
 
-	public static class TestValidator implements Validator<Annotation> {
 
-		private static final Log LOG = LogFactory.getLog(TestValidator.class);
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @ValidatorAnnotation(TestValidator.class)
+    public @interface TestAnnotation {
 
-		private static boolean invoked = false;
+    }
 
-		public static boolean isInvoked() {
-			return invoked;
-		}
+    public static class TestValidator implements Validator<Annotation> {
 
-		public void validate(Object value, @SuppressWarnings("unused")
-		int parameterIdx, @SuppressWarnings("unused")
-		Annotation parameterAnnotation, @SuppressWarnings("unused")
-		ValidatorResult result) {
-			LOG.debug("validate: " + value);
-			invoked = true;
-		}
-	}
+        private static final Log LOG     = LogFactory.getLog(TestValidator.class);
 
-	public void method(@SuppressWarnings("unused")
-	@TestAnnotation
-	String param) {
-		// empty
-	}
+        private static boolean   invoked = false;
 
-	private Method getLocalMethod(String methodName) {
-		Class<?> clazz = InputValidationTest.class;
-		Method[] methods = clazz.getMethods();
-		for (Method method : methods) {
-			if (method.getName().equals(methodName)) {
-				return method;
-			}
-		}
-		throw new IllegalArgumentException("no method found with name: "
-				+ methodName);
-	}
 
-	public void testInvoke() throws Exception {
-		// setup
-		Method method = getLocalMethod("method");
-		InvocationContext invocationContext = new TestInvocationContext(method,
-				"Hello World");
+        public static boolean isInvoked() {
 
-		// operate
-		this.testedInstance.inputValidationInterceptor(invocationContext);
+            return invoked;
+        }
 
-		// verify
-		assertTrue(TestValidator.isInvoked());
-	}
+        public void validate(Object value, @SuppressWarnings("unused") int parameterIdx,
+                @SuppressWarnings("unused") Annotation parameterAnnotation,
+                @SuppressWarnings("unused") ValidatorResult result) {
 
-	private static class TestInvocationContext implements InvocationContext {
+            LOG.debug("validate: " + value);
+            invoked = true;
+        }
+    }
 
-		private final Method method;
 
-		private final Object[] parameters;
+    public void method(@SuppressWarnings("unused") @TestAnnotation String param) {
 
-		public TestInvocationContext(Method method, Object... parameters) {
-			this.method = method;
-			this.parameters = parameters;
-		}
+        // empty
+    }
 
-		public Map<String, Object> getContextData() {
-			return null;
-		}
+    private Method getLocalMethod(String methodName) {
 
-		public Method getMethod() {
-			return this.method;
-		}
+        Class<?> clazz = InputValidationTest.class;
+        Method[] methods = clazz.getMethods();
+        for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
+                return method;
+            }
+        }
+        throw new IllegalArgumentException("no method found with name: " + methodName);
+    }
 
-		public Object[] getParameters() {
-			return this.parameters;
-		}
+    public void testInvoke() throws Exception {
 
-		public Object getTarget() {
-			return null;
-		}
+        // setup
+        Method method = getLocalMethod("method");
+        InvocationContext invocationContext = new TestInvocationContext(method, "Hello World");
 
-		public Object proceed() throws Exception {
-			return null;
-		}
+        // operate
+        this.testedInstance.inputValidationInterceptor(invocationContext);
 
-		public void setParameters(@SuppressWarnings("unused")
-		Object[] aobj) {
-			// empty
-		}
-	}
+        // verify
+        assertTrue(TestValidator.isInvoked());
+    }
+
+
+    private static class TestInvocationContext implements InvocationContext {
+
+        private final Method   method;
+
+        private final Object[] parameters;
+
+
+        public TestInvocationContext(Method method, Object... parameters) {
+
+            this.method = method;
+            this.parameters = parameters;
+        }
+
+        public Map<String, Object> getContextData() {
+
+            return null;
+        }
+
+        public Method getMethod() {
+
+            return this.method;
+        }
+
+        public Object[] getParameters() {
+
+            return this.parameters;
+        }
+
+        public Object getTarget() {
+
+            return null;
+        }
+
+        public Object proceed() throws Exception {
+
+            return null;
+        }
+
+        public void setParameters(@SuppressWarnings("unused") Object[] aobj) {
+
+            // empty
+        }
+    }
 }

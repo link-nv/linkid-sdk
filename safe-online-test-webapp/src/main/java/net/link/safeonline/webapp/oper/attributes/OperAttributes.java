@@ -8,27 +8,32 @@ package net.link.safeonline.webapp.oper.attributes;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperAttributes extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/attributes/attributes.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/attributes/attributes.seam";
 
-	public OperAttributes() {
-		super(PAGE_NAME);
-	}
 
-	public OperAttributeAdd add() {
-		clickButtonAndWait("add");
-		return new OperAttributeAdd();
-	}
+    public OperAttributes() {
 
-	public boolean isAttributePresent(String name) {
-		return checkRowLink("attributes-data", name);
+        super(PAGE_NAME);
+    }
 
-	}
+    public OperAttributeAdd add() {
 
-	public OperAttributeRemove removeAttribute(String name) {
-		clickLinkInRowLinkAndWait("attributes-data", name, "remove");
-		return new OperAttributeRemove();
-	}
+        clickButtonAndWait("add");
+        return new OperAttributeAdd();
+    }
+
+    public boolean isAttributePresent(String name) {
+
+        return checkRowLink("attributes-data", name);
+
+    }
+
+    public OperAttributeRemove removeAttribute(String name) {
+
+        clickLinkInRowLinkAndWait("attributes-data", name, "remove");
+        return new OperAttributeRemove();
+    }
 }

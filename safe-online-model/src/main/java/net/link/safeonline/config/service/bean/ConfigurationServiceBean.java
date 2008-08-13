@@ -24,34 +24,38 @@ import net.link.safeonline.config.service.ConfigurationServiceRemote;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class ConfigurationServiceBean implements ConfigurationService,
-		ConfigurationServiceRemote {
+public class ConfigurationServiceBean implements ConfigurationService, ConfigurationServiceRemote {
 
-	@EJB
-	private ConfigGroupDAO configGroupDAO;
+    @EJB
+    private ConfigGroupDAO configGroupDAO;
 
-	@EJB
-	private ConfigItemDAO configItemDAO;
+    @EJB
+    private ConfigItemDAO  configItemDAO;
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<ConfigGroupEntity> listConfigGroups() {
-		return this.configGroupDAO.listConfigGroups();
-	}
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void saveConfigItem(ConfigItemEntity configItem) {
-		this.configItemDAO.saveConfigItem(configItem);
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public List<ConfigGroupEntity> listConfigGroups() {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void saveConfiguration(List<ConfigGroupEntity> configGroupList) {
-		for (ConfigGroupEntity configGroup : configGroupList) {
-			this.configGroupDAO.saveConfigGroup(configGroup);
-			for (ConfigItemEntity configItem : configGroup.getConfigItems()) {
-				this.configItemDAO.saveConfigItem(configItem);
-			}
-		}
-	}
+        return this.configGroupDAO.listConfigGroups();
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void saveConfigItem(ConfigItemEntity configItem) {
+
+        this.configItemDAO.saveConfigItem(configItem);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void saveConfiguration(List<ConfigGroupEntity> configGroupList) {
+
+        for (ConfigGroupEntity configGroup : configGroupList) {
+            this.configGroupDAO.saveConfigGroup(configGroup);
+            for (ConfigItemEntity configItem : configGroup.getConfigItems()) {
+                this.configItemDAO.saveConfigItem(configItem);
+            }
+        }
+    }
 }

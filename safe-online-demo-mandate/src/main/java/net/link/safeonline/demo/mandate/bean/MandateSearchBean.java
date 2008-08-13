@@ -32,12 +32,12 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("mandateSearch")
 @LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateSearchBean/local")
 @SecurityDomain(MandateConstants.SECURITY_DOMAIN)
-public class MandateSearchBean extends AbstractMandateDataClientBean implements
-        MandateSearch {
+public class MandateSearchBean extends AbstractMandateDataClientBean implements MandateSearch {
 
     @Logger
     private Log       log;
@@ -91,8 +91,8 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
         Attribute<Mandate[]> mandateAttribute;
         try {
             this.log.debug("get attribute value for user: " + userId);
-            mandateAttribute = dataClient.getAttributeValue(userId,
-                    DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
+            mandateAttribute = dataClient.getAttributeValue(userId, DemoConstants.MANDATE_ATTRIBUTE_NAME,
+                    Mandate[].class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;
@@ -137,9 +137,8 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
 
         DataClient dataClient = getDataClient();
         try {
-            dataClient.removeAttribute(userId,
-                    DemoConstants.MANDATE_ATTRIBUTE_NAME, this.selectedMandate
-                            .getAttributeId());
+            dataClient.removeAttribute(userId, DemoConstants.MANDATE_ATTRIBUTE_NAME, this.selectedMandate
+                    .getAttributeId());
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;

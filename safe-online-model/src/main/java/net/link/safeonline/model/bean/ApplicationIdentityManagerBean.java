@@ -32,113 +32,97 @@ import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
 
+
 @Stateless
-public class ApplicationIdentityManagerBean implements
-		ApplicationIdentityManager {
+public class ApplicationIdentityManagerBean implements ApplicationIdentityManager {
 
-	private static final Log LOG = LogFactory
-			.getLog(ApplicationIdentityManagerBean.class);
+    private static final Log       LOG = LogFactory.getLog(ApplicationIdentityManagerBean.class);
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO         applicationDAO;
 
-	@EJB
-	private ApplicationIdentityDAO applicationIdentityDAO;
+    @EJB
+    private ApplicationIdentityDAO applicationIdentityDAO;
 
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+    @EJB
+    private AttributeTypeDAO       attributeTypeDAO;
 
-	public void updateApplicationIdentity(String applicationId,
-			List<IdentityAttributeTypeDO> newApplicationIdentityAttributes)
-			throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException,
-			AttributeTypeNotFoundException {
-		LOG.debug("update application identity for application: "
-				+ applicationId);
 
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationId);
-		long currentIdentityVersion = application
-				.getCurrentApplicationIdentity();
-		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
-				.getApplicationIdentity(application, currentIdentityVersion);
-		List<AttributeTypeEntity> currentAttributeTypes = applicationIdentity
-				.getAttributeTypes();
-		if (null == currentAttributeTypes) {
-			currentAttributeTypes = new LinkedList<AttributeTypeEntity>();
-		}
+    public void updateApplicationIdentity(String applicationId,
+            List<IdentityAttributeTypeDO> newApplicationIdentityAttributes) throws ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException, AttributeTypeNotFoundException {
 
-		List<AttributeTypeEntity> newAttributeTypes = new LinkedList<AttributeTypeEntity>();
-		for (IdentityAttributeTypeDO newAttribute : newApplicationIdentityAttributes) {
-			LOG.debug("new identity attribute: " + newAttribute);
-			AttributeTypeEntity newAttributeType = this.attributeTypeDAO
-					.getAttributeType(newAttribute.getName());
-			newAttributeTypes.add(newAttributeType);
-		}
+        LOG.debug("update application identity for application: " + applicationId);
 
-		boolean requireNewIdentity = CollectionUtils.isProperSubCollection(
-				currentAttributeTypes, newAttributeTypes);
+        ApplicationEntity application = this.applicationDAO.getApplication(applicationId);
+        long currentIdentityVersion = application.getCurrentApplicationIdentity();
+        ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(application,
+                currentIdentityVersion);
+        List<AttributeTypeEntity> currentAttributeTypes = applicationIdentity.getAttributeTypes();
+        if (null == currentAttributeTypes) {
+            currentAttributeTypes = new LinkedList<AttributeTypeEntity>();
+        }
 
-		LOG.debug("require new identity: " + requireNewIdentity);
-		if (true == requireNewIdentity) {
-			long newIdentityVersion = currentIdentityVersion + 1;
-			LOG.debug("new identity version: " + newIdentityVersion);
-			applicationIdentity = this.applicationIdentityDAO
-					.addApplicationIdentity(application, newIdentityVersion);
-			for (IdentityAttributeTypeDO attribute : newApplicationIdentityAttributes) {
-				AttributeTypeEntity attributeType = this.attributeTypeDAO
-						.getAttributeType(attribute.getName());
-				boolean required = attribute.isRequired();
-				boolean dataMining = attribute.isDataMining();
-				this.applicationIdentityDAO.addApplicationIdentityAttribute(
-						applicationIdentity, attributeType, required,
-						dataMining);
-			}
-			LOG.debug("setting new identity version on application: "
-					+ newIdentityVersion);
-			application.setCurrentApplicationIdentity(newIdentityVersion);
-			return;
-		}
+        List<AttributeTypeEntity> newAttributeTypes = new LinkedList<AttributeTypeEntity>();
+        for (IdentityAttributeTypeDO newAttribute : newApplicationIdentityAttributes) {
+            LOG.debug("new identity attribute: " + newAttribute);
+            AttributeTypeEntity newAttributeType = this.attributeTypeDAO.getAttributeType(newAttribute.getName());
+            newAttributeTypes.add(newAttributeType);
+        }
 
-		/*
-		 * Else we still need to update the current application identity.
-		 */
+        boolean requireNewIdentity = CollectionUtils.isProperSubCollection(currentAttributeTypes, newAttributeTypes);
 
-		/*
-		 * First construct a map for fast lookup.
-		 */
-		Map<String, IdentityAttributeTypeDO> newIdentityAttributesMap = new HashMap<String, IdentityAttributeTypeDO>();
-		for (IdentityAttributeTypeDO newIdentityAttribute : newApplicationIdentityAttributes) {
-			newIdentityAttributesMap.put(newIdentityAttribute.getName(),
-					newIdentityAttribute);
-		}
+        LOG.debug("require new identity: " + requireNewIdentity);
+        if (true == requireNewIdentity) {
+            long newIdentityVersion = currentIdentityVersion + 1;
+            LOG.debug("new identity version: " + newIdentityVersion);
+            applicationIdentity = this.applicationIdentityDAO.addApplicationIdentity(application, newIdentityVersion);
+            for (IdentityAttributeTypeDO attribute : newApplicationIdentityAttributes) {
+                AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attribute.getName());
+                boolean required = attribute.isRequired();
+                boolean dataMining = attribute.isDataMining();
+                this.applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType,
+                        required, dataMining);
+            }
+            LOG.debug("setting new identity version on application: " + newIdentityVersion);
+            application.setCurrentApplicationIdentity(newIdentityVersion);
+            return;
+        }
 
-		List<ApplicationIdentityAttributeEntity> toRemove = new LinkedList<ApplicationIdentityAttributeEntity>();
+        /*
+         * Else we still need to update the current application identity.
+         */
 
-		for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : applicationIdentity
-				.getAttributes()) {
-			IdentityAttributeTypeDO newIdentityAttribute = newIdentityAttributesMap
-					.get(applicationIdentityAttribute.getAttributeTypeName());
-			if (null != newIdentityAttribute) {
-				/*
-				 * In this case just update the existing identity attribute.
-				 */
-				applicationIdentityAttribute.setRequired(newIdentityAttribute
-						.isRequired());
-			} else {
-				toRemove.add(applicationIdentityAttribute);
-				/*
-				 * Don't remove from the list while iterating over the list.
-				 */
-			}
-		}
+        /*
+         * First construct a map for fast lookup.
+         */
+        Map<String, IdentityAttributeTypeDO> newIdentityAttributesMap = new HashMap<String, IdentityAttributeTypeDO>();
+        for (IdentityAttributeTypeDO newIdentityAttribute : newApplicationIdentityAttributes) {
+            newIdentityAttributesMap.put(newIdentityAttribute.getName(), newIdentityAttribute);
+        }
 
-		for (ApplicationIdentityAttributeEntity toRemoveEntity : toRemove) {
-			this.applicationIdentityDAO
-					.removeApplicationIdentityAttribute(toRemoveEntity);
-		}
+        List<ApplicationIdentityAttributeEntity> toRemove = new LinkedList<ApplicationIdentityAttributeEntity>();
 
-		LOG.debug("changing current identity version: "
-				+ currentIdentityVersion);
-	}
+        for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : applicationIdentity.getAttributes()) {
+            IdentityAttributeTypeDO newIdentityAttribute = newIdentityAttributesMap.get(applicationIdentityAttribute
+                    .getAttributeTypeName());
+            if (null != newIdentityAttribute) {
+                /*
+                 * In this case just update the existing identity attribute.
+                 */
+                applicationIdentityAttribute.setRequired(newIdentityAttribute.isRequired());
+            } else {
+                toRemove.add(applicationIdentityAttribute);
+                /*
+                 * Don't remove from the list while iterating over the list.
+                 */
+            }
+        }
+
+        for (ApplicationIdentityAttributeEntity toRemoveEntity : toRemove) {
+            this.applicationIdentityDAO.removeApplicationIdentityAttribute(toRemoveEntity);
+        }
+
+        LOG.debug("changing current identity version: " + currentIdentityVersion);
+    }
 }

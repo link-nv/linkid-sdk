@@ -7,38 +7,43 @@
 package net.link.safeonline.util.servlet;
 
 /**
- * Wrapper class that hols a name-value pair for error messages. Used by
- * {@link AbstractInjectionServlet}.
+ * Wrapper class that hols a name-value pair for error messages. Used by {@link AbstractInjectionServlet}.
  * 
  * @author wvdhaute
  * 
  */
 public class ErrorMessage {
 
-	private String name;
+    private String name;
 
-	private String message;
+    private String message;
 
-	public ErrorMessage(String message) {
-		this.name = "ErrorMessage";
-		this.message = message;
-	}
 
-	public ErrorMessage(String name, String message) {
-		this.name = name;
-		this.message = message;
-	}
+    public ErrorMessage(String message) {
 
-	public String getName() {
-		return this.name;
-	}
+        this.name = "ErrorMessage";
+        this.message = message;
+    }
 
-	public String getMessage() {
-		return this.message;
-	}
+    public ErrorMessage(String name, String message) {
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+        this.name = name;
+        this.message = message;
+    }
+
+    public String getName() {
+
+        return this.name;
+    }
+
+    public String getMessage() {
+
+        return this.message;
+    }
+
+    public void setMessage(String message) {
+
+        this.message = message;
+    }
 
 }

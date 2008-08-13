@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 
+
 /**
  * Mandate JAAS login module.
  * 
@@ -38,99 +39,106 @@ import org.jboss.security.SimplePrincipal;
  */
 public class MandateLoginModule implements LoginModule {
 
-	private static final Log LOG = LogFactory.getLog(MandateLoginModule.class);
+    private static final Log     LOG = LogFactory.getLog(MandateLoginModule.class);
 
-	private Subject subject;
+    private Subject              subject;
 
-	private CallbackHandler callbackHandler;
+    private CallbackHandler      callbackHandler;
 
-	private Principal authenticatedPrincipal;
+    private Principal            authenticatedPrincipal;
 
-	private boolean admin;
+    private boolean              admin;
 
-	private AuthorizationService authorizationService;
+    private AuthorizationService authorizationService;
 
-	public void initialize(Subject inSubject, CallbackHandler inCallbackHandler,
-			Map<String, ?> sharedState, Map<String, ?> options) {
-		LOG.debug("initialize");
-		this.subject = inSubject;
-		this.callbackHandler = inCallbackHandler;
 
-		this.authorizationService = AuthorizationServiceFactory.newInstance();
-	}
+    public void initialize(Subject inSubject, CallbackHandler inCallbackHandler, Map<String, ?> sharedState,
+            Map<String, ?> options) {
 
-	public boolean login() throws LoginException {
-		NameCallback nameCallback = new NameCallback("username");
-		Callback[] callbacks = new Callback[] { nameCallback };
+        LOG.debug("initialize");
+        this.subject = inSubject;
+        this.callbackHandler = inCallbackHandler;
 
-		try {
-			this.callbackHandler.handle(callbacks);
-		} catch (IOException e) {
-			throw new LoginException("IO error: " + e.getMessage());
-		} catch (UnsupportedCallbackException e) {
-			throw new LoginException("Unsupported callback: " + e.getMessage());
-		}
+        this.authorizationService = AuthorizationServiceFactory.newInstance();
+    }
 
-		String username = nameCallback.getName();
-		LOG.debug("username: " + username);
+    public boolean login() throws LoginException {
 
-		// authentication
-		this.authenticatedPrincipal = new SimplePrincipal(username);
+        NameCallback nameCallback = new NameCallback("username");
+        Callback[] callbacks = new Callback[] { nameCallback };
 
-		// authorization
-		this.admin = this.authorizationService.isAdmin(username);
+        try {
+            this.callbackHandler.handle(callbacks);
+        } catch (IOException e) {
+            throw new LoginException("IO error: " + e.getMessage());
+        } catch (UnsupportedCallbackException e) {
+            throw new LoginException("Unsupported callback: " + e.getMessage());
+        }
 
-		return true;
-	}
+        String username = nameCallback.getName();
+        LOG.debug("username: " + username);
 
-	public boolean commit() throws LoginException {
-		Set<Principal> principals = this.subject.getPrincipals();
-		principals.add(this.authenticatedPrincipal);
-		setRole(principals, MandateConstants.USER_ROLE);
-		if (this.admin) {
-			setRole(principals, MandateConstants.ADMIN_ROLE);
-		}
-		return true;
-	}
+        // authentication
+        this.authenticatedPrincipal = new SimplePrincipal(username);
 
-	private void setRole(Set<Principal> principals, String role) {
-		if (null == role) {
-			return;
-		}
-		Group rolesGroup = getGroup("Roles", principals);
-		Principal rolePrincipal = new SimplePrincipal(role);
-		rolesGroup.addMember(rolePrincipal);
-	}
+        // authorization
+        this.admin = this.authorizationService.isAdmin(username);
 
-	private Group getGroup(String groupName, Set<Principal> principals) {
-		for (Principal principal : principals) {
-			if (false == principal instanceof Group) {
-				continue;
-			}
-			Group group = (Group) principal;
-			if (groupName.equals(group.getName())) {
-				return group;
-			}
-		}
-		/*
-		 * If the group did not yet exist, create it and add it to the subject
-		 * principals.
-		 */
-		Group group = new SimpleGroup(groupName);
-		principals.add(group);
-		return group;
-	}
+        return true;
+    }
 
-	public boolean abort() throws LoginException {
-		this.authenticatedPrincipal = null;
-		this.admin = false;
-		return true;
-	}
+    public boolean commit() throws LoginException {
 
-	public boolean logout() throws LoginException {
-		this.subject.getPrincipals().clear();
-		this.subject.getPublicCredentials().clear();
-		this.subject.getPrivateCredentials().clear();
-		return true;
-	}
+        Set<Principal> principals = this.subject.getPrincipals();
+        principals.add(this.authenticatedPrincipal);
+        setRole(principals, MandateConstants.USER_ROLE);
+        if (this.admin) {
+            setRole(principals, MandateConstants.ADMIN_ROLE);
+        }
+        return true;
+    }
+
+    private void setRole(Set<Principal> principals, String role) {
+
+        if (null == role) {
+            return;
+        }
+        Group rolesGroup = getGroup("Roles", principals);
+        Principal rolePrincipal = new SimplePrincipal(role);
+        rolesGroup.addMember(rolePrincipal);
+    }
+
+    private Group getGroup(String groupName, Set<Principal> principals) {
+
+        for (Principal principal : principals) {
+            if (false == principal instanceof Group) {
+                continue;
+            }
+            Group group = (Group) principal;
+            if (groupName.equals(group.getName())) {
+                return group;
+            }
+        }
+        /*
+         * If the group did not yet exist, create it and add it to the subject principals.
+         */
+        Group group = new SimpleGroup(groupName);
+        principals.add(group);
+        return group;
+    }
+
+    public boolean abort() throws LoginException {
+
+        this.authenticatedPrincipal = null;
+        this.admin = false;
+        return true;
+    }
+
+    public boolean logout() throws LoginException {
+
+        this.subject.getPrincipals().clear();
+        this.subject.getPublicCredentials().clear();
+        this.subject.getPrivateCredentials().clear();
+        return true;
+    }
 }

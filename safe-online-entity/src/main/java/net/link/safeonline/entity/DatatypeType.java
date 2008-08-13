@@ -9,29 +9,33 @@ package net.link.safeonline.entity;
 
 public enum DatatypeType {
 
-	STRING("string", true), BOOLEAN("boolean", true), INTEGER("integer", true), DOUBLE(
-			"double", true), DATE("date", true), COMPOUNDED, LOGIN("login",
-			true);
+    STRING("string", true), BOOLEAN("boolean", true), INTEGER("integer", true), DOUBLE("double", true), DATE("date",
+            true), COMPOUNDED, LOGIN("login", true);
 
-	private final String friendlyName;
+    private final String  friendlyName;
 
-	private final boolean primitive;
+    private final boolean primitive;
 
-	private DatatypeType() {
-		this.friendlyName = this.name();
-		this.primitive = false;
-	}
 
-	private DatatypeType(String friendlyName, boolean primitive) {
-		this.friendlyName = friendlyName;
-		this.primitive = primitive;
-	}
+    private DatatypeType() {
 
-	public String getFriendlyName() {
-		return this.friendlyName;
-	}
+        this.friendlyName = this.name();
+        this.primitive = false;
+    }
 
-	public boolean isPrimitive() {
-		return this.primitive;
-	}
+    private DatatypeType(String friendlyName, boolean primitive) {
+
+        this.friendlyName = friendlyName;
+        this.primitive = primitive;
+    }
+
+    public String getFriendlyName() {
+
+        return this.friendlyName;
+    }
+
+    public boolean isPrimitive() {
+
+        return this.primitive;
+    }
 }

@@ -16,6 +16,7 @@ import net.link.safeonline.applet.InfoLevel;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.IdentityProvider;
 
+
 public class AuthenticationApplet extends AppletBase {
 
     private static final long serialVersionUID = 1L;
@@ -32,23 +33,20 @@ public class AuthenticationApplet extends AppletBase {
     }
 
     @Override
-    public byte[] createStatement(Signer signer,
-            IdentityProvider identityProvider) {
+    public byte[] createStatement(Signer signer, IdentityProvider identityProvider) {
 
         String sessionId = getParameter("SessionId");
         String applicationId = getParameter("ApplicationId");
 
         Locale locale = getLocale();
-        ResourceBundle messages = ResourceBundle.getBundle(
-                "net.link.safeonline.auth.AuthenticationMessages", locale);
+        ResourceBundle messages = ResourceBundle.getBundle("net.link.safeonline.auth.AuthenticationMessages", locale);
 
         outputInfoMessage(InfoLevel.NORMAL, messages.getString("creatingStmt"));
         outputDetailMessage("Session: " + sessionId);
         outputDetailMessage("Application: " + applicationId);
         try {
-            byte[] authenticationStatement = AuthenticationStatementFactory
-                    .createAuthenticationStatement(sessionId, applicationId,
-                            signer);
+            byte[] authenticationStatement = AuthenticationStatementFactory.createAuthenticationStatement(sessionId,
+                    applicationId, signer);
             return authenticationStatement;
         } catch (RuntimeException e) {
             outputDetailMessage("runtime exception: " + e.getMessage());

@@ -15,19 +15,20 @@ import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 
+
 @Local
 public interface HelpdeskEventDAO {
 
-	void persist(List<HelpdeskEventEntity> helpdeskEvents);
+    void persist(List<HelpdeskEventEntity> helpdeskEvents);
 
-	List<HelpdeskEventEntity> listEvents(Long logId);
+    List<HelpdeskEventEntity> listEvents(Long logId);
 
-	void clearEvents(long ageInMinutes, LogLevelType logLevel);
+    void clearEvents(long ageInMinutes, LogLevelType logLevel);
 
-	void removeEvents(Long logId);
+    void removeEvents(Long logId);
 
-	List<HelpdeskContextEntity> listUserContexts(String user);
+    List<HelpdeskContextEntity> listUserContexts(String user);
 
-	List<String> listUsers();
+    List<String> listUsers();
 
 }

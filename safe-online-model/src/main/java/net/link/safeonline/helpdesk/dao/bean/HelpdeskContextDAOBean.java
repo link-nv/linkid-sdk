@@ -26,56 +26,58 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
 
-	@EJB
-	private HelpdeskEventDAO helpdeskEventDAO;
+    @EJB
+    private HelpdeskEventDAO                     helpdeskEventDAO;
 
-	private static final Log LOG = LogFactory
-			.getLog(HelpdeskContextDAOBean.class);
+    private static final Log                     LOG = LogFactory.getLog(HelpdeskContextDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                        entityManager;
 
-	private HelpdeskContextEntity.QueryInterface queryObject;
+    private HelpdeskContextEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, HelpdeskContextEntity.QueryInterface.class);
-	}
 
-	public HelpdeskContextEntity createHelpdeskContext(String location) {
-		HelpdeskContextEntity helpdeskContext = new HelpdeskContextEntity(
-				location);
-		this.entityManager.persist(helpdeskContext);
-		LOG.debug("created helpdesk context: " + helpdeskContext.getId());
-		return helpdeskContext;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public List<HelpdeskContextEntity> listContexts() {
-		return this.queryObject.listContexts();
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                HelpdeskContextEntity.QueryInterface.class);
+    }
 
-	public void cleanup() {
-		List<HelpdeskContextEntity> contexts = listContexts();
-		for (HelpdeskContextEntity context : contexts) {
-			List<HelpdeskEventEntity> events = this.helpdeskEventDAO
-					.listEvents(context.getId());
-			if (events.size() == 0) {
-				LOG.debug("remove empty helpdesk context: " + context.getId());
-				this.entityManager.remove(context);
-			}
-		}
-	}
+    public HelpdeskContextEntity createHelpdeskContext(String location) {
 
-	public void removeContext(Long logId)
-			throws HelpdeskContextNotFoundException {
-		HelpdeskContextEntity context = this.entityManager.find(
-				HelpdeskContextEntity.class, logId);
-		if (null == context)
-			throw new HelpdeskContextNotFoundException();
-		this.entityManager.remove(context);
-	}
+        HelpdeskContextEntity helpdeskContext = new HelpdeskContextEntity(location);
+        this.entityManager.persist(helpdeskContext);
+        LOG.debug("created helpdesk context: " + helpdeskContext.getId());
+        return helpdeskContext;
+    }
+
+    public List<HelpdeskContextEntity> listContexts() {
+
+        return this.queryObject.listContexts();
+    }
+
+    public void cleanup() {
+
+        List<HelpdeskContextEntity> contexts = listContexts();
+        for (HelpdeskContextEntity context : contexts) {
+            List<HelpdeskEventEntity> events = this.helpdeskEventDAO.listEvents(context.getId());
+            if (events.size() == 0) {
+                LOG.debug("remove empty helpdesk context: " + context.getId());
+                this.entityManager.remove(context);
+            }
+        }
+    }
+
+    public void removeContext(Long logId) throws HelpdeskContextNotFoundException {
+
+        HelpdeskContextEntity context = this.entityManager.find(HelpdeskContextEntity.class, logId);
+        if (null == context)
+            throw new HelpdeskContextNotFoundException();
+        this.entityManager.remove(context);
+    }
 }

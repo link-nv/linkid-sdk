@@ -16,6 +16,7 @@ import net.link.safeonline.helpdesk.bean.HelpdeskBaseBean;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.annotations.Name;
 
+
 @Stateful
 @Name("beidHelpdesk")
 @LocalBinding(jndiBinding = BeidConstants.JNDI_PREFIX + "HelpdeskBean/local")

@@ -38,215 +38,194 @@ import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.xml.ConfigurationException;
 
+
 /**
- * SAML handler used by remote device issuers to handle an incoming SAML
- * authentication request and store the retrieved information on the session
- * into {@link AuthenticationContext}.
+ * SAML handler used by remote device issuers to handle an incoming SAML authentication request and store the retrieved
+ * information on the session into {@link AuthenticationContext}.
  * 
- * After authenticating it will post a SAML authentication response containing
- * the necessary assertions or a SAML authentication response telling the
- * authentication has failed.
+ * After authenticating it will post a SAML authentication response containing the necessary assertions or a SAML
+ * authentication response telling the authentication has failed.
  * 
  * @author wvdhaute
  * 
  */
 public class Saml2Handler implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID               = 1L;
 
-	private static final Log LOG = LogFactory.getLog(Saml2Handler.class);
+    private static final Log   LOG                            = LogFactory.getLog(Saml2Handler.class);
 
-	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
+    public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
 
-	private HttpSession session;
+    private HttpSession        session;
 
-	private String stsWsLocation;
+    private String             stsWsLocation;
 
-	private String issuer;
+    private String             issuer;
 
-	private KeyPair applicationKeyPair;
+    private KeyPair            applicationKeyPair;
 
-	private X509Certificate applicationCertificate;
+    private X509Certificate    applicationCertificate;
 
-	public static final String SAML2_HANDLER = Saml2Handler.class.getName()
-			+ ".SAML2_HANDLER";
+    public static final String SAML2_HANDLER                  = Saml2Handler.class.getName() + ".SAML2_HANDLER";
 
-	static {
-		/*
-		 * Next is because Sun loves to endorse crippled versions of Xerces.
-		 */
-		System
-				.setProperty(
-						"javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
-						"org.apache.xerces.jaxp.validation.XMLSchemaFactory");
-		try {
-			DefaultBootstrap.bootstrap();
-		} catch (ConfigurationException e) {
-			throw new RuntimeException(
-					"could not bootstrap the OpenSAML2 library");
-		}
-	}
+    static {
+        /*
+         * Next is because Sun loves to endorse crippled versions of Xerces.
+         */
+        System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+                "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+        try {
+            DefaultBootstrap.bootstrap();
+        } catch (ConfigurationException e) {
+            throw new RuntimeException("could not bootstrap the OpenSAML2 library");
+        }
+    }
 
-	private Saml2Handler(HttpServletRequest request) {
-		this.session = request.getSession();
-		this.session.setAttribute(SAML2_HANDLER, this);
-	}
 
-	public static Saml2Handler getSaml2Handler(HttpServletRequest request) {
-		Saml2Handler instance = (Saml2Handler) request.getSession()
-				.getAttribute(SAML2_HANDLER);
-		if (null == instance) {
-			instance = new Saml2Handler(request);
-		}
-		return instance;
-	}
+    private Saml2Handler(HttpServletRequest request) {
 
-	public static Saml2Handler findSaml2Handler(HttpServletRequest request) {
-		Saml2Handler instance = (Saml2Handler) request.getSession()
-				.getAttribute(SAML2_HANDLER);
-		return instance;
-	}
+        this.session = request.getSession();
+        this.session.setAttribute(SAML2_HANDLER, this);
+    }
 
-	public void init(Map<String, String> configParams,
-			X509Certificate newApplicationCertificate,
-			KeyPair newApplicationKeyPair)
-			throws AuthenticationInitializationException {
-		this.stsWsLocation = configParams.get("StsWsLocation");
-		this.issuer = configParams.get("DeviceName");
-		this.applicationCertificate = newApplicationCertificate;
-		this.applicationKeyPair = newApplicationKeyPair;
-		if (null == this.stsWsLocation) {
-			throw new AuthenticationInitializationException(
-					"Missing STS WS Location ( \"StsWsLocation\" )");
-		}
-	}
+    public static Saml2Handler getSaml2Handler(HttpServletRequest request) {
 
-	public void initAuthentication(HttpServletRequest request)
-			throws AuthenticationInitializationException {
+        Saml2Handler instance = (Saml2Handler) request.getSession().getAttribute(SAML2_HANDLER);
+        if (null == instance) {
+            instance = new Saml2Handler(request);
+        }
+        return instance;
+    }
 
-		AuthnRequest samlAuthnRequest;
-		try {
-			samlAuthnRequest = AuthnRequestUtil.validateAuthnRequest(request,
-					this.stsWsLocation, this.applicationCertificate,
-					this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
-		} catch (ServletException e) {
-			throw new AuthenticationInitializationException(e.getMessage());
-		}
+    public static Saml2Handler findSaml2Handler(HttpServletRequest request) {
 
-		String assertionConsumerService = samlAuthnRequest
-				.getAssertionConsumerServiceURL();
+        Saml2Handler instance = (Saml2Handler) request.getSession().getAttribute(SAML2_HANDLER);
+        return instance;
+    }
 
-		if (null == assertionConsumerService)
-			throw new AuthenticationInitializationException(
-					"missing AssertionConsumerServiceURL");
+    public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate,
+            KeyPair newApplicationKeyPair) throws AuthenticationInitializationException {
 
-		if (samlAuthnRequest.getConditions().getAudienceRestrictions()
-				.isEmpty())
-			throw new AuthenticationInitializationException(
-					"missing audience restriction");
+        this.stsWsLocation = configParams.get("StsWsLocation");
+        this.issuer = configParams.get("DeviceName");
+        this.applicationCertificate = newApplicationCertificate;
+        this.applicationKeyPair = newApplicationKeyPair;
+        if (null == this.stsWsLocation) {
+            throw new AuthenticationInitializationException("Missing STS WS Location ( \"StsWsLocation\" )");
+        }
+    }
 
-		String application = samlAuthnRequest.getConditions()
-				.getAudienceRestrictions().get(0).getAudiences().get(0)
-				.getAudienceURI();
+    public void initAuthentication(HttpServletRequest request) throws AuthenticationInitializationException {
 
-		if (null == application) {
-			throw new AuthenticationInitializationException(
-					"No target application was specified");
-		}
-		LOG.debug("application: " + application);
+        AuthnRequest samlAuthnRequest;
+        try {
+            samlAuthnRequest = AuthnRequestUtil.validateAuthnRequest(request, this.stsWsLocation,
+                    this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+        } catch (ServletException e) {
+            throw new AuthenticationInitializationException(e.getMessage());
+        }
 
-		String applicationFriendlyName = samlAuthnRequest.getProviderName();
+        String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
 
-		String nodeName = samlAuthnRequest.getIssuer().getValue();
+        if (null == assertionConsumerService)
+            throw new AuthenticationInitializationException("missing AssertionConsumerServiceURL");
 
-		String samlAuthnRequestId = samlAuthnRequest.getID();
+        if (samlAuthnRequest.getConditions().getAudienceRestrictions().isEmpty())
+            throw new AuthenticationInitializationException("missing audience restriction");
 
-		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
-				.getRequestedAuthnContext();
-		Set<String> devices;
+        String application = samlAuthnRequest.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0)
+                .getAudienceURI();
 
-		if (null != requestedAuthnContext) {
-			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
-					.getAuthnContextClassRefs();
-			devices = new HashSet<String>();
-			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
-				devices.add(authnContextClassRef.getAuthnContextClassRef());
-		} else {
-			devices = null;
-		}
+        if (null == application) {
+            throw new AuthenticationInitializationException("No target application was specified");
+        }
+        LOG.debug("application: " + application);
 
-		this.session.setAttribute("applicationId", application);
-		this.session.setAttribute("applicationName", applicationFriendlyName);
+        String applicationFriendlyName = samlAuthnRequest.getProviderName();
 
-		AuthenticationContext authenticationContext = AuthenticationContext
-				.getAuthenticationContext(request.getSession());
-		authenticationContext.setWantedDevices(devices);
-		authenticationContext.setApplication(application);
-		authenticationContext
-				.setApplicationFriendlyName(applicationFriendlyName);
-		authenticationContext.setNodeName(nodeName);
-		authenticationContext.setInResponseTo(samlAuthnRequestId);
-		authenticationContext.setTargetUrl(assertionConsumerService);
-		authenticationContext.setIssuer(this.issuer);
-	}
+        String nodeName = samlAuthnRequest.getIssuer().getValue();
 
-	public void finalizeAuthentication(HttpServletRequest request,
-			HttpServletResponse response)
-			throws AuthenticationFinalizationException {
-		AuthenticationContext authenticationContext = AuthenticationContext
-				.getAuthenticationContext(request.getSession());
-		String usedDevice = authenticationContext.getUsedDevice();
-		String userId = authenticationContext.getUserId();
-		String applicationId = authenticationContext.getApplication();
-		String target = authenticationContext.getTargetUrl();
-		String inResponseTo = authenticationContext.getInResponseTo();
-		if (null == inResponseTo) {
-			throw new AuthenticationFinalizationException(
-					"missing IN_RESPONSE_TO session attribute");
-		}
+        String samlAuthnRequestId = samlAuthnRequest.getID();
 
-		String issuerName = authenticationContext.getIssuer();
-		int validity = authenticationContext.getValidity();
+        RequestedAuthnContext requestedAuthnContext = samlAuthnRequest.getRequestedAuthnContext();
+        Set<String> devices;
 
-		String samlResponseToken;
-		if (null == userId && null == usedDevice) {
-			/*
-			 * Authentication must have failed
-			 */
-			samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(
-					inResponseTo, issuerName, this.applicationKeyPair, target);
-		} else if (null == userId && null != usedDevice) {
-			/*
-			 * Authentication failed and user requested to try another device.
-			 */
-			samlResponseToken = AuthnResponseFactory
-					.createAuthResponseRequestRegistration(inResponseTo,
-							issuerName, this.applicationKeyPair, target);
+        if (null != requestedAuthnContext) {
+            List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
+            devices = new HashSet<String>();
+            for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
+                devices.add(authnContextClassRef.getAuthnContextClassRef());
+        } else {
+            devices = null;
+        }
 
-		} else {
-			/*
-			 * Authentication was successful
-			 */
-			samlResponseToken = AuthnResponseFactory.createAuthResponse(
-					inResponseTo, applicationId, issuerName, userId,
-					usedDevice, this.applicationKeyPair, validity, target);
-		}
+        this.session.setAttribute("applicationId", application);
+        this.session.setAttribute("applicationName", applicationFriendlyName);
 
-		String encodedSamlResponseToken = Base64.encode(samlResponseToken
-				.getBytes());
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request
+                .getSession());
+        authenticationContext.setWantedDevices(devices);
+        authenticationContext.setApplication(application);
+        authenticationContext.setApplicationFriendlyName(applicationFriendlyName);
+        authenticationContext.setNodeName(nodeName);
+        authenticationContext.setInResponseTo(samlAuthnRequestId);
+        authenticationContext.setTargetUrl(assertionConsumerService);
+        authenticationContext.setIssuer(this.issuer);
+    }
 
-		String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+    public void finalizeAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationFinalizationException {
 
-		try {
-			AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken,
-					templateResourceName, target, response);
-		} catch (ServletException e) {
-			throw new AuthenticationFinalizationException(e.getMessage());
-		} catch (IOException e) {
-			throw new AuthenticationFinalizationException(e.getMessage());
-		}
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request
+                .getSession());
+        String usedDevice = authenticationContext.getUsedDevice();
+        String userId = authenticationContext.getUserId();
+        String applicationId = authenticationContext.getApplication();
+        String target = authenticationContext.getTargetUrl();
+        String inResponseTo = authenticationContext.getInResponseTo();
+        if (null == inResponseTo) {
+            throw new AuthenticationFinalizationException("missing IN_RESPONSE_TO session attribute");
+        }
 
-		// destroy the session to prevent reuse
-		request.getSession().invalidate();
-	}
+        String issuerName = authenticationContext.getIssuer();
+        int validity = authenticationContext.getValidity();
+
+        String samlResponseToken;
+        if (null == userId && null == usedDevice) {
+            /*
+             * Authentication must have failed
+             */
+            samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(inResponseTo, issuerName,
+                    this.applicationKeyPair, target);
+        } else if (null == userId && null != usedDevice) {
+            /*
+             * Authentication failed and user requested to try another device.
+             */
+            samlResponseToken = AuthnResponseFactory.createAuthResponseRequestRegistration(inResponseTo, issuerName,
+                    this.applicationKeyPair, target);
+
+        } else {
+            /*
+             * Authentication was successful
+             */
+            samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationId, issuerName,
+                    userId, usedDevice, this.applicationKeyPair, validity, target);
+        }
+
+        String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
+
+        String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+
+        try {
+            AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken, templateResourceName, target, response);
+        } catch (ServletException e) {
+            throw new AuthenticationFinalizationException(e.getMessage());
+        } catch (IOException e) {
+            throw new AuthenticationFinalizationException(e.getMessage());
+        }
+
+        // destroy the session to prevent reuse
+        request.getSession().invalidate();
+    }
 }

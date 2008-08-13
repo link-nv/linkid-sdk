@@ -16,9 +16,9 @@ import net.link.safeonline.helpdesk.bean.HelpdeskBaseBean;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.annotations.Name;
 
+
 @Stateful
 @Name("helpdesk")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-		+ "HelpdeskBean/local")
+@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "HelpdeskBean/local")
 public class HelpdeskBean extends HelpdeskBaseBean implements Helpdesk {
 }

@@ -16,34 +16,30 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 
+
 @Local
 public interface EndpointReferenceDAO {
 
-	EndpointReferenceEntity addEndpointReference(String address,
-			ApplicationEntity application);
+    EndpointReferenceEntity addEndpointReference(String address, ApplicationEntity application);
 
-	EndpointReferenceEntity addEndpointReference(String address,
-			DeviceEntity device);
+    EndpointReferenceEntity addEndpointReference(String address, DeviceEntity device);
 
-	EndpointReferenceEntity findEndpointReference(String address,
-			ApplicationEntity application);
+    EndpointReferenceEntity findEndpointReference(String address, ApplicationEntity application);
 
-	EndpointReferenceEntity findEndpointReference(String address,
-			DeviceEntity device);
+    EndpointReferenceEntity findEndpointReference(String address, DeviceEntity device);
 
-	EndpointReferenceEntity getEndpointReference(String address,
-			ApplicationEntity application)
-			throws EndpointReferenceNotFoundException;
+    EndpointReferenceEntity getEndpointReference(String address, ApplicationEntity application)
+            throws EndpointReferenceNotFoundException;
 
-	EndpointReferenceEntity getEndpointReference(String address,
-			DeviceEntity device) throws EndpointReferenceNotFoundException;
+    EndpointReferenceEntity getEndpointReference(String address, DeviceEntity device)
+            throws EndpointReferenceNotFoundException;
 
-	List<EndpointReferenceEntity> listEndpoints();
+    List<EndpointReferenceEntity> listEndpoints();
 
-	List<EndpointReferenceEntity> listEndpoints(DeviceEntity device);
+    List<EndpointReferenceEntity> listEndpoints(DeviceEntity device);
 
-	List<EndpointReferenceEntity> listEndpoints(ApplicationEntity application);
+    List<EndpointReferenceEntity> listEndpoints(ApplicationEntity application);
 
-	void remove(EndpointReferenceEntity endpoint);
+    void remove(EndpointReferenceEntity endpoint);
 
 }

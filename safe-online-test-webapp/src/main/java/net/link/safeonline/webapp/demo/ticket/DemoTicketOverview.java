@@ -10,31 +10,37 @@ package net.link.safeonline.webapp.demo.ticket;
 import net.link.safeonline.webapp.Page;
 import junit.framework.Assert;
 
+
 public class DemoTicketOverview extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX
-			+ "/overview.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX + "/overview.seam";
 
-	public DemoTicketOverview() {
-		super(PAGE_NAME);
-	}
 
-	public DemoTicketList list() {
-		clickLinkAndWait("list");
-		return new DemoTicketList();
-	}
+    public DemoTicketOverview() {
 
-	public DemoTicketAdd add() {
-		clickLinkAndWait("add");
-		return new DemoTicketAdd();
-	}
+        super(PAGE_NAME);
+    }
 
-	public void remove() {
-		clickButtonAndWait("remove");
-	}
+    public DemoTicketList list() {
 
-	public void checkLoggedIn(String login) {
-		Assert.assertTrue(checkTextPresent("Welcome " + login));
-	}
+        clickLinkAndWait("list");
+        return new DemoTicketList();
+    }
+
+    public DemoTicketAdd add() {
+
+        clickLinkAndWait("add");
+        return new DemoTicketAdd();
+    }
+
+    public void remove() {
+
+        clickButtonAndWait("remove");
+    }
+
+    public void checkLoggedIn(String login) {
+
+        Assert.assertTrue(checkTextPresent("Welcome " + login));
+    }
 
 }

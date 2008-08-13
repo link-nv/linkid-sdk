@@ -12,6 +12,7 @@ package net.link.safeonline.validation.validator;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Catalog for validators. Flyweight pattern.
  * 
@@ -20,26 +21,26 @@ import java.util.Map;
  */
 public class ValidatorCatalog {
 
-	@SuppressWarnings("unchecked")
-	private static Map<Class<? extends Validator>, Validator<?>> instances = new HashMap<Class<? extends Validator>, Validator<?>>();
+    @SuppressWarnings("unchecked")
+    private static Map<Class<? extends Validator>, Validator<?>> instances = new HashMap<Class<? extends Validator>, Validator<?>>();
 
-	private ValidatorCatalog() {
-		// empty
-	}
 
-	public static Validator<?> getInstance(@SuppressWarnings("unchecked")
-	Class<? extends Validator> validatorClass) {
-		Validator<?> instance = ValidatorCatalog.instances.get(validatorClass);
-		if (null == instance) {
-			try {
-				instance = validatorClass.newInstance();
-				ValidatorCatalog.instances.put(validatorClass, instance);
-			} catch (Exception e) {
-				throw new IllegalStateException(
-						"Unable to get instance of class: "
-								+ validatorClass.getName());
-			}
-		}
-		return instance;
-	}
+    private ValidatorCatalog() {
+
+        // empty
+    }
+
+    public static Validator<?> getInstance(@SuppressWarnings("unchecked") Class<? extends Validator> validatorClass) {
+
+        Validator<?> instance = ValidatorCatalog.instances.get(validatorClass);
+        if (null == instance) {
+            try {
+                instance = validatorClass.newInstance();
+                ValidatorCatalog.instances.put(validatorClass, instance);
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to get instance of class: " + validatorClass.getName());
+            }
+        }
+        return instance;
+    }
 }

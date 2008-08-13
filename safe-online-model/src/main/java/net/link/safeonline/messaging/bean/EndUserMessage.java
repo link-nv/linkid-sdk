@@ -7,58 +7,69 @@ import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+
 public class EndUserMessage implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String destination;
+    private String            destination;
 
-	private String subject;
+    private String            subject;
 
-	private String message;
+    private String            message;
 
-	public EndUserMessage(String destination, String subject, String message) {
-		this.destination = destination;
-		this.subject = subject;
-		this.message = message;
-	}
 
-	public EndUserMessage(Message JMSMessage) throws JMSException {
-		this.destination = JMSMessage.getStringProperty("destination");
-		this.subject = JMSMessage.getStringProperty("subject");
-		this.message = JMSMessage.getStringProperty("messagetext");
-	}
+    public EndUserMessage(String destination, String subject, String message) {
 
-	public TextMessage getJMSMessage(Session session) throws JMSException {
-		TextMessage JMSMessage = session.createTextMessage();
-		JMSMessage.setStringProperty("destination", this.destination);
-		JMSMessage.setStringProperty("subject", this.subject);
-		JMSMessage.setStringProperty("messagetext", this.message);
-		return JMSMessage;
-	}
+        this.destination = destination;
+        this.subject = subject;
+        this.message = message;
+    }
 
-	public String getDestination() {
-		return this.destination;
-	}
+    public EndUserMessage(Message JMSMessage) throws JMSException {
 
-	public void setDestination(String destination) {
-		this.destination = destination;
-	}
+        this.destination = JMSMessage.getStringProperty("destination");
+        this.subject = JMSMessage.getStringProperty("subject");
+        this.message = JMSMessage.getStringProperty("messagetext");
+    }
 
-	public String getMessage() {
-		return this.message;
-	}
+    public TextMessage getJMSMessage(Session session) throws JMSException {
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+        TextMessage JMSMessage = session.createTextMessage();
+        JMSMessage.setStringProperty("destination", this.destination);
+        JMSMessage.setStringProperty("subject", this.subject);
+        JMSMessage.setStringProperty("messagetext", this.message);
+        return JMSMessage;
+    }
 
-	public String getSubject() {
-		return this.subject;
-	}
+    public String getDestination() {
 
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
+        return this.destination;
+    }
+
+    public void setDestination(String destination) {
+
+        this.destination = destination;
+    }
+
+    public String getMessage() {
+
+        return this.message;
+    }
+
+    public void setMessage(String message) {
+
+        this.message = message;
+    }
+
+    public String getSubject() {
+
+        return this.subject;
+    }
+
+    public void setSubject(String subject) {
+
+        this.subject = subject;
+    }
 
 }

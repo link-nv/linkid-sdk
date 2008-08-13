@@ -11,10 +11,12 @@ import net.link.safeonline.taglib.AttributeInputComponent;
 
 import org.junit.Test;
 
+
 public class AttributeInputComponentTest {
 
-	@Test
-	public void newInstance() throws Exception {
-		new AttributeInputComponent();
-	}
+    @Test
+    public void newInstance() throws Exception {
+
+        new AttributeInputComponent();
+    }
 }

@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SecurityAssociation;
 import org.jboss.security.SimplePrincipal;
 
+
 /**
  * Implementation of application ownership security constraint.
  * 
@@ -35,113 +36,109 @@ import org.jboss.security.SimplePrincipal;
  */
 public class SecurityApplicationEntityListener {
 
-	private static final Log LOG = LogFactory
-			.getLog(SecurityApplicationEntityListener.class);
+    private static final Log    LOG                 = LogFactory.getLog(SecurityApplicationEntityListener.class);
 
-	private static final String SUBJECT_CONTEXT_KEY = "javax.security.auth.Subject.container";
+    private static final String SUBJECT_CONTEXT_KEY = "javax.security.auth.Subject.container";
 
-	@PreUpdate
-	public void preUpdateCallback(ApplicationEntity application) {
-		LOG.debug("pre update callback on application: "
-				+ application.getName());
 
-		Subject subject;
-		try {
-			/*
-			 * JSR-115: Java Authorization Contract for Containers (JACC)
-			 * 4.6.1.1. Container Subject Policy Context Handler
-			 */
-			String contextId = PolicyContext.getContextID();
-			LOG.debug("context Id: " + contextId);
-			subject = (Subject) PolicyContext.getContext(SUBJECT_CONTEXT_KEY);
-		} catch (PolicyContextException e) {
-			throw new EJBException("Policy Context error: " + e.getMessage(), e);
-		}
+    @PreUpdate
+    public void preUpdateCallback(ApplicationEntity application) {
 
-		if (null == subject) {
-			/*
-			 * We allow non-authenticated code to proceed. This is required for
-			 * the bootstrap code.
-			 */
-			LOG.debug("no subject active");
-			return;
-		}
+        LOG.debug("pre update callback on application: " + application.getName());
 
-		boolean isOperator = isCallerInRole(subject,
-				SafeOnlineRoles.OPERATOR_ROLE);
-		if (isOperator) {
-			LOG.debug("operator ok");
-			return;
-		}
-		boolean isGlobalOperator = isCallerInRole(subject,
-				SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
-		if (isGlobalOperator) {
-			LOG.debug("global operator ok");
-			return;
-		}
+        Subject subject;
+        try {
+            /*
+             * JSR-115: Java Authorization Contract for Containers (JACC) 4.6.1.1. Container Subject Policy Context
+             * Handler
+             */
+            String contextId = PolicyContext.getContextID();
+            LOG.debug("context Id: " + contextId);
+            subject = (Subject) PolicyContext.getContext(SUBJECT_CONTEXT_KEY);
+        } catch (PolicyContextException e) {
+            throw new EJBException("Policy Context error: " + e.getMessage(), e);
+        }
 
-		boolean isOwner = isCallerInRole(subject, SafeOnlineRoles.OWNER_ROLE);
-		if (!isOwner) {
-			String msg = "caller has no owner role";
-			LOG.debug(msg);
-			return;
-		}
+        if (null == subject) {
+            /*
+             * We allow non-authenticated code to proceed. This is required for the bootstrap code.
+             */
+            LOG.debug("no subject active");
+            return;
+        }
 
-		String login = getLogin(subject);
-		LOG.debug("login: " + login);
-		ApplicationOwnerEntity applicationOwner = application
-				.getApplicationOwner();
-		SubjectEntity adminSubject = applicationOwner.getAdmin();
-		String ownerLogin = adminSubject.getUserId();
-		LOG.debug("admin login: " + ownerLogin);
+        boolean isOperator = isCallerInRole(subject, SafeOnlineRoles.OPERATOR_ROLE);
+        if (isOperator) {
+            LOG.debug("operator ok");
+            return;
+        }
+        boolean isGlobalOperator = isCallerInRole(subject, SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+        if (isGlobalOperator) {
+            LOG.debug("global operator ok");
+            return;
+        }
 
-		Principal saPrincipal = SecurityAssociation.getPrincipal();
-		LOG.debug("security association principal: " + saPrincipal.getName());
-		Subject saSubject = SecurityAssociation.getSubject();
-		LOG.debug("security association subject == JACC subject: "
-				+ saSubject.equals(subject));
+        boolean isOwner = isCallerInRole(subject, SafeOnlineRoles.OWNER_ROLE);
+        if (!isOwner) {
+            String msg = "caller has no owner role";
+            LOG.debug(msg);
+            return;
+        }
 
-		Set<Principal> principals = subject.getPrincipals();
-		for (Principal principal : principals) {
-			LOG.debug("principal: " + principal + "; "
-					+ principal.getClass().getName());
-		}
+        String login = getLogin(subject);
+        LOG.debug("login: " + login);
+        ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
+        SubjectEntity adminSubject = applicationOwner.getAdmin();
+        String ownerLogin = adminSubject.getUserId();
+        LOG.debug("admin login: " + ownerLogin);
 
-		if (ownerLogin.equals(saPrincipal.getName())) {
-			LOG.debug("ownership check ok");
-			return;
-		}
-		String msg = "only the application owner admin can change the application";
-		LOG.error(msg);
-		throw new EJBException(msg);
-	}
+        Principal saPrincipal = SecurityAssociation.getPrincipal();
+        LOG.debug("security association principal: " + saPrincipal.getName());
+        Subject saSubject = SecurityAssociation.getSubject();
+        LOG.debug("security association subject == JACC subject: " + saSubject.equals(subject));
 
-	private String getLogin(Subject subject) {
-		Set<Principal> principals = subject.getPrincipals();
-		for (Principal principal : principals) {
-			if (principal instanceof Group) {
-				continue;
-			}
-			String login = principal.getName();
-			return login;
-		}
-		throw new EJBException("no simple principal found on subject");
-	}
+        Set<Principal> principals = subject.getPrincipals();
+        for (Principal principal : principals) {
+            LOG.debug("principal: " + principal + "; " + principal.getClass().getName());
+        }
 
-	private boolean isCallerInRole(Subject subject, String role) {
-		Set<Group> groups = subject.getPrincipals(Group.class);
-		if (null == groups) {
-			return false;
-		}
-		SimplePrincipal rolePrincipal = new SimplePrincipal(role);
-		for (Group group : groups) {
-			if (!"Roles".equals(group.getName())) {
-				continue;
-			}
-			if (group.isMember(rolePrincipal)) {
-				return true;
-			}
-		}
-		return false;
-	}
+        if (ownerLogin.equals(saPrincipal.getName())) {
+            LOG.debug("ownership check ok");
+            return;
+        }
+        String msg = "only the application owner admin can change the application";
+        LOG.error(msg);
+        throw new EJBException(msg);
+    }
+
+    private String getLogin(Subject subject) {
+
+        Set<Principal> principals = subject.getPrincipals();
+        for (Principal principal : principals) {
+            if (principal instanceof Group) {
+                continue;
+            }
+            String login = principal.getName();
+            return login;
+        }
+        throw new EJBException("no simple principal found on subject");
+    }
+
+    private boolean isCallerInRole(Subject subject, String role) {
+
+        Set<Group> groups = subject.getPrincipals(Group.class);
+        if (null == groups) {
+            return false;
+        }
+        SimplePrincipal rolePrincipal = new SimplePrincipal(role);
+        for (Group group : groups) {
+            if (!"Roles".equals(group.getName())) {
+                continue;
+            }
+            if (group.isMember(rolePrincipal)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

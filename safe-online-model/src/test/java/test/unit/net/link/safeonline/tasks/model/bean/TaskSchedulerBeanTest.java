@@ -50,156 +50,153 @@ import org.junit.Test;
 
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class TaskSchedulerBeanTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(TaskSchedulerBeanTest.class);
+    private static final Log  LOG = LogFactory.getLog(TaskSchedulerBeanTest.class);
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	private TaskSchedulerBean testedInstance;
+    private TaskSchedulerBean testedInstance;
 
-	private TimerService mockTimerService;
+    private TimerService      mockTimerService;
 
-	private Timer mockTimer;
+    private Timer             mockTimer;
 
-	private JndiTestUtils jndiTestUtils;
+    private JndiTestUtils     jndiTestUtils;
 
-	@Before
-	public void setUp() throws Exception {
-		this.mockTimerService = createMock(TimerService.class);
-		this.mockTimer = createMock(Timer.class);
-		this.testedInstance = new TaskSchedulerBean();
-		EJBTestUtils.inject(this.testedInstance, this.mockTimerService);
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+    @Before
+    public void setUp() throws Exception {
 
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        this.mockTimerService = createMock(TimerService.class);
+        this.mockTimer = createMock(Timer.class);
+        this.testedInstance = new TaskSchedulerBean();
+        EJBTestUtils.inject(this.testedInstance, this.mockTimerService);
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
-						return certificate;
-					}
-				});
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		Startable systemStartable = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		systemStartable.postStart();
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		EntityTransaction entityTransaction = entityManager.getTransaction();
-		entityTransaction.commit();
-		entityTransaction.begin();
+                        return authCertificate;
+                    }
+                });
 
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
-	}
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-	@After
-	public void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		this.jndiTestUtils.tearDown();
-	}
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-	@Test
-	public void testSetTimer() throws Exception {
-		// setup
-		SchedulingEntity scheduling = new SchedulingEntity("test",
-				"0 0/5 * * * ?", null);
+                        return certificate;
+                    }
+                });
 
-		expect(
-				this.mockTimerService.createTimer((Date) anyObject(),
-						(String) anyObject())).andReturn(this.mockTimer);
-		expect(this.mockTimer.getHandle()).andReturn(null);
-		expect(
-				this.mockTimerService.createTimer((Date) anyObject(),
-						(String) anyObject())).andReturn(this.mockTimer);
-		expect(this.mockTimer.getHandle()).andReturn(null);
-		replay(this.mockTimerService);
-		replay(this.mockTimer);
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		// operate
-		this.testedInstance.setTimer(scheduling);
-		Date firstDate = scheduling.getFireDate();
-		this.testedInstance.setTimer(scheduling);
-		Date nextDate = scheduling.getFireDate();
-		assertFalse(firstDate.equals(nextDate));
-	}
+        systemStartable.postStart();
 
-	@Test
-	public void testPostStart() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		this.testedInstance = EJBTestUtils.newInstance(TaskSchedulerBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.commit();
+        entityTransaction.begin();
 
-		Task testTaskComponent = new TestTask();
-		String testTaskJndiName = "SafeOnline/task/TestTaskComponent";
-		this.jndiTestUtils.bindComponent(testTaskJndiName, testTaskComponent);
+        this.jndiTestUtils = new JndiTestUtils();
+        this.jndiTestUtils.setUp();
+    }
 
-		// operate
-		LOG
-				.debug("------------------ FIRST POST START -------------------------");
-		this.testedInstance.postStart();
-		EntityTransaction entityTransaction = entityManager.getTransaction();
-		entityTransaction.commit();
-		entityTransaction.begin();
+    @After
+    public void tearDown() throws Exception {
 
-		SchedulingDAO schedulingDAO = EJBTestUtils.newInstance(
-				SchedulingDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
-		SchedulingEntity defaultScheduling = schedulingDAO
-				.findSchedulingByName("default");
-		assertNotNull(defaultScheduling);
-		List<TaskEntity> defaultTasks = defaultScheduling.getTasks();
-		assertNotNull(defaultTasks);
-		assertEquals(1, defaultTasks.size());
-		assertEquals(testTaskJndiName, defaultTasks.get(0).getJndiName());
-		assertEquals("test-task", defaultTasks.get(0).getName());
-		assertEquals(defaultScheduling, defaultTasks.get(0).getScheduling());
+        this.entityTestManager.tearDown();
+        this.jndiTestUtils.tearDown();
+    }
 
-		LOG
-				.debug("------------------ SECOND POST START ----------------------------");
-		/*
-		 * We run postStart twice since the task scheduler bean must be capable
-		 * of rebooting using a non-volatile database.
-		 */
-		this.testedInstance.postStart();
-	}
+    @Test
+    public void testSetTimer() throws Exception {
 
-	static class TestTask implements Task {
+        // setup
+        SchedulingEntity scheduling = new SchedulingEntity("test", "0 0/5 * * * ?", null);
 
-		private static final Log taskLOG = LogFactory.getLog(TestTask.class);
+        expect(this.mockTimerService.createTimer((Date) anyObject(), (String) anyObject())).andReturn(this.mockTimer);
+        expect(this.mockTimer.getHandle()).andReturn(null);
+        expect(this.mockTimerService.createTimer((Date) anyObject(), (String) anyObject())).andReturn(this.mockTimer);
+        expect(this.mockTimer.getHandle()).andReturn(null);
+        replay(this.mockTimerService);
+        replay(this.mockTimer);
 
-		public String getName() {
-			return "test-task";
-		}
+        // operate
+        this.testedInstance.setTimer(scheduling);
+        Date firstDate = scheduling.getFireDate();
+        this.testedInstance.setTimer(scheduling);
+        Date nextDate = scheduling.getFireDate();
+        assertFalse(firstDate.equals(nextDate));
+    }
 
-		public void perform() {
-			taskLOG.debug("perform");
-		}
-	}
+    @Test
+    public void testPostStart() throws Exception {
+
+        // setup
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        this.testedInstance = EJBTestUtils.newInstance(TaskSchedulerBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
+
+        Task testTaskComponent = new TestTask();
+        String testTaskJndiName = "SafeOnline/task/TestTaskComponent";
+        this.jndiTestUtils.bindComponent(testTaskJndiName, testTaskComponent);
+
+        // operate
+        LOG.debug("------------------ FIRST POST START -------------------------");
+        this.testedInstance.postStart();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.commit();
+        entityTransaction.begin();
+
+        SchedulingDAO schedulingDAO = EJBTestUtils.newInstance(SchedulingDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        SchedulingEntity defaultScheduling = schedulingDAO.findSchedulingByName("default");
+        assertNotNull(defaultScheduling);
+        List<TaskEntity> defaultTasks = defaultScheduling.getTasks();
+        assertNotNull(defaultTasks);
+        assertEquals(1, defaultTasks.size());
+        assertEquals(testTaskJndiName, defaultTasks.get(0).getJndiName());
+        assertEquals("test-task", defaultTasks.get(0).getName());
+        assertEquals(defaultScheduling, defaultTasks.get(0).getScheduling());
+
+        LOG.debug("------------------ SECOND POST START ----------------------------");
+        /*
+         * We run postStart twice since the task scheduler bean must be capable of rebooting using a non-volatile
+         * database.
+         */
+        this.testedInstance.postStart();
+    }
+
+
+    static class TestTask implements Task {
+
+        private static final Log taskLOG = LogFactory.getLog(TestTask.class);
+
+
+        public String getName() {
+
+            return "test-task";
+        }
+
+        public void perform() {
+
+            taskLOG.debug("perform");
+        }
+    }
 }

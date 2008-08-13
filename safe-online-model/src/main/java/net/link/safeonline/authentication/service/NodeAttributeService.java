@@ -14,9 +14,9 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
+
 /**
- * Attribute Service. To be used by Olas nodes to retrieve attributes of their
- * users.
+ * Attribute Service. To be used by Olas nodes to retrieve attributes of their users.
  * 
  * @author wvdhaute
  * 
@@ -24,25 +24,23 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 @Local
 public interface NodeAttributeService {
 
-	/**
-	 * Gives back the value of an attribute of a certain subject.
-	 * 
-	 * <p>
-	 * The returned object can be a {@link String} or {@link Boolean}, ...
-	 * depending on the actual datatype used by corresponding attribute type of
-	 * the requested attribute. In case of a multivalued attribute the returned
-	 * object will be an array. In case of a compounded a Map will be returned.
-	 * In case of a multivalued compounded an array of Maps will be returned.
-	 * </p>
-	 * 
-	 * @param subjectId
-	 * @param attributeName
-	 * @throws AttributeNotFoundException
-	 * @throws PermissionDeniedException
-	 * @throws SubjectNotFoundException
-	 * @throws AttributeTypeNotFoundException
-	 */
-	Object getAttributeValue(String subjectId, String attributeName)
-			throws AttributeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException, AttributeTypeNotFoundException;
+    /**
+     * Gives back the value of an attribute of a certain subject.
+     * 
+     * <p>
+     * The returned object can be a {@link String} or {@link Boolean}, ... depending on the actual datatype used by
+     * corresponding attribute type of the requested attribute. In case of a multivalued attribute the returned object
+     * will be an array. In case of a compounded a Map will be returned. In case of a multivalued compounded an array of
+     * Maps will be returned.
+     * </p>
+     * 
+     * @param subjectId
+     * @param attributeName
+     * @throws AttributeNotFoundException
+     * @throws PermissionDeniedException
+     * @throws SubjectNotFoundException
+     * @throws AttributeTypeNotFoundException
+     */
+    Object getAttributeValue(String subjectId, String attributeName) throws AttributeNotFoundException,
+            PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException;
 }

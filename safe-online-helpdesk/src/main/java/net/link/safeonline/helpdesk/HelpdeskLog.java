@@ -13,59 +13,61 @@ import javax.ejb.Local;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
+
 @Local
 public interface HelpdeskLog {
-	/*
-	 * Factories.
-	 */
-	void helpdeskContextListFactory();
 
-	void helpdeskLogListFactory();
+    /*
+     * Factories.
+     */
+    void helpdeskContextListFactory();
 
-	void helpdeskUserListFactory();
+    void helpdeskLogListFactory();
 
-	void helpdeskUserContextListFactory();
+    void helpdeskUserListFactory();
 
-	/*
-	 * Richfaces
-	 */
-	List<String> autocomplete(Object event);
+    void helpdeskUserContextListFactory();
 
-	List<String> autocompleteUser(Object event);
+    /*
+     * Richfaces
+     */
+    List<String> autocomplete(Object event);
 
-	/*
-	 * Validators
-	 */
-	void validateId(FacesContext context, UIComponent toValidate, Object value);
+    List<String> autocompleteUser(Object event);
 
-	void validateUser(FacesContext context, UIComponent toValidate, Object value);
+    /*
+     * Validators
+     */
+    void validateId(FacesContext context, UIComponent toValidate, Object value);
 
-	/*
-	 * Accessors.
-	 */
-	Long getSearchId();
+    void validateUser(FacesContext context, UIComponent toValidate, Object value);
 
-	void setSearchId(Long searchId);
+    /*
+     * Accessors.
+     */
+    Long getSearchId();
 
-	String getSearchUserName();
+    void setSearchId(Long searchId);
 
-	void setSearchUserName(String searchUserName);
+    String getSearchUserName();
 
-	/*
-	 * Actions.
-	 */
-	String search();
+    void setSearchUserName(String searchUserName);
 
-	String searchUser();
+    /*
+     * Actions.
+     */
+    String search();
 
-	String view();
+    String searchUser();
 
-	String viewUser();
+    String view();
 
-	String removeLog();
+    String viewUser();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    String removeLog();
+
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

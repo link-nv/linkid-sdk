@@ -9,13 +9,15 @@ package net.link.safeonline.webapp.auth;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class AuthUnsupportedProtocol extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/unsupported-protocol.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/unsupported-protocol.seam";
 
-	public AuthUnsupportedProtocol() {
-		super(PAGE_NAME);
-	}
+
+    public AuthUnsupportedProtocol() {
+
+        super(PAGE_NAME);
+    }
 
 }

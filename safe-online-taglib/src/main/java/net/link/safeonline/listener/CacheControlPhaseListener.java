@@ -13,6 +13,7 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletResponse;
 
+
 /**
  * Cache Control Phase Listener.
  * 
@@ -21,22 +22,25 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class CacheControlPhaseListener implements PhaseListener {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public void afterPhase(PhaseEvent event) {
-	}
 
-	public void beforePhase(PhaseEvent event) {
-		FacesContext facesContext = event.getFacesContext();
-		HttpServletResponse response = (HttpServletResponse) facesContext
-				.getExternalContext().getResponse();
-		response.addHeader("Pragma", "no-cache");
-		response.addHeader("Cache-Control", "no-cache");
-		response.addHeader("Cache-Control", "must-revalidate");
-		response.addHeader("Expires", "-1");
-	}
+    public void afterPhase(PhaseEvent event) {
 
-	public PhaseId getPhaseId() {
-		return PhaseId.RENDER_RESPONSE;
-	}
+    }
+
+    public void beforePhase(PhaseEvent event) {
+
+        FacesContext facesContext = event.getFacesContext();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+        response.addHeader("Pragma", "no-cache");
+        response.addHeader("Cache-Control", "no-cache");
+        response.addHeader("Cache-Control", "must-revalidate");
+        response.addHeader("Expires", "-1");
+    }
+
+    public PhaseId getPhaseId() {
+
+        return PhaseId.RENDER_RESPONSE;
+    }
 }

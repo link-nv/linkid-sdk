@@ -21,6 +21,7 @@ import net.link.safeonline.demo.cinema.service.InitializationService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 /**
  * <h2>{@link InitializationServiceBean}<br>
  * <sub>Service bean for {@link InitializationService}.</sub></h2>
@@ -33,8 +34,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = InitializationService.BINDING)
-public class InitializationServiceBean extends AbstractCinemaServiceBean
-        implements InitializationService {
+public class InitializationServiceBean extends AbstractCinemaServiceBean implements InitializationService {
 
     private static List<List<RoomEntity>> theatreRoomEntities = new ArrayList<List<RoomEntity>>();
 
@@ -55,16 +55,15 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean
 
         // Gent
         for (int t = 0; t < theatreNames.length; ++t) {
-            TheatreEntity theatre = new TheatreEntity(theatreNames[t],
-                    theatreAdresses[t]);
+            TheatreEntity theatre = new TheatreEntity(theatreNames[t], theatreAdresses[t]);
             this.em.persist(theatre);
 
             List<RoomEntity> currentTheatreRooms = new ArrayList<RoomEntity>();
             theatreRoomEntities.add(currentTheatreRooms);
 
             for (int r = 0; r < theatreRooms[t].length; ++r) {
-                currentTheatreRooms.add(addRoom(theatre, theatreRooms[t][r],
-                        theatreRoomSeats[t][r][0], theatreRoomSeats[t][r][1]));
+                currentTheatreRooms.add(addRoom(theatre, theatreRooms[t][r], theatreRoomSeats[t][r][0],
+                        theatreRoomSeats[t][r][1]));
             }
         }
     }
@@ -91,24 +90,20 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean
                 for (int r : filmRooms[f][t]) {
                     LOG.info("room: " + r);
                     LOG.info("room theatres: " + theatreRoomEntities.size());
-                    LOG.info("theatre rooms: "
-                            + theatreRoomEntities.get(filmTheatres[f][t])
-                                    .size());
-                    rooms.add(theatreRoomEntities.get(filmTheatres[f][t])
-                            .get(r));
+                    LOG.info("theatre rooms: " + theatreRoomEntities.get(filmTheatres[f][t]).size());
+                    rooms.add(theatreRoomEntities.get(filmTheatres[f][t]).get(r));
                 }
             }
 
-            this.em.persist(new FilmEntity(filmNames[f], filmDescriptions[f],
-                    filmDurations[f], filmPrices[f], times, rooms));
+            this.em.persist(new FilmEntity(filmNames[f], filmDescriptions[f], filmDurations[f], filmPrices[f], times,
+                    rooms));
         }
     }
 
     /**
      * Create a room for the given theatre.
      */
-    private RoomEntity addRoom(TheatreEntity theatre, String name, int columns,
-            int rows) {
+    private RoomEntity addRoom(TheatreEntity theatre, String name, int columns, int rows) {
 
         RoomEntity room = new RoomEntity(name, theatre);
         this.em.persist(room);

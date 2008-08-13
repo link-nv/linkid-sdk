@@ -31,65 +31,69 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class PingPortImplTest {
 
-	private static final Log LOG = LogFactory.getLog(PingPortImplTest.class);
+    private static final Log    LOG = LogFactory.getLog(PingPortImplTest.class);
 
-	private WebServiceTestUtils webServiceTestUtils;
+    private WebServiceTestUtils webServiceTestUtils;
 
-	@Before
-	public void setUp() throws Exception {
-		this.webServiceTestUtils = new WebServiceTestUtils();
-		PingPortImpl port = new PingPortImpl();
-		this.webServiceTestUtils.setUp(port);
-	}
 
-	@After
-	public void tearDown() throws Exception {
-		this.webServiceTestUtils.tearDown();
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	@Test
-	public void testInvocation() throws Exception {
-		// setup
-		PingService service = PingServiceFactory.newInstance();
-		PingPort port = service.getPingPort();
-		setEndpointAddress(port);
-		MessageLoggerHandler logger = installLogger(port);
+        this.webServiceTestUtils = new WebServiceTestUtils();
+        PingPortImpl port = new PingPortImpl();
+        this.webServiceTestUtils.setUp(port);
+    }
 
-		// operate
-		Request request = new Request();
-		Response response;
-		try {
-			response = port.pingOperation(request);
-		} finally {
-			LOG.debug("outbound message: "
-					+ DomTestUtils.domToString(logger.getOutboundMessage()));
-			LOG.debug("inbound message: "
-					+ DomTestUtils.domToString(logger.getInboundMessage()));
-		}
+    @After
+    public void tearDown() throws Exception {
 
-		// verify
-		assertNotNull(response);
-	}
+        this.webServiceTestUtils.tearDown();
+    }
 
-	private void setEndpointAddress(PingPort port) {
-		BindingProvider bindingProvider = (BindingProvider) port;
-		String location = this.webServiceTestUtils.getEndpointAddress();
-		LOG.debug("location: " + location);
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
-	}
+    @Test
+    public void testInvocation() throws Exception {
 
-	private MessageLoggerHandler installLogger(PingPort port) {
-		BindingProvider bindingProvider = (BindingProvider) port;
-		MessageLoggerHandler logger = new MessageLoggerHandler();
-		logger.setCaptureMessages(true);
-		Binding binding = bindingProvider.getBinding();
-		@SuppressWarnings("unchecked")
-		List<Handler> handlerChain = binding.getHandlerChain();
-		handlerChain.add(logger);
-		binding.setHandlerChain(handlerChain);
-		return logger;
-	}
+        // setup
+        PingService service = PingServiceFactory.newInstance();
+        PingPort port = service.getPingPort();
+        setEndpointAddress(port);
+        MessageLoggerHandler logger = installLogger(port);
+
+        // operate
+        Request request = new Request();
+        Response response;
+        try {
+            response = port.pingOperation(request);
+        } finally {
+            LOG.debug("outbound message: " + DomTestUtils.domToString(logger.getOutboundMessage()));
+            LOG.debug("inbound message: " + DomTestUtils.domToString(logger.getInboundMessage()));
+        }
+
+        // verify
+        assertNotNull(response);
+    }
+
+    private void setEndpointAddress(PingPort port) {
+
+        BindingProvider bindingProvider = (BindingProvider) port;
+        String location = this.webServiceTestUtils.getEndpointAddress();
+        LOG.debug("location: " + location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
+    }
+
+    private MessageLoggerHandler installLogger(PingPort port) {
+
+        BindingProvider bindingProvider = (BindingProvider) port;
+        MessageLoggerHandler logger = new MessageLoggerHandler();
+        logger.setCaptureMessages(true);
+        Binding binding = bindingProvider.getBinding();
+        @SuppressWarnings("unchecked")
+        List<Handler> handlerChain = binding.getHandlerChain();
+        handlerChain.add(logger);
+        binding.setHandlerChain(handlerChain);
+        return logger;
+    }
 }

@@ -12,14 +12,15 @@ import javax.persistence.PersistenceContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * <h2>{@link AbstractProfilingServiceBean}<br>
  * <sub>Abstract class for the entity services.</sub></h2>
- *
+ * 
  * <p>
  * Provides access to the {@link EntityManager}.
  * </p>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
@@ -28,20 +29,20 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractProfilingServiceBean {
 
-	static final Log LOG = LogFactory.getLog(AbstractProfilingServiceBean.class);
+    static final Log             LOG = LogFactory.getLog(AbstractProfilingServiceBean.class);
 
-	private static EntityManager defaultEntityManager;
+    private static EntityManager defaultEntityManager;
 
-	@PersistenceContext(unitName = "AgentEntityManager")
-	EntityManager em = defaultEntityManager;
+    @PersistenceContext(unitName = "AgentEntityManager")
+    EntityManager                em  = defaultEntityManager;
 
-	/**
-	 * Install a default entity manager which will be used for any new services.
-	 * This is mostly useful for installing an entity manager in an environment
-	 * where there is no enterprise container that provides one.
-	 */
-	public static void setDefaultEntityManager(EntityManager entityManager) {
 
-		defaultEntityManager = entityManager;
-	}
+    /**
+     * Install a default entity manager which will be used for any new services. This is mostly useful for installing an
+     * entity manager in an environment where there is no enterprise container that provides one.
+     */
+    public static void setDefaultEntityManager(EntityManager entityManager) {
+
+        defaultEntityManager = entityManager;
+    }
 }

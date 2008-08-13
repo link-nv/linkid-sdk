@@ -14,16 +14,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
+
 public class AuthenticationProtocolTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthenticationProtocolTest.class);
+    private static final Log LOG = LogFactory.getLog(AuthenticationProtocolTest.class);
 
-	@Test
-	public void literals() throws Exception {
-		LOG.debug(AuthenticationProtocol.SAML2_BROWSER_POST);
 
-		assertEquals("SAML2_BROWSER_POST",
-				AuthenticationProtocol.SAML2_BROWSER_POST.name());
-	}
+    @Test
+    public void literals() throws Exception {
+
+        LOG.debug(AuthenticationProtocol.SAML2_BROWSER_POST);
+
+        assertEquals("SAML2_BROWSER_POST", AuthenticationProtocol.SAML2_BROWSER_POST.name());
+    }
 }

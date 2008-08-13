@@ -29,6 +29,7 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
+
 /**
  * <h2>{@link AgentPanel}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -43,255 +44,248 @@ import com.jgoodies.forms.layout.FormLayout;
  * 
  * @author mbillemo
  */
-public class AgentPanel extends JPanel implements MouseListener,
-		AgentStatusListener, AgentSelectionListener, ExecutionSelectionListener {
+public class AgentPanel extends JPanel implements MouseListener, AgentStatusListener, AgentSelectionListener,
+        ExecutionSelectionListener {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private ConsoleAgent agent;
-	private AgentsList list;
+    private ConsoleAgent      agent;
+    private AgentsList        list;
 
-	private boolean selected;
+    private boolean           selected;
 
-	private JLabel title;
-	private JLabel state;
-	private JLabel transit;
-	private JLabel speed;
-	private TinyGraph speedGraph;
-	private JProgressBar progress;
+    private JLabel            title;
+    private JLabel            state;
+    private JLabel            transit;
+    private JLabel            speed;
+    private TinyGraph         speedGraph;
+    private JProgressBar      progress;
 
-	public AgentPanel(AgentsList list, ConsoleAgent agent) {
 
-		this.agent = agent;
-		this.list = list;
+    public AgentPanel(AgentsList list, ConsoleAgent agent) {
 
-		buildUi();
-		listen(this);
+        this.agent = agent;
+        this.list = list;
 
-		statusChanged(agent);
-		ConsoleData.addAgentStatusListener(this);
-		ConsoleData.addAgentSelectionListener(this);
-		ConsoleData.addExecutionSelectionListener(this);
-	}
+        buildUi();
+        listen(this);
 
-	private void listen(Component c) {
+        statusChanged(agent);
+        ConsoleData.addAgentStatusListener(this);
+        ConsoleData.addAgentSelectionListener(this);
+        ConsoleData.addExecutionSelectionListener(this);
+    }
 
-		c.addMouseListener(this);
+    private void listen(Component c) {
 
-		if (c instanceof Container)
-			for (Component cc : ((Container) c).getComponents())
-				listen(cc);
-	}
+        c.addMouseListener(this);
 
-	private void buildUi() {
+        if (c instanceof Container)
+            for (Component cc : ((Container) c).getComponents())
+                listen(cc);
+    }
 
-		FormLayout layout = new FormLayout(
-				"50dlu, 5dlu, 50dlu, 5dlu, p:g, 5dlu, p", "p, 4dlu, p, 4dlu, p");
-		layout.setColumnGroups(new int[][] { { 1, 3 } });
-		DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
-		builder.setDefaultDialogBorder();
+    private void buildUi() {
 
-		builder.append(this.title = new JLabel(), 3);
-		this.title.setFont(getFont().deriveFont(18f));
-		builder.nextLine(2);
+        FormLayout layout = new FormLayout("50dlu, 5dlu, 50dlu, 5dlu, p:g, 5dlu, p", "p, 4dlu, p, 4dlu, p");
+        layout.setColumnGroups(new int[][] { { 1, 3 } });
+        DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
+        builder.setDefaultDialogBorder();
 
-		builder.append(this.state = new JLabel(), this.transit = new JLabel());
-		this.state.setFont(getFont().deriveFont(14f));
-		this.transit.setFont(getFont().deriveFont(14f));
-		builder.nextLine(2);
+        builder.append(this.title = new JLabel(), 3);
+        this.title.setFont(getFont().deriveFont(18f));
+        builder.nextLine(2);
 
-		builder.append(this.progress = new JProgressBar(0, 1000), 7);
+        builder.append(this.state = new JLabel(), this.transit = new JLabel());
+        this.state.setFont(getFont().deriveFont(14f));
+        this.transit.setFont(getFont().deriveFont(14f));
+        builder.nextLine(2);
 
-		CellConstraints cc = new CellConstraints();
-		builder.add(this.speedGraph = new TinyGraph(100), cc.xywh(5, 1, 1, 3,
-				"fill, fill"));
-		builder.add(this.speed = new JLabel(), cc.xywh(7, 1, 1, 3,
-				"center, fill"));
-		this.speed.setFont(getFont().deriveFont(24f));
+        builder.append(this.progress = new JProgressBar(0, 1000), 7);
 
-		setBackground(null);
-		this.progress.setOpaque(false);
-		this.progress.setBorderPainted(false);
-		this.speedGraph.setVisible(false);
-	}
+        CellConstraints cc = new CellConstraints();
+        builder.add(this.speedGraph = new TinyGraph(100), cc.xywh(5, 1, 1, 3, "fill, fill"));
+        builder.add(this.speed = new JLabel(), cc.xywh(7, 1, 1, 3, "center, fill"));
+        this.speed.setFont(getFont().deriveFont(24f));
 
-	/**
-	 * @return The agent of this {@link AgentPanel}.
-	 */
-	public ConsoleAgent getAgent() {
+        setBackground(null);
+        this.progress.setOpaque(false);
+        this.progress.setBorderPainted(false);
+        this.speedGraph.setVisible(false);
+    }
 
-		return this.agent;
-	}
+    /**
+     * @return The agent of this {@link AgentPanel}.
+     */
+    public ConsoleAgent getAgent() {
 
-	/**
-	 * @return <code>true</code> if the user has this {@link AgentPanel}
-	 *         selected.
-	 */
-	public boolean isSelected() {
+        return this.agent;
+    }
 
-		return this.selected;
-	}
+    /**
+     * @return <code>true</code> if the user has this {@link AgentPanel} selected.
+     */
+    public boolean isSelected() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object o) {
+        return this.selected;
+    }
 
-		if (this == o)
-			return true;
-		if (o == null || !(o instanceof AgentPanel))
-			return false;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object o) {
 
-		return this.agent.equals(((AgentPanel) o).agent);
-	}
+        if (this == o)
+            return true;
+        if (o == null || !(o instanceof AgentPanel))
+            return false;
 
-	private void update() {
+        return this.agent.equals(((AgentPanel) o).agent);
+    }
 
-		/*
-		 * Find out which execution is selected and which is this agent's last
-		 * started execution.
-		 */
-		ScenarioExecution selectedExecution = ConsoleData
-				.getSelectedExecution();
-		ScenarioExecution lastExecution = null;
-		if (this.agent.getExecutions() != null
-				&& !this.agent.getExecutions().isEmpty())
-			lastExecution = new TreeSet<ScenarioExecution>(this.agent
-					.getExecutions()).last();
+    private void update() {
 
-		/* Update all our text values. */
-		this.speed.setText("");
-		if (this.agent.getExecutions() != null && selectedExecution != null)
-			for (ScenarioExecution execution : this.agent.getExecutions())
-				if (execution.equalRequest(selectedExecution)) {
-					if (execution.getSpeed() != null)
-						this.speed.setText(String.format("%.2f/s", execution
-								.getSpeed()));
+        /*
+         * Find out which execution is selected and which is this agent's last started execution.
+         */
+        ScenarioExecution selectedExecution = ConsoleData.getSelectedExecution();
+        ScenarioExecution lastExecution = null;
+        if (this.agent.getExecutions() != null && !this.agent.getExecutions().isEmpty())
+            lastExecution = new TreeSet<ScenarioExecution>(this.agent.getExecutions()).last();
 
-					break;
-				}
+        /* Update all our text values. */
+        this.speed.setText("");
+        if (this.agent.getExecutions() != null && selectedExecution != null)
+            for (ScenarioExecution execution : this.agent.getExecutions())
+                if (execution.equalRequest(selectedExecution)) {
+                    if (execution.getSpeed() != null)
+                        this.speed.setText(String.format("%.2f/s", execution.getSpeed()));
 
-		if (this.agent.getAddress() != null)
-			this.title.setText(this.agent.getAddress().toString());
-		else
-			this.title.setText("[Unknown]");
-		this.title.setForeground(this.state == null ? Color.gray : this.agent
-				.isHealthy() ? Color.green.darker() : Color.red);
+                    break;
+                }
 
-		if (this.agent.getState() != null) {
-			this.state.setText(this.agent.getState().getState());
-			this.state.setForeground(this.agent.getState().getColor());
-		} else {
-			this.state.setText("[Unknown]");
-			this.state.setForeground(AgentState.RESET.getColor());
-		}
+        if (this.agent.getAddress() != null)
+            this.title.setText(this.agent.getAddress().toString());
+        else
+            this.title.setText("[Unknown]");
+        this.title.setForeground(this.state == null? Color.gray: this.agent.isHealthy()? Color.green.darker()
+                : Color.red);
 
-		if (this.agent.isTransitting()) {
-			this.transit.setText(this.agent.getTransit().getTransitioning());
-			this.transit.setForeground(this.agent.getTransit().getColor());
-		} else {
-			this.transit.setText(AgentState.RESET.getTransitioning());
-			this.transit.setForeground(AgentState.RESET.getColor());
-		}
+        if (this.agent.getState() != null) {
+            this.state.setText(this.agent.getState().getState());
+            this.state.setForeground(this.agent.getState().getColor());
+        } else {
+            this.state.setText("[Unknown]");
+            this.state.setForeground(AgentState.RESET.getColor());
+        }
 
-		/* Update the progress bar. */
-		if (!this.agent.isTransitting()) {
-			this.progress.setIndeterminate(false);
-			this.progress.setValue(0);
-		} else {
+        if (this.agent.isTransitting()) {
+            this.transit.setText(this.agent.getTransit().getTransitioning());
+            this.transit.setForeground(this.agent.getTransit().getColor());
+        } else {
+            this.transit.setText(AgentState.RESET.getTransitioning());
+            this.transit.setForeground(AgentState.RESET.getColor());
+        }
 
-			/* Default to indeterminate. */
-			this.progress.setIndeterminate(true);
-			this.speedGraph.setVisible(false);
+        /* Update the progress bar. */
+        if (!this.agent.isTransitting()) {
+            this.progress.setIndeterminate(false);
+            this.progress.setValue(0);
+        } else {
 
-			/* If this agent is executing and there is a last execution.. */
-			if (AgentState.EXECUTE.equals(this.agent.getTransit())
-					&& lastExecution != null) {
+            /* Default to indeterminate. */
+            this.progress.setIndeterminate(true);
+            this.speedGraph.setVisible(false);
 
-				/* Update speed graph with last execution's speed. */
-				this.speedGraph.setVisible(true);
-				this.speedGraph.update(lastExecution.getSpeed());
+            /* If this agent is executing and there is a last execution.. */
+            if (AgentState.EXECUTE.equals(this.agent.getTransit()) && lastExecution != null) {
 
-				/* Check how much time is left. */
-				long timeLeft = lastExecution.getStartTime().getTime()
-						+ lastExecution.getDuration()
-						- System.currentTimeMillis();
+                /* Update speed graph with last execution's speed. */
+                this.speedGraph.setVisible(true);
+                this.speedGraph.update(lastExecution.getSpeed());
 
-				/* If there is time left, show a progress bar. */
-				if (timeLeft > 0) {
-					int completion = (int) (1000 - 1000 * timeLeft
-							/ lastExecution.getDuration());
+                /* Check how much time is left. */
+                long timeLeft = lastExecution.getStartTime().getTime() + lastExecution.getDuration()
+                        - System.currentTimeMillis();
 
-					this.progress.setIndeterminate(false);
-					this.progress.setValue(completion);
-				}
-			} else
-				this.speedGraph.reset();
-		}
-	}
+                /* If there is time left, show a progress bar. */
+                if (timeLeft > 0) {
+                    int completion = (int) (1000 - 1000 * timeLeft / lastExecution.getDuration());
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void agentsSelected(Set<ConsoleAgent> selectedAgents) {
+                    this.progress.setIndeterminate(false);
+                    this.progress.setValue(completion);
+                }
+            } else
+                this.speedGraph.reset();
+        }
+    }
 
-		update();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void agentsSelected(Set<ConsoleAgent> selectedAgents) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void statusChanged(ConsoleAgent changedAgent) {
+        update();
+    }
 
-		if (this.agent.equals(changedAgent))
-			update();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void statusChanged(ConsoleAgent changedAgent) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void executionSelected(ScenarioExecution execution) {
+        if (this.agent.equals(changedAgent))
+            update();
+    }
 
-		update();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void executionSelected(ScenarioExecution execution) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void mouseClicked(MouseEvent e) {
+        update();
+    }
 
-		this.selected = !this.selected;
+    /**
+     * {@inheritDoc}
+     */
+    public void mouseClicked(MouseEvent e) {
 
-		if (this.selected)
-			setBackground(Color.decode("#EEEEFF"));
-		else
-			setBackground(null);
+        this.selected = !this.selected;
 
-		this.list.fireListSelectionChanged();
-	}
+        if (this.selected)
+            setBackground(Color.decode("#EEEEFF"));
+        else
+            setBackground(null);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void mouseEntered(MouseEvent e) {
-	}
+        this.list.fireListSelectionChanged();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void mouseExited(MouseEvent e) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void mouseEntered(MouseEvent e) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void mousePressed(MouseEvent e) {
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void mouseReleased(MouseEvent e) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void mouseReleased(MouseEvent e) {
+
+    }
 }

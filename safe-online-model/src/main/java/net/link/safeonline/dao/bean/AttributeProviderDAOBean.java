@@ -27,60 +27,60 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class AttributeProviderDAOBean implements AttributeProviderDAO {
 
-	private static final Log LOG = LogFactory
-			.getLog(AttributeProviderDAOBean.class);
+    private static final Log                       LOG = LogFactory.getLog(AttributeProviderDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                          entityManager;
 
-	private AttributeProviderEntity.QueryInterface queryObject;
+    private AttributeProviderEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager,
-				AttributeProviderEntity.QueryInterface.class);
-	}
 
-	public AttributeProviderEntity findAttributeProvider(
-			ApplicationEntity application, AttributeTypeEntity attributeType) {
-		AttributeProviderPK pk = new AttributeProviderPK(application,
-				attributeType);
-		AttributeProviderEntity attributeProvider = this.entityManager.find(
-				AttributeProviderEntity.class, pk);
-		return attributeProvider;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public List<AttributeProviderEntity> listAttributeProviders(
-			AttributeTypeEntity attributeType) {
-		List<AttributeProviderEntity> attributeProviders = this.queryObject
-				.listAttributeProviders(attributeType);
-		return attributeProviders;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                AttributeProviderEntity.QueryInterface.class);
+    }
 
-	public void removeAttributeProvider(
-			AttributeProviderEntity attributeProvider) {
-		this.entityManager.remove(attributeProvider);
-	}
+    public AttributeProviderEntity findAttributeProvider(ApplicationEntity application,
+            AttributeTypeEntity attributeType) {
 
-	public void addAttributeProvider(ApplicationEntity application,
-			AttributeTypeEntity attributeType) {
-		AttributeProviderEntity attributeProvider = new AttributeProviderEntity(
-				application, attributeType);
-		this.entityManager.persist(attributeProvider);
-	}
+        AttributeProviderPK pk = new AttributeProviderPK(application, attributeType);
+        AttributeProviderEntity attributeProvider = this.entityManager.find(AttributeProviderEntity.class, pk);
+        return attributeProvider;
+    }
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void removeAttributeProviders(ApplicationEntity application) {
-		int count = this.queryObject.removeAttributeProviders(application);
-		LOG.debug("number of removed provider entities: " + count);
-	}
+    public List<AttributeProviderEntity> listAttributeProviders(AttributeTypeEntity attributeType) {
 
-	public void removeAttributeProviders(AttributeTypeEntity attributeType) {
-		int count = this.queryObject.removeAttributeProviders(attributeType);
-		LOG.debug("number of removed provider entities: " + count);
-	}
+        List<AttributeProviderEntity> attributeProviders = this.queryObject.listAttributeProviders(attributeType);
+        return attributeProviders;
+    }
+
+    public void removeAttributeProvider(AttributeProviderEntity attributeProvider) {
+
+        this.entityManager.remove(attributeProvider);
+    }
+
+    public void addAttributeProvider(ApplicationEntity application, AttributeTypeEntity attributeType) {
+
+        AttributeProviderEntity attributeProvider = new AttributeProviderEntity(application, attributeType);
+        this.entityManager.persist(attributeProvider);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void removeAttributeProviders(ApplicationEntity application) {
+
+        int count = this.queryObject.removeAttributeProviders(application);
+        LOG.debug("number of removed provider entities: " + count);
+    }
+
+    public void removeAttributeProviders(AttributeTypeEntity attributeType) {
+
+        int count = this.queryObject.removeAttributeProviders(attributeType);
+        LOG.debug("number of removed provider entities: " + count);
+    }
 }

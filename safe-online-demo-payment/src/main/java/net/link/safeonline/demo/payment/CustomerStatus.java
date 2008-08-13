@@ -9,48 +9,58 @@ package net.link.safeonline.demo.payment;
 
 import java.io.Serializable;
 
+
 public class CustomerStatus implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String userId;
-	
-	private boolean junior;
+    private String            userId;
 
-	private boolean paymentAdmin;
+    private boolean           junior;
 
-	public boolean isJunior() {
-		return this.junior;
-	}
+    private boolean           paymentAdmin;
 
-	public boolean isPaymentAdmin() {
-		return this.paymentAdmin;
-	}
 
-	public CustomerStatus() {
-		this(null,false, false);
-	}
+    public boolean isJunior() {
 
-	public void setPaymentAdmin(boolean paymentAdmin) {
-		this.paymentAdmin = paymentAdmin;
-	}
+        return this.junior;
+    }
 
-	public void setJunior(boolean junior) {
-		this.junior = junior;
-	}
+    public boolean isPaymentAdmin() {
 
-	public CustomerStatus(final String userId, final boolean junior, final boolean paymentAdmin) {
-		super();
-		this.userId = userId;
-		this.junior = junior;
-		this.paymentAdmin = paymentAdmin;
-	}
+        return this.paymentAdmin;
+    }
 
-	public String getUserId() {
-		return this.userId;
-	}
+    public CustomerStatus() {
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+        this(null, false, false);
+    }
+
+    public void setPaymentAdmin(boolean paymentAdmin) {
+
+        this.paymentAdmin = paymentAdmin;
+    }
+
+    public void setJunior(boolean junior) {
+
+        this.junior = junior;
+    }
+
+    public CustomerStatus(final String userId, final boolean junior, final boolean paymentAdmin) {
+
+        super();
+        this.userId = userId;
+        this.junior = junior;
+        this.paymentAdmin = paymentAdmin;
+    }
+
+    public String getUserId() {
+
+        return this.userId;
+    }
+
+    public void setUserId(String userId) {
+
+        this.userId = userId;
+    }
 }

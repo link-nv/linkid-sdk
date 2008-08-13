@@ -12,25 +12,31 @@ import org.junit.Test;
 import net.link.safeonline.sdk.ws.annotation.Compound;
 import net.link.safeonline.sdk.ws.annotation.CompoundMember;
 
+
 public class CompoundedAttributeTest {
 
-	@Compound("test-compound-attribute-name")
-	public static class MyTestCompoundedAttribute {
+    @Compound("test-compound-attribute-name")
+    public static class MyTestCompoundedAttribute {
 
-		private String name;
+        private String name;
 
-		@CompoundMember("test-member-attribute-name")
-		public String getName() {
-			return this.name;
-		}
 
-		public void setName(String name) {
-			this.name = name;
-		}
-	}
+        @CompoundMember("test-member-attribute-name")
+        public String getName() {
 
-	@Test
-	public void instance() throws Exception {
-		new MyTestCompoundedAttribute();
-	}
+            return this.name;
+        }
+
+        public void setName(String name) {
+
+            this.name = name;
+        }
+    }
+
+
+    @Test
+    public void instance() throws Exception {
+
+        new MyTestCompoundedAttribute();
+    }
 }

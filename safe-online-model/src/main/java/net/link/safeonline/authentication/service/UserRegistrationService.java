@@ -14,12 +14,12 @@ import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.SubjectEntity;
 
+
 /**
  * User registration service interface.
  * 
- * The component implementing this interface will allow for registration of new
- * users within the SafeOnline core. This means creating a new Subject and
- * subscribing the new Subject to the safe-online-user application.
+ * The component implementing this interface will allow for registration of new users within the SafeOnline core. This
+ * means creating a new Subject and subscribing the new Subject to the safe-online-user application.
  * 
  * @author fcorneli
  * 
@@ -27,21 +27,20 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface UserRegistrationService {
 
-	/**
-	 * Checks whether the given login name already exists and has completed
-	 * device registrations. In case there are existing device registrations it
-	 * will poll those device issuers if the registration actually completed. If
-	 * one them has completed, return null.
-	 * 
-	 * If no such login exists, register and return the subject.
-	 * 
-	 * If no completed device registrations were found, return the subject.
-	 * 
-	 * @param login
-	 * @throws AttributeTypeNotFoundException
-	 * @throws ExistingUserException
-	 * @throws PermissionDeniedException
-	 */
-	SubjectEntity registerUser(String login) throws ExistingUserException,
-			AttributeTypeNotFoundException, PermissionDeniedException;
+    /**
+     * Checks whether the given login name already exists and has completed device registrations. In case there are
+     * existing device registrations it will poll those device issuers if the registration actually completed. If one
+     * them has completed, return null.
+     * 
+     * If no such login exists, register and return the subject.
+     * 
+     * If no completed device registrations were found, return the subject.
+     * 
+     * @param login
+     * @throws AttributeTypeNotFoundException
+     * @throws ExistingUserException
+     * @throws PermissionDeniedException
+     */
+    SubjectEntity registerUser(String login) throws ExistingUserException, AttributeTypeNotFoundException,
+            PermissionDeniedException;
 }

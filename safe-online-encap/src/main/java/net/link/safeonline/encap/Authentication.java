@@ -8,42 +8,43 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 
+
 @Local
 public interface Authentication {
 
-	/*
-	 * Accessors.
-	 */
-	String getMobileOTP();
+    /*
+     * Accessors.
+     */
+    String getMobileOTP();
 
-	void setMobileOTP(String mobileOTP);
+    void setMobileOTP(String mobileOTP);
 
-	String getMobile();
+    String getMobile();
 
-	void setMobile(String mobile);
+    void setMobile(String mobile);
 
-	String getChallengeId();
+    String getChallengeId();
 
-	void setChallengeId(String challengeId);
+    void setChallengeId(String challengeId);
 
-	/*
-	 * Actions.
-	 */
-	String login() throws MobileAuthenticationException, IOException;
+    /*
+     * Actions.
+     */
+    String login() throws MobileAuthenticationException, IOException;
 
-	String requestOTP() throws MalformedURLException, MobileException;
+    String requestOTP() throws MalformedURLException, MobileException;
 
-	String requestNewOTP() throws MalformedURLException, MobileException;
+    String requestNewOTP() throws MalformedURLException, MobileException;
 
-	String cancel() throws IOException;
+    String cancel() throws IOException;
 
-	String tryAnotherDevice() throws IOException;
+    String tryAnotherDevice() throws IOException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void init();
+    /*
+     * Lifecycle.
+     */
+    void init();
 
-	void destroyCallback();
+    void destroyCallback();
 
 }

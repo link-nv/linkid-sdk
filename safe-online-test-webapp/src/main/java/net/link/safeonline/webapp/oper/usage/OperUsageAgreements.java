@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.usage;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperUsageAgreements extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/usage/usage-agreements.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/usage/usage-agreements.seam";
 
-	public OperUsageAgreements() {
-		super(PAGE_NAME);
-	}
+
+    public OperUsageAgreements() {
+
+        super(PAGE_NAME);
+    }
 }

@@ -12,32 +12,32 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.UsageAgreementNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 
+
 @Local
 public interface UsageAgreementManager {
 
-	/**
-	 * This commits the current draft usage agreement for the specified
-	 * application to a new usage agreement version. And updates the appliation
-	 * with this new version. This causes the user to have to agree with this
-	 * updated version during his next authentication.
-	 * 
-	 * @param application
-	 */
-	void updateUsageAgreement(ApplicationEntity application);
+    /**
+     * This commits the current draft usage agreement for the specified application to a new usage agreement version.
+     * And updates the appliation with this new version. This causes the user to have to agree with this updated version
+     * during his next authentication.
+     * 
+     * @param application
+     */
+    void updateUsageAgreement(ApplicationEntity application);
 
-	/**
-	 * Set the usage agreement version of the specified application to the
-	 * specified version. Draft versions are not taken into account.
-	 * 
-	 * @param application
-	 * @param usageAgreementVersion
-	 * @throws UsageAgreementNotFoundException
-	 */
-	void setUsageAgreement(ApplicationEntity application,
-			Long usageAgreementVersion) throws UsageAgreementNotFoundException;
+    /**
+     * Set the usage agreement version of the specified application to the specified version. Draft versions are not
+     * taken into account.
+     * 
+     * @param application
+     * @param usageAgreementVersion
+     * @throws UsageAgreementNotFoundException
+     */
+    void setUsageAgreement(ApplicationEntity application, Long usageAgreementVersion)
+            throws UsageAgreementNotFoundException;
 
-	/**
-	 * Updates current draft global usage agreement.
-	 */
-	void updateGlobalUsageAgreement();
+    /**
+     * Updates current draft global usage agreement.
+     */
+    void updateGlobalUsageAgreement();
 }

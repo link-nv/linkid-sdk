@@ -9,16 +9,18 @@ package net.link.safeonline.oper.audit;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface AuditPrincipal {
-	/*
-	 * Accessors
-	 */
-	String getName();
 
-	/*
-	 * Lifecycle
-	 */
-	void destroyCallback();
+    /*
+     * Accessors
+     */
+    String getName();
+
+    /*
+     * Lifecycle
+     */
+    void destroyCallback();
 
 }

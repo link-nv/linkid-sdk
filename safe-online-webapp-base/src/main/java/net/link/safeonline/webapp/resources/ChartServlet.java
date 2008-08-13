@@ -25,73 +25,72 @@ import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 
+
 public class ChartServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(ChartServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(ChartServlet.class);
 
-	@EJB(mappedName = "SafeOnline/StatisticServiceBean/local")
-	private StatisticService statisticService;
+    @EJB(mappedName = "SafeOnline/StatisticServiceBean/local")
+    private StatisticService  statisticService;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-	}
 
-	@Override
-	public void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("image/png");
-		OutputStream out = response.getOutputStream();
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-		String chartName = request.getParameter("chartname");
-		String domainName = request.getParameter("domain");
-		String applicationName = request.getParameter("applicationname");
+        super.init(config);
+    }
 
-		if (null == chartName) {
-			throw new ServletException("chartname request parameter missing");
-		}
-		if (null == applicationName) {
-			throw new ServletException(
-					"aplicationname request parameter missing");
-		}
+    @Override
+    public void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		LOG.debug("getting chart: " + chartName + " for application: "
-				+ applicationName);
+        response.setContentType("image/png");
+        OutputStream out = response.getOutputStream();
 
-		byte[] buffer = null;
-		try {
-			buffer = getChart(chartName, domainName, applicationName, 800, 600);
-		} catch (Exception e) {
-			LOG.debug("exception: " + e.getMessage());
-			throw new ServletException(e.getMessage(), e);
-		}
-		if (buffer != null) {
-			out.write(buffer);
-		}
+        String chartName = request.getParameter("chartname");
+        String domainName = request.getParameter("domain");
+        String applicationName = request.getParameter("applicationname");
 
-	}
+        if (null == chartName) {
+            throw new ServletException("chartname request parameter missing");
+        }
+        if (null == applicationName) {
+            throw new ServletException("aplicationname request parameter missing");
+        }
 
-	public byte[] getChart(String chartName, String domainName,
-			String applicationName, int width, int heigth)
-			throws StatisticNotFoundException {
-		LOG.debug("finding statistic: " + chartName + " for application: "
-				+ applicationName);
-		JFreeChart chart = this.statisticService.getChart(chartName,
-				domainName, applicationName);
+        LOG.debug("getting chart: " + chartName + " for application: " + applicationName);
 
-		byte[] result = null;
+        byte[] buffer = null;
+        try {
+            buffer = getChart(chartName, domainName, applicationName, 800, 600);
+        } catch (Exception e) {
+            LOG.debug("exception: " + e.getMessage());
+            throw new ServletException(e.getMessage(), e);
+        }
+        if (buffer != null) {
+            out.write(buffer);
+        }
 
-		try {
-			result = ChartUtilities.encodeAsPNG(chart.createBufferedImage(
-					width, heigth));
-		} catch (Exception e) {
-			LOG.debug("Could not generate image");
-			return null;
-		}
+    }
 
-		LOG.debug("returning byte[]");
-		return result;
-	}
+    public byte[] getChart(String chartName, String domainName, String applicationName, int width, int heigth)
+            throws StatisticNotFoundException {
+
+        LOG.debug("finding statistic: " + chartName + " for application: " + applicationName);
+        JFreeChart chart = this.statisticService.getChart(chartName, domainName, applicationName);
+
+        byte[] result = null;
+
+        try {
+            result = ChartUtilities.encodeAsPNG(chart.createBufferedImage(width, heigth));
+        } catch (Exception e) {
+            LOG.debug("Could not generate image");
+            return null;
+        }
+
+        LOG.debug("returning byte[]");
+        return result;
+    }
 }

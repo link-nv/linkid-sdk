@@ -24,6 +24,7 @@ import net.link.safeonline.performance.service.ExecutionService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 /**
  * <h2>{@link ExecutionServiceBean}<br>
  * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
@@ -37,86 +38,80 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = ExecutionService.BINDING)
-public class ExecutionServiceBean extends AbstractProfilingServiceBean implements
-		ExecutionService {
+public class ExecutionServiceBean extends AbstractProfilingServiceBean implements ExecutionService {
 
-	@Resource
-	SessionContext ctx;
+    @Resource
+    SessionContext ctx;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public ExecutionEntity addExecution(String scenarioName, Integer agents,
-			Integer workers, Date startTime, Long duration, String hostname,
-			Boolean useSsl) {
 
-		ExecutionEntity execution = new ExecutionEntity(scenarioName, agents,
-				workers, startTime, duration, hostname, useSsl);
-		this.em.persist(execution);
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public ExecutionEntity addExecution(String scenarioName, Integer agents, Integer workers, Date startTime,
+            Long duration, String hostname, Boolean useSsl) {
 
-		return execution;
-	}
+        ExecutionEntity execution = new ExecutionEntity(scenarioName, agents, workers, startTime, duration, hostname,
+                useSsl);
+        this.em.persist(execution);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Set<Date> getExecutions() {
+        return execution;
+    }
 
-		Set<Date> executionIds = new HashSet<Date>();
-		List<ExecutionEntity> executions = this.em.createNamedQuery(
-				ExecutionEntity.findAll).getResultList();
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Set<Date> getExecutions() {
 
-		for (ExecutionEntity execution : executions)
-			executionIds.add(execution.getStartTime());
+        Set<Date> executionIds = new HashSet<Date>();
+        List<ExecutionEntity> executions = this.em.createNamedQuery(ExecutionEntity.findAll).getResultList();
 
-		return executionIds;
-	}
+        for (ExecutionEntity execution : executions)
+            executionIds.add(execution.getStartTime());
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public ExecutionEntity getExecution(Date startTime) {
+        return executionIds;
+    }
 
-		return (ExecutionEntity) this.em.createNamedQuery(
-				ExecutionEntity.findById).setParameter("startTime", startTime)
-				.getSingleResult();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public ExecutionEntity getExecution(Date startTime) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<DriverProfileEntity> getProfiles(Date startTime) {
+        return (ExecutionEntity) this.em.createNamedQuery(ExecutionEntity.findById)
+                .setParameter("startTime", startTime).getSingleResult();
+    }
 
-		if (this.ctx == null)
-			return getExecution(startTime).getProfiles();
+    /**
+     * {@inheritDoc}
+     */
+    public Set<DriverProfileEntity> getProfiles(Date startTime) {
 
-		return this.ctx.getBusinessObject(ExecutionService.class).getExecution(
-				startTime).getProfiles();
-	}
+        if (this.ctx == null)
+            return getExecution(startTime).getProfiles();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public ScenarioTimingEntity start(ExecutionEntity execution) {
+        return this.ctx.getBusinessObject(ExecutionService.class).getExecution(startTime).getProfiles();
+    }
 
-		ScenarioTimingEntity startTimeEntity = new ScenarioTimingEntity(
-				execution);
-		this.em.persist(startTimeEntity);
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public ScenarioTimingEntity start(ExecutionEntity execution) {
 
-		return startTimeEntity;
-	}
+        ScenarioTimingEntity startTimeEntity = new ScenarioTimingEntity(execution);
+        this.em.persist(startTimeEntity);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void updateSpeed(ExecutionEntity execution) {
+        return startTimeEntity;
+    }
 
-		execution.setSpeed((Double) this.em.createNamedQuery(
-				ExecutionEntity.calcSpeed).setParameter("execution", execution)
-				.getSingleResult());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void updateSpeed(ExecutionEntity execution) {
+
+        execution.setSpeed((Double) this.em.createNamedQuery(ExecutionEntity.calcSpeed).setParameter("execution",
+                execution).getSingleResult());
+    }
 }

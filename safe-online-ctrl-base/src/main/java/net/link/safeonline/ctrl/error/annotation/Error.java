@@ -11,15 +11,17 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Error {
 
-	public String NOT_SPECIFIED = "Not Specified";
+    public String NOT_SPECIFIED = "Not Specified";
 
-	Class<? extends Exception> exceptionClass();
 
-	String messageId();
+    Class<? extends Exception> exceptionClass();
 
-	String fieldId() default NOT_SPECIFIED;
+    String messageId();
+
+    String fieldId() default NOT_SPECIFIED;
 }

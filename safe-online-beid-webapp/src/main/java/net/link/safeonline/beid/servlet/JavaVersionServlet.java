@@ -22,10 +22,10 @@ import net.link.safeonline.util.servlet.annotation.RequestParameter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Servlet that receives the java version data from the JavaVersionApplet applet
- * and processes it. Depending on target session attributes being set this
- * servlet will redirect to different locations.
+ * Servlet that receives the java version data from the JavaVersionApplet applet and processes it. Depending on target
+ * session attributes being set this servlet will redirect to different locations.
  * 
  * @author fcorneli
  * 
@@ -34,24 +34,15 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     private static final long  serialVersionUID                = 1L;
 
-    private static final Log   LOG                             = LogFactory
-                                                                       .getLog(JavaVersionServlet.class);
+    private static final Log   LOG                             = LogFactory.getLog(JavaVersionServlet.class);
 
-    public static final String TARGET_SESSION_ATTRIBUTE        = JavaVersionServlet.class
-                                                                       .getName()
-                                                                       + ".target";
+    public static final String TARGET_SESSION_ATTRIBUTE        = JavaVersionServlet.class.getName() + ".target";
 
-    public static final String TARGET15_SESSION_ATTRIBUTE      = JavaVersionServlet.class
-                                                                       .getName()
-                                                                       + ".target15";
+    public static final String TARGET15_SESSION_ATTRIBUTE      = JavaVersionServlet.class.getName() + ".target15";
 
-    public static final String TARGET16_SESSION_ATTRIBUTE      = JavaVersionServlet.class
-                                                                       .getName()
-                                                                       + ".target16";
+    public static final String TARGET16_SESSION_ATTRIBUTE      = JavaVersionServlet.class.getName() + ".target16";
 
-    public static final String PKCS11_TARGET_SESSION_ATTRIBUTE = JavaVersionServlet.class
-                                                                       .getName()
-                                                                       + ".pkcs11target";
+    public static final String PKCS11_TARGET_SESSION_ATTRIBUTE = JavaVersionServlet.class.getName() + ".pkcs11target";
 
     public static final String JAVA_VERSION_REG_EXPR           = "^1\\.(5|6).*";
 
@@ -59,27 +50,23 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
 
     /**
-     * Sets the target in case no PKCS#11 drivers were detected but Java 1.5
-     * runtime is present.
+     * Sets the target in case no PKCS#11 drivers were detected but Java 1.5 runtime is present.
      * 
      * @param target
      * @param session
      */
-    public static void setJava15NoPkcs11Target(String target,
-            HttpSession session) {
+    public static void setJava15NoPkcs11Target(String target, HttpSession session) {
 
         session.setAttribute(TARGET15_SESSION_ATTRIBUTE, target);
     }
 
     /**
-     * Sets the target in case no PKCS#11 drivers were detected but Java 1.6
-     * runtime is present.
+     * Sets the target in case no PKCS#11 drivers were detected but Java 1.6 runtime is present.
      * 
      * @param target
      * @param session
      */
-    public static void setJava16NoPkcs11Target(String target,
-            HttpSession session) {
+    public static void setJava16NoPkcs11Target(String target, HttpSession session) {
 
         session.setAttribute(TARGET16_SESSION_ATTRIBUTE, target);
     }
@@ -154,21 +141,20 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         invoke(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         invoke(request, response);
     }
 
-    private void invoke(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
+    private void invoke(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         LOG.debug("doPost");
         LOG.debug("platform: " + this.platformRequestParameter);
@@ -203,8 +189,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
         HttpSession session = request.getSession();
         if ("true".equals(this.hasPkcs11)) {
-            String pkcs11target = (String) session
-                    .getAttribute(PKCS11_TARGET_SESSION_ATTRIBUTE);
+            String pkcs11target = (String) session.getAttribute(PKCS11_TARGET_SESSION_ATTRIBUTE);
             if (null != pkcs11target) {
                 LOG.debug("redirect to target: " + pkcs11target);
                 response.sendRedirect(pkcs11target);
@@ -218,8 +203,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
         switch (this.sessionJavaVersion) {
             case JAVA_1_5:
-                String target15 = (String) session
-                        .getAttribute(TARGET15_SESSION_ATTRIBUTE);
+                String target15 = (String) session.getAttribute(TARGET15_SESSION_ATTRIBUTE);
                 if (null != target15) {
                     LOG.debug("redirecting to target: " + target15);
                     response.sendRedirect(target15);
@@ -227,8 +211,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
                 }
             break;
             case JAVA_1_6:
-                String target16 = (String) session
-                        .getAttribute(TARGET16_SESSION_ATTRIBUTE);
+                String target16 = (String) session.getAttribute(TARGET16_SESSION_ATTRIBUTE);
                 if (null != target16) {
                     LOG.debug("redirecting to target: " + target16);
                     response.sendRedirect(target16);
@@ -249,13 +232,10 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
     private boolean checkJavaVersion() throws ServletException {
 
         if (null == this.javaVersion)
-            throw new ServletException(
-                    "javaVersion request parameter is required");
-        boolean result = Pattern.matches(JAVA_VERSION_REG_EXPR,
-                this.javaVersion);
+            throw new ServletException("javaVersion request parameter is required");
+        boolean result = Pattern.matches(JAVA_VERSION_REG_EXPR, this.javaVersion);
         LOG.debug("java version check result: " + result);
-        boolean java15 = Pattern.matches(JAVA_1_5_VERSION_REG_EXPR,
-                this.javaVersion);
+        boolean java15 = Pattern.matches(JAVA_1_5_VERSION_REG_EXPR, this.javaVersion);
         if (java15) {
             this.sessionJavaVersion = JAVA_VERSION.JAVA_1_5;
         } else {

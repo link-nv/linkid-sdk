@@ -14,64 +14,72 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Embeddable
 public class DeviceClassDescriptionPK implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String deviceClassName;
+    private String            deviceClassName;
 
-	private String language;
+    private String            language;
 
-	public DeviceClassDescriptionPK() {
-		// empty
-	}
 
-	public DeviceClassDescriptionPK(String deviceClassName, String language) {
-		this.deviceClassName = deviceClassName;
-		this.language = language;
-	}
+    public DeviceClassDescriptionPK() {
 
-	public String getDeviceClassName() {
-		return this.deviceClassName;
-	}
+        // empty
+    }
 
-	public void setDeviceClassName(String deviceClassName) {
-		this.deviceClassName = deviceClassName;
-	}
+    public DeviceClassDescriptionPK(String deviceClassName, String language) {
 
-	public String getLanguage() {
-		return this.language;
-	}
+        this.deviceClassName = deviceClassName;
+        this.language = language;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public String getDeviceClassName() {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof DeviceClassDescriptionPK) {
-			return false;
-		}
-		DeviceClassDescriptionPK rhs = (DeviceClassDescriptionPK) obj;
-		return new EqualsBuilder().append(this.deviceClassName,
-				rhs.deviceClassName).append(this.language, rhs.language)
-				.isEquals();
-	}
+        return this.deviceClassName;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.deviceClassName).append(
-				this.language).toHashCode();
-	}
+    public void setDeviceClassName(String deviceClassName) {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("deviceClassName",
-				this.deviceClassName).append("language", this.language)
-				.toString();
-	}
+        this.deviceClassName = deviceClassName;
+    }
+
+    public String getLanguage() {
+
+        return this.language;
+    }
+
+    public void setLanguage(String language) {
+
+        this.language = language;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof DeviceClassDescriptionPK) {
+            return false;
+        }
+        DeviceClassDescriptionPK rhs = (DeviceClassDescriptionPK) obj;
+        return new EqualsBuilder().append(this.deviceClassName, rhs.deviceClassName)
+                .append(this.language, rhs.language).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.deviceClassName).append(this.language).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("deviceClassName", this.deviceClassName).append("language",
+                this.language).toString();
+    }
 }

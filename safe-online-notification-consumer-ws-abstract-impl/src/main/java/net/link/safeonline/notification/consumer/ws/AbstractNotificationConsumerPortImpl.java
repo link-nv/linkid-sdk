@@ -9,14 +9,15 @@ package net.link.safeonline.notification.consumer.ws;
 
 import net.lin_k.safe_online.notification.consumer.NotificationConsumerPort;
 
-public abstract class AbstractNotificationConsumerPortImpl implements
-		NotificationConsumerPort {
 
-	protected AbstractNotificationConsumerService notificationConsumerService;
+public abstract class AbstractNotificationConsumerPortImpl implements NotificationConsumerPort {
 
-	public AbstractNotificationConsumerPortImpl(
-			AbstractNotificationConsumerService notificationConsumerService) {
-		this.notificationConsumerService = notificationConsumerService;
-	}
+    protected AbstractNotificationConsumerService notificationConsumerService;
+
+
+    public AbstractNotificationConsumerPortImpl(AbstractNotificationConsumerService notificationConsumerService) {
+
+        this.notificationConsumerService = notificationConsumerService;
+    }
 
 }

@@ -38,10 +38,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 /**
- * Implementation of the authorization manager service. For the moment the
- * authorization is granted via application subscriptions. I.e. when assigning a
- * role to a subject, the subject will actually be subscribed onto the
+ * Implementation of the authorization manager service. For the moment the authorization is granted via application
+ * subscriptions. I.e. when assigning a role to a subject, the subject will actually be subscribed onto the
  * corresponding SafeOnline application.
  * 
  * @author fcorneli
@@ -49,140 +49,131 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class AuthorizationManagerServiceBean implements
-		AuthorizationManagerService {
+public class AuthorizationManagerServiceBean implements AuthorizationManagerService {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthorizationManagerServiceBean.class);
+    private static final Log LOG = LogFactory.getLog(AuthorizationManagerServiceBean.class);
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService   subjectService;
 
-	@EJB
-	private SubscriptionDAO subscriptionDAO;
+    @EJB
+    private SubscriptionDAO  subscriptionDAO;
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO   applicationDAO;
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public Set<String> getAvailableRoles() {
-		LOG.debug("getAvailableRoles");
-		Set<String> availableRoles = new HashSet<String>();
-		/*
-		 * We limit ourself to the SafeOnline application on which a user cannot
-		 * subscribe himself.
-		 */
-		availableRoles.add(SafeOnlineRoles.HELPDESK_ROLE);
-		availableRoles.add(SafeOnlineRoles.OPERATOR_ROLE);
-		availableRoles.add(SafeOnlineRoles.OWNER_ROLE);
-		return availableRoles;
-	}
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public Set<String> getRoles(String login) throws SubjectNotFoundException {
-		LOG.debug("getRoles for subject: " + login);
-		SubjectEntity subject = this.subjectService
-				.getSubjectFromUserName(login);
-		Set<String> roles = new HashSet<String>();
-		addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
-				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
-		addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject,
-				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-				roles);
-		addRoleIfSubscribed(SafeOnlineRoles.HELPDESK_ROLE, subject,
-				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
-				roles);
-		return roles;
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public Set<String> getAvailableRoles() {
 
-	private static final Map<String, String> roleApplicationNameMap = new HashMap<String, String>();
+        LOG.debug("getAvailableRoles");
+        Set<String> availableRoles = new HashSet<String>();
+        /*
+         * We limit ourself to the SafeOnline application on which a user cannot subscribe himself.
+         */
+        availableRoles.add(SafeOnlineRoles.HELPDESK_ROLE);
+        availableRoles.add(SafeOnlineRoles.OPERATOR_ROLE);
+        availableRoles.add(SafeOnlineRoles.OWNER_ROLE);
+        return availableRoles;
+    }
 
-	static {
-		roleApplicationNameMap.put(SafeOnlineRoles.OWNER_ROLE,
-				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
-		roleApplicationNameMap.put(SafeOnlineRoles.OPERATOR_ROLE,
-				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME);
-		roleApplicationNameMap.put(SafeOnlineRoles.HELPDESK_ROLE,
-				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME);
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public Set<String> getRoles(String login) throws SubjectNotFoundException {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void setRoles(String login, Set<String> roles)
-			throws SubjectNotFoundException, RoleNotFoundException {
-		SubjectEntity subject = this.subjectService
-				.getSubjectFromUserName(login);
-		LOG.debug("set roles for subject: " + login);
-		for (String role : roles) {
-			setRole(subject, role);
-		}
-		Set<String> removeRoles = getAvailableRoles();
-		removeRoles.removeAll(roles);
-		for (String removeRole : removeRoles) {
-			unsetRole(subject, removeRole);
-		}
+        LOG.debug("getRoles for subject: " + login);
+        SubjectEntity subject = this.subjectService.getSubjectFromUserName(login);
+        Set<String> roles = new HashSet<String>();
+        addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
+                SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
+        addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject,
+                SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, roles);
+        addRoleIfSubscribed(SafeOnlineRoles.HELPDESK_ROLE, subject,
+                SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, roles);
+        return roles;
+    }
 
-		SecurityManagerUtils.flushCredentialCache(login,
-				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
-	}
 
-	private void setRole(SubjectEntity subject, String role)
-			throws RoleNotFoundException {
-		ApplicationEntity application = getApplication(role);
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, application);
-		if (null != subscription) {
-			return;
-		}
-		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
-				subject, application);
-	}
+    private static final Map<String, String> roleApplicationNameMap = new HashMap<String, String>();
 
-	private ApplicationEntity getApplication(String role)
-			throws RoleNotFoundException {
-		String applicationName = roleApplicationNameMap.get(role);
-		if (null == applicationName) {
-			throw new RoleNotFoundException();
-		}
-		ApplicationEntity application = this.applicationDAO
-				.findApplication(applicationName);
-		if (null == application) {
-			throw new EJBException("application not found: " + applicationName);
-		}
-		return application;
-	}
+    static {
+        roleApplicationNameMap.put(SafeOnlineRoles.OWNER_ROLE, SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+        roleApplicationNameMap.put(SafeOnlineRoles.OPERATOR_ROLE,
+                SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME);
+        roleApplicationNameMap.put(SafeOnlineRoles.HELPDESK_ROLE,
+                SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME);
+    }
 
-	private void unsetRole(SubjectEntity subject, String role)
-			throws RoleNotFoundException {
-		ApplicationEntity application = getApplication(role);
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, application);
-		if (null == subscription) {
-			return;
-		}
-		this.subscriptionDAO.removeSubscription(subscription);
-	}
 
-	private void addRoleIfSubscribed(String roleToAdd, SubjectEntity subject,
-			String applicationName, Set<String> roles) {
-		ApplicationEntity application;
-		try {
-			application = this.applicationDAO.getApplication(applicationName);
-		} catch (ApplicationNotFoundException e) {
-			LOG.error("application not found: " + applicationName);
-			return;
-		}
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, application);
-		if (null == subscription) {
-			return;
-		}
-		roles.add(roleToAdd);
-	}
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void setRoles(String login, Set<String> roles) throws SubjectNotFoundException, RoleNotFoundException {
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<String> getUsers(String prefix)
-			throws AttributeTypeNotFoundException {
-		List<String> users = this.subjectService.listUsers(prefix);
-		return users;
-	}
+        SubjectEntity subject = this.subjectService.getSubjectFromUserName(login);
+        LOG.debug("set roles for subject: " + login);
+        for (String role : roles) {
+            setRole(subject, role);
+        }
+        Set<String> removeRoles = getAvailableRoles();
+        removeRoles.removeAll(roles);
+        for (String removeRole : removeRoles) {
+            unsetRole(subject, removeRole);
+        }
+
+        SecurityManagerUtils.flushCredentialCache(login, SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+    }
+
+    private void setRole(SubjectEntity subject, String role) throws RoleNotFoundException {
+
+        ApplicationEntity application = getApplication(role);
+        SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
+        if (null != subscription) {
+            return;
+        }
+        this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, subject, application);
+    }
+
+    private ApplicationEntity getApplication(String role) throws RoleNotFoundException {
+
+        String applicationName = roleApplicationNameMap.get(role);
+        if (null == applicationName) {
+            throw new RoleNotFoundException();
+        }
+        ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
+        if (null == application) {
+            throw new EJBException("application not found: " + applicationName);
+        }
+        return application;
+    }
+
+    private void unsetRole(SubjectEntity subject, String role) throws RoleNotFoundException {
+
+        ApplicationEntity application = getApplication(role);
+        SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
+        if (null == subscription) {
+            return;
+        }
+        this.subscriptionDAO.removeSubscription(subscription);
+    }
+
+    private void addRoleIfSubscribed(String roleToAdd, SubjectEntity subject, String applicationName, Set<String> roles) {
+
+        ApplicationEntity application;
+        try {
+            application = this.applicationDAO.getApplication(applicationName);
+        } catch (ApplicationNotFoundException e) {
+            LOG.error("application not found: " + applicationName);
+            return;
+        }
+        SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
+        if (null == subscription) {
+            return;
+        }
+        roles.add(roleToAdd);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public List<String> getUsers(String prefix) throws AttributeTypeNotFoundException {
+
+        List<String> users = this.subjectService.listUsers(prefix);
+        return users;
+    }
 }

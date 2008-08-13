@@ -17,13 +17,14 @@ import java.lang.annotation.Target;
 
 import net.link.safeonline.validation.validator.LessThanValidator;
 
+
 @Documented
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @ValidatorAnnotation(LessThanValidator.class)
 public @interface LessThan {
 
-	double value();
+    double value();
 
-	String name() default "";
+    String name() default "";
 }

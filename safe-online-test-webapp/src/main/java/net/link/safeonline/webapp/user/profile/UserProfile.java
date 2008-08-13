@@ -9,17 +9,20 @@ package net.link.safeonline.webapp.user.profile;
 
 import net.link.safeonline.webapp.user.UserTemplate;
 
+
 public class UserProfile extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/profile/profile.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/profile/profile.seam";
 
-	public UserProfile() {
-		super(PAGE_NAME);
-	}
 
-	public String getAttributeValue(String attribute) {
-		return this.getSafeOnlineAttributeValue(attribute);
-	}
+    public UserProfile() {
+
+        super(PAGE_NAME);
+    }
+
+    public String getAttributeValue(String attribute) {
+
+        return this.getSafeOnlineAttributeValue(attribute);
+    }
 
 }

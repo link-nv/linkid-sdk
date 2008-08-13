@@ -9,30 +9,35 @@ package net.link.safeonline.cli;
 
 public abstract class AbstractMenuAction implements Runnable {
 
-	private final char activationChar;
+    private final char   activationChar;
 
-	private final String description;
+    private final String description;
 
-	public AbstractMenuAction(char activationChar, String description) {
-		this.activationChar = activationChar;
-		this.description = description;
-	}
 
-	public boolean isActive() {
-		return true;
-	}
+    public AbstractMenuAction(char activationChar, String description) {
 
-	@Override
-	public String toString() {
-		return "[" + Character.toUpperCase(this.activationChar) + "] "
-				+ this.description;
-	}
+        this.activationChar = activationChar;
+        this.description = description;
+    }
 
-	public char getActivationChar() {
-		return this.activationChar;
-	}
+    public boolean isActive() {
 
-	public String getDescription() {
-		return this.description;
-	}
+        return true;
+    }
+
+    @Override
+    public String toString() {
+
+        return "[" + Character.toUpperCase(this.activationChar) + "] " + this.description;
+    }
+
+    public char getActivationChar() {
+
+        return this.activationChar;
+    }
+
+    public String getDescription() {
+
+        return this.description;
+    }
 }

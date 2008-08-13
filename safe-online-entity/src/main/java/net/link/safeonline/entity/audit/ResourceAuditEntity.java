@@ -34,142 +34,156 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+
 @Entity
 @Table(name = "resource_audit")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
-				+ "FROM ResourceAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record "
-				+ "FROM ResourceAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) "
-				+ "FROM ResourceAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = QUERY_ALL, query = "FROM ResourceAuditEntity"),
-		@NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record "
-				+ "FROM ResourceAuditEntity AS record "
-				+ "WHERE record.eventDate > :ageLimit") })
+        @NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE " + "FROM ResourceAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record " + "FROM ResourceAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) " + "FROM ResourceAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = QUERY_ALL, query = "FROM ResourceAuditEntity"),
+        @NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record " + "FROM ResourceAuditEntity AS record "
+                + "WHERE record.eventDate > :ageLimit") })
 public class ResourceAuditEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID             = 1L;
 
-	public static final String QUERY_DELETE_WHERE_CONTEXTID = "ra.del.id";
+    public static final String QUERY_DELETE_WHERE_CONTEXTID = "ra.del.id";
 
-	public static final String QUERY_ALL = "ra.all";
+    public static final String QUERY_ALL                    = "ra.all";
 
-	public static final String QUERY_WHERE_CONTEXTID = "ra.id";
+    public static final String QUERY_WHERE_CONTEXTID        = "ra.id";
 
-	public static final String QUERY_WHERE_AGELIMIT = "ra.age";
+    public static final String QUERY_WHERE_AGELIMIT         = "ra.age";
 
-	public static final String COUNT_WHERE_CONTEXTID = "ra.count.id";
+    public static final String COUNT_WHERE_CONTEXTID        = "ra.count.id";
 
-	private Long id;
+    private Long               id;
 
-	private AuditContextEntity auditContext;
+    private AuditContextEntity auditContext;
 
-	private ResourceNameType resourceName;
+    private ResourceNameType   resourceName;
 
-	private ResourceLevelType resourceLevel;
+    private ResourceLevelType  resourceLevel;
 
-	private String sourceComponent;
+    private String             sourceComponent;
 
-	private String message;
+    private String             message;
 
-	private Date eventDate;
+    private Date               eventDate;
 
-	public ResourceAuditEntity() {
-		// empty
-	}
 
-	public ResourceAuditEntity(AuditContextEntity auditContext,
-			ResourceNameType resourceName, ResourceLevelType resourceLevel,
-			String sourceComponent, String message) {
-		this.auditContext = auditContext;
-		this.resourceName = resourceName;
-		this.resourceLevel = resourceLevel;
-		this.sourceComponent = sourceComponent;
-		this.message = message;
-		this.eventDate = new Date();
-	}
+    public ResourceAuditEntity() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return this.id;
-	}
+        // empty
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public ResourceAuditEntity(AuditContextEntity auditContext, ResourceNameType resourceName,
+            ResourceLevelType resourceLevel, String sourceComponent, String message) {
 
-	public String getMessage() {
-		return this.message;
-	}
+        this.auditContext = auditContext;
+        this.resourceName = resourceName;
+        this.resourceLevel = resourceLevel;
+        this.sourceComponent = sourceComponent;
+        this.message = message;
+        this.eventDate = new Date();
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
 
-	@Temporal(value = TemporalType.TIMESTAMP)
-	public Date getEventDate() {
-		return this.eventDate;
-	}
+        return this.id;
+    }
 
-	public void setEventDate(Date eventDate) {
-		this.eventDate = eventDate;
-	}
+    public void setId(Long id) {
 
-	@Enumerated(EnumType.STRING)
-	public ResourceNameType getResourceName() {
-		return this.resourceName;
-	}
+        this.id = id;
+    }
 
-	public void setResourceName(ResourceNameType resourceName) {
-		this.resourceName = resourceName;
-	}
+    public String getMessage() {
 
-	@Enumerated(EnumType.STRING)
-	public ResourceLevelType getResourceLevel() {
-		return this.resourceLevel;
-	}
+        return this.message;
+    }
 
-	public void setResourceLevel(ResourceLevelType resourceLevel) {
-		this.resourceLevel = resourceLevel;
-	}
+    public void setMessage(String message) {
 
-	@ManyToOne
-	public AuditContextEntity getAuditContext() {
-		return this.auditContext;
-	}
+        this.message = message;
+    }
 
-	public void setAuditContext(AuditContextEntity auditContext) {
-		this.auditContext = auditContext;
-	}
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getEventDate() {
 
-	public String getSourceComponent() {
-		return this.sourceComponent;
-	}
+        return this.eventDate;
+    }
 
-	public void setSourceComponent(String sourceComponent) {
-		this.sourceComponent = sourceComponent;
-	}
+    public void setEventDate(Date eventDate) {
 
-	public interface QueryInterface {
-		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
-		void deleteRecords(@QueryParam("contextId") Long contextId);
+        this.eventDate = eventDate;
+    }
 
-		@QueryMethod(QUERY_ALL)
-		List<ResourceAuditEntity> listRecords();
+    @Enumerated(EnumType.STRING)
+    public ResourceNameType getResourceName() {
 
-		@QueryMethod(QUERY_WHERE_CONTEXTID)
-		List<ResourceAuditEntity> listRecords(@QueryParam("contextId") Long id);
+        return this.resourceName;
+    }
 
-		@QueryMethod(COUNT_WHERE_CONTEXTID)
-		long countRecords(@QueryParam("contextId") long id);
+    public void setResourceName(ResourceNameType resourceName) {
 
-		@QueryMethod(QUERY_WHERE_AGELIMIT)
-		List<ResourceAuditEntity> listRecordsSince(
-				@QueryParam("ageLimit") Date ageLimit);
-	}
+        this.resourceName = resourceName;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public ResourceLevelType getResourceLevel() {
+
+        return this.resourceLevel;
+    }
+
+    public void setResourceLevel(ResourceLevelType resourceLevel) {
+
+        this.resourceLevel = resourceLevel;
+    }
+
+    @ManyToOne
+    public AuditContextEntity getAuditContext() {
+
+        return this.auditContext;
+    }
+
+    public void setAuditContext(AuditContextEntity auditContext) {
+
+        this.auditContext = auditContext;
+    }
+
+    public String getSourceComponent() {
+
+        return this.sourceComponent;
+    }
+
+    public void setSourceComponent(String sourceComponent) {
+
+        this.sourceComponent = sourceComponent;
+    }
+
+
+    public interface QueryInterface {
+
+        @UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
+        void deleteRecords(@QueryParam("contextId") Long contextId);
+
+        @QueryMethod(QUERY_ALL)
+        List<ResourceAuditEntity> listRecords();
+
+        @QueryMethod(QUERY_WHERE_CONTEXTID)
+        List<ResourceAuditEntity> listRecords(@QueryParam("contextId") Long id);
+
+        @QueryMethod(COUNT_WHERE_CONTEXTID)
+        long countRecords(@QueryParam("contextId") long id);
+
+        @QueryMethod(QUERY_WHERE_AGELIMIT)
+        List<ResourceAuditEntity> listRecordsSince(@QueryParam("ageLimit") Date ageLimit);
+    }
 }

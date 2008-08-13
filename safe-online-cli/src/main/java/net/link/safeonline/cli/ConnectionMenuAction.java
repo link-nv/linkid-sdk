@@ -16,107 +16,104 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.List;
 
+
 public class ConnectionMenuAction extends AbstractMenuAction {
 
-	public ConnectionMenuAction() {
-		super('c', "Create Database Connection");
-	}
+    public ConnectionMenuAction() {
 
-	@Override
-	public boolean isActive() {
-		return false == DatabasePluginManager.hasActiveConnection();
-	}
+        super('c', "Create Database Connection");
+    }
 
-	public void run() {
-		System.out.println(super.getDescription());
-		System.out.println();
+    @Override
+    public boolean isActive() {
 
-		File jdbcDriverFile = getJDBCDriverFile();
-		System.out.println("JDBC driver location: \""
-				+ jdbcDriverFile.getAbsolutePath() + "\"");
-		URL jdbcDriverUrl;
-		try {
-			jdbcDriverUrl = jdbcDriverFile.toURI().toURL();
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("URL error: " + e.getMessage(), e);
-		}
+        return false == DatabasePluginManager.hasActiveConnection();
+    }
 
-		Thread currentThread = Thread.currentThread();
-		ClassLoader parentClassLoader = currentThread.getContextClassLoader();
-		URLClassLoader classLoader = new URLClassLoader(
-				new URL[] { jdbcDriverUrl }, parentClassLoader);
-		currentThread.setContextClassLoader(classLoader);
+    public void run() {
 
-		DatabasePlugin databasePlugin = initDatabasePlugin(classLoader);
-		if (null == databasePlugin) {
-			System.out.println("Cannot continue without database plugin.");
-			return;
-		}
-		System.out.println("Selected database plugin: "
-				+ databasePlugin.getName());
+        System.out.println(super.getDescription());
+        System.out.println();
 
-		Connection connection = connectToDatabase(databasePlugin);
-		try {
-			DatabaseMetaData databaseMetaData = connection.getMetaData();
-			System.out.println("Driver name: "
-					+ databaseMetaData.getDriverName());
-			System.out.println("Database product name: "
-					+ databaseMetaData.getDatabaseProductName());
-			System.out.println("Database product version: "
-					+ databaseMetaData.getDatabaseProductVersion());
-		} catch (SQLException e) {
-			throw new RuntimeException("error retrieving database meta data: "
-					+ e.getMessage());
-		}
-	}
+        File jdbcDriverFile = getJDBCDriverFile();
+        System.out.println("JDBC driver location: \"" + jdbcDriverFile.getAbsolutePath() + "\"");
+        URL jdbcDriverUrl;
+        try {
+            jdbcDriverUrl = jdbcDriverFile.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("URL error: " + e.getMessage(), e);
+        }
 
-	private Connection connectToDatabase(DatabasePlugin databasePlugin) {
-		while (true) {
-			System.out.print("Give the JDBC Connection URL: ");
-			String connectionUrl = Keyboard.getString();
-			System.out.print("Give the user: ");
-			String user = Keyboard.getString();
-			System.out.print("Give the password: ");
-			String password = Keyboard.getString();
-			try {
-				Connection connection = DatabasePluginManager.connect(
-						databasePlugin, connectionUrl, user, password);
-				return connection;
-			} catch (SQLException e) {
-				System.err.println("Connection error: " + e.getMessage());
-				e.printStackTrace();
-				System.out.println("Try again.");
-			}
-		}
-	}
+        Thread currentThread = Thread.currentThread();
+        ClassLoader parentClassLoader = currentThread.getContextClassLoader();
+        URLClassLoader classLoader = new URLClassLoader(new URL[] { jdbcDriverUrl }, parentClassLoader);
+        currentThread.setContextClassLoader(classLoader);
 
-	private DatabasePlugin initDatabasePlugin(ClassLoader classLoader) {
-		List<DatabasePlugin> availableDatabasePlugins = DatabasePluginManager
-				.initDatabasePlugins(classLoader);
-		if (availableDatabasePlugins.isEmpty()) {
-			System.out.println("No database plugins available.");
-			return null;
-		}
-		System.out.println("Available database plugins:");
-		int idx = 1;
-		for (DatabasePlugin databasePlugin : availableDatabasePlugins) {
-			System.out.println("[" + idx + "] " + databasePlugin.getName());
-		}
-		System.out.println("Please select a database plugin: ");
-		int selectedIdx = Keyboard.getInteger() - 1;
-		DatabasePlugin selectedDatabasePlugin = availableDatabasePlugins
-				.get(selectedIdx);
-		return selectedDatabasePlugin;
-	}
+        DatabasePlugin databasePlugin = initDatabasePlugin(classLoader);
+        if (null == databasePlugin) {
+            System.out.println("Cannot continue without database plugin.");
+            return;
+        }
+        System.out.println("Selected database plugin: " + databasePlugin.getName());
 
-	private File getJDBCDriverFile() {
-		while (true) {
-			System.out.print("Give the JDBC driver JAR location: ");
-			String driverLocation = Keyboard.getString();
-			File driverFile = new File(driverLocation);
-			if (true == driverFile.exists())
+        Connection connection = connectToDatabase(databasePlugin);
+        try {
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            System.out.println("Driver name: " + databaseMetaData.getDriverName());
+            System.out.println("Database product name: " + databaseMetaData.getDatabaseProductName());
+            System.out.println("Database product version: " + databaseMetaData.getDatabaseProductVersion());
+        } catch (SQLException e) {
+            throw new RuntimeException("error retrieving database meta data: " + e.getMessage());
+        }
+    }
+
+    private Connection connectToDatabase(DatabasePlugin databasePlugin) {
+
+        while (true) {
+            System.out.print("Give the JDBC Connection URL: ");
+            String connectionUrl = Keyboard.getString();
+            System.out.print("Give the user: ");
+            String user = Keyboard.getString();
+            System.out.print("Give the password: ");
+            String password = Keyboard.getString();
+            try {
+                Connection connection = DatabasePluginManager.connect(databasePlugin, connectionUrl, user, password);
+                return connection;
+            } catch (SQLException e) {
+                System.err.println("Connection error: " + e.getMessage());
+                e.printStackTrace();
+                System.out.println("Try again.");
+            }
+        }
+    }
+
+    private DatabasePlugin initDatabasePlugin(ClassLoader classLoader) {
+
+        List<DatabasePlugin> availableDatabasePlugins = DatabasePluginManager.initDatabasePlugins(classLoader);
+        if (availableDatabasePlugins.isEmpty()) {
+            System.out.println("No database plugins available.");
+            return null;
+        }
+        System.out.println("Available database plugins:");
+        int idx = 1;
+        for (DatabasePlugin databasePlugin : availableDatabasePlugins) {
+            System.out.println("[" + idx + "] " + databasePlugin.getName());
+        }
+        System.out.println("Please select a database plugin: ");
+        int selectedIdx = Keyboard.getInteger() - 1;
+        DatabasePlugin selectedDatabasePlugin = availableDatabasePlugins.get(selectedIdx);
+        return selectedDatabasePlugin;
+    }
+
+    private File getJDBCDriverFile() {
+
+        while (true) {
+            System.out.print("Give the JDBC driver JAR location: ");
+            String driverLocation = Keyboard.getString();
+            File driverFile = new File(driverLocation);
+            if (true == driverFile.exists())
                 return driverFile;
-			System.out.println("File not found. Try again.");
-		}
-	}
+            System.out.println("File not found. Try again.");
+        }
+    }
 }

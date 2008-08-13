@@ -50,252 +50,233 @@ import org.bouncycastle.ocsp.Req;
 import org.bouncycastle.util.encoders.Hex;
 import org.joda.time.DateTime;
 
+
 public class OcspValidatorBeanTest extends TestCase {
 
-	private OcspValidatorBean testedInstance;
+    private OcspValidatorBean   testedInstance;
 
-	private URI ocspUri;
+    private URI                 ocspUri;
 
-	private KeyPair caKeyPair;
+    private KeyPair             caKeyPair;
 
-	private X509Certificate caCertificate;
+    private X509Certificate     caCertificate;
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager  servletTestManager;
 
-	private ResourceAuditLogger mockResourceAuditLogger;
+    private ResourceAuditLogger mockResourceAuditLogger;
 
-	private Object[] mockObjects;
+    private Object[]            mockObjects;
 
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
 
-		this.testedInstance = new OcspValidatorBean();
+    @Override
+    public void setUp() throws Exception {
 
-		this.servletTestManager = new ServletTestManager();
+        super.setUp();
 
-		this.servletTestManager.setUp(TestOcspResponderServlet.class);
+        this.testedInstance = new OcspValidatorBean();
 
-		this.ocspUri = new URI(this.servletTestManager.getServletLocation());
+        this.servletTestManager = new ServletTestManager();
 
-		this.caKeyPair = PkiTestUtils.generateKeyPair();
-		this.caCertificate = PkiTestUtils.generateSelfSignedCertificate(
-				this.caKeyPair, "CN=TestCA");
+        this.servletTestManager.setUp(TestOcspResponderServlet.class);
 
-		KeyPair ocspResponderKeyPair = PkiTestUtils.generateKeyPair();
+        this.ocspUri = new URI(this.servletTestManager.getServletLocation());
 
-		TestOcspResponderServlet.certificate = PkiTestUtils
-				.generateCertificate(ocspResponderKeyPair.getPublic(),
-						"CN=TestOCSPResponder", this.caKeyPair.getPrivate(),
-						this.caCertificate, new DateTime(this.caCertificate
-								.getNotBefore()), new DateTime(
-								this.caCertificate.getNotAfter()), null, false,
-						false, null);
-		TestOcspResponderServlet.privateKey = ocspResponderKeyPair.getPrivate();
+        this.caKeyPair = PkiTestUtils.generateKeyPair();
+        this.caCertificate = PkiTestUtils.generateSelfSignedCertificate(this.caKeyPair, "CN=TestCA");
 
-		TestOcspResponderServlet.called = false;
+        KeyPair ocspResponderKeyPair = PkiTestUtils.generateKeyPair();
 
-		this.mockResourceAuditLogger = createMock(ResourceAuditLogger.class);
-		this.mockObjects = new Object[] { this.mockResourceAuditLogger };
-		EJBTestUtils.inject(this.testedInstance, this.mockResourceAuditLogger);
-	}
+        TestOcspResponderServlet.certificate = PkiTestUtils.generateCertificate(ocspResponderKeyPair.getPublic(),
+                "CN=TestOCSPResponder", this.caKeyPair.getPrivate(), this.caCertificate, new DateTime(
+                        this.caCertificate.getNotBefore()), new DateTime(this.caCertificate.getNotAfter()), null,
+                false, false, null);
+        TestOcspResponderServlet.privateKey = ocspResponderKeyPair.getPrivate();
 
-	@Override
-	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
+        TestOcspResponderServlet.called = false;
 
-		super.tearDown();
-	}
+        this.mockResourceAuditLogger = createMock(ResourceAuditLogger.class);
+        this.mockObjects = new Object[] { this.mockResourceAuditLogger };
+        EJBTestUtils.inject(this.testedInstance, this.mockResourceAuditLogger);
+    }
 
-	public void testGetOcspUri() throws Exception {
-		// setup
-		URI testOcspUri = new URI("http://test.ocsp.location/");
-		X509Certificate certificate = PkiTestUtils
-				.generateTestSelfSignedCert(testOcspUri);
+    @Override
+    public void tearDown() throws Exception {
 
-		// operate
-		URI resultOcspUri = this.testedInstance.getOcspUri(certificate);
+        this.servletTestManager.tearDown();
 
-		// verify
-		assertEquals(testOcspUri, resultOcspUri);
-	}
+        super.tearDown();
+    }
 
-	public void testGetOcspUriGivesNullOnMissingOcspAccessLocation()
-			throws Exception {
-		// setup
-		X509Certificate certificate = PkiTestUtils
-				.generateTestSelfSignedCert(null);
+    public void testGetOcspUri() throws Exception {
 
-		// operate
-		URI resultOcspUri = this.testedInstance.getOcspUri(certificate);
+        // setup
+        URI testOcspUri = new URI("http://test.ocsp.location/");
+        X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(testOcspUri);
 
-		// verify
-		assertNull(resultOcspUri);
-	}
+        // operate
+        URI resultOcspUri = this.testedInstance.getOcspUri(certificate);
 
-	public void testPerformOcspCheckFailsIfOcspResponderIsDown()
-			throws Exception {
-		// setup
-		URI testOcspUri = new URI("http://localhost:1/");
-		X509Certificate certificate = PkiTestUtils
-				.generateTestSelfSignedCert(testOcspUri);
+        // verify
+        assertEquals(testOcspUri, resultOcspUri);
+    }
 
-		// expectations
-		this.mockResourceAuditLogger.addResourceAudit(ResourceNameType.OCSP,
-				ResourceLevelType.RESOURCE_UNAVAILABLE, "/",
-				"OCSP Responder is down");
+    public void testGetOcspUriGivesNullOnMissingOcspAccessLocation() throws Exception {
 
-		// prepare
-		replay(this.mockObjects);
+        // setup
+        X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(null);
 
-		// operate
-		boolean result = this.testedInstance.performOcspCheck(certificate,
-				certificate);
+        // operate
+        URI resultOcspUri = this.testedInstance.getOcspUri(certificate);
 
-		// verify
-		verify(this.mockObjects);
-		assertFalse(result);
-	}
+        // verify
+        assertNull(resultOcspUri);
+    }
 
-	public void testPerformOcspCheckFailsIfOcspResponderDoesNotExist()
-			throws Exception {
-		// setup
-		URI testOcspUri = new URI("http://foobar.ocsp.responder/");
-		X509Certificate certificate = PkiTestUtils
-				.generateTestSelfSignedCert(testOcspUri);
+    public void testPerformOcspCheckFailsIfOcspResponderIsDown() throws Exception {
 
-		// operate
-		boolean result = this.testedInstance.performOcspCheck(certificate,
-				certificate);
+        // setup
+        URI testOcspUri = new URI("http://localhost:1/");
+        X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(testOcspUri);
 
-		// verify
-		assertFalse(result);
-	}
+        // expectations
+        this.mockResourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNAVAILABLE,
+                "/", "OCSP Responder is down");
 
-	public void testPerformOcspCheck() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair
-				.getPublic(), "CN=Test", this.caKeyPair.getPrivate(),
-				this.caCertificate, new DateTime(this.caCertificate
-						.getNotBefore()), new DateTime(this.caCertificate
-						.getNotAfter()), null, false, false, this.ocspUri);
+        // prepare
+        replay(this.mockObjects);
 
-		// operate
-		boolean result = this.testedInstance.performOcspCheck(certificate,
-				this.caCertificate);
+        // operate
+        boolean result = this.testedInstance.performOcspCheck(certificate, certificate);
 
-		// verify
-		assertTrue(result);
-		assertTrue(TestOcspResponderServlet.hasBeenCalled());
-	}
+        // verify
+        verify(this.mockObjects);
+        assertFalse(result);
+    }
 
-	public static class TestOcspResponderServlet extends HttpServlet {
+    public void testPerformOcspCheckFailsIfOcspResponderDoesNotExist() throws Exception {
 
-		private static final long serialVersionUID = 1L;
+        // setup
+        URI testOcspUri = new URI("http://foobar.ocsp.responder/");
+        X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(testOcspUri);
 
-		private static final Log LOG = LogFactory
-				.getLog(TestOcspResponderServlet.class);
+        // operate
+        boolean result = this.testedInstance.performOcspCheck(certificate, certificate);
 
-		static X509Certificate certificate;
+        // verify
+        assertFalse(result);
+    }
 
-		static PrivateKey privateKey;
+    public void testPerformOcspCheck() throws Exception {
 
-		static boolean called;
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", this.caKeyPair
+                .getPrivate(), this.caCertificate, new DateTime(this.caCertificate.getNotBefore()), new DateTime(
+                this.caCertificate.getNotAfter()), null, false, false, this.ocspUri);
 
-		private static CertificateStatus certificateStatus = CertificateStatus.GOOD;
+        // operate
+        boolean result = this.testedInstance.performOcspCheck(certificate, this.caCertificate);
 
-		public static void setCertificateStatus(
-				CertificateStatus certificateStatus) {
-			TestOcspResponderServlet.certificateStatus = certificateStatus;
-		}
+        // verify
+        assertTrue(result);
+        assertTrue(TestOcspResponderServlet.hasBeenCalled());
+    }
 
-		public static boolean hasBeenCalled() {
-			return TestOcspResponderServlet.called;
-		}
 
-		@Override
-		protected void doPost(HttpServletRequest request,
-				HttpServletResponse response) throws ServletException,
-				IOException {
-			LOG.debug("doPost");
-			String contentType = request.getContentType();
-			if (false == "application/ocsp-request".equals(contentType)) {
-				LOG.error("incorrect content type");
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				return;
-			}
+    public static class TestOcspResponderServlet extends HttpServlet {
 
-			BasicOCSPRespGenerator basicOCSPRespGenerator;
-			try {
-				basicOCSPRespGenerator = new BasicOCSPRespGenerator(
-						TestOcspResponderServlet.certificate.getPublicKey());
-			} catch (OCSPException e) {
-				throw new UnavailableException(
-						"cound not create basic OCSP response generator");
-			}
+        private static final long        serialVersionUID  = 1L;
 
-			OCSPReq ocspReq = new OCSPReq(request.getInputStream());
-			Req[] requestList = ocspReq.getRequestList();
-			for (Req ocspRequest : requestList) {
-				CertificateID certificateID = ocspRequest.getCertID();
-				LOG.debug("certificate Id hash algo OID: "
-						+ certificateID.getHashAlgOID());
-				if (false == CertificateID.HASH_SHA1.equals(certificateID
-						.getHashAlgOID())) {
-					LOG.debug("only supporting SHA1 hash algo");
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-					return;
-				}
-				BigInteger serialNumber = certificateID.getSerialNumber();
-				LOG.debug("serial number: " + serialNumber);
-				LOG.debug("issuer name hash: "
-						+ new String(Hex.encode(certificateID
-								.getIssuerNameHash())));
-				LOG.debug("issuer key hash: "
-						+ new String(Hex.encode(certificateID
-								.getIssuerKeyHash())));
-				basicOCSPRespGenerator.addResponse(certificateID,
-						TestOcspResponderServlet.certificateStatus);
-				TestOcspResponderServlet.called = true;
-			}
+        private static final Log         LOG               = LogFactory.getLog(TestOcspResponderServlet.class);
 
-			try {
-				BasicOCSPResp basicOCSPResp = basicOCSPRespGenerator
-						.generate(
-								"SHA1WITHRSA",
-								TestOcspResponderServlet.privateKey,
-								new X509Certificate[] { TestOcspResponderServlet.certificate },
-								new Date(), BouncyCastleProvider.PROVIDER_NAME);
-				OCSPRespGenerator ocspRespGenerator = new OCSPRespGenerator();
-				OCSPResp ocspResp = ocspRespGenerator.generate(
-						OCSPRespGenerator.SUCCESSFUL, basicOCSPResp);
-				response.setContentType("application/ocsp-response");
-				response.getOutputStream().write(ocspResp.getEncoded());
-			} catch (NoSuchProviderException e) {
-				throw new UnavailableException("NoSuchProviderException: "
-						+ e.getMessage());
-			} catch (IllegalArgumentException e) {
-				throw new UnavailableException("IllegalArgumentException: "
-						+ e.getMessage());
-			} catch (OCSPException e) {
-				throw new UnavailableException("OCSPException: "
-						+ e.getMessage());
-			}
-		}
+        static X509Certificate           certificate;
 
-		@Override
-		public void destroy() {
-			LOG.debug("destroy");
-			super.destroy();
-		}
+        static PrivateKey                privateKey;
 
-		@Override
-		public void init() throws ServletException {
-			super.init();
-			LOG.debug("init");
+        static boolean                   called;
 
-			TestOcspResponderServlet.called = false;
-		}
-	}
+        private static CertificateStatus certificateStatus = CertificateStatus.GOOD;
+
+
+        public static void setCertificateStatus(CertificateStatus certificateStatus) {
+
+            TestOcspResponderServlet.certificateStatus = certificateStatus;
+        }
+
+        public static boolean hasBeenCalled() {
+
+            return TestOcspResponderServlet.called;
+        }
+
+        @Override
+        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+                IOException {
+
+            LOG.debug("doPost");
+            String contentType = request.getContentType();
+            if (false == "application/ocsp-request".equals(contentType)) {
+                LOG.error("incorrect content type");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            BasicOCSPRespGenerator basicOCSPRespGenerator;
+            try {
+                basicOCSPRespGenerator = new BasicOCSPRespGenerator(TestOcspResponderServlet.certificate.getPublicKey());
+            } catch (OCSPException e) {
+                throw new UnavailableException("cound not create basic OCSP response generator");
+            }
+
+            OCSPReq ocspReq = new OCSPReq(request.getInputStream());
+            Req[] requestList = ocspReq.getRequestList();
+            for (Req ocspRequest : requestList) {
+                CertificateID certificateID = ocspRequest.getCertID();
+                LOG.debug("certificate Id hash algo OID: " + certificateID.getHashAlgOID());
+                if (false == CertificateID.HASH_SHA1.equals(certificateID.getHashAlgOID())) {
+                    LOG.debug("only supporting SHA1 hash algo");
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
+                BigInteger serialNumber = certificateID.getSerialNumber();
+                LOG.debug("serial number: " + serialNumber);
+                LOG.debug("issuer name hash: " + new String(Hex.encode(certificateID.getIssuerNameHash())));
+                LOG.debug("issuer key hash: " + new String(Hex.encode(certificateID.getIssuerKeyHash())));
+                basicOCSPRespGenerator.addResponse(certificateID, TestOcspResponderServlet.certificateStatus);
+                TestOcspResponderServlet.called = true;
+            }
+
+            try {
+                BasicOCSPResp basicOCSPResp = basicOCSPRespGenerator.generate("SHA1WITHRSA",
+                        TestOcspResponderServlet.privateKey,
+                        new X509Certificate[] { TestOcspResponderServlet.certificate }, new Date(),
+                        BouncyCastleProvider.PROVIDER_NAME);
+                OCSPRespGenerator ocspRespGenerator = new OCSPRespGenerator();
+                OCSPResp ocspResp = ocspRespGenerator.generate(OCSPRespGenerator.SUCCESSFUL, basicOCSPResp);
+                response.setContentType("application/ocsp-response");
+                response.getOutputStream().write(ocspResp.getEncoded());
+            } catch (NoSuchProviderException e) {
+                throw new UnavailableException("NoSuchProviderException: " + e.getMessage());
+            } catch (IllegalArgumentException e) {
+                throw new UnavailableException("IllegalArgumentException: " + e.getMessage());
+            } catch (OCSPException e) {
+                throw new UnavailableException("OCSPException: " + e.getMessage());
+            }
+        }
+
+        @Override
+        public void destroy() {
+
+            LOG.debug("destroy");
+            super.destroy();
+        }
+
+        @Override
+        public void init() throws ServletException {
+
+            super.init();
+            LOG.debug("init");
+
+            TestOcspResponderServlet.called = false;
+        }
+    }
 }

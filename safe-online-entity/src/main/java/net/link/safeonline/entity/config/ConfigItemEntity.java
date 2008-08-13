@@ -25,96 +25,112 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import static net.link.safeonline.entity.config.ConfigItemEntity.QUERY_LIST_ALL;
 
+
 @Entity
 @Table(name = "config_item")
 @NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigItemEntity c") })
 public class ConfigItemEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-	public static final String QUERY_LIST_ALL = "cie.list";
+    public static final String QUERY_LIST_ALL   = "cie.list";
 
-	private String name;
+    private String             name;
 
-	private String value;
+    private String             value;
 
-	private String valueType;
+    private String             valueType;
 
-	private ConfigGroupEntity configGroup;
+    private ConfigGroupEntity  configGroup;
 
-	public ConfigItemEntity() {
-		// empty
-	}
 
-	public ConfigItemEntity(String name, String value, String valueType,
-			ConfigGroupEntity configGroup) {
-		this.name = name;
-		this.value = value;
-		this.valueType = valueType;
-		this.configGroup = configGroup;
-	}
+    public ConfigItemEntity() {
 
-	@ManyToOne
-	public ConfigGroupEntity getConfigGroup() {
-		return this.configGroup;
-	}
+        // empty
+    }
 
-	public void setConfigGroup(ConfigGroupEntity configGroup) {
-		this.configGroup = configGroup;
-	}
+    public ConfigItemEntity(String name, String value, String valueType, ConfigGroupEntity configGroup) {
 
-	@Id
-	public String getName() {
-		return this.name;
-	}
+        this.name = name;
+        this.value = value;
+        this.valueType = valueType;
+        this.configGroup = configGroup;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @ManyToOne
+    public ConfigGroupEntity getConfigGroup() {
 
-	public String getValue() {
-		return this.value;
-	}
+        return this.configGroup;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setConfigGroup(ConfigGroupEntity configGroup) {
 
-	public String getValueType() {
-		return this.valueType;
-	}
+        this.configGroup = configGroup;
+    }
 
-	public void setValueType(String valueType) {
-		this.valueType = valueType;
-	}
+    @Id
+    public String getName() {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("name", this.name).toString();
-	}
+        return this.name;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (null == obj) {
-			return false;
-		}
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof ConfigItemEntity) {
-			return false;
-		}
-		ConfigItemEntity rhs = (ConfigItemEntity) obj;
-		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
-	}
+    public void setName(String name) {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.name).toHashCode();
-	}
+        this.name = name;
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_LIST_ALL)
-		List<ConfigItemEntity> listConfigItems();
-	}
+    public String getValue() {
+
+        return this.value;
+    }
+
+    public void setValue(String value) {
+
+        this.value = value;
+    }
+
+    public String getValueType() {
+
+        return this.valueType;
+    }
+
+    public void setValueType(String valueType) {
+
+        this.valueType = valueType;
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("name", this.name).toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof ConfigItemEntity) {
+            return false;
+        }
+        ConfigItemEntity rhs = (ConfigItemEntity) obj;
+        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.name).toHashCode();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_LIST_ALL)
+        List<ConfigItemEntity> listConfigItems();
+    }
 }

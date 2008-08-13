@@ -29,20 +29,17 @@ import net.link.safeonline.performance.console.swing.ui.AgentStatusListener;
 
 import org.jgroups.Address;
 
+
 /**
  * <h2>{@link ConsoleData}<br>
  * <sub>A central location for console configuration data.</sub></h2>
  * 
  * <p>
- * All configuration settings are kept in this class. The UI needs to make sure
- * to update this class whenever settings are modified and needs to read the
- * settings in from this class rather than trying to parse them out of the UI.
- * <br>
- * This includes the mappings of known agent addresses to {@link ConsoleAgent}
- * objects. It is the responsibility of the UI to call the appropriate methods (
- * {@link #getAgent(Address)} and {@link #removeStaleAgents()} ) whenever agent
- * addresses join or leave the group so that the mappings kept by this class are
- * up-to-date.
+ * All configuration settings are kept in this class. The UI needs to make sure to update this class whenever settings
+ * are modified and needs to read the settings in from this class rather than trying to parse them out of the UI. <br>
+ * This includes the mappings of known agent addresses to {@link ConsoleAgent} objects. It is the responsibility of the
+ * UI to call the appropriate methods ( {@link #getAgent(Address)} and {@link #removeStaleAgents()} ) whenever agent
+ * addresses join or leave the group so that the mappings kept by this class are up-to-date.
  * </p>
  * 
  * <p>
@@ -53,385 +50,375 @@ import org.jgroups.Address;
  */
 public class ConsoleData {
 
-	public static final Object lock = new Object();
-	private static final LockHandler lockHandler = new LockHandler();
+    public static final Object                      lock                        = new Object();
+    private static final LockHandler                lockHandler                 = new LockHandler();
 
-	static final List<ExecutionSelectionListener> executionSelectionListeners = new ArrayList<ExecutionSelectionListener>();
-	static final List<ExecutionSettingsListener> executionSettingsListeners = new ArrayList<ExecutionSettingsListener>();
-	static final List<AgentSelectionListener> agentSelectionListeners = new ArrayList<AgentSelectionListener>();
-	static final List<AgentStatusListener> agentStatusListeners = new ArrayList<AgentStatusListener>();
+    static final List<ExecutionSelectionListener>   executionSelectionListeners = new ArrayList<ExecutionSelectionListener>();
+    static final List<ExecutionSettingsListener>    executionSettingsListeners  = new ArrayList<ExecutionSettingsListener>();
+    static final List<AgentSelectionListener>       agentSelectionListeners     = new ArrayList<AgentSelectionListener>();
+    static final List<AgentStatusListener>          agentStatusListeners        = new ArrayList<AgentStatusListener>();
 
-	private static final Map<Address, ConsoleAgent> agents = new HashMap<Address, ConsoleAgent>();
-	private static final AgentRemoting agentDiscoverer = new AgentRemoting();
-	private static final ScenarioRemoting remoting = new ScenarioRemoting();
-	private static String hostname = "sebeco-dev-10";
-	private static boolean                          ssl                         = false;
+    private static final Map<Address, ConsoleAgent> agents                      = new HashMap<Address, ConsoleAgent>();
+    private static final AgentRemoting              agentDiscoverer             = new AgentRemoting();
+    private static final ScenarioRemoting           remoting                    = new ScenarioRemoting();
+    private static String                           hostname                    = "sebeco-dev-10";
+    private static boolean                          ssl                         = false;
     private static int                              port                        = 8080;
 
-	static int workers = 10;
-	private static long                             duration                    = 60 * 60 * 1000;
-	static Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
-	static ScenarioExecution execution;
-	private static String scenarioName;
+    static int                                      workers                     = 10;
+    private static long                             duration                    = 60 * 60 * 1000;
+    static Set<ConsoleAgent>                        selectedAgents              = new HashSet<ConsoleAgent>();
+    static ScenarioExecution                        execution;
+    private static String                           scenarioName;
 
-	public static Address getSelf() {
 
-		return ConsoleData.agentDiscoverer.getSelf();
-	}
+    public static Address getSelf() {
 
-	/**
-	 * @return an unmodifiable view of the currently known agents for read-only
-	 *         access.
-	 */
-	public static synchronized Map<Address, ConsoleAgent> getAgents() {
+        return ConsoleData.agentDiscoverer.getSelf();
+    }
 
-		return Collections.unmodifiableMap(Collections
-				.synchronizedMap(new HashMap<Address, ConsoleAgent>(
-						ConsoleData.agents)));
-	}
+    /**
+     * @return an unmodifiable view of the currently known agents for read-only access.
+     */
+    public static synchronized Map<Address, ConsoleAgent> getAgents() {
 
-	/**
-	 * Retrieve the {@link ConsoleAgent} object for a given address. If there is
-	 * no such object yet, and the {@link Address} is part of the group; create
-	 * an {@link ConsoleAgent} object for it.
-	 */
-	public static synchronized ConsoleAgent getAgent(Address agentAddress) {
+        return Collections.unmodifiableMap(Collections.synchronizedMap(new HashMap<Address, ConsoleAgent>(
+                ConsoleData.agents)));
+    }
 
-		ConsoleAgent agent = ConsoleData.agents.get(agentAddress);
-		if (null == agent
-				&& ConsoleData.agentDiscoverer.hasMember(agentAddress)) {
-            ConsoleData.agents.put(agentAddress, agent = new ConsoleAgent(
-					agentAddress));
+    /**
+     * Retrieve the {@link ConsoleAgent} object for a given address. If there is no such object yet, and the
+     * {@link Address} is part of the group; create an {@link ConsoleAgent} object for it.
+     */
+    public static synchronized ConsoleAgent getAgent(Address agentAddress) {
+
+        ConsoleAgent agent = ConsoleData.agents.get(agentAddress);
+        if (null == agent && ConsoleData.agentDiscoverer.hasMember(agentAddress)) {
+            ConsoleData.agents.put(agentAddress, agent = new ConsoleAgent(agentAddress));
         }
 
-		return agent;
-	}
+        return agent;
+    }
 
-	/**
-	 * Remove {@link ConsoleAgent} objects for agents that disappeared from the
-	 * group.
-	 * 
-	 * @return All agents that were removed.
-	 */
-	public static synchronized List<ConsoleAgent> removeStaleAgents() {
+    /**
+     * Remove {@link ConsoleAgent} objects for agents that disappeared from the group.
+     * 
+     * @return All agents that were removed.
+     */
+    public static synchronized List<ConsoleAgent> removeStaleAgents() {
 
-		List<ConsoleAgent> staleAgents = new ArrayList<ConsoleAgent>();
-		for (Address agentAddress : getAgents().keySet())
-			if (!ConsoleData.agentDiscoverer.hasMember(agentAddress)) {
-				ConsoleAgent staleAgent = ConsoleData.agents
-						.remove(agentAddress);
+        List<ConsoleAgent> staleAgents = new ArrayList<ConsoleAgent>();
+        for (Address agentAddress : getAgents().keySet())
+            if (!ConsoleData.agentDiscoverer.hasMember(agentAddress)) {
+                ConsoleAgent staleAgent = ConsoleData.agents.remove(agentAddress);
 
-				staleAgents.add(staleAgent);
-				staleAgent.shutdown();
-			}
+                staleAgents.add(staleAgent);
+                staleAgent.shutdown();
+            }
 
-		return staleAgents;
-	}
+        return staleAgents;
+    }
 
-	/**
-	 * @return the agentDiscoverer
-	 */
-	public static AgentRemoting getAgentDiscoverer() {
+    /**
+     * @return the agentDiscoverer
+     */
+    public static AgentRemoting getAgentDiscoverer() {
 
-		return ConsoleData.agentDiscoverer;
-	}
+        return ConsoleData.agentDiscoverer;
+    }
 
-	/**
-	 * @param hostname
-	 *            the hostname of the OLAS application.
-	 */
-	public static synchronized void setHostname(String hostname) {
+    /**
+     * @param hostname
+     *            the hostname of the OLAS application.
+     */
+    public static synchronized void setHostname(String hostname) {
 
-		ConsoleData.hostname = hostname;
-		fireExecutionSettings();
-	}
+        ConsoleData.hostname = hostname;
+        fireExecutionSettings();
+    }
 
-	/**
-	 * @return the hostname of the OLAS application.
-	 */
-	public static synchronized String getHostname() {
+    /**
+     * @return the hostname of the OLAS application.
+     */
+    public static synchronized String getHostname() {
 
-		return ConsoleData.hostname;
-	}
-	
-	/**
-	 * @param ssl
-	 *            <code>true</code> if OLAS should be contacted over SSL.
-	 */
-	public static void setSsl(boolean ssl) {
+        return ConsoleData.hostname;
+    }
 
-		ConsoleData.ssl = ssl;
-		fireExecutionSettings();
-	}
+    /**
+     * @param ssl
+     *            <code>true</code> if OLAS should be contacted over SSL.
+     */
+    public static void setSsl(boolean ssl) {
 
-	/**
-	 * @return <code>true</code> if OLAS should be contacted over SSL.
-	 */
-	public static Boolean isSsl() {
+        ConsoleData.ssl = ssl;
+        fireExecutionSettings();
+    }
 
-		return ConsoleData.ssl;
-	}
+    /**
+     * @return <code>true</code> if OLAS should be contacted over SSL.
+     */
+    public static Boolean isSsl() {
 
-	/**
-	 * @param port
-	 *            the port of the OLAS application.
-	 */
-	public static synchronized void setPort(int port) {
+        return ConsoleData.ssl;
+    }
 
-		ConsoleData.port = port;
-		fireExecutionSettings();
-	}
+    /**
+     * @param port
+     *            the port of the OLAS application.
+     */
+    public static synchronized void setPort(int port) {
 
-	/**
-	 * @return the port of the OLAS application.
-	 */
-	public static synchronized int getPort() {
+        ConsoleData.port = port;
+        fireExecutionSettings();
+    }
 
-		return ConsoleData.port;
-	}
+    /**
+     * @return the port of the OLAS application.
+     */
+    public static synchronized int getPort() {
 
-	/**
-	 * @return the amount of simultaneous threads that execute a scenario.
-	 */
-	public static synchronized int getWorkers() {
+        return ConsoleData.port;
+    }
 
-		return ConsoleData.workers;
-	}
+    /**
+     * @return the amount of simultaneous threads that execute a scenario.
+     */
+    public static synchronized int getWorkers() {
 
-	/**
-	 * @param workers
-	 *            The amount of simultaneous threads that execute a scenario.
-	 */
-	public static synchronized void setWorkers(int workers) {
+        return ConsoleData.workers;
+    }
 
-		ConsoleData.workers = workers;
-		fireExecutionSettings();
-	}
+    /**
+     * @param workers
+     *            The amount of simultaneous threads that execute a scenario.
+     */
+    public static synchronized void setWorkers(int workers) {
 
-	/**
-	 * @return The amount of time to keep the scenario running (in
-	 *         milliseconds).
-	 */
-	public static long getDuration() {
+        ConsoleData.workers = workers;
+        fireExecutionSettings();
+    }
 
-		return ConsoleData.duration;
-	}
+    /**
+     * @return The amount of time to keep the scenario running (in milliseconds).
+     */
+    public static long getDuration() {
 
-	/**
-	 * @param duration
-	 *            The amount of time to keep the scenario running (in
-	 *            milliseconds).
-	 */
-	public static void setDuration(long duration) {
+        return ConsoleData.duration;
+    }
 
-		ConsoleData.duration = duration;
-		fireExecutionSettings();
-	}
+    /**
+     * @param duration
+     *            The amount of time to keep the scenario running (in milliseconds).
+     */
+    public static void setDuration(long duration) {
 
-	/**
-	 * @return The instance that supplies remoting to the agent service.
-	 */
-	public static ScenarioRemoting getRemoting() {
+        ConsoleData.duration = duration;
+        fireExecutionSettings();
+    }
 
-		return ConsoleData.remoting;
-	}
+    /**
+     * @return The instance that supplies remoting to the agent service.
+     */
+    public static ScenarioRemoting getRemoting() {
 
-	/**
-	 * Update the set of selected agents.
-	 */
-	public static void setSelectedAgents(Set<ConsoleAgent> selectedAgents) {
+        return ConsoleData.remoting;
+    }
 
-		ConsoleData.selectedAgents = selectedAgents;
-		fireAgentSelection();
-	}
+    /**
+     * Update the set of selected agents.
+     */
+    public static void setSelectedAgents(Set<ConsoleAgent> selectedAgents) {
 
-	/**
-	 * @return The selectedAgents of this {@link ConsoleData}.
-	 */
-	public static Set<ConsoleAgent> getSelectedAgents() {
+        ConsoleData.selectedAgents = selectedAgents;
+        fireAgentSelection();
+    }
 
-		return Collections.unmodifiableSet(Collections
-				.synchronizedSet(ConsoleData.selectedAgents));
-	}
+    /**
+     * @return The selectedAgents of this {@link ConsoleData}.
+     */
+    public static Set<ConsoleAgent> getSelectedAgents() {
 
-	/**
-	 * @param execution
-	 *            The execution to perform actions upon.
-	 */
-	public static void setExecution(ScenarioExecution execution) {
+        return Collections.unmodifiableSet(Collections.synchronizedSet(ConsoleData.selectedAgents));
+    }
 
-		ConsoleData.execution = execution;
-		fireExecutionSelection();
-	}
+    /**
+     * @param execution
+     *            The execution to perform actions upon.
+     */
+    public static void setExecution(ScenarioExecution execution) {
 
-	/**
-	 * @return The execution to perform actions upon.
-	 */
-	public static ScenarioExecution getSelectedExecution() {
+        ConsoleData.execution = execution;
+        fireExecutionSelection();
+    }
 
-		return ConsoleData.execution;
-	}
+    /**
+     * @return The execution to perform actions upon.
+     */
+    public static ScenarioExecution getSelectedExecution() {
 
-	/**
-	 * @param scenarioName
-	 *            The fully classified name of the scenario that needs to be
-	 *            executed.
-	 */
-	public static void setScenarioName(String scenarioName) {
+        return ConsoleData.execution;
+    }
 
-		ConsoleData.scenarioName = scenarioName;
-		fireExecutionSettings();
-	}
+    /**
+     * @param scenarioName
+     *            The fully classified name of the scenario that needs to be executed.
+     */
+    public static void setScenarioName(String scenarioName) {
 
-	/**
-	 * @return The fully classified name of the scenario that needs to be
-	 *         executed.
-	 */
-	public static String getScenarioName() {
+        ConsoleData.scenarioName = scenarioName;
+        fireExecutionSettings();
+    }
 
-		return ConsoleData.scenarioName;
-	}
+    /**
+     * @return The fully classified name of the scenario that needs to be executed.
+     */
+    public static String getScenarioName() {
 
-	public static void fireExecutionSelection() {
+        return ConsoleData.scenarioName;
+    }
 
-		lockHandler.queue(new Runnable() {
-			public void run() {
+    public static void fireExecutionSelection() {
 
-				for (ExecutionSelectionListener listener : executionSelectionListeners) {
+        lockHandler.queue(new Runnable() {
+
+            public void run() {
+
+                for (ExecutionSelectionListener listener : executionSelectionListeners) {
                     listener.executionSelected(execution);
                 }
-			}
-		});
-	}
+            }
+        });
+    }
 
-	/**
-	 * Make the given object listen to execution selection events.
-	 */
-	public static void addExecutionSelectionListener(
-			ExecutionSelectionListener listener) {
+    /**
+     * Make the given object listen to execution selection events.
+     */
+    public static void addExecutionSelectionListener(ExecutionSelectionListener listener) {
 
-		if (!executionSelectionListeners.contains(listener)) {
+        if (!executionSelectionListeners.contains(listener)) {
             executionSelectionListeners.add(listener);
         }
-	}
+    }
 
-	public static void fireExecutionSettings() {
+    public static void fireExecutionSettings() {
 
-		lockHandler.queue(new Runnable() {
-			public void run() {
+        lockHandler.queue(new Runnable() {
 
-				for (ExecutionSettingsListener listener : executionSettingsListeners) {
+            public void run() {
+
+                for (ExecutionSettingsListener listener : executionSettingsListeners) {
                     listener.executionSettingsChanged();
                 }
-			}
-		});
-	}
+            }
+        });
+    }
 
-	/**
-	 * Make the given object listen to execution settings changes.
-	 */
-	public static void addExecutionSettingsListener(
-			ExecutionSettingsListener listener) {
+    /**
+     * Make the given object listen to execution settings changes.
+     */
+    public static void addExecutionSettingsListener(ExecutionSettingsListener listener) {
 
-		if (!executionSettingsListeners.contains(listener)) {
+        if (!executionSettingsListeners.contains(listener)) {
             executionSettingsListeners.add(listener);
         }
-	}
+    }
 
-	public static void fireAgentSelection() {
+    public static void fireAgentSelection() {
 
-		lockHandler.queue(new Runnable() {
-			public void run() {
+        lockHandler.queue(new Runnable() {
 
-				for (AgentSelectionListener listener : agentSelectionListeners) {
+            public void run() {
+
+                for (AgentSelectionListener listener : agentSelectionListeners) {
                     listener.agentsSelected(selectedAgents);
                 }
-			}
-		});
-	}
+            }
+        });
+    }
 
-	/**
-	 * Make the given object listen to agent selection events.
-	 */
-	public static void addAgentSelectionListener(AgentSelectionListener listener) {
+    /**
+     * Make the given object listen to agent selection events.
+     */
+    public static void addAgentSelectionListener(AgentSelectionListener listener) {
 
-		if (!agentSelectionListeners.contains(listener)) {
+        if (!agentSelectionListeners.contains(listener)) {
             agentSelectionListeners.add(listener);
         }
-	}
+    }
 
-	/**
-	 * Manually fire an agent status event forcing the UI to update itself for
-	 * this agent.
-	 * 
-	 * @param agent
-	 *            The agent whose status changed.
-	 */
-	public static void fireAgentStatus(final ConsoleAgent agent) {
+    /**
+     * Manually fire an agent status event forcing the UI to update itself for this agent.
+     * 
+     * @param agent
+     *            The agent whose status changed.
+     */
+    public static void fireAgentStatus(final ConsoleAgent agent) {
 
-		lockHandler.queue(new Runnable() {
-			public void run() {
+        lockHandler.queue(new Runnable() {
 
-				for (AgentStatusListener listener : agentStatusListeners) {
+            public void run() {
+
+                for (AgentStatusListener listener : agentStatusListeners) {
                     listener.statusChanged(agent);
                 }
-			}
-		});
-	}
+            }
+        });
+    }
 
-	/**
-	 * Make the given object listen to agent status changes.
-	 */
-	public static void addAgentStatusListener(
-			AgentStatusListener agentStatusListener) {
+    /**
+     * Make the given object listen to agent status changes.
+     */
+    public static void addAgentStatusListener(AgentStatusListener agentStatusListener) {
 
-		if (!agentStatusListeners.contains(agentStatusListener)) {
+        if (!agentStatusListeners.contains(agentStatusListener)) {
             agentStatusListeners.add(agentStatusListener);
         }
-	}
+    }
 
-	private static class LockHandler extends Thread {
 
-		private LinkedBlockingQueue<Runnable> queue;
+    private static class LockHandler extends Thread {
 
-		public LockHandler() {
+        private LinkedBlockingQueue<Runnable> queue;
 
-			super("Lock Handler");
-			
-			setDaemon(true);
-			this.queue = new LinkedBlockingQueue<Runnable>();
 
-			start();
-		}
+        public LockHandler() {
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void run() {
+            super("Lock Handler");
 
-			Runnable task;
-			while (true) {
+            setDaemon(true);
+            this.queue = new LinkedBlockingQueue<Runnable>();
+
+            start();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void run() {
+
+            Runnable task;
+            while (true) {
                 try {
-					while ((task = this.queue.poll(Long.MAX_VALUE,
-							TimeUnit.SECONDS)) == null) {
+                    while ((task = this.queue.poll(Long.MAX_VALUE, TimeUnit.SECONDS)) == null) {
                         Thread.yield();
                     }
 
-					synchronized (lock) {
-						SwingUtilities.invokeAndWait(task);
-					}
-				}
+                    synchronized (lock) {
+                        SwingUtilities.invokeAndWait(task);
+                    }
+                }
 
-				catch (InterruptedException e) {
-				} catch (InvocationTargetException e) {
-				}
+                catch (InterruptedException e) {
+                } catch (InvocationTargetException e) {
+                }
             }
-		}
+        }
 
-		public void queue(Runnable task) {
+        public void queue(Runnable task) {
 
-			this.queue.offer(task);
-		}
-	}
+            this.queue.offer(task);
+        }
+    }
 }

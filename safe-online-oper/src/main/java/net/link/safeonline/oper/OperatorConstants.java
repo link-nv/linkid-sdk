@@ -9,15 +9,17 @@ package net.link.safeonline.oper;
 
 public class OperatorConstants {
 
-	private OperatorConstants() {
-		// empty
-	}
+    private OperatorConstants() {
 
-	public static final String SAFE_ONLINE_OPER_SECURITY_DOMAIN = "safe-online-oper";
+        // empty
+    }
 
-	public static final String OPERATOR_ROLE = "operator";
 
-	public static final String JNDI_PREFIX = "SafeOnline/oper/";
+    public static final String SAFE_ONLINE_OPER_SECURITY_DOMAIN = "safe-online-oper";
 
-	public static final String UNKNOWN_PRINCIPAL = "<none>";
+    public static final String OPERATOR_ROLE                    = "operator";
+
+    public static final String JNDI_PREFIX                      = "SafeOnline/oper/";
+
+    public static final String UNKNOWN_PRINCIPAL                = "<none>";
 }

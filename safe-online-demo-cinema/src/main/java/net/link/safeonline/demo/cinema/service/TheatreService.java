@@ -13,13 +13,13 @@ import javax.ejb.Local;
 import net.link.safeonline.demo.cinema.entity.FilmEntity;
 import net.link.safeonline.demo.cinema.entity.TheatreEntity;
 
+
 /**
  * <h2>{@link TheatreService}<br>
  * <sub>Service bean for {@link TheatreEntity}.</sub></h2>
  * 
  * <p>
- * Provide access to either all {@link TheatreEntity}s or those that play the
- * given film.
+ * Provide access to either all {@link TheatreEntity}s or those that play the given film.
  * </p>
  * 
  * <p>
@@ -31,8 +31,7 @@ import net.link.safeonline.demo.cinema.entity.TheatreEntity;
 @Local
 public interface TheatreService extends CinemaService {
 
-    public static final String BINDING = JNDI_PREFIX
-                                               + "TheatreServiceBean/local";
+    public static final String BINDING = JNDI_PREFIX + "TheatreServiceBean/local";
 
 
     /**

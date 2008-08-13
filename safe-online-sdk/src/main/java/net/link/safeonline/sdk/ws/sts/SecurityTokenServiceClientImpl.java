@@ -35,16 +35,15 @@ import org.w3c.dom.Element;
 
 import com.sun.xml.ws.client.ClientTransportException;
 
+
 /**
  * Implementation of Security Token Service Client.
  * 
  * @author fcorneli
  */
-public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
-        implements SecurityTokenServiceClient {
+public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor implements SecurityTokenServiceClient {
 
-    private final static Log               LOG = LogFactory
-                                                       .getLog(SecurityTokenServiceClientImpl.class);
+    private final static Log               LOG = LogFactory.getLog(SecurityTokenServiceClientImpl.class);
 
     private final SecurityTokenServicePort port;
 
@@ -61,47 +60,40 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public SecurityTokenServiceClientImpl(String location,
-            X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
+    public SecurityTokenServiceClientImpl(String location, X509Certificate clientCertificate,
+            PrivateKey clientPrivateKey) {
 
-        SecurityTokenService service = SecurityTokenServiceFactory
-                .newInstance();
+        SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         this.port = service.getSecurityTokenServicePort();
         this.location = location + "/safe-online-ws/sts";
         setEndpointAddress();
 
         registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
-                clientPrivateKey);
+        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
         LOG.debug("location: " + location);
     }
 
     private void setEndpointAddress() {
 
         BindingProvider bindingProvider = (BindingProvider) this.port;
-        bindingProvider.getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
-    public void validate(Element token, TrustDomainType trustDomain)
-            throws WSClientTransportException {
+    public void validate(Element token, TrustDomainType trustDomain) throws WSClientTransportException {
 
         LOG.debug("invoke");
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<String> requestType = objectFactory
-                .createRequestType(WebServiceConstants.WS_TRUST_REQUEST_TYPE
-                        + "Validate#" + trustDomain);
+        JAXBElement<String> requestType = objectFactory.createRequestType(WebServiceConstants.WS_TRUST_REQUEST_TYPE
+                + "Validate#" + trustDomain);
         request.getAny().add(requestType);
 
-        JAXBElement<String> tokenType = objectFactory
-                .createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
+        JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
         request.getAny().add(tokenType);
 
         ValidateTargetType validateTarget = new ValidateTargetType();
         validateTarget.setAny(token);
-        request.getAny()
-                .add(objectFactory.createValidateTarget(validateTarget));
+        request.getAny().add(objectFactory.createValidateTarget(validateTarget));
 
         SafeOnlineTrustManager.configureSsl();
 

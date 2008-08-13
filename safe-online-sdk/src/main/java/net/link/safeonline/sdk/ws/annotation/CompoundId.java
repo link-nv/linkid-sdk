@@ -13,9 +13,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+
 /**
- * Is used to specify a mapped compounded attribute identifier for a property or
- * field.
+ * Is used to specify a mapped compounded attribute identifier for a property or field.
  * 
  * @author fcorneli
  * 

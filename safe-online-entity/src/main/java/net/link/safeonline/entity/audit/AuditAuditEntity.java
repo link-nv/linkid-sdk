@@ -32,6 +32,7 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+
 /**
  * Audit entity about audit system itself.
  * 
@@ -41,109 +42,114 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 @Entity
 @Table(name = "audit_audit")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
-				+ "FROM AuditAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record "
-				+ "FROM AuditAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) "
-				+ "FROM AuditAuditEntity AS record "
-				+ "WHERE record.auditContext.id = :contextId"),
-		@NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record "
-				+ "FROM AuditAuditEntity AS record "
-				+ "WHERE record.eventDate > :ageLimit"),
-		@NamedQuery(name = QUERY_ALL, query = "FROM AuditAuditEntity") })
+        @NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE " + "FROM AuditAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record " + "FROM AuditAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) " + "FROM AuditAuditEntity AS record "
+                + "WHERE record.auditContext.id = :contextId"),
+        @NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record " + "FROM AuditAuditEntity AS record "
+                + "WHERE record.eventDate > :ageLimit"), @NamedQuery(name = QUERY_ALL, query = "FROM AuditAuditEntity") })
 public class AuditAuditEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID             = 1L;
 
-	public static final String QUERY_DELETE_WHERE_CONTEXTID = "aa.del.id";
+    public static final String QUERY_DELETE_WHERE_CONTEXTID = "aa.del.id";
 
-	public static final String QUERY_WHERE_CONTEXTID = "aa.id";
+    public static final String QUERY_WHERE_CONTEXTID        = "aa.id";
 
-	public static final String QUERY_WHERE_AGELIMIT = "aa.age";
+    public static final String QUERY_WHERE_AGELIMIT         = "aa.age";
 
-	public static final String COUNT_WHERE_CONTEXTID = "aa.count.id";
+    public static final String COUNT_WHERE_CONTEXTID        = "aa.count.id";
 
-	public static final String QUERY_ALL = "aa.all";
+    public static final String QUERY_ALL                    = "aa.all";
 
-	private Long id;
+    private Long               id;
 
-	private AuditContextEntity auditContext;
+    private AuditContextEntity auditContext;
 
-	private String message;
+    private String             message;
 
-	private Date eventDate;
+    private Date               eventDate;
 
-	public AuditAuditEntity() {
-		// empty
-	}
 
-	public AuditAuditEntity(AuditContextEntity auditContext, String message) {
-		this.auditContext = auditContext;
-		this.message = message;
-		this.eventDate = new Date();
-	}
+    public AuditAuditEntity() {
 
-	public AuditAuditEntity(String message) {
-		this(null, message);
-	}
+        // empty
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return this.id;
-	}
+    public AuditAuditEntity(AuditContextEntity auditContext, String message) {
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+        this.auditContext = auditContext;
+        this.message = message;
+        this.eventDate = new Date();
+    }
 
-	@ManyToOne
-	public AuditContextEntity getAuditContext() {
-		return this.auditContext;
-	}
+    public AuditAuditEntity(String message) {
 
-	public void setAuditContext(AuditContextEntity auditContext) {
-		this.auditContext = auditContext;
-	}
+        this(null, message);
+    }
 
-	public String getMessage() {
-		return this.message;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+        return this.id;
+    }
 
-	@Temporal(value = TemporalType.TIMESTAMP)
-	public Date getEventDate() {
-		return this.eventDate;
-	}
+    public void setId(Long id) {
 
-	public void setEventDate(Date eventDate) {
-		this.eventDate = eventDate;
-	}
+        this.id = id;
+    }
 
-	public interface QueryInterface {
-		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
-		void deleteRecords(@QueryParam("contextId")
-		Long contextId);
+    @ManyToOne
+    public AuditContextEntity getAuditContext() {
 
-		@QueryMethod(QUERY_WHERE_CONTEXTID)
-		List<AuditAuditEntity> listRecords(@QueryParam("contextId")
-		Long id);
+        return this.auditContext;
+    }
 
-		@QueryMethod(COUNT_WHERE_CONTEXTID)
-		long countRecords(@QueryParam("contextId")
-		long id);
+    public void setAuditContext(AuditContextEntity auditContext) {
 
-		@QueryMethod(QUERY_WHERE_AGELIMIT)
-		List<AuditAuditEntity> listRecordsSince(@QueryParam("ageLimit")
-		Date ageLimit);
+        this.auditContext = auditContext;
+    }
 
-		@QueryMethod(QUERY_ALL)
-		List<AuditAuditEntity> listRecords();
-	}
+    public String getMessage() {
+
+        return this.message;
+    }
+
+    public void setMessage(String message) {
+
+        this.message = message;
+    }
+
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getEventDate() {
+
+        return this.eventDate;
+    }
+
+    public void setEventDate(Date eventDate) {
+
+        this.eventDate = eventDate;
+    }
+
+
+    public interface QueryInterface {
+
+        @UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
+        void deleteRecords(@QueryParam("contextId") Long contextId);
+
+        @QueryMethod(QUERY_WHERE_CONTEXTID)
+        List<AuditAuditEntity> listRecords(@QueryParam("contextId") Long id);
+
+        @QueryMethod(COUNT_WHERE_CONTEXTID)
+        long countRecords(@QueryParam("contextId") long id);
+
+        @QueryMethod(QUERY_WHERE_AGELIMIT)
+        List<AuditAuditEntity> listRecordsSince(@QueryParam("ageLimit") Date ageLimit);
+
+        @QueryMethod(QUERY_ALL)
+        List<AuditAuditEntity> listRecords();
+    }
 }

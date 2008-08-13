@@ -13,32 +13,32 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
+
 @Local
 public interface Registration {
 
-	/*
-	 * Accessors.
-	 */
-	String getLoginName();
+    /*
+     * Accessors.
+     */
+    String getLoginName();
 
-	void setLoginName(String loginName);
+    void setLoginName(String loginName);
 
-	String getSerialNumber();
+    String getSerialNumber();
 
-	void setSerialNumber(String serialNumber);
+    void setSerialNumber(String serialNumber);
 
-	/*
-	 * Actions.
-	 */
-	String register() throws PermissionDeniedException,
-			SubjectNotFoundException, ArgumentIntegrityException;
+    /*
+     * Actions.
+     */
+    String register() throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException;
 
-	/*
-	 * Factories
-	 */
+    /*
+     * Factories
+     */
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

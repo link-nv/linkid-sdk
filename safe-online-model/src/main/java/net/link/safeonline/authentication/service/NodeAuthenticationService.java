@@ -15,6 +15,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.entity.OlasEntity;
 
+
 /**
  * Interface for node authentication service.
  * 
@@ -24,43 +25,41 @@ import net.link.safeonline.entity.OlasEntity;
 @Local
 public interface NodeAuthenticationService {
 
-	/**
-	 * Authenticates an olas node given a node's certificate. At this point the
-	 * node's certificate already passed the PKI validation.
-	 * 
-	 * @param authnCertificate
-	 *            the trusted X509 node certificate.
-	 * @return the node name.
-	 * @throws NodeNotFoundException
-	 */
-	String authenticate(X509Certificate authnCertificate)
-			throws NodeNotFoundException;
+    /**
+     * Authenticates an olas node given a node's certificate. At this point the node's certificate already passed the
+     * PKI validation.
+     * 
+     * @param authnCertificate
+     *            the trusted X509 node certificate.
+     * @return the node name.
+     * @throws NodeNotFoundException
+     */
+    String authenticate(X509Certificate authnCertificate) throws NodeNotFoundException;
 
-	/**
-	 * Gives back the node's signing certificates given the node name.
-	 * 
-	 * @param nodeName
-	 *            the node name.
-	 * @return the signing X509 node certificates.
-	 * @throws NodeNotFoundException
-	 */
-	List<X509Certificate> getSigningCertificates(String nodeName)
-			throws NodeNotFoundException;
+    /**
+     * Gives back the node's signing certificates given the node name.
+     * 
+     * @param nodeName
+     *            the node name.
+     * @return the signing X509 node certificates.
+     * @throws NodeNotFoundException
+     */
+    List<X509Certificate> getSigningCertificates(String nodeName) throws NodeNotFoundException;
 
-	/**
-	 * Gives back the node entity given the node name.
-	 * 
-	 * @param nodeName
-	 * @return the OLAS node entity
-	 * @throws NodeNotFoundException
-	 */
-	OlasEntity getNode(String nodeName) throws NodeNotFoundException;
+    /**
+     * Gives back the node entity given the node name.
+     * 
+     * @param nodeName
+     * @return the OLAS node entity
+     * @throws NodeNotFoundException
+     */
+    OlasEntity getNode(String nodeName) throws NodeNotFoundException;
 
-	/**
-	 * Gives back the node entity at this location.
-	 * 
-	 * @return
-	 * @throws NodeNotFoundException
-	 */
-	OlasEntity getLocalNode() throws NodeNotFoundException;
+    /**
+     * Gives back the node entity at this location.
+     * 
+     * @return
+     * @throws NodeNotFoundException
+     */
+    OlasEntity getLocalNode() throws NodeNotFoundException;
 }

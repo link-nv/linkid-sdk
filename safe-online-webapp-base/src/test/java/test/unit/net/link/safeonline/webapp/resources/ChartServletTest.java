@@ -38,105 +38,102 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.joda.time.DateTime;
 
+
 public class ChartServletTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(ChartServletTest.class);
+    private static final Log   LOG = LogFactory.getLog(ChartServletTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager servletTestManager;
 
-	private String servletLocation;
+    private String             servletLocation;
 
-	private JndiTestUtils jndiTestUtils;
+    private JndiTestUtils      jndiTestUtils;
 
-	private StatisticService mockStatisticService;
+    private StatisticService   mockStatisticService;
 
-	private Object[] mockObjects;
+    private Object[]           mockObjects;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.mockStatisticService = createMock(StatisticService.class);
+    @Override
+    protected void setUp() throws Exception {
 
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/StatisticServiceBean/local",
-				this.mockStatisticService);
+        super.setUp();
 
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(ChartServlet.class);
-		this.servletLocation = this.servletTestManager.getServletLocation();
+        this.mockStatisticService = createMock(StatisticService.class);
 
-		this.mockObjects = new Object[] { this.mockStatisticService };
-	}
+        this.jndiTestUtils = new JndiTestUtils();
+        this.jndiTestUtils.setUp();
+        this.jndiTestUtils.bindComponent("SafeOnline/StatisticServiceBean/local", this.mockStatisticService);
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-		this.jndiTestUtils.tearDown();
+        this.servletTestManager = new ServletTestManager();
+        this.servletTestManager.setUp(ChartServlet.class);
+        this.servletLocation = this.servletTestManager.getServletLocation();
 
-		super.tearDown();
-	}
+        this.mockObjects = new Object[] { this.mockStatisticService };
+    }
 
-	public void testDoGet() throws Exception {
-		// setup
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletLocation);
-		String testChartName = "test-chart-name-" + getName();
-		String testDomain = "test-domain-" + getName();
-		String testApplicationName = "test-application-name-" + getName();
-		getMethod.setQueryString(new NameValuePair[] {
-				new NameValuePair("chartname", testChartName),
-				new NameValuePair("domain", testDomain),
-				new NameValuePair("applicationname", testApplicationName) });
-		StatisticEntity statistic = new StatisticEntity();
-		statistic.setName("test-statistic-name");
-		statistic.getStatisticDataPoints().add(
-				new StatisticDataPointEntity("test-data-point", statistic,
-						new Date(), 1, 2, 3));
-		statistic.getStatisticDataPoints().add(
-				new StatisticDataPointEntity("test-data-point", statistic,
-						new DateTime().plusDays(1).toDate(), 4, 5, 6));
+    @Override
+    protected void tearDown() throws Exception {
 
-		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		JFreeChart chart = ChartFactory.createBarChart(statistic.getName(), // chart
-				// title
-				"Category", // domain axis label
-				"Value", // range axis label
-				dataset, // data
-				PlotOrientation.VERTICAL, // orientation
-				true, // include legend
-				true, // tooltips?
-				false // URLs?
-				);
+        this.servletTestManager.tearDown();
+        this.jndiTestUtils.tearDown();
 
-		// stubs
+        super.tearDown();
+    }
 
-		expect(
-				this.mockStatisticService.getChart(testChartName, testDomain,
-						testApplicationName)).andStubReturn(chart);
+    public void testDoGet() throws Exception {
 
-		// prepare
-		replay(this.mockObjects);
+        // setup
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletLocation);
+        String testChartName = "test-chart-name-" + getName();
+        String testDomain = "test-domain-" + getName();
+        String testApplicationName = "test-application-name-" + getName();
+        getMethod.setQueryString(new NameValuePair[] { new NameValuePair("chartname", testChartName),
+                new NameValuePair("domain", testDomain), new NameValuePair("applicationname", testApplicationName) });
+        StatisticEntity statistic = new StatisticEntity();
+        statistic.setName("test-statistic-name");
+        statistic.getStatisticDataPoints().add(
+                new StatisticDataPointEntity("test-data-point", statistic, new Date(), 1, 2, 3));
+        statistic.getStatisticDataPoints()
+                .add(
+                        new StatisticDataPointEntity("test-data-point", statistic, new DateTime().plusDays(1).toDate(),
+                                4, 5, 6));
 
-		// operate
-		int result = httpClient.executeMethod(getMethod);
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        JFreeChart chart = ChartFactory.createBarChart(statistic.getName(), // chart
+                // title
+                "Category", // domain axis label
+                "Value", // range axis label
+                dataset, // data
+                PlotOrientation.VERTICAL, // orientation
+                true, // include legend
+                true, // tooltips?
+                false // URLs?
+                );
 
-		// verify
-		LOG.debug("result: " + result);
-		verify(this.mockObjects);
-		assertEquals(HttpServletResponse.SC_OK, result);
-		String resultContentType = getMethod.getResponseHeader("Content-Type")
-				.getValue();
-		LOG.debug("result content-type: " + resultContentType);
-		assertEquals("image/png", resultContentType);
-		LOG.debug("result content length: "
-				+ getMethod.getResponseContentLength());
+        // stubs
 
-		File tmpFile = File.createTempFile("result-image-", ".png");
-		FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
-		IOUtils.copy(getMethod.getResponseBodyAsStream(), fileOutputStream);
-		fileOutputStream.close();
-	}
+        expect(this.mockStatisticService.getChart(testChartName, testDomain, testApplicationName)).andStubReturn(chart);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        int result = httpClient.executeMethod(getMethod);
+
+        // verify
+        LOG.debug("result: " + result);
+        verify(this.mockObjects);
+        assertEquals(HttpServletResponse.SC_OK, result);
+        String resultContentType = getMethod.getResponseHeader("Content-Type").getValue();
+        LOG.debug("result content-type: " + resultContentType);
+        assertEquals("image/png", resultContentType);
+        LOG.debug("result content length: " + getMethod.getResponseContentLength());
+
+        File tmpFile = File.createTempFile("result-image-", ".png");
+        FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
+        IOUtils.copy(getMethod.getResponseBodyAsStream(), fileOutputStream);
+        fileOutputStream.close();
+    }
 }

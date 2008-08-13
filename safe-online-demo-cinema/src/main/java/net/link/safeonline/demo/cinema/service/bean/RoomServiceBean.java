@@ -20,6 +20,7 @@ import net.link.safeonline.demo.cinema.service.SeatService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 /**
  * <h2>{@link RoomServiceBean}<br>
  * <sub>Service bean for {@link RoomService}.</sub></h2>
@@ -36,8 +37,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = RoomService.BINDING)
-public class RoomServiceBean extends AbstractCinemaServiceBean implements
-        RoomService {
+public class RoomServiceBean extends AbstractCinemaServiceBean implements RoomService {
 
     @EJB
     private transient SeatService seatService;
@@ -49,8 +49,8 @@ public class RoomServiceBean extends AbstractCinemaServiceBean implements
     @SuppressWarnings("unchecked")
     public List<RoomEntity> getRoomsFor(TheatreEntity theatre, FilmEntity film) {
 
-        return this.em.createNamedQuery(RoomEntity.getFor).setParameter(
-                "theatre", theatre).setParameter("film", film).getResultList();
+        return this.em.createNamedQuery(RoomEntity.getFor).setParameter("theatre", theatre).setParameter("film", film)
+                .getResultList();
     }
 
     /**
@@ -87,8 +87,8 @@ public class RoomServiceBean extends AbstractCinemaServiceBean implements
         if (room == null)
             return null;
 
-        return (RoomEntity) this.em.createNamedQuery(RoomEntity.getById)
-                .setParameter("id", room.getId()).getSingleResult();
+        return (RoomEntity) this.em.createNamedQuery(RoomEntity.getById).setParameter("id", room.getId())
+                .getSingleResult();
     }
 
 }

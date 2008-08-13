@@ -19,50 +19,51 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class DeviceDAOBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager  entityTestManager;
 
-	private DeviceDAOBean testedInstance;
+    private DeviceDAOBean      testedInstance;
 
-	private DeviceClassDAOBean deviceClassDAO;
+    private DeviceClassDAOBean deviceClassDAO;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.entityTestManager = new EntityTestManager();
-		/*
-		 * If you add entities to this list, also add them to
-		 * safe-online-sql-ddl.
-		 */
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-		this.testedInstance = new DeviceDAOBean();
-		this.deviceClassDAO = new DeviceClassDAOBean();
+    @Override
+    protected void setUp() throws Exception {
 
-		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.deviceClassDAO, this.entityTestManager
-				.getEntityManager());
+        super.setUp();
+        this.entityTestManager = new EntityTestManager();
+        /*
+         * If you add entities to this list, also add them to safe-online-sql-ddl.
+         */
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-		EJBTestUtils.init(this.testedInstance);
-		EJBTestUtils.init(this.deviceClassDAO);
-	}
+        this.testedInstance = new DeviceDAOBean();
+        this.deviceClassDAO = new DeviceClassDAOBean();
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.deviceClassDAO, this.entityTestManager.getEntityManager());
 
-	public void testDevice() {
-		DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-		DeviceEntity device = this.testedInstance.addDevice("testDevice",
-				deviceClass, null, null, null, null, null, null, null, null);
-		List<DeviceEntity> devices = this.testedInstance.listDevices();
-		assertEquals(device, devices.get(0));
-	}
+        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(this.deviceClassDAO);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
+
+    public void testDevice() {
+
+        DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+        DeviceEntity device = this.testedInstance.addDevice("testDevice", deviceClass, null, null, null, null, null,
+                null, null, null);
+        List<DeviceEntity> devices = this.testedInstance.listDevices();
+        assertEquals(device, devices.get(0));
+    }
 
 }

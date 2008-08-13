@@ -22,33 +22,30 @@ import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.util.ASN1Dump;
 
+
 public class AuthenticationStatementTest extends TestCase {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthenticationStatementTest.class);
+    private static final Log LOG = LogFactory.getLog(AuthenticationStatementTest.class);
 
-	public void testCreateAuthenticationStatement() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair,
-						"CN=AuthenticationCertificate");
-		String sessionId = UUID.randomUUID().toString();
-		String applicationId = UUID.randomUUID().toString();
 
-		Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
+    public void testCreateAuthenticationStatement() throws Exception {
 
-		// operate
-		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-				sessionId, applicationId, signer);
-		byte[] resultAuthenticationStatement = authenticationStatement
-				.generateStatement();
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
+                "CN=AuthenticationCertificate");
+        String sessionId = UUID.randomUUID().toString();
+        String applicationId = UUID.randomUUID().toString();
 
-		// verify
-		assertNotNull(resultAuthenticationStatement);
-		ASN1Object asn1IdentityStatement = ASN1Object
-				.fromByteArray(resultAuthenticationStatement);
-		LOG.debug("Authentication statement: "
-				+ ASN1Dump.dumpAsString(asn1IdentityStatement));
-	}
+        Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
+
+        // operate
+        AuthenticationStatement authenticationStatement = new AuthenticationStatement(sessionId, applicationId, signer);
+        byte[] resultAuthenticationStatement = authenticationStatement.generateStatement();
+
+        // verify
+        assertNotNull(resultAuthenticationStatement);
+        ASN1Object asn1IdentityStatement = ASN1Object.fromByteArray(resultAuthenticationStatement);
+        LOG.debug("Authentication statement: " + ASN1Dump.dumpAsString(asn1IdentityStatement));
+    }
 }

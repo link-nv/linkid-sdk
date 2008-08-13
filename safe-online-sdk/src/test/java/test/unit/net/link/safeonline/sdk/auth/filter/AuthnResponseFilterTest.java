@@ -35,96 +35,98 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class AuthnResponseFilterTest {
 
-	private static final Log LOG = LogFactory.getLog(AuthnResponseFilterTest.class);
+    private static final Log              LOG = LogFactory.getLog(AuthnResponseFilterTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager            servletTestManager;
 
-	private AuthenticationProtocolHandler mockProtocolHandler;
+    private AuthenticationProtocolHandler mockProtocolHandler;
 
-	@Before
-	public void setUp() throws Exception {
-		this.servletTestManager = new ServletTestManager();
 
-		this.mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-		initialSessionAttributes.put(
-				AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-				this.mockProtocolHandler);
-		this.servletTestManager.setUp(LoginTestServlet.class,
-				AuthnResponseFilter.class, null, initialSessionAttributes);
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	public static class LoginTestServlet extends HttpServlet {
+        this.servletTestManager = new ServletTestManager();
 
-		private static final long serialVersionUID = 1L;
+        this.mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
+        Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
+        initialSessionAttributes
+                .put(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, this.mockProtocolHandler);
+        this.servletTestManager
+                .setUp(LoginTestServlet.class, AuthnResponseFilter.class, null, initialSessionAttributes);
+    }
 
-		private static final Log ltLOG = LogFactory
-				.getLog(LoginTestServlet.class);
 
-		@Override
-		protected void doGet(HttpServletRequest request,
-				HttpServletResponse response) {
-			ltLOG.debug("doGet");
-		}
-	}
+    public static class LoginTestServlet extends HttpServlet {
 
-	@After
-	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-	}
+        private static final long serialVersionUID = 1L;
 
-	@Test
-	public void normalRequestPasses() throws Exception {
-		// setup
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletTestManager
-				.getServletLocation());
+        private static final Log  ltLOG            = LogFactory.getLog(LoginTestServlet.class);
 
-		// expectations
-		expect(
-				this.mockProtocolHandler.finalizeAuthentication(
-						(HttpServletRequest) anyObject(),
-						(HttpServletResponse) anyObject())).andReturn(null);
 
-		// prepare
-		replay(this.mockProtocolHandler);
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
-		// operate
-		int statusCode = httpClient.executeMethod(getMethod);
+            ltLOG.debug("doGet");
+        }
+    }
 
-		// verify
-		verify(this.mockProtocolHandler);
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpStatus.SC_OK, statusCode);
-	}
 
-	@Test
-	public void canLogin() throws Exception {
-		// setup
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletTestManager
-				.getServletLocation());
+    @After
+    public void tearDown() throws Exception {
 
-		// expectations
-		String username = "test-username";
-		expect(
-				this.mockProtocolHandler.finalizeAuthentication(
-						(HttpServletRequest) anyObject(),
-						(HttpServletResponse) anyObject())).andReturn(username);
+        this.servletTestManager.tearDown();
+    }
 
-		// prepare
-		replay(this.mockProtocolHandler);
+    @Test
+    public void normalRequestPasses() throws Exception {
 
-		// operate
-		int statusCode = httpClient.executeMethod(getMethod);
+        // setup
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
 
-		// verify
-		assertEquals(HttpStatus.SC_OK, statusCode);
-		String resultUsername = (String) this.servletTestManager
-				.getSessionAttribute("username");
-		LOG.debug("result username: " + resultUsername);
-		assertEquals(username, resultUsername);
-	}
+        // expectations
+        expect(
+                this.mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(),
+                        (HttpServletResponse) anyObject())).andReturn(null);
+
+        // prepare
+        replay(this.mockProtocolHandler);
+
+        // operate
+        int statusCode = httpClient.executeMethod(getMethod);
+
+        // verify
+        verify(this.mockProtocolHandler);
+        LOG.debug("status code: " + statusCode);
+        assertEquals(HttpStatus.SC_OK, statusCode);
+    }
+
+    @Test
+    public void canLogin() throws Exception {
+
+        // setup
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+
+        // expectations
+        String username = "test-username";
+        expect(
+                this.mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(),
+                        (HttpServletResponse) anyObject())).andReturn(username);
+
+        // prepare
+        replay(this.mockProtocolHandler);
+
+        // operate
+        int statusCode = httpClient.executeMethod(getMethod);
+
+        // verify
+        assertEquals(HttpStatus.SC_OK, statusCode);
+        String resultUsername = (String) this.servletTestManager.getSessionAttribute("username");
+        LOG.debug("result username: " + resultUsername);
+        assertEquals(username, resultUsername);
+    }
 }

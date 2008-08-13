@@ -31,126 +31,137 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+
 @Entity
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_OWNER_AND_VERSION, query = "SELECT usageAgreementText "
-				+ "FROM UsageAgreementTextEntity AS usageAgreementText "
-				+ "WHERE usageAgreementText.pk.owner = :owner "
-				+ "AND usageAgreementText.pk.usageAgreementVersion = :version "
-				+ "ORDER BY usageAgreementText.pk.language DESC"),
-		@NamedQuery(name = DELETE_WHERE_OWNER_AND_VERSION, query = "DELETE "
-				+ "FROM UsageAgreementTextEntity AS usageAgreementText "
-				+ "WHERE usageAgreementText.pk.owner = :owner "
-				+ "AND usageAgreementText.pk.usageAgreementVersion = :version") })
+        @NamedQuery(name = QUERY_WHERE_OWNER_AND_VERSION, query = "SELECT usageAgreementText "
+                + "FROM UsageAgreementTextEntity AS usageAgreementText "
+                + "WHERE usageAgreementText.pk.owner = :owner "
+                + "AND usageAgreementText.pk.usageAgreementVersion = :version "
+                + "ORDER BY usageAgreementText.pk.language DESC"),
+        @NamedQuery(name = DELETE_WHERE_OWNER_AND_VERSION, query = "DELETE "
+                + "FROM UsageAgreementTextEntity AS usageAgreementText "
+                + "WHERE usageAgreementText.pk.owner = :owner "
+                + "AND usageAgreementText.pk.usageAgreementVersion = :version") })
 @Table(name = "UsageAgText")
 public class UsageAgreementTextEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long    serialVersionUID               = 1L;
 
-	public static final String QUERY_WHERE_OWNER_AND_VERSION = "uat.owner.version";
+    public static final String   QUERY_WHERE_OWNER_AND_VERSION  = "uat.owner.version";
 
-	public static final String DELETE_WHERE_OWNER_AND_VERSION = "uat.del.owner.version";
+    public static final String   DELETE_WHERE_OWNER_AND_VERSION = "uat.del.owner.version";
 
-	private String text;
+    private String               text;
 
-	private UsageAgreementTextPK pk;
+    private UsageAgreementTextPK pk;
 
-	public UsageAgreementTextEntity() {
-		// empty
-	}
 
-	public UsageAgreementTextEntity(
-			GlobalUsageAgreementEntity globalUsageAgreement, String text,
-			String language) {
-		this.text = text;
-		this.pk = new UsageAgreementTextPK(
-				GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
-				globalUsageAgreement.getUsageAgreementVersion(), language);
-	}
+    public UsageAgreementTextEntity() {
 
-	public UsageAgreementTextEntity(UsageAgreementEntity usageAgreement,
-			String text, String language) {
-		this.text = text;
-		this.pk = new UsageAgreementTextPK(usageAgreement.getApplication()
-				.getName(), usageAgreement.getUsageAgreementVersion(), language);
-	}
+        // empty
+    }
 
-	@Lob
-	@Column(length = 1024 * 1024)
-	public String getText() {
-		return this.text;
-	}
+    public UsageAgreementTextEntity(GlobalUsageAgreementEntity globalUsageAgreement, String text, String language) {
 
-	public void setText(String text) {
-		this.text = text;
-	}
+        this.text = text;
+        this.pk = new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT, globalUsageAgreement
+                .getUsageAgreementVersion(), language);
+    }
 
-	@EmbeddedId
-	public UsageAgreementTextPK getPk() {
-		return this.pk;
-	}
+    public UsageAgreementTextEntity(UsageAgreementEntity usageAgreement, String text, String language) {
 
-	public void setPk(UsageAgreementTextPK pk) {
-		this.pk = pk;
-	}
+        this.text = text;
+        this.pk = new UsageAgreementTextPK(usageAgreement.getApplication().getName(), usageAgreement
+                .getUsageAgreementVersion(), language);
+    }
 
-	@Transient
-	public String getLanguage() {
-		return this.pk.getLanguage();
-	}
+    @Lob
+    @Column(length = 1024 * 1024)
+    public String getText() {
 
-	@Transient
-	public Long getUsageAgreementVersion() {
-		return this.pk.getUsageAgreementVersion();
-	}
+        return this.text;
+    }
 
-	@Transient
-	public void setUsageAgreementVersion(Long usageAgreementVersion) {
-		this.pk.setUsageAgreementVersion(usageAgreementVersion);
-	}
+    public void setText(String text) {
 
-	@Transient
-	public String getOwner() {
-		return this.pk.getOwner();
-	}
+        this.text = text;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == obj instanceof UsageAgreementTextEntity) {
-			return false;
-		}
-		UsageAgreementTextEntity rhs = (UsageAgreementTextEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+    @EmbeddedId
+    public UsageAgreementTextPK getPk() {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.pk).toHashCode();
-	}
+        return this.pk;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append("pk", this.pk).append("text", this.text).toString();
-	}
+    public void setPk(UsageAgreementTextPK pk) {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_OWNER_AND_VERSION)
-		List<UsageAgreementTextEntity> listUsageAgreementTexts(
-				@QueryParam("owner")
-				String ownerName, @QueryParam("version")
-				Long usageAgreementVersion);
+        this.pk = pk;
+    }
 
-		@UpdateMethod(DELETE_WHERE_OWNER_AND_VERSION)
-		void removeUsageAgreementTexts(@QueryParam("owner")
-		String ownerName, @QueryParam("version")
-		Long usageAgreementVersion);
-	}
+    @Transient
+    public String getLanguage() {
+
+        return this.pk.getLanguage();
+    }
+
+    @Transient
+    public Long getUsageAgreementVersion() {
+
+        return this.pk.getUsageAgreementVersion();
+    }
+
+    @Transient
+    public void setUsageAgreementVersion(Long usageAgreementVersion) {
+
+        this.pk.setUsageAgreementVersion(usageAgreementVersion);
+    }
+
+    @Transient
+    public String getOwner() {
+
+        return this.pk.getOwner();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == obj instanceof UsageAgreementTextEntity) {
+            return false;
+        }
+        UsageAgreementTextEntity rhs = (UsageAgreementTextEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.pk).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", this.pk).append("text",
+                this.text).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_OWNER_AND_VERSION)
+        List<UsageAgreementTextEntity> listUsageAgreementTexts(@QueryParam("owner") String ownerName,
+                @QueryParam("version") Long usageAgreementVersion);
+
+        @UpdateMethod(DELETE_WHERE_OWNER_AND_VERSION)
+        void removeUsageAgreementTexts(@QueryParam("owner") String ownerName,
+                @QueryParam("version") Long usageAgreementVersion);
+    }
 
 }

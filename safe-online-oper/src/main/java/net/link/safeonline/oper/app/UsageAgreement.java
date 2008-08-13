@@ -14,70 +14,60 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.UsageAgreementEntity;
 
+
 @Local
 public interface UsageAgreement {
 
-	/*
-	 * Factories
-	 */
-	void usageAgreementTextListFactory();
+    /*
+     * Factories
+     */
+    void usageAgreementTextListFactory();
 
-	void draftUsageAgreementsTextsFactory()
-			throws ApplicationNotFoundException, PermissionDeniedException;
+    void draftUsageAgreementsTextsFactory() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	void currentUsageAgreementsTextsFactory() throws PermissionDeniedException,
-			ApplicationNotFoundException;
+    void currentUsageAgreementsTextsFactory() throws PermissionDeniedException, ApplicationNotFoundException;
 
-	/*
-	 * Actions
-	 */
-	String viewText();
+    /*
+     * Actions
+     */
+    String viewText();
 
-	String viewCurrentText();
+    String viewCurrentText();
 
-	String viewDraftText();
+    String viewDraftText();
 
-	String saveText() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String saveText() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	String createUsageAgreement() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String createUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	String editDraftText();
+    String editDraftText();
 
-	String removeDraftText() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String removeDraftText() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	String editCurrentText() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String editCurrentText() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	String addText() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String addText() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	String releaseDraft() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String releaseDraft() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	String removeDraft() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String removeDraft() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	/*
-	 * Accessors
-	 */
-	UsageAgreementEntity getDraftUsageAgreement()
-			throws ApplicationNotFoundException, PermissionDeniedException;
+    /*
+     * Accessors
+     */
+    UsageAgreementEntity getDraftUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	UsageAgreementEntity getCurrentUsageAgreement()
-			throws PermissionDeniedException, ApplicationNotFoundException;
+    UsageAgreementEntity getCurrentUsageAgreement() throws PermissionDeniedException, ApplicationNotFoundException;
 
-	void setLanguage(String language);
+    void setLanguage(String language);
 
-	String getLanguage();
+    String getLanguage();
 
-	List<String> autocompleteLanguage(Object event);
+    List<String> autocompleteLanguage(Object event);
 
-	/*
-	 * Lifecycle
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle
+     */
+    void destroyCallback();
 
 }

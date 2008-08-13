@@ -14,44 +14,41 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
+
 @Local
 public interface Application {
 
-	/*
-	 * Accessors
-	 */
+    /*
+     * Accessors
+     */
 
-	/*
-	 * Factories
-	 */
-	void applicationListFactory() throws ApplicationOwnerNotFoundException;
+    /*
+     * Factories
+     */
+    void applicationListFactory() throws ApplicationOwnerNotFoundException;
 
-	void usageAgreementListFactory() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	/*
-	 * Actions
-	 */
-	String view() throws ApplicationNotFoundException,
-			PermissionDeniedException, ApplicationIdentityNotFoundException;
+    /*
+     * Actions
+     */
+    String view() throws ApplicationNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException;
 
-	String edit();
+    String edit();
 
-	String save() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String save() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	String viewStats();
+    String viewStats();
 
-	void allowedDevices();
+    void allowedDevices();
 
-	String viewUsageAgreement();
+    String viewUsageAgreement();
 
-	String editUsageAgreement() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	/*
-	 * Lifecycle
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle
+     */
+    void destroyCallback();
 
 }

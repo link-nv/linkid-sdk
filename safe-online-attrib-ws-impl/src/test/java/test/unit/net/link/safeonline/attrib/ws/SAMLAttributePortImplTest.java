@@ -74,10 +74,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class SAMLAttributePortImplTest {
 
-    private static final Log                    LOG               = LogFactory
-                                                                          .getLog(SAMLAttributePortImplTest.class);
+    private static final Log                    LOG               = LogFactory.getLog(SAMLAttributePortImplTest.class);
 
     private WebServiceTestUtils                 webServiceTestUtils;
 
@@ -122,14 +122,12 @@ public class SAMLAttributePortImplTest {
 
         LOG.debug("setup");
 
-        this.testSubjectLogin = "test-subject-login-"
-                + UUID.randomUUID().toString();
+        this.testSubjectLogin = "test-subject-login-" + UUID.randomUUID().toString();
         this.testSubjectId = UUID.randomUUID().toString();
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent(
-                "java:comp/env/wsSecurityConfigurationServiceJndiName",
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
@@ -143,63 +141,39 @@ public class SAMLAttributePortImplTest {
         this.mockApplicationManager = createMock(ApplicationManager.class);
         this.mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
 
-        this.mockObjects = new Object[] {
-                this.mockWSSecurityConfigurationService,
-                this.mockAttributeService, this.mockNodeAttributeService,
-                this.mockPkiValidator,
-                this.mockApplicationAuthenticationService,
+        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockAttributeService,
+                this.mockNodeAttributeService, this.mockPkiValidator, this.mockApplicationAuthenticationService,
                 this.mockSamlAuthorityService, this.mockApplicationManager,
                 this.mockApplicationIdentifierMappingService };
 
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/WSSecurityConfigurationBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
                 this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/AttributeServiceBean/local",
-                this.mockAttributeService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/NodeAttributeServiceBean/local",
-                this.mockNodeAttributeService);
-        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
-                this.mockPkiValidator);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/ApplicationAuthenticationServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/AttributeServiceBean/local", this.mockAttributeService);
+        this.jndiTestUtils.bindComponent("SafeOnline/NodeAttributeServiceBean/local", this.mockNodeAttributeService);
+        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
+        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local",
                 this.mockApplicationAuthenticationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/DeviceAuthenticationServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local",
                 this.mockDeviceAuthenticationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/NodeAuthenticationServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local",
                 this.mockNodeAuthenticationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/SamlAuthorityServiceBean/local",
-                this.mockSamlAuthorityService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/ApplicationManagerBean/local",
-                this.mockApplicationManager);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/ApplicationIdentifierMappingServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/SamlAuthorityServiceBean/local", this.mockSamlAuthorityService);
+        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationManagerBean/local", this.mockApplicationManager);
+        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local",
                 this.mockApplicationIdentifierMappingService);
 
         expect(
-                this.mockPkiValidator.validateCertificate((String) EasyMock
-                        .anyObject(), (X509Certificate) EasyMock.anyObject()))
-                .andStubReturn(PkiResult.VALID);
+                this.mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock
+                        .anyObject())).andStubReturn(PkiResult.VALID);
 
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .getMaximumWsSecurityTimestampOffset()).andStubReturn(
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
                 Long.MAX_VALUE);
 
-        expect(this.mockApplicationManager.getCallerApplication())
-                .andStubReturn(
-                        new ApplicationEntity(this.testApplicationId, null,
-                                new ApplicationOwnerEntity(), null, null, null,
-                                null, this.certificate));
+        expect(this.mockApplicationManager.getCallerApplication()).andStubReturn(
+                new ApplicationEntity(this.testApplicationId, null, new ApplicationOwnerEntity(), null, null, null,
+                        null, this.certificate));
 
-        expect(
-                this.mockApplicationIdentifierMappingService.findUserId(
-                        this.testApplicationId, this.testSubjectLogin))
+        expect(this.mockApplicationIdentifierMappingService.findUserId(this.testApplicationId, this.testSubjectLogin))
                 .andStubReturn(this.testSubjectId);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
@@ -208,24 +182,21 @@ public class SAMLAttributePortImplTest {
         this.webServiceTestUtils = new WebServiceTestUtils();
         this.webServiceTestUtils.setUp(wsPort);
         /*
-         * Next is required, else the wsPort will get old mocks injected when
-         * running multiple tests.
+         * Next is required, else the wsPort will get old mocks injected when running multiple tests.
          */
         InjectionInstanceResolver.clearInstanceCache();
-        SAMLAttributeService service = SAMLAttributeServiceFactory
-                .newInstance();
+        SAMLAttributeService service = SAMLAttributeServiceFactory.newInstance();
         this.clientPort = service.getSAMLAttributePort();
         this.webServiceTestUtils.setEndpointAddress(this.clientPort);
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
-                "CN=Test");
+        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
         BindingProvider bindingProvider = (BindingProvider) this.clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
-        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
-                this.certificate, keyPair.getPrivate());
+        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, keyPair
+                .getPrivate());
         handlerChain.add(wsSecurityHandler);
         binding.setHandlerChain(handlerChain);
     }
@@ -261,22 +232,14 @@ public class SAMLAttributePortImplTest {
         String testIssuerName = "test-issuer-name";
 
         // stubs
-        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
-                testIssuerName);
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         // expectations
-        expect(
-                this.mockAttributeService.getConfirmedAttributeValue(
-                        this.testSubjectId, testAttributeName)).andReturn(
+        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(
                 testAttributeValue);
-        expect(
-                this.mockApplicationAuthenticationService
-                        .authenticate(this.certificate)).andReturn(
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 "test-application-name");
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .skipMessageIntegrityCheck(this.certificate))
-                .andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
 
         // prepare
         replay(this.mockObjects);
@@ -288,35 +251,27 @@ public class SAMLAttributePortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
 
-        List<Object> resultAssertions = response
-                .getAssertionOrEncryptedAssertion();
+        List<Object> resultAssertions = response.getAssertionOrEncryptedAssertion();
         assertEquals(1, resultAssertions.size());
-        LOG.debug("assertion class: "
-                + resultAssertions.get(0).getClass().getName());
+        LOG.debug("assertion class: " + resultAssertions.get(0).getClass().getName());
         AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
         SubjectType resultSubject = resultAssertion.getSubject();
         List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
         assertEquals(1, resultSubjectContent.size());
-        LOG.debug("subject content type: "
-                + resultSubjectContent.get(0).getValue().getClass().getName());
-        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
-                .getValue();
+        LOG.debug("subject content type: " + resultSubjectContent.get(0).getValue().getClass().getName());
+        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0).getValue();
         assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
         List<StatementAbstractType> resultStatements = resultAssertion
                 .getStatementOrAuthnStatementOrAuthzDecisionStatement();
         assertEquals(1, resultStatements.size());
-        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
-                .get(0);
-        List<Object> resultAttributes = resultAttributeStatement
-                .getAttributeOrEncryptedAttribute();
+        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements.get(0);
+        List<Object> resultAttributes = resultAttributeStatement.getAttributeOrEncryptedAttribute();
         assertEquals(1, resultAttributes.size());
-        LOG.debug("result attribute type: "
-                + resultAttributes.get(0).getClass().getName());
+        LOG.debug("result attribute type: " + resultAttributes.get(0).getClass().getName());
         AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
         assertEquals(testAttributeName, resultAttribute.getName());
-        List<Object> resultAttributeValues = resultAttribute
-                .getAttributeValue();
+        List<Object> resultAttributeValues = resultAttribute.getAttributeValue();
         assertEquals(1, resultAttributeValues.size());
         Object resultAttributeValueObject = resultAttributeValues.get(0);
         assertEquals(resultAttributeValueObject.getClass(), String.class);
@@ -327,8 +282,7 @@ public class SAMLAttributePortImplTest {
         Marshaller marshaller = context.createMarshaller();
         StringWriter stringWriter = new StringWriter();
         ObjectFactory samlpObjectFactory = new ObjectFactory();
-        marshaller.marshal(samlpObjectFactory.createResponse(response),
-                stringWriter);
+        marshaller.marshal(samlpObjectFactory.createResponse(response), stringWriter);
         LOG.debug("response: " + stringWriter);
     }
 
@@ -347,34 +301,24 @@ public class SAMLAttributePortImplTest {
 
         List<AttributeType> attributes = request.getAttribute();
         AttributeType attribute = new AttributeType();
-        String testAttributeName = "test-attribute-name-"
-                + UUID.randomUUID().toString();
+        String testAttributeName = "test-attribute-name-" + UUID.randomUUID().toString();
         attribute.setName(testAttributeName);
         attributes.add(attribute);
 
         String testAttributeValue1 = "test-attribute-value-1";
         String testAttributeValue2 = "test-attribute-value-2";
-        String[] testAttributeValues = { testAttributeValue1,
-                testAttributeValue2 };
+        String[] testAttributeValues = { testAttributeValue1, testAttributeValue2 };
         String testIssuerName = "test-issuer-name";
 
         // stubs
-        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
-                testIssuerName);
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         // expectations
-        expect(
-                this.mockAttributeService.getConfirmedAttributeValue(
-                        this.testSubjectId, testAttributeName)).andReturn(
+        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(
                 testAttributeValues);
-        expect(
-                this.mockApplicationAuthenticationService
-                        .authenticate(this.certificate)).andReturn(
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 this.testApplicationId);
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .skipMessageIntegrityCheck(this.certificate))
-                .andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
 
         // prepare
         replay(this.mockObjects);
@@ -386,38 +330,29 @@ public class SAMLAttributePortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
 
-        List<Object> resultAssertions = response
-                .getAssertionOrEncryptedAssertion();
+        List<Object> resultAssertions = response.getAssertionOrEncryptedAssertion();
         assertEquals(1, resultAssertions.size());
-        LOG.debug("assertion class: "
-                + resultAssertions.get(0).getClass().getName());
+        LOG.debug("assertion class: " + resultAssertions.get(0).getClass().getName());
         AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
         SubjectType resultSubject = resultAssertion.getSubject();
         List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
         assertEquals(1, resultSubjectContent.size());
-        LOG.debug("subject content type: "
-                + resultSubjectContent.get(0).getValue().getClass().getName());
-        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
-                .getValue();
+        LOG.debug("subject content type: " + resultSubjectContent.get(0).getValue().getClass().getName());
+        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0).getValue();
         assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
         List<StatementAbstractType> resultStatements = resultAssertion
                 .getStatementOrAuthnStatementOrAuthzDecisionStatement();
         assertEquals(1, resultStatements.size());
-        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
-                .get(0);
-        List<Object> resultAttributes = resultAttributeStatement
-                .getAttributeOrEncryptedAttribute();
+        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements.get(0);
+        List<Object> resultAttributes = resultAttributeStatement.getAttributeOrEncryptedAttribute();
         assertEquals(1, resultAttributes.size());
-        LOG.debug("result attribute type: "
-                + resultAttributes.get(0).getClass().getName());
+        LOG.debug("result attribute type: " + resultAttributes.get(0).getClass().getName());
         AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
         assertEquals(testAttributeName, resultAttribute.getName());
-        assertEquals(Boolean.TRUE.toString(), resultAttribute
-                .getOtherAttributes().get(
-                        WebServiceConstants.MULTIVALUED_ATTRIBUTE));
-        List<Object> resultAttributeValues = resultAttribute
-                .getAttributeValue();
+        assertEquals(Boolean.TRUE.toString(), resultAttribute.getOtherAttributes().get(
+                WebServiceConstants.MULTIVALUED_ATTRIBUTE));
+        List<Object> resultAttributeValues = resultAttribute.getAttributeValue();
         assertEquals(2, resultAttributeValues.size());
         Object resultAttributeValueObject = resultAttributeValues.get(0);
         assertEquals(String.class, resultAttributeValueObject.getClass());
@@ -432,8 +367,7 @@ public class SAMLAttributePortImplTest {
         Marshaller marshaller = context.createMarshaller();
         StringWriter stringWriter = new StringWriter();
         ObjectFactory samlpObjectFactory = new ObjectFactory();
-        marshaller.marshal(samlpObjectFactory.createResponse(response),
-                stringWriter);
+        marshaller.marshal(samlpObjectFactory.createResponse(response), stringWriter);
         LOG.debug("response: " + stringWriter);
     }
 
@@ -452,8 +386,7 @@ public class SAMLAttributePortImplTest {
 
         List<AttributeType> attributes = request.getAttribute();
         AttributeType attribute = new AttributeType();
-        String testAttributeName = "test-compounded-attribute-name-"
-                + UUID.randomUUID().toString();
+        String testAttributeName = "test-compounded-attribute-name-" + UUID.randomUUID().toString();
         attribute.setName(testAttributeName);
         attributes.add(attribute);
 
@@ -470,22 +403,14 @@ public class SAMLAttributePortImplTest {
         String testIssuerName = "test-issuer-name";
 
         // stubs
-        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
-                testIssuerName);
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         // expectations
-        expect(
-                this.mockAttributeService.getConfirmedAttributeValue(
-                        this.testSubjectId, testAttributeName)).andReturn(
+        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(
                 testAttributeValues);
-        expect(
-                this.mockApplicationAuthenticationService
-                        .authenticate(this.certificate)).andReturn(
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 this.testApplicationId);
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .skipMessageIntegrityCheck(this.certificate))
-                .andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
 
         // prepare
         replay(this.mockObjects);
@@ -497,46 +422,36 @@ public class SAMLAttributePortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
 
-        List<Object> resultAssertions = response
-                .getAssertionOrEncryptedAssertion();
+        List<Object> resultAssertions = response.getAssertionOrEncryptedAssertion();
         assertEquals(1, resultAssertions.size());
-        LOG.debug("assertion class: "
-                + resultAssertions.get(0).getClass().getName());
+        LOG.debug("assertion class: " + resultAssertions.get(0).getClass().getName());
         AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
         SubjectType resultSubject = resultAssertion.getSubject();
         List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
         assertEquals(1, resultSubjectContent.size());
-        LOG.debug("subject content type: "
-                + resultSubjectContent.get(0).getValue().getClass().getName());
-        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
-                .getValue();
+        LOG.debug("subject content type: " + resultSubjectContent.get(0).getValue().getClass().getName());
+        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0).getValue();
         assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
         List<StatementAbstractType> resultStatements = resultAssertion
                 .getStatementOrAuthnStatementOrAuthzDecisionStatement();
         assertEquals(1, resultStatements.size());
-        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
-                .get(0);
-        List<Object> resultAttributes = resultAttributeStatement
-                .getAttributeOrEncryptedAttribute();
+        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements.get(0);
+        List<Object> resultAttributes = resultAttributeStatement.getAttributeOrEncryptedAttribute();
         assertEquals(1, resultAttributes.size());
-        LOG.debug("result attribute type: "
-                + resultAttributes.get(0).getClass().getName());
+        LOG.debug("result attribute type: " + resultAttributes.get(0).getClass().getName());
         AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
         assertEquals(testAttributeName, resultAttribute.getName());
-        assertEquals(Boolean.TRUE.toString(), resultAttribute
-                .getOtherAttributes().get(
-                        WebServiceConstants.MULTIVALUED_ATTRIBUTE));
-        List<Object> resultAttributeValues = resultAttribute
-                .getAttributeValue();
+        assertEquals(Boolean.TRUE.toString(), resultAttribute.getOtherAttributes().get(
+                WebServiceConstants.MULTIVALUED_ATTRIBUTE));
+        List<Object> resultAttributeValues = resultAttribute.getAttributeValue();
         assertEquals(2, resultAttributeValues.size());
 
         JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
         Marshaller marshaller = context.createMarshaller();
         StringWriter stringWriter = new StringWriter();
         ObjectFactory samlpObjectFactory = new ObjectFactory();
-        marshaller.marshal(samlpObjectFactory.createResponse(response),
-                stringWriter);
+        marshaller.marshal(samlpObjectFactory.createResponse(response), stringWriter);
         LOG.debug("response: " + stringWriter);
     }
 
@@ -555,8 +470,7 @@ public class SAMLAttributePortImplTest {
 
         List<AttributeType> attributes = request.getAttribute();
         AttributeType attribute = new AttributeType();
-        String testAttributeName = "test-attribute-name-"
-                + UUID.randomUUID().toString();
+        String testAttributeName = "test-attribute-name-" + UUID.randomUUID().toString();
         attribute.setName(testAttributeName);
         attributes.add(attribute);
 
@@ -564,22 +478,14 @@ public class SAMLAttributePortImplTest {
         String testIssuerName = "test-issuer-name";
 
         // stubs
-        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
-                testIssuerName);
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         // expectations
-        expect(
-                this.mockAttributeService.getConfirmedAttributeValue(
-                        this.testSubjectId, testAttributeName)).andReturn(
+        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(
                 testAttributeValue);
-        expect(
-                this.mockApplicationAuthenticationService
-                        .authenticate(this.certificate)).andReturn(
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 this.testApplicationId);
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .skipMessageIntegrityCheck(this.certificate))
-                .andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
 
         // prepare
         replay(this.mockObjects);
@@ -591,35 +497,27 @@ public class SAMLAttributePortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
 
-        List<Object> resultAssertions = response
-                .getAssertionOrEncryptedAssertion();
+        List<Object> resultAssertions = response.getAssertionOrEncryptedAssertion();
         assertEquals(1, resultAssertions.size());
-        LOG.debug("assertion class: "
-                + resultAssertions.get(0).getClass().getName());
+        LOG.debug("assertion class: " + resultAssertions.get(0).getClass().getName());
         AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
         SubjectType resultSubject = resultAssertion.getSubject();
         List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
         assertEquals(1, resultSubjectContent.size());
-        LOG.debug("subject content type: "
-                + resultSubjectContent.get(0).getValue().getClass().getName());
-        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
-                .getValue();
+        LOG.debug("subject content type: " + resultSubjectContent.get(0).getValue().getClass().getName());
+        NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0).getValue();
         assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
         List<StatementAbstractType> resultStatements = resultAssertion
                 .getStatementOrAuthnStatementOrAuthzDecisionStatement();
         assertEquals(1, resultStatements.size());
-        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
-                .get(0);
-        List<Object> resultAttributes = resultAttributeStatement
-                .getAttributeOrEncryptedAttribute();
+        AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements.get(0);
+        List<Object> resultAttributes = resultAttributeStatement.getAttributeOrEncryptedAttribute();
         assertEquals(1, resultAttributes.size());
-        LOG.debug("result attribute type: "
-                + resultAttributes.get(0).getClass().getName());
+        LOG.debug("result attribute type: " + resultAttributes.get(0).getClass().getName());
         AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
         assertEquals(testAttributeName, resultAttribute.getName());
-        List<Object> resultAttributeValues = resultAttribute
-                .getAttributeValue();
+        List<Object> resultAttributeValues = resultAttribute.getAttributeValue();
         assertEquals(1, resultAttributeValues.size());
         Object resultAttributeValueObject = resultAttributeValues.get(0);
         assertEquals(resultAttributeValueObject.getClass(), Boolean.class);
@@ -647,18 +545,11 @@ public class SAMLAttributePortImplTest {
         attributes.add(attribute);
 
         // expectations
-        expect(
-                this.mockAttributeService.getConfirmedAttributeValue(
-                        this.testSubjectId, testAttributeName)).andThrow(
+        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andThrow(
                 new AttributeNotFoundException());
-        expect(
-                this.mockApplicationAuthenticationService
-                        .authenticate(this.certificate)).andReturn(
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 this.testApplicationId);
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .skipMessageIntegrityCheck(this.certificate))
-                .andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
 
         // prepare
         replay(this.mockObjects);
@@ -672,7 +563,6 @@ public class SAMLAttributePortImplTest {
         StatusType resultStatus = response.getStatus();
         String resultStatusMessage = resultStatus.getStatusMessage();
         LOG.debug("result status message: " + resultStatusMessage);
-        assertEquals("urn:oasis:names:tc:SAML:2.0:status:Requester",
-                resultStatus.getStatusCode().getValue());
+        assertEquals("urn:oasis:names:tc:SAML:2.0:status:Requester", resultStatus.getStatusCode().getValue());
     }
 }

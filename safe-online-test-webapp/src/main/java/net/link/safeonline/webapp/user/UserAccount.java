@@ -8,26 +8,30 @@ package net.link.safeonline.webapp.user;
 
 public class UserAccount extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/account.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/account.seam";
 
-	public UserAccount() {
-		super(PAGE_NAME);
-	}
 
-	public UserHistory gotoHistory() {
-		clickLinkAndWait("history");
-		return new UserHistory();
-	}
+    public UserAccount() {
 
-	public UserUsage gotoUsage() {
-		clickLinkAndWait("usage");
-		return new UserUsage();
-	}
+        super(PAGE_NAME);
+    }
 
-	public UserRemove gotoRemove() {
-		clickLinkAndWait("remove");
-		return new UserRemove();
-	}
+    public UserHistory gotoHistory() {
+
+        clickLinkAndWait("history");
+        return new UserHistory();
+    }
+
+    public UserUsage gotoUsage() {
+
+        clickLinkAndWait("usage");
+        return new UserUsage();
+    }
+
+    public UserRemove gotoRemove() {
+
+        clickLinkAndWait("remove");
+        return new UserRemove();
+    }
 
 }

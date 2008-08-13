@@ -17,21 +17,19 @@ import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.entity.pkix.TrustPointPK;
 import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
 
+
 @Local
 public interface TrustPointDAO {
 
-	void addTrustPoint(TrustDomainEntity trustDomain,
-			X509Certificate certificate);
+    void addTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate);
 
-	List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain);
+    List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain);
 
-	TrustPointEntity getTrustPoint(TrustPointPK pk)
-			throws TrustPointNotFoundException;
+    TrustPointEntity getTrustPoint(TrustPointPK pk) throws TrustPointNotFoundException;
 
-	TrustPointEntity findTrustPoint(TrustDomainEntity trustDomain,
-			X509Certificate certificate);
+    TrustPointEntity findTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate);
 
-	void removeTrustPoint(TrustPointEntity trustPoint);
+    void removeTrustPoint(TrustPointEntity trustPoint);
 
-	List<TrustPointEntity> listTrustPoints(String certificateSubject);
+    List<TrustPointEntity> listTrustPoints(String certificateSubject);
 }

@@ -10,6 +10,7 @@ package net.link.safeonline.model.application;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.ApplicationEntity;
 
+
 /**
  * Domain Model class for Application.
  * 
@@ -18,34 +19,37 @@ import net.link.safeonline.entity.ApplicationEntity;
  */
 public class Application {
 
-	private final ApplicationEntity entity;
+    private final ApplicationEntity entity;
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param entity
-	 */
-	public Application(ApplicationEntity entity) {
-		this.entity = entity;
-	}
 
-	/**
-	 * Check whether a user is allowed to subscribe onto this application.
-	 * 
-	 * @throws PermissionDeniedException
-	 */
-	public void checkUserSubscriptionPermission()
-			throws PermissionDeniedException {
-		if (false == this.entity.isAllowUserSubscription()) {
-			throw new PermissionDeniedException("user not allowed to subscribe");
-		}
-	}
+    /**
+     * Main constructor.
+     * 
+     * @param entity
+     */
+    public Application(ApplicationEntity entity) {
 
-	/**
-	 * Gives back the underlying persistent application entity.
-	 * 
-	 */
-	public ApplicationEntity getEntity() {
-		return this.entity;
-	}
+        this.entity = entity;
+    }
+
+    /**
+     * Check whether a user is allowed to subscribe onto this application.
+     * 
+     * @throws PermissionDeniedException
+     */
+    public void checkUserSubscriptionPermission() throws PermissionDeniedException {
+
+        if (false == this.entity.isAllowUserSubscription()) {
+            throw new PermissionDeniedException("user not allowed to subscribe");
+        }
+    }
+
+    /**
+     * Gives back the underlying persistent application entity.
+     * 
+     */
+    public ApplicationEntity getEntity() {
+
+        return this.entity;
+    }
 }

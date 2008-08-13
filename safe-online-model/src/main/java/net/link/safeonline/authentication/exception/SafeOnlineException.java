@@ -11,28 +11,33 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class SafeOnlineException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String errorCode;
+    private final String      errorCode;
 
-	/**
-	 * Gives back the error code. The error code is a unique code per exception
-	 * type. It can be used by client-side components for better error handling.
-	 * 
-	 */
-	public String getErrorCode() {
-		return this.errorCode;
-	}
 
-	public SafeOnlineException() {
-		this(null, SharedConstants.UNDEFINED_ERROR);
-	}
+    /**
+     * Gives back the error code. The error code is a unique code per exception type. It can be used by client-side
+     * components for better error handling.
+     * 
+     */
+    public String getErrorCode() {
 
-	public SafeOnlineException(String message, String errorCode) {
-		super(message);
-		this.errorCode = errorCode;
-	}
+        return this.errorCode;
+    }
+
+    public SafeOnlineException() {
+
+        this(null, SharedConstants.UNDEFINED_ERROR);
+    }
+
+    public SafeOnlineException(String message, String errorCode) {
+
+        super(message);
+        this.errorCode = errorCode;
+    }
 }

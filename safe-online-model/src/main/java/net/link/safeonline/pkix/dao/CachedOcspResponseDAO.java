@@ -13,13 +13,14 @@ import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
+
 @Local
 public interface CachedOcspResponseDAO {
 
     CachedOcspResponseEntity findCachedOcspResponse(String key);
 
-    CachedOcspResponseEntity addCachedOcspResponse(String key,
-            CachedOcspResultType result, TrustDomainEntity trustDomain);
+    CachedOcspResponseEntity addCachedOcspResponse(String key, CachedOcspResultType result,
+            TrustDomainEntity trustDomain);
 
     void removeCachedOcspResponse(CachedOcspResponseEntity cachedOcspResponse);
 

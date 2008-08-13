@@ -16,33 +16,31 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.model.digipass.DigipassException;
 
+
 @Local
 public interface Removal {
 
-	/*
-	 * Accessors
-	 */
-	String getLoginName();
+    /*
+     * Accessors
+     */
+    String getLoginName();
 
-	void setLoginName(String loginName);
+    void setLoginName(String loginName);
 
-	/*
-	 * Actions.
-	 */
-	String getRegistrations() throws SubjectNotFoundException,
-			PermissionDeniedException;
+    /*
+     * Actions.
+     */
+    String getRegistrations() throws SubjectNotFoundException, PermissionDeniedException;
 
-	String remove() throws SubjectNotFoundException, DigipassException,
-			PermissionDeniedException;
+    String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException;
 
-	/*
-	 * Factories
-	 */
-	List<AttributeDO> digipassAttributesFactory()
-			throws SubjectNotFoundException, PermissionDeniedException;
+    /*
+     * Factories
+     */
+    List<AttributeDO> digipassAttributesFactory() throws SubjectNotFoundException, PermissionDeniedException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

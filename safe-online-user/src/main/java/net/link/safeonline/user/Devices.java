@@ -18,57 +18,52 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.DeviceMappingDO;
 
+
 @Local
 public interface Devices {
 
-	/*
-	 * Accessors.
-	 */
-	String getNewPassword();
+    /*
+     * Accessors.
+     */
+    String getNewPassword();
 
-	void setNewPassword(String newPassword);
+    void setNewPassword(String newPassword);
 
-	String getOldPassword();
+    String getOldPassword();
 
-	void setOldPassword(String oldPassword);
+    void setOldPassword(String oldPassword);
 
-	boolean isPasswordConfigured() throws SubjectNotFoundException,
-			DeviceNotFoundException;
+    boolean isPasswordConfigured() throws SubjectNotFoundException, DeviceNotFoundException;
 
-	/*
-	 * Actions.
-	 */
-	String register() throws DeviceNotFoundException, IOException;
+    /*
+     * Actions.
+     */
+    String register() throws DeviceNotFoundException, IOException;
 
-	String remove() throws DeviceNotFoundException, IOException;
+    String remove() throws DeviceNotFoundException, IOException;
 
-	String removeDevice() throws DeviceNotFoundException, IOException;
+    String removeDevice() throws DeviceNotFoundException, IOException;
 
-	String update() throws DeviceNotFoundException, IOException;
+    String update() throws DeviceNotFoundException, IOException;
 
-	String updateDevice() throws DeviceNotFoundException, IOException;
+    String updateDevice() throws DeviceNotFoundException, IOException;
 
-	String changePassword() throws SubjectNotFoundException,
-			PermissionDeniedException, DeviceNotFoundException;
+    String changePassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
-	String registerPassword() throws SubjectNotFoundException,
-			PermissionDeniedException, DeviceNotFoundException;
+    String registerPassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
-	String removePassword() throws SubjectNotFoundException,
-			DeviceNotFoundException, PermissionDeniedException;
+    String removePassword() throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Factory.
-	 */
-	List<DeviceEntry> devicesFactory() throws SubjectNotFoundException,
-			DeviceNotFoundException;
+    /*
+     * Factory.
+     */
+    List<DeviceEntry> devicesFactory() throws SubjectNotFoundException, DeviceNotFoundException;
 
-	List<DeviceMappingDO> deviceRegistrationsFactory()
-			throws SubjectNotFoundException, DeviceNotFoundException,
-			PermissionDeniedException, AttributeTypeNotFoundException;
+    List<DeviceMappingDO> deviceRegistrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException;
 }

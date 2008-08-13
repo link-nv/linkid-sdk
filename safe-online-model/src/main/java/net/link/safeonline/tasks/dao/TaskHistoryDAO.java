@@ -15,17 +15,17 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 
+
 @Local
 public interface TaskHistoryDAO {
 
-	TaskHistoryEntity addTaskHistoryEntity(TaskEntity task, String message,
-			boolean result, Date startDate, Date endDate);
+    TaskHistoryEntity addTaskHistoryEntity(TaskEntity task, String message, boolean result, Date startDate, Date endDate);
 
-	List<TaskHistoryEntity> listTaskHistory(TaskEntity task);
+    List<TaskHistoryEntity> listTaskHistory(TaskEntity task);
 
-	void clearTaskHistory(TaskEntity task);
+    void clearTaskHistory(TaskEntity task);
 
-	void clearAllTasksHistory();
+    void clearAllTasksHistory();
 
-	void clearAllTasksHistory(long ageInMillis);
+    void clearAllTasksHistory(long ageInMillis);
 }

@@ -15,31 +15,29 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
+
 @Local
 public interface AttributeProviderDAO {
 
-	AttributeProviderEntity findAttributeProvider(
-			ApplicationEntity application, AttributeTypeEntity attributeType);
+    AttributeProviderEntity findAttributeProvider(ApplicationEntity application, AttributeTypeEntity attributeType);
 
-	List<AttributeProviderEntity> listAttributeProviders(
-			AttributeTypeEntity attributeType);
+    List<AttributeProviderEntity> listAttributeProviders(AttributeTypeEntity attributeType);
 
-	void removeAttributeProvider(AttributeProviderEntity attributeProvider);
+    void removeAttributeProvider(AttributeProviderEntity attributeProvider);
 
-	void addAttributeProvider(ApplicationEntity application,
-			AttributeTypeEntity attributeType);
+    void addAttributeProvider(ApplicationEntity application, AttributeTypeEntity attributeType);
 
-	/**
-	 * Remove all attribute providers for the given application.
-	 * 
-	 * @param application
-	 */
-	void removeAttributeProviders(ApplicationEntity application);
+    /**
+     * Remove all attribute providers for the given application.
+     * 
+     * @param application
+     */
+    void removeAttributeProviders(ApplicationEntity application);
 
-	/**
-	 * Remove all attribute providers for the given attribute type.
-	 * 
-	 * @param attributeType
-	 */
-	void removeAttributeProviders(AttributeTypeEntity attributeType);
+    /**
+     * Remove all attribute providers for the given attribute type.
+     * 
+     * @param attributeType
+     */
+    void removeAttributeProviders(AttributeTypeEntity attributeType);
 }

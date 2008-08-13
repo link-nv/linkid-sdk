@@ -13,6 +13,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+
 /**
  * Specifies that the class is a compounded attribute.
  * 
@@ -24,9 +25,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Compound {
 
-	/**
-	 * The name of the compounded attribute.
-	 * 
-	 */
-	String value();
+    /**
+     * The name of the compounded attribute.
+     * 
+     */
+    String value();
 }

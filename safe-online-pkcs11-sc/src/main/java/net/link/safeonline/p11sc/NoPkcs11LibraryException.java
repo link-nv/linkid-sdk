@@ -9,8 +9,9 @@ package net.link.safeonline.p11sc;
 
 import java.io.IOException;
 
+
 public class NoPkcs11LibraryException extends IOException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

@@ -13,6 +13,7 @@ import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
 import org.wicketstuff.javaee.naming.IJndiNamingStrategy;
 import org.wicketstuff.javaee.naming.StandardJndiNamingStrategy;
 
+
 public class CinemaApplication extends WebApplication {
 
     static final Log LOG = LogFactory.getLog(CinemaApplication.class);
@@ -21,57 +22,40 @@ public class CinemaApplication extends WebApplication {
     @Override
     protected void init() {
 
-        addComponentInstantiationListener(new JavaEEComponentInjector(this,
-                new IJndiNamingStrategy() {
+        addComponentInstantiationListener(new JavaEEComponentInjector(this, new IJndiNamingStrategy() {
 
-                    private static final long                serialVersionUID = 1L;
-                    private final StandardJndiNamingStrategy defaultStrategy  = new StandardJndiNamingStrategy();
+            private static final long                serialVersionUID = 1L;
+            private final StandardJndiNamingStrategy defaultStrategy  = new StandardJndiNamingStrategy();
 
 
-                    @SuppressWarnings("unchecked")
-                    public String calculateName(String ejbName, Class ejbType) {
+            @SuppressWarnings("unchecked")
+            public String calculateName(String ejbName, Class ejbType) {
 
-                        try {
-                            Field bindingField = ejbType
-                                    .getDeclaredField("BINDING");
-                            Object binding = bindingField.get(null);
+                try {
+                    Field bindingField = ejbType.getDeclaredField("BINDING");
+                    Object binding = bindingField.get(null);
 
-                            LOG.debug("Resolved '" + ejbName + "' type '"
-                                    + ejbType.getCanonicalName() + "' to: "
-                                    + binding);
+                    LOG.debug("Resolved '" + ejbName + "' type '" + ejbType.getCanonicalName() + "' to: " + binding);
 
-                            if (binding != null)
-                                return binding.toString();
-                        } catch (SecurityException e) {
-                            LOG.warn(
-                                    "No access to fields when trying to resolve '"
-                                            + ejbName + "' type '"
-                                            + ejbType.getCanonicalName() + "'",
-                                    e);
-                        } catch (NoSuchFieldException e) {
-                            LOG.warn(
-                                    "No field called 'BINDING' when trying to resolve '"
-                                            + ejbName + "' type '"
-                                            + ejbType.getCanonicalName() + "'",
-                                    e);
-                        } catch (IllegalArgumentException e) {
-                            LOG.warn(
-                                    "No valid instance of EJB when trying to resolve '"
-                                            + ejbName + "' type '"
-                                            + ejbType.getCanonicalName() + "'",
-                                    e);
-                        } catch (IllegalAccessException e) {
-                            LOG.warn(
-                                    "No access to 'BINDING' when trying to resolve '"
-                                            + ejbName + "' type '"
-                                            + ejbType.getCanonicalName() + "'",
-                                    e);
-                        }
+                    if (binding != null)
+                        return binding.toString();
+                } catch (SecurityException e) {
+                    LOG.warn("No access to fields when trying to resolve '" + ejbName + "' type '"
+                            + ejbType.getCanonicalName() + "'", e);
+                } catch (NoSuchFieldException e) {
+                    LOG.warn("No field called 'BINDING' when trying to resolve '" + ejbName + "' type '"
+                            + ejbType.getCanonicalName() + "'", e);
+                } catch (IllegalArgumentException e) {
+                    LOG.warn("No valid instance of EJB when trying to resolve '" + ejbName + "' type '"
+                            + ejbType.getCanonicalName() + "'", e);
+                } catch (IllegalAccessException e) {
+                    LOG.warn("No access to 'BINDING' when trying to resolve '" + ejbName + "' type '"
+                            + ejbType.getCanonicalName() + "'", e);
+                }
 
-                        return this.defaultStrategy.calculateName(ejbName,
-                                ejbType);
-                    }
-                }));
+                return this.defaultStrategy.calculateName(ejbName, ejbType);
+            }
+        }));
     }
 
     /**

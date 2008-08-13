@@ -23,52 +23,57 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class SubjectDAOBean implements SubjectDAO {
 
-	private static final Log LOG = LogFactory.getLog(SubjectDAOBean.class);
+    private static final Log             LOG = LogFactory.getLog(SubjectDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                entityManager;
 
-	private SubjectEntity.QueryInterface queryObject;
+    private SubjectEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, SubjectEntity.QueryInterface.class);
-	}
 
-	public SubjectEntity findSubject(String userId) {
-		LOG.debug("find subject: " + userId);
-		SubjectEntity subject = this.entityManager.find(SubjectEntity.class,
-				userId);
-		return subject;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public SubjectEntity addSubject(String userId) {
-		LOG.debug("add subject: " + userId);
-		SubjectEntity subject = new SubjectEntity(userId);
-		this.entityManager.persist(subject);
-		return subject;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, SubjectEntity.QueryInterface.class);
+    }
 
-	public SubjectEntity getSubject(String userId)
-			throws SubjectNotFoundException {
-		LOG.debug("get subject: " + userId);
-		SubjectEntity subject = findSubject(userId);
-		if (null == subject) {
-			throw new SubjectNotFoundException();
-		}
-		return subject;
-	}
+    public SubjectEntity findSubject(String userId) {
 
-	public void removeSubject(SubjectEntity subject) {
-		this.entityManager.remove(subject);
-	}
+        LOG.debug("find subject: " + userId);
+        SubjectEntity subject = this.entityManager.find(SubjectEntity.class, userId);
+        return subject;
+    }
 
-	public List<String> listUsers() {
-		List<String> users = this.queryObject.listUsers();
-		return users;
-	}
+    public SubjectEntity addSubject(String userId) {
+
+        LOG.debug("add subject: " + userId);
+        SubjectEntity subject = new SubjectEntity(userId);
+        this.entityManager.persist(subject);
+        return subject;
+    }
+
+    public SubjectEntity getSubject(String userId) throws SubjectNotFoundException {
+
+        LOG.debug("get subject: " + userId);
+        SubjectEntity subject = findSubject(userId);
+        if (null == subject) {
+            throw new SubjectNotFoundException();
+        }
+        return subject;
+    }
+
+    public void removeSubject(SubjectEntity subject) {
+
+        this.entityManager.remove(subject);
+    }
+
+    public List<String> listUsers() {
+
+        List<String> users = this.queryObject.listUsers();
+        return users;
+    }
 }

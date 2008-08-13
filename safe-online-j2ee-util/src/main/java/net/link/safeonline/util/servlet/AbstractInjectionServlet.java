@@ -37,6 +37,7 @@ import net.link.safeonline.util.servlet.annotation.RequestParameter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Abstract Injection Servlet.
  * 
@@ -44,14 +45,11 @@ import org.apache.commons.logging.LogFactory;
  * <li>Injects request parameters into servlet fields.
  * <li>Injects and outjects session parameters.
  * <li>Injects EJBs.
- * <li>Injects servlet init parameters. If no defaultValue is specified, an
- * {@link UnavailableException} will be thrown.
- * <li>Injects servlet context parameters. If no defaultValue is specified, an
- * {@link UnavailableException} will be thrown.
- * <li>By default checks if the servlet is accessed with a secure connection. If
- * context parameter <code>Protocol</code> is <code>http</code> or
- * <code>securityCheck</code> is set to <code>false</code> this check will be
- * ommitted.
+ * <li>Injects servlet init parameters. If no defaultValue is specified, an {@link UnavailableException} will be thrown.
+ * <li>Injects servlet context parameters. If no defaultValue is specified, an {@link UnavailableException} will be
+ * thrown.
+ * <li>By default checks if the servlet is accessed with a secure connection. If context parameter <code>Protocol</code>
+ * is <code>http</code> or <code>securityCheck</code> is set to <code>false</code> this check will be ommitted.
  * </ul>
  * 
  * @author fcorneli
@@ -59,8 +57,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractInjectionServlet extends HttpServlet {
 
-    private static final Log      LOG              = LogFactory
-                                                           .getLog(AbstractInjectionServlet.class);
+    private static final Log      LOG              = LogFactory.getLog(AbstractInjectionServlet.class);
 
     private static final long     serialVersionUID = 1L;
 
@@ -76,40 +73,38 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     }
 
     @Override
-    protected final void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected final void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         doGetInvocation(request, response);
     }
 
     @Override
-    protected final void doPost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected final void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         doPostInvocation(request, response);
     }
 
-    private void doGetInvocation(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    private void doGetInvocation(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         HttpSession session = request.getSession();
         injectRequestParameters(request);
         injectSessionAttributes(session);
-        InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
-                response);
+        InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(response);
         invokeGet(request, responseWrapper);
         outjectSessionAttributes(session);
         responseWrapper.commit();
     }
 
-    private void doPostInvocation(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    private void doPostInvocation(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         HttpSession session = request.getSession();
         injectRequestParameters(request);
         injectSessionAttributes(session);
-        InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
-                response);
+        InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(response);
         invokePost(request, responseWrapper);
         outjectSessionAttributes(session);
         responseWrapper.commit();
@@ -117,14 +112,12 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 
 
     /**
-     * Injection response wrapper. We use a response wrapper since we want to be
-     * able to postpone some actions.
+     * Injection response wrapper. We use a response wrapper since we want to be able to postpone some actions.
      * 
      * @author fcorneli
      * 
      */
-    public static class InjectionResponseWrapper extends
-            HttpServletResponseWrapper {
+    public static class InjectionResponseWrapper extends HttpServletResponseWrapper {
 
         private String redirectLocation;
 
@@ -152,25 +145,23 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     }
 
 
-    protected void invokeGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         super.doGet(request, response);
     }
 
-    protected void invokePost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         super.doPost(request, response);
     }
 
-    private void injectRequestParameters(HttpServletRequest request)
-            throws ServletException {
+    private void injectRequestParameters(HttpServletRequest request) throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
-            RequestParameter requestParameterAnnotation = field
-                    .getAnnotation(RequestParameter.class);
+            RequestParameter requestParameterAnnotation = field.getAnnotation(RequestParameter.class);
             if (null == requestParameterAnnotation) {
                 continue;
             }
@@ -183,17 +174,14 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             try {
                 field.set(this, value);
             } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: "
-                        + e.getMessage(), e);
+                throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(),
-                        e);
+                throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
     }
 
-    private void injectSessionAttributes(HttpSession session)
-            throws ServletException {
+    private void injectSessionAttributes(HttpSession session) throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -205,19 +193,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             Object value = session.getAttribute(inName);
             if (inAnnotation.required()) {
                 if (null == value) {
-                    throw new ServletException(
-                            "missing required session attribute: " + inName);
+                    throw new ServletException("missing required session attribute: " + inName);
                 }
             }
             field.setAccessible(true);
             try {
                 field.set(this, value);
             } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: "
-                        + e.getMessage(), e);
+                throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(),
-                        e);
+                throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
     }
@@ -245,17 +230,14 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             try {
                 field.set(this, ejbRef);
             } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: "
-                        + e.getMessage(), e);
+                throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(),
-                        e);
+                throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
     }
 
-    private void initInitParameters(ServletConfig config)
-            throws ServletException {
+    private void initInitParameters(ServletConfig config) throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -274,8 +256,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             String value = config.getInitParameter(name);
             if (null == value) {
                 if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional) {
-                    throw new UnavailableException("missing init parameter: "
-                            + name);
+                    throw new UnavailableException("missing init parameter: " + name);
                 }
                 if (Init.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
@@ -286,18 +267,15 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             try {
                 field.set(this, value);
             } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: "
-                        + e.getMessage(), e);
+                throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(),
-                        e);
+                throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void initContextParameters(ServletConfig config)
-            throws ServletException {
+    private void initContextParameters(ServletConfig config) throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -316,8 +294,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             String value = config.getServletContext().getInitParameter(name);
             if (null == value) {
                 if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional) {
-                    throw new UnavailableException("missing init parameter: "
-                            + name);
+                    throw new UnavailableException("missing init parameter: " + name);
                 }
                 if (Context.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
@@ -328,26 +305,21 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             try {
                 field.set(this, value);
             } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: "
-                        + e.getMessage(), e);
+                throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(),
-                        e);
+                throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
         this.configParams = new HashMap<String, String>();
-        Enumeration<String> initParamsEnum = config.getServletContext()
-                .getInitParameterNames();
+        Enumeration<String> initParamsEnum = config.getServletContext().getInitParameterNames();
         while (initParamsEnum.hasMoreElements()) {
             String paramName = initParamsEnum.nextElement();
-            String paramValue = config.getServletContext().getInitParameter(
-                    paramName);
+            String paramValue = config.getServletContext().getInitParameter(paramName);
             this.configParams.put(paramName, paramValue);
         }
     }
 
-    private void outjectSessionAttributes(HttpSession session)
-            throws ServletException {
+    private void outjectSessionAttributes(HttpSession session) throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -361,14 +333,11 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             try {
                 value = field.get(this);
                 if (value == null && outAnnotation.required())
-                    throw new ServletException(
-                            "missing required session attribute: " + outName);
+                    throw new ServletException("missing required session attribute: " + outName);
             } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: "
-                        + e.getMessage(), e);
+                throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(),
-                        e);
+                throw new ServletException("illegal access: " + e.getMessage(), e);
             }
             LOG.debug("outjecting to session attribute: " + outName);
             session.setAttribute(outName, value);
@@ -376,9 +345,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     }
 
     /**
-     * Redirects to the specified error page. The errorMessages entries contain
-     * as key the name of the error message attribute that will be pushed on the
-     * session. The attribute value will be looked up if a resource bundle is
+     * Redirects to the specified error page. The errorMessages entries contain as key the name of the error message
+     * attribute that will be pushed on the session. The attribute value will be looked up if a resource bundle is
      * specified, else directly pushed onto the session.
      * 
      * @param request
@@ -388,18 +356,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
      * @param errorMessages
      * @throws IOException
      */
-    public void redirectToErrorPage(HttpServletRequest request,
-            HttpServletResponse response, String errorPage,
-            String resourceBundleName, ErrorMessage... errorMessages)
-            throws IOException {
+    public void redirectToErrorPage(HttpServletRequest request, HttpServletResponse response, String errorPage,
+            String resourceBundleName, ErrorMessage... errorMessages) throws IOException {
 
         HttpSession session = request.getSession();
         ResourceBundle resourceBundle = null;
         if (null != resourceBundleName) {
             Locale locale = request.getLocale();
             try {
-                resourceBundle = ResourceBundle.getBundle(resourceBundleName,
-                        locale, Thread.currentThread().getContextClassLoader());
+                resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale, Thread.currentThread()
+                        .getContextClassLoader());
             } catch (MissingResourceException e) {
                 resourceBundle = null;
             }
@@ -407,8 +373,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         for (ErrorMessage errorMessage : errorMessages) {
             if (null != resourceBundle) {
                 try {
-                    errorMessage.setMessage(resourceBundle
-                            .getString(errorMessage.getMessage()));
+                    errorMessage.setMessage(resourceBundle.getString(errorMessage.getMessage()));
                 } catch (MissingResourceException e) {
                     // not found
                 }
@@ -416,21 +381,18 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         }
         if (null == errorPage) {
             /*
-             * If no error page specified, spit out a basic HTML page containing
-             * the error message.
+             * If no error page specified, spit out a basic HTML page containing the error message.
              */
             writeBasicErrorPage(response, errorMessages);
         } else {
             for (ErrorMessage errorMessage : errorMessages) {
-                session.setAttribute(errorMessage.getName(), errorMessage
-                        .getMessage());
+                session.setAttribute(errorMessage.getName(), errorMessage.getMessage());
             }
             response.sendRedirect(errorPage);
         }
     }
 
-    private void writeBasicErrorPage(HttpServletResponse response,
-            ErrorMessage... errorMessages) throws IOException {
+    private void writeBasicErrorPage(HttpServletResponse response, ErrorMessage... errorMessages) throws IOException {
 
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

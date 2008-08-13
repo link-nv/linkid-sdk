@@ -35,130 +35,121 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class AuthnRequestFilterTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthnRequestFilterTest.class);
+    private static final Log   LOG = LogFactory.getLog(AuthnRequestFilterTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager servletTestManager;
 
-	private ClassLoader originalContextClassLoader;
+    private ClassLoader        originalContextClassLoader;
 
-	private TestClassLoader testClassLoader;
+    private TestClassLoader    testClassLoader;
 
-	@Before
-	public void setUp() throws Exception {
-		this.originalContextClassLoader = Thread.currentThread()
-				.getContextClassLoader();
-		this.testClassLoader = new TestClassLoader();
-		Thread.currentThread().setContextClassLoader(this.testClassLoader);
-		this.servletTestManager = new ServletTestManager();
-	}
 
-	@After
-	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-		Thread.currentThread().setContextClassLoader(
-				this.originalContextClassLoader);
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	public static class TestServlet extends HttpServlet {
+        this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        this.testClassLoader = new TestClassLoader();
+        Thread.currentThread().setContextClassLoader(this.testClassLoader);
+        this.servletTestManager = new ServletTestManager();
+    }
 
-		private static final long serialVersionUID = 1L;
+    @After
+    public void tearDown() throws Exception {
 
-		@Override
-		protected void doGet(HttpServletRequest request,
-				HttpServletResponse response) throws ServletException {
-			throw new ServletException("should never get called");
-		}
-	}
+        this.servletTestManager.tearDown();
+        Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
+    }
 
-	@Test
-	public void performSaml2AuthnRequest() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(
-				keyPair, "CN=TestApplication");
-		File tmpP12File = File.createTempFile("application-", ".p12");
-		tmpP12File.deleteOnExit();
-		PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert,
-				"secret", "secret");
 
-		String p12ResourceName = "p12-resource-name.p12";
-		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI()
-				.toURL());
+    public static class TestServlet extends HttpServlet {
 
-		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put("AuthenticationServiceUrl",
-				"http://authn.service");
-		filterInitParameters.put("ApplicationName", "application-id");
-		filterInitParameters
-				.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
-		filterInitParameters.put("KeyStoreResource", p12ResourceName);
-		filterInitParameters.put("KeyStorePassword", "secret");
-		filterInitParameters.put("WsLocation", "https://ws.location");
-		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-		this.servletTestManager.setUp(TestServlet.class,
-				AuthnRequestFilter.class, filterInitParameters,
-				initialSessionAttributes);
+        private static final long serialVersionUID = 1L;
 
-		GetMethod getMethod = new GetMethod(this.servletTestManager
-				.getServletLocation());
-		HttpClient httpClient = new HttpClient();
 
-		// operate
-		int statusCode = httpClient.executeMethod(getMethod);
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
-		// verify
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpStatus.SC_OK, statusCode);
-		String response = getMethod.getResponseBodyAsString();
-		LOG.debug("response body: " + response);
-	}
+            throw new ServletException("should never get called");
+        }
+    }
 
-	@Test
-	public void performSaml2AuthnRequestWithCustomTemplate() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(
-				keyPair, "CN=TestApplication");
-		File tmpP12File = File.createTempFile("application-", ".p12");
-		tmpP12File.deleteOnExit();
-		PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert,
-				"secret", "secret");
 
-		String p12ResourceName = "p12-resource-name.p12";
-		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI()
-				.toURL());
+    @Test
+    public void performSaml2AuthnRequest() throws Exception {
 
-		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put("AuthenticationServiceUrl",
-				"http://authn.service");
-		filterInitParameters.put("ApplicationName", "application-id");
-		filterInitParameters
-				.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
-		filterInitParameters.put("KeyStoreResource", p12ResourceName);
-		filterInitParameters.put("KeyStorePassword", "secret");
-		filterInitParameters.put("Saml2BrowserPostTemplate",
-				"test-saml2-post-binding.vm");
-		filterInitParameters.put("WsLocation", "https://ws.location");
-		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-		this.servletTestManager.setUp(TestServlet.class,
-				AuthnRequestFilter.class, filterInitParameters,
-				initialSessionAttributes);
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=TestApplication");
+        File tmpP12File = File.createTempFile("application-", ".p12");
+        tmpP12File.deleteOnExit();
+        PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert, "secret", "secret");
 
-		GetMethod getMethod = new GetMethod(this.servletTestManager
-				.getServletLocation());
-		HttpClient httpClient = new HttpClient();
+        String p12ResourceName = "p12-resource-name.p12";
+        this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
 
-		// operate
-		int statusCode = httpClient.executeMethod(getMethod);
+        Map<String, String> filterInitParameters = new HashMap<String, String>();
+        filterInitParameters.put("AuthenticationServiceUrl", "http://authn.service");
+        filterInitParameters.put("ApplicationName", "application-id");
+        filterInitParameters.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
+        filterInitParameters.put("KeyStoreResource", p12ResourceName);
+        filterInitParameters.put("KeyStorePassword", "secret");
+        filterInitParameters.put("WsLocation", "https://ws.location");
+        Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
+        this.servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters,
+                initialSessionAttributes);
 
-		// verify
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpStatus.SC_OK, statusCode);
-		String response = getMethod.getResponseBodyAsString();
-		LOG.debug("response body: " + response);
-		assertTrue(response.indexOf("custom template") != -1);
-	}
+        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        HttpClient httpClient = new HttpClient();
+
+        // operate
+        int statusCode = httpClient.executeMethod(getMethod);
+
+        // verify
+        LOG.debug("status code: " + statusCode);
+        assertEquals(HttpStatus.SC_OK, statusCode);
+        String response = getMethod.getResponseBodyAsString();
+        LOG.debug("response body: " + response);
+    }
+
+    @Test
+    public void performSaml2AuthnRequestWithCustomTemplate() throws Exception {
+
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=TestApplication");
+        File tmpP12File = File.createTempFile("application-", ".p12");
+        tmpP12File.deleteOnExit();
+        PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert, "secret", "secret");
+
+        String p12ResourceName = "p12-resource-name.p12";
+        this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
+
+        Map<String, String> filterInitParameters = new HashMap<String, String>();
+        filterInitParameters.put("AuthenticationServiceUrl", "http://authn.service");
+        filterInitParameters.put("ApplicationName", "application-id");
+        filterInitParameters.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
+        filterInitParameters.put("KeyStoreResource", p12ResourceName);
+        filterInitParameters.put("KeyStorePassword", "secret");
+        filterInitParameters.put("Saml2BrowserPostTemplate", "test-saml2-post-binding.vm");
+        filterInitParameters.put("WsLocation", "https://ws.location");
+        Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
+        this.servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters,
+                initialSessionAttributes);
+
+        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        HttpClient httpClient = new HttpClient();
+
+        // operate
+        int statusCode = httpClient.executeMethod(getMethod);
+
+        // verify
+        LOG.debug("status code: " + statusCode);
+        assertEquals(HttpStatus.SC_OK, statusCode);
+        String response = getMethod.getResponseBodyAsString();
+        LOG.debug("response body: " + response);
+        assertTrue(response.indexOf("custom template") != -1);
+    }
 }

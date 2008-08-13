@@ -16,26 +16,25 @@ import net.link.safeonline.taglib.AttributeOutputComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class AttributeOutputComponentTest extends TestCase {
 
-	private static final Log LOG = LogFactory
-			.getLog(AttributeOutputComponentTest.class);
+    private static final Log LOG = LogFactory.getLog(AttributeOutputComponentTest.class);
 
-	public void testGetAttributeValueEncoder() throws Exception {
-		// setup
-		Class<AttributeOutputComponent> clazz = AttributeOutputComponent.class;
-		Method method = clazz.getDeclaredMethod("getAttributeValueEncoder",
-				new Class[] { DatatypeType.class });
-		method.setAccessible(true);
 
-		// operate
-		Object result1 = method.invoke(null,
-				new Object[] { DatatypeType.STRING });
-		Object result2 = method.invoke(null,
-				new Object[] { DatatypeType.STRING });
+    public void testGetAttributeValueEncoder() throws Exception {
 
-		// verify
-		assertTrue(result1 == result2);
-		LOG.debug("result class: " + result1.getClass().getName());
-	}
+        // setup
+        Class<AttributeOutputComponent> clazz = AttributeOutputComponent.class;
+        Method method = clazz.getDeclaredMethod("getAttributeValueEncoder", new Class[] { DatatypeType.class });
+        method.setAccessible(true);
+
+        // operate
+        Object result1 = method.invoke(null, new Object[] { DatatypeType.STRING });
+        Object result2 = method.invoke(null, new Object[] { DatatypeType.STRING });
+
+        // verify
+        assertTrue(result1 == result2);
+        LOG.debug("result class: " + result1.getClass().getName());
+    }
 }

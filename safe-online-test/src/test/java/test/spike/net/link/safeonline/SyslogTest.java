@@ -12,12 +12,13 @@ import java.util.Date;
 import net.link.safeonline.audit.TinySyslogger;
 import net.link.safeonline.audit.TinySyslogger.Facility;
 
+
 public class SyslogTest {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		TinySyslogger mySyslogAppender = new TinySyslogger(Facility.LOCAL0);
+        TinySyslogger mySyslogAppender = new TinySyslogger(Facility.LOCAL0);
 
-		mySyslogAppender.log("hello world: " + new Date());
-	}
+        mySyslogAppender.log("hello world: " + new Date());
+    }
 }

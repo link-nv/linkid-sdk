@@ -12,6 +12,7 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.w3c.dom.Element;
 
+
 /**
  * Interface for Security Token Service WS-Trust client.
  * 
@@ -26,6 +27,5 @@ public interface SecurityTokenServiceClient extends MessageAccessor {
      * @param trustDomain
      * @throws WSClientTransportException
      */
-    void validate(Element token, TrustDomainType trustDomain)
-            throws WSClientTransportException;
+    void validate(Element token, TrustDomainType trustDomain) throws WSClientTransportException;
 }

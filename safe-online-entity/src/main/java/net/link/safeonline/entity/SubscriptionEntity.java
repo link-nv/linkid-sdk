@@ -39,193 +39,203 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+
 @Entity
 @Table(name = "subscription")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT subscription "
-				+ "FROM SubscriptionEntity AS subscription "
-				+ "WHERE subscription.subject = :subject"),
-		@NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION, query = "SELECT COUNT(*) "
-				+ "FROM SubscriptionEntity AS subscription "
-				+ "WHERE subscription.application = :application"),
-		@NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE, query = "SELECT COUNT(*) "
-				+ "FROM SubscriptionEntity AS subscription "
-				+ "WHERE subscription.application = :application "
-				+ "AND subscription.lastLogin > :lastLogin"),
-		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT subscription "
-				+ "FROM SubscriptionEntity AS subscription "
-				+ "WHERE subscription.application = :application"),
-		@NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM SubscriptionEntity AS subscription "
-				+ "WHERE subscription.subject = :subject"),
-		@NamedQuery(name = QUERY_WHERE_USER_APPLICATION_ID, query = "SELECT subscription "
-				+ "FROM SubscriptionEntity AS subscription "
-				+ "WHERE subscription.subscriptionUserId = :subscriptionUserId") })
+        @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT subscription "
+                + "FROM SubscriptionEntity AS subscription " + "WHERE subscription.subject = :subject"),
+        @NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION, query = "SELECT COUNT(*) "
+                + "FROM SubscriptionEntity AS subscription " + "WHERE subscription.application = :application"),
+        @NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE, query = "SELECT COUNT(*) "
+                + "FROM SubscriptionEntity AS subscription " + "WHERE subscription.application = :application "
+                + "AND subscription.lastLogin > :lastLogin"),
+        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT subscription "
+                + "FROM SubscriptionEntity AS subscription " + "WHERE subscription.application = :application"),
+        @NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM SubscriptionEntity AS subscription "
+                + "WHERE subscription.subject = :subject"),
+        @NamedQuery(name = QUERY_WHERE_USER_APPLICATION_ID, query = "SELECT subscription "
+                + "FROM SubscriptionEntity AS subscription "
+                + "WHERE subscription.subscriptionUserId = :subscriptionUserId") })
 public class SubscriptionEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long     serialVersionUID                         = 1L;
 
-	public static final String QUERY_WHERE_SUBJECT = "sub.subject";
+    public static final String    QUERY_WHERE_SUBJECT                      = "sub.subject";
 
-	public static final String QUERY_COUNT_WHERE_APPLICATION = "sub.count.app";
+    public static final String    QUERY_COUNT_WHERE_APPLICATION            = "sub.count.app";
 
-	public static final String QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE = "sub.count.app.active";
+    public static final String    QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE = "sub.count.app.active";
 
-	public static final String QUERY_WHERE_APPLICATION = "sub.application";
+    public static final String    QUERY_WHERE_APPLICATION                  = "sub.application";
 
-	public static final String QUERY_WHERE_USER_APPLICATION_ID = "sub.userapplicationid";
+    public static final String    QUERY_WHERE_USER_APPLICATION_ID          = "sub.userapplicationid";
 
-	public static final String DELETE_ALL_SUBJECT = "sub.del.sub";
+    public static final String    DELETE_ALL_SUBJECT                       = "sub.del.sub";
 
-	private SubscriptionPK pk;
+    private SubscriptionPK        pk;
 
-	private SubjectEntity subject;
+    private SubjectEntity         subject;
 
-	private ApplicationEntity application;
+    private ApplicationEntity     application;
 
-	private SubscriptionOwnerType subscriptionOwnerType;
+    private SubscriptionOwnerType subscriptionOwnerType;
 
-	private Long confirmedIdentityVersion;
+    private Long                  confirmedIdentityVersion;
 
-	private Long confirmedUsageAgreementVersion;
+    private Long                  confirmedUsageAgreementVersion;
 
-	private String subscriptionUserId;
+    private String                subscriptionUserId;
 
-	private Date lastLogin;
+    private Date                  lastLogin;
 
-	public SubscriptionEntity() {
-		// empty
-	}
 
-	public SubscriptionEntity(SubscriptionOwnerType subscriptionOwnerType,
-			SubjectEntity subject, String subscriptionUserId,
-			ApplicationEntity application) {
-		this.subscriptionOwnerType = subscriptionOwnerType;
-		this.subject = subject;
-		this.subscriptionUserId = subscriptionUserId;
-		this.application = application;
-		this.confirmedUsageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
-		this.pk = new SubscriptionPK(subject, application);
-	}
+    public SubscriptionEntity() {
 
-	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "application", column = @Column(name = "application")),
-			@AttributeOverride(name = "subject", column = @Column(name = "subject")) })
-	public SubscriptionPK getPk() {
-		return this.pk;
-	}
+        // empty
+    }
 
-	public void setPk(SubscriptionPK pk) {
-		this.pk = pk;
-	}
+    public SubscriptionEntity(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject,
+            String subscriptionUserId, ApplicationEntity application) {
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "application", insertable = false, updatable = false)
-	public ApplicationEntity getApplication() {
-		return this.application;
-	}
+        this.subscriptionOwnerType = subscriptionOwnerType;
+        this.subject = subject;
+        this.subscriptionUserId = subscriptionUserId;
+        this.application = application;
+        this.confirmedUsageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
+        this.pk = new SubscriptionPK(subject, application);
+    }
 
-	public void setApplication(ApplicationEntity application) {
-		this.application = application;
-	}
+    @EmbeddedId
+    @AttributeOverrides( { @AttributeOverride(name = "application", column = @Column(name = "application")),
+            @AttributeOverride(name = "subject", column = @Column(name = "subject")) })
+    public SubscriptionPK getPk() {
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "subject", insertable = false, updatable = false)
-	public SubjectEntity getSubject() {
-		return this.subject;
-	}
+        return this.pk;
+    }
 
-	public void setSubject(SubjectEntity subject) {
-		this.subject = subject;
-	}
+    public void setPk(SubscriptionPK pk) {
 
-	@Enumerated(EnumType.STRING)
-	public SubscriptionOwnerType getSubscriptionOwnerType() {
-		return this.subscriptionOwnerType;
-	}
+        this.pk = pk;
+    }
 
-	public void setSubscriptionOwnerType(
-			SubscriptionOwnerType applicationOwnerType) {
-		this.subscriptionOwnerType = applicationOwnerType;
-	}
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "application", insertable = false, updatable = false)
+    public ApplicationEntity getApplication() {
 
-	public Long getConfirmedIdentityVersion() {
-		return this.confirmedIdentityVersion;
-	}
+        return this.application;
+    }
 
-	public void setConfirmedIdentityVersion(Long confirmedIdentityVersion) {
-		this.confirmedIdentityVersion = confirmedIdentityVersion;
-	}
+    public void setApplication(ApplicationEntity application) {
 
-	@Column(name = "confirmedUAVersion")
-	public Long getConfirmedUsageAgreementVersion() {
-		return this.confirmedUsageAgreementVersion;
-	}
+        this.application = application;
+    }
 
-	public void setConfirmedUsageAgreementVersion(
-			Long confirmedUsageAgreementVersion) {
-		this.confirmedUsageAgreementVersion = confirmedUsageAgreementVersion;
-	}
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "subject", insertable = false, updatable = false)
+    public SubjectEntity getSubject() {
 
-	@Column(unique = true)
-	public String getSubscriptionUserId() {
-		return this.subscriptionUserId;
-	}
+        return this.subject;
+    }
 
-	public void setSubscriptionUserId(String subscriptionUserId) {
-		this.subscriptionUserId = subscriptionUserId;
-	}
+    public void setSubject(SubjectEntity subject) {
 
-	public Date getLastLogin() {
-		return this.lastLogin;
-	}
+        this.subject = subject;
+    }
 
-	public void setLastLogin(Date lastLogin) {
-		this.lastLogin = lastLogin;
-	}
+    @Enumerated(EnumType.STRING)
+    public SubscriptionOwnerType getSubscriptionOwnerType() {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof SubscriptionEntity) {
-			return false;
-		}
-		SubscriptionEntity rhs = (SubscriptionEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+        return this.subscriptionOwnerType;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
-				"pk", this.pk).append("ownerType", this.subscriptionOwnerType)
-				.toString();
-	}
+    public void setSubscriptionOwnerType(SubscriptionOwnerType applicationOwnerType) {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_SUBJECT)
-		List<SubscriptionEntity> listSubsciptions(
-				@QueryParam("subject") SubjectEntity subject);
+        this.subscriptionOwnerType = applicationOwnerType;
+    }
 
-		@QueryMethod(QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE)
-		long getNumberOfActiveSubscriptions(
-				@QueryParam("application") ApplicationEntity application,
-				@QueryParam("lastLogin") Date lastLogin);
+    public Long getConfirmedIdentityVersion() {
 
-		@QueryMethod(QUERY_COUNT_WHERE_APPLICATION)
-		long getNumberOfSubscriptions(
-				@QueryParam("application") ApplicationEntity application);
+        return this.confirmedIdentityVersion;
+    }
 
-		@QueryMethod(QUERY_WHERE_APPLICATION)
-		List<SubscriptionEntity> listSubscriptions(
-				@QueryParam("application") ApplicationEntity application);
+    public void setConfirmedIdentityVersion(Long confirmedIdentityVersion) {
 
-		@QueryMethod(value = QUERY_WHERE_USER_APPLICATION_ID, nullable = true)
-		SubscriptionEntity findSubscription(
-				@QueryParam("subscriptionUserId") String subscriptionUserId);
+        this.confirmedIdentityVersion = confirmedIdentityVersion;
+    }
 
-		@UpdateMethod(DELETE_ALL_SUBJECT)
-		void deleteAll(@QueryParam("subject") SubjectEntity subject);
-	}
+    @Column(name = "confirmedUAVersion")
+    public Long getConfirmedUsageAgreementVersion() {
+
+        return this.confirmedUsageAgreementVersion;
+    }
+
+    public void setConfirmedUsageAgreementVersion(Long confirmedUsageAgreementVersion) {
+
+        this.confirmedUsageAgreementVersion = confirmedUsageAgreementVersion;
+    }
+
+    @Column(unique = true)
+    public String getSubscriptionUserId() {
+
+        return this.subscriptionUserId;
+    }
+
+    public void setSubscriptionUserId(String subscriptionUserId) {
+
+        this.subscriptionUserId = subscriptionUserId;
+    }
+
+    public Date getLastLogin() {
+
+        return this.lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+
+        this.lastLogin = lastLogin;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof SubscriptionEntity) {
+            return false;
+        }
+        SubscriptionEntity rhs = (SubscriptionEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", this.pk).append("ownerType",
+                this.subscriptionOwnerType).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_SUBJECT)
+        List<SubscriptionEntity> listSubsciptions(@QueryParam("subject") SubjectEntity subject);
+
+        @QueryMethod(QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE)
+        long getNumberOfActiveSubscriptions(@QueryParam("application") ApplicationEntity application,
+                @QueryParam("lastLogin") Date lastLogin);
+
+        @QueryMethod(QUERY_COUNT_WHERE_APPLICATION)
+        long getNumberOfSubscriptions(@QueryParam("application") ApplicationEntity application);
+
+        @QueryMethod(QUERY_WHERE_APPLICATION)
+        List<SubscriptionEntity> listSubscriptions(@QueryParam("application") ApplicationEntity application);
+
+        @QueryMethod(value = QUERY_WHERE_USER_APPLICATION_ID, nullable = true)
+        SubscriptionEntity findSubscription(@QueryParam("subscriptionUserId") String subscriptionUserId);
+
+        @UpdateMethod(DELETE_ALL_SUBJECT)
+        void deleteAll(@QueryParam("subject") SubjectEntity subject);
+    }
 }

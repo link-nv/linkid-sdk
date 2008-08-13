@@ -9,8 +9,9 @@ package net.link.safeonline.demo.ticket;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface TicketOverview extends AbstractTicketDataClient {
 
-	void ticketListFactory();
+    void ticketListFactory();
 }

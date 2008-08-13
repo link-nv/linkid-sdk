@@ -21,54 +21,54 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class HelpdeskEventDAOBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager      entityTestManager;
 
-	private HelpdeskEventDAOBean eventDAO;
-	private HelpdeskContextDAOBean contextDAO;
+    private HelpdeskEventDAOBean   eventDAO;
+    private HelpdeskContextDAOBean contextDAO;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.entityTestManager = new EntityTestManager();
-		/*
-		 * If you add entities to this list, also add them to
-		 * safe-online-sql-ddl.
-		 */
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-		this.eventDAO = new HelpdeskEventDAOBean();
-		this.contextDAO = new HelpdeskContextDAOBean();
+    @Override
+    protected void setUp() throws Exception {
 
-		EJBTestUtils.inject(this.eventDAO, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.contextDAO, this.entityTestManager
-				.getEntityManager());
+        super.setUp();
+        this.entityTestManager = new EntityTestManager();
+        /*
+         * If you add entities to this list, also add them to safe-online-sql-ddl.
+         */
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-		EJBTestUtils.init(this.eventDAO);
-		EJBTestUtils.init(this.contextDAO);
-	}
+        this.eventDAO = new HelpdeskEventDAOBean();
+        this.contextDAO = new HelpdeskContextDAOBean();
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+        EJBTestUtils.inject(this.eventDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.contextDAO, this.entityTestManager.getEntityManager());
 
-	public void testLogs() {
-		HelpdeskContextEntity context = this.contextDAO
-				.createHelpdeskContext("test-location");
-		List<HelpdeskEventEntity> events = new Vector<HelpdeskEventEntity>();
-		events.add(new HelpdeskEventEntity(context, new Date(),
-				"test-message-1", "test-principal", LogLevelType.INFO));
-		events.add(new HelpdeskEventEntity(context, new Date(),
-				"test-message-2", "test-principal", LogLevelType.ERROR));
-		this.eventDAO.persist(events);
+        EJBTestUtils.init(this.eventDAO);
+        EJBTestUtils.init(this.contextDAO);
+    }
 
-		List<HelpdeskEventEntity> persisted_events = this.eventDAO
-				.listEvents(context.getId());
-		assertEquals(persisted_events.size(), events.size());
-	}
+    @Override
+    protected void tearDown() throws Exception {
+
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
+
+    public void testLogs() {
+
+        HelpdeskContextEntity context = this.contextDAO.createHelpdeskContext("test-location");
+        List<HelpdeskEventEntity> events = new Vector<HelpdeskEventEntity>();
+        events.add(new HelpdeskEventEntity(context, new Date(), "test-message-1", "test-principal", LogLevelType.INFO));
+        events
+                .add(new HelpdeskEventEntity(context, new Date(), "test-message-2", "test-principal",
+                        LogLevelType.ERROR));
+        this.eventDAO.persist(events);
+
+        List<HelpdeskEventEntity> persisted_events = this.eventDAO.listEvents(context.getId());
+        assertEquals(persisted_events.size(), events.size());
+    }
 
 }

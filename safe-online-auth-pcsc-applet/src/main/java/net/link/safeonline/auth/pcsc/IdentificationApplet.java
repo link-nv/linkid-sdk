@@ -9,18 +9,20 @@ package net.link.safeonline.auth.pcsc;
 
 import net.link.safeonline.auth.AuthenticationApplet;
 
+
 /**
- * Applet for quick identification of a user via the BeID card using the PC/SC
- * interface.
+ * Applet for quick identification of a user via the BeID card using the PC/SC interface.
  * 
  * @author fcorneli
  * 
  */
 public class IdentificationApplet extends AuthenticationApplet {
 
-	private static final long serialVersionUID = 1L;
-	
-	public IdentificationApplet() {
-		super(new IdentificationController());
-	}
+    private static final long serialVersionUID = 1L;
+
+
+    public IdentificationApplet() {
+
+        super(new IdentificationController());
+    }
 }

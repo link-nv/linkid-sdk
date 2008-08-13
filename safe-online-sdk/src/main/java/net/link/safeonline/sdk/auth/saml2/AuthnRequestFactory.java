@@ -47,12 +47,12 @@ import org.opensaml.xml.signature.Signer;
 import org.opensaml.xml.signature.impl.SignatureBuilder;
 import org.w3c.dom.Element;
 
+
 /**
  * Factory class for SAML2 authentication requests.
  * 
  * <p>
- * We're using the OpenSAML2 Java library for construction of the XML SAML
- * documents.
+ * We're using the OpenSAML2 Java library for construction of the XML SAML documents.
  * </p>
  * 
  * @author fcorneli
@@ -60,335 +60,286 @@ import org.w3c.dom.Element;
  */
 public class AuthnRequestFactory {
 
-	private AuthnRequestFactory() {
-		// empty
-	}
+    private AuthnRequestFactory() {
 
-	static {
-		/*
-		 * Next is because Sun loves to endorse crippled versions of Xerces.
-		 */
-		System
-				.setProperty(
-						"javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
-						"org.apache.xerces.jaxp.validation.XMLSchemaFactory");
-		try {
-			DefaultBootstrap.bootstrap();
-		} catch (ConfigurationException e) {
-			throw new RuntimeException(
-					"could not bootstrap the OpenSAML2 library");
-		}
-	}
+        // empty
+    }
 
-	/**
-	 * Creates a SAML2 authentication request. For the moment we allow the
-	 * Service Provider to pass on the Assertion Consumer Service URL itself.
-	 * Later on we could use the SAML Metadata service or a persistent
-	 * server-side application field to locate this service.
-	 * 
-	 * @param issuerName
-	 * @param applicationName
-	 * @param applicationFriendlyName
-	 * @param signerKeyPair
-	 * @param assertionConsumerServiceURL
-	 *            the optional location of the assertion consumer service. This
-	 *            location can be used by the IdP to send back the SAML response
-	 *            message.
-	 * @param destinationURL
-	 *            the optional location of the destination IdP.
-	 * @param challenge
-	 *            the optional challenge (output variable).
-	 * @param devices
-	 *            the optional list of allowed authentication devices.
-	 */
-	public static String createAuthnRequest(String issuerName,
-			String applicationName, String applicationFriendlyName,
-			KeyPair signerKeyPair, String assertionConsumerServiceURL,
-			String destinationURL, Challenge<String> challenge,
-			Set<String> devices) {
-		if (null == signerKeyPair) {
-			throw new IllegalArgumentException(
-					"signer key pair should not be null");
-		}
-		if (null == applicationName) {
-			throw new IllegalArgumentException(
-					"application name should not be null");
-		}
-		if (null == issuerName) {
-			throw new IllegalArgumentException(
-					"application name should not be null");
-		}
 
-		AuthnRequest request = buildXMLObject(AuthnRequest.class,
-				AuthnRequest.DEFAULT_ELEMENT_NAME);
+    static {
+        /*
+         * Next is because Sun loves to endorse crippled versions of Xerces.
+         */
+        System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+                "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+        try {
+            DefaultBootstrap.bootstrap();
+        } catch (ConfigurationException e) {
+            throw new RuntimeException("could not bootstrap the OpenSAML2 library");
+        }
+    }
 
-		request.setForceAuthn(true);
-		SecureRandomIdentifierGenerator idGenerator;
-		try {
-			idGenerator = new SecureRandomIdentifierGenerator();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("secure random init error: "
-					+ e.getMessage(), e);
-		}
-		String id = idGenerator.generateIdentifier();
-		request.setID(id);
-		if (null != challenge) {
-			challenge.setValue(id);
-		}
-		request.setVersion(SAMLVersion.VERSION_20);
-		request.setIssueInstant(new DateTime());
-		Issuer issuer = buildXMLObject(Issuer.class,
-				Issuer.DEFAULT_ELEMENT_NAME);
-		issuer.setValue(issuerName);
-		request.setIssuer(issuer);
 
-		if (null != assertionConsumerServiceURL) {
-			request.setAssertionConsumerServiceURL(assertionConsumerServiceURL);
-			request.setProtocolBinding(SAMLConstants.SAML2_POST_BINDING_URI);
-		}
+    /**
+     * Creates a SAML2 authentication request. For the moment we allow the Service Provider to pass on the Assertion
+     * Consumer Service URL itself. Later on we could use the SAML Metadata service or a persistent server-side
+     * application field to locate this service.
+     * 
+     * @param issuerName
+     * @param applicationName
+     * @param applicationFriendlyName
+     * @param signerKeyPair
+     * @param assertionConsumerServiceURL
+     *            the optional location of the assertion consumer service. This location can be used by the IdP to send
+     *            back the SAML response message.
+     * @param destinationURL
+     *            the optional location of the destination IdP.
+     * @param challenge
+     *            the optional challenge (output variable).
+     * @param devices
+     *            the optional list of allowed authentication devices.
+     */
+    public static String createAuthnRequest(String issuerName, String applicationName, String applicationFriendlyName,
+            KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
+            Challenge<String> challenge, Set<String> devices) {
 
-		if (null != destinationURL) {
-			request.setDestination(destinationURL);
-		}
+        if (null == signerKeyPair) {
+            throw new IllegalArgumentException("signer key pair should not be null");
+        }
+        if (null == applicationName) {
+            throw new IllegalArgumentException("application name should not be null");
+        }
+        if (null == issuerName) {
+            throw new IllegalArgumentException("application name should not be null");
+        }
 
-		if (null == applicationFriendlyName) {
-			request.setProviderName(applicationName);
-		} else {
-			request.setProviderName(applicationFriendlyName);
-		}
+        AuthnRequest request = buildXMLObject(AuthnRequest.class, AuthnRequest.DEFAULT_ELEMENT_NAME);
 
-		NameIDPolicy nameIdPolicy = buildXMLObject(NameIDPolicy.class,
-				NameIDPolicy.DEFAULT_ELEMENT_NAME);
-		nameIdPolicy.setAllowCreate(true);
-		request.setNameIDPolicy(nameIdPolicy);
+        request.setForceAuthn(true);
+        SecureRandomIdentifierGenerator idGenerator;
+        try {
+            idGenerator = new SecureRandomIdentifierGenerator();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
+        }
+        String id = idGenerator.generateIdentifier();
+        request.setID(id);
+        if (null != challenge) {
+            challenge.setValue(id);
+        }
+        request.setVersion(SAMLVersion.VERSION_20);
+        request.setIssueInstant(new DateTime());
+        Issuer issuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
+        issuer.setValue(issuerName);
+        request.setIssuer(issuer);
 
-		if (null != devices) {
-			RequestedAuthnContext requestedAuthnContext = buildXMLObject(
-					RequestedAuthnContext.class,
-					RequestedAuthnContext.DEFAULT_ELEMENT_NAME);
-			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
-					.getAuthnContextClassRefs();
-			for (String device : devices) {
-				AuthnContextClassRef authnContextClassRef = buildXMLObject(
-						AuthnContextClassRef.class,
-						AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
-				authnContextClassRef.setAuthnContextClassRef(device);
-				authnContextClassRefs.add(authnContextClassRef);
-			}
-			request.setRequestedAuthnContext(requestedAuthnContext);
-		}
+        if (null != assertionConsumerServiceURL) {
+            request.setAssertionConsumerServiceURL(assertionConsumerServiceURL);
+            request.setProtocolBinding(SAMLConstants.SAML2_POST_BINDING_URI);
+        }
 
-		Conditions conditions = buildXMLObject(Conditions.class,
-				Conditions.DEFAULT_ELEMENT_NAME);
-		List<AudienceRestriction> audienceRestrictions = conditions
-				.getAudienceRestrictions();
-		AudienceRestriction audienceRestriction = buildXMLObject(
-				AudienceRestriction.class,
-				AudienceRestriction.DEFAULT_ELEMENT_NAME);
-		audienceRestrictions.add(audienceRestriction);
-		List<Audience> audiences = audienceRestriction.getAudiences();
-		Audience audience = buildXMLObject(Audience.class,
-				Audience.DEFAULT_ELEMENT_NAME);
-		audiences.add(audience);
-		audience.setAudienceURI(applicationName);
-		request.setConditions(conditions);
+        if (null != destinationURL) {
+            request.setDestination(destinationURL);
+        }
 
-		return signAuthnRequest(request, signerKeyPair);
-	}
+        if (null == applicationFriendlyName) {
+            request.setProviderName(applicationName);
+        } else {
+            request.setProviderName(applicationFriendlyName);
+        }
 
-	/**
-	 * Creates a SAML2 device operation authentication request. This
-	 * authentication request will contain a Subject element, containing the
-	 * device mapping id.
-	 * 
-	 * @param issuerName
-	 * @param subjectName
-	 *            the subject name which wants to execute a device operation (
-	 *            register/removal/update ). This is the device mapping id.
-	 * @param signerKeyPair
-	 * @param assertionConsumerServiceURL
-	 *            the optional location of the assertion consumer service. This
-	 *            location can be used by the IdP to send back the SAML response
-	 *            message.
-	 * @param destinationURL
-	 *            the optional location of the destination IdP.
-	 * @param challenge
-	 *            the optional challenge (output variable).
-	 * @param device
-	 */
-	public static String createDeviceOperationAuthnRequest(String issuerName,
-			String subjectName, KeyPair signerKeyPair,
-			String assertionConsumerServiceURL, String destinationURL,
-			DeviceOperationType deviceOperation, Challenge<String> challenge,
-			String device) {
-		if (null == signerKeyPair) {
-			throw new IllegalArgumentException(
-					"signer key pair should not be null");
-		}
-		if (null == issuerName) {
-			throw new IllegalArgumentException(
-					"application name should not be null");
-		}
-		if (null == destinationURL) {
-			throw new IllegalArgumentException(
-					"destination url should not be null");
-		}
-		if (null == deviceOperation) {
-			throw new IllegalArgumentException(
-					"device operation should not be null");
-		}
+        NameIDPolicy nameIdPolicy = buildXMLObject(NameIDPolicy.class, NameIDPolicy.DEFAULT_ELEMENT_NAME);
+        nameIdPolicy.setAllowCreate(true);
+        request.setNameIDPolicy(nameIdPolicy);
 
-		AuthnRequest request = buildXMLObject(AuthnRequest.class,
-				AuthnRequest.DEFAULT_ELEMENT_NAME);
+        if (null != devices) {
+            RequestedAuthnContext requestedAuthnContext = buildXMLObject(RequestedAuthnContext.class,
+                    RequestedAuthnContext.DEFAULT_ELEMENT_NAME);
+            List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
+            for (String device : devices) {
+                AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class,
+                        AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
+                authnContextClassRef.setAuthnContextClassRef(device);
+                authnContextClassRefs.add(authnContextClassRef);
+            }
+            request.setRequestedAuthnContext(requestedAuthnContext);
+        }
 
-		request.setForceAuthn(true);
-		SecureRandomIdentifierGenerator idGenerator;
-		try {
-			idGenerator = new SecureRandomIdentifierGenerator();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("secure random init error: "
-					+ e.getMessage(), e);
-		}
-		String id = idGenerator.generateIdentifier();
-		request.setID(id);
-		if (null != challenge) {
-			challenge.setValue(id);
-		}
-		request.setVersion(SAMLVersion.VERSION_20);
-		request.setIssueInstant(new DateTime());
-		Issuer issuer = buildXMLObject(Issuer.class,
-				Issuer.DEFAULT_ELEMENT_NAME);
-		issuer.setValue(issuerName);
-		request.setIssuer(issuer);
+        Conditions conditions = buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
+        List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
+        AudienceRestriction audienceRestriction = buildXMLObject(AudienceRestriction.class,
+                AudienceRestriction.DEFAULT_ELEMENT_NAME);
+        audienceRestrictions.add(audienceRestriction);
+        List<Audience> audiences = audienceRestriction.getAudiences();
+        Audience audience = buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
+        audiences.add(audience);
+        audience.setAudienceURI(applicationName);
+        request.setConditions(conditions);
 
-		Subject subject = buildXMLObject(Subject.class,
-				Subject.DEFAULT_ELEMENT_NAME);
-		NameID nameID = buildXMLObject(NameID.class,
-				NameID.DEFAULT_ELEMENT_NAME);
-		nameID.setValue(subjectName);
-		nameID
-				.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent");
-		subject.setNameID(nameID);
-		request.setSubject(subject);
+        return signAuthnRequest(request, signerKeyPair);
+    }
 
-		if (null != assertionConsumerServiceURL) {
-			request.setAssertionConsumerServiceURL(assertionConsumerServiceURL);
-			request.setProtocolBinding(SAMLConstants.SAML2_POST_BINDING_URI);
-		}
+    /**
+     * Creates a SAML2 device operation authentication request. This authentication request will contain a Subject
+     * element, containing the device mapping id.
+     * 
+     * @param issuerName
+     * @param subjectName
+     *            the subject name which wants to execute a device operation ( register/removal/update ). This is the
+     *            device mapping id.
+     * @param signerKeyPair
+     * @param assertionConsumerServiceURL
+     *            the optional location of the assertion consumer service. This location can be used by the IdP to send
+     *            back the SAML response message.
+     * @param destinationURL
+     *            the optional location of the destination IdP.
+     * @param challenge
+     *            the optional challenge (output variable).
+     * @param device
+     */
+    public static String createDeviceOperationAuthnRequest(String issuerName, String subjectName,
+            KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
+            DeviceOperationType deviceOperation, Challenge<String> challenge, String device) {
 
-		request.setDestination(destinationURL);
+        if (null == signerKeyPair) {
+            throw new IllegalArgumentException("signer key pair should not be null");
+        }
+        if (null == issuerName) {
+            throw new IllegalArgumentException("application name should not be null");
+        }
+        if (null == destinationURL) {
+            throw new IllegalArgumentException("destination url should not be null");
+        }
+        if (null == deviceOperation) {
+            throw new IllegalArgumentException("device operation should not be null");
+        }
 
-		/*
-		 * Add device operation as an audience restriction to the conditions of
-		 * the authnentication request.
-		 */
-		Conditions conditions = buildXMLObject(Conditions.class,
-				Conditions.DEFAULT_ELEMENT_NAME);
-		List<AudienceRestriction> audienceRestrictions = conditions
-				.getAudienceRestrictions();
-		AudienceRestriction audienceRestriction = buildXMLObject(
-				AudienceRestriction.class,
-				AudienceRestriction.DEFAULT_ELEMENT_NAME);
-		audienceRestrictions.add(audienceRestriction);
-		List<Audience> audiences = audienceRestriction.getAudiences();
-		Audience audience = buildXMLObject(Audience.class,
-				Audience.DEFAULT_ELEMENT_NAME);
-		audiences.add(audience);
-		audience.setAudienceURI(deviceOperation.name());
-		request.setConditions(conditions);
+        AuthnRequest request = buildXMLObject(AuthnRequest.class, AuthnRequest.DEFAULT_ELEMENT_NAME);
 
-		NameIDPolicy nameIdPolicy = buildXMLObject(NameIDPolicy.class,
-				NameIDPolicy.DEFAULT_ELEMENT_NAME);
-		nameIdPolicy.setAllowCreate(true);
-		request.setNameIDPolicy(nameIdPolicy);
+        request.setForceAuthn(true);
+        SecureRandomIdentifierGenerator idGenerator;
+        try {
+            idGenerator = new SecureRandomIdentifierGenerator();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
+        }
+        String id = idGenerator.generateIdentifier();
+        request.setID(id);
+        if (null != challenge) {
+            challenge.setValue(id);
+        }
+        request.setVersion(SAMLVersion.VERSION_20);
+        request.setIssueInstant(new DateTime());
+        Issuer issuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
+        issuer.setValue(issuerName);
+        request.setIssuer(issuer);
 
-		RequestedAuthnContext requestedAuthnContext = buildXMLObject(
-				RequestedAuthnContext.class,
-				RequestedAuthnContext.DEFAULT_ELEMENT_NAME);
-		List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
-				.getAuthnContextClassRefs();
+        Subject subject = buildXMLObject(Subject.class, Subject.DEFAULT_ELEMENT_NAME);
+        NameID nameID = buildXMLObject(NameID.class, NameID.DEFAULT_ELEMENT_NAME);
+        nameID.setValue(subjectName);
+        nameID.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent");
+        subject.setNameID(nameID);
+        request.setSubject(subject);
 
-		AuthnContextClassRef authnContextClassRef = buildXMLObject(
-				AuthnContextClassRef.class,
-				AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
-		authnContextClassRef.setAuthnContextClassRef(device);
-		authnContextClassRefs.add(authnContextClassRef);
+        if (null != assertionConsumerServiceURL) {
+            request.setAssertionConsumerServiceURL(assertionConsumerServiceURL);
+            request.setProtocolBinding(SAMLConstants.SAML2_POST_BINDING_URI);
+        }
 
-		request.setRequestedAuthnContext(requestedAuthnContext);
+        request.setDestination(destinationURL);
 
-		return signAuthnRequest(request, signerKeyPair);
-	}
+        /*
+         * Add device operation as an audience restriction to the conditions of the authnentication request.
+         */
+        Conditions conditions = buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
+        List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
+        AudienceRestriction audienceRestriction = buildXMLObject(AudienceRestriction.class,
+                AudienceRestriction.DEFAULT_ELEMENT_NAME);
+        audienceRestrictions.add(audienceRestriction);
+        List<Audience> audiences = audienceRestriction.getAudiences();
+        Audience audience = buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
+        audiences.add(audience);
+        audience.setAudienceURI(deviceOperation.name());
+        request.setConditions(conditions);
 
-	/**
-	 * Signs the unsigned authentication request
-	 * 
-	 * @return
-	 */
-	private static String signAuthnRequest(AuthnRequest authnRequest,
-			KeyPair signerKeyPair) {
-		XMLObjectBuilderFactory builderFactory = Configuration
-				.getBuilderFactory();
-		SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
-				.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
-		Signature signature = signatureBuilder.buildObject();
-		signature
-				.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-		String algorithm = signerKeyPair.getPrivate().getAlgorithm();
-		if ("RSA".equals(algorithm)) {
-			signature
-					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
-		} else if ("DSA".equals(algorithm)) {
-			signature
-					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
-		}
-		authnRequest.setSignature(signature);
-		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
-				signerKeyPair.getPublic(), signerKeyPair.getPrivate());
-		signature.setSigningCredential(signingCredential);
+        NameIDPolicy nameIdPolicy = buildXMLObject(NameIDPolicy.class, NameIDPolicy.DEFAULT_ELEMENT_NAME);
+        nameIdPolicy.setAllowCreate(true);
+        request.setNameIDPolicy(nameIdPolicy);
 
-		// marshalling
-		MarshallerFactory marshallerFactory = Configuration
-				.getMarshallerFactory();
-		Marshaller marshaller = marshallerFactory.getMarshaller(authnRequest);
-		Element requestElement;
-		try {
-			requestElement = marshaller.marshall(authnRequest);
-		} catch (MarshallingException e) {
-			throw new RuntimeException("opensaml2 marshalling error: "
-					+ e.getMessage(), e);
-		}
+        RequestedAuthnContext requestedAuthnContext = buildXMLObject(RequestedAuthnContext.class,
+                RequestedAuthnContext.DEFAULT_ELEMENT_NAME);
+        List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
 
-		// sign after marshaling of course
-		try {
-			Signer.signObject(signature);
-		} catch (SignatureException e) {
-			throw new RuntimeException("opensaml2 signing error: "
-					+ e.getMessage(), e);
-		}
+        AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class,
+                AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
+        authnContextClassRef.setAuthnContextClassRef(device);
+        authnContextClassRefs.add(authnContextClassRef);
 
-		String result;
-		try {
-			result = DomUtils.domToString(requestElement);
-		} catch (TransformerException e) {
-			throw new RuntimeException(
-					"DOM to string error: " + e.getMessage(), e);
-		}
-		return result;
+        request.setRequestedAuthnContext(requestedAuthnContext);
 
-	}
+        return signAuthnRequest(request, signerKeyPair);
+    }
 
-	@SuppressWarnings("unchecked")
-	private static <Type extends SAMLObject> Type buildXMLObject(
-			@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
-		XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory()
-				.getBuilder(objectQName);
-		if (builder == null) {
-			throw new RuntimeException(
-					"Unable to retrieve builder for object QName "
-							+ objectQName);
-		}
-		Type object = builder.buildObject(objectQName.getNamespaceURI(),
-				objectQName.getLocalPart(), objectQName.getPrefix());
-		return object;
-	}
+    /**
+     * Signs the unsigned authentication request
+     * 
+     * @return
+     */
+    private static String signAuthnRequest(AuthnRequest authnRequest, KeyPair signerKeyPair) {
+
+        XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
+        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
+                .getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+        Signature signature = signatureBuilder.buildObject();
+        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+        String algorithm = signerKeyPair.getPrivate().getAlgorithm();
+        if ("RSA".equals(algorithm)) {
+            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
+        } else if ("DSA".equals(algorithm)) {
+            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
+        }
+        authnRequest.setSignature(signature);
+        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair
+                .getPrivate());
+        signature.setSigningCredential(signingCredential);
+
+        // marshalling
+        MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
+        Marshaller marshaller = marshallerFactory.getMarshaller(authnRequest);
+        Element requestElement;
+        try {
+            requestElement = marshaller.marshall(authnRequest);
+        } catch (MarshallingException e) {
+            throw new RuntimeException("opensaml2 marshalling error: " + e.getMessage(), e);
+        }
+
+        // sign after marshaling of course
+        try {
+            Signer.signObject(signature);
+        } catch (SignatureException e) {
+            throw new RuntimeException("opensaml2 signing error: " + e.getMessage(), e);
+        }
+
+        String result;
+        try {
+            result = DomUtils.domToString(requestElement);
+        } catch (TransformerException e) {
+            throw new RuntimeException("DOM to string error: " + e.getMessage(), e);
+        }
+        return result;
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz,
+            QName objectQName) {
+
+        XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
+        if (builder == null) {
+            throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
+        }
+        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
+                .getPrefix());
+        return object;
+    }
 }

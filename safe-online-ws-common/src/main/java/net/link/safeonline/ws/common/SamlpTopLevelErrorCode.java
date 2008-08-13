@@ -10,6 +10,7 @@ package net.link.safeonline.ws.common;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * SAMLp version 2.0 Top Level Error Code.
  * 
@@ -17,43 +18,44 @@ import java.util.Map;
  * 
  */
 public enum SamlpTopLevelErrorCode {
-	SUCCESS("urn:oasis:names:tc:SAML:2.0:status:Success"), REQUESTER(
-			"urn:oasis:names:tc:SAML:2.0:status:Requester"), RESPONDER(
-			"urn:oasis:names:tc:SAML:2.0:status:Responder"), VERSION_MISMATCH(
-			"urn:oasis:names:tc:SAML:2.0:status:VersionMismatch");
+    SUCCESS("urn:oasis:names:tc:SAML:2.0:status:Success"), REQUESTER("urn:oasis:names:tc:SAML:2.0:status:Requester"), RESPONDER(
+            "urn:oasis:names:tc:SAML:2.0:status:Responder"), VERSION_MISMATCH(
+            "urn:oasis:names:tc:SAML:2.0:status:VersionMismatch");
 
-	private final String errorCode;
+    private final String                                     errorCode;
 
-	private final static Map<String, SamlpTopLevelErrorCode> errorCodeMap = new HashMap<String, SamlpTopLevelErrorCode>();
+    private final static Map<String, SamlpTopLevelErrorCode> errorCodeMap = new HashMap<String, SamlpTopLevelErrorCode>();
 
-	static {
-		SamlpTopLevelErrorCode[] errorCodes = SamlpTopLevelErrorCode.values();
-		for (SamlpTopLevelErrorCode errorCode : errorCodes) {
-			errorCodeMap.put(errorCode.getErrorCode(), errorCode);
-		}
-	}
+    static {
+        SamlpTopLevelErrorCode[] errorCodes = SamlpTopLevelErrorCode.values();
+        for (SamlpTopLevelErrorCode errorCode : errorCodes) {
+            errorCodeMap.put(errorCode.getErrorCode(), errorCode);
+        }
+    }
 
-	private SamlpTopLevelErrorCode(String errorCode) {
-		this.errorCode = errorCode;
-	}
 
-	public String getErrorCode() {
-		return this.errorCode;
-	}
+    private SamlpTopLevelErrorCode(String errorCode) {
 
-	@Override
-	public String toString() {
-		return this.errorCode;
-	}
+        this.errorCode = errorCode;
+    }
 
-	public static SamlpTopLevelErrorCode getSamlpTopLevelErrorCode(
-			String errorCode) {
-		SamlpTopLevelErrorCode samlpTopLevelErrorCode = errorCodeMap
-				.get(errorCode);
-		if (null == samlpTopLevelErrorCode) {
-			throw new IllegalArgumentException(
-					"unknown SAMLp top-level error code: " + errorCode);
-		}
-		return samlpTopLevelErrorCode;
-	}
+    public String getErrorCode() {
+
+        return this.errorCode;
+    }
+
+    @Override
+    public String toString() {
+
+        return this.errorCode;
+    }
+
+    public static SamlpTopLevelErrorCode getSamlpTopLevelErrorCode(String errorCode) {
+
+        SamlpTopLevelErrorCode samlpTopLevelErrorCode = errorCodeMap.get(errorCode);
+        if (null == samlpTopLevelErrorCode) {
+            throw new IllegalArgumentException("unknown SAMLp top-level error code: " + errorCode);
+        }
+        return samlpTopLevelErrorCode;
+    }
 }

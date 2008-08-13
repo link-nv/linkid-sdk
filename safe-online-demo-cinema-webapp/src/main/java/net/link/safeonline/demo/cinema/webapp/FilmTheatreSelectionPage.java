@@ -15,14 +15,14 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 
+
 /**
  * <h2>{@link FilmTheatreSelectionPage}<br>
  * <sub>Wicket backend for theatre and film selection page.</sub></h2>
  * 
  * <p>
- * On this page the user selects a film and the theatre in which he'd like to
- * view his film. Upon selecting either it is added to the session and the
- * other's view is limited to only those entities that still apply.
+ * On this page the user selects a film and the theatre in which he'd like to view his film. Upon selecting either it is
+ * added to the session and the other's view is limited to only those entities that still apply.
  * </p>
  * 
  * <p>
@@ -43,11 +43,9 @@ public class FilmTheatreSelectionPage extends LayoutPage {
 
 
     /**
-     * If film and theatre are selected; continue to the time and room selection
-     * page.
+     * If film and theatre are selected; continue to the time and room selection page.
      * 
-     * If not, assign components to the HTML wicket elements so the user can
-     * select a film and theatre.
+     * If not, assign components to the HTML wicket elements so the user can select a film and theatre.
      */
     public FilmTheatreSelectionPage() {
 
@@ -73,8 +71,8 @@ public class FilmTheatreSelectionPage extends LayoutPage {
      * <p>
      * This form shows some information on films.
      * 
-     * When no theatre is selected, it lists all films, otherwise it limits the
-     * film selection to those available in the selected theatre.
+     * When no theatre is selected, it lists all films, otherwise it limits the film selection to those available in the
+     * selected theatre.
      * 
      * The user can then select a film to purchase a ticket for.
      * </p>
@@ -98,8 +96,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
             // Either get all films or just those that play in selected theatre.
             List<FilmEntity> data;
             if (CinemaSession.isTheaterSet()) {
-                data = FilmTheatreSelectionPage.this.filmService
-                        .getFilmsThatPlayIn(CinemaSession.get().getTheatre());
+                data = FilmTheatreSelectionPage.this.filmService.getFilmsThatPlayIn(CinemaSession.get().getTheatre());
             } else {
                 data = FilmTheatreSelectionPage.this.filmService.getAllFilms();
             }
@@ -115,10 +112,8 @@ public class FilmTheatreSelectionPage extends LayoutPage {
                     final FilmEntity film = item.getModelObject();
 
                     /* Film Details. */
-                    item.add(new Label<String>("price", CinemaSession
-                            .format(film.getPrice())));
-                    item.add(new Label<String>("description", film
-                            .getDescription()));
+                    item.add(new Label<String>("price", CinemaSession.format(film.getPrice())));
+                    item.add(new Label<String>("description", film.getDescription()));
 
                     /* Film Selection. */
                     item.add(new Link<String>("select") {
@@ -154,8 +149,8 @@ public class FilmTheatreSelectionPage extends LayoutPage {
      * <p>
      * This form shows some information on theatres.
      * 
-     * When no film is selected, it lists all theatres, otherwise it limits the
-     * theatre selection to those that play the selected film.
+     * When no film is selected, it lists all theatres, otherwise it limits the theatre selection to those that play the
+     * selected film.
      * 
      * The user can then select a theatre to purchase a ticket for.
      * <p>
@@ -178,11 +173,9 @@ public class FilmTheatreSelectionPage extends LayoutPage {
             // Either get all theatres or just those that play selected film.
             List<TheatreEntity> data;
             if (CinemaSession.isFilmSet()) {
-                data = FilmTheatreSelectionPage.this.theatreService
-                        .getTheatresThatPlay(CinemaSession.get().getFilm());
+                data = FilmTheatreSelectionPage.this.theatreService.getTheatresThatPlay(CinemaSession.get().getFilm());
             } else {
-                data = FilmTheatreSelectionPage.this.theatreService
-                        .getAllTheatres();
+                data = FilmTheatreSelectionPage.this.theatreService.getAllTheatres();
             }
 
             add(new ListView<TheatreEntity>("list", data) {
@@ -196,9 +189,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
                     final TheatreEntity theatre = item.getModelObject();
 
                     /* Theatre Location. */
-                    item
-                            .add(new Label<String>("address", theatre
-                                    .getAddress()));
+                    item.add(new Label<String>("address", theatre.getAddress()));
 
                     /* Theatre Selection. */
                     item.add(new Link<String>("select") {

@@ -30,12 +30,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("prescriptionSearch")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionSearchBean/local")
 @SecurityDomain(PrescriptionConstants.SECURITY_DOMAIN)
-public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
-        implements PrescriptionSearch {
+public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean implements PrescriptionSearch {
 
     @Logger
     private Log        log;
@@ -80,9 +80,8 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
 
         DataClient dataClient = getDataClient();
         try {
-            Attribute<Boolean> adminAttribute = dataClient.getAttributeValue(
-                    userId, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
-                    Boolean.class);
+            Attribute<Boolean> adminAttribute = dataClient.getAttributeValue(userId,
+                    DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean.class);
             if (null != adminAttribute) {
                 Boolean value = adminAttribute.getValue();
                 if (null != value) {
@@ -90,11 +89,8 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
                 }
             }
 
-            Attribute<Boolean> careProviderAttribute = dataClient
-                    .getAttributeValue(
-                            userId,
-                            DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
-                            Boolean.class);
+            Attribute<Boolean> careProviderAttribute = dataClient.getAttributeValue(userId,
+                    DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME, Boolean.class);
             if (null != careProviderAttribute) {
                 Boolean value = careProviderAttribute.getValue();
                 if (null != value) {
@@ -102,11 +98,8 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
                 }
             }
 
-            Attribute<Boolean> pharmacistAttribute = dataClient
-                    .getAttributeValue(
-                            userId,
-                            DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
-                            Boolean.class);
+            Attribute<Boolean> pharmacistAttribute = dataClient.getAttributeValue(userId,
+                    DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, Boolean.class);
             if (null != pharmacistAttribute) {
                 Boolean value = pharmacistAttribute.getValue();
                 if (null != value) {
@@ -124,8 +117,7 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
             return null;
         }
 
-        this.userStatus = new UserStatus(this.name, userId, admin,
-                careProvider, pharmacist);
+        this.userStatus = new UserStatus(this.name, userId, admin, careProvider, pharmacist);
 
         return "success";
     }

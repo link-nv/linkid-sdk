@@ -15,5 +15,5 @@ package net.link.safeonline.auth.pcsc;
  */
 public interface PcscSignerLogger {
 
-	void log(String message);
+    void log(String message);
 }

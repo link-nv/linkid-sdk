@@ -27,13 +27,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_DEVICE_SECURITY_DOMAIN)
-public class DeviceIdentifierMappingServiceBean implements
-        DeviceIdentifierMappingService {
+public class DeviceIdentifierMappingServiceBean implements DeviceIdentifierMappingService {
 
-    private static final Log     LOG = LogFactory
-                                             .getLog(DeviceIdentifierMappingServiceBean.class);
+    private static final Log     LOG = LogFactory.getLog(DeviceIdentifierMappingServiceBean.class);
 
     @EJB
     private DeviceManager        deviceManager;
@@ -46,16 +45,14 @@ public class DeviceIdentifierMappingServiceBean implements
 
 
     @RolesAllowed(SafeOnlineDeviceRoles.DEVICE_ROLE)
-    public String getDeviceMappingId(String username)
-            throws DeviceNotFoundException, SubjectNotFoundException {
+    public String getDeviceMappingId(String username) throws DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("get device mapping id: " + username);
         DeviceEntity device = this.deviceManager.getCallerDevice();
-        SubjectEntity subject = this.subjectService
-                .getSubjectFromUserName(username);
+        SubjectEntity subject = this.subjectService.getSubjectFromUserName(username);
 
-        DeviceMappingEntity deviceMapping = this.deviceMappingService
-                .getDeviceMapping(subject.getUserId(), device.getName());
+        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(), device
+                .getName());
         return deviceMapping.getId();
     }
 }

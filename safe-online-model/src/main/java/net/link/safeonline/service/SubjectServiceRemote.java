@@ -9,6 +9,7 @@ package net.link.safeonline.service;
 
 import javax.ejb.Remote;
 
+
 @Remote
 public interface SubjectServiceRemote extends SubjectService {
 

@@ -46,151 +46,160 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("applicationOwner")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "ApplicationOwnerBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "ApplicationOwnerBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class ApplicationOwnerBean implements ApplicationOwner {
 
-	private static final Log LOG = LogFactory
-			.getLog(ApplicationOwnerBean.class);
+    private static final Log              LOG                         = LogFactory.getLog(ApplicationOwnerBean.class);
 
-	private static final String APPLICATION_OWNER_LIST_NAME = "applicationOwnerList";
+    private static final String           APPLICATION_OWNER_LIST_NAME = "applicationOwnerList";
 
-	private static final String APPLICATION_LIST_NAME = "applicationList";
+    private static final String           APPLICATION_LIST_NAME       = "applicationList";
 
-	@EJB
-	private ApplicationService applicationService;
+    @EJB
+    private ApplicationService            applicationService;
 
-	@EJB
-	protected SubjectService subjectService;
+    @EJB
+    protected SubjectService              subjectService;
 
-	@DataModel(APPLICATION_OWNER_LIST_NAME)
-	private List<ApplicationOwnerWrapper> applicationOwnerList;
+    @DataModel(APPLICATION_OWNER_LIST_NAME)
+    private List<ApplicationOwnerWrapper> applicationOwnerList;
 
-	@DataModelSelection(APPLICATION_OWNER_LIST_NAME)
-	@Out(value = "selectedApplicationOwner", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private ApplicationOwnerWrapper selectedApplicationOwner;
+    @DataModelSelection(APPLICATION_OWNER_LIST_NAME)
+    @Out(value = "selectedApplicationOwner", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private ApplicationOwnerWrapper       selectedApplicationOwner;
 
-	@SuppressWarnings("unused")
-	@DataModel(APPLICATION_LIST_NAME)
-	private List<ApplicationEntity> applicationList;
-	
-	@DataModelSelection(APPLICATION_LIST_NAME)
+    @SuppressWarnings("unused")
+    @DataModel(APPLICATION_LIST_NAME)
+    private List<ApplicationEntity>       applicationList;
+
+    @DataModelSelection(APPLICATION_LIST_NAME)
     @Out(value = "selectedApplication", required = false, scope = ScopeType.SESSION)
     @In(required = false)
-    private ApplicationEntity selectedApplication;
+    private ApplicationEntity             selectedApplication;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                         facesMessages;
 
-	private String login;
+    private String                        login;
 
-	private String name;
+    private String                        name;
 
-	public String getLogin() {
-		return this.login;
-	}
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public String getLogin() {
 
-	public String getName() {
-		return this.name;
-	}
+        return this.login;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setLogin(String login) {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@ErrorHandling( {
-			@Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
-			@Error(exceptionClass = ExistingApplicationOwnerException.class, messageId = "errorApplicationOwnerAlreadyExists", fieldId = "name"),
-			@Error(exceptionClass = ExistingApplicationAdminException.class, messageId = "errorApplicationAdminAlreadyExists", fieldId = "login") })
-	public String add() throws SubjectNotFoundException,
-			ExistingApplicationOwnerException,
-			ExistingApplicationAdminException {
-		LOG.debug("add");
-		this.applicationService.registerApplicationOwner(this.name, this.login);
-		return "success";
-	}
+        this.login = login;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() throws SubscriptionNotFoundException,
-			SubjectNotFoundException, ApplicationOwnerNotFoundException,
-			PermissionDeniedException {
-		LOG.debug("remove");
-		this.applicationService.removeApplicationOwner(
-				this.selectedApplicationOwner.getEntity().getName(),
-				this.selectedApplicationOwner.getAdminName());
+    public String getName() {
 
-		applicationOwnerListFactory();
-		return "success";
-	}
+        return this.name;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		LOG.debug("view owner: " + this.selectedApplicationOwner.getAdminName());
-		return "view-owner";
-	}
-	
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @ErrorHandling( {
+            @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
+            @Error(exceptionClass = ExistingApplicationOwnerException.class, messageId = "errorApplicationOwnerAlreadyExists", fieldId = "name"),
+            @Error(exceptionClass = ExistingApplicationAdminException.class, messageId = "errorApplicationAdminAlreadyExists", fieldId = "login") })
+    public String add() throws SubjectNotFoundException, ExistingApplicationOwnerException,
+            ExistingApplicationAdminException {
+
+        LOG.debug("add");
+        this.applicationService.registerApplicationOwner(this.name, this.login);
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String remove() throws SubscriptionNotFoundException, SubjectNotFoundException,
+            ApplicationOwnerNotFoundException, PermissionDeniedException {
+
+        LOG.debug("remove");
+        this.applicationService.removeApplicationOwner(this.selectedApplicationOwner.getEntity().getName(),
+                this.selectedApplicationOwner.getAdminName());
+
+        applicationOwnerListFactory();
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String view() {
+
+        LOG.debug("view owner: " + this.selectedApplicationOwner.getAdminName());
+        return "view-owner";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String viewapp() {
+
         LOG.debug("view owner app: " + this.selectedApplication.getName());
         return "view-app";
     }
 
-	@Factory(APPLICATION_OWNER_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void applicationOwnerListFactory() {
-		LOG.debug("application owner list factory");
-		List<ApplicationOwnerEntity> applicationOwnerEntityList = this.applicationService
-				.listApplicationOwners();
-		this.applicationOwnerList = new LinkedList<ApplicationOwnerWrapper>();
-		for (ApplicationOwnerEntity applicationOwnerEntity : applicationOwnerEntityList) {
-			this.applicationOwnerList.add(new ApplicationOwnerWrapper(
-					applicationOwnerEntity));
-		}
-	}
+    @Factory(APPLICATION_OWNER_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void applicationOwnerListFactory() {
 
-	@Factory(APPLICATION_LIST_NAME)
-	public void applicationListFactory() {
-		if (null == this.selectedApplicationOwner)
-			return;
-		LOG.debug("application list factory for owner="
-				+ this.selectedApplicationOwner.getEntity().getName());
-		this.applicationList = this.selectedApplicationOwner.getEntity()
-				.getApplications();
-	}
+        LOG.debug("application owner list factory");
+        List<ApplicationOwnerEntity> applicationOwnerEntityList = this.applicationService.listApplicationOwners();
+        this.applicationOwnerList = new LinkedList<ApplicationOwnerWrapper>();
+        for (ApplicationOwnerEntity applicationOwnerEntity : applicationOwnerEntityList) {
+            this.applicationOwnerList.add(new ApplicationOwnerWrapper(applicationOwnerEntity));
+        }
+    }
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
+    @Factory(APPLICATION_LIST_NAME)
+    public void applicationListFactory() {
 
-	public class ApplicationOwnerWrapper {
+        if (null == this.selectedApplicationOwner)
+            return;
+        LOG.debug("application list factory for owner=" + this.selectedApplicationOwner.getEntity().getName());
+        this.applicationList = this.selectedApplicationOwner.getEntity().getApplications();
+    }
 
-		private String adminName;
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-		private ApplicationOwnerEntity entity;
+    }
 
-		public ApplicationOwnerWrapper(ApplicationOwnerEntity entity) {
-			this.entity = entity;
-			this.adminName = ApplicationOwnerBean.this.subjectService
-					.getSubjectLogin(this.entity.getAdmin().getUserId());
-		}
 
-		public String getAdminName() {
-			return this.adminName;
-		}
+    public class ApplicationOwnerWrapper {
 
-		public ApplicationOwnerEntity getEntity() {
-			return this.entity;
-		}
-	}
+        private String                 adminName;
+
+        private ApplicationOwnerEntity entity;
+
+
+        public ApplicationOwnerWrapper(ApplicationOwnerEntity entity) {
+
+            this.entity = entity;
+            this.adminName = ApplicationOwnerBean.this.subjectService.getSubjectLogin(this.entity.getAdmin()
+                    .getUserId());
+        }
+
+        public String getAdminName() {
+
+            return this.adminName;
+        }
+
+        public ApplicationOwnerEntity getEntity() {
+
+            return this.entity;
+        }
+    }
 }

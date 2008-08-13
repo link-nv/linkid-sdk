@@ -8,6 +8,7 @@ package net.link.safeonline.service;
 
 import javax.ejb.Remote;
 
+
 @Remote
 public interface DeviceServiceRemote extends DeviceService {
 

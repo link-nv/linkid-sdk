@@ -18,38 +18,37 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
+
 @Local
 public interface DeviceRegistration {
 
-	/*
-	 * Accessors.
-	 */
-	String getDevice();
+    /*
+     * Accessors.
+     */
+    String getDevice();
 
-	void setDevice(String device);
+    void setDevice(String device);
 
-	String getPassword();
+    String getPassword();
 
-	void setPassword(String password);
+    void setPassword(String password);
 
-	String getUsername();
+    String getUsername();
 
-	/*
-	 * Actions.
-	 */
-	String deviceNext() throws IOException, DeviceNotFoundException;
+    /*
+     * Actions.
+     */
+    String deviceNext() throws IOException, DeviceNotFoundException;
 
-	String passwordNext() throws SubjectNotFoundException,
-			DeviceNotFoundException;
+    String passwordNext() throws SubjectNotFoundException, DeviceNotFoundException;
 
-	/*
-	 * Factories
-	 */
-	List<SelectItem> applicationDevicesFactory()
-			throws ApplicationNotFoundException, EmptyDevicePolicyException;
+    /*
+     * Factories
+     */
+    List<SelectItem> applicationDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

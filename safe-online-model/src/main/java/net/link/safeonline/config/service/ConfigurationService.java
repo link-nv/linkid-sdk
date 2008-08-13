@@ -14,12 +14,13 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
+
 @Local
 public interface ConfigurationService {
 
-	List<ConfigGroupEntity> listConfigGroups();
+    List<ConfigGroupEntity> listConfigGroups();
 
-	void saveConfiguration(List<ConfigGroupEntity> configGroupList);
+    void saveConfiguration(List<ConfigGroupEntity> configGroupList);
 
-	void saveConfigItem(ConfigItemEntity configItem);
+    void saveConfigItem(ConfigItemEntity configItem);
 }

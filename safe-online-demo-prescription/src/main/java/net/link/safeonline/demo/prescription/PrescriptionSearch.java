@@ -9,11 +9,12 @@ package net.link.safeonline.demo.prescription;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface PrescriptionSearch extends AbstractPrescriptionDataClient {
 
-	/*
-	 * Actions.
-	 */
-	String search();
+    /*
+     * Actions.
+     */
+    String search();
 }

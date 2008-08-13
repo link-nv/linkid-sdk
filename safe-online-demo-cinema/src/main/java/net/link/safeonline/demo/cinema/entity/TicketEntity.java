@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+
 @Entity
 @NamedQueries( { @NamedQuery(name = TicketEntity.findTicket, query = "SELECT t FROM TicketEntity t WHERE t.owner.nrn = :nrn") })
 public class TicketEntity implements Serializable {
@@ -45,8 +46,7 @@ public class TicketEntity implements Serializable {
 
     }
 
-    public TicketEntity(UserEntity owner, FilmEntity film, long time,
-            SeatOccupationEntity occupation) {
+    public TicketEntity(UserEntity owner, FilmEntity film, long time, SeatOccupationEntity occupation) {
 
         this.owner = owner;
 
@@ -61,11 +61,8 @@ public class TicketEntity implements Serializable {
     @Override
     public String toString() {
 
-        return String.format(
-                "[%s]   Owner: %s, Price %s, Film: %s, Theatre: %s", new Date(
-                        getTime()), getOwner().getNrn(), getPrice(), getFilm()
-                        .getName(), getOccupation().getSeat().getRoom()
-                        .getTheatre().getName());
+        return String.format("[%s]   Owner: %s, Price %s, Film: %s, Theatre: %s", new Date(getTime()), getOwner()
+                .getNrn(), getPrice(), getFilm().getName(), getOccupation().getSeat().getRoom().getTheatre().getName());
     }
 
     /**
@@ -85,8 +82,7 @@ public class TicketEntity implements Serializable {
     }
 
     /**
-     * @return The {@link Date} of the showing of the {@link FilmEntity} that
-     *         this ticket grants the owner access to.
+     * @return The {@link Date} of the showing of the {@link FilmEntity} that this ticket grants the owner access to.
      */
     public long getTime() {
 
@@ -103,8 +99,7 @@ public class TicketEntity implements Serializable {
 
     /**
      * @param price
-     *            The calculated price for this {@link TicketEntity} at the time
-     *            of purchase.
+     *            The calculated price for this {@link TicketEntity} at the time of purchase.
      */
     public void setPrice(double price) {
 
@@ -112,8 +107,7 @@ public class TicketEntity implements Serializable {
     }
 
     /**
-     * @return The calculated price for this {@link TicketEntity} at the time of
-     *         purchase.
+     * @return The calculated price for this {@link TicketEntity} at the time of purchase.
      */
     public double getPrice() {
 

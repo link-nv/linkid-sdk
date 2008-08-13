@@ -11,9 +11,9 @@ package net.link.safeonline.validation.validator;
 
 import java.lang.annotation.Annotation;
 
+
 /**
- * Interface for basic validators. Every validator has a corresponding
- * annotation.
+ * Interface for basic validators. Every validator has a corresponding annotation.
  * 
  * @author fcorneli
  * 
@@ -21,6 +21,5 @@ import java.lang.annotation.Annotation;
  */
 public interface Validator<T extends Annotation> {
 
-	void validate(Object value, int parameterIdx, T parameterAnnotation,
-			ValidatorResult result);
+    void validate(Object value, int parameterIdx, T parameterAnnotation, ValidatorResult result);
 }

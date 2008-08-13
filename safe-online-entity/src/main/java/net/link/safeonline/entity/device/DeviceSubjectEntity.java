@@ -28,14 +28,14 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 /**
  * Entity representing a subject from a remote device.
  * 
  * Id equals the device mapping id returned by OLAS.
  * 
- * Registrations is the list of actual registered devices for this 'device
- * subject'. These are regular OLAS subjects but without the standard Login
- * attribute.
+ * Registrations is the list of actual registered devices for this 'device subject'. These are regular OLAS subjects but
+ * without the standard Login attribute.
  * 
  * @author wvdhaute
  * 
@@ -43,75 +43,85 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Entity
 @Table(name = "device_subject")
 @NamedQueries( { @NamedQuery(name = QUERY_REGISTRATION, query = "SELECT deviceSubject "
-		+ "FROM DeviceSubjectEntity AS deviceSubject "
-		+ "JOIN deviceSubject.registrations registration "
-		+ "WHERE registration = :registration") })
+        + "FROM DeviceSubjectEntity AS deviceSubject " + "JOIN deviceSubject.registrations registration "
+        + "WHERE registration = :registration") })
 public class DeviceSubjectEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID   = 1L;
 
-	public static final String QUERY_REGISTRATION = "devsub.reg";
+    public static final String  QUERY_REGISTRATION = "devsub.reg";
 
-	private String id;
+    private String              id;
 
-	private List<SubjectEntity> registrations;
+    private List<SubjectEntity> registrations;
 
-	public DeviceSubjectEntity() {
-		// empty
-	}
 
-	public DeviceSubjectEntity(String id) {
-		this.id = id;
-		this.registrations = new LinkedList<SubjectEntity>();
-	}
+    public DeviceSubjectEntity() {
 
-	@Id
-	public String getId() {
-		return this.id;
-	}
+        // empty
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public DeviceSubjectEntity(String id) {
 
-	@OneToMany
-	public List<SubjectEntity> getRegistrations() {
-		return this.registrations;
-	}
+        this.id = id;
+        this.registrations = new LinkedList<SubjectEntity>();
+    }
 
-	public void setRegistrations(List<SubjectEntity> registrations) {
-		this.registrations = registrations;
-	}
+    @Id
+    public String getId() {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == (obj instanceof DeviceSubjectEntity)) {
-			return false;
-		}
-		DeviceSubjectEntity rhs = (DeviceSubjectEntity) obj;
-		return new EqualsBuilder().append(this.id, rhs.id).isEquals();
-	}
+        return this.id;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.id).toHashCode();
-	}
+    public void setId(String id) {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("id", this.id).toString();
-	}
+        this.id = id;
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(value = QUERY_REGISTRATION, nullable = true)
-		DeviceSubjectEntity findSubject(
-				@QueryParam("registration") SubjectEntity registration);
-	}
+    @OneToMany
+    public List<SubjectEntity> getRegistrations() {
+
+        return this.registrations;
+    }
+
+    public void setRegistrations(List<SubjectEntity> registrations) {
+
+        this.registrations = registrations;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == (obj instanceof DeviceSubjectEntity)) {
+            return false;
+        }
+        DeviceSubjectEntity rhs = (DeviceSubjectEntity) obj;
+        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.id).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("id", this.id).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(value = QUERY_REGISTRATION, nullable = true)
+        DeviceSubjectEntity findSubject(@QueryParam("registration") SubjectEntity registration);
+    }
 
 }

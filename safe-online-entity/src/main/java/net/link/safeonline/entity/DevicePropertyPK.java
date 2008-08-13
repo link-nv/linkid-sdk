@@ -14,62 +14,70 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Embeddable
 public class DevicePropertyPK implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String deviceName;
+    private String            deviceName;
 
-	private String name;
+    private String            name;
 
-	public DevicePropertyPK() {
-		// empty
-	}
 
-	public DevicePropertyPK(String deviceName, String name) {
-		this.deviceName = deviceName;
-		this.name = name;
-	}
+    public DevicePropertyPK() {
 
-	public String getDeviceName() {
-		return this.deviceName;
-	}
+        // empty
+    }
 
-	public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
-	}
+    public DevicePropertyPK(String deviceName, String name) {
 
-	public String getName() {
-		return this.name;
-	}
+        this.deviceName = deviceName;
+        this.name = name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getDeviceName() {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof DevicePropertyPK) {
-			return false;
-		}
-		DevicePropertyPK rhs = (DevicePropertyPK) obj;
-		return new EqualsBuilder().append(this.deviceName, rhs.deviceName)
-				.append(this.name, rhs.name).isEquals();
-	}
+        return this.deviceName;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.deviceName).append(this.name)
-				.toHashCode();
-	}
+    public void setDeviceName(String deviceName) {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("deviceName", this.deviceName)
-				.append("name", this.name).toString();
-	}
+        this.deviceName = deviceName;
+    }
+
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof DevicePropertyPK) {
+            return false;
+        }
+        DevicePropertyPK rhs = (DevicePropertyPK) obj;
+        return new EqualsBuilder().append(this.deviceName, rhs.deviceName).append(this.name, rhs.name).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.deviceName).append(this.name).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("deviceName", this.deviceName).append("name", this.name).toString();
+    }
 }

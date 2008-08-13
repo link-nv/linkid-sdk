@@ -32,128 +32,147 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import static net.link.safeonline.entity.AttributeTypeDescriptionEntity.QUERY_WHERE_ATTRIBUTE_TYPE;
 
+
 @Entity
 @Table(name = "attribute_type_description")
 @NamedQueries( { @NamedQuery(name = QUERY_WHERE_ATTRIBUTE_TYPE, query = "SELECT attribDesc "
-		+ "FROM AttributeTypeDescriptionEntity AS attribDesc "
-		+ "WHERE attribDesc.attributeType = :attributeType") })
+        + "FROM AttributeTypeDescriptionEntity AS attribDesc " + "WHERE attribDesc.attributeType = :attributeType") })
 public class AttributeTypeDescriptionEntity implements Serializable {
 
-	public static final String QUERY_WHERE_ATTRIBUTE_TYPE = "atd.at";
+    public static final String         QUERY_WHERE_ATTRIBUTE_TYPE = "atd.at";
 
-	private static final long serialVersionUID = 1L;
+    private static final long          serialVersionUID           = 1L;
 
-	private AttributeTypeDescriptionPK pk;
+    private AttributeTypeDescriptionPK pk;
 
-	private AttributeTypeEntity attributeType;
+    private AttributeTypeEntity        attributeType;
 
-	private String language;
+    private String                     language;
 
-	private String name;
+    private String                     name;
 
-	private String description;
+    private String                     description;
 
-	public AttributeTypeDescriptionEntity() {
-		// empty
-	}
 
-	public AttributeTypeDescriptionEntity(AttributeTypeEntity attributeType,
-			String language, String name, String description) {
-		this.pk = new AttributeTypeDescriptionPK(attributeType.getName(),
-				language);
-		this.attributeType = attributeType;
-		this.language = language;
-		this.name = name;
-		this.description = description;
-	}
+    public AttributeTypeDescriptionEntity() {
 
-	public static final String ATTRIBUTE_TYPE_COLUMN_NAME = "attribute_type";
+        // empty
+    }
 
-	public static final String LANGUAGE_COLUMN_NAME = "language";
+    public AttributeTypeDescriptionEntity(AttributeTypeEntity attributeType, String language, String name,
+            String description) {
 
-	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
-			@AttributeOverride(name = "language", column = @Column(name = LANGUAGE_COLUMN_NAME)) })
-	public AttributeTypeDescriptionPK getPk() {
-		return this.pk;
-	}
+        this.pk = new AttributeTypeDescriptionPK(attributeType.getName(), language);
+        this.attributeType = attributeType;
+        this.language = language;
+        this.name = name;
+        this.description = description;
+    }
 
-	public void setPk(AttributeTypeDescriptionPK pk) {
-		this.pk = pk;
-	}
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = ATTRIBUTE_TYPE_COLUMN_NAME, insertable = false, updatable = false)
-	public AttributeTypeEntity getAttributeType() {
-		return this.attributeType;
-	}
+    public static final String ATTRIBUTE_TYPE_COLUMN_NAME = "attribute_type";
 
-	public void setAttributeType(AttributeTypeEntity attributeType) {
-		this.attributeType = attributeType;
-	}
+    public static final String LANGUAGE_COLUMN_NAME       = "language";
 
-	public String getDescription() {
-		return this.description;
-	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    @EmbeddedId
+    @AttributeOverrides( {
+            @AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
+            @AttributeOverride(name = "language", column = @Column(name = LANGUAGE_COLUMN_NAME)) })
+    public AttributeTypeDescriptionPK getPk() {
 
-	@Basic(optional = false)
-	public String getName() {
-		return this.name;
-	}
+        return this.pk;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setPk(AttributeTypeDescriptionPK pk) {
 
-	@Column(name = LANGUAGE_COLUMN_NAME, insertable = false, updatable = false)
-	public String getLanguage() {
-		return this.language;
-	}
+        this.pk = pk;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    @ManyToOne(optional = false)
+    @JoinColumn(name = ATTRIBUTE_TYPE_COLUMN_NAME, insertable = false, updatable = false)
+    public AttributeTypeEntity getAttributeType() {
 
-	@Transient
-	public String getAttributeTypeName() {
-		return this.pk.getAttributeType();
-	}
+        return this.attributeType;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == obj instanceof AttributeTypeDescriptionEntity) {
-			return false;
-		}
-		AttributeTypeDescriptionEntity rhs = (AttributeTypeDescriptionEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+    public void setAttributeType(AttributeTypeEntity attributeType) {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.pk).toHashCode();
-	}
+        this.attributeType = attributeType;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("pk", this.pk).append("name",
-				this.name).append("description", this.description).toString();
-	}
+    public String getDescription() {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_ATTRIBUTE_TYPE)
-		List<AttributeTypeDescriptionEntity> listDescriptions(
-				@QueryParam("attributeType")
-				AttributeTypeEntity attributeType);
-	}
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+
+        this.description = description;
+    }
+
+    @Basic(optional = false)
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    @Column(name = LANGUAGE_COLUMN_NAME, insertable = false, updatable = false)
+    public String getLanguage() {
+
+        return this.language;
+    }
+
+    public void setLanguage(String language) {
+
+        this.language = language;
+    }
+
+    @Transient
+    public String getAttributeTypeName() {
+
+        return this.pk.getAttributeType();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == obj instanceof AttributeTypeDescriptionEntity) {
+            return false;
+        }
+        AttributeTypeDescriptionEntity rhs = (AttributeTypeDescriptionEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.pk).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("pk", this.pk).append("name", this.name).append("description",
+                this.description).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_ATTRIBUTE_TYPE)
+        List<AttributeTypeDescriptionEntity> listDescriptions(
+                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+    }
 }

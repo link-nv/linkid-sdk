@@ -16,43 +16,42 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 
+
 @Local
 public interface ApplicationOwner {
 
-	/*
-	 * Factory.
-	 */
-	void applicationOwnerListFactory();
+    /*
+     * Factory.
+     */
+    void applicationOwnerListFactory();
 
-	void applicationListFactory();
+    void applicationListFactory();
 
-	/*
-	 * Accessors.
-	 */
-	String getLogin();
+    /*
+     * Accessors.
+     */
+    String getLogin();
 
-	void setLogin(String login);
+    void setLogin(String login);
 
-	String getName();
+    String getName();
 
-	void setName(String name);
+    void setName(String name);
 
-	/*
-	 * Actions.
-	 */
-	String add() throws SubjectNotFoundException,
-			ExistingApplicationOwnerException,
-			ExistingApplicationAdminException;
+    /*
+     * Actions.
+     */
+    String add() throws SubjectNotFoundException, ExistingApplicationOwnerException, ExistingApplicationAdminException;
 
-	String remove() throws SubscriptionNotFoundException,
-			SubjectNotFoundException, ApplicationOwnerNotFoundException,
-			PermissionDeniedException;
+    String remove() throws SubscriptionNotFoundException, SubjectNotFoundException, ApplicationOwnerNotFoundException,
+            PermissionDeniedException;
 
-	String view();
-    String viewapp(); 
+    String view();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    String viewapp();
+
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

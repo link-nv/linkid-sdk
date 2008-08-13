@@ -27,29 +27,32 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_DEVICE_SECURITY_DOMAIN)
 public class DeviceManagerBean implements DeviceManager {
 
-	private static final Log LOG = LogFactory.getLog(DeviceManagerBean.class);
+    private static final Log LOG = LogFactory.getLog(DeviceManagerBean.class);
 
-	@Resource
-	private SessionContext context;
+    @Resource
+    private SessionContext   context;
 
-	@EJB
-	private DeviceDAO deviceDAO;
+    @EJB
+    private DeviceDAO        deviceDAO;
 
-	@RolesAllowed(SafeOnlineDeviceRoles.DEVICE_ROLE)
-	public DeviceEntity getCallerDevice() {
-		Principal callerPrincipal = this.context.getCallerPrincipal();
-		String deviceName = callerPrincipal.getName();
-		LOG.debug("get caller device: " + deviceName);
-		DeviceEntity callerDevice;
-		try {
-			callerDevice = this.deviceDAO.getDevice(deviceName);
-		} catch (DeviceNotFoundException e) {
-			throw new EJBException("device not found: " + e.getMessage(), e);
-		}
-		return callerDevice;
-	}
+
+    @RolesAllowed(SafeOnlineDeviceRoles.DEVICE_ROLE)
+    public DeviceEntity getCallerDevice() {
+
+        Principal callerPrincipal = this.context.getCallerPrincipal();
+        String deviceName = callerPrincipal.getName();
+        LOG.debug("get caller device: " + deviceName);
+        DeviceEntity callerDevice;
+        try {
+            callerDevice = this.deviceDAO.getDevice(deviceName);
+        } catch (DeviceNotFoundException e) {
+            throw new EJBException("device not found: " + e.getMessage(), e);
+        }
+        return callerDevice;
+    }
 }

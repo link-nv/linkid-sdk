@@ -11,6 +11,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.helpdesk.HelpdeskBase;
 
+
 @Local
 public interface Helpdesk extends HelpdeskBase {
 }

@@ -43,203 +43,183 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.tools.Executable;
 
+
 /**
  * <h2>{@link PDF}<br>
  * <sub>Renders charts to a PDF file and opens it.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class PDF {
 
-	static final Log LOG = LogFactory.getLog(PDF.class);
+    static final Log LOG = LogFactory.getLog(PDF.class);
 
-	public static boolean generate(
-			Map<ConsoleAgent, ScenarioExecution> agentCharts) {
 
-		// Calculate total execution speed.
-		double speed = 0, agentSpeeds = 0;
-		for (Map.Entry<ConsoleAgent, ScenarioExecution> entry : agentCharts
-				.entrySet())
-			if (entry.getValue().getSpeed() != null) {
-				speed += entry.getValue().getSpeed();
-				++agentSpeeds;
-			} else
-				LOG.warn("Agent " + entry.getKey()
-						+ " doesn't know speed for execution "
-						+ entry.getValue().getStartTime() + "!");
+    public static boolean generate(Map<ConsoleAgent, ScenarioExecution> agentCharts) {
 
-		// Get execution metadata from the first agent.
-		ScenarioExecution execution = agentCharts.values().iterator().next();
+        // Calculate total execution speed.
+        double speed = 0, agentSpeeds = 0;
+        for (Map.Entry<ConsoleAgent, ScenarioExecution> entry : agentCharts.entrySet())
+            if (entry.getValue().getSpeed() != null) {
+                speed += entry.getValue().getSpeed();
+                ++agentSpeeds;
+            } else
+                LOG.warn("Agent " + entry.getKey() + " doesn't know speed for execution "
+                        + entry.getValue().getStartTime() + "!");
 
-		// Guess the real execution speed if we don't select all agents that
-		// participated in the execution for PDF generation.
-		// (Because we don't have the ScenarioExecution objects for those agents
-		// that aren't selected but did participate).
-		long duration = execution.getDuration();
-		Date startTime = execution.getStartTime();
-		speed *= execution.getAgents() / agentSpeeds;
+        // Get execution metadata from the first agent.
+        ScenarioExecution execution = agentCharts.values().iterator().next();
 
-		// Choose output.
-		File pdfFile = chooseOutputFile(new File(String.format(
-				"%s-%s-%dmin-%dx%d.pdf", new SimpleDateFormat(
-						"dd.MM.yyyy-HH.mm.ss").format(startTime), execution
-						.getHostname().split(":")[0], duration / 60000,
-				execution.getAgents(), execution.getWorkers())));
-		if (pdfFile == null)
-			return false;
+        // Guess the real execution speed if we don't select all agents that
+        // participated in the execution for PDF generation.
+        // (Because we don't have the ScenarioExecution objects for those agents
+        // that aren't selected but did participate).
+        long duration = execution.getDuration();
+        Date startTime = execution.getStartTime();
+        speed *= execution.getAgents() / agentSpeeds;
 
-		try {
-			// Find the max width and height of all charts.
-			float width = 0, height = 0;
-			for (ScenarioExecution agent : agentCharts.values())
-				for (byte[][] charts : agent.getCharts().values())
-					for (byte[] chart : charts) {
-						ImageIcon image = new ImageIcon(chart);
-						width = Math.max(width, image.getIconWidth());
-						height = Math.max(height, image.getIconHeight());
-					}
+        // Choose output.
+        File pdfFile = chooseOutputFile(new File(String.format("%s-%s-%dmin-%dx%d.pdf", new SimpleDateFormat(
+                "dd.MM.yyyy-HH.mm.ss").format(startTime), execution.getHostname().split(":")[0], duration / 60000,
+                execution.getAgents(), execution.getWorkers())));
+        if (pdfFile == null)
+            return false;
 
-			// Create the PDF document.
-			Document pdfDocument = new Document(new com.lowagie.text.Rectangle(
-					width + 100, height + 200), 50, 50, 50, 50);
-			PdfWriter.getInstance(pdfDocument, new FileOutputStream(pdfFile));
-			BaseFont font = BaseFont.createFont(BaseFont.COURIER_BOLD,
-					BaseFont.WINANSI, false);
-			pdfDocument.open();
+        try {
+            // Find the max width and height of all charts.
+            float width = 0, height = 0;
+            for (ScenarioExecution agent : agentCharts.values())
+                for (byte[][] charts : agent.getCharts().values())
+                    for (byte[] chart : charts) {
+                        ImageIcon image = new ImageIcon(chart);
+                        width = Math.max(width, image.getIconWidth());
+                        height = Math.max(height, image.getIconHeight());
+                    }
 
-			// Create front page information.
-			List<Cell> frontCells = new ArrayList<Cell>();
-			frontCells.add(new Cell(new Phrase(
-					"Safe Online:  Performance Testing", new Font(font, 40f))));
-			frontCells.add(new Cell(new Phrase(50f,
-					execution.getScenarioName(), new Font(font, 20f))));
-			frontCells.add(new Cell(new Phrase(150f,
-					String.format("Started: %s at %s",
-							DateFormat.getDateInstance(DateFormat.LONG).format(
-									startTime), DateFormat.getTimeInstance(
-									DateFormat.LONG).format(startTime)),
-					new Font(font, 20f))));
-			frontCells.add(new Cell(new Phrase(50f, String.format(
-					"Using %d agent%s with %d worker%s each.", execution
-							.getAgents(), execution.getAgents() > 1 ? "s" : "",
-					execution.getWorkers(), execution.getWorkers() > 1 ? "s"
-							: ""), new Font(font, 20f))));
-			frontCells.add(new Cell(new Phrase(50f, String.format(
-					"OLAS Host: %s", execution.getHostname()), new Font(font,
-					20f))));
-			frontCells.add(new Cell(new Phrase(50f, String.format(
-					"Duration: %s", ExecutionInfo.formatDuration(duration)),
-					new Font(font, 20f))));
-			frontCells.add(new Cell(new Phrase(100f, String.format(
-					"Average Execution Speed: %.2f%s scenarios/s", speed,
-					agentSpeeds == execution.getAgents() ? "" : "*"), new Font(
-					font, 20f))));
+            // Create the PDF document.
+            Document pdfDocument = new Document(new com.lowagie.text.Rectangle(width + 100, height + 200), 50, 50, 50,
+                    50);
+            PdfWriter.getInstance(pdfDocument, new FileOutputStream(pdfFile));
+            BaseFont font = BaseFont.createFont(BaseFont.COURIER_BOLD, BaseFont.WINANSI, false);
+            pdfDocument.open();
 
-			// Style front page information and add it to the PDF.
-			Table front = new Table(1);
-			front.setBorder(0);
-			front.setOffset(height / 3);
-			for (Cell cell : frontCells) {
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				cell.setBorder(0);
-				front.addCell(cell);
-			}
-			pdfDocument.add(front);
-			pdfDocument.newPage();
+            // Create front page information.
+            List<Cell> frontCells = new ArrayList<Cell>();
+            frontCells.add(new Cell(new Phrase("Safe Online:  Performance Testing", new Font(font, 40f))));
+            frontCells.add(new Cell(new Phrase(50f, execution.getScenarioName(), new Font(font, 20f))));
+            frontCells.add(new Cell(new Phrase(150f, String.format("Started: %s at %s", DateFormat.getDateInstance(
+                    DateFormat.LONG).format(startTime), DateFormat.getTimeInstance(DateFormat.LONG).format(startTime)),
+                    new Font(font, 20f))));
+            frontCells.add(new Cell(new Phrase(50f, String.format("Using %d agent%s with %d worker%s each.", execution
+                    .getAgents(), execution.getAgents() > 1? "s": "", execution.getWorkers(),
+                    execution.getWorkers() > 1? "s": ""), new Font(font, 20f))));
+            frontCells.add(new Cell(new Phrase(50f, String.format("OLAS Host: %s", execution.getHostname()), new Font(
+                    font, 20f))));
+            frontCells.add(new Cell(new Phrase(50f, String.format("Duration: %s", ExecutionInfo
+                    .formatDuration(duration)), new Font(font, 20f))));
+            frontCells.add(new Cell(new Phrase(100f, String.format("Average Execution Speed: %.2f%s scenarios/s",
+                    speed, agentSpeeds == execution.getAgents()? "": "*"), new Font(font, 20f))));
 
-			// Create chapters from the labels of the first agent's charts.
-			List<Chapter> chapters = new ArrayList<Chapter>();
-			List<String> labels = new ArrayList<String>(agentCharts.values()
-					.iterator().next().getCharts().keySet());
-			for (int chapter = 0; chapter < labels.size(); ++chapter)
-				chapters.add(new Chapter(new Paragraph(labels.get(chapter),
-						new Font(font, 20f)), chapter + 1));
+            // Style front page information and add it to the PDF.
+            Table front = new Table(1);
+            front.setBorder(0);
+            front.setOffset(height / 3);
+            for (Cell cell : frontCells) {
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setBorder(0);
+                front.addCell(cell);
+            }
+            pdfDocument.add(front);
+            pdfDocument.newPage();
 
-			// Arrange all the data in the chapters.
-			for (int chapter = 0; chapter < chapters.size(); ++chapter) {
-				boolean newPage = false;
+            // Create chapters from the labels of the first agent's charts.
+            List<Chapter> chapters = new ArrayList<Chapter>();
+            List<String> labels = new ArrayList<String>(agentCharts.values().iterator().next().getCharts().keySet());
+            for (int chapter = 0; chapter < labels.size(); ++chapter)
+                chapters.add(new Chapter(new Paragraph(labels.get(chapter), new Font(font, 20f)), chapter + 1));
 
-				for (Map.Entry<ConsoleAgent, ScenarioExecution> charts : agentCharts
-						.entrySet()) {
-					Section section = chapters.get(chapter).addSection(
-							new Paragraph(charts.getKey().getAddress()
-									.toString(), new Font(font, 15f)));
+            // Arrange all the data in the chapters.
+            for (int chapter = 0; chapter < chapters.size(); ++chapter) {
+                boolean newPage = false;
 
-					section.setTriggerNewPage(newPage);
-					newPage = true;
+                for (Map.Entry<ConsoleAgent, ScenarioExecution> charts : agentCharts.entrySet()) {
+                    Section section = chapters.get(chapter).addSection(
+                            new Paragraph(charts.getKey().getAddress().toString(), new Font(font, 15f)));
 
-					for (byte[] chart : new ArrayList<byte[][]>(charts
-							.getValue().getCharts().values()).get(chapter))
-						section.add(Image.getInstance(chart));
-				}
-			}
+                    section.setTriggerNewPage(newPage);
+                    newPage = true;
 
-			// Add the completed chapters to the PDF.
-			for (Chapter chapter : chapters) {
-				pdfDocument.add(chapter);
-				pdfDocument.newPage();
-			}
-			pdfDocument.close();
+                    for (byte[] chart : new ArrayList<byte[][]>(charts.getValue().getCharts().values()).get(chapter))
+                        section.add(Image.getInstance(chart));
+                }
+            }
 
-			// Open the PDF document.
-			Executable.openDocument(pdfFile);
-			return true;
-		}
+            // Add the completed chapters to the PDF.
+            for (Chapter chapter : chapters) {
+                pdfDocument.add(chapter);
+                pdfDocument.newPage();
+            }
+            pdfDocument.close();
 
-		catch (FileNotFoundException error) {
-			LOG.error("File not found: " + pdfFile, error);
-		} catch (DocumentException error) {
-			LOG.error("Couldn't create a document writer.", error);
-		} catch (IOException error) {
-			LOG.error("Couldn't handle image data.", error);
-		}
+            // Open the PDF document.
+            Executable.openDocument(pdfFile);
+            return true;
+        }
 
-		return false;
-	}
+        catch (FileNotFoundException error) {
+            LOG.error("File not found: " + pdfFile, error);
+        } catch (DocumentException error) {
+            LOG.error("Couldn't create a document writer.", error);
+        } catch (IOException error) {
+            LOG.error("Couldn't handle image data.", error);
+        }
 
-	/**
-	 * Ask the user where to save the PDF.
-	 */
-	private static File chooseOutputFile(File suggestion) {
+        return false;
+    }
 
-		JFileChooser pdfChooser = new JFileChooser();
-		pdfChooser.addChoosableFileFilter(new FileFilter() {
-			@Override
-			public boolean accept(File f) {
+    /**
+     * Ask the user where to save the PDF.
+     */
+    private static File chooseOutputFile(File suggestion) {
 
-				return f.isFile() && f.canWrite()
-						&& f.getName().endsWith(".pdf");
-			}
+        JFileChooser pdfChooser = new JFileChooser();
+        pdfChooser.addChoosableFileFilter(new FileFilter() {
 
-			@Override
-			public String getDescription() {
+            @Override
+            public boolean accept(File f) {
 
-				return "PDF File";
-			}
-		});
-		pdfChooser.setFileFilter(new FileFilter() {
-			@Override
-			public boolean accept(File f) {
+                return f.isFile() && f.canWrite() && f.getName().endsWith(".pdf");
+            }
 
-				return f.isDirectory() || f.isFile() && f.canWrite()
-						&& f.getName().endsWith(".pdf");
-			}
+            @Override
+            public String getDescription() {
 
-			@Override
-			public String getDescription() {
+                return "PDF File";
+            }
+        });
+        pdfChooser.setFileFilter(new FileFilter() {
 
-				return "PDF File";
-			}
-		});
-		pdfChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		pdfChooser.setSelectedFile(suggestion);
-		if (pdfChooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION)
-			return null;
+            @Override
+            public boolean accept(File f) {
 
-		return pdfChooser.getSelectedFile();
-	}
+                return f.isDirectory() || f.isFile() && f.canWrite() && f.getName().endsWith(".pdf");
+            }
+
+            @Override
+            public String getDescription() {
+
+                return "PDF File";
+            }
+        });
+        pdfChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        pdfChooser.setSelectedFile(suggestion);
+        if (pdfChooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION)
+            return null;
+
+        return pdfChooser.getSelectedFile();
+    }
 }

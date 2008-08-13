@@ -37,11 +37,11 @@ import net.link.safeonline.util.servlet.annotation.In;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * The login servlet. A device (username-password or BeID) confirms successful
- * login by setting the 'username' session attribute. Then the device redirects
- * to this login servlet. This login servlet will decide which is the next step
- * in the authentication process.
+ * The login servlet. A device (username-password or BeID) confirms successful login by setting the 'username' session
+ * attribute. Then the device redirects to this login servlet. This login servlet will decide which is the next step in
+ * the authentication process.
  * 
  * 
  * @author fcorneli
@@ -51,8 +51,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
     private static final long     serialVersionUID = 1L;
 
-    private static final Log      LOG              = LogFactory
-                                                           .getLog(LoginServlet.class);
+    private static final Log      LOG              = LogFactory.getLog(LoginServlet.class);
 
     @EJB(mappedName = "SafeOnline/IdentityServiceBean/local")
     private IdentityService       identityService;
@@ -77,8 +76,8 @@ public class LoginServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
         LOG.debug("doGet");
         HttpSession session = request.getSession();
@@ -95,8 +94,7 @@ public class LoginServlet extends AbstractInjectionServlet {
             redirectToGlobalConfirmation(response);
             return;
         }
-        HelpdeskLogger.add(session,
-                "global usage agreement confirmation found", LogLevelType.INFO);
+        HelpdeskLogger.add(session, "global usage agreement confirmation found", LogLevelType.INFO);
 
         boolean subscriptionRequired = performSubscriptionCheck();
         if (true == subscriptionRequired) {
@@ -117,8 +115,7 @@ public class LoginServlet extends AbstractInjectionServlet {
             redirectToMissingAttributes(response);
             return;
         }
-        HelpdeskLogger.add(session, "necessary attributes found",
-                LogLevelType.INFO);
+        HelpdeskLogger.add(session, "necessary attributes found", LogLevelType.INFO);
 
         /*
          * We can commit the authentication process here.
@@ -126,24 +123,21 @@ public class LoginServlet extends AbstractInjectionServlet {
         response.sendRedirect("./exit");
     }
 
-    private void redirectToRegisterDevice(HttpServletResponse response)
-            throws IOException {
+    private void redirectToRegisterDevice(HttpServletResponse response) throws IOException {
 
         response.sendRedirect("./register-device.seam");
     }
 
     private boolean performGlobalUsageAgreementCheck() {
 
-        return this.usageAgreementService
-                .requiresGlobalUsageAgreementAcceptation();
+        return this.usageAgreementService.requiresGlobalUsageAgreementAcceptation();
     }
 
     private boolean performMissingAttributesCheck() throws ServletException {
 
         boolean hasMissingAttributes;
         try {
-            hasMissingAttributes = this.identityService
-                    .hasMissingAttributes(this.applicationId);
+            hasMissingAttributes = this.identityService.hasMissingAttributes(this.applicationId);
         } catch (ApplicationNotFoundException e) {
             throw new ServletException("application not found");
         } catch (ApplicationIdentityNotFoundException e) {
@@ -160,8 +154,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
         boolean confirmationRequired;
         try {
-            confirmationRequired = this.identityService
-                    .isConfirmationRequired(this.applicationId);
+            confirmationRequired = this.identityService.isConfirmationRequired(this.applicationId);
         } catch (SubscriptionNotFoundException e) {
             throw new ServletException("subscription not found");
         } catch (ApplicationNotFoundException e) {
@@ -177,8 +170,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
         boolean subscriptionRequired;
         try {
-            subscriptionRequired = !this.subscriptionService
-                    .isSubscribed(this.applicationId);
+            subscriptionRequired = !this.subscriptionService.isSubscribed(this.applicationId);
             if (!subscriptionRequired) {
                 try {
                     subscriptionRequired = this.usageAgreementService
@@ -196,26 +188,21 @@ public class LoginServlet extends AbstractInjectionServlet {
     }
 
     /**
-     * Check whether the used authentication device is sufficient for the given
-     * application.
+     * Check whether the used authentication device is sufficient for the given application.
      * 
      * @param session
      * @param applicationId
      * @param device
      * @throws ServletException
      */
-    private boolean performDevicePolicyCheck(HttpSession session)
-            throws ServletException {
+    private boolean performDevicePolicyCheck(HttpSession session) throws ServletException {
 
-        Set<DeviceEntity> requiredDevicePolicy = LoginManager
-                .getRequiredDevices(session);
+        Set<DeviceEntity> requiredDevicePolicy = LoginManager.getRequiredDevices(session);
         List<DeviceEntity> devicePolicy;
         try {
-            devicePolicy = this.devicePolicyService.getDevicePolicy(
-                    this.applicationId, requiredDevicePolicy);
+            devicePolicy = this.devicePolicyService.getDevicePolicy(this.applicationId, requiredDevicePolicy);
         } catch (ApplicationNotFoundException e) {
-            throw new ServletException("application not found: "
-                    + this.applicationId);
+            throw new ServletException("application not found: " + this.applicationId);
         } catch (EmptyDevicePolicyException e) {
             throw new ServletException("empty device policy");
         }
@@ -224,15 +211,13 @@ public class LoginServlet extends AbstractInjectionServlet {
         return false;
     }
 
-    private void redirectToMissingAttributes(HttpServletResponse response)
-            throws IOException {
+    private void redirectToMissingAttributes(HttpServletResponse response) throws IOException {
 
         String redirectUrl = "./missing-attributes.seam";
         response.sendRedirect(redirectUrl);
     }
 
-    private void redirectToIdentityConfirmation(HttpServletResponse response)
-            throws IOException {
+    private void redirectToIdentityConfirmation(HttpServletResponse response) throws IOException {
 
         String redirectUrl = "./identity-confirmation.seam";
 
@@ -240,15 +225,13 @@ public class LoginServlet extends AbstractInjectionServlet {
         response.sendRedirect(redirectUrl);
     }
 
-    private void redirectToSubscription(HttpServletResponse response)
-            throws IOException {
+    private void redirectToSubscription(HttpServletResponse response) throws IOException {
 
         String redirectUrl = "./subscription.seam";
         response.sendRedirect(redirectUrl);
     }
 
-    private void redirectToGlobalConfirmation(HttpServletResponse response)
-            throws IOException {
+    private void redirectToGlobalConfirmation(HttpServletResponse response) throws IOException {
 
         String redirectUrl = "./global-confirmation.seam";
         response.sendRedirect(redirectUrl);

@@ -27,73 +27,86 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import static net.link.safeonline.entity.config.ConfigGroupEntity.QUERY_LIST_ALL;
 
+
 @Entity
 @Table(name = "config_group")
 @NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigGroupEntity c") })
 public class ConfigGroupEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long      serialVersionUID = 1L;
 
-	public static final String QUERY_LIST_ALL = "cge.list";
+    public static final String     QUERY_LIST_ALL   = "cge.list";
 
-	private String name;
+    private String                 name;
 
-	private List<ConfigItemEntity> configItems;
+    private List<ConfigItemEntity> configItems;
 
-	public ConfigGroupEntity() {
-		this(null);
-	}
 
-	public ConfigGroupEntity(String name) {
-		this.name = name;
-		this.configItems = new ArrayList<ConfigItemEntity>();
-	}
+    public ConfigGroupEntity() {
 
-	@OneToMany(mappedBy = "configGroup", fetch = FetchType.EAGER)
-	public List<ConfigItemEntity> getConfigItems() {
-		return this.configItems;
-	}
+        this(null);
+    }
 
-	public void setConfigItems(List<ConfigItemEntity> configItems) {
-		this.configItems = configItems;
-	}
+    public ConfigGroupEntity(String name) {
 
-	@Id
-	public String getName() {
-		return this.name;
-	}
+        this.name = name;
+        this.configItems = new ArrayList<ConfigItemEntity>();
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @OneToMany(mappedBy = "configGroup", fetch = FetchType.EAGER)
+    public List<ConfigItemEntity> getConfigItems() {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("name", this.name).toString();
-	}
+        return this.configItems;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (null == obj) {
-			return false;
-		}
-		if (this == obj) {
-			return true;
-		}
-		if (false == obj instanceof ConfigGroupEntity) {
-			return false;
-		}
-		ConfigGroupEntity rhs = (ConfigGroupEntity) obj;
-		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
-	}
+    public void setConfigItems(List<ConfigItemEntity> configItems) {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.name).toHashCode();
-	}
+        this.configItems = configItems;
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_LIST_ALL)
-		List<ConfigGroupEntity> listConfigGroups();
-	}
+    @Id
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("name", this.name).toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (null == obj) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (false == obj instanceof ConfigGroupEntity) {
+            return false;
+        }
+        ConfigGroupEntity rhs = (ConfigGroupEntity) obj;
+        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.name).toHashCode();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_LIST_ALL)
+        List<ConfigGroupEntity> listConfigGroups();
+    }
 }

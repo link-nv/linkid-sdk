@@ -9,13 +9,15 @@ package net.link.safeonline.sts.ws;
 
 public class SecurityTokenServiceConstants {
 
-	private SecurityTokenServiceConstants() {
-		// empty
-	}
+    private SecurityTokenServiceConstants() {
 
-	public static final String STATUS_VALID = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid";
+        // empty
+    }
 
-	public static final String STATUS_INVALID = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/invalid";
 
-	public static final String TOKEN_TYPE_STATUS = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/RSTR/Status";
+    public static final String STATUS_VALID      = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid";
+
+    public static final String STATUS_INVALID    = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/invalid";
+
+    public static final String TOKEN_TYPE_STATUS = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/RSTR/Status";
 }

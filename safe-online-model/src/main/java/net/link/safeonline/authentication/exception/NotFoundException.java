@@ -9,12 +9,15 @@ package net.link.safeonline.authentication.exception;
 
 import javax.ejb.ApplicationException;
 
+
 @ApplicationException(rollback = true)
 public class NotFoundException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public NotFoundException(String errorCode) {
-		super(null, errorCode);
-	}
+
+    public NotFoundException(String errorCode) {
+
+        super(null, errorCode);
+    }
 }

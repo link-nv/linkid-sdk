@@ -20,44 +20,44 @@ import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.ResourceAuditEntity;
 import net.link.safeonline.entity.audit.SecurityAuditEntity;
 
+
 @Local
 public interface AuditService {
 
-	Set<String> listUsers();
+    Set<String> listUsers();
 
-	List<AccessAuditEntity> listAccessAuditRecords(String principal);
+    List<AccessAuditEntity> listAccessAuditRecords(String principal);
 
-	List<SecurityAuditEntity> listSecurityAuditRecords(String principal);
+    List<SecurityAuditEntity> listSecurityAuditRecords(String principal);
 
-	List<AuditContextEntity> listContexts();
+    List<AuditContextEntity> listContexts();
 
-	List<AccessAuditEntity> listAccessAuditRecords(Long id);
+    List<AccessAuditEntity> listAccessAuditRecords(Long id);
 
-	boolean removeAuditContext(Long id) throws AuditContextNotFoundException;
+    boolean removeAuditContext(Long id) throws AuditContextNotFoundException;
 
-	List<SecurityAuditEntity> listSecurityAuditRecords(Long id);
+    List<SecurityAuditEntity> listSecurityAuditRecords(Long id);
 
-	List<ResourceAuditEntity> listResourceAuditRecords(Long id);
+    List<ResourceAuditEntity> listResourceAuditRecords(Long id);
 
-	List<AuditAuditEntity> listAuditAuditRecords(Long id);
+    List<AuditAuditEntity> listAuditAuditRecords(Long id);
 
-	List<AccessAuditEntity> listAccessAuditRecordsSince(Date ageLimit);
+    List<AccessAuditEntity> listAccessAuditRecordsSince(Date ageLimit);
 
-	List<SecurityAuditEntity> listSecurityAuditRecordsSince(Date ageLimit);
+    List<SecurityAuditEntity> listSecurityAuditRecordsSince(Date ageLimit);
 
-	List<ResourceAuditEntity> listResourceAuditRecordsSince(Date ageLimit);
+    List<ResourceAuditEntity> listResourceAuditRecordsSince(Date ageLimit);
 
-	List<AuditAuditEntity> listAuditAuditRecordsSince(Date ageLimit);
+    List<AuditAuditEntity> listAuditAuditRecordsSince(Date ageLimit);
 
-	AuditContextEntity getAuditContext(Long id)
-			throws AuditContextNotFoundException;
+    AuditContextEntity getAuditContext(Long id) throws AuditContextNotFoundException;
 
-	List<SecurityAuditEntity> listSecurityAuditRecords();
+    List<SecurityAuditEntity> listSecurityAuditRecords();
 
-	List<ResourceAuditEntity> listResourceAuditRecords();
+    List<ResourceAuditEntity> listResourceAuditRecords();
 
-	List<AuditContextEntity> listLastContexts();
+    List<AuditContextEntity> listLastContexts();
 
-	List<AuditAuditEntity> listAuditAuditRecords();
+    List<AuditAuditEntity> listAuditAuditRecords();
 
 }

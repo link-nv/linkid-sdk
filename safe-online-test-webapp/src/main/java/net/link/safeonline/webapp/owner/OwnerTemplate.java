@@ -9,9 +9,11 @@ package net.link.safeonline.webapp.owner;
 
 import net.link.safeonline.webapp.Page;
 
+
 public abstract class OwnerTemplate extends Page {
 
-	public OwnerTemplate(String page) {
-		super(page);
-	}
+    public OwnerTemplate(String page) {
+
+        super(page);
+    }
 }

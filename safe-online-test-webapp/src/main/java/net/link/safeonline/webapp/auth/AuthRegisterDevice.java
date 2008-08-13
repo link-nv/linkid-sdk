@@ -9,13 +9,15 @@ package net.link.safeonline.webapp.auth;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class AuthRegisterDevice extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/register-device.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/register-device.seam";
 
-	public AuthRegisterDevice() {
-		super(PAGE_NAME);
-	}
+
+    public AuthRegisterDevice() {
+
+        super(PAGE_NAME);
+    }
 
 }

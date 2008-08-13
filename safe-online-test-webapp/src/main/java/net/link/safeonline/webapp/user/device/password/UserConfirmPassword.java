@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.user.device.password;
 
 import net.link.safeonline.webapp.user.UserTemplate;
 
+
 public class UserConfirmPassword extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/device/password/confirm-password.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/device/password/confirm-password.seam";
 
-	public UserConfirmPassword() {
-		super(PAGE_NAME);
-	}
+
+    public UserConfirmPassword() {
+
+        super(PAGE_NAME);
+    }
 }

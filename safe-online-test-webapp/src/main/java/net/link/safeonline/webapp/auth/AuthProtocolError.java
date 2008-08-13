@@ -9,13 +9,15 @@ package net.link.safeonline.webapp.auth;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class AuthProtocolError extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/protocol-error.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/protocol-error.seam";
 
-	public AuthProtocolError() {
-		super(PAGE_NAME);
-	}
+
+    public AuthProtocolError() {
+
+        super(PAGE_NAME);
+    }
 
 }

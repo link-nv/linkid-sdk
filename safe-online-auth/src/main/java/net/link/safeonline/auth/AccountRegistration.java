@@ -20,46 +20,46 @@ import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
+
 @Local
 public interface AccountRegistration {
 
-	static final String REQUESTED_USERNAME_ATTRIBUTE = "requestedUsername";
+    static final String REQUESTED_USERNAME_ATTRIBUTE = "requestedUsername";
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
 
-	/*
-	 * Accessors.
-	 */
-	String getLogin();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	void setLogin(String login);
+    /*
+     * Accessors.
+     */
+    String getLogin();
 
-	String getDevice();
+    void setLogin(String login);
 
-	void setDevice(String device);
+    String getDevice();
 
-	String getGivenCaptcha();
+    void setDevice(String device);
 
-	void setGivenCaptcha(String givenCaptcha);
+    String getGivenCaptcha();
 
-	String getCaptchaURL();
+    void setGivenCaptcha(String givenCaptcha);
 
-	String getUsername();
+    String getCaptchaURL();
 
-	/*
-	 * Factories
-	 */
-	List<SelectItem> allDevicesFactory()
-			throws ApplicationNotFoundException, EmptyDevicePolicyException;
+    String getUsername();
 
-	/*
-	 * Actions.
-	 */
-	String loginNext() throws ExistingUserException,
-			AttributeTypeNotFoundException, PermissionDeniedException;
+    /*
+     * Factories
+     */
+    List<SelectItem> allDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
-	String deviceNext() throws DeviceNotFoundException, IOException;
+    /*
+     * Actions.
+     */
+    String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException;
+
+    String deviceNext() throws DeviceNotFoundException, IOException;
 }

@@ -23,32 +23,34 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("customerSearch")
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/CustomerSearchBean/local")
 @SecurityDomain(PaymentConstants.SECURITY_DOMAIN)
-public class CustomerSearchBean extends AbstractPaymentDataClientBean implements
-		CustomerSearch {
+public class CustomerSearchBean extends AbstractPaymentDataClientBean implements CustomerSearch {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log            log;
 
-	@In("name")
-	@Out(scope = ScopeType.SESSION)
-	private String name;
+    @In("name")
+    @Out(scope = ScopeType.SESSION)
+    private String         name;
 
-	@SuppressWarnings("unused")
-	@Out(value = "customerEditableStatus", required = false, scope = ScopeType.SESSION)
-	private CustomerStatus customerStatus;
+    @SuppressWarnings("unused")
+    @Out(value = "customerEditableStatus", required = false, scope = ScopeType.SESSION)
+    private CustomerStatus customerStatus;
 
-	@RolesAllowed(PaymentConstants.ADMIN_ROLE)
-	public String search() {
-		this.log.debug("search: " + this.name);
-		CustomerStatus inCustomerStatus = getCustomerStatus(this.name);
-		if (null == inCustomerStatus) {
-			return null;
-		}
-		this.customerStatus = inCustomerStatus;
-		return "success";
-	}
+
+    @RolesAllowed(PaymentConstants.ADMIN_ROLE)
+    public String search() {
+
+        this.log.debug("search: " + this.name);
+        CustomerStatus inCustomerStatus = getCustomerStatus(this.name);
+        if (null == inCustomerStatus) {
+            return null;
+        }
+        this.customerStatus = inCustomerStatus;
+        return "success";
+    }
 }

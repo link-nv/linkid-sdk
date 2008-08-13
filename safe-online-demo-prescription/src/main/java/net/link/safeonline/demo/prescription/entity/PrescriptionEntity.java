@@ -22,138 +22,165 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+
 @Entity
 @Table(name = "prescriptions")
 public class PrescriptionEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private long id;
+    private long              id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long getId() {
-		return this.id;
-	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
 
-	private Date creationDate;
+        return this.id;
+    }
 
-	private String patient;
+    public void setId(long id) {
 
-	private String patientName;
+        this.id = id;
+    }
 
-	private String careProvider;
 
-	private String careProviderName;
+    private Date                             creationDate;
 
-	private boolean filled;
+    private String                           patient;
 
-	private String pharmacist;
+    private String                           patientName;
 
-	private String pharmacistName;
+    private String                           careProvider;
 
-	private Date filledDate;
+    private String                           careProviderName;
 
-	private List<PrescriptionMedicineEntity> medicines;
+    private boolean                          filled;
 
-	public PrescriptionEntity(String patient, String patientName,
-			String careProvider, String careProviderName) {
-		this.patient = patient;
-		this.patientName = patientName;
-		this.careProvider = careProvider;
-		this.careProviderName = careProviderName;
-		this.filled = false;
-		this.creationDate = new Date();
-	}
+    private String                           pharmacist;
 
-	public PrescriptionEntity() {
-		// empty
-	}
+    private String                           pharmacistName;
 
-	public String getCareProvider() {
-		return this.careProvider;
-	}
+    private Date                             filledDate;
 
-	public void setCareProvider(String careProvider) {
-		this.careProvider = careProvider;
-	}
+    private List<PrescriptionMedicineEntity> medicines;
 
-	@Temporal(value = TemporalType.TIMESTAMP)
-	public Date getCreationDate() {
-		return this.creationDate;
-	}
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
+    public PrescriptionEntity(String patient, String patientName, String careProvider, String careProviderName) {
 
-	public boolean isFilled() {
-		return this.filled;
-	}
+        this.patient = patient;
+        this.patientName = patientName;
+        this.careProvider = careProvider;
+        this.careProviderName = careProviderName;
+        this.filled = false;
+        this.creationDate = new Date();
+    }
 
-	public void setFilled(boolean filled) {
-		this.filled = filled;
-	}
+    public PrescriptionEntity() {
 
-	public String getPatient() {
-		return this.patient;
-	}
+        // empty
+    }
 
-	public void setPatient(String patient) {
-		this.patient = patient;
-	}
+    public String getCareProvider() {
 
-	@OneToMany(mappedBy = "prescription", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-	public List<PrescriptionMedicineEntity> getMedicines() {
-		return this.medicines;
-	}
+        return this.careProvider;
+    }
 
-	public void setMedicines(List<PrescriptionMedicineEntity> medicines) {
-		this.medicines = medicines;
-	}
+    public void setCareProvider(String careProvider) {
 
-	public String getPharmacist() {
-		return this.pharmacist;
-	}
+        this.careProvider = careProvider;
+    }
 
-	public void setPharmacist(String pharmacist) {
-		this.pharmacist = pharmacist;
-	}
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getCreationDate() {
 
-	public String getPharmacistName() {
-		return this.pharmacistName;
-	}
+        return this.creationDate;
+    }
 
-	public void setPharmacistName(String pharmacistName) {
-		this.pharmacistName = pharmacistName;
-	}
+    public void setCreationDate(Date creationDate) {
 
-	@Temporal(value = TemporalType.TIMESTAMP)
-	public Date getFilledDate() {
-		return this.filledDate;
-	}
+        this.creationDate = creationDate;
+    }
 
-	public void setFilledDate(Date filledDate) {
-		this.filledDate = filledDate;
-	}
+    public boolean isFilled() {
 
-	public String getPatientName() {
-		return this.patientName;
-	}
+        return this.filled;
+    }
 
-	public void setPatientName(String patientName) {
-		this.patientName = patientName;
-	}
+    public void setFilled(boolean filled) {
 
-	public String getCareProviderName() {
-		return this.careProviderName;
-	}
+        this.filled = filled;
+    }
 
-	public void setCareProviderName(String careProviderName) {
-		this.careProviderName = careProviderName;
-	}
+    public String getPatient() {
+
+        return this.patient;
+    }
+
+    public void setPatient(String patient) {
+
+        this.patient = patient;
+    }
+
+    @OneToMany(mappedBy = "prescription", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    public List<PrescriptionMedicineEntity> getMedicines() {
+
+        return this.medicines;
+    }
+
+    public void setMedicines(List<PrescriptionMedicineEntity> medicines) {
+
+        this.medicines = medicines;
+    }
+
+    public String getPharmacist() {
+
+        return this.pharmacist;
+    }
+
+    public void setPharmacist(String pharmacist) {
+
+        this.pharmacist = pharmacist;
+    }
+
+    public String getPharmacistName() {
+
+        return this.pharmacistName;
+    }
+
+    public void setPharmacistName(String pharmacistName) {
+
+        this.pharmacistName = pharmacistName;
+    }
+
+    @Temporal(value = TemporalType.TIMESTAMP)
+    public Date getFilledDate() {
+
+        return this.filledDate;
+    }
+
+    public void setFilledDate(Date filledDate) {
+
+        this.filledDate = filledDate;
+    }
+
+    public String getPatientName() {
+
+        return this.patientName;
+    }
+
+    public void setPatientName(String patientName) {
+
+        this.patientName = patientName;
+    }
+
+    public String getCareProviderName() {
+
+        return this.careProviderName;
+    }
+
+    public void setCareProviderName(String careProviderName) {
+
+        this.careProviderName = careProviderName;
+    }
 }

@@ -15,9 +15,10 @@ package net.link.safeonline.audit;
  */
 public interface AuditBackend {
 
-	public static final String JNDI_CONTEXT = "SafeOnline/audit";
+    public static final String JNDI_CONTEXT = "SafeOnline/audit";
 
-	public static final String JNDI_PREFIX = JNDI_CONTEXT + "/";
+    public static final String JNDI_PREFIX  = JNDI_CONTEXT + "/";
 
-	void process(long auditContextId);
+
+    void process(long auditContextId);
 }

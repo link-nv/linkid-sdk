@@ -14,30 +14,32 @@ import net.link.safeonline.model.Messaging;
 
 import static net.link.safeonline.messaging.bean.EmailBean.queueName;
 
+
 @Stateless
 public class MessagingBean implements Messaging {
 
-	@Resource(mappedName = "ConnectionFactory")
-	private ConnectionFactory factory;
+    @Resource(mappedName = "ConnectionFactory")
+    private ConnectionFactory factory;
 
-	@Resource(mappedName = queueName)
-	private Queue emailQueue;
+    @Resource(mappedName = queueName)
+    private Queue             emailQueue;
 
-	public void sendEmail(String to, String subject, String messageText) {
 
-		EndUserMessage message = new EndUserMessage(to, subject, messageText);
+    public void sendEmail(String to, String subject, String messageText) {
 
-		try {
-			Connection connect = this.factory.createConnection();
-			Session session = connect.createSession(true, 0);
-			MessageProducer producer = session.createProducer(this.emailQueue);
-			producer.send(message.getJMSMessage(session));
-			session.close();
-			connect.close();
-		} catch (Exception e) {
-			throw new EJBException();
-		}
+        EndUserMessage message = new EndUserMessage(to, subject, messageText);
 
-	}
+        try {
+            Connection connect = this.factory.createConnection();
+            Session session = connect.createSession(true, 0);
+            MessageProducer producer = session.createProducer(this.emailQueue);
+            producer.send(message.getJMSMessage(session));
+            session.close();
+            connect.close();
+        } catch (Exception e) {
+            throw new EJBException();
+        }
+
+    }
 
 }

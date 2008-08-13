@@ -22,42 +22,44 @@ import net.link.safeonline.performance.scenario.Scenario;
 
 import org.jfree.util.Log;
 
+
 /**
  * <h2>{@link RegisteredScripts}<br>
  * <sub>This object maintains a list of known scenarios.</sub></h2>
- *
+ * 
  * <p>
- * Whenever you add a scenario to this project, you should register it with this
- * object in the static block to make it visible to the console.
+ * Whenever you add a scenario to this project, you should register it with this object in the static block to make it
+ * visible to the console.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class RegisteredScripts {
 
-	private static Set<Class<? extends Scenario>> registeredScenarios = new HashSet<Class<? extends Scenario>>();
+    private static Set<Class<? extends Scenario>> registeredScenarios = new HashSet<Class<? extends Scenario>>();
 
-	static {
-		register(BasicScenario.class);
-		register(DummyScenario.class);
-	}
+    static {
+        register(BasicScenario.class);
+        register(DummyScenario.class);
+    }
 
-	private static void register(Class<? extends Scenario> scenario) {
 
-		Log.debug("registering " + scenario);
-		registeredScenarios.add(scenario);
-	}
+    private static void register(Class<? extends Scenario> scenario) {
 
-	/**
-	 * @return The registered scenarios.
-	 */
-	public static Set<Class<? extends Scenario>> getRegisteredScenarios() {
+        Log.debug("registering " + scenario);
+        registeredScenarios.add(scenario);
+    }
 
-		Log.debug("registered: " + registeredScenarios);
-		return registeredScenarios;
-	}
+    /**
+     * @return The registered scenarios.
+     */
+    public static Set<Class<? extends Scenario>> getRegisteredScenarios() {
+
+        Log.debug("registered: " + registeredScenarios);
+        return registeredScenarios;
+    }
 }

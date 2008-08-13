@@ -15,5 +15,5 @@ package net.link.safeonline.test.util;
  */
 public interface MBeanActionHandler {
 
-	Object invoke(Object[] arguments);
+    Object invoke(Object[] arguments);
 }

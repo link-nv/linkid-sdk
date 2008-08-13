@@ -21,113 +21,108 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
+
 @Local
 public interface Application {
 
-	/*
-	 * Factory
-	 */
-	void applicationListFactory();
+    /*
+     * Factory
+     */
+    void applicationListFactory();
 
-	void newIdentityAttributesFactory();
+    void newIdentityAttributesFactory();
 
-	void identityAttributesFactory() throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException;
+    void identityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+            PermissionDeniedException;
 
-	void applicationIdentityAttributesFactory()
-			throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, PermissionDeniedException;
+    void applicationIdentityAttributesFactory() throws ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException, PermissionDeniedException;
 
-	List<SelectItem> availableApplicationOwnersFactory();
+    List<SelectItem> availableApplicationOwnersFactory();
 
-	List<SelectItem> appliactionIdScopeFactory();
+    List<SelectItem> appliactionIdScopeFactory();
 
-	void allowedDevices();
+    void allowedDevices();
 
-	void usageAgreementListFactory() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Accessors.
-	 */
-	String getName();
+    /*
+     * Accessors.
+     */
+    String getName();
 
-	void setName(String name);
+    void setName(String name);
 
-	String getFriendlyName();
+    String getFriendlyName();
 
-	void setFriendlyName(String friendlyName);
+    void setFriendlyName(String friendlyName);
 
-	String getDescription();
+    String getDescription();
 
-	void setDescription(String description);
+    void setDescription(String description);
 
-	String getApplicationUrl();
+    String getApplicationUrl();
 
-	void setApplicationUrl(String applicationUrl);
+    void setApplicationUrl(String applicationUrl);
 
-	byte[] getApplicationLogo();
+    byte[] getApplicationLogo();
 
-	void setApplicationLogo(byte[] applicationLogo);
+    void setApplicationLogo(byte[] applicationLogo);
 
-	UploadedFile getApplicationLogoFile();
+    UploadedFile getApplicationLogoFile();
 
-	void setApplicationLogoFile(UploadedFile applicationLogoFile);
+    void setApplicationLogoFile(UploadedFile applicationLogoFile);
 
-	String getApplicationColor();
+    String getApplicationColor();
 
-	void setApplicationColor(String applicationColor);
+    void setApplicationColor(String applicationColor);
 
-	String getApplicationOwner();
+    String getApplicationOwner();
 
-	void setApplicationOwner(String applicationOwner);
+    void setApplicationOwner(String applicationOwner);
 
-	void setUpFile(UploadedFile uploadedFile);
+    void setUpFile(UploadedFile uploadedFile);
 
-	UploadedFile getUpFile();
+    UploadedFile getUpFile();
 
-	boolean isIdmapping();
+    boolean isIdmapping();
 
-	void setIdmapping(boolean idmapping);
+    void setIdmapping(boolean idmapping);
 
-	String getUsageAgreement() throws ApplicationNotFoundException;
+    String getUsageAgreement() throws ApplicationNotFoundException;
 
-	void setApplicationIdScope(String applicationIdScope);
+    void setApplicationIdScope(String applicationIdScope);
 
-	String getApplicationIdScope();
+    String getApplicationIdScope();
 
-	boolean isSkipMessageIntegrityCheck();
+    boolean isSkipMessageIntegrityCheck();
 
-	void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck);
+    void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck);
 
-	boolean isDeviceRestriction();
+    boolean isDeviceRestriction();
 
-	void setDeviceRestriction(boolean deviceRestriction);
+    void setDeviceRestriction(boolean deviceRestriction);
 
-	/*
-	 * Actions.
-	 */
-	String add() throws AttributeTypeNotFoundException, IOException,
-			ApplicationNotFoundException;
+    /*
+     * Actions.
+     */
+    String add() throws AttributeTypeNotFoundException, IOException, ApplicationNotFoundException;
 
-	String removeApplication() throws ApplicationNotFoundException;
+    String removeApplication() throws ApplicationNotFoundException;
 
-	String save() throws CertificateEncodingException,
-			ApplicationNotFoundException, IOException,
-			ApplicationIdentityNotFoundException,
-			AttributeTypeNotFoundException, PermissionDeniedException;
+    String save() throws CertificateEncodingException, ApplicationNotFoundException, IOException,
+            ApplicationIdentityNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException;
 
-	String view();
+    String view();
 
-	String edit();
+    String edit();
 
-	String viewUsageAgreement();
+    String viewUsageAgreement();
 
-	String editUsageAgreement() throws ApplicationNotFoundException,
-			PermissionDeniedException;
+    String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException;
 }

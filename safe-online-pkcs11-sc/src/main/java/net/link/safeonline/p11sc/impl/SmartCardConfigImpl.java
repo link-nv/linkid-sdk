@@ -13,98 +13,117 @@ import java.util.List;
 
 import net.link.safeonline.p11sc.SmartCardConfig;
 
+
 public class SmartCardConfigImpl implements SmartCardConfig {
 
-	private String cardAlias;
+    private String               cardAlias;
 
-	private String authenticationKeyAlias;
+    private String               authenticationKeyAlias;
 
-	private String signatureKeyAlias;
+    private String               signatureKeyAlias;
 
-	private List<Pkcs11Platform> pkcs11DriverLocations;
+    private List<Pkcs11Platform> pkcs11DriverLocations;
 
-	private String identityExtractorClassname;
+    private String               identityExtractorClassname;
 
-	private static class Pkcs11Platform {
-		private String platformMatch;
 
-		private List<File> driverLocations;
+    private static class Pkcs11Platform {
 
-		public Pkcs11Platform(String platformMatch) {
-			this.platformMatch = platformMatch;
-			this.driverLocations = new LinkedList<File>();
-		}
+        private String     platformMatch;
 
-		public String getPlatformMatch() {
-			return this.platformMatch;
-		}
+        private List<File> driverLocations;
 
-		public List<File> getDriverLocations() {
-			return this.driverLocations;
-		}
 
-		public void addDriverLocation(File driverLocation) {
-			this.driverLocations.add(driverLocation);
-		}
+        public Pkcs11Platform(String platformMatch) {
 
-		public void addDriverLocation(String driverLocation) {
-			File driverLocationFile = new File(driverLocation);
-			addDriverLocation(driverLocationFile);
-		}
-	}
+            this.platformMatch = platformMatch;
+            this.driverLocations = new LinkedList<File>();
+        }
 
-	public SmartCardConfigImpl(String cardAlias) {
-		this.cardAlias = cardAlias;
-		this.pkcs11DriverLocations = new LinkedList<Pkcs11Platform>();
-	}
+        public String getPlatformMatch() {
 
-	public String getCardAlias() {
-		return this.cardAlias;
-	}
+            return this.platformMatch;
+        }
 
-	public String getAuthenticationKeyAlias() {
-		return this.authenticationKeyAlias;
-	}
+        public List<File> getDriverLocations() {
 
-	public String getSignatureKeyAlias() {
-		return this.signatureKeyAlias;
-	}
+            return this.driverLocations;
+        }
 
-	public void setAuthenticationKeyAlias(String authenticationKeyAlias) {
-		this.authenticationKeyAlias = authenticationKeyAlias;
-	}
+        public void addDriverLocation(File driverLocation) {
 
-	public void setSignatureKeyAlias(String signatureKeyAlias) {
-		this.signatureKeyAlias = signatureKeyAlias;
-	}
+            this.driverLocations.add(driverLocation);
+        }
 
-	public List<File> getPkcs11DriverLocations(String platform) {
-		List<File> driverLocations = new LinkedList<File>();
-		for (Pkcs11Platform pkcs11Platform : this.pkcs11DriverLocations) {
-			if (false == platform.matches(pkcs11Platform.getPlatformMatch())) {
-				continue;
-			}
-			driverLocations.addAll(pkcs11Platform.getDriverLocations());
-		}
-		return driverLocations;
-	}
+        public void addDriverLocation(String driverLocation) {
 
-	public void addPkcs11DriverLocations(String platformMatch,
-			List<String> driverLocations) {
-		Pkcs11Platform platform = new Pkcs11Platform(platformMatch);
-		for (String driverLocation : driverLocations) {
-			// SOS-2: auto-reformatting XML config file can yield whitespaces
-			driverLocation = driverLocation.trim();
-			platform.addDriverLocation(driverLocation);
-		}
-		this.pkcs11DriverLocations.add(platform);
-	}
+            File driverLocationFile = new File(driverLocation);
+            addDriverLocation(driverLocationFile);
+        }
+    }
 
-	public String getIdentityExtractorClassname() {
-		return this.identityExtractorClassname;
-	}
 
-	public void setIdentityExtractorClassname(String identityExtractorClassname) {
-		this.identityExtractorClassname = identityExtractorClassname;
-	}
+    public SmartCardConfigImpl(String cardAlias) {
+
+        this.cardAlias = cardAlias;
+        this.pkcs11DriverLocations = new LinkedList<Pkcs11Platform>();
+    }
+
+    public String getCardAlias() {
+
+        return this.cardAlias;
+    }
+
+    public String getAuthenticationKeyAlias() {
+
+        return this.authenticationKeyAlias;
+    }
+
+    public String getSignatureKeyAlias() {
+
+        return this.signatureKeyAlias;
+    }
+
+    public void setAuthenticationKeyAlias(String authenticationKeyAlias) {
+
+        this.authenticationKeyAlias = authenticationKeyAlias;
+    }
+
+    public void setSignatureKeyAlias(String signatureKeyAlias) {
+
+        this.signatureKeyAlias = signatureKeyAlias;
+    }
+
+    public List<File> getPkcs11DriverLocations(String platform) {
+
+        List<File> driverLocations = new LinkedList<File>();
+        for (Pkcs11Platform pkcs11Platform : this.pkcs11DriverLocations) {
+            if (false == platform.matches(pkcs11Platform.getPlatformMatch())) {
+                continue;
+            }
+            driverLocations.addAll(pkcs11Platform.getDriverLocations());
+        }
+        return driverLocations;
+    }
+
+    public void addPkcs11DriverLocations(String platformMatch, List<String> driverLocations) {
+
+        Pkcs11Platform platform = new Pkcs11Platform(platformMatch);
+        for (String driverLocation : driverLocations) {
+            // SOS-2: auto-reformatting XML config file can yield whitespaces
+            driverLocation = driverLocation.trim();
+            platform.addDriverLocation(driverLocation);
+        }
+        this.pkcs11DriverLocations.add(platform);
+    }
+
+    public String getIdentityExtractorClassname() {
+
+        return this.identityExtractorClassname;
+    }
+
+    public void setIdentityExtractorClassname(String identityExtractorClassname) {
+
+        this.identityExtractorClassname = identityExtractorClassname;
+    }
 }

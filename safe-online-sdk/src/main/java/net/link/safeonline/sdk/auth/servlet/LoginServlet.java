@@ -24,86 +24,82 @@ import net.link.safeonline.util.servlet.annotation.Init;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Login Servlet. This servlet contains the landing page to finalize the
- * authentication process initiated by the web application.
+ * Login Servlet. This servlet contains the landing page to finalize the authentication process initiated by the web
+ * application.
  * 
  * @author fcorneli
  * 
  */
 public class LoginServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(LoginServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(LoginServlet.class);
 
-	@Init(name = "ServletEndpointUrl", optional = true)
-	private String servletEndpointUrl;
+    @Init(name = "ServletEndpointUrl", optional = true)
+    private String            servletEndpointUrl;
 
-	@Init(name = "ErrorPage", optional = true)
-	private String errorPage;
+    @Init(name = "ErrorPage", optional = true)
+    private String            errorPage;
 
-	@Override
-	protected void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
 
-	@Override
-	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		handleLanding(request, response);
-	}
+    @Override
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-	private void handleLanding(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+        handleLanding(request, response);
+    }
 
-		/**
-		 * Wrap the request to use the servlet endpoint url if defined. To
-		 * prevent failure when behind a reverse proxy or loadbalancer when
-		 * opensaml is checking the destination field.
-		 */
-		HttpServletRequestEndpointWrapper requestWrapper;
-		if (null != this.servletEndpointUrl) {
-			requestWrapper = new HttpServletRequestEndpointWrapper(request,
-					this.servletEndpointUrl);
-		} else {
-			requestWrapper = new HttpServletRequestEndpointWrapper(request,
-					request.getRequestURL().toString());
-		}
+    @Override
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
-				.findAuthenticationProtocolHandler(requestWrapper);
-		if (null == protocolHandler) {
-			/*
-			 * The landing page can only be used for finalizing an ongoing
-			 * authentication process. If no protocol handler is active then
-			 * something must be going wrong here.
-			 */
-			String msg = "no protocol handler active";
-			LOG.error(msg);
-			redirectToErrorPage(requestWrapper, response, this.errorPage, null,
-					new ErrorMessage(msg));
+        handleLanding(request, response);
+    }
 
-			return;
-		}
+    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		String username = protocolHandler.finalizeAuthentication(
-				requestWrapper, response);
-		if (null == username) {
-			String msg = "protocol handler could not finalize";
-			LOG.error(msg);
-			redirectToErrorPage(requestWrapper, response, this.errorPage, null,
-					new ErrorMessage(msg));
-			return;
-		}
+        /**
+         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy
+         * or loadbalancer when opensaml is checking the destination field.
+         */
+        HttpServletRequestEndpointWrapper requestWrapper;
+        if (null != this.servletEndpointUrl) {
+            requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        } else {
+            requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
+        }
 
-		LOG.debug("username: " + username);
-		LoginManager.setUsername(username, requestWrapper);
-		AuthenticationProtocolManager
-				.cleanupAuthenticationHandler(requestWrapper);
-		String target = AuthenticationProtocolManager.getTarget(requestWrapper);
-		LOG.debug("target: " + target);
-		response.sendRedirect(target);
-	}
+        AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
+                .findAuthenticationProtocolHandler(requestWrapper);
+        if (null == protocolHandler) {
+            /*
+             * The landing page can only be used for finalizing an ongoing authentication process. If no protocol
+             * handler is active then something must be going wrong here.
+             */
+            String msg = "no protocol handler active";
+            LOG.error(msg);
+            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
+
+            return;
+        }
+
+        String username = protocolHandler.finalizeAuthentication(requestWrapper, response);
+        if (null == username) {
+            String msg = "protocol handler could not finalize";
+            LOG.error(msg);
+            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
+            return;
+        }
+
+        LOG.debug("username: " + username);
+        LoginManager.setUsername(username, requestWrapper);
+        AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);
+        String target = AuthenticationProtocolManager.getTarget(requestWrapper);
+        LOG.debug("target: " + target);
+        response.sendRedirect(target);
+    }
 }

@@ -17,40 +17,48 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "demo_payment_user")
 public class UserEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID = 1L;
 
-	private List<PaymentEntity> payments;
+    private List<PaymentEntity> payments;
 
-	private String safeOnlineUserName;
+    private String              safeOnlineUserName;
 
-	public UserEntity() {
-		this(null);
-	}
 
-	public UserEntity(String safeOnlineUserName) {
-		this.payments = new ArrayList<PaymentEntity>();
-		this.safeOnlineUserName = safeOnlineUserName;
-	}
+    public UserEntity() {
 
-	@Id
-	public String getSafeOnlineUserName() {
-		return this.safeOnlineUserName;
-	}
+        this(null);
+    }
 
-	public void setSafeOnlineUserName(String safeOnlineUserName) {
-		this.safeOnlineUserName = safeOnlineUserName;
-	}
+    public UserEntity(String safeOnlineUserName) {
 
-	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
-	public List<PaymentEntity> getPayments() {
-		return this.payments;
-	}
+        this.payments = new ArrayList<PaymentEntity>();
+        this.safeOnlineUserName = safeOnlineUserName;
+    }
 
-	public void setPayments(List<PaymentEntity> payments) {
-		this.payments = payments;
-	}
+    @Id
+    public String getSafeOnlineUserName() {
+
+        return this.safeOnlineUserName;
+    }
+
+    public void setSafeOnlineUserName(String safeOnlineUserName) {
+
+        this.safeOnlineUserName = safeOnlineUserName;
+    }
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+    public List<PaymentEntity> getPayments() {
+
+        return this.payments;
+    }
+
+    public void setPayments(List<PaymentEntity> payments) {
+
+        this.payments = payments;
+    }
 }

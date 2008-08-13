@@ -28,38 +28,42 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("configuration")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "ConfigurationBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "ConfigurationBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class ConfigurationBean implements Configuration {
 
-	@DataModel("configGroupList")
-	private List<ConfigGroupEntity> configGroupList;
+    @DataModel("configGroupList")
+    private List<ConfigGroupEntity> configGroupList;
 
-	@EJB
-	private ConfigurationService configurationService;
+    @EJB
+    private ConfigurationService    configurationService;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                   facesMessages;
 
-	@Factory("configGroupList")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void configGroupListFactory() {
-		this.configGroupList = this.configurationService.listConfigGroups();
-	}
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		// empty
-	}
+    @Factory("configGroupList")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void configGroupListFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() {
-		this.configurationService.saveConfiguration(this.configGroupList);
-		return "saved";
-	}
+        this.configGroupList = this.configurationService.listConfigGroups();
+    }
+
+    @Remove
+    @Destroy
+    public void destroyCallback() {
+
+        // empty
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String save() {
+
+        this.configurationService.saveConfiguration(this.configGroupList);
+        return "saved";
+    }
 
 }

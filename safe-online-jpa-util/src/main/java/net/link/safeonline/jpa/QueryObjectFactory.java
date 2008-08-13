@@ -16,6 +16,7 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
+
 /**
  * Factory for query objects.
  * 
@@ -24,36 +25,34 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
  */
 public class QueryObjectFactory {
 
-	private QueryObjectFactory() {
-		// empty
-	}
+    private QueryObjectFactory() {
 
-	/**
-	 * Creates a new query object from the given query object interface. The
-	 * methods on this interface should be annotated via {@link QueryMethod} or
-	 * {@link UpdateMethod}. If the method has parameters one should annotated
-	 * these via {@link QueryParam}.
-	 * 
-	 * @param <T>
-	 * @param entityManager
-	 *            the JPA entity manager used by the returned query object.
-	 * @param queryObjectInterface
-	 *            the interface that the query object will implement.
-	 * @return a new query object.
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T createQueryObject(EntityManager entityManager,
-			Class<T> queryObjectInterface) {
-		if (false == queryObjectInterface.isInterface()) {
-			throw new IllegalArgumentException(
-					"query object class is not an interface");
-		}
-		InvocationHandler invocationHandler = new QueryObjectInvocationHandler(
-				entityManager);
-		Thread currentThread = Thread.currentThread();
-		ClassLoader classLoader = currentThread.getContextClassLoader();
-		T queryObject = (T) Proxy.newProxyInstance(classLoader,
-				new Class[] { queryObjectInterface }, invocationHandler);
-		return queryObject;
-	}
+        // empty
+    }
+
+    /**
+     * Creates a new query object from the given query object interface. The methods on this interface should be
+     * annotated via {@link QueryMethod} or {@link UpdateMethod}. If the method has parameters one should annotated
+     * these via {@link QueryParam}.
+     * 
+     * @param <T>
+     * @param entityManager
+     *            the JPA entity manager used by the returned query object.
+     * @param queryObjectInterface
+     *            the interface that the query object will implement.
+     * @return a new query object.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T createQueryObject(EntityManager entityManager, Class<T> queryObjectInterface) {
+
+        if (false == queryObjectInterface.isInterface()) {
+            throw new IllegalArgumentException("query object class is not an interface");
+        }
+        InvocationHandler invocationHandler = new QueryObjectInvocationHandler(entityManager);
+        Thread currentThread = Thread.currentThread();
+        ClassLoader classLoader = currentThread.getContextClassLoader();
+        T queryObject = (T) Proxy
+                .newProxyInstance(classLoader, new Class[] { queryObjectInterface }, invocationHandler);
+        return queryObject;
+    }
 }

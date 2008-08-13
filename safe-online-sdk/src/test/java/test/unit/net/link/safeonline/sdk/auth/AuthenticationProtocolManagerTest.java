@@ -44,150 +44,133 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class AuthenticationProtocolManagerTest {
 
-	static final Log LOG = LogFactory
-			.getLog(AuthenticationProtocolManagerTest.class);
+    static final Log           LOG = LogFactory.getLog(AuthenticationProtocolManagerTest.class);
 
-	private HttpServletRequest mockHttpServletRequest;
+    private HttpServletRequest mockHttpServletRequest;
 
-	private HttpSession mockHttpSession;
+    private HttpSession        mockHttpSession;
 
-	private Object[] mockObjects;
+    private Object[]           mockObjects;
 
-	@Before
-	public void setUp() throws Exception {
-		this.mockHttpServletRequest = createMock(HttpServletRequest.class);
-		this.mockHttpSession = createMock(HttpSession.class);
 
-		this.mockObjects = new Object[] { this.mockHttpServletRequest,
-				this.mockHttpSession };
+    @Before
+    public void setUp() throws Exception {
 
-		// stubs
-		expect(this.mockHttpServletRequest.getSession()).andStubReturn(
-				this.mockHttpSession);
-	}
+        this.mockHttpServletRequest = createMock(HttpServletRequest.class);
+        this.mockHttpSession = createMock(HttpSession.class);
 
-	@Test
-	public void saml2ProtocolHandler() throws Exception {
-		// expectations
-		expect(
-				this.mockHttpSession
-						.getAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE))
-				.andReturn(null);
-		this.mockHttpSession.setAttribute(
-				eq(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE),
-				anyObject());
+        this.mockObjects = new Object[] { this.mockHttpServletRequest, this.mockHttpSession };
 
-		// prepare
-		replay(this.mockObjects);
+        // stubs
+        expect(this.mockHttpServletRequest.getSession()).andStubReturn(this.mockHttpSession);
+    }
 
-		// operate
-		Map<String, String> configParams = Collections.singletonMap(
-				"WsLocation", "https://ws.location");
-		AuthenticationProtocolHandler saml2AuthenticationProtocolHandler = AuthenticationProtocolManager
-				.createAuthenticationProtocolHandler(
-						AuthenticationProtocol.SAML2_BROWSER_POST,
-						"http://authn.service", "application-id", null, null,
-						null, configParams, this.mockHttpServletRequest);
+    @Test
+    public void saml2ProtocolHandler() throws Exception {
 
-		// verify
-		verify(this.mockObjects);
-		assertNotNull(saml2AuthenticationProtocolHandler);
-	}
+        // expectations
+        expect(this.mockHttpSession.getAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE)).andReturn(
+                null);
+        this.mockHttpSession.setAttribute(eq(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE), anyObject());
 
-	@Test
-	public void testInitiateAuthenticationWithoutLandingPage() throws Exception {
-		ServletTestManager servletTestManager = new ServletTestManager();
-		AuthenticationProtocolHandler mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-		servletTestManager.setUp(TestServlet.class);
-		servletTestManager.setSessionAttribute(
-				AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-				mockProtocolHandler);
-		try {
-			String location = servletTestManager.getServletLocation();
-			mockProtocolHandler.initiateAuthentication(
-					(HttpServletRequest) EasyMock.anyObject(),
-					(HttpServletResponse) EasyMock.anyObject(), EasyMock
-							.eq(location));
-			replay(mockProtocolHandler);
-			LOG.debug("servlet location: " + location);
-			HttpClient httpClient = new HttpClient();
-			GetMethod getMethod = new GetMethod(location);
-			int statusCode = httpClient.executeMethod(getMethod);
-			LOG.debug("status code: " + statusCode);
-			verify(mockProtocolHandler);
-			assertEquals(HttpStatus.SC_OK, statusCode);
-			assertNull(servletTestManager
-					.getSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE));
-		} finally {
-			servletTestManager.tearDown();
-		}
-	}
+        // prepare
+        replay(this.mockObjects);
 
-	@Test
-	public void testInitiateAuthenticationWithLandingPage() throws Exception {
-		ServletTestManager servletTestManager = new ServletTestManager();
-		AuthenticationProtocolHandler mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-		Map<String, String> initParams = new HashMap<String, String>();
-		String landingPage = "login";
-		initParams.put(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM,
-				"login");
-		servletTestManager.setUp(TestServlet.class, initParams);
-		servletTestManager.setSessionAttribute(
-				AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-				mockProtocolHandler);
-		try {
-			String location = servletTestManager.getServletLocation();
-			mockProtocolHandler.initiateAuthentication(
-					(HttpServletRequest) EasyMock.anyObject(),
-					(HttpServletResponse) EasyMock.anyObject(), EasyMock
-							.eq(landingPage));
-			replay(mockProtocolHandler);
-			LOG.debug("servlet location: " + location);
-			HttpClient httpClient = new HttpClient();
-			GetMethod getMethod = new GetMethod(location);
-			int statusCode = httpClient.executeMethod(getMethod);
-			LOG.debug("status code: " + statusCode);
-			verify(mockProtocolHandler);
-			assertEquals(HttpStatus.SC_OK, statusCode);
-			assertEquals(
-					location,
-					servletTestManager
-							.getSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE));
-		} finally {
-			servletTestManager.tearDown();
-		}
-	}
+        // operate
+        Map<String, String> configParams = Collections.singletonMap("WsLocation", "https://ws.location");
+        AuthenticationProtocolHandler saml2AuthenticationProtocolHandler = AuthenticationProtocolManager
+                .createAuthenticationProtocolHandler(AuthenticationProtocol.SAML2_BROWSER_POST, "http://authn.service",
+                        "application-id", null, null, null, configParams, this.mockHttpServletRequest);
 
-	public static class TestServlet extends HttpServlet {
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(saml2AuthenticationProtocolHandler);
+    }
 
-		private static final long serialVersionUID = 1L;
+    @Test
+    public void testInitiateAuthenticationWithoutLandingPage() throws Exception {
 
-		private static final Log SERVLET_LOG = LogFactory
-				.getLog(TestServlet.class);
+        ServletTestManager servletTestManager = new ServletTestManager();
+        AuthenticationProtocolHandler mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
+        servletTestManager.setUp(TestServlet.class);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
+                mockProtocolHandler);
+        try {
+            String location = servletTestManager.getServletLocation();
+            mockProtocolHandler.initiateAuthentication((HttpServletRequest) EasyMock.anyObject(),
+                    (HttpServletResponse) EasyMock.anyObject(), EasyMock.eq(location));
+            replay(mockProtocolHandler);
+            LOG.debug("servlet location: " + location);
+            HttpClient httpClient = new HttpClient();
+            GetMethod getMethod = new GetMethod(location);
+            int statusCode = httpClient.executeMethod(getMethod);
+            LOG.debug("status code: " + statusCode);
+            verify(mockProtocolHandler);
+            assertEquals(HttpStatus.SC_OK, statusCode);
+            assertNull(servletTestManager.getSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE));
+        } finally {
+            servletTestManager.tearDown();
+        }
+    }
 
-		@Override
-		public void init(ServletConfig config) throws ServletException {
-			super.init(config);
-			SERVLET_LOG
-					.debug("init: landing page init param: "
-							+ config
-									.getInitParameter(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM));
-		}
+    @Test
+    public void testInitiateAuthenticationWithLandingPage() throws Exception {
 
-		@Override
-		protected void doGet(HttpServletRequest request,
-				HttpServletResponse response) throws ServletException,
-				IOException {
-			HttpSession session = request.getSession();
-			ServletContext servletContext = session.getServletContext();
-			SERVLET_LOG
-					.debug("doGet: landing page init param: "
-							+ servletContext
-									.getInitParameter(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM));
-			AuthenticationProtocolManager.initiateAuthentication(request,
-					response);
-		}
-	}
+        ServletTestManager servletTestManager = new ServletTestManager();
+        AuthenticationProtocolHandler mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
+        Map<String, String> initParams = new HashMap<String, String>();
+        String landingPage = "login";
+        initParams.put(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM, "login");
+        servletTestManager.setUp(TestServlet.class, initParams);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
+                mockProtocolHandler);
+        try {
+            String location = servletTestManager.getServletLocation();
+            mockProtocolHandler.initiateAuthentication((HttpServletRequest) EasyMock.anyObject(),
+                    (HttpServletResponse) EasyMock.anyObject(), EasyMock.eq(landingPage));
+            replay(mockProtocolHandler);
+            LOG.debug("servlet location: " + location);
+            HttpClient httpClient = new HttpClient();
+            GetMethod getMethod = new GetMethod(location);
+            int statusCode = httpClient.executeMethod(getMethod);
+            LOG.debug("status code: " + statusCode);
+            verify(mockProtocolHandler);
+            assertEquals(HttpStatus.SC_OK, statusCode);
+            assertEquals(location, servletTestManager
+                    .getSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE));
+        } finally {
+            servletTestManager.tearDown();
+        }
+    }
+
+
+    public static class TestServlet extends HttpServlet {
+
+        private static final long serialVersionUID = 1L;
+
+        private static final Log  SERVLET_LOG      = LogFactory.getLog(TestServlet.class);
+
+
+        @Override
+        public void init(ServletConfig config) throws ServletException {
+
+            super.init(config);
+            SERVLET_LOG.debug("init: landing page init param: "
+                    + config.getInitParameter(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM));
+        }
+
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+                IOException {
+
+            HttpSession session = request.getSession();
+            ServletContext servletContext = session.getServletContext();
+            SERVLET_LOG.debug("doGet: landing page init param: "
+                    + servletContext.getInitParameter(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM));
+            AuthenticationProtocolManager.initiateAuthentication(request, response);
+        }
+    }
 }

@@ -9,37 +9,45 @@ package net.link.safeonline.webapp.demo.payment;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class DemoPaymentSearchResult extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX
-			+ "/search-result.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX + "/search-result.seam";
 
-	public DemoPaymentSearchResult() {
-		super(PAGE_NAME);
-	}
 
-	public void setJunior(boolean junior) {
-		this.setCheckBox("junior", junior);
-	}
+    public DemoPaymentSearchResult() {
 
-	public boolean getJunior() {
-		return this.isCheckedCheckBox("junior");
-	}
+        super(PAGE_NAME);
+    }
 
-	public void setPaymentAdmin(boolean admin) {
-		this.setCheckBox("paymentadmin", admin);
-	}
+    public void setJunior(boolean junior) {
 
-	public boolean getPaymentAdmin() {
-		return this.isCheckedCheckBox("paymentadmin");
-	}
+        this.setCheckBox("junior", junior);
+    }
 
-	public void save() {
-		clickButtonAndWait("save");
-	}
+    public boolean getJunior() {
 
-	public DemoPaymentSearch back() {
-		clickButtonAndWait("back");
-		return new DemoPaymentSearch();
-	}
+        return this.isCheckedCheckBox("junior");
+    }
+
+    public void setPaymentAdmin(boolean admin) {
+
+        this.setCheckBox("paymentadmin", admin);
+    }
+
+    public boolean getPaymentAdmin() {
+
+        return this.isCheckedCheckBox("paymentadmin");
+    }
+
+    public void save() {
+
+        clickButtonAndWait("save");
+    }
+
+    public DemoPaymentSearch back() {
+
+        clickButtonAndWait("back");
+        return new DemoPaymentSearch();
+    }
 }

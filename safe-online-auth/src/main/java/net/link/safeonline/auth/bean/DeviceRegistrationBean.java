@@ -45,14 +45,13 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("deviceRegistration")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-        + "DeviceRegistrationBean/local")
+@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "DeviceRegistrationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
-public class DeviceRegistrationBean extends AbstractLoginBean implements
-        DeviceRegistration {
+public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceRegistration {
 
     @Logger
     private Log                   log;
@@ -88,8 +87,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
         this.log.debug("deviceNext: " + this.device);
 
-        String registrationURL = this.devicePolicyService
-                .getRegistrationURL(this.device);
+        String registrationURL = this.devicePolicyService.getRegistrationURL(this.device);
         if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
             FacesContext context = FacesContext.getCurrentInstance();
             ExternalContext externalContext = context.getExternalContext();
@@ -119,8 +117,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String passwordNext() throws SubjectNotFoundException,
-            DeviceNotFoundException {
+    public String passwordNext() throws SubjectNotFoundException, DeviceNotFoundException {
 
         this.log.debug("passwordNext");
         this.authenticationService.setPassword(this.userId, this.password);
@@ -143,21 +140,18 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     @Factory("applicationDevicesDeviceRegistration")
-    public List<SelectItem> applicationDevicesFactory()
-            throws ApplicationNotFoundException, EmptyDevicePolicyException {
+    public List<SelectItem> applicationDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         this.log.debug("application devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
 
-        List<DeviceEntity> devicePolicy = this.devicePolicyService
-                .getDevicePolicy(this.application, this.requiredDevicePolicy);
+        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.application,
+                this.requiredDevicePolicy);
         for (DeviceEntity deviceEntity : devicePolicy) {
-            String deviceName = this.devicePolicyService.getDeviceDescription(
-                    deviceEntity.getName(), viewLocale);
-            SelectItem applicationDevice = new SelectItem(deviceEntity
-                    .getName(), deviceName);
+            String deviceName = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
+            SelectItem applicationDevice = new SelectItem(deviceEntity.getName(), deviceName);
             applicationDevices.add(applicationDevice);
         }
         return applicationDevices;

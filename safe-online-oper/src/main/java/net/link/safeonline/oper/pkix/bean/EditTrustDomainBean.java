@@ -29,79 +29,86 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("editTrustDomain")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "EditTrustDomainBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "EditTrustDomainBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class EditTrustDomainBean implements EditTrustDomain {
 
-	private static final Log LOG = LogFactory.getLog(EditTrustDomainBean.class);
+    private static final Log  LOG = LogFactory.getLog(EditTrustDomainBean.class);
 
-	private boolean performOcspCheck;
+    private boolean           performOcspCheck;
 
-	private long ocspCacheTimeOutMillis;
+    private long              ocspCacheTimeOutMillis;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages             facesMessages;
 
-	@In(value = "selectedTrustDomain")
-	private TrustDomainEntity selectedTrustDomain;
+    @In(value = "selectedTrustDomain")
+    private TrustDomainEntity selectedTrustDomain;
 
-	@EJB
-	private PkiService pkiService;
+    @EJB
+    private PkiService        pkiService;
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@End
-	public String save() throws TrustDomainNotFoundException {
-		LOG.debug("saving " + this.selectedTrustDomain);
-		this.selectedTrustDomain.setPerformOcspCheck(this.performOcspCheck);
-		this.selectedTrustDomain
-				.setOcspCacheTimeOutMillis(this.ocspCacheTimeOutMillis);
-		this.pkiService.saveTrustDomain(this.selectedTrustDomain);
-		return "success";
-	}
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		LOG.debug("destroy");
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @End
+    public String save() throws TrustDomainNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public boolean isPerformOcspCheck() {
-		return this.performOcspCheck;
-	}
+        LOG.debug("saving " + this.selectedTrustDomain);
+        this.selectedTrustDomain.setPerformOcspCheck(this.performOcspCheck);
+        this.selectedTrustDomain.setOcspCacheTimeOutMillis(this.ocspCacheTimeOutMillis);
+        this.pkiService.saveTrustDomain(this.selectedTrustDomain);
+        return "success";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setPerformOcspCheck(boolean performOcspCheck) {
-		this.performOcspCheck = performOcspCheck;
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public long getOcspCacheTimeOutMillis() {
-		return this.ocspCacheTimeOutMillis;
-	}
+        LOG.debug("destroy");
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis) {
-		this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public boolean isPerformOcspCheck() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Begin
-	public String edit() {
-		LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
-		this.performOcspCheck = this.selectedTrustDomain.isPerformOcspCheck();
-		this.ocspCacheTimeOutMillis = this.selectedTrustDomain
-				.getOcspCacheTimeOutMillis();
-		return "edit";
-	}
+        return this.performOcspCheck;
+    }
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String cancel() {
-		LOG.debug("cancel");
-		return "canceled";
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setPerformOcspCheck(boolean performOcspCheck) {
+
+        this.performOcspCheck = performOcspCheck;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public long getOcspCacheTimeOutMillis() {
+
+        return this.ocspCacheTimeOutMillis;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis) {
+
+        this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Begin
+    public String edit() {
+
+        LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
+        this.performOcspCheck = this.selectedTrustDomain.isPerformOcspCheck();
+        this.ocspCacheTimeOutMillis = this.selectedTrustDomain.getOcspCacheTimeOutMillis();
+        return "edit";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String cancel() {
+
+        LOG.debug("cancel");
+        return "canceled";
+    }
 }

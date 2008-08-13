@@ -18,6 +18,7 @@ import javax.management.MBeanInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Dummy MBean for unit testing purposes.
  * 
@@ -26,59 +27,61 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DynamicTestMBean implements DynamicMBean {
 
-	private static final Log LOG = LogFactory.getLog(DynamicTestMBean.class);
+    private static final Log                LOG            = LogFactory.getLog(DynamicTestMBean.class);
 
-	private Map<String, MBeanActionHandler> actionHandlers = new HashMap<String, MBeanActionHandler>();
+    private Map<String, MBeanActionHandler> actionHandlers = new HashMap<String, MBeanActionHandler>();
 
-	/**
-	 * Registers an action handler that this dynamic test MBean will be using
-	 * when invoking actions.
-	 * 
-	 * @param actionName
-	 * @param action
-	 */
-	public void registerActionHandler(String actionName,
-			MBeanActionHandler action) {
-		if (this.actionHandlers.containsKey(actionName)) {
-			throw new IllegalStateException("already registered mbean action: "
-					+ actionName);
-		}
-		this.actionHandlers.put(actionName, action);
-	}
 
-	@SuppressWarnings("unused")
-	public Object getAttribute(String attribute) {
-		return null;
-	}
+    /**
+     * Registers an action handler that this dynamic test MBean will be using when invoking actions.
+     * 
+     * @param actionName
+     * @param action
+     */
+    public void registerActionHandler(String actionName, MBeanActionHandler action) {
 
-	@SuppressWarnings("unused")
-	public AttributeList getAttributes(String[] attributes) {
-		return null;
-	}
+        if (this.actionHandlers.containsKey(actionName)) {
+            throw new IllegalStateException("already registered mbean action: " + actionName);
+        }
+        this.actionHandlers.put(actionName, action);
+    }
 
-	public MBeanInfo getMBeanInfo() {
-		return new MBeanInfo(this.getClass().getName(), "test", null, null,
-				null, null);
-	}
+    @SuppressWarnings("unused")
+    public Object getAttribute(String attribute) {
 
-	public Object invoke(String actionName, Object[] params,
-			@SuppressWarnings("unused")
-			String[] signature) {
-		LOG.debug("invoked: " + actionName);
-		MBeanActionHandler actionHandler = this.actionHandlers.get(actionName);
-		if (null == actionHandler) {
-			return null;
-		}
-		Object result = actionHandler.invoke(params);
-		return result;
-	}
+        return null;
+    }
 
-	@SuppressWarnings("unused")
-	public void setAttribute(Attribute attribute) {
-	}
+    @SuppressWarnings("unused")
+    public AttributeList getAttributes(String[] attributes) {
 
-	@SuppressWarnings("unused")
-	public AttributeList setAttributes(AttributeList attributes) {
-		return null;
-	}
+        return null;
+    }
+
+    public MBeanInfo getMBeanInfo() {
+
+        return new MBeanInfo(this.getClass().getName(), "test", null, null, null, null);
+    }
+
+    public Object invoke(String actionName, Object[] params, @SuppressWarnings("unused") String[] signature) {
+
+        LOG.debug("invoked: " + actionName);
+        MBeanActionHandler actionHandler = this.actionHandlers.get(actionName);
+        if (null == actionHandler) {
+            return null;
+        }
+        Object result = actionHandler.invoke(params);
+        return result;
+    }
+
+    @SuppressWarnings("unused")
+    public void setAttribute(Attribute attribute) {
+
+    }
+
+    @SuppressWarnings("unused")
+    public AttributeList setAttributes(AttributeList attributes) {
+
+        return null;
+    }
 }

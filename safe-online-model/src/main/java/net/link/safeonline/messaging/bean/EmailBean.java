@@ -32,63 +32,63 @@ import net.link.safeonline.config.model.ConfigurationInterceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @MessageDriven(activationConfig = {
-		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = queueName) })
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = queueName) })
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable(group = "E-mail configuration")
 public class EmailBean implements MessageListener {
 
-	private final static Log LOG = LogFactory.getLog(EmailBean.class);
+    private final static Log   LOG                = LogFactory.getLog(EmailBean.class);
 
-	public final static String queueName = "queue/outgoing-email";
+    public final static String queueName          = "queue/outgoing-email";
 
-	@Configurable(name = "Outgoing mail server")
-	private String emailServer = "127.0.0.1";
+    @Configurable(name = "Outgoing mail server")
+    private String             emailServer        = "127.0.0.1";
 
-	@Configurable(name = "Mail server port")
-	private Integer emailServerPort = 25;
+    @Configurable(name = "Mail server port")
+    private Integer            emailServerPort    = 25;
 
-	@Configurable(name = "E-mail sender")
-	private String emailSender = "safeonline@lin-k.net";
+    @Configurable(name = "E-mail sender")
+    private String             emailSender        = "safeonline@lin-k.net";
 
-	@Configurable(name = "Subject prefix")
-	private String emailSubjectPrefix = "[Safe Online]";
+    @Configurable(name = "Subject prefix")
+    private String             emailSubjectPrefix = "[Safe Online]";
 
-	public void onMessage(Message msg) {
-		try {
 
-			EndUserMessage message = new EndUserMessage(msg);
+    public void onMessage(Message msg) {
 
-			LOG.debug("Message received for: " + message.getDestination()
-					+ " about: " + message.getSubject());
+        try {
 
-			Properties props = new Properties();
-			props.put("mail.smtp.host", this.emailServer);
-			props.put("mail.smtp.port", this.emailServerPort.toString());
-			Session session = Session.getInstance(props, null);
+            EndUserMessage message = new EndUserMessage(msg);
 
-			MimeMessage mimemsg = new MimeMessage(session);
-			mimemsg.setFrom(new InternetAddress(this.emailSender));
-			InternetAddress[] address = { new InternetAddress(message
-					.getDestination()) };
-			mimemsg.setRecipients(javax.mail.Message.RecipientType.TO, address);
-			mimemsg.setSubject(this.emailSubjectPrefix + " "
-					+ message.getSubject());
-			mimemsg.setSentDate(new Date());
+            LOG.debug("Message received for: " + message.getDestination() + " about: " + message.getSubject());
 
-			MimeBodyPart mbp1 = new MimeBodyPart();
-			mbp1.setText(message.getMessage());
-			Multipart mp = new MimeMultipart();
-			mp.addBodyPart(mbp1);
-			mimemsg.setContent(mp);
+            Properties props = new Properties();
+            props.put("mail.smtp.host", this.emailServer);
+            props.put("mail.smtp.port", this.emailServerPort.toString());
+            Session session = Session.getInstance(props, null);
 
-			// send the message
-			Transport.send(mimemsg);
+            MimeMessage mimemsg = new MimeMessage(session);
+            mimemsg.setFrom(new InternetAddress(this.emailSender));
+            InternetAddress[] address = { new InternetAddress(message.getDestination()) };
+            mimemsg.setRecipients(javax.mail.Message.RecipientType.TO, address);
+            mimemsg.setSubject(this.emailSubjectPrefix + " " + message.getSubject());
+            mimemsg.setSentDate(new Date());
 
-		} catch (Exception e) {
-			throw new EJBException(e);
-		}
-	}
+            MimeBodyPart mbp1 = new MimeBodyPart();
+            mbp1.setText(message.getMessage());
+            Multipart mp = new MimeMultipart();
+            mp.addBodyPart(mbp1);
+            mimemsg.setContent(mp);
+
+            // send the message
+            Transport.send(mimemsg);
+
+        } catch (Exception e) {
+            throw new EJBException(e);
+        }
+    }
 
 }

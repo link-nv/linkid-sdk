@@ -93,10 +93,10 @@ import org.opensaml.xml.signature.SignatureException;
 import org.opensaml.xml.signature.Signer;
 import org.w3c.dom.Element;
 
+
 public class SecurityTokenServicePortImplTest {
 
-    static final Log                         LOG = LogFactory
-                                                         .getLog(SecurityTokenServicePortImplTest.class);
+    static final Log                         LOG = LogFactory.getLog(SecurityTokenServicePortImplTest.class);
 
     private WebServiceTestUtils              webServiceTestUtils;
 
@@ -132,26 +132,21 @@ public class SecurityTokenServicePortImplTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         this.privateKey = keyPair.getPrivate();
         this.publicKey = keyPair.getPublic();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
-                "CN=TestApplication");
+        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=TestApplication");
 
-        this.jmxTestUtils.registerActionHandler(
-                IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
+        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
                 new MBeanActionHandler() {
 
-                    public Object invoke(
-                            @SuppressWarnings("unused") Object[] arguments) {
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
                         LOG.debug("returning private key");
                         return SecurityTokenServicePortImplTest.this.privateKey;
                     }
                 });
-        this.jmxTestUtils.registerActionHandler(
-                IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey",
+        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey",
                 new MBeanActionHandler() {
 
-                    public Object invoke(
-                            @SuppressWarnings("unused") Object[] arguments) {
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
                         LOG.debug("returning public key");
                         return SecurityTokenServicePortImplTest.this.publicKey;
@@ -160,8 +155,7 @@ public class SecurityTokenServicePortImplTest {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent(
-                "java:comp/env/wsSecurityConfigurationServiceJndiName",
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
@@ -170,26 +164,19 @@ public class SecurityTokenServicePortImplTest {
         this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         this.mockPkiValidator = createMock(PkiValidator.class);
 
-        this.mockObjects = new Object[] {
-                this.mockWSSecurityConfigurationService,
-                this.mockApplicationAuthenticationService,
-                this.mockDeviceAuthenticationService,
+        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService,
+                this.mockApplicationAuthenticationService, this.mockDeviceAuthenticationService,
                 this.mockNodeAuthenticationService, this.mockPkiValidator };
 
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/WSSecurityConfigurationBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
                 this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/ApplicationAuthenticationServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local",
                 this.mockApplicationAuthenticationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/DeviceAuthenticationServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local",
                 this.mockDeviceAuthenticationService);
-        this.jndiTestUtils.bindComponent(
-                "SafeOnline/NodeAuthenticationServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local",
                 this.mockNodeAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
-                this.mockPkiValidator);
+        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
 
         this.webServiceTestUtils = new WebServiceTestUtils();
 
@@ -197,32 +184,19 @@ public class SecurityTokenServicePortImplTest {
         this.webServiceTestUtils.setUp(port);
 
         String testNodeName = "test-node-name";
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .getMaximumWsSecurityTimestampOffset()).andStubReturn(
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
                 Long.MAX_VALUE);
         expect(
-                this.mockPkiValidator
-                        .validateCertificate(
-                                SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                                this.certificate)).andStubReturn(
-                PkiResult.INVALID);
-        expect(
-                this.mockPkiValidator.validateCertificate(
-                        SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
+                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
                         this.certificate)).andStubReturn(PkiResult.INVALID);
         expect(
-                this.mockPkiValidator.validateCertificate(
-                        SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
+                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
+                        this.certificate)).andStubReturn(PkiResult.INVALID);
+        expect(
+                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
                         this.certificate)).andStubReturn(PkiResult.VALID);
-        expect(
-                this.mockNodeAuthenticationService
-                        .authenticate(this.certificate)).andStubReturn(
-                testNodeName);
-        expect(
-                this.mockWSSecurityConfigurationService
-                        .skipMessageIntegrityCheck(this.certificate))
-                .andReturn(false);
+        expect(this.mockNodeAuthenticationService.authenticate(this.certificate)).andStubReturn(testNodeName);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
     }
@@ -240,15 +214,12 @@ public class SecurityTokenServicePortImplTest {
         /*
          * Next is because Sun loves to endorse crippled versions of Xerces.
          */
-        System
-                .setProperty(
-                        "javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
-                        "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+        System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+                "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
         try {
             DefaultBootstrap.bootstrap();
         } catch (ConfigurationException e) {
-            throw new RuntimeException(
-                    "could not bootstrap the OpenSAML2 library");
+            throw new RuntimeException("could not bootstrap the OpenSAML2 library");
         }
     }
 
@@ -258,24 +229,19 @@ public class SecurityTokenServicePortImplTest {
 
         // setup
         String testIssuer = "test-issuer";
-        SecurityTokenService service = SecurityTokenServiceFactory
-                .newInstance();
+        SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(
-                BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                 this.webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(this.certificate,
-                this.privateKey));
+        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(
-                this.mockNodeAuthenticationService
-                        .getSigningCertificates(testIssuer)).andStubReturn(
+        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
                 Collections.singletonList(this.certificate));
 
         // prepare
@@ -284,23 +250,18 @@ public class SecurityTokenServicePortImplTest {
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
         JAXBElement<String> requestType = objectFactory
-                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#"
-                        + TrustDomainType.NODE);
+                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         request.getAny().add(requestType);
-        JAXBElement<String> tokenType = objectFactory
-                .createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
+        JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
         request.getAny().add(tokenType);
         ValidateTargetType validateTarget = new ValidateTargetType();
 
-        Element responseToken = createAuthResponse("test-in-response-to",
-                testIssuer, "test-subject", 60);
+        Element responseToken = createAuthResponse("test-in-response-to", testIssuer, "test-subject", 60);
         validateTarget.setAny(responseToken);
-        request.getAny()
-                .add(objectFactory.createValidateTarget(validateTarget));
+        request.getAny().add(objectFactory.createValidateTarget(validateTarget));
 
-        RequestSecurityTokenResponseType response = port
-                .requestSecurityToken(request);
+        RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
 
         // verify
         verify(this.mockObjects);
@@ -321,11 +282,9 @@ public class SecurityTokenServicePortImplTest {
         assertEquals(SecurityTokenServiceConstants.STATUS_VALID, statusCode);
     }
 
-    private Element createAuthResponse(String inResponseTo, String issuerName,
-            String subjectName, int validity) {
+    private Element createAuthResponse(String inResponseTo, String issuerName, String subjectName, int validity) {
 
-        Response response = buildXMLObject(Response.class,
-                Response.DEFAULT_ELEMENT_NAME);
+        Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
         DateTime now = new DateTime();
 
@@ -333,113 +292,90 @@ public class SecurityTokenServicePortImplTest {
         try {
             idGenerator = new SecureRandomIdentifierGenerator();
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("secure random init error: "
-                    + e.getMessage(), e);
+            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
         }
         response.setID(idGenerator.generateIdentifier());
         response.setVersion(SAMLVersion.VERSION_20);
         response.setInResponseTo(inResponseTo);
         response.setIssueInstant(now);
 
-        Issuer responseIssuer = buildXMLObject(Issuer.class,
-                Issuer.DEFAULT_ELEMENT_NAME);
+        Issuer responseIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
         responseIssuer.setValue(issuerName);
         response.setIssuer(responseIssuer);
 
-        Status status = buildXMLObject(Status.class,
-                Status.DEFAULT_ELEMENT_NAME);
-        StatusCode statusCode = buildXMLObject(StatusCode.class,
-                StatusCode.DEFAULT_ELEMENT_NAME);
+        Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
+        StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
         statusCode.setValue(StatusCode.SUCCESS_URI);
         status.setStatusCode(statusCode);
         response.setStatus(status);
 
-        Assertion assertion = buildXMLObject(Assertion.class,
-                Assertion.DEFAULT_ELEMENT_NAME);
+        Assertion assertion = buildXMLObject(Assertion.class, Assertion.DEFAULT_ELEMENT_NAME);
         assertion.setID(idGenerator.generateIdentifier());
         assertion.setIssueInstant(now);
         response.getAssertions().add(assertion);
 
-        Issuer assertionIssuer = buildXMLObject(Issuer.class,
-                Issuer.DEFAULT_ELEMENT_NAME);
+        Issuer assertionIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
         assertionIssuer.setValue(issuerName);
         assertion.setIssuer(assertionIssuer);
 
-        Subject subject = buildXMLObject(Subject.class,
-                Subject.DEFAULT_ELEMENT_NAME);
-        NameID nameID = buildXMLObject(NameID.class,
-                NameID.DEFAULT_ELEMENT_NAME);
+        Subject subject = buildXMLObject(Subject.class, Subject.DEFAULT_ELEMENT_NAME);
+        NameID nameID = buildXMLObject(NameID.class, NameID.DEFAULT_ELEMENT_NAME);
         nameID.setValue(subjectName);
         subject.setNameID(nameID);
         assertion.setSubject(subject);
 
-        Conditions conditions = buildXMLObject(Conditions.class,
-                Conditions.DEFAULT_ELEMENT_NAME);
+        Conditions conditions = buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
         conditions.setNotBefore(now);
         conditions.setNotOnOrAfter(now.plusSeconds(validity));
         assertion.setConditions(conditions);
 
-        AuthnStatement authnStatement = buildXMLObject(AuthnStatement.class,
-                AuthnStatement.DEFAULT_ELEMENT_NAME);
+        AuthnStatement authnStatement = buildXMLObject(AuthnStatement.class, AuthnStatement.DEFAULT_ELEMENT_NAME);
         assertion.getAuthnStatements().add(authnStatement);
         authnStatement.setAuthnInstant(now);
-        AuthnContext authnContext = buildXMLObject(AuthnContext.class,
-                AuthnContext.DEFAULT_ELEMENT_NAME);
+        AuthnContext authnContext = buildXMLObject(AuthnContext.class, AuthnContext.DEFAULT_ELEMENT_NAME);
         authnStatement.setAuthnContext(authnContext);
 
-        AuthnContextClassRef authnContextClassRef = buildXMLObject(
-                AuthnContextClassRef.class,
+        AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class,
                 AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
         authnContext.setAuthnContextClassRef(authnContextClassRef);
-        authnContextClassRef
-                .setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI");
+        authnContextClassRef.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI");
 
-        Signature signature = buildXMLObject(Signature.class,
-                Signature.DEFAULT_ELEMENT_NAME);
-        signature
-                .setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-        signature
-                .setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
+        Signature signature = buildXMLObject(Signature.class, Signature.DEFAULT_ELEMENT_NAME);
+        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+        signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
         response.setSignature(signature);
-        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
-                this.publicKey, this.privateKey);
+        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(this.publicKey, this.privateKey);
         signature.setSigningCredential(signingCredential);
 
-        MarshallerFactory marshallerFactory = Configuration
-                .getMarshallerFactory();
+        MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
         Marshaller marshaller = marshallerFactory.getMarshaller(response);
         Element responseElement;
         try {
             responseElement = marshaller.marshall(response);
         } catch (MarshallingException e) {
-            throw new RuntimeException("opensaml2 marshalling error: "
-                    + e.getMessage(), e);
+            throw new RuntimeException("opensaml2 marshalling error: " + e.getMessage(), e);
         }
 
         // sign after marshalling of course
         try {
             Signer.signObject(signature);
         } catch (SignatureException e) {
-            throw new RuntimeException("opensaml2 signing error: "
-                    + e.getMessage(), e);
+            throw new RuntimeException("opensaml2 signing error: " + e.getMessage(), e);
         }
 
         return responseElement;
     }
 
     @SuppressWarnings("unchecked")
-    private static <Type extends XMLObject> Type buildXMLObject(
-            @SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
+    private static <Type extends XMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz,
+            QName objectQName) {
 
-        XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory()
-                .getBuilder(objectQName);
+        XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
         if (builder == null) {
-            throw new RuntimeException(
-                    "Unable to retrieve builder for object QName "
-                            + objectQName);
+            throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
         }
-        Type object = builder.buildObject(objectQName.getNamespaceURI(),
-                objectQName.getLocalPart(), objectQName.getPrefix());
+        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
+                .getPrefix());
         return object;
     }
 }

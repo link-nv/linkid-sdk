@@ -11,6 +11,7 @@ import net.link.safeonline.sdk.exception.SubscriptionFailedException;
 import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
+
 /**
  * WS Notification Producer Service Client interface.
  * 
@@ -27,7 +28,5 @@ public interface NotificationProducerClient extends MessageAccessor {
      * @throws SubscriptionFailedException
      * @throws WSClientTransportException
      */
-    void subscribe(String topic, String address)
-            throws SubscriptionFailedException,
-            WSClientTransportException;
+    void subscribe(String topic, String address) throws SubscriptionFailedException, WSClientTransportException;
 }

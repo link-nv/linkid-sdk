@@ -10,6 +10,7 @@ package net.link.safeonline.applet;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.shared.statement.IdentityProvider;
 
+
 /**
  * Identity provider based on BeID PKCS11 component.
  * 
@@ -18,17 +19,21 @@ import net.link.safeonline.shared.statement.IdentityProvider;
  */
 public class BeIdIdentityProvider implements IdentityProvider {
 
-	private final SmartCard smartCard;
+    private final SmartCard smartCard;
 
-	public BeIdIdentityProvider(SmartCard smartCard) {
-		this.smartCard = smartCard;
-	}
 
-	public String getGivenName() {
-		return this.smartCard.getGivenName();
-	}
+    public BeIdIdentityProvider(SmartCard smartCard) {
 
-	public String getSurname() {
-		return this.smartCard.getSurname();
-	}
+        this.smartCard = smartCard;
+    }
+
+    public String getGivenName() {
+
+        return this.smartCard.getGivenName();
+    }
+
+    public String getSurname() {
+
+        return this.smartCard.getSurname();
+    }
 }

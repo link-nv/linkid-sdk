@@ -20,92 +20,102 @@ import org.apache.commons.logging.LogFactory;
 
 import junit.framework.TestCase;
 
+
 public class EJBTestUtilsTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(EJBTestUtilsTest.class);
+    private static final Log LOG = LogFactory.getLog(EJBTestUtilsTest.class);
 
-	public static interface TestIface {
-		void func();
-	}
 
-	public static class TestClass implements TestIface {
+    public static interface TestIface {
 
-		private static final Log testLOG = LogFactory.getLog(TestClass.class);
+        void func();
+    }
 
-		public void func() {
-			testLOG.debug("func invoked");
-		}
-	}
+    public static class TestClass implements TestIface {
 
-	private static class TestInvocationHandler implements InvocationHandler {
+        private static final Log testLOG = LogFactory.getLog(TestClass.class);
 
-		private static final Log handlerLOG = LogFactory
-				.getLog(TestInvocationHandler.class);
 
-		private final Object object;
+        public void func() {
 
-		public TestInvocationHandler(Object object) {
-			this.object = object;
-		}
+            testLOG.debug("func invoked");
+        }
+    }
 
-		public Object invoke(@SuppressWarnings("unused")
-		Object proxy, Method method, Object[] args) throws Throwable {
-			handlerLOG.debug("invoke");
-			return method.invoke(this.object, args);
-		}
-	}
+    private static class TestInvocationHandler implements InvocationHandler {
 
-	public void testProxy() throws Exception {
-		// setup
-		TestClass origObject = new TestClass();
-		TestInvocationHandler testInvocationHandler = new TestInvocationHandler(
-				origObject);
-		TestIface testObject = (TestIface) Proxy.newProxyInstance(
-				EJBTestUtilsTest.class.getClassLoader(), TestClass.class
-						.getInterfaces(), testInvocationHandler);
+        private static final Log handlerLOG = LogFactory.getLog(TestInvocationHandler.class);
 
-		// operate
-		testObject.func();
+        private final Object     object;
 
-		// verify
-		LOG.debug("testObject type: " + testObject.getClass().getName());
-		assertFalse(testObject instanceof TestClass);
-	}
 
-	private static class TestInterceptor implements MethodInterceptor {
+        public TestInvocationHandler(Object object) {
 
-		private static final Log interceptorLOG = LogFactory
-				.getLog(TestInterceptor.class);
+            this.object = object;
+        }
 
-		private final Object object;
+        public Object invoke(@SuppressWarnings("unused") Object proxy, Method method, Object[] args) throws Throwable {
 
-		public TestInterceptor(Object object) {
-			this.object = object;
-		}
+            handlerLOG.debug("invoke");
+            return method.invoke(this.object, args);
+        }
+    }
 
-		public Object intercept(@SuppressWarnings("unused")
-		Object obj, Method method, Object[] args, @SuppressWarnings("unused")
-		MethodProxy proxy) throws Throwable {
-			interceptorLOG.debug("intercept");
-			return method.invoke(this.object, args);
-		}
-	}
 
-	public void testCgLib() throws Exception {
-		// setup
-		TestClass origObject = new TestClass();
+    public void testProxy() throws Exception {
 
-		Enhancer enhancer = new Enhancer();
-		enhancer.setSuperclass(TestClass.class);
-		TestInterceptor testInterceptor = new TestInterceptor(origObject);
-		enhancer.setCallback(testInterceptor);
-		TestClass object = (TestClass) enhancer.create();
+        // setup
+        TestClass origObject = new TestClass();
+        TestInvocationHandler testInvocationHandler = new TestInvocationHandler(origObject);
+        TestIface testObject = (TestIface) Proxy.newProxyInstance(EJBTestUtilsTest.class.getClassLoader(),
+                TestClass.class.getInterfaces(), testInvocationHandler);
 
-		// operate
-		object.func();
+        // operate
+        testObject.func();
 
-		// verify
-		// assertTrue(object instanceof TestClass);
-		// ^ object is declared as TestClass, making this assert pretty useless
-	}
+        // verify
+        LOG.debug("testObject type: " + testObject.getClass().getName());
+        assertFalse(testObject instanceof TestClass);
+    }
+
+
+    private static class TestInterceptor implements MethodInterceptor {
+
+        private static final Log interceptorLOG = LogFactory.getLog(TestInterceptor.class);
+
+        private final Object     object;
+
+
+        public TestInterceptor(Object object) {
+
+            this.object = object;
+        }
+
+        public Object intercept(@SuppressWarnings("unused") Object obj, Method method, Object[] args,
+                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
+
+            interceptorLOG.debug("intercept");
+            return method.invoke(this.object, args);
+        }
+    }
+
+
+    public void testCgLib() throws Exception {
+
+        // setup
+        TestClass origObject = new TestClass();
+
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(TestClass.class);
+        TestInterceptor testInterceptor = new TestInterceptor(origObject);
+        enhancer.setCallback(testInterceptor);
+        TestClass object = (TestClass) enhancer.create();
+
+        // operate
+        object.func();
+
+        // verify
+        // assertTrue(object instanceof TestClass);
+        // ^ object is declared as TestClass, making this assert pretty useless
+    }
 }

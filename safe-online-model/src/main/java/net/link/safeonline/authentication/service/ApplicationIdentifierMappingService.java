@@ -14,6 +14,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 
+
 /**
  * Interface for identifier mapping service component.
  * 
@@ -23,27 +24,24 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 @Local
 public interface ApplicationIdentifierMappingService {
 
-	/**
-	 * Returns the subject's user id using the application's id scope.
-	 * 
-	 * @param username
-	 * @throws PermissionDeniedException
-	 * @throws ApplicationNotFoundException
-	 * @throws SubscriptionNotFoundException
-	 * @throws SubjectNotFoundException
-	 */
-	String getApplicationUserId(String username)
-			throws PermissionDeniedException, ApplicationNotFoundException,
-			SubscriptionNotFoundException, SubjectNotFoundException;
+    /**
+     * Returns the subject's user id using the application's id scope.
+     * 
+     * @param username
+     * @throws PermissionDeniedException
+     * @throws ApplicationNotFoundException
+     * @throws SubscriptionNotFoundException
+     * @throws SubjectNotFoundException
+     */
+    String getApplicationUserId(String username) throws PermissionDeniedException, ApplicationNotFoundException,
+            SubscriptionNotFoundException, SubjectNotFoundException;
 
-	/**
-	 * Returns the global OLAS user ID using the application's id scope. Returns
-	 * null if not found.
-	 * 
-	 * @param applicationName
-	 * @param applicationUserId
-	 * @throws ApplicationNotFoundException
-	 */
-	String findUserId(String applicationName, String applicationUserId)
-			throws ApplicationNotFoundException;
+    /**
+     * Returns the global OLAS user ID using the application's id scope. Returns null if not found.
+     * 
+     * @param applicationName
+     * @param applicationUserId
+     * @throws ApplicationNotFoundException
+     */
+    String findUserId(String applicationName, String applicationUserId) throws ApplicationNotFoundException;
 }

@@ -37,134 +37,146 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+
 @Entity
 @Table(name = "application_identity")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT applicationIdentity "
-				+ "FROM ApplicationIdentityEntity AS applicationIdentity "
-				+ "WHERE applicationIdentity.application = :application"),
-		@NamedQuery(name = QUERY_LIST_ALL, query = "SELECT applicationIdentity "
-				+ "FROM ApplicationIdentityEntity AS applicationIdentity") })
+        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT applicationIdentity "
+                + "FROM ApplicationIdentityEntity AS applicationIdentity "
+                + "WHERE applicationIdentity.application = :application"),
+        @NamedQuery(name = QUERY_LIST_ALL, query = "SELECT applicationIdentity "
+                + "FROM ApplicationIdentityEntity AS applicationIdentity") })
 public class ApplicationIdentityEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long                       serialVersionUID        = 1L;
 
-	public static final String QUERY_WHERE_APPLICATION = "ai.app";
+    public static final String                      QUERY_WHERE_APPLICATION = "ai.app";
 
-	public static final String QUERY_LIST_ALL = "ai.all";
+    public static final String                      QUERY_LIST_ALL          = "ai.all";
 
-	private ApplicationIdentityPK pk;
+    private ApplicationIdentityPK                   pk;
 
-	private ApplicationEntity application;
+    private ApplicationEntity                       application;
 
-	private Set<ApplicationIdentityAttributeEntity> attributes;
+    private Set<ApplicationIdentityAttributeEntity> attributes;
 
-	public ApplicationIdentityEntity() {
-		this.attributes = new HashSet<ApplicationIdentityAttributeEntity>();
-	}
 
-	public ApplicationIdentityEntity(ApplicationEntity application,
-			long identityVersion) {
-		this.pk = new ApplicationIdentityPK(application.getName(),
-				identityVersion);
-		this.application = application;
-		this.attributes = new HashSet<ApplicationIdentityAttributeEntity>();
-	}
+    public ApplicationIdentityEntity() {
 
-	public static final String APPLICATION_COLUMN_NAME = "application";
+        this.attributes = new HashSet<ApplicationIdentityAttributeEntity>();
+    }
 
-	public static final String IDENTITY_VERSION_COLUMN_NAME = "identityVersion";
+    public ApplicationIdentityEntity(ApplicationEntity application, long identityVersion) {
 
-	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
-			@AttributeOverride(name = "identityVersion", column = @Column(name = IDENTITY_VERSION_COLUMN_NAME)) })
-	public ApplicationIdentityPK getPk() {
-		return this.pk;
-	}
+        this.pk = new ApplicationIdentityPK(application.getName(), identityVersion);
+        this.application = application;
+        this.attributes = new HashSet<ApplicationIdentityAttributeEntity>();
+    }
 
-	public void setPk(ApplicationIdentityPK pk) {
-		this.pk = pk;
-	}
 
-	@Transient
-	public long getIdentityVersion() {
-		return this.pk.getIdentityVersion();
-	}
+    public static final String APPLICATION_COLUMN_NAME      = "application";
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false)
-	public ApplicationEntity getApplication() {
-		return this.application;
-	}
+    public static final String IDENTITY_VERSION_COLUMN_NAME = "identityVersion";
 
-	public void setApplication(ApplicationEntity application) {
-		this.application = application;
-	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationIdentity", cascade = CascadeType.REMOVE)
-	public Set<ApplicationIdentityAttributeEntity> getAttributes() {
-		return this.attributes;
-	}
+    @EmbeddedId
+    @AttributeOverrides( { @AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
+            @AttributeOverride(name = "identityVersion", column = @Column(name = IDENTITY_VERSION_COLUMN_NAME)) })
+    public ApplicationIdentityPK getPk() {
 
-	public void setAttributes(Set<ApplicationIdentityAttributeEntity> attributes) {
-		this.attributes = attributes;
-	}
+        return this.pk;
+    }
 
-	@Transient
-	public List<AttributeTypeEntity> getAttributeTypes() {
-		List<AttributeTypeEntity> attributeTypes = new LinkedList<AttributeTypeEntity>();
-		for (ApplicationIdentityAttributeEntity attribute : this
-				.getAttributes()) {
-			attributeTypes.add(attribute.getAttributeType());
-		}
-		return attributeTypes;
-	}
+    public void setPk(ApplicationIdentityPK pk) {
 
-	@Transient
-	public List<AttributeTypeEntity> getRequiredAttributeTypes() {
-		List<AttributeTypeEntity> requiredAttributeTypes = new LinkedList<AttributeTypeEntity>();
-		for (ApplicationIdentityAttributeEntity attribute : this
-				.getAttributes()) {
-			/*
-			 * This could be optimized via an SQL query, though the identity
-			 * attribute set will always be limited.
-			 */
-			if (false == attribute.isRequired()) {
-				continue;
-			}
-			requiredAttributeTypes.add(attribute.getAttributeType());
-		}
-		return requiredAttributeTypes;
-	}
+        this.pk = pk;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.pk).toHashCode();
-	}
+    @Transient
+    public long getIdentityVersion() {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == obj instanceof ApplicationIdentityEntity) {
-			return false;
-		}
-		ApplicationIdentityEntity rhs = (ApplicationIdentityEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+        return this.pk.getIdentityVersion();
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_APPLICATION)
-		List<ApplicationIdentityEntity> listApplicationIdentities(
-				@QueryParam("application")
-				ApplicationEntity application);
+    @ManyToOne(optional = false)
+    @JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false)
+    public ApplicationEntity getApplication() {
 
-		@QueryMethod(QUERY_LIST_ALL)
-		List<ApplicationIdentityEntity> listApplicationIdentities();
-	}
+        return this.application;
+    }
+
+    public void setApplication(ApplicationEntity application) {
+
+        this.application = application;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationIdentity", cascade = CascadeType.REMOVE)
+    public Set<ApplicationIdentityAttributeEntity> getAttributes() {
+
+        return this.attributes;
+    }
+
+    public void setAttributes(Set<ApplicationIdentityAttributeEntity> attributes) {
+
+        this.attributes = attributes;
+    }
+
+    @Transient
+    public List<AttributeTypeEntity> getAttributeTypes() {
+
+        List<AttributeTypeEntity> attributeTypes = new LinkedList<AttributeTypeEntity>();
+        for (ApplicationIdentityAttributeEntity attribute : this.getAttributes()) {
+            attributeTypes.add(attribute.getAttributeType());
+        }
+        return attributeTypes;
+    }
+
+    @Transient
+    public List<AttributeTypeEntity> getRequiredAttributeTypes() {
+
+        List<AttributeTypeEntity> requiredAttributeTypes = new LinkedList<AttributeTypeEntity>();
+        for (ApplicationIdentityAttributeEntity attribute : this.getAttributes()) {
+            /*
+             * This could be optimized via an SQL query, though the identity attribute set will always be limited.
+             */
+            if (false == attribute.isRequired()) {
+                continue;
+            }
+            requiredAttributeTypes.add(attribute.getAttributeType());
+        }
+        return requiredAttributeTypes;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.pk).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == obj instanceof ApplicationIdentityEntity) {
+            return false;
+        }
+        ApplicationIdentityEntity rhs = (ApplicationIdentityEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_APPLICATION)
+        List<ApplicationIdentityEntity> listApplicationIdentities(
+                @QueryParam("application") ApplicationEntity application);
+
+        @QueryMethod(QUERY_LIST_ALL)
+        List<ApplicationIdentityEntity> listApplicationIdentities();
+    }
 }

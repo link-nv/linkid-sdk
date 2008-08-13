@@ -11,32 +11,33 @@ import javax.ejb.Local;
 
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
+
 @Local
 public interface EditTrustDomain {
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Actions.
-	 */
-	String edit();
+    /*
+     * Actions.
+     */
+    String edit();
 
-	String save() throws TrustDomainNotFoundException;
+    String save() throws TrustDomainNotFoundException;
 
-	String cancel();
+    String cancel();
 
-	/*
-	 * Accessors.
-	 */
-	boolean isPerformOcspCheck();
+    /*
+     * Accessors.
+     */
+    boolean isPerformOcspCheck();
 
-	void setPerformOcspCheck(boolean performOcspCheck);
+    void setPerformOcspCheck(boolean performOcspCheck);
 
-	long getOcspCacheTimeOutMillis();
+    long getOcspCacheTimeOutMillis();
 
-	void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis);
+    void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis);
 
 }

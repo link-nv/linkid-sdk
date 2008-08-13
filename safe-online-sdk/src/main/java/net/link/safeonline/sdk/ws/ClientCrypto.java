@@ -19,92 +19,109 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.components.crypto.Crypto;
 
+
 /**
- * WSS4J Crypto implementation. This component hosts the client certificate and
- * private key as used by the WSS4J library.
+ * WSS4J Crypto implementation. This component hosts the client certificate and private key as used by the WSS4J
+ * library.
  * 
  * @author fcorneli
  * 
  */
 public class ClientCrypto implements Crypto {
 
-	private static final Log LOG = LogFactory.getLog(ClientCrypto.class);
+    private static final Log      LOG = LogFactory.getLog(ClientCrypto.class);
 
-	private final X509Certificate certificate;
+    private final X509Certificate certificate;
 
-	private final PrivateKey privateKey;
+    private final PrivateKey      privateKey;
 
-	public ClientCrypto(X509Certificate certificate, PrivateKey privateKey) {
-		this.certificate = certificate;
-		this.privateKey = privateKey;
-	}
 
-	public String getAliasForX509Cert(Certificate cert) {
-		return null;
-	}
+    public ClientCrypto(X509Certificate certificate, PrivateKey privateKey) {
 
-	public String getAliasForX509Cert(String issuer) {
-		return null;
-	}
+        this.certificate = certificate;
+        this.privateKey = privateKey;
+    }
 
-	public String getAliasForX509Cert(byte[] subjectKeyIdentifier) {
-		return null;
-	}
+    public String getAliasForX509Cert(Certificate cert) {
 
-	public String getAliasForX509Cert(String issuer, BigInteger serialNumber) {
-		return null;
-	}
+        return null;
+    }
 
-	public String getAliasForX509CertThumb(byte[] thumb) {
-		return null;
-	}
+    public String getAliasForX509Cert(String issuer) {
 
-	public String[] getAliasesForDN(String subjectDN) {
-		return null;
-	}
+        return null;
+    }
 
-	public byte[] getCertificateData(boolean reverse,
-			X509Certificate[] certificates) {
-		return null;
-	}
+    public String getAliasForX509Cert(byte[] subjectKeyIdentifier) {
 
-	public CertificateFactory getCertificateFactory() {
-		return null;
-	}
+        return null;
+    }
 
-	public X509Certificate[] getCertificates(String alias) {
-		LOG.debug("getCertificates for alias: " + alias);
-		X509Certificate[] certificates = new X509Certificate[] { this.certificate };
-		return certificates;
-	}
+    public String getAliasForX509Cert(String issuer, BigInteger serialNumber) {
 
-	public String getDefaultX509Alias() {
-		return null;
-	}
+        return null;
+    }
 
-	public KeyStore getKeyStore() {
-		return null;
-	}
+    public String getAliasForX509CertThumb(byte[] thumb) {
 
-	public PrivateKey getPrivateKey(String alias, String password)
-			throws Exception {
-		LOG.debug("getPrivateKey for alias: " + alias);
-		return this.privateKey;
-	}
+        return null;
+    }
 
-	public byte[] getSKIBytesFromCert(X509Certificate cert) {
-		return null;
-	}
+    public String[] getAliasesForDN(String subjectDN) {
 
-	public X509Certificate[] getX509Certificates(byte[] data, boolean reverse) {
-		return null;
-	}
+        return null;
+    }
 
-	public X509Certificate loadCertificate(InputStream inputStream) {
-		return null;
-	}
+    public byte[] getCertificateData(boolean reverse, X509Certificate[] certificates) {
 
-	public boolean validateCertPath(X509Certificate[] certificates) {
-		return false;
-	}
+        return null;
+    }
+
+    public CertificateFactory getCertificateFactory() {
+
+        return null;
+    }
+
+    public X509Certificate[] getCertificates(String alias) {
+
+        LOG.debug("getCertificates for alias: " + alias);
+        X509Certificate[] certificates = new X509Certificate[] { this.certificate };
+        return certificates;
+    }
+
+    public String getDefaultX509Alias() {
+
+        return null;
+    }
+
+    public KeyStore getKeyStore() {
+
+        return null;
+    }
+
+    public PrivateKey getPrivateKey(String alias, String password) throws Exception {
+
+        LOG.debug("getPrivateKey for alias: " + alias);
+        return this.privateKey;
+    }
+
+    public byte[] getSKIBytesFromCert(X509Certificate cert) {
+
+        return null;
+    }
+
+    public X509Certificate[] getX509Certificates(byte[] data, boolean reverse) {
+
+        return null;
+    }
+
+    public X509Certificate loadCertificate(InputStream inputStream) {
+
+        return null;
+    }
+
+    public boolean validateCertPath(X509Certificate[] certificates) {
+
+        return false;
+    }
 }

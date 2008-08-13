@@ -10,26 +10,30 @@ package net.link.safeonline.shared.asn1;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+
 public class DERBitString implements DEREncodable {
 
-	public static final int BIT_STRING = 0x03;
+    public static final int BIT_STRING = 0x03;
 
-	private final byte[] data;
+    private final byte[]    data;
 
-	public DERBitString(byte[] data) {
-		this.data = data;
-	}
 
-	public byte[] getEncoded() {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		out.write(BIT_STRING);
-		try {
-			DERUtils.writeLength(this.data.length + 1, out);
-			out.write(0);
-			out.write(this.data);
-		} catch (IOException e) {
-			throw new RuntimeException("IO error: " + e.getMessage());
-		}
-		return out.toByteArray();
-	}
+    public DERBitString(byte[] data) {
+
+        this.data = data;
+    }
+
+    public byte[] getEncoded() {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        out.write(BIT_STRING);
+        try {
+            DERUtils.writeLength(this.data.length + 1, out);
+            out.write(0);
+            out.write(this.data);
+        } catch (IOException e) {
+            throw new RuntimeException("IO error: " + e.getMessage());
+        }
+        return out.toByteArray();
+    }
 }

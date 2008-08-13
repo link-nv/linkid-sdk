@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.devices;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperDevicePropEdit extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/devices/device-prop-edit.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/devices/device-prop-edit.seam";
 
-	public OperDevicePropEdit() {
-		super(PAGE_NAME);
-	}
+
+    public OperDevicePropEdit() {
+
+        super(PAGE_NAME);
+    }
 }

@@ -13,35 +13,38 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+
 /**
- * Login HTTP Servlet Request Wrapper. This wrapper adds user principal and
- * roles to the request.
+ * Login HTTP Servlet Request Wrapper. This wrapper adds user principal and roles to the request.
  * 
  * @author fcorneli
  * 
  */
 public class LoginHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
-	private final Principal userPrincipal;
+    private final Principal   userPrincipal;
 
-	private final Set<String> roles;
+    private final Set<String> roles;
 
-	public LoginHttpServletRequestWrapper(HttpServletRequest request,
-			Principal userPrincipal, Set<String> roles) {
-		super(request);
 
-		this.userPrincipal = userPrincipal;
-		this.roles = roles;
-	}
+    public LoginHttpServletRequestWrapper(HttpServletRequest request, Principal userPrincipal, Set<String> roles) {
 
-	@Override
-	public Principal getUserPrincipal() {
-		return this.userPrincipal;
-	}
+        super(request);
 
-	@Override
-	public boolean isUserInRole(String role) {
-		boolean userInRole = this.roles.contains(role);
-		return userInRole;
-	}
+        this.userPrincipal = userPrincipal;
+        this.roles = roles;
+    }
+
+    @Override
+    public Principal getUserPrincipal() {
+
+        return this.userPrincipal;
+    }
+
+    @Override
+    public boolean isUserInRole(String role) {
+
+        boolean userInRole = this.roles.contains(role);
+        return userInRole;
+    }
 }

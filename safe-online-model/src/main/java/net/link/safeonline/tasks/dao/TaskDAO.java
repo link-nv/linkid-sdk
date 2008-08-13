@@ -14,16 +14,16 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 
+
 @Local
 public interface TaskDAO {
 
-	TaskEntity findTaskEntity(String jndiName);
+    TaskEntity findTaskEntity(String jndiName);
 
-	List<TaskEntity> listTaskEntities();
+    List<TaskEntity> listTaskEntities();
 
-	TaskEntity addTaskEntity(String jndiName, String name,
-			SchedulingEntity scheduling);
+    TaskEntity addTaskEntity(String jndiName, String name, SchedulingEntity scheduling);
 
-	void removeTaskEntity(TaskEntity taskEntity);
+    void removeTaskEntity(TaskEntity taskEntity);
 
 }

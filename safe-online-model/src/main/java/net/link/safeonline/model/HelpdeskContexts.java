@@ -7,18 +7,19 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 
+
 @Local
 public interface HelpdeskContexts {
 
-	List<HelpdeskContextEntity> listContexts();
+    List<HelpdeskContextEntity> listContexts();
 
-	List<HelpdeskEventEntity> listEvents(Long logId);
+    List<HelpdeskEventEntity> listEvents(Long logId);
 
-	// remove log ( i.e. context and events )
-	void removeLog(Long logId);
+    // remove log ( i.e. context and events )
+    void removeLog(Long logId);
 
-	List<HelpdeskContextEntity> listUserContexts(String user);
+    List<HelpdeskContextEntity> listUserContexts(String user);
 
-	List<String> listUsers();
+    List<String> listUsers();
 
 }

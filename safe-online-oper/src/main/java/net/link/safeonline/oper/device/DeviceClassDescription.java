@@ -13,43 +13,41 @@ import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFou
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceClassDescriptionException;
 
+
 @Local
 public interface DeviceClassDescription {
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Factories
-	 */
-	void deviceClassDescriptionsListFactory()
-			throws DeviceClassNotFoundException;
+    /*
+     * Factories
+     */
+    void deviceClassDescriptionsListFactory() throws DeviceClassNotFoundException;
 
-	/*
-	 * Actions.
-	 */
-	String add() throws ExistingDeviceClassDescriptionException,
-			DeviceClassNotFoundException;
+    /*
+     * Actions.
+     */
+    String add() throws ExistingDeviceClassDescriptionException, DeviceClassNotFoundException;
 
-	String edit();
+    String edit();
 
-	String save();
+    String save();
 
-	String remove() throws DeviceClassDescriptionNotFoundException,
-			DeviceClassNotFoundException;
+    String remove() throws DeviceClassDescriptionNotFoundException, DeviceClassNotFoundException;
 
-	String cancelEdit();
+    String cancelEdit();
 
-	/*
-	 * Acccessors
-	 */
-	String getLanguage();
+    /*
+     * Acccessors
+     */
+    String getLanguage();
 
-	void setLanguage(String language);
+    void setLanguage(String language);
 
-	String getDescription();
+    String getDescription();
 
-	void setDescription(String description);
+    void setDescription(String description);
 }

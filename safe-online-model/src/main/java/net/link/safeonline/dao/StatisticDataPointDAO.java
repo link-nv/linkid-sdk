@@ -15,20 +15,18 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 
+
 @Local
 public interface StatisticDataPointDAO {
 
-	StatisticDataPointEntity addStatisticDataPoint(String name,
-			StatisticEntity statistic, long x, long y, long z);
+    StatisticDataPointEntity addStatisticDataPoint(String name, StatisticEntity statistic, long x, long y, long z);
 
-	List<StatisticDataPointEntity> listStatisticDataPoints(String name,
-			StatisticEntity statistic);
+    List<StatisticDataPointEntity> listStatisticDataPoints(String name, StatisticEntity statistic);
 
-	StatisticDataPointEntity findOrAddStatisticDataPoint(String name,
-			StatisticEntity statistic);
+    StatisticDataPointEntity findOrAddStatisticDataPoint(String name, StatisticEntity statistic);
 
-	void cleanStatisticDataPoints(StatisticEntity statistic);
+    void cleanStatisticDataPoints(StatisticEntity statistic);
 
-	void cleanStatisticDataPoints(StatisticEntity statistic, Date ageLimit);
+    void cleanStatisticDataPoints(StatisticEntity statistic, Date ageLimit);
 
 }

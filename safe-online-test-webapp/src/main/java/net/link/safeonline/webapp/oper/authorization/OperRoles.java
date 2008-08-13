@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.authorization;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperRoles extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/authorization/roles.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/authorization/roles.seam";
 
-	public OperRoles() {
-		super(PAGE_NAME);
-	}
+
+    public OperRoles() {
+
+        super(PAGE_NAME);
+    }
 }

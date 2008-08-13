@@ -10,19 +10,19 @@ package net.link.safeonline.shared.statement;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.asn1.statement.DERIdentityStatement;
 
+
 /**
- * Component for construction of the identity statement. The identity statement
- * links the certificate with the username.
+ * Component for construction of the identity statement. The identity statement links the certificate with the username.
  * 
  * @author fcorneli
  * 
  */
 public class IdentityStatement extends AbstractStatement {
 
-	public IdentityStatement(String sessionId, String user, String operation,
-			IdentityProvider identityProvider, Signer signer) {
-		super(signer, new DERIdentityStatement(signer.getCertificate(),
-				sessionId, user, operation, identityProvider.getGivenName(),
-				identityProvider.getSurname()));
-	}
+    public IdentityStatement(String sessionId, String user, String operation, IdentityProvider identityProvider,
+            Signer signer) {
+
+        super(signer, new DERIdentityStatement(signer.getCertificate(), sessionId, user, operation, identityProvider
+                .getGivenName(), identityProvider.getSurname()));
+    }
 }

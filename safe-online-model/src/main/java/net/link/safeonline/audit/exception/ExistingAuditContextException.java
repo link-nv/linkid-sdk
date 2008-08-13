@@ -11,18 +11,22 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.authentication.exception.ExistingException;
 
+
 @ApplicationException(rollback = true)
 public class ExistingAuditContextException extends ExistingException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final long auditContextId;
+    private final long        auditContextId;
 
-	public ExistingAuditContextException(long auditContextId) {
-		this.auditContextId = auditContextId;
-	}
 
-	public long getAuditContextId() {
-		return this.auditContextId;
-	}
+    public ExistingAuditContextException(long auditContextId) {
+
+        this.auditContextId = auditContextId;
+    }
+
+    public long getAuditContextId() {
+
+        return this.auditContextId;
+    }
 }

@@ -9,9 +9,11 @@ package net.link.safeonline.beid;
 
 public class BeidConstants {
 
-	private BeidConstants() {
-		// empty
-	}
+    private BeidConstants() {
 
-	public static final String JNDI_PREFIX = "SafeOnlineBeid/";
+        // empty
+    }
+
+
+    public static final String JNDI_PREFIX = "SafeOnlineBeid/";
 }

@@ -24,51 +24,50 @@ import net.link.safeonline.pkix.model.bean.PkiProviderManagerBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+
 public class PkiProviderManagerBeanTest extends TestCase {
 
-	private PkiProviderManagerBean testedInstance;
+    private PkiProviderManagerBean testedInstance;
 
-	private PkiProvider mockPkiProvider;
+    private PkiProvider            mockPkiProvider;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		System.setProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY,
-				"org.shiftone.ooc.InitialContextFactoryImpl");
+    @Override
+    protected void setUp() throws Exception {
 
-		InitialContext initialContext = new InitialContext();
-		Context safeOnlineContext = initialContext
-				.createSubcontext("SafeOnline");
-		Context pkixContext = safeOnlineContext.createSubcontext("pkix");
-		this.mockPkiProvider = createMock(PkiProvider.class);
-		pkixContext.bind("test-pkix-provider", this.mockPkiProvider);
+        super.setUp();
 
-		this.testedInstance = new PkiProviderManagerBean();
+        System.setProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.shiftone.ooc.InitialContextFactoryImpl");
 
-		EJBTestUtils.init(this.testedInstance);
-	}
+        InitialContext initialContext = new InitialContext();
+        Context safeOnlineContext = initialContext.createSubcontext("SafeOnline");
+        Context pkixContext = safeOnlineContext.createSubcontext("pkix");
+        this.mockPkiProvider = createMock(PkiProvider.class);
+        pkixContext.bind("test-pkix-provider", this.mockPkiProvider);
 
-	public void testFindTrustDomain() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
+        this.testedInstance = new PkiProviderManagerBean();
 
-		// stubs
-		expect(this.mockPkiProvider.accept(certificate)).andStubReturn(true);
-		expect(this.mockPkiProvider.getReference()).andStubReturn(
-				this.mockPkiProvider);
+        EJBTestUtils.init(this.testedInstance);
+    }
 
-		// prepare
-		replay(this.mockPkiProvider);
+    public void testFindTrustDomain() throws Exception {
 
-		// operate
-		PkiProvider resultPkiProvider = this.testedInstance
-				.findPkiProvider(certificate);
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-		// verify
-		verify(this.mockPkiProvider);
-		assertEquals(this.mockPkiProvider, resultPkiProvider);
-	}
+        // stubs
+        expect(this.mockPkiProvider.accept(certificate)).andStubReturn(true);
+        expect(this.mockPkiProvider.getReference()).andStubReturn(this.mockPkiProvider);
+
+        // prepare
+        replay(this.mockPkiProvider);
+
+        // operate
+        PkiProvider resultPkiProvider = this.testedInstance.findPkiProvider(certificate);
+
+        // verify
+        verify(this.mockPkiProvider);
+        assertEquals(this.mockPkiProvider, resultPkiProvider);
+    }
 }

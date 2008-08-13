@@ -14,20 +14,19 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
+
 @Local
 public interface TrustDomainDAO {
 
-	List<TrustDomainEntity> listTrustDomains();
+    List<TrustDomainEntity> listTrustDomains();
 
-	TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck);
+    TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck);
 
-	TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck,
-			long ocspCachetimeOutMillis);
+    TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck, long ocspCachetimeOutMillis);
 
-	TrustDomainEntity findTrustDomain(String name);
+    TrustDomainEntity findTrustDomain(String name);
 
-	TrustDomainEntity getTrustDomain(String name)
-			throws TrustDomainNotFoundException;
+    TrustDomainEntity getTrustDomain(String name) throws TrustDomainNotFoundException;
 
-	void removeTrustDomain(TrustDomainEntity trustDomain);
+    void removeTrustDomain(TrustDomainEntity trustDomain);
 }

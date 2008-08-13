@@ -15,16 +15,15 @@ import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 
+
 @Local
 public interface AllowedDeviceDAO {
 
-	AllowedDeviceEntity addAllowedDevice(ApplicationEntity application,
-			DeviceEntity device, int weight);
+    AllowedDeviceEntity addAllowedDevice(ApplicationEntity application, DeviceEntity device, int weight);
 
-	AllowedDeviceEntity findAllowedDevice(ApplicationEntity application,
-			DeviceEntity device);
+    AllowedDeviceEntity findAllowedDevice(ApplicationEntity application, DeviceEntity device);
 
-	List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application);
+    List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application);
 
-	void deleteAllowedDevices(ApplicationEntity application);
+    void deleteAllowedDevices(ApplicationEntity application);
 }

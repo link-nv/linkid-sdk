@@ -40,152 +40,164 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Entity
 @Table(name = "trust_point")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_DOMAIN, query = "SELECT trustPoint "
-				+ "FROM TrustPointEntity AS trustPoint "
-				+ "WHERE trustPoint.trustDomain = :trustDomain"),
-		@NamedQuery(name = QUERY_WHERE_CERT_SUBJECT, query = "SELECT trustPoint "
-				+ "FROM TrustPointEntity AS trustPoint "
-				+ "WHERE trustPoint.subjectName = :certificateSubject") })
+        @NamedQuery(name = QUERY_WHERE_DOMAIN, query = "SELECT trustPoint " + "FROM TrustPointEntity AS trustPoint "
+                + "WHERE trustPoint.trustDomain = :trustDomain"),
+        @NamedQuery(name = QUERY_WHERE_CERT_SUBJECT, query = "SELECT trustPoint "
+                + "FROM TrustPointEntity AS trustPoint " + "WHERE trustPoint.subjectName = :certificateSubject") })
 public class TrustPointEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long         serialVersionUID         = 1L;
 
-	public static final String QUERY_WHERE_DOMAIN = "tp.domain";
+    public static final String        QUERY_WHERE_DOMAIN       = "tp.domain";
 
-	public static final String QUERY_WHERE_CERT_SUBJECT = "tp.cert.sub";
+    public static final String        QUERY_WHERE_CERT_SUBJECT = "tp.cert.sub";
 
-	private TrustPointPK pk;
+    private TrustPointPK              pk;
 
-	private byte[] encodedCert;
+    private byte[]                    encodedCert;
 
-	private transient X509Certificate certificate;
+    private transient X509Certificate certificate;
 
-	private String issuerName;
+    private String                    issuerName;
 
-	private String subjectName;
+    private String                    subjectName;
 
-	private TrustDomainEntity trustDomain;
+    private TrustDomainEntity         trustDomain;
 
-	public TrustPointEntity() {
-		// empty
-	}
 
-	public TrustPointEntity(TrustDomainEntity trustDomain,
-			X509Certificate certificate) {
-		this.trustDomain = trustDomain;
-		this.certificate = certificate;
-		this.issuerName = certificate.getIssuerX500Principal().getName();
-		try {
-			this.encodedCert = certificate.getEncoded();
-		} catch (CertificateEncodingException e) {
-			throw new EJBException("cert encoding error: " + e.getMessage());
-		}
-		this.pk = new TrustPointPK(trustDomain, certificate);
-		this.subjectName = this.pk.getSubjectName();
-	}
+    public TrustPointEntity() {
 
-	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "domain", column = @Column(name = "domain")),
-			@AttributeOverride(name = "subjectName", column = @Column(name = "subjectName")),
-			@AttributeOverride(name = "keyId", column = @Column(name = "keyId")) })
-	public TrustPointPK getPk() {
-		return this.pk;
-	}
+        // empty
+    }
 
-	public void setPk(TrustPointPK pk) {
-		this.pk = pk;
-	}
+    public TrustPointEntity(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
-	public String getIssuerName() {
-		return this.issuerName;
-	}
+        this.trustDomain = trustDomain;
+        this.certificate = certificate;
+        this.issuerName = certificate.getIssuerX500Principal().getName();
+        try {
+            this.encodedCert = certificate.getEncoded();
+        } catch (CertificateEncodingException e) {
+            throw new EJBException("cert encoding error: " + e.getMessage());
+        }
+        this.pk = new TrustPointPK(trustDomain, certificate);
+        this.subjectName = this.pk.getSubjectName();
+    }
 
-	public void setIssuerName(String issuerName) {
-		this.issuerName = issuerName;
-	}
+    @EmbeddedId
+    @AttributeOverrides( { @AttributeOverride(name = "domain", column = @Column(name = "domain")),
+            @AttributeOverride(name = "subjectName", column = @Column(name = "subjectName")),
+            @AttributeOverride(name = "keyId", column = @Column(name = "keyId")) })
+    public TrustPointPK getPk() {
 
-	@Column(name = "subjectName", insertable = false, updatable = false)
-	public String getSubjectName() {
-		return this.subjectName;
-	}
+        return this.pk;
+    }
 
-	public void setSubjectName(String subjectName) {
-		this.subjectName = subjectName;
-	}
+    public void setPk(TrustPointPK pk) {
 
-	@Lob
-	@Column(length = 4 * 1024)
-	public byte[] getEncodedCert() {
-		return this.encodedCert;
-	}
+        this.pk = pk;
+    }
 
-	public void setEncodedCert(byte[] encodedCert) {
-		this.encodedCert = encodedCert;
-	}
+    public String getIssuerName() {
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "domain", insertable = false, updatable = false)
-	public TrustDomainEntity getTrustDomain() {
-		return this.trustDomain;
-	}
+        return this.issuerName;
+    }
 
-	public void setTrustDomain(TrustDomainEntity trustDomain) {
-		this.trustDomain = trustDomain;
-	}
+    public void setIssuerName(String issuerName) {
 
-	@Transient
-	public X509Certificate getCertificate() {
-		if (null != this.certificate) {
-			return this.certificate;
-		}
-		try {
-			CertificateFactory certificateFactory = CertificateFactory
-					.getInstance("X.509");
-			InputStream inputStream = new ByteArrayInputStream(this.encodedCert);
-			this.certificate = (X509Certificate) certificateFactory
-					.generateCertificate(inputStream);
-		} catch (CertificateException e) {
-			throw new EJBException("cert factory error: " + e.getMessage());
-		}
-		return this.certificate;
-	}
+        this.issuerName = issuerName;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == obj instanceof TrustPointEntity) {
-			return false;
-		}
-		TrustPointEntity rhs = (TrustPointEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+    @Column(name = "subjectName", insertable = false, updatable = false)
+    public String getSubjectName() {
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.pk).toHashCode();
-	}
+        return this.subjectName;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("pk", this.pk).toString();
-	}
+    public void setSubjectName(String subjectName) {
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_DOMAIN)
-		List<TrustPointEntity> listTrustPoints(
-				@QueryParam("trustDomain") TrustDomainEntity trustDomain);
+        this.subjectName = subjectName;
+    }
 
-		@QueryMethod(QUERY_WHERE_CERT_SUBJECT)
-		List<TrustPointEntity> listTrustPoints(
-				@QueryParam("certificateSubject") String certificateSubject);
-	}
+    @Lob
+    @Column(length = 4 * 1024)
+    public byte[] getEncodedCert() {
+
+        return this.encodedCert;
+    }
+
+    public void setEncodedCert(byte[] encodedCert) {
+
+        this.encodedCert = encodedCert;
+    }
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "domain", insertable = false, updatable = false)
+    public TrustDomainEntity getTrustDomain() {
+
+        return this.trustDomain;
+    }
+
+    public void setTrustDomain(TrustDomainEntity trustDomain) {
+
+        this.trustDomain = trustDomain;
+    }
+
+    @Transient
+    public X509Certificate getCertificate() {
+
+        if (null != this.certificate) {
+            return this.certificate;
+        }
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            InputStream inputStream = new ByteArrayInputStream(this.encodedCert);
+            this.certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+        } catch (CertificateException e) {
+            throw new EJBException("cert factory error: " + e.getMessage());
+        }
+        return this.certificate;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == obj instanceof TrustPointEntity) {
+            return false;
+        }
+        TrustPointEntity rhs = (TrustPointEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.pk).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("pk", this.pk).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_DOMAIN)
+        List<TrustPointEntity> listTrustPoints(@QueryParam("trustDomain") TrustDomainEntity trustDomain);
+
+        @QueryMethod(QUERY_WHERE_CERT_SUBJECT)
+        List<TrustPointEntity> listTrustPoints(@QueryParam("certificateSubject") String certificateSubject);
+    }
 }

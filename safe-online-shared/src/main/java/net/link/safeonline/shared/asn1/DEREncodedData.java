@@ -9,13 +9,16 @@ package net.link.safeonline.shared.asn1;
 
 public class DEREncodedData implements DEREncodable {
 
-	private final byte[] data;
+    private final byte[] data;
 
-	public DEREncodedData(byte[] data) {
-		this.data = data;
-	}
 
-	public byte[] getEncoded() {
-		return this.data;
-	}
+    public DEREncodedData(byte[] data) {
+
+        this.data = data;
+    }
+
+    public byte[] getEncoded() {
+
+        return this.data;
+    }
 }

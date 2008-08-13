@@ -25,6 +25,7 @@ import net.link.safeonline.service.SubjectService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * <h2>{@link DeviceMappingServiceBean} - Service bean for device mappings.</h2>
  * 
@@ -37,49 +38,49 @@ import org.apache.commons.logging.LogFactory;
 @Stateless
 public class DeviceMappingServiceBean implements DeviceMappingService {
 
-	private final static Log LOG = LogFactory
-			.getLog(DeviceMappingServiceBean.class);
+    private final static Log    LOG = LogFactory.getLog(DeviceMappingServiceBean.class);
 
-	@EJB
-	private DeviceMappingDAO deviceMappingDAO;
+    @EJB
+    private DeviceMappingDAO    deviceMappingDAO;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService      subjectService;
 
-	@EJB
-	private DevicePolicyService devicePolicyService;
+    @EJB
+    private DevicePolicyService devicePolicyService;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public DeviceMappingEntity getDeviceMapping(String userId, String deviceName)
-			throws SubjectNotFoundException, DeviceNotFoundException {
-		SubjectEntity subject = this.subjectService.getSubject(userId);
-		DeviceEntity device = this.devicePolicyService.getDevice(deviceName);
 
-		DeviceMappingEntity deviceMapping = this.deviceMappingDAO
-				.findDeviceMapping(subject, device);
-		if (null == deviceMapping)
-			deviceMapping = this.deviceMappingDAO.addDeviceMapping(subject,
-					device);
-		return deviceMapping;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public DeviceMappingEntity getDeviceMapping(String userId, String deviceName) throws SubjectNotFoundException,
+            DeviceNotFoundException {
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 */
-	public DeviceMappingEntity getDeviceMapping(String id)
-			throws DeviceMappingNotFoundException {
-		LOG.debug("get device mapping: " + id);
-		return this.deviceMappingDAO.getDeviceMapping(id);
-	}
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+        DeviceEntity device = this.devicePolicyService.getDevice(deviceName);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject) {
-		return this.deviceMappingDAO.listDeviceMappings(subject);
-	}
+        DeviceMappingEntity deviceMapping = this.deviceMappingDAO.findDeviceMapping(subject, device);
+        if (null == deviceMapping)
+            deviceMapping = this.deviceMappingDAO.addDeviceMapping(subject, device);
+        return deviceMapping;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    public DeviceMappingEntity getDeviceMapping(String id) throws DeviceMappingNotFoundException {
+
+        LOG.debug("get device mapping: " + id);
+        return this.deviceMappingDAO.getDeviceMapping(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject) {
+
+        return this.deviceMappingDAO.listDeviceMappings(subject);
+    }
 
 }

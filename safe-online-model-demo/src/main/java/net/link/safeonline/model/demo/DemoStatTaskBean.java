@@ -24,51 +24,52 @@ import net.link.safeonline.entity.StatisticEntity;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DemoStatTaskBean")
 public class DemoStatTaskBean implements Task {
 
-	@EJB
-	private StatisticDAO statisticDAO;
+    @EJB
+    private StatisticDAO          statisticDAO;
 
-	@EJB
-	private StatisticDataPointDAO statisticDataPointDAO;
+    @EJB
+    private StatisticDataPointDAO statisticDataPointDAO;
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO        applicationDAO;
 
-	private final static String STAT_NAME = "demo stat";
+    private final static String   STAT_NAME   = "demo stat";
 
-	private final static String STAT_DOMAIN = "demo stat domain";
+    private final static String   STAT_DOMAIN = "demo stat domain";
 
-	public String getName() {
-		return "Demo statistic generator";
-	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() {
-		ApplicationEntity application = this.applicationDAO
-				.findApplication(DemoStartableBean.DEMO_APPLICATION_NAME);
-		if (application == null) {
-			return;
-		}
-		StatisticEntity statistic = this.statisticDAO
-				.findStatisticByNameDomainAndApplication(STAT_NAME,
-						STAT_DOMAIN, application);
-		if (statistic == null) {
-			statistic = this.statisticDAO.addStatistic(STAT_NAME, STAT_DOMAIN,
-					application);
-		}
-		Random generator = new Random();
-		this.statisticDataPointDAO.cleanStatisticDataPoints(statistic);
-		this.statisticDataPointDAO.addStatisticDataPoint("cat A", statistic,
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		this.statisticDataPointDAO.addStatisticDataPoint("cat B", statistic,
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		this.statisticDataPointDAO.addStatisticDataPoint("cat C", statistic,
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-		this.statisticDataPointDAO.addStatisticDataPoint("cat D", statistic,
-				generator.nextInt(), generator.nextInt(), generator.nextInt());
-	}
+    public String getName() {
+
+        return "Demo statistic generator";
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void perform() {
+
+        ApplicationEntity application = this.applicationDAO.findApplication(DemoStartableBean.DEMO_APPLICATION_NAME);
+        if (application == null) {
+            return;
+        }
+        StatisticEntity statistic = this.statisticDAO.findStatisticByNameDomainAndApplication(STAT_NAME, STAT_DOMAIN,
+                application);
+        if (statistic == null) {
+            statistic = this.statisticDAO.addStatistic(STAT_NAME, STAT_DOMAIN, application);
+        }
+        Random generator = new Random();
+        this.statisticDataPointDAO.cleanStatisticDataPoints(statistic);
+        this.statisticDataPointDAO.addStatisticDataPoint("cat A", statistic, generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+        this.statisticDataPointDAO.addStatisticDataPoint("cat B", statistic, generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+        this.statisticDataPointDAO.addStatisticDataPoint("cat C", statistic, generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+        this.statisticDataPointDAO.addStatisticDataPoint("cat D", statistic, generator.nextInt(), generator.nextInt(),
+                generator.nextInt());
+    }
 }

@@ -8,17 +8,20 @@ package net.link.safeonline.device.sdk.exception;
 
 public class DeviceFinalizationException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String message;
+    private String            message;
 
-	public DeviceFinalizationException(String message) {
-		this.message = message;
-	}
 
-	@Override
-	public String getMessage() {
-		return this.message;
-	}
+    public DeviceFinalizationException(String message) {
+
+        this.message = message;
+    }
+
+    @Override
+    public String getMessage() {
+
+        return this.message;
+    }
 
 }

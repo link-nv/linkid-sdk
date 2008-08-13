@@ -20,70 +20,74 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;
 
+
 public class SubjectDAOBeanTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(SubjectDAOBeanTest.class);
+    private static final Log  LOG = LogFactory.getLog(SubjectDAOBeanTest.class);
 
-	private SubjectDAO testedInstance;
+    private SubjectDAO        testedInstance;
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SubjectEntity.class);
+    @Override
+    protected void setUp() throws Exception {
 
-		this.testedInstance = this.entityTestManager
-				.newInstance(SubjectDAOBean.class);
-	}
+        super.setUp();
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SubjectEntity.class);
 
-	public void testFindNonExistingSubjectReturnsNull() throws Exception {
-		// setup
-		String nonExistingSubjectLogin = UUID.randomUUID().toString();
+        this.testedInstance = this.entityTestManager.newInstance(SubjectDAOBean.class);
+    }
 
-		// operate
-		SubjectEntity result = this.testedInstance
-				.findSubject(nonExistingSubjectLogin);
+    @Override
+    protected void tearDown() throws Exception {
 
-		// verify
-		assertNull(result);
-	}
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
 
-	public void testAddSubjectAndGet() throws Exception {
-		// setup
-		String subjectLogin = UUID.randomUUID().toString();
+    public void testFindNonExistingSubjectReturnsNull() throws Exception {
 
-		// operate
-		this.testedInstance.addSubject(subjectLogin);
-		SubjectEntity resultSubject = this.testedInstance
-				.getSubject(subjectLogin);
+        // setup
+        String nonExistingSubjectLogin = UUID.randomUUID().toString();
 
-		// verify
-		assertEquals(subjectLogin, resultSubject.getUserId());
-	}
+        // operate
+        SubjectEntity result = this.testedInstance.findSubject(nonExistingSubjectLogin);
 
-	public void testAddingTwiceFails() throws Exception {
-		// setup
-		String subjectLogin = UUID.randomUUID().toString();
+        // verify
+        assertNull(result);
+    }
 
-		// operate
-		this.testedInstance.addSubject(subjectLogin);
+    public void testAddSubjectAndGet() throws Exception {
 
-		// operate & verify
-		try {
-			this.testedInstance.addSubject(subjectLogin);
-			fail();
-		} catch (RollbackException e) {
-			// expected
-			LOG.debug("exception type: " + e.getClass().getName());
-		}
-	}
+        // setup
+        String subjectLogin = UUID.randomUUID().toString();
+
+        // operate
+        this.testedInstance.addSubject(subjectLogin);
+        SubjectEntity resultSubject = this.testedInstance.getSubject(subjectLogin);
+
+        // verify
+        assertEquals(subjectLogin, resultSubject.getUserId());
+    }
+
+    public void testAddingTwiceFails() throws Exception {
+
+        // setup
+        String subjectLogin = UUID.randomUUID().toString();
+
+        // operate
+        this.testedInstance.addSubject(subjectLogin);
+
+        // operate & verify
+        try {
+            this.testedInstance.addSubject(subjectLogin);
+            fail();
+        } catch (RollbackException e) {
+            // expected
+            LOG.debug("exception type: " + e.getClass().getName());
+        }
+    }
 }

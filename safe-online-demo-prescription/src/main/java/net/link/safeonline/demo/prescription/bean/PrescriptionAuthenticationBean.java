@@ -17,18 +17,20 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
+
 @Stateless
 @Name("prescriptionAuthentication")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionAuthenticationBean/local")
-public class PrescriptionAuthenticationBean implements
-		PrescriptionAuthentication {
+public class PrescriptionAuthenticationBean implements PrescriptionAuthentication {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log log;
 
-	public String authenticate(String target) {
-		this.log.debug("authentication for target: #0", target);
-		String result = SafeOnlineLoginUtils.login(target);
-		return result;
-	}
+
+    public String authenticate(String target) {
+
+        this.log.debug("authentication for target: #0", target);
+        String result = SafeOnlineLoginUtils.login(target);
+        return result;
+    }
 }

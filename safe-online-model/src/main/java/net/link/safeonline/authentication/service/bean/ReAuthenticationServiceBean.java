@@ -36,101 +36,103 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @Stateful
-@Interceptors( { AuditContextManager.class, AccessAuditLogger.class,
-		InputValidation.class })
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
-	// TODO: update for remote devices
+    // TODO: update for remote devices
 
-	private final static Log LOG = LogFactory
-			.getLog(ReAuthenticationServiceBean.class);
+    private final static Log      LOG = LogFactory.getLog(ReAuthenticationServiceBean.class);
 
-	private SubjectEntity authenticatedSubject;
+    private SubjectEntity         authenticatedSubject;
 
-	private Set<DeviceEntity> authenticationDevices;
+    private Set<DeviceEntity>     authenticationDevices;
 
-	@EJB
-	private DeviceDAO deviceDAO;
+    @EJB
+    private DeviceDAO             deviceDAO;
 
-	@EJB
-	private SubjectManager subjectManager;
+    @EJB
+    private SubjectManager        subjectManager;
 
-	@EJB
-	private PasswordDeviceService passwordDeviceService;
+    @EJB
+    private PasswordDeviceService passwordDeviceService;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		LOG.debug("PostConstruct");
-	}
 
-	@DenyAll
-	public Set<DeviceEntity> getAuthenticatedDevices() {
-		return this.authenticationDevices;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	private void addAuthenticationDevice(DeviceEntity authenticationDevice) {
-		LOG.debug("set re-auth device: " + authenticationDevice.getName());
-		if (null == this.authenticationDevices)
-			this.authenticationDevices = new HashSet<DeviceEntity>();
-		this.authenticationDevices.add(authenticationDevice);
-	}
+        LOG.debug("PostConstruct");
+    }
 
-	/**
-	 * Sets the re-authenticated subject. If already set checks if its the same.
-	 * 
-	 * @param subject
-	 * @throws SubjectMismatchException
-	 * @throws PermissionDeniedException
-	 */
-	@DenyAll
-	public void setAuthenticatedSubject(SubjectEntity subject)
-			throws SubjectMismatchException, PermissionDeniedException {
-		LOG.debug("set re-auth subject: " + subject.getUserId());
-		SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
-		if (targetSubject.equals(subject))
-			throw new PermissionDeniedException(
-					"target subject is equals source subject");
-		if (null == this.authenticatedSubject) {
-			this.authenticatedSubject = subject;
-			return;
-		}
-		if (!this.authenticatedSubject.equals(subject))
-			throw new SubjectMismatchException();
-	}
+    @DenyAll
+    public Set<DeviceEntity> getAuthenticatedDevices() {
 
-	@DenyAll
-	public boolean authenticate(@NonEmptyString
-	String login, @NonEmptyString
-	String password) throws SubjectNotFoundException, DeviceNotFoundException,
-			SubjectMismatchException, PermissionDeniedException {
-		SubjectEntity subject = this.passwordDeviceService.authenticate(login,
-				password);
-		if (null == subject)
-			return false;
-		LOG.debug("sucessfully authenticated " + login);
+        return this.authenticationDevices;
+    }
 
-		/*
-		 * Safe the state in this stateful session bean.
-		 */
-		setAuthenticatedSubject(subject);
-		DeviceEntity passwordDevice = this.deviceDAO
-				.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-		addAuthenticationDevice(passwordDevice);
+    private void addAuthenticationDevice(DeviceEntity authenticationDevice) {
 
-		/*
-		 * Communicate that the authentication process can continue.
-		 */
-		return true;
-	}
+        LOG.debug("set re-auth device: " + authenticationDevice.getName());
+        if (null == this.authenticationDevices)
+            this.authenticationDevices = new HashSet<DeviceEntity>();
+        this.authenticationDevices.add(authenticationDevice);
+    }
 
-	@DenyAll
-	@Remove
-	public void abort() {
-		LOG.debug("abort");
-		this.authenticatedSubject = null;
-		this.authenticationDevices = null;
-	}
+    /**
+     * Sets the re-authenticated subject. If already set checks if its the same.
+     * 
+     * @param subject
+     * @throws SubjectMismatchException
+     * @throws PermissionDeniedException
+     */
+    @DenyAll
+    public void setAuthenticatedSubject(SubjectEntity subject) throws SubjectMismatchException,
+            PermissionDeniedException {
+
+        LOG.debug("set re-auth subject: " + subject.getUserId());
+        SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
+        if (targetSubject.equals(subject))
+            throw new PermissionDeniedException("target subject is equals source subject");
+        if (null == this.authenticatedSubject) {
+            this.authenticatedSubject = subject;
+            return;
+        }
+        if (!this.authenticatedSubject.equals(subject))
+            throw new SubjectMismatchException();
+    }
+
+    @DenyAll
+    public boolean authenticate(@NonEmptyString String login, @NonEmptyString String password)
+            throws SubjectNotFoundException, DeviceNotFoundException, SubjectMismatchException,
+            PermissionDeniedException {
+
+        SubjectEntity subject = this.passwordDeviceService.authenticate(login, password);
+        if (null == subject)
+            return false;
+        LOG.debug("sucessfully authenticated " + login);
+
+        /*
+         * Safe the state in this stateful session bean.
+         */
+        setAuthenticatedSubject(subject);
+        DeviceEntity passwordDevice = this.deviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        addAuthenticationDevice(passwordDevice);
+
+        /*
+         * Communicate that the authentication process can continue.
+         */
+        return true;
+    }
+
+    @DenyAll
+    @Remove
+    public void abort() {
+
+        LOG.debug("abort");
+        this.authenticatedSubject = null;
+        this.authenticationDevices = null;
+    }
 
 }

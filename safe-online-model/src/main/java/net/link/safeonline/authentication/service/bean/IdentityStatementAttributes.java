@@ -9,5 +9,5 @@ package net.link.safeonline.authentication.service.bean;
 
 public enum IdentityStatementAttributes {
 
-	SURNAME, GIVEN_NAME, AUTH_CERT
+    SURNAME, GIVEN_NAME, AUTH_CERT
 }

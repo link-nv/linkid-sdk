@@ -19,62 +19,56 @@ import net.link.safeonline.performance.service.DriverProfileService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 /**
  * <h2>{@link DriverProfileServiceBean}<br>
  * <sub>Service bean for {@link DriverProfileEntity}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see DriverProfileService
  * @author mbillemo
  */
 @Stateless
 @LocalBinding(jndiBinding = DriverProfileService.BINDING)
-public class DriverProfileServiceBean extends AbstractProfilingServiceBean implements
-		DriverProfileService {
+public class DriverProfileServiceBean extends AbstractProfilingServiceBean implements DriverProfileService {
 
-	@Resource
-	SessionContext ctx;
+    @Resource
+    SessionContext ctx;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public DriverProfileEntity addProfile(String driverClassName,
-			ExecutionEntity execution) {
 
-		DriverProfileEntity profile = new DriverProfileEntity(driverClassName,
-				execution);
-		this.em.persist(profile);
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public DriverProfileEntity addProfile(String driverClassName, ExecutionEntity execution) {
 
-		return profile;
-	}
+        DriverProfileEntity profile = new DriverProfileEntity(driverClassName, execution);
+        this.em.persist(profile);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public DriverProfileEntity getProfile(String driverClassName,
-			ExecutionEntity execution) {
+        return profile;
+    }
 
-		try {
-			return (DriverProfileEntity) this.em.createNamedQuery(
-					DriverProfileEntity.findByExecution).setParameter(
-					"driverClassName", driverClassName).setParameter(
-					"execution", execution).getSingleResult();
-		} catch (NoResultException e) {
-			if (this.ctx == null) {
-				LOG.warn("No EJB3 context found: "
-						+ "assuming we're running outside a container.");
+    /**
+     * {@inheritDoc}
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public DriverProfileEntity getProfile(String driverClassName, ExecutionEntity execution) {
 
-				return addProfile(driverClassName, execution);
-			}
+        try {
+            return (DriverProfileEntity) this.em.createNamedQuery(DriverProfileEntity.findByExecution).setParameter(
+                    "driverClassName", driverClassName).setParameter("execution", execution).getSingleResult();
+        } catch (NoResultException e) {
+            if (this.ctx == null) {
+                LOG.warn("No EJB3 context found: " + "assuming we're running outside a container.");
 
-			return this.ctx.getBusinessObject(DriverProfileService.class)
-					.addProfile(driverClassName, execution);
-		}
+                return addProfile(driverClassName, execution);
+            }
 
-	}
+            return this.ctx.getBusinessObject(DriverProfileService.class).addProfile(driverClassName, execution);
+        }
+
+    }
 }

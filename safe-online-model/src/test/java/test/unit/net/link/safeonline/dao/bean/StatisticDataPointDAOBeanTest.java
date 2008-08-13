@@ -20,59 +20,55 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;
 
+
 public class StatisticDataPointDAOBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager         entityTestManager;
 
-	private StatisticDataPointDAOBean testedInstance;
+    private StatisticDataPointDAOBean testedInstance;
 
-	private StatisticDAOBean statisticDAO;
+    private StatisticDAOBean          statisticDAO;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.entityTestManager = new EntityTestManager();
-		/*
-		 * If you add entities to this list, also add them to
-		 * safe-online-sql-ddl.
-		 */
-		this.entityTestManager.setUp(StatisticEntity.class,
-				StatisticDataPointEntity.class, ApplicationEntity.class,
-				ApplicationOwnerEntity.class, SubjectEntity.class);
-		// StatisticDataPointEntity.class,
-		this.testedInstance = new StatisticDataPointDAOBean();
-		this.statisticDAO = new StatisticDAOBean();
 
-		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.statisticDAO, this.entityTestManager
-				.getEntityManager());
+    @Override
+    protected void setUp() throws Exception {
 
-		EJBTestUtils.init(this.statisticDAO);
-		EJBTestUtils.init(this.testedInstance);
-	}
+        super.setUp();
+        this.entityTestManager = new EntityTestManager();
+        /*
+         * If you add entities to this list, also add them to safe-online-sql-ddl.
+         */
+        this.entityTestManager.setUp(StatisticEntity.class, StatisticDataPointEntity.class, ApplicationEntity.class,
+                ApplicationOwnerEntity.class, SubjectEntity.class);
+        // StatisticDataPointEntity.class,
+        this.testedInstance = new StatisticDataPointDAOBean();
+        this.statisticDAO = new StatisticDAOBean();
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.statisticDAO, this.entityTestManager.getEntityManager());
 
-	public void testStatisticDataPoint() {
-		// setup
-		Random generator = new Random();
-		StatisticEntity statistic = this.statisticDAO.addStatistic("test",
-				"domain", null);
+        EJBTestUtils.init(this.statisticDAO);
+        EJBTestUtils.init(this.testedInstance);
+    }
 
-		// operate
-		this.testedInstance.addStatisticDataPoint("cat A", statistic, generator
-				.nextInt(), 0, 0);
-		this.testedInstance.addStatisticDataPoint("cat B", statistic, generator
-				.nextInt(), 0, 0);
-		this.testedInstance.cleanStatisticDataPoints(statistic);
-		this.testedInstance.addStatisticDataPoint("cat A", statistic, generator
-				.nextInt(), 0, 0);
-		this.testedInstance.addStatisticDataPoint("cat B", statistic, generator
-				.nextInt(), 0, 0);
-	}
+    @Override
+    protected void tearDown() throws Exception {
+
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
+
+    public void testStatisticDataPoint() {
+
+        // setup
+        Random generator = new Random();
+        StatisticEntity statistic = this.statisticDAO.addStatistic("test", "domain", null);
+
+        // operate
+        this.testedInstance.addStatisticDataPoint("cat A", statistic, generator.nextInt(), 0, 0);
+        this.testedInstance.addStatisticDataPoint("cat B", statistic, generator.nextInt(), 0, 0);
+        this.testedInstance.cleanStatisticDataPoints(statistic);
+        this.testedInstance.addStatisticDataPoint("cat A", statistic, generator.nextInt(), 0, 0);
+        this.testedInstance.addStatisticDataPoint("cat B", statistic, generator.nextInt(), 0, 0);
+    }
 }

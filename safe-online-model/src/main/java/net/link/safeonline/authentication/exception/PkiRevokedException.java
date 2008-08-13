@@ -11,6 +11,7 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class PkiRevokedException extends SafeOnlineException {
 

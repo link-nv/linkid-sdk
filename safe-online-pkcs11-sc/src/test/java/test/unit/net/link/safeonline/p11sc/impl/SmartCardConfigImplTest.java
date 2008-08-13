@@ -10,42 +10,47 @@ package test.unit.net.link.safeonline.p11sc.impl;
 import junit.framework.TestCase;
 import net.link.safeonline.p11sc.impl.SmartCardConfigImpl;
 
+
 public class SmartCardConfigImplTest extends TestCase {
 
-	private String testAlias;
+    private String              testAlias;
 
-	private SmartCardConfigImpl testedInstance;
+    private SmartCardConfigImpl testedInstance;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.testAlias = "test-alias-" + getName();
+    @Override
+    protected void setUp() throws Exception {
 
-		this.testedInstance = new SmartCardConfigImpl(this.testAlias);
-	}
+        super.setUp();
 
-	public void testGetAlias() throws Exception {
-		// operate
-		String result = this.testedInstance.getCardAlias();
+        this.testAlias = "test-alias-" + getName();
 
-		// verify
-		assertEquals(this.testAlias, result);
-	}
+        this.testedInstance = new SmartCardConfigImpl(this.testAlias);
+    }
 
-	public void testSetAuthAndSignKeyAliases() throws Exception {
-		// setup
-		String authKeyAlias = "test-auth-alias";
-		String signKeyAlias = "test-sign-alias";
+    public void testGetAlias() throws Exception {
 
-		// operate
-		this.testedInstance.setAuthenticationKeyAlias(authKeyAlias);
-		this.testedInstance.setSignatureKeyAlias(signKeyAlias);
-		String authResult = this.testedInstance.getAuthenticationKeyAlias();
-		String signResult = this.testedInstance.getSignatureKeyAlias();
+        // operate
+        String result = this.testedInstance.getCardAlias();
 
-		// verify
-		assertEquals(authKeyAlias, authResult);
-		assertEquals(signKeyAlias, signResult);
-	}
+        // verify
+        assertEquals(this.testAlias, result);
+    }
+
+    public void testSetAuthAndSignKeyAliases() throws Exception {
+
+        // setup
+        String authKeyAlias = "test-auth-alias";
+        String signKeyAlias = "test-sign-alias";
+
+        // operate
+        this.testedInstance.setAuthenticationKeyAlias(authKeyAlias);
+        this.testedInstance.setSignatureKeyAlias(signKeyAlias);
+        String authResult = this.testedInstance.getAuthenticationKeyAlias();
+        String signResult = this.testedInstance.getSignatureKeyAlias();
+
+        // verify
+        assertEquals(authKeyAlias, authResult);
+        assertEquals(signKeyAlias, signResult);
+    }
 }

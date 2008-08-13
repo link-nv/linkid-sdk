@@ -34,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jgroups.Address;
 
+
 /**
  * <h2>{@link ScenarioRemoting}<br>
  * <sub>This class takes care of communication with the remote agent via RMI.</sub></h2>
@@ -46,256 +47,237 @@ import org.jgroups.Address;
  */
 public class ScenarioRemoting {
 
-	private static Log LOG = LogFactory.getLog(ScenarioRemoting.class);
+    private static Log                                LOG         = LogFactory.getLog(ScenarioRemoting.class);
 
-	private static Map<Thread, MBeanServerConnection> connections = Collections
-			.synchronizedMap(new HashMap<Thread, MBeanServerConnection>());
+    private static Map<Thread, MBeanServerConnection> connections = Collections
+                                                                          .synchronizedMap(new HashMap<Thread, MBeanServerConnection>());
 
-	private ObjectName agentService;
+    private ObjectName                                agentService;
 
-	public ScenarioRemoting() {
 
-		try {
-			this.agentService = new ObjectName(
-					"safeonline.performance:name=AgentService");
-		}
+    public ScenarioRemoting() {
 
-		catch (MalformedObjectNameException e) {
-			LOG.error("The Agent Service is not available.", e);
-			throw new RuntimeException(e);
-		}
-	}
+        try {
+            this.agentService = new ObjectName("safeonline.performance:name=AgentService");
+        }
 
-	/**
-	 * Retrieve an {@link InitialContext} for the JNDI of the given agent.
-	 */
-	public static InitialContext getInitialContext(Address agent)
-			throws NamingException {
+        catch (MalformedObjectNameException e) {
+            LOG.error("The Agent Service is not available.", e);
+            throw new RuntimeException(e);
+        }
+    }
 
-		Hashtable<String, String> environment = new Hashtable<String, String>();
+    /**
+     * Retrieve an {@link InitialContext} for the JNDI of the given agent.
+     */
+    public static InitialContext getInitialContext(Address agent) throws NamingException {
 
-		String jndiUrl = String.format("jnp://%s:1099", agent.toString().split(
-				":")[0]);
-		environment.put(Context.INITIAL_CONTEXT_FACTORY,
-				"org.jnp.interfaces.NamingContextFactory");
-		environment.put(Context.PROVIDER_URL, jndiUrl);
+        Hashtable<String, String> environment = new Hashtable<String, String>();
 
-		return new InitialContext(environment);
-	}
+        String jndiUrl = String.format("jnp://%s:1099", agent.toString().split(":")[0]);
+        environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
+        environment.put(Context.PROVIDER_URL, jndiUrl);
 
-	public static void shutdown(@SuppressWarnings("unused") Thread thread) {
+        return new InitialContext(environment);
+    }
 
-		// TODO
-	}
+    public static void shutdown(@SuppressWarnings("unused") Thread thread) {
 
-	/**
-	 * Invoke a method on the agent service deployed at AP of the given agent.
-	 * 
-	 * @throws IllegalStateException
-	 *             When the RMI adaptor is not available on the given agent.
-	 */
-	private Object invokeFor(Address agent, String methodName,
-			Object[] arguments, String[] argumentTypes) throws MBeanException,
-			IllegalStateException {
+        // TODO
+    }
 
-		try {
-			InitialContext context = getInitialContext(agent);
-			MBeanServerConnection rmi = (MBeanServerConnection) context
-					.lookup("jmx/rmi/RMIAdaptor");
+    /**
+     * Invoke a method on the agent service deployed at AP of the given agent.
+     * 
+     * @throws IllegalStateException
+     *             When the RMI adaptor is not available on the given agent.
+     */
+    private Object invokeFor(Address agent, String methodName, Object[] arguments, String[] argumentTypes)
+            throws MBeanException, IllegalStateException {
 
-			connections.put(Thread.currentThread(), rmi);
-			return rmi.invoke(this.agentService, methodName, arguments,
-					argumentTypes);
-		}
+        try {
+            InitialContext context = getInitialContext(agent);
+            MBeanServerConnection rmi = (MBeanServerConnection) context.lookup("jmx/rmi/RMIAdaptor");
 
-		catch (IOException e) {
-			LOG.error("Could not talk to the MBean Server.", e);
-			throw new RuntimeException(e);
-		}
+            connections.put(Thread.currentThread(), rmi);
+            return rmi.invoke(this.agentService, methodName, arguments, argumentTypes);
+        }
 
-		catch (MBeanException e) {
-			throw e;
-		}
+        catch (IOException e) {
+            LOG.error("Could not talk to the MBean Server.", e);
+            throw new RuntimeException(e);
+        }
 
-		catch (JMException e) {
-			LOG.error("Failed invoking " + methodName + ".", e);
-			throw new RuntimeException(e);
-		}
+        catch (MBeanException e) {
+            throw e;
+        }
 
-		catch (NamingException e) {
-			throw new IllegalStateException("RMI Adaptor not found on " + agent
-					+ ".", e);
-		}
+        catch (JMException e) {
+            LOG.error("Failed invoking " + methodName + ".", e);
+            throw new RuntimeException(e);
+        }
 
-		finally {
-			connections.remove(Thread.currentThread());
-		}
-	}
+        catch (NamingException e) {
+            throw new IllegalStateException("RMI Adaptor not found on " + agent + ".", e);
+        }
 
-	/**
-	 * Upload the application that resides in the given file as EAR.<br>
-	 * <br>
-	 * Note: Maximum application size is: 2147483647 Bytes (2GB).
-	 */
-	public void upload(Address agent, File application) {
+        finally {
+            connections.remove(Thread.currentThread());
+        }
+    }
 
-		byte[] applicationData = new byte[(int) application.length()];
+    /**
+     * Upload the application that resides in the given file as EAR.<br>
+     * <br>
+     * Note: Maximum application size is: 2147483647 Bytes (2GB).
+     */
+    public void upload(Address agent, File application) {
 
-		try {
-			BufferedInputStream in = new BufferedInputStream(
-					new FileInputStream(application));
-			in.read(applicationData);
-			in.close();
-		}
+        byte[] applicationData = new byte[(int) application.length()];
 
-		catch (IOException e) {
-			LOG.error("Could not read in the Scenario's data.", e);
-			throw new RuntimeException(e);
-		}
+        try {
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(application));
+            in.read(applicationData);
+            in.close();
+        }
 
-		try {
-			invokeFor(agent, "upload", new Object[] { applicationData },
-					new String[] { "[B" });
-		} catch (MBeanException e) {
-			LOG.error("Server error during upload!", e);
-		}
-	}
+        catch (IOException e) {
+            LOG.error("Could not read in the Scenario's data.", e);
+            throw new RuntimeException(e);
+        }
 
-	/**
-	 * Deploy the previously uploaded application.
-	 */
-	public void deploy(Address agent) {
+        try {
+            invokeFor(agent, "upload", new Object[] { applicationData }, new String[] { "[B" });
+        } catch (MBeanException e) {
+            LOG.error("Server error during upload!", e);
+        }
+    }
 
-		try {
-			invokeFor(agent, "deploy", new Object[] {}, new String[] {});
-		} catch (MBeanException e) {
-			LOG.error("Server error during deploy!", e);
-		}
-	}
+    /**
+     * Deploy the previously uploaded application.
+     */
+    public void deploy(Address agent) {
 
-	/**
-	 * Deploy the previously uploaded application.
-	 */
-	public void execute(Address agent, String scenarioName, Integer agents,
-			Integer workers, Long duration, String olasHost, Boolean useSsl,
-			Date startTime) {
+        try {
+            invokeFor(agent, "deploy", new Object[] {}, new String[] {});
+        } catch (MBeanException e) {
+            LOG.error("Server error during deploy!", e);
+        }
+    }
 
-		try {
-			invokeFor(agent, "execute", new Object[] { scenarioName, agents,
-					workers, duration, olasHost, useSsl, startTime },
-					new String[] { String.class.getName(),
-							Integer.class.getName(), Integer.class.getName(),
-							Long.class.getName(), String.class.getName(),
-							Boolean.class.getName(), Date.class.getName() });
-		} catch (MBeanException e) {
-			LOG.error("Server error during execute!", e);
-		}
-	}
+    /**
+     * Deploy the previously uploaded application.
+     */
+    public void execute(Address agent, String scenarioName, Integer agents, Integer workers, Long duration,
+            String olasHost, Boolean useSsl, Date startTime) {
 
-	/**
-	 * @see Agent#getCharts(Date)
-	 */
-	public ScenarioExecution getCharts(Address agent, Date startTime) {
+        try {
+            invokeFor(agent, "execute", new Object[] { scenarioName, agents, workers, duration, olasHost, useSsl,
+                    startTime }, new String[] { String.class.getName(), Integer.class.getName(),
+                    Integer.class.getName(), Long.class.getName(), String.class.getName(), Boolean.class.getName(),
+                    Date.class.getName() });
+        } catch (MBeanException e) {
+            LOG.error("Server error during execute!", e);
+        }
+    }
 
-		try {
-			return (ScenarioExecution) invokeFor(agent, "getCharts",
-					new Object[] { startTime }, new String[] { Date.class
-							.getName() });
-		} catch (MBeanException e) {
-			LOG.error("Server error during stats retrieval!", e);
+    /**
+     * @see Agent#getCharts(Date)
+     */
+    public ScenarioExecution getCharts(Address agent, Date startTime) {
 
-			return null;
-		}
-	}
+        try {
+            return (ScenarioExecution) invokeFor(agent, "getCharts", new Object[] { startTime },
+                    new String[] { Date.class.getName() });
+        } catch (MBeanException e) {
+            LOG.error("Server error during stats retrieval!", e);
 
-	/**
-	 * @see Agent#getState()
-	 */
-	public AgentState getState(Address agent) {
+            return null;
+        }
+    }
 
-		try {
-			return (AgentState) invokeFor(agent, "getState", new Object[] {},
-					new String[] {});
-		} catch (MBeanException e) {
-			LOG.error("Server error during state retrieval!", e);
-		}
+    /**
+     * @see Agent#getState()
+     */
+    public AgentState getState(Address agent) {
 
-		return null;
-	}
+        try {
+            return (AgentState) invokeFor(agent, "getState", new Object[] {}, new String[] {});
+        } catch (MBeanException e) {
+            LOG.error("Server error during state retrieval!", e);
+        }
 
-	/**
-	 * @see Agent#getTransit()
-	 */
-	public AgentState getTransit(Address agent) {
+        return null;
+    }
 
-		try {
-			return (AgentState) invokeFor(agent, "getTransit", new Object[] {},
-					new String[] {});
-		} catch (MBeanException e) {
-			LOG.error("Server error during transit retrieval!", e);
-		}
+    /**
+     * @see Agent#getTransit()
+     */
+    public AgentState getTransit(Address agent) {
 
-		return null;
-	}
+        try {
+            return (AgentState) invokeFor(agent, "getTransit", new Object[] {}, new String[] {});
+        } catch (MBeanException e) {
+            LOG.error("Server error during transit retrieval!", e);
+        }
 
-	/**
-	 * @see Agent#getError()
-	 */
-	public Throwable getError(Address agent) {
+        return null;
+    }
 
-		try {
-			return (Throwable) invokeFor(agent, "getError", new Object[] {},
-					new String[] {});
-		} catch (MBeanException e) {
-			return e;
-		}
-	}
+    /**
+     * @see Agent#getError()
+     */
+    public Throwable getError(Address agent) {
 
-	/**
-	 * @see Agent#getExecutions()
-	 */
-	@SuppressWarnings("unchecked")
-	public Set<ScenarioExecution> getExecutions(Address agent)
-			throws NamingException {
+        try {
+            return (Throwable) invokeFor(agent, "getError", new Object[] {}, new String[] {});
+        } catch (MBeanException e) {
+            return e;
+        }
+    }
 
-		try {
-			return (Set<ScenarioExecution>) invokeFor(agent, "getExecutions",
-					new Object[] {}, new String[] {});
-		} catch (MBeanException e) {
-			if (e.getCause() instanceof NamingException)
-				throw (NamingException) e.getCause();
+    /**
+     * @see Agent#getExecutions()
+     */
+    @SuppressWarnings("unchecked")
+    public Set<ScenarioExecution> getExecutions(Address agent) throws NamingException {
 
-			LOG.error("Server error during execution retrieval!", e);
+        try {
+            return (Set<ScenarioExecution>) invokeFor(agent, "getExecutions", new Object[] {}, new String[] {});
+        } catch (MBeanException e) {
+            if (e.getCause() instanceof NamingException)
+                throw (NamingException) e.getCause();
 
-			return new HashSet<ScenarioExecution>();
-		}
-	}
+            LOG.error("Server error during execution retrieval!", e);
 
-	/**
-	 * @see Agent#getScenarios()
-	 */
-	@SuppressWarnings("unchecked")
-	public Set<String> getScenarios(Address agent) {
+            return new HashSet<ScenarioExecution>();
+        }
+    }
 
-		try {
-			return (Set<String>) invokeFor(agent, "getScenarios",
-					new Object[] {}, new String[] {});
-		} catch (MBeanException e) {
-			LOG.error("Server error during scenario retrieval!", e);
+    /**
+     * @see Agent#getScenarios()
+     */
+    @SuppressWarnings("unchecked")
+    public Set<String> getScenarios(Address agent) {
 
-			return null;
-		}
-	}
+        try {
+            return (Set<String>) invokeFor(agent, "getScenarios", new Object[] {}, new String[] {});
+        } catch (MBeanException e) {
+            LOG.error("Server error during scenario retrieval!", e);
 
-	/**
-	 * @see Agent#resetTransit()
-	 */
-	public void resetTransit(Address agent) {
+            return null;
+        }
+    }
 
-		try {
-			invokeFor(agent, "resetTransit", new Object[] {}, new String[] {});
-		} catch (MBeanException e) {
-			LOG.error("Server error during reset!", e);
-		}
-	}
+    /**
+     * @see Agent#resetTransit()
+     */
+    public void resetTransit(Address agent) {
+
+        try {
+            invokeFor(agent, "resetTransit", new Object[] {}, new String[] {});
+        } catch (MBeanException e) {
+            LOG.error("Server error during reset!", e);
+        }
+    }
 }

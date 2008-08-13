@@ -12,35 +12,41 @@ import javax.ejb.ApplicationException;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 
+
 @ApplicationException(rollback = true)
 public class SafeOnlineResourceException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long       serialVersionUID = 1L;
 
-	private final ResourceNameType resourceName;
+    private final ResourceNameType  resourceName;
 
-	private final ResourceLevelType resourceLevel;
+    private final ResourceLevelType resourceLevel;
 
-	private final String sourceComponent;
+    private final String            sourceComponent;
 
-	public SafeOnlineResourceException(ResourceNameType resourceName,
-			ResourceLevelType resourceLevel, String sourceComponent) {
-		this.resourceName = resourceName;
-		this.resourceLevel = resourceLevel;
-		this.sourceComponent = sourceComponent;
 
-	}
+    public SafeOnlineResourceException(ResourceNameType resourceName, ResourceLevelType resourceLevel,
+            String sourceComponent) {
 
-	public ResourceLevelType getResourceLevel() {
-		return this.resourceLevel;
-	}
+        this.resourceName = resourceName;
+        this.resourceLevel = resourceLevel;
+        this.sourceComponent = sourceComponent;
 
-	public ResourceNameType getResourceName() {
-		return this.resourceName;
-	}
+    }
 
-	public String getSourceComponent() {
-		return this.sourceComponent;
-	}
+    public ResourceLevelType getResourceLevel() {
+
+        return this.resourceLevel;
+    }
+
+    public ResourceNameType getResourceName() {
+
+        return this.resourceName;
+    }
+
+    public String getSourceComponent() {
+
+        return this.sourceComponent;
+    }
 
 }

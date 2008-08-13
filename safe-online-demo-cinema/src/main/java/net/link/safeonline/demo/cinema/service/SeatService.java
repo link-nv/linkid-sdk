@@ -15,6 +15,7 @@ import net.link.safeonline.demo.cinema.entity.RoomEntity;
 import net.link.safeonline.demo.cinema.entity.SeatEntity;
 import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
 
+
 /**
  * <h2>{@link SeatService}<br>
  * <sub>Service bean for {@link SeatEntity}.</sub></h2>
@@ -46,13 +47,11 @@ public interface SeatService extends CinemaService {
     public boolean isOccupied(SeatEntity seat, Date start);
 
     /**
-     * Verify that the given seat is not already occupied. If it is not, persist
-     * it.
+     * Verify that the given seat is not already occupied. If it is not, persist it.
      * 
      * @return The persisted seat occupation.
      * @throws IllegalStateException
      *             When at least one of the given seats is not available.
      */
-    public SeatOccupationEntity validate(SeatOccupationEntity occupation)
-            throws IllegalStateException;
+    public SeatOccupationEntity validate(SeatOccupationEntity occupation) throws IllegalStateException;
 }

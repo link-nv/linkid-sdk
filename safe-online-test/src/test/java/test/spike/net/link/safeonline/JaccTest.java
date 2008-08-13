@@ -19,69 +19,75 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class JaccTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(JaccTest.class);
+    private static final Log LOG = LogFactory.getLog(JaccTest.class);
 
-	@SuppressWarnings("unchecked")
-	public void testPolicyContext() throws Exception {
-		String contextId = PolicyContext.getContextID();
-		LOG.debug("context Id: " + contextId);
-		assertNull(contextId);
 
-		Set<String> handlerKeys = PolicyContext.getHandlerKeys();
-		LOG.debug("# handler keys: " + handlerKeys.size());
-		assertEquals(0, handlerKeys.size());
+    @SuppressWarnings("unchecked")
+    public void testPolicyContext() throws Exception {
 
-		TestSubjectPolicyContextHandler policyContextHandler = new TestSubjectPolicyContextHandler();
-		Subject subject = new Subject();
-		policyContextHandler.setSubject(subject);
-		PolicyContext.registerHandler(
-				TestSubjectPolicyContextHandler.SUBJECT_CONTEXT_KEY,
-				policyContextHandler, false);
+        String contextId = PolicyContext.getContextID();
+        LOG.debug("context Id: " + contextId);
+        assertNull(contextId);
 
-		handlerKeys = PolicyContext.getHandlerKeys();
-		LOG.debug("# handler keys: " + handlerKeys.size());
-		assertEquals(1, handlerKeys.size());
+        Set<String> handlerKeys = PolicyContext.getHandlerKeys();
+        LOG.debug("# handler keys: " + handlerKeys.size());
+        assertEquals(0, handlerKeys.size());
 
-		Object result = PolicyContext
-				.getContext(TestSubjectPolicyContextHandler.SUBJECT_CONTEXT_KEY);
-		assertTrue(result instanceof Subject);
-		assertEquals(subject, result);
-	}
+        TestSubjectPolicyContextHandler policyContextHandler = new TestSubjectPolicyContextHandler();
+        Subject subject = new Subject();
+        policyContextHandler.setSubject(subject);
+        PolicyContext.registerHandler(TestSubjectPolicyContextHandler.SUBJECT_CONTEXT_KEY, policyContextHandler, false);
 
-	public void testRetrieveNonExistingPolicyContext() throws Exception {
-		String contextId = "context-id-" + UUID.randomUUID().toString();
-		try {
-			PolicyContext.getContext(contextId);
-			fail();
-		} catch (IllegalArgumentException e) {
-			// expected
-		}
-	}
+        handlerKeys = PolicyContext.getHandlerKeys();
+        LOG.debug("# handler keys: " + handlerKeys.size());
+        assertEquals(1, handlerKeys.size());
 
-	static class TestSubjectPolicyContextHandler implements
-			PolicyContextHandler {
+        Object result = PolicyContext.getContext(TestSubjectPolicyContextHandler.SUBJECT_CONTEXT_KEY);
+        assertTrue(result instanceof Subject);
+        assertEquals(subject, result);
+    }
 
-		private static final String SUBJECT_CONTEXT_KEY = "javax.security.auth.Subject.container";
+    public void testRetrieveNonExistingPolicyContext() throws Exception {
 
-		private Subject subject;
+        String contextId = "context-id-" + UUID.randomUUID().toString();
+        try {
+            PolicyContext.getContext(contextId);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
 
-		public void setSubject(Subject subject) {
-			this.subject = subject;
-		}
 
-		@SuppressWarnings("unused")
-		public Object getContext(String key, Object data) {
-			return this.subject;
-		}
+    static class TestSubjectPolicyContextHandler implements PolicyContextHandler {
 
-		public String[] getKeys() {
-			return new String[] { SUBJECT_CONTEXT_KEY };
-		}
+        private static final String SUBJECT_CONTEXT_KEY = "javax.security.auth.Subject.container";
 
-		public boolean supports(String key) {
-			return SUBJECT_CONTEXT_KEY.equals(key);
-		}
-	}
+        private Subject             subject;
+
+
+        public void setSubject(Subject subject) {
+
+            this.subject = subject;
+        }
+
+        @SuppressWarnings("unused")
+        public Object getContext(String key, Object data) {
+
+            return this.subject;
+        }
+
+        public String[] getKeys() {
+
+            return new String[] { SUBJECT_CONTEXT_KEY };
+        }
+
+        public boolean supports(String key) {
+
+            return SUBJECT_CONTEXT_KEY.equals(key);
+        }
+    }
 }

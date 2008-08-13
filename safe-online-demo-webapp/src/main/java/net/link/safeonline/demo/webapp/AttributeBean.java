@@ -21,6 +21,7 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class AttributeBean {
 
     private static final Log LOG = LogFactory.getLog(AttributeBean.class);
@@ -63,8 +64,7 @@ public class AttributeBean {
         return this.attributeWebServiceLocation;
     }
 
-    public void setAttributeWebServiceLocation(
-            String attributeWebServiceLocation) {
+    public void setAttributeWebServiceLocation(String attributeWebServiceLocation) {
 
         this.attributeWebServiceLocation = attributeWebServiceLocation;
     }
@@ -90,12 +90,11 @@ public class AttributeBean {
 
         if (null == this.attributeValue) {
             loadCertificate();
-            AttributeClient attributeClient = new AttributeClientImpl(
-                    this.attributeWebServiceLocation, this.certificate,
-                    this.privateKey);
+            AttributeClient attributeClient = new AttributeClientImpl(this.attributeWebServiceLocation,
+                    this.certificate, this.privateKey);
             try {
-                this.attributeValue = attributeClient.getAttributeValue(
-                        this.subjectLogin, this.attributeName, String.class);
+                this.attributeValue = attributeClient.getAttributeValue(this.subjectLogin, this.attributeName,
+                        String.class);
             } catch (AttributeNotFoundException e) {
                 LOG.error("attribute not found: " + e.getMessage());
                 return "[attribute not found]";

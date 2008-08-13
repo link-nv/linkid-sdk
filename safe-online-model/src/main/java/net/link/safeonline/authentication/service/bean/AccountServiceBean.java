@@ -45,13 +45,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class AccountServiceBean implements AccountService, AccountServiceRemote {
 
-    private static final Log            LOG = LogFactory
-                                                    .getLog(AccountServiceBean.class);
+    private static final Log            LOG = LogFactory.getLog(AccountServiceBean.class);
 
     @EJB
     private SubjectManager              subjectManager;
@@ -88,16 +88,14 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void removeAccount() throws SubscriptionNotFoundException,
-            MessageHandlerNotFoundException {
+    public void removeAccount() throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         removeSubject(subject);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeAccount(SubjectEntity subject)
-            throws SubscriptionNotFoundException,
+    public void removeAccount(SubjectEntity subject) throws SubscriptionNotFoundException,
             MessageHandlerNotFoundException {
 
         removeSubject(subject);
@@ -105,23 +103,21 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void removeAccount(String userId) throws SubjectNotFoundException,
-            SubscriptionNotFoundException, MessageHandlerNotFoundException {
+    public void removeAccount(String userId) throws SubjectNotFoundException, SubscriptionNotFoundException,
+            MessageHandlerNotFoundException {
 
         SubjectEntity subject = this.subjectService.getSubject(userId);
         removeSubject(subject);
     }
 
-    private void removeSubject(SubjectEntity subject)
-            throws SubscriptionNotFoundException,
+    private void removeSubject(SubjectEntity subject) throws SubscriptionNotFoundException,
             MessageHandlerNotFoundException {
 
         LOG.debug("remove account: " + subject.getUserId());
 
         List<String> message = new LinkedList<String>();
         message.add(subject.getUserId());
-        this.notificationProducerService.sendNotification(
-                SafeOnlineConstants.TOPIC_REMOVE_USER, message);
+        this.notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_REMOVE_USER, message);
 
         this.historyDAO.clearAllHistory(subject);
         this.subscriptionDAO.removeAllSubscriptions(subject);
@@ -141,17 +137,13 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
      */
     private void removeDeviceRegistrations(SubjectEntity subject) {
 
-        List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO
-                .listDeviceMappings(subject);
+        List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO.listDeviceMappings(subject);
         for (DeviceMappingEntity deviceMapping : deviceMappings) {
-            if (deviceMapping.getDevice().getName().equals(
-                    SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-                DeviceSubjectEntity deviceSubject = this.subjectService
-                        .findDeviceSubject(deviceMapping.getId());
+            if (deviceMapping.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+                DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceMapping.getId());
                 if (null == deviceSubject)
                     continue;
-                for (SubjectEntity deviceRegistration : deviceSubject
-                        .getRegistrations()) {
+                for (SubjectEntity deviceRegistration : deviceSubject.getRegistrations()) {
                     removeDeviceRegistration(deviceRegistration);
                 }
                 this.deviceSubjectDAO.removeSubject(deviceSubject);

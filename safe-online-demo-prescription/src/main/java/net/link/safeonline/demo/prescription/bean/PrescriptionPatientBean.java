@@ -35,54 +35,60 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("prescriptionPatient")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionPatientBean/local")
 @SecurityDomain(PrescriptionConstants.SECURITY_DOMAIN)
 public class PrescriptionPatientBean implements PrescriptionPatient {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                      log;
 
-	public final static String PATIENT_PRESCRIPTIONS = "patientPrescriptions";
+    public final static String       PATIENT_PRESCRIPTIONS = "patientPrescriptions";
 
-	public final static String SELECTED_PRESCRIPTION = "selectedPrescription";
+    public final static String       SELECTED_PRESCRIPTION = "selectedPrescription";
 
-	@SuppressWarnings("unused")
-	@DataModel(PATIENT_PRESCRIPTIONS)
-	private List<PrescriptionEntity> prescriptions;
+    @SuppressWarnings("unused")
+    @DataModel(PATIENT_PRESCRIPTIONS)
+    private List<PrescriptionEntity> prescriptions;
 
-	@DataModelSelection(PATIENT_PRESCRIPTIONS)
-	@Out(value = SELECTED_PRESCRIPTION, required = false, scope = ScopeType.SESSION)
-	private PrescriptionEntity selectedPrescription;
+    @DataModelSelection(PATIENT_PRESCRIPTIONS)
+    @Out(value = SELECTED_PRESCRIPTION, required = false, scope = ScopeType.SESSION)
+    private PrescriptionEntity       selectedPrescription;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	@PersistenceContext(unitName = PrescriptionConstants.ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@Resource
-	private SessionContext sessionContext;
+    }
 
-	@SuppressWarnings("unchecked")
-	@RolesAllowed(PrescriptionConstants.PATIENT_ROLE)
-	@Factory(PATIENT_PRESCRIPTIONS)
-	public void patientPrescriptionsFactory() {
-		Principal patientPrincipal = this.sessionContext.getCallerPrincipal();
-		String patient = patientPrincipal.getName();
-		Query query = this.entityManager
-				.createQuery("SELECT prescription FROM PrescriptionEntity AS prescription "
-						+ "WHERE prescription.patient = :patient");
-		query.setParameter("patient", patient);
-		this.prescriptions = query.getResultList();
-	}
 
-	@RolesAllowed(PrescriptionConstants.PATIENT_ROLE)
-	public String view() {
-		this.log.debug("view: #0", this.selectedPrescription.getId());
-		return "view";
-	}
+    @PersistenceContext(unitName = PrescriptionConstants.ENTITY_MANAGER)
+    private EntityManager  entityManager;
+
+    @Resource
+    private SessionContext sessionContext;
+
+
+    @SuppressWarnings("unchecked")
+    @RolesAllowed(PrescriptionConstants.PATIENT_ROLE)
+    @Factory(PATIENT_PRESCRIPTIONS)
+    public void patientPrescriptionsFactory() {
+
+        Principal patientPrincipal = this.sessionContext.getCallerPrincipal();
+        String patient = patientPrincipal.getName();
+        Query query = this.entityManager.createQuery("SELECT prescription FROM PrescriptionEntity AS prescription "
+                + "WHERE prescription.patient = :patient");
+        query.setParameter("patient", patient);
+        this.prescriptions = query.getResultList();
+    }
+
+    @RolesAllowed(PrescriptionConstants.PATIENT_ROLE)
+    public String view() {
+
+        this.log.debug("view: #0", this.selectedPrescription.getId());
+        return "view";
+    }
 }

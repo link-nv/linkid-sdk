@@ -20,23 +20,21 @@ import net.link.safeonline.entity.StatisticEntity;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jfree.chart.JFreeChart;
 
+
 @Local
 public interface StatisticService {
 
-	public StatisticEntity getStatistic(String statisticName,
-			String statisticDomain, String applicationName)
-			throws StatisticNotFoundException, PermissionDeniedException;
+    public StatisticEntity getStatistic(String statisticName, String statisticDomain, String applicationName)
+            throws StatisticNotFoundException, PermissionDeniedException;
 
-	public List<StatisticEntity> getStatistics(ApplicationEntity application)
-			throws PermissionDeniedException;
+    public List<StatisticEntity> getStatistics(ApplicationEntity application) throws PermissionDeniedException;
 
-	public JFreeChart getChart(String statisticName, String statisticDomain,
-			String applicationName) throws StatisticNotFoundException;
+    public JFreeChart getChart(String statisticName, String statisticDomain, String applicationName)
+            throws StatisticNotFoundException;
 
-	public HSSFWorkbook exportStatistic(String statisticName,
-			String statisticDomain, String applicationName)
-			throws StatisticNotFoundException;
+    public HSSFWorkbook exportStatistic(String statisticName, String statisticDomain, String applicationName)
+            throws StatisticNotFoundException;
 
-	public HSSFWorkbook exportStatistics(String applicationName)
-			throws ApplicationNotFoundException, StatisticNotFoundException;
+    public HSSFWorkbook exportStatistics(String applicationName) throws ApplicationNotFoundException,
+            StatisticNotFoundException;
 }

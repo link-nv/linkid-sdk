@@ -10,35 +10,37 @@ package net.link.safeonline.data.ws;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public enum TopLevelStatusCode {
-	OK("OK"), FAILED("Failed");
+    OK("OK"), FAILED("Failed");
 
-	private String code;
+    private String                                 code;
 
-	private static Map<String, TopLevelStatusCode> statusCodes = new HashMap<String, TopLevelStatusCode>();
+    private static Map<String, TopLevelStatusCode> statusCodes = new HashMap<String, TopLevelStatusCode>();
 
-	static {
-		for (TopLevelStatusCode topLevelStatusCode : TopLevelStatusCode
-				.values()) {
-			TopLevelStatusCode.statusCodes.put(topLevelStatusCode.getCode(),
-					topLevelStatusCode);
-		}
-	}
+    static {
+        for (TopLevelStatusCode topLevelStatusCode : TopLevelStatusCode.values()) {
+            TopLevelStatusCode.statusCodes.put(topLevelStatusCode.getCode(), topLevelStatusCode);
+        }
+    }
 
-	private TopLevelStatusCode(String code) {
-		this.code = code;
-	}
 
-	public String getCode() {
-		return this.code;
-	}
+    private TopLevelStatusCode(String code) {
 
-	public static TopLevelStatusCode fromCode(String code) {
-		TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode.statusCodes
-				.get(code);
-		if (null == topLevelStatusCode) {
-			throw new IllegalArgumentException("unknown code: " + code);
-		}
-		return topLevelStatusCode;
-	}
+        this.code = code;
+    }
+
+    public String getCode() {
+
+        return this.code;
+    }
+
+    public static TopLevelStatusCode fromCode(String code) {
+
+        TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode.statusCodes.get(code);
+        if (null == topLevelStatusCode) {
+            throw new IllegalArgumentException("unknown code: " + code);
+        }
+        return topLevelStatusCode;
+    }
 }

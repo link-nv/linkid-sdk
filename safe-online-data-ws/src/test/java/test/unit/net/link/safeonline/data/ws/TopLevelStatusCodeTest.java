@@ -10,16 +10,18 @@ package test.unit.net.link.safeonline.data.ws;
 import net.link.safeonline.data.ws.TopLevelStatusCode;
 import junit.framework.TestCase;
 
+
 public class TopLevelStatusCodeTest extends TestCase {
 
-	public void testFromCode() throws Exception {
-		// setup
-		String testCode = TopLevelStatusCode.OK.getCode();
+    public void testFromCode() throws Exception {
 
-		// operate
-		TopLevelStatusCode result = TopLevelStatusCode.fromCode(testCode);
+        // setup
+        String testCode = TopLevelStatusCode.OK.getCode();
 
-		// verify
-		assertEquals(TopLevelStatusCode.OK, result);
-	}
+        // operate
+        TopLevelStatusCode result = TopLevelStatusCode.fromCode(testCode);
+
+        // verify
+        assertEquals(TopLevelStatusCode.OK, result);
+    }
 }

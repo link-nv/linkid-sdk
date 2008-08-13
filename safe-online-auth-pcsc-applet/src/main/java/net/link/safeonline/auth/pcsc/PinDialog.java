@@ -27,109 +27,126 @@ import javax.swing.JPasswordField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class PinDialog extends JDialog implements ActionListener,
-		DocumentListener, KeyListener {
 
-	private static final long serialVersionUID = 1L;
+public class PinDialog extends JDialog implements ActionListener, DocumentListener, KeyListener {
 
-	protected JPasswordField  passwordField;
+    private static final long serialVersionUID = 1L;
 
-	private JButton okButton;
+    protected JPasswordField  passwordField;
 
-	private JButton cancelButton;
+    private JButton           okButton;
 
-	public PinDialog() {
-		super((Frame) null, "PIN", true);
-		JLabel promptLabel = new JLabel("PIN:");
+    private JButton           cancelButton;
 
-		this.passwordField = new JPasswordField(4);
-		this.passwordField.setEchoChar('*');
-		this.passwordField.getDocument().addDocumentListener(this);
-		this.passwordField.addKeyListener(this);
 
-		JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		passwordPanel.add(promptLabel);
-		passwordPanel.add(Box.createHorizontalStrut(5));
-		passwordPanel.add(this.passwordField);
-		passwordPanel.add(Box.createHorizontalGlue());
+    public PinDialog() {
 
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		this.okButton = new JButton("OK");
-		this.okButton.addActionListener(this);
-		this.okButton.setEnabled(false);
-		buttonPanel.add(this.okButton);
-		this.cancelButton = new JButton("Cancel");
-		this.cancelButton.addActionListener(this);
-		buttonPanel.add(this.cancelButton);
+        super((Frame) null, "PIN", true);
+        JLabel promptLabel = new JLabel("PIN:");
 
-		JPanel contentPanel = new JPanel() {
-			private static final long serialVersionUID = 1L;
+        this.passwordField = new JPasswordField(4);
+        this.passwordField.setEchoChar('*');
+        this.passwordField.getDocument().addDocumentListener(this);
+        this.passwordField.addKeyListener(this);
 
-			@Override
-			public Insets getInsets() {
-				return new Insets(5, 20, 5, 20);
-			}
-		};
-		contentPanel.setLayout(new GridLayout(3, 1));
-		contentPanel.add(new JLabel("Geef uw PIN in, om u te authentiseren."));
-		contentPanel.add(passwordPanel);
-		contentPanel.add(buttonPanel);
+        JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        passwordPanel.add(promptLabel);
+        passwordPanel.add(Box.createHorizontalStrut(5));
+        passwordPanel.add(this.passwordField);
+        passwordPanel.add(Box.createHorizontalGlue());
 
-		getContentPane().add(contentPanel);
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentShown(ComponentEvent e) {
-				PinDialog.this.passwordField.requestFocusInWindow();
-			}
-		});
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        this.okButton = new JButton("OK");
+        this.okButton.addActionListener(this);
+        this.okButton.setEnabled(false);
+        buttonPanel.add(this.okButton);
+        this.cancelButton = new JButton("Cancel");
+        this.cancelButton.addActionListener(this);
+        buttonPanel.add(this.cancelButton);
 
-	}
+        JPanel contentPanel = new JPanel() {
 
-	public String getPin() {
-		pack();
-		setLocationRelativeTo(null);
-		setVisible(true);
-		if (false == this.okClicked)
+            private static final long serialVersionUID = 1L;
+
+
+            @Override
+            public Insets getInsets() {
+
+                return new Insets(5, 20, 5, 20);
+            }
+        };
+        contentPanel.setLayout(new GridLayout(3, 1));
+        contentPanel.add(new JLabel("Geef uw PIN in, om u te authentiseren."));
+        contentPanel.add(passwordPanel);
+        contentPanel.add(buttonPanel);
+
+        getContentPane().add(contentPanel);
+        addComponentListener(new ComponentAdapter() {
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+
+                PinDialog.this.passwordField.requestFocusInWindow();
+            }
+        });
+
+    }
+
+    public String getPin() {
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+        if (false == this.okClicked)
             return null;
-		String pin = new String(this.passwordField.getPassword());
-		return pin;
-	}
+        String pin = new String(this.passwordField.getPassword());
+        return pin;
+    }
 
-	private boolean okClicked;
 
-	public void actionPerformed(ActionEvent e) {
-		Object source = e.getSource();
-		if (this.okButton == source) {
-			this.okClicked = true;
-			dispose();
-		} else if (this.cancelButton == source) {
-			dispose();
-		}
-	}
+    private boolean okClicked;
 
-	public void changedUpdate(DocumentEvent e) {
-	}
 
-	public void insertUpdate(DocumentEvent e) {
-		this.okButton.setEnabled(this.passwordField.getPassword().length == 4);
-	}
+    public void actionPerformed(ActionEvent e) {
 
-	public void removeUpdate(DocumentEvent e) {
-		this.okButton.setEnabled(this.passwordField.getPassword().length == 4);
-	}
+        Object source = e.getSource();
+        if (this.okButton == source) {
+            this.okClicked = true;
+            dispose();
+        } else if (this.cancelButton == source) {
+            dispose();
+        }
+    }
 
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if (this.passwordField.getPassword().length == 4) {
-				this.okClicked = true;
-				dispose();
-			}
-		}
-	}
+    public void changedUpdate(DocumentEvent e) {
 
-	public void keyReleased(KeyEvent e) {
-	}
+    }
 
-	public void keyTyped(KeyEvent e) {
-	}
+    public void insertUpdate(DocumentEvent e) {
+
+        this.okButton.setEnabled(this.passwordField.getPassword().length == 4);
+    }
+
+    public void removeUpdate(DocumentEvent e) {
+
+        this.okButton.setEnabled(this.passwordField.getPassword().length == 4);
+    }
+
+    public void keyPressed(KeyEvent e) {
+
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (this.passwordField.getPassword().length == 4) {
+                this.okClicked = true;
+                dispose();
+            }
+        }
+    }
+
+    public void keyReleased(KeyEvent e) {
+
+    }
+
+    public void keyTyped(KeyEvent e) {
+
+    }
 }

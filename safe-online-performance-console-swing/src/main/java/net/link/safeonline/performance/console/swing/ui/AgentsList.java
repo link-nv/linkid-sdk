@@ -22,6 +22,7 @@ import org.jgroups.Address;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
+
 /**
  * <h2>{@link AgentsList}<br>
  * <sub>A list that visualises agent status.</sub></h2>
@@ -34,132 +35,133 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public class AgentsList extends JPanel implements AgentStateListener {
 
-	private static final long serialVersionUID = 1L;
-	private Set<AgentPanel> agentPanels;
-	private DefaultFormBuilder builder;
+    private static final long  serialVersionUID = 1L;
+    private Set<AgentPanel>    agentPanels;
+    private DefaultFormBuilder builder;
 
-	public AgentsList() {
 
-		FormLayout formLayout = new FormLayout("f:p:g");
-		this.builder = new DefaultFormBuilder(formLayout, this);
-		setBackground(Color.white);
+    public AgentsList() {
 
-		this.agentPanels = new HashSet<AgentPanel>();
+        FormLayout formLayout = new FormLayout("f:p:g");
+        this.builder = new DefaultFormBuilder(formLayout, this);
+        setBackground(Color.white);
 
-		ConsoleData.getAgentDiscoverer().addAgentStateListener(this);
-	}
+        this.agentPanels = new HashSet<AgentPanel>();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void membersChanged(List<Address> addresses) {
+        ConsoleData.getAgentDiscoverer().addAgentStateListener(this);
+    }
 
-		// Check whether all agents are in the list and add them if need be.
-		for (Address address : addresses)
-			if (!address.equals(ConsoleData.getSelf())) {
-				ConsoleAgent agent = ConsoleData.getAgent(address);
-				if (agent != null && findPanel(agent) == null)
-					addAgent(agent);
-			}
+    /**
+     * {@inheritDoc}
+     */
+    public void membersChanged(List<Address> addresses) {
 
-		// Remove stale agents from the list.
-		for (ConsoleAgent agent : ConsoleData.removeStaleAgents())
-			removeAgent(agent);
-	}
+        // Check whether all agents are in the list and add them if need be.
+        for (Address address : addresses)
+            if (!address.equals(ConsoleData.getSelf())) {
+                ConsoleAgent agent = ConsoleData.getAgent(address);
+                if (agent != null && findPanel(agent) == null)
+                    addAgent(agent);
+            }
 
-	private void addAgent(ConsoleAgent agent) {
+        // Remove stale agents from the list.
+        for (ConsoleAgent agent : ConsoleData.removeStaleAgents())
+            removeAgent(agent);
+    }
 
-		AgentPanel panel = new AgentPanel(this, agent);
+    private void addAgent(ConsoleAgent agent) {
 
-		this.agentPanels.add(panel);
-		this.builder.appendRow("p");
-		this.builder.append(panel);
-		validate();
-	}
+        AgentPanel panel = new AgentPanel(this, agent);
 
-	private void removeAgent(ConsoleAgent agent) {
+        this.agentPanels.add(panel);
+        this.builder.appendRow("p");
+        this.builder.append(panel);
+        validate();
+    }
 
-		AgentPanel panel = findPanel(agent);
+    private void removeAgent(ConsoleAgent agent) {
 
-		System.err.println("Removing " + agent);
-		if (panel == null) {
-			System.err.println(" -> not there.");
-			return;
-		}
+        AgentPanel panel = findPanel(agent);
 
-		this.agentPanels.remove(panel);
-		remove(panel);
-		validate();
+        System.err.println("Removing " + agent);
+        if (panel == null) {
+            System.err.println(" -> not there.");
+            return;
+        }
 
-		System.err.println(" -> done.");
-	}
+        this.agentPanels.remove(panel);
+        remove(panel);
+        validate();
 
-	private AgentPanel findPanel(ConsoleAgent agent) {
+        System.err.println(" -> done.");
+    }
 
-		for (AgentPanel panel : this.agentPanels)
-			if (panel.getAgent().equals(agent))
-				return panel;
+    private AgentPanel findPanel(ConsoleAgent agent) {
 
-		return null;
-	}
+        for (AgentPanel panel : this.agentPanels)
+            if (panel.getAgent().equals(agent))
+                return panel;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void agentSuspected(Address agentAddress) {
+        return null;
+    }
 
-		ConsoleAgent agent = ConsoleData.getAgent(agentAddress);
-		if (null != agent)
-			agent.setHealthy(false);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void agentSuspected(Address agentAddress) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelClosed() {
+        ConsoleAgent agent = ConsoleData.getAgent(agentAddress);
+        if (null != agent)
+            agent.setHealthy(false);
+    }
 
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void channelClosed() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelConnected() {
+    }
 
-		membersChanged(ConsoleData.getAgentDiscoverer().getMembers());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void channelConnected() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelDisconnected() {
+        membersChanged(ConsoleData.getAgentDiscoverer().getMembers());
+    }
 
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void channelDisconnected() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelReconnected(Address arg0) {
+    }
 
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void channelReconnected(Address arg0) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void channelShunned() {
+    }
 
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void channelShunned() {
 
-	/**
-	 * Updates the selected agents in {@link ConsoleData}. Fired by
-	 * {@link AgentPanel} when its selection status changes.
-	 */
-	public void fireListSelectionChanged() {
+    }
 
-		Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
-		for (AgentPanel panel : this.agentPanels)
-			if (panel.isSelected())
-				selectedAgents.add(panel.getAgent());
+    /**
+     * Updates the selected agents in {@link ConsoleData}. Fired by {@link AgentPanel} when its selection status
+     * changes.
+     */
+    public void fireListSelectionChanged() {
 
-		ConsoleData.setSelectedAgents(selectedAgents);
-	}
+        Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
+        for (AgentPanel panel : this.agentPanels)
+            if (panel.isSelected())
+                selectedAgents.add(panel.getAgent());
+
+        ConsoleData.setSelectedAgents(selectedAgents);
+    }
 }

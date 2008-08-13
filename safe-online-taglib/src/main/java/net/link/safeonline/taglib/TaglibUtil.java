@@ -12,18 +12,21 @@ import java.util.ResourceBundle;
 
 import javax.faces.context.FacesContext;
 
+
 public class TaglibUtil {
 
-	public static final String RESOURCE_BASE = "net.link.safeonline.taglib.Messages";
+    public static final String RESOURCE_BASE = "net.link.safeonline.taglib.Messages";
 
-	private TaglibUtil() {
-		// empty
-	}
 
-	public static ResourceBundle getResourceBundle(FacesContext context) {
-		Locale locale = context.getExternalContext().getRequestLocale();
-		ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BASE,
-				locale);
-		return messages;
-	}
+    private TaglibUtil() {
+
+        // empty
+    }
+
+    public static ResourceBundle getResourceBundle(FacesContext context) {
+
+        Locale locale = context.getExternalContext().getRequestLocale();
+        ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BASE, locale);
+        return messages;
+    }
 }

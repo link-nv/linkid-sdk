@@ -47,107 +47,105 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("subscriptions")
-@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX
-		+ "SubscriptionsBean/local")
+@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "SubscriptionsBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class SubscriptionsBean implements Subscriptions {
 
-	private static final Log LOG = LogFactory.getLog(SubscriptionsBean.class);
+    private static final Log         LOG = LogFactory.getLog(SubscriptionsBean.class);
 
-	@EJB
-	private SubscriptionService subscriptionService;
+    @EJB
+    private SubscriptionService      subscriptionService;
 
-	@EJB
-	private IdentityService identityService;
+    @EJB
+    private IdentityService          identityService;
 
-	@EJB
-	private UsageAgreementService usageAgreementService;
+    @EJB
+    private UsageAgreementService    usageAgreementService;
 
-	@EJB
-	private SubjectManager subjectManager;
+    @EJB
+    private SubjectManager           subjectManager;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                    facesMessages;
 
-	@SuppressWarnings("unused")
-	@DataModel
-	private List<SubscriptionEntity> subscriptionList;
+    @SuppressWarnings("unused")
+    @DataModel
+    private List<SubscriptionEntity> subscriptionList;
 
-	@DataModelSelection("subscriptionList")
-	@Out(value = "selectedSubscription", required = false, scope = ScopeType.SESSION)
-	private SubscriptionEntity selectedSubscription;
+    @DataModelSelection("subscriptionList")
+    @Out(value = "selectedSubscription", required = false, scope = ScopeType.SESSION)
+    private SubscriptionEntity       selectedSubscription;
 
-	@SuppressWarnings("unused")
-	@Out(value = "confirmedIdentityAttributes", required = false)
-	private List<AttributeDO> confirmedIdentityAttributes;
+    @SuppressWarnings("unused")
+    @Out(value = "confirmedIdentityAttributes", required = false)
+    private List<AttributeDO>        confirmedIdentityAttributes;
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	@Factory("subscriptionList")
-	public void subscriptionListFactory() {
-		LOG.debug("subscription list factory");
-		this.subscriptionList = this.subscriptionService.listSubscriptions();
 
-	}
+    @RolesAllowed(UserConstants.USER_ROLE)
+    @Factory("subscriptionList")
+    public void subscriptionListFactory() {
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String viewSubscription() throws SubscriptionNotFoundException,
-			ApplicationNotFoundException, ApplicationIdentityNotFoundException {
-		String applicationName = this.selectedSubscription.getApplication()
-				.getName();
-		LOG.debug("view subscription: " + applicationName);
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		this.confirmedIdentityAttributes = this.identityService
-				.listConfirmedIdentity(applicationName, viewLocale);
-		return "view-subscription";
-	}
+        LOG.debug("subscription list factory");
+        this.subscriptionList = this.subscriptionService.listSubscriptions();
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String unsubscribe() throws SubscriptionNotFoundException,
-			ApplicationNotFoundException {
-		LOG.debug("unsubscribe from: "
-				+ this.selectedSubscription.getApplication().getName());
-		String applicationName = this.selectedSubscription.getApplication()
-				.getName();
-		try {
-			this.subscriptionService.unsubscribe(applicationName);
-		} catch (PermissionDeniedException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorUserMayNotUnsubscribeFrom", applicationName);
-			return null;
-		}
-		subscriptionListFactory();
-		return "unsubscribed";
-	}
+    }
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String viewSubscription() throws SubscriptionNotFoundException, ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException {
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String getUsageAgreement() throws ApplicationNotFoundException {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		if (null == this.selectedSubscription)
+        String applicationName = this.selectedSubscription.getApplication().getName();
+        LOG.debug("view subscription: " + applicationName);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        this.confirmedIdentityAttributes = this.identityService.listConfirmedIdentity(applicationName, viewLocale);
+        return "view-subscription";
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String unsubscribe() throws SubscriptionNotFoundException, ApplicationNotFoundException {
+
+        LOG.debug("unsubscribe from: " + this.selectedSubscription.getApplication().getName());
+        String applicationName = this.selectedSubscription.getApplication().getName();
+        try {
+            this.subscriptionService.unsubscribe(applicationName);
+        } catch (PermissionDeniedException e) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserMayNotUnsubscribeFrom",
+                    applicationName);
             return null;
-		return this.usageAgreementService.getUsageAgreementText(
-				this.selectedSubscription.getApplication().getName(),
-				viewLocale.getLanguage(), this.selectedSubscription
-						.getConfirmedUsageAgreementVersion());
-	}
+        }
+        subscriptionListFactory();
+        return "unsubscribed";
+    }
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String getGlobalUsageAgreement() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		return this.usageAgreementService.getGlobalUsageAgreementText(
-				viewLocale.getLanguage(), subject
-						.getConfirmedUsageAgreementVersion());
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
+
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String getUsageAgreement() throws ApplicationNotFoundException {
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        if (null == this.selectedSubscription)
+            return null;
+        return this.usageAgreementService.getUsageAgreementText(this.selectedSubscription.getApplication().getName(),
+                viewLocale.getLanguage(), this.selectedSubscription.getConfirmedUsageAgreementVersion());
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String getGlobalUsageAgreement() {
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        SubjectEntity subject = this.subjectManager.getCallerSubject();
+        return this.usageAgreementService.getGlobalUsageAgreementText(viewLocale.getLanguage(), subject
+                .getConfirmedUsageAgreementVersion());
+    }
 }

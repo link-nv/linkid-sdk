@@ -21,67 +21,69 @@ import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * <h2>{@link DummyScenario}<br>
  * <sub>A scenario that does absolutely nothing whatsoever.</sub></h2>
- *
+ * 
  * <p>
- * This scenario does nothing other than logging the prepare and run method
- * entry and sleeping for a second in the run call.
+ * This scenario does nothing other than logging the prepare and run method entry and sleeping for a second in the run
+ * call.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 7, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class DummyScenario implements Scenario {
 
-	private static final Log LOG = LogFactory.getLog(DummyScenario.class);
-	private static final long SLEEP_TIME = 1000;
+    private static final Log  LOG        = LogFactory.getLog(DummyScenario.class);
+    private static final long SLEEP_TIME = 1000;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getDescription() {
 
-		return "This is a scenario stub which basically does nothing other than sleep for a specified amount of time (normally 1 second).\n\n"
-				+ "No drivers are loaded and some debug-level messages are logged upon preparing and executing the scenario.";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getDescription() {
 
-	public void prepare(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
+        return "This is a scenario stub which basically does nothing other than sleep for a specified amount of time (normally 1 second).\n\n"
+                + "No drivers are loaded and some debug-level messages are logged upon preparing and executing the scenario.";
+    }
 
-		LOG.debug("Prepare called.");
-	}
+    public void prepare(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public void run() {
+        LOG.debug("Prepare called.");
+    }
 
-		try {
-			LOG.debug("Run called; sleeping for " + SLEEP_TIME + " ms.");
+    /**
+     * @{inheritDoc
+     */
+    public void run() {
 
-			Thread.sleep(SLEEP_TIME);
-		}
+        try {
+            LOG.debug("Run called; sleeping for " + SLEEP_TIME + " ms.");
 
-		catch (InterruptedException e) {
-			LOG.debug("Interrupted.");
-		}
-	}
+            Thread.sleep(SLEEP_TIME);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<Chart> getCharts() {
+        catch (InterruptedException e) {
+            LOG.debug("Interrupted.");
+        }
+    }
 
-		List<Chart> charts = new ArrayList<Chart>();
-		charts.add(new ScenarioDurationsChart());
-		charts.add(new ScenarioMemoryChart());
-		charts.add(new ScenarioSpeedChart(5 * 60 * 1000));
-		charts.add(new ScenarioExceptionsChart());
+    /**
+     * {@inheritDoc}
+     */
+    public List<Chart> getCharts() {
 
-		return charts;
-	}
+        List<Chart> charts = new ArrayList<Chart>();
+        charts.add(new ScenarioDurationsChart());
+        charts.add(new ScenarioMemoryChart());
+        charts.add(new ScenarioSpeedChart(5 * 60 * 1000));
+        charts.add(new ScenarioExceptionsChart());
+
+        return charts;
+    }
 }

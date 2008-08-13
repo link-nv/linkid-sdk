@@ -15,12 +15,14 @@ package net.link.safeonline;
  */
 public class SafeOnlineApplicationRoles {
 
-	private SafeOnlineApplicationRoles() {
-		// empty
-	}
+    private SafeOnlineApplicationRoles() {
 
-	/**
-	 * Role for regular SafeOnline Relying Party Applications.
-	 */
-	public static final String APPLICATION_ROLE = "application";
+        // empty
+    }
+
+
+    /**
+     * Role for regular SafeOnline Relying Party Applications.
+     */
+    public static final String APPLICATION_ROLE = "application";
 }

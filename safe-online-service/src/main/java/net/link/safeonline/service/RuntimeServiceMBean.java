@@ -9,6 +9,7 @@ package net.link.safeonline.service;
 
 import org.jboss.system.ServiceMBean;
 
+
 public interface RuntimeServiceMBean extends ServiceMBean {
 
 }

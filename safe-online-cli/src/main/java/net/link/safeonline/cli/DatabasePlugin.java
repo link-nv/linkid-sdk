@@ -11,14 +11,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+
 public interface DatabasePlugin {
 
-	boolean init(ClassLoader classLoader);
+    boolean init(ClassLoader classLoader);
 
-	String getName();
+    String getName();
 
-	Connection getConnection(String connectionUrl, String user, String password)
-			throws SQLException;
+    Connection getConnection(String connectionUrl, String user, String password) throws SQLException;
 
-	List<String> getInitList();
+    List<String> getInitList();
 }

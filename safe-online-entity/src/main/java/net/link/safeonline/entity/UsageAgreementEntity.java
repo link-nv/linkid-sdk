@@ -36,129 +36,137 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+
 @Entity
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT usageAgreement "
-				+ "FROM UsageAgreementEntity AS usageAgreement "
-				+ "WHERE usageAgreement.application = :application "
-				+ "ORDER BY usageAgreement.pk.usageAgreementVersion DESC"),
-		@NamedQuery(name = DELETE_WHERE_APPLICATION_AND_VERSION, query = "DELETE "
-				+ "FROM UsageAgreementEntity AS usageAgreement "
-				+ "WHERE usageAgreement.application = :application "
-				+ "AND usageAgreement.pk.usageAgreementVersion = :usageAgreementVersion") })
+        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT usageAgreement "
+                + "FROM UsageAgreementEntity AS usageAgreement " + "WHERE usageAgreement.application = :application "
+                + "ORDER BY usageAgreement.pk.usageAgreementVersion DESC"),
+        @NamedQuery(name = DELETE_WHERE_APPLICATION_AND_VERSION, query = "DELETE "
+                + "FROM UsageAgreementEntity AS usageAgreement " + "WHERE usageAgreement.application = :application "
+                + "AND usageAgreement.pk.usageAgreementVersion = :usageAgreementVersion") })
 @Table(name = "UsageAg")
 public class UsageAgreementEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long             serialVersionUID                     = 1L;
 
-	public static final String QUERY_WHERE_APPLICATION = "ua.app";
+    public static final String            QUERY_WHERE_APPLICATION              = "ua.app";
 
-	public static final String DELETE_WHERE_APPLICATION_AND_VERSION = "ua.remove.app.version";
+    public static final String            DELETE_WHERE_APPLICATION_AND_VERSION = "ua.remove.app.version";
 
-	public static final String APPLICATION_COLUMN_NAME = "application";
+    public static final String            APPLICATION_COLUMN_NAME              = "application";
 
-	public static final String USAGE_AGREEMENT_VERSION_COLUMN_NAME = "version";
+    public static final String            USAGE_AGREEMENT_VERSION_COLUMN_NAME  = "version";
 
-	private UsageAgreementPK pk;
+    private UsageAgreementPK              pk;
 
-	private ApplicationEntity application;
+    private ApplicationEntity             application;
 
-	private Set<UsageAgreementTextEntity> usageAgreementTexts;
+    private Set<UsageAgreementTextEntity> usageAgreementTexts;
 
-	public UsageAgreementEntity() {
-		this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
-	}
 
-	public UsageAgreementEntity(ApplicationEntity application,
-			Long usageAgreementVersion) {
-		this.pk = new UsageAgreementPK(application.getName(),
-				usageAgreementVersion);
-		this.application = application;
-		this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
-	}
+    public UsageAgreementEntity() {
 
-	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
-			@AttributeOverride(name = "version", column = @Column(name = USAGE_AGREEMENT_VERSION_COLUMN_NAME)) })
-	public UsageAgreementPK getPk() {
-		return this.pk;
-	}
+        this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
+    }
 
-	public void setPk(UsageAgreementPK pk) {
-		this.pk = pk;
-	}
+    public UsageAgreementEntity(ApplicationEntity application, Long usageAgreementVersion) {
 
-	@Column(name = "texts")
-	@OneToMany(fetch = FetchType.EAGER)
-	public Set<UsageAgreementTextEntity> getUsageAgreementTexts() {
-		return this.usageAgreementTexts;
-	}
+        this.pk = new UsageAgreementPK(application.getName(), usageAgreementVersion);
+        this.application = application;
+        this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
+    }
 
-	public void setUsageAgreementTexts(
-			Set<UsageAgreementTextEntity> usageAgreementTexts) {
-		this.usageAgreementTexts = usageAgreementTexts;
-	}
+    @EmbeddedId
+    @AttributeOverrides( { @AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
+            @AttributeOverride(name = "version", column = @Column(name = USAGE_AGREEMENT_VERSION_COLUMN_NAME)) })
+    public UsageAgreementPK getPk() {
 
-	@Transient
-	public Long getUsageAgreementVersion() {
-		return this.pk.getUsageAgreementVersion();
-	}
+        return this.pk;
+    }
 
-	@Transient
-	public void setUsageAgreementVersion(Long usageAgreementVersion) {
-		this.pk.setUsageAgreementVersion(usageAgreementVersion);
-	}
+    public void setPk(UsageAgreementPK pk) {
 
-	@Transient
-	public UsageAgreementTextEntity getUsageAgreementText(String language) {
-		for (UsageAgreementTextEntity usageAgreementText : this.usageAgreementTexts) {
-			if (usageAgreementText.getLanguage().equals(language))
-				return usageAgreementText;
-		}
-		return null;
-	}
+        this.pk = pk;
+    }
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false)
-	public ApplicationEntity getApplication() {
-		return this.application;
-	}
+    @Column(name = "texts")
+    @OneToMany(fetch = FetchType.EAGER)
+    public Set<UsageAgreementTextEntity> getUsageAgreementTexts() {
 
-	public void setApplication(ApplicationEntity application) {
-		this.application = application;
-	}
+        return this.usageAgreementTexts;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.pk).toHashCode();
-	}
+    public void setUsageAgreementTexts(Set<UsageAgreementTextEntity> usageAgreementTexts) {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == obj instanceof UsageAgreementEntity) {
-			return false;
-		}
-		UsageAgreementEntity rhs = (UsageAgreementEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+        this.usageAgreementTexts = usageAgreementTexts;
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_APPLICATION)
-		List<UsageAgreementEntity> listUsageAgreements(
-				@QueryParam("application")
-				ApplicationEntity application);
+    @Transient
+    public Long getUsageAgreementVersion() {
 
-		@UpdateMethod(DELETE_WHERE_APPLICATION_AND_VERSION)
-		void removeUsageAgreement(@QueryParam("application")
-		ApplicationEntity application, @QueryParam("usageAgreementVersion")
-		Long usageAgreementVersion);
-	}
+        return this.pk.getUsageAgreementVersion();
+    }
+
+    @Transient
+    public void setUsageAgreementVersion(Long usageAgreementVersion) {
+
+        this.pk.setUsageAgreementVersion(usageAgreementVersion);
+    }
+
+    @Transient
+    public UsageAgreementTextEntity getUsageAgreementText(String language) {
+
+        for (UsageAgreementTextEntity usageAgreementText : this.usageAgreementTexts) {
+            if (usageAgreementText.getLanguage().equals(language))
+                return usageAgreementText;
+        }
+        return null;
+    }
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false)
+    public ApplicationEntity getApplication() {
+
+        return this.application;
+    }
+
+    public void setApplication(ApplicationEntity application) {
+
+        this.application = application;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.pk).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == obj instanceof UsageAgreementEntity) {
+            return false;
+        }
+        UsageAgreementEntity rhs = (UsageAgreementEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_APPLICATION)
+        List<UsageAgreementEntity> listUsageAgreements(@QueryParam("application") ApplicationEntity application);
+
+        @UpdateMethod(DELETE_WHERE_APPLICATION_AND_VERSION)
+        void removeUsageAgreement(@QueryParam("application") ApplicationEntity application,
+                @QueryParam("usageAgreementVersion") Long usageAgreementVersion);
+    }
 
 }

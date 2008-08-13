@@ -18,49 +18,48 @@ import net.link.safeonline.model.Applications;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class ApplicationsBean implements Applications {
 
-	private static final Log LOG = LogFactory.getLog(ApplicationsBean.class);
+    private static final Log       LOG = LogFactory.getLog(ApplicationsBean.class);
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO         applicationDAO;
 
-	@EJB
-	private ApplicationIdentityDAO applicationIdentityDAO;
+    @EJB
+    private ApplicationIdentityDAO applicationIdentityDAO;
 
-	public ApplicationEntity getApplication(String applicationName)
-			throws ApplicationNotFoundException {
-		return this.applicationDAO.getApplication(applicationName);
-	}
 
-	public List<ApplicationEntity> listApplications() {
-		List<ApplicationEntity> applications = this.applicationDAO
-				.listApplications();
-		return applications;
-	}
+    public ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException {
 
-	public List<ApplicationEntity> listUserApplications() {
-		List<ApplicationEntity> applications = this.applicationDAO
-				.listUserApplications();
-		return applications;
-	}
+        return this.applicationDAO.getApplication(applicationName);
+    }
 
-	public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
-			ApplicationEntity application)
-			throws ApplicationIdentityNotFoundException {
+    public List<ApplicationEntity> listApplications() {
 
-		LOG.debug("get current application identity: " + application.getName());
+        List<ApplicationEntity> applications = this.applicationDAO.listApplications();
+        return applications;
+    }
 
-		long currentIdentityVersion = application
-				.getCurrentApplicationIdentity();
-		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
-				.getApplicationIdentity(application, currentIdentityVersion);
-		Set<ApplicationIdentityAttributeEntity> attributes = applicationIdentity
-				.getAttributes();
-		for (ApplicationIdentityAttributeEntity attribute : attributes) {
-			LOG.debug("attribute: " + attribute);
-		}
-		return attributes;
-	}
+    public List<ApplicationEntity> listUserApplications() {
+
+        List<ApplicationEntity> applications = this.applicationDAO.listUserApplications();
+        return applications;
+    }
+
+    public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(ApplicationEntity application)
+            throws ApplicationIdentityNotFoundException {
+
+        LOG.debug("get current application identity: " + application.getName());
+
+        long currentIdentityVersion = application.getCurrentApplicationIdentity();
+        ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(application,
+                currentIdentityVersion);
+        Set<ApplicationIdentityAttributeEntity> attributes = applicationIdentity.getAttributes();
+        for (ApplicationIdentityAttributeEntity attribute : attributes) {
+            LOG.debug("attribute: " + attribute);
+        }
+        return attributes;
+    }
 }

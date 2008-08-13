@@ -16,57 +16,57 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
+
 @Local
 public interface Node {
 
-	/*
-	 * Factory
-	 */
-	void nodeListFactory();
+    /*
+     * Factory
+     */
+    void nodeListFactory();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Accessors.
-	 */
-	String getName();
+    /*
+     * Accessors.
+     */
+    String getName();
 
-	void setName(String name);
+    void setName(String name);
 
-	String getHostname();
+    String getHostname();
 
-	void setHostname(String hostname);
+    void setHostname(String hostname);
 
-	int getPort();
+    int getPort();
 
-	void setPort(int port);
+    void setPort(int port);
 
-	int getSslPort();
+    int getSslPort();
 
-	void setSslPort(int sslPort);
+    void setSslPort(int sslPort);
 
-	void setAuthnUpFile(UploadedFile uploadedFile);
+    void setAuthnUpFile(UploadedFile uploadedFile);
 
-	UploadedFile getAuthnUpFile();
+    UploadedFile getAuthnUpFile();
 
-	void setSigningUpFile(UploadedFile uploadedFile);
+    void setSigningUpFile(UploadedFile uploadedFile);
 
-	UploadedFile getSigningUpFile();
+    UploadedFile getSigningUpFile();
 
-	/*
-	 * Actions.
-	 */
-	String add() throws CertificateEncodingException, IOException;
+    /*
+     * Actions.
+     */
+    String add() throws CertificateEncodingException, IOException;
 
-	String remove() throws NodeNotFoundException;
+    String remove() throws NodeNotFoundException;
 
-	String save() throws CertificateEncodingException, NodeNotFoundException,
-			IOException;
+    String save() throws CertificateEncodingException, NodeNotFoundException, IOException;
 
-	String view();
+    String view();
 
-	String edit();
+    String edit();
 }

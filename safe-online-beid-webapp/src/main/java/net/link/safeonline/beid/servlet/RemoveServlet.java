@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * From here we continue doing java runtime version checking.
  * 
@@ -26,33 +27,31 @@ import org.apache.commons.logging.LogFactory;
  */
 public class RemoveServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(RemoveServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(RemoveServlet.class);
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		prepareJavaVersionCheck(req, resp);
-	}
 
-	private void prepareJavaVersionCheck(HttpServletRequest req,
-			HttpServletResponse resp) throws IOException {
-		LOG.debug("prepareJavaVersionCheck");
-		HttpSession session = req.getSession();
-		JavaVersionServlet.setPkcs11Target("remove-beid.seam", session);
-		JavaVersionServlet.setJava15NoPkcs11Target("missing-middleware.seam",
-				session);
-		JavaVersionServlet.setJava16NoPkcs11Target("remove-beid-pcsc.seam",
-				session);
-		LOG
-				.debug("redirecting to beid.html for Java runtime version checking...");
-		resp.sendRedirect("beid.html");
-	}
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		prepareJavaVersionCheck(req, resp);
-	}
+        prepareJavaVersionCheck(req, resp);
+    }
+
+    private void prepareJavaVersionCheck(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        LOG.debug("prepareJavaVersionCheck");
+        HttpSession session = req.getSession();
+        JavaVersionServlet.setPkcs11Target("remove-beid.seam", session);
+        JavaVersionServlet.setJava15NoPkcs11Target("missing-middleware.seam", session);
+        JavaVersionServlet.setJava16NoPkcs11Target("remove-beid-pcsc.seam", session);
+        LOG.debug("redirecting to beid.html for Java runtime version checking...");
+        resp.sendRedirect("beid.html");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        prepareJavaVersionCheck(req, resp);
+    }
 }

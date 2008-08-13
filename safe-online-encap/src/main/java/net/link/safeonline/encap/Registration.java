@@ -16,49 +16,47 @@ import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
+
 @Local
 public interface Registration {
 
-	/*
-	 * Accessors.
-	 */
-	String getMobile();
+    /*
+     * Accessors.
+     */
+    String getMobile();
 
-	void setMobile(String mobile);
+    void setMobile(String mobile);
 
-	String getMobileActivationCode();
+    String getMobileActivationCode();
 
-	String getMobileClientLink();
+    String getMobileClientLink();
 
-	String getMobileOTP();
+    String getMobileOTP();
 
-	void setMobileOTP(String mobileOTP);
+    void setMobileOTP(String mobileOTP);
 
-	String getChallengeId();
+    String getChallengeId();
 
-	/*
-	 * Actions.
-	 */
-	String mobileRegister() throws MobileException, MalformedURLException,
-			MobileRegistrationException;
+    /*
+     * Actions.
+     */
+    String mobileRegister() throws MobileException, MalformedURLException, MobileRegistrationException;
 
-	String cancel() throws IOException;
+    String cancel() throws IOException;
 
-	String mobileActivationOk();
+    String mobileActivationOk();
 
-	String mobileActivationRetry() throws MalformedURLException,
-			MobileException, MobileRegistrationException;
+    String mobileActivationRetry() throws MalformedURLException, MobileException, MobileRegistrationException;
 
-	String mobileActivationCancel() throws SubjectNotFoundException,
-			MobileException, MalformedURLException, IOException;
+    String mobileActivationCancel() throws SubjectNotFoundException, MobileException, MalformedURLException,
+            IOException;
 
-	String requestOTP() throws MalformedURLException, MobileException;
+    String requestOTP() throws MalformedURLException, MobileException;
 
-	String authenticate() throws IOException, MobileException,
-			SubjectNotFoundException;
+    String authenticate() throws IOException, MobileException, SubjectNotFoundException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }

@@ -15,5 +15,5 @@ package net.link.safeonline.sdk.exception;
  */
 public class SubjectNotFoundException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 }

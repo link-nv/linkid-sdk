@@ -36,92 +36,93 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("attributeProvider")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "AttributeProviderBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "AttributeProviderBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AttributeProviderBean implements AttributeProvider {
 
-	public static final String ATTRIBUTE_PROVIDERS_NAME = "attributeProviders";
+    public static final String              ATTRIBUTE_PROVIDERS_NAME = "attributeProviders";
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                             log;
 
-	@EJB
-	private AttributeProviderManagerService attributeProviderManagerService;
+    @EJB
+    private AttributeProviderManagerService attributeProviderManagerService;
 
-	@EJB
-	private ApplicationService applicationService;
+    @EJB
+    private ApplicationService              applicationService;
 
-	@SuppressWarnings("unused")
-	@DataModel(ATTRIBUTE_PROVIDERS_NAME)
-	private List<AttributeProviderEntity> attributeProviders;
+    @SuppressWarnings("unused")
+    @DataModel(ATTRIBUTE_PROVIDERS_NAME)
+    private List<AttributeProviderEntity>   attributeProviders;
 
-	@DataModelSelection(ATTRIBUTE_PROVIDERS_NAME)
-	private AttributeProviderEntity selectedAttributeProvider;
+    @DataModelSelection(ATTRIBUTE_PROVIDERS_NAME)
+    private AttributeProviderEntity         selectedAttributeProvider;
 
-	@In(value = "selectedAttributeType")
-	private AttributeTypeEntity selectedAttributeType;
+    @In(value = "selectedAttributeType")
+    private AttributeTypeEntity             selectedAttributeType;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                           facesMessages;
 
-	private String application;
+    private String                          application;
 
-	@Factory(ATTRIBUTE_PROVIDERS_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void attributeProvidersFactory()
-			throws AttributeTypeNotFoundException {
-		String attributeName = this.selectedAttributeType.getName();
-		this.attributeProviders = this.attributeProviderManagerService
-				.getAttributeProviders(attributeName);
-	}
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		// empty
-	}
+    @Factory(ATTRIBUTE_PROVIDERS_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void attributeProvidersFactory() throws AttributeTypeNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeProvider() throws AttributeTypeNotFoundException,
-			AttributeProviderNotFoundException {
-		this.log.debug("removing attribute provider #0",
-				this.selectedAttributeProvider);
-		this.attributeProviderManagerService
-				.removeAttributeProvider(this.selectedAttributeProvider);
-		attributeProvidersFactory();
-		return "provider-removed";
-	}
+        String attributeName = this.selectedAttributeType.getName();
+        this.attributeProviders = this.attributeProviderManagerService.getAttributeProviders(attributeName);
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String add() throws ExistingAttributeProviderException,
-			ApplicationNotFoundException, AttributeTypeNotFoundException,
-			PermissionDeniedException {
-		this.log.debug("add application provider: " + this.application);
-		this.attributeProviderManagerService.addAttributeProvider(
-				this.application, this.selectedAttributeType.getName());
-		return "success";
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<SelectItem> getApplicationList() {
-		List<ApplicationEntity> applications = this.applicationService
-				.listApplications();
-		List<SelectItem> applicationList = new LinkedList<SelectItem>();
-		for (ApplicationEntity currentApplication : applications) {
-			applicationList.add(new SelectItem(currentApplication.getName()));
-		}
-		return applicationList;
-	}
+        // empty
+    }
 
-	public String getApplication() {
-		return this.application;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String removeProvider() throws AttributeTypeNotFoundException, AttributeProviderNotFoundException {
 
-	public void setApplication(String application) {
-		this.application = application;
-	}
+        this.log.debug("removing attribute provider #0", this.selectedAttributeProvider);
+        this.attributeProviderManagerService.removeAttributeProvider(this.selectedAttributeProvider);
+        attributeProvidersFactory();
+        return "provider-removed";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String add() throws ExistingAttributeProviderException, ApplicationNotFoundException,
+            AttributeTypeNotFoundException, PermissionDeniedException {
+
+        this.log.debug("add application provider: " + this.application);
+        this.attributeProviderManagerService.addAttributeProvider(this.application, this.selectedAttributeType
+                .getName());
+        return "success";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> getApplicationList() {
+
+        List<ApplicationEntity> applications = this.applicationService.listApplications();
+        List<SelectItem> applicationList = new LinkedList<SelectItem>();
+        for (ApplicationEntity currentApplication : applications) {
+            applicationList.add(new SelectItem(currentApplication.getName()));
+        }
+        return applicationList;
+    }
+
+    public String getApplication() {
+
+        return this.application;
+    }
+
+    public void setApplication(String application) {
+
+        this.application = application;
+    }
 }

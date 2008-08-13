@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.user.profile;
 
 import net.link.safeonline.webapp.user.UserTemplate;
 
+
 public class UserAttributeEdit extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/profile/attribute-edit.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/profile/attribute-edit.seam";
 
-	public UserAttributeEdit() {
-		super(PAGE_NAME);
-	}
+
+    public UserAttributeEdit() {
+
+        super(PAGE_NAME);
+    }
 }

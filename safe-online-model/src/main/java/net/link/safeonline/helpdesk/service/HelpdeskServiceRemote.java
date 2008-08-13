@@ -9,6 +9,7 @@ package net.link.safeonline.helpdesk.service;
 
 import javax.ejb.Remote;
 
+
 @Remote
 public interface HelpdeskServiceRemote extends HelpdeskService {
 

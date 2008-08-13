@@ -21,35 +21,39 @@ import net.link.safeonline.tasks.dao.TaskHistoryDAO;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @Local(Task.class)
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/"
-		+ "TaskHistoryCleanerTaskBean")
+@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "TaskHistoryCleanerTaskBean")
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable
 public class TaskHistoryCleanerTaskBean implements Task {
 
-	private static final String name = "Task history cleaner";
+    private static final String name              = "Task history cleaner";
 
-	@EJB
-	private TaskHistoryDAO taskHistoryDAO;
+    @EJB
+    private TaskHistoryDAO      taskHistoryDAO;
 
-	@Configurable(group = "Task history cleaner", name = "Task history age limit (ms)")
-	private Integer configAgeInMillis = 10 * 60 * 1000;
+    @Configurable(group = "Task history cleaner", name = "Task history age limit (ms)")
+    private Integer             configAgeInMillis = 10 * 60 * 1000;
 
-	public TaskHistoryCleanerTaskBean() {
-		// empty
-	}
 
-	public String getName() {
-		return name;
-	}
+    public TaskHistoryCleanerTaskBean() {
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() throws Exception {
-		long ageInMillis = this.configAgeInMillis;
+        // empty
+    }
 
-		this.taskHistoryDAO.clearAllTasksHistory(ageInMillis);
-	}
+    public String getName() {
+
+        return name;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void perform() throws Exception {
+
+        long ageInMillis = this.configAgeInMillis;
+
+        this.taskHistoryDAO.clearAllTasksHistory(ageInMillis);
+    }
 
 }

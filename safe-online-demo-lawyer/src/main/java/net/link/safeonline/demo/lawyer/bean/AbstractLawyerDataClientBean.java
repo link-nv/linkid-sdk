@@ -41,15 +41,14 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 /**
- * Abstract class for data client beans. Inherit from this class if you need a
- * {@link DataClient} component.
+ * Abstract class for data client beans. Inherit from this class if you need a {@link DataClient} component.
  * 
  * @author fcorneli
  * 
  */
-public abstract class AbstractLawyerDataClientBean implements
-        AbstractLawyerDataClient {
+public abstract class AbstractLawyerDataClientBean implements AbstractLawyerDataClient {
 
     @Logger
     private Log                                   log;
@@ -77,8 +76,7 @@ public abstract class AbstractLawyerDataClientBean implements
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         this.wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils
-                .getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils.getPrivateKeyEntry();
         this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
         this.privateKey = privateKeyEntry.getPrivateKey();
         postActivateCallback();
@@ -88,12 +86,10 @@ public abstract class AbstractLawyerDataClientBean implements
     public void postActivateCallback() {
 
         this.log.debug("postActivate: location=" + this.wsLocation);
-        this.dataClient = new DataClientImpl(this.wsLocation, this.certificate,
+        this.dataClient = new DataClientImpl(this.wsLocation, this.certificate, this.privateKey);
+        this.attributeClient = new AttributeClientImpl(this.wsLocation, this.certificate, this.privateKey);
+        this.identifierMappingClient = new NameIdentifierMappingClientImpl(this.wsLocation, this.certificate,
                 this.privateKey);
-        this.attributeClient = new AttributeClientImpl(this.wsLocation,
-                this.certificate, this.privateKey);
-        this.identifierMappingClient = new NameIdentifierMappingClientImpl(
-                this.wsLocation, this.certificate, this.privateKey);
     }
 
     @PrePassivate
@@ -141,8 +137,8 @@ public abstract class AbstractLawyerDataClientBean implements
     }
 
     /**
-     * Gives back the lawyer status of a subject. This method also sets the
-     * {@link FacesMessages} in case something goes wrong.
+     * Gives back the lawyer status of a subject. This method also sets the {@link FacesMessages} in case something goes
+     * wrong.
      * 
      * @param userId
      * @return the lawyer status or <code>null</code> in case of error.
@@ -159,16 +155,14 @@ public abstract class AbstractLawyerDataClientBean implements
         Attribute<Boolean> barAdminAttribute;
         DataClient currentDataClient = getDataClient();
         try {
-            lawyerAttribute = currentDataClient.getAttributeValue(userId,
-                    DemoConstants.LAWYER_ATTRIBUTE_NAME, Boolean.class);
+            lawyerAttribute = currentDataClient.getAttributeValue(userId, DemoConstants.LAWYER_ATTRIBUTE_NAME,
+                    Boolean.class);
             suspendedAttribute = currentDataClient.getAttributeValue(userId,
-                    DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
-                    Boolean.class);
-            barAttribute = currentDataClient.getAttributeValue(userId,
-                    DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, String.class);
+                    DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, Boolean.class);
+            barAttribute = currentDataClient.getAttributeValue(userId, DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME,
+                    String.class);
             barAdminAttribute = currentDataClient.getAttributeValue(userId,
-                    DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
-                    Boolean.class);
+                    DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;
@@ -191,14 +185,12 @@ public abstract class AbstractLawyerDataClientBean implements
         if (null != barAdminAttribute && null != barAdminAttribute.getValue()) {
             barAdmin = barAdminAttribute.getValue();
         }
-        LawyerStatus lawyerStatus = new LawyerStatus(lawyer, suspended, bar,
-                barAdmin);
+        LawyerStatus lawyerStatus = new LawyerStatus(lawyer, suspended, bar, barAdmin);
         return lawyerStatus;
     }
 
     /**
-     * Returns the username for this user Id. Sets {@link FacesMessages} in case
-     * something goes wrong.
+     * Returns the username for this user Id. Sets {@link FacesMessages} in case something goes wrong.
      * 
      * @param userId
      */
@@ -207,8 +199,8 @@ public abstract class AbstractLawyerDataClientBean implements
         String username = null;
         AttributeClient currentAttributeClient = getAttributeClient();
         try {
-            username = currentAttributeClient.getAttributeValue(userId,
-                    DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+            username = currentAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
+                    String.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;

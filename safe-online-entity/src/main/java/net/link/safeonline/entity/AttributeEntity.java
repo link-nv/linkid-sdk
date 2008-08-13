@@ -45,10 +45,10 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 /**
- * Attribute JPA Entity. Sits as many-to-many between
- * {@link AttributeTypeEntity} and {@link SubjectEntity}. Multi-valued
- * attributes are implemented via {@link #getAttributeIndex()}.
+ * Attribute JPA Entity. Sits as many-to-many between {@link AttributeTypeEntity} and {@link SubjectEntity}.
+ * Multi-valued attributes are implemented via {@link #getAttributeIndex()}.
  * 
  * @author fcorneli
  * 
@@ -56,345 +56,373 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Entity
 @Table(name = "attribute")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT attribute FROM AttributeEntity AS attribute "
-				+ "WHERE attribute.subject = :"
-				+ SUBJECT_PARAM
-				+ " ORDER BY attribute.attributeType, attribute.attributeIndex"),
-		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_VISIBLE, query = "SELECT attribute FROM AttributeEntity AS attribute "
-				+ "WHERE attribute.subject = :"
-				+ SUBJECT_PARAM
-				+ " AND attribute.attributeType.userVisible = TRUE "
-				+ "ORDER BY attribute.attributeType, attribute.attributeIndex"),
-		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT attribute FROM AttributeEntity AS attribute "
-				+ "WHERE attribute.subject = :"
-				+ SUBJECT_PARAM
-				+ " AND attribute.attributeType = :"
-				+ ATTRIBUTE_TYPE_PARAM
-				+ " ORDER BY attribute.attributeIndex"),
-		@NamedQuery(name = QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE, query = "SELECT attribute FROM AttributeEntity AS attribute "
-				+ "WHERE SUBSTRING(attribute.stringValue,1,LENGTH(:prefix)) = :prefix"
-				+ " AND attribute.attributeType = :"
-				+ ATTRIBUTE_TYPE_PARAM
-				+ " ORDER BY attribute.stringValue"),
-		@NamedQuery(name = MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT MAX(attribute.attributeIndex) FROM AttributeEntity AS attribute "
-				+ "WHERE attribute.subject = :"
-				+ SUBJECT_PARAM
-				+ " AND attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM),
-		@NamedQuery(name = DELETE_WHERE_SUBJECT, query = "DELETE FROM AttributeEntity AS attribute "
-				+ "WHERE attribute.subject = :" + SUBJECT_PARAM),
-		@NamedQuery(name = DELETE_WHERE_ATTRIBUTE_TYPE, query = "DELETE FROM AttributeEntity AS attribute "
-				+ "WHERE attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM) })
+        @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT attribute FROM AttributeEntity AS attribute "
+                + "WHERE attribute.subject = :" + SUBJECT_PARAM
+                + " ORDER BY attribute.attributeType, attribute.attributeIndex"),
+        @NamedQuery(name = QUERY_WHERE_SUBJECT_AND_VISIBLE, query = "SELECT attribute FROM AttributeEntity AS attribute "
+                + "WHERE attribute.subject = :"
+                + SUBJECT_PARAM
+                + " AND attribute.attributeType.userVisible = TRUE "
+                + "ORDER BY attribute.attributeType, attribute.attributeIndex"),
+        @NamedQuery(name = QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT attribute FROM AttributeEntity AS attribute "
+                + "WHERE attribute.subject = :"
+                + SUBJECT_PARAM
+                + " AND attribute.attributeType = :"
+                + ATTRIBUTE_TYPE_PARAM + " ORDER BY attribute.attributeIndex"),
+        @NamedQuery(name = QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE, query = "SELECT attribute FROM AttributeEntity AS attribute "
+                + "WHERE SUBSTRING(attribute.stringValue,1,LENGTH(:prefix)) = :prefix"
+                + " AND attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM + " ORDER BY attribute.stringValue"),
+        @NamedQuery(name = MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT MAX(attribute.attributeIndex) FROM AttributeEntity AS attribute "
+                + "WHERE attribute.subject = :"
+                + SUBJECT_PARAM
+                + " AND attribute.attributeType = :"
+                + ATTRIBUTE_TYPE_PARAM),
+        @NamedQuery(name = DELETE_WHERE_SUBJECT, query = "DELETE FROM AttributeEntity AS attribute "
+                + "WHERE attribute.subject = :" + SUBJECT_PARAM),
+        @NamedQuery(name = DELETE_WHERE_ATTRIBUTE_TYPE, query = "DELETE FROM AttributeEntity AS attribute "
+                + "WHERE attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM) })
 public class AttributeEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID                        = 1L;
 
-	public static final String QUERY_WHERE_SUBJECT = "attr.subject";
+    public static final String  QUERY_WHERE_SUBJECT                     = "attr.subject";
 
-	public static final String QUERY_WHERE_SUBJECT_AND_VISIBLE = "attr.subject.visi";
+    public static final String  QUERY_WHERE_SUBJECT_AND_VISIBLE         = "attr.subject.visi";
 
-	public static final String QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "attr.subject.at";
+    public static final String  QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE  = "attr.subject.at";
 
-	public static final String QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE = "attr.pre.at";
+    public static final String  QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE   = "attr.pre.at";
 
-	public static final String MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "max.id.subject.at";
+    public static final String  MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "max.id.subject.at";
 
-	public static final String DELETE_WHERE_SUBJECT = "attr.del.sub";
+    public static final String  DELETE_WHERE_SUBJECT                    = "attr.del.sub";
 
-	public static final String DELETE_WHERE_ATTRIBUTE_TYPE = "attr.del.at";
+    public static final String  DELETE_WHERE_ATTRIBUTE_TYPE             = "attr.del.at";
 
-	public static final String SUBJECT_PARAM = "subject";
+    public static final String  SUBJECT_PARAM                           = "subject";
 
-	public static final String ATTRIBUTE_TYPE_PARAM = "attributeType";
+    public static final String  ATTRIBUTE_TYPE_PARAM                    = "attributeType";
 
-	private AttributePK pk;
+    private AttributePK         pk;
 
-	private AttributeTypeEntity attributeType;
+    private AttributeTypeEntity attributeType;
 
-	private SubjectEntity subject;
+    private SubjectEntity       subject;
 
-	private long attributeIndex;
+    private long                attributeIndex;
 
-	private String stringValue;
+    private String              stringValue;
 
-	private Boolean booleanValue;
+    private Boolean             booleanValue;
 
-	private Integer integerValue;
+    private Integer             integerValue;
 
-	private Double doubleValue;
+    private Double              doubleValue;
 
-	private Date dateValue;
+    private Date                dateValue;
 
-	public AttributeEntity() {
-		// empty
-	}
 
-	public AttributeEntity(AttributeTypeEntity attributeType,
-			SubjectEntity subject, String stringValue) {
-		this.stringValue = stringValue;
-		this.attributeType = attributeType;
-		this.subject = subject;
-		this.pk = new AttributePK(attributeType.getName(), subject.getUserId());
-	}
+    public AttributeEntity() {
 
-	public AttributeEntity(AttributeTypeEntity attributeType,
-			SubjectEntity subject, long attributeIdx) {
-		this.attributeType = attributeType;
-		this.subject = subject;
-		this.attributeIndex = attributeIdx;
-		this.pk = new AttributePK(attributeType, subject, attributeIdx);
-	}
+        // empty
+    }
 
-	public static final String ATTRIBUTE_INDEX_COLUMN_NAME = "attribute_index";
+    public AttributeEntity(AttributeTypeEntity attributeType, SubjectEntity subject, String stringValue) {
 
-	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
-			@AttributeOverride(name = "subject", column = @Column(name = SUBJECT_COLUMN_NAME)),
-			@AttributeOverride(name = "attributeIndex", column = @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME)) })
-	public AttributePK getPk() {
-		return this.pk;
-	}
+        this.stringValue = stringValue;
+        this.attributeType = attributeType;
+        this.subject = subject;
+        this.pk = new AttributePK(attributeType.getName(), subject.getUserId());
+    }
 
-	public void setPk(AttributePK pk) {
-		this.pk = pk;
-	}
+    public AttributeEntity(AttributeTypeEntity attributeType, SubjectEntity subject, long attributeIdx) {
 
-	public static final String ATTRIBUTE_TYPE_COLUMN_NAME = "attribute_type";
+        this.attributeType = attributeType;
+        this.subject = subject;
+        this.attributeIndex = attributeIdx;
+        this.pk = new AttributePK(attributeType, subject, attributeIdx);
+    }
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = ATTRIBUTE_TYPE_COLUMN_NAME, insertable = false, updatable = false)
-	public AttributeTypeEntity getAttributeType() {
-		return this.attributeType;
-	}
 
-	public void setAttributeType(AttributeTypeEntity attributeType) {
-		this.attributeType = attributeType;
-	}
+    public static final String ATTRIBUTE_INDEX_COLUMN_NAME = "attribute_index";
 
-	public static final String SUBJECT_COLUMN_NAME = "subject";
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = SUBJECT_COLUMN_NAME, insertable = false, updatable = false)
-	public SubjectEntity getSubject() {
-		return this.subject;
-	}
+    @EmbeddedId
+    @AttributeOverrides( {
+            @AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
+            @AttributeOverride(name = "subject", column = @Column(name = SUBJECT_COLUMN_NAME)),
+            @AttributeOverride(name = "attributeIndex", column = @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME)) })
+    public AttributePK getPk() {
 
-	public void setSubject(SubjectEntity subject) {
-		this.subject = subject;
-	}
+        return this.pk;
+    }
 
-	/**
-	 * The attribute index is used for implementing the multi-valued attributes.
-	 * For single-value attributes that attribute index is zero.
-	 * 
-	 */
-	@Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
-	public long getAttributeIndex() {
-		return this.attributeIndex;
-	}
+    public void setPk(AttributePK pk) {
 
-	public void setAttributeIndex(long attributeIndex) {
-		this.attributeIndex = attributeIndex;
-	}
+        this.pk = pk;
+    }
 
-	public String getStringValue() {
-		return this.stringValue;
-	}
 
-	public void setStringValue(String stringValue) {
-		this.stringValue = stringValue;
-	}
+    public static final String ATTRIBUTE_TYPE_COLUMN_NAME = "attribute_type";
 
-	public Boolean getBooleanValue() {
-		return this.booleanValue;
-	}
 
-	public void setBooleanValue(Boolean booleanValue) {
-		this.booleanValue = booleanValue;
-	}
+    @ManyToOne(optional = false)
+    @JoinColumn(name = ATTRIBUTE_TYPE_COLUMN_NAME, insertable = false, updatable = false)
+    public AttributeTypeEntity getAttributeType() {
 
-	@Temporal(TemporalType.DATE)
-	public Date getDateValue() {
-		return this.dateValue;
-	}
+        return this.attributeType;
+    }
 
-	public void setDateValue(Date dateValue) {
-		this.dateValue = dateValue;
-	}
+    public void setAttributeType(AttributeTypeEntity attributeType) {
 
-	public Double getDoubleValue() {
-		return this.doubleValue;
-	}
+        this.attributeType = attributeType;
+    }
 
-	public void setDoubleValue(Double doubleValue) {
-		this.doubleValue = doubleValue;
-	}
 
-	public Integer getIntegerValue() {
-		return this.integerValue;
-	}
+    public static final String SUBJECT_COLUMN_NAME = "subject";
 
-	public void setIntegerValue(Integer integerValue) {
-		this.integerValue = integerValue;
-	}
 
-	private transient List<AttributeEntity> members;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = SUBJECT_COLUMN_NAME, insertable = false, updatable = false)
+    public SubjectEntity getSubject() {
 
-	/**
-	 * We don't manage the member attributes of a compounded attribute directly
-	 * via the database because the relationship is to complex to express. This
-	 * field is filled in by the DAO layer upon request.
-	 * 
-	 */
-	@Transient
-	public List<AttributeEntity> getMembers() {
-		if (null == this.members) {
-			this.members = new LinkedList<AttributeEntity>();
-		}
-		return this.members;
-	}
+        return this.subject;
+    }
 
-	public void setMembers(List<AttributeEntity> members) {
-		this.members = members;
-	}
+    public void setSubject(SubjectEntity subject) {
 
-	/**
-	 * Generic data mapping can be done via {@link #getValue()} and
-	 * {@link #setValue(Object)}.
-	 * 
-	 */
-	@Transient
-	public Object getValue() {
-		DatatypeType datatype = this.attributeType.getType();
-		switch (datatype) {
-		case STRING:
-		case LOGIN:
-			return this.getStringValue();
-		case BOOLEAN:
-			return this.getBooleanValue();
-		case INTEGER:
-			return this.getIntegerValue();
-		case DOUBLE:
-			return this.getDoubleValue();
-		case DATE:
-			return this.getDateValue();
-		default:
-			throw new EJBException("datatype not supported: " + datatype);
-		}
-	}
+        this.subject = subject;
+    }
 
-	@Transient
-	public void setValue(Object value) {
-		DatatypeType datatype = this.attributeType.getType();
-		switch (datatype) {
-		case STRING:
-		case LOGIN:
-			this.setStringValue((String) value);
-			break;
-		case BOOLEAN:
-			this.setBooleanValue((Boolean) value);
-			break;
-		case INTEGER:
-			this.setIntegerValue((Integer) value);
-			break;
-		case DOUBLE:
-			this.setDoubleValue((Double) value);
-			break;
-		case DATE:
-			this.setDateValue((Date) value);
-			break;
-		default:
-			throw new EJBException("datatype not supported: " + datatype);
-		}
-	}
+    /**
+     * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that
+     * attribute index is zero.
+     * 
+     */
+    @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
+    public long getAttributeIndex() {
 
-	@Transient
-	public boolean isEmpty() {
-		DatatypeType datatype = this.attributeType.getType();
-		switch (datatype) {
-		case STRING:
-		case LOGIN:
-			String value = this.getStringValue();
-			if (null == value) {
-				return true;
-			}
-			return value.length() == 0;
-		case BOOLEAN:
-			return null == this.getBooleanValue();
-		case INTEGER:
-			return null == this.getIntegerValue();
-		case DOUBLE:
-			return null == this.getDoubleValue();
-		case DATE:
-			return null == this.getDateValue();
-		default:
-			throw new EJBException("datatype not supported: " + datatype);
-		}
-	}
+        return this.attributeIndex;
+    }
 
-	@Transient
-	public void clearValues() {
-		this.booleanValue = null;
-		this.dateValue = null;
-		this.doubleValue = null;
-		this.integerValue = null;
-		this.stringValue = null;
-	}
+    public void setAttributeIndex(long attributeIndex) {
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (null == obj) {
-			return false;
-		}
-		if (false == (obj instanceof AttributeEntity)) {
-			return false;
-		}
-		AttributeEntity rhs = (AttributeEntity) obj;
-		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
-	}
+        this.attributeIndex = attributeIndex;
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.pk).toHashCode();
-	}
+    public String getStringValue() {
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("pk", this.pk).toString();
-	}
+        return this.stringValue;
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_SUBJECT)
-		List<AttributeEntity> listAttributes(
-				@QueryParam(SUBJECT_PARAM) SubjectEntity subject);
+    public void setStringValue(String stringValue) {
 
-		@QueryMethod(QUERY_WHERE_SUBJECT_AND_VISIBLE)
-		List<AttributeEntity> listVisibleAttributes(
-				@QueryParam(SUBJECT_PARAM) SubjectEntity subject);
+        this.stringValue = stringValue;
+    }
 
-		@QueryMethod(QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
-		List<AttributeEntity> listAttributes(
-				@QueryParam(SUBJECT_PARAM) SubjectEntity subject,
-				@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+    public Boolean getBooleanValue() {
 
-		@QueryMethod(QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE)
-		List<AttributeEntity> listAttributes(
-				@QueryParam("prefix") String prefix,
-				@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+        return this.booleanValue;
+    }
 
-		@QueryMethod(MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
-		List<Long> listMaxIdWhereSubjectAndAttributeType(
-				@QueryParam(SUBJECT_PARAM) SubjectEntity subject,
-				@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+    public void setBooleanValue(Boolean booleanValue) {
 
-		@UpdateMethod(DELETE_WHERE_SUBJECT)
-		void deleteAttributes(@QueryParam(SUBJECT_PARAM) SubjectEntity subject);
+        this.booleanValue = booleanValue;
+    }
 
-		@UpdateMethod(DELETE_WHERE_ATTRIBUTE_TYPE)
-		int deleteAttributes(
-				@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
-	}
+    @Temporal(TemporalType.DATE)
+    public Date getDateValue() {
+
+        return this.dateValue;
+    }
+
+    public void setDateValue(Date dateValue) {
+
+        this.dateValue = dateValue;
+    }
+
+    public Double getDoubleValue() {
+
+        return this.doubleValue;
+    }
+
+    public void setDoubleValue(Double doubleValue) {
+
+        this.doubleValue = doubleValue;
+    }
+
+    public Integer getIntegerValue() {
+
+        return this.integerValue;
+    }
+
+    public void setIntegerValue(Integer integerValue) {
+
+        this.integerValue = integerValue;
+    }
+
+
+    private transient List<AttributeEntity> members;
+
+
+    /**
+     * We don't manage the member attributes of a compounded attribute directly via the database because the
+     * relationship is to complex to express. This field is filled in by the DAO layer upon request.
+     * 
+     */
+    @Transient
+    public List<AttributeEntity> getMembers() {
+
+        if (null == this.members) {
+            this.members = new LinkedList<AttributeEntity>();
+        }
+        return this.members;
+    }
+
+    public void setMembers(List<AttributeEntity> members) {
+
+        this.members = members;
+    }
+
+    /**
+     * Generic data mapping can be done via {@link #getValue()} and {@link #setValue(Object)}.
+     * 
+     */
+    @Transient
+    public Object getValue() {
+
+        DatatypeType datatype = this.attributeType.getType();
+        switch (datatype) {
+            case STRING:
+            case LOGIN:
+                return this.getStringValue();
+            case BOOLEAN:
+                return this.getBooleanValue();
+            case INTEGER:
+                return this.getIntegerValue();
+            case DOUBLE:
+                return this.getDoubleValue();
+            case DATE:
+                return this.getDateValue();
+            default:
+                throw new EJBException("datatype not supported: " + datatype);
+        }
+    }
+
+    @Transient
+    public void setValue(Object value) {
+
+        DatatypeType datatype = this.attributeType.getType();
+        switch (datatype) {
+            case STRING:
+            case LOGIN:
+                this.setStringValue((String) value);
+            break;
+            case BOOLEAN:
+                this.setBooleanValue((Boolean) value);
+            break;
+            case INTEGER:
+                this.setIntegerValue((Integer) value);
+            break;
+            case DOUBLE:
+                this.setDoubleValue((Double) value);
+            break;
+            case DATE:
+                this.setDateValue((Date) value);
+            break;
+            default:
+                throw new EJBException("datatype not supported: " + datatype);
+        }
+    }
+
+    @Transient
+    public boolean isEmpty() {
+
+        DatatypeType datatype = this.attributeType.getType();
+        switch (datatype) {
+            case STRING:
+            case LOGIN:
+                String value = this.getStringValue();
+                if (null == value) {
+                    return true;
+                }
+                return value.length() == 0;
+            case BOOLEAN:
+                return null == this.getBooleanValue();
+            case INTEGER:
+                return null == this.getIntegerValue();
+            case DOUBLE:
+                return null == this.getDoubleValue();
+            case DATE:
+                return null == this.getDateValue();
+            default:
+                throw new EJBException("datatype not supported: " + datatype);
+        }
+    }
+
+    @Transient
+    public void clearValues() {
+
+        this.booleanValue = null;
+        this.dateValue = null;
+        this.doubleValue = null;
+        this.integerValue = null;
+        this.stringValue = null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (null == obj) {
+            return false;
+        }
+        if (false == (obj instanceof AttributeEntity)) {
+            return false;
+        }
+        AttributeEntity rhs = (AttributeEntity) obj;
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder().append(this.pk).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("pk", this.pk).toString();
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_WHERE_SUBJECT)
+        List<AttributeEntity> listAttributes(@QueryParam(SUBJECT_PARAM) SubjectEntity subject);
+
+        @QueryMethod(QUERY_WHERE_SUBJECT_AND_VISIBLE)
+        List<AttributeEntity> listVisibleAttributes(@QueryParam(SUBJECT_PARAM) SubjectEntity subject);
+
+        @QueryMethod(QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
+        List<AttributeEntity> listAttributes(@QueryParam(SUBJECT_PARAM) SubjectEntity subject,
+                @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+
+        @QueryMethod(QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE)
+        List<AttributeEntity> listAttributes(@QueryParam("prefix") String prefix,
+                @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+
+        @QueryMethod(MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
+        List<Long> listMaxIdWhereSubjectAndAttributeType(@QueryParam(SUBJECT_PARAM) SubjectEntity subject,
+                @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+
+        @UpdateMethod(DELETE_WHERE_SUBJECT)
+        void deleteAttributes(@QueryParam(SUBJECT_PARAM) SubjectEntity subject);
+
+        @UpdateMethod(DELETE_WHERE_ATTRIBUTE_TYPE)
+        int deleteAttributes(@QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+    }
 }

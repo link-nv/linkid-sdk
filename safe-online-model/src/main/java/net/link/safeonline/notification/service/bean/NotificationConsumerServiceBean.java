@@ -20,22 +20,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_NODE_SECURITY_DOMAIN)
-public class NotificationConsumerServiceBean implements
-		NotificationConsumerService {
+public class NotificationConsumerServiceBean implements NotificationConsumerService {
 
-	private static final Log LOG = LogFactory
-			.getLog(NotificationConsumerServiceBean.class);
+    private static final Log LOG = LogFactory.getLog(NotificationConsumerServiceBean.class);
 
-	public void handleMessage(String topic, String destination,
-			List<String> message) {
-		LOG.debug("handle message for topic: " + topic);
-		try {
-			MessageHandlerManager.handleMessage(topic, destination, message);
-		} catch (MessageHandlerNotFoundException e) {
-			LOG.debug("Exception: " + e.getMessage());
-			return;
-		}
-	}
+
+    public void handleMessage(String topic, String destination, List<String> message) {
+
+        LOG.debug("handle message for topic: " + topic);
+        try {
+            MessageHandlerManager.handleMessage(topic, destination, message);
+        } catch (MessageHandlerNotFoundException e) {
+            LOG.debug("Exception: " + e.getMessage());
+            return;
+        }
+    }
 }

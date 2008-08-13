@@ -25,33 +25,32 @@ import net.link.safeonline.performance.service.ScenarioTimingService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 /**
  * <h2>{@link ScenarioTimingServiceBean}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless
 @LocalBinding(jndiBinding = ScenarioTimingService.BINDING)
-public class ScenarioTimingServiceBean extends AbstractProfilingServiceBean implements
-		ScenarioTimingService {
+public class ScenarioTimingServiceBean extends AbstractProfilingServiceBean implements ScenarioTimingService {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public List<ScenarioTimingEntity> getExecutionTimings(
-			ExecutionEntity execution) {
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public List<ScenarioTimingEntity> getExecutionTimings(ExecutionEntity execution) {
 
-		return this.em.createNamedQuery(ScenarioTimingEntity.getTimings)
-				.setParameter("execution", execution).getResultList();
-	}
+        return this.em.createNamedQuery(ScenarioTimingEntity.getTimings).setParameter("execution", execution)
+                .getResultList();
+    }
 }

@@ -20,30 +20,29 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link CinemaStartupListener}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Jun 23, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class CinemaStartupListener implements ServletContextListener {
 
-    private static final Log LOG = LogFactory
-                                         .getLog(CinemaStartupListener.class);
-    
+    private static final Log LOG = LogFactory.getLog(CinemaStartupListener.class);
+
+
     /**
      * {@inheritDoc}
      */
     public void contextInitialized(ServletContextEvent sce) {
 
         try {
-            ((InitializationService) new InitialContext()
-                    .lookup(InitializationService.BINDING)).buildEntities();
+            ((InitializationService) new InitialContext().lookup(InitializationService.BINDING)).buildEntities();
         } catch (NamingException e) {
             LOG.error("Couldn't find the cinema initialization bean.", e);
         }

@@ -40,200 +40,219 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("scheduling")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "SchedulingBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "SchedulingBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class SchedulingBean implements Scheduling {
 
-	private static final Log LOG = LogFactory.getLog(SchedulingBean.class);
+    private static final Log        LOG = LogFactory.getLog(SchedulingBean.class);
 
-	@DataModel("schedulingList")
-	private List<SchedulingEntity> schedulingList;
+    @DataModel("schedulingList")
+    private List<SchedulingEntity>  schedulingList;
 
-	@DataModelSelection("schedulingList")
-	@Out(value = "selectedScheduling", required = false, scope = ScopeType.SESSION)
-	@In(value = "selectedScheduling", required = false)
-	private SchedulingEntity selectedScheduling;
+    @DataModelSelection("schedulingList")
+    @Out(value = "selectedScheduling", required = false, scope = ScopeType.SESSION)
+    @In(value = "selectedScheduling", required = false)
+    private SchedulingEntity        selectedScheduling;
 
-	@DataModelSelection("taskList")
-	@Out(value = "selectedTask", required = false, scope = ScopeType.SESSION)
-	@In(value = "selectedTask", required = false)
-	private TaskEntity selectedTask;
+    @DataModelSelection("taskList")
+    @Out(value = "selectedTask", required = false, scope = ScopeType.SESSION)
+    @In(value = "selectedTask", required = false)
+    private TaskEntity              selectedTask;
 
-	@DataModel("taskList")
-	@SuppressWarnings("unused")
-	private List<TaskEntity> taskList;
+    @DataModel("taskList")
+    @SuppressWarnings("unused")
+    private List<TaskEntity>        taskList;
 
-	@DataModel("taskHistoryList")
-	@SuppressWarnings("unused")
-	private List<TaskHistoryEntity> taskHistoryList;
+    @DataModel("taskHistoryList")
+    @SuppressWarnings("unused")
+    private List<TaskHistoryEntity> taskHistoryList;
 
-	@Out(value = "newScheduling", required = false)
-	@In(value = "newScheduling", required = false)
-	private SchedulingEntity newScheduling;
+    @Out(value = "newScheduling", required = false)
+    @In(value = "newScheduling", required = false)
+    private SchedulingEntity        newScheduling;
 
-	@EJB
-	private SchedulingService schedulingService;
+    @EJB
+    private SchedulingService       schedulingService;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                   facesMessages;
 
-	@Factory("schedulingList")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void schedulingListFactory() {
-		this.schedulingList = this.schedulingService.getSchedulingList();
-	}
 
-	@Factory("taskList")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void taskListFactory() {
-		if (this.selectedScheduling == null) {
-			this.taskList = this.schedulingService.listTaskList();
-		} else {
-			this.taskList = this.selectedScheduling.getTasks();
-		}
-	}
+    @Factory("schedulingList")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void schedulingListFactory() {
 
-	@Factory("taskHistoryList")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void taskHistoryListFactory() {
-		this.taskHistoryList = this.schedulingService
-				.getTaskHistoryList(this.selectedTask);
-	}
+        this.schedulingList = this.schedulingService.getSchedulingList();
+    }
 
-	@Factory("newScheduling")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void newSchedulingFactory() {
-		this.newScheduling = new SchedulingEntity();
-	}
+    @Factory("taskList")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void taskListFactory() {
 
-	@Factory("selectSchedulingList")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<SelectItem> selectSchedulingListFactory() {
-		List<SelectItem> selectSchedulingList = new ArrayList<SelectItem>();
-		this.schedulingListFactory();
-		for (SchedulingEntity scheduling : this.schedulingList) {
-			SelectItem selectItem = new SelectItem(scheduling.getName());
-			selectSchedulingList.add(selectItem);
-		}
-		return selectSchedulingList;
-	}
+        if (this.selectedScheduling == null) {
+            this.taskList = this.schedulingService.listTaskList();
+        } else {
+            this.taskList = this.selectedScheduling.getTasks();
+        }
+    }
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		// empty
-	}
+    @Factory("taskHistoryList")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void taskHistoryListFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String schedulingListView() {
-		this.selectedTask = null;
-		return "schedulinglistview";
-	}
+        this.taskHistoryList = this.schedulingService.getTaskHistoryList(this.selectedTask);
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String schedulingView() {
-		if (this.selectedScheduling == null) {
-			this.selectedScheduling = this.selectedTask.getScheduling();
-		}
-		this.taskList = this.selectedScheduling.getTasks();
-		return "schedulingview";
-	}
+    @Factory("newScheduling")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void newSchedulingFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String taskListView() {
-		this.selectedScheduling = null;
-		this.taskList = this.schedulingService.listTaskList();
-		return "tasklistview";
-	}
+        this.newScheduling = new SchedulingEntity();
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String taskView() {
-		return "taskview";
-	}
+    @Factory("selectSchedulingList")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> selectSchedulingListFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String taskHistoryView() {
-		return "taskhistoryview";
-	}
+        List<SelectItem> selectSchedulingList = new ArrayList<SelectItem>();
+        this.schedulingListFactory();
+        for (SchedulingEntity scheduling : this.schedulingList) {
+            SelectItem selectItem = new SelectItem(scheduling.getName());
+            selectSchedulingList.add(selectItem);
+        }
+        return selectSchedulingList;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String performTask() {
-		this.schedulingService.performTask(this.selectedTask);
-		return "successperformtask";
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String performScheduling() {
-		this.schedulingService.performScheduling(this.selectedScheduling);
-		return "successperformscheduling";
-	}
+        // empty
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String clearTaskHistory() {
-		this.schedulingService.clearTaskHistory(this.selectedTask);
-		taskHistoryListFactory();
-		return "successcleartaskhistory";
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String schedulingListView() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String clearAllTasksHistory() {
-		this.schedulingService.clearAllTasksHistory();
-		return "successclearalltaskhistory";
-	}
+        this.selectedTask = null;
+        return "schedulinglistview";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String saveScheduling() {
-		try {
-			this.schedulingService.saveScheduling(this.selectedScheduling);
-		} catch (InvalidCronExpressionException e) {
-			this.facesMessages.addToControlFromResourceBundle("cronExpression",
-					FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
-			return null;
-		}
-		return "successsavescheduling";
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String schedulingView() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String editSchedulingView() {
-		return "schedulingedit";
-	}
+        if (this.selectedScheduling == null) {
+            this.selectedScheduling = this.selectedTask.getScheduling();
+        }
+        this.taskList = this.selectedScheduling.getTasks();
+        return "schedulingview";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String addSchedulingView() {
-		return "addschedulingview";
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String taskListView() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String addScheduling() {
-		LOG.debug("adding scheduling: " + this.newScheduling.getName());
-		try {
-			this.schedulingService.addScheduling(this.newScheduling);
-		} catch (InvalidCronExpressionException e) {
-			this.facesMessages.addToControlFromResourceBundle("cronExpression",
-					FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
-			return null;
-		} catch (ExistingSchedulingException e) {
-			this.facesMessages
-					.addToControlFromResourceBundle("cronExpression",
-							FacesMessage.SEVERITY_ERROR,
-							"errorSchedulingAlreadyExists");
-			return null;
-		}
-		return "successaddscheduling";
-	}
+        this.selectedScheduling = null;
+        this.taskList = this.schedulingService.listTaskList();
+        return "tasklistview";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String saveTask() {
-		this.schedulingService.saveTask(this.selectedTask);
-		return "successsavetask";
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String taskView() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String taskEditView() {
-		return "taskeditview";
-	}
+        return "taskview";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String taskHistoryView() {
+
+        return "taskhistoryview";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String performTask() {
+
+        this.schedulingService.performTask(this.selectedTask);
+        return "successperformtask";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String performScheduling() {
+
+        this.schedulingService.performScheduling(this.selectedScheduling);
+        return "successperformscheduling";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String clearTaskHistory() {
+
+        this.schedulingService.clearTaskHistory(this.selectedTask);
+        taskHistoryListFactory();
+        return "successcleartaskhistory";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String clearAllTasksHistory() {
+
+        this.schedulingService.clearAllTasksHistory();
+        return "successclearalltaskhistory";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String saveScheduling() {
+
+        try {
+            this.schedulingService.saveScheduling(this.selectedScheduling);
+        } catch (InvalidCronExpressionException e) {
+            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR,
+                    "errorCronExpressionInvalid");
+            return null;
+        }
+        return "successsavescheduling";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String editSchedulingView() {
+
+        return "schedulingedit";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String addSchedulingView() {
+
+        return "addschedulingview";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String addScheduling() {
+
+        LOG.debug("adding scheduling: " + this.newScheduling.getName());
+        try {
+            this.schedulingService.addScheduling(this.newScheduling);
+        } catch (InvalidCronExpressionException e) {
+            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR,
+                    "errorCronExpressionInvalid");
+            return null;
+        } catch (ExistingSchedulingException e) {
+            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR,
+                    "errorSchedulingAlreadyExists");
+            return null;
+        }
+        return "successaddscheduling";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String saveTask() {
+
+        this.schedulingService.saveTask(this.selectedTask);
+        return "successsavetask";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String taskEditView() {
+
+        return "taskeditview";
+    }
 
 }

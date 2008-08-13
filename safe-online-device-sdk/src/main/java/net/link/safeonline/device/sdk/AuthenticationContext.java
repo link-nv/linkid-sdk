@@ -12,120 +12,141 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+
 public class AuthenticationContext implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID       = 1L;
 
-	public static final String AUTHENTICATION_CONTEXT = "AuthenticationContext";
+    public static final String AUTHENTICATION_CONTEXT = "AuthenticationContext";
 
-	private String inResponseTo;
+    private String             inResponseTo;
 
-	private String targetUrl;
+    private String             targetUrl;
 
-	private Set<String> wantedDevices;
+    private Set<String>        wantedDevices;
 
-	private String usedDevice;
+    private String             usedDevice;
 
-	private String userId;
+    private String             userId;
 
-	private String nodeName;
+    private String             nodeName;
 
-	private String application;
+    private String             application;
 
-	private String applicationFriendlyName;
+    private String             applicationFriendlyName;
 
-	private String issuer;
+    private String             issuer;
 
-	private int validity;
+    private int                validity;
 
-	public static AuthenticationContext getAuthenticationContext(
-			HttpSession session) {
-		AuthenticationContext instance = (AuthenticationContext) session
-				.getAttribute(AUTHENTICATION_CONTEXT);
-		if (null == instance) {
-			instance = new AuthenticationContext();
-			session.setAttribute(AUTHENTICATION_CONTEXT, instance);
-		}
-		return instance;
-	}
 
-	public Set<String> getWantedDevices() {
-		return this.wantedDevices;
-	}
+    public static AuthenticationContext getAuthenticationContext(HttpSession session) {
 
-	public void setWantedDevices(Set<String> wantedDevices) {
-		this.wantedDevices = wantedDevices;
-	}
+        AuthenticationContext instance = (AuthenticationContext) session.getAttribute(AUTHENTICATION_CONTEXT);
+        if (null == instance) {
+            instance = new AuthenticationContext();
+            session.setAttribute(AUTHENTICATION_CONTEXT, instance);
+        }
+        return instance;
+    }
 
-	public String getUsedDevice() {
-		return this.usedDevice;
-	}
+    public Set<String> getWantedDevices() {
 
-	public void setUsedDevice(String usedDevice) {
-		this.usedDevice = usedDevice;
-	}
+        return this.wantedDevices;
+    }
 
-	public String getUserId() {
-		return this.userId;
-	}
+    public void setWantedDevices(Set<String> wantedDevices) {
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+        this.wantedDevices = wantedDevices;
+    }
 
-	public String getNodeName() {
-		return this.nodeName;
-	}
+    public String getUsedDevice() {
 
-	public void setNodeName(String nodeName) {
-		this.nodeName = nodeName;
-	}
+        return this.usedDevice;
+    }
 
-	public String getApplication() {
-		return this.application;
-	}
+    public void setUsedDevice(String usedDevice) {
 
-	public void setApplication(String application) {
-		this.application = application;
-	}
+        this.usedDevice = usedDevice;
+    }
 
-	public String getIssuer() {
-		return this.issuer;
-	}
+    public String getUserId() {
 
-	public void setIssuer(String issuer) {
-		this.issuer = issuer;
-	}
+        return this.userId;
+    }
 
-	public int getValidity() {
-		return this.validity;
-	}
+    public void setUserId(String userId) {
 
-	public void setValidity(int validity) {
-		this.validity = validity;
-	}
+        this.userId = userId;
+    }
 
-	public String getInResponseTo() {
-		return this.inResponseTo;
-	}
+    public String getNodeName() {
 
-	public void setInResponseTo(String inResponseTo) {
-		this.inResponseTo = inResponseTo;
-	}
+        return this.nodeName;
+    }
 
-	public String getTargetUrl() {
-		return this.targetUrl;
-	}
+    public void setNodeName(String nodeName) {
 
-	public void setTargetUrl(String targetUrl) {
-		this.targetUrl = targetUrl;
-	}
+        this.nodeName = nodeName;
+    }
 
-	public void setApplicationFriendlyName(String applicationFriendlyName) {
-		this.applicationFriendlyName = applicationFriendlyName;
-	}
+    public String getApplication() {
 
-	public String getApplicationFriendlyName() {
-		return this.applicationFriendlyName;
-	}
+        return this.application;
+    }
+
+    public void setApplication(String application) {
+
+        this.application = application;
+    }
+
+    public String getIssuer() {
+
+        return this.issuer;
+    }
+
+    public void setIssuer(String issuer) {
+
+        this.issuer = issuer;
+    }
+
+    public int getValidity() {
+
+        return this.validity;
+    }
+
+    public void setValidity(int validity) {
+
+        this.validity = validity;
+    }
+
+    public String getInResponseTo() {
+
+        return this.inResponseTo;
+    }
+
+    public void setInResponseTo(String inResponseTo) {
+
+        this.inResponseTo = inResponseTo;
+    }
+
+    public String getTargetUrl() {
+
+        return this.targetUrl;
+    }
+
+    public void setTargetUrl(String targetUrl) {
+
+        this.targetUrl = targetUrl;
+    }
+
+    public void setApplicationFriendlyName(String applicationFriendlyName) {
+
+        this.applicationFriendlyName = applicationFriendlyName;
+    }
+
+    public String getApplicationFriendlyName() {
+
+        return this.applicationFriendlyName;
+    }
 }

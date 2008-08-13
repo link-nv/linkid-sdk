@@ -11,26 +11,25 @@ import java.io.IOException;
 
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 
+
 /**
- * Applet helpdesk interface. Some methods which send out helpdesk events to a
- * servlet specified in ServletPath from the applet runtime context. These are
- * picked up by the HelpdeskServlet and forwarded to the HelpdeskLogger.
+ * Applet helpdesk interface. Some methods which send out helpdesk events to a servlet specified in ServletPath from the
+ * applet runtime context. These are picked up by the HelpdeskServlet and forwarded to the HelpdeskLogger.
  * 
  * @author wvdhaute
  * 
  */
 public interface AppletHelpdesk {
 
-	boolean addHelpdeskEvent(String message, LogLevelType logLevel)
-			throws IOException;
+    boolean addHelpdeskEvent(String message, LogLevelType logLevel) throws IOException;
 
-	boolean clearHelpdesk() throws IOException;
+    boolean clearHelpdesk() throws IOException;
 
-	/**
-	 * Persists the helpdesk context.
-	 * 
-	 * @return the helpdesk Id.
-	 * @throws IOException
-	 */
-	Long persistHelpdesk() throws IOException;
+    /**
+     * Persists the helpdesk context.
+     * 
+     * @return the helpdesk Id.
+     * @throws IOException
+     */
+    Long persistHelpdesk() throws IOException;
 }

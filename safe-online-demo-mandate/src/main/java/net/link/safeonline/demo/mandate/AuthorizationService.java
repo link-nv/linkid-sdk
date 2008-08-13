@@ -9,14 +9,16 @@ package net.link.safeonline.demo.mandate;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface AuthorizationService {
 
-	static final String JNDI_BINDING = "SafeOnlineMandateDemo/AuthorizationServiceBean/local";
+    static final String JNDI_BINDING       = "SafeOnlineMandateDemo/AuthorizationServiceBean/local";
 
-	static final String DEFAULT_ADMIN_USER = "mandate-admin";
+    static final String DEFAULT_ADMIN_USER = "mandate-admin";
 
-	boolean isAdmin(String userId);
 
-	void bootstrap();
+    boolean isAdmin(String userId);
+
+    void bootstrap();
 }

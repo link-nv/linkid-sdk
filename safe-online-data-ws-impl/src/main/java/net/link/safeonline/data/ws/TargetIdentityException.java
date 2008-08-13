@@ -9,8 +9,9 @@ package net.link.safeonline.data.ws;
 
 import java.security.GeneralSecurityException;
 
+
 public class TargetIdentityException extends GeneralSecurityException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

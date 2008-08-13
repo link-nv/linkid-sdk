@@ -18,33 +18,36 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.model.Devices;
 
+
 @Stateless
 public class DevicesBean implements Devices {
 
-	@EJB
-	private DeviceDAO deviceDAO;
+    @EJB
+    private DeviceDAO        deviceDAO;
 
-	@EJB
-	private AllowedDeviceDAO allowedDeviceDAO;
+    @EJB
+    private AllowedDeviceDAO allowedDeviceDAO;
 
-	public List<AllowedDeviceEntity> listAllowedDevices(
-			ApplicationEntity application) {
-		return this.allowedDeviceDAO.listAllowedDevices(application);
-	}
 
-	public List<DeviceEntity> listDevices() {
-		return this.deviceDAO.listDevices();
-	}
+    public List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application) {
 
-	public void setAllowedDevices(ApplicationEntity application,
-			List<AllowedDeviceEntity> allowedDevices) {
-		this.allowedDeviceDAO.deleteAllowedDevices(application);
-		if (allowedDevices != null) {
-			for (AllowedDeviceEntity allowedDevice : allowedDevices) {
-				this.allowedDeviceDAO.addAllowedDevice(application,
-						allowedDevice.getDevice(), allowedDevice.getWeight());
-			}
-		}
-	}
+        return this.allowedDeviceDAO.listAllowedDevices(application);
+    }
+
+    public List<DeviceEntity> listDevices() {
+
+        return this.deviceDAO.listDevices();
+    }
+
+    public void setAllowedDevices(ApplicationEntity application, List<AllowedDeviceEntity> allowedDevices) {
+
+        this.allowedDeviceDAO.deleteAllowedDevices(application);
+        if (allowedDevices != null) {
+            for (AllowedDeviceEntity allowedDevice : allowedDevices) {
+                this.allowedDeviceDAO.addAllowedDevice(application, allowedDevice.getDevice(), allowedDevice
+                        .getWeight());
+            }
+        }
+    }
 
 }

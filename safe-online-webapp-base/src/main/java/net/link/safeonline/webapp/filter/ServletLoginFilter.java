@@ -28,12 +28,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimplePrincipal;
 
+
 /**
- * Servlet Container login filter. This filter provides perceived servlet
- * container security. This means that the servlet web application that is
- * applying this filter will see meaningfull values for the
- * request.getUserPrincipal and request.isUserInRole methods. This filter does
- * not provide web resource protection itself.
+ * Servlet Container login filter. This filter provides perceived servlet container security. This means that the
+ * servlet web application that is applying this filter will see meaningful values for the request.getUserPrincipal and
+ * request.isUserInRole methods. This filter does not provide web resource protection itself.
  * 
  * @see <a href="http://securityfilter.sourceforge.net/test">SecurityFilter</a>
  * 
@@ -42,47 +41,48 @@ import org.jboss.security.SimplePrincipal;
  */
 public class ServletLoginFilter implements Filter {
 
-	private static final Log LOG = LogFactory.getLog(ServletLoginFilter.class);
+    private static final Log     LOG = LogFactory.getLog(ServletLoginFilter.class);
 
-	private AuthorizationService authorizationService;
+    private AuthorizationService authorizationService;
 
-	public void destroy() {
-		LOG.debug("destroy");
-	}
 
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
-		LOG.debug("doFilter");
+    public void destroy() {
 
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        LOG.debug("destroy");
+    }
 
-		HttpSession session = httpServletRequest.getSession();
-		String username = (String) session.getAttribute("username");
-		if (null == username) {
-			chain.doFilter(request, response);
-			return;
-		}
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+            ServletException {
 
-		// TODO: cache roles in http request context
-		Set<String> roles = this.authorizationService.getRoles(username);
+        LOG.debug("doFilter");
 
-		Principal userPrincipal = new SimplePrincipal(username);
-		LoginHttpServletRequestWrapper loginHttpServletRequestWrapper = new LoginHttpServletRequestWrapper(
-				httpServletRequest, userPrincipal, roles);
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-		chain.doFilter(loginHttpServletRequestWrapper, response);
-	}
+        HttpSession session = httpServletRequest.getSession();
+        String username = (String) session.getAttribute("username");
+        if (null == username) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-	public void init(@SuppressWarnings("unused")
-	FilterConfig config) throws ServletException {
-		LOG.debug("init");
-		try {
-			this.authorizationService = EjbUtils.getEJB(
-					"SafeOnline/AuthorizationServiceBean/local",
-					AuthorizationService.class);
-		} catch (RuntimeException e) {
-			throw new UnavailableException(
-					"authorization service lookup failure");
-		}
-	}
+        // TODO: cache roles in http request context
+        Set<String> roles = this.authorizationService.getRoles(username);
+
+        Principal userPrincipal = new SimplePrincipal(username);
+        LoginHttpServletRequestWrapper loginHttpServletRequestWrapper = new LoginHttpServletRequestWrapper(
+                httpServletRequest, userPrincipal, roles);
+
+        chain.doFilter(loginHttpServletRequestWrapper, response);
+    }
+
+    public void init(@SuppressWarnings("unused") FilterConfig config) throws ServletException {
+
+        LOG.debug("init");
+        try {
+            this.authorizationService = EjbUtils.getEJB("SafeOnline/AuthorizationServiceBean/local",
+                    AuthorizationService.class);
+        } catch (RuntimeException e) {
+            throw new UnavailableException("authorization service lookup failure");
+        }
+    }
 }

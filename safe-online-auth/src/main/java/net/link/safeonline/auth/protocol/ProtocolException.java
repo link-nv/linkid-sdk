@@ -8,44 +8,47 @@
 package net.link.safeonline.auth.protocol;
 
 /**
- * Thrown when a protocol handler detects a violation against the corresponding
- * authentication protocol. The protocol error message will be displayed in the
- * protocol error message result page.
+ * Thrown when a protocol handler detects a violation against the corresponding authentication protocol. The protocol
+ * error message will be displayed in the protocol error message result page.
  * 
  * @author fcorneli
  * 
  */
 public class ProtocolException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String protocolName;
+    private String            protocolName;
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param message
-	 *            the protocol error message.
-	 */
-	public ProtocolException(String message) {
-		super(message);
-		this.protocolName = "unknown";
-	}
 
-	/**
-	 * Sets the protocol name.
-	 * 
-	 * @param protocolName
-	 */
-	public void setProtocolName(String protocolName) {
-		this.protocolName = protocolName;
-	}
+    /**
+     * Main constructor.
+     * 
+     * @param message
+     *            the protocol error message.
+     */
+    public ProtocolException(String message) {
 
-	/**
-	 * Gives back the protocol name.
-	 * 
-	 */
-	public String getProtocolName() {
-		return this.protocolName;
-	}
+        super(message);
+        this.protocolName = "unknown";
+    }
+
+    /**
+     * Sets the protocol name.
+     * 
+     * @param protocolName
+     */
+    public void setProtocolName(String protocolName) {
+
+        this.protocolName = protocolName;
+    }
+
+    /**
+     * Gives back the protocol name.
+     * 
+     */
+    public String getProtocolName() {
+
+        return this.protocolName;
+    }
 }

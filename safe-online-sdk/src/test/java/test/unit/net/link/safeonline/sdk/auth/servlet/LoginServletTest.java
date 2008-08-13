@@ -39,124 +39,122 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.tidy.Tidy;
 
+
 public class LoginServletTest {
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager servletTestManager;
 
-	private static final Log LOG = LogFactory.getLog(LoginServletTest.class);
+    private static final Log   LOG = LogFactory.getLog(LoginServletTest.class);
 
-	@Before
-	public void setUp() throws Exception {
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(LoginServlet.class);
-	}
 
-	@After
-	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	@Test
-	public void testNoProtocolHandler() throws Exception {
-		// setup
-		String location = this.servletTestManager.getServletLocation();
-		LOG.debug("servlet location: " + location);
+        this.servletTestManager = new ServletTestManager();
+        this.servletTestManager.setUp(LoginServlet.class);
+    }
 
-		// operate
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(location);
-		int statusCode = httpClient.executeMethod(getMethod);
+    @After
+    public void tearDown() throws Exception {
 
-		// verify
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpServletResponse.SC_BAD_REQUEST, statusCode);
-		InputStream resultStream = getMethod.getResponseBodyAsStream();
+        this.servletTestManager.tearDown();
+    }
 
-		Tidy tidy = new Tidy();
-		tidy.setQuiet(true);
-		tidy.setShowWarnings(false);
-		Document resultDocument = tidy.parseDOM(resultStream, null);
-		LOG.debug("result document: "
-				+ DomTestUtils.domToString(resultDocument));
-		Node h1Node = XPathAPI.selectSingleNode(resultDocument, "//h1/text()");
-		assertNotNull(h1Node);
-		assertEquals("Error(s)", h1Node.getNodeValue());
-	}
+    @Test
+    public void testNoProtocolHandler() throws Exception {
 
-	@Test
-	public void testHandlerCannotFinalize() throws Exception {
-		// setup
-		String location = this.servletTestManager.getServletLocation();
-		LOG.debug("servlet location: " + location);
-		AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-		this.servletTestManager.setSessionAttribute(
-				AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-				mockAuthenticationProtocolHandler);
+        // setup
+        String location = this.servletTestManager.getServletLocation();
+        LOG.debug("servlet location: " + location);
 
-		// expectations
-		expect(
-				mockAuthenticationProtocolHandler.finalizeAuthentication(
-						(HttpServletRequest) EasyMock.anyObject(),
-						(HttpServletResponse) EasyMock.anyObject())).andReturn(
-				null);
+        // operate
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(location);
+        int statusCode = httpClient.executeMethod(getMethod);
 
-		// prepare
-		replay(mockAuthenticationProtocolHandler);
+        // verify
+        LOG.debug("status code: " + statusCode);
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, statusCode);
+        InputStream resultStream = getMethod.getResponseBodyAsStream();
 
-		// operate
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(location);
-		int statusCode = httpClient.executeMethod(getMethod);
+        Tidy tidy = new Tidy();
+        tidy.setQuiet(true);
+        tidy.setShowWarnings(false);
+        Document resultDocument = tidy.parseDOM(resultStream, null);
+        LOG.debug("result document: " + DomTestUtils.domToString(resultDocument));
+        Node h1Node = XPathAPI.selectSingleNode(resultDocument, "//h1/text()");
+        assertNotNull(h1Node);
+        assertEquals("Error(s)", h1Node.getNodeValue());
+    }
 
-		// verify
-		verify(mockAuthenticationProtocolHandler);
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpServletResponse.SC_BAD_REQUEST, statusCode);
-		String responseBody = getMethod.getResponseBodyAsString();
-		LOG.debug("response body: " + responseBody);
-	}
+    @Test
+    public void testHandlerCannotFinalize() throws Exception {
 
-	@Test
-	public void testLogin() throws Exception {
-		// setup
-		String location = this.servletTestManager.getServletLocation();
-		LOG.debug("servlet location: " + location);
-		AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-		this.servletTestManager.setSessionAttribute(
-				AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-				mockAuthenticationProtocolHandler);
-		String target = "http://test.target";
-		this.servletTestManager.setSessionAttribute(
-				AuthenticationProtocolManager.TARGET_ATTRIBUTE, target);
-		String username = "test-user-name";
+        // setup
+        String location = this.servletTestManager.getServletLocation();
+        LOG.debug("servlet location: " + location);
+        AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
+        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
+                mockAuthenticationProtocolHandler);
 
-		// expectations
-		expect(
-				mockAuthenticationProtocolHandler.finalizeAuthentication(
-						(HttpServletRequest) EasyMock.anyObject(),
-						(HttpServletResponse) EasyMock.anyObject())).andReturn(
-				username);
+        // expectations
+        expect(
+                mockAuthenticationProtocolHandler.finalizeAuthentication((HttpServletRequest) EasyMock.anyObject(),
+                        (HttpServletResponse) EasyMock.anyObject())).andReturn(null);
 
-		// prepare
-		replay(mockAuthenticationProtocolHandler);
+        // prepare
+        replay(mockAuthenticationProtocolHandler);
 
-		// operate
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(location);
-		getMethod.setFollowRedirects(false);
-		int statusCode = httpClient.executeMethod(getMethod);
+        // operate
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(location);
+        int statusCode = httpClient.executeMethod(getMethod);
 
-		// verify
-		verify(mockAuthenticationProtocolHandler);
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-		String responseBody = getMethod.getResponseBodyAsString();
-		LOG.debug("response body: " + responseBody);
-		String resultUsername = (String) this.servletTestManager
-				.getSessionAttribute(LoginManager.USERNAME_SESSION_ATTRIBUTE);
-		assertEquals(username, resultUsername);
-		String resultTarget = getMethod.getResponseHeader("Location")
-				.getValue();
-		assertEquals(target, resultTarget);
-	}
+        // verify
+        verify(mockAuthenticationProtocolHandler);
+        LOG.debug("status code: " + statusCode);
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, statusCode);
+        String responseBody = getMethod.getResponseBodyAsString();
+        LOG.debug("response body: " + responseBody);
+    }
+
+    @Test
+    public void testLogin() throws Exception {
+
+        // setup
+        String location = this.servletTestManager.getServletLocation();
+        LOG.debug("servlet location: " + location);
+        AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
+        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
+                mockAuthenticationProtocolHandler);
+        String target = "http://test.target";
+        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, target);
+        String username = "test-user-name";
+
+        // expectations
+        expect(
+                mockAuthenticationProtocolHandler.finalizeAuthentication((HttpServletRequest) EasyMock.anyObject(),
+                        (HttpServletResponse) EasyMock.anyObject())).andReturn(username);
+
+        // prepare
+        replay(mockAuthenticationProtocolHandler);
+
+        // operate
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(location);
+        getMethod.setFollowRedirects(false);
+        int statusCode = httpClient.executeMethod(getMethod);
+
+        // verify
+        verify(mockAuthenticationProtocolHandler);
+        LOG.debug("status code: " + statusCode);
+        assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
+        String responseBody = getMethod.getResponseBodyAsString();
+        LOG.debug("response body: " + responseBody);
+        String resultUsername = (String) this.servletTestManager
+                .getSessionAttribute(LoginManager.USERNAME_SESSION_ATTRIBUTE);
+        assertEquals(username, resultUsername);
+        String resultTarget = getMethod.getResponseHeader("Location").getValue();
+        assertEquals(target, resultTarget);
+    }
 }

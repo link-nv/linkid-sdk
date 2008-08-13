@@ -22,80 +22,80 @@ import org.apache.commons.logging.LogFactory;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.server.AbstractMultiInstanceResolver;
 
+
 /**
- * Implementation class for injection JAX-WS RI instance resolver. This JAX-WS
- * RI instance resolver injects JNDI components. Simply use the EJB annotation
- * with mappedName attribute on the injection fields of your JAX-WS endpoints.
- * Use only to inject stateless session beans. This cannot be used for injection
- * of stateful session beans.
+ * Implementation class for injection JAX-WS RI instance resolver. This JAX-WS RI instance resolver injects JNDI
+ * components. Simply use the EJB annotation with mappedName attribute on the injection fields of your JAX-WS endpoints.
+ * Use only to inject stateless session beans. This cannot be used for injection of stateful session beans.
  * 
  * @author fcorneli
  * 
  * @param <T>
  */
-public class InjectionInstanceResolver<T> extends
-		AbstractMultiInstanceResolver<T> {
+public class InjectionInstanceResolver<T> extends AbstractMultiInstanceResolver<T> {
 
-	private static final Log LOG = LogFactory
-			.getLog(InjectionInstanceResolver.class);
+    private static final Log                   LOG       = LogFactory.getLog(InjectionInstanceResolver.class);
 
-	private static final Map<Class<?>, Object> instances = new Hashtable<Class<?>, Object>();
+    private static final Map<Class<?>, Object> instances = new Hashtable<Class<?>, Object>();
 
-	private final Class<T> clazz;
+    private final Class<T>                     clazz;
 
-	public InjectionInstanceResolver(Class<T> clazz) {
-		super(clazz);
-		this.clazz = clazz;
-	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public T resolve(@SuppressWarnings("unused")
-	Packet request) {
-		T instance = (T) instances.get(this.clazz);
-		if (null == instance) {
-			LOG.debug("creating new instance for class: "
-					+ this.clazz.getName());
-			instance = create();
-			ejbInjection(instance);
-			instances.put(this.clazz, instance);
-		}
-		return instance;
-	}
+    public InjectionInstanceResolver(Class<T> clazz) {
 
-	@SuppressWarnings("unchecked")
-	private void ejbInjection(T instance) {
-		Field[] fields = this.clazz.getDeclaredFields();
-		for (Field field : fields) {
-			EJB ejb = field.getAnnotation(EJB.class);
-			if (null == ejb) {
-				continue;
-			}
-			String mappedName = ejb.mappedName();
-			if (null == mappedName) {
-				throw new EJBException("@EJB mappedName attribute required");
-			}
-			LOG.debug("injecting: " + mappedName);
-			Class type = field.getType();
-			if (false == type.isInterface()) {
-				throw new EJBException("field is not an interface type");
-			}
-			Object ejbRef = EjbUtils.getEJB(mappedName, type);
-			field.setAccessible(true);
-			try {
-				field.set(instance, ejbRef);
-			} catch (IllegalArgumentException e) {
-				throw new EJBException("illegal argument");
-			} catch (IllegalAccessException e) {
-				throw new EJBException("illegal access");
-			}
-		}
-	}
+        super(clazz);
+        this.clazz = clazz;
+    }
 
-	/**
-	 * Clears the instance cache. This might be required for certain unit tests.
-	 */
-	public static void clearInstanceCache() {
-		instances.clear();
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public T resolve(@SuppressWarnings("unused") Packet request) {
+
+        T instance = (T) instances.get(this.clazz);
+        if (null == instance) {
+            LOG.debug("creating new instance for class: " + this.clazz.getName());
+            instance = create();
+            ejbInjection(instance);
+            instances.put(this.clazz, instance);
+        }
+        return instance;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void ejbInjection(T instance) {
+
+        Field[] fields = this.clazz.getDeclaredFields();
+        for (Field field : fields) {
+            EJB ejb = field.getAnnotation(EJB.class);
+            if (null == ejb) {
+                continue;
+            }
+            String mappedName = ejb.mappedName();
+            if (null == mappedName) {
+                throw new EJBException("@EJB mappedName attribute required");
+            }
+            LOG.debug("injecting: " + mappedName);
+            Class type = field.getType();
+            if (false == type.isInterface()) {
+                throw new EJBException("field is not an interface type");
+            }
+            Object ejbRef = EjbUtils.getEJB(mappedName, type);
+            field.setAccessible(true);
+            try {
+                field.set(instance, ejbRef);
+            } catch (IllegalArgumentException e) {
+                throw new EJBException("illegal argument");
+            } catch (IllegalAccessException e) {
+                throw new EJBException("illegal access");
+            }
+        }
+    }
+
+    /**
+     * Clears the instance cache. This might be required for certain unit tests.
+     */
+    public static void clearInstanceCache() {
+
+        instances.clear();
+    }
 }

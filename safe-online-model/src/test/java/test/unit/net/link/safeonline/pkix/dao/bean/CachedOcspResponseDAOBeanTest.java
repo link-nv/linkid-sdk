@@ -18,6 +18,7 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class CachedOcspResponseDAOBeanTest extends TestCase {
 
     private EntityTestManager         entityTestManager;
@@ -31,16 +32,12 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
         super.setUp();
         this.entityTestManager = new EntityTestManager();
         /*
-         * If you add entities to this list, also add them to
-         * safe-online-sql-ddl.
+         * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(TrustDomainEntity.class,
-                CachedOcspResponseEntity.class);
+        this.entityTestManager.setUp(TrustDomainEntity.class, CachedOcspResponseEntity.class);
 
-        this.testedInstance = EJBTestUtils.newInstance(
-                CachedOcspResponseDAOBean.class,
-                SafeOnlineTestContainer.sessionBeans, this.entityTestManager
-                        .getEntityManager());
+        this.testedInstance = EJBTestUtils.newInstance(CachedOcspResponseDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, this.entityTestManager.getEntityManager());
     }
 
     @Override
@@ -54,42 +51,33 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
 
         String key = "1234";
         CachedOcspResultType result = CachedOcspResultType.GOOD;
-        CachedOcspResponseEntity cachedOcspResponse = this.testedInstance
-                .addCachedOcspResponse(key, result, null);
+        CachedOcspResponseEntity cachedOcspResponse = this.testedInstance.addCachedOcspResponse(key, result, null);
         cachedOcspResponse = this.testedInstance.findCachedOcspResponse(key);
         this.testedInstance.removeCachedOcspResponse(cachedOcspResponse);
 
-        this.testedInstance = EJBTestUtils.newInstance(
-                CachedOcspResponseDAOBean.class,
-                SafeOnlineTestContainer.sessionBeans, this.entityTestManager
-                        .refreshEntityManager());
+        this.testedInstance = EJBTestUtils.newInstance(CachedOcspResponseDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, this.entityTestManager.refreshEntityManager());
 
         this.testedInstance.addCachedOcspResponse(key, result, null);
     }
 
     public void testClearOcspCacheExpired() {
 
-        TrustDomainEntity trustDomainExpired = new TrustDomainEntity(
-                "trustdomainExpired", true, 0);
-        TrustDomainEntity trustDomainNotExpired = new TrustDomainEntity(
-                "trustdomainNotExpired", true, System.currentTimeMillis());
+        TrustDomainEntity trustDomainExpired = new TrustDomainEntity("trustdomainExpired", true, 0);
+        TrustDomainEntity trustDomainNotExpired = new TrustDomainEntity("trustdomainNotExpired", true, System
+                .currentTimeMillis());
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         entityManager.persist(trustDomainExpired);
         entityManager.persist(trustDomainNotExpired);
         String keyExpired = "1234";
         String keyNotExpired = "4321";
-        this.testedInstance.addCachedOcspResponse(keyExpired,
-                CachedOcspResultType.GOOD, trustDomainExpired);
-        this.testedInstance.addCachedOcspResponse(keyNotExpired,
-                CachedOcspResultType.GOOD, trustDomainNotExpired);
+        this.testedInstance.addCachedOcspResponse(keyExpired, CachedOcspResultType.GOOD, trustDomainExpired);
+        this.testedInstance.addCachedOcspResponse(keyNotExpired, CachedOcspResultType.GOOD, trustDomainNotExpired);
         entityManager.flush();
 
-        this.testedInstance
-                .clearOcspCacheExpiredForTrustDomain(trustDomainExpired);
-        this.testedInstance
-                .clearOcspCacheExpiredForTrustDomain(trustDomainNotExpired);
-        CachedOcspResponseEntity result = this.testedInstance
-                .findCachedOcspResponse(keyExpired);
+        this.testedInstance.clearOcspCacheExpiredForTrustDomain(trustDomainExpired);
+        this.testedInstance.clearOcspCacheExpiredForTrustDomain(trustDomainNotExpired);
+        CachedOcspResponseEntity result = this.testedInstance.findCachedOcspResponse(keyExpired);
         assertNull(result);
         result = this.testedInstance.findCachedOcspResponse(keyNotExpired);
         assertNotNull(result);

@@ -22,22 +22,23 @@ import net.link.safeonline.model.SubjectManager;
 
 import org.jboss.annotation.security.SecurityDomain;
 
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class ApplicationOwnerManagerBean implements ApplicationOwnerManager {
 
-	@EJB
-	private SubjectManager subjectManager;
+    @EJB
+    private SubjectManager      subjectManager;
 
-	@EJB
-	private ApplicationOwnerDAO applicationOwnerDAO;
+    @EJB
+    private ApplicationOwnerDAO applicationOwnerDAO;
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-	public ApplicationOwnerEntity getCallerApplicationOwner()
-			throws ApplicationOwnerNotFoundException {
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
-				.getApplicationOwner(subject);
-		return applicationOwner;
-	}
+
+    @RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+    public ApplicationOwnerEntity getCallerApplicationOwner() throws ApplicationOwnerNotFoundException {
+
+        SubjectEntity subject = this.subjectManager.getCallerSubject();
+        ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.getApplicationOwner(subject);
+        return applicationOwner;
+    }
 }

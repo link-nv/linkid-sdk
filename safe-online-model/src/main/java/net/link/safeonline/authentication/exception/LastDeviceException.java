@@ -11,13 +11,16 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class LastDeviceException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public LastDeviceException(String message) {
-		super(message, SharedConstants.PERMISSION_DENIED_ERROR);
-	}
+
+    public LastDeviceException(String message) {
+
+        super(message, SharedConstants.PERMISSION_DENIED_ERROR);
+    }
 
 }

@@ -19,13 +19,13 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 
+
 /**
  * <h2>{@link TimeRoomSelectionPage}<br>
  * <sub>Wicket backend for time and room selection page.</sub></h2>
  * 
  * <p>
- * On this page the user selects at what time and in which room he wants to view
- * his film.
+ * On this page the user selects at what time and in which room he wants to view his film.
  * </p>
  * 
  * <p>
@@ -48,8 +48,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
     /**
      * If time and room are selected; continue to the seat selection page.
      * 
-     * If not, assign components to the HTML wicket elements so the user can
-     * select a show time and the room.
+     * If not, assign components to the HTML wicket elements so the user can select a show time and the room.
      */
     public TimeRoomSelectionPage() {
 
@@ -80,8 +79,8 @@ public class TimeRoomSelectionPage extends LayoutPage {
      * 
      * TODO:
      * 
-     * When no room is selected, it lists all times, otherwise it limits the
-     * time selection to those available in the selected rooms.
+     * When no room is selected, it lists all times, otherwise it limits the time selection to those available in the
+     * selected rooms.
      * 
      * The user can then select the viewing time of his choosing.
      * </p>
@@ -104,8 +103,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
             // Either get all times TODO: or just those for the selected room.
             List<Date> data = new LinkedList<Date>();
-            for (ShowTimeEntity showTime : CinemaSession.get().getFilm()
-                    .getTimes()) {
+            for (ShowTimeEntity showTime : CinemaSession.get().getFilm().getTimes()) {
                 addDate(data, Calendar.MONDAY, showTime.getMonStart());
                 addDate(data, Calendar.TUESDAY, showTime.getTueStart());
                 addDate(data, Calendar.WEDNESDAY, showTime.getWedStart());
@@ -130,8 +128,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
                         private static final long serialVersionUID = 1L;
 
                         {
-                            add(new Label<String>("time", CinemaSession
-                                    .format(time)));
+                            add(new Label<String>("time", CinemaSession.format(time)));
                         }
 
 
@@ -147,8 +144,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
         }
 
         /**
-         * Calculate the {@link Date} for the given time of the day on the given
-         * day of the current week.
+         * Calculate the {@link Date} for the given time of the day on the given day of the current week.
          */
         private void addDate(List<Date> data, int dayOfWeek, Integer timeOfDay) {
 
@@ -180,8 +176,8 @@ public class TimeRoomSelectionPage extends LayoutPage {
      * 
      * TODO:
      * 
-     * When no time is selected, it lists all rooms, otherwise it limits the
-     * room selection to those that play the film at the selected time.
+     * When no time is selected, it lists all rooms, otherwise it limits the room selection to those that play the film
+     * at the selected time.
      * 
      * The user can then select the room of his choosing.
      * <p>
@@ -203,9 +199,8 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
             // Either get all rooms TODO: or just those that play the film at
             // the selected time.
-            List<RoomEntity> data = TimeRoomSelectionPage.this.roomService
-                    .getRoomsFor(CinemaSession.get().getTheatre(),
-                            CinemaSession.get().getFilm());
+            List<RoomEntity> data = TimeRoomSelectionPage.this.roomService.getRoomsFor(
+                    CinemaSession.get().getTheatre(), CinemaSession.get().getFilm());
 
             add(new ListView<RoomEntity>("list", data) {
 

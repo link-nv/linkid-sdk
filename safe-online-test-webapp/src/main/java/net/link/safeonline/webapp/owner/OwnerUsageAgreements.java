@@ -8,10 +8,11 @@ package net.link.safeonline.webapp.owner;
 
 public class OwnerUsageAgreements extends OwnerTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OWNER_WEBAPP_PREFIX
-			+ "/usage-agreements.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OWNER_WEBAPP_PREFIX + "/usage-agreements.seam";
 
-	public OwnerUsageAgreements() {
-		super(PAGE_NAME);
-	}
+
+    public OwnerUsageAgreements() {
+
+        super(PAGE_NAME);
+    }
 }

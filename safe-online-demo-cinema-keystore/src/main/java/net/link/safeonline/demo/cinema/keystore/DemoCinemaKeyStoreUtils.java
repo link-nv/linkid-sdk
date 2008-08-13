@@ -11,11 +11,14 @@ import java.security.KeyStore.PrivateKeyEntry;
 
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
 
+
 public class DemoCinemaKeyStoreUtils {
 
-	public static final String KEYSTORE_RESOURCE = "safe-online-demo-cinema-keystore.jks";
+    public static final String KEYSTORE_RESOURCE = "safe-online-demo-cinema-keystore.jks";
 
-	public static PrivateKeyEntry getPrivateKeyEntry() {
-		return DemoKeyStoreUtils.getPrivateKeyEntry(KEYSTORE_RESOURCE);
-	}
+
+    public static PrivateKeyEntry getPrivateKeyEntry() {
+
+        return DemoKeyStoreUtils.getPrivateKeyEntry(KEYSTORE_RESOURCE);
+    }
 }

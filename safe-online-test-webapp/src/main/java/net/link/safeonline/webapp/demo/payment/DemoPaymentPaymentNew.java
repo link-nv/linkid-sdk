@@ -9,12 +9,14 @@ package net.link.safeonline.webapp.demo.payment;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class DemoPaymentPaymentNew extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX
-			+ "/payment-new.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX + "/payment-new.seam";
 
-	public DemoPaymentPaymentNew() {
-		super(PAGE_NAME);
-	}
+
+    public DemoPaymentPaymentNew() {
+
+        super(PAGE_NAME);
+    }
 }

@@ -22,68 +22,82 @@ import net.link.safeonline.sms.ra.SMSManagedConnection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class SMSManagedConnectionImpl implements SMSManagedConnection {
 
-	private static final Log LOG = LogFactory
-			.getLog(SMSManagedConnectionImpl.class);
+    private static final Log   LOG = LogFactory.getLog(SMSManagedConnectionImpl.class);
 
-	private transient GSMModem gsmModem;
+    private transient GSMModem gsmModem;
 
-	public SMSManagedConnectionImpl() {
-		LOG.debug("Connection created, no init");
-	}
 
-	public SMSManagedConnectionImpl(String serialPort) {
-		this.gsmModem = new GSMModem(serialPort);
-		LOG.debug("Connection created: " + serialPort);
-	}
+    public SMSManagedConnectionImpl() {
 
-	@SuppressWarnings("unused")
-	public void addConnectionEventListener(ConnectionEventListener arg0) {
-		// empty
-	}
+        LOG.debug("Connection created, no init");
+    }
 
-	@SuppressWarnings("unused")
-	public void associateConnection(Object arg0) {
-		// empty
-	}
+    public SMSManagedConnectionImpl(String serialPort) {
 
-	public void cleanup() {
-		LOG.debug("Connection cleanup: " + this.gsmModem.getSerialPortName());
-	}
+        this.gsmModem = new GSMModem(serialPort);
+        LOG.debug("Connection created: " + serialPort);
+    }
 
-	public void destroy() {
-		LOG.debug("Connection destroy: " + this.gsmModem.getSerialPortName());
-	}
+    @SuppressWarnings("unused")
+    public void addConnectionEventListener(ConnectionEventListener arg0) {
 
-	@SuppressWarnings("unused")
-	public Object getConnection(Subject arg0, ConnectionRequestInfo arg1) {
-		return this.gsmModem;
-	}
+        // empty
+    }
 
-	public LocalTransaction getLocalTransaction() {
-		return null;
-	}
+    @SuppressWarnings("unused")
+    public void associateConnection(Object arg0) {
 
-	public PrintWriter getLogWriter() {
-		return null;
-	}
+        // empty
+    }
 
-	public ManagedConnectionMetaData getMetaData() {
-		return null;
-	}
+    public void cleanup() {
 
-	public XAResource getXAResource() {
-		return null;
-	}
+        LOG.debug("Connection cleanup: " + this.gsmModem.getSerialPortName());
+    }
 
-	@SuppressWarnings("unused")
-	public void removeConnectionEventListener(ConnectionEventListener arg0) {
-		// empty
-	}
+    public void destroy() {
 
-	@SuppressWarnings("unused")
-	public void setLogWriter(PrintWriter arg0) {
-		// empty
-	}
+        LOG.debug("Connection destroy: " + this.gsmModem.getSerialPortName());
+    }
+
+    @SuppressWarnings("unused")
+    public Object getConnection(Subject arg0, ConnectionRequestInfo arg1) {
+
+        return this.gsmModem;
+    }
+
+    public LocalTransaction getLocalTransaction() {
+
+        return null;
+    }
+
+    public PrintWriter getLogWriter() {
+
+        return null;
+    }
+
+    public ManagedConnectionMetaData getMetaData() {
+
+        return null;
+    }
+
+    public XAResource getXAResource() {
+
+        return null;
+    }
+
+    @SuppressWarnings("unused")
+    public void removeConnectionEventListener(ConnectionEventListener arg0) {
+
+        // empty
+    }
+
+    @SuppressWarnings("unused")
+    public void setLogWriter(PrintWriter arg0) {
+
+        // empty
+    }
 }

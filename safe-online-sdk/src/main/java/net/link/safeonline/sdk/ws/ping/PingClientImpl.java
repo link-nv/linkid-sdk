@@ -19,36 +19,38 @@ import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 
 import com.sun.xml.ws.client.ClientTransportException;
 
-public class PingClientImpl extends AbstractMessageAccessor implements
-		PingClient {
 
-	private final PingPort pingPort;
+public class PingClientImpl extends AbstractMessageAccessor implements PingClient {
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param location
-	 */
-	public PingClientImpl(String location) {
-		PingService pingService = PingServiceFactory.newInstance();
-		this.pingPort = pingService.getPingPort();
+    private final PingPort pingPort;
 
-		BindingProvider bindingProvider = (BindingProvider) this.pingPort;
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				location + "/safe-online-ws/ping");
-	}
 
-	public void ping() throws ConnectException {
-		Request request = new Request();
-		try {
-			this.pingPort.pingOperation(request);
-		} catch (ClientTransportException e) {
-			throw new ConnectException(e.getMessage());
-		} catch (Exception e) {
-			throw retrieveHeadersFromException(e);
-		} finally {
-			retrieveHeadersFromPort(this.pingPort);
-		}
-	}
+    /**
+     * Main constructor.
+     * 
+     * @param location
+     */
+    public PingClientImpl(String location) {
+
+        PingService pingService = PingServiceFactory.newInstance();
+        this.pingPort = pingService.getPingPort();
+
+        BindingProvider bindingProvider = (BindingProvider) this.pingPort;
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                location + "/safe-online-ws/ping");
+    }
+
+    public void ping() throws ConnectException {
+
+        Request request = new Request();
+        try {
+            this.pingPort.pingOperation(request);
+        } catch (ClientTransportException e) {
+            throw new ConnectException(e.getMessage());
+        } catch (Exception e) {
+            throw retrieveHeadersFromException(e);
+        } finally {
+            retrieveHeadersFromPort(this.pingPort);
+        }
+    }
 }

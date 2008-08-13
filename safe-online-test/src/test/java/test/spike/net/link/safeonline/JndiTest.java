@@ -22,53 +22,54 @@ import org.apache.commons.logging.LogFactory;
 
 import test.integ.net.link.safeonline.IntegrationTestUtils;
 
+
 public class JndiTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(JndiTest.class);
+    private static final Log LOG = LogFactory.getLog(JndiTest.class);
 
-	public void testJndiIteration() throws Exception {
 
-		InitialContext initialContext = IntegrationTestUtils
-				.getInitialContext();
-		Context context = (Context) initialContext.lookup("SafeOnline");
+    public void testJndiIteration() throws Exception {
 
-		List<String> classes = contextIteration(context, Object.class);
+        InitialContext initialContext = IntegrationTestUtils.getInitialContext();
+        Context context = (Context) initialContext.lookup("SafeOnline");
 
-		for (String className : classes) {
-			if (className.equals("SamlAuthorityServiceBean")) {
-				LOG.debug("found bean: " + className);
-			}
-		}
+        List<String> classes = contextIteration(context, Object.class);
 
-	}
+        for (String className : classes) {
+            if (className.equals("SamlAuthorityServiceBean")) {
+                LOG.debug("found bean: " + className);
+            }
+        }
 
-	private List<String> contextIteration(Context context, Class<?> type)
-			throws Exception {
-		LOG.debug("Entering context: " + context.getNameInNamespace());
+    }
 
-		List<String> result = new ArrayList<String>();
+    private List<String> contextIteration(Context context, Class<?> type) throws Exception {
 
-		NamingEnumeration<NameClassPair> items = context.list("");
+        LOG.debug("Entering context: " + context.getNameInNamespace());
 
-		while (items.hasMore()) {
-			NameClassPair nameClassPair = items.next();
-			String objectName = nameClassPair.getName();
-			Object object;
-			try {
-				object = context.lookup(objectName);
-			} catch (Exception e) {
-				return result;
-			}
-			if (type.isInstance(object)) {
-				result.add(objectName);
-				LOG.debug("Added: " + objectName);
-			}
-			if (Context.class.isInstance(object)) {
-				LOG.debug("Seen: " + object.getClass().getName());
-				result.addAll(contextIteration((Context) object, type));
-			}
-		}
+        List<String> result = new ArrayList<String>();
 
-		return result;
-	}
+        NamingEnumeration<NameClassPair> items = context.list("");
+
+        while (items.hasMore()) {
+            NameClassPair nameClassPair = items.next();
+            String objectName = nameClassPair.getName();
+            Object object;
+            try {
+                object = context.lookup(objectName);
+            } catch (Exception e) {
+                return result;
+            }
+            if (type.isInstance(object)) {
+                result.add(objectName);
+                LOG.debug("Added: " + objectName);
+            }
+            if (Context.class.isInstance(object)) {
+                LOG.debug("Seen: " + object.getClass().getName());
+                result.addAll(contextIteration((Context) object, type));
+            }
+        }
+
+        return result;
+    }
 }

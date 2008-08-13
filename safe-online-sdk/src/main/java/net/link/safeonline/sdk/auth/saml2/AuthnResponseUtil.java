@@ -51,6 +51,7 @@ import org.opensaml.xml.security.SecurityException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+
 /**
  * Utility class for SAML2 authentication responses.
  * 
@@ -76,25 +77,19 @@ public class AuthnResponseUtil {
      * @throws ServletException
      * @throws IOException
      */
-    public static void sendAuthnResponse(String encodedSamlResponseToken,
-            String templateResourceName, String consumerUrl,
-            HttpServletResponse httpResponse) throws ServletException,
-            IOException {
+    public static void sendAuthnResponse(String encodedSamlResponseToken, String templateResourceName,
+            String consumerUrl, HttpServletResponse httpResponse) throws ServletException, IOException {
 
         /*
-         * We could use the opensaml2 HTTPPostEncoderBuilder here to construct
-         * the HTTP response. But this code is just too complex in usage. It's
-         * easier to do all these things ourselves.
+         * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just
+         * too complex in usage. It's easier to do all these things ourselves.
          */
         Properties velocityProperties = new Properties();
         velocityProperties.put("resource.loader", "class");
-        velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-                Log4JLogChute.class.getName());
-        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER,
-                AuthnResponseUtil.class.getName());
-        velocityProperties
-                .put("class.resource.loader.class",
-                        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, Log4JLogChute.class.getName());
+        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, AuthnResponseUtil.class.getName());
+        velocityProperties.put("class.resource.loader.class",
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         VelocityEngine velocityEngine;
         try {
             velocityEngine = new VelocityEngine(velocityProperties);
@@ -110,8 +105,7 @@ public class AuthnResponseUtil {
         try {
             template = velocityEngine.getTemplate(templateResourceName);
         } catch (Exception e) {
-            throw new ServletException("Velocity template error: "
-                    + e.getMessage(), e);
+            throw new ServletException("Velocity template error: " + e.getMessage(), e);
         }
 
         httpResponse.setContentType("text/html");
@@ -138,12 +132,9 @@ public class AuthnResponseUtil {
      * @param applicationPrivateKey
      * @throws ServletException
      */
-    public static Response validateResponse(DateTime now,
-            HttpServletRequest httpRequest, String expectedInResponseTo,
-            String expectedAudience, String stsWsLocation,
-            X509Certificate applicationCertificate,
-            PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
-            throws ServletException {
+    public static Response validateResponse(DateTime now, HttpServletRequest httpRequest, String expectedInResponseTo,
+            String expectedAudience, String stsWsLocation, X509Certificate applicationCertificate,
+            PrivateKey applicationPrivateKey, TrustDomainType trustDomain) throws ServletException {
 
         if (false == "POST".equals(httpRequest.getMethod()))
             return null;
@@ -157,9 +148,7 @@ public class AuthnResponseUtil {
         LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
 
         BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
-        messageContext
-                .setInboundMessageTransport(new HttpServletRequestAdapter(
-                        httpRequest));
+        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(httpRequest));
 
         SecurityPolicyResolver securityPolicyResolver = new SamlResponseSecurityPolicyResolver();
         messageContext.setSecurityPolicyResolver(securityPolicyResolver);
@@ -192,14 +181,13 @@ public class AuthnResponseUtil {
         }
         Document samlDocument;
         try {
-            samlDocument = DomUtils.parseDocument(new String(
-                    decodedSamlResponse));
+            samlDocument = DomUtils.parseDocument(new String(decodedSamlResponse));
         } catch (Exception e) {
             throw new ServletException("DOM parsing error");
         }
         Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(
-                stsWsLocation, applicationCertificate, applicationPrivateKey);
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation,
+                applicationCertificate, applicationPrivateKey);
         try {
             stsClient.validate(samlElement, trustDomain);
         } catch (RuntimeException e) {
@@ -209,20 +197,15 @@ public class AuthnResponseUtil {
         }
 
         /*
-         * Check whether the response is indeed a response to a previous request
-         * by comparing the InResponseTo fields
+         * Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
          */
         if (!samlResponse.getInResponseTo().equals(expectedInResponseTo)) {
-            throw new ServletException(
-                    "SAML response is not a response belonging to the original request.");
+            throw new ServletException("SAML response is not a response belonging to the original request.");
         }
 
-        if (samlResponse.getStatus().getStatusCode().getValue().equals(
-                StatusCode.AUTHN_FAILED_URI)
-                || samlResponse.getStatus().getStatusCode().getValue().equals(
-                        StatusCode.REQUEST_UNSUPPORTED_URI)
-                || samlResponse.getStatus().getStatusCode().getValue().equals(
-                        StatusCode.UNKNOWN_PRINCIPAL_URI)) {
+        if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)
+                || samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)
+                || samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI)) {
             /**
              * Authentication failed but response ok.
              */
@@ -253,22 +236,17 @@ public class AuthnResponseUtil {
             }
 
             /*
-             * Check whether the audience of the response corresponds to the
-             * original audience restriction
+             * Check whether the audience of the response corresponds to the original audience restriction
              */
-            List<AudienceRestriction> audienceRestrictions = conditions
-                    .getAudienceRestrictions();
+            List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
             if (audienceRestrictions.isEmpty()) {
-                throw new ServletException(
-                        "no Audience Restrictions found in response assertion");
+                throw new ServletException("no Audience Restrictions found in response assertion");
             }
 
-            AudienceRestriction audienceRestriction = audienceRestrictions
-                    .get(0);
+            AudienceRestriction audienceRestriction = audienceRestrictions.get(0);
             List<Audience> audiences = audienceRestriction.getAudiences();
             if (audiences.isEmpty()) {
-                throw new ServletException(
-                        "no Audiences found in AudienceRestriction");
+                throw new ServletException("no Audiences found in AudienceRestriction");
             }
 
             Audience audience = audiences.get(0);
@@ -276,9 +254,7 @@ public class AuthnResponseUtil {
             String actualAudience = audience.getAudienceURI();
             LOG.debug("actual audience name: " + actualAudience);
             if (false == expectedAudience.equals(actualAudience)) {
-                throw new ServletException(
-                        "audience name not correct, expected: "
-                                + expectedAudience);
+                throw new ServletException("audience name not correct, expected: " + expectedAudience);
             }
 
         }

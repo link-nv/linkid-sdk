@@ -14,13 +14,13 @@ import net.link.safeonline.demo.cinema.entity.FilmEntity;
 import net.link.safeonline.demo.cinema.entity.RoomEntity;
 import net.link.safeonline.demo.cinema.entity.TheatreEntity;
 
+
 /**
  * <h2>{@link RoomService}<br>
  * <sub>Service bean for {@link RoomEntity}.</sub></h2>
  * 
  * <p>
- * Provide access to {@link RoomEntity}s based on which theatre you want to view
- * which movie in.
+ * Provide access to {@link RoomEntity}s based on which theatre you want to view which movie in.
  * </p>
  * 
  * <p>

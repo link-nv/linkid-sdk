@@ -19,78 +19,69 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
+
 @Local
 public interface AttributeTypeService {
 
-	/**
-	 * Lists all attributes types within the system. This includes primitive
-	 * attribute types, multi-valued attribute types and compounded attribute
-	 * types.
-	 * 
-	 */
-	List<AttributeTypeEntity> listAttributeTypes();
+    /**
+     * Lists all attributes types within the system. This includes primitive attribute types, multi-valued attribute
+     * types and compounded attribute types.
+     * 
+     */
+    List<AttributeTypeEntity> listAttributeTypes();
 
-	/**
-	 * Lists attribute types that could participate as member in a compounded
-	 * attribute type.
-	 * 
-	 * <p>
-	 * Via this method we express the restriction that one cannot construct
-	 * compounded attributes of other compounded attributes. We also don't allow
-	 * an attribute type to be member of more than one compounded attribute
-	 * type.
-	 * </p>
-	 * 
-	 */
-	List<AttributeTypeEntity> listAvailableMemberAttributeTypes();
+    /**
+     * Lists attribute types that could participate as member in a compounded attribute type.
+     * 
+     * <p>
+     * Via this method we express the restriction that one cannot construct compounded attributes of other compounded
+     * attributes. We also don't allow an attribute type to be member of more than one compounded attribute type.
+     * </p>
+     * 
+     */
+    List<AttributeTypeEntity> listAvailableMemberAttributeTypes();
 
-	/**
-	 * Adds a new attribute type using the given attribute type prototype.
-	 * 
-	 * @param attributeType
-	 *            the attribute type prototype.
-	 * @throws ExistingAttributeTypeException
-	 * @throws AttributeTypeDefinitionException
-	 *             in case the member attribute is not allowed when defining a
-	 *             new compounded attribute type.
-	 * @throws AttributeTypeNotFoundException
-	 *             in case the member attribute was not found when defining a
-	 *             new compounded attribute type.
-	 */
-	void add(AttributeTypeEntity attributeType)
-			throws ExistingAttributeTypeException,
-			AttributeTypeNotFoundException, AttributeTypeDefinitionException;
+    /**
+     * Adds a new attribute type using the given attribute type prototype.
+     * 
+     * @param attributeType
+     *            the attribute type prototype.
+     * @throws ExistingAttributeTypeException
+     * @throws AttributeTypeDefinitionException
+     *             in case the member attribute is not allowed when defining a new compounded attribute type.
+     * @throws AttributeTypeNotFoundException
+     *             in case the member attribute was not found when defining a new compounded attribute type.
+     */
+    void add(AttributeTypeEntity attributeType) throws ExistingAttributeTypeException, AttributeTypeNotFoundException,
+            AttributeTypeDefinitionException;
 
-	/**
-	 * Removes an attribute type using the given attribute type prototype. No
-	 * existing application identities should be using this type.
-	 * 
-	 * @param attributeType
-	 * @throws AttributeTypeDescriptionNotFoundException
-	 * @throws PermissionDeniedException
-	 * @throws AttributeTypeNotFoundException
-	 */
-	void remove(AttributeTypeEntity attributeType)
-			throws AttributeTypeDescriptionNotFoundException,
-			PermissionDeniedException, AttributeTypeNotFoundException;
+    /**
+     * Removes an attribute type using the given attribute type prototype. No existing application identities should be
+     * using this type.
+     * 
+     * @param attributeType
+     * @throws AttributeTypeDescriptionNotFoundException
+     * @throws PermissionDeniedException
+     * @throws AttributeTypeNotFoundException
+     */
+    void remove(AttributeTypeEntity attributeType) throws AttributeTypeDescriptionNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException;
 
-	List<AttributeTypeDescriptionEntity> listDescriptions(
-			String attributeTypeName) throws AttributeTypeNotFoundException;
+    List<AttributeTypeDescriptionEntity> listDescriptions(String attributeTypeName)
+            throws AttributeTypeNotFoundException;
 
-	/**
-	 * Adds a new attribute type description. The entity parameter is used as
-	 * data object between the operator control beans and the model service.
-	 * 
-	 * @param newAttributeTypeDescription
-	 * @throws AttributeTypeNotFoundException
-	 */
-	void addDescription(
-			AttributeTypeDescriptionEntity newAttributeTypeDescription)
-			throws AttributeTypeNotFoundException;
+    /**
+     * Adds a new attribute type description. The entity parameter is used as data object between the operator control
+     * beans and the model service.
+     * 
+     * @param newAttributeTypeDescription
+     * @throws AttributeTypeNotFoundException
+     */
+    void addDescription(AttributeTypeDescriptionEntity newAttributeTypeDescription)
+            throws AttributeTypeNotFoundException;
 
-	void removeDescription(
-			AttributeTypeDescriptionEntity attributeTypeDescription)
-			throws AttributeTypeDescriptionNotFoundException;
+    void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription)
+            throws AttributeTypeDescriptionNotFoundException;
 
-	void saveDescription(AttributeTypeDescriptionEntity attributeTypeDescription);
+    void saveDescription(AttributeTypeDescriptionEntity attributeTypeDescription);
 }

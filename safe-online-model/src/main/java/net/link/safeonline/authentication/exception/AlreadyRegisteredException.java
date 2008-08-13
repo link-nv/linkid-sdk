@@ -11,13 +11,16 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class AlreadyRegisteredException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public AlreadyRegisteredException() {
-		super(null, SharedConstants.ALREADY_REGISTERED_ERROR);
-	}
+
+    public AlreadyRegisteredException() {
+
+        super(null, SharedConstants.ALREADY_REGISTERED_ERROR);
+    }
 
 }

@@ -18,43 +18,44 @@ package net.link.safeonline.performance.console.swing.ui;
 /**
  * <h2>{@link ItemRenderer}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 20, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ItemRenderer<I> {
 
-	protected I item;
+    protected I item;
 
-	/**
-	 * Create a new {@link ItemRenderer} instance.
-	 */
-	public ItemRenderer(I item) {
 
-		this.item = item;
-	}
+    /**
+     * Create a new {@link ItemRenderer} instance.
+     */
+    public ItemRenderer(I item) {
 
-	/**
-	 * @return The item of this {@link ItemRenderer}.
-	 */
-	public I getItem() {
+        this.item = item;
+    }
 
-		return this.item;
-	}
+    /**
+     * @return The item of this {@link ItemRenderer}.
+     */
+    public I getItem() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
+        return this.item;
+    }
 
-		return this.item.toString();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+
+        return this.item.toString();
+    }
 }

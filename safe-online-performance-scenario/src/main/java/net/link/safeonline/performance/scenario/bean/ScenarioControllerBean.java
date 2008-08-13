@@ -49,14 +49,14 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.ejb.TransactionTimeout;
 
+
 /**
  * <h2>{@link ScenarioControllerBean}<br>
  * <sub>This bean is the heart of the scenario application.</sub></h2>
  * 
  * <p>
- * We take care of preparing scenario execution and launching a single scenario
- * run. As these methods are called, entity objects are updated with state that
- * can later be used to graph out the progress of the scenario execution.<br>
+ * We take care of preparing scenario execution and launching a single scenario run. As these methods are called, entity
+ * objects are updated with state that can later be used to graph out the progress of the scenario execution.<br>
  * <br>
  * Charts are also generated in this bean as registered by the scenario.
  * </p>
@@ -78,16 +78,14 @@ public class ScenarioControllerBean implements ScenarioController {
     private static final int             CHARTING_TIMEOUT           = 10 * 60 * 60;
     private static final int             SCENARIO_EXECUTION_TIMEOUT = 10 * 60;
 
-    private static final Log             LOG                        = LogFactory
-                                                                            .getLog(ScenarioControllerBean.class);
+    private static final Log             LOG                        = LogFactory.getLog(ScenarioControllerBean.class);
     private static final int             DATA_POINTS                = 800;
 
     private static MBeanServerConnection rmi;
 
     static {
         try {
-            rmi = (MBeanServerConnection) getInitialContext().lookup(
-                    "jmx/invoker/RMIAdaptor");
+            rmi = (MBeanServerConnection) getInitialContext().lookup("jmx/invoker/RMIAdaptor");
         } catch (NamingException e) {
             LOG.error("JMX unavailable.", e);
         }
@@ -115,8 +113,7 @@ public class ScenarioControllerBean implements ScenarioController {
     @TransactionTimeout(SCENARIO_EXECUTION_TIMEOUT)
     public void execute(Date startTime) throws Exception {
 
-        ExecutionEntity execution = this.executionService
-                .getExecution(startTime);
+        ExecutionEntity execution = this.executionService.getExecution(startTime);
         ScenarioTimingEntity agentTime = this.executionService.start(execution);
         agentTime.setStartMemory(getFreeMemory());
 
@@ -148,8 +145,7 @@ public class ScenarioControllerBean implements ScenarioController {
         try {
             return loadClass(Scenario.class, scenario).newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Configured scenario '" + scenario
-                    + "' cannot be created.", e);
+            throw new RuntimeException("Configured scenario '" + scenario + "' cannot be created.", e);
         }
     }
 
@@ -157,11 +153,10 @@ public class ScenarioControllerBean implements ScenarioController {
      * Load a class with the given class name. TODO: Describe method.
      */
     @SuppressWarnings("unchecked")
-    private <C> Class<C> loadClass(@SuppressWarnings("unused") Class<C> clazz,
-            String className) throws ClassNotFoundException {
+    private <C> Class<C> loadClass(@SuppressWarnings("unused") Class<C> clazz, String className)
+            throws ClassNotFoundException {
 
-        return (Class<C>) Thread.currentThread().getContextClassLoader()
-                .loadClass(className);
+        return (Class<C>) Thread.currentThread().getContextClassLoader().loadClass(className);
     }
 
     /**
@@ -170,11 +165,9 @@ public class ScenarioControllerBean implements ScenarioController {
     public Date prepare(ExecutionMetadata metaData) {
 
         // Create the execution and fill it up with metadata.
-        ExecutionEntity execution = this.executionService.addExecution(metaData
-                .getScenarioName(), metaData.getAgents(),
-                metaData.getWorkers(), metaData.getStartTime(), metaData
-                        .getDuration(), metaData.getHostname(), metaData
-                        .isSsl());
+        ExecutionEntity execution = this.executionService.addExecution(metaData.getScenarioName(),
+                metaData.getAgents(), metaData.getWorkers(), metaData.getStartTime(), metaData.getDuration(), metaData
+                        .getHostname(), metaData.isSsl());
         createScenario(execution.getScenarioName()).prepare(execution, null);
 
         return execution.getStartTime();
@@ -186,8 +179,7 @@ public class ScenarioControllerBean implements ScenarioController {
     public Set<String> getScenarios() {
 
         Set<String> scenarios = new HashSet<String>();
-        for (Class<? extends Scenario> scenario : RegisteredScripts
-                .getRegisteredScenarios()) {
+        for (Class<? extends Scenario> scenario : RegisteredScripts.getRegisteredScenarios()) {
             scenarios.add(scenario.getName());
         }
 
@@ -207,14 +199,11 @@ public class ScenarioControllerBean implements ScenarioController {
      */
     public ExecutionMetadata getExecutionMetadata(Date executionId) {
 
-        ExecutionEntity execution = this.executionService
-                .getExecution(executionId);
+        ExecutionEntity execution = this.executionService.getExecution(executionId);
 
-        return ExecutionMetadata.createResponse(execution.getScenarioName(),
-                getDescription(executionId), execution.getAgents(), execution
-                        .getWorkers(), execution.getStartTime(), execution
-                        .getDuration(), execution.getHostname(), execution
-                        .isSsl(), execution.getSpeed());
+        return ExecutionMetadata.createResponse(execution.getScenarioName(), getDescription(executionId), execution
+                .getAgents(), execution.getWorkers(), execution.getStartTime(), execution.getDuration(), execution
+                .getHostname(), execution.isSsl(), execution.getSpeed());
     }
 
     /**
@@ -230,19 +219,15 @@ public class ScenarioControllerBean implements ScenarioController {
      */
     public String getDescription(Date executionId) {
 
-        ExecutionEntity execution = this.executionService
-                .getExecution(executionId);
+        ExecutionEntity execution = this.executionService.getExecution(executionId);
         StringBuffer description = new StringBuffer();
 
-        for (DriverProfileEntity profile : new TreeSet<DriverProfileEntity>(
-                execution.getProfiles())) {
+        for (DriverProfileEntity profile : new TreeSet<DriverProfileEntity>(execution.getProfiles())) {
             try {
-                String driverDescription = (String) loadClass(null,
-                        profile.getDriverClassName()).getField("DESCRIPTION")
-                        .get(null);
+                String driverDescription = (String) loadClass(null, profile.getDriverClassName()).getField(
+                        "DESCRIPTION").get(null);
 
-                description.append("<li>").append(driverDescription).append(
-                        "</li>\n");
+                description.append("<li>").append(driverDescription).append("</li>\n");
             } catch (Exception e) {
             }
         }
@@ -252,8 +237,7 @@ public class ScenarioControllerBean implements ScenarioController {
             description.append("</ul>");
         }
 
-        return getDescription(execution.getScenarioName())
-                + description.toString();
+        return getDescription(execution.getScenarioName()) + description.toString();
     }
 
     /**
@@ -261,8 +245,7 @@ public class ScenarioControllerBean implements ScenarioController {
      */
     public Double getProgress(Date executionStartTime) {
 
-        ExecutionEntity execution = this.executionService
-                .getExecution(executionStartTime);
+        ExecutionEntity execution = this.executionService.getExecution(executionStartTime);
 
         return execution.getChartingProgress();
     }
@@ -275,8 +258,7 @@ public class ScenarioControllerBean implements ScenarioController {
     public Map<String, byte[][]> createCharts(Date executionStartTime) {
 
         boolean ready = false;
-        ExecutionEntity execution = this.executionService
-                .getExecution(executionStartTime);
+        ExecutionEntity execution = this.executionService.getExecution(executionStartTime);
 
         try {
             // Start the progress.
@@ -290,8 +272,7 @@ public class ScenarioControllerBean implements ScenarioController {
                 return images;
             }
 
-            List<? extends Chart> charts = createScenario(
-                    execution.getScenarioName()).getCharts();
+            List<? extends Chart> charts = createScenario(execution.getScenarioName()).getCharts();
             LOG.debug("Creating " + charts.size() + "charts..");
 
             // Divide the charts over three lists depending on data they chart.
@@ -317,8 +298,7 @@ public class ScenarioControllerBean implements ScenarioController {
             // Chart scenario timing data.
             LOG.debug(" - Starting timings..");
             if (!timingCharts.isEmpty()) {
-                List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
-                        .getExecutionTimings(execution);
+                List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService.getExecutionTimings(execution);
                 double total = scenarioTimings.size(), current = 0;
                 LOG.debug(" - - Total: " + total);
                 for (ScenarioTimingEntity timing : scenarioTimings) {
@@ -333,8 +313,7 @@ public class ScenarioControllerBean implements ScenarioController {
                     }
 
                     execution.setChartingProgress(++current / total * 0.4);
-                    LOG.debug(String.format(" - - %01.2f%% (timings)", current
-                            / total * 0.4 * 100));
+                    LOG.debug(String.format(" - - %01.2f%% (timings)", current / total * 0.4 * 100));
                 }
             }
 
@@ -346,8 +325,7 @@ public class ScenarioControllerBean implements ScenarioController {
                 // Chart data.
                 LOG.debug(" - Starting " + profile.getDriverClassName() + "..");
                 if (!dataCharts.isEmpty()) {
-                    List<ProfileDataEntity> profileData = this.profileDataService
-                            .getProfileData(profile, DATA_POINTS);
+                    List<ProfileDataEntity> profileData = this.profileDataService.getProfileData(profile, DATA_POINTS);
                     double total = profileData.size(), current = 0;
                     LOG.debug(" - - Total: " + total);
                     for (ProfileDataEntity data : profileData) {
@@ -363,11 +341,9 @@ public class ScenarioControllerBean implements ScenarioController {
                             }
                         }
 
-                        execution
-                                .setChartingProgress((total * currentProfile + ++current)
-                                        / (total * totalProfiles) * 0.4 + 0.4);
-                        LOG.debug(String.format(" - - %01.2f%% (data)", ((total
-                                * currentProfile + current)
+                        execution.setChartingProgress((total * currentProfile + ++current) / (total * totalProfiles)
+                                * 0.4 + 0.4);
+                        LOG.debug(String.format(" - - %01.2f%% (data)", ((total * currentProfile + current)
                                 / (total * totalProfiles) * 0.4 + 0.4) * 100));
                     }
                 }
@@ -375,8 +351,8 @@ public class ScenarioControllerBean implements ScenarioController {
                 // Chart errors.
                 LOG.debug(" - - Errors..");
                 if (!errorCharts.isEmpty()) {
-                    List<DriverExceptionEntity> profileErrors = this.driverExceptionService
-                            .getProfileErrors(profile, DATA_POINTS);
+                    List<DriverExceptionEntity> profileErrors = this.driverExceptionService.getProfileErrors(profile,
+                            DATA_POINTS);
                     for (DriverExceptionEntity error : profileErrors)
                         if (error != null) {
                             for (Chart chart : errorCharts) {
@@ -399,8 +375,7 @@ public class ScenarioControllerBean implements ScenarioController {
                 chart.postProcess();
 
                 execution.setChartingProgress(++current / total * 0.1 + 0.8);
-                LOG.debug(String.format(" - - %01.2f%% (post)", (current
-                        / total * 0.1 + 0.8) * 100));
+                LOG.debug(String.format(" - - %01.2f%% (post)", (current / total * 0.1 + 0.8) * 100));
             }
 
             LOG.debug(" - Starting rendering..");
@@ -414,8 +389,7 @@ public class ScenarioControllerBean implements ScenarioController {
                 }
 
                 execution.setChartingProgress(++current / total * 0.1 + 0.9);
-                LOG.debug(String.format(" - - %01.2f%% (render)", (current
-                        / total * 0.1 + 0.9) * 100));
+                LOG.debug(String.format(" - - %01.2f%% (render)", (current / total * 0.1 + 0.9) * 100));
             }
 
             execution.setCharts(images);
@@ -426,15 +400,14 @@ public class ScenarioControllerBean implements ScenarioController {
 
         finally {
             LOG.debug(" - Stopped Charting; Ready? " + ready);
-            execution.setChartingProgress(ready ? null : 1d);
+            execution.setChartingProgress(ready? null: 1d);
         }
     }
 
     private long getFreeMemory() {
 
         try {
-            return (Long) rmi.getAttribute(new ObjectName(
-                    "jboss.system:type=ServerInfo"), "FreeMemory");
+            return (Long) rmi.getAttribute(new ObjectName("jboss.system:type=ServerInfo"), "FreeMemory");
         } catch (Exception e) {
             LOG.error("Failed to read in free memory through JMX.", e);
         }
@@ -446,8 +419,7 @@ public class ScenarioControllerBean implements ScenarioController {
 
         Hashtable<String, String> environment = new Hashtable<String, String>();
 
-        environment.put(Context.INITIAL_CONTEXT_FACTORY,
-                "org.jnp.interfaces.NamingContextFactory");
+        environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
         environment.put(Context.PROVIDER_URL, "localhost:1099");
 
         return new InitialContext(environment);

@@ -13,56 +13,58 @@ import javax.ejb.Local;
 
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 
+
 @Local
 public interface GlobalUsageAgreement {
-	/*
-	 * Accessors
-	 */
-	void setLanguage(String language);
 
-	String getLanguage();
+    /*
+     * Accessors
+     */
+    void setLanguage(String language);
 
-	GlobalUsageAgreementEntity getCurrentUsageAgreement();
+    String getLanguage();
 
-	GlobalUsageAgreementEntity getDraftUsageAgreement();
+    GlobalUsageAgreementEntity getCurrentUsageAgreement();
 
-	String getUsageAgreementVersion();
+    GlobalUsageAgreementEntity getDraftUsageAgreement();
 
-	List<String> autocompleteLanguage(Object event);
+    String getUsageAgreementVersion();
 
-	/*
-	 * Actions
-	 */
-	String releaseDraft();
+    List<String> autocompleteLanguage(Object event);
 
-	String removeDraft();
+    /*
+     * Actions
+     */
+    String releaseDraft();
 
-	String addText();
+    String removeDraft();
 
-	String saveText();
+    String addText();
 
-	String viewCurrentText();
+    String saveText();
 
-	String viewDraftText();
+    String viewCurrentText();
 
-	String editDraftText();
+    String viewDraftText();
 
-	String removeDraftText();
+    String editDraftText();
 
-	String editCurrentText();
+    String removeDraftText();
 
-	String createUsageAgreement();
+    String editCurrentText();
 
-	/*
-	 * Factories
-	 */
-	void draftUsageAgreementsTextsFactory();
+    String createUsageAgreement();
 
-	void currentUsageAgreementsTextsFactory();
+    /*
+     * Factories
+     */
+    void draftUsageAgreementsTextsFactory();
 
-	/*
-	 * Lifecycle
-	 */
-	void destroyCallback();
+    void currentUsageAgreementsTextsFactory();
+
+    /*
+     * Lifecycle
+     */
+    void destroyCallback();
 
 }

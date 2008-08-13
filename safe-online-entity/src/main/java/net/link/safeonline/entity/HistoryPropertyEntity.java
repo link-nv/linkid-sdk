@@ -29,11 +29,11 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Entity
 @Table(name = "history_property")
 @NamedQueries( { @NamedQuery(name = QUERY_WHERE_HISTORY, query = "SELECT historyProp "
-        + "FROM HistoryPropertyEntity AS historyProp "
-        + "WHERE historyProp.history = :history") })
+        + "FROM HistoryPropertyEntity AS historyProp " + "WHERE historyProp.history = :history") })
 public class HistoryPropertyEntity implements Serializable {
 
     private static final long  serialVersionUID          = 1L;
@@ -58,8 +58,7 @@ public class HistoryPropertyEntity implements Serializable {
         // empty
     }
 
-    public HistoryPropertyEntity(HistoryEntity history, String name,
-            String value) {
+    public HistoryPropertyEntity(HistoryEntity history, String name, String value) {
 
         this.history = history;
         this.name = name;
@@ -89,8 +88,7 @@ public class HistoryPropertyEntity implements Serializable {
     }
 
     @EmbeddedId
-    @AttributeOverrides( {
-            @AttributeOverride(name = "id", column = @Column(name = ID_COLUMN_NAME)),
+    @AttributeOverrides( { @AttributeOverride(name = "id", column = @Column(name = ID_COLUMN_NAME)),
             @AttributeOverride(name = "name", column = @Column(name = PROPERTY_NAME_COLUMN_NAME)) })
     public HistoryPropertyPK getPk() {
 
@@ -136,16 +134,14 @@ public class HistoryPropertyEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).append("value",
-                this.value).toString();
+        return new ToStringBuilder(this).append("pk", this.pk).append("value", this.value).toString();
     }
 
 
     public interface QueryInterface {
 
         @QueryMethod(QUERY_WHERE_HISTORY)
-        List<HistoryPropertyEntity> listProperties(
-                @QueryParam("history") HistoryEntity history);
+        List<HistoryPropertyEntity> listProperties(@QueryParam("history") HistoryEntity history);
     }
 
 }

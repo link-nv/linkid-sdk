@@ -15,20 +15,21 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.audit.AuditAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 
+
 @Local
 public interface AuditAuditDAO {
 
-	void addAuditAudit(AuditContextEntity auditContext, String message);
+    void addAuditAudit(AuditContextEntity auditContext, String message);
 
-	void addAuditAudit(String message);
+    void addAuditAudit(String message);
 
-	void cleanup(Long id);
+    void cleanup(Long id);
 
-	List<AuditAuditEntity> listRecords(Long id);
+    List<AuditAuditEntity> listRecords(Long id);
 
-	boolean hasRecords(long id);
+    boolean hasRecords(long id);
 
-	List<AuditAuditEntity> listRecordsSince(Date ageLimit);
+    List<AuditAuditEntity> listRecordsSince(Date ageLimit);
 
-	List<AuditAuditEntity> listRecords();
+    List<AuditAuditEntity> listRecords();
 }

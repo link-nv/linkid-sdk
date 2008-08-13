@@ -9,6 +9,7 @@ package net.link.safeonline.p11sc;
 
 import java.util.Locale;
 
+
 /**
  * /dev/null implementation of the smart card interaction interface.
  * 
@@ -17,12 +18,14 @@ import java.util.Locale;
  */
 public class NullSmartCardInteraction implements SmartCardInteraction {
 
-	public void output(String message) {
-		// empty
-	}
+    public void output(String message) {
 
-	public Locale getLocale() {
-		Locale locale = Locale.getDefault();
-		return locale;
-	}
+        // empty
+    }
+
+    public Locale getLocale() {
+
+        Locale locale = Locale.getDefault();
+        return locale;
+    }
 }

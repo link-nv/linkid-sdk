@@ -13,45 +13,47 @@ import org.jboss.seam.contexts.Context;
 import org.jboss.seam.international.LocaleSelector;
 import org.jboss.seam.log.Log;
 
+
 public class LanguageSelectionBaseBean implements LanguageSelectionBase {
 
-	public static final String LAST_PAGE = "lang.selection.lastpage";
+    public static final String LAST_PAGE = "lang.selection.lastpage";
 
-	@In
-	Context sessionContext;
+    @In
+    Context                    sessionContext;
 
-	@In
-	FacesContext facesContext;
+    @In
+    FacesContext               facesContext;
 
-	@In(create = true)
-	LocaleSelector localeSelector;
+    @In(create = true)
+    LocaleSelector             localeSelector;
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                log;
 
-	public String entry() {
-		this.sessionContext.set(LAST_PAGE, this.facesContext.getViewRoot()
-				.getViewId());
-		return "/language.xhtml";
-	}
 
-	public String goBack() {
-		String result = (String) this.sessionContext.get(LAST_PAGE);
-		this.sessionContext.remove(LAST_PAGE);
-		return result;
-	}
+    public String entry() {
 
-	public void selectLanguage(ActionEvent event) {
-		this.log.debug("selected language: " + event.getComponent().getId());
-		this.localeSelector.selectLanguage(event.getComponent().getId());
+        this.sessionContext.set(LAST_PAGE, this.facesContext.getViewRoot().getViewId());
+        return "/language.xhtml";
+    }
 
-		HttpServletResponse response = (HttpServletResponse) this.facesContext
-				.getExternalContext().getResponse();
+    public String goBack() {
 
-		Cookie languageCookie = new Cookie("OLAS.language", event
-				.getComponent().getId());
-		languageCookie.setPath("/");
-		languageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
-		response.addCookie(languageCookie);
-	}
+        String result = (String) this.sessionContext.get(LAST_PAGE);
+        this.sessionContext.remove(LAST_PAGE);
+        return result;
+    }
+
+    public void selectLanguage(ActionEvent event) {
+
+        this.log.debug("selected language: " + event.getComponent().getId());
+        this.localeSelector.selectLanguage(event.getComponent().getId());
+
+        HttpServletResponse response = (HttpServletResponse) this.facesContext.getExternalContext().getResponse();
+
+        Cookie languageCookie = new Cookie("OLAS.language", event.getComponent().getId());
+        languageCookie.setPath("/");
+        languageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+        response.addCookie(languageCookie);
+    }
 }

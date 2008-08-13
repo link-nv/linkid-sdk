@@ -10,6 +10,7 @@ package test.accept.net.link.safeonline.auth;
 import junit.framework.TestCase;
 import net.link.safeonline.webapp.AcceptanceTestManager;
 
+
 /**
  * Acceptance test for auth web application.
  * 
@@ -18,19 +19,22 @@ import net.link.safeonline.webapp.AcceptanceTestManager;
  */
 public class AuthTest extends TestCase {
 
-	private AcceptanceTestManager acceptanceTestManager;
+    private AcceptanceTestManager acceptanceTestManager;
 
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
-		this.acceptanceTestManager = new AcceptanceTestManager();
-		this.acceptanceTestManager.setUp();
-	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.acceptanceTestManager.tearDown();
-		super.tearDown();
-	}
+    @Override
+    public void setUp() throws Exception {
+
+        super.setUp();
+        this.acceptanceTestManager = new AcceptanceTestManager();
+        this.acceptanceTestManager.setUp();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+
+        this.acceptanceTestManager.tearDown();
+        super.tearDown();
+    }
 
 }

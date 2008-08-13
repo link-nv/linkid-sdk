@@ -9,13 +9,15 @@ package net.link.safeonline.webapp.demo.lawyer;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class DemoLawyerOverview extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_LAWYER_WEBAPP_PREFIX
-			+ "/overview.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_LAWYER_WEBAPP_PREFIX + "/overview.seam";
 
-	public DemoLawyerOverview() {
-		super(PAGE_NAME);
-	}
+
+    public DemoLawyerOverview() {
+
+        super(PAGE_NAME);
+    }
 
 }

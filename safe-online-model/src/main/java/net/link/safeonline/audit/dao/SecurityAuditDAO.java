@@ -16,24 +16,24 @@ import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.SecurityAuditEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 
+
 @Local
 public interface SecurityAuditDAO {
 
-	void addSecurityAudit(AuditContextEntity auditContext,
-			SecurityThreatType securityThreat, String targetPrincipal,
-			String message);
+    void addSecurityAudit(AuditContextEntity auditContext, SecurityThreatType securityThreat, String targetPrincipal,
+            String message);
 
-	void cleanup(Long id);
+    void cleanup(Long id);
 
-	List<SecurityAuditEntity> listRecords();
+    List<SecurityAuditEntity> listRecords();
 
-	List<SecurityAuditEntity> listRecords(Long id);
+    List<SecurityAuditEntity> listRecords(Long id);
 
-	boolean hasRecords(long id);
+    boolean hasRecords(long id);
 
-	List<SecurityAuditEntity> listRecords(String principal);
+    List<SecurityAuditEntity> listRecords(String principal);
 
-	List<SecurityAuditEntity> listRecordsSince(Date ageLimit);
+    List<SecurityAuditEntity> listRecordsSince(Date ageLimit);
 
-	List<String> listUsers();
+    List<String> listUsers();
 }

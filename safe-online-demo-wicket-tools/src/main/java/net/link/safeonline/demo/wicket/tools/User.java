@@ -4,57 +4,66 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class User implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String username;
+    private String            username;
 
-	private List<String> roles = new ArrayList<String>();
+    private List<String>      roles            = new ArrayList<String>();
 
-	public User() {
-		// empty
-	}
 
-	public List<String> getRoles() {
-		return this.roles;
-	}
+    public User() {
 
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
-	}
+        // empty
+    }
 
-	public String getUsername() {
-		return this.username; 
-	}
+    public List<String> getRoles() {
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+        return this.roles;
+    }
 
-	public boolean hasOneOf(List<String> roleList) {
-		if (roleList == null)
-			return true;
-		if (roleList.size() == 0)
-			return true;
+    public void setRoles(List<String> roles) {
 
-		for (String hasRole : this.roles) {
-			for (String needRole : roleList) {
-				if (hasRole.equals(needRole)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+        this.roles = roles;
+    }
 
-	public boolean has(String role) {
-		for (String hasRole : this.roles) {
-			if (hasRole.equals(role)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public String getUsername() {
+
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+
+        this.username = username;
+    }
+
+    public boolean hasOneOf(List<String> roleList) {
+
+        if (roleList == null)
+            return true;
+        if (roleList.size() == 0)
+            return true;
+
+        for (String hasRole : this.roles) {
+            for (String needRole : roleList) {
+                if (hasRole.equals(needRole)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean has(String role) {
+
+        for (String hasRole : this.roles) {
+            if (hasRole.equals(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

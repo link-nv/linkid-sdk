@@ -33,153 +33,161 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
+
 public class SafeOnlineTrustManagerTest {
 
-	static final Log LOG = LogFactory.getLog(SafeOnlineTrustManagerTest.class);
+    static final Log LOG = LogFactory.getLog(SafeOnlineTrustManagerTest.class);
 
-	@Test
-	public void trustAllSSLConnection() throws Exception {
-		LOG.debug("trust all ssl connection");
 
-		// setup
-		SSLContext sslContext = SSLContext.getInstance("TLS");
-		KeyPair serverKeyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate serverCert = PkiTestUtils
-				.generateSelfSignedCertificate(serverKeyPair, "CN=TestServer");
-		KeyManager keyManager = new TestX509KeyManager(serverKeyPair,
-				serverCert);
-		sslContext.init(new KeyManager[] { keyManager }, null, null);
-		SSLServerSocketFactory sslServerSocketFactory = sslContext
-				.getServerSocketFactory();
-		int port = getFreePort();
-		final ServerSocket serverSocket = sslServerSocketFactory
-				.createServerSocket(port);
+    @Test
+    public void trustAllSSLConnection() throws Exception {
 
-		Thread serverThread = new Thread() {
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						LOG.debug("listening...");
-						Socket socket = serverSocket.accept();
-						LOG.debug("incomming connection");
-						byte[] input = new byte[512];
-						int size = socket.getInputStream().read(input);
-						LOG.debug("size: " + size);
-						String result = new String(input);
-						LOG.debug("result: " + result);
-						assertTrue(result.startsWith("hello world"));
-					} catch (IOException e) {
-						LOG.debug("IO error: " + e.getMessage(), e);
-					}
-				}
-			}
-		};
+        LOG.debug("trust all ssl connection");
 
-		serverThread.start();
+        // setup
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        KeyPair serverKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate serverCert = PkiTestUtils.generateSelfSignedCertificate(serverKeyPair, "CN=TestServer");
+        KeyManager keyManager = new TestX509KeyManager(serverKeyPair, serverCert);
+        sslContext.init(new KeyManager[] { keyManager }, null, null);
+        SSLServerSocketFactory sslServerSocketFactory = sslContext.getServerSocketFactory();
+        int port = getFreePort();
+        final ServerSocket serverSocket = sslServerSocketFactory.createServerSocket(port);
 
-		SafeOnlineTrustManager.configureSsl();
+        Thread serverThread = new Thread() {
 
-		// operate: wrong server certificate
-		X509Certificate foobarCert = PkiTestUtils
-				.generateSelfSignedCertificate(serverKeyPair, "CN=FooBarServer");
-		SafeOnlineTrustManager.setTrustedCertificate(foobarCert);
-		SSLSocket socket = (SSLSocket) HttpsURLConnection
-				.getDefaultSSLSocketFactory().createSocket("localhost", port);
-		try {
-			socket.getOutputStream().write("hello world".getBytes());
-			fail();
-		} catch (Exception e) {
-			// expected
-			LOG.debug("expected exception: " + e.getMessage());
-			LOG.debug("exception type: " + e.getClass().getName());
-		}
-		socket.close();
-		/*
-		 * Apparently we need to invalidate the SSL session to force a new SSL
-		 * handshake.
-		 */
-		SSLSession session = socket.getSession();
-		session.invalidate();
+            @Override
+            public void run() {
 
-		// operate: no trusted server cert configured
-		SafeOnlineTrustManager.setTrustedCertificate(null);
-		SSLSocket socketNoServerCert = (SSLSocket) HttpsURLConnection
-				.getDefaultSSLSocketFactory().createSocket("localhost", port);
-		socketNoServerCert.getOutputStream().write("hello world".getBytes());
-		socketNoServerCert.close();
-		SSLSession sessionNoServerCert = socketNoServerCert.getSession();
-		sessionNoServerCert.invalidate();
+                while (true) {
+                    try {
+                        LOG.debug("listening...");
+                        Socket socket = serverSocket.accept();
+                        LOG.debug("incomming connection");
+                        byte[] input = new byte[512];
+                        int size = socket.getInputStream().read(input);
+                        LOG.debug("size: " + size);
+                        String result = new String(input);
+                        LOG.debug("result: " + result);
+                        assertTrue(result.startsWith("hello world"));
+                    } catch (IOException e) {
+                        LOG.debug("IO error: " + e.getMessage(), e);
+                    }
+                }
+            }
+        };
 
-		// operate: server cert configured
-		SafeOnlineTrustManager.setTrustedCertificate(serverCert);
-		SSLSocket socketServerCert = (SSLSocket) HttpsURLConnection
-				.getDefaultSSLSocketFactory().createSocket("localhost", port);
-		socketServerCert.getOutputStream().write("hello world".getBytes());
-		socketServerCert.setKeepAlive(false);
-		socketServerCert.close();
+        serverThread.start();
 
-	}
+        SafeOnlineTrustManager.configureSsl();
 
-	private static class TestX509KeyManager implements X509KeyManager {
-		public static final String SERVER_ALIAS = "test-server-alias";
+        // operate: wrong server certificate
+        X509Certificate foobarCert = PkiTestUtils.generateSelfSignedCertificate(serverKeyPair, "CN=FooBarServer");
+        SafeOnlineTrustManager.setTrustedCertificate(foobarCert);
+        SSLSocket socket = (SSLSocket) HttpsURLConnection.getDefaultSSLSocketFactory().createSocket("localhost", port);
+        try {
+            socket.getOutputStream().write("hello world".getBytes());
+            fail();
+        } catch (Exception e) {
+            // expected
+            LOG.debug("expected exception: " + e.getMessage());
+            LOG.debug("exception type: " + e.getClass().getName());
+        }
+        socket.close();
+        /*
+         * Apparently we need to invalidate the SSL session to force a new SSL handshake.
+         */
+        SSLSession session = socket.getSession();
+        session.invalidate();
 
-		private final KeyPair keyPair;
+        // operate: no trusted server cert configured
+        SafeOnlineTrustManager.setTrustedCertificate(null);
+        SSLSocket socketNoServerCert = (SSLSocket) HttpsURLConnection.getDefaultSSLSocketFactory().createSocket(
+                "localhost", port);
+        socketNoServerCert.getOutputStream().write("hello world".getBytes());
+        socketNoServerCert.close();
+        SSLSession sessionNoServerCert = socketNoServerCert.getSession();
+        sessionNoServerCert.invalidate();
 
-		private final X509Certificate certificate;
+        // operate: server cert configured
+        SafeOnlineTrustManager.setTrustedCertificate(serverCert);
+        SSLSocket socketServerCert = (SSLSocket) HttpsURLConnection.getDefaultSSLSocketFactory().createSocket(
+                "localhost", port);
+        socketServerCert.getOutputStream().write("hello world".getBytes());
+        socketServerCert.setKeepAlive(false);
+        socketServerCert.close();
 
-		public TestX509KeyManager(KeyPair keyPair, X509Certificate certificate) {
-			this.keyPair = keyPair;
-			this.certificate = certificate;
-		}
+    }
 
-		public String chooseClientAlias(String[] keyType, Principal[] issuers,
-				Socket socket) {
-			LOG.debug("chooseClientAlias");
-			return null;
-		}
 
-		public String chooseServerAlias(String keyType, Principal[] issuers,
-				Socket socket) {
-			LOG.debug("chooseServerAlias; keyType: " + keyType);
-			return SERVER_ALIAS;
-		}
+    private static class TestX509KeyManager implements X509KeyManager {
 
-		public X509Certificate[] getCertificateChain(String alias) {
-			LOG.debug("getCertificateChain: " + alias);
-			if (SERVER_ALIAS.equals(alias)) {
-				return new X509Certificate[] { this.certificate };
-			}
-			return null;
-		}
+        public static final String    SERVER_ALIAS = "test-server-alias";
 
-		public String[] getClientAliases(String keyType, Principal[] issuers) {
-			LOG.debug("getClientAliases");
-			return null;
-		}
+        private final KeyPair         keyPair;
 
-		public PrivateKey getPrivateKey(String alias) {
-			LOG.debug("getPrivateKey: " + alias);
-			if (SERVER_ALIAS.equals(alias)) {
-				PrivateKey privateKey = this.keyPair.getPrivate();
-				if (null == privateKey) {
-					throw new SecurityException("no private key");
-				}
-				return this.keyPair.getPrivate();
-			}
-			return null;
-		}
+        private final X509Certificate certificate;
 
-		public String[] getServerAliases(String keyType, Principal[] issuers) {
-			LOG.debug("getServerAliases; keyType: " + keyType);
-			return null;
-		}
-	}
 
-	private static int getFreePort() throws Exception {
-		ServerSocket serverSocket = new ServerSocket(0);
-		int port = serverSocket.getLocalPort();
-		serverSocket.close();
-		return port;
-	}
+        public TestX509KeyManager(KeyPair keyPair, X509Certificate certificate) {
+
+            this.keyPair = keyPair;
+            this.certificate = certificate;
+        }
+
+        public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
+
+            LOG.debug("chooseClientAlias");
+            return null;
+        }
+
+        public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket) {
+
+            LOG.debug("chooseServerAlias; keyType: " + keyType);
+            return SERVER_ALIAS;
+        }
+
+        public X509Certificate[] getCertificateChain(String alias) {
+
+            LOG.debug("getCertificateChain: " + alias);
+            if (SERVER_ALIAS.equals(alias)) {
+                return new X509Certificate[] { this.certificate };
+            }
+            return null;
+        }
+
+        public String[] getClientAliases(String keyType, Principal[] issuers) {
+
+            LOG.debug("getClientAliases");
+            return null;
+        }
+
+        public PrivateKey getPrivateKey(String alias) {
+
+            LOG.debug("getPrivateKey: " + alias);
+            if (SERVER_ALIAS.equals(alias)) {
+                PrivateKey privateKey = this.keyPair.getPrivate();
+                if (null == privateKey) {
+                    throw new SecurityException("no private key");
+                }
+                return this.keyPair.getPrivate();
+            }
+            return null;
+        }
+
+        public String[] getServerAliases(String keyType, Principal[] issuers) {
+
+            LOG.debug("getServerAliases; keyType: " + keyType);
+            return null;
+        }
+    }
+
+
+    private static int getFreePort() throws Exception {
+
+        ServerSocket serverSocket = new ServerSocket(0);
+        int port = serverSocket.getLocalPort();
+        serverSocket.close();
+        return port;
+    }
 }

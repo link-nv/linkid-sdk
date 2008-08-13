@@ -23,45 +23,50 @@ import net.link.safeonline.tasks.dao.TaskDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class TaskDAOBean implements TaskDAO {
 
-	private static final Log LOG = LogFactory.getLog(TaskDAOBean.class);
+    private static final Log          LOG = LogFactory.getLog(TaskDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager             entityManager;
 
-	private TaskEntity.QueryInterface queryObject;
+    private TaskEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, TaskEntity.QueryInterface.class);
-	}
 
-	public TaskEntity addTaskEntity(String jndiName, String name,
-			SchedulingEntity scheduling) {
-		LOG.debug("Adding task entity: " + name);
+    @PostConstruct
+    public void postConstructCallback() {
 
-		TaskEntity taskEntity = new TaskEntity(jndiName, name, scheduling);
-		this.entityManager.persist(taskEntity);
-		return taskEntity;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, TaskEntity.QueryInterface.class);
+    }
 
-	public TaskEntity findTaskEntity(String jndiName) {
-		LOG.debug("find task entity: " + jndiName);
-		TaskEntity result = this.queryObject.findTaskEntity(jndiName);
-		return result;
-	}
+    public TaskEntity addTaskEntity(String jndiName, String name, SchedulingEntity scheduling) {
 
-	public List<TaskEntity> listTaskEntities() {
-		LOG.debug("Listing task entities");
-		List<TaskEntity> result = this.queryObject.listTaskEntities();
-		return result;
-	}
+        LOG.debug("Adding task entity: " + name);
 
-	public void removeTaskEntity(TaskEntity taskEntity) {
-		LOG.debug("Removing task entity: " + taskEntity.getName());
-		this.entityManager.remove(taskEntity);
-	}
+        TaskEntity taskEntity = new TaskEntity(jndiName, name, scheduling);
+        this.entityManager.persist(taskEntity);
+        return taskEntity;
+    }
+
+    public TaskEntity findTaskEntity(String jndiName) {
+
+        LOG.debug("find task entity: " + jndiName);
+        TaskEntity result = this.queryObject.findTaskEntity(jndiName);
+        return result;
+    }
+
+    public List<TaskEntity> listTaskEntities() {
+
+        LOG.debug("Listing task entities");
+        List<TaskEntity> result = this.queryObject.listTaskEntities();
+        return result;
+    }
+
+    public void removeTaskEntity(TaskEntity taskEntity) {
+
+        LOG.debug("Removing task entity: " + taskEntity.getName());
+        this.entityManager.remove(taskEntity);
+    }
 }

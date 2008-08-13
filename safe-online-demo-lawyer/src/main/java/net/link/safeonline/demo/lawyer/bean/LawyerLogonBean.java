@@ -20,33 +20,37 @@ import org.jboss.seam.contexts.Context;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.web.Session;
 
+
 @Stateful
 @Name("lawyerLogon")
 @LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerLogonBean/local")
-public class LawyerLogonBean extends AbstractLawyerDataClientBean implements
-		LawyerLogon {
+public class LawyerLogonBean extends AbstractLawyerDataClientBean implements LawyerLogon {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log log;
 
-	@In
-	Context sessionContext;
+    @In
+    Context     sessionContext;
 
-	public String login() {
-		this.log.debug("login");
-		String result = SafeOnlineLoginUtils.login("login");
-		return result;
-	}
 
-	public String logout() {
-		this.log.debug("logout");
-		Session.getInstance().invalidate();
-		return "logout-success";
-	}
+    public String login() {
 
-	public String getUsername() {
-		String userId = (String) this.sessionContext.get("username");
-		String username = getUsername(userId);
-		return username;
-	}
+        this.log.debug("login");
+        String result = SafeOnlineLoginUtils.login("login");
+        return result;
+    }
+
+    public String logout() {
+
+        this.log.debug("logout");
+        Session.getInstance().invalidate();
+        return "logout-success";
+    }
+
+    public String getUsername() {
+
+        String userId = (String) this.sessionContext.get("username");
+        String username = getUsername(userId);
+        return username;
+    }
 }

@@ -12,39 +12,47 @@ import net.link.safeonline.sdk.ws.annotation.Compound;
 import net.link.safeonline.sdk.ws.annotation.CompoundId;
 import net.link.safeonline.sdk.ws.annotation.CompoundMember;
 
+
 @Compound(DemoConstants.MANDATE_ATTRIBUTE_NAME)
 public class Mandate {
 
-	private String companyName;
+    private String companyName;
 
-	private String title;
+    private String title;
 
-	private String attributeId;
+    private String attributeId;
 
-	@CompoundId
-	public String getAttributeId() {
-		return this.attributeId;
-	}
 
-	public void setAttributeId(String attributeId) {
-		this.attributeId = attributeId;
-	}
+    @CompoundId
+    public String getAttributeId() {
 
-	@CompoundMember(DemoConstants.MANDATE_COMPANY_ATTRIBUTE_NAME)
-	public String getCompanyName() {
-		return this.companyName;
-	}
+        return this.attributeId;
+    }
 
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
+    public void setAttributeId(String attributeId) {
 
-	@CompoundMember(DemoConstants.MANDATE_TITLE_ATTRIBUTE_NAME)
-	public String getTitle() {
-		return this.title;
-	}
+        this.attributeId = attributeId;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    @CompoundMember(DemoConstants.MANDATE_COMPANY_ATTRIBUTE_NAME)
+    public String getCompanyName() {
+
+        return this.companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+
+        this.companyName = companyName;
+    }
+
+    @CompoundMember(DemoConstants.MANDATE_TITLE_ATTRIBUTE_NAME)
+    public String getTitle() {
+
+        return this.title;
+    }
+
+    public void setTitle(String title) {
+
+        this.title = title;
+    }
 }

@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Buffered servlet response wrapper.
  * 
@@ -31,54 +32,56 @@ import org.apache.commons.logging.LogFactory;
  */
 public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
 
-	private static final Log LOG = LogFactory
-			.getLog(BufferedServletResponseWrapper.class);
+    private static final Log                  LOG = LogFactory.getLog(BufferedServletResponseWrapper.class);
 
-	private final HttpServletResponse origResponse;
+    private final HttpServletResponse         origResponse;
 
-	private final BufferedServletOutputStream bufferedServletOutputStream;
+    private final BufferedServletOutputStream bufferedServletOutputStream;
 
-	private PrintWriter writer;
+    private PrintWriter                       writer;
 
-	public BufferedServletResponseWrapper(HttpServletResponse response) {
-		super(response);
-		this.origResponse = response;
-		this.bufferedServletOutputStream = new BufferedServletOutputStream();
-	}
 
-	/**
-	 * This method will commit the buffered response to the real output
-	 * response.
-	 * 
-	 * @throws IOException
-	 */
-	public void commit() throws IOException {
-		if (null != this.writer) {
-			/*
-			 * We need to flush the writer first so that the buffered servlet
-			 * output stream holds all the data.
-			 */
-			this.writer.flush();
-		}
-		byte[] data = this.bufferedServletOutputStream.getData();
-		LOG.debug("committing " + data.length + " bytes");
-		IOUtils.write(data, this.origResponse.getOutputStream());
-	}
+    public BufferedServletResponseWrapper(HttpServletResponse response) {
 
-	@Override
-	public ServletOutputStream getOutputStream() {
-		LOG.debug("get output stream");
-		return this.bufferedServletOutputStream;
-	}
+        super(response);
+        this.origResponse = response;
+        this.bufferedServletOutputStream = new BufferedServletOutputStream();
+    }
 
-	@Override
-	public PrintWriter getWriter() throws IOException {
-		LOG.debug("get writer");
-		if (null == this.writer) {
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
-					this.bufferedServletOutputStream, getCharacterEncoding());
-			this.writer = new PrintWriter(outputStreamWriter);
-		}
-		return this.writer;
-	}
+    /**
+     * This method will commit the buffered response to the real output response.
+     * 
+     * @throws IOException
+     */
+    public void commit() throws IOException {
+
+        if (null != this.writer) {
+            /*
+             * We need to flush the writer first so that the buffered servlet output stream holds all the data.
+             */
+            this.writer.flush();
+        }
+        byte[] data = this.bufferedServletOutputStream.getData();
+        LOG.debug("committing " + data.length + " bytes");
+        IOUtils.write(data, this.origResponse.getOutputStream());
+    }
+
+    @Override
+    public ServletOutputStream getOutputStream() {
+
+        LOG.debug("get output stream");
+        return this.bufferedServletOutputStream;
+    }
+
+    @Override
+    public PrintWriter getWriter() throws IOException {
+
+        LOG.debug("get writer");
+        if (null == this.writer) {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.bufferedServletOutputStream,
+                    getCharacterEncoding());
+            this.writer = new PrintWriter(outputStreamWriter);
+        }
+        return this.writer;
+    }
 }

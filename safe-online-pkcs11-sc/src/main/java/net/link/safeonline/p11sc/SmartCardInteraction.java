@@ -9,26 +9,26 @@ package net.link.safeonline.p11sc;
 
 import java.util.Locale;
 
+
 /**
- * Smart Card Interaction interface. Via this interface the smart card component
- * can interact with the end-user.
+ * Smart Card Interaction interface. Via this interface the smart card component can interact with the end-user.
  * 
  * @author fcorneli
  */
 public interface SmartCardInteraction {
 
-	/**
-	 * Output a message to the end-user.
-	 * 
-	 * @param message
-	 *            the message to be displayed.
-	 */
-	void output(String message);
+    /**
+     * Output a message to the end-user.
+     * 
+     * @param message
+     *            the message to be displayed.
+     */
+    void output(String message);
 
-	/**
-	 * Gives back the locale in which we should communicate to the end-user.
-	 * 
-	 * @return
-	 */
-	Locale getLocale();
+    /**
+     * Gives back the locale in which we should communicate to the end-user.
+     * 
+     * @return
+     */
+    Locale getLocale();
 }

@@ -9,5 +9,5 @@ package net.link.safeonline.shared.asn1;
 
 public interface DEREncodable {
 
-	byte[] getEncoded();
+    byte[] getEncoded();
 }

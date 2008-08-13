@@ -22,52 +22,63 @@ import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 
+
 @Entity
 @Table(name = "helpdesk_context")
 @NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM HelpdeskContextEntity") })
 public class HelpdeskContextEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-	public static final String QUERY_LIST_ALL = "hdcon.all";
+    public static final String QUERY_LIST_ALL   = "hdcon.all";
 
-	private Long id;
+    private Long               id;
 
-	private String location;
+    private String             location;
 
-	public HelpdeskContextEntity() {
-	}
 
-	public HelpdeskContextEntity(String location) {
-		this.location = location;
-	}
+    public HelpdeskContextEntity() {
 
-	// used by unit tests
-	public HelpdeskContextEntity(Long id) {
-		this.id = id;
-	}
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return this.id;
-	}
+    public HelpdeskContextEntity(String location) {
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+        this.location = location;
+    }
 
-	public String getLocation() {
-		return this.location;
-	}
+    // used by unit tests
+    public HelpdeskContextEntity(Long id) {
 
-	public void setLocation(String location) {
-		this.location = location;
-	}
+        this.id = id;
+    }
 
-	public interface QueryInterface {
-		@QueryMethod(QUERY_LIST_ALL)
-		List<HelpdeskContextEntity> listContexts();
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
+
+        return this.id;
+    }
+
+    public void setId(Long id) {
+
+        this.id = id;
+    }
+
+    public String getLocation() {
+
+        return this.location;
+    }
+
+    public void setLocation(String location) {
+
+        this.location = location;
+    }
+
+
+    public interface QueryInterface {
+
+        @QueryMethod(QUERY_LIST_ALL)
+        List<HelpdeskContextEntity> listContexts();
+    }
 
 }

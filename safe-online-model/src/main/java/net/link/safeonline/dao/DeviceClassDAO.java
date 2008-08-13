@@ -17,36 +17,31 @@ import net.link.safeonline.entity.DeviceClassDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassDescriptionPK;
 import net.link.safeonline.entity.DeviceClassEntity;
 
+
 @Local
 public interface DeviceClassDAO {
 
-	DeviceClassEntity addDeviceClass(String name,
-			String authenticationContextClass);
+    DeviceClassEntity addDeviceClass(String name, String authenticationContextClass);
 
-	DeviceClassEntity findDeviceClass(String deviceClassName);
+    DeviceClassEntity findDeviceClass(String deviceClassName);
 
-	DeviceClassEntity getDeviceClass(String deviceClassName)
-			throws DeviceClassNotFoundException;
+    DeviceClassEntity getDeviceClass(String deviceClassName) throws DeviceClassNotFoundException;
 
-	void removeDeviceClass(String name);
+    void removeDeviceClass(String name);
 
-	List<DeviceClassEntity> listDeviceClasses();
+    List<DeviceClassEntity> listDeviceClasses();
 
-	List<DeviceClassDescriptionEntity> listDescriptions(
-			DeviceClassEntity deviceClass);
+    List<DeviceClassDescriptionEntity> listDescriptions(DeviceClassEntity deviceClass);
 
-	void addDescription(DeviceClassEntity deviceClass,
-			DeviceClassDescriptionEntity description);
+    void addDescription(DeviceClassEntity deviceClass, DeviceClassDescriptionEntity description);
 
-	void removeDescription(DeviceClassDescriptionEntity description);
+    void removeDescription(DeviceClassDescriptionEntity description);
 
-	void saveDescription(DeviceClassDescriptionEntity description);
+    void saveDescription(DeviceClassDescriptionEntity description);
 
-	DeviceClassDescriptionEntity getDescription(
-			DeviceClassDescriptionPK descriptionPK)
-			throws DeviceClassDescriptionNotFoundException;
+    DeviceClassDescriptionEntity getDescription(DeviceClassDescriptionPK descriptionPK)
+            throws DeviceClassDescriptionNotFoundException;
 
-	DeviceClassDescriptionEntity findDescription(
-			DeviceClassDescriptionPK descriptionPK);
+    DeviceClassDescriptionEntity findDescription(DeviceClassDescriptionPK descriptionPK);
 
 }

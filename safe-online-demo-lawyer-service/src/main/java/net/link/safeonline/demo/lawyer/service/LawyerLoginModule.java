@@ -30,123 +30,125 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 
+
 /**
- * Lawyer JAAS login module. This login module will retrieve the username and
- * role attribute from the HTTP servlet request using JACC. It uses these
- * attribute values to populate the subject for usage within the JBoss
- * Application Server.
+ * Lawyer JAAS login module. This login module will retrieve the username and role attribute from the HTTP servlet
+ * request using JACC. It uses these attribute values to populate the subject for usage within the JBoss Application
+ * Server.
  * 
  * @author fcorneli
  * 
  */
 public class LawyerLoginModule implements LoginModule {
 
-	private static final Log LOG = LogFactory.getLog(LawyerLoginModule.class);
+    private static final Log LOG = LogFactory.getLog(LawyerLoginModule.class);
 
-	private Subject subject;
+    private Subject          subject;
 
-	private CallbackHandler callbackHandler;
+    private CallbackHandler  callbackHandler;
 
-	private Principal authenticatedPrincipal;
+    private Principal        authenticatedPrincipal;
 
-	private String role;
+    private String           role;
 
-	public void initialize(Subject inSubject,
-			CallbackHandler inCallbackHandler, Map<String, ?> sharedState,
-			Map<String, ?> options) {
-		this.subject = inSubject;
-		this.callbackHandler = inCallbackHandler;
-	}
 
-	public boolean login() throws LoginException {
+    public void initialize(Subject inSubject, CallbackHandler inCallbackHandler, Map<String, ?> sharedState,
+            Map<String, ?> options) {
 
-		HttpServletRequest httpServletRequest;
-		try {
-			httpServletRequest = (HttpServletRequest) PolicyContext
-					.getContext("javax.servlet.http.HttpServletRequest");
-		} catch (PolicyContextException e) {
-			throw new LoginException("JACC policy context error: "
-					+ e.getMessage());
-		}
+        this.subject = inSubject;
+        this.callbackHandler = inCallbackHandler;
+    }
 
-		HttpSession httpSession = httpServletRequest.getSession();
-		String sessionUsername = (String) httpSession.getAttribute("username");
-		LOG.debug("jacc http username: " + sessionUsername);
+    public boolean login() throws LoginException {
 
-		NameCallback nameCallback = new NameCallback("username");
-		Callback[] callbacks = new Callback[] { nameCallback };
+        HttpServletRequest httpServletRequest;
+        try {
+            httpServletRequest = (HttpServletRequest) PolicyContext.getContext("javax.servlet.http.HttpServletRequest");
+        } catch (PolicyContextException e) {
+            throw new LoginException("JACC policy context error: " + e.getMessage());
+        }
 
-		try {
-			this.callbackHandler.handle(callbacks);
-		} catch (IOException e) {
-			throw new LoginException("IO error: " + e.getMessage());
-		} catch (UnsupportedCallbackException e) {
-			throw new LoginException("Unsupported callback: " + e.getMessage());
-		}
+        HttpSession httpSession = httpServletRequest.getSession();
+        String sessionUsername = (String) httpSession.getAttribute("username");
+        LOG.debug("jacc http username: " + sessionUsername);
 
-		String jaasUsername = nameCallback.getName();
-		LOG.debug("jaas username: " + jaasUsername);
+        NameCallback nameCallback = new NameCallback("username");
+        Callback[] callbacks = new Callback[] { nameCallback };
 
-		if (false == jaasUsername.equals(sessionUsername)) {
-			throw new LoginException(
-					"JAAS login username should equal session username");
-		}
+        try {
+            this.callbackHandler.handle(callbacks);
+        } catch (IOException e) {
+            throw new LoginException("IO error: " + e.getMessage());
+        } catch (UnsupportedCallbackException e) {
+            throw new LoginException("Unsupported callback: " + e.getMessage());
+        }
 
-		// authentication
-		this.authenticatedPrincipal = new SimplePrincipal(sessionUsername);
+        String jaasUsername = nameCallback.getName();
+        LOG.debug("jaas username: " + jaasUsername);
 
-		// authorization
-		String inRole = (String) httpSession.getAttribute("role");
-		this.role = inRole;
+        if (false == jaasUsername.equals(sessionUsername)) {
+            throw new LoginException("JAAS login username should equal session username");
+        }
 
-		return true;
-	}
+        // authentication
+        this.authenticatedPrincipal = new SimplePrincipal(sessionUsername);
 
-	public boolean commit() throws LoginException {
-		Set<Principal> principals = this.subject.getPrincipals();
-		principals.add(this.authenticatedPrincipal);
-		setRole(principals, this.role);
-		return true;
-	}
+        // authorization
+        String inRole = (String) httpSession.getAttribute("role");
+        this.role = inRole;
 
-	private void setRole(Set<Principal> principals, String role) {
-		if (null == role) {
-			return;
-		}
-		Group rolesGroup = getGroup("Roles", principals);
-		Principal rolePrincipal = new SimplePrincipal(role);
-		rolesGroup.addMember(rolePrincipal);
-	}
+        return true;
+    }
 
-	private Group getGroup(String groupName, Set<Principal> principals) {
-		for (Principal principal : principals) {
-			if (false == principal instanceof Group) {
-				continue;
-			}
-			Group group = (Group) principal;
-			if (groupName.equals(group.getName())) {
-				return group;
-			}
-		}
-		/*
-		 * If the group did not yet exist, create it and add it to the subject
-		 * principals.
-		 */
-		Group group = new SimpleGroup(groupName);
-		principals.add(group);
-		return group;
-	}
+    public boolean commit() throws LoginException {
 
-	public boolean abort() throws LoginException {
-		this.authenticatedPrincipal = null;
-		this.role = null;
-		return true;
-	}
+        Set<Principal> principals = this.subject.getPrincipals();
+        principals.add(this.authenticatedPrincipal);
+        setRole(principals, this.role);
+        return true;
+    }
 
-	public boolean logout() throws LoginException {
-		this.subject.getPrincipals().clear();
-		this.subject.getPublicCredentials().clear();
-		this.subject.getPrivateCredentials().clear();
-		return true;
-	}
+    private void setRole(Set<Principal> principals, String role) {
+
+        if (null == role) {
+            return;
+        }
+        Group rolesGroup = getGroup("Roles", principals);
+        Principal rolePrincipal = new SimplePrincipal(role);
+        rolesGroup.addMember(rolePrincipal);
+    }
+
+    private Group getGroup(String groupName, Set<Principal> principals) {
+
+        for (Principal principal : principals) {
+            if (false == principal instanceof Group) {
+                continue;
+            }
+            Group group = (Group) principal;
+            if (groupName.equals(group.getName())) {
+                return group;
+            }
+        }
+        /*
+         * If the group did not yet exist, create it and add it to the subject principals.
+         */
+        Group group = new SimpleGroup(groupName);
+        principals.add(group);
+        return group;
+    }
+
+    public boolean abort() throws LoginException {
+
+        this.authenticatedPrincipal = null;
+        this.role = null;
+        return true;
+    }
+
+    public boolean logout() throws LoginException {
+
+        this.subject.getPrincipals().clear();
+        this.subject.getPublicCredentials().clear();
+        this.subject.getPrivateCredentials().clear();
+        return true;
+    }
 }

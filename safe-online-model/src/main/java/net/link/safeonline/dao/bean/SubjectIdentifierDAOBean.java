@@ -24,62 +24,62 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
 
-	private static final Log LOG = LogFactory
-			.getLog(SubjectIdentifierDAOBean.class);
+    private static final Log                       LOG = LogFactory.getLog(SubjectIdentifierDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                          entityManager;
 
-	private SubjectIdentifierEntity.QueryInterface queryObject;
+    private SubjectIdentifierEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager,
-				SubjectIdentifierEntity.QueryInterface.class);
-	}
 
-	public void addSubjectIdentifier(String domain, String subjectIdentifier,
-			SubjectEntity subject) {
-		LOG.debug("add subject identifier");
-		SubjectIdentifierEntity subjectIdentifierEntity = new SubjectIdentifierEntity(
-				domain, subjectIdentifier, subject);
-		this.entityManager.persist(subjectIdentifierEntity);
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public SubjectEntity findSubject(String domain, String subjectIdentifier) {
-		SubjectIdentifierPK pk = new SubjectIdentifierPK(domain,
-				subjectIdentifier);
-		SubjectIdentifierEntity subjectIdentifierEntity = this.entityManager
-				.find(SubjectIdentifierEntity.class, pk);
-		if (null == subjectIdentifierEntity) {
-			return null;
-		}
-		SubjectEntity subject = subjectIdentifierEntity.getSubject();
-		return subject;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                SubjectIdentifierEntity.QueryInterface.class);
+    }
 
-	public List<SubjectIdentifierEntity> getSubjectIdentifiers(
-			SubjectEntity subject) {
-		return this.queryObject.getWhereSubject(subject);
-	}
+    public void addSubjectIdentifier(String domain, String subjectIdentifier, SubjectEntity subject) {
 
-	public void removeOtherSubjectIdentifiers(String domain, String identifier,
-			SubjectEntity subject) {
-		int count = this.queryObject.deleteWhereOtherIdentifiers(domain,
-				identifier, subject);
-		LOG.debug("number of removed subject identifiers: " + count);
-	}
+        LOG.debug("add subject identifier");
+        SubjectIdentifierEntity subjectIdentifierEntity = new SubjectIdentifierEntity(domain, subjectIdentifier,
+                subject);
+        this.entityManager.persist(subjectIdentifierEntity);
+    }
 
-	public void removeSubjectIdentifier(SubjectEntity subject, String domain,
-			String identifier) {
-		this.queryObject.deleteWhereIdentifier(subject, domain, identifier);
-	}
+    public SubjectEntity findSubject(String domain, String subjectIdentifier) {
 
-	public void removeSubjectIdentifiers(SubjectEntity subject) {
-		this.queryObject.deleteWhereSubject(subject);
-	}
+        SubjectIdentifierPK pk = new SubjectIdentifierPK(domain, subjectIdentifier);
+        SubjectIdentifierEntity subjectIdentifierEntity = this.entityManager.find(SubjectIdentifierEntity.class, pk);
+        if (null == subjectIdentifierEntity) {
+            return null;
+        }
+        SubjectEntity subject = subjectIdentifierEntity.getSubject();
+        return subject;
+    }
+
+    public List<SubjectIdentifierEntity> getSubjectIdentifiers(SubjectEntity subject) {
+
+        return this.queryObject.getWhereSubject(subject);
+    }
+
+    public void removeOtherSubjectIdentifiers(String domain, String identifier, SubjectEntity subject) {
+
+        int count = this.queryObject.deleteWhereOtherIdentifiers(domain, identifier, subject);
+        LOG.debug("number of removed subject identifiers: " + count);
+    }
+
+    public void removeSubjectIdentifier(SubjectEntity subject, String domain, String identifier) {
+
+        this.queryObject.deleteWhereIdentifier(subject, domain, identifier);
+    }
+
+    public void removeSubjectIdentifiers(SubjectEntity subject) {
+
+        this.queryObject.deleteWhereSubject(subject);
+    }
 }

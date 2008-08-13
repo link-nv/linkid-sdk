@@ -9,20 +9,20 @@ package net.link.safeonline.webapp.user;
 import net.link.safeonline.webapp.Page;
 import junit.framework.Assert;
 
+
 public class UserHistory extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/history.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/history.seam";
 
-	public UserHistory() {
-		super(PAGE_NAME);
-	}
 
-	public void checkHistoryPasswordLogon() {
-		Assert
-				.assertTrue(Page
-						.getSelenium()
-						.isTextPresent(
-								"Logged in successfully into application 'olas-user' using device 'password'."));
-	}
+    public UserHistory() {
+
+        super(PAGE_NAME);
+    }
+
+    public void checkHistoryPasswordLogon() {
+
+        Assert.assertTrue(Page.getSelenium().isTextPresent(
+                "Logged in successfully into application 'olas-user' using device 'password'."));
+    }
 }

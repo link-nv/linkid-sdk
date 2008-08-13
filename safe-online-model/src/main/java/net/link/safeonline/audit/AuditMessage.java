@@ -13,32 +13,39 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
+
 public class AuditMessage implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Long auditContextId;
+    private Long              auditContextId;
 
-	public Long getAuditContextId() {
-		return this.auditContextId;
-	}
 
-	public void setAuditContextId(Long auditContextId) {
-		this.auditContextId = auditContextId;
-	}
+    public Long getAuditContextId() {
 
-	public AuditMessage(Long auditContextId) {
-		this.auditContextId = auditContextId;
-	}
+        return this.auditContextId;
+    }
 
-	public AuditMessage(Message message) throws JMSException {
-		this.auditContextId = message.getLongProperty("auditContextId");
-	}
+    public void setAuditContextId(Long auditContextId) {
 
-	public Message getJMSMessage(Session session) throws JMSException {
-		Message message = session.createMessage();
-		message.setLongProperty("auditContextId", this.auditContextId);
-		return message;
-	}
+        this.auditContextId = auditContextId;
+    }
+
+    public AuditMessage(Long auditContextId) {
+
+        this.auditContextId = auditContextId;
+    }
+
+    public AuditMessage(Message message) throws JMSException {
+
+        this.auditContextId = message.getLongProperty("auditContextId");
+    }
+
+    public Message getJMSMessage(Session session) throws JMSException {
+
+        Message message = session.createMessage();
+        message.setLongProperty("auditContextId", this.auditContextId);
+        return message;
+    }
 
 }

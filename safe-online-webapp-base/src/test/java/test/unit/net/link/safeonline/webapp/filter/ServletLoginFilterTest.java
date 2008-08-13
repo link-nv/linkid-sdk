@@ -33,138 +33,136 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class ServletLoginFilterTest extends TestCase {
 
-	private static final Log LOG = LogFactory
-			.getLog(ServletLoginFilterTest.class);
+    private static final Log     LOG = LogFactory.getLog(ServletLoginFilterTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager   servletTestManager;
 
-	private JndiTestUtils jndiTestUtils;
+    private JndiTestUtils        jndiTestUtils;
 
-	private String username;
+    private String               username;
 
-	private AuthorizationService mockAuthorizationService;
+    private AuthorizationService mockAuthorizationService;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
-		this.mockAuthorizationService = createMock(AuthorizationService.class);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/AuthorizationServiceBean/local",
-				this.mockAuthorizationService);
+    @Override
+    protected void setUp() throws Exception {
 
-		this.username = "username-" + getName();
-		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-		initialSessionAttributes.put("username", this.username);
+        super.setUp();
 
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(ServletLoginFilterTestServlet.class,
-				ServletLoginFilter.class, null, initialSessionAttributes);
+        this.jndiTestUtils = new JndiTestUtils();
+        this.jndiTestUtils.setUp();
+        this.mockAuthorizationService = createMock(AuthorizationService.class);
+        this.jndiTestUtils.bindComponent("SafeOnline/AuthorizationServiceBean/local", this.mockAuthorizationService);
 
-		ServletLoginFilterTestServlet.reset();
-	}
+        this.username = "username-" + getName();
+        Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
+        initialSessionAttributes.put("username", this.username);
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-		this.jndiTestUtils.tearDown();
+        this.servletTestManager = new ServletTestManager();
+        this.servletTestManager.setUp(ServletLoginFilterTestServlet.class, ServletLoginFilter.class, null,
+                initialSessionAttributes);
 
-		super.tearDown();
-	}
+        ServletLoginFilterTestServlet.reset();
+    }
 
-	public void testServletContainerLogin() throws Exception {
-		// setup
-		String testExpectedRole = "test-role-" + getName();
-		ServletLoginFilterTestServlet.addExpectedRole(testExpectedRole);
+    @Override
+    protected void tearDown() throws Exception {
 
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletTestManager
-				.getServletLocation());
+        this.servletTestManager.tearDown();
+        this.jndiTestUtils.tearDown();
 
-		// stubs
-		expect(this.mockAuthorizationService.getRoles(this.username))
-				.andStubReturn(Collections.singleton(testExpectedRole));
-		replay(this.mockAuthorizationService);
+        super.tearDown();
+    }
 
-		// operate
-		int statusCode = httpClient.executeMethod(getMethod);
+    public void testServletContainerLogin() throws Exception {
 
-		// verify
-		verify(this.mockAuthorizationService);
-		assertEquals(HttpStatus.SC_OK, statusCode);
-		assertTrue(ServletLoginFilterTestServlet.isInvoked());
-		LOG.debug("last user principal: "
-				+ ServletLoginFilterTestServlet.getLastUserPrincipal());
-		assertNotNull(ServletLoginFilterTestServlet.getLastUserPrincipal());
-		assertEquals(this.username, ServletLoginFilterTestServlet
-				.getLastUserPrincipal().getName());
-		assertTrue(ServletLoginFilterTestServlet
-				.isExpectedRolePresent(testExpectedRole));
-		assertFalse(ServletLoginFilterTestServlet
-				.isExpectedRolePresent(testExpectedRole + "-not-expected"));
-	}
+        // setup
+        String testExpectedRole = "test-role-" + getName();
+        ServletLoginFilterTestServlet.addExpectedRole(testExpectedRole);
 
-	public static class ServletLoginFilterTestServlet extends HttpServlet {
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
 
-		private static final long serialVersionUID = 1L;
+        // stubs
+        expect(this.mockAuthorizationService.getRoles(this.username)).andStubReturn(
+                Collections.singleton(testExpectedRole));
+        replay(this.mockAuthorizationService);
 
-		private static final Log testServletLOG = LogFactory
-				.getLog(ServletLoginFilterTestServlet.class);
+        // operate
+        int statusCode = httpClient.executeMethod(getMethod);
 
-		private static boolean invoked;
+        // verify
+        verify(this.mockAuthorizationService);
+        assertEquals(HttpStatus.SC_OK, statusCode);
+        assertTrue(ServletLoginFilterTestServlet.isInvoked());
+        LOG.debug("last user principal: " + ServletLoginFilterTestServlet.getLastUserPrincipal());
+        assertNotNull(ServletLoginFilterTestServlet.getLastUserPrincipal());
+        assertEquals(this.username, ServletLoginFilterTestServlet.getLastUserPrincipal().getName());
+        assertTrue(ServletLoginFilterTestServlet.isExpectedRolePresent(testExpectedRole));
+        assertFalse(ServletLoginFilterTestServlet.isExpectedRolePresent(testExpectedRole + "-not-expected"));
+    }
 
-		private static Principal lastUserPrincipal;
 
-		private static Map<String, Boolean> expectedRoles;
+    public static class ServletLoginFilterTestServlet extends HttpServlet {
 
-		public static void reset() {
-			ServletLoginFilterTestServlet.invoked = false;
-			ServletLoginFilterTestServlet.lastUserPrincipal = null;
-			ServletLoginFilterTestServlet.expectedRoles = new HashMap<String, Boolean>();
-		}
+        private static final long           serialVersionUID = 1L;
 
-		public static void addExpectedRole(String expectedRole) {
-			ServletLoginFilterTestServlet.expectedRoles
-					.put(expectedRole, false);
-		}
+        private static final Log            testServletLOG   = LogFactory.getLog(ServletLoginFilterTestServlet.class);
 
-		public static boolean isExpectedRolePresent(String expectedRole) {
-			Boolean expectedRolePresent = ServletLoginFilterTestServlet.expectedRoles
-					.get(expectedRole);
-			if (null == expectedRolePresent) {
-				return false;
-			}
-			return expectedRolePresent;
-		}
+        private static boolean              invoked;
 
-		public static boolean isInvoked() {
-			return ServletLoginFilterTestServlet.invoked;
-		}
+        private static Principal            lastUserPrincipal;
 
-		public static Principal getLastUserPrincipal() {
-			return ServletLoginFilterTestServlet.lastUserPrincipal;
-		}
+        private static Map<String, Boolean> expectedRoles;
 
-		@Override
-		protected void doGet(HttpServletRequest request,
-				@SuppressWarnings("unused")
-				HttpServletResponse response) {
-			testServletLOG.debug("doGet");
-			ServletLoginFilterTestServlet.invoked = true;
-			Principal principal = request.getUserPrincipal();
-			testServletLOG.debug("user principal: " + principal);
-			ServletLoginFilterTestServlet.lastUserPrincipal = principal;
 
-			for (String expectedRole : ServletLoginFilterTestServlet.expectedRoles
-					.keySet()) {
-				boolean rolePresent = request.isUserInRole(expectedRole);
-				ServletLoginFilterTestServlet.expectedRoles.put(expectedRole,
-						rolePresent);
-			}
-		}
-	}
+        public static void reset() {
+
+            ServletLoginFilterTestServlet.invoked = false;
+            ServletLoginFilterTestServlet.lastUserPrincipal = null;
+            ServletLoginFilterTestServlet.expectedRoles = new HashMap<String, Boolean>();
+        }
+
+        public static void addExpectedRole(String expectedRole) {
+
+            ServletLoginFilterTestServlet.expectedRoles.put(expectedRole, false);
+        }
+
+        public static boolean isExpectedRolePresent(String expectedRole) {
+
+            Boolean expectedRolePresent = ServletLoginFilterTestServlet.expectedRoles.get(expectedRole);
+            if (null == expectedRolePresent) {
+                return false;
+            }
+            return expectedRolePresent;
+        }
+
+        public static boolean isInvoked() {
+
+            return ServletLoginFilterTestServlet.invoked;
+        }
+
+        public static Principal getLastUserPrincipal() {
+
+            return ServletLoginFilterTestServlet.lastUserPrincipal;
+        }
+
+        @Override
+        protected void doGet(HttpServletRequest request, @SuppressWarnings("unused") HttpServletResponse response) {
+
+            testServletLOG.debug("doGet");
+            ServletLoginFilterTestServlet.invoked = true;
+            Principal principal = request.getUserPrincipal();
+            testServletLOG.debug("user principal: " + principal);
+            ServletLoginFilterTestServlet.lastUserPrincipal = principal;
+
+            for (String expectedRole : ServletLoginFilterTestServlet.expectedRoles.keySet()) {
+                boolean rolePresent = request.isUserInRole(expectedRole);
+                ServletLoginFilterTestServlet.expectedRoles.put(expectedRole, rolePresent);
+            }
+        }
+    }
 }

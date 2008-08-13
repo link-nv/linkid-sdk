@@ -24,124 +24,146 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "demo_ticket")
 @NamedQueries(@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT ticket FROM Ticket AS ticket "
-		+ "WHERE ticket.owner = :owner"))
+        + "WHERE ticket.owner = :owner"))
 public class Ticket implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID  = 1L;
 
-	public static final String QUERY_WHERE_OWNER = "ticket.where.owner";
+    public static final String QUERY_WHERE_OWNER = "ticket.where.owner";
 
-	public enum Site {
-		GENT("Gent"), BRUSSEL("Brussel"), ANTWERPEN("Antwerpen"), HERZELE(
-				"Herzele"), MELLE("Melle"), GENTBRUGGE("Gentbrugge");
 
-		private final String name;
+    public enum Site {
+        GENT("Gent"), BRUSSEL("Brussel"), ANTWERPEN("Antwerpen"), HERZELE("Herzele"), MELLE("Melle"), GENTBRUGGE(
+                "Gentbrugge");
 
-		Site(String name) {
-			this.name = name;
-		}
+        private final String name;
 
-		public String getName() {
-			return this.name;
-		}
-	}
 
-	private long id;
+        Site(String name) {
 
-	private User owner;
+            this.name = name;
+        }
 
-	private Site start;
+        public String getName() {
 
-	private Site destination;
+            return this.name;
+        }
+    }
 
-	private Date validFrom;
 
-	private Date validTo;
+    private long    id;
 
-	private boolean biDirectional;
+    private User    owner;
 
-	public Ticket() {
-		// empty
-	}
+    private Site    start;
 
-	public Ticket(User owner, Site start, Site destination, Date validFrom,
-			Date validTo, boolean biDirectional) {
-		this.owner = owner;
-		this.start = start;
-		this.destination = destination;
-		this.validFrom = validFrom;
-		this.validTo = validTo;
-		this.biDirectional = biDirectional;
-	}
+    private Site    destination;
 
-	@Enumerated(EnumType.STRING)
-	public Site getDestination() {
-		return this.destination;
-	}
+    private Date    validFrom;
 
-	public void setDestination(Site destination) {
-		this.destination = destination;
-	}
+    private Date    validTo;
 
-	@ManyToOne
-	public User getOwner() {
-		return this.owner;
-	}
+    private boolean biDirectional;
 
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}
 
-	@Enumerated(EnumType.STRING)
-	public Site getStart() {
-		return this.start;
-	}
+    public Ticket() {
 
-	public void setStart(Site start) {
-		this.start = start;
-	}
+        // empty
+    }
 
-	public Date getValidFrom() {
-		return this.validFrom;
-	}
+    public Ticket(User owner, Site start, Site destination, Date validFrom, Date validTo, boolean biDirectional) {
 
-	public void setValidFrom(Date validFrom) {
-		this.validFrom = validFrom;
-	}
+        this.owner = owner;
+        this.start = start;
+        this.destination = destination;
+        this.validFrom = validFrom;
+        this.validTo = validTo;
+        this.biDirectional = biDirectional;
+    }
 
-	public Date getValidTo() {
-		return this.validTo;
-	}
+    @Enumerated(EnumType.STRING)
+    public Site getDestination() {
 
-	public void setValidTo(Date validTo) {
-		this.validTo = validTo;
-	}
+        return this.destination;
+    }
 
-	public boolean isBiDirectional() {
-		return this.biDirectional;
-	}
+    public void setDestination(Site destination) {
 
-	public void setBiDirectional(boolean biDirectional) {
-		this.biDirectional = biDirectional;
-	}
+        this.destination = destination;
+    }
 
-	@Id
-	@GeneratedValue
-	public long getId() {
-		return this.id;
-	}
+    @ManyToOne
+    public User getOwner() {
 
-	public void setId(long id) {
-		this.id = id;
-	}
+        return this.owner;
+    }
 
-	public static Query createQueryWhereOwner(EntityManager entityManager,
-			User owner) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_OWNER);
-		query.setParameter("owner", owner);
-		return query;
-	}
+    public void setOwner(User owner) {
+
+        this.owner = owner;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public Site getStart() {
+
+        return this.start;
+    }
+
+    public void setStart(Site start) {
+
+        this.start = start;
+    }
+
+    public Date getValidFrom() {
+
+        return this.validFrom;
+    }
+
+    public void setValidFrom(Date validFrom) {
+
+        this.validFrom = validFrom;
+    }
+
+    public Date getValidTo() {
+
+        return this.validTo;
+    }
+
+    public void setValidTo(Date validTo) {
+
+        this.validTo = validTo;
+    }
+
+    public boolean isBiDirectional() {
+
+        return this.biDirectional;
+    }
+
+    public void setBiDirectional(boolean biDirectional) {
+
+        this.biDirectional = biDirectional;
+    }
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+
+        return this.id;
+    }
+
+    public void setId(long id) {
+
+        this.id = id;
+    }
+
+    public static Query createQueryWhereOwner(EntityManager entityManager, User owner) {
+
+        Query query = entityManager.createNamedQuery(QUERY_WHERE_OWNER);
+        query.setParameter("owner", owner);
+        return query;
+    }
 }

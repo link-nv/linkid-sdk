@@ -9,127 +9,147 @@ package net.link.safeonline.auth.pcsc;
 
 import java.util.Date;
 
+
 public class IdentityFile {
-	@Tag(1)
-	String cardNumber;
 
-	@Tag(2)
-	String chipNumber;
+    @Tag(1)
+    String cardNumber;
 
-	@Tag(3)
-	@Convert(ValidityDateConvertor.class)
-	Date validityDateBegin;
+    @Tag(2)
+    String chipNumber;
 
-	@Tag(4)
-	@Convert(ValidityDateConvertor.class)
-	Date validityDateEnd;
+    @Tag(3)
+    @Convert(ValidityDateConvertor.class)
+    Date   validityDateBegin;
 
-	@Tag(5)
-	String municipal;
+    @Tag(4)
+    @Convert(ValidityDateConvertor.class)
+    Date   validityDateEnd;
 
-	@Tag(6)
-	String nationalNumber;
+    @Tag(5)
+    String municipal;
 
-	@Tag(7)
-	String name;
+    @Tag(6)
+    String nationalNumber;
 
-	@Tag(8)
-	String firstName;
+    @Tag(7)
+    String name;
 
-	@Tag(9)
-	String middleNameLetter;
+    @Tag(8)
+    String firstName;
 
-	@Tag(10)
-	String nationality;
+    @Tag(9)
+    String middleNameLetter;
 
-	@Tag(11)
-	String birthLocation;
+    @Tag(10)
+    String nationality;
 
-	@Tag(12)
-	@Convert(BirthDateConvertor.class)
-	Date birthDate;
+    @Tag(11)
+    String birthLocation;
 
-	@Tag(13)
-	@Convert(SexConvertor.class)
-	Sex sex;
+    @Tag(12)
+    @Convert(BirthDateConvertor.class)
+    Date   birthDate;
 
-	@Tag(14)
-	String nobleCondition;
+    @Tag(13)
+    @Convert(SexConvertor.class)
+    Sex    sex;
 
-	@Tag(15)
-	String documentType;
+    @Tag(14)
+    String nobleCondition;
 
-	@Tag(16)
-	String specialStatus;
+    @Tag(15)
+    String documentType;
 
-	@Tag(17)
-	byte[] hashPhoto;
+    @Tag(16)
+    String specialStatus;
 
-	public String getCardNumber() {
-		return this.cardNumber;
-	}
+    @Tag(17)
+    byte[] hashPhoto;
 
-	public String getChipNumber() {
-		return this.chipNumber;
-	}
 
-	public Date getValidityDateBegin() {
-		return this.validityDateBegin;
-	}
+    public String getCardNumber() {
 
-	public Date getValidityDateEnd() {
-		return this.validityDateEnd;
-	}
+        return this.cardNumber;
+    }
 
-	public String getMunicipal() {
-		return this.municipal;
-	}
+    public String getChipNumber() {
 
-	public String getNationalNumber() {
-		return this.nationalNumber;
-	}
+        return this.chipNumber;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public Date getValidityDateBegin() {
 
-	public String getFirstName() {
-		return this.firstName;
-	}
+        return this.validityDateBegin;
+    }
 
-	public String getMiddleNameLetter() {
-		return this.middleNameLetter;
-	}
+    public Date getValidityDateEnd() {
 
-	public String getNationality() {
-		return this.nationality;
-	}
+        return this.validityDateEnd;
+    }
 
-	public String getBirthLocation() {
-		return this.birthLocation;
-	}
+    public String getMunicipal() {
 
-	public Date getBirthDate() {
-		return this.birthDate;
-	}
+        return this.municipal;
+    }
 
-	public Sex getSex() {
-		return this.sex;
-	}
+    public String getNationalNumber() {
 
-	public String getNobleCondition() {
-		return this.nobleCondition;
-	}
+        return this.nationalNumber;
+    }
 
-	public String getDocumentType() {
-		return this.documentType;
-	}
+    public String getName() {
 
-	public String getSpecialStatus() {
-		return this.specialStatus;
-	}
+        return this.name;
+    }
 
-	public byte[] getHashPhoto() {
-		return this.hashPhoto;
-	}
+    public String getFirstName() {
+
+        return this.firstName;
+    }
+
+    public String getMiddleNameLetter() {
+
+        return this.middleNameLetter;
+    }
+
+    public String getNationality() {
+
+        return this.nationality;
+    }
+
+    public String getBirthLocation() {
+
+        return this.birthLocation;
+    }
+
+    public Date getBirthDate() {
+
+        return this.birthDate;
+    }
+
+    public Sex getSex() {
+
+        return this.sex;
+    }
+
+    public String getNobleCondition() {
+
+        return this.nobleCondition;
+    }
+
+    public String getDocumentType() {
+
+        return this.documentType;
+    }
+
+    public String getSpecialStatus() {
+
+        return this.specialStatus;
+    }
+
+    public byte[] getHashPhoto() {
+
+        return this.hashPhoto;
+    }
 }

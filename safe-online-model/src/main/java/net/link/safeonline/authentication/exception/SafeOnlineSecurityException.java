@@ -11,32 +11,37 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.entity.audit.SecurityThreatType;
 
+
 @ApplicationException(rollback = true)
 public class SafeOnlineSecurityException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long        serialVersionUID = 1L;
 
-	private final SecurityThreatType securityThreat;
+    private final SecurityThreatType securityThreat;
 
-	private final String targetPrincipal;
+    private final String             targetPrincipal;
 
-	public SafeOnlineSecurityException(SecurityThreatType securityThreat) {
-		this.securityThreat = securityThreat;
-		this.targetPrincipal = null;
-	}
 
-	public SafeOnlineSecurityException(SecurityThreatType securityThreat,
-			String targetPrincipal) {
-		this.securityThreat = securityThreat;
-		this.targetPrincipal = targetPrincipal;
-	}
+    public SafeOnlineSecurityException(SecurityThreatType securityThreat) {
 
-	public SecurityThreatType getSecurityThreat() {
-		return this.securityThreat;
-	}
+        this.securityThreat = securityThreat;
+        this.targetPrincipal = null;
+    }
 
-	public String getTargetPrincipal() {
-		return this.targetPrincipal;
-	}
+    public SafeOnlineSecurityException(SecurityThreatType securityThreat, String targetPrincipal) {
+
+        this.securityThreat = securityThreat;
+        this.targetPrincipal = targetPrincipal;
+    }
+
+    public SecurityThreatType getSecurityThreat() {
+
+        return this.securityThreat;
+    }
+
+    public String getTargetPrincipal() {
+
+        return this.targetPrincipal;
+    }
 
 }

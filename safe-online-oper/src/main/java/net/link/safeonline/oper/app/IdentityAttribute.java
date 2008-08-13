@@ -9,61 +9,72 @@ package net.link.safeonline.oper.app;
 
 import java.io.Serializable;
 
+
 public class IdentityAttribute implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String name;
+    private String            name;
 
-	private boolean included;
+    private boolean           included;
 
-	private boolean required;
+    private boolean           required;
 
-	private boolean dataMining;
+    private boolean           dataMining;
 
-	public boolean isDataMining() {
-		return this.dataMining;
-	}
 
-	public void setDataMining(boolean dataMining) {
-		this.dataMining = dataMining;
-	}
+    public boolean isDataMining() {
 
-	public IdentityAttribute(String name) {
-		this.name = name;
-		this.included = false;
-		this.required = false;
-	}
+        return this.dataMining;
+    }
 
-	public IdentityAttribute(String name, boolean included, boolean required,
-			boolean dataMining) {
-		this.name = name;
-		this.included = included;
-		this.required = required;
-		this.dataMining = dataMining;
-	}
+    public void setDataMining(boolean dataMining) {
 
-	public boolean isIncluded() {
-		return this.included;
-	}
+        this.dataMining = dataMining;
+    }
 
-	public void setIncluded(boolean included) {
-		this.included = included;
-	}
+    public IdentityAttribute(String name) {
 
-	public String getName() {
-		return this.name;
-	}
+        this.name = name;
+        this.included = false;
+        this.required = false;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public IdentityAttribute(String name, boolean included, boolean required, boolean dataMining) {
 
-	public boolean isRequired() {
-		return this.required;
-	}
+        this.name = name;
+        this.included = included;
+        this.required = required;
+        this.dataMining = dataMining;
+    }
 
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
+    public boolean isIncluded() {
+
+        return this.included;
+    }
+
+    public void setIncluded(boolean included) {
+
+        this.included = included;
+    }
+
+    public String getName() {
+
+        return this.name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    public boolean isRequired() {
+
+        return this.required;
+    }
+
+    public void setRequired(boolean required) {
+
+        this.required = required;
+    }
 }

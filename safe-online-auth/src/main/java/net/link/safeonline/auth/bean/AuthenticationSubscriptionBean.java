@@ -41,14 +41,13 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateless
 @Name("authSubscription")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-        + "AuthenticationSubscriptionBean/local")
+@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "AuthenticationSubscriptionBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
-public class AuthenticationSubscriptionBean implements
-        AuthenticationSubscription {
+public class AuthenticationSubscriptionBean implements AuthenticationSubscription {
 
     @Logger
     private Log                   log;
@@ -70,42 +69,33 @@ public class AuthenticationSubscriptionBean implements
 
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String subscribe() throws ApplicationNotFoundException,
-            AlreadySubscribedException, PermissionDeniedException,
-            SubscriptionNotFoundException,
-            ApplicationIdentityNotFoundException,
+    public String subscribe() throws ApplicationNotFoundException, AlreadySubscribedException,
+            PermissionDeniedException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
             AttributeTypeNotFoundException {
 
         if (!this.subscriptionService.isSubscribed(this.applicationId)) {
             this.log.debug("subscribe to application #0", this.applicationId);
             this.subscriptionService.subscribe(this.applicationId);
-            HelpdeskLogger.add("subscribed to application: "
-                    + this.applicationId, LogLevelType.INFO);
+            HelpdeskLogger.add("subscribed to application: " + this.applicationId, LogLevelType.INFO);
         }
 
-        if (this.usageAgreementService
-                .requiresUsageAgreementAcceptation(this.applicationId)) {
-            this.log.debug("confirm usage agreement for application #0",
-                    this.applicationId);
-            this.usageAgreementService
-                    .confirmUsageAgreementVersion(this.applicationId);
-            HelpdeskLogger.add("confirmed usage agreement of application: "
-                    + this.applicationId, LogLevelType.INFO);
+        if (this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId)) {
+            this.log.debug("confirm usage agreement for application #0", this.applicationId);
+            this.usageAgreementService.confirmUsageAgreementVersion(this.applicationId);
+            HelpdeskLogger.add("confirmed usage agreement of application: " + this.applicationId, LogLevelType.INFO);
         }
 
         /*
          * After successful subscription we continue the workflow as usual.
          */
 
-        boolean confirmationRequired = this.identityService
-                .isConfirmationRequired(this.applicationId);
+        boolean confirmationRequired = this.identityService.isConfirmationRequired(this.applicationId);
         this.log.debug("confirmation required: " + confirmationRequired);
         if (true == confirmationRequired) {
             return "confirmation-required";
         }
 
-        boolean hasMissingAttributes = this.identityService
-                .hasMissingAttributes(this.applicationId);
+        boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.applicationId);
 
         if (true == hasMissingAttributes) {
             return "missing-attributes";
@@ -122,12 +112,10 @@ public class AuthenticationSubscriptionBean implements
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         try {
-            return this.usageAgreementService.getUsageAgreementText(
-                    this.applicationId, viewLocale.getLanguage());
+            return this.usageAgreementService.getUsageAgreementText(this.applicationId, viewLocale.getLanguage());
         } catch (ApplicationNotFoundException e) {
             this.log.debug("application not found.");
-            this.facesMessages.addFromResourceBundle(
-                    FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
             return null;
         }
     }

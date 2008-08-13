@@ -45,156 +45,140 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class UserRegistrationServiceBeanTest extends TestCase {
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+    @Override
+    protected void setUp() throws Exception {
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
+        super.setUp();
 
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate authCertificate = PkiTestUtils
-				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(
-							@SuppressWarnings("unused") Object[] arguments) {
-						return authCertificate;
-					}
-				});
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
-		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		final X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		jmxTestUtils.registerActionHandler(
-				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-				new MBeanActionHandler() {
-					public Object invoke(
-							@SuppressWarnings("unused") Object[] arguments) {
-						return certificate;
-					}
-				});
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-		SystemInitializationStartableBean systemInit = EJBTestUtils
-				.newInstance(SystemInitializationStartableBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		systemInit.postStart();
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		EntityTransaction entityTransaction = entityManager.getTransaction();
-		entityTransaction.commit();
-		entityTransaction.begin();
-	}
+                        return authCertificate;
+                    }
+                });
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-		super.tearDown();
-	}
+        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+                new MBeanActionHandler() {
 
-	public void testRegister() throws Exception {
-		// setup
-		String testLogin = "test-login";
-		String testPassword = "test-password";
+                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		UserRegistrationService userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
-				PasswordDeviceServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+                        return certificate;
+                    }
+                });
 
-		// operate
-		SubjectEntity testSubject = userRegistrationService
-				.registerUser(testLogin);
-		passwordDeviceService.register(testSubject, testPassword);
+        SystemInitializationStartableBean systemInit = EJBTestUtils.newInstance(
+                SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        systemInit.postStart();
 
-		// verify
-		SubjectService subjectService = EJBTestUtils.newInstance(
-				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
-		SubjectEntity resultSubject = subjectService
-				.getSubjectFromUserName(testLogin);
-		AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(
-				AttributeTypeDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		AttributeTypeEntity loginAttributeType = attributeTypeDAO
-				.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
-		AttributeDAO attributeDAO = EJBTestUtils.newInstance(
-				AttributeDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
-		AttributeEntity loginAttribute = attributeDAO.getAttribute(
-				loginAttributeType, resultSubject);
-		assertEquals(testLogin, loginAttribute.getValue());
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.commit();
+        entityTransaction.begin();
+    }
 
-		DeviceMappingService deviceMappingService = EJBTestUtils.newInstance(
-				DeviceMappingServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		DeviceMappingEntity deviceMapping = deviceMappingService
-				.getDeviceMapping(resultSubject.getUserId(),
-						SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-		assertNotNull(deviceMapping);
+    @Override
+    protected void tearDown() throws Exception {
 
-		DeviceSubjectEntity deviceSubject = subjectService
-				.getDeviceSubject(deviceMapping.getId());
-		assertNotNull(deviceSubject);
-		assertEquals(1, deviceSubject.getRegistrations().size());
+        this.entityTestManager.tearDown();
 
-		SubjectEntity deviceRegistration = deviceSubject.getRegistrations()
-				.get(0);
+        super.tearDown();
+    }
 
-		PasswordManager passwordManager = EJBTestUtils.newInstance(
-				PasswordManagerBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+    public void testRegister() throws Exception {
 
-		boolean isPasswordConfigured = passwordManager
-				.isPasswordConfigured(deviceRegistration);
-		assertTrue(isPasswordConfigured);
+        // setup
+        String testLogin = "test-login";
+        String testPassword = "test-password";
 
-		boolean isPasswordCorrect = passwordManager.validatePassword(
-				deviceRegistration, testPassword);
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		assertTrue(isPasswordCorrect);
+        // operate
+        SubjectEntity testSubject = userRegistrationService.registerUser(testLogin);
+        passwordDeviceService.register(testSubject, testPassword);
 
-	}
+        // verify
+        SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        SubjectEntity resultSubject = subjectService.getSubjectFromUserName(testLogin);
+        AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        AttributeTypeEntity loginAttributeType = attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
+        AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAOBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        AttributeEntity loginAttribute = attributeDAO.getAttribute(loginAttributeType, resultSubject);
+        assertEquals(testLogin, loginAttribute.getValue());
 
-	public void testRegisteringTwiceFails() throws Exception {
-		// setup
-		String testLogin = "test-login";
-		String testPassword = "test-password";
+        DeviceMappingService deviceMappingService = EJBTestUtils.newInstance(DeviceMappingServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        DeviceMappingEntity deviceMapping = deviceMappingService.getDeviceMapping(resultSubject.getUserId(),
+                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        assertNotNull(deviceMapping);
 
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		UserRegistrationService userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class,
-						SafeOnlineTestContainer.sessionBeans, entityManager);
-		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
-				PasswordDeviceServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
+        DeviceSubjectEntity deviceSubject = subjectService.getDeviceSubject(deviceMapping.getId());
+        assertNotNull(deviceSubject);
+        assertEquals(1, deviceSubject.getRegistrations().size());
 
-		// operate
-		SubjectEntity testSubject = userRegistrationService
-				.registerUser(testLogin);
-		passwordDeviceService.register(testSubject, testPassword);
+        SubjectEntity deviceRegistration = deviceSubject.getRegistrations().get(0);
 
-		// operate & verify
-		try {
-			userRegistrationService.registerUser(testLogin);
-			fail();
-		} catch (ExistingUserException e) {
-			// expected
-		}
-	}
+        PasswordManager passwordManager = EJBTestUtils.newInstance(PasswordManagerBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+
+        boolean isPasswordConfigured = passwordManager.isPasswordConfigured(deviceRegistration);
+        assertTrue(isPasswordConfigured);
+
+        boolean isPasswordCorrect = passwordManager.validatePassword(deviceRegistration, testPassword);
+
+        assertTrue(isPasswordCorrect);
+
+    }
+
+    public void testRegisteringTwiceFails() throws Exception {
+
+        // setup
+        String testLogin = "test-login";
+        String testPassword = "test-password";
+
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
+
+        // operate
+        SubjectEntity testSubject = userRegistrationService.registerUser(testLogin);
+        passwordDeviceService.register(testSubject, testPassword);
+
+        // operate & verify
+        try {
+            userRegistrationService.registerUser(testLogin);
+            fail();
+        } catch (ExistingUserException e) {
+            // expected
+        }
+    }
 }

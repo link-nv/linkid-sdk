@@ -15,11 +15,13 @@ package net.link.safeonline.data.ws;
  */
 public class DataServiceConstants {
 
-	private DataServiceConstants() {
-		// empty
-	}
+    private DataServiceConstants() {
 
-	public static final String ATTRIBUTE_OBJECT_TYPE = "Attribute";
+        // empty
+    }
 
-	public static final String LIBERTY_SOAP_BINDING_NAMESPACE = "urn:liberty:sb:2005-11";
+
+    public static final String ATTRIBUTE_OBJECT_TYPE          = "Attribute";
+
+    public static final String LIBERTY_SOAP_BINDING_NAMESPACE = "urn:liberty:sb:2005-11";
 }

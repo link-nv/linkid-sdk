@@ -10,18 +10,17 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 
+
 @Local
 public interface Applications {
 
-	public ApplicationEntity getApplication(String applicationName)
-			throws ApplicationNotFoundException;
+    public ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException;
 
-	public List<ApplicationEntity> listApplications();
+    public List<ApplicationEntity> listApplications();
 
-	public List<ApplicationEntity> listUserApplications();
+    public List<ApplicationEntity> listUserApplications();
 
-	public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
-			ApplicationEntity application)
-			throws ApplicationIdentityNotFoundException;
+    public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(ApplicationEntity application)
+            throws ApplicationIdentityNotFoundException;
 
 }

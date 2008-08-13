@@ -24,43 +24,40 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.model.AttributeTypeDescriptionDecorator;
 
+
 @Stateless
-public class AttributeTypeDescriptionDecoratorBean implements
-		AttributeTypeDescriptionDecorator {
+public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescriptionDecorator {
 
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+    @EJB
+    private AttributeTypeDAO attributeTypeDAO;
 
-	public List<AttributeDO> addDescriptionFromIdentityAttributes(
-			Collection<ApplicationIdentityAttributeEntity> identityAttributes,
-			Locale locale) {
-		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
-		String language = null;
-		if (null != locale) {
-			language = locale.getLanguage();
-		}
-		for (ApplicationIdentityAttributeEntity identityAttribute : identityAttributes) {
-			String name = identityAttribute.getAttributeTypeName();
-			AttributeTypeEntity attributeType = identityAttribute
-					.getAttributeType();
-			DatatypeType datatype = attributeType.getType();
-			String humanReadableName = null;
-			String description = null;
-			if (null != language) {
-				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
-						.findDescription(new AttributeTypeDescriptionPK(name,
-								language));
-				if (null != attributeTypeDescription) {
-					humanReadableName = attributeTypeDescription.getName();
-					description = attributeTypeDescription.getDescription();
-				}
-			}
-			AttributeDO attribute = new AttributeDO(name, datatype, false, 0,
-					humanReadableName, description, identityAttribute
-							.getAttributeType().isUserEditable(),
-					identityAttribute.isDataMining(), null, null);
-			attributes.add(attribute);
-		}
-		return attributes;
-	}
+
+    public List<AttributeDO> addDescriptionFromIdentityAttributes(
+            Collection<ApplicationIdentityAttributeEntity> identityAttributes, Locale locale) {
+
+        List<AttributeDO> attributes = new LinkedList<AttributeDO>();
+        String language = null;
+        if (null != locale) {
+            language = locale.getLanguage();
+        }
+        for (ApplicationIdentityAttributeEntity identityAttribute : identityAttributes) {
+            String name = identityAttribute.getAttributeTypeName();
+            AttributeTypeEntity attributeType = identityAttribute.getAttributeType();
+            DatatypeType datatype = attributeType.getType();
+            String humanReadableName = null;
+            String description = null;
+            if (null != language) {
+                AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+                        .findDescription(new AttributeTypeDescriptionPK(name, language));
+                if (null != attributeTypeDescription) {
+                    humanReadableName = attributeTypeDescription.getName();
+                    description = attributeTypeDescription.getDescription();
+                }
+            }
+            AttributeDO attribute = new AttributeDO(name, datatype, false, 0, humanReadableName, description,
+                    identityAttribute.getAttributeType().isUserEditable(), identityAttribute.isDataMining(), null, null);
+            attributes.add(attribute);
+        }
+        return attributes;
+    }
 }

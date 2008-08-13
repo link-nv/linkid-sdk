@@ -10,18 +10,18 @@ package net.link.safeonline.auth;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.AuthenticationStatement;
 
+
 public class AuthenticationStatementFactory {
 
-	private AuthenticationStatementFactory() {
-		// empty
-	}
+    private AuthenticationStatementFactory() {
 
-	public static byte[] createAuthenticationStatement(String sessionId,
-			String applicationId, Signer signer) {
-		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-				sessionId, applicationId, signer);
-		byte[] authenticationStatementData = authenticationStatement
-				.generateStatement();
-		return authenticationStatementData;
-	}
+        // empty
+    }
+
+    public static byte[] createAuthenticationStatement(String sessionId, String applicationId, Signer signer) {
+
+        AuthenticationStatement authenticationStatement = new AuthenticationStatement(sessionId, applicationId, signer);
+        byte[] authenticationStatementData = authenticationStatement.generateStatement();
+        return authenticationStatementData;
+    }
 }

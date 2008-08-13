@@ -22,108 +22,111 @@ import net.link.safeonline.entity.DeviceClassDescriptionPK;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+
 @Stateless
 public class DeviceClassDAOBean implements DeviceClassDAO {
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                               entityManager;
 
-	private DeviceClassEntity.QueryInterface queryObject;
+    private DeviceClassEntity.QueryInterface            queryObject;
 
-	private DeviceClassDescriptionEntity.QueryInterface descriptionQueryObject;
+    private DeviceClassDescriptionEntity.QueryInterface descriptionQueryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, DeviceClassEntity.QueryInterface.class);
-		this.descriptionQueryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager,
-				DeviceClassDescriptionEntity.QueryInterface.class);
-	}
 
-	public DeviceClassEntity addDeviceClass(String name,
-			String authenticationContextClass) {
-		DeviceClassEntity deviceClass = new DeviceClassEntity(name,
-				authenticationContextClass);
-		this.entityManager.persist(deviceClass);
-		return deviceClass;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public void removeDeviceClass(String name) {
-		DeviceClassEntity deviceClass = findDeviceClass(name);
-		this.entityManager.remove(deviceClass);
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                DeviceClassEntity.QueryInterface.class);
+        this.descriptionQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                DeviceClassDescriptionEntity.QueryInterface.class);
+    }
 
-	public DeviceClassEntity findDeviceClass(String deviceClassName) {
-		return this.entityManager
-				.find(DeviceClassEntity.class, deviceClassName);
-	}
+    public DeviceClassEntity addDeviceClass(String name, String authenticationContextClass) {
 
-	public DeviceClassEntity getDeviceClass(String deviceClassName)
-			throws DeviceClassNotFoundException {
-		DeviceClassEntity deviceClass = this.entityManager.find(
-				DeviceClassEntity.class, deviceClassName);
-		if (null == deviceClass) {
-			throw new DeviceClassNotFoundException();
-		}
-		return deviceClass;
-	}
+        DeviceClassEntity deviceClass = new DeviceClassEntity(name, authenticationContextClass);
+        this.entityManager.persist(deviceClass);
+        return deviceClass;
+    }
 
-	public List<DeviceClassEntity> listDeviceClasses() {
-		return this.queryObject.listDeviceClasses();
-	}
+    public void removeDeviceClass(String name) {
 
-	public List<DeviceClassDescriptionEntity> listDescriptions(
-			DeviceClassEntity deviceClass) {
-		return this.descriptionQueryObject.listDescriptions(deviceClass);
-	}
+        DeviceClassEntity deviceClass = findDeviceClass(name);
+        this.entityManager.remove(deviceClass);
+    }
 
-	public void addDescription(DeviceClassEntity deviceClass,
-			DeviceClassDescriptionEntity description) {
-		/*
-		 * Manage relationships.
-		 */
-		description.setDeviceClass(deviceClass);
-		deviceClass.getDescriptions().put(description.getLanguage(),
-				description);
-		/*
-		 * Persist.
-		 */
-		this.entityManager.persist(description);
-	}
+    public DeviceClassEntity findDeviceClass(String deviceClassName) {
 
-	public void removeDescription(DeviceClassDescriptionEntity description) {
-		/*
-		 * Manage relationships.
-		 */
-		String language = description.getLanguage();
-		description.getDeviceClass().getDescriptions().remove(language);
-		/*
-		 * Remove from database.
-		 */
-		this.entityManager.remove(description);
-	}
+        return this.entityManager.find(DeviceClassEntity.class, deviceClassName);
+    }
 
-	public void saveDescription(DeviceClassDescriptionEntity description) {
-		this.entityManager.merge(description);
-	}
+    public DeviceClassEntity getDeviceClass(String deviceClassName) throws DeviceClassNotFoundException {
 
-	public DeviceClassDescriptionEntity getDescription(
-			DeviceClassDescriptionPK descriptionPK)
-			throws DeviceClassDescriptionNotFoundException {
-		DeviceClassDescriptionEntity description = this.entityManager.find(
-				DeviceClassDescriptionEntity.class, descriptionPK);
-		if (null == description) {
-			throw new DeviceClassDescriptionNotFoundException();
-		}
-		return description;
-	}
+        DeviceClassEntity deviceClass = this.entityManager.find(DeviceClassEntity.class, deviceClassName);
+        if (null == deviceClass) {
+            throw new DeviceClassNotFoundException();
+        }
+        return deviceClass;
+    }
 
-	public DeviceClassDescriptionEntity findDescription(
-			DeviceClassDescriptionPK descriptionPK) {
-		DeviceClassDescriptionEntity description = this.entityManager.find(
-				DeviceClassDescriptionEntity.class, descriptionPK);
-		return description;
-	}
+    public List<DeviceClassEntity> listDeviceClasses() {
+
+        return this.queryObject.listDeviceClasses();
+    }
+
+    public List<DeviceClassDescriptionEntity> listDescriptions(DeviceClassEntity deviceClass) {
+
+        return this.descriptionQueryObject.listDescriptions(deviceClass);
+    }
+
+    public void addDescription(DeviceClassEntity deviceClass, DeviceClassDescriptionEntity description) {
+
+        /*
+         * Manage relationships.
+         */
+        description.setDeviceClass(deviceClass);
+        deviceClass.getDescriptions().put(description.getLanguage(), description);
+        /*
+         * Persist.
+         */
+        this.entityManager.persist(description);
+    }
+
+    public void removeDescription(DeviceClassDescriptionEntity description) {
+
+        /*
+         * Manage relationships.
+         */
+        String language = description.getLanguage();
+        description.getDeviceClass().getDescriptions().remove(language);
+        /*
+         * Remove from database.
+         */
+        this.entityManager.remove(description);
+    }
+
+    public void saveDescription(DeviceClassDescriptionEntity description) {
+
+        this.entityManager.merge(description);
+    }
+
+    public DeviceClassDescriptionEntity getDescription(DeviceClassDescriptionPK descriptionPK)
+            throws DeviceClassDescriptionNotFoundException {
+
+        DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class,
+                descriptionPK);
+        if (null == description) {
+            throw new DeviceClassDescriptionNotFoundException();
+        }
+        return description;
+    }
+
+    public DeviceClassDescriptionEntity findDescription(DeviceClassDescriptionPK descriptionPK) {
+
+        DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class,
+                descriptionPK);
+        return description;
+    }
 
 }

@@ -23,37 +23,41 @@ import org.jboss.seam.contexts.Context;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.web.Session;
 
+
 @Stateful
 @Name("ticketLogon")
 @Scope(ScopeType.SESSION)
 @CacheConfig(idleTimeoutSeconds = (5 + 1) * 60)
 @LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketLogonBean/local")
-public class TicketLogonBean extends AbstractTicketDataClientBean implements
-		TicketLogon {
+public class TicketLogonBean extends AbstractTicketDataClientBean implements TicketLogon {
 
-	public static final String APPLICATION_NAME = "safe-online-demo-ticket";
+    public static final String APPLICATION_NAME = "safe-online-demo-ticket";
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                log;
 
-	@In
-	Context sessionContext;
+    @In
+    Context                    sessionContext;
 
-	public String login() {
-		this.log.debug("login");
 
-		return SafeOnlineLoginUtils.login("overview.seam");
-	}
+    public String login() {
 
-	public String logout() {
-		this.log.debug("logout");
-		this.sessionContext.set("username", null);
-		Session.getInstance().invalidate();
-		return "logout-success";
-	}
+        this.log.debug("login");
 
-	public String getUsername() {
-		String userId = (String) this.sessionContext.get("username");
-		return getUsername(userId);
-	}
+        return SafeOnlineLoginUtils.login("overview.seam");
+    }
+
+    public String logout() {
+
+        this.log.debug("logout");
+        this.sessionContext.set("username", null);
+        Session.getInstance().invalidate();
+        return "logout-success";
+    }
+
+    public String getUsername() {
+
+        String userId = (String) this.sessionContext.get("username");
+        return getUsername(userId);
+    }
 }

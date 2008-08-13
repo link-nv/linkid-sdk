@@ -13,28 +13,26 @@ import javax.xml.namespace.QName;
 
 import net.lin_k.safe_online.notification.subscription.manager.NotificationSubscriptionManagerService;
 
+
 public class NotificationSubscriptionManagerServiceFactory {
 
-	private NotificationSubscriptionManagerServiceFactory() {
-		// empty
-	}
+    private NotificationSubscriptionManagerServiceFactory() {
 
-	public static NotificationSubscriptionManagerService newInstance() {
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
-		URL wsdlUrl = classLoader
-				.getResource("notification-subscription-manager.wsdl");
-		if (null == wsdlUrl) {
-			throw new RuntimeException(
-					"Notification Subscription Manager WSDL not found");
-		}
+        // empty
+    }
 
-		NotificationSubscriptionManagerService service = new NotificationSubscriptionManagerService(
-				wsdlUrl,
-				new QName(
-						"urn:net:lin-k:safe-online:notification:subscription:manager",
-						"NotificationSubscriptionManagerService"));
+    public static NotificationSubscriptionManagerService newInstance() {
 
-		return service;
-	}
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URL wsdlUrl = classLoader.getResource("notification-subscription-manager.wsdl");
+        if (null == wsdlUrl) {
+            throw new RuntimeException("Notification Subscription Manager WSDL not found");
+        }
+
+        NotificationSubscriptionManagerService service = new NotificationSubscriptionManagerService(wsdlUrl,
+                new QName("urn:net:lin-k:safe-online:notification:subscription:manager",
+                        "NotificationSubscriptionManagerService"));
+
+        return service;
+    }
 }

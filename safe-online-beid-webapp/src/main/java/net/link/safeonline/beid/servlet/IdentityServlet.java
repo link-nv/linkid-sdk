@@ -34,9 +34,9 @@ import net.link.safeonline.shared.SharedConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * The identity servlet implementation. This servlet receives its data from the
- * BeID via the IdentityApplet.
+ * The identity servlet implementation. This servlet receives its data from the BeID via the IdentityApplet.
  * 
  * @author fcorneli
  * 
@@ -45,8 +45,7 @@ public class IdentityServlet extends AbstractStatementServlet {
 
     private static final long    serialVersionUID = 1L;
 
-    private static final Log     LOG              = LogFactory
-                                                          .getLog(IdentityServlet.class);
+    private static final Log     LOG              = LogFactory.getLog(IdentityServlet.class);
 
     @EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
     private BeIdDeviceService    beIdDeviceService;
@@ -56,74 +55,59 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 
     @Override
-    protected void processStatement(byte[] statementData, HttpSession session,
-            HttpServletResponse response) throws IOException {
+    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         String sessionId = session.getId();
         LOG.debug("session Id: " + sessionId);
 
-        ProtocolContext protocolContext = ProtocolContext
-                .getProtocolContext(session);
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(session);
         try {
-            protocolContext.setValidity(this.samlAuthorityService
-                    .getAuthnAssertionValidity());
+            protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
             protocolContext.setSuccess(false);
 
             String userId = (String) session.getAttribute("userId");
             String operation = (String) session.getAttribute("operation");
-            this.beIdDeviceService.register(sessionId, userId, operation,
-                    statementData);
+            this.beIdDeviceService.register(sessionId, userId, operation, statementData);
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that registration was successful.
             protocolContext.setSuccess(true);
         } catch (TrustDomainNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PermissionDeniedException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (ArgumentIntegrityException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (AttributeTypeNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (DeviceNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (AttributeNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (AlreadyRegisteredException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiRevokedException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiSuspendedException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiExpiredException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiNotYetValidException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiInvalidException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-                    .getErrorCode());
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         }
     }
 }

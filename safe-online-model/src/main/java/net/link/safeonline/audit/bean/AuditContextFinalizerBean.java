@@ -28,9 +28,10 @@ import net.link.safeonline.audit.dao.AuditAuditDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Implementation of the audit context finalizer component. Important here is
- * that this component runs within it's own transaction.
+ * Implementation of the audit context finalizer component. Important here is that this component runs within it's own
+ * transaction.
  * 
  * @author fcorneli
  * 
@@ -38,45 +39,44 @@ import org.apache.commons.logging.LogFactory;
 @Stateless
 public class AuditContextFinalizerBean implements AuditContextFinalizer {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuditContextFinalizerBean.class);
+    private static final Log  LOG = LogFactory.getLog(AuditContextFinalizerBean.class);
 
-	@Resource(mappedName = AuditConstants.CONNECTION_FACTORY_NAME)
-	private ConnectionFactory factory;
+    @Resource(mappedName = AuditConstants.CONNECTION_FACTORY_NAME)
+    private ConnectionFactory factory;
 
-	@Resource(mappedName = AuditConstants.AUDIT_BACKEND_QUEUE_NAME)
-	private Queue auditBackendQueue;
+    @Resource(mappedName = AuditConstants.AUDIT_BACKEND_QUEUE_NAME)
+    private Queue             auditBackendQueue;
 
-	@EJB
-	private AuditAuditDAO auditAuditDAO;
+    @EJB
+    private AuditAuditDAO     auditAuditDAO;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void finalizeAuditContext(Long auditContextId) {
-		LOG.debug("finalizing audit context: " + auditContextId);
-		AuditMessage auditMessage = new AuditMessage(auditContextId);
-		try {
-			Connection connection = this.factory.createConnection();
-			try {
-				Session session = connection.createSession(true, 0);
-				try {
-					MessageProducer producer = session
-							.createProducer(this.auditBackendQueue);
-					try {
-						Message message = auditMessage.getJMSMessage(session);
-						producer.send(message);
-					} finally {
-						producer.close();
-					}
-				} finally {
-					session.close();
-				}
-			} finally {
-				connection.close();
-			}
-		} catch (JMSException e) {
-			this.auditAuditDAO.addAuditAudit("unable to publish audit context "
-					+ auditContextId + " - reason: " + e.getMessage()
-					+ " - errorCode: " + e.getErrorCode());
-		}
-	}
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void finalizeAuditContext(Long auditContextId) {
+
+        LOG.debug("finalizing audit context: " + auditContextId);
+        AuditMessage auditMessage = new AuditMessage(auditContextId);
+        try {
+            Connection connection = this.factory.createConnection();
+            try {
+                Session session = connection.createSession(true, 0);
+                try {
+                    MessageProducer producer = session.createProducer(this.auditBackendQueue);
+                    try {
+                        Message message = auditMessage.getJMSMessage(session);
+                        producer.send(message);
+                    } finally {
+                        producer.close();
+                    }
+                } finally {
+                    session.close();
+                }
+            } finally {
+                connection.close();
+            }
+        } catch (JMSException e) {
+            this.auditAuditDAO.addAuditAudit("unable to publish audit context " + auditContextId + " - reason: "
+                    + e.getMessage() + " - errorCode: " + e.getErrorCode());
+        }
+    }
 }

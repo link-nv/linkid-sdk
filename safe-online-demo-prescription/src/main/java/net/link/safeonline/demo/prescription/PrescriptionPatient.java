@@ -9,21 +9,22 @@ package net.link.safeonline.demo.prescription;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface PrescriptionPatient {
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	/*
-	 * Action.
-	 */
-	String view();
+    /*
+     * Action.
+     */
+    String view();
 
-	/*
-	 * Factory.
-	 */
-	void patientPrescriptionsFactory();
+    /*
+     * Factory.
+     */
+    void patientPrescriptionsFactory();
 }

@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+
 /**
  * Attribute Service Implementation for nodes.
  * 
@@ -40,31 +41,27 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_NODE_SECURITY_DOMAIN)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
-public class NodeAttributeServiceBean implements NodeAttributeService,
-		NodeAttributeServiceRemote {
+public class NodeAttributeServiceBean implements NodeAttributeService, NodeAttributeServiceRemote {
 
-	private static final Log LOG = LogFactory
-			.getLog(NodeAttributeServiceBean.class);
+    private static final Log      LOG = LogFactory.getLog(NodeAttributeServiceBean.class);
 
-	@EJB
-	private ProxyAttributeService proxyAttributeService;
+    @EJB
+    private ProxyAttributeService proxyAttributeService;
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService        subjectService;
 
-	@RolesAllowed(SafeOnlineNodeRoles.NODE_ROLE)
-	public Object getAttributeValue(String subjectId, String attributeName)
-			throws AttributeNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException, SubjectNotFoundException {
-		LOG.debug("get attribute " + attributeName + " for login " + subjectId);
-		SubjectEntity subject = this.subjectService.findSubject(subjectId);
-		if (null == subject) {
-			DeviceSubjectEntity deviceSubjectEntity = this.subjectService
-					.getDeviceSubject(subjectId);
-			return this.proxyAttributeService.findDeviceAttributeValue(
-					deviceSubjectEntity.getId(), attributeName);
-		}
-		return this.proxyAttributeService.findAttributeValue(subjectId,
-				attributeName);
-	}
+
+    @RolesAllowed(SafeOnlineNodeRoles.NODE_ROLE)
+    public Object getAttributeValue(String subjectId, String attributeName) throws AttributeNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException {
+
+        LOG.debug("get attribute " + attributeName + " for login " + subjectId);
+        SubjectEntity subject = this.subjectService.findSubject(subjectId);
+        if (null == subject) {
+            DeviceSubjectEntity deviceSubjectEntity = this.subjectService.getDeviceSubject(subjectId);
+            return this.proxyAttributeService.findDeviceAttributeValue(deviceSubjectEntity.getId(), attributeName);
+        }
+        return this.proxyAttributeService.findAttributeValue(subjectId, attributeName);
+    }
 }

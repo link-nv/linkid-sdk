@@ -44,132 +44,137 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("deviceClassDesc")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "DeviceClassDescriptionBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "DeviceClassDescriptionBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceClassDescriptionBean implements DeviceClassDescription {
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceClassDescriptionBean.class);
+    private static final Log                  LOG                               = LogFactory
+                                                                                        .getLog(DeviceClassDescriptionBean.class);
 
-	public static final String OPER_DEVICE_CLASS_DESCR_LIST_NAME = "deviceClassDescriptions";
+    public static final String                OPER_DEVICE_CLASS_DESCR_LIST_NAME = "deviceClassDescriptions";
 
-	private String language;
+    private String                            language;
 
-	private String description;
+    private String                            description;
 
-	@In(value = "selectedDeviceClass", required = true)
-	private DeviceClassEntity selectedDeviceClass;
+    @In(value = "selectedDeviceClass", required = true)
+    private DeviceClassEntity                 selectedDeviceClass;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                             facesMessages;
 
-	@EJB
-	private DeviceService deviceService;
+    @EJB
+    private DeviceService                     deviceService;
 
-	@DataModel(OPER_DEVICE_CLASS_DESCR_LIST_NAME)
-	public List<DeviceClassDescriptionEntity> deviceClassDescriptions;
+    @DataModel(OPER_DEVICE_CLASS_DESCR_LIST_NAME)
+    public List<DeviceClassDescriptionEntity> deviceClassDescriptions;
 
-	@DataModelSelection(OPER_DEVICE_CLASS_DESCR_LIST_NAME)
-	@Out(value = "selectedDeviceClassDescription", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private DeviceClassDescriptionEntity selectedDeviceClassDescription;
+    @DataModelSelection(OPER_DEVICE_CLASS_DESCR_LIST_NAME)
+    @Out(value = "selectedDeviceClassDescription", required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private DeviceClassDescriptionEntity      selectedDeviceClassDescription;
 
-	/*
-	 * Lifecycle
-	 */
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	/*
-	 * Factories
-	 */
-	@Factory(OPER_DEVICE_CLASS_DESCR_LIST_NAME)
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void deviceClassDescriptionsListFactory()
-			throws DeviceClassNotFoundException {
-		LOG.debug("device class description list factory for device: "
-				+ this.selectedDeviceClass.getName());
-		this.deviceClassDescriptions = this.deviceService
-				.listDeviceClassDescriptions(this.selectedDeviceClass.getName());
-	}
+    /*
+     * Lifecycle
+     */
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	/*
-	 * Actions
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@ErrorHandling( { @Error(exceptionClass = ExistingDeviceClassDescriptionException.class, messageId = "errorDeviceClassDescriptionAlreadyExists", fieldId = "language") })
-	public String add() throws ExistingDeviceClassDescriptionException,
-			DeviceClassNotFoundException {
-		LOG.debug("add: " + this.language);
+    }
 
-		DeviceClassDescriptionEntity newDeviceClassDescription = new DeviceClassDescriptionEntity();
-		DeviceClassDescriptionPK pk = new DeviceClassDescriptionPK(
-				this.selectedDeviceClass.getName(), this.language);
-		newDeviceClassDescription.setPk(pk);
-		newDeviceClassDescription.setDescription(this.description);
-		this.deviceService.addDeviceClassDescription(newDeviceClassDescription);
-		return "success";
-	}
+    /*
+     * Factories
+     */
+    @Factory(OPER_DEVICE_CLASS_DESCR_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void deviceClassDescriptionsListFactory() throws DeviceClassNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Begin
-	public String edit() {
-		LOG.debug("edit: " + this.selectedDeviceClassDescription);
-		return "edit-desc";
-	}
+        LOG.debug("device class description list factory for device: " + this.selectedDeviceClass.getName());
+        this.deviceClassDescriptions = this.deviceService.listDeviceClassDescriptions(this.selectedDeviceClass
+                .getName());
+    }
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() throws DeviceClassDescriptionNotFoundException,
-			DeviceClassNotFoundException {
-		LOG.debug("remove: " + this.selectedDeviceClassDescription);
-		this.deviceService
-				.removeDeviceClassDescription(this.selectedDeviceClassDescription);
-		deviceClassDescriptionsListFactory();
-		return "removed";
-	}
+    /*
+     * Actions
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @ErrorHandling( { @Error(exceptionClass = ExistingDeviceClassDescriptionException.class, messageId = "errorDeviceClassDescriptionAlreadyExists", fieldId = "language") })
+    public String add() throws ExistingDeviceClassDescriptionException, DeviceClassNotFoundException {
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() {
-		LOG.debug("save: " + this.selectedDeviceClassDescription);
-		this.deviceService
-				.saveDeviceClassDescription(this.selectedDeviceClassDescription);
-		return "saved";
-	}
+        LOG.debug("add: " + this.language);
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String cancelEdit() {
-		return "cancel";
-	}
+        DeviceClassDescriptionEntity newDeviceClassDescription = new DeviceClassDescriptionEntity();
+        DeviceClassDescriptionPK pk = new DeviceClassDescriptionPK(this.selectedDeviceClass.getName(), this.language);
+        newDeviceClassDescription.setPk(pk);
+        newDeviceClassDescription.setDescription(this.description);
+        this.deviceService.addDeviceClassDescription(newDeviceClassDescription);
+        return "success";
+    }
 
-	/*
-	 * Accessors
-	 */
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getLanguage() {
-		return this.language;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Begin
+    public String edit() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+        LOG.debug("edit: " + this.selectedDeviceClassDescription);
+        return "edit-desc";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getDescription() {
-		return this.description;
-	}
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String remove() throws DeviceClassDescriptionNotFoundException, DeviceClassNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setDescription(String description) {
-		this.description = description;
-	}
+        LOG.debug("remove: " + this.selectedDeviceClassDescription);
+        this.deviceService.removeDeviceClassDescription(this.selectedDeviceClassDescription);
+        deviceClassDescriptionsListFactory();
+        return "removed";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String save() {
+
+        LOG.debug("save: " + this.selectedDeviceClassDescription);
+        this.deviceService.saveDeviceClassDescription(this.selectedDeviceClassDescription);
+        return "saved";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String cancelEdit() {
+
+        return "cancel";
+    }
+
+    /*
+     * Accessors
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getLanguage() {
+
+        return this.language;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setLanguage(String language) {
+
+        this.language = language;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getDescription() {
+
+        return this.description;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setDescription(String description) {
+
+        this.description = description;
+    }
 }

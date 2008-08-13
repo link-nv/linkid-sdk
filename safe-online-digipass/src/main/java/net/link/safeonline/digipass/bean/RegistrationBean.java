@@ -30,59 +30,64 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("digipassRegistration")
-@LocalBinding(jndiBinding = DigipassConstants.JNDI_PREFIX
-		+ "RegistrationBean/local")
+@LocalBinding(jndiBinding = DigipassConstants.JNDI_PREFIX + "RegistrationBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class RegistrationBean implements Registration {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                   log;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                 facesMessages;
 
-	private String loginName;
+    private String                loginName;
 
-	private String serialNumber;
+    private String                serialNumber;
 
-	@EJB
-	private DigipassDeviceService digipassDeviceService;
+    @EJB
+    private DigipassDeviceService digipassDeviceService;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		this.log.debug("destroy");
-		this.loginName = null;
-		this.serialNumber = null;
-	}
 
-	@ErrorHandling( {
-			@Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
-			@Error(exceptionClass = ArgumentIntegrityException.class, messageId = "errorDigipassRegistered", fieldId = "serialNumber") })
-	public String register() throws PermissionDeniedException,
-			SubjectNotFoundException, ArgumentIntegrityException {
-		this.log.debug("register digipas with sn=" + this.serialNumber
-				+ " for user: " + this.loginName);
-		this.digipassDeviceService.register(this.loginName, this.serialNumber);
-		return "success";
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	public String getLoginName() {
-		return this.loginName;
-	}
+        this.log.debug("destroy");
+        this.loginName = null;
+        this.serialNumber = null;
+    }
 
-	public String getSerialNumber() {
-		return this.serialNumber;
-	}
+    @ErrorHandling( {
+            @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
+            @Error(exceptionClass = ArgumentIntegrityException.class, messageId = "errorDigipassRegistered", fieldId = "serialNumber") })
+    public String register() throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException {
 
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
+        this.log.debug("register digipas with sn=" + this.serialNumber + " for user: " + this.loginName);
+        this.digipassDeviceService.register(this.loginName, this.serialNumber);
+        return "success";
+    }
 
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
-	}
+    public String getLoginName() {
+
+        return this.loginName;
+    }
+
+    public String getSerialNumber() {
+
+        return this.serialNumber;
+    }
+
+    public void setLoginName(String loginName) {
+
+        this.loginName = loginName;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+
+        this.serialNumber = serialNumber;
+    }
 
 }

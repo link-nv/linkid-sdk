@@ -10,15 +10,16 @@ package net.link.safeonline.p11sc;
 import java.io.File;
 import java.util.List;
 
+
 public interface SmartCardConfig {
 
-	String getCardAlias();
+    String getCardAlias();
 
-	String getAuthenticationKeyAlias();
+    String getAuthenticationKeyAlias();
 
-	String getSignatureKeyAlias();
+    String getSignatureKeyAlias();
 
-	List<File> getPkcs11DriverLocations(String platform);
+    List<File> getPkcs11DriverLocations(String platform);
 
-	String getIdentityExtractorClassname();
+    String getIdentityExtractorClassname();
 }

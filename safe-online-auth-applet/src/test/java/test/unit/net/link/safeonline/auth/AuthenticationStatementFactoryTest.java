@@ -22,28 +22,27 @@ import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.util.ASN1Dump;
 
+
 public class AuthenticationStatementFactoryTest extends TestCase {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthenticationStatementFactoryTest.class);
+    private static final Log LOG = LogFactory.getLog(AuthenticationStatementFactoryTest.class);
 
-	public void testCreateAuthenticationStatement() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(
-				keyPair, "CN=Test");
-		String sessionId = UUID.randomUUID().toString();
-		String applicationId = "test-application-id";
 
-		Signer signer = new JceSigner(keyPair.getPrivate(), cert);
+    public void testCreateAuthenticationStatement() throws Exception {
 
-		// operate
-		byte[] result = AuthenticationStatementFactory
-				.createAuthenticationStatement(sessionId, applicationId, signer);
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        String sessionId = UUID.randomUUID().toString();
+        String applicationId = "test-application-id";
 
-		// verify
-		assertNotNull(result);
-		LOG.debug("authentication statement: "
-				+ ASN1Dump.dumpAsString(ASN1Object.fromByteArray(result)));
-	}
+        Signer signer = new JceSigner(keyPair.getPrivate(), cert);
+
+        // operate
+        byte[] result = AuthenticationStatementFactory.createAuthenticationStatement(sessionId, applicationId, signer);
+
+        // verify
+        assertNotNull(result);
+        LOG.debug("authentication statement: " + ASN1Dump.dumpAsString(ASN1Object.fromByteArray(result)));
+    }
 }

@@ -30,92 +30,86 @@ import net.link.safeonline.service.SubjectService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
- * Implementation of the authorization service interface. This component cannot
- * live within the SafeOnline core security domain since it will be used by a
- * JAAS login module to perform authorization of a caller principal.
+ * Implementation of the authorization service interface. This component cannot live within the SafeOnline core security
+ * domain since it will be used by a JAAS login module to perform authorization of a caller principal.
  * 
  * @author fcorneli
  * 
  */
 @Stateless
-public class AuthorizationServiceBean implements AuthorizationService,
-		AuthorizationServiceRemote {
+public class AuthorizationServiceBean implements AuthorizationService, AuthorizationServiceRemote {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthorizationServiceBean.class);
+    private static final Log LOG              = LogFactory.getLog(AuthorizationServiceBean.class);
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService   subjectService;
 
-	@EJB
-	private SubscriptionDAO subscriptionDAO;
+    @EJB
+    private SubscriptionDAO  subscriptionDAO;
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO   applicationDAO;
 
-	@Resource(name = "isGlobalOperator")
-	private boolean isGlobalOperator = false;
+    @Resource(name = "isGlobalOperator")
+    private boolean          isGlobalOperator = false;
 
-	public Set<String> getRoles(String login) {
-		Set<String> roles = new HashSet<String>();
 
-		LOG.debug("get roles for login: " + login);
+    public Set<String> getRoles(String login) {
 
-		SubjectEntity subject;
-		try {
-			subject = this.subjectService.getSubject(login);
-		} catch (SubjectNotFoundException e) {
-			LOG.error("entity not found: " + login);
-			/*
-			 * In case the subject was not found we don't assign the user any
-			 * roles.
-			 */
-			return roles;
-		}
+        Set<String> roles = new HashSet<String>();
 
-		/*
-		 * For now we base the authorization on made subscriptions. Of course,
-		 * later on we could let this decision depend on explicit ACL, i.e.,
-		 * have a trust layer to make the decision.
-		 */
-		addRoleIfSubscribed(SafeOnlineRoles.USER_ROLE, subject,
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, roles);
+        LOG.debug("get roles for login: " + login);
 
-		addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
-				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
+        SubjectEntity subject;
+        try {
+            subject = this.subjectService.getSubject(login);
+        } catch (SubjectNotFoundException e) {
+            LOG.error("entity not found: " + login);
+            /*
+             * In case the subject was not found we don't assign the user any roles.
+             */
+            return roles;
+        }
 
-		if (true == this.isGlobalOperator) {
-			LOG.debug("assigning global operator role");
-			addRoleIfSubscribed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, subject,
-					SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-					roles);
-		}
-		addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject,
-				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-				roles);
+        /*
+         * For now we base the authorization on made subscriptions. Of course, later on we could let this decision
+         * depend on explicit ACL, i.e., have a trust layer to make the decision.
+         */
+        addRoleIfSubscribed(SafeOnlineRoles.USER_ROLE, subject, SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+                roles);
 
-		addRoleIfSubscribed(SafeOnlineRoles.HELPDESK_ROLE, subject,
-				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
-				roles);
+        addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
+                SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
 
-		return roles;
-	}
+        if (true == this.isGlobalOperator) {
+            LOG.debug("assigning global operator role");
+            addRoleIfSubscribed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, subject,
+                    SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, roles);
+        }
+        addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject,
+                SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, roles);
 
-	private void addRoleIfSubscribed(String roleToAdd, SubjectEntity subject,
-			String applicationName, Set<String> roles) {
-		ApplicationEntity application;
-		try {
-			application = this.applicationDAO.getApplication(applicationName);
-		} catch (ApplicationNotFoundException e) {
-			LOG.error("application not found: " + applicationName);
-			return;
-		}
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, application);
-		if (null == subscription) {
-			return;
-		}
-		roles.add(roleToAdd);
-	}
+        addRoleIfSubscribed(SafeOnlineRoles.HELPDESK_ROLE, subject,
+                SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, roles);
+
+        return roles;
+    }
+
+    private void addRoleIfSubscribed(String roleToAdd, SubjectEntity subject, String applicationName, Set<String> roles) {
+
+        ApplicationEntity application;
+        try {
+            application = this.applicationDAO.getApplication(applicationName);
+        } catch (ApplicationNotFoundException e) {
+            LOG.error("application not found: " + applicationName);
+            return;
+        }
+        SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
+        if (null == subscription) {
+            return;
+        }
+        roles.add(roleToAdd);
+    }
 }

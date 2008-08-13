@@ -9,12 +9,14 @@ package net.link.safeonline.webapp.auth;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class AuthGlobalConfirmationRejection extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/global-confirmation-rejection.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/global-confirmation-rejection.seam";
 
-	public AuthGlobalConfirmationRejection() {
-		super(PAGE_NAME);
-	}
+
+    public AuthGlobalConfirmationRejection() {
+
+        super(PAGE_NAME);
+    }
 }

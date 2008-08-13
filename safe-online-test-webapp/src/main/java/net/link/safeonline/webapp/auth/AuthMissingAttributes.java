@@ -9,21 +9,25 @@ package net.link.safeonline.webapp.auth;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class AuthMissingAttributes extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/missing-attributes.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/missing-attributes.seam";
 
-	public AuthMissingAttributes() {
-		super(PAGE_NAME);
-	}
 
-	public void setAttributeValue(String label, String value) {
-		fillInputFieldInRepeat(label, "value", value);
-	}
+    public AuthMissingAttributes() {
 
-	public void save() {
-		clickButtonAndWait("save");
-	}
+        super(PAGE_NAME);
+    }
+
+    public void setAttributeValue(String label, String value) {
+
+        fillInputFieldInRepeat(label, "value", value);
+    }
+
+    public void save() {
+
+        clickButtonAndWait("save");
+    }
 
 }

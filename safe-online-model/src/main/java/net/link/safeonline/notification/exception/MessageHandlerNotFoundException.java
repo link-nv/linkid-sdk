@@ -12,13 +12,15 @@ import javax.ejb.ApplicationException;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.shared.SharedConstants;
 
+
 @ApplicationException(rollback = true)
 public class MessageHandlerNotFoundException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public MessageHandlerNotFoundException(String topic) {
-		super("No message handler found for topic: " + topic,
-				SharedConstants.UNDEFINED_ERROR);
-	}
+
+    public MessageHandlerNotFoundException(String topic) {
+
+        super("No message handler found for topic: " + topic, SharedConstants.UNDEFINED_ERROR);
+    }
 }

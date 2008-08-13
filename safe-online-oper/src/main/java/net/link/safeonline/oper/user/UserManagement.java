@@ -24,57 +24,58 @@ import net.link.safeonline.data.DeviceMappingDO;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
+
 @Local
 public interface UserManagement {
 
-	/*
-	 * Accessors.
-	 */
-	String getUser();
+    /*
+     * Accessors.
+     */
+    String getUser();
 
-	void setUser(String user);
+    void setUser(String user);
 
-	List<String> getRoles();
+    List<String> getRoles();
 
-	void setRoles(List<String> roles);
+    void setRoles(List<String> roles);
 
-	List<HistoryMessage> getHistoryList();
+    List<HistoryMessage> getHistoryList();
 
-	List<SubscriptionEntity> getSubscriptionList();
+    List<SubscriptionEntity> getSubscriptionList();
 
-	List<DeviceMappingDO> getDeviceRegistrationList();
+    List<DeviceMappingDO> getDeviceRegistrationList();
 
-	List<AttributeDO> getAttributeList();
+    List<AttributeDO> getAttributeList();
 
-	/*
-	 * Actions.
-	 */
-	String search() throws SubjectNotFoundException, DeviceNotFoundException,
-			PermissionDeniedException, AttributeTypeNotFoundException;
+    /*
+     * Actions.
+     */
+    String search() throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException;
 
-	String save() throws SubjectNotFoundException, RoleNotFoundException;
+    String save() throws SubjectNotFoundException, RoleNotFoundException;
 
-	String remove();
+    String remove();
 
-	String removeConfirm() throws SubjectNotFoundException,
-			SubscriptionNotFoundException, MessageHandlerNotFoundException;
+    String removeConfirm() throws SubjectNotFoundException, SubscriptionNotFoundException,
+            MessageHandlerNotFoundException;
 
-	String removeCancel();
+    String removeCancel();
 
-	/*
-	 * Richfaces.
-	 */
-	List<String> autocompleteUser(Object event);
+    /*
+     * Richfaces.
+     */
+    List<String> autocompleteUser(Object event);
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 
-	void postConstructCallback();
+    void postConstructCallback();
 
-	/*
-	 * Factories.
-	 */
-	List<SelectItem> availableRolesFactory();
+    /*
+     * Factories.
+     */
+    List<SelectItem> availableRolesFactory();
 }

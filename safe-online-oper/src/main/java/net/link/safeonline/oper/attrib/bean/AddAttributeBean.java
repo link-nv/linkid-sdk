@@ -48,312 +48,355 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("addAttribute")
 @Scope(ScopeType.CONVERSATION)
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "AddAttributeBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "AddAttributeBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AddAttributeBean implements AddAttribute {
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@Logger
-	private Log log;
+    }
 
-	@EJB
-	private NodeService nodeService;
 
-	private String category;
+    @Logger
+    private Log         log;
 
-	private String name;
+    @EJB
+    private NodeService nodeService;
 
-	private String node;
+    private String      category;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    private String      name;
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getCategory() {
-		return this.category;
-	}
+    private String      node;
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getName() {
-		return this.name;
-	}
+    @In(create = true)
+    FacesMessages       facesMessages;
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String next() {
-		this.log.debug("next: name #0, category #1", this.name, this.category);
-		return this.category;
-	}
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setCategory(String category) {
-		this.category = category;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getCategory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setName(String name) {
-		this.name = name;
-	}
+        return this.category;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getNode() {
-		return this.node;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getName() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setNode(String node) {
-		this.node = node;
-	}
+        return this.name;
+    }
 
-	@Factory("datatypes")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<SelectItem> datatypesFactory() {
-		List<SelectItem> datatypes = new LinkedList<SelectItem>();
-		for (DatatypeType currentType : DatatypeType.values()) {
-			if (false == currentType.isPrimitive()) {
-				continue;
-			}
-			datatypes.add(new SelectItem(currentType.name(), currentType
-					.getFriendlyName()));
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String next() {
 
-		}
-		return datatypes;
-	}
+        this.log.debug("next: name #0, category #1", this.name, this.category);
+        return this.category;
+    }
 
-	@Factory("attributeNodes")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<SelectItem> nodeFactory() {
-		List<OlasEntity> nodeList = this.nodeService.listNodes();
-		List<SelectItem> nodes = ConvertorUtil.convert(nodeList,
-				new OlasEntitySelectItemConvertor());
-		return nodes;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setCategory(String category) {
 
-	static class OlasEntitySelectItemConvertor implements
-			Convertor<OlasEntity, SelectItem> {
+        this.category = category;
+    }
 
-		public SelectItem convert(OlasEntity input) {
-			SelectItem output = new SelectItem(input.getName());
-			return output;
-		}
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setName(String name) {
 
-	private String type;
+        this.name = name;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getType() {
-		return this.type;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getNode() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setType(String type) {
-		this.type = type;
-	}
+        return this.node;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String typeNext() {
-		this.log.debug("type next");
-		return "next";
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setNode(String node) {
 
-	private boolean userVisible;
+        this.node = node;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public boolean isUserVisible() {
-		return this.userVisible;
-	}
+    @Factory("datatypes")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> datatypesFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setUserVisible(boolean userVisible) {
-		this.userVisible = userVisible;
-	}
+        List<SelectItem> datatypes = new LinkedList<SelectItem>();
+        for (DatatypeType currentType : DatatypeType.values()) {
+            if (false == currentType.isPrimitive()) {
+                continue;
+            }
+            datatypes.add(new SelectItem(currentType.name(), currentType.getFriendlyName()));
 
-	private boolean userEditable;
+        }
+        return datatypes;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public boolean isUserEditable() {
-		return this.userEditable;
-	}
+    @Factory("attributeNodes")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> nodeFactory() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setUserEditable(boolean userEditable) {
-		this.userEditable = userEditable;
-	}
+        List<OlasEntity> nodeList = this.nodeService.listNodes();
+        List<SelectItem> nodes = ConvertorUtil.convert(nodeList, new OlasEntitySelectItemConvertor());
+        return nodes;
+    }
 
-	@EJB
-	private AttributeTypeService attributeTypeService;
 
-	private List<AttributeTypeEntity> sourceMemberAttributes;
+    static class OlasEntitySelectItemConvertor implements Convertor<OlasEntity, SelectItem> {
 
-	private List<AttributeTypeEntity> selectedMemberAttributes;
+        public SelectItem convert(OlasEntity input) {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<AttributeTypeEntity> getSourceMemberAttributes() {
-		this.sourceMemberAttributes = this.attributeTypeService
-				.listAvailableMemberAttributeTypes();
-		if (null != this.selectedMemberAttributes) {
-			this.sourceMemberAttributes
-					.removeAll(this.selectedMemberAttributes);
-		}
-		return this.sourceMemberAttributes;
-	}
+            SelectItem output = new SelectItem(input.getName());
+            return output;
+        }
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setSourceMemberAttributes(
-			List<AttributeTypeEntity> sourceMemberAttributes) {
-		this.sourceMemberAttributes = sourceMemberAttributes;
-	}
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<AttributeTypeEntity> getTargetMemberAttributes() {
-		return this.selectedMemberAttributes;
-	}
+    private String type;
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setTargetMemberAttributes(
-			List<AttributeTypeEntity> targetMemberAttributes) {
-		this.selectedMemberAttributes = targetMemberAttributes;
-		for (AttributeTypeEntity targetMemberAttribute : this.selectedMemberAttributes)
-			this.log.debug("set target: " + targetMemberAttribute.getName());
-	}
 
-	@SuppressWarnings("unused")
-	@DataModel
-	private List<AttributeTypeEntity> attributeTypeList;
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getType() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@End
-	@ErrorHandling( {
-			@Error(exceptionClass = NodeNotFoundException.class, messageId = "errorNodeNotFound", fieldId = "location"),
-			@Error(exceptionClass = ExistingAttributeTypeException.class, messageId = "errorAttributeTypeAlreadyExists", fieldId = "name"),
-			@Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeMemberNotFound", fieldId = "name"),
-			@Error(exceptionClass = AttributeTypeDefinitionException.class, messageId = "errorAttributeTypeMemberIllegal", fieldId = "name") })
-	public String add() throws NodeNotFoundException,
-			ExistingAttributeTypeException, AttributeTypeNotFoundException,
-			AttributeTypeDefinitionException {
-		this.log.debug("add");
+        return this.type;
+    }
 
-		AttributeTypeEntity attributeType = new AttributeTypeEntity();
-		attributeType.setName(this.name);
-		if ("compounded".equals(this.category)) {
-			attributeType.setMultivalued(true);
-			attributeType.setType(DatatypeType.COMPOUNDED);
-		} else {
-			if ("multiValued".equals(this.category)) {
-				attributeType.setMultivalued(true);
-			}
-			attributeType.setType(DatatypeType.valueOf(this.type));
-		}
-		attributeType.setUserEditable(this.userEditable);
-		attributeType.setUserVisible(this.userVisible);
-		attributeType.setDeviceAttribute(this.deviceAttribute);
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setType(String type) {
 
-		OlasEntity olasNode = this.nodeService.getNode(this.node);
-		attributeType.setLocation(olasNode);
+        this.type = type;
+    }
 
-		if (null != this.memberAccessControlAttributes) {
-			int memberSequence = 0;
-			for (MemberAccessControl memberAccessControlAttribute : this.memberAccessControlAttributes) {
-				this.log.debug("selected member attribute: "
-						+ memberAccessControlAttribute.getName());
-				attributeType.addMember(memberAccessControlAttribute
-						.getAttributeType(), memberSequence,
-						memberAccessControlAttribute.isRequired());
-				memberSequence += 1;
-			}
-		}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String typeNext() {
 
-		this.attributeTypeService.add(attributeType);
+        this.log.debug("type next");
+        return "next";
+    }
 
-		/*
-		 * Reload the attribute type list here.
-		 */
-		this.attributeTypeList = this.attributeTypeService.listAttributeTypes();
 
-		return "success";
-	}
+    private boolean userVisible;
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String cancel() {
-		return "canceled";
-	}
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String membersNext() {
-		this.log.debug("members next");
-		memberAccessControlAttributesFactory();
-		return "next";
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public boolean isUserVisible() {
 
-	public static final String MEMBER_ACCESS_CONTROL_ATTRIBUTES = "memberAccessControlAttributes";
+        return this.userVisible;
+    }
 
-	@DataModel("memberAccessControlAttributes")
-	private List<MemberAccessControl> memberAccessControlAttributes;
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setUserVisible(boolean userVisible) {
 
-	public static class MemberAccessControl {
-		private boolean required;
+        this.userVisible = userVisible;
+    }
 
-		private final AttributeTypeEntity attributeType;
 
-		public MemberAccessControl(AttributeTypeEntity attributeType) {
-			this.attributeType = attributeType;
-		}
+    private boolean userEditable;
 
-		public String getName() {
-			return this.attributeType.getName();
-		}
 
-		public boolean isRequired() {
-			return this.required;
-		}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public boolean isUserEditable() {
 
-		public void setRequired(boolean required) {
-			this.required = required;
-		}
+        return this.userEditable;
+    }
 
-		public AttributeTypeEntity getAttributeType() {
-			return this.attributeType;
-		}
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setUserEditable(boolean userEditable) {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory(MEMBER_ACCESS_CONTROL_ATTRIBUTES)
-	public void memberAccessControlAttributesFactory() {
-		this.log.debug("memberAccessControlAttributesFactory");
-		this.memberAccessControlAttributes = new LinkedList<MemberAccessControl>();
-		if (null == this.selectedMemberAttributes) {
-			return;
-		}
-		for (AttributeTypeEntity selectedMemberAttribute : this.selectedMemberAttributes) {
-			this.memberAccessControlAttributes.add(new MemberAccessControl(
-					selectedMemberAttribute));
-		}
-	}
+        this.userEditable = userEditable;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String membersAccessControlNext() {
-		this.log.debug("members access control next");
-		return "next";
-	}
 
-	private boolean deviceAttribute;
+    @EJB
+    private AttributeTypeService      attributeTypeService;
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public boolean isDeviceAttribute() {
-		return this.deviceAttribute;
-	}
+    private List<AttributeTypeEntity> sourceMemberAttributes;
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setDeviceAttribute(boolean deviceAttribute) {
-		this.deviceAttribute = deviceAttribute;
-	}
+    private List<AttributeTypeEntity> selectedMemberAttributes;
+
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<AttributeTypeEntity> getSourceMemberAttributes() {
+
+        this.sourceMemberAttributes = this.attributeTypeService.listAvailableMemberAttributeTypes();
+        if (null != this.selectedMemberAttributes) {
+            this.sourceMemberAttributes.removeAll(this.selectedMemberAttributes);
+        }
+        return this.sourceMemberAttributes;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setSourceMemberAttributes(List<AttributeTypeEntity> sourceMemberAttributes) {
+
+        this.sourceMemberAttributes = sourceMemberAttributes;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<AttributeTypeEntity> getTargetMemberAttributes() {
+
+        return this.selectedMemberAttributes;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setTargetMemberAttributes(List<AttributeTypeEntity> targetMemberAttributes) {
+
+        this.selectedMemberAttributes = targetMemberAttributes;
+        for (AttributeTypeEntity targetMemberAttribute : this.selectedMemberAttributes)
+            this.log.debug("set target: " + targetMemberAttribute.getName());
+    }
+
+
+    @SuppressWarnings("unused")
+    @DataModel
+    private List<AttributeTypeEntity> attributeTypeList;
+
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @End
+    @ErrorHandling( {
+            @Error(exceptionClass = NodeNotFoundException.class, messageId = "errorNodeNotFound", fieldId = "location"),
+            @Error(exceptionClass = ExistingAttributeTypeException.class, messageId = "errorAttributeTypeAlreadyExists", fieldId = "name"),
+            @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeMemberNotFound", fieldId = "name"),
+            @Error(exceptionClass = AttributeTypeDefinitionException.class, messageId = "errorAttributeTypeMemberIllegal", fieldId = "name") })
+    public String add() throws NodeNotFoundException, ExistingAttributeTypeException, AttributeTypeNotFoundException,
+            AttributeTypeDefinitionException {
+
+        this.log.debug("add");
+
+        AttributeTypeEntity attributeType = new AttributeTypeEntity();
+        attributeType.setName(this.name);
+        if ("compounded".equals(this.category)) {
+            attributeType.setMultivalued(true);
+            attributeType.setType(DatatypeType.COMPOUNDED);
+        } else {
+            if ("multiValued".equals(this.category)) {
+                attributeType.setMultivalued(true);
+            }
+            attributeType.setType(DatatypeType.valueOf(this.type));
+        }
+        attributeType.setUserEditable(this.userEditable);
+        attributeType.setUserVisible(this.userVisible);
+        attributeType.setDeviceAttribute(this.deviceAttribute);
+
+        OlasEntity olasNode = this.nodeService.getNode(this.node);
+        attributeType.setLocation(olasNode);
+
+        if (null != this.memberAccessControlAttributes) {
+            int memberSequence = 0;
+            for (MemberAccessControl memberAccessControlAttribute : this.memberAccessControlAttributes) {
+                this.log.debug("selected member attribute: " + memberAccessControlAttribute.getName());
+                attributeType.addMember(memberAccessControlAttribute.getAttributeType(), memberSequence,
+                        memberAccessControlAttribute.isRequired());
+                memberSequence += 1;
+            }
+        }
+
+        this.attributeTypeService.add(attributeType);
+
+        /*
+         * Reload the attribute type list here.
+         */
+        this.attributeTypeList = this.attributeTypeService.listAttributeTypes();
+
+        return "success";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String cancel() {
+
+        return "canceled";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String membersNext() {
+
+        this.log.debug("members next");
+        memberAccessControlAttributesFactory();
+        return "next";
+    }
+
+
+    public static final String        MEMBER_ACCESS_CONTROL_ATTRIBUTES = "memberAccessControlAttributes";
+
+    @DataModel("memberAccessControlAttributes")
+    private List<MemberAccessControl> memberAccessControlAttributes;
+
+
+    public static class MemberAccessControl {
+
+        private boolean                   required;
+
+        private final AttributeTypeEntity attributeType;
+
+
+        public MemberAccessControl(AttributeTypeEntity attributeType) {
+
+            this.attributeType = attributeType;
+        }
+
+        public String getName() {
+
+            return this.attributeType.getName();
+        }
+
+        public boolean isRequired() {
+
+            return this.required;
+        }
+
+        public void setRequired(boolean required) {
+
+            this.required = required;
+        }
+
+        public AttributeTypeEntity getAttributeType() {
+
+            return this.attributeType;
+        }
+    }
+
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(MEMBER_ACCESS_CONTROL_ATTRIBUTES)
+    public void memberAccessControlAttributesFactory() {
+
+        this.log.debug("memberAccessControlAttributesFactory");
+        this.memberAccessControlAttributes = new LinkedList<MemberAccessControl>();
+        if (null == this.selectedMemberAttributes) {
+            return;
+        }
+        for (AttributeTypeEntity selectedMemberAttribute : this.selectedMemberAttributes) {
+            this.memberAccessControlAttributes.add(new MemberAccessControl(selectedMemberAttribute));
+        }
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String membersAccessControlNext() {
+
+        this.log.debug("members access control next");
+        return "next";
+    }
+
+
+    private boolean deviceAttribute;
+
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public boolean isDeviceAttribute() {
+
+        return this.deviceAttribute;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setDeviceAttribute(boolean deviceAttribute) {
+
+        this.deviceAttribute = deviceAttribute;
+    }
 }

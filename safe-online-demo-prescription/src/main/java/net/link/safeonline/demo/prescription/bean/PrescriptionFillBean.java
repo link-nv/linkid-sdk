@@ -35,77 +35,79 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("prescriptionFill")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionFillBean/local")
 @SecurityDomain(PrescriptionConstants.SECURITY_DOMAIN)
-public class PrescriptionFillBean extends AbstractPrescriptionDataClientBean
-		implements PrescriptionFill {
+public class PrescriptionFillBean extends AbstractPrescriptionDataClientBean implements PrescriptionFill {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                      log;
 
-	public final static String PRESCRIPTIONS = "prescriptions";
+    public final static String       PRESCRIPTIONS         = "prescriptions";
 
-	public final static String SELECTED_PRESCRIPTION = "selectedPrescription";
+    public final static String       SELECTED_PRESCRIPTION = "selectedPrescription";
 
-	@SuppressWarnings("unused")
-	@DataModel(PRESCRIPTIONS)
-	private List<PrescriptionEntity> prescriptions;
+    @SuppressWarnings("unused")
+    @DataModel(PRESCRIPTIONS)
+    private List<PrescriptionEntity> prescriptions;
 
-	@DataModelSelection(PRESCRIPTIONS)
-	@Out(value = SELECTED_PRESCRIPTION, required = false, scope = ScopeType.SESSION)
-	private PrescriptionEntity selectedPrescription;
+    @DataModelSelection(PRESCRIPTIONS)
+    @Out(value = SELECTED_PRESCRIPTION, required = false, scope = ScopeType.SESSION)
+    private PrescriptionEntity       selectedPrescription;
 
-	/**
-	 * Fill prescription entity. We have to use a field different from
-	 * selectedPrescription because the DataModelSelection annotation is causing
-	 * the selectedPrescription field to become null.
-	 */
-	@In(value = SELECTED_PRESCRIPTION, required = false)
-	private PrescriptionEntity fillPrescription;
+    /**
+     * Fill prescription entity. We have to use a field different from selectedPrescription because the
+     * DataModelSelection annotation is causing the selectedPrescription field to become null.
+     */
+    @In(value = SELECTED_PRESCRIPTION, required = false)
+    private PrescriptionEntity       fillPrescription;
 
-	@PersistenceContext(unitName = PrescriptionConstants.ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = PrescriptionConstants.ENTITY_MANAGER)
+    private EntityManager            entityManager;
 
-	@In(value = "patient")
-	private String patient;
+    @In(value = "patient")
+    private String                   patient;
 
-	@SuppressWarnings("unchecked")
-	@RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
-	@Factory(PRESCRIPTIONS)
-	public void prescriptionsFactory() {
-		Query query = this.entityManager
-				.createQuery("SELECT prescription FROM PrescriptionEntity AS prescription "
-						+ "WHERE prescription.patient = :patient AND "
-						+ "prescription.filled = FALSE");
-		query.setParameter("patient", this.patient);
-		this.prescriptions = query.getResultList();
-	}
 
-	@RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
-	public String view() {
-		this.log.debug("view: #0", this.selectedPrescription.getId());
-		return "view";
-	}
+    @SuppressWarnings("unchecked")
+    @RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
+    @Factory(PRESCRIPTIONS)
+    public void prescriptionsFactory() {
 
-	@Resource
-	private SessionContext sessionContext;
+        Query query = this.entityManager.createQuery("SELECT prescription FROM PrescriptionEntity AS prescription "
+                + "WHERE prescription.patient = :patient AND " + "prescription.filled = FALSE");
+        query.setParameter("patient", this.patient);
+        this.prescriptions = query.getResultList();
+    }
 
-	@RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
-	public String fill() {
-		this.log.debug("filling: #0", this.fillPrescription.getId());
-		this.fillPrescription.setFilled(true);
-		Principal pharmacistPrincipal = this.sessionContext
-				.getCallerPrincipal();
-		String pharmacist = pharmacistPrincipal.getName();
-		this.fillPrescription.setPharmacist(pharmacist);
+    @RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
+    public String view() {
 
-		String pharmacistName = super.getUsername(pharmacist);
-		this.fillPrescription.setPharmacistName(pharmacistName);
+        this.log.debug("view: #0", this.selectedPrescription.getId());
+        return "view";
+    }
 
-		this.fillPrescription.setFilledDate(new Date());
-		this.entityManager.merge(this.fillPrescription);
-		return "filled";
-	}
+
+    @Resource
+    private SessionContext sessionContext;
+
+
+    @RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
+    public String fill() {
+
+        this.log.debug("filling: #0", this.fillPrescription.getId());
+        this.fillPrescription.setFilled(true);
+        Principal pharmacistPrincipal = this.sessionContext.getCallerPrincipal();
+        String pharmacist = pharmacistPrincipal.getName();
+        this.fillPrescription.setPharmacist(pharmacist);
+
+        String pharmacistName = super.getUsername(pharmacist);
+        this.fillPrescription.setPharmacistName(pharmacistName);
+
+        this.fillPrescription.setFilledDate(new Date());
+        this.entityManager.merge(this.fillPrescription);
+        return "filled";
+    }
 }

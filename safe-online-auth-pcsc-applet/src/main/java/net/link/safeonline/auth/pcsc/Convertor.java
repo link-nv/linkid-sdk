@@ -8,5 +8,6 @@
 package net.link.safeonline.auth.pcsc;
 
 public interface Convertor<T> {
-	T convert(byte[] value) throws ConvertorException;
+
+    T convert(byte[] value) throws ConvertorException;
 }

@@ -25,6 +25,7 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Implementation of node authentication service.
  * 
@@ -34,45 +35,44 @@ import org.apache.commons.logging.LogFactory;
 @Stateless
 public class NodeAuthenticationServiceBean implements NodeAuthenticationService {
 
-	private static final Log LOG = LogFactory
-			.getLog(NodeAuthenticationServiceBean.class);
+    private static final Log LOG = LogFactory.getLog(NodeAuthenticationServiceBean.class);
 
-	@EJB
-	private OlasDAO olasDAO;
+    @EJB
+    private OlasDAO          olasDAO;
 
-	@EJB
-	private TrustPointDAO trustPointDAO;
+    @EJB
+    private TrustPointDAO    trustPointDAO;
 
-	public String authenticate(X509Certificate authnCertificate)
-			throws NodeNotFoundException {
-		OlasEntity node = this.olasDAO
-				.getNodeFromAuthnCertificate(authnCertificate);
-		String nodeName = node.getName();
-		LOG.debug("authenticated node: " + nodeName);
-		return nodeName;
-	}
 
-	public List<X509Certificate> getSigningCertificates(String nodeName)
-			throws NodeNotFoundException {
-		LOG.debug("get signing certificate for node: " + nodeName);
-		OlasEntity node = this.olasDAO.getNode(nodeName);
-		List<TrustPointEntity> trustPoints = this.trustPointDAO
-				.listTrustPoints(node.getSigningCertificateSubject());
-		List<X509Certificate> certificates = new LinkedList<X509Certificate>();
-		for (TrustPointEntity trustPoint : trustPoints) {
-			certificates.add(trustPoint.getCertificate());
+    public String authenticate(X509Certificate authnCertificate) throws NodeNotFoundException {
 
-		}
-		return certificates;
-	}
+        OlasEntity node = this.olasDAO.getNodeFromAuthnCertificate(authnCertificate);
+        String nodeName = node.getName();
+        LOG.debug("authenticated node: " + nodeName);
+        return nodeName;
+    }
 
-	public OlasEntity getNode(String nodeName) throws NodeNotFoundException {
-		return this.olasDAO.getNode(nodeName);
-	}
+    public List<X509Certificate> getSigningCertificates(String nodeName) throws NodeNotFoundException {
 
-	public OlasEntity getLocalNode() throws NodeNotFoundException {
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		return this.getNode(this.authenticate(authIdentityServiceClient
-				.getCertificate()));
-	}
+        LOG.debug("get signing certificate for node: " + nodeName);
+        OlasEntity node = this.olasDAO.getNode(nodeName);
+        List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(node.getSigningCertificateSubject());
+        List<X509Certificate> certificates = new LinkedList<X509Certificate>();
+        for (TrustPointEntity trustPoint : trustPoints) {
+            certificates.add(trustPoint.getCertificate());
+
+        }
+        return certificates;
+    }
+
+    public OlasEntity getNode(String nodeName) throws NodeNotFoundException {
+
+        return this.olasDAO.getNode(nodeName);
+    }
+
+    public OlasEntity getLocalNode() throws NodeNotFoundException {
+
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        return this.getNode(this.authenticate(authIdentityServiceClient.getCertificate()));
+    }
 }

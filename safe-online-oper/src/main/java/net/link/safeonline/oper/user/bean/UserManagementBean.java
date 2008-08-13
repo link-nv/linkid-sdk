@@ -64,220 +64,228 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("userManager")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
-		+ "UserManagementBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "UserManagementBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Scope(ScopeType.CONVERSATION)
 @Interceptors(ErrorMessageInterceptor.class)
 public class UserManagementBean implements UserManagement {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log                         log;
 
-	private static final String AVAILABLE_ROLES_LIST_NAME = "availableRoles";
+    private static final String         AVAILABLE_ROLES_LIST_NAME = "availableRoles";
 
-	@EJB
-	private SubjectService subjectService;
+    @EJB
+    private SubjectService              subjectService;
 
-	@EJB
-	private AuthorizationManagerService authorizationManagerService;
+    @EJB
+    private AuthorizationManagerService authorizationManagerService;
 
-	@EJB
-	private IdentityService identityService;
+    @EJB
+    private IdentityService             identityService;
 
-	@EJB
-	private SubscriptionService subscriptionService;
+    @EJB
+    private SubscriptionService         subscriptionService;
 
-	@EJB
-	private DeviceService deviceService;
+    @EJB
+    private DeviceService               deviceService;
 
-	@EJB
-	private AccountService accountService;
+    @EJB
+    private AccountService              accountService;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                       facesMessages;
 
-	private String user;
+    private String                      user;
 
-	private Set<String> roles;
+    private Set<String>                 roles;
 
-	private List<HistoryMessage> historyList;
+    private List<HistoryMessage>        historyList;
 
-	private List<SubscriptionEntity> subscriptionList;
+    private List<SubscriptionEntity>    subscriptionList;
 
-	private List<DeviceMappingDO> deviceRegistrationList;
+    private List<DeviceMappingDO>       deviceRegistrationList;
 
-	private List<AttributeDO> attributeList;
+    private List<AttributeDO>           attributeList;
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		this.log.debug("destroy: " + this);
-	}
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.log.debug("postConstruct: " + this);
-	}
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Begin
-	@ErrorHandling( { @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "user") })
-	public String search() throws SubjectNotFoundException,
-			DeviceNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException {
-		this.log.debug("search: #0", this.user);
-		getUserInfo(this.user);
-		return "found";
-	}
+        this.log.debug("destroy: " + this);
+    }
 
-	private Locale getViewLocale() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		return viewLocale;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	private void getUserInfo(String username) throws SubjectNotFoundException,
-			DeviceNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException {
-		SubjectEntity subject = this.subjectService
-				.getSubjectFromUserName(username);
+        this.log.debug("postConstruct: " + this);
+    }
 
-		this.roles = this.authorizationManagerService.getRoles(username);
-		this.historyList = getHistoryList(subject);
-		this.subscriptionList = this.subscriptionService
-				.listSubscriptions(subject);
-		this.deviceRegistrationList = this.deviceService
-				.getDeviceRegistrations(subject, getViewLocale());
-		this.attributeList = this.identityService.listAttributes(subject,
-				getViewLocale());
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Begin
+    @ErrorHandling( { @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "user") })
+    public String search() throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException {
 
-	private List<HistoryMessage> getHistoryList(SubjectEntity subject) {
-		List<HistoryEntity> result = this.identityService.listHistory(subject);
+        this.log.debug("search: #0", this.user);
+        getUserInfo(this.user);
+        return "found";
+    }
 
-		List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
+    private Locale getViewLocale() {
 
-		for (HistoryEntity historyEntity : result) {
-			String historyMessage = HistoryMessageManager.getMessage(
-					FacesContext.getCurrentInstance(), historyEntity);
-			messageList.add(new HistoryMessage(historyEntity.getWhen(),
-					historyMessage));
-		}
-		return messageList;
-	}
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        return viewLocale;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getUser() {
-		this.log.debug("get user: #0", this.user);
-		return this.user;
-	}
+    private void getUserInfo(String username) throws SubjectNotFoundException, DeviceNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setUser(String user) {
-		this.user = user;
-	}
+        SubjectEntity subject = this.subjectService.getSubjectFromUserName(username);
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String save() throws SubjectNotFoundException, RoleNotFoundException {
-		this.log.debug("save: " + this.user);
-		this.authorizationManagerService.setRoles(this.user, this.roles);
-		return "saved";
-	}
+        this.roles = this.authorizationManagerService.getRoles(username);
+        this.historyList = getHistoryList(subject);
+        this.subscriptionList = this.subscriptionService.listSubscriptions(subject);
+        this.deviceRegistrationList = this.deviceService.getDeviceRegistrations(subject, getViewLocale());
+        this.attributeList = this.identityService.listAttributes(subject, getViewLocale());
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String remove() {
-		this.log.debug("remove: " + this.user);
-		return "remove";
-	}
+    private List<HistoryMessage> getHistoryList(SubjectEntity subject) {
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeConfirm() throws SubjectNotFoundException,
-			SubscriptionNotFoundException, MessageHandlerNotFoundException {
-		this.log.debug("confirm remove: " + this.user);
-		SubjectEntity subject = this.subjectService
-				.getSubjectFromUserName(this.user);
-		this.accountService.removeAccount(subject);
-		return "success";
-	}
+        List<HistoryEntity> result = this.identityService.listHistory(subject);
 
-	@End
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String removeCancel() {
-		this.log.debug("cancel remove: " + this.user);
-		return "success";
+        List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
 
-	}
+        for (HistoryEntity historyEntity : result) {
+            String historyMessage = HistoryMessageManager.getMessage(FacesContext.getCurrentInstance(), historyEntity);
+            messageList.add(new HistoryMessage(historyEntity.getWhen(), historyMessage));
+        }
+        return messageList;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<String> getRoles() {
-		this.log.debug("get roles: #0", this.roles);
-		return new LinkedList<String>(this.roles);
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getUser() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setRoles(List<String> roles) {
-		this.log.debug("set roles: #0", roles);
-		this.roles = new HashSet<String>(roles);
-	}
+        this.log.debug("get user: #0", this.user);
+        return this.user;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory(AVAILABLE_ROLES_LIST_NAME)
-	public List<SelectItem> availableRolesFactory() {
-		this.log.debug("availableRoles factory");
-		Set<String> availableRoles = this.authorizationManagerService
-				.getAvailableRoles();
-		List<SelectItem> availableRolesView = new LinkedList<SelectItem>();
-		for (String availableRole : availableRoles) {
-			SelectItem availableRoleView = new SelectItem(availableRole);
-			availableRolesView.add(availableRoleView);
-		}
-		return availableRolesView;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setUser(String user) {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<String> autocompleteUser(Object event) {
-		String userPrefix = event.toString();
-		if (userPrefix.length() < 3) {
-			return null;
-		}
-		this.log.debug("auto-complete user: #0", userPrefix);
-		List<String> filteredUsers;
-		try {
-			filteredUsers = this.authorizationManagerService
-					.getUsers(userPrefix);
-		} catch (AttributeTypeNotFoundException e) {
-			this.log.debug("login attribute type not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR,
-					"errorAttributeTypeNotFoundSpecific",
-					SafeOnlineConstants.LOGIN_ATTRIBTUE);
-			return null;
-		}
-		return filteredUsers;
-	}
+        this.user = user;
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<HistoryMessage> getHistoryList() {
-		return this.historyList;
-	}
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String save() throws SubjectNotFoundException, RoleNotFoundException {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<SubscriptionEntity> getSubscriptionList() {
-		return this.subscriptionList;
-	}
+        this.log.debug("save: " + this.user);
+        this.authorizationManagerService.setRoles(this.user, this.roles);
+        return "saved";
+    }
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<DeviceMappingDO> getDeviceRegistrationList() {
-		return this.deviceRegistrationList;
-	}
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String remove() {
 
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<AttributeDO> getAttributeList() {
-		return this.attributeList;
-	}
+        this.log.debug("remove: " + this.user);
+        return "remove";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String removeConfirm() throws SubjectNotFoundException, SubscriptionNotFoundException,
+            MessageHandlerNotFoundException {
+
+        this.log.debug("confirm remove: " + this.user);
+        SubjectEntity subject = this.subjectService.getSubjectFromUserName(this.user);
+        this.accountService.removeAccount(subject);
+        return "success";
+    }
+
+    @End
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String removeCancel() {
+
+        this.log.debug("cancel remove: " + this.user);
+        return "success";
+
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<String> getRoles() {
+
+        this.log.debug("get roles: #0", this.roles);
+        return new LinkedList<String>(this.roles);
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setRoles(List<String> roles) {
+
+        this.log.debug("set roles: #0", roles);
+        this.roles = new HashSet<String>(roles);
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(AVAILABLE_ROLES_LIST_NAME)
+    public List<SelectItem> availableRolesFactory() {
+
+        this.log.debug("availableRoles factory");
+        Set<String> availableRoles = this.authorizationManagerService.getAvailableRoles();
+        List<SelectItem> availableRolesView = new LinkedList<SelectItem>();
+        for (String availableRole : availableRoles) {
+            SelectItem availableRoleView = new SelectItem(availableRole);
+            availableRolesView.add(availableRoleView);
+        }
+        return availableRolesView;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<String> autocompleteUser(Object event) {
+
+        String userPrefix = event.toString();
+        if (userPrefix.length() < 3) {
+            return null;
+        }
+        this.log.debug("auto-complete user: #0", userPrefix);
+        List<String> filteredUsers;
+        try {
+            filteredUsers = this.authorizationManagerService.getUsers(userPrefix);
+        } catch (AttributeTypeNotFoundException e) {
+            this.log.debug("login attribute type not found");
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific",
+                    SafeOnlineConstants.LOGIN_ATTRIBTUE);
+            return null;
+        }
+        return filteredUsers;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<HistoryMessage> getHistoryList() {
+
+        return this.historyList;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SubscriptionEntity> getSubscriptionList() {
+
+        return this.subscriptionList;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<DeviceMappingDO> getDeviceRegistrationList() {
+
+        return this.deviceRegistrationList;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<AttributeDO> getAttributeList() {
+
+        return this.attributeList;
+    }
 }

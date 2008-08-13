@@ -16,5 +16,6 @@ package net.link.safeonline.ctrl;
  * @param <TypeOut>
  */
 public interface Convertor<TypeIn, TypeOut> {
-	TypeOut convert(TypeIn input);
+
+    TypeOut convert(TypeIn input);
 }

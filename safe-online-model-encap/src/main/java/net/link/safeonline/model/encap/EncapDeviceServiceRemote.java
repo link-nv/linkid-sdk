@@ -8,6 +8,7 @@ package net.link.safeonline.model.encap;
 
 import javax.ejb.Remote;
 
+
 @Remote
 public interface EncapDeviceServiceRemote extends EncapDeviceService {
 

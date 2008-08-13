@@ -12,6 +12,7 @@ import net.link.safeonline.sdk.exception.SubscriptionNotFoundException;
 import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
+
 /**
  * WS Notification Subscription Manager Service Client interface.
  * 
@@ -29,8 +30,7 @@ public interface NotificationSubscriptionManagerClient extends MessageAccessor {
      * @throws RequestDeniedException
      * @throws WSClientTransportException
      */
-    void unsubscribe(String topic, String address)
-            throws SubscriptionNotFoundException, RequestDeniedException,
+    void unsubscribe(String topic, String address) throws SubscriptionNotFoundException, RequestDeniedException,
             WSClientTransportException;
 
 }

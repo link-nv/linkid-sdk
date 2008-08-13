@@ -32,97 +32,95 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class LoginServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(LoginServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(LoginServlet.class);
 
-	private DataClient dataClient;
+    private DataClient        dataClient;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
 
-		LOG.debug("init");
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-		String wsLocation = config.getInitParameter("WsLocation");
+        super.init(config);
 
-		PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils
-				.getPrivateKeyEntry();
+        LOG.debug("init");
 
-		X509Certificate clientCertificate = (X509Certificate) privateKeyEntry
-				.getCertificate();
-		PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
+        String wsLocation = config.getInitParameter("WsLocation");
 
-		this.dataClient = new DataClientImpl(wsLocation, clientCertificate,
-				clientPrivateKey);
-	}
+        PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils.getPrivateKeyEntry();
 
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		/*
-		 * Since the SAML protocol can enter the application via an HTTP POST we
-		 * also need to implement the doPost method.
-		 */
-		doGet(request, response);
-	}
+        X509Certificate clientCertificate = (X509Certificate) privateKeyEntry.getCertificate();
+        PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
 
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+        this.dataClient = new DataClientImpl(wsLocation, clientCertificate, clientPrivateKey);
+    }
 
-		HttpSession session = request.getSession();
-		String username = (String) session.getAttribute("username");
-		LOG.debug("username: " + username);
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		Attribute<Boolean> paymentAdminAttribute;
-		try {
-			paymentAdminAttribute = this.dataClient.getAttributeValue(username,
-					DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, Boolean.class);
-		} catch (RequestDeniedException e) {
-			throw new ServletException(
-					"count not retrieve payment admin attribute");
-		} catch (SubjectNotFoundException e) {
-			throw new ServletException("subject not found");
-		} catch (WSClientTransportException e) {
+        /*
+         * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost
+         * method.
+         */
+        doGet(request, response);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        String username = (String) session.getAttribute("username");
+        LOG.debug("username: " + username);
+
+        Attribute<Boolean> paymentAdminAttribute;
+        try {
+            paymentAdminAttribute = this.dataClient.getAttributeValue(username,
+                    DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, Boolean.class);
+        } catch (RequestDeniedException e) {
+            throw new ServletException("count not retrieve payment admin attribute");
+        } catch (SubjectNotFoundException e) {
+            throw new ServletException("subject not found");
+        } catch (WSClientTransportException e) {
             throw new ServletException("connection failed");
         }
 
-		if (null == paymentAdminAttribute) {
-			redirectToOverviewPage(session, response);
-			return;
-		}
+        if (null == paymentAdminAttribute) {
+            redirectToOverviewPage(session, response);
+            return;
+        }
 
-		Boolean value = paymentAdminAttribute.getValue();
-		if (null == value) {
-			redirectToOverviewPage(session, response);
-			return;
-		}
+        Boolean value = paymentAdminAttribute.getValue();
+        if (null == value) {
+            redirectToOverviewPage(session, response);
+            return;
+        }
 
-		if (false == value) {
-			redirectToOverviewPage(session, response);
-			return;
-		}
+        if (false == value) {
+            redirectToOverviewPage(session, response);
+            return;
+        }
 
-		redirectToAdminPage(session, response);
-	}
+        redirectToAdminPage(session, response);
+    }
 
-	private void redirectToOverviewPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", PaymentConstants.USER_ROLE);
-		/*
-		 * The role attribute is used by the LawyerLoginModule for
-		 * authorization.
-		 */
-		response.sendRedirect("./overview.seam");
-	}
+    private void redirectToOverviewPage(HttpSession session, HttpServletResponse response) throws IOException {
 
-	private void redirectToAdminPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", PaymentConstants.ADMIN_ROLE);
-		response.sendRedirect("./search.seam");
-	}
+        session.setAttribute("role", PaymentConstants.USER_ROLE);
+        /*
+         * The role attribute is used by the LawyerLoginModule for authorization.
+         */
+        response.sendRedirect("./overview.seam");
+    }
+
+    private void redirectToAdminPage(HttpSession session, HttpServletResponse response) throws IOException {
+
+        session.setAttribute("role", PaymentConstants.ADMIN_ROLE);
+        response.sendRedirect("./search.seam");
+    }
 
 }

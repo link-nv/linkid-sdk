@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
 /**
  * <h2>{@link ShowTimeEntity}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -50,9 +51,8 @@ public class ShowTimeEntity implements Serializable {
 
     }
 
-    public ShowTimeEntity(Integer monStart, Integer tueStart, Integer wedStart,
-            Integer thuStart, Integer friStart, Integer satStart,
-            Integer sunStart) {
+    public ShowTimeEntity(Integer monStart, Integer tueStart, Integer wedStart, Integer thuStart, Integer friStart,
+            Integer satStart, Integer sunStart) {
 
         this.monStart = monStart;
         this.tueStart = tueStart;
@@ -69,12 +69,9 @@ public class ShowTimeEntity implements Serializable {
     @Override
     public String toString() {
 
-        return String.format(
-                "[M: %s, T: %s, W: %s, T: %s, F: %s, S: %s, S: %s]",
-                timeToStr(this.monStart), timeToStr(this.tueStart),
-                timeToStr(this.wedStart), timeToStr(this.thuStart),
-                timeToStr(this.friStart), timeToStr(this.satStart),
-                timeToStr(this.sunStart));
+        return String.format("[M: %s, T: %s, W: %s, T: %s, F: %s, S: %s, S: %s]", timeToStr(this.monStart),
+                timeToStr(this.tueStart), timeToStr(this.wedStart), timeToStr(this.thuStart), timeToStr(this.friStart),
+                timeToStr(this.satStart), timeToStr(this.sunStart));
     }
 
     private String timeToStr(Integer time) {

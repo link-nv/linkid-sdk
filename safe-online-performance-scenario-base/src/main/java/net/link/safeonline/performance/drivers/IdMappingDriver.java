@@ -14,6 +14,7 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
+
 /**
  * <h2>{@link IdMappingDriver}<br>
  * <sub>Provide access to the ID Mapping service.</sub></h2>
@@ -26,56 +27,53 @@ import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
  */
 public class IdMappingDriver extends ProfileDriver {
 
-	public static final String NAME = "User ID Mapping Driver";
-	public static final String DESCRIPTION = "<b>User ID Mapping Driver:</b><br>"
-			+ "Maps the <i>'performance'</i> username to a UUID for the <i>'performance-application'</i>.";
+    public static final String NAME        = "User ID Mapping Driver";
+    public static final String DESCRIPTION = "<b>User ID Mapping Driver:</b><br>"
+                                                   + "Maps the <i>'performance'</i> username to a UUID for the <i>'performance-application'</i>.";
 
-	public IdMappingDriver(ExecutionEntity execution,
-			ScenarioTimingEntity agentTime) {
 
-		super(NAME, execution, agentTime);
-	}
+    public IdMappingDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
-	/**
-	 * Retrieve the ID of the user with the given username.
-	 * 
-	 * @param applicationKey
-	 *            The certificate of the application making the request. This
-	 *            identifies the application and gives the request the
-	 *            application's authority.
-	 * @param username
-	 *            The username that the application wishes to know the ID for.
-	 * @return The ID of the user with the given username.
-	 */
-	public String getUserId(PrivateKeyEntry applicationKey, String username) {
+        super(NAME, execution, agentTime);
+    }
 
-		if (!(applicationKey.getCertificate() instanceof X509Certificate))
-			throw new IllegalArgumentException(
-					"The certificate in the keystore needs to be of X509 format.");
+    /**
+     * Retrieve the ID of the user with the given username.
+     * 
+     * @param applicationKey
+     *            The certificate of the application making the request. This identifies the application and gives the
+     *            request the application's authority.
+     * @param username
+     *            The username that the application wishes to know the ID for.
+     * @return The ID of the user with the given username.
+     */
+    public String getUserId(PrivateKeyEntry applicationKey, String username) {
 
-		try {
-			NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(
-					getHost(), (X509Certificate) applicationKey
-							.getCertificate(), applicationKey.getPrivateKey());
+        if (!(applicationKey.getCertificate() instanceof X509Certificate))
+            throw new IllegalArgumentException("The certificate in the keystore needs to be of X509 format.");
 
-			try {
-				return service.getUserId(username);
-			} finally {
-				report(service);
-			}
-		}
+        try {
+            NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(getHost(),
+                    (X509Certificate) applicationKey.getCertificate(), applicationKey.getPrivateKey());
 
-		catch (Throwable error) {
-			throw report(error);
-		}
-	}
+            try {
+                return service.getUserId(username);
+            } finally {
+                report(service);
+            }
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDescription() {
+        catch (Throwable error) {
+            throw report(error);
+        }
+    }
 
-		return DESCRIPTION;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+
+        return DESCRIPTION;
+    }
 }

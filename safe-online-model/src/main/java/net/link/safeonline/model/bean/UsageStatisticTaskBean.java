@@ -30,6 +30,7 @@ import net.link.safeonline.entity.StatisticEntity;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "UsageStatisticTaskBean")
@@ -37,64 +38,60 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Interceptors(ConfigurationInterceptor.class)
 public class UsageStatisticTaskBean implements Task {
 
-	public static final String name = "Usage statistic task";
+    public static final String    name                = "Usage statistic task";
 
-	public static final String statisticName = "Usage statistic";
+    public static final String    statisticName       = "Usage statistic";
 
-	public static final String statisticDomain = "Usage statistic domain";
+    public static final String    statisticDomain     = "Usage statistic domain";
 
-	public static final String loginCounter = "Login counter";
+    public static final String    loginCounter        = "Login counter";
 
-	@Configurable(name = "Active user limit (ms)")
-	private Integer activeLimitInMillis = 10 * 60 * 1000;
+    @Configurable(name = "Active user limit (ms)")
+    private Integer               activeLimitInMillis = 10 * 60 * 1000;
 
-	@Configurable(name = "Keep stats for (ms)")
-	private Integer ageInMillis = 100 * 60 * 1000;
+    @Configurable(name = "Keep stats for (ms)")
+    private Integer               ageInMillis         = 100 * 60 * 1000;
 
-	@EJB
-	private StatisticDAO statisticDAO;
+    @EJB
+    private StatisticDAO          statisticDAO;
 
-	@EJB
-	private StatisticDataPointDAO statisticDataPointDAO;
+    @EJB
+    private StatisticDataPointDAO statisticDataPointDAO;
 
-	@EJB
-	private SubscriptionDAO subscriptionDAO;
+    @EJB
+    private SubscriptionDAO       subscriptionDAO;
 
-	@EJB
-	private ApplicationDAO applicationDAO;
+    @EJB
+    private ApplicationDAO        applicationDAO;
 
-	public String getName() {
-		return UsageStatisticTaskBean.name;
-	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() throws Exception {
-		List<ApplicationEntity> applicationList = this.applicationDAO
-				.listApplications();
-		Date activeLimit = new Date(System.currentTimeMillis()
-				- this.activeLimitInMillis);
-		Date ageLimit = new Date(System.currentTimeMillis() - this.ageInMillis);
+    public String getName() {
 
-		for (ApplicationEntity application : applicationList) {
-			long totalSubscriptions = this.subscriptionDAO
-					.getNumberOfSubscriptions(application);
-			long activeSubscriptions = this.subscriptionDAO
-					.getActiveNumberOfSubscriptions(application, activeLimit);
+        return UsageStatisticTaskBean.name;
+    }
 
-			StatisticEntity statistic = this.statisticDAO
-					.findOrAddStatisticByNameDomainAndApplication(
-							statisticName, statisticDomain, application);
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void perform() throws Exception {
 
-			StatisticDataPointEntity loginCounterDP = this.statisticDataPointDAO
-					.findOrAddStatisticDataPoint(loginCounter, statistic);
+        List<ApplicationEntity> applicationList = this.applicationDAO.listApplications();
+        Date activeLimit = new Date(System.currentTimeMillis() - this.activeLimitInMillis);
+        Date ageLimit = new Date(System.currentTimeMillis() - this.ageInMillis);
 
-			this.statisticDataPointDAO.addStatisticDataPoint(statisticName,
-					statistic, totalSubscriptions, activeSubscriptions,
-					loginCounterDP.getX());
-			this.statisticDataPointDAO.cleanStatisticDataPoints(statistic,
-					ageLimit);
-			loginCounterDP.setX(0);
+        for (ApplicationEntity application : applicationList) {
+            long totalSubscriptions = this.subscriptionDAO.getNumberOfSubscriptions(application);
+            long activeSubscriptions = this.subscriptionDAO.getActiveNumberOfSubscriptions(application, activeLimit);
 
-		}
-	}
+            StatisticEntity statistic = this.statisticDAO.findOrAddStatisticByNameDomainAndApplication(statisticName,
+                    statisticDomain, application);
+
+            StatisticDataPointEntity loginCounterDP = this.statisticDataPointDAO.findOrAddStatisticDataPoint(
+                    loginCounter, statistic);
+
+            this.statisticDataPointDAO.addStatisticDataPoint(statisticName, statistic, totalSubscriptions,
+                    activeSubscriptions, loginCounterDP.getX());
+            this.statisticDataPointDAO.cleanStatisticDataPoints(statistic, ageLimit);
+            loginCounterDP.setX(0);
+
+        }
+    }
 }

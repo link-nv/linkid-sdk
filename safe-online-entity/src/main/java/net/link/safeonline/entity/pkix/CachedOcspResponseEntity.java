@@ -33,12 +33,12 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+
 @Entity
 @Table(name = "cached_ocsp_responses")
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_KEY, query = "SELECT cachedOcspResponse "
-                + "FROM CachedOcspResponseEntity AS CachedOcspResponse "
-                + "WHERE CachedOcspResponse.key = :key"),
+                + "FROM CachedOcspResponseEntity AS CachedOcspResponse " + "WHERE CachedOcspResponse.key = :key"),
         @NamedQuery(name = QUERY_DELETE_ALL, query = "DELETE FROM CachedOcspResponseEntity"),
         @NamedQuery(name = QUERY_DELETE_PER_DOMAIN, query = "DELETE "
                 + "FROM CachedOcspResponseEntity AS CachedOcspResponse "
@@ -49,27 +49,27 @@ import org.apache.commons.lang.builder.ToStringBuilder;
                 + "AND CachedOcspResponse.trustDomain = :trustDomain") })
 public class CachedOcspResponseEntity implements Serializable {
 
-    private static final long      serialVersionUID        = 1L;
+    private static final long    serialVersionUID        = 1L;
 
-    public static final String     QUERY_WHERE_KEY         = "cor.key";
+    public static final String   QUERY_WHERE_KEY         = "cor.key";
 
-    public static final String     QUERY_DELETE_ALL        = "cor.delall";
+    public static final String   QUERY_DELETE_ALL        = "cor.delall";
 
-    public static final String     QUERY_DELETE_PER_DOMAIN = "cor.deldomain";
+    public static final String   QUERY_DELETE_PER_DOMAIN = "cor.deldomain";
 
-    public static final String     QUERY_DELETE_EXPIRED    = "cor.expired";
+    public static final String   QUERY_DELETE_EXPIRED    = "cor.expired";
 
-    private static final int       KEY_SIZE                = 128;
+    private static final int     KEY_SIZE                = 128;
 
-    private long                   id;
+    private long                 id;
 
-    private String                 key;
+    private String               key;
 
     private CachedOcspResultType result;
 
-    private TrustDomainEntity      trustDomain;
+    private TrustDomainEntity    trustDomain;
 
-    private Date                   entryDate;
+    private Date                 entryDate;
 
 
     public CachedOcspResponseEntity() {
@@ -77,8 +77,7 @@ public class CachedOcspResponseEntity implements Serializable {
         // empty
     }
 
-    public CachedOcspResponseEntity(String key, CachedOcspResultType result,
-            TrustDomainEntity trustDomain) {
+    public CachedOcspResponseEntity(String key, CachedOcspResultType result, TrustDomainEntity trustDomain) {
 
         this.key = key;
         this.result = result;
@@ -143,9 +142,8 @@ public class CachedOcspResponseEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).append("key",
-                this.key).append("result", this.result).append("entry date",
-                this.entryDate).toString();
+        return new ToStringBuilder(this).append("id", this.id).append("key", this.key).append("result", this.result)
+                .append("entry date", this.entryDate).toString();
     }
 
     @Override
@@ -171,19 +169,16 @@ public class CachedOcspResponseEntity implements Serializable {
     public interface QueryInterface {
 
         @QueryMethod(value = QUERY_WHERE_KEY, nullable = true)
-        CachedOcspResponseEntity findCachedOcspResponse(
-                @QueryParam("key") String key);
+        CachedOcspResponseEntity findCachedOcspResponse(@QueryParam("key") String key);
 
         @UpdateMethod(QUERY_DELETE_ALL)
         int deleteAll();
 
         @UpdateMethod(QUERY_DELETE_PER_DOMAIN)
-        void deletePerDomain(
-                @QueryParam("trustDomain") TrustDomainEntity trustDomain);
+        void deletePerDomain(@QueryParam("trustDomain") TrustDomainEntity trustDomain);
 
         @UpdateMethod(QUERY_DELETE_EXPIRED)
-        void deleteExpired(
-                @QueryParam("trustDomain") TrustDomainEntity trustDomain,
+        void deleteExpired(@QueryParam("trustDomain") TrustDomainEntity trustDomain,
                 @QueryParam("expiryTime") Date expiryTime);
     }
 }

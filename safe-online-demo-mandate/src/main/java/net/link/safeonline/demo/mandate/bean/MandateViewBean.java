@@ -34,12 +34,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.log.Log;
 
+
 @Stateful
 @Name("mandateView")
 @LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateViewBean/local")
 @SecurityDomain(MandateConstants.SECURITY_DOMAIN)
-public class MandateViewBean extends AbstractMandateDataClientBean implements
-        MandateView {
+public class MandateViewBean extends AbstractMandateDataClientBean implements MandateView {
 
     @SuppressWarnings("unused")
     @DataModel
@@ -88,8 +88,8 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
         DataClient dataClient = getDataClient();
         Attribute<Mandate[]> mandateAttribute = null;
         try {
-            mandateAttribute = dataClient.getAttributeValue(mandateUserId,
-                    DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
+            mandateAttribute = dataClient.getAttributeValue(mandateUserId, DemoConstants.MANDATE_ATTRIBUTE_NAME,
+                    Mandate[].class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
         } catch (RequestDeniedException e) {
@@ -116,8 +116,8 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
         DataClient dataClient = getDataClient();
         Attribute<Mandate[]> mandateAttribute = null;
         try {
-            mandateAttribute = dataClient.getAttributeValue(username,
-                    DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
+            mandateAttribute = dataClient.getAttributeValue(username, DemoConstants.MANDATE_ATTRIBUTE_NAME,
+                    Mandate[].class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
         } catch (RequestDeniedException e) {

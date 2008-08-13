@@ -13,72 +13,73 @@ import javax.faces.context.FacesContext;
 
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 
+
 @Local
 public interface AuditSearch {
 
-	/*
-	 * Accessors
-	 */
-	Long getSearchContextId();
+    /*
+     * Accessors
+     */
+    Long getSearchContextId();
 
-	void setSearchContextId(Long searchContextId);
+    void setSearchContextId(Long searchContextId);
 
-	String getSearchAuditUser();
+    String getSearchAuditUser();
 
-	void setSearchAuditUser(String searchAuditUser);
+    void setSearchAuditUser(String searchAuditUser);
 
-	Integer getSearchLastTimeDays();
+    Integer getSearchLastTimeDays();
 
-	void setSearchLastTimeDays(Integer searchLastTimeDays);
+    void setSearchLastTimeDays(Integer searchLastTimeDays);
 
-	Integer getSearchLastTimeHours();
+    Integer getSearchLastTimeHours();
 
-	void setSearchLastTimeHours(Integer searchLastTimeHours);
+    void setSearchLastTimeHours(Integer searchLastTimeHours);
 
-	Integer getSearchLastTimeMinutes();
+    Integer getSearchLastTimeMinutes();
 
-	void setSearchLastTimeMinutes(Integer searchLastTimeMinutes);
+    void setSearchLastTimeMinutes(Integer searchLastTimeMinutes);
 
-	/*
-	 * Factories
-	 */
-	void auditContextListFactory();
+    /*
+     * Factories
+     */
+    void auditContextListFactory();
 
-	void accessAuditRecordListFactory();
+    void accessAuditRecordListFactory();
 
-	void securityAuditRecordListFactory();
+    void securityAuditRecordListFactory();
 
-	void resourceAuditRecordListFactory();
+    void resourceAuditRecordListFactory();
 
-	void auditAuditRecordListFactory();
+    void auditAuditRecordListFactory();
 
-	/*
-	 * Actions
-	 */
-	String view();
+    /*
+     * Actions
+     */
+    String view();
 
-	String viewResourceRecords();
+    String viewResourceRecords();
 
-	String viewSecurityRecords();
+    String viewSecurityRecords();
 
-	String viewAuditRecords();
+    String viewAuditRecords();
 
-	String removeContext() throws AuditContextNotFoundException;
+    String removeContext() throws AuditContextNotFoundException;
 
-	String search();
+    String search();
 
-	String viewPrincipal();
+    String viewPrincipal();
 
-	/*
-	 * Validators
-	 */
-	void validateId(FacesContext context, UIComponent toValidate, Object value);
+    /*
+     * Validators
+     */
+    void validateId(FacesContext context, UIComponent toValidate, Object value);
 
-	void validateUser(FacesContext context, UIComponent toValidate, Object value);
+    void validateUser(FacesContext context, UIComponent toValidate, Object value);
 
-	/*
-	 * Lifecycle
-	 */
-	void destroyCallback();
+    /*
+     * Lifecycle
+     */
+    void destroyCallback();
 
 }

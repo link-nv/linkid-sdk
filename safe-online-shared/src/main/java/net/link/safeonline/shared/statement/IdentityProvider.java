@@ -15,17 +15,17 @@ package net.link.safeonline.shared.statement;
  */
 public interface IdentityProvider {
 
-	/**
-	 * Gives back the given name.
-	 * 
-	 * @return
-	 */
-	String getGivenName();
+    /**
+     * Gives back the given name.
+     * 
+     * @return
+     */
+    String getGivenName();
 
-	/**
-	 * Gives back the surname.
-	 * 
-	 * @return
-	 */
-	String getSurname();
+    /**
+     * Gives back the surname.
+     * 
+     * @return
+     */
+    String getSurname();
 }

@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.owners;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperOwnerAdd extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/owners/owner-add.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/owners/owner-add.seam";
 
-	public OperOwnerAdd() {
-		super(PAGE_NAME);
-	}
+
+    public OperOwnerAdd() {
+
+        super(PAGE_NAME);
+    }
 }

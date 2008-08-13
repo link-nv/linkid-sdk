@@ -26,6 +26,7 @@ import net.link.safeonline.util.servlet.annotation.Init;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Generic exit point for the authentication web application.
  * 
@@ -34,20 +35,17 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * <ul>
  * <li>Committing the authentication process via the authentication service.</li>
- * <li>Make sure the correct protocol handler is activated to handle the
- * application response.</li>
+ * <li>Make sure the correct protocol handler is activated to handle the application response.</li>
  * </ul>
  * 
  * <p>
- * It's crucial to keep the authentication commit together with the response
- * generation as an atomic unit of work.
+ * It's crucial to keep the authentication commit together with the response generation as an atomic unit of work.
  * </p>
  * 
  * <p>
  * Servlet init parameters:
  * <ul>
- * <li><code>ProtocolErrorUrl</code>: the URL of the page to display in case
- * a protocol error took place.</li>
+ * <li><code>ProtocolErrorUrl</code>: the URL of the page to display in case a protocol error took place.</li>
  * </ul>
  * </p>
  * 
@@ -56,40 +54,40 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ExitServlet extends AbstractInjectionServlet {
 
-	private static final Log LOG = LogFactory.getLog(ExitServlet.class);
+    private static final Log   LOG                              = LogFactory.getLog(ExitServlet.class);
 
-	private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID                 = 1L;
 
-	public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
+    public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
 
-	public static final String PROTOCOL_NAME_ATTRIBUTE = "protocolName";
+    public static final String PROTOCOL_NAME_ATTRIBUTE          = "protocolName";
 
-	@Init(name = "ProtocolErrorUrl")
-	private String protocolErrorUrl;
+    @Init(name = "ProtocolErrorUrl")
+    private String             protocolErrorUrl;
 
-	@Override
-	protected void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("handleInvocation");
-		HttpSession session = request.getSession();
 
-		try {
-			AuthenticationService authenticationService = AuthenticationServiceManager
-					.getAuthenticationService(session);
-			authenticationService.commitAuthentication();
-		} catch (SafeOnlineException e) {
-			throw new ServletException(
-					"error committing the authentication process");
-		}
+    @Override
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
 
-		try {
-			ProtocolHandlerManager.authnResponse(session, response);
-		} catch (ProtocolException e) {
-			LOG.debug("protocol error: " + e.getMessage());
-			redirectToErrorPage(request, response, this.protocolErrorUrl, null,
-					new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE, e
-							.getProtocolName()), new ErrorMessage(
-							PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
-		}
-	}
+        LOG.debug("handleInvocation");
+        HttpSession session = request.getSession();
+
+        try {
+            AuthenticationService authenticationService = AuthenticationServiceManager
+                    .getAuthenticationService(session);
+            authenticationService.commitAuthentication();
+        } catch (SafeOnlineException e) {
+            throw new ServletException("error committing the authentication process");
+        }
+
+        try {
+            ProtocolHandlerManager.authnResponse(session, response);
+        } catch (ProtocolException e) {
+            LOG.debug("protocol error: " + e.getMessage());
+            redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(
+                    PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e
+                    .getMessage()));
+        }
+    }
 }

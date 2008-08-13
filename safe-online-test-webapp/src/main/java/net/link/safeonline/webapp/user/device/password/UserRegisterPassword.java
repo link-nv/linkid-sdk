@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.user.device.password;
 
 import net.link.safeonline.webapp.user.UserTemplate;
 
+
 public class UserRegisterPassword extends UserTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX
-			+ "/device/password/register-password.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_USER_WEBAPP_PREFIX + "/device/password/register-password.seam";
 
-	public UserRegisterPassword() {
-		super(PAGE_NAME);
-	}
+
+    public UserRegisterPassword() {
+
+        super(PAGE_NAME);
+    }
 }

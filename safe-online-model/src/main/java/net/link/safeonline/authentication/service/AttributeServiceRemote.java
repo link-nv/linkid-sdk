@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Remote;
 
+
 @Remote
 public interface AttributeServiceRemote extends AttributeService {
 

@@ -8,10 +8,11 @@ package net.link.safeonline.webapp.oper;
 
 public class OperConfigurationMain extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/configuration-main.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/configuration-main.seam";
 
-	public OperConfigurationMain() {
-		super(PAGE_NAME);
-	}
+
+    public OperConfigurationMain() {
+
+        super(PAGE_NAME);
+    }
 }

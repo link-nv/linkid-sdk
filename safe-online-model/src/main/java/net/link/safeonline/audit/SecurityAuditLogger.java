@@ -11,11 +11,11 @@ import javax.ejb.Local;
 
 import net.link.safeonline.entity.audit.SecurityThreatType;
 
+
 @Local
 public interface SecurityAuditLogger {
 
-	void addSecurityAudit(SecurityThreatType securityThreat, String message);
+    void addSecurityAudit(SecurityThreatType securityThreat, String message);
 
-	void addSecurityAudit(SecurityThreatType securityThreat,
-			String targetPrincipal, String message);
+    void addSecurityAudit(SecurityThreatType securityThreat, String targetPrincipal, String message);
 }

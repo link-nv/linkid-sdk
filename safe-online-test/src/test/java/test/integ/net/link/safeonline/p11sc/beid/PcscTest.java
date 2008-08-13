@@ -15,51 +15,56 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
+
 public class PcscTest {
 
-	protected static final Log LOG = LogFactory.getLog(PcscTest.class);
+    protected static final Log LOG = LogFactory.getLog(PcscTest.class);
 
-	@Test
-	public void testReadIdentityFile() throws Exception {
-		TerminalFactory terminalFactory = TerminalFactory.getDefault();
-		CardTerminals cardTerminals = terminalFactory.terminals();
-		CardTerminal cardTerminal = cardTerminals.list().get(0);
-		Card card = cardTerminal.connect("T=0");
-		CardChannel channel = card.getBasicChannel();
-		Pcsc pcsc = new Pcsc(channel);
-		IdentityFile identity = pcsc.getIdentityFile();
-		LOG.debug("dob: " + identity.getBirthDate());
-		LOG.debug("first name: " + identity.getFirstName());
-	}
 
-	@Test
-	public void testSisCard() throws Exception {
-		TerminalFactory terminalFactory = TerminalFactory.getDefault();
-		CardTerminals cardTerminals = terminalFactory.terminals();
-		CardTerminal cardTerminal = cardTerminals.list().get(0);
-		Card card = cardTerminal.connect("*");
-		card.getBasicChannel();
-	}
+    @Test
+    public void testReadIdentityFile() throws Exception {
 
-	
-	@Test
-	public void testSign() throws Exception {
-		TerminalFactory terminalFactory = TerminalFactory.getDefault();
-		CardTerminals cardTerminals = terminalFactory.terminals();
-		CardTerminal cardTerminal = cardTerminals.list().get(0);
-		Card card = cardTerminal.connect("T=0");
-		CardChannel channel = card.getBasicChannel();
+        TerminalFactory terminalFactory = TerminalFactory.getDefault();
+        CardTerminals cardTerminals = terminalFactory.terminals();
+        CardTerminal cardTerminal = cardTerminals.list().get(0);
+        Card card = cardTerminal.connect("T=0");
+        CardChannel channel = card.getBasicChannel();
+        Pcsc pcsc = new Pcsc(channel);
+        IdentityFile identity = pcsc.getIdentityFile();
+        LOG.debug("dob: " + identity.getBirthDate());
+        LOG.debug("first name: " + identity.getFirstName());
+    }
 
-		PcscSigner pcscSigner = new PcscSigner(channel,
-				new TestPcscSignerLogger());
+    @Test
+    public void testSisCard() throws Exception {
 
-		pcscSigner.sign("hello world".getBytes());
-	}
+        TerminalFactory terminalFactory = TerminalFactory.getDefault();
+        CardTerminals cardTerminals = terminalFactory.terminals();
+        CardTerminal cardTerminal = cardTerminals.list().get(0);
+        Card card = cardTerminal.connect("*");
+        card.getBasicChannel();
+    }
 
-	static class TestPcscSignerLogger implements PcscSignerLogger {
+    @Test
+    public void testSign() throws Exception {
 
-		public void log(String message) {
-			LOG.debug("pcsc logger: " + message);
-		}
-	}
+        TerminalFactory terminalFactory = TerminalFactory.getDefault();
+        CardTerminals cardTerminals = terminalFactory.terminals();
+        CardTerminal cardTerminal = cardTerminals.list().get(0);
+        Card card = cardTerminal.connect("T=0");
+        CardChannel channel = card.getBasicChannel();
+
+        PcscSigner pcscSigner = new PcscSigner(channel, new TestPcscSignerLogger());
+
+        pcscSigner.sign("hello world".getBytes());
+    }
+
+
+    static class TestPcscSignerLogger implements PcscSignerLogger {
+
+        public void log(String message) {
+
+            LOG.debug("pcsc logger: " + message);
+        }
+    }
 }

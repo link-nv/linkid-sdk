@@ -28,81 +28,80 @@ import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
+
 /**
  * <h2>{@link ScenarioQueueChart}<br>
  * <sub>TODO</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioQueueChart extends AbstractChart {
 
-	private TimeSeries auditQueue;
+    private TimeSeries auditQueue;
 
-	/**
-	 * Create a new {@link ScenarioQueueChart} instance.
-	 */
-	public ScenarioQueueChart() {
 
-		super("JMS Queue Size");
+    /**
+     * Create a new {@link ScenarioQueueChart} instance.
+     */
+    public ScenarioQueueChart() {
 
-		this.auditQueue = new TimeSeries("Audit", FixedMillisecond.class);
-	}
+        super("JMS Queue Size");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void processData(ProfileDataEntity data) {
+        this.auditQueue = new TimeSeries("Audit", FixedMillisecond.class);
+    }
 
-		if (data.getMeasurements().isEmpty())
-			return;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processData(ProfileDataEntity data) {
 
-		FixedMillisecond startTime = new FixedMillisecond(data
-				.getScenarioTiming().getStart());
+        if (data.getMeasurements().isEmpty())
+            return;
 
-		Long audit = getMeasurement(data.getMeasurements(),
-				ProfileData.AUDIT_SIZE);
+        FixedMillisecond startTime = new FixedMillisecond(data.getScenarioTiming().getStart());
 
-		this.auditQueue.addOrUpdate(startTime, audit);
-	}
+        Long audit = getMeasurement(data.getMeasurements(), ProfileData.AUDIT_SIZE);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isDataProcessed() {
+        this.auditQueue.addOrUpdate(startTime, audit);
+    }
 
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDataProcessed() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected XYPlot getPlot() {
+        return true;
+    }
 
-		if (this.auditQueue.isEmpty())
-			return null;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected XYPlot getPlot() {
 
-		ValueAxis domainAxis = new DateAxis("Time");
+        if (this.auditQueue.isEmpty())
+            return null;
 
-		TimeSeriesCollection auditSet;
-		auditSet = new TimeSeriesCollection(this.auditQueue);
+        ValueAxis domainAxis = new DateAxis("Time");
 
-		XYPlot auditPlot = new XYPlot(auditSet, domainAxis, new NumberAxis(
-				"Queue Size (messages)"), new XYLineAndShapeRenderer(true,
-				false));
+        TimeSeriesCollection auditSet;
+        auditSet = new TimeSeriesCollection(this.auditQueue);
 
-		CombinedDomainXYPlot queuePlot = new CombinedDomainXYPlot(domainAxis);
-		queuePlot.add(auditPlot);
+        XYPlot auditPlot = new XYPlot(auditSet, domainAxis, new NumberAxis("Queue Size (messages)"),
+                new XYLineAndShapeRenderer(true, false));
 
-		return queuePlot;
-	}
+        CombinedDomainXYPlot queuePlot = new CombinedDomainXYPlot(domainAxis);
+        queuePlot.add(auditPlot);
+
+        return queuePlot;
+    }
 }

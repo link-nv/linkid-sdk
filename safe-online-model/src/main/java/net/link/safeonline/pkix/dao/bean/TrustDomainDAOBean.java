@@ -23,65 +23,68 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 @Stateless
 public class TrustDomainDAOBean implements TrustDomainDAO {
 
-	private static final Log LOG = LogFactory.getLog(TrustDomainDAOBean.class);
+    private static final Log                 LOG = LogFactory.getLog(TrustDomainDAOBean.class);
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                    entityManager;
 
-	private TrustDomainEntity.QueryInterface queryObject;
+    private TrustDomainEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, TrustDomainEntity.QueryInterface.class);
-	}
 
-	public List<TrustDomainEntity> listTrustDomains() {
-		LOG.debug("get trust domains");
-		List<TrustDomainEntity> trustDomains = this.queryObject
-				.listTrustDomains();
-		return trustDomains;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public TrustDomainEntity addTrustDomain(String name,
-			boolean performOcspCheck) {
-		LOG.debug("add trust domain: " + name);
-		TrustDomainEntity trustDomain = new TrustDomainEntity(name,
-				performOcspCheck);
-		this.entityManager.persist(trustDomain);
-		return trustDomain;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                TrustDomainEntity.QueryInterface.class);
+    }
 
-	public TrustDomainEntity addTrustDomain(String name,
-			boolean performOcspCheck, long ocspCacheTimeOutMillis) {
-		LOG.debug("add trust domain: " + name);
-		TrustDomainEntity trustDomain = new TrustDomainEntity(name,
-				performOcspCheck, ocspCacheTimeOutMillis);
-		this.entityManager.persist(trustDomain);
-		return trustDomain;
-	}
+    public List<TrustDomainEntity> listTrustDomains() {
 
-	public TrustDomainEntity findTrustDomain(String name) {
-		LOG.debug("find trust domain: " + name);
-		TrustDomainEntity trustDomain = this.queryObject.findTrustDomain(name);
-		return trustDomain;
-	}
+        LOG.debug("get trust domains");
+        List<TrustDomainEntity> trustDomains = this.queryObject.listTrustDomains();
+        return trustDomains;
+    }
 
-	public void removeTrustDomain(TrustDomainEntity trustDomain) {
-		LOG.debug("remove trust domain: " + trustDomain.getName());
-		this.entityManager.remove(trustDomain);
-	}
+    public TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck) {
 
-	public TrustDomainEntity getTrustDomain(String name)
-			throws TrustDomainNotFoundException {
-		LOG.debug("get trust domain: " + name);
-		TrustDomainEntity trustDomain = findTrustDomain(name);
-		if (null == trustDomain) {
-			throw new TrustDomainNotFoundException();
-		}
-		return trustDomain;
-	}
+        LOG.debug("add trust domain: " + name);
+        TrustDomainEntity trustDomain = new TrustDomainEntity(name, performOcspCheck);
+        this.entityManager.persist(trustDomain);
+        return trustDomain;
+    }
+
+    public TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck, long ocspCacheTimeOutMillis) {
+
+        LOG.debug("add trust domain: " + name);
+        TrustDomainEntity trustDomain = new TrustDomainEntity(name, performOcspCheck, ocspCacheTimeOutMillis);
+        this.entityManager.persist(trustDomain);
+        return trustDomain;
+    }
+
+    public TrustDomainEntity findTrustDomain(String name) {
+
+        LOG.debug("find trust domain: " + name);
+        TrustDomainEntity trustDomain = this.queryObject.findTrustDomain(name);
+        return trustDomain;
+    }
+
+    public void removeTrustDomain(TrustDomainEntity trustDomain) {
+
+        LOG.debug("remove trust domain: " + trustDomain.getName());
+        this.entityManager.remove(trustDomain);
+    }
+
+    public TrustDomainEntity getTrustDomain(String name) throws TrustDomainNotFoundException {
+
+        LOG.debug("get trust domain: " + name);
+        TrustDomainEntity trustDomain = findTrustDomain(name);
+        if (null == trustDomain) {
+            throw new TrustDomainNotFoundException();
+        }
+        return trustDomain;
+    }
 }

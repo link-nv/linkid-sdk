@@ -17,39 +17,42 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
+
 public class TrustDomainDAOBeanTest extends TestCase {
 
-	private TrustDomainDAO testedInstance;
+    private TrustDomainDAO    testedInstance;
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager entityTestManager;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(TrustDomainEntity.class);
+    @Override
+    protected void setUp() throws Exception {
 
-		this.testedInstance = EJBTestUtils.newInstance(
-				TrustDomainDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-				this.entityTestManager.getEntityManager());
-	}
+        super.setUp();
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+        this.entityTestManager = new EntityTestManager();
+        this.entityTestManager.setUp(TrustDomainEntity.class);
 
-	public void testAddAndRemoveTrustDomain() throws Exception {
-		// setup
-		String name = UUID.randomUUID().toString();
+        this.testedInstance = EJBTestUtils.newInstance(TrustDomainDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+                this.entityTestManager.getEntityManager());
+    }
 
-		// operate & verify
-		this.testedInstance.addTrustDomain(name, true);
-		TrustDomainEntity resultTrustDomain = this.testedInstance
-				.findTrustDomain(name);
-		assertNotNull(resultTrustDomain);
-		this.testedInstance.removeTrustDomain(resultTrustDomain);
-	}
+    @Override
+    protected void tearDown() throws Exception {
+
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
+
+    public void testAddAndRemoveTrustDomain() throws Exception {
+
+        // setup
+        String name = UUID.randomUUID().toString();
+
+        // operate & verify
+        this.testedInstance.addTrustDomain(name, true);
+        TrustDomainEntity resultTrustDomain = this.testedInstance.findTrustDomain(name);
+        assertNotNull(resultTrustDomain);
+        this.testedInstance.removeTrustDomain(resultTrustDomain);
+    }
 }

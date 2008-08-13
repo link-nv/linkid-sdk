@@ -12,48 +12,49 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
+
 @Local
 public interface TicketBuy {
 
-	/*
-	 * Field accessors.
-	 */
+    /*
+     * Field accessors.
+     */
 
-	String getFrom();
+    String getFrom();
 
-	void setFrom(String from);
+    void setFrom(String from);
 
-	String getTo();
+    String getTo();
 
-	void setTo(String to);
+    void setTo(String to);
 
-	String getValidUntil();
+    String getValidUntil();
 
-	void setValidUntil(String validUntil);
+    void setValidUntil(String validUntil);
 
-	boolean getReturnTicket();
+    boolean getReturnTicket();
 
-	void setReturnTicket(boolean returnTicket);
+    void setReturnTicket(boolean returnTicket);
 
-	/*
-	 * Factories
-	 */
+    /*
+     * Factories
+     */
 
-	List<SelectItem> siteListFactory();
+    List<SelectItem> siteListFactory();
 
-	List<SelectItem> dateListFactory();
+    List<SelectItem> dateListFactory();
 
-	/*
-	 * Actions
-	 */
+    /*
+     * Actions
+     */
 
-	String checkOut();
+    String checkOut();
 
-	String confirm();
+    String confirm();
 
-	/*
-	 * Lifecycle
-	 */
+    /*
+     * Lifecycle
+     */
 
-	void destroyCallback();
+    void destroyCallback();
 }

@@ -16,14 +16,17 @@ import net.lin_k.safe_online.ping.PingPort;
 import net.lin_k.safe_online.ping.Request;
 import net.lin_k.safe_online.ping.Response;
 
+
 @WebService(endpointInterface = "net.lin_k.safe_online.ping.PingPort")
 public class PingPortImpl implements PingPort {
 
-	private static final Log LOG = LogFactory.getLog(PingPortImpl.class);
+    private static final Log LOG = LogFactory.getLog(PingPortImpl.class);
 
-	public Response pingOperation(Request request) {
-		LOG.debug("ping");
-		Response response = new Response();
-		return response;
-	}
+
+    public Response pingOperation(Request request) {
+
+        LOG.debug("ping");
+        Response response = new Response();
+        return response;
+    }
 }

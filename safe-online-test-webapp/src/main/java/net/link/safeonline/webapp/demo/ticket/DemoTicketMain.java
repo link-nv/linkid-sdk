@@ -9,13 +9,15 @@ package net.link.safeonline.webapp.demo.ticket;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class DemoTicketMain extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX
-			+ "/main.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX + "/main.seam";
 
-	public DemoTicketMain() {
-		super(PAGE_NAME);
-	}
+
+    public DemoTicketMain() {
+
+        super(PAGE_NAME);
+    }
 
 }

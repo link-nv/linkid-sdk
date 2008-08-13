@@ -19,70 +19,68 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;
 
+
 public class ConfigurationServiceBeanTest extends TestCase {
 
-	private ConfigurationServiceBean testedInstance;
+    private ConfigurationServiceBean testedInstance;
 
-	private EntityTestManager entityTestManager;
+    private EntityTestManager        entityTestManager;
 
-	private ConfigItemDAOBean configItemDAO;
+    private ConfigItemDAOBean        configItemDAO;
 
-	private ConfigGroupDAOBean configGroupDAO;
+    private ConfigGroupDAOBean       configGroupDAO;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.testedInstance = new ConfigurationServiceBean();
-		this.configGroupDAO = new ConfigGroupDAOBean();
-		this.configItemDAO = new ConfigItemDAOBean();
+    @Override
+    protected void setUp() throws Exception {
 
-		this.entityTestManager = new EntityTestManager();
-		/*
-		 * If you add entities to this list, also add them to
-		 * safe-online-sql-ddl.
-		 */
-		this.entityTestManager.setUp(ConfigGroupEntity.class,
-				ConfigItemEntity.class);
+        super.setUp();
 
-		EJBTestUtils.inject(this.configGroupDAO, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.configItemDAO, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.testedInstance, this.configItemDAO);
-		EJBTestUtils.inject(this.testedInstance, this.configGroupDAO);
+        this.testedInstance = new ConfigurationServiceBean();
+        this.configGroupDAO = new ConfigGroupDAOBean();
+        this.configItemDAO = new ConfigItemDAOBean();
 
-		EJBTestUtils.init(this.configItemDAO);
-		EJBTestUtils.init(this.configGroupDAO);
-	}
+        this.entityTestManager = new EntityTestManager();
+        /*
+         * If you add entities to this list, also add them to safe-online-sql-ddl.
+         */
+        this.entityTestManager.setUp(ConfigGroupEntity.class, ConfigItemEntity.class);
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.entityTestManager.tearDown();
-		super.tearDown();
-	}
+        EJBTestUtils.inject(this.configGroupDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.configItemDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(this.testedInstance, this.configItemDAO);
+        EJBTestUtils.inject(this.testedInstance, this.configGroupDAO);
 
-	public void testSaveConfigGroup() {
-		// setup
-		ConfigGroupEntity configGroup = this.configGroupDAO
-				.addConfigGroup("group 1");
-		this.configItemDAO.addConfigItem("item 1", "value 1", "string",
-				configGroup);
+        EJBTestUtils.init(this.configItemDAO);
+        EJBTestUtils.init(this.configGroupDAO);
+    }
 
-		ConfigGroupEntity detachedGroup = new ConfigGroupEntity("group 1");
-		ConfigItemEntity detachedItem = new ConfigItemEntity("item 1",
-				"value 2", "string", detachedGroup);
-		detachedGroup.getConfigItems().add(detachedItem);
-		List<ConfigGroupEntity> groupList = new ArrayList<ConfigGroupEntity>();
-		groupList.add(detachedGroup);
+    @Override
+    protected void tearDown() throws Exception {
 
-		// operate
-		this.testedInstance.saveConfiguration(groupList);
+        this.entityTestManager.tearDown();
+        super.tearDown();
+    }
 
-		// verify
-		groupList = this.testedInstance.listConfigGroups();
-		String result = groupList.get(0).getConfigItems().get(0).getValue();
-		assertEquals(result, "value 2");
-	}
+    public void testSaveConfigGroup() {
+
+        // setup
+        ConfigGroupEntity configGroup = this.configGroupDAO.addConfigGroup("group 1");
+        this.configItemDAO.addConfigItem("item 1", "value 1", "string", configGroup);
+
+        ConfigGroupEntity detachedGroup = new ConfigGroupEntity("group 1");
+        ConfigItemEntity detachedItem = new ConfigItemEntity("item 1", "value 2", "string", detachedGroup);
+        detachedGroup.getConfigItems().add(detachedItem);
+        List<ConfigGroupEntity> groupList = new ArrayList<ConfigGroupEntity>();
+        groupList.add(detachedGroup);
+
+        // operate
+        this.testedInstance.saveConfiguration(groupList);
+
+        // verify
+        groupList = this.testedInstance.listConfigGroups();
+        String result = groupList.get(0).getConfigItems().get(0).getValue();
+        assertEquals(result, "value 2");
+    }
 
 }

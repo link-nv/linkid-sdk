@@ -31,52 +31,56 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.tidy.Tidy;
 
+
 public class ExitServletTest {
 
-	private static final Log LOG = LogFactory.getLog(ExitServletTest.class);
+    private static final Log   LOG    = LogFactory.getLog(ExitServletTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager servletTestManager;
 
-	private HttpClient httpClient;
+    private HttpClient         httpClient;
 
-	private String location;
+    private String             location;
 
-	String userId = UUID.randomUUID().toString();
+    String                     userId = UUID.randomUUID().toString();
 
-	@Before
-	public void setUp() throws Exception {
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(ExitServlet.class);
-		this.location = this.servletTestManager.getServletLocation();
-		this.httpClient = new HttpClient();
-	}
 
-	@After
-	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
-	}
+    @Before
+    public void setUp() throws Exception {
 
-	@Test
-	public void testNoProtocolHandler() throws Exception {
-		// setup
+        this.servletTestManager = new ServletTestManager();
+        this.servletTestManager.setUp(ExitServlet.class);
+        this.location = this.servletTestManager.getServletLocation();
+        this.httpClient = new HttpClient();
+    }
 
-		// operate
-		GetMethod getMethod = new GetMethod(this.location);
-		int statusCode = this.httpClient.executeMethod(getMethod);
+    @After
+    public void tearDown() throws Exception {
 
-		// verify
-		LOG.debug("status code: " + statusCode);
-		assertEquals(HttpServletResponse.SC_BAD_REQUEST, statusCode);
-		InputStream resultStream = getMethod.getResponseBodyAsStream();
+        this.servletTestManager.tearDown();
+    }
 
-		Tidy tidy = new Tidy();
-		tidy.setQuiet(true);
-		tidy.setShowWarnings(false);
-		Document resultDocument = tidy.parseDOM(resultStream, null);
-		LOG.debug("result document: "
-				+ DomTestUtils.domToString(resultDocument));
-		Node h1Node = XPathAPI.selectSingleNode(resultDocument, "//h1/text()");
-		assertNotNull(h1Node);
-		assertEquals("Error(s)", h1Node.getNodeValue());
-	}
+    @Test
+    public void testNoProtocolHandler() throws Exception {
+
+        // setup
+
+        // operate
+        GetMethod getMethod = new GetMethod(this.location);
+        int statusCode = this.httpClient.executeMethod(getMethod);
+
+        // verify
+        LOG.debug("status code: " + statusCode);
+        assertEquals(HttpServletResponse.SC_BAD_REQUEST, statusCode);
+        InputStream resultStream = getMethod.getResponseBodyAsStream();
+
+        Tidy tidy = new Tidy();
+        tidy.setQuiet(true);
+        tidy.setShowWarnings(false);
+        Document resultDocument = tidy.parseDOM(resultStream, null);
+        LOG.debug("result document: " + DomTestUtils.domToString(resultDocument));
+        Node h1Node = XPathAPI.selectSingleNode(resultDocument, "//h1/text()");
+        assertNotNull(h1Node);
+        assertEquals("Error(s)", h1Node.getNodeValue());
+    }
 }

@@ -8,27 +8,32 @@ package net.link.safeonline.webapp.auth;
 
 import net.link.safeonline.webapp.Page;
 
+
 public class AuthSubscription extends Page {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX
-			+ "/subscription.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/subscription.seam";
 
-	public AuthSubscription() {
-		super(PAGE_NAME);
-	}
 
-	public AuthIdentityConfirmation confirm() {
-		clickButtonAndWait("confirm");
-		return new AuthIdentityConfirmation();
-	}
+    public AuthSubscription() {
 
-	public AuthIdentityConfirmation subscribe() {
-		clickButtonAndWait("subscribe");
-		return new AuthIdentityConfirmation();
-	}
+        super(PAGE_NAME);
+    }
 
-	public AuthSubscriptionRejection reject() {
-		clickButtonAndWait("reject");
-		return new AuthSubscriptionRejection();
-	}
+    public AuthIdentityConfirmation confirm() {
+
+        clickButtonAndWait("confirm");
+        return new AuthIdentityConfirmation();
+    }
+
+    public AuthIdentityConfirmation subscribe() {
+
+        clickButtonAndWait("subscribe");
+        return new AuthIdentityConfirmation();
+    }
+
+    public AuthSubscriptionRejection reject() {
+
+        clickButtonAndWait("reject");
+        return new AuthSubscriptionRejection();
+    }
 }

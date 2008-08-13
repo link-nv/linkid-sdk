@@ -25,56 +25,59 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.openssl.PEMWriter;
 
+
 /**
- * Servlet that exports the public key and certificate of the OLAS service that
- * is being used to sign the generated SAML tokens. This service can be useful
- * to service providers that want to verify the correctness of the
- * authentication response tokens themselves.
+ * Servlet that exports the public key and certificate of the OLAS service that is being used to sign the generated SAML
+ * tokens. This service can be useful to service providers that want to verify the correctness of the authentication
+ * response tokens themselves.
  * 
  * @author fcorneli
  * 
  */
 public class PkiServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long     serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(PkiServlet.class);
+    private static final Log      LOG              = LogFactory.getLog(PkiServlet.class);
 
-	private IdentityServiceClient client;
+    private IdentityServiceClient client;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		LOG.debug("init");
-		this.client = new IdentityServiceClient();
-	}
 
-	@Override
-	protected void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("doGet");
-		X509Certificate certificate = this.client.getCertificate();
-		String pemCertificate = toPem(certificate);
+    @Override
+    public void init(ServletConfig config) throws ServletException {
 
-		response.setContentType("text/plain");
-		PrintWriter out = response.getWriter();
-		out.print(pemCertificate);
-		out.close();
-	}
+        super.init(config);
+        LOG.debug("init");
+        this.client = new IdentityServiceClient();
+    }
 
-	private static String toPem(Object object) {
-		StringWriter buffer = new StringWriter();
-		try {
-			PEMWriter writer = new PEMWriter(buffer);
-			LOG.debug("toPem: " + object.getClass().getName());
-			writer.writeObject(object);
-			writer.close();
-			return buffer.toString();
-		} catch (Exception e) {
-			throw new RuntimeException("Cannot convert object to PEM format: "
-					+ e.getMessage(), e);
-		} finally {
-			IOUtils.closeQuietly(buffer);
-		}
-	}
+    @Override
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+
+        LOG.debug("doGet");
+        X509Certificate certificate = this.client.getCertificate();
+        String pemCertificate = toPem(certificate);
+
+        response.setContentType("text/plain");
+        PrintWriter out = response.getWriter();
+        out.print(pemCertificate);
+        out.close();
+    }
+
+    private static String toPem(Object object) {
+
+        StringWriter buffer = new StringWriter();
+        try {
+            PEMWriter writer = new PEMWriter(buffer);
+            LOG.debug("toPem: " + object.getClass().getName());
+            writer.writeObject(object);
+            writer.close();
+            return buffer.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot convert object to PEM format: " + e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(buffer);
+        }
+    }
 }

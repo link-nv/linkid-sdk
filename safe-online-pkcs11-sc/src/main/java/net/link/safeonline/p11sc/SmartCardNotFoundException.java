@@ -10,6 +10,7 @@ package net.link.safeonline.p11sc;
 
 import java.io.IOException;
 
+
 /**
  * Signals that no smart card was found in the smart card reader.
  * 
@@ -18,13 +19,16 @@ import java.io.IOException;
  */
 public class SmartCardNotFoundException extends IOException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public SmartCardNotFoundException() {
-		super();
-	}
 
-	public SmartCardNotFoundException(String s) {
-		super(s);
-	}
+    public SmartCardNotFoundException() {
+
+        super();
+    }
+
+    public SmartCardNotFoundException(String s) {
+
+        super(s);
+    }
 }

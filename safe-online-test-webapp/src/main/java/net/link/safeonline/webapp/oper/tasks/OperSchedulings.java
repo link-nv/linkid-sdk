@@ -8,12 +8,14 @@ package net.link.safeonline.webapp.oper.tasks;
 
 import net.link.safeonline.webapp.oper.OperTemplate;
 
+
 public class OperSchedulings extends OperTemplate {
 
-	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/tasks/schedulings.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX + "/tasks/schedulings.seam";
 
-	public OperSchedulings() {
-		super(PAGE_NAME);
-	}
+
+    public OperSchedulings() {
+
+        super(PAGE_NAME);
+    }
 }

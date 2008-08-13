@@ -28,6 +28,7 @@ import net.link.safeonline.demo.cinema.service.UserService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 /**
  * <h2>{@link TicketServiceBean}<br>
  * <sub>Service bean for {@link TicketService}.</sub></h2>
@@ -40,8 +41,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = TicketService.BINDING)
-public class TicketServiceBean extends AbstractCinemaServiceBean implements
-        TicketService {
+public class TicketServiceBean extends AbstractCinemaServiceBean implements TicketService {
 
     @EJB
     private transient SeatService seatService;
@@ -52,16 +52,13 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
     /**
      * {@inheritDoc}
      */
-    public TicketEntity createTicket(UserEntity user, FilmEntity film,
-            Date time, SeatOccupationEntity occupation) {
+    public TicketEntity createTicket(UserEntity user, FilmEntity film, Date time, SeatOccupationEntity occupation) {
 
         // Occupy our seat.
-        SeatOccupationEntity ticketOccupation = this.seatService
-                .validate(occupation);
+        SeatOccupationEntity ticketOccupation = this.seatService.validate(occupation);
 
         // Create a ticket for them.
-        TicketEntity ticket = new TicketEntity(user, film, time.getTime(),
-                ticketOccupation);
+        TicketEntity ticket = new TicketEntity(user, film, time.getTime(), ticketOccupation);
         ticket.setPrice(calculatePrice(ticket));
 
         return ticket;
@@ -100,8 +97,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
         LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
         try {
             // NOTE: time parameter is not checked because this is a demo.
-            return this.em.createNamedQuery(TicketEntity.findTicket)
-                    .setParameter("nrn", nrn).getResultList();
+            return this.em.createNamedQuery(TicketEntity.findTicket).setParameter("nrn", nrn).getResultList();
         }
 
         catch (NoResultException e) {
@@ -112,13 +108,11 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
     /**
      * {@inheritDoc}
      */
-    public List<TicketEntity> getTickets(String nrn, Date time,
-            String theatreName) {
+    public List<TicketEntity> getTickets(String nrn, Date time, String theatreName) {
 
         List<TicketEntity> tickets = getTickets(nrn, time);
         for (Iterator<TicketEntity> it = tickets.iterator(); it.hasNext();)
-            if (!it.next().getOccupation().getSeat().getRoom().getTheatre()
-                    .getName().equalsIgnoreCase(theatreName)) {
+            if (!it.next().getOccupation().getSeat().getRoom().getTheatre().getName().equalsIgnoreCase(theatreName)) {
                 it.remove();
             }
 
@@ -135,8 +129,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
     /**
      * {@inheritDoc}
      */
-    public boolean isValid(String nrn, Date time, String theatreName,
-            String filmName) {
+    public boolean isValid(String nrn, Date time, String theatreName, String filmName) {
 
         for (TicketEntity ticket : getTickets(nrn, time, theatreName))
             if (ticket.getFilm().getName().equalsIgnoreCase(filmName))
@@ -181,7 +174,6 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements
      */
     public String getTheatreName(TicketEntity ticket) {
 
-        return ticket.getOccupation().getSeat().getRoom().getTheatre()
-                .getName();
+        return ticket.getOccupation().getSeat().getRoom().getTheatre().getName();
     }
 }

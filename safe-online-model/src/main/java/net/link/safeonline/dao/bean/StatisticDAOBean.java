@@ -23,82 +23,83 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+
 @Stateless
 public class StatisticDAOBean implements StatisticDAO {
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager                  entityManager;
 
-	@EJB
-	StatisticDataPointDAO statisticDataPointDAO;
+    @EJB
+    StatisticDataPointDAO                  statisticDataPointDAO;
 
-	private StatisticEntity.QueryInterface queryObject;
+    private StatisticEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, StatisticEntity.QueryInterface.class);
-	}
 
-	public StatisticEntity addStatistic(String name, String domain,
-			ApplicationEntity application) {
-		StatisticEntity statistic = new StatisticEntity(name, domain,
-				application, new Date());
-		this.entityManager.persist(statistic);
-		return statistic;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public StatisticEntity findStatisticById(long statisticId) {
-		StatisticEntity result = this.entityManager.find(StatisticEntity.class,
-				statisticId);
-		return result;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                StatisticEntity.QueryInterface.class);
+    }
 
-	public StatisticEntity findStatisticByNameDomainAndApplication(String name,
-			String domain, ApplicationEntity application) {
-		try {
-			if (null == application)
-				return this.queryObject.findStatisticWhereNameAndDomain(name,
-						domain);
-			return this.queryObject.findStatisticWhereNameDomainAndApplication(
-					name, domain, application);
-		} catch (Exception e) {
-			return null;
-		}
-	}
+    public StatisticEntity addStatistic(String name, String domain, ApplicationEntity application) {
 
-	public StatisticEntity findOrAddStatisticByNameDomainAndApplication(
-			String name, String domain, ApplicationEntity application) {
-		StatisticEntity statistic = this
-				.findStatisticByNameDomainAndApplication(name, domain,
-						application);
-		if (statistic == null) {
-			statistic = this.addStatistic(name, domain, application);
-		}
-		return statistic;
-	}
+        StatisticEntity statistic = new StatisticEntity(name, domain, application, new Date());
+        this.entityManager.persist(statistic);
+        return statistic;
+    }
 
-	public List<StatisticEntity> listStatistics(ApplicationEntity application) {
-		if (null == application)
-			return this.queryObject.listStatistics();
-		return this.queryObject.listStatistics(application);
-	}
+    public StatisticEntity findStatisticById(long statisticId) {
 
-	public void removeStatistics(ApplicationEntity application) {
-		List<StatisticEntity> statistics = listStatistics(application);
-		for (StatisticEntity statistic : statistics) {
-			this.statisticDataPointDAO.cleanStatisticDataPoints(statistic);
-			this.entityManager.remove(statistic);
-		}
-	}
+        StatisticEntity result = this.entityManager.find(StatisticEntity.class, statisticId);
+        return result;
+    }
 
-	public void cleanDomain(String domain) {
-		List<StatisticEntity> statistics = this.queryObject
-				.listStatistics(domain);
-		for (StatisticEntity statisticEntity : statistics) {
-			this.statisticDataPointDAO
-					.cleanStatisticDataPoints(statisticEntity);
-		}
-		this.queryObject.deleteWhereDomain(domain);
-	}
+    public StatisticEntity findStatisticByNameDomainAndApplication(String name, String domain,
+            ApplicationEntity application) {
+
+        try {
+            if (null == application)
+                return this.queryObject.findStatisticWhereNameAndDomain(name, domain);
+            return this.queryObject.findStatisticWhereNameDomainAndApplication(name, domain, application);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public StatisticEntity findOrAddStatisticByNameDomainAndApplication(String name, String domain,
+            ApplicationEntity application) {
+
+        StatisticEntity statistic = this.findStatisticByNameDomainAndApplication(name, domain, application);
+        if (statistic == null) {
+            statistic = this.addStatistic(name, domain, application);
+        }
+        return statistic;
+    }
+
+    public List<StatisticEntity> listStatistics(ApplicationEntity application) {
+
+        if (null == application)
+            return this.queryObject.listStatistics();
+        return this.queryObject.listStatistics(application);
+    }
+
+    public void removeStatistics(ApplicationEntity application) {
+
+        List<StatisticEntity> statistics = listStatistics(application);
+        for (StatisticEntity statistic : statistics) {
+            this.statisticDataPointDAO.cleanStatisticDataPoints(statistic);
+            this.entityManager.remove(statistic);
+        }
+    }
+
+    public void cleanDomain(String domain) {
+
+        List<StatisticEntity> statistics = this.queryObject.listStatistics(domain);
+        for (StatisticEntity statisticEntity : statistics) {
+            this.statisticDataPointDAO.cleanStatisticDataPoints(statisticEntity);
+        }
+        this.queryObject.deleteWhereDomain(domain);
+    }
 }

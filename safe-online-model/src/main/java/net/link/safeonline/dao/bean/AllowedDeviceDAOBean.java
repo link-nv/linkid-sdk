@@ -21,43 +21,44 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+
 @Stateless
 public class AllowedDeviceDAOBean implements AllowedDeviceDAO {
 
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+    private EntityManager              entityManager;
 
-	AllowedDeviceEntity.QueryInterface queryObject;
+    AllowedDeviceEntity.QueryInterface queryObject;
 
-	@PostConstruct
-	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory.createQueryObject(
-				this.entityManager, AllowedDeviceEntity.QueryInterface.class);
-	}
 
-	public AllowedDeviceEntity addAllowedDevice(ApplicationEntity application,
-			DeviceEntity device, int weight) {
-		AllowedDeviceEntity allowedDevice = new AllowedDeviceEntity(
-				application, device, weight);
-		this.entityManager.persist(allowedDevice);
-		return allowedDevice;
-	}
+    @PostConstruct
+    public void postConstructCallback() {
 
-	public List<AllowedDeviceEntity> listAllowedDevices(
-			ApplicationEntity application) {
-		List<AllowedDeviceEntity> result = this.queryObject
-				.listAllowedDevices(application);
-		return result;
-	}
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+                AllowedDeviceEntity.QueryInterface.class);
+    }
 
-	public void deleteAllowedDevices(ApplicationEntity application) {
-		this.queryObject.deleteAllowedDevices(application);
-	}
+    public AllowedDeviceEntity addAllowedDevice(ApplicationEntity application, DeviceEntity device, int weight) {
 
-	public AllowedDeviceEntity findAllowedDevice(ApplicationEntity application,
-			DeviceEntity device) {
-		AllowedDeviceEntity allowedDevice = this.queryObject.find(application,
-				device);
-		return allowedDevice;
-	}
+        AllowedDeviceEntity allowedDevice = new AllowedDeviceEntity(application, device, weight);
+        this.entityManager.persist(allowedDevice);
+        return allowedDevice;
+    }
+
+    public List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application) {
+
+        List<AllowedDeviceEntity> result = this.queryObject.listAllowedDevices(application);
+        return result;
+    }
+
+    public void deleteAllowedDevices(ApplicationEntity application) {
+
+        this.queryObject.deleteAllowedDevices(application);
+    }
+
+    public AllowedDeviceEntity findAllowedDevice(ApplicationEntity application, DeviceEntity device) {
+
+        AllowedDeviceEntity allowedDevice = this.queryObject.find(application, device);
+        return allowedDevice;
+    }
 }

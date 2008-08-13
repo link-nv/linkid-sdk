@@ -14,6 +14,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 
+
 /**
  * Interface for application authentication service.
  * 
@@ -23,38 +24,35 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 @Local
 public interface ApplicationAuthenticationService {
 
-	/**
-	 * Authenticates an application given an application certificate. At this
-	 * point the application certificate already passed the PKI validation.
-	 * 
-	 * @param certificate
-	 *            the trusted X509 application certificate.
-	 * @return the application Id of the authentication application.
-	 * @throws ApplicationNotFoundException
-	 */
-	String authenticate(X509Certificate certificate)
-			throws ApplicationNotFoundException;
+    /**
+     * Authenticates an application given an application certificate. At this point the application certificate already
+     * passed the PKI validation.
+     * 
+     * @param certificate
+     *            the trusted X509 application certificate.
+     * @return the application Id of the authentication application.
+     * @throws ApplicationNotFoundException
+     */
+    String authenticate(X509Certificate certificate) throws ApplicationNotFoundException;
 
-	/**
-	 * Gives back the application X509 certificates given the application Id.
-	 * 
-	 * @param applicationId
-	 *            the application Id.
-	 * @return the X509 application certificates.
-	 * @throws ApplicationNotFoundException
-	 */
-	List<X509Certificate> getCertificates(String applicationId)
-			throws ApplicationNotFoundException;
+    /**
+     * Gives back the application X509 certificates given the application Id.
+     * 
+     * @param applicationId
+     *            the application Id.
+     * @return the X509 application certificates.
+     * @throws ApplicationNotFoundException
+     */
+    List<X509Certificate> getCertificates(String applicationId) throws ApplicationNotFoundException;
 
-	/**
-	 * Checks whether we have to skip the message integrity check. This means
-	 * that the SOAP body should not be signed by the WS-Security signature.
-	 * 
-	 * @param applicationId
-	 *            the application Id.
-	 * @return <code>true</code> if we can skip the message integrity check.
-	 * @throws ApplicationNotFoundException
-	 */
-	boolean skipMessageIntegrityCheck(String applicationId)
-			throws ApplicationNotFoundException;
+    /**
+     * Checks whether we have to skip the message integrity check. This means that the SOAP body should not be signed by
+     * the WS-Security signature.
+     * 
+     * @param applicationId
+     *            the application Id.
+     * @return <code>true</code> if we can skip the message integrity check.
+     * @throws ApplicationNotFoundException
+     */
+    boolean skipMessageIntegrityCheck(String applicationId) throws ApplicationNotFoundException;
 }

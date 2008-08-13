@@ -52,215 +52,211 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 
+
 @Stateful
 @Name("ownerApplication")
-@LocalBinding(jndiBinding = OwnerConstants.JNDI_PREFIX
-		+ "ApplicationBean/local")
+@LocalBinding(jndiBinding = OwnerConstants.JNDI_PREFIX + "ApplicationBean/local")
 @SecurityDomain(OwnerConstants.SAFE_ONLINE_OWNER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class ApplicationBean implements Application {
 
-	private static final Log LOG = LogFactory.getLog(ApplicationBean.class);
+    private static final Log      LOG                                     = LogFactory.getLog(ApplicationBean.class);
 
-	private static final String selectedApplicationUsageAgreementsModel = "selectedApplicationUsageAgreements";
+    private static final String   selectedApplicationUsageAgreementsModel = "selectedApplicationUsageAgreements";
 
-	@EJB
-	private ApplicationService applicationService;
+    @EJB
+    private ApplicationService    applicationService;
 
-	@EJB
-	private UsageAgreementService usageAgreementService;
+    @EJB
+    private UsageAgreementService usageAgreementService;
 
-	@EJB
-	private SubscriptionService subscriptionService;
+    @EJB
+    private SubscriptionService   subscriptionService;
 
-	@EJB
-	private DeviceService deviceService;
+    @EJB
+    private DeviceService         deviceService;
 
-	@EJB
-	private DevicePolicyService devicePolicyService;
+    @EJB
+    private DevicePolicyService   devicePolicyService;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+    @In(create = true)
+    FacesMessages                 facesMessages;
 
-	@SuppressWarnings("unused")
-	@Out
-	private long numberOfSubscriptions;
+    @SuppressWarnings("unused")
+    @Out
+    private long                  numberOfSubscriptions;
 
-	/*
-	 * Lifecycle
-	 */
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
-	/*
-	 * Seam Data models
-	 */
-	@SuppressWarnings("unused")
-	@DataModel
-	private List<ApplicationEntity> ownerApplicationList;
+    /*
+     * Lifecycle
+     */
+    @Remove
+    @Destroy
+    public void destroyCallback() {
 
-	@DataModelSelection("ownerApplicationList")
-	@Out(required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private ApplicationEntity selectedApplication;
+    }
 
-	@SuppressWarnings("unused")
-	@DataModel(value = "selectedApplicationIdentity")
-	private Set<ApplicationIdentityAttributeEntity> selectedApplicationIdentity;
 
-	@SuppressWarnings("unused")
-	@DataModel(value = selectedApplicationUsageAgreementsModel)
-	private List<UsageAgreementEntity> selectedApplicationUsageAgreements;
+    /*
+     * Seam Data models
+     */
+    @SuppressWarnings("unused")
+    @DataModel
+    private List<ApplicationEntity>                 ownerApplicationList;
 
-	@DataModelSelection(selectedApplicationUsageAgreementsModel)
-	@Out(required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private UsageAgreementEntity selectedUsageAgreement;
+    @DataModelSelection("ownerApplicationList")
+    @Out(required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private ApplicationEntity                       selectedApplication;
 
-	@SuppressWarnings("unused")
-	@Out(required = false, scope = ScopeType.SESSION)
-	private UsageAgreementEntity draftUsageAgreement;
+    @SuppressWarnings("unused")
+    @DataModel(value = "selectedApplicationIdentity")
+    private Set<ApplicationIdentityAttributeEntity> selectedApplicationIdentity;
 
-	@SuppressWarnings("unused")
-	@Out(required = false, scope = ScopeType.SESSION)
-	private UsageAgreementEntity currentUsageAgreement;
+    @SuppressWarnings("unused")
+    @DataModel(value = selectedApplicationUsageAgreementsModel)
+    private List<UsageAgreementEntity>              selectedApplicationUsageAgreements;
 
-	@DataModel
-	private List<DeviceEntry> allowedDevices;
+    @DataModelSelection(selectedApplicationUsageAgreementsModel)
+    @Out(required = false, scope = ScopeType.SESSION)
+    @In(required = false)
+    private UsageAgreementEntity                    selectedUsageAgreement;
 
-	/*
-	 * Seam Data model Factories
-	 */
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	@Factory("ownerApplicationList")
-	public void applicationListFactory()
-			throws ApplicationOwnerNotFoundException {
-		LOG.debug("application list factory");
-		this.ownerApplicationList = this.applicationService
-				.getOwnedApplications();
-	}
+    @SuppressWarnings("unused")
+    @Out(required = false, scope = ScopeType.SESSION)
+    private UsageAgreementEntity                    draftUsageAgreement;
 
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	@Factory("allowedDevices")
-	public void allowedDevices() {
-		if (this.selectedApplication == null) {
-			return;
-		}
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		Locale viewLocale = facesContext.getViewRoot().getLocale();
+    @SuppressWarnings("unused")
+    @Out(required = false, scope = ScopeType.SESSION)
+    private UsageAgreementEntity                    currentUsageAgreement;
 
-		List<DeviceEntity> deviceList = this.deviceService.listDevices();
-		List<AllowedDeviceEntity> allowedDeviceList = this.deviceService
-				.listAllowedDevices(this.selectedApplication);
+    @DataModel
+    private List<DeviceEntry>                       allowedDevices;
 
-		this.allowedDevices = new ArrayList<DeviceEntry>();
 
-		boolean defaultValue = false;
+    /*
+     * Seam Data model Factories
+     */
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    @Factory("ownerApplicationList")
+    public void applicationListFactory() throws ApplicationOwnerNotFoundException {
 
-		for (DeviceEntity deviceEntity : deviceList) {
-			String deviceDescription = this.devicePolicyService
-					.getDeviceDescription(deviceEntity.getName(), viewLocale);
-			this.allowedDevices.add(new DeviceEntry(deviceEntity,
-					deviceDescription, defaultValue, 0));
-		}
+        LOG.debug("application list factory");
+        this.ownerApplicationList = this.applicationService.getOwnedApplications();
+    }
 
-		for (AllowedDeviceEntity allowedDevice : allowedDeviceList) {
-			for (DeviceEntry deviceEntry : this.allowedDevices) {
-				if (deviceEntry.getDevice().equals(allowedDevice.getDevice())) {
-					deviceEntry.setAllowed(true);
-					deviceEntry.setWeight(allowedDevice.getWeight());
-				}
-			}
-		}
-	}
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    @Factory("allowedDevices")
+    public void allowedDevices() {
 
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	@Factory(selectedApplicationUsageAgreementsModel)
-	public void usageAgreementListFactory()
-			throws ApplicationNotFoundException, PermissionDeniedException {
-		if (null == this.selectedApplication) {
-			return;
-		}
-		LOG.debug("usage agreement list factory");
-		this.selectedApplicationUsageAgreements = this.usageAgreementService
-				.getUsageAgreements(this.selectedApplication.getName());
-	}
+        if (this.selectedApplication == null) {
+            return;
+        }
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-	/*
-	 * Actions
-	 */
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String view() throws ApplicationNotFoundException,
-			PermissionDeniedException, ApplicationIdentityNotFoundException {
-		String applicationName = this.selectedApplication.getName();
-		LOG.debug("view: " + applicationName);
-		this.numberOfSubscriptions = this.subscriptionService
-				.getNumberOfSubscriptions(applicationName);
-		this.selectedApplicationIdentity = this.applicationService
-				.getCurrentApplicationIdentity(applicationName);
-		return "view-application";
-	}
+        List<DeviceEntity> deviceList = this.deviceService.listDevices();
+        List<AllowedDeviceEntity> allowedDeviceList = this.deviceService.listAllowedDevices(this.selectedApplication);
 
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String edit() {
-		LOG.debug("edit: " + this.selectedApplication.getName());
-		return "edit-application";
-	}
+        this.allowedDevices = new ArrayList<DeviceEntry>();
 
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String save() throws ApplicationNotFoundException,
-			PermissionDeniedException {
-		String applicationName = this.selectedApplication.getName();
-		String applicationDescription = this.selectedApplication
-				.getDescription();
-		boolean deviceRestriction = this.selectedApplication
-				.isDeviceRestriction();
-		LOG.debug("save: " + applicationName);
-		LOG.debug("description: " + applicationDescription);
+        boolean defaultValue = false;
 
-		List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
-		for (DeviceEntry deviceEntry : this.allowedDevices) {
-			if (deviceEntry.isAllowed() == true) {
-				AllowedDeviceEntity device = new AllowedDeviceEntity(
-						this.selectedApplication, deviceEntry.getDevice(),
-						deviceEntry.getWeight());
-				allowedDeviceList.add(device);
-			}
-		}
+        for (DeviceEntity deviceEntity : deviceList) {
+            String deviceDescription = this.devicePolicyService
+                    .getDeviceDescription(deviceEntity.getName(), viewLocale);
+            this.allowedDevices.add(new DeviceEntry(deviceEntity, deviceDescription, defaultValue, 0));
+        }
 
-		this.applicationService.setApplicationDescription(applicationName,
-				applicationDescription);
-		this.applicationService.setApplicationDeviceRestriction(
-				applicationName, deviceRestriction);
-		this.deviceService.setAllowedDevices(this.selectedApplication,
-				allowedDeviceList);
-		return "saved";
-	}
+        for (AllowedDeviceEntity allowedDevice : allowedDeviceList) {
+            for (DeviceEntry deviceEntry : this.allowedDevices) {
+                if (deviceEntry.getDevice().equals(allowedDevice.getDevice())) {
+                    deviceEntry.setAllowed(true);
+                    deviceEntry.setWeight(allowedDevice.getWeight());
+                }
+            }
+        }
+    }
 
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String viewStats() {
-		return "viewstats";
-	}
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    @Factory(selectedApplicationUsageAgreementsModel)
+    public void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException {
 
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String viewUsageAgreement() {
-		LOG.debug("view usage agreement for application: "
-				+ this.selectedApplication.getName() + ", version="
-				+ this.selectedUsageAgreement.getUsageAgreementVersion());
-		return "view-usage-agreement";
-	}
+        if (null == this.selectedApplication) {
+            return;
+        }
+        LOG.debug("usage agreement list factory");
+        this.selectedApplicationUsageAgreements = this.usageAgreementService
+                .getUsageAgreements(this.selectedApplication.getName());
+    }
 
-	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public String editUsageAgreement() throws ApplicationNotFoundException,
-			PermissionDeniedException {
-		LOG.debug("edit usage agreement for application: "
-				+ this.selectedApplication.getName());
-		this.draftUsageAgreement = this.usageAgreementService
-				.getDraftUsageAgreement(this.selectedApplication.getName());
-		this.currentUsageAgreement = this.usageAgreementService
-				.getCurrentUsageAgreement(this.selectedApplication.getName());
-		return "edit-usage-agreement";
-	}
+    /*
+     * Actions
+     */
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    public String view() throws ApplicationNotFoundException, PermissionDeniedException,
+            ApplicationIdentityNotFoundException {
+
+        String applicationName = this.selectedApplication.getName();
+        LOG.debug("view: " + applicationName);
+        this.numberOfSubscriptions = this.subscriptionService.getNumberOfSubscriptions(applicationName);
+        this.selectedApplicationIdentity = this.applicationService.getCurrentApplicationIdentity(applicationName);
+        return "view-application";
+    }
+
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    public String edit() {
+
+        LOG.debug("edit: " + this.selectedApplication.getName());
+        return "edit-application";
+    }
+
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    public String save() throws ApplicationNotFoundException, PermissionDeniedException {
+
+        String applicationName = this.selectedApplication.getName();
+        String applicationDescription = this.selectedApplication.getDescription();
+        boolean deviceRestriction = this.selectedApplication.isDeviceRestriction();
+        LOG.debug("save: " + applicationName);
+        LOG.debug("description: " + applicationDescription);
+
+        List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
+        for (DeviceEntry deviceEntry : this.allowedDevices) {
+            if (deviceEntry.isAllowed() == true) {
+                AllowedDeviceEntity device = new AllowedDeviceEntity(this.selectedApplication, deviceEntry.getDevice(),
+                        deviceEntry.getWeight());
+                allowedDeviceList.add(device);
+            }
+        }
+
+        this.applicationService.setApplicationDescription(applicationName, applicationDescription);
+        this.applicationService.setApplicationDeviceRestriction(applicationName, deviceRestriction);
+        this.deviceService.setAllowedDevices(this.selectedApplication, allowedDeviceList);
+        return "saved";
+    }
+
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    public String viewStats() {
+
+        return "viewstats";
+    }
+
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    public String viewUsageAgreement() {
+
+        LOG.debug("view usage agreement for application: " + this.selectedApplication.getName() + ", version="
+                + this.selectedUsageAgreement.getUsageAgreementVersion());
+        return "view-usage-agreement";
+    }
+
+    @RolesAllowed(OwnerConstants.OWNER_ROLE)
+    public String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException {
+
+        LOG.debug("edit usage agreement for application: " + this.selectedApplication.getName());
+        this.draftUsageAgreement = this.usageAgreementService
+                .getDraftUsageAgreement(this.selectedApplication.getName());
+        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication
+                .getName());
+        return "edit-usage-agreement";
+    }
 }

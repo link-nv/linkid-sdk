@@ -21,83 +21,90 @@ import org.apache.commons.logging.LogFactory;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 
+
 /**
- * Web Service Test Utils. Can be used to unit test JAX-WS endpoint
- * implementations.
+ * Web Service Test Utils. Can be used to unit test JAX-WS endpoint implementations.
  * 
  * @author fcorneli
  * 
  */
 public class WebServiceTestUtils {
 
-	private static final Log LOG = LogFactory.getLog(WebServiceTestUtils.class);
+    private static final Log LOG     = LogFactory.getLog(WebServiceTestUtils.class);
 
-	private Endpoint endpoint;
+    private Endpoint         endpoint;
 
-	private HttpServer httpServer;
+    private HttpServer       httpServer;
 
-	private ExecutorService executorService;
+    private ExecutorService  executorService;
 
-	private int port;
+    private int              port;
 
-	private String context = "/test";
+    private String           context = "/test";
 
-	public void setUp(Object webServicePort) throws Exception {
-		this.endpoint = Endpoint.create(webServicePort);
 
-		this.httpServer = HttpServer.create();
-		this.port = getFreePort();
-		LOG.debug("using port: " + this.port);
-		this.httpServer.bind(new InetSocketAddress(this.port), 1);
-		this.executorService = Executors.newFixedThreadPool(1);
-		this.httpServer.setExecutor(this.executorService);
-		this.httpServer.start();
+    public void setUp(Object webServicePort) throws Exception {
 
-		HttpContext httpContext = this.httpServer.createContext(this.context);
-		this.endpoint.publish(httpContext);
-	}
+        this.endpoint = Endpoint.create(webServicePort);
 
-	public void setUp(Object webServicePort, String context) throws Exception {
-		this.endpoint = Endpoint.create(webServicePort);
+        this.httpServer = HttpServer.create();
+        this.port = getFreePort();
+        LOG.debug("using port: " + this.port);
+        this.httpServer.bind(new InetSocketAddress(this.port), 1);
+        this.executorService = Executors.newFixedThreadPool(1);
+        this.httpServer.setExecutor(this.executorService);
+        this.httpServer.start();
 
-		this.httpServer = HttpServer.create();
-		this.port = getFreePort();
-		LOG.debug("using port: " + this.port);
-		this.httpServer.bind(new InetSocketAddress(this.port), 1);
-		this.executorService = Executors.newFixedThreadPool(1);
-		this.httpServer.setExecutor(this.executorService);
-		this.httpServer.start();
+        HttpContext httpContext = this.httpServer.createContext(this.context);
+        this.endpoint.publish(httpContext);
+    }
 
-		HttpContext httpContext = this.httpServer.createContext(context);
-		this.endpoint.publish(httpContext);
-	}
+    public void setUp(Object webServicePort, String context) throws Exception {
 
-	public String getEndpointAddress() {
-		String endpointAddress = "http://localhost:" + this.port + this.context;
-		return endpointAddress;
-	}
+        this.endpoint = Endpoint.create(webServicePort);
 
-	public String getLocation() {
-		return "http://localhost:" + this.port;
-	}
+        this.httpServer = HttpServer.create();
+        this.port = getFreePort();
+        LOG.debug("using port: " + this.port);
+        this.httpServer.bind(new InetSocketAddress(this.port), 1);
+        this.executorService = Executors.newFixedThreadPool(1);
+        this.httpServer.setExecutor(this.executorService);
+        this.httpServer.start();
 
-	public void tearDown() throws Exception {
-		this.endpoint.stop();
-		this.httpServer.stop(1);
-		this.executorService.shutdown();
-	}
+        HttpContext httpContext = this.httpServer.createContext(context);
+        this.endpoint.publish(httpContext);
+    }
 
-	public void setEndpointAddress(Object webServiceClientPort) {
-		BindingProvider bindingProvider = (BindingProvider) webServiceClientPort;
-		String endpointAddress = getEndpointAddress();
-		bindingProvider.getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
-	}
+    public String getEndpointAddress() {
 
-	public static int getFreePort() throws Exception {
-		ServerSocket serverSocket = new ServerSocket(0);
-		int port = serverSocket.getLocalPort();
-		serverSocket.close();
-		return port;
-	}
+        String endpointAddress = "http://localhost:" + this.port + this.context;
+        return endpointAddress;
+    }
+
+    public String getLocation() {
+
+        return "http://localhost:" + this.port;
+    }
+
+    public void tearDown() throws Exception {
+
+        this.endpoint.stop();
+        this.httpServer.stop(1);
+        this.executorService.shutdown();
+    }
+
+    public void setEndpointAddress(Object webServiceClientPort) {
+
+        BindingProvider bindingProvider = (BindingProvider) webServiceClientPort;
+        String endpointAddress = getEndpointAddress();
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
+    }
+
+    public static int getFreePort() throws Exception {
+
+        ServerSocket serverSocket = new ServerSocket(0);
+        int port = serverSocket.getLocalPort();
+        serverSocket.close();
+        return port;
+    }
 }

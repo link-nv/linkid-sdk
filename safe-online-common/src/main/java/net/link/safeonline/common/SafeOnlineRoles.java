@@ -9,17 +9,19 @@ package net.link.safeonline.common;
 
 public class SafeOnlineRoles {
 
-	private SafeOnlineRoles() {
-		// empty
-	}
+    private SafeOnlineRoles() {
 
-	public static final String USER_ROLE = "user";
+        // empty
+    }
 
-	public static final String OPERATOR_ROLE = "operator";
 
-	public static final String GLOBAL_OPERATOR_ROLE = "global-operator";
+    public static final String USER_ROLE            = "user";
 
-	public static final String OWNER_ROLE = "owner";
-	
-	public static final String HELPDESK_ROLE = "helpdesk";
+    public static final String OPERATOR_ROLE        = "operator";
+
+    public static final String GLOBAL_OPERATOR_ROLE = "global-operator";
+
+    public static final String OWNER_ROLE           = "owner";
+
+    public static final String HELPDESK_ROLE        = "helpdesk";
 }

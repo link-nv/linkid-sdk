@@ -13,9 +13,9 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.entity.SubjectEntity;
 
+
 @Local
 public interface UserRegistrationManager {
 
-	SubjectEntity registerUser(String username) throws ExistingUserException,
-			AttributeTypeNotFoundException;
+    SubjectEntity registerUser(String username) throws ExistingUserException, AttributeTypeNotFoundException;
 }

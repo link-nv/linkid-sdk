@@ -4,34 +4,35 @@ import java.io.IOException;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface Authentication {
 
-	/*
-	 * Accessors.
-	 */
-	String getLoginName();
+    /*
+     * Accessors.
+     */
+    String getLoginName();
 
-	void setLoginName(String loginName);
+    void setLoginName(String loginName);
 
-	String getToken();
+    String getToken();
 
-	void setToken(String token);
+    void setToken(String token);
 
-	/*
-	 * Actions.
-	 */
-	String login() throws IOException;
+    /*
+     * Actions.
+     */
+    String login() throws IOException;
 
-	String cancel() throws IOException;
+    String cancel() throws IOException;
 
-	String tryAnotherDevice() throws IOException;
+    String tryAnotherDevice() throws IOException;
 
-	/*
-	 * Lifecycle.
-	 */
-	void init();
+    /*
+     * Lifecycle.
+     */
+    void init();
 
-	void destroyCallback();
+    void destroyCallback();
 
 }

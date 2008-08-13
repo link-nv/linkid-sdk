@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+
 /**
  * <h2>{@link ScenarioTimingEntity}<br>
  * <sub>Holds the startTime at which a scenario has been executed.</sub></h2>
@@ -26,159 +27,150 @@ import javax.persistence.NamedQuery;
  */
 @Entity
 @NamedQueries( { @NamedQuery(name = ScenarioTimingEntity.getTimings, query = "SELECT t"
-		+ "    FROM ScenarioTimingEntity t"
-		+ "    WHERE t.execution = :execution     "
-		+ "    ORDER BY t.startTime") })
+        + "    FROM ScenarioTimingEntity t" + "    WHERE t.execution = :execution     " + "    ORDER BY t.startTime") })
 public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 
-	public static final String getTimings = "ScenarioTimingEntity.getTimings";
+    public static final String getTimings = "ScenarioTimingEntity.getTimings";
 
-	@Id
-	@SuppressWarnings("unused")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+    @Id
+    @SuppressWarnings("unused")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int                id;
 
-	private Long startTime;
-	private Long olasDuration;
-	private Long agentDuration;
-	private Long startFreeMem;
-	private Long endFreeMem;
+    private Long               startTime;
+    private Long               olasDuration;
+    private Long               agentDuration;
+    private Long               startFreeMem;
+    private Long               endFreeMem;
 
-	@ManyToOne
-	private ExecutionEntity execution;
+    @ManyToOne
+    private ExecutionEntity    execution;
 
-	public ScenarioTimingEntity() {
 
-		this.agentDuration = 0l;
-		this.startTime = System.currentTimeMillis();
-	}
+    public ScenarioTimingEntity() {
 
-	public ScenarioTimingEntity(ExecutionEntity execution) {
+        this.agentDuration = 0l;
+        this.startTime = System.currentTimeMillis();
+    }
 
-		this();
+    public ScenarioTimingEntity(ExecutionEntity execution) {
 
-		this.execution = execution;
-	}
+        this();
 
-	public ScenarioTimingEntity(ExecutionEntity execution, Long startTime,
-			Double olasDuration, Double agentDuration, Double startFreeMem,
-			Double endFreeMem) {
+        this.execution = execution;
+    }
 
-		this.execution = execution;
-		this.startTime = startTime;
-		this.olasDuration = olasDuration == null ? 0 : olasDuration.longValue();
-		this.agentDuration = agentDuration == null ? 0 : agentDuration
-				.longValue();
-		this.startFreeMem = startFreeMem == null ? 0 : startFreeMem.longValue();
-		this.endFreeMem = endFreeMem == null ? 0 : endFreeMem.longValue();
-	}
+    public ScenarioTimingEntity(ExecutionEntity execution, Long startTime, Double olasDuration, Double agentDuration,
+            Double startFreeMem, Double endFreeMem) {
 
-	/**
-	 * @return The startTime of this {@link ScenarioTimingEntity}.
-	 */
-	public Long getStart() {
+        this.execution = execution;
+        this.startTime = startTime;
+        this.olasDuration = olasDuration == null? 0: olasDuration.longValue();
+        this.agentDuration = agentDuration == null? 0: agentDuration.longValue();
+        this.startFreeMem = startFreeMem == null? 0: startFreeMem.longValue();
+        this.endFreeMem = endFreeMem == null? 0: endFreeMem.longValue();
+    }
 
-		return this.startTime;
-	}
+    /**
+     * @return The startTime of this {@link ScenarioTimingEntity}.
+     */
+    public Long getStart() {
 
-	/**
-	 * Add a new timing information about a call made to OLAS during the
-	 * scenario that is timed with this entity.
-	 */
-	public void addOlasTime(long newOlasTime) {
+        return this.startTime;
+    }
 
-		if (this.olasDuration == null) {
+    /**
+     * Add a new timing information about a call made to OLAS during the scenario that is timed with this entity.
+     */
+    public void addOlasTime(long newOlasTime) {
+
+        if (this.olasDuration == null) {
             this.olasDuration = newOlasTime;
         } else {
             this.olasDuration += newOlasTime;
         }
-	}
+    }
 
-	/**
-	 * @return The duration of this {@link ScenarioTimingEntity}.
-	 */
-	public Long getOlasDuration() {
+    /**
+     * @return The duration of this {@link ScenarioTimingEntity}.
+     */
+    public Long getOlasDuration() {
 
-		return this.olasDuration;
-	}
+        return this.olasDuration;
+    }
 
-	/**
-	 * @return The duration of this {@link ScenarioTimingEntity}.
-	 */
-	public Long getAgentDuration() {
+    /**
+     * @return The duration of this {@link ScenarioTimingEntity}.
+     */
+    public Long getAgentDuration() {
 
-		return this.agentDuration;
-	}
+        return this.agentDuration;
+    }
 
-	/**
-	 * Signal that the scenario started at the startTime contained in this
-	 * entity has just ended.
-	 */
-	public void stop() {
+    /**
+     * Signal that the scenario started at the startTime contained in this entity has just ended.
+     */
+    public void stop() {
 
-		this.agentDuration = System.currentTimeMillis() - this.startTime;
-	}
+        this.agentDuration = System.currentTimeMillis() - this.startTime;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int compareTo(ScenarioTimingEntity o) {
+    /**
+     * {@inheritDoc}
+     */
+    public int compareTo(ScenarioTimingEntity o) {
 
-		return this.startTime.compareTo(o.startTime);
-	}
+        return this.startTime.compareTo(o.startTime);
+    }
 
-	/**
-	 * Remember the amount of memory was available when the execution of the
-	 * scenario timed by this entity started.
-	 */
-	public void setStartMemory(long startFreeMem) {
+    /**
+     * Remember the amount of memory was available when the execution of the scenario timed by this entity started.
+     */
+    public void setStartMemory(long startFreeMem) {
 
-		this.startFreeMem = startFreeMem;
-	}
+        this.startFreeMem = startFreeMem;
+    }
 
-	/**
-	 * @return The amount of memory was available when the execution of the
-	 *         scenario timed by this entity started.
-	 */
-	public Long getStartFreeMem() {
+    /**
+     * @return The amount of memory was available when the execution of the scenario timed by this entity started.
+     */
+    public Long getStartFreeMem() {
 
-		return this.startFreeMem;
-	}
+        return this.startFreeMem;
+    }
 
-	/**
-	 * Remember the amount of memory was available when the execution of the
-	 * scenario timed by this entity ended.
-	 */
-	public void setEndMemory(long endFreeMem) {
+    /**
+     * Remember the amount of memory was available when the execution of the scenario timed by this entity ended.
+     */
+    public void setEndMemory(long endFreeMem) {
 
-		this.endFreeMem = endFreeMem;
-	}
+        this.endFreeMem = endFreeMem;
+    }
 
-	/**
-	 * @return The amount of memory was available when the execution of the
-	 *         scenario timed by this entity ended.
-	 */
-	public Long getEndFreeMem() {
+    /**
+     * @return The amount of memory was available when the execution of the scenario timed by this entity ended.
+     */
+    public Long getEndFreeMem() {
 
-		return this.endFreeMem;
-	}
+        return this.endFreeMem;
+    }
 
-	/**
-	 * @return The execution of this {@link ScenarioTimingEntity}.
-	 */
-	public ExecutionEntity getExecution() {
-		return this.execution;
-	}
-	
-	/**
+    /**
+     * @return The execution of this {@link ScenarioTimingEntity}.
+     */
+    public ExecutionEntity getExecution() {
+
+        return this.execution;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
 
-        return String.format("ST: %01.2f(%+01.2f) MB, %d(+{o:%d, a:%d})",
-                this.startFreeMem / (1024 * 1024f),
-                (this.endFreeMem - this.startFreeMem) / (1024 * 1024f),
-                this.startTime, this.olasDuration, this.agentDuration);
+        return String.format("ST: %01.2f(%+01.2f) MB, %d(+{o:%d, a:%d})", this.startFreeMem / (1024 * 1024f),
+                (this.endFreeMem - this.startFreeMem) / (1024 * 1024f), this.startTime, this.olasDuration,
+                this.agentDuration);
     }
 }

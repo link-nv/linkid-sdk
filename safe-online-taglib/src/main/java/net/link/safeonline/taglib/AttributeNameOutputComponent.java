@@ -16,99 +16,108 @@ import javax.faces.context.ResponseWriter;
 
 import net.link.safeonline.data.AttributeDO;
 
+
 /**
- * JSF output component for name of {@link AttributeDO}. The visual effect will
- * depend on the category of the attribute. A compounded entry will appear in
- * bold, a member entry will appear in italic.
+ * JSF output component for name of {@link AttributeDO}. The visual effect will depend on the category of the attribute.
+ * A compounded entry will appear in bold, a member entry will appear in italic.
  * 
  * @author fcorneli
  * 
  */
 public class AttributeNameOutputComponent extends UIOutput {
 
-	public static final String ATTRIBUTE_NAME_OUTPUT_COMPONENT_TYPE = "net.link.component.attributeNameOutput";
+    public static final String ATTRIBUTE_NAME_OUTPUT_COMPONENT_TYPE = "net.link.component.attributeNameOutput";
 
-	private String compoundedStyleClass = "";
+    private String             compoundedStyleClass                 = "";
 
-	public final static String COMPOUNDED_DEFAULT = "so-nameoutput-compounded";
+    public final static String COMPOUNDED_DEFAULT                   = "so-nameoutput-compounded";
 
-	private String memberStyleClass = "";
+    private String             memberStyleClass                     = "";
 
-	public final static String MEMBER_DEFAULT = "so-nameoutput-member";
+    public final static String MEMBER_DEFAULT                       = "so-nameoutput-member";
 
-	private String styleClass = "";
+    private String             styleClass                           = "";
 
-	public final static String STYLE_DEFAULT = "so-nameoutput";
+    public final static String STYLE_DEFAULT                        = "so-nameoutput";
 
-	private boolean optional = false;
+    private boolean            optional                             = false;
 
-	@Override
-	public void encodeBegin(FacesContext context) throws IOException {
-		ResponseWriter response = context.getResponseWriter();
-		response.startElement("span", this);
-		String clientId = getClientId(context);
-		response.writeAttribute("id", clientId, "id");
-		response.writeAttribute("class", STYLE_DEFAULT + " " + this.styleClass,
-				"styleClass");
-		AttributeDO attribute = (AttributeDO) getValue();
-		String attributeName = attribute.getHumanReadableName();
-		ResourceBundle messages = TaglibUtil.getResourceBundle(context);
-		String optionalStr = messages.getString("optional");
-		if (this.optional) {
-			attributeName += " ( " + optionalStr + " )";
-		}
-		if (attribute.isCompounded()) {
-			response.startElement("span", null);
-			response.writeAttribute("class", COMPOUNDED_DEFAULT + " "
-					+ this.compoundedStyleClass, "compoundedStyleClass");
-			response.write(attributeName);
-			response.endElement("span");
-		} else if (attribute.isMember()) {
-			response.startElement("span", null);
-			response.writeAttribute("class", MEMBER_DEFAULT + " "
-					+ this.memberStyleClass, "memberStyleClass");
-			response.write(attributeName);
-			response.endElement("span");
-		} else {
-			response.write(attributeName);
-		}
-	}
 
-	@Override
-	public void encodeEnd(FacesContext context) throws IOException {
-		ResponseWriter response = context.getResponseWriter();
-		response.endElement("span");
-	}
+    @Override
+    public void encodeBegin(FacesContext context) throws IOException {
 
-	public String getCompoundedStyleClass() {
-		return this.compoundedStyleClass;
-	}
+        ResponseWriter response = context.getResponseWriter();
+        response.startElement("span", this);
+        String clientId = getClientId(context);
+        response.writeAttribute("id", clientId, "id");
+        response.writeAttribute("class", STYLE_DEFAULT + " " + this.styleClass, "styleClass");
+        AttributeDO attribute = (AttributeDO) getValue();
+        String attributeName = attribute.getHumanReadableName();
+        ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+        String optionalStr = messages.getString("optional");
+        if (this.optional) {
+            attributeName += " ( " + optionalStr + " )";
+        }
+        if (attribute.isCompounded()) {
+            response.startElement("span", null);
+            response.writeAttribute("class", COMPOUNDED_DEFAULT + " " + this.compoundedStyleClass,
+                    "compoundedStyleClass");
+            response.write(attributeName);
+            response.endElement("span");
+        } else if (attribute.isMember()) {
+            response.startElement("span", null);
+            response.writeAttribute("class", MEMBER_DEFAULT + " " + this.memberStyleClass, "memberStyleClass");
+            response.write(attributeName);
+            response.endElement("span");
+        } else {
+            response.write(attributeName);
+        }
+    }
 
-	public void setCompoundedStyleClass(String compoundedStyleClass) {
-		this.compoundedStyleClass = compoundedStyleClass;
-	}
+    @Override
+    public void encodeEnd(FacesContext context) throws IOException {
 
-	public String getMemberStyleClass() {
-		return this.memberStyleClass;
-	}
+        ResponseWriter response = context.getResponseWriter();
+        response.endElement("span");
+    }
 
-	public void setMemberStyleClass(String memberStyleClass) {
-		this.memberStyleClass = memberStyleClass;
-	}
+    public String getCompoundedStyleClass() {
 
-	public String getStyleClass() {
-		return this.styleClass;
-	}
+        return this.compoundedStyleClass;
+    }
 
-	public void setStyleClass(String styleClass) {
-		this.styleClass = styleClass;
-	}
+    public void setCompoundedStyleClass(String compoundedStyleClass) {
 
-	public boolean getOptional() {
-		return this.optional;
-	}
+        this.compoundedStyleClass = compoundedStyleClass;
+    }
 
-	public void setOptional(boolean optional) {
-		this.optional = optional;
-	}
+    public String getMemberStyleClass() {
+
+        return this.memberStyleClass;
+    }
+
+    public void setMemberStyleClass(String memberStyleClass) {
+
+        this.memberStyleClass = memberStyleClass;
+    }
+
+    public String getStyleClass() {
+
+        return this.styleClass;
+    }
+
+    public void setStyleClass(String styleClass) {
+
+        this.styleClass = styleClass;
+    }
+
+    public boolean getOptional() {
+
+        return this.optional;
+    }
+
+    public void setOptional(boolean optional) {
+
+        this.optional = optional;
+    }
 }

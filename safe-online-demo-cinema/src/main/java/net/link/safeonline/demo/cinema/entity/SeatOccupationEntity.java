@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+
 @Entity
 // @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "seat", "start"
 // }))
@@ -67,8 +68,7 @@ public class SeatOccupationEntity implements Serializable {
     }
 
     /**
-     * @return <code>true</code> if this seat occupation can no longer be taken
-     *         by anyone else.
+     * @return <code>true</code> if this seat occupation can no longer be taken by anyone else.
      */
     public boolean isReserved() {
 
@@ -84,8 +84,7 @@ public class SeatOccupationEntity implements Serializable {
     public void reserve() throws IllegalStateException {
 
         if (this.reserved)
-            throw new IllegalStateException("Seat " + this.seat
-                    + " is already reserved!");
+            throw new IllegalStateException("Seat " + this.seat + " is already reserved!");
 
         this.reserved = true;
     }
@@ -96,8 +95,7 @@ public class SeatOccupationEntity implements Serializable {
     @Override
     public String toString() {
 
-        return String.format("{Occ: %s - %s}", this.seat, DateFormat
-                .getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-                .format(this.start));
+        return String.format("{Occ: %s - %s}", this.seat, DateFormat.getDateTimeInstance(DateFormat.SHORT,
+                DateFormat.SHORT).format(this.start));
     }
 }

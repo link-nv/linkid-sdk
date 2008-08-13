@@ -9,22 +9,24 @@ package net.link.safeonline.auth;
 
 import javax.ejb.Local;
 
+
 @Local
 public interface Timeout {
 
-	public static final String APPLICATION_COOKIE = "ApplicationCookie";
+    public static final String APPLICATION_COOKIE = "ApplicationCookie";
 
-	public static final String TIMEOUT_COOKIE = "TimeoutCookie";
+    public static final String TIMEOUT_COOKIE     = "TimeoutCookie";
 
-	public static final String ENTRY_COOKIE = "EntryCookie";
+    public static final String ENTRY_COOKIE       = "EntryCookie";
 
-	/*
-	 * Accessors.
-	 */
-	String getApplicationUrl();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+    /*
+     * Accessors.
+     */
+    String getApplicationUrl();
+
+    /*
+     * Lifecycle.
+     */
+    void destroyCallback();
 }
