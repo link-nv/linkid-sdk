@@ -13,7 +13,11 @@ import javax.ejb.EJB;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.ctrl.LoginBase;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.service.SubjectService;
@@ -69,20 +73,42 @@ public class LoginBaseBean implements LoginBase {
     public String login() {
 
         /*
-         * The 'login-processing' session attribute is used by the timeout filter to help in detecting an application
-         * level session timeout.
+         * The login cookie is used to help in detecting an application level session timeout.
          */
-        this.sessionContext.set("login-processing", "true");
+        addLoginCookie();
         return SafeOnlineLoginUtils.login("overview.seam");
     }
 
     public String logout() {
 
         this.log.debug("logout");
-        this.sessionContext.set("login-processing", null);
+        removeLoginCookie();
         this.sessionContext.set("username", null);
         Session.instance().invalidate();
         return "logout-success";
+    }
+
+    private void addLoginCookie() {
+
+        this.log.debug("add login cookie");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+        Cookie loginCookie = new Cookie(SafeOnlineCookies.LOGIN_COOKIE, "true");
+        loginCookie.setPath(facesContext.getExternalContext().getRequestContextPath());
+        response.addCookie(loginCookie);
+    }
+
+    private void removeLoginCookie() {
+
+        this.log.debug("remove login cookie");
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+        Cookie loginCookie = new Cookie(SafeOnlineCookies.LOGIN_COOKIE, "");
+        loginCookie.setPath(facesContext.getExternalContext().getRequestContextPath());
+        loginCookie.setMaxAge(0);
+        response.addCookie(loginCookie);
     }
 
     public String getLoggedInUsername() {

@@ -15,9 +15,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -41,16 +40,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TimeoutFilter extends AbstractInjectionFilter {
 
-    private static final Log    LOG          = LogFactory.getLog(TimeoutFilter.class);
-
-    private static final String LOGIN_COOKIE = "OLAS.login";
+    private static final Log LOG = LogFactory.getLog(TimeoutFilter.class);
 
     @Init(name = "TimeoutPath")
-    private String              timeoutPath;
-
-    @Init(name = "LoginSessionAttribute")
-    private String              loginSessionAttribute;
-
+    private String           timeoutPath;
 
     public void destroy() {
 
@@ -83,37 +76,17 @@ public class TimeoutFilter extends AbstractInjectionFilter {
         }
         boolean requestedSessionIdValid = httpRequest.isRequestedSessionIdValid();
         if (true == requestedSessionIdValid) {
-            /*
-             * We wrap the response since we need to be able to add cookies after the body has been committed.
-             */
-            BufferedServletResponseWrapper timeoutResponseWrapper = new BufferedServletResponseWrapper(httpResponse);
             LOG.debug("chain.doFilter");
-            chain.doFilter(request, timeoutResponseWrapper);
-            // chain.doFilter(request, response);
-            /*
-             * This means that the servlet container found a matching session context for the requested session Id.
-             */
-            HttpSession session = httpRequest.getSession();
-            Object tempLoginSessionAttribute = session.getAttribute(this.loginSessionAttribute);
-            if (null != tempLoginSessionAttribute) {
-                addCookie(LOGIN_COOKIE, "true", httpRequest.getContextPath(), httpRequest, httpResponse);
-            } else {
-                /*
-                 * If the user performs a logout, we need to remove the login cookie. Else the user could trigger an
-                 * explicit timeout while actually he's no longer logged in.
-                 */
-                removeCookie(LOGIN_COOKIE, httpRequest.getContextPath(), httpRequest, httpResponse);
-            }
-            timeoutResponseWrapper.commit();
+            chain.doFilter(request, response);
             return;
         }
         /*
          * In this case no corresponding session context for the given requested session Id was found. This could be an
          * indication that the browser caused a timeout on the web application. We detect this via the login cookie.
          */
-        if (true == hasCookie(LOGIN_COOKIE, httpRequest)) {
+        if (true == hasCookie(SafeOnlineCookies.LOGIN_COOKIE, httpRequest)) {
             LOG.debug("forwaring to timeout path: " + this.timeoutPath);
-            removeCookie(LOGIN_COOKIE, httpRequest.getContextPath(), httpRequest, httpResponse);
+            removeCookie(SafeOnlineCookies.LOGIN_COOKIE, httpRequest.getContextPath(), httpRequest, httpResponse);
             httpResponse.sendRedirect(this.timeoutPath);
             return;
         }

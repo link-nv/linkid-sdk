@@ -9,6 +9,8 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import net.link.safeonline.common.SafeOnlineCookies;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,7 +35,7 @@ public class LanguagePhaseListener implements PhaseListener {
                 return;
             Cookie[] cookies = ((HttpServletRequest) facesContext.getExternalContext().getRequest()).getCookies();
             for (Cookie cookie : cookies) {
-                if ("OLAS.language".equals(cookie.getName())) {
+                if (SafeOnlineCookies.LANGUAGE_COOKIE.equals(cookie.getName())) {
                     String language = cookie.getValue();
                     LOG.debug("use language stored in cookie: " + language);
                     facesContext.getViewRoot().setLocale(new Locale(language));

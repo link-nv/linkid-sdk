@@ -19,6 +19,7 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
@@ -39,13 +40,14 @@ import net.link.safeonline.util.servlet.annotation.Init;
  * The following servlet init parameters are required:
  * </p>
  * <ul>
- * <li><code>StartUrl</code>: points to the relative/absolute URL to which this servlet will redirect after successful
- * authentication protocol entry.</li>
- * <li><code>FirstTimeUrl</code>: points to the relative/absolute URL to which this servlet will redirect after first
- * visit and successful authentication protocol entry.</li>
- * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol is
+ * <li><code>StartUrl</code>: points to the relative/absolute URL to which this servlet will redirect after
+ * successful authentication protocol entry.</li>
+ * <li><code>FirstTimeUrl</code>: points to the relative/absolute URL to which this servlet will redirect after
+ * first visit and successful authentication protocol entry.</li>
+ * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol
+ * is encountered.</li>
+ * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is
  * encountered.</li>
- * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is encountered.</li>
  * </ul>
  * 
  * @author fcorneli
@@ -54,8 +56,6 @@ import net.link.safeonline.util.servlet.annotation.Init;
 public class AuthnEntryServlet extends AbstractInjectionServlet {
 
     private static final long  serialVersionUID                 = 1L;
-
-    public static final String AUTH_LANGUAGE_COOKIE             = "OLAS.auth.language";
 
     public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
 
@@ -119,7 +119,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
          * Set the locale if language was specified in the browser post
          */
         if (null != protocolContext.getLanguage()) {
-            Cookie authLanguageCookie = new Cookie(AUTH_LANGUAGE_COOKIE, protocolContext.getLanguage());
+            Cookie authLanguageCookie = new Cookie(SafeOnlineCookies.AUTH_LANGUAGE_COOKIE, protocolContext
+                    .getLanguage());
             authLanguageCookie.setPath("/olas-auth/");
             authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(authLanguageCookie);
@@ -168,9 +169,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
     private Cookie findDefloweredCookie(Cookie[] cookies) {
 
         for (Cookie cookie : cookies) {
-            if (DEFLOWER_COOKIE_NAME.equals(cookie.getName())) {
+            if (DEFLOWER_COOKIE_NAME.equals(cookie.getName()))
                 return cookie;
-            }
         }
         return null;
     }

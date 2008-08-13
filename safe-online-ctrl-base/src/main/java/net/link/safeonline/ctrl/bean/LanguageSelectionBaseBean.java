@@ -5,6 +5,7 @@ import javax.faces.event.ActionEvent;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.ctrl.LanguageSelectionBase;
 
 import org.jboss.seam.annotations.In;
@@ -51,7 +52,7 @@ public class LanguageSelectionBaseBean implements LanguageSelectionBase {
 
         HttpServletResponse response = (HttpServletResponse) this.facesContext.getExternalContext().getResponse();
 
-        Cookie languageCookie = new Cookie("OLAS.language", event.getComponent().getId());
+        Cookie languageCookie = new Cookie(SafeOnlineCookies.LANGUAGE_COOKIE, event.getComponent().getId());
         languageCookie.setPath("/");
         languageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
         response.addCookie(languageCookie);
