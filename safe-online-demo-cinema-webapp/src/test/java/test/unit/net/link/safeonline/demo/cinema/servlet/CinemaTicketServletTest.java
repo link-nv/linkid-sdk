@@ -74,21 +74,22 @@ public class CinemaTicketServletTest extends TestCase {
         String testNrn = UUID.randomUUID().toString(); // User's NRN.
         int filmId = 0; // The index of the film in the initialization service.
         int theatreThatPlaysFilmId = 0; // The i'th theatre that plays the film.
-        Date testTime = new Date(); // Time of user's ticket check.
+        long testTime = new Date().getTime() / 1000; // Time of user's ticket check *IN SECONDS: UNIX TIMESTAMP*.
+        Date testDate = new Date(testTime * 1000); // Date of user's ticket check (IN MILLISECONDS).
 
         // Resolve film & theatre names.
         String testFilm = InitializationService.filmNames[filmId];
         String testTheatre = InitializationService.theatreNames[InitializationService.filmTheatres[filmId][theatreThatPlaysFilmId]];
 
         // Setup Mock.
-        expect(this.mockTicketService.isValid(testNrn, testTime, testTheatre, testFilm)).andReturn(true);
+        expect(this.mockTicketService.isValid(testNrn, testDate, testTheatre, testFilm)).andReturn(true);
         replay(this.mockTicketService);
 
         // Validate ticket.
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(this.servletLocation);
         getMethod.setQueryString(new NameValuePair[] { new NameValuePair(CinemaTicketServlet.NRN, testNrn),
-                new NameValuePair(CinemaTicketServlet.TIME, Long.toString(testTime.getTime())),
+                new NameValuePair(CinemaTicketServlet.TIME, Long.toString(testTime)),
                 new NameValuePair(CinemaTicketServlet.FILM, testFilm),
                 new NameValuePair(CinemaTicketServlet.THEATRE, testTheatre) });
         int result = httpClient.executeMethod(getMethod);
@@ -105,21 +106,22 @@ public class CinemaTicketServletTest extends TestCase {
         String testNrn = UUID.randomUUID().toString(); // User's NRN.
         int filmId = 0; // The index of the film in the initialization service.
         int theatreThatPlaysFilmId = 0; // The i'th theatre that plays the film.
-        Date testTime = new Date(); // Time of user's ticket check.
+        long testTime = new Date().getTime() / 1000; // Time of user's ticket check *IN SECONDS: UNIX TIMESTAMP*.
+        Date testDate = new Date(testTime * 1000); // Date of user's ticket check (IN MILLISECONDS).
 
         // Resolve film & theatre names.
         String testFilm = InitializationService.filmNames[filmId];
         String testTheatre = InitializationService.theatreNames[InitializationService.filmTheatres[filmId][theatreThatPlaysFilmId]];
 
         // Setup Mock.
-        expect(this.mockTicketService.isValid(testNrn, testTime, testFilm, testTheatre)).andReturn(false);
+        expect(this.mockTicketService.isValid(testNrn, testDate, testTheatre, testFilm)).andReturn(false);
         replay(this.mockTicketService);
 
         // Validate ticket.
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(this.servletLocation);
         getMethod.setQueryString(new NameValuePair[] { new NameValuePair(CinemaTicketServlet.NRN, testNrn),
-                new NameValuePair(CinemaTicketServlet.TIME, Long.toString(testTime.getTime())),
+                new NameValuePair(CinemaTicketServlet.TIME, Long.toString(testTime)),
                 new NameValuePair(CinemaTicketServlet.FILM, testFilm),
                 new NameValuePair(CinemaTicketServlet.THEATRE, testTheatre) });
         int result = httpClient.executeMethod(getMethod);
