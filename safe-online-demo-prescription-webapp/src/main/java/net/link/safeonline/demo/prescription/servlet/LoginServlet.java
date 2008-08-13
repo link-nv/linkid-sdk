@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -36,12 +36,12 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Login handling servlet. After SafeOnline performed its authentication it will redirect to this servlet. This servlet
  * will retrieve the 'admin' attribute. Depending on the value of this attribute we redirect to a different page.
- * 
+ *
  * If the user has multiple roles active this servlet will redirect to a page where the user can select the role under
  * which he would like to operate.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class LoginServlet extends HttpServlet {
 

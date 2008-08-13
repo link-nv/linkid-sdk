@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,9 +23,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * This servlet redirects back to the calling web application.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class IdentificationExitServlet extends AbstractInjectionServlet {
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,9 +23,9 @@ import org.w3c.dom.Document;
 
 /**
  * JAX-WS SOAP handler to log the SOAP messages.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -45,7 +45,7 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 
     /**
      * Set to <code>true</code> if you want to log the inbound and outbound SOAP messages.
-     * 
+     *
      * @param captureMessages
      */
     public void setCaptureMessages(boolean captureMessages) {
@@ -56,7 +56,7 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
     /**
      * Returns <code>true</code> if this handler will capture the inbound and outbound SOAP messages during following
      * web service invocations.
-     * 
+     *
      */
     public boolean isCaptureMessages() {
 
@@ -79,12 +79,11 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 
     public boolean handleMessage(SOAPMessageContext soapMessageContext) {
 
-        if (false == this.captureMessages) {
+        if (false == this.captureMessages)
             /*
              * Nothing to do.
              */
             return true;
-        }
         LOG.debug("logging message");
 
         Boolean outboundProperty = (Boolean) soapMessageContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);

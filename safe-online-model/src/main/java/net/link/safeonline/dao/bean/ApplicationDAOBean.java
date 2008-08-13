@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -79,8 +79,9 @@ public class ApplicationDAOBean implements ApplicationDAO {
     public ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException {
 
         ApplicationEntity application = findApplication(applicationName);
-        if (null == application)
+        if (null == application) {
             throw new ApplicationNotFoundException();
+        }
         return application;
     }
 
@@ -114,9 +115,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
         List<ApplicationEntity> applications = this.queryObject.listApplicationsWhereCertificateSubject(certificate
                 .getSubjectX500Principal().getName());
-        if (applications.isEmpty()) {
+        if (applications.isEmpty())
             throw new ApplicationNotFoundException();
-        }
         ApplicationEntity application = applications.get(0);
         return application;
     }
@@ -125,9 +125,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
         List<ApplicationEntity> applications = this.queryObject.listApplicationsWhereCertificateSubject(certificate
                 .getSubjectX500Principal().getName());
-        if (applications.isEmpty()) {
+        if (applications.isEmpty())
             return null;
-        }
         ApplicationEntity application = applications.get(0);
         return application;
 

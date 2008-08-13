@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -65,22 +65,22 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of SAML attribute web service using JAX-WS.
- * 
+ *
  * <p>
  * Specification: Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0.
  * </p>
- * 
+ *
  * <p>
  * OASIS Standard, 15 March 2005
  * </p>
- * 
+ *
  * <p>
  * SafeOnline extensions: we communicate the multivalued property of an attribute via the
  * AttributeServiceConstants#MULTIVALUED_ATTRIBUTE XML attribute on the SAML XML "Attribute" element.
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @WebService(endpointInterface = "oasis.names.tc.saml._2_0.protocol.SAMLAttributePort")
 @HandlerChain(file = "auth-ws-handlers.xml")
@@ -120,9 +120,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
     private String findSubjectLogin(AttributeQueryType request) {
 
-        if (null == request) {
+        if (null == request)
             return null;
-        }
         SubjectType subject = request.getSubject();
         List<JAXBElement<?>> subjectContent = subject.getContent();
         for (JAXBElement<?> subjectItem : subjectContent) {

@@ -16,11 +16,11 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
 /**
  * <h2>{@link ScenarioController}<br>
  * <sub>The POJO interface to the {@link ScenarioControllerBean}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public interface ScenarioController {
@@ -70,7 +70,7 @@ public interface ScenarioController {
 
     /**
      * Check what the progress is on the charts generation of the given execution.
-     * 
+     *
      * @return <code>null</code> when no execution is being charted at the moment. A value ranging between 0 and 1 when
      *         charts are being generated, and 1 when charts are available.
      */

@@ -1,16 +1,16 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package test.unit.net.link.safeonline.sdk.ws.attrib;
 
-import org.junit.Test;
-
 import net.link.safeonline.sdk.ws.annotation.Compound;
 import net.link.safeonline.sdk.ws.annotation.CompoundMember;
+
+import org.junit.Test;
 
 
 public class CompoundedAttributeTest {

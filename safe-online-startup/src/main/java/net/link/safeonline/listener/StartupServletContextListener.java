@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -30,10 +30,10 @@ import org.apache.commons.logging.LogFactory;
 /**
  * This servlet context listener will start and stop all components registered in JNDI under the prefix defined by the
  * web.xml context-param StartableJndiPrefix. These components should implement the {@link Startable} interface.
- * 
+ *
  * @see Startable
  * @author fcorneli
- * 
+ *
  */
 public class StartupServletContextListener implements ServletContextListener {
 
@@ -86,9 +86,8 @@ public class StartupServletContextListener implements ServletContextListener {
 
         public int compare(Startable startable1, Startable startable2) {
 
-            if (false == this.priorityDescSort) {
+            if (false == this.priorityDescSort)
                 return startable1.getPriority() - startable2.getPriority();
-            }
             return startable2.getPriority() - startable1.getPriority();
         }
     }

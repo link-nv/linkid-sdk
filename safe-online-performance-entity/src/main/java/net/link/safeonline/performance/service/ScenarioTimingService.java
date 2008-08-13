@@ -17,15 +17,15 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 /**
  * <h2>{@link ScenarioTimingService}<br>
  * <sub>Service bean for {@link ScenarioTimingEntity}.</sub></h2>
- * 
+ *
  * <p>
  * Retrieve timing data for executions.
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Local

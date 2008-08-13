@@ -76,9 +76,8 @@ public class DeviceMappingDAOBean implements DeviceMappingDAO {
     public DeviceMappingEntity getDeviceMapping(String id) throws DeviceMappingNotFoundException {
 
         DeviceMappingEntity deviceMapping = this.findDeviceMapping(id);
-        if (null == deviceMapping) {
+        if (null == deviceMapping)
             throw new DeviceMappingNotFoundException();
-        }
         return deviceMapping;
     }
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -17,9 +17,9 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
  * Validator for PKI.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface PkiValidator {
@@ -31,7 +31,7 @@ public interface PkiValidator {
 
     /**
      * Validates the given X509 certificate using the trust points (and policy) defined within a certain trust domain.
-     * 
+     *
      * @param trustDomainName
      * @param certificate
      */

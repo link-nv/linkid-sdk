@@ -130,33 +130,26 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (false == obj instanceof ApplicationIdentityAttributeEntity) {
+        if (false == obj instanceof ApplicationIdentityAttributeEntity)
             return false;
-        }
         ApplicationIdentityAttributeEntity rhs = (ApplicationIdentityAttributeEntity) obj;
         return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
     }
 
     public boolean equivalent(ApplicationIdentityAttributeEntity attr) {
 
-        if (!this.getApplicationName().equals(attr.getApplicationName())) {
+        if (!this.getApplicationName().equals(attr.getApplicationName()))
             return false;
-        }
-        if (!this.getAttributeTypeName().equals(attr.getAttributeTypeName())) {
+        if (!this.getAttributeTypeName().equals(attr.getAttributeTypeName()))
             return false;
-        }
-        if (this.isDataMining() != attr.isDataMining()) {
+        if (this.isDataMining() != attr.isDataMining())
             return false;
-        }
-        if (this.isRequired() != attr.isRequired()) {
+        if (this.isRequired() != attr.isRequired())
             return false;
-        }
         return true;
     }
 

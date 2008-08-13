@@ -38,15 +38,15 @@ import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThrea
 /**
  * <h2>{@link ScenarioChooser}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * This class keeps and listens to the UI components that upload, deploy and execute scenarios on agents.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioChooser extends JPanel implements ActionListener, CaretListener, AgentSelectionListener,
@@ -150,30 +150,26 @@ public class ScenarioChooser extends JPanel implements ActionListener, CaretList
                 }
             });
 
-            if (chooser.showDialog(this, "Choose") == JFileChooser.APPROVE_OPTION)
+            if (chooser.showDialog(this, "Choose") == JFileChooser.APPROVE_OPTION) {
                 this.scenarioField.setText(chooser.getSelectedFile().getPath());
+            }
         }
 
-        else if (this.uploadButton.equals(e.getSource()))
+        else if (this.uploadButton.equals(e.getSource())) {
             new ScenarioUploaderThread(getScenarioFile()).start();
-
-        else if (this.deployButton.equals(e.getSource()))
+        } else if (this.deployButton.equals(e.getSource())) {
             new ScenarioDeployerThread().start();
-
-        else if (this.executeButton.equals(e.getSource()))
+        } else if (this.executeButton.equals(e.getSource())) {
             new ScenarioExecutorThread().start();
-
-        else if (this.chartsButton.equals(e.getSource()))
+        } else if (this.chartsButton.equals(e.getSource())) {
             new ScenarioCharterThread(false).start();
-
-        else if (this.pdfButton.equals(e.getSource()))
+        } else if (this.pdfButton.equals(e.getSource())) {
             new ScenarioCharterThread(true).start();
-
-        else if (this.refreshButton.equals(e.getSource()))
+        } else if (this.refreshButton.equals(e.getSource())) {
             new AgentRefreshThread(false).start();
-
-        else if (this.resetButton.equals(e.getSource()))
+        } else if (this.resetButton.equals(e.getSource())) {
             new AgentRefreshThread(true).start();
+        }
     }
 
     /**
@@ -181,8 +177,9 @@ public class ScenarioChooser extends JPanel implements ActionListener, CaretList
      */
     public void caretUpdate(CaretEvent e) {
 
-        if (e.getSource().equals(this.scenarioField))
+        if (e.getSource().equals(this.scenarioField)) {
             buttonToggler(null != getScenarioFile(), this.uploadButton);
+        }
     }
 
     /**
@@ -253,11 +250,11 @@ public class ScenarioChooser extends JPanel implements ActionListener, CaretList
                         this.pdfButton);
             }
 
-            else if (agent.getState() == null)
+            else if (agent.getState() == null) {
                 // System.err.println("no state: actions off");
                 buttonToggler(false, this.uploadButton, this.deployButton, this.executeButton, this.chartsButton,
                         this.pdfButton);
-            else
+            } else {
                 switch (agent.getState()) {
                     case RESET:
                         // System.err
@@ -293,6 +290,7 @@ public class ScenarioChooser extends JPanel implements ActionListener, CaretList
                         // System.err.println("charted state; do nothing");
                     break;
                 }
+            }
 
             highlight(this.uploadButton, AgentState.UPLOAD.equals(agent.getTransit()));
             highlight(this.deployButton, AgentState.DEPLOY.equals(agent.getTransit()));
@@ -303,8 +301,9 @@ public class ScenarioChooser extends JPanel implements ActionListener, CaretList
 
     private void buttonToggler(boolean enable, JButton... buttons) {
 
-        for (JButton button : buttons)
+        for (JButton button : buttons) {
             button.setEnabled(enable);
+        }
     }
 
     private void highlight(JButton button, boolean highlightOn) {
@@ -315,7 +314,7 @@ public class ScenarioChooser extends JPanel implements ActionListener, CaretList
 
     /**
      * Parse the picked or typed file out of the scenario file field.
-     * 
+     *
      * @return <code>null</code> if the file is non-existing, unreadable, or not a file.
      */
     private File getScenarioFile() {

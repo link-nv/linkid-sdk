@@ -8,16 +8,16 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 /**
  * Service that fetches that attribute values or locally or remotely.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Local
 public interface ProxyAttributeService {
 
     /**
      * Fetches the device attributes for all registrations associated with the specified device mapping ID.
-     * 
+     *
      * @param deviceMappingId
      * @param attributeName
      * @throws AttributeTypeNotFoundException
@@ -28,7 +28,7 @@ public interface ProxyAttributeService {
 
     /**
      * Fetches an attribute from the specified subject ID.
-     * 
+     *
      * @param userId
      * @param attributeName
      * @throws PermissionDeniedException

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,15 +13,15 @@ import net.link.safeonline.performance.console.swing.data.ConsoleData;
 /**
  * <h2>{@link AgentRefreshThread}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Apr 2, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AgentRefreshThread extends ScenarioThread {
@@ -42,8 +42,9 @@ public class AgentRefreshThread extends ScenarioThread {
     @Override
     void process(ConsoleAgent agent) throws Exception {
 
-        if (this.reset)
+        if (this.reset) {
             agent.resetTransit();
+        }
 
         agent.updateState();
         ConsoleData.fireAgentStatus(agent);

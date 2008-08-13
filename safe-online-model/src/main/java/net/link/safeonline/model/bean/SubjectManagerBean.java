@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -31,9 +31,9 @@ import org.jboss.annotation.security.SecurityDomain;
 /**
  * Implementation of subject manager interface. This component really must live within the SafeOnline core security
  * domain since it depends on the caller principal to retrieve its data.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -18,9 +18,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Primary key class for {@link AttributeEntity}.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Embeddable
 public class AttributePK implements Serializable {
@@ -84,7 +84,7 @@ public class AttributePK implements Serializable {
     /**
      * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that
      * attribute index is zero.
-     * 
+     *
      */
     public long getAttributeIndex() {
 
@@ -99,12 +99,10 @@ public class AttributePK implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == (obj instanceof AttributePK)) {
+        if (false == obj instanceof AttributePK)
             return false;
-        }
         AttributePK rhs = (AttributePK) obj;
         return new EqualsBuilder().append(this.subject, rhs.subject).append(this.attributeType, rhs.attributeType)
                 .append(this.attributeIndex, rhs.attributeIndex).isEquals();

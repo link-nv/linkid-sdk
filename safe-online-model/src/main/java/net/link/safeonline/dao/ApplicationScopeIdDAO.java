@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -16,9 +16,9 @@ import net.link.safeonline.entity.SubjectEntity;
 
 /**
  * Application Scope Id entity data access object interface definition.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Local
 public interface ApplicationScopeIdDAO {

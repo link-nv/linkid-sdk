@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -25,9 +25,8 @@ public class NotificationProducerServiceFactory {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL wsdlUrl = classLoader.getResource("notification-producer.wsdl");
-        if (null == wsdlUrl) {
+        if (null == wsdlUrl)
             throw new RuntimeException("Notification Producer WSDL not found");
-        }
 
         NotificationProducerService service = new NotificationProducerService(wsdlUrl, new QName(
                 "urn:net:lin-k:safe-online:notification:producer", "NotificationProducerService"));

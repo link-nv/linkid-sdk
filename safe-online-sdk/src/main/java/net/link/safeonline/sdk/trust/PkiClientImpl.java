@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,9 +23,9 @@ import org.bouncycastle.openssl.PEMReader;
 
 /**
  * Implementation component for PKI client.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class PkiClientImpl implements PkiClient {
 
@@ -52,9 +52,8 @@ public class PkiClientImpl implements PkiClient {
         } catch (IOException e) {
             throw new RuntimeException("IO error: " + e.getMessage(), e);
         }
-        if (HttpServletResponse.SC_OK != statusCode) {
+        if (HttpServletResponse.SC_OK != statusCode)
             throw new RuntimeException("invalid status code: " + statusCode);
-        }
         String responseBody;
         try {
             responseBody = getMethod.getResponseBodyAsString();
@@ -70,9 +69,8 @@ public class PkiClientImpl implements PkiClient {
         } catch (IOException e) {
             throw new RuntimeException("IO error: " + e.getMessage(), e);
         }
-        if (false == obj instanceof X509Certificate) {
+        if (false == obj instanceof X509Certificate)
             throw new RuntimeException("invalid response type: " + obj.getClass().getName());
-        }
         X509Certificate certificate = (X509Certificate) obj;
         return certificate;
     }

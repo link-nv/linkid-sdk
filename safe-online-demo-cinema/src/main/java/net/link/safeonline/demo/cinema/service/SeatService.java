@@ -19,15 +19,15 @@ import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
 /**
  * <h2>{@link SeatService}<br>
  * <sub>Service bean for {@link SeatEntity}.</sub></h2>
- * 
+ *
  * <p>
  * Provide access to {@link SeatEntity}s.
  * </p>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Local
@@ -48,7 +48,7 @@ public interface SeatService extends CinemaService {
 
     /**
      * Verify that the given seat is not already occupied. If it is not, persist it.
-     * 
+     *
      * @return The persisted seat occupation.
      * @throws IllegalStateException
      *             When at least one of the given seats is not available.

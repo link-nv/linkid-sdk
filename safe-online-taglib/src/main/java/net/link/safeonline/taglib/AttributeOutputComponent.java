@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,9 +23,9 @@ import net.link.safeonline.entity.DatatypeType;
 
 /**
  * JSF output component for {@link AttributeDO}.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AttributeOutputComponent extends UIOutput {
 
@@ -187,11 +187,13 @@ public class AttributeOutputComponent extends UIOutput {
     private static void registerAttributeValueEncoder(Class<? extends AttributeValueEncoder> clazz) {
 
         SupportedType supportedType = clazz.getAnnotation(SupportedType.class);
-        if (null == supportedType)
+        if (null == supportedType) {
             throw new RuntimeException("attribute value encoder requires @SupportedType meta-data annotation");
+        }
         DatatypeType type = supportedType.value();
-        if (attributeValueEncoders.containsKey(type))
+        if (attributeValueEncoders.containsKey(type)) {
             throw new RuntimeException("duplicate attribute value encoder entry for type: " + type);
+        }
         attributeValueEncoders.put(type, clazz);
     }
 
@@ -202,7 +204,7 @@ public class AttributeOutputComponent extends UIOutput {
     /**
      * Gives back an instance of the requested attribute value encoder. There is a chance for a datarace here, but we
      * don't care.
-     * 
+     *
      * @param type
      */
     private static AttributeValueEncoder getAttributeValueEncoder(DatatypeType type) {
@@ -211,8 +213,9 @@ public class AttributeOutputComponent extends UIOutput {
         if (null != attributeValueEncoder)
             return attributeValueEncoder;
         Class<? extends AttributeValueEncoder> attributeValueEncoderClass = attributeValueEncoders.get(type);
-        if (null == attributeValueEncoderClass)
+        if (null == attributeValueEncoderClass) {
             throw new RuntimeException("unsupported type: " + type);
+        }
         try {
             attributeValueEncoder = attributeValueEncoderClass.newInstance();
         } catch (Exception e) {

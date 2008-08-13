@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,7 +23,7 @@ import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
  * Device operation service interface. This service allows the authentication web application and user web application
  * to register, remove or update devices for a user. The bean behind this interface is stateful. This means that a
  * certain method invocation pattern must be respected.
- * 
+ *
  * @author wvdhaute
  */
 @Local

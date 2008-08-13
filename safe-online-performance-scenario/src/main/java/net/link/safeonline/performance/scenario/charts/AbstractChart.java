@@ -83,7 +83,7 @@ import org.jfree.ui.RectangleAnchor;
 /**
  * <h2>{@link AbstractChart}<br>
  * <sub>The basis of chart generators.</sub></h2>
- * 
+ *
  * <p>
  * This class implements several helper methods that will be very convenient in generating and rendering charts.<br>
  * <br>
@@ -94,11 +94,11 @@ import org.jfree.ui.RectangleAnchor;
  * <li>{@link #isTimingProcessed()}</li>
  * </ul>
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public abstract class AbstractChart implements Chart {
@@ -141,7 +141,7 @@ public abstract class AbstractChart implements Chart {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Post-processing here calculates ranges for shared axes.<br>
      * We also cache the plot for use in {@link #render(int)}.
      */
@@ -200,25 +200,28 @@ public abstract class AbstractChart implements Chart {
 
             for (AbstractChart link : this.links) {
                 XYPlot linkedPlot = link.getPlot();
-                if (linkedPlot != null)
+                if (linkedPlot != null) {
                     combinedPlot.add(linkedPlot);
+                }
             }
         }
 
         // Not linked, add average markers.
         else {
             XYDataset set = this.plot.getDataset();
-            if (set != null)
+            if (set != null) {
                 for (int i = 0; i < set.getSeriesCount(); ++i) {
                     double sum = 0;
-                    for (int j = 0; j < set.getItemCount(i); ++j)
+                    for (int j = 0; j < set.getItemCount(i); ++j) {
                         sum += set.getYValue(i, j);
+                    }
 
                     ValueMarker marker = new ValueMarker(sum / set.getItemCount(i));
                     marker.setLabel("Average " + i + "                ");
                     marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
                     this.plot.addRangeMarker(marker);
                 }
+            }
         }
 
         JFreeChart chart = new JFreeChart(this.plot);
@@ -405,7 +408,7 @@ public abstract class AbstractChart implements Chart {
             scenarioDuration.addSeries(requestSet);
 
             int _data = 0;
-            for (ProfileDataEntity data : profileData)
+            for (ProfileDataEntity data : profileData) {
                 try {
                     this.LOG.debug("  -> Data: " + ++_data + " / " + profileData.size());
                     Set<MeasurementEntity> measurements = data.getMeasurements();
@@ -426,15 +429,17 @@ public abstract class AbstractChart implements Chart {
 
                         // Collect Iteration Timing Chart Data.
                         if (!ProfileData.isRequestKey(method)) {
-                            if (!timingSet.containsKey(method))
+                            if (!timingSet.containsKey(method)) {
                                 timingSet.put(method, new XYSeries(method, true, false));
+                            }
 
                             timingSet.get(method).addOrUpdate(startTime, timing);
                         }
 
                         // Collect Method Timing Chart Data.
-                        if (!driverMethods.containsKey(method))
+                        if (!driverMethods.containsKey(method)) {
                             driverMethods.put(method, new ArrayList<Long>());
+                        }
                         driverMethods.get(method).add(timing);
                     }
                 } catch (SeriesException e) {
@@ -442,19 +447,23 @@ public abstract class AbstractChart implements Chart {
                 } catch (NoSuchElementException e) {
                     this.LOG.debug("No start time found!");
                 }
+            }
 
-            for (DriverExceptionEntity error : this.driverExceptionService.getAllProfileErrors(profile))
+            for (DriverExceptionEntity error : this.driverExceptionService.getAllProfileErrors(profile)) {
                 errorsSet.addValue((Number) 1, error.getMessage(), timeFormat.format(error.getOccurredTime()));
+            }
 
             // Calculate averages.
             this.LOG.debug("  -> Averages.");
             double requestAvg = 0, memoryAvg = 0;
             for (Object item : requestSet.getItems())
-                if (item instanceof XYDataItem && ((XYDataItem) item).getY() != null)
+                if (item instanceof XYDataItem && ((XYDataItem) item).getY() != null) {
                     requestAvg += ((XYDataItem) item).getY().doubleValue();
+                }
             for (Object item : afterMemorySet.getItems())
-                if (item instanceof XYDataItem && ((XYDataItem) item).getY() != null)
+                if (item instanceof XYDataItem && ((XYDataItem) item).getY() != null) {
                     memoryAvg += ((XYDataItem) item).getY().doubleValue();
+                }
             requestAvg /= requestSet.getItemCount();
             memoryAvg /= afterMemorySet.getItemCount();
 
@@ -465,8 +474,9 @@ public abstract class AbstractChart implements Chart {
             DefaultTableXYDataset memoryData = new DefaultTableXYDataset();
             requestData.addSeries(requestSet);
             memoryData.addSeries(afterMemorySet);
-            for (XYSeries timingSeries : timingSet.values())
+            for (XYSeries timingSeries : timingSet.values()) {
                 timingData.addSeries(timingSeries);
+            }
             requestSet = afterMemorySet = null;
             timingSet = null;
 
@@ -529,10 +539,9 @@ public abstract class AbstractChart implements Chart {
         List<TimeSeriesCollection> scenarioSpeedSets = new ArrayList<TimeSeriesCollection>();
         SortedSet<ScenarioTimingEntity> agentTimes = new TreeSet<ScenarioTimingEntity>();
         // this.executionService .getExecutionTimes(execution);
-        if (agentTimes.isEmpty())
+        if (agentTimes.isEmpty()) {
             this.LOG.debug("No scenario start times available.");
-
-        else
+        } else {
             // Calculate moving averages from the scenario starts for 2 periods.
             for (int period : new int[] { 3600000 }) {
                 TimeSeries timeSeries = new TimeSeries("Period: " + period / 1000 + "s", FixedMillisecond.class);
@@ -542,15 +551,18 @@ public abstract class AbstractChart implements Chart {
                 for (ScenarioTimingEntity agentTime : agentTimes) {
 
                     // Skip until enough values in past for one period.
-                    if (agentTime.getStart() - startTime < period)
+                    if (agentTime.getStart() - startTime < period) {
                         continue;
+                    }
 
                     double count = 0;
                     for (ScenarioTimingEntity pastTime : agentTimes) {
-                        if (agentTime.getStart() - pastTime.getStart() > period)
+                        if (agentTime.getStart() - pastTime.getStart() > period) {
                             continue; // Ignore values before period.
-                        if (pastTime.getStart() == agentTime.getStart())
+                        }
+                        if (pastTime.getStart() == agentTime.getStart()) {
                             break; // Stop counting at current time.
+                        }
 
                         count++;
                     }
@@ -558,6 +570,7 @@ public abstract class AbstractChart implements Chart {
                     timeSeries.addOrUpdate(new FixedMillisecond(agentTime.getStart()), 1000 * count / period);
                 }
             }
+        }
 
         // Create the agent memory data.
         this.LOG.debug("Took " + (System.currentTimeMillis() - start) / 1000f + " seconds");
@@ -566,9 +579,11 @@ public abstract class AbstractChart implements Chart {
         TimeSeries endAgentMemory = new TimeSeries("After", FixedMillisecond.class);
         TimeSeriesCollection agentMemorySet = new TimeSeriesCollection();
         agentMemorySet.addSeries(endAgentMemory);
-        if (!agentTimes.isEmpty())
-            for (ScenarioTimingEntity agentTime : agentTimes)
+        if (!agentTimes.isEmpty()) {
+            for (ScenarioTimingEntity agentTime : agentTimes) {
                 endAgentMemory.add(new FixedMillisecond(agentTime.getStart()), agentTime.getEndFreeMem());
+            }
+        }
 
         // Create moving averages off the agent memory usage.
         this.LOG.debug("  -> Moving Avg.");
@@ -582,47 +597,52 @@ public abstract class AbstractChart implements Chart {
         XYSeries olasDuration = new XYSeries("OLAS", true, false);
         XYSeries agentDuration = new XYSeries("Overhead", true, false);
         DefaultTableXYDataset olasScenarioDuration = new DefaultTableXYDataset();
-        if (!agentTimes.isEmpty())
+        if (!agentTimes.isEmpty()) {
             for (ScenarioTimingEntity agentTime : agentTimes) {
                 Long time = agentTime.getStart();
                 Long olas = agentTime.getOlasDuration();
                 Long agent = agentTime.getAgentDuration();
 
-                if (olas == null)
+                if (olas == null) {
                     olas = 0l;
-                if (agent == null)
+                }
+                if (agent == null) {
                     agent = 0l;
+                }
 
                 olasDuration.addOrUpdate(time, olas);
                 agentDuration.addOrUpdate(time, agent - olas);
             }
+        }
         scenarioDuration.addSeries(agentDuration);
         olasScenarioDuration.addSeries(olasDuration);
 
         // Create moving averages off the OLAS durations.
         this.LOG.debug("  -> Moving Avg.");
         List<XYDataset> olasAverageDurations = new ArrayList<XYDataset>();
-        for (int period : new int[] { 3600000 })
+        for (int period : new int[] { 3600000 }) {
             olasAverageDurations.add(MovingAverage.createMovingAverage(olasScenarioDuration, "; period: " + period
                     / 1000 + "s", period, period));
+        }
 
         // Create Box-and-Whisker objects from Method Timing Data.
         this.LOG.debug("Took " + (System.currentTimeMillis() - start) / 1000f + " seconds");
         start = System.currentTimeMillis();
         this.LOG.debug("Box & Whisker.");
-        for (String driverTitle : driversMethods.keySet())
+        for (String driverTitle : driversMethods.keySet()) {
             for (Map.Entry<String, List<Long>> driverData : driversMethods.get(driverTitle).entrySet()) {
                 String methodName = driverData.getKey();
                 List<Long> methodTimings = driverData.getValue();
 
-                if (ProfileData.REQUEST_DELTA_TIME.equals(methodName))
+                if (ProfileData.REQUEST_DELTA_TIME.equals(methodName)) {
                     driversRequestSet.add(BoxAndWhiskerCalculator.calculateBoxAndWhiskerStatistics(methodTimings),
                             "Request Time", driverTitle);
-
-                else if (!ProfileData.isRequestKey(methodName))
+                } else if (!ProfileData.isRequestKey(methodName)) {
                     driversMethodSet.add(BoxAndWhiskerCalculator.calculateBoxAndWhiskerStatistics(methodTimings),
                             methodName, driverTitle);
+                }
             }
+        }
 
         // Plots.
         this.LOG.debug("Took " + (System.currentTimeMillis() - start) / 1000f + " seconds");
@@ -631,17 +651,19 @@ public abstract class AbstractChart implements Chart {
         DateAxis timeAxis = new DateAxis("Time");
         CombinedDomainXYPlot speedPlot = new CombinedDomainXYPlot(timeAxis);
         for (TimeSeriesCollection scenarioSpeedSet : scenarioSpeedSets)
-            if (scenarioSpeedSet.getItemCount(0) > 0)
+            if (scenarioSpeedSet.getItemCount(0) > 0) {
                 speedPlot.add(new XYPlot(scenarioSpeedSet, timeAxis, new NumberAxis("Speed (#/s)"),
                         new XYLineAndShapeRenderer(true, false)));
+            }
         JFreeChart speedChart = new JFreeChart(speedPlot);
 
         timeAxis = new DateAxis("Time");
         CombinedDomainXYPlot olasAverageDurationsPlot = new CombinedDomainXYPlot(timeAxis);
         for (XYDataset olasAverageDuration : olasAverageDurations)
-            if (olasAverageDuration.getItemCount(0) > 0)
+            if (olasAverageDuration.getItemCount(0) > 0) {
                 olasAverageDurationsPlot.add(new XYPlot(olasAverageDuration, timeAxis, new NumberAxis("Duration (ms)"),
                         new XYLineAndShapeRenderer(true, false)));
+            }
         JFreeChart olasAverageDurationsChart = new JFreeChart(olasAverageDurationsPlot);
 
         timeAxis = new DateAxis("Time");
@@ -691,8 +713,9 @@ public abstract class AbstractChart implements Chart {
         charts.put("Scenario Execution Speed", new byte[][] { getImage(speedChart, dataPoints) });
         charts.put("Request Duration per Driver", new byte[][] { getImage(requestChart, dataPoints) });
         charts.put("Method Duration per Driver", new byte[][] { getImage(methodChart, dataPoints) });
-        for (Map.Entry<String, List<byte[]>> driverCharts : driversCharts.entrySet())
+        for (Map.Entry<String, List<byte[]>> driverCharts : driversCharts.entrySet()) {
             charts.put(driverCharts.getKey(), driverCharts.getValue().toArray(new byte[0][0]));
+        }
 
         this.LOG.debug("Took " + (System.currentTimeMillis() - start) / 1000f + " seconds");
         this.LOG.debug("All done.");

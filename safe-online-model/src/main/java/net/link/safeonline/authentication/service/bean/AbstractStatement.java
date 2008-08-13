@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -36,7 +36,7 @@ abstract public class AbstractStatement<T extends AbstractStatementStructure> {
 
     /**
      * Verifies the integrity of the statement.
-     * 
+     *
      */
     public X509Certificate verifyIntegrity() {
 
@@ -58,9 +58,8 @@ abstract public class AbstractStatement<T extends AbstractStatementStructure> {
         try {
             signature.update(data);
             boolean result = signature.verify(this.statementStructure.getSignature());
-            if (result) {
+            if (result)
                 return authCert;
-            }
             return null;
         } catch (SignatureException e) {
             LOG.error("signature error: " + e.getMessage());

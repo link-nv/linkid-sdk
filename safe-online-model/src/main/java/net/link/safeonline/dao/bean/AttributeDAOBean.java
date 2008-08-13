@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -100,8 +100,9 @@ public class AttributeDAOBean implements AttributeDAO {
             String stringValue) {
 
         AttributeEntity attribute = findAttribute(subject, attributeType, index);
-        if (null == attribute)
+        if (null == attribute) {
             attribute = addAttribute(attributeType, subject, index);
+        }
         attribute.setStringValue(stringValue);
     }
 
@@ -109,8 +110,9 @@ public class AttributeDAOBean implements AttributeDAO {
             Boolean booleanValue) {
 
         AttributeEntity attribute = findAttribute(subject, attributeType, index);
-        if (null == attribute)
+        if (null == attribute) {
             attribute = addAttribute(attributeType, subject, index);
+        }
         attribute.setBooleanValue(booleanValue);
     }
 
@@ -118,8 +120,9 @@ public class AttributeDAOBean implements AttributeDAO {
             throws AttributeNotFoundException {
 
         AttributeEntity attribute = findAttribute(attributeTypeName, subject);
-        if (null == attribute)
+        if (null == attribute) {
             throw new AttributeNotFoundException();
+        }
         return attribute;
     }
 
@@ -135,8 +138,9 @@ public class AttributeDAOBean implements AttributeDAO {
 
         AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType,
                 subject));
-        if (null == attribute)
+        if (null == attribute) {
             throw new AttributeNotFoundException();
+        }
         return attribute;
     }
 
@@ -151,8 +155,9 @@ public class AttributeDAOBean implements AttributeDAO {
 
         AttributePK pk = new AttributePK(attributeType, subject, index);
         AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, pk);
-        if (null == attribute)
+        if (null == attribute) {
             throw new AttributeNotFoundException();
+        }
         return attribute;
     }
 
@@ -171,10 +176,11 @@ public class AttributeDAOBean implements AttributeDAO {
     public AttributeEntity addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject) {
 
         long index;
-        if (false == attributeType.isMultivalued())
+        if (false == attributeType.isMultivalued()) {
             index = 0;
-        else
+        } else {
             index = calcIndex(subject, attributeType);
+        }
 
         AttributeEntity attribute = new AttributeEntity(attributeType, subject, index);
         this.entityManager.persist(attribute);

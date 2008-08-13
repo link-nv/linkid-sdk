@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -39,9 +39,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Entity representing a W3CEndpointReference.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Entity
 @Table(name = "endpoint_ref")
@@ -155,32 +155,33 @@ public class EndpointReferenceEntity implements Serializable {
 
         ToStringBuilder builder = new ToStringBuilder(this);
         builder.append("address", this.address);
-        if (null != this.application)
+        if (null != this.application) {
             builder.append("application", this.application.getName());
-        if (null != this.device)
+        }
+        if (null != this.device) {
             builder.append("device", this.device.getName());
+        }
         return builder.toString();
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof EndpointReferenceEntity) {
+        if (false == obj instanceof EndpointReferenceEntity)
             return false;
-        }
         EndpointReferenceEntity rhs = (EndpointReferenceEntity) obj;
         EqualsBuilder builder = new EqualsBuilder();
         builder.append(this.address, rhs.address);
-        if (null != this.application)
+        if (null != this.application) {
             builder.append(this.application, rhs.application);
-        if (null != this.device)
+        }
+        if (null != this.device) {
             builder.append(this.device, rhs.device);
+        }
         return builder.isEquals();
     }
 
@@ -189,10 +190,12 @@ public class EndpointReferenceEntity implements Serializable {
 
         HashCodeBuilder builder = new HashCodeBuilder();
         builder.append(this.address);
-        if (null != this.application)
+        if (null != this.application) {
             builder.append(this.application);
-        if (null != this.device)
+        }
+        if (null != this.device) {
             builder.append(this.device);
+        }
         return builder.toHashCode();
     }
 

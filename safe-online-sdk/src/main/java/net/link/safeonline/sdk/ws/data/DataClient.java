@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -18,9 +18,9 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
  * Interface for data client component. Via this interface application can perform CRUD operations on attributes of a
  * subject. For this the application must be an attribute provider. Only the operator can set the attribute provider
  * role for applications.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public interface DataClient extends MessageAccessor {
 
@@ -28,7 +28,7 @@ public interface DataClient extends MessageAccessor {
      * Sets the value of an attribute. Please notice that the attribute should already be defined via:
      * {@link #createAttribute(String, String, Object)}. The attribute value can be of type {@link String} or
      * {@link Boolean}.
-     * 
+     *
      * @param userId
      * @param attributeName
      * @param attributeValue
@@ -44,7 +44,7 @@ public interface DataClient extends MessageAccessor {
     /**
      * Gives back the attribute value of an attribute. We return an {@link Attribute} object to be able to make a
      * distinction between a missing attribute and a <code>null</code> attribute value.
-     * 
+     *
      * @param <Type>
      *            the type of the attribute value.
      * @param userId
@@ -61,7 +61,7 @@ public interface DataClient extends MessageAccessor {
 
     /**
      * Creates a new (empty) attribute for the given subject.
-     * 
+     *
      * @param userId
      * @param attributeName
      * @throws WSClientTransportException
@@ -71,7 +71,7 @@ public interface DataClient extends MessageAccessor {
 
     /**
      * Removes an attribute for the given subject.
-     * 
+     *
      * @param userId
      *            the subject from which to remove the attribute.
      * @param attributeName
@@ -85,7 +85,7 @@ public interface DataClient extends MessageAccessor {
 
     /**
      * Removes an attribute.
-     * 
+     *
      * @param <Type>
      * @param userId
      * @param attribute

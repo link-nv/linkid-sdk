@@ -1,19 +1,19 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.entity.audit;
 
-import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_WHERE_AGELIMIT;
-import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.audit.SecurityAuditEntity.COUNT_WHERE_CONTEXTID;
 import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_ALL;
 import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
 import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_LIST_USER;
+import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_WHERE_AGELIMIT;
+import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_WHERE_CONTEXTID;
 import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_WHERE_USER;
-import static net.link.safeonline.entity.audit.SecurityAuditEntity.COUNT_WHERE_CONTEXTID;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -149,9 +149,8 @@ public class ApplicationBean implements Application {
     @Factory("allowedDevices")
     public void allowedDevices() {
 
-        if (this.selectedApplication == null) {
+        if (this.selectedApplication == null)
             return;
-        }
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
@@ -182,9 +181,8 @@ public class ApplicationBean implements Application {
     @Factory(selectedApplicationUsageAgreementsModel)
     public void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException {
 
-        if (null == this.selectedApplication) {
+        if (null == this.selectedApplication)
             return;
-        }
         LOG.debug("usage agreement list factory");
         this.selectedApplicationUsageAgreements = this.usageAgreementService
                 .getUsageAgreements(this.selectedApplication.getName());

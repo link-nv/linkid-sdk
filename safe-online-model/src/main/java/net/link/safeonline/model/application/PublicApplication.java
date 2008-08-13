@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -22,9 +22,9 @@ import net.link.safeonline.service.PublicApplicationService;
  * <p>
  * <i>Dec 7, 2007</i>
  * </p>
- * 
+ *
  * @see PublicApplicationService#findPublicApplication(String)
- * 
+ *
  * @author mbillemo
  */
 public class PublicApplication {

@@ -18,16 +18,16 @@ import net.link.safeonline.performance.service.bean.DriverProfileServiceBean;
 /**
  * <h2>{@link DriverProfileServiceBean}<br>
  * <sub>Service bean for {@link DriverProfileEntity}.</sub></h2>
- * 
+ *
  * <p>
  * Create and access {@link DriverProfileEntity}s. Register {@link ProfileDataEntity}s or {@link DriverExceptionEntity}s
  * in them.
  * </p>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Local

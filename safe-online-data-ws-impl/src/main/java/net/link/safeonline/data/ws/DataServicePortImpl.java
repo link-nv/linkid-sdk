@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -59,13 +59,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of data service using JAX-WS.
- * 
+ *
  * <p>
  * Specification: Liberty ID-WSF Data Service Template version 2.1
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @WebService(endpointInterface = "liberty.dst._2006_08.ref.safe_online.DataServicePort")
 @HandlerChain(file = "data-ws-handlers.xml")
@@ -379,13 +379,11 @@ public class DataServicePortImpl implements DataServicePort {
     private boolean isCompoundAttribute(AttributeType attribute) {
 
         List<Object> attributeValues = attribute.getAttributeValue();
-        if (attributeValues.isEmpty()) {
+        if (attributeValues.isEmpty())
             return false;
-        }
         Object attributeValue = attributeValues.get(0);
-        if (attributeValue instanceof AttributeType) {
+        if (attributeValue instanceof AttributeType)
             return true;
-        }
         return false;
     }
 
@@ -585,9 +583,8 @@ public class DataServicePortImpl implements DataServicePort {
     private Object getValueObjectFromAttribute(AttributeType attribute) {
 
         List<Object> attributeValues = attribute.getAttributeValue();
-        if (attributeValues.isEmpty()) {
+        if (attributeValues.isEmpty())
             return null;
-        }
         if (false == Boolean.TRUE.toString().equals(
                 attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
             /*
@@ -618,14 +615,13 @@ public class DataServicePortImpl implements DataServicePort {
 
     /**
      * Convertor to go from XML datatypes to Service datatypes. The Service layer doesn't eat XMLGregorianCalendars.
-     * 
+     *
      * @param value
      */
     private Object convertXMLDatatypeToServiceDatatype(Object value) {
 
-        if (null == value) {
+        if (null == value)
             return null;
-        }
         if (value instanceof XMLGregorianCalendar) {
             XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
             return calendar.toGregorianCalendar().getTime();

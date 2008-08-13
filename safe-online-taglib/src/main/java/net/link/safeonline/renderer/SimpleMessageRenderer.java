@@ -35,14 +35,12 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
-        if (context == null) {
+        if (context == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(
                     MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
-        }
-        if (component == null) {
+        if (component == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(
                     MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
-        }
         if (component instanceof UIOutput) {
             this.omRenderer.encodeBegin(context, component);
             return;
@@ -53,14 +51,12 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
     @Override
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
-        if (context == null) {
+        if (context == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(
                     MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
-        }
-        if (component == null) {
+        if (component == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(
                     MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
-        }
         if (component instanceof UIOutput) {
             this.omRenderer.encodeChildren(context, component);
             return;
@@ -76,14 +72,12 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
         FacesMessage curMessage = null;
         ResponseWriter writer = null;
 
-        if (context == null) {
+        if (context == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(
                     MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
-        }
-        if (component == null) {
+        if (component == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(
                     MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
-        }
 
         if (component instanceof UIOutput) {
             this.omRenderer.encodeEnd(context, component);
@@ -102,7 +96,7 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
             return;
         }
         writer = context.getResponseWriter();
-        assert (writer != null);
+        assert writer != null;
 
         String clientId = ((UIMessage) component).getFor();
         // "for" attribute required for Message. Should be taken care of
@@ -116,11 +110,10 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
 
         messageIter = getMessageIter(context, clientId, component);
 
-        assert (messageIter != null);
-        if (!messageIter.hasNext()) {
+        assert messageIter != null;
+        if (!messageIter.hasNext())
             // no messages to render
             return;
-        }
         curMessage = (FacesMessage) messageIter.next();
 
         String summary = null, detail = null, severityStyle = null, severityStyleClass = null;
@@ -129,9 +122,9 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
 
         // make sure we have a non-null value for summary and
         // detail.
-        summary = (null != (summary = curMessage.getSummary()))? summary: "";
+        summary = null != (summary = curMessage.getSummary())? summary: "";
         // Default to summary if we have no detail
-        detail = (null != (detail = curMessage.getDetail()))? detail: summary;
+        detail = null != (detail = curMessage.getDetail())? detail: summary;
 
         if (curMessage.getSeverity() == FacesMessage.SEVERITY_INFO) {
             severityStyle = (String) component.getAttributes().get("infoStyle");
@@ -154,23 +147,23 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
         String title = (String) component.getAttributes().get("title");
 
         // if we have style and severityStyle
-        if ((style != null) && (severityStyle != null)) {
+        if (style != null && severityStyle != null) {
             // severityStyle wins
             style = severityStyle;
         }
         // if we have no style, but do have severityStyle
-        else if ((style == null) && (severityStyle != null)) {
+        else if (style == null && severityStyle != null) {
             // severityStyle wins
             style = severityStyle;
         }
 
         // if we have styleClass and severityStyleClass
-        if ((styleClass != null) && (severityStyleClass != null)) {
+        if (styleClass != null && severityStyleClass != null) {
             // severityStyleClass wins
             styleClass = severityStyleClass;
         }
         // if we have no styleClass, but do have severityStyleClass
-        else if ((styleClass == null) && (severityStyleClass != null)) {
+        else if (styleClass == null && severityStyleClass != null) {
             // severityStyleClass wins
             styleClass = severityStyleClass;
         }

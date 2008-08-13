@@ -26,7 +26,7 @@ import org.junit.Test;
  * <p>
  * <i>Dec 19, 2007</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class TinyTests {
@@ -52,8 +52,9 @@ public class TinyTests {
 
         boolean first = true;
         for (Object element : array) {
-            if (!first)
+            if (!first) {
                 System.out.print(", ");
+            }
             first = false;
             System.out.print(element);
         }

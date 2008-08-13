@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -11,12 +11,12 @@ import javax.naming.NamingException;
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import net.link.safeonline.sms.ra.SMSConnection;
 import net.link.safeonline.sms.ra.SMSConnectionFactory;
 import net.link.safeonline.sms.ra.SMSManagedConnectionFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 public class SMSConnectionFactoryImpl implements SMSConnectionFactory {

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,8 +13,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import org.jboss.annotation.security.SecurityDomain;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.config.dao.ConfigGroupDAO;
@@ -23,6 +21,8 @@ import net.link.safeonline.config.service.ConfigurationService;
 import net.link.safeonline.config.service.ConfigurationServiceRemote;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+
+import org.jboss.annotation.security.SecurityDomain;
 
 
 @Stateless

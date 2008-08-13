@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -165,9 +165,8 @@ public class AuthWsHandlersTest {
         public boolean handleFault(SOAPMessageContext soapContext) {
 
             Boolean outboundProperty = (Boolean) soapContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-            if (true == outboundProperty) {
+            if (true == outboundProperty)
                 return true;
-            }
 
             SOAPMessage soapMessage = soapContext.getMessage();
             SOAPPart soapPart = soapMessage.getSOAPPart();

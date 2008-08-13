@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -134,9 +134,8 @@ public class ServletLoginFilterTest extends TestCase {
         public static boolean isExpectedRolePresent(String expectedRole) {
 
             Boolean expectedRolePresent = ServletLoginFilterTestServlet.expectedRoles.get(expectedRole);
-            if (null == expectedRolePresent) {
+            if (null == expectedRolePresent)
                 return false;
-            }
             return expectedRolePresent;
         }
 

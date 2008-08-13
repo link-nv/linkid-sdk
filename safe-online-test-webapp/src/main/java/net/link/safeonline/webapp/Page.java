@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -216,8 +216,9 @@ public abstract class Page {
     protected void setCheckBox(String id, boolean check) {
 
         boolean isChecked = isCheckedCheckBox(id);
-        if ((isChecked && !check) || (!isChecked && check))
+        if (isChecked && !check || !isChecked && check) {
             clickCheckbox(id);
+        }
     }
 
     protected void setTableRowCheckbox(String table, String row, String id, boolean check) {
@@ -225,7 +226,7 @@ public abstract class Page {
         String locator = "xpath=//table[contains(@id, '" + table + "')]//tr[./td[contains(text(), '" + row
                 + "')]]/td/input[@type = 'checkbox' and contains(@id, '" + id + "')]";
         boolean isChecked = selenium.isChecked(locator);
-        if ((isChecked && !check) || (!isChecked && check)) {
+        if (isChecked && !check || !isChecked && check) {
             selenium.click(locator);
         }
     }
@@ -267,8 +268,9 @@ public abstract class Page {
             selenium.waitForPageToLoad(TIMEOUT);
         } catch (SeleniumException e) {
             LOG.debug("Selenium exception: " + e.getMessage());
-            if (!e.getMessage().startsWith("Timed out after"))
+            if (!e.getMessage().startsWith("Timed out after")) {
                 throw e;
+            }
         }
     }
 }

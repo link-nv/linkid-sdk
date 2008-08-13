@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -78,10 +78,11 @@ public class DigipassStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
         String address = protocol + "://" + hostname + ":";
-        if (protocol.equals("http"))
+        if (protocol.equals("http")) {
             address += hostport;
-        else
+        } else {
             address += hostportssl;
+        }
         address += "/safe-online-ws/consumer";
         this.notificationSubcriptions.add(new NotificationSubscription(topic, address, certificate));
     }

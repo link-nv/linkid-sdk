@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 
 /**
  * Is used to specify a mapped compounded attribute identifier for a property or field.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Documented
 @Target( { ElementType.FIELD, ElementType.METHOD })

@@ -69,8 +69,9 @@ public class EntityTestManager {
     @SuppressWarnings("deprecation")
     public void setUp(Class<?>... serializableClasses) throws Exception {
 
-        if (this.configuration == null)
+        if (this.configuration == null) {
             configureHSql();
+        }
 
         for (Class<?> serializableClass : serializableClasses) {
             LOG.debug("adding annotated class: " + serializableClass.getName());
@@ -87,16 +88,18 @@ public class EntityTestManager {
 
     public void tearDown() throws Exception {
 
-        if (null == this.entityManager)
+        if (null == this.entityManager) {
             throw new IllegalStateException("invoke setUp first");
+        }
 
         if (this.entityManager.isOpen()) {
             EntityTransaction entityTransaction = this.entityManager.getTransaction();
             if (entityTransaction.isActive())
-                if (entityTransaction.getRollbackOnly())
+                if (entityTransaction.getRollbackOnly()) {
                     entityTransaction.rollback();
-                else
+                } else {
                     entityTransaction.commit();
+                }
             this.entityManager.close();
         }
         this.entityManagerFactory.close();
@@ -107,10 +110,11 @@ public class EntityTestManager {
         if (this.entityManager.isOpen()) {
             EntityTransaction entityTransaction = this.entityManager.getTransaction();
             if (entityTransaction.isActive())
-                if (entityTransaction.getRollbackOnly())
+                if (entityTransaction.getRollbackOnly()) {
                     entityTransaction.rollback();
-                else
+                } else {
                     entityTransaction.commit();
+                }
             this.entityManager.close();
         }
         this.entityManager = this.entityManagerFactory.createEntityManager();
@@ -135,9 +139,9 @@ public class EntityTestManager {
     /**
      * Create a new instance of the given class that has the test transaction entity manager handler applied to it. The
      * transaction semantics are:
-     * 
+     *
      * <code>@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)</code>
-     * 
+     *
      * @param <Type>
      * @param clazz
      */
@@ -173,8 +177,9 @@ public class EntityTestManager {
         Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
             PostConstruct postConstruct = method.getAnnotation(PostConstruct.class);
-            if (null == postConstruct)
+            if (null == postConstruct) {
                 continue;
+            }
             method.invoke(bean, new Object[] {});
         }
     }
@@ -202,10 +207,12 @@ public class EntityTestManager {
             Field[] fields = clazz.getDeclaredFields();
             for (Field currentField : fields) {
                 PersistenceContext persistenceContextAnnotation = currentField.getAnnotation(PersistenceContext.class);
-                if (null == persistenceContextAnnotation)
+                if (null == persistenceContextAnnotation) {
                     continue;
-                if (false == EntityManager.class.isAssignableFrom(currentField.getType()))
+                }
+                if (false == EntityManager.class.isAssignableFrom(currentField.getType())) {
                     throw new RuntimeException("field type not correct");
+                }
                 currentField.setAccessible(true);
                 return currentField;
             }

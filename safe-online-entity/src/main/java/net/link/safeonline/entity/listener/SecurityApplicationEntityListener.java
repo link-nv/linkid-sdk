@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -30,9 +30,9 @@ import org.jboss.security.SimplePrincipal;
 
 /**
  * Implementation of application ownership security constraint.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class SecurityApplicationEntityListener {
 
@@ -127,17 +127,15 @@ public class SecurityApplicationEntityListener {
     private boolean isCallerInRole(Subject subject, String role) {
 
         Set<Group> groups = subject.getPrincipals(Group.class);
-        if (null == groups) {
+        if (null == groups)
             return false;
-        }
         SimplePrincipal rolePrincipal = new SimplePrincipal(role);
         for (Group group : groups) {
             if (!"Roles".equals(group.getName())) {
                 continue;
             }
-            if (group.isMember(rolePrincipal)) {
+            if (group.isMember(rolePrincipal))
                 return true;
-            }
         }
         return false;
     }

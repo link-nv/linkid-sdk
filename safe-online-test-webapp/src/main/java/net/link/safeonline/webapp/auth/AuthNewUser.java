@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -71,14 +71,16 @@ public class AuthNewUser extends Page {
         String jSessionId = getJSessionID();
         LOG.debug("session id: " + jSessionId);
         JFrame captchaFrame = new CaptchaFrame(jSessionId);
-        while (captchaFrame.isShowing())
+        while (captchaFrame.isShowing()) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Assert.fail("Thread interrupted");
             }
-        if (null == this.captcha)
+        }
+        if (null == this.captcha) {
             this.captcha = "";
+        }
     }
 
     private String getJSessionID() {

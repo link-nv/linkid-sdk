@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -60,8 +60,9 @@ public class OlasDAOBean implements OlasDAO {
     public OlasEntity getNode(String name) throws NodeNotFoundException {
 
         OlasEntity node = findNode(name);
-        if (null == node)
+        if (null == node) {
             throw new NodeNotFoundException();
+        }
         return node;
     }
 
@@ -69,8 +70,9 @@ public class OlasDAOBean implements OlasDAO {
 
         List<OlasEntity> nodes = this.queryObject.listOlasEntitiesWhereAuthnCertificateSubject(authnCertificate
                 .getSubjectX500Principal().getName());
-        if (nodes.isEmpty())
+        if (nodes.isEmpty()) {
             throw new NodeNotFoundException();
+        }
         OlasEntity node = nodes.get(0);
         return node;
     }
@@ -79,8 +81,9 @@ public class OlasDAOBean implements OlasDAO {
 
         List<OlasEntity> nodes = this.queryObject.listOlasEntitiesWhereSigningCertificateSubject(signingCertificate
                 .getSubjectX500Principal().getName());
-        if (nodes.isEmpty())
+        if (nodes.isEmpty()) {
             throw new NodeNotFoundException();
+        }
         OlasEntity node = nodes.get(0);
         return node;
     }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -47,7 +47,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * The base class for both the identity and the authentication applet.
- * 
+ *
  * @author fcorneli
  */
 public abstract class AppletBase extends JApplet implements ActionListener, AppletView, AppletHelpdesk, RuntimeContext,

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -18,9 +18,9 @@ import net.link.safeonline.entity.OlasEntity;
 
 /**
  * Interface for node authentication service.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Local
 public interface NodeAuthenticationService {
@@ -28,7 +28,7 @@ public interface NodeAuthenticationService {
     /**
      * Authenticates an olas node given a node's certificate. At this point the node's certificate already passed the
      * PKI validation.
-     * 
+     *
      * @param authnCertificate
      *            the trusted X509 node certificate.
      * @return the node name.
@@ -38,7 +38,7 @@ public interface NodeAuthenticationService {
 
     /**
      * Gives back the node's signing certificates given the node name.
-     * 
+     *
      * @param nodeName
      *            the node name.
      * @return the signing X509 node certificates.
@@ -48,7 +48,7 @@ public interface NodeAuthenticationService {
 
     /**
      * Gives back the node entity given the node name.
-     * 
+     *
      * @param nodeName
      * @return the OLAS node entity
      * @throws NodeNotFoundException
@@ -57,7 +57,7 @@ public interface NodeAuthenticationService {
 
     /**
      * Gives back the node entity at this location.
-     * 
+     *
      * @return
      * @throws NodeNotFoundException
      */

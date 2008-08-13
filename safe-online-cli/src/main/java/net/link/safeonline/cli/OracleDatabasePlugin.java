@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -51,9 +51,8 @@ public class OracleDatabasePlugin implements DatabasePlugin {
 
     public Connection getConnection(String connectionUrl, String user, String password) throws SQLException {
 
-        if (null == this.driver) {
+        if (null == this.driver)
             throw new SQLException("need to initialize the database plugin first");
-        }
         Properties info = new Properties();
         info.put("user", user);
         info.put("password", password);
@@ -66,9 +65,8 @@ public class OracleDatabasePlugin implements DatabasePlugin {
         Thread currentThread = Thread.currentThread();
         ClassLoader classLoader = currentThread.getContextClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(SQL_DDL_RESOURCE_NAME);
-        if (null == inputStream) {
+        if (null == inputStream)
             throw new RuntimeException(SQL_DDL_RESOURCE_NAME + " not found");
-        }
 
         BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
         StringBuffer buffer = new StringBuffer();

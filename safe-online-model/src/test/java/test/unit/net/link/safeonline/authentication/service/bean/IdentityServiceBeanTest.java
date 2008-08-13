@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -512,7 +512,7 @@ public class IdentityServiceBeanTest {
      * for the record to be removed. Also checks whether we can remove all the member attribute values. Even if the
      * member attribute types are marked as non-user-editable it's possible for the user to remove the attribute record
      * if the compounded attribute type is marked as user-editable.
-     * 
+     *
      * @throws Exception
      */
     @Test

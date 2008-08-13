@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -34,9 +34,9 @@ import org.apache.commons.logging.LogFactory;
  * Certificate JAX-WS Login Handler. This JAX-WS SOAP handler maps a trusted certificate to or an application Id, or a
  * device name, or an olas node name. For this it uses the {@link ApplicationAuthenticationService},
  * {@link DeviceAuthenticationService} and {@link NodeAuthenticationService} service.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -95,9 +95,8 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
 
         LOG.debug("login");
         X509Certificate certificate = WSSecurityServerHandler.getCertificate(context);
-        if (null == certificate) {
+        if (null == certificate)
             throw new RuntimeException("no client certificate found on JAX-WS context");
-        }
 
         if (CertificateValidatorHandler.isDeviceCertificate(context)) {
             String deviceName;
@@ -146,15 +145,14 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
 
     /**
      * Gives back the Id that have been written on the given SOAP message context by a handler instance of this type.
-     * 
+     *
      * @param soapMessageContext
      */
     public static String getId(SOAPMessageContext soapMessageContext) {
 
         String id = (String) soapMessageContext.get(ID_PROPERTY);
-        if (null == id) {
+        if (null == id)
             throw new RuntimeException("no Id found on JAX-WS context");
-        }
         return id;
     }
 }

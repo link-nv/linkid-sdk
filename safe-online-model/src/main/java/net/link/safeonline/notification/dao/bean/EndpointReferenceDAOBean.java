@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -82,8 +82,9 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
             throws EndpointReferenceNotFoundException {
 
         EndpointReferenceEntity endpointReference = findEndpointReference(address, application);
-        if (null == endpointReference)
+        if (null == endpointReference) {
             throw new EndpointReferenceNotFoundException();
+        }
         return endpointReference;
     }
 
@@ -91,8 +92,9 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
             throws EndpointReferenceNotFoundException {
 
         EndpointReferenceEntity endpointReference = findEndpointReference(address, device);
-        if (null == endpointReference)
+        if (null == endpointReference) {
             throw new EndpointReferenceNotFoundException();
+        }
         return endpointReference;
     }
 

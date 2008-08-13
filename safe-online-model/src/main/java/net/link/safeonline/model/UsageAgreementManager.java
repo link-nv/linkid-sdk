@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -20,7 +20,7 @@ public interface UsageAgreementManager {
      * This commits the current draft usage agreement for the specified application to a new usage agreement version.
      * And updates the appliation with this new version. This causes the user to have to agree with this updated version
      * during his next authentication.
-     * 
+     *
      * @param application
      */
     void updateUsageAgreement(ApplicationEntity application);
@@ -28,7 +28,7 @@ public interface UsageAgreementManager {
     /**
      * Set the usage agreement version of the specified application to the specified version. Draft versions are not
      * taken into account.
-     * 
+     *
      * @param application
      * @param usageAgreementVersion
      * @throws UsageAgreementNotFoundException

@@ -1,11 +1,13 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.entity.config;
+
+import static net.link.safeonline.entity.config.ConfigGroupEntity.QUERY_LIST_ALL;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,8 +26,6 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import static net.link.safeonline.entity.config.ConfigGroupEntity.QUERY_LIST_ALL;
 
 
 @Entity
@@ -84,15 +84,12 @@ public class ConfigGroupEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof ConfigGroupEntity) {
+        if (false == obj instanceof ConfigGroupEntity)
             return false;
-        }
         ConfigGroupEntity rhs = (ConfigGroupEntity) obj;
         return new EqualsBuilder().append(this.name, rhs.name).isEquals();
     }

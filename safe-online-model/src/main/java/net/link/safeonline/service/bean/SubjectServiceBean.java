@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -137,9 +137,8 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
         LOG.debug("get subject login: " + login);
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
                 login);
-        if (null == subject) {
+        if (null == subject)
             throw new SubjectNotFoundException();
-        }
         return subject;
     }
 
@@ -171,8 +170,9 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
     public DeviceSubjectEntity getDeviceSubject(String deviceUserId) throws SubjectNotFoundException {
 
         DeviceSubjectEntity deviceSubject = findDeviceSubject(deviceUserId);
-        if (null == deviceSubject)
+        if (null == deviceSubject) {
             throw new SubjectNotFoundException();
+        }
         return deviceSubject;
     }
 }

@@ -26,15 +26,15 @@ import org.jgroups.View;
 /**
  * <h2>{@link AgentRemoting}<br>
  * <sub>Takes care of locating and maintaining a list of available agents.</sub></h2>
- * 
+ *
  * <p>
  * Utility class to locate performance testing agents using JGroups and monitor any changes in their availability.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AgentRemoting implements Receiver, ChannelListener {
@@ -59,8 +59,9 @@ public class AgentRemoting implements Receiver, ChannelListener {
         this.agentStateListeners = new ArrayList<AgentStateListener>();
 
         try {
-            if (null == this.channel || !this.channel.isOpen())
+            if (null == this.channel || !this.channel.isOpen()) {
                 this.channel = new JChannel(getClass().getResource("/jgroups.xml"));
+            }
         }
 
         catch (ChannelException e) {
@@ -87,8 +88,9 @@ public class AgentRemoting implements Receiver, ChannelListener {
             public void run() {
 
                 try {
-                    if (!AgentRemoting.this.channel.isConnected())
+                    if (!AgentRemoting.this.channel.isConnected()) {
                         AgentRemoting.this.channel.connect(AgentRemoting.this.group);
+                    }
                 }
 
                 catch (ChannelException e) {
@@ -124,9 +126,11 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelClosed(Channel c) {
 
-        if (c.equals(this.channel))
-            for (AgentStateListener listener : this.agentStateListeners)
+        if (c.equals(this.channel)) {
+            for (AgentStateListener listener : this.agentStateListeners) {
                 listener.channelClosed();
+            }
+        }
     }
 
     /**
@@ -134,9 +138,11 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelConnected(Channel c) {
 
-        if (c.equals(this.channel))
-            for (AgentStateListener listener : this.agentStateListeners)
+        if (c.equals(this.channel)) {
+            for (AgentStateListener listener : this.agentStateListeners) {
                 listener.channelConnected();
+            }
+        }
     }
 
     /**
@@ -144,9 +150,11 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelDisconnected(Channel c) {
 
-        if (c.equals(this.channel))
-            for (AgentStateListener listener : this.agentStateListeners)
+        if (c.equals(this.channel)) {
+            for (AgentStateListener listener : this.agentStateListeners) {
                 listener.channelDisconnected();
+            }
+        }
     }
 
     /**
@@ -154,8 +162,9 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelReconnected(Address agent) {
 
-        for (AgentStateListener listener : this.agentStateListeners)
+        for (AgentStateListener listener : this.agentStateListeners) {
             listener.channelReconnected(agent);
+        }
     }
 
     /**
@@ -163,8 +172,9 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelShunned() {
 
-        for (AgentStateListener listener : this.agentStateListeners)
+        for (AgentStateListener listener : this.agentStateListeners) {
             listener.channelShunned();
+        }
     }
 
     public void close() {
@@ -256,8 +266,9 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void suspect(Address suspected_mbr) {
 
-        for (AgentStateListener listener : this.agentStateListeners)
+        for (AgentStateListener listener : this.agentStateListeners) {
             listener.agentSuspected(suspected_mbr);
+        }
     }
 
     /**
@@ -265,7 +276,8 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void viewAccepted(View new_view) {
 
-        for (AgentStateListener listener : this.agentStateListeners)
+        for (AgentStateListener listener : this.agentStateListeners) {
             listener.membersChanged(new_view.getMembers());
+        }
     }
 }

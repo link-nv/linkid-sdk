@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -28,11 +28,11 @@ import org.jboss.security.auth.callback.UsernamePasswordHandler;
 
 /**
  * JAX-WS Login Handler. This JAX-WS SOAP handler will perform the JAAS login for applications, devices or olas nodes.
- * 
+ *
  * The JAAS login is performed using certificate and the id ( application name, device name, olas node name ).
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class LoginHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -74,9 +74,8 @@ public class LoginHandler implements SOAPHandler<SOAPMessageContext> {
         LOG.debug("login");
 
         X509Certificate certificate = WSSecurityServerHandler.getCertificate(context);
-        if (null == certificate) {
+        if (null == certificate)
             throw new RuntimeException("no certificate found on JAX-WS context");
-        }
 
         String id = CertificateMapperHandler.getId(context);
         try {
@@ -98,14 +97,12 @@ public class LoginHandler implements SOAPHandler<SOAPMessageContext> {
         LOG.debug("logout");
 
         X509Certificate certificate = WSSecurityServerHandler.getCertificate(context);
-        if (null == certificate) {
+        if (null == certificate)
             throw new RuntimeException("no certificate found on JAX-WS context");
-        }
 
         LoginContext loginContext = (LoginContext) context.get(LOGINCONTEXT_PROPERTY);
-        if (null == loginContext) {
+        if (null == loginContext)
             throw new RuntimeException("no JAAS login context present on the JAX-WS context");
-        }
         try {
             loginContext.logout();
         } catch (LoginException e) {

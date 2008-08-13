@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -35,9 +35,8 @@ public class SmartCardConfigFactoryImpl implements SmartCardConfigFactory {
         LOG.debug("get smart card configs");
         List<SmartCardConfig> smartCardConfigs = new LinkedList<SmartCardConfig>();
         Enumeration<URL> configResources = getConfigResources();
-        if (null == configResources) {
+        if (null == configResources)
             return smartCardConfigs;
-        }
         while (configResources.hasMoreElements()) {
             URL configResource = configResources.nextElement();
             LOG.debug("config resource: " + configResource);

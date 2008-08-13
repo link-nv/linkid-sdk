@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -18,9 +18,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * JACC policy context handler for audit context information.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
@@ -65,9 +65,8 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
     public Object getContext(String key, @SuppressWarnings("unused") Object data) {
 
-        if (false == key.equalsIgnoreCase(AUDIT_CONTEXT_KEY)) {
+        if (false == key.equalsIgnoreCase(AUDIT_CONTEXT_KEY))
             return null;
-        }
         AuditContextInfo auditContextInfo = auditContextInfos.get();
         if (null == auditContextInfo)
             return null;
@@ -87,7 +86,7 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
     /**
      * Sets the audit context Id for the current thread.
-     * 
+     *
      * @param auditContextId
      * @throws ExistingAuditContextException
      */
@@ -105,7 +104,7 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
     /**
      * Returns the audit context Id for the current thread
-     * 
+     *
      * @return auditContextId
      * @throws MissingAuditContextException
      */
@@ -122,7 +121,7 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
     /**
      * Locks the audit context associated with the current thread. If the current thread has no audit context this
      * method will return <code>false</code>.
-     * 
+     *
      */
     public static synchronized boolean lockAuditContext() {
 
@@ -136,7 +135,7 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
     /**
      * Removes the audit context for the current thread.
-     * 
+     *
      * @throws MissingAuditContextException
      */
     public static synchronized boolean removeAuditContext() throws MissingAuditContextException {

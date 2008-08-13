@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -28,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Manager class for the protocol handlers registered within the authentication web application.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class ProtocolHandlerManager {
 
@@ -64,9 +64,8 @@ public class ProtocolHandlerManager {
         try {
             ProtocolHandler protocolHandler = protocolHandlerClass.newInstance();
             String protocolId = protocolHandlerClass.getName();
-            if (protocolHandlerMap.containsKey(protocolId)) {
+            if (protocolHandlerMap.containsKey(protocolId))
                 throw new RuntimeException("protocol handler already registered for Id: " + protocolId);
-            }
             protocolHandlerMap.put(protocolId, protocolHandler);
             protocolHandlers.add(protocolHandler);
         } catch (Exception e) {
@@ -79,7 +78,7 @@ public class ProtocolHandlerManager {
      * Handles the authentication protocol request. This method return a protocol context in case of a successful
      * initiation of the authentication procedure. The method returns <code>null</code> if no appropriate authentication
      * protocol handler has been found.
-     * 
+     *
      * @param request
      * @return a protocol context or <code>null</code>.
      * @throws ProtocolException
@@ -114,7 +113,7 @@ public class ProtocolHandlerManager {
     /**
      * Handles the authentication response according to the authentication protocol by which the current authentication
      * procedure was initiated.
-     * 
+     *
      * @param session
      * @param response
      * @throws ProtocolException
@@ -122,13 +121,11 @@ public class ProtocolHandlerManager {
     public static void authnResponse(HttpSession session, HttpServletResponse response) throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
-        if (null == protocolId) {
+        if (null == protocolId)
             throw new ProtocolException("incorrect request handling detected");
-        }
         ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
-        if (null == protocolHandler) {
+        if (null == protocolHandler)
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
-        }
 
         try {
             protocolHandler.authnResponse(session, response);

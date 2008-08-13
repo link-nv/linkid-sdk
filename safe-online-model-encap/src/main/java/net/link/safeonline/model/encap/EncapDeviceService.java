@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -24,7 +24,7 @@ public interface EncapDeviceService {
 
     /**
      * Authenticate against the encap server and verifies with OLAS.
-     * 
+     *
      * @param mobile
      * @param challengeId
      * @param mobileOTP
@@ -39,7 +39,7 @@ public interface EncapDeviceService {
 
     /**
      * Authenticates against the encap server.
-     * 
+     *
      * @param challengeId
      * @param mobileOTP
      * @return true or false
@@ -50,7 +50,7 @@ public interface EncapDeviceService {
 
     /**
      * Activates the specified mobile at the encap server.
-     * 
+     *
      * @param mobile
      * @param sessionId
      * @return activationCode code to be used by the user on his mobile
@@ -64,7 +64,7 @@ public interface EncapDeviceService {
     /**
      * Commits the encap registration for OLAS, creates a device subject if necessary, creates a new device registration
      * for this mobile and attaches it to the device subject.
-     * 
+     *
      * @param deviceUserId
      * @param mobile
      * @throws SubjectNotFoundException
@@ -80,7 +80,7 @@ public interface EncapDeviceService {
 
     /**
      * Requests the encap server to send an OTP to the specified mobile.
-     * 
+     *
      * @param mobile
      * @throws MalformedURLException
      * @throws MobileException

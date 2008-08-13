@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,16 +21,16 @@ import net.link.safeonline.entity.ApplicationOwnerEntity;
 
 /**
  * Application entity data access object interface definition.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface ApplicationDAO {
 
     /**
      * Find the application for a given application name.
-     * 
+     *
      * @param applicationName
      *            the application name.
      * @return the application or <code>null</code> if not found.
@@ -39,7 +39,7 @@ public interface ApplicationDAO {
 
     /**
      * Gives back the application entity for a given application name.
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      *             in case the application was not found.
@@ -57,20 +57,20 @@ public interface ApplicationDAO {
 
     /**
      * Gives back a list of all application registered within the SafeOnline system.
-     * 
+     *
      */
     List<ApplicationEntity> listApplications();
 
     /**
      * Gives back a list of all applications registered within the SafeOnline system and allowed for regular users to
      * view/subscribe to.
-     * 
+     *
      */
     List<ApplicationEntity> listUserApplications();
 
     /**
      * Gives back the application owned by the given application owner.
-     * 
+     *
      * @param applicationOwner
      */
     List<ApplicationEntity> listApplications(ApplicationOwnerEntity applicationOwner);
@@ -79,7 +79,7 @@ public interface ApplicationDAO {
 
     /**
      * Gives back an application entity.
-     * 
+     *
      * @param certificate
      *            the application certificate.
      * @throws ApplicationNotFoundException
@@ -88,7 +88,7 @@ public interface ApplicationDAO {
 
     /**
      * Gives back an application entity.
-     * 
+     *
      * @param certificate
      *            the application certificate.
      * @return the application or <code>null</code> if not found.

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -29,21 +29,21 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Servlet Filter that handles authentication browser timeout events.
- * 
+ *
  * This filter will set ( if not already ) a cookie containing the applicationId if the current session is valid. If the
  * session is invalid, it will check for such a cookie, fetch the {@link LoginManager#APPLICATION_ID_ATTRIBUTE} and
  * lookup the application URL. If such an url can be retrieved, it will display the timeout page as configured with the
  * <code>TimeoutPath</code> containing this URL. Else the URL will just be omitted.
- * 
+ *
  * <p>
  * The init parameters for this filter are:
  * </p>
  * <ul>
  * <li><code>TimeoutPath</code>: the path to the timeout page.</li>
  * </ul>
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class TimeoutFilter extends AbstractInjectionFilter {
 

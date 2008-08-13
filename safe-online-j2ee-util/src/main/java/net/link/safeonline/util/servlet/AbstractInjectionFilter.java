@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -31,16 +31,16 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract Injection Filter.
- * 
+ *
  * <ul>
  * <li>Injects EJBs.
  * <li>Injects filter init parameters. If no defaultValue is specified, an {@link UnavailableException} will be thrown.
  * <li>Injects filter context parameters. If no defaultValue is specified, an {@link UnavailableException} will be
  * thrown.
  * </ul>
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public abstract class AbstractInjectionFilter implements Filter {
 
@@ -68,12 +68,14 @@ public abstract class AbstractInjectionFilter implements Filter {
                 continue;
             }
             String mappedName = ejb.mappedName();
-            if (null == mappedName)
+            if (null == mappedName) {
                 throw new ServletException("@EJB mappedName attribute required");
+            }
             LOG.debug("injecting: " + mappedName);
             Class type = field.getType();
-            if (false == type.isInterface())
+            if (false == type.isInterface()) {
                 throw new ServletException("field is not an interface type");
+            }
             Object ejbRef = EjbUtils.getEJB(mappedName, type);
             field.setAccessible(true);
             try {
@@ -96,16 +98,18 @@ public abstract class AbstractInjectionFilter implements Filter {
                 continue;
             }
             String name = initAnnotation.name();
-            if (null == name)
+            if (null == name) {
                 throw new ServletException("@Init name attribute required");
+            }
             LOG.debug("init: " + name);
             String defaultValue = initAnnotation.defaultValue();
             boolean optional = initAnnotation.optional();
 
             String value = config.getInitParameter(name);
             if (null == value) {
-                if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional)
+                if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional) {
                     throw new UnavailableException("missing init parameter: " + name);
+                }
                 if (Init.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
                 }
@@ -139,16 +143,18 @@ public abstract class AbstractInjectionFilter implements Filter {
                 continue;
             }
             String name = contextAnnotation.name();
-            if (null == name)
+            if (null == name) {
                 throw new ServletException("@Context name attribute required");
+            }
             LOG.debug("init: " + name);
             String defaultValue = contextAnnotation.defaultValue();
             boolean optional = contextAnnotation.optional();
 
             String value = config.getServletContext().getInitParameter(name);
             if (null == value) {
-                if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional)
+                if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional) {
                     throw new UnavailableException("missing init parameter: " + name);
+                }
                 if (Context.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
                 }

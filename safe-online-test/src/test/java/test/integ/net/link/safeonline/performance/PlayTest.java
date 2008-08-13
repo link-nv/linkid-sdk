@@ -31,15 +31,15 @@ import net.link.safeonline.util.performance.ProfileData;
 /**
  * <h2>{@link PlayTest}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @SuppressWarnings("unused")

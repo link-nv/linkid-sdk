@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -64,9 +64,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation of the data client. This class is using JAX-WS, secured via WS-Security and server-side SSL.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class DataClientImpl extends AbstractMessageAccessor implements DataClient {
 
@@ -81,7 +81,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
     /**
      * Main constructor.
-     * 
+     *
      * @param location
      *            the location (i.e. host:port) of the data web service.
      * @param clientCertificate
@@ -219,15 +219,18 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         switch (topLevelStatusCode) {
             case FAILED:
                 List<StatusType> secondLevelStatuses = status.getStatus();
-                if (0 == secondLevelStatuses.size())
+                if (0 == secondLevelStatuses.size()) {
                     throw new RuntimeException("ID-WSF DST error");
+                }
                 StatusType secondLevelStatus = secondLevelStatuses.get(0);
                 SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode.fromCode(secondLevelStatus
                         .getCode());
-                if (SecondLevelStatusCode.NOT_AUTHORIZED == secondLevelStatusCode)
+                if (SecondLevelStatusCode.NOT_AUTHORIZED == secondLevelStatusCode) {
                     throw new RequestDeniedException();
-                if (SecondLevelStatusCode.DOES_NOT_EXIST == secondLevelStatusCode)
+                }
+                if (SecondLevelStatusCode.DOES_NOT_EXIST == secondLevelStatusCode) {
                     throw new SubjectNotFoundException();
+                }
                 throw new RuntimeException("unknown error occurred");
             case OK:
             break;
@@ -298,9 +301,10 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
                     Array.set(values, idx, compoundBuilder.getCompound());
                 } else {
-                    if (false == componentType.isInstance(attributeValue))
+                    if (false == componentType.isInstance(attributeValue)) {
                         throw new IllegalArgumentException("expected type " + componentType.getName() + "; received: "
                                 + attributeValue.getClass().getName());
+                    }
                     Array.set(values, idx, attributeValue);
                 }
             }
@@ -311,9 +315,10 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         /*
          * Single-valued attribute expected.
          */
-        if (false == expectedValueClass.isInstance(firstAttributeValue))
+        if (false == expectedValueClass.isInstance(firstAttributeValue)) {
             throw new IllegalArgumentException("type mismatch: expected " + expectedValueClass.getName()
                     + "; received: " + firstAttributeValue.getClass().getName());
+        }
         Type value = (Type) firstAttributeValue;
 
         Attribute<Type> dataValue = new Attribute<Type>(name, value);
@@ -356,8 +361,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
             LOG.debug("status: " + status.getCode());
 
             TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode.fromCode(status.getCode());
-            if (TopLevelStatusCode.OK != topLevelStatusCode)
+            if (TopLevelStatusCode.OK != topLevelStatusCode) {
                 throw new RuntimeException("error occurred while creating attribute");
+            }
         } catch (ClientTransportException e) {
             throw new WSClientTransportException(this.location);
         } catch (Exception e) {
@@ -369,9 +375,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
     /**
      * Sets the attribute value within the target SAML attribute element.
-     * 
+     *
      * The input attribute value can be an Integer, Boolean or array of these in case of a multivalued attribute.
-     * 
+     *
      * @param attributeValue
      * @param targetAttribute
      * @param newAttribute
@@ -394,8 +400,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
                 Object value = Array.get(attributeValue, idx);
                 attributeValues.add(value);
             }
-        } else
+        } else {
             attributeValues.add(attributeValue);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -426,21 +433,23 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
                 attributeValues.add(memberAttribute);
             }
             CompoundId compoundIdAnnotation = method.getAnnotation(CompoundId.class);
-            if (null != compoundIdAnnotation)
+            if (null != compoundIdAnnotation) {
                 try {
                     id = (String) method.invoke(attributeValue, new Object[] {});
                 } catch (Exception e) {
                     throw new RuntimeException("@Id property not of type string");
                 }
+            }
         }
-        if (null != id)
+        if (null != id) {
             compoundAttribute.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, id);
-        else if (false == isNewAttribute)
+        } else if (false == isNewAttribute) {
             /*
              * The @Id property is really required to be able to target the correct compound attribute record within the
              * system. In case we're creating a new compounded attribute record the attribute Id is of no use.
              */
             throw new IllegalArgumentException("Missing @Id property on compound attribute value");
+        }
         return compoundAttribute;
     }
 
@@ -461,8 +470,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         select.setValue(attributeName);
         deleteItem.setSelect(select);
 
-        if (null != attributeId)
+        if (null != attributeId) {
             select.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, attributeId);
+        }
 
         DeleteResponseType deleteResponse;
         try {
@@ -492,7 +502,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         if (CompoundUtil.isCompound(value)) {
             String attributeId = CompoundUtil.getAttributeId(value);
             removeAttribute(userId, attributeName, attributeId);
-        } else
+        } else {
             removeAttribute(userId, attributeName, null);
+        }
     }
 }

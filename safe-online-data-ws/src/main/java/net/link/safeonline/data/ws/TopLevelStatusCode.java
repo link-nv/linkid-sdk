@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -38,9 +38,8 @@ public enum TopLevelStatusCode {
     public static TopLevelStatusCode fromCode(String code) {
 
         TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode.statusCodes.get(code);
-        if (null == topLevelStatusCode) {
+        if (null == topLevelStatusCode)
             throw new IllegalArgumentException("unknown code: " + code);
-        }
         return topLevelStatusCode;
     }
 }

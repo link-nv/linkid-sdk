@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -72,9 +72,8 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
 
         AttributeProviderEntity attachedEntity = this.attributeProviderDAO.findAttributeProvider(attributeProvider
                 .getApplication(), attributeProvider.getAttributeType());
-        if (null == attachedEntity) {
+        if (null == attachedEntity)
             throw new AttributeProviderNotFoundException();
-        }
         this.attributeProviderDAO.removeAttributeProvider(attachedEntity);
     }
 
@@ -84,13 +83,13 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-        if (!attributeType.isLocal())
+        if (!attributeType.isLocal()) {
             throw new PermissionDeniedException("Cannot set attribute provider on remote attribute");
+        }
         AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO.findAttributeProvider(
                 application, attributeType);
-        if (null != existingAttributeProvider) {
+        if (null != existingAttributeProvider)
             throw new ExistingAttributeProviderException();
-        }
         this.attributeProviderDAO.addAttributeProvider(application, attributeType);
     }
 }

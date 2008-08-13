@@ -12,9 +12,9 @@ import org.apache.commons.logging.Log;
 
 /**
  * Implementation of Logger using the applet view as output.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AppletLog implements Log {
 

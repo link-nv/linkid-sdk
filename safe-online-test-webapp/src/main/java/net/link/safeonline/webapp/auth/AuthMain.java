@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -46,13 +46,13 @@ public class AuthMain extends Page {
     public Page next() {
 
         clickButtonAndWait("next");
-        if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+        if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
             return new AuthUserNamePassword();
-        } else if (this.device.equals(BeIdConstants.BEID_DEVICE_ID)) {
+        else if (this.device.equals(BeIdConstants.BEID_DEVICE_ID))
             return null;
-        } else if (this.device.equals(EncapConstants.ENCAP_DEVICE_ID)) {
+        else if (this.device.equals(EncapConstants.ENCAP_DEVICE_ID))
             return null;
-        } else if (this.device.equals(DigipassConstants.DIGIPASS_DEVICE_ID))
+        else if (this.device.equals(DigipassConstants.DIGIPASS_DEVICE_ID))
             return null;
         return null;
     }

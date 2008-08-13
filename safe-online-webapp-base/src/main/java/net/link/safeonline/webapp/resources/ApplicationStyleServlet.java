@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -32,16 +32,16 @@ import org.apache.velocity.runtime.log.Log4JLogChute;
 /**
  * <h2>{@link ApplicationStyleServlet}<br>
  * <sub>This servlet generates CSS style for colouring web applications.</sub></h2>
- * 
+ *
  * <p>
  * CSS is generated as declared in <code>style.css.vm</code> in this project's resource folder. Color variables in there
  * are calculated in this servlet based off of the current application's configured base color.
  * </p>
- * 
+ *
  * <p>
  * <i>May 13, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ApplicationStyleServlet extends AbstractInjectionServlet {
@@ -102,9 +102,8 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
             IOException {
 
         String applicationName = request.getParameter("applicationName");
-        if (null == applicationName) {
+        if (null == applicationName)
             throw new IllegalArgumentException("The application name must be provided.");
-        }
 
         // Figure out the base color for the style.
         Color baseColor = Color.decode("#5a7500"); // Default: Green.
@@ -112,8 +111,9 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
             try {
                 PublicApplication application = this.publicApplicationService.findPublicApplication(applicationName);
 
-                if (application == null)
+                if (application == null) {
                     throw new IllegalStateException("Application not found: " + applicationName);
+                }
 
                 if (application.getColor() != null) {
                     baseColor = application.getColor();

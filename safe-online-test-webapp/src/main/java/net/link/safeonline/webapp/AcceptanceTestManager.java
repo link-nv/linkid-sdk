@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,15 +21,15 @@ import com.thoughtworks.selenium.SeleniumLogLevels;
 
 /**
  * Acceptance test manager based on the Selenium testing framework.
- * 
+ *
  * This component will launch the selenium server on port 4455.
- * 
+ *
  * Make sure that the SafeOnline web applications are up and running.
- * 
+ *
  * Note: JBoss AS already runs on the default selenium server port 4444.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AcceptanceTestManager {
 
@@ -75,9 +75,8 @@ public class AcceptanceTestManager {
 
     public Selenium getSelenium() {
 
-        if (null == this.selenium) {
+        if (null == this.selenium)
             throw new IllegalStateException("call setUp first");
-        }
         return this.selenium;
     }
 

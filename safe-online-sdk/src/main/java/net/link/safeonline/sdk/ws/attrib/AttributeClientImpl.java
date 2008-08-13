@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -55,9 +55,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation of attribute client. This class is using JAX-WS, secured via WS-Security and server-side SSL.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AttributeClientImpl extends AbstractMessageAccessor implements AttributeClient {
 
@@ -70,7 +70,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
 
     /**
      * Main constructor.
-     * 
+     *
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -110,20 +110,23 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     private <Type> Type getAttributeValue(ResponseType response, Class<Type> valueClass) {
 
         List<Object> assertions = response.getAssertionOrEncryptedAssertion();
-        if (assertions.isEmpty())
+        if (assertions.isEmpty()) {
             throw new RuntimeException("No assertions in response");
+        }
         AssertionType assertion = (AssertionType) assertions.get(0);
 
         List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-        if (statements.isEmpty())
+        if (statements.isEmpty()) {
             throw new RuntimeException("No statements in response assertion");
+        }
         AttributeStatementType attributeStatement = (AttributeStatementType) statements.get(0);
         List<Object> attributeObjects = attributeStatement.getAttributeOrEncryptedAttribute();
         AttributeType attribute = (AttributeType) attributeObjects.get(0);
 
         if (Boolean.valueOf(attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))
-                ^ valueClass.isArray())
+                ^ valueClass.isArray()) {
             throw new IllegalArgumentException("multivalued and [] type mismatch");
+        }
 
         List<Object> attributeValues = attribute.getAttributeValue();
 
@@ -149,8 +152,9 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
                     }
 
                     Array.set(result, idx, compoundBuilder.getCompound());
-                } else
+                } else {
                     Array.set(result, idx, attributeValue);
+                }
                 idx++;
             }
 
@@ -165,9 +169,10 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         if (null == value)
             return null;
 
-        if (false == valueClass.isInstance(value))
+        if (false == valueClass.isInstance(value)) {
             throw new IllegalArgumentException("expected type: " + valueClass.getName() + "; actual type: "
                     + value.getClass().getName());
+        }
         Type attributeValue = valueClass.cast(value);
         return attributeValue;
 
@@ -201,10 +206,11 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
                 String secondLevelStatusCodeValue = secondLevelStatusCode.getValue();
                 SamlpSecondLevelErrorCode samlpSecondLevelErrorCode = SamlpSecondLevelErrorCode
                         .getSamlpTopLevelErrorCode(secondLevelStatusCodeValue);
-                if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode)
+                if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode) {
                     throw new AttributeNotFoundException();
-                else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode)
+                } else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode) {
                     throw new RequestDeniedException();
+                }
                 LOG.debug("second level status code: " + secondLevelStatusCode.getValue());
             }
             throw new RuntimeException("error: " + statusCodeValue);
@@ -264,13 +270,15 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     private void getAttributeValues(ResponseType response, Map<String, Object> attributes) {
 
         List<Object> assertions = response.getAssertionOrEncryptedAssertion();
-        if (0 == assertions.size())
+        if (0 == assertions.size()) {
             throw new RuntimeException("No assertions in response");
+        }
         AssertionType assertion = (AssertionType) assertions.get(0);
 
         List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-        if (0 == statements.size())
+        if (0 == statements.size()) {
             throw new RuntimeException("No statements in response assertion");
+        }
         AttributeStatementType attributeStatement = (AttributeStatementType) statements.get(0);
         List<Object> attributeObjects = attributeStatement.getAttributeOrEncryptedAttribute();
         for (Object attributeObject : attributeObjects) {
@@ -287,15 +295,17 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
                 Class<?> componentType = firstAttributeValue.getClass();
                 int size = attributeValues.size();
                 attributeValue = Array.newInstance(componentType, size);
-                for (int idx = 0; idx < size; idx++)
+                for (int idx = 0; idx < size; idx++) {
                     Array.set(attributeValue, idx, attributeValues.get(idx));
-            } else
+                }
+            } else {
                 /*
                  * Single-valued attribute.
-                 * 
+                 *
                  * Here we depend on the xsi:type typing.
                  */
                 attributeValue = attributeValues.get(0);
+            }
 
             attributes.put(attributeName, attributeValue);
         }
@@ -318,8 +328,9 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
             throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException {
 
         IdentityCard identityCardAnnotation = identityCardClass.getAnnotation(IdentityCard.class);
-        if (null == identityCardAnnotation)
+        if (null == identityCardAnnotation) {
             throw new IllegalArgumentException("identity card class should be annotated with @IdentityCard");
+        }
         Type identityCard;
         try {
             identityCard = identityCardClass.newInstance();
@@ -329,8 +340,9 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         Method[] methods = identityCardClass.getMethods();
         for (Method method : methods) {
             IdentityAttribute identityAttributeAnnotation = method.getAnnotation(IdentityAttribute.class);
-            if (null == identityAttributeAnnotation)
+            if (null == identityAttributeAnnotation) {
                 continue;
+            }
             String attributeName = identityAttributeAnnotation.value();
             Class valueClass = method.getReturnType();
             Object attributeValue = getAttributeValue(subjectLogin, attributeName, valueClass);

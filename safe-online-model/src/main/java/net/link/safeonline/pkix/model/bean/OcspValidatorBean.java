@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -66,9 +66,9 @@ import org.bouncycastle.ocsp.UnknownStatus;
 
 /**
  * OCSP Validator Bean. Specification available at: http://www.ietf.org/rfc/rfc2560.txt
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Stateless
 public class OcspValidatorBean implements OcspValidator {
@@ -82,25 +82,22 @@ public class OcspValidatorBean implements OcspValidator {
     public boolean performOcspCheck(X509Certificate certificate, X509Certificate issuerCertificate) {
 
         URI ocspUri = getOcspUri(certificate);
-        if (null == ocspUri) {
+        if (null == ocspUri)
             /*
              * Nothing to do.
              */
             return true;
-        }
         OcspResult result = verifyOcspStatus(ocspUri, certificate, issuerCertificate);
-        if (result == OcspResult.GOOD) {
+        if (result == OcspResult.GOOD)
             return true;
-        }
         return false;
     }
 
     public OcspResult verifyOcspStatus(URI ocspUri, X509Certificate certificate, X509Certificate issuerCertificate) {
 
         byte[] resultOcspData = getOcsp(ocspUri, certificate, issuerCertificate);
-        if (null == resultOcspData) {
+        if (null == resultOcspData)
             return OcspResult.FAILED;
-        }
         LOG.debug("result OCSP data: " + resultOcspData.length);
         OCSPResp resp;
         try {
@@ -110,9 +107,8 @@ public class OcspValidatorBean implements OcspValidator {
         }
         int ocspStatus = resp.getStatus();
         LOG.debug("OCSP result status: " + ocspStatus);
-        if (OCSPRespStatus.SUCCESSFUL != ocspStatus) {
+        if (OCSPRespStatus.SUCCESSFUL != ocspStatus)
             return OcspResult.FAILED;
-        }
         Object responseObject;
         try {
             responseObject = resp.getResponseObject();
@@ -222,13 +218,12 @@ public class OcspValidatorBean implements OcspValidator {
         }
         LOG.debug("cert status: " + singleResp.getCertStatus());
         CertificateStatus status = (CertificateStatus) singleResp.getCertStatus();
-        if (null == status) {
+        if (null == status)
             return OcspResult.GOOD;
-        } else if (status instanceof RevokedStatus) {
+        else if (status instanceof RevokedStatus)
             return OcspResult.REVOKED;
-        } else if (status instanceof UnknownStatus) {
+        else if (status instanceof UnknownStatus)
             return OcspResult.SUSPENDED;
-        }
         return OcspResult.FAILED;
     }
 
@@ -340,13 +335,12 @@ public class OcspValidatorBean implements OcspValidator {
     private URI getAccessLocation(X509Certificate certificate, DERObjectIdentifier accessMethod) {
 
         byte[] authInfoAccessExtensionValue = certificate.getExtensionValue(X509Extensions.AuthorityInfoAccess.getId());
-        if (null == authInfoAccessExtensionValue) {
+        if (null == authInfoAccessExtensionValue)
             return null;
-        }
         DEROctetString oct;
         try {
-            oct = (DEROctetString) (new ASN1InputStream(new ByteArrayInputStream(authInfoAccessExtensionValue))
-                    .readObject());
+            oct = (DEROctetString) new ASN1InputStream(new ByteArrayInputStream(authInfoAccessExtensionValue))
+                    .readObject();
         } catch (IOException e) {
             throw new RuntimeException("IO error: " + e.getMessage(), e);
         }

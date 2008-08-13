@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -24,9 +24,9 @@ import com.sun.net.httpserver.HttpServer;
 
 /**
  * Web Service Test Utils. Can be used to unit test JAX-WS endpoint implementations.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class WebServiceTestUtils {
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -25,9 +25,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * JMX bean that manages the authentication identity of the SafeOnline instance. This identity is used for
  * authenticating this olas node to other olas nodes.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class AuthIdentityService implements AuthIdentityServiceMBean {
 
@@ -58,24 +58,20 @@ public class AuthIdentityService implements AuthIdentityServiceMBean {
     public void loadKeyPair() {
 
         LOG.debug("load private key");
-        if (null == this.keyStoreResource && null == this.keyStoreFile) {
+        if (null == this.keyStoreResource && null == this.keyStoreFile)
             throw new RuntimeException("no key store resource or file set");
-        }
-        if (null == this.keyStorePassword) {
+        if (null == this.keyStorePassword)
             throw new RuntimeException("no key store password set");
-        }
-        if (null == this.keyStoreType) {
+        if (null == this.keyStoreType)
             throw new RuntimeException("no key store type set");
-        }
 
         InputStream keyStoreInputStream;
         if (null != this.keyStoreResource) {
             Thread currenThread = Thread.currentThread();
             ClassLoader classLoader = currenThread.getContextClassLoader();
             keyStoreInputStream = classLoader.getResourceAsStream(this.keyStoreResource);
-            if (null == keyStoreInputStream) {
+            if (null == keyStoreInputStream)
                 throw new RuntimeException("keystore resource not found: " + this.keyStoreResource);
-            }
         } else {
             try {
                 keyStoreInputStream = new FileInputStream(this.keyStoreFile);

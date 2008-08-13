@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -371,9 +371,8 @@ public class SecurityTokenServicePortImplTest {
             QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
-        if (builder == null) {
+        if (builder == null)
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        }
         Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
                 .getPrefix());
         return object;

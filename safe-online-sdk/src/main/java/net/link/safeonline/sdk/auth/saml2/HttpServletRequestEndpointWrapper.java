@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * HttpServletRequest wrapper used to provide opensaml with the correct endpoint URI.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class HttpServletRequestEndpointWrapper extends HttpServletRequestWrapper {
 

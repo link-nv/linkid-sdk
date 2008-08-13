@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -36,9 +36,8 @@ public class BirthDateConvertor implements Convertor<Date> {
                 }
             }
         }
-        if (null == month) {
+        if (null == month)
             throw new ConvertorException("could not parse month: " + monthStr);
-        }
         int year = Integer.parseInt(stringTokenizer.nextToken());
         GregorianCalendar calendar = new GregorianCalendar(year, month, day);
         Date birthDate = calendar.getTime();

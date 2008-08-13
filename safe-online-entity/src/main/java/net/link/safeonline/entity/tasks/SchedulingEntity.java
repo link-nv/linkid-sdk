@@ -1,11 +1,15 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.entity.tasks;
+
+import static net.link.safeonline.entity.tasks.SchedulingEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.tasks.SchedulingEntity.QUERY_WHERE_NAME;
+import static net.link.safeonline.entity.tasks.SchedulingEntity.QUERY_WHERE_TIMERHANDLE;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -28,10 +32,6 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import static net.link.safeonline.entity.tasks.SchedulingEntity.QUERY_LIST_ALL;
-import static net.link.safeonline.entity.tasks.SchedulingEntity.QUERY_WHERE_NAME;
-import static net.link.safeonline.entity.tasks.SchedulingEntity.QUERY_WHERE_TIMERHANDLE;
 
 
 @Entity
@@ -144,15 +144,12 @@ public class SchedulingEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof SchedulingEntity) {
+        if (false == obj instanceof SchedulingEntity)
             return false;
-        }
         SchedulingEntity rhs = (SchedulingEntity) obj;
         return new EqualsBuilder().append(this.name, rhs.name).isEquals();
     }

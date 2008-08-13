@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -14,9 +14,9 @@ import com.sun.tools.ws.WsImport;
 
 /**
  * Unit test for testing the (missing) off-line features of WsImport.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class WsImportTest {
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -57,9 +57,8 @@ public class BeIdentityExtractor implements IdentityDataExtractor {
     private String getAttributeFromSubjectName(String subjectName, String attributeName) {
 
         int attributeBegin = subjectName.indexOf(attributeName + "=");
-        if (-1 == attributeBegin) {
+        if (-1 == attributeBegin)
             throw new IllegalArgumentException("attribute name does not occur in subject: " + attributeName);
-        }
         attributeBegin += attributeName.length() + 1; // "attributeName="
         int attributeEnd = subjectName.indexOf(",", attributeBegin);
         if (-1 == attributeEnd) {

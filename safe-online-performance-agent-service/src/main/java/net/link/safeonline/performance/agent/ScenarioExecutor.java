@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ScenarioExecutor}<br>
  * <sub>Thread in which we execute the scenario.</sub></h2>
- * 
+ *
  * <p>
  * We retrieve the EJB for the scenario and use it to prepare a new scenario execution. We then create a thread pool
  * which size depends on the amount of workers we were instructed to use and tell the scenario EJB to execute scenarios
@@ -33,11 +33,11 @@ import org.apache.commons.logging.LogFactory;
  * interrupting all active threads and shutting down the thread pool. The agent will revert to its previous state and no
  * statistics will be available.
  * </p>
- * 
+ *
  * <p>
  * <i>Jan 8, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioExecutor extends Thread {
@@ -73,7 +73,7 @@ public class ScenarioExecutor extends Thread {
             // Create a pool of threads that execute scenario beans.
             long startTime = System.currentTimeMillis();
             this.pool = Executors.newScheduledThreadPool(this.request.getWorkers());
-            for (int i = 0; i < this.request.getWorkers(); ++i)
+            for (int i = 0; i < this.request.getWorkers(); ++i) {
                 this.pool.scheduleWithFixedDelay(new Runnable() {
 
                     public void run() {
@@ -88,21 +88,24 @@ public class ScenarioExecutor extends Thread {
                         }
                     }
                 }, 0, 100, TimeUnit.MILLISECONDS);
+            }
 
             // Sleep this thread until the specified duration has elapsed.
             long until = startTime + this.request.getDuration();
-            while (!this.abort && System.currentTimeMillis() < until)
+            while (!this.abort && System.currentTimeMillis() < until) {
                 try {
                     Thread.sleep(Math.min(until - System.currentTimeMillis(), 50));
                 } catch (InterruptedException e) {
                     break;
                 }
+            }
 
             // Shut down and wait for active scenarios to complete.
             this.pool.shutdown();
             try {
-                while (!this.pool.awaitTermination(1, TimeUnit.SECONDS))
+                while (!this.pool.awaitTermination(1, TimeUnit.SECONDS)) {
                     Thread.sleep(50);
+                }
             } catch (InterruptedException e) {
             }
         }
@@ -120,10 +123,12 @@ public class ScenarioExecutor extends Thread {
 
         this.abort = true;
 
-        if (this.pool != null)
+        if (this.pool != null) {
             this.pool.shutdownNow();
+        }
 
-        if (isAlive())
+        if (isAlive()) {
             interrupt();
+        }
     }
 }

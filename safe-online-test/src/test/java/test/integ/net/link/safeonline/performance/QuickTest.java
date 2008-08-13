@@ -27,15 +27,15 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 /**
  * <h2>{@link QuickTest}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 12, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class QuickTest extends AbstractDataTest {
@@ -79,10 +79,11 @@ public class QuickTest extends AbstractDataTest {
                 int length = tt[i].toString().length();
                 rowTotal += length + 4;
 
-                if (maxlens.size() < i + 1)
+                if (maxlens.size() < i + 1) {
                     maxlens.add(length);
-                else
+                } else {
                     maxlens.set(i, Math.max(maxlens.get(i), length));
+                }
             }
 
             total = Math.max(total, rowTotal);
@@ -90,11 +91,13 @@ public class QuickTest extends AbstractDataTest {
 
         System.out.println();
         String descr = String.format("%s (%d):", title, ttt.size());
-        for (int i = 0; i < (total - descr.length()) / 2; ++i)
+        for (int i = 0; i < (total - descr.length()) / 2; ++i) {
             System.out.print(" ");
+        }
         System.out.println(descr);
-        for (int i = 0; i < total; ++i)
+        for (int i = 0; i < total; ++i) {
             System.out.print("_");
+        }
         System.out.println();
 
         for (Object _tt : ttt) {
@@ -105,8 +108,9 @@ public class QuickTest extends AbstractDataTest {
                 tt = new Object[] { _tt };
             }
 
-            for (int i = 0; i < tt.length; ++i)
+            for (int i = 0; i < tt.length; ++i) {
                 System.out.format("|%" + (maxlens.get(i) + 1) + "s |", tt[i]);
+            }
             System.out.println();
         }
 

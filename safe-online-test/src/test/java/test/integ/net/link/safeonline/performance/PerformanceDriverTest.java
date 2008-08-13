@@ -45,7 +45,7 @@ import org.junit.Test;
 
 /**
  * @author mbillemo
- * 
+ *
  */
 public class PerformanceDriverTest {
 
@@ -183,7 +183,7 @@ public class PerformanceDriverTest {
 
     /**
      * Log the given username in using the given password for the given application and retrieve the UUID for the user.
-     * 
+     *
      * @param testPass2
      * @param applicationKey2
      */

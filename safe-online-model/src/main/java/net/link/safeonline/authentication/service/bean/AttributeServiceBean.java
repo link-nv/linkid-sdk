@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -48,9 +48,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Attribute Service Implementation for applications.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
@@ -137,8 +137,9 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
          */
         List<ApplicationIdentityAttributeEntity> attributes = new ArrayList<ApplicationIdentityAttributeEntity>();
         for (ApplicationIdentityAttributeEntity attribute : confirmedApplicationIdentity.getAttributes())
-            if (!attribute.isDataMining())
+            if (!attribute.isDataMining()) {
                 attributes.add(attribute);
+            }
         return attributes;
     }
 
@@ -153,8 +154,9 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
         for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
             String attributeName = confirmedAttribute.getAttributeTypeName();
             Object value = this.proxyAttributeService.findAttributeValue(subject.getUserId(), attributeName);
-            if (null == value)
+            if (null == value) {
                 continue;
+            }
             LOG.debug("confirmed attribute: " + attributeName);
             resultAttributes.put(attributeName, value);
         }

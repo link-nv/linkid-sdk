@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -19,9 +19,9 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 /**
  * Factory for query objects.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class QueryObjectFactory {
 
@@ -34,7 +34,7 @@ public class QueryObjectFactory {
      * Creates a new query object from the given query object interface. The methods on this interface should be
      * annotated via {@link QueryMethod} or {@link UpdateMethod}. If the method has parameters one should annotated
      * these via {@link QueryParam}.
-     * 
+     *
      * @param <T>
      * @param entityManager
      *            the JPA entity manager used by the returned query object.
@@ -45,9 +45,8 @@ public class QueryObjectFactory {
     @SuppressWarnings("unchecked")
     public static <T> T createQueryObject(EntityManager entityManager, Class<T> queryObjectInterface) {
 
-        if (false == queryObjectInterface.isInterface()) {
+        if (false == queryObjectInterface.isInterface())
             throw new IllegalArgumentException("query object class is not an interface");
-        }
         InvocationHandler invocationHandler = new QueryObjectInvocationHandler(entityManager);
         Thread currentThread = Thread.currentThread();
         ClassLoader classLoader = currentThread.getContextClassLoader();

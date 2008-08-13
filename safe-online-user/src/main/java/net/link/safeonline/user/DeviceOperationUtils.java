@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -52,8 +52,8 @@ public class DeviceOperationUtils {
      * An optional initialization parameter <code>Saml2BrowserPostTemplate</code> can be defnied in web.xml, specifying
      * a custom SAML2 browser post velocity template.
      * </p>
-     * 
-     * 
+     *
+     *
      * @param landingUrl
      *            the location at the remote device issuer where to post the authentication request to
      * @param device
@@ -120,8 +120,9 @@ public class DeviceOperationUtils {
     private static String getInitParameter(ExternalContext context, String parameterName) {
 
         String initParameter = context.getInitParameter(parameterName);
-        if (null == initParameter)
+        if (null == initParameter) {
             throw new RuntimeException("missing context-param in web.xml: " + parameterName);
+        }
         return initParameter;
     }
 

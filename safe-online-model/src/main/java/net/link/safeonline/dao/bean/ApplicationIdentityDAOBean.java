@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -60,9 +60,8 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
         ApplicationIdentityPK applicationIdentityPK = new ApplicationIdentityPK(application.getName(), identityVersion);
         ApplicationIdentityEntity applicationIdentity = this.entityManager.find(ApplicationIdentityEntity.class,
                 applicationIdentityPK);
-        if (null == applicationIdentity) {
+        if (null == applicationIdentity)
             throw new ApplicationIdentityNotFoundException();
-        }
         return applicationIdentity;
     }
 

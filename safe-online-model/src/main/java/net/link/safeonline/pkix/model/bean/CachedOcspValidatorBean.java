@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -47,9 +47,8 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
         OcspResult ocspResult;
 
         URI ocspURI = this.ocspValidator.getOcspUri(certificate);
-        if (null == ocspURI) {
+        if (null == ocspURI)
             return OcspResult.GOOD;
-        }
 
         String key = generateKey(certificate);
 
@@ -107,39 +106,35 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
 
     private boolean cacheResult(OcspResult ocspResult) {
 
-        if (ocspResult == OcspResult.GOOD) {
+        if (ocspResult == OcspResult.GOOD)
             return true;
-        }
-        if (ocspResult == OcspResult.REVOKED) {
+        if (ocspResult == OcspResult.REVOKED)
             return true;
-        }
         return false;
     }
 
     private OcspResult convertCachedOcspResultType(CachedOcspResultType cachedOcspResult) {
 
-        if (cachedOcspResult == CachedOcspResultType.GOOD) {
+        if (cachedOcspResult == CachedOcspResultType.GOOD)
             return OcspResult.GOOD;
-        } else if (cachedOcspResult == CachedOcspResultType.REVOKED) {
+        else if (cachedOcspResult == CachedOcspResultType.REVOKED)
             return OcspResult.REVOKED;
-        } else if (cachedOcspResult == CachedOcspResultType.SUSPENDED) {
+        else if (cachedOcspResult == CachedOcspResultType.SUSPENDED)
             return OcspResult.SUSPENDED;
-        } else {
+        else
             return OcspResult.UNKNOWN;
-        }
     }
 
     private CachedOcspResultType convertOcspResult(OcspResult ocspResult) {
 
-        if (ocspResult == OcspResult.GOOD) {
+        if (ocspResult == OcspResult.GOOD)
             return CachedOcspResultType.GOOD;
-        } else if (ocspResult == OcspResult.REVOKED) {
+        else if (ocspResult == OcspResult.REVOKED)
             return CachedOcspResultType.REVOKED;
-        } else if (ocspResult == OcspResult.SUSPENDED) {
+        else if (ocspResult == OcspResult.SUSPENDED)
             return CachedOcspResultType.SUSPENDED;
-        } else {
+        else
             return CachedOcspResultType.UNKNOWN;
-        }
     }
 
     private String generateKey(X509Certificate certificate) {

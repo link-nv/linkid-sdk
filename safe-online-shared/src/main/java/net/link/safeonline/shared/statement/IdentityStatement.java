@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,9 +13,9 @@ import net.link.safeonline.shared.asn1.statement.DERIdentityStatement;
 
 /**
  * Component for construction of the identity statement. The identity statement links the certificate with the username.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class IdentityStatement extends AbstractStatement {
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -117,15 +117,17 @@ public class NodeBean implements Node {
 
         try {
             byte[] encodedAuthnCertificate;
-            if (null != this.authnUpFile)
+            if (null != this.authnUpFile) {
                 encodedAuthnCertificate = getUpFileContent(this.authnUpFile);
-            else
+            } else {
                 encodedAuthnCertificate = null;
+            }
             byte[] encodedSigningCertificate;
-            if (null != this.signingUpFile)
+            if (null != this.signingUpFile) {
                 encodedSigningCertificate = getUpFileContent(this.signingUpFile);
-            else
+            } else {
                 encodedSigningCertificate = null;
+            }
             this.nodeService.addNode(this.name, this.protocol, this.hostname, this.port, this.sslPort,
                     encodedAuthnCertificate, encodedSigningCertificate);
         } catch (ExistingNodeException e) {

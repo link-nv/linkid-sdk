@@ -26,11 +26,11 @@ import org.jboss.mx.util.MBeanServerLocator;
 /**
  * <h2>{@link ScenarioDeployer}<br>
  * <sub>Deploys an application (EAR) that is contained in a byte array.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioDeployer {
@@ -49,12 +49,13 @@ public class ScenarioDeployer {
             this.uploading = true;
 
             // Undeploy any existing scenario first.
-            if (null != this.applicationFile && this.applicationFile.exists())
+            if (null != this.applicationFile && this.applicationFile.exists()) {
                 try {
                     undeploy();
                 } catch (Exception e) {
                     LOG.error("Couldn't undeploy existing scenario: " + this.applicationFile, e);
                 }
+            }
 
             // Create a temporary file to write the scenario into.
             this.applicationFile = File.createTempFile("scenario", ".ear");
@@ -82,8 +83,9 @@ public class ScenarioDeployer {
             invokeDeployer("undeploy", new URL[] { this.applicationFile.toURI().toURL() }, new String[] { URL.class
                     .getName() });
         } finally {
-            if (null != this.applicationFile && this.applicationFile.exists())
+            if (null != this.applicationFile && this.applicationFile.exists()) {
                 this.applicationFile.delete();
+            }
         }
     }
 

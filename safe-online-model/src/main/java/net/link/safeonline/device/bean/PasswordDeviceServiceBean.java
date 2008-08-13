@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -63,8 +63,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(),
                 SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
         DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceMapping.getId());
-        if (deviceSubject.getRegistrations().isEmpty())
+        if (deviceSubject.getRegistrations().isEmpty()) {
             throw new SubjectNotFoundException();
+        }
 
         SubjectEntity deviceRegistration = deviceSubject.getRegistrations().get(0);
 
@@ -99,8 +100,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
          * Create new device subject
          */
         DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceMapping.getId());
-        if (null == deviceSubject)
+        if (null == deviceSubject) {
             deviceSubject = this.subjectService.addDeviceSubject(deviceMapping.getId());
+        }
 
         /*
          * Create new device registration subject
@@ -127,8 +129,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(),
                 SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
         DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceMapping.getId());
-        if (deviceSubject.getRegistrations().isEmpty())
+        if (deviceSubject.getRegistrations().isEmpty()) {
             throw new SubjectNotFoundException();
+        }
 
         SubjectEntity deviceRegistration = deviceSubject.getRegistrations().get(0);
 
@@ -148,8 +151,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(),
                 SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
         DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceMapping.getId());
-        if (deviceSubject.getRegistrations().isEmpty())
+        if (deviceSubject.getRegistrations().isEmpty()) {
             throw new SubjectNotFoundException();
+        }
 
         SubjectEntity deviceRegistration = deviceSubject.getRegistrations().get(0);
         this.passwordManager.changePassword(deviceRegistration, oldPassword, newPassword);

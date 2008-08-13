@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -42,12 +42,12 @@ import org.opensaml.xml.ConfigurationException;
 /**
  * SAML handler used by remote device issuers to handle an incoming SAML authentication request and store the retrieved
  * information on the session into {@link AuthenticationContext}.
- * 
+ *
  * After authenticating it will post a SAML authentication response containing the necessary assertions or a SAML
  * authentication response telling the authentication has failed.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class Saml2Handler implements Serializable {
 
@@ -111,9 +111,8 @@ public class Saml2Handler implements Serializable {
         this.issuer = configParams.get("DeviceName");
         this.applicationCertificate = newApplicationCertificate;
         this.applicationKeyPair = newApplicationKeyPair;
-        if (null == this.stsWsLocation) {
+        if (null == this.stsWsLocation)
             throw new AuthenticationInitializationException("Missing STS WS Location ( \"StsWsLocation\" )");
-        }
     }
 
     public void initAuthentication(HttpServletRequest request) throws AuthenticationInitializationException {
@@ -128,18 +127,19 @@ public class Saml2Handler implements Serializable {
 
         String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
 
-        if (null == assertionConsumerService)
+        if (null == assertionConsumerService) {
             throw new AuthenticationInitializationException("missing AssertionConsumerServiceURL");
+        }
 
-        if (samlAuthnRequest.getConditions().getAudienceRestrictions().isEmpty())
+        if (samlAuthnRequest.getConditions().getAudienceRestrictions().isEmpty()) {
             throw new AuthenticationInitializationException("missing audience restriction");
+        }
 
         String application = samlAuthnRequest.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0)
                 .getAudienceURI();
 
-        if (null == application) {
+        if (null == application)
             throw new AuthenticationInitializationException("No target application was specified");
-        }
         LOG.debug("application: " + application);
 
         String applicationFriendlyName = samlAuthnRequest.getProviderName();
@@ -154,8 +154,9 @@ public class Saml2Handler implements Serializable {
         if (null != requestedAuthnContext) {
             List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
             devices = new HashSet<String>();
-            for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
+            for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs) {
                 devices.add(authnContextClassRef.getAuthnContextClassRef());
+            }
         } else {
             devices = null;
         }
@@ -184,9 +185,8 @@ public class Saml2Handler implements Serializable {
         String applicationId = authenticationContext.getApplication();
         String target = authenticationContext.getTargetUrl();
         String inResponseTo = authenticationContext.getInResponseTo();
-        if (null == inResponseTo) {
+        if (null == inResponseTo)
             throw new AuthenticationFinalizationException("missing IN_RESPONSE_TO session attribute");
-        }
 
         String issuerName = authenticationContext.getIssuer();
         int validity = authenticationContext.getValidity();

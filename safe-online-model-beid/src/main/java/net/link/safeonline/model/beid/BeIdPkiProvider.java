@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -72,15 +72,12 @@ public class BeIdPkiProvider implements PkiProvider {
         X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
         String subject = subjectPrincipal.toString();
         LOG.debug("subject: " + subject);
-        if (subject.indexOf("SERIALNUMBER") == -1) {
+        if (subject.indexOf("SERIALNUMBER") == -1)
             return false;
-        }
-        if (subject.indexOf("GIVENNAME") == -1) {
+        if (subject.indexOf("GIVENNAME") == -1)
             return false;
-        }
-        if (subject.indexOf("SURNAME") == -1) {
+        if (subject.indexOf("SURNAME") == -1)
             return false;
-        }
         return true;
     }
 
@@ -161,9 +158,8 @@ public class BeIdPkiProvider implements PkiProvider {
     private String getAttributeFromSubjectName(String subjectName, String attributeName) {
 
         int attributeBegin = subjectName.indexOf(attributeName + "=");
-        if (-1 == attributeBegin) {
+        if (-1 == attributeBegin)
             throw new IllegalArgumentException("attribute name does not occur in subject: " + attributeName);
-        }
         attributeBegin += attributeName.length() + 1; // "attributeName="
         int attributeEnd = subjectName.indexOf(",", attributeBegin);
         if (-1 == attributeEnd) {
@@ -182,8 +178,9 @@ public class BeIdPkiProvider implements PkiProvider {
     private void removeAttribute(String attributeName, SubjectEntity subject) {
 
         AttributeEntity attribute = this.attributeDAO.findAttribute(attributeName, subject);
-        if (null != attribute)
+        if (null != attribute) {
             this.attributeDAO.removeAttribute(attribute);
+        }
     }
 
     public void storeDeviceAttribute(SubjectEntity subject) throws DeviceNotFoundException, AttributeNotFoundException {

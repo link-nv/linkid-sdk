@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -80,9 +80,8 @@ public class InputValidationTest extends TestCase {
         Class<?> clazz = InputValidationTest.class;
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
-            if (method.getName().equals(methodName)) {
+            if (method.getName().equals(methodName))
                 return method;
-            }
         }
         throw new IllegalArgumentException("no method found with name: " + methodName);
     }

@@ -18,15 +18,15 @@ import org.apache.wicket.markup.html.list.ListView;
 /**
  * <h2>{@link TicketPage}<br>
  * <sub>Wicket backend for ticket overview page.</sub></h2>
- * 
+ *
  * <p>
  * On this page the user can see all the tickets he purchased in the past and start the process of purchasing a new one.
  * </p>
- * 
+ *
  * <p>
  * <i>Jun 20, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class TicketPage extends LayoutPage {
@@ -39,7 +39,7 @@ public class TicketPage extends LayoutPage {
 
     /**
      * If film and theatre are selected; continue to the time and room selection page.
-     * 
+     *
      * If not, assign components to the HTML wicket elements so the user can select a film and theatre.
      */
     public TicketPage() {
@@ -58,17 +58,17 @@ public class TicketPage extends LayoutPage {
     /**
      * <h2>{@link TicketForm}<br>
      * <sub>Ticket History Form.</sub></h2>
-     * 
+     *
      * <p>
      * This form shows some information on purchased tickets.
-     * 
+     *
      * A link lets the user purchase a new one.
      * </p>
-     * 
+     *
      * <p>
      * <i>Jun 23, 2008</i>
      * </p>
-     * 
+     *
      * @author mbillemo
      */
     class TicketForm extends Form<String> {

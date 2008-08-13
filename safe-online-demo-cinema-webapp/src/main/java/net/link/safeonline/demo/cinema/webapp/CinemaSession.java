@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -31,15 +31,15 @@ import org.apache.wicket.Session;
 /**
  * <h2>{@link CinemaSession}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Jun 10, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class CinemaSession extends Session {
@@ -183,7 +183,7 @@ public class CinemaSession extends Session {
 
     /**
      * Change the seat occupation to the given seat, or unoccupy that seat if it was the seat currently occupied by us.
-     * 
+     *
      * @param seat
      *            The seat to occupy or unoccupy.
      */
@@ -211,7 +211,7 @@ public class CinemaSession extends Session {
 
     /**
      * Unset the selected film (and all other properties that depend on it).
-     * 
+     *
      * Don't do anything if no film is set.
      */
     public void resetFilm() {
@@ -227,7 +227,7 @@ public class CinemaSession extends Session {
 
     /**
      * Unset the selected theatre (and all other properties that depend on it).
-     * 
+     *
      * Don't do anything if no theatre is set.
      */
     public void resetTheatre() {
@@ -243,7 +243,7 @@ public class CinemaSession extends Session {
 
     /**
      * Unset the selected room (and all other properties that depend on it).
-     * 
+     *
      * Don't do anything if no room is set.
      */
     public void resetRoom() {
@@ -257,7 +257,7 @@ public class CinemaSession extends Session {
 
     /**
      * Unset the selected time (and all other properties that depend on it).
-     * 
+     *
      * Don't do anything if no time is set.
      */
     public void resetTime() {
@@ -271,7 +271,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> when the given seat is occupied by the user in this session.
      */
     public static boolean isOccupied(SeatEntity seat) {
@@ -281,7 +281,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> if the user has selected a seat.
      */
     public static boolean isSeatSet() {
@@ -299,7 +299,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> if the user has selected both a film and theatre.
      */
     public static boolean isFilmAndTheaterSet() {
@@ -309,7 +309,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> if the user has selected film.
      */
     public static boolean isFilmSet() {
@@ -319,7 +319,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> if the user has selected a theatre.
      */
     public static boolean isTheaterSet() {
@@ -329,7 +329,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> if the user has selected both a film and theatre.
      */
     public static boolean isTimeAndRoomSet() {
@@ -339,7 +339,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> if the user has selected a show time.
      */
     public static boolean isTimeSet() {
@@ -349,7 +349,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> if the user has selected a room.
      */
     public static boolean isRoomSet() {
@@ -359,7 +359,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> if the user has made all selections required for a complete ticket.
      */
     public static boolean isTicketSet() {
@@ -369,7 +369,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
+     *
      * @return <code>true</code> if there is a user logged in and has a {@link UserEntity} set.
      */
     public static boolean isUserSet() {

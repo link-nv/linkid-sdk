@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -29,13 +29,13 @@ import org.jdesktop.swingworker.SwingWorker;
 
 /**
  * SafeOnline services util class
- * 
+ *
  * <p>
  * Used to access to the attribute and data SafeOnline web services
  * </p>
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class ServicesUtils extends Observable {
 
@@ -56,21 +56,23 @@ public class ServicesUtils extends Observable {
 
     public static ServicesUtils getInstance() {
 
-        if (null == servicesUtilsInstance)
+        if (null == servicesUtilsInstance) {
             servicesUtilsInstance = new ServicesUtils();
+        }
         return servicesUtilsInstance;
     }
 
     /*
-     * 
+     *
      * Name Identifier web service methods
      */
     NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
-        if (null == this.nameClient)
+        if (null == this.nameClient) {
             this.nameClient = new NameIdentifierMappingClientImpl(this.consoleManager.getLocation(),
                     (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager
                             .getIdentity().getPrivateKey());
+        }
         return this.nameClient;
     }
 
@@ -81,15 +83,16 @@ public class ServicesUtils extends Observable {
     }
 
     /*
-     * 
+     *
      * Attribute web service methods
      */
     AttributeClient getAttributeClient() {
 
-        if (null == this.attributeClient)
+        if (null == this.attributeClient) {
             this.attributeClient = new AttributeClientImpl(this.consoleManager.getLocation(),
                     (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager
                             .getIdentity().getPrivateKey());
+        }
 
         this.consoleManager.setMessageAccessor(this.attributeClient);
         return this.attributeClient;
@@ -133,15 +136,16 @@ public class ServicesUtils extends Observable {
     }
 
     /*
-     * 
+     *
      * Data web service methods
      */
     DataClient getDataClient() {
 
-        if (null == this.dataClient)
+        if (null == this.dataClient) {
             this.dataClient = new DataClientImpl(this.consoleManager.getLocation(),
                     (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager
                             .getIdentity().getPrivateKey());
+        }
 
         this.consoleManager.setMessageAccessor(this.dataClient);
         return this.dataClient;

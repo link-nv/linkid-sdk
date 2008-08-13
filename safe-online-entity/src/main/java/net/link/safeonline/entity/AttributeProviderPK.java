@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -66,15 +66,12 @@ public class AttributeProviderPK implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (false == obj instanceof AttributeProviderPK) {
+        if (false == obj instanceof AttributeProviderPK)
             return false;
-        }
         AttributeProviderPK rhs = (AttributeProviderPK) obj;
         return new EqualsBuilder().append(this.applicationName, rhs.applicationName).append(this.attributeTypeName,
                 rhs.attributeTypeName).isEquals();

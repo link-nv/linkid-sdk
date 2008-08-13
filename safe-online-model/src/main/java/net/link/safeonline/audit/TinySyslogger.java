@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  * <i>Dec 5, 2007</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class TinySyslogger {
@@ -58,7 +58,7 @@ public class TinySyslogger {
 
     /**
      * Sends events to the syslog daemon on localhost at port 514.
-     * 
+     *
      * @param facility
      *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code>
      *            is given.
@@ -70,7 +70,7 @@ public class TinySyslogger {
 
     /**
      * Sends events to the syslog daemon at port 514.
-     * 
+     *
      * @param facility
      *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code>
      *            is given.
@@ -84,7 +84,7 @@ public class TinySyslogger {
 
     /**
      * Sends events to the given syslog daemon.
-     * 
+     *
      * @param facility
      *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code>
      *            is given.
@@ -106,10 +106,11 @@ public class TinySyslogger {
      */
     public void setFacility(Facility facility) {
 
-        if (facility == null)
+        if (facility == null) {
             this.facility = Facility.USER;
-        else
+        } else {
             this.facility = facility;
+        }
     }
 
     /**
@@ -117,7 +118,7 @@ public class TinySyslogger {
      *            The IP address or hostname of the syslog daemon.
      * @param port
      *            The UDP port on which the syslog daemon is listening.
-     * 
+     *
      * @return <code>false</code>: No local UDP socket could be created.
      */
     public boolean setRemote(String host, int port) {
@@ -125,13 +126,14 @@ public class TinySyslogger {
         close();
         this.syslog = new InetSocketAddress(host, port);
 
-        if (!sockets.containsKey(this.syslog))
+        if (!sockets.containsKey(this.syslog)) {
             try {
                 sockets.put(this.syslog, new DatagramSocket());
             } catch (SocketException e) {
                 LOG.error("Couldn't create an UDP socket for communication with syslog on " + host + ":" + port, e);
                 return false;
             }
+        }
 
         return true;
     }
@@ -153,7 +155,7 @@ public class TinySyslogger {
 
         // Split at RFC 3164 limit of 1024 bytes.
         byte[] bytes = message.getBytes();
-        if (bytes.length <= 1029)
+        if (bytes.length <= 1029) {
             try {
                 // Prepend the message with the facility and level.
                 bytes = String.format("<%d> %s", this.facility.getId(), message).getBytes();
@@ -166,8 +168,7 @@ public class TinySyslogger {
             catch (IOException e) {
                 LOG.error("Couldn't dispatch packet of " + bytes.length + " bytes to syslog at " + this.syslog, e);
             }
-
-        else {
+        } else {
             int split = message.length() / 2;
             send(message.substring(0, split) + "...");
             send("..." + message.substring(split));
@@ -179,8 +180,9 @@ public class TinySyslogger {
      */
     public void close() {
 
-        if (sockets.containsKey(this.syslog))
+        if (sockets.containsKey(this.syslog)) {
             sockets.remove(this.syslog).close();
+        }
     }
 
     /**

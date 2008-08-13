@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -30,9 +30,9 @@ import net.link.safeonline.util.servlet.annotation.Init;
 
 /**
  * Device landing servlet. Landing page to finalize the authentication process between OLAS and a device provider.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class DeviceLandingServlet extends AbstractInjectionServlet {
 

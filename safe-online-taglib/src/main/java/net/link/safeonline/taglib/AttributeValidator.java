@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -28,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * JSF validator for {@link AttributeDO}.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AttributeValidator implements Validator {
 
@@ -43,16 +43,14 @@ public class AttributeValidator implements Validator {
 
         UIInput inputComponent = (UIInput) component;
         boolean required = inputComponent.isRequired();
-        if (false == required) {
+        if (false == required)
             return;
-        }
         AttributeDO attribute = (AttributeDO) value;
-        if (false == attribute.isRequired() && attribute.isCompounded()) {
+        if (false == attribute.isRequired() && attribute.isCompounded())
             /*
              * In case of compounded member attributes the attribute can be optional.
              */
             return;
-        }
         DatatypeType type = attribute.getType();
         TypeValidator typeValidator = typeValidators.get(type);
         if (null == typeValidator) {
@@ -161,13 +159,11 @@ public class AttributeValidator implements Validator {
     private static void registerTypeValidator(Class<? extends TypeValidator> clazz) {
 
         SupportedType supportedTypeAnnotation = clazz.getAnnotation(SupportedType.class);
-        if (null == supportedTypeAnnotation) {
+        if (null == supportedTypeAnnotation)
             throw new RuntimeException("@SupportedType annotation required on class: " + clazz.getName());
-        }
         DatatypeType type = supportedTypeAnnotation.value();
-        if (typeValidators.containsKey(type)) {
+        if (typeValidators.containsKey(type))
             throw new RuntimeException("already registered an validator for type: " + type);
-        }
 
         TypeValidator typeValidator;
         try {

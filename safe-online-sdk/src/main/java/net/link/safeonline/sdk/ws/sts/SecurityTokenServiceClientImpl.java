@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -38,7 +38,7 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation of Security Token Service Client.
- * 
+ *
  * @author fcorneli
  */
 public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor implements SecurityTokenServiceClient {
@@ -52,7 +52,7 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
 
     /**
      * Main constructor.
-     * 
+     *
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -114,11 +114,13 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
             if (result instanceof JAXBElement) {
                 JAXBElement<?> resultElement = (JAXBElement<?>) result;
                 Object value = resultElement.getValue();
-                if (value instanceof StatusType)
+                if (value instanceof StatusType) {
                     status = (StatusType) value;
+                }
             }
-        if (null == status)
+        if (null == status) {
             throw new RuntimeException("no Status found in response");
+        }
         String statusCode = status.getCode();
         if (SecurityTokenServiceConstants.STATUS_VALID.equals(statusCode))
             return;

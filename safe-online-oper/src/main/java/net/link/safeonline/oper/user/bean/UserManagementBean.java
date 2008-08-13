@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -249,9 +249,8 @@ public class UserManagementBean implements UserManagement {
     public List<String> autocompleteUser(Object event) {
 
         String userPrefix = event.toString();
-        if (userPrefix.length() < 3) {
+        if (userPrefix.length() < 3)
             return null;
-        }
         this.log.debug("auto-complete user: #0", userPrefix);
         List<String> filteredUsers;
         try {

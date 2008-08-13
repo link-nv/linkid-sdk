@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -16,9 +16,9 @@ import net.link.safeonline.test.util.JndiTestUtils;
 
 /**
  * Who will guard the guards.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class JndiTestUtilsTest extends TestCase {
 

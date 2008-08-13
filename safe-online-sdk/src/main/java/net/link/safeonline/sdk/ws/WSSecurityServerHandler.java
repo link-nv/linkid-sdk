@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -42,9 +42,9 @@ import org.joda.time.Instant;
 
 /**
  * JAX-WS SOAP Handler that provides WS-Security server-side verification.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -120,7 +120,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
     /**
      * Handles the outbound SOAP message. This method will simply add an unsigned WS-Security Timestamp in the SOAP
      * header. This is required for .NET 2/3 clients.
-     * 
+     *
      * @param document
      */
     private void handleOutboundDocument(SOAPPart document) {
@@ -149,10 +149,9 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
             throw WSSecurityUtil.createSOAPFaultException("The signature or decryption was invalid", "FailedCheck");
         }
         LOG.debug("results: " + wsSecurityEngineResults);
-        if (null == wsSecurityEngineResults) {
+        if (null == wsSecurityEngineResults)
             throw WSSecurityUtil.createSOAPFaultException(
                     "An error was discovered processing the <wsse:Security> header.", "InvalidSecurity");
-        }
         Timestamp timestamp = null;
         Set<String> signedElements = null;
         for (WSSecurityEngineResult result : wsSecurityEngineResults) {
@@ -171,22 +170,19 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
             }
         }
 
-        if (null == signedElements) {
+        if (null == signedElements)
             throw WSSecurityUtil.createSOAPFaultException("The signature or decryption was invalid", "FailedCheck");
-        }
         LOG.debug("signed elements: " + signedElements);
         soapMessageContext.put(SIGNED_ELEMENTS_CONTEXT_KEY, signedElements);
 
         /*
          * Check timestamp.
          */
-        if (null == timestamp) {
+        if (null == timestamp)
             throw WSSecurityUtil.createSOAPFaultException("missing Timestamp in WS-Security header", "InvalidSecurity");
-        }
         String timestampId = timestamp.getID();
-        if (false == signedElements.contains(timestampId)) {
+        if (false == signedElements.contains(timestampId))
             throw WSSecurityUtil.createSOAPFaultException("Timestamp not signed", "FailedCheck");
-        }
         Calendar created = timestamp.getCreated();
         long maxOffset = this.wsSecurityConfigurationService.getMaximumWsSecurityTimestampOffset();
         DateTime createdDateTime = new DateTime(created);
@@ -209,7 +205,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
     /**
      * Gives back the X509 certificate that was set previously by a WS-Security handler.
-     * 
+     *
      * @param context
      */
     public static X509Certificate getCertificate(SOAPMessageContext context) {
@@ -220,7 +216,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
     /**
      * Gives back the X509 certificate that was set previously by a WS-Security handler.
-     * 
+     *
      * @param context
      */
     public static X509Certificate getCertificate(WebServiceContext context) {
@@ -232,7 +228,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
     /**
      * Checks whether a WS-Security handler did verify that the element with given Id was signed correctly.
-     * 
+     *
      * @param id
      * @param context
      */
@@ -240,9 +236,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
     public static boolean isSignedElement(String id, SOAPMessageContext context) {
 
         Set<String> signedElements = (Set<String>) context.get(SIGNED_ELEMENTS_CONTEXT_KEY);
-        if (null == signedElements) {
+        if (null == signedElements)
             return false;
-        }
         boolean result = signedElements.contains(id);
         return result;
     }

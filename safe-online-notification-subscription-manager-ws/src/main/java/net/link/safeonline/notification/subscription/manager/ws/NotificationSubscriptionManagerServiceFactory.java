@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -25,9 +25,8 @@ public class NotificationSubscriptionManagerServiceFactory {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL wsdlUrl = classLoader.getResource("notification-subscription-manager.wsdl");
-        if (null == wsdlUrl) {
+        if (null == wsdlUrl)
             throw new RuntimeException("Notification Subscription Manager WSDL not found");
-        }
 
         NotificationSubscriptionManagerService service = new NotificationSubscriptionManagerService(wsdlUrl,
                 new QName("urn:net:lin-k:safe-online:notification:subscription:manager",

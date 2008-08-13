@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,9 +13,9 @@ import java.util.Map;
 
 /**
  * SAMLp version 2.0 Top Level Error Code.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public enum SamlpTopLevelErrorCode {
     SUCCESS("urn:oasis:names:tc:SAML:2.0:status:Success"), REQUESTER("urn:oasis:names:tc:SAML:2.0:status:Requester"), RESPONDER(
@@ -53,9 +53,8 @@ public enum SamlpTopLevelErrorCode {
     public static SamlpTopLevelErrorCode getSamlpTopLevelErrorCode(String errorCode) {
 
         SamlpTopLevelErrorCode samlpTopLevelErrorCode = errorCodeMap.get(errorCode);
-        if (null == samlpTopLevelErrorCode) {
+        if (null == samlpTopLevelErrorCode)
             throw new IllegalArgumentException("unknown SAMLp top-level error code: " + errorCode);
-        }
         return samlpTopLevelErrorCode;
     }
 }

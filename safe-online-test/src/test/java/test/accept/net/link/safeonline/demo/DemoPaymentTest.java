@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -38,9 +38,9 @@ import net.link.safeonline.webapp.user.UserRemove;
 
 /**
  * Payment demo tests.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class DemoPaymentTest extends TestCase {
 
@@ -69,7 +69,7 @@ public class DemoPaymentTest extends TestCase {
      * <li>Log new user in demo payment, confirm updated identity</li>
      * <li>Remove attribute from demo payment</li>
      * <li>Remove new user</li> </ol
-     * 
+     *
      * @throws Exception
      */
     public void testDemoPaymentTicket() throws Exception {

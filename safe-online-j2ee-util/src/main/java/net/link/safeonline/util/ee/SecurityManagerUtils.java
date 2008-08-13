@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -35,7 +35,7 @@ public class SecurityManagerUtils {
     /**
      * Flushes the JBoss security manager credential cache for a certain principal. This method is accessing the JBoss
      * security manager via JMX.
-     * 
+     *
      * @param login
      * @param securityDomain
      */

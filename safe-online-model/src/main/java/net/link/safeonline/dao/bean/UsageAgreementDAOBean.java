@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -81,9 +81,8 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
             throws UsageAgreementNotFoundException {
 
         UsageAgreementEntity usageAgreement = getUsageAgreement(application, usageAgreementVersion);
-        if (null == usageAgreement) {
+        if (null == usageAgreement)
             throw new UsageAgreementNotFoundException(usageAgreementVersion);
-        }
         return usageAgreement;
     }
 
@@ -147,9 +146,8 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
             throws UsageAgreementTextNotFoundException {
 
         UsageAgreementTextEntity usageAgreementText = getUsageAgreementText(usageAgreement, language);
-        if (null == usageAgreementText) {
+        if (null == usageAgreementText)
             throw new UsageAgreementTextNotFoundException(usageAgreement.getUsageAgreementVersion());
-        }
         return usageAgreementText;
     }
 

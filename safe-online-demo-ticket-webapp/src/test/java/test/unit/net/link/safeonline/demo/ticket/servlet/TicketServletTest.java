@@ -1,33 +1,33 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package test.unit.net.link.safeonline.demo.ticket.servlet;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
+
+import junit.framework.TestCase;
+import net.link.safeonline.demo.ticket.entity.Ticket.Site;
+import net.link.safeonline.demo.ticket.service.TicketService;
+import net.link.safeonline.demo.ticket.servlet.TicketServlet;
+import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import net.link.safeonline.demo.ticket.entity.Ticket.Site;
-import net.link.safeonline.demo.ticket.service.TicketService;
-import net.link.safeonline.demo.ticket.servlet.TicketServlet;
-import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.ServletTestManager;
-import junit.framework.TestCase;
-
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.easymock.EasyMock.expect;
 
 
 public class TicketServletTest extends TestCase {

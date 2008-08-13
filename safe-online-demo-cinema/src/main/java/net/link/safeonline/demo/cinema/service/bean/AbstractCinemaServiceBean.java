@@ -16,15 +16,15 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link AbstractCinemaServiceBean}<br>
  * <sub>Abstract class for the entity services.</sub></h2>
- * 
+ *
  * <p>
  * Provides access to the {@link EntityManager}.
  * </p>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public abstract class AbstractCinemaServiceBean {

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -14,15 +14,15 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Interface for server-side authentication protocol handlers.
- * 
+ *
  * <p>
  * Protocol handlers should be implemented as stateless POJOs. The server-side protocol handlers are stateless. That way
  * they can never be subject to input validation attacks in case they would pass state from input message to output
  * message without checking for its correctness.
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public interface ProtocolHandler {
 
@@ -31,7 +31,7 @@ public interface ProtocolHandler {
      * authentication request. If the handler cannot handle the authentication request then it should return
      * <code>null</code>. A {@link ProtocolException} should be thrown in case this handler can handle the
      * authentication request but the request itself violates the authentication protocol supported by this handler.
-     * 
+     *
      * @param authnRequest
      * @return the protocol context or <code>null</code>.
      * @throws ProtocolException
@@ -42,7 +42,7 @@ public interface ProtocolHandler {
     /**
      * Performs the authentication response according to the protocol supported by the handler that implements this
      * interface.
-     * 
+     *
      * @param session
      * @param authnResponse
      * @throws ProtocolException
@@ -52,7 +52,7 @@ public interface ProtocolHandler {
     /**
      * Gives back the informal human-readable name of the authentication protocol that this protocol handler supports.
      * This name can be used on error pages.
-     * 
+     *
      */
     String getName();
 }

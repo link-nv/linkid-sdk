@@ -16,9 +16,9 @@ import net.link.safeonline.util.servlet.annotation.Init;
 /**
  * This servlet returns a saml authentication response from device issuer to OLAS, notifying the status of the device
  * operation.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class ExitServlet extends AbstractInjectionServlet {
 

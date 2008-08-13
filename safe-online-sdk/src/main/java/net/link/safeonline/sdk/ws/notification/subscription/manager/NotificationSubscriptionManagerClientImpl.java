@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -40,9 +40,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation WS-Notification producer service.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAccessor implements
         NotificationSubscriptionManagerClient {
@@ -57,7 +57,7 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
 
     /**
      * Main constructor.
-     * 
+     *
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -124,10 +124,9 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
         StatusCodeType statusCode = status.getStatusCode();
         String statusCodeValue = statusCode.getValue();
         NotificationErrorCode errorCode = NotificationErrorCode.getNotificationErrorCode(statusCodeValue);
-        if (NotificationErrorCode.SUBSCRIPTION_NOT_FOUND == errorCode) {
+        if (NotificationErrorCode.SUBSCRIPTION_NOT_FOUND == errorCode)
             throw new SubscriptionNotFoundException();
-        } else if (NotificationErrorCode.PERMISSION_DENIED == errorCode) {
+        else if (NotificationErrorCode.PERMISSION_DENIED == errorCode)
             throw new RequestDeniedException();
-        }
     }
 }

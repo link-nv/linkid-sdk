@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -79,9 +79,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Implementation of application service interface.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -208,8 +208,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     private void checkExistingApplication(String name) throws ExistingApplicationException {
 
         ApplicationEntity existingApplication = this.applicationDAO.findApplication(name);
-        if (null != existingApplication)
+        if (null != existingApplication) {
             throw new ExistingApplicationException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -219,8 +220,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         LOG.debug("remove application: " + name);
         ApplicationEntity application = this.applicationDAO.getApplication(name);
 
-        if (false == application.isRemovable())
+        if (false == application.isRemovable()) {
             throw new PermissionDeniedException("application not removable", "errorPermissionApplicationNotRemovable");
+        }
 
         List<SubscriptionEntity> subscriptions = this.subscriptionDAO.listSubscriptions(application);
 
@@ -236,8 +238,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO
                 .listApplicationIdentities(application);
-        for (ApplicationIdentityEntity applicationIdentity : applicationIdentities)
+        for (ApplicationIdentityEntity applicationIdentity : applicationIdentities) {
             this.applicationIdentityDAO.removeApplicationIdentity(applicationIdentity);
+        }
 
         // remove all device notification subscriptions
         List<EndpointReferenceEntity> endpoints = this.endpointReferenceDAO.listEndpoints(application);
@@ -261,7 +264,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     /**
      * Check write permission on the given application. Only the subject corresponding with the application owner of the
      * application is allowed to write to the application entity.
-     * 
+     *
      * @param application
      * @throws PermissionDeniedException
      */
@@ -272,8 +275,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
         SubjectEntity requiredSubject = applicationOwner.getAdmin();
         SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-        if (false == requiredSubject.equals(actualSubject))
+        if (false == requiredSubject.equals(actualSubject)) {
             throw new PermissionDeniedException("application owner admin mismatch");
+        }
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
@@ -302,8 +306,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         ApplicationEntity ownerApplication = this.applicationDAO
                 .findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
-        if (null == ownerApplication)
+        if (null == ownerApplication) {
             throw new EJBException("SafeOnline owner application not found");
+        }
 
         /*
          * Subscribe the new application owner to the SafeOnline owner web application so he can do it's job.
@@ -321,15 +326,17 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     private void checkExistingAdmin(SubjectEntity adminSubject) throws ExistingApplicationAdminException {
 
         ApplicationOwnerEntity existingApplicationOwner = this.applicationOwnerDAO.findApplicationOwner(adminSubject);
-        if (null != existingApplicationOwner)
+        if (null != existingApplicationOwner) {
             throw new ExistingApplicationAdminException();
+        }
     }
 
     private void checkExistingOwner(String name) throws ExistingApplicationOwnerException {
 
         ApplicationOwnerEntity existingApplicationOwner = this.applicationOwnerDAO.findApplicationOwner(name);
-        if (null != existingApplicationOwner)
+        if (null != existingApplicationOwner) {
             throw new ExistingApplicationOwnerException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -346,8 +353,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         ApplicationEntity ownerApplication = this.applicationDAO
                 .findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
-        if (null == ownerApplication)
+        if (null == ownerApplication) {
             throw new EJBException("SafeOnline owner application not found");
+        }
 
         /*
          * Remove the application owner's subscription to the SafeOnline Owner web application.
@@ -367,9 +375,10 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         ApplicationOwnerEntity owner = this.applicationOwnerDAO.getApplicationOwner(name);
         if (null == owner.getApplications())
             return;
-        if (!owner.getApplications().isEmpty())
+        if (!owner.getApplications().isEmpty()) {
             throw new PermissionDeniedException("application owner still owns " + owner.getApplications().size()
                     + " applications");
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -407,8 +416,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
         SubjectEntity expectedSubject = applicationOwner.getAdmin();
         SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-        if (false == expectedSubject.equals(actualSubject))
+        if (false == expectedSubject.equals(actualSubject)) {
             throw new PermissionDeniedException("application owner admin mismatch");
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

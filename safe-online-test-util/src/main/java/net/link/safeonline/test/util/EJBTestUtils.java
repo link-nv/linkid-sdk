@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -62,9 +62,9 @@ import org.jboss.security.SimplePrincipal;
 
 /**
  * Util class for EJB3 unit testing.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public final class EJBTestUtils {
 
@@ -78,7 +78,7 @@ public final class EJBTestUtils {
 
     /**
      * Injects a value into a given object.
-     * 
+     *
      * @param fieldName
      *            the name of the field to set.
      * @param object
@@ -89,15 +89,12 @@ public final class EJBTestUtils {
      */
     public static void inject(String fieldName, Object object, Object value) throws Exception {
 
-        if (null == fieldName) {
+        if (null == fieldName)
             throw new IllegalArgumentException("field name should not be null");
-        }
-        if (null == value) {
+        if (null == value)
             throw new IllegalArgumentException("the value should not be null");
-        }
-        if (null == object) {
+        if (null == object)
             throw new IllegalArgumentException("the object should not be null");
-        }
         Field field = object.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(object, value);
@@ -105,7 +102,7 @@ public final class EJBTestUtils {
 
     /**
      * Injects a resource value into an object.
-     * 
+     *
      * @param bean
      *            the bean object on which to inject a value.
      * @param resourceName
@@ -115,15 +112,12 @@ public final class EJBTestUtils {
      */
     public static void injectResource(Object bean, String resourceName, Object value) throws Exception {
 
-        if (null == bean) {
+        if (null == bean)
             throw new IllegalArgumentException("the bean object should not be null");
-        }
-        if (null == resourceName) {
+        if (null == resourceName)
             throw new IllegalArgumentException("the resource name should not be null");
-        }
-        if (null == value) {
+        if (null == value)
             throw new IllegalArgumentException("the value object should not be null");
-        }
         Class<?> beanClass = bean.getClass();
         Field[] fields = beanClass.getDeclaredFields();
         for (Field field : fields) {
@@ -143,7 +137,7 @@ public final class EJBTestUtils {
 
     /**
      * Injects a value object into a given bean object.
-     * 
+     *
      * @param object
      *            the bean object in which to inject.
      * @param value
@@ -152,32 +146,28 @@ public final class EJBTestUtils {
      */
     public static void inject(Object object, Object value) throws Exception {
 
-        if (null == value) {
+        if (null == value)
             throw new IllegalArgumentException("the value should not be null");
-        }
-        if (null == object) {
+        if (null == object)
             throw new IllegalArgumentException("the object should not be null");
-        }
         Field[] fields = object.getClass().getDeclaredFields();
         Field selectedField = null;
         for (Field field : fields) {
             if (field.getType().isInstance(value)) {
-                if (null != selectedField) {
+                if (null != selectedField)
                     throw new IllegalStateException("two field found of same injection type");
-                }
                 selectedField = field;
             }
         }
-        if (null == selectedField) {
+        if (null == selectedField)
             throw new IllegalStateException("field of injection type not found");
-        }
         selectedField.setAccessible(true);
         selectedField.set(object, value);
     }
 
     /**
      * Initializes a bean.
-     * 
+     *
      * @param bean
      *            the bean to initialize.
      * @throws IllegalArgumentException
@@ -241,9 +231,8 @@ public final class EJBTestUtils {
     public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager,
             SessionContext sessionContext) {
 
-        if (clazz.isInterface()) {
+        if (clazz.isInterface())
             throw new EJBException("cannot instantiate an interface");
-        }
         Type instance;
         try {
             instance = clazz.newInstance();
@@ -269,9 +258,9 @@ public final class EJBTestUtils {
 
     /**
      * Test EJB3 Container method interceptor. Be careful here not to start writing an entire EJB3 container.
-     * 
+     *
      * @author fcorneli
-     * 
+     *
      */
     static class TestContainerMethodInterceptor implements MethodInterceptor {
 
@@ -318,9 +307,8 @@ public final class EJBTestUtils {
         private void manageTransaction(Method method) {
 
             TransactionAttribute transactionAttributeAnnotation = method.getAnnotation(TransactionAttribute.class);
-            if (null == transactionAttributeAnnotation) {
+            if (null == transactionAttributeAnnotation)
                 return;
-            }
             TransactionAttributeType transactionAttributeType = transactionAttributeAnnotation.value();
             switch (transactionAttributeType) {
                 case REQUIRES_NEW:
@@ -341,27 +329,23 @@ public final class EJBTestUtils {
         private void checkSecurity(Class clazz, Method method) {
 
             SecurityDomain securityDomainAnnotation = (SecurityDomain) clazz.getAnnotation(SecurityDomain.class);
-            if (null == securityDomainAnnotation) {
+            if (null == securityDomainAnnotation)
                 return;
-            }
             // LOG.debug("security domain: " +
             // securityDomainAnnotation.value());
             Principal callerPrincipal = this.sessionContext.getCallerPrincipal();
-            if (null == callerPrincipal) {
+            if (null == callerPrincipal)
                 throw new EJBException("caller principal should not be null");
-            }
             // LOG.debug("caller principal: " + callerPrincipal.getName());
             RolesAllowed rolesAllowedAnnotation = method.getAnnotation(RolesAllowed.class);
-            if (rolesAllowedAnnotation == null) {
+            if (rolesAllowedAnnotation == null)
                 return;
-            }
             String[] roles = rolesAllowedAnnotation.value();
             // LOG.debug("number of roles: " + roles.length);
             for (String role : roles) {
                 // LOG.debug("checking role: " + role);
-                if (true == this.sessionContext.isCallerInRole(role)) {
+                if (true == this.sessionContext.isCallerInRole(role))
                     return;
-                }
             }
             StringBuffer message = new StringBuffer();
             message.append("user is not allowed to invoke the method. [allowed roles: ");
@@ -378,9 +362,8 @@ public final class EJBTestUtils {
             Class clazz = this.object.getClass();
             Stateless statelessAnnotation = (Stateless) clazz.getAnnotation(Stateless.class);
             Stateful statefulAnnotation = (Stateful) clazz.getAnnotation(Stateful.class);
-            if (null == statelessAnnotation && statefulAnnotation == null) {
+            if (null == statelessAnnotation && statefulAnnotation == null)
                 throw new EJBException("no @Stateless nor @Stateful annotation found");
-            }
         }
 
         private void injectResources(Class<?> clazz) {
@@ -448,17 +431,14 @@ public final class EJBTestUtils {
                     continue;
                 }
                 Class fieldType = field.getType();
-                if (false == fieldType.isInterface()) {
+                if (false == fieldType.isInterface())
                     throw new EJBException("field is not an interface type");
-                }
                 Local localAnnotation = (Local) fieldType.getAnnotation(Local.class);
-                if (null == localAnnotation) {
+                if (null == localAnnotation)
                     throw new EJBException("interface has no @Local annotation: " + fieldType.getName());
-                }
                 Remote remoteAnnotation = (Remote) fieldType.getAnnotation(Remote.class);
-                if (null != remoteAnnotation) {
+                if (null != remoteAnnotation)
                     throw new EJBException("interface cannot have both @Local and @Remote annotation");
-                }
                 Class beanType = getBeanType(fieldType);
                 Object bean = EJBTestUtils.newInstance(beanType, this.container, this.entityManager,
                         this.sessionContext);
@@ -490,9 +470,8 @@ public final class EJBTestUtils {
                     continue;
                 }
                 Class<?> fieldType = field.getType();
-                if (false == EntityManager.class.isAssignableFrom(fieldType)) {
+                if (false == EntityManager.class.isAssignableFrom(fieldType))
                     throw new EJBException("field type not correct");
-                }
                 setField(field, this.entityManager);
             }
         }
@@ -545,9 +524,8 @@ public final class EJBTestUtils {
 
         public boolean supports(String key) {
 
-            if ("javax.security.auth.Subject.container".equals(key)) {
+            if ("javax.security.auth.Subject.container".equals(key))
                 return true;
-            }
             return false;
         }
     }
@@ -605,9 +583,8 @@ public final class EJBTestUtils {
 
         public Principal getCallerPrincipal() {
 
-            if (null == this.principal) {
+            if (null == this.principal)
                 throw new EJBException("caller principal not set");
-            }
             return this.principal;
         }
 
@@ -649,13 +626,11 @@ public final class EJBTestUtils {
 
         public boolean isCallerInRole(String expectedRole) {
 
-            if (null == this.roles) {
+            if (null == this.roles)
                 return false;
-            }
             for (String role : this.roles) {
-                if (true == role.equals(expectedRole)) {
+                if (true == role.equals(expectedRole))
                     return true;
-                }
             }
             return false;
         }

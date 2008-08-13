@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -25,10 +25,10 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract statement servlet. Helpdesk events are handled by the helpdesk servlet.
- * 
+ *
  * @author wvdhaute
  * @see HelpdeskServlet
- * 
+ *
  */
 public abstract class AbstractStatementServlet extends AbstractInjectionServlet {
 

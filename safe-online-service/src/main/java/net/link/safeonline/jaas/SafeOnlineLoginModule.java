@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -33,7 +33,7 @@ import org.jboss.security.SimplePrincipal;
 
 /**
  * JAAS login module that performs authentication and authorization used by the SafeOnline core security domain.
- * 
+ *
  * @author fcorneli
  */
 public class SafeOnlineLoginModule implements LoginModule {
@@ -70,8 +70,9 @@ public class SafeOnlineLoginModule implements LoginModule {
         LOG.debug("commit");
 
         Set<Principal> principals = this.subject.getPrincipals();
-        if (null == this.authenticatedPrincipal)
+        if (null == this.authenticatedPrincipal) {
             throw new LoginException("authenticated principal should be not null");
+        }
         // authenticate
         principals.add(this.authenticatedPrincipal);
 
@@ -85,8 +86,9 @@ public class SafeOnlineLoginModule implements LoginModule {
         if (null == this.roles)
             return true;
 
-        for (String role : this.roles)
+        for (String role : this.roles) {
             rolesGroup.addMember(new SimplePrincipal(role));
+        }
 
         LOG.debug("committed");
 
@@ -122,8 +124,9 @@ public class SafeOnlineLoginModule implements LoginModule {
         Iterator<?> iter = principals.iterator();
         while (iter.hasNext()) {
             Object next = iter.next();
-            if (next instanceof Group == false)
+            if (next instanceof Group == false) {
                 continue;
+            }
             Group group = (Group) next;
             if (group.getName().equals(groupName))
                 return group;
@@ -156,8 +159,9 @@ public class SafeOnlineLoginModule implements LoginModule {
 
         String username = nameCallback.getName();
         LOG.debug("username: " + username);
-        if (null == username)
+        if (null == username) {
             throw new LoginException("username is null");
+        }
 
         // authenticate
         // TODO: authenticate here again via SAML assertion
@@ -188,11 +192,13 @@ public class SafeOnlineLoginModule implements LoginModule {
 
         LOG.debug("logout");
         Set<Principal> principals = this.subject.getPrincipals();
-        if (null == this.authenticatedPrincipal)
+        if (null == this.authenticatedPrincipal) {
             throw new LoginException("authenticated principal should not be null");
+        }
         boolean result = principals.remove(this.authenticatedPrincipal);
-        if (!result)
+        if (!result) {
             throw new LoginException("could not remove authenticated principal");
+        }
         /*
          * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here
          * all data on the subject.

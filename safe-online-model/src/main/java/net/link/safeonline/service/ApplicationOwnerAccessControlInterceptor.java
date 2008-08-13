@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -53,9 +53,8 @@ public class ApplicationOwnerAccessControlInterceptor {
                 returnValue = true;
             }
         }
-        if (returnValue == false) {
+        if (returnValue == false)
             throw new PermissionDeniedException("application admin mismatch");
-        }
         return invocation.proceed();
     }
 }

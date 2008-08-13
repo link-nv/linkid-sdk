@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract Injection Servlet.
- * 
+ *
  * <ul>
  * <li>Injects request parameters into servlet fields.
  * <li>Injects and outjects session parameters.
@@ -51,9 +51,9 @@ import org.apache.commons.logging.LogFactory;
  * <li>By default checks if the servlet is accessed with a secure connection. If context parameter <code>Protocol</code>
  * is <code>http</code> or <code>securityCheck</code> is set to <code>false</code> this check will be ommitted.
  * </ul>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public abstract class AbstractInjectionServlet extends HttpServlet {
 
@@ -113,9 +113,9 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 
     /**
      * Injection response wrapper. We use a response wrapper since we want to be able to postpone some actions.
-     * 
+     *
      * @author fcorneli
-     * 
+     *
      */
     public static class InjectionResponseWrapper extends HttpServletResponseWrapper {
 
@@ -130,9 +130,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         @Override
         public void sendRedirect(String location) throws IOException {
 
-            if (null != this.redirectLocation) {
+            if (null != this.redirectLocation)
                 throw new IllegalStateException("cannot send redirect twice");
-            }
             this.redirectLocation = location;
         }
 
@@ -192,9 +191,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             String inName = inAnnotation.value();
             Object value = session.getAttribute(inName);
             if (inAnnotation.required()) {
-                if (null == value) {
+                if (null == value)
                     throw new ServletException("missing required session attribute: " + inName);
-                }
             }
             field.setAccessible(true);
             try {
@@ -217,14 +215,12 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
                 continue;
             }
             String mappedName = ejb.mappedName();
-            if (null == mappedName) {
+            if (null == mappedName)
                 throw new ServletException("@EJB mappedName attribute required");
-            }
             LOG.debug("injecting: " + mappedName);
             Class type = field.getType();
-            if (false == type.isInterface()) {
+            if (false == type.isInterface())
                 throw new ServletException("field is not an interface type");
-            }
             Object ejbRef = EjbUtils.getEJB(mappedName, type);
             field.setAccessible(true);
             try {
@@ -246,18 +242,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
                 continue;
             }
             String name = initAnnotation.name();
-            if (null == name) {
+            if (null == name)
                 throw new ServletException("@Init name attribute required");
-            }
             LOG.debug("init: " + name);
             String defaultValue = initAnnotation.defaultValue();
             boolean optional = initAnnotation.optional();
 
             String value = config.getInitParameter(name);
             if (null == value) {
-                if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional) {
+                if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional)
                     throw new UnavailableException("missing init parameter: " + name);
-                }
                 if (Init.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
                 }
@@ -284,18 +278,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
                 continue;
             }
             String name = contextAnnotation.name();
-            if (null == name) {
+            if (null == name)
                 throw new ServletException("@Context name attribute required");
-            }
             LOG.debug("init: " + name);
             String defaultValue = contextAnnotation.defaultValue();
             boolean optional = contextAnnotation.optional();
 
             String value = config.getServletContext().getInitParameter(name);
             if (null == value) {
-                if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional) {
+                if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional)
                     throw new UnavailableException("missing init parameter: " + name);
-                }
                 if (Context.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
                 }
@@ -332,8 +324,9 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             Object value;
             try {
                 value = field.get(this);
-                if (value == null && outAnnotation.required())
+                if (value == null && outAnnotation.required()) {
                     throw new ServletException("missing required session attribute: " + outName);
+                }
             } catch (IllegalArgumentException e) {
                 throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
@@ -348,7 +341,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
      * Redirects to the specified error page. The errorMessages entries contain as key the name of the error message
      * attribute that will be pushed on the session. The attribute value will be looked up if a resource bundle is
      * specified, else directly pushed onto the session.
-     * 
+     *
      * @param request
      * @param response
      * @param errorPage

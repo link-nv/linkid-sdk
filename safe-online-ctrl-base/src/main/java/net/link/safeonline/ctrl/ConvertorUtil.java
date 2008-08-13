@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,9 +13,9 @@ import java.util.List;
 
 /**
  * Implementation of the convertor design pattern.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class ConvertorUtil {
 
@@ -26,7 +26,7 @@ public class ConvertorUtil {
 
     /**
      * Converts one list to another one.
-     * 
+     *
      * @param <TypeIn>
      * @param <TypeOut>
      * @param inputList

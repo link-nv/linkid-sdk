@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -29,14 +29,14 @@ public interface AttributeProviderDAO {
 
     /**
      * Remove all attribute providers for the given application.
-     * 
+     *
      * @param application
      */
     void removeAttributeProviders(ApplicationEntity application);
 
     /**
      * Remove all attribute providers for the given attribute type.
-     * 
+     *
      * @param attributeType
      */
     void removeAttributeProviders(AttributeTypeEntity attributeType);

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -22,9 +22,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Used to store the resulting data of account merging and to transfer data between service and user web application.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class AccountMergingDO implements Serializable {
 
@@ -68,8 +68,9 @@ public class AccountMergingDO implements Serializable {
 
     public void addNeededProvenDevices(List<DeviceEntity> devices) {
 
-        if (null == this.neededProvenDevices)
+        if (null == this.neededProvenDevices) {
             this.neededProvenDevices = new LinkedList<DeviceEntity>();
+        }
         this.neededProvenDevices.addAll(devices);
     }
 
@@ -90,8 +91,9 @@ public class AccountMergingDO implements Serializable {
 
     public void addImportedSubscription(SubscriptionDO importedSubscriptionDO) {
 
-        if (null == this.importedSubscriptions)
+        if (null == this.importedSubscriptions) {
             this.importedSubscriptions = new LinkedList<SubscriptionDO>();
+        }
         this.importedSubscriptions.add(importedSubscriptionDO);
     }
 
@@ -134,8 +136,9 @@ public class AccountMergingDO implements Serializable {
 
         List<AttributeDO> visibleAttributes = new LinkedList<AttributeDO>();
         for (AttributeDO attribute : attributes) {
-            if (attribute.isUserVisible())
+            if (attribute.isUserVisible()) {
                 visibleAttributes.add(attribute);
+            }
         }
         return visibleAttributes;
     }
@@ -147,8 +150,9 @@ public class AccountMergingDO implements Serializable {
 
     public void addPreservedAttributes(List<AttributeDO> attributes) {
 
-        if (null == this.preservedAttributes)
+        if (null == this.preservedAttributes) {
             this.preservedAttributes = new LinkedList<AttributeDO>();
+        }
         this.preservedAttributes.addAll(attributes);
     }
 
@@ -169,8 +173,9 @@ public class AccountMergingDO implements Serializable {
 
     public void addChoosableAttributes(List<AttributeDO> targetAttributes, List<AttributeDO> sourceAttributes) {
 
-        if (null == this.choosableAttributes)
+        if (null == this.choosableAttributes) {
             this.choosableAttributes = new LinkedList<ChoosableAttributeDO>();
+        }
         Iterator<AttributeDO> targetIt = targetAttributes.iterator();
         Iterator<AttributeDO> sourceIt = sourceAttributes.iterator();
         while (sourceIt.hasNext() && targetIt.hasNext()) {

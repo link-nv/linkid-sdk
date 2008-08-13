@@ -39,7 +39,7 @@ public class LayoutPage extends WebPage<Object> {
 
     /**
      * Add components to the layout that are present on every page.
-     * 
+     *
      * This includes the title and the global ticket.
      */
     public LayoutPage() {

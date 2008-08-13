@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -32,11 +32,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link TicketServiceBean}<br>
  * <sub>Service bean for {@link TicketService}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jun 25, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Stateless

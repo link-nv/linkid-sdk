@@ -18,11 +18,11 @@ import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 /**
  * <h2>{@link IdMappingDriver}<br>
  * <sub>Provide access to the ID Mapping service.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class IdMappingDriver extends ProfileDriver {
@@ -39,7 +39,7 @@ public class IdMappingDriver extends ProfileDriver {
 
     /**
      * Retrieve the ID of the user with the given username.
-     * 
+     *
      * @param applicationKey
      *            The certificate of the application making the request. This identifies the application and gives the
      *            request the application's authority.
@@ -49,8 +49,9 @@ public class IdMappingDriver extends ProfileDriver {
      */
     public String getUserId(PrivateKeyEntry applicationKey, String username) {
 
-        if (!(applicationKey.getCertificate() instanceof X509Certificate))
+        if (!(applicationKey.getCertificate() instanceof X509Certificate)) {
             throw new IllegalArgumentException("The certificate in the keystore needs to be of X509 format.");
+        }
 
         try {
             NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(getHost(),

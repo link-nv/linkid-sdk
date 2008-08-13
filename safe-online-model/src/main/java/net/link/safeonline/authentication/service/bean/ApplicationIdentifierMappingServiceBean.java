@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -58,9 +58,8 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
         ApplicationEntity application = this.applicationManager.getCallerApplication();
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
                 username);
-        if (null == subject) {
+        if (null == subject)
             throw new SubjectNotFoundException();
-        }
         String userId = this.userIdMappingService.getApplicationUserId(application.getName(), subject.getUserId());
         LOG.debug("userId: " + userId);
         return userId;
@@ -70,9 +69,8 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
 
         ApplicationEntity application = this.applicationManager.getCallerApplication();
         boolean allowed = application.isIdentifierMappingAllowed();
-        if (false == allowed) {
+        if (false == allowed)
             throw new PermissionDeniedException("application not allowed to use the identifier mapping service");
-        }
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)

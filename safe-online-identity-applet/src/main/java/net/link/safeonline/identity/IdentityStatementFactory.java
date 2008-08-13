@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -14,9 +14,9 @@ import net.link.safeonline.shared.statement.IdentityStatement;
 
 /**
  * A factory for identity statements.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class IdentityStatementFactory {
 
@@ -27,7 +27,7 @@ public class IdentityStatementFactory {
 
     /**
      * Creates a new identity statement linking the user with the given smart card.
-     * 
+     *
      * @param user
      *            the Id of the user.
      * @param signer
@@ -37,15 +37,12 @@ public class IdentityStatementFactory {
     public static byte[] createIdentityStatement(String sessionId, String user, String operation, Signer signer,
             IdentityProvider identityProvider) {
 
-        if (null == sessionId) {
+        if (null == sessionId)
             throw new IllegalArgumentException("sessionId should not be null");
-        }
-        if (null == user) {
+        if (null == user)
             throw new IllegalArgumentException("user should not be null");
-        }
-        if (null == operation) {
+        if (null == operation)
             throw new IllegalArgumentException("operation should not be null");
-        }
         IdentityStatement identityStatement = new IdentityStatement(sessionId, user, operation, identityProvider,
                 signer);
         byte[] identityStatementData = identityStatement.generateStatement();

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Builder for compound attribute instances. A compound attribute instance in build using the compound annotations.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class CompoundBuilder {
 
@@ -42,7 +42,7 @@ public class CompoundBuilder {
      * Main constructor. The compound class should be annotated with {@link Compound} and the member properties with
      * {@link CompoundMember}. The compound class can also be a simple {@link Map}. In this case the result map will be
      * filled with name value map entries for every member of the compounded attribute.
-     * 
+     *
      * @param compoundClass
      */
     @SuppressWarnings("unchecked")
@@ -52,9 +52,8 @@ public class CompoundBuilder {
 
         Compound compoundAnnotation = (Compound) compoundClass.getAnnotation(Compound.class);
         if (null == compoundAnnotation) {
-            if (false == Map.class.isAssignableFrom(compoundClass)) {
+            if (false == Map.class.isAssignableFrom(compoundClass))
                 throw new IllegalArgumentException("valueClass not @Compound annotated or not of type java.util.Map");
-            }
             this.isMap = true;
             this.compoundAttribute = new HashMap<String, Object>();
         } else {
@@ -70,7 +69,7 @@ public class CompoundBuilder {
 
     /**
      * Gives back the resulting compound object.
-     * 
+     *
      */
     public Object getCompound() {
 
@@ -79,7 +78,7 @@ public class CompoundBuilder {
 
     /**
      * Sets a property (i.e. a member attribute) on the compounded object.
-     * 
+     *
      * @param memberName
      *            the name of the member attribute.
      * @param memberAttributeValue
@@ -93,9 +92,8 @@ public class CompoundBuilder {
              * We also support non-annotated compound results via a simple java.util.Map.
              */
             Map<String, Object> compoundMap = (Map<String, Object>) this.compoundAttribute;
-            if (compoundMap.containsKey(memberName)) {
+            if (compoundMap.containsKey(memberName))
                 throw new RuntimeException("member already present in result map: " + memberName);
-            }
             compoundMap.put(memberName, memberAttributeValue);
             return;
         }
@@ -119,7 +117,7 @@ public class CompoundBuilder {
 
     /**
      * Sets the compounded attribute Id. Every compounded attribute record has an identifier.
-     * 
+     *
      * @param attributeId
      */
     @SuppressWarnings("unchecked")

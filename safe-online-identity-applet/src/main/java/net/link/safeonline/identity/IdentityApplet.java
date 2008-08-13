@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -20,9 +20,9 @@ import net.link.safeonline.shared.statement.IdentityProvider;
 /**
  * The identity applet creates an identity statement at the client-side within the browser and sends it over to a
  * server-side servlet.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class IdentityApplet extends AppletBase {
 

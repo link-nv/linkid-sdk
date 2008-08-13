@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -24,7 +24,7 @@ public interface AccountService {
 
     /**
      * Removes the specified account, not removing the subject identifers.
-     * 
+     *
      * @param userId
      * @throws SubjectNotFoundException
      * @throws MessageHandlerNotFoundException

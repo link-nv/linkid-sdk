@@ -1,11 +1,13 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.entity;
+
+import static net.link.safeonline.entity.SubjectEntity.QUERY_ALL;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,8 +23,6 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-
-import static net.link.safeonline.entity.SubjectEntity.QUERY_ALL;
 
 
 @Entity
@@ -74,12 +74,10 @@ public class SubjectEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof SubjectEntity) {
+        if (false == obj instanceof SubjectEntity)
             return false;
-        }
         SubjectEntity rhs = (SubjectEntity) obj;
         return new EqualsBuilder().append(this.userId, rhs.userId).isEquals();
     }

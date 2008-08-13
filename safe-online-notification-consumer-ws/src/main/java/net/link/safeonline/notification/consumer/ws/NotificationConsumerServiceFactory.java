@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -25,9 +25,8 @@ public class NotificationConsumerServiceFactory {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL wsdlUrl = classLoader.getResource("notification-consumer.wsdl");
-        if (null == wsdlUrl) {
+        if (null == wsdlUrl)
             throw new RuntimeException("Notification Consumer WSDL not found");
-        }
 
         NotificationConsumerService service = new NotificationConsumerService(wsdlUrl, new QName(
                 "urn:net:lin-k:safe-online:notification:consumer", "NotificationConsumerService"));

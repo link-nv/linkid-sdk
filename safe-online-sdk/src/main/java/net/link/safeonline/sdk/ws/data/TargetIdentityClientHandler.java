@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -34,13 +34,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * SOAP Handler for TargetIdentity SOAP Header handling.
- * 
+ *
  * <p>
  * Specifications: Liberty ID-WSF SOAP Binding Specification 2.0
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -57,7 +57,7 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
 
     /**
      * Sets the target identity, i.e. the user Id.
-     * 
+     *
      * @param targetIdentity
      */
     public void setTargetIdentity(String targetIdentity) {
@@ -82,12 +82,11 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
     public boolean handleMessage(SOAPMessageContext soapContext) {
 
         Boolean outboundProperty = (Boolean) soapContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-        if (false == outboundProperty.booleanValue()) {
+        if (false == outboundProperty.booleanValue())
             /*
              * We only need to add the TargetIdentity SOAP header to the outbound messages.
              */
             return true;
-        }
 
         SOAPMessage soapMessage = soapContext.getMessage();
         SOAPHeader soapHeader;
@@ -111,9 +110,8 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
     private void addTargetIdentityHeader(SOAPHeader soapHeader, SOAPMessageContext soapContext) throws SOAPException,
             JAXBException {
 
-        if (null == this.targetIdentity) {
+        if (null == this.targetIdentity)
             throw new IllegalStateException("TargetIdentity is null");
-        }
         LOG.debug("adding TargetIdentity: " + this.targetIdentity);
 
         /*

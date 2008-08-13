@@ -29,7 +29,7 @@ import org.junit.Test;
 
 /**
  * @author mbillemo
- * 
+ *
  */
 public class PagingTest {
 
@@ -59,8 +59,9 @@ public class PagingTest {
     @After
     public void tearDown() throws Exception {
 
-        if (this.entityTestManager.getEntityManager() != null)
+        if (this.entityTestManager.getEntityManager() != null) {
             this.entityTestManager.tearDown();
+        }
     }
 
     @Test
@@ -86,8 +87,9 @@ public class PagingTest {
 
         int repeat = 100;
         long start = System.currentTimeMillis();
-        for (int i = 0; i < repeat; ++i)
+        for (int i = 0; i < repeat; ++i) {
             testPagingOne(profile, dataPoints);
+        }
 
         Set<ProfileDataEntity> pointData = testPagingOne(profile, dataPoints);
 
@@ -98,8 +100,9 @@ public class PagingTest {
 
         for (ProfileDataEntity d : pointData) {
             System.out.println("ProfileData: " + new Date(d.getScenarioTiming().getStart()));
-            for (MeasurementEntity m : d.getMeasurements())
+            for (MeasurementEntity m : d.getMeasurements()) {
                 System.out.println("  - " + m.getMeasurement() + " -> " + m.getDuration());
+            }
         }
     }
 
@@ -124,12 +127,13 @@ public class PagingTest {
         List<ProfileDataEntity> profileData;
         Set<ProfileDataEntity> pointData = new HashSet<ProfileDataEntity>();
         for (int point = 0; (profileData = profileDataQuery.setFirstResult(point * period).getResultList()) != null; ++point) {
-            if (profileData.isEmpty())
+            if (profileData.isEmpty()) {
                 break;
+            }
 
             Map<String, Long> durations = new HashMap<String, Long>();
             Map<String, Integer> counts = new HashMap<String, Integer>();
-            for (ProfileDataEntity d : profileData)
+            for (ProfileDataEntity d : profileData) {
                 for (MeasurementEntity m : d.getMeasurements())
                     if (!ProfileData.REQUEST_START_TIME.equals(m.getMeasurement())) {
                         if (!durations.containsKey(m.getMeasurement())) {
@@ -143,15 +147,17 @@ public class PagingTest {
                         durations.put(m.getMeasurement(), m.getDuration());
                         counts.put(m.getMeasurement(), 1);
                     }
+            }
 
             ProfileDataEntity data = new ProfileDataEntity(profileData.get(0).getProfile(), profileData.get(0)
                     .getScenarioTiming());
             pointData.add(data);
 
             Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();
-            for (String measurement : durations.keySet())
+            for (String measurement : durations.keySet()) {
                 measurements.add(new MeasurementEntity(data, measurement, durations.get(measurement)
                         / counts.get(measurement)));
+            }
 
         }
 
@@ -191,8 +197,9 @@ public class PagingTest {
                     .setParameter("profile", profile).setParameter("start", dataStart + point * period).setParameter(
                             "stop", dataStart + (point + 1) * period).getResultList();
 
-            for (MeasurementEntity m : measurements)
+            for (MeasurementEntity m : measurements) {
                 m.setProfileData(data);
+            }
         }
 
         return pointData;

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -65,9 +65,9 @@ import org.opensaml.saml2.core.Subject;
 
 /**
  * Implementation of device operation service interface.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Stateful
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
@@ -169,13 +169,13 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
         Assertion assertion = samlResponse.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-        if (authStatements.isEmpty()) {
+        if (authStatements.isEmpty())
             throw new ServletException("missing authentication statement");
-        }
 
         AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext())
+        if (null == authStatement.getAuthnContext()) {
             throw new ServletException("missing authentication context in authentication statement");
+        }
 
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();

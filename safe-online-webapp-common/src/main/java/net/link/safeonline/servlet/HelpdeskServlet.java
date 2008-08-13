@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -46,9 +46,8 @@ public class HelpdeskServlet extends HttpServlet {
 
     private boolean processHelpdeskHeaders(HttpServletRequest request, HttpServletResponse response) {
 
-        if (null == request.getHeader(HelpdeskCodes.HELPDESK_START)) {
+        if (null == request.getHeader(HelpdeskCodes.HELPDESK_START))
             return false;
-        }
         LOG.debug("request has helpdesk events attached ...");
 
         if (null != request.getHeader(HelpdeskCodes.HELPDESK_CLEAR)) {

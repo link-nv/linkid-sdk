@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * The login manager makes sure that both the 'username' and the 'authenticationDevice' are set at the same time to have
  * a consistent login approach. For Seam login components you can use {@link AbstractLoginBean}.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class LoginManager {
 
@@ -49,12 +49,10 @@ public class LoginManager {
 
     public static void login(HttpSession session, String username, DeviceEntity device) {
 
-        if (null == username) {
+        if (null == username)
             throw new IllegalArgumentException("username is null");
-        }
-        if (null == device) {
+        if (null == device)
             throw new IllegalArgumentException("device is null");
-        }
         session.setAttribute(USERID_ATTRIBUTE, username);
         setAuthenticationDevice(session, device);
     }
@@ -70,11 +68,12 @@ public class LoginManager {
         // can be null, in case the device registration was combined with an
         // olas user registration
         DeviceEntity currentDevice = findAuthenticationDevice(session);
-        if (null == currentDevice)
+        if (null == currentDevice) {
             LOG.debug("login for " + username + " with device " + device.getName());
-        else
+        } else {
             LOG.debug("relogin for " + username + " from device " + currentDevice.getName() + " to device "
                     + device.getName());
+        }
         setAuthenticationDevice(session, device);
     }
 
@@ -87,18 +86,16 @@ public class LoginManager {
     public static String getUsername(HttpSession session) {
 
         String username = findUsername(session);
-        if (null == username) {
+        if (null == username)
             throw new IllegalStateException("username session attribute is not present");
-        }
         return username;
     }
 
     public static DeviceEntity getAuthenticationDevice(HttpSession session) {
 
         DeviceEntity authenticationDevice = findAuthenticationDevice(session);
-        if (null == authenticationDevice) {
+        if (null == authenticationDevice)
             throw new IllegalStateException("authenticationDevice session attribute is not present");
-        }
         return authenticationDevice;
     }
 
@@ -122,9 +119,8 @@ public class LoginManager {
 
     public static void setApplication(HttpSession session, String applicationId) {
 
-        if (null == applicationId) {
+        if (null == applicationId)
             throw new IllegalArgumentException("application is null");
-        }
         session.setAttribute(APPLICATION_ID_ATTRIBUTE, applicationId);
     }
 
@@ -136,37 +132,34 @@ public class LoginManager {
 
     public static void setApplicationFriendlyName(HttpSession session, String applicationFriendlyName) {
 
-        if (null == applicationFriendlyName) {
+        if (null == applicationFriendlyName)
             throw new IllegalArgumentException("applicationFriendlyName is null");
-        }
         session.setAttribute(APPLICATION_FRIENDLY_NAME_ATTRIBUTE, applicationFriendlyName);
     }
 
     public static void setTarget(HttpSession session, String target) {
 
-        if (null == target) {
+        if (null == target)
             throw new IllegalArgumentException("target is null");
-        }
         session.setAttribute(TARGET_ATTRIBUTE, target);
     }
 
     /**
      * Sets the required devices within the session. The set of required devices can be null.
-     * 
+     *
      * @param session
      * @param requiredDevices
      */
     public static void setRequiredDevices(HttpSession session, Set<DeviceEntity> requiredDevices) {
 
-        if (null == requiredDevices) {
+        if (null == requiredDevices)
             return;
-        }
         session.setAttribute(REQUIRED_DEVICES_ATTRIBUTE, requiredDevices);
     }
 
     /**
      * Gives back the set of required devices. The value returned can be null.
-     * 
+     *
      * @param session
      */
     @SuppressWarnings("unchecked")
@@ -179,9 +172,8 @@ public class LoginManager {
     public static String getTarget(HttpSession session) {
 
         String target = (String) session.getAttribute(TARGET_ATTRIBUTE);
-        if (null == target) {
+        if (null == target)
             throw new IllegalStateException(TARGET_ATTRIBUTE + " session attribute not present");
-        }
         return target;
     }
 }

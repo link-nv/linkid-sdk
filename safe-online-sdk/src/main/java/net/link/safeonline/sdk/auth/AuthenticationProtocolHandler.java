@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -22,15 +22,15 @@ import javax.servlet.http.HttpServletResponse;
  * Interface for authentication protocol handlers. Protocol handlers are stateful since they must be capable of handling
  * the challenge-response aspect of the authentication protocol. Since protocol handlers are stored in the HTTP session
  * they must be serializable.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public interface AuthenticationProtocolHandler extends Serializable {
 
     /**
      * Initializes the authentication protocol handler.
-     * 
+     *
      * @param authnServiceUrl
      *            the URL of the authentication service to be used by the handler.
      * @param applicationName
@@ -49,7 +49,7 @@ public interface AuthenticationProtocolHandler extends Serializable {
 
     /**
      * Initiates the authentication request towards the SafeOnline authentication web application.
-     * 
+     *
      * @param request
      * @param response
      * @param targetUrl
@@ -62,7 +62,7 @@ public interface AuthenticationProtocolHandler extends Serializable {
 
     /**
      * Finalize the active authentication process.
-     * 
+     *
      * @param httpRequest
      * @param httpResponse
      * @return the authenticated user Id or <code>null</code> if the handler thinks the request has nothing to do with

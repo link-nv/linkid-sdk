@@ -17,11 +17,11 @@ import javax.persistence.NamedQuery;
 /**
  * <h2>{@link DriverProfileEntity}<br>
  * <sub>Links the {@link ProfileDataEntity}s that belong to a certain driver in a certain execution.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Entity

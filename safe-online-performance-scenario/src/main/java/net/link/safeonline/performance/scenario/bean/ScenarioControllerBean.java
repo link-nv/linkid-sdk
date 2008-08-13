@@ -53,18 +53,18 @@ import org.jboss.annotation.ejb.TransactionTimeout;
 /**
  * <h2>{@link ScenarioControllerBean}<br>
  * <sub>This bean is the heart of the scenario application.</sub></h2>
- * 
+ *
  * <p>
  * We take care of preparing scenario execution and launching a single scenario run. As these methods are called, entity
  * objects are updated with state that can later be used to graph out the progress of the scenario execution.<br>
  * <br>
  * Charts are also generated in this bean as registered by the scenario.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Stateless

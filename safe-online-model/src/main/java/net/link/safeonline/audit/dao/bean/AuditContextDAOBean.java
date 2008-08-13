@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -78,15 +78,14 @@ public class AuditContextDAOBean implements AuditContextDAO {
          * We also put REQUIRES_NEW here, else we risk a 'no transaction open' exception.
          */
         AuditContextEntity auditContext = this.entityManager.find(AuditContextEntity.class, auditContextId);
-        if (null == auditContext) {
+        if (null == auditContext)
             throw new AuditContextNotFoundException();
-        }
         return auditContext;
     }
 
     public void cleanup(long ageInMinutes) {
 
-        Date ageLimit = new Date(System.currentTimeMillis() - (ageInMinutes * 60 * 1000));
+        Date ageLimit = new Date(System.currentTimeMillis() - ageInMinutes * 60 * 1000);
         LOG.debug("Cleaning audit contexts older then " + ageLimit);
         List<AuditContextEntity> contexts = this.queryObject.listContextsOlderThen(ageLimit);
         for (AuditContextEntity context : contexts) {

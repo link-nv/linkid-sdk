@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -62,9 +62,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     public void addTrustDomain(String name, boolean performOcspCheck) throws ExistingTrustDomainException {
 
         TrustDomainEntity existingTrustDomain = this.trustDomainDAO.findTrustDomain(name);
-        if (null != existingTrustDomain) {
+        if (null != existingTrustDomain)
             throw new ExistingTrustDomainException();
-        }
         this.trustDomainDAO.addTrustDomain(name, performOcspCheck);
     }
 
@@ -73,9 +72,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
             throws ExistingTrustDomainException {
 
         TrustDomainEntity existingTrustDomain = this.trustDomainDAO.findTrustDomain(name);
-        if (null != existingTrustDomain) {
+        if (null != existingTrustDomain)
             throw new ExistingTrustDomainException();
-        }
         this.trustDomainDAO.addTrustDomain(name, performOcspCheck, ocspCacheTimeOutMillis);
     }
 
@@ -99,9 +97,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
         String subjectName = certificate.getSubjectX500Principal().toString();
         LOG.debug("subject name: " + subjectName);
         TrustPointEntity existingTrustPoint = this.trustPointDAO.findTrustPoint(trustDomain, certificate);
-        if (null != existingTrustPoint) {
+        if (null != existingTrustPoint)
             throw new ExistingTrustPointException();
-        }
         this.trustPointDAO.addTrustPoint(trustDomain, certificate);
     }
 

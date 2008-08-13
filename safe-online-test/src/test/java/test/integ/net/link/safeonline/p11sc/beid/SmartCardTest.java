@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -185,9 +185,8 @@ public class SmartCardTest {
         }
         assertNotNull(existingDriverLocation);
         LOG.debug("existing driver location: " + existingDriverLocation);
-        if (null == existingDriverLocation) {
+        if (null == existingDriverLocation)
             throw new Exception("driver location is null");
-        }
         PKCS11 pkcs11 = PKCS11.getInstance(existingDriverLocation.getAbsolutePath(), "C_GetFunctionList", null, false);
         assertNotNull(pkcs11);
         try {
@@ -388,14 +387,12 @@ public class SmartCardTest {
         JOptionPane.showMessageDialog(null, "Start APDU signature");
 
         SunPKCS11 provider = (SunPKCS11) Security.getProvider("SunPKCS11-" + name);
-        if (null != provider) {
+        if (null != provider)
             throw new RuntimeException("Smart Card provider already active");
-        }
         resetPKCS11Driver();
         provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
-        if (-1 == Security.addProvider(provider)) {
+        if (-1 == Security.addProvider(provider))
             throw new RuntimeException("could not add the security provider");
-        }
         String providerName = provider.getName();
 
         CallbackHandler callbackHandler = new TestCallbackHandler();
@@ -423,9 +420,8 @@ public class SmartCardTest {
         // resetPKCS11Driver();
 
         provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
-        if (-1 == Security.addProvider(provider)) {
+        if (-1 == Security.addProvider(provider))
             throw new RuntimeException("could not add the security provider");
-        }
 
         // provider.login(null, callbackHandler);
 
@@ -451,9 +447,8 @@ public class SmartCardTest {
                 Security.removeProvider(providerName);
                 resetPKCS11Driver();
                 provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
-                if (-1 == Security.addProvider(provider)) {
+                if (-1 == Security.addProvider(provider))
                     throw new RuntimeException("could not add the security provider");
-                }
                 builder = KeyStore.Builder.newInstance("PKCS11", provider, protectionParameter);
 
                 keyStore = builder.getKeyStore();
@@ -510,9 +505,8 @@ public class SmartCardTest {
                     PasswordCallback passwordCallback = (PasswordCallback) callback;
                     HandlerLOG.debug("password required");
                     char[] pin = getPin();
-                    if (null == pin) {
+                    if (null == pin)
                         throw new UnsupportedCallbackException(callback, "User canceled PIN input.");
-                    }
                     passwordCallback.setPassword(pin);
                 }
             }

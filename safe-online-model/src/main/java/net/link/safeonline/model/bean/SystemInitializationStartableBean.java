@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -37,12 +37,12 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 /**
  * This component will initialize the system at startup.
- * 
+ *
  * For now it creates initial users, applications and subscriptions. This to allow for admins to gain access to the
  * system and thus to bootstrap the SafeOnline core.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Stateless
 @Local(Startable.class)

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Manager class for registered WS-Notification message handlers.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class MessageHandlerManager {
 
@@ -63,8 +63,9 @@ public class MessageHandlerManager {
             throws MessageHandlerNotFoundException, WSClientTransportException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
-        if (null == messageHandler)
+        if (null == messageHandler) {
             throw new MessageHandlerNotFoundException(topic);
+        }
         messageHandler.init();
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
@@ -81,16 +82,18 @@ public class MessageHandlerManager {
             destination = consumer.getDevice().getName();
             returnMessage = messageHandler.createDeviceMessage(message, consumer.getDevice());
         }
-        if (null != returnMessage)
+        if (null != returnMessage) {
             consumerClient.sendNotification(topic, destination, returnMessage);
+        }
     }
 
     public static void handleMessage(String topic, String destination, List<String> message)
             throws MessageHandlerNotFoundException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
-        if (null == messageHandler)
+        if (null == messageHandler) {
             throw new MessageHandlerNotFoundException(topic);
+        }
         messageHandler.init();
 
         messageHandler.handleMessage(destination, message);

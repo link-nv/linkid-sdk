@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -39,9 +39,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Landing servlet on the remote device issuer side where OLAS posts its SAML authentication request to for device
  * registration, updating, removal.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class LandingServlet extends AbstractInjectionServlet {
 
@@ -90,9 +90,8 @@ public class LandingServlet extends AbstractInjectionServlet {
             Thread currentThread = Thread.currentThread();
             ClassLoader classLoader = currentThread.getContextClassLoader();
             keyStoreInputStream = classLoader.getResourceAsStream(this.p12KeyStoreResourceName);
-            if (null == keyStoreInputStream) {
+            if (null == keyStoreInputStream)
                 throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreResourceName);
-            }
         } else if (null != this.p12KeyStoreFileName) {
             try {
                 keyStoreInputStream = new FileInputStream(this.p12KeyStoreFileName);

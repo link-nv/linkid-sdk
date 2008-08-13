@@ -20,11 +20,11 @@ import net.link.safeonline.performance.console.jgroups.Agent;
 /**
  * <h2>{@link AgentServiceMBean}<br>
  * <sub>The MBean interface for {@link AgentService}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public interface AgentServiceMBean extends Agent {

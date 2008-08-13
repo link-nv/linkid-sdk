@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,9 +21,9 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
  * Interface for attribute type description decorator. The component implementing this interface will convert the
  * incoming lists to lists that have been decorated with attribute descriptions, internationalized according to the
  * given locale.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface AttributeTypeDescriptionDecorator {

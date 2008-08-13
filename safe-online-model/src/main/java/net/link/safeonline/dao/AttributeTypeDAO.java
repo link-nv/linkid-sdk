@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -24,9 +24,9 @@ import net.link.safeonline.entity.OlasEntity;
 
 /**
  * Interface for attribute type data access object.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface AttributeTypeDAO {
@@ -43,14 +43,14 @@ public interface AttributeTypeDAO {
 
     /**
      * List all attribute types that are marked user visible.
-     * 
+     *
      * @return
      */
     List<AttributeTypeEntity> listVisibleAttributeTypes();
 
     /**
      * Lists all attribute types on the specified olas node.
-     * 
+     *
      * @param node
      */
     List<AttributeTypeEntity> listAttributeTypes(OlasEntity node);
@@ -62,7 +62,7 @@ public interface AttributeTypeDAO {
 
     /**
      * Removes an attribute type description. The entity parameter should be an attached entity.
-     * 
+     *
      * @param attributeTypeDescription
      */
     void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription);
@@ -77,14 +77,14 @@ public interface AttributeTypeDAO {
     /**
      * Returns a map containing a list of unique values of an attribute with a count of how many times these values
      * occur
-     * 
+     *
      * @param attributeType
      */
     Map<Object, Long> categorize(ApplicationEntity application, AttributeTypeEntity attributeType);
 
     /**
      * Gives back the compounded parent attribute type to which a member attribute type belongs to.
-     * 
+     *
      * @param memberAttributeType
      * @throws AttributeTypeNotFoundException
      */
@@ -96,7 +96,7 @@ public interface AttributeTypeDAO {
     /**
      * Removes the compounded member attribute type entities ( not the actual member attribute type ) of the given
      * parent.
-     * 
+     *
      * @param parentAttributeType
      */
     void removeMemberEntries(AttributeTypeEntity parentAttributeType);

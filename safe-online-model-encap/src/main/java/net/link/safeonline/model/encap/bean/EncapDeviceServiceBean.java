@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -78,9 +78,8 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
         SubjectEntity deviceRegistration = this.subjectIdentifierDAO.findSubject(
                 EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
-        if (null == deviceRegistration) {
+        if (null == deviceRegistration)
             throw new SubjectNotFoundException();
-        }
         DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceRegistration);
 
         boolean result = authenicateEncap(challengeId, mobileOTP);
@@ -96,9 +95,8 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
             MobileRegistrationException {
 
         String activationCode = this.mobileManager.activate(mobile, sessionId);
-        if (null == activationCode) {
+        if (null == activationCode)
             throw new MobileRegistrationException();
-        }
         return activationCode;
     }
 
@@ -159,8 +157,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceUserId);
         SubjectEntity deviceRegistration = this.subjectIdentifierDAO.findSubject(
                 EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
-        if (null == deviceRegistration)
+        if (null == deviceRegistration) {
             throw new MobileException("device registration not found");
+        }
 
         removeRegistration(deviceSubject, deviceRegistration, mobile);
     }

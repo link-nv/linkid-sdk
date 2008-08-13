@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -90,7 +90,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
     /**
      * Dry run of merging with the specified account. Returns an account merging data object.
-     * 
+     *
      */
     @DenyAll
     public AccountMergingDO getAccountMergingDO(String sourceAccountName) throws SubjectNotFoundException,
@@ -117,7 +117,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
     /**
      * Commits a merge given an account merging data object.
-     * 
+     *
      * @throws SubjectNotFoundException
      * @throws PermissionDeniedException
      * @throws SubscriptionNotFoundException
@@ -129,8 +129,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
             SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
         LOG.debug("commit merge with account " + accountMergingDO.getSourceSubject().getUserId());
-        if (null != neededDevices && neededDevices.size() != 0)
+        if (null != neededDevices && neededDevices.size() != 0) {
             throw new PermissionDeniedException("authentication needed for certain devices");
+        }
         SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
         SubjectEntity sourceSubject = this.subjectService.getSubject(accountMergingDO.getSourceSubject().getUserId());
         /*
@@ -153,8 +154,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
          */
         List<SubjectIdentifierEntity> sourceSubjectIdentifiers = this.subjectIdentifierDAO
                 .getSubjectIdentifiers(sourceSubject);
-        for (SubjectIdentifierEntity subjectIdentifier : sourceSubjectIdentifiers)
+        for (SubjectIdentifierEntity subjectIdentifier : sourceSubjectIdentifiers) {
             subjectIdentifier.setSubject(targetSubject);
+        }
 
         /*
          * Remove the remaining subject identifier in the login domain
@@ -183,7 +185,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
     /**
      * Adds a list of attributes
-     * 
+     *
      * @param attributes
      * @throws AttributeTypeNotFoundException
      */
@@ -196,21 +198,22 @@ public class AccountMergingServiceBean implements AccountMergingService {
             LOG.debug("add attribute: " + attribute.getName());
             AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attribute.getName());
             AttributeEntity attributeEntity = this.attributeDAO.addAttribute(attributeType, subject);
-            if (attributeType.isCompounded())
+            if (attributeType.isCompounded()) {
                 attributeEntity.setStringValue(attribute.getStringValue());
-            else
+            } else {
                 attribute.copyValueTo(attributeType, attributeEntity);
+            }
         }
     }
 
     /**
      * Merge subscriptions :
-     * 
+     *
      * When a subscription does already exist in the target: do not move
-     * 
+     *
      * When a subscription does not yet exist: move if the source account holder has proven possession of a device from
      * the allowed devices list of the application. When there is no allowed devices list: any device is sufficient.
-     * 
+     *
      * @param targetSubscriptions
      * @param sourceSubscriptions
      * @throws EmptyDevicePolicyException
@@ -227,8 +230,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
             if (null == targetSubscription) {
                 SubscriptionDO subscriptionDO = getSubscriptionDO(sourceSubscription);
                 accountMergingDO.addImportedSubscription(subscriptionDO);
-                if (null != subscriptionDO.getAllowedDevices())
+                if (null != subscriptionDO.getAllowedDevices()) {
                     accountMergingDO.addNeededProvenDevices(subscriptionDO.getAllowedDevices());
+                }
             }
         }
     }
@@ -246,22 +250,23 @@ public class AccountMergingServiceBean implements AccountMergingService {
             EmptyDevicePolicyException {
 
         List<DeviceEntity> allowedDevices = null;
-        if (subscription.getApplication().isDeviceRestriction())
+        if (subscription.getApplication().isDeviceRestriction()) {
             allowedDevices = this.devicePolicyService.getDevicePolicy(subscription.getApplication().getName(), null);
+        }
         return new SubscriptionDO(subscription, allowedDevices);
     }
 
     /**
      * Merge attributes
-     * 
+     *
      * no corresponding attribute exists: move to target
-     * 
+     *
      * multivalued attributes: add values to target
-     * 
+     *
      * single valued, user editable: user can choose
-     * 
+     *
      * single valued, non user editable: use target attributes.
-     * 
+     *
      * @param targetAttributes
      * @param sourceAttributes
      * @throws AttributeTypeNotFoundException
@@ -307,8 +312,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
                 else if (sourceAttributeType.isCompoundMember()) {
                     preservedAttributeMap.remove(targetAttribute.getKey());
                     continue;
-                } else
+                } else {
                     mergedAttributeToAddList = mergeAttribute(targetAttribute, sourceAttribute);
+                }
                 targetAttribute.getValue().addAll(mergedAttributeToAddList);
                 mergedAttributesList.addAll(targetAttribute.getValue());
                 mergedAttributesToAddList.addAll(mergedAttributeToAddList);
@@ -337,12 +343,12 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
     /**
      * Merge two compounded multivalued attributes, removing doubles.
-     * 
+     *
      * for each compound ( source and target ) : fetch all its members in a list then compare all attributes in these
      * lists with each other ...
-     * 
+     *
      * Returns only the list of attributes to be added to the target attribute
-     * 
+     *
      * @param targetAttributes
      * @param sourceAttributes
      */
@@ -379,7 +385,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
     /**
      * Fetch the compounded attributes' member attributes
-     * 
+     *
      * @param subject
      * @param attributes
      */
@@ -400,7 +406,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
     /**
      * Compares the attribute members of one compounded attribute to another one
-     * 
+     *
      * @param sourceMembers
      * @param targetMembers
      */
@@ -415,9 +421,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
     /**
      * Merges two multivalued attributes, removing doubles. Compounded attributes are not handled here.
-     * 
+     *
      * Returns the list of attributes that will need to be added.
-     * 
+     *
      * @param sourceAttribute
      * @param targetAttribute
      */
@@ -477,8 +483,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
             AttributeDO attributeView = new AttributeDO(attributeType.getName(), attributeType.getType(), attributeType
                     .isMultivalued(), attribute.getAttributeIndex(), humanReadableName, description, attributeType
                     .isUserEditable(), true, attribute.getStringValue(), attribute.getBooleanValue());
-            if (!attributeType.isCompounded())
+            if (!attributeType.isCompounded()) {
                 attributeView.setValue(attribute);
+            }
             attributeView.setUserVisible(attributeType.isUserVisible());
             attributeView.setCompounded(attributeType.isCompounded());
             attributeView.setMember(attributeType.isCompoundMember());

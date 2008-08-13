@@ -29,15 +29,15 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ScenarioTimingServiceBean}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Stateless

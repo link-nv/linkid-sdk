@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -68,9 +68,8 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
         if (null != requiredDevicePolicy) {
             devicePolicy.retainAll(requiredDevicePolicy);
         }
-        if (true == devicePolicy.isEmpty()) {
+        if (true == devicePolicy.isEmpty())
             throw new EmptyDevicePolicyException();
-        }
         return devicePolicy;
     }
 
@@ -120,8 +119,9 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
         List<DeviceEntity> authndevices = new LinkedList<DeviceEntity>();
         List<DeviceEntity> allDevices = this.deviceDAO.listDevices();
         for (DeviceEntity device : allDevices) {
-            if (device.getAuthenticationContextClass().equals(authenticationContextClass))
+            if (device.getAuthenticationContextClass().equals(authenticationContextClass)) {
                 authndevices.add(device);
+            }
         }
         if (authndevices.size() != 0)
             return authndevices;

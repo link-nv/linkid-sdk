@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -31,14 +31,14 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Entity representing a subject from a remote device.
- * 
+ *
  * Id equals the device mapping id returned by OLAS.
- * 
+ *
  * Registrations is the list of actual registered devices for this 'device subject'. These are regular OLAS subjects but
  * without the standard Login attribute.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Entity
 @Table(name = "device_subject")
@@ -92,15 +92,12 @@ public class DeviceSubjectEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (false == (obj instanceof DeviceSubjectEntity)) {
+        if (false == obj instanceof DeviceSubjectEntity)
             return false;
-        }
         DeviceSubjectEntity rhs = (DeviceSubjectEntity) obj;
         return new EqualsBuilder().append(this.id, rhs.id).isEquals();
     }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,9 +23,9 @@ import net.link.safeonline.entity.AttributeEntity;
 /**
  * Interface for attribute provider service component. The application using this component must be registered as an
  * attribute provider by the operator.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface AttributeProviderService {
@@ -33,15 +33,15 @@ public interface AttributeProviderService {
     /**
      * Gives back the values of an attribute of a certain subject. This application must be an attribute provider of the
      * attribute in order to read the attribute's values.
-     * 
+     *
      * <p>
      * For single-valued attributes the returned list will of course contain at maximum one entry.
      * </p>
-     * 
+     *
      * <p>
      * For compounded attributes the members field will be filled in correctly.
      * </p>
-     * 
+     *
      * @param subjectLogin
      * @param attributeName
      * @return the list of attribute entries.
@@ -55,12 +55,12 @@ public interface AttributeProviderService {
 
     /**
      * Create a new attribute for the given user.
-     * 
+     *
      * <p>
      * The optional attribute value can be a {@link String} or {@link Integer} or an array in case of a multivalued
      * attribute. In case of a compounded attribute record the attribute value is a Map.
      * </p>
-     * 
+     *
      * @param subjectLogin
      * @param attributeName
      * @param attributeValue
@@ -77,7 +77,7 @@ public interface AttributeProviderService {
     /**
      * Sets an attribute for the given user. For attribute value we accept {@link String} and {@link Boolean}. A
      * <code>null</code> attribute value is also allowed.
-     * 
+     *
      * @param subjectLogin
      * @param attributeName
      * @param attributeValue
@@ -95,7 +95,7 @@ public interface AttributeProviderService {
      * Sets the member values of a compound attribute record. Editing a compound multivalued attribute is somehow
      * different from editing a regular multivalued attribute. This because we explicitly address the records of a
      * multivalued compounded attribute via the attribute Id.
-     * 
+     *
      * @param subjectLogin
      * @param attributeName
      * @param attributeId
@@ -112,7 +112,7 @@ public interface AttributeProviderService {
 
     /**
      * Removes the attribute for the given subject.
-     * 
+     *
      * @param subjectLogin
      *            the login of the subject from whom to remove an attribute.
      * @param attributeName
@@ -127,7 +127,7 @@ public interface AttributeProviderService {
 
     /**
      * Removes a record of a compounded attribute. The record is identified via the attribute Id.
-     * 
+     *
      * @param subjectLogin
      * @param attributeName
      * @param attributeId

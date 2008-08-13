@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -247,8 +247,9 @@ public class AddAttributeBean implements AddAttribute {
     public void setTargetMemberAttributes(List<AttributeTypeEntity> targetMemberAttributes) {
 
         this.selectedMemberAttributes = targetMemberAttributes;
-        for (AttributeTypeEntity targetMemberAttribute : this.selectedMemberAttributes)
+        for (AttributeTypeEntity targetMemberAttribute : this.selectedMemberAttributes) {
             this.log.debug("set target: " + targetMemberAttribute.getName());
+        }
     }
 
 
@@ -369,9 +370,8 @@ public class AddAttributeBean implements AddAttribute {
 
         this.log.debug("memberAccessControlAttributesFactory");
         this.memberAccessControlAttributes = new LinkedList<MemberAccessControl>();
-        if (null == this.selectedMemberAttributes) {
+        if (null == this.selectedMemberAttributes)
             return;
-        }
         for (AttributeTypeEntity selectedMemberAttribute : this.selectedMemberAttributes) {
             this.memberAccessControlAttributes.add(new MemberAccessControl(selectedMemberAttribute));
         }

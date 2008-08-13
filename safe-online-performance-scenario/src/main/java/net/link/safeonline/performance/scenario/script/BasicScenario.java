@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link BasicScenario}<br>
  * <sub>A basic scenario that runs all basic drivers to test OLAS on every field available through the SDK.</sub></h2>
- * 
+ *
  * <p>
  * We perform the following, in order:
  * <ul>
@@ -50,11 +50,11 @@ import org.apache.commons.logging.LogFactory;
  * <li>{@link AttribDriver#getAttributes(PrivateKeyEntry, String)}</li>
  * </ul>
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class BasicScenario implements Scenario {
@@ -91,8 +91,9 @@ public class BasicScenario implements Scenario {
         } catch (NamingException e) {
             LOG.error("OLAS couldn't provide performance keys.", e);
         }
-        if (this.applicationKey == null)
+        if (this.applicationKey == null) {
             this.applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+        }
 
         LOG.debug("building drivers..");
         this.authDriver = new AuthDriver(execution, agentTime);
@@ -105,18 +106,21 @@ public class BasicScenario implements Scenario {
      */
     public void run() {
 
-        if (this.applicationKey == null)
+        if (this.applicationKey == null) {
             throw new IllegalStateException("Performance keys not set up. Perhaps you didn't call prepare?");
+        }
 
         /* Logging in. */
         String loginUserId = this.authDriver.login(this.applicationKey, applicationName, username, password);
-        if (loginUserId == null)
+        if (loginUserId == null) {
             throw new IllegalStateException("Login failed.");
+        }
 
         /* Verifying UUID. */
         String mappedUserId = this.idDriver.getUserId(this.applicationKey, username);
-        if (!loginUserId.equals(mappedUserId))
+        if (!loginUserId.equals(mappedUserId)) {
             throw new IllegalStateException("Login ID doesn't match mapped ID.");
+        }
 
         /* Reading attributes. */
         this.attribDriver.getAttributes(this.applicationKey, mappedUserId);

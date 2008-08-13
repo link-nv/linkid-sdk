@@ -29,17 +29,17 @@ import org.jgroups.Address;
 /**
  * <h2>{@link ConsoleAgent}<br>
  * <sub>Proxy that maintains the status of the remote agent and provides access to its functionality.</sub></h2>
- * 
+ *
  * <p>
  * This is a proxy for the remote agent and provides access to all functionality offered and all state made available by
  * the agent. It takes care of keeping the status information synchronised by a daemon thread that checks the remote
  * status every two seconds.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ConsoleAgent implements Agent {
@@ -133,10 +133,12 @@ public class ConsoleAgent implements Agent {
 
         String transitStr = AgentState.RESET.getTransitioning();
         String stateStr = AgentState.RESET.getTransitioning();
-        if (null != this.transit)
+        if (null != this.transit) {
             transitStr = this.transit.getTransitioning();
-        if (null != this.state)
+        }
+        if (null != this.state) {
             stateStr = this.state.getState();
+        }
 
         return String.format("%s: [%s:%s]", this.agentAddress, stateStr, transitStr);
     }
@@ -174,7 +176,7 @@ public class ConsoleAgent implements Agent {
 
     /**
      * Will never be <code>null</code>.
-     * 
+     *
      * {@inheritDoc}
      */
     public AgentState getState() {
@@ -187,8 +189,9 @@ public class ConsoleAgent implements Agent {
      */
     public void resetTransit() {
 
-        for (ScenarioThread actionThread : this.scenarioThreads)
+        for (ScenarioThread actionThread : this.scenarioThreads) {
             actionThread.shutdown();
+        }
 
         this.agentRemoting.resetTransit(this.agentAddress);
         updateState();
@@ -266,8 +269,9 @@ public class ConsoleAgent implements Agent {
 
     public void updateState() {
 
-        if (SwingUtilities.isEventDispatchThread())
+        if (SwingUtilities.isEventDispatchThread()) {
             LOG.warn("We're in the event queue!  Deadlock may occur.");
+        }
 
         try {
             boolean isDeployed = this.state != null && AgentState.UPLOAD.compareTo(this.state) < 0;
@@ -306,8 +310,9 @@ public class ConsoleAgent implements Agent {
 
         catch (Throwable e) {
             Throwable cause = e;
-            while (cause.getCause() != null)
+            while (cause.getCause() != null) {
                 cause = cause.getCause();
+            }
 
             setError(cause);
         }
@@ -322,18 +327,22 @@ public class ConsoleAgent implements Agent {
 
         // Equals is broken for non-sorted sets when the order gets shaken up.
         Object fixedOld = oldValue, fixedNew = newValue;
-        if (oldValue instanceof Set && !(oldValue instanceof SortedSet))
+        if (oldValue instanceof Set && !(oldValue instanceof SortedSet)) {
             fixedOld = new TreeSet<Object>((Set<? extends Object>) oldValue);
-        if (newValue instanceof Set && !(newValue instanceof SortedSet))
+        }
+        if (newValue instanceof Set && !(newValue instanceof SortedSet)) {
             fixedNew = new TreeSet<Object>((Set<? extends Object>) newValue);
-
-        if (fixedOld != null) {
-            if (fixedNew == null || !fixedOld.equals(fixedNew))
-                ConsoleData.fireAgentStatus(this);
         }
 
-        else if (fixedNew != null)
+        if (fixedOld != null) {
+            if (fixedNew == null || !fixedOld.equals(fixedNew)) {
+                ConsoleData.fireAgentStatus(this);
+            }
+        }
+
+        else if (fixedNew != null) {
             ConsoleData.fireAgentStatus(this);
+        }
 
         return newValue;
     }
@@ -362,14 +371,16 @@ public class ConsoleAgent implements Agent {
         @Override
         public void run() {
 
-            while (!this.shutdown)
+            while (!this.shutdown) {
                 try {
-                    if (ConsoleAgent.this.autoUpdate)
+                    if (ConsoleAgent.this.autoUpdate) {
                         updateState();
+                    }
 
                     Thread.sleep(INTERVAL);
                 } catch (InterruptedException e) {
                 }
+            }
         }
     }
 }

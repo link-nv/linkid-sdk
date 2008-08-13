@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -61,8 +61,9 @@ public class NotificationProducerDAOBean implements NotificationProducerDAO {
 
         LOG.debug("get subscription: " + topic);
         NotificationProducerSubscriptionEntity subscription = findSubscription(topic);
-        if (null == subscription)
+        if (null == subscription) {
             throw new SubscriptionNotFoundException();
+        }
         return subscription;
     }
 

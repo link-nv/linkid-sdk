@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Dummy MBean for unit testing purposes.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class DynamicTestMBean implements DynamicMBean {
 
@@ -34,15 +34,14 @@ public class DynamicTestMBean implements DynamicMBean {
 
     /**
      * Registers an action handler that this dynamic test MBean will be using when invoking actions.
-     * 
+     *
      * @param actionName
      * @param action
      */
     public void registerActionHandler(String actionName, MBeanActionHandler action) {
 
-        if (this.actionHandlers.containsKey(actionName)) {
+        if (this.actionHandlers.containsKey(actionName))
             throw new IllegalStateException("already registered mbean action: " + actionName);
-        }
         this.actionHandlers.put(actionName, action);
     }
 
@@ -67,9 +66,8 @@ public class DynamicTestMBean implements DynamicMBean {
 
         LOG.debug("invoked: " + actionName);
         MBeanActionHandler actionHandler = this.actionHandlers.get(actionName);
-        if (null == actionHandler) {
+        if (null == actionHandler)
             return null;
-        }
         Object result = actionHandler.invoke(params);
         return result;
     }

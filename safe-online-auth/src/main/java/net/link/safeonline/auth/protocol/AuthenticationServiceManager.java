@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * This HTTP session listener manages the life-cycle of the authentication service instance used by the authentication
  * web application.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AuthenticationServiceManager implements HttpSessionListener {
 
@@ -56,13 +56,12 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 
         AuthenticationService authenticationService = (AuthenticationService) session
                 .getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService) {
+        if (null == authenticationService)
             /*
              * This is the normal thing to happen. This means that the authentication service was already properly
              * terminated.
              */
             return;
-        }
 
         /*
          * Make sure we do a proper cleanup of the authentication service instance. This can happen in the event of an
@@ -91,29 +90,27 @@ public class AuthenticationServiceManager implements HttpSessionListener {
      * be used to finalize the authentication service via {@link AuthenticationService#finalizeAuthentication()} or
      * {@link AuthenticationService#abort()}. These operations should be performed via this authentication service
      * manager class.
-     * 
+     *
      * @param session
      */
     public static AuthenticationService getAuthenticationService(HttpSession session) {
 
         AuthenticationService authenticationService = (AuthenticationService) session
                 .getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService) {
+        if (null == authenticationService)
             throw new IllegalStateException("authentication service instance not present");
-        }
-        if (authenticationService.getAuthenticationState().equals(AuthenticationState.COMMITTED)) {
+        if (authenticationService.getAuthenticationState().equals(AuthenticationState.COMMITTED))
             throw new IllegalStateException(
                     "authentication process is already committed, cannot use the authentication service directly anymore.");
-        }
         return authenticationService;
     }
 
     /**
      * Finalizes the authentication process.
-     * 
+     *
      * This method will return an encoded SAML response token which should be communicated to the application the user
      * is authenticating for.
-     * 
+     *
      * @param session
      * @throws NodeNotFoundException
      * @throws ApplicationNotFoundException
@@ -124,9 +121,8 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 
         AuthenticationService authenticationService = (AuthenticationService) session
                 .getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService) {
+        if (null == authenticationService)
             throw new IllegalStateException("authentication service instance not present");
-        }
         try {
             return authenticationService.finalizeAuthentication();
         } finally {
@@ -140,16 +136,15 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 
     /**
      * Aborts the authentication process.
-     * 
+     *
      * @param session
      */
     public static void abort(HttpSession session) {
 
         AuthenticationService authenticationService = (AuthenticationService) session
                 .getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService) {
+        if (null == authenticationService)
             throw new IllegalStateException("authentication service instance not present");
-        }
         try {
             authenticationService.abort();
         } finally {

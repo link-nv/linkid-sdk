@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2005-2006 Frank Cornelis.
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
@@ -204,7 +204,7 @@ public class PkiTestUtils {
 
     /**
      * Persist the given private key and corresponding certificate to a PKCS12 keystore file.
-     * 
+     *
      * @param pkcs12keyStore
      *            the file of the PKCS12 keystore to write the key material to.
      * @param privateKey

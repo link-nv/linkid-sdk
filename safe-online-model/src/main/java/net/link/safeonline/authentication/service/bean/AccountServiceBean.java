@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -132,7 +132,7 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
     /**
      * Remove local device attributes and possible local device subjects
-     * 
+     *
      * @param subject
      */
     private void removeDeviceRegistrations(SubjectEntity subject) {
@@ -141,8 +141,9 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
         for (DeviceMappingEntity deviceMapping : deviceMappings) {
             if (deviceMapping.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
                 DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceMapping.getId());
-                if (null == deviceSubject)
+                if (null == deviceSubject) {
                     continue;
+                }
                 for (SubjectEntity deviceRegistration : deviceSubject.getRegistrations()) {
                     removeDeviceRegistration(deviceRegistration);
                 }

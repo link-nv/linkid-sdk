@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -74,12 +74,10 @@ public class UsageAgreementTextPK implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof UsageAgreementTextPK) {
+        if (false == obj instanceof UsageAgreementTextPK)
             return false;
-        }
         UsageAgreementTextPK rhs = (UsageAgreementTextPK) obj;
         return new EqualsBuilder().append(this.usageAgreementVersion, rhs.usageAgreementVersion).append(this.owner,
                 rhs.owner).append(this.language, rhs.language).isEquals();

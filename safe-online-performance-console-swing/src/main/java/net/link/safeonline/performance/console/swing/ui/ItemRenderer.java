@@ -18,15 +18,15 @@ package net.link.safeonline.performance.console.swing.ui;
 /**
  * <h2>{@link ItemRenderer}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 20, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ItemRenderer<I> {

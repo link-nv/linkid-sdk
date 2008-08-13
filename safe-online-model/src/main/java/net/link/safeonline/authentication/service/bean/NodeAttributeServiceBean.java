@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -34,9 +34,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Attribute Service Implementation for nodes.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_NODE_SECURITY_DOMAIN)

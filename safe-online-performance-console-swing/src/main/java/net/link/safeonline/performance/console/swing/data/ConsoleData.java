@@ -33,7 +33,7 @@ import org.jgroups.Address;
 /**
  * <h2>{@link ConsoleData}<br>
  * <sub>A central location for console configuration data.</sub></h2>
- * 
+ *
  * <p>
  * All configuration settings are kept in this class. The UI needs to make sure to update this class whenever settings
  * are modified and needs to read the settings in from this class rather than trying to parse them out of the UI. <br>
@@ -41,11 +41,11 @@ import org.jgroups.Address;
  * UI to call the appropriate methods ( {@link #getAgent(Address)} and {@link #removeStaleAgents()} ) whenever agent
  * addresses join or leave the group so that the mappings kept by this class are up-to-date.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ConsoleData {
@@ -102,7 +102,7 @@ public class ConsoleData {
 
     /**
      * Remove {@link ConsoleAgent} objects for agents that disappeared from the group.
-     * 
+     *
      * @return All agents that were removed.
      */
     public static synchronized List<ConsoleAgent> removeStaleAgents() {
@@ -349,7 +349,7 @@ public class ConsoleData {
 
     /**
      * Manually fire an agent status event forcing the UI to update itself for this agent.
-     * 
+     *
      * @param agent
      *            The agent whose status changed.
      */

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -38,9 +38,9 @@ import org.w3c.dom.Element;
 
 /**
  * Test SOAP JAX-WS Handler to verify the different XML Signature of the STS request.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -65,9 +65,8 @@ public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessage
 
         LOG.debug("handle message");
         Boolean outboundProperty = (Boolean) soapContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-        if (false == outboundProperty) {
+        if (false == outboundProperty)
             return true;
-        }
         SOAPMessage soapMessage = soapContext.getMessage();
         SOAPPart soapPart = soapMessage.getSOAPPart();
 

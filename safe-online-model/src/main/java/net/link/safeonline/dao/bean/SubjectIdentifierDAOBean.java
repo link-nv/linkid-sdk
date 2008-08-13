@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -55,9 +55,8 @@ public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
 
         SubjectIdentifierPK pk = new SubjectIdentifierPK(domain, subjectIdentifier);
         SubjectIdentifierEntity subjectIdentifierEntity = this.entityManager.find(SubjectIdentifierEntity.class, pk);
-        if (null == subjectIdentifierEntity) {
+        if (null == subjectIdentifierEntity)
             return null;
-        }
         SubjectEntity subject = subjectIdentifierEntity.getSubject();
         return subject;
     }

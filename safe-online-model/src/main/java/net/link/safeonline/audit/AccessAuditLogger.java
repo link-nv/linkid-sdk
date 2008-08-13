@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -35,9 +35,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * EJB3 access audit logger.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AccessAuditLogger {
 
@@ -153,9 +153,8 @@ public class AccessAuditLogger {
             LOG.debug("getCallerPrincipal throws IllegalStateException");
             return null;
         }
-        if (null == callerPrincipal) {
+        if (null == callerPrincipal)
             return null;
-        }
         String name = callerPrincipal.getName();
         return name;
     }

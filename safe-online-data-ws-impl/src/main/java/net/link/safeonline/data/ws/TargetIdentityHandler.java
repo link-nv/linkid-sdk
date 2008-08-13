@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -43,11 +43,11 @@ import org.apache.commons.logging.LogFactory;
 /**
  * SOAP Handler for TargetIdentity SOAP Header handling. This SOAP handler will check for the presence of the
  * TargetIdentity SOAP Header. If present it will push the found subject name onto the messaging context.
- * 
+ *
  * <p>
  * Specifications: Liberty ID-WSF SOAP Binding Specification 2.0
  * </p>
- * 
+ *
  * @author fcorneli
  */
 public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
@@ -87,12 +87,11 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
     public boolean handleMessage(SOAPMessageContext soapContext) {
 
         Boolean outboundProperty = (Boolean) soapContext.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-        if (true == outboundProperty.booleanValue()) {
+        if (true == outboundProperty.booleanValue())
             /*
              * We only need to verify the TargetIdentity SOAP header on inbound messages.
              */
             return true;
-        }
 
         SOAPMessage soapMessage = soapContext.getMessage();
         try {
@@ -131,13 +130,11 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
          * signature.
          */
         String id = targetIdentityHeaderElement.getAttributeNS(WSU_NS, "Id");
-        if (null == id) {
+        if (null == id)
             throw new RuntimeException("wsu:Id attribute not found");
-        }
         boolean signed = WSSecurityServerHandler.isSignedElement(id, soapContext);
-        if (false == signed) {
+        if (false == signed)
             throw new RuntimeException("TargetIdentity SOAP header not signed by WS-Security");
-        }
 
         JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -145,9 +142,8 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
                 .getFirstChild());
 
         Object element = jaxbElement.getValue();
-        if (false == element instanceof SubjectType) {
+        if (false == element instanceof SubjectType)
             throw new RuntimeException("samlp:Subject expected");
-        }
 
         SubjectType subject = (SubjectType) element;
         String login = findSubjectLogin(subject);
@@ -195,7 +191,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
     /**
      * Gives back the target identity. This target identity has been extracted before by this handler from the
      * TargetIdentity SOAP header.
-     * 
+     *
      * @param context
      * @throws TargetIdentityException
      *             in case of a missing TargetIdentity SOAP header.
@@ -204,9 +200,8 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
         MessageContext messageContext = context.getMessageContext();
         String targetIdentity = (String) messageContext.get(TargetIdentityHandler.TARGET_IDENTITY_CONTEXT_VAR);
-        if (null == targetIdentity) {
+        if (null == targetIdentity)
             throw new TargetIdentityException();
-        }
         return targetIdentity;
     }
 }

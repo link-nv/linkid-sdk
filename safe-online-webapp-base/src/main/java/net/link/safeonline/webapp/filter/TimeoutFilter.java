@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Servlet Filter that handles browser timeout events.
- * 
+ *
  * <p>
  * The init parameters for this filter are:
  * </p>
@@ -34,9 +34,9 @@ import org.apache.commons.logging.LogFactory;
  * <li><code>TimeoutPath</code>: the path to the timeout page.</li>
  * <li><code>LoginSessionAttribute</code>: the HTTP session attribute that indicated a logged in user.</li>
  * </ul>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class TimeoutFilter extends AbstractInjectionFilter {
 

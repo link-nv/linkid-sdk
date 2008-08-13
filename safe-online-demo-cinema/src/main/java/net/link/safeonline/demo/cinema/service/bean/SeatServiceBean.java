@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,11 +23,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link SeatServiceBean}<br>
  * <sub>Service bean for {@link SeatService}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jun 12, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Stateless
@@ -67,8 +67,9 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
                     SeatOccupationEntity.getFor).setParameter("seat", seat)
                     .setParameter("start", occupation.getStart()).getSingleResult();
 
-            if (existingOccupation.isReserved())
+            if (existingOccupation.isReserved()) {
                 throw new IllegalStateException("Seat " + seat + " is already occupied.");
+            }
 
             // An existing occupation that is not yet reserved?
             // Must be a stale ticket registration; give the existing

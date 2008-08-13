@@ -32,14 +32,14 @@ import org.jfree.data.time.TimeSeriesCollection;
 /**
  * <h2>{@link ScenarioMemoryChart}<br>
  * <sub>TODO</sub></h2>
- * 
+ *
  * <p>
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioMemoryChart extends AbstractChart {

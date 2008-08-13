@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -147,8 +147,9 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 
         // verify
         for (Object value : result.keySet())
-            if (value.equals(attributeValue))
+            if (value.equals(attributeValue)) {
                 assertEquals(result.get(value), Long.valueOf(1));
+            }
 
     }
 }

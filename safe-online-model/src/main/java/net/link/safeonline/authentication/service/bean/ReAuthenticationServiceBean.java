@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -75,14 +75,15 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
     private void addAuthenticationDevice(DeviceEntity authenticationDevice) {
 
         LOG.debug("set re-auth device: " + authenticationDevice.getName());
-        if (null == this.authenticationDevices)
+        if (null == this.authenticationDevices) {
             this.authenticationDevices = new HashSet<DeviceEntity>();
+        }
         this.authenticationDevices.add(authenticationDevice);
     }
 
     /**
      * Sets the re-authenticated subject. If already set checks if its the same.
-     * 
+     *
      * @param subject
      * @throws SubjectMismatchException
      * @throws PermissionDeniedException
@@ -93,14 +94,16 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
         LOG.debug("set re-auth subject: " + subject.getUserId());
         SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
-        if (targetSubject.equals(subject))
+        if (targetSubject.equals(subject)) {
             throw new PermissionDeniedException("target subject is equals source subject");
+        }
         if (null == this.authenticatedSubject) {
             this.authenticatedSubject = subject;
             return;
         }
-        if (!this.authenticatedSubject.equals(subject))
+        if (!this.authenticatedSubject.equals(subject)) {
             throw new SubjectMismatchException();
+        }
     }
 
     @DenyAll

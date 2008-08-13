@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -32,17 +32,17 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * This entity represents an OLAS node in the OLAS network.
- * 
+ *
  * An OLAS node has an authentication certificate used to authenticate against other OLAS node when using its web
  * services.
- * 
+ *
  * An OLAS node also has a signing certificate used for signing SAML tokens issued from this node.
- * 
+ *
  * This entity is for example used by remote attributes to identify the location of the actual attribute in the OLAS
  * network.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Entity
 @Table(name = "olas_entity")
@@ -186,7 +186,7 @@ public class OlasEntity implements Serializable {
     /**
      * Sets the authentication certificate subject. Do not use this method directly. Use
      * {@link #setAuthnCertificate(X509Certificate) setCertificate} instead. JPA requires this setter.
-     * 
+     *
      * @param authnCertificateSubject
      * @see #setAuthnCertificate(X509Certificate)
      */
@@ -198,7 +198,7 @@ public class OlasEntity implements Serializable {
     /**
      * Sets the X509 certificate of the application. Use this method to update the application certificate since this
      * method keeps the certificate identifier in sync with the certificate.
-     * 
+     *
      * @param authnCertificate
      */
     @Transient
@@ -216,7 +216,7 @@ public class OlasEntity implements Serializable {
     /**
      * Sets the signing certificate subject. Do not use this method directly. Use
      * {@link #setAuthnCertificate(X509Certificate) setCertificate} instead. JPA requires this setter.
-     * 
+     *
      * @param signingCertificateSubject
      * @see #setSigningCertificate(X509Certificate)
      */
@@ -228,7 +228,7 @@ public class OlasEntity implements Serializable {
     /**
      * Sets the X509 certificate of the application. Use this method to update the application certificate since this
      * method keeps the certificate identifier in sync with the certificate.
-     * 
+     *
      * @param signingCertificate
      */
     @Transient

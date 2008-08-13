@@ -1,5 +1,5 @@
 /* SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -93,14 +93,15 @@ public class HelpdeskLogger {
     private static String getPrincipal(HttpSession session) {
 
         String principal = (String) session.getAttribute("username");
-        if (null == principal)
+        if (null == principal) {
             principal = UNKNOWN_USER;
-        else {
+        } else {
             SubjectService subjectService = EjbUtils
                     .getEJB("SafeOnline/SubjectServiceBean/local", SubjectService.class);
             principal = subjectService.getExceptionSubjectLogin(principal);
-            if (null == principal)
+            if (null == principal) {
                 principal = UNKNOWN_USER;
+            }
 
         }
         LOG.debug("principal found: " + principal);

@@ -47,15 +47,15 @@ import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 /**
  * <h2>{@link ChartsTest}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ChartsTest extends AbstractDataTest {

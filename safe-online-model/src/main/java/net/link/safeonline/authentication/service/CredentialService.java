@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -16,16 +16,16 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 /**
  * Interface of service that manages the credentials of the caller subject.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface CredentialService {
 
     /**
      * Changes the password of the current user. Of course for that to happen the oldPassword must match.
-     * 
+     *
      * @param oldPassword
      * @param newPassword
      * @throws PermissionDeniedException
@@ -36,7 +36,7 @@ public interface CredentialService {
 
     /**
      * Register password for the current user.
-     * 
+     *
      * @param password
      * @throws PermissionDeniedException
      * @throws SubjectNotFoundException
@@ -46,7 +46,7 @@ public interface CredentialService {
 
     /**
      * Removes the password of the current user. For this to happen the password must match.
-     * 
+     *
      * @param password
      * @throws DeviceNotFoundException
      * @throws PermissionDeniedException
@@ -57,10 +57,10 @@ public interface CredentialService {
 
     /**
      * Gives back <code>true</code> if the user already has a password configured.
-     * 
+     *
      * @throws DeviceNotFoundException
      * @throws SubjectNotFoundException
-     * 
+     *
      */
     boolean isPasswordConfigured() throws SubjectNotFoundException, DeviceNotFoundException;
 }

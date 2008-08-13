@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -49,9 +49,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Attribute JPA Entity. Sits as many-to-many between {@link AttributeTypeEntity} and {@link SubjectEntity}.
  * Multi-valued attributes are implemented via {@link #getAttributeIndex()}.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Entity
 @Table(name = "attribute")
@@ -197,7 +197,7 @@ public class AttributeEntity implements Serializable {
     /**
      * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that
      * attribute index is zero.
-     * 
+     *
      */
     @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
     public long getAttributeIndex() {
@@ -268,7 +268,7 @@ public class AttributeEntity implements Serializable {
     /**
      * We don't manage the member attributes of a compounded attribute directly via the database because the
      * relationship is to complex to express. This field is filled in by the DAO layer upon request.
-     * 
+     *
      */
     @Transient
     public List<AttributeEntity> getMembers() {
@@ -286,7 +286,7 @@ public class AttributeEntity implements Serializable {
 
     /**
      * Generic data mapping can be done via {@link #getValue()} and {@link #setValue(Object)}.
-     * 
+     *
      */
     @Transient
     public Object getValue() {
@@ -343,9 +343,8 @@ public class AttributeEntity implements Serializable {
             case STRING:
             case LOGIN:
                 String value = this.getStringValue();
-                if (null == value) {
+                if (null == value)
                     return true;
-                }
                 return value.length() == 0;
             case BOOLEAN:
                 return null == this.getBooleanValue();
@@ -373,15 +372,12 @@ public class AttributeEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (null == obj) {
+        if (null == obj)
             return false;
-        }
-        if (false == (obj instanceof AttributeEntity)) {
+        if (false == obj instanceof AttributeEntity)
             return false;
-        }
         AttributeEntity rhs = (AttributeEntity) obj;
         return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
     }

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -46,9 +46,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Implementation of usage agreement service interface.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -78,35 +78,31 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
 
     private void checkReadPermission(ApplicationEntity application) throws PermissionDeniedException {
 
-        if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)) {
+        if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE))
             return;
-        }
         ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
         SubjectEntity expectedSubject = applicationOwner.getAdmin();
         SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-        if (false == expectedSubject.equals(actualSubject)) {
+        if (false == expectedSubject.equals(actualSubject))
             throw new PermissionDeniedException("application owner admin mismatch");
-        }
     }
 
     /**
      * Check write permission on the given application. Only the subject corresponding with the application owner of the
      * application is allowed to write to the application entity.
-     * 
+     *
      * @param application
      * @throws PermissionDeniedException
      */
     private void checkWritePermission(ApplicationEntity application) throws PermissionDeniedException {
 
-        if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)) {
+        if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE))
             return;
-        }
         ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
         SubjectEntity requiredSubject = applicationOwner.getAdmin();
         SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-        if (false == requiredSubject.equals(actualSubject)) {
+        if (false == requiredSubject.equals(actualSubject))
             throw new PermissionDeniedException("application owner admin mismatch");
-        }
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
@@ -142,8 +138,9 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
 
         UsageAgreementEntity usageAgreement = getDraftUsageAgreement(applicationName);
         UsageAgreementTextEntity usageAgreementText = usageAgreement.getUsageAgreementText(language);
-        if (null == usageAgreementText)
+        if (null == usageAgreementText) {
             usageAgreementText = this.usageAgreementDAO.addUsageAgreementText(usageAgreement, text, language);
+        }
         return usageAgreementText;
     }
 
@@ -250,9 +247,8 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
 
         long confirmedUsageAgreementVersion = subscription.getConfirmedUsageAgreementVersion();
         if (confirmedUsageAgreementVersion != currentUsageAgreementVersion
-                && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION) {
+                && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION)
             return true;
-        }
         return false;
     }
 
@@ -324,8 +320,9 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
         LOG.debug("create draft usage agreement text: language=" + language);
         GlobalUsageAgreementEntity usageAgreement = getDraftGlobalUsageAgreement();
         UsageAgreementTextEntity usageAgreementText = usageAgreement.getUsageAgreementText(language);
-        if (null == usageAgreementText)
+        if (null == usageAgreementText) {
             usageAgreementText = this.usageAgreementDAO.addGlobalUsageAgreementText(usageAgreement, text, language);
+        }
         return usageAgreementText;
     }
 
@@ -407,9 +404,8 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
         long confirmedUsageAgreementVersion = subject.getConfirmedUsageAgreementVersion();
         if (confirmedUsageAgreementVersion != currentUsageAgreementVersion
                 && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
-                        .longValue()) {
+                        .longValue())
             return true;
-        }
         return false;
     }
 
@@ -420,10 +416,11 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
         LOG.debug("confirm global usage agreement for subject " + subject.getUserId());
 
         GlobalUsageAgreementEntity usageAgreement = this.usageAgreementDAO.getGlobalUsageAgreement();
-        if (null == usageAgreement)
+        if (null == usageAgreement) {
             subject.setConfirmedUsageAgreementVersion(GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION);
-        else
+        } else {
             subject.setConfirmedUsageAgreementVersion(usageAgreement.getUsageAgreementVersion());
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)

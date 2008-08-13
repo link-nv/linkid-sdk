@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -20,9 +20,9 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 /**
  * PKIX utility methods.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class PkiUtils {
 
@@ -33,15 +33,14 @@ public class PkiUtils {
 
     /**
      * Decodes a given DER encoded X509 certificate.
-     * 
+     *
      * @param encodedCertificate
      * @throws CertificateEncodingException
      */
     public static X509Certificate decodeCertificate(byte[] encodedCertificate) throws CertificateEncodingException {
 
-        if (null == encodedCertificate) {
+        if (null == encodedCertificate)
             return null;
-        }
         CertificateFactory certificateFactory;
         try {
             certificateFactory = CertificateFactory.getInstance("X.509");

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -40,9 +40,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 /**
  * Implementation of the name identifier mapping interface. This class is using JAX-WS, secured via WS-Security and
  * server-side SSL.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor implements NameIdentifierMappingClient {
 
@@ -55,7 +55,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
 
     /**
      * Main constructor.
-     * 
+     *
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -122,10 +122,12 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
                 String secondErrorCode = secondStatusCode.getValue();
                 SamlpSecondLevelErrorCode secondLevelErrorCode = SamlpSecondLevelErrorCode
                         .getSamlpTopLevelErrorCode(secondErrorCode);
-                if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode)
+                if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode) {
                     throw new SubjectNotFoundException();
-                if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode)
+                }
+                if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode) {
                     throw new RequestDeniedException();
+                }
                 throw new RuntimeException("error occurred on identifier mapping service: " + secondErrorCode);
             }
         }

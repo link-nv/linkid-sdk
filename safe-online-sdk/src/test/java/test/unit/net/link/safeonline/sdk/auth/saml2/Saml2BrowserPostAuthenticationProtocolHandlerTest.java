@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -309,8 +309,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         String resultString = inString;
         while (true) {
             start = resultString.indexOf(oldStr);
-            if (start == -1)
+            if (start == -1) {
                 break;
+            }
             StringBuffer sb = new StringBuffer();
             sb.append(resultString.substring(0, start));
             sb.append(newStr);

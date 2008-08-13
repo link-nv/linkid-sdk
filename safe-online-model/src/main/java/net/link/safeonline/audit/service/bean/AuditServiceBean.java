@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -67,13 +67,15 @@ public class AuditServiceBean implements AuditService {
         Set<String> users = new HashSet<String>();
         for (String userId : accessUsers) {
             String user = this.subjectService.getSubjectLogin(userId);
-            if (null != user)
+            if (null != user) {
                 users.add(user);
+            }
         }
         for (String userId : securityUsers) {
             String user = this.subjectService.getSubjectLogin(userId);
-            if (null != user)
+            if (null != user) {
                 users.add(user);
+            }
         }
         return users;
     }

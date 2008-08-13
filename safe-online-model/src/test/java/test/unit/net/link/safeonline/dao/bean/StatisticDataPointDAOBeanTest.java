@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -9,6 +9,7 @@ package test.unit.net.link.safeonline.dao.bean;
 
 import java.util.Random;
 
+import junit.framework.TestCase;
 import net.link.safeonline.dao.bean.StatisticDAOBean;
 import net.link.safeonline.dao.bean.StatisticDataPointDAOBean;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -18,7 +19,6 @@ import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import junit.framework.TestCase;
 
 
 public class StatisticDataPointDAOBeanTest extends TestCase {

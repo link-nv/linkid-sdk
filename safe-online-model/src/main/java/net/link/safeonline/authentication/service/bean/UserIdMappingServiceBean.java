@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -31,12 +31,12 @@ import org.apache.commons.logging.LogFactory;
 /**
  * This service serves as a mapping between the SafeOnline global user id and the required application's user id as
  * specified in the application's id scope.
- * 
+ *
  * This service does not live within a security domain as it is used by services in the application security domain as
  * well as in the user security domain.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 
 @Stateless
@@ -110,9 +110,8 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 
         LOG.debug("getUserIdFromSubscriptionScope: " + applicationUserId);
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(applicationUserId);
-        if (null == subscription) {
+        if (null == subscription)
             return null;
-        }
         return subscription.getSubject().getUserId();
     }
 
@@ -121,9 +120,8 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
         LOG.debug("getUserIdFromApplicationScope: " + applicationUserId);
         ApplicationScopeIdEntity applicationScopeId = this.applicationScopeIdDAO
                 .findApplicationScopeId(applicationUserId);
-        if (null == applicationScopeId) {
+        if (null == applicationScopeId)
             return null;
-        }
         return applicationScopeId.getSubject().getUserId();
     }
 }

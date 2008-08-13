@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -32,12 +32,12 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Device registration landing page.
- * 
+ *
  * This landing page handles the SAML response returned by the remote device issuer to notify the success of the
  * registration.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 

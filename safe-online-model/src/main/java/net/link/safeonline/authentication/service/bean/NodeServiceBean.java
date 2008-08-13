@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -40,9 +40,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Implementation of node service interface.
- * 
+ *
  * @author wvdhaute
- * 
+ *
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -82,8 +82,9 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
     private void checkExistingNode(String name) throws ExistingNodeException {
 
         OlasEntity existingNode = this.olasDAO.findNode(name);
-        if (null != existingNode)
+        if (null != existingNode) {
             throw new ExistingNodeException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -95,9 +96,10 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 
         // check if present in an attribute type
         List<AttributeTypeEntity> nodeAttributeTypes = this.attributeTypeDAO.listAttributeTypes(node);
-        if (nodeAttributeTypes.size() > 0)
+        if (nodeAttributeTypes.size() > 0) {
             throw new PermissionDeniedException("Still attribute types attached to this node",
                     "errorPermissionNodeHasAttributes");
+        }
 
         this.olasDAO.removeNode(node);
     }

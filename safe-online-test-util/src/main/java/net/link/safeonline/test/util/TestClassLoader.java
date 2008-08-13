@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -38,9 +38,8 @@ public class TestClassLoader extends ClassLoader {
 
         LOG.debug("get resources for resource name: " + name);
         List<URL> resourceList = this.resources.get(name);
-        if (null == resourceList) {
+        if (null == resourceList)
             return super.getResources(name);
-        }
         LOG.debug("found test resources");
         Enumeration<URL> enumeration = Collections.enumeration(resourceList);
         return enumeration;
@@ -51,9 +50,8 @@ public class TestClassLoader extends ClassLoader {
 
         LOG.debug("getResourceAsStream: " + name);
         List<URL> resourceList = this.resources.get(name);
-        if (null == resourceList) {
+        if (null == resourceList)
             return super.getResourceAsStream(name);
-        }
         for (URL resource : resourceList) {
             LOG.debug("found resource: " + resource);
             try {
@@ -68,9 +66,8 @@ public class TestClassLoader extends ClassLoader {
 
     public void addResource(String name, URL resource) {
 
-        if (null == resource) {
+        if (null == resource)
             throw new IllegalArgumentException("resource is null");
-        }
         List<URL> resourceList = this.resources.get(name);
         if (null == resourceList) {
             resourceList = new LinkedList<URL>();

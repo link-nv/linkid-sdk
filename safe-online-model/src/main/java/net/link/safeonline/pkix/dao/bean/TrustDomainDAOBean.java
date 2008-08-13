@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -82,9 +82,8 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
 
         LOG.debug("get trust domain: " + name);
         TrustDomainEntity trustDomain = findTrustDomain(name);
-        if (null == trustDomain) {
+        if (null == trustDomain)
             throw new TrustDomainNotFoundException();
-        }
         return trustDomain;
     }
 }

@@ -22,11 +22,11 @@ import javax.persistence.OneToMany;
 /**
  * <h2>{@link ProfileDataEntity}<br>
  * <sub>Holds data gathered by OLAS during a single request.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 10, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Entity

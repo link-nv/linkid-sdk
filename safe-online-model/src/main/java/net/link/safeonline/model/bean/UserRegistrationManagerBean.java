@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -57,18 +57,16 @@ public class UserRegistrationManagerBean implements UserRegistrationManager {
     private void checkExistingUser(String login) throws ExistingUserException {
 
         SubjectEntity existingSubject = this.subjectService.findSubjectFromUserName(login);
-        if (null != existingSubject) {
+        if (null != existingSubject)
             throw new ExistingUserException();
-        }
     }
 
     private ApplicationEntity getSafeOnlineUserApplication() {
 
         ApplicationEntity safeOnlineUserApplication = this.applicationDAO
                 .findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
-        if (null == safeOnlineUserApplication) {
+        if (null == safeOnlineUserApplication)
             throw new EJBException("SafeOnline user application not found");
-        }
         return safeOnlineUserApplication;
     }
 }

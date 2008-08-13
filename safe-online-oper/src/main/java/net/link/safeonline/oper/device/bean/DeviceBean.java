@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -258,10 +258,12 @@ public class DeviceBean implements Device {
         this.authenticationPath = this.selectedDevice.getAuthenticationPath();
         this.registrationPath = this.selectedDevice.getRegistrationPath();
         this.removalPath = this.selectedDevice.getRemovalPath();
-        if (null != this.selectedDevice.getAttributeType())
+        if (null != this.selectedDevice.getAttributeType()) {
             this.attributeType = this.selectedDevice.getAttributeType().getName();
-        if (null != this.selectedDevice.getUserAttributeType())
+        }
+        if (null != this.selectedDevice.getUserAttributeType()) {
             this.userAttributeType = this.selectedDevice.getUserAttributeType().getName();
+        }
 
         return "edit";
     }
@@ -274,12 +276,15 @@ public class DeviceBean implements Device {
         String deviceName = this.selectedDevice.getName();
 
         this.deviceService.updateAuthenticationPath(deviceName, this.authenticationPath);
-        if (null != this.registrationPath)
+        if (null != this.registrationPath) {
             this.deviceService.updateRegistrationPath(deviceName, this.registrationPath);
-        if (null != this.removalPath)
+        }
+        if (null != this.removalPath) {
             this.deviceService.updateRemovalPath(deviceName, this.removalPath);
-        if (null != this.updatePath)
+        }
+        if (null != this.updatePath) {
             this.deviceService.updateUpdatePath(deviceName, this.updatePath);
+        }
 
         if (null != this.certificate) {
             LOG.debug("updating device certificate");

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -22,22 +22,22 @@ import net.link.safeonline.entity.SubscriptionEntity;
 
 /**
  * Interface to service components that manages the application subscriptions of the caller principal.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Local
 public interface SubscriptionService {
 
     /**
      * Gives back a list of all application subscriptions of the caller user.
-     * 
+     *
      */
     List<SubscriptionEntity> listSubscriptions();
 
     /**
      * Gives back a list of all application subscriptions for the specified user.
-     * 
+     *
      * @param subject
      * @return list of application subscriptions.
      * @throws SubjectNotFoundException
@@ -46,7 +46,7 @@ public interface SubscriptionService {
 
     /**
      * Subscribe the caller user to the given application.
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws AlreadySubscribedException
@@ -57,7 +57,7 @@ public interface SubscriptionService {
 
     /**
      * Unsubscribe the caller user from the given application.
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
@@ -69,7 +69,7 @@ public interface SubscriptionService {
 
     /**
      * Gives back the number of subscriptions for a given application.
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
@@ -79,7 +79,7 @@ public interface SubscriptionService {
 
     /**
      * Returns <code>true</code> if the caller user has a subscription for the given application.
-     * 
+     *
      * @param applicationName
      * @throws ApplicationNotFoundException
      */

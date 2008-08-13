@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -9,10 +9,10 @@ package test.unit.net.link.safeonline.shared.asn1;
 
 import java.util.Arrays;
 
-import org.bouncycastle.asn1.ASN1Object;
-
-import net.link.safeonline.shared.asn1.DERBitString;
 import junit.framework.TestCase;
+import net.link.safeonline.shared.asn1.DERBitString;
+
+import org.bouncycastle.asn1.ASN1Object;
 
 
 public class DERBitStringTest extends TestCase {

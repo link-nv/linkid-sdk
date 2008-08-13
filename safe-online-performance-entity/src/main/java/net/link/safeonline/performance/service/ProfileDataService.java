@@ -20,15 +20,15 @@ import net.link.safeonline.util.performance.ProfileData;
 /**
  * <h2>{@link ProfileDataServiceBean}<br>
  * <sub>Service bean for {@link ProfileDataEntity}.</sub></h2>
- * 
+ *
  * <p>
  * Create {@link ProfileDataEntity}s from {@link ProfileData}.
  * </p>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Local

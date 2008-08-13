@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -76,12 +76,10 @@ public class ApplicationIdentityAttributePK implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (false == obj instanceof ApplicationIdentityAttributePK) {
+        if (false == obj instanceof ApplicationIdentityAttributePK)
             return false;
-        }
         ApplicationIdentityAttributePK rhs = (ApplicationIdentityAttributePK) obj;
         return new EqualsBuilder().append(this.application, rhs.application).append(this.identityVersion,
                 rhs.identityVersion).append(this.attributeTypeName, rhs.attributeTypeName).isEquals();
