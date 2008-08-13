@@ -12,6 +12,9 @@ import javax.ejb.ApplicationException;
 import net.link.safeonline.authentication.exception.ExistingException;
 
 
+/**
+ * An audit context already exists on the current thread.
+ */
 @ApplicationException(rollback = true)
 public class ExistingAuditContextException extends ExistingException {
 

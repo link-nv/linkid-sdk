@@ -65,18 +65,21 @@ public class AuditServiceBean implements AuditService {
         List<String> accessUsers = this.accessAuditDAO.listUsers();
         List<String> securityUsers = this.securityAuditDAO.listUsers();
         Set<String> users = new HashSet<String>();
+        
         for (String userId : accessUsers) {
             String user = this.subjectService.getSubjectLogin(userId);
             if (null != user) {
                 users.add(user);
             }
         }
+        
         for (String userId : securityUsers) {
             String user = this.subjectService.getSubjectLogin(userId);
             if (null != user) {
                 users.add(user);
             }
         }
+        
         return users;
     }
 
@@ -86,6 +89,7 @@ public class AuditServiceBean implements AuditService {
         SubjectEntity subject = this.subjectService.findSubjectFromUserName(principal);
         if (null == subject)
             return null;
+        
         return this.accessAuditDAO.listRecords(subject.getUserId());
     }
 
@@ -95,6 +99,7 @@ public class AuditServiceBean implements AuditService {
         SubjectEntity subject = this.subjectService.findSubjectFromUserName(principal);
         if (null == subject)
             return null;
+        
         return this.securityAuditDAO.listRecords(subject.getUserId());
     }
 

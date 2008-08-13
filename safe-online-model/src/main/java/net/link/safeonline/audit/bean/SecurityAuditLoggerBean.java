@@ -41,11 +41,11 @@ public class SecurityAuditLoggerBean implements SecurityAuditLogger {
     @AroundInvoke
     public Object interceptor(InvocationContext context) throws Exception {
 
-        Object result;
         try {
-            result = context.proceed();
-            return result;
-        } catch (SafeOnlineSecurityException e) {
+            return context.proceed();
+        }
+
+        catch (SafeOnlineSecurityException e) {
             addSecurityAudit(e.getSecurityThreat(), e.getTargetPrincipal(), e.getMessage());
             throw e;
         }
@@ -53,27 +53,27 @@ public class SecurityAuditLoggerBean implements SecurityAuditLogger {
 
     public void addSecurityAudit(SecurityThreatType securityThreat, String targetPrincipal, String message) {
 
-        Long auditContextId;
         try {
-            auditContextId = (Long) PolicyContext.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
-        } catch (PolicyContextException e) {
+            Long auditContextId = (Long) PolicyContext.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
+            if (null == auditContextId) {
+                this.auditAuditDAO.addAuditAudit("no audit context available");
+                return;
+            }
+
+            try {
+                AuditContextEntity auditContext = this.auditContextDAO.getAuditContext(auditContextId);
+
+                this.securityAuditDAO.addSecurityAudit(auditContext, securityThreat, targetPrincipal, message);
+            }
+
+            catch (AuditContextNotFoundException e) {
+                this.auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
+            }
+        }
+
+        catch (PolicyContextException e) {
             this.auditAuditDAO.addAuditAudit("audit context policy context error: " + e.getMessage());
-            return;
         }
-        if (null == auditContextId) {
-            this.auditAuditDAO.addAuditAudit("no audit context available");
-            return;
-        }
-
-        AuditContextEntity auditContext;
-        try {
-            auditContext = this.auditContextDAO.getAuditContext(auditContextId);
-        } catch (AuditContextNotFoundException e) {
-            this.auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
-            return;
-        }
-
-        this.securityAuditDAO.addSecurityAudit(auditContext, securityThreat, targetPrincipal, message);
     }
 
     public void addSecurityAudit(SecurityThreatType securityThreat, String message) {

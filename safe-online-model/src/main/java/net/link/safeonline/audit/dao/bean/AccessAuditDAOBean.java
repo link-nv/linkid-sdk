@@ -83,6 +83,7 @@ public class AccessAuditDAOBean implements AccessAuditDAO {
 
         long count = this.queryObject.countErrorRecords(id);
         LOG.debug("# error records: " + count);
+        
         return 0 != count;
     }
 }
