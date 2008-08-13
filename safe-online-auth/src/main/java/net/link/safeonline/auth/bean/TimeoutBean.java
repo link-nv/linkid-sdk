@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.Timeout;
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.service.PublicApplicationService;
@@ -57,7 +58,7 @@ public class TimeoutBean implements Timeout {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             Cookie applicationCookie = (Cookie) facesContext.getExternalContext().getRequestCookieMap().get(
-                    APPLICATION_COOKIE);
+                    SafeOnlineCookies.APPLICATION_COOKIE);
             PublicApplication application = this.publicApplicationService.findPublicApplication(applicationCookie
                     .getValue());
             if (null != application) {
@@ -70,9 +71,9 @@ public class TimeoutBean implements Timeout {
         } finally {
             this.log.debug("removing entry and timeout cookie");
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            removeCookie(TIMEOUT_COOKIE, response);
-            removeCookie(ENTRY_COOKIE, response);
-            removeCookie(APPLICATION_COOKIE, response);
+            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, response);
+            removeCookie(SafeOnlineCookies.ENTRY_COOKIE, response);
+            removeCookie(SafeOnlineCookies.APPLICATION_COOKIE, response);
         }
     }
 

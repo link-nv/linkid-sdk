@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
-import net.link.safeonline.auth.Timeout;
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
 import net.link.safeonline.util.servlet.annotation.Init;
@@ -89,18 +89,21 @@ public class TimeoutFilter extends AbstractInjectionFilter {
             HttpSession session = httpRequest.getSession();
             String applicationId = LoginManager.findApplication(session);
             if (null != applicationId) {
-                setCookie(Timeout.APPLICATION_COOKIE, applicationId, COOKIE_PATH, httpResponse);
+                setCookie(SafeOnlineCookies.APPLICATION_COOKIE, applicationId,
+                        COOKIE_PATH, httpResponse);
             }
             /*
              * Remove the possible timeout cookie, add entry cookie to prevent timing out again on first entry after a
              * previous timeout.
              */
-            removeCookie(Timeout.TIMEOUT_COOKIE, COOKIE_PATH, httpRequest, httpResponse);
-            addCookie(Timeout.ENTRY_COOKIE, "", COOKIE_PATH, httpRequest, httpResponse);
+            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, COOKIE_PATH,
+                    httpRequest, httpResponse);
+            addCookie(SafeOnlineCookies.ENTRY_COOKIE, "", COOKIE_PATH,
+                    httpRequest, httpResponse);
             timeoutResponseWrapper.commit();
             return;
         }
-        if (hasCookie(Timeout.TIMEOUT_COOKIE, httpRequest)) {
+        if (hasCookie(SafeOnlineCookies.TIMEOUT_COOKIE, httpRequest)) {
             /*
              * In this case we already redirected to the timeout page.
              */
@@ -114,10 +117,12 @@ public class TimeoutFilter extends AbstractInjectionFilter {
          * indication that the browser caused a timeout on the web application. We should redirect to the timeout path,
          * add the timeout cookie to not get in an infinite timeout redirect loop, and remove the entry cookie.
          */
-        if (hasCookie(Timeout.ENTRY_COOKIE, httpRequest)) {
+        if (hasCookie(SafeOnlineCookies.ENTRY_COOKIE, httpRequest)) {
             LOG.debug("forwarding to timeout path: " + this.timeoutPath);
-            addCookie(Timeout.TIMEOUT_COOKIE, "", COOKIE_PATH, httpRequest, httpResponse);
-            removeCookie(Timeout.ENTRY_COOKIE, COOKIE_PATH, httpRequest, httpResponse);
+            addCookie(SafeOnlineCookies.TIMEOUT_COOKIE, "", COOKIE_PATH,
+                    httpRequest, httpResponse);
+            removeCookie(SafeOnlineCookies.ENTRY_COOKIE, COOKIE_PATH,
+                    httpRequest, httpResponse);
             httpResponse.sendRedirect(this.timeoutPath);
             return;
         }

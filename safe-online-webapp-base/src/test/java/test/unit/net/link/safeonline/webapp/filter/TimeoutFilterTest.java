@@ -104,16 +104,6 @@ public class TimeoutFilterTest {
         assertTrue(body.startsWith("hello world: alice"));
         // session cookie
         assertNotNull(getMethod.getResponseHeader("Set-Cookie"));
-
-        // operate
-        LOG.debug("operate: continue on existing session");
-        statusCode = httpClient.executeMethod(getMethod);
-        logHeaders(getMethod);
-        // login cookie
-        body = getMethod.getResponseBodyAsString();
-        LOG.debug("body: " + body);
-        assertTrue(body.startsWith("hello world: alice"));
-        assertNotNull(getMethod.getResponseHeader("Set-Cookie"));
     }
 
     private void logHeaders(GetMethod getMethod) {

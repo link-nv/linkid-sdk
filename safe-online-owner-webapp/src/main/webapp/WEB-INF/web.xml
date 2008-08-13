@@ -97,10 +97,6 @@
 			<param-name>TimeoutPath</param-name>
 			<param-value>${safe-online.host.basename}/${safe-online.owner.webapp.name}/timeout.seam</param-value>
 		</init-param>
-		<init-param>
-			<param-name>LoginSessionAttribute</param-name>
-			<param-value>username</param-value>
-		</init-param>
 	</filter>
 	<filter>
 		<filter-name>AuthnResponseFilter</filter-name>
