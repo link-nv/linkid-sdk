@@ -119,9 +119,9 @@ import org.opensaml.xml.validation.ValidationException;
 /**
  * Implementation of authentication service interface. This component does not live within the SafeOnline core security
  * domain (chicken-egg problem).
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Stateful
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
@@ -208,7 +208,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     @EJB
     private UserIdMappingService             userIdMappingService;
-
 
     public void initialize(@NotNull AuthnRequest samlAuthnRequest) throws AuthenticationInitializationException,
             ApplicationNotFoundException, TrustDomainNotFoundException {
@@ -352,7 +351,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(username, device);
 
         String samlRequestToken = AuthnRequestFactory.createDeviceOperationAuthnRequest(node.getName(), deviceMapping
-                .getId(), keyPair, registrationServiceUrl, targetUrl, DeviceOperationType.REGISTER, challenge, device);
+                .getId(), keyPair, registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER,
+                challenge, device);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -467,13 +467,12 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         OlasEntity node = this.nodeAuthenticationService.getLocalNode();
 
         Response samlResponse = AuthnResponseUtil.validateResponse(now, request, this.expectedDeviceChallengeId,
-                DeviceOperationType.REGISTER.name(), node.getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
+                DeviceOperationType.NEW_ACCOUNT_REGISTER.name(), node.getLocation(), authIdentityServiceClient
+                        .getCertificate(), authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
         if (null == samlResponse)
             return null;
 
         if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)) {
-
             /*
              * Registration failed, reset the state
              */
@@ -481,7 +480,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             this.expectedDeviceChallengeId = null;
             return null;
         } else if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
-            // TODO: add security audit
             /*
              * Registration not supported by this device, reset the state
              */
@@ -682,7 +680,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 this.authenticationDevice.getName());
 
         this.subscriptionDAO.loggedIn(subscription);
-        this.addLoginTick(application);
+        addLoginTick(application);
 
         /*
          * Safe the state in this stateful session bean.

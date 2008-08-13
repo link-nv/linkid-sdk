@@ -10,9 +10,12 @@
 	<ui:define name="top_content">
 	</ui:define>
 	<ui:define name="content">
-		<ui:include src="/WEB-INF/incl/progress-registration.xhtml">
-			<ui:param name="stage" value="register" />
-		</ui:include>
+
+		<f:subview rendered="#{operation eq 'NEW_ACCOUNT_REGISTER'}">
+			<ui:include src="/WEB-INF/incl/progress-registration.xhtml">
+				<ui:param name="stage" value="register" />
+			</ui:include>
+		</f:subview>
 
 		<h2>#{msgs.registerANewDevice}</h2>
 
@@ -66,7 +69,6 @@
 				<h:messages globalOnly="true" styleClass="error" />
 			</f:subview>
 		</a4j:form>
-
 	</ui:define>
 	<ui:define name="sidebar">
 		<p>#{msgs.helpRegisterMobile}</p>

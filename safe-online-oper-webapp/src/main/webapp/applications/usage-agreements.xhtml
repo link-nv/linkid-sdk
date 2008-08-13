@@ -113,8 +113,9 @@
 									<rich:suggestionbox for="language"
 										suggestionAction="#{operUsageAgreement.autocompleteLanguage}"
 										var="languageInput" selfRendered="true">
-
-										<h:outputText value="#{languageInput}" />
+										<h:column>
+											<h:outputText value="#{languageInput}" />
+										</h:column>
 									</rich:suggestionbox>
 								</s:decorate> <h:message for="language" styleClass="error" /></td>
 								<td><h:commandLink id="add" value="#{msgs.addaction}"
