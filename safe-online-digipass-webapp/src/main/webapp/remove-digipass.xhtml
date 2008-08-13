@@ -28,7 +28,7 @@
 				id="getRegistrations" value="#{msgs.viewaction}" styleClass="submit" />
 			<h:commandButton action="cancel" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
-			<rich:messages styleClass="error" />
+			<rich:messages id="error" warnClass="error" errorClass="error" fatalClass="error" />
 		</a4j:form>
 
 		<h:form id="digipassListForm">
