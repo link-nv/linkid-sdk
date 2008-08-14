@@ -85,7 +85,7 @@ public class TimeoutFilter extends AbstractInjectionFilter {
          * indication that the browser caused a timeout on the web application. We detect this via the login cookie.
          */
         if (true == hasCookie(SafeOnlineCookies.LOGIN_COOKIE, httpRequest)) {
-            LOG.debug("forwaring to timeout path: " + this.timeoutPath);
+            LOG.debug("forwarding to timeout path: " + this.timeoutPath);
             removeCookie(SafeOnlineCookies.LOGIN_COOKIE, httpRequest.getContextPath(), httpRequest, httpResponse);
             httpResponse.sendRedirect(this.timeoutPath);
             return;
