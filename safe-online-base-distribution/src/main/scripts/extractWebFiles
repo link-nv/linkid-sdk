@@ -53,21 +53,23 @@ pwd=$PWD
     || webapps=( "$work/"* )
 webapps=( "${webapps[@]%.ear}" )
 webapps=( "${webapps[@]##*/}" )
-repos=()
-for webapp in "${webapps[@]}"; do
-    source=( "$base"/../*/*/target/"$webapp.ear" )
-    if (( ${#source[@]} )); then
-        source=( "${source[@]%/*/target/*}" )
-    else
-        source=$(ask "Source repository to apply $webapp onto:")
-    fi
+if (( apply )); then
+    repos=()
+    for webapp in "${webapps[@]}"; do
+        source=( "$base"/../*/*/target/"$webapp.ear" )
+        if (( ${#source[@]} )); then
+            source=( "${source[@]%/*/target/*}" )
+        else
+            source=$(ask "Source repository to apply $webapp onto:")
+        fi
 
-    [[ -d $source ]] && repos+=("$source")
-done
-(( ${#repos[@]} != ${#webapps[@]} )) && {
-    emit -R "Not an equal amount of repositories (${#repos[@]}) and web applications (${#webapps[@]})."
-    exit 1
-}
+        [[ -d $source ]] && repos+=("$source")
+    done
+    (( ${#repos[@]} != ${#webapps[@]} )) && {
+        emit -R "Not an equal amount of repositories (${#repos[@]}) and web applications (${#webapps[@]})."
+        exit 1
+    }
+fi
 
 
 # Make sure distribution is deployed and files are available for extraction.
@@ -172,7 +174,7 @@ if (( apply )); then
             if (( force )) || [[ $fileHash != $backHash ]]; then
                 ddest="${repos[w]}/${file/-1.0-SNAPSHOT-exp.war//src/main/webapp}"
 
-                if ! [[ -e $ddest ]]; then
+                if ! [[ -e $ddest ]] || [[ $(openssl md4 < "$ddest") != $backHash ]]; then
                     adest=( "${repos[w]}/"*"/src/main/webapp/${file/*-1.0-SNAPSHOT-exp.war/}" )
                     for ad in ${!adest[@]}; do
                         for exclude in $excludes; do
@@ -180,19 +182,30 @@ if (( apply )); then
                         done
                     done
                     adest=("${adest[@]}")
+                    uptodate=
+                    mdest=()
+                    for dest in "${adest[@]}"; do
+                        destHash=$(openssl md4 < "$dest")
+                        [[ $destHash = $backHash ]] \
+                            && mdest+=( "$dest" )
+                        [[ $destHash = $fileHash ]] \
+                            && { uptodate=1; mdest=$dest; break; }
+                    done
 
-                    if (( ! ${#adest[@]} || ${#adest[@]} > 1 )) || [[ ! -e $adest ]]; then
+                    if [[ ! $uptodate && ( ! ${#mdest[@]} || ${#mdest[@]} > 1 || ! -e $mdest ) ]]; then
                         emit -y "Source of $(shorten -p "$pwd" "$file") could not be determined.  Possibilities:"
                         for dest in "$ddest" "${adest[@]}"; do
+                            hash=$([[ -e $dest ]] && openssl md4 < "$dest")
                             emit -y "   - $(shorten -p "$pwd" "$dest"):"\
-                                    "$([[ -e $dest ]] && echo "${green}exists${reset}." || echo "${red}doesn't exist${reset}.")"\
-                                    "$([[ -r $dest && $fileHash = $(openssl md4 < "$dest") ]] && echo "(${bold}${green}already up to date${reset})")"
+                                    "$([[ -e $dest ]] && echo "${green}exists${reset}" || echo "${red}doesn't exist${reset}"),"\
+                                    "$([[ $hash = $backHash ]] && echo "${green}match${reset}" || echo "${red}no match${reset}")"\
+                                    "$([[ -r $dest && $fileHash = $hash ]] && echo "(${bold}${green}up to date${reset})")"
                         done
 
                         continue
                     fi
 
-                    dest=$adest
+                    dest=$mdest
                 else
                     dest=$ddest
                 fi
@@ -204,7 +217,7 @@ if (( apply )); then
                         mv "$dest"{,~} && cp "$file" "$dest"
                     emit -$?
                 else
-                    emit "   - $(shorten -p "$pwd" "$dest") is already up to date."
+                    emit "   - $(shorten -p "$pwd" "$dest"): ${bold}${green}up to date${reset}."
                 fi
             fi
         done

@@ -76,9 +76,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Implementation of identity service.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -149,7 +149,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     /**
      * Gives back the attribute type for the given attribute name, but only if the user is allowed to edit attributes of
      * the attribute type.
-     *
+     * 
      * @param attributeName
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
@@ -168,7 +168,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     /**
      * Gives back the attribute type for the given attribute name, but only if the user is allowed to remove attributes
      * of the attribute type.
-     *
+     * 
      * @param attributeName
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
@@ -337,7 +337,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             // No value found so this must be an optional attribute, add a
             // template attribute view.
             if (null == value && addTemplate) {
-                addTemplateToView(attributeType, attributesView, locale);
+                addTemplateToView(attributeType, attributesView, locale, false);
                 continue;
             } else if (null == value) {
                 continue;
@@ -347,18 +347,20 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         return attributesView;
     }
 
-    private void addTemplateToView(AttributeTypeEntity attributeType, List<AttributeDO> attributesView, Locale locale) {
+    private void addTemplateToView(AttributeTypeEntity attributeType, List<AttributeDO> attributesView, Locale locale,
+            boolean missingAttribute) {
 
         LOG.debug("add template attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued() && !attributeType.isCompounded()) {
             // single or multi-valued but NOT compounded
-            attributesView.add(getAttributeView(attributeType, null, 0, locale));
+            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute));
         } else {
             // compounded
-            attributesView.add(getAttributeView(attributeType, null, 0, locale)); // parent
+            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute)); // parent
             for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
                 LOG.debug("add compounded member attribute template: " + memberAttributeType.getMember().getName());
-                attributesView.add(getAttributeView(memberAttributeType.getMember(), null, 0, locale));
+                attributesView
+                        .add(getAttributeView(memberAttributeType.getMember(), null, 0, locale, missingAttribute));
             }
         }
     }
@@ -370,12 +372,12 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         LOG.debug("add attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued()) {
             // single-valued
-            attributesView.add(getAttributeView(attributeType, value, 0, locale));
+            attributesView.add(getAttributeView(attributeType, value, 0, locale, false));
         } else if (!attributeType.isCompounded()) {
             // multi-valued but NOT compounded
             int idx = 0;
             for (Object attributeValue : (Object[]) value) {
-                attributesView.add(getAttributeView(attributeType, attributeValue, idx, locale));
+                attributesView.add(getAttributeView(attributeType, attributeValue, idx, locale, false));
                 idx++;
             }
         } else {
@@ -386,11 +388,11 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 // first add an attribute view for the parent attribute
                 // type
                 LOG.debug("add compounded attribute: " + attributeType.getName());
-                attributesView.add(getAttributeView(attributeType, null, idx, locale));
+                attributesView.add(getAttributeView(attributeType, null, idx, locale, false));
                 for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
                     LOG.debug("add compounded member attribute: " + memberAttributeType.getMember().getName());
                     attributesView.add(getAttributeView(memberAttributeType.getMember(), memberMap
-                            .get(memberAttributeType.getMember().getName()), idx, locale));
+                            .get(memberAttributeType.getMember().getName()), idx, locale, false));
                 }
                 idx++;
             }
@@ -400,9 +402,11 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     /**
      * Returns an attribute view for the given attribute. If value is specified, it must be a single attribute at this
      * point, not a multi-valued or compounded attribute. The value can be null in case of a compounded parent
-     * attribute, or if a template view is wanted.
+     * attribute, or if a template view is wanted. missingAttribute is used to determine if compounded member attributes
+     * should be editable or not.
      */
-    private AttributeDO getAttributeView(AttributeTypeEntity attributeType, Object value, int idx, Locale locale) {
+    private AttributeDO getAttributeView(AttributeTypeEntity attributeType, Object value, int idx, Locale locale,
+            boolean missingAttribute) {
 
         LOG.debug("get attribute view for type: " + attributeType.getName() + " with value: " + value);
         String humanReadableName = null;
@@ -420,9 +424,10 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         attributeView.setMember(attributeType.isCompoundMember());
         /*
          * We mark compounded attribute members as non-editable when queries via the listAttributes method to ease
-         * visualization.
+         * visualization. This is not the case if we are making a view for the missing attributes page, then the user
+         * editable'ness should be as set in the attribute type.
          */
-        if (attributeType.isCompoundMember()) {
+        if (attributeType.isCompoundMember() && !missingAttribute) {
             attributeView.setEditable(false);
         }
 
@@ -556,7 +561,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     /**
      * Gives back all the data attribute types for the given application, required or optional as specified. This method
      * will also expand compounded attribute types.
-     *
+     * 
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws ApplicationIdentityNotFoundException
@@ -673,7 +678,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             LOG.debug("find attribute value for type: " + attributeType.getName());
             Object value = this.proxyAttributeService.findAttributeValue(subject.getUserId(), attributeType.getName());
             if (null == value) {
-                addTemplateToView(attributeType, attributesView, locale);
+                addTemplateToView(attributeType, attributesView, locale, true);
             }
         }
         return attributesView;
@@ -699,7 +704,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     /**
      * Convert a single valued / non-compounded attribute to an Attribute View
-     *
+     * 
      * @param value
      * @param index
      * @param attributeType
