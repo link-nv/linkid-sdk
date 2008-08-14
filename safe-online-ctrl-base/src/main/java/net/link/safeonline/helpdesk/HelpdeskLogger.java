@@ -34,10 +34,13 @@ public class HelpdeskLogger {
 
     private static final Log    LOG                    = LogFactory.getLog(HelpdeskLogger.class);
 
-    private static final int    HELPDESK_CONTEXT_LIMIT = 50;
-
     private static final String UNKNOWN_USER           = "unknown";
 
+
+    private HelpdeskLogger() {
+
+        // empty
+    }
 
     /*
      * Clear the volatile helpdesk context on the HttpSession
@@ -110,8 +113,12 @@ public class HelpdeskLogger {
 
     private static void add(HttpSession session, String message, String principal, LogLevelType logLevel) {
 
+        HelpdeskManager helpdeskManager = EjbUtils
+                .getEJB("SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
+        int helpdeskContextLimit = helpdeskManager.getHelpdeskContextLimit();
+
         List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
-        if (helpdeskContext.size() >= HELPDESK_CONTEXT_LIMIT) {
+        if (helpdeskContext.size() >= helpdeskContextLimit) {
             SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB("SafeOnline/SecurityAuditLoggerBean/local",
                     SecurityAuditLogger.class);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION, principal, message);
@@ -148,6 +155,11 @@ public class HelpdeskLogger {
             historyDAO.addHistoryEntry(subjectManager.getCallerSubject(), HistoryEventType.HELPDESK_ID, Collections
                     .singletonMap(SafeOnlineConstants.INFO_PROPERTY, id.toString()));
         }
+
+        /*
+         * Clear events on session that are now persisted.
+         */
+        clear(session);
         return id;
     }
 
