@@ -12,6 +12,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.common.Configurable;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
@@ -23,9 +24,13 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@Configurable
 public class HelpdeskManagerBean implements HelpdeskManager {
 
-    private final static Log   LOG = LogFactory.getLog(HelpdeskManagerBean.class);
+    private final static Log   LOG                   = LogFactory.getLog(HelpdeskManagerBean.class);
+
+    @Configurable(group = "Helpdesk", name = "Helpdesk event list size")
+    private int                helpdeskContextLimit = 50;
 
     @EJB
     private HelpdeskContextDAO helpdeskContextDAO;
@@ -46,6 +51,15 @@ public class HelpdeskManagerBean implements HelpdeskManager {
 
         this.helpdeskEventDAO.persist(helpdeskEventList);
         return context.getId();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getHelpdeskContextLimit() {
+
+        return this.helpdeskContextLimit;
     }
 
 }

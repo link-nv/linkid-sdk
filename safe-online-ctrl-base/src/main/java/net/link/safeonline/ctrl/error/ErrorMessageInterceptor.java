@@ -14,7 +14,6 @@ import java.security.cert.CertificateEncodingException;
 import javax.faces.application.FacesMessage;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
-import javax.management.AttributeNotFoundException;
 import javax.management.relation.RoleNotFoundException;
 
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
@@ -22,6 +21,7 @@ import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -58,15 +58,15 @@ import org.jboss.seam.faces.FacesMessages;
 /**
  * Seam Error Message interceptor. This interceptor will catch exceptions and try to construct a proper error message
  * from them.
- *
+ * 
  * The interceptor can be used on method or class level. It also has a default set of Exception-Error message pairs. It
  * will first look at a possible annotation on the method, then the class and if still not found use this default set.
- *
+ * 
  * @ErrorHandling(
  * @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorUserMayNotUnsubscribeFrom") })
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class ErrorMessageInterceptor {
 
