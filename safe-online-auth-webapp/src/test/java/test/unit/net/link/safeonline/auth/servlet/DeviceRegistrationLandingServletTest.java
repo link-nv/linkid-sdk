@@ -29,6 +29,7 @@ import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
@@ -73,6 +74,8 @@ public class DeviceRegistrationLandingServletTest {
 
     private SubjectService        mockSubjectService;
 
+    private HelpdeskManager       mockHelpdeskManager;
+
     private Object[]              mockObjects;
 
 
@@ -84,7 +87,9 @@ public class DeviceRegistrationLandingServletTest {
 
         this.mockAuthenticationService = createMock(AuthenticationService.class);
         this.mockSubjectService = createMock(SubjectService.class);
+        this.mockHelpdeskManager = createMock(HelpdeskManager.class);
         this.jndiTestUtils.bindComponent("SafeOnline/SubjectServiceBean/local", this.mockSubjectService);
+        this.jndiTestUtils.bindComponent("SafeOnline/HelpdeskManagerBean/local", this.mockHelpdeskManager);
 
         this.servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
@@ -103,7 +108,10 @@ public class DeviceRegistrationLandingServletTest {
         this.location = this.servletTestManager.getServletLocation();
         this.httpClient = new HttpClient();
 
-        this.mockObjects = new Object[] { this.mockAuthenticationService, this.mockSubjectService };
+        this.mockObjects = new Object[] { this.mockAuthenticationService, this.mockSubjectService,
+                this.mockHelpdeskManager };
+
+        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(50);
     }
 
     @After
