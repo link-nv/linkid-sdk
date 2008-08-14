@@ -390,6 +390,9 @@ hr.float_fix {
     margin-left:        20px;                       /* auto margin doesn't center in IE. */
     margin-right:       20px;
 }
+table .text.block {
+    margin:             auto;
+}
 .center {
     float:              none;
 
@@ -429,6 +432,10 @@ hr.float_fix {
 }
 
 /********************************************* SAFE ONLINE TAGLIB **/
+.so-input {
+    display:            block;
+    height:             1.3em;
+}
 .so-input-text {
 }
 .so-output {
@@ -436,7 +443,7 @@ hr.float_fix {
 .so-nameoutput {
 }
 .so-nameoutput-compounded {
-    /*font-weight:        bold;                     /* Easily confused with header cells */
+    font-weight:        bold;
 }
 .so-nameoutput-member {
     margin-left:        15px;
@@ -480,6 +487,13 @@ input, select, textarea {
     padding:            0;
 
     font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
+}
+input[disabled], select[disabled], textarea[disabled] {
+    border-color:       #BBB !important;
+    border-bottom-style:solid !important;
+}
+input[disabled]:hover, select[disabled]:hover, textarea[disabled]:hover {
+    border-color:       #FBB !important;
 }
 .af_inputFile, .label, .so-output, .tinylabel {
     display:            block;
