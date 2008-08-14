@@ -78,7 +78,7 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.jboss</groupId>
-									<artifactId>jboss-messaging</artifactId>
+									<artifactId>jboss-messaging-dist</artifactId>
 									<type>zip</type>
 								</artifactItem>
 								<artifactItem>
@@ -110,7 +110,7 @@
 							<outputDirectory> ${project.build.directory}/dependency 
 							</outputDirectory>
 							<excludeArtifactIds>
-								jboss-as,jboss-messaging,jboss-messaging-sar,jaxws-ri 
+								jboss-as,jboss-messaging-dist,jboss-messaging-sar,jaxws-ri 
 							</excludeArtifactIds>
 							<includeScope>runtime</includeScope>
 						</configuration>
@@ -147,7 +147,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
-			<artifactId>jboss-messaging</artifactId>
+			<artifactId>jboss-messaging-dist</artifactId>
 			<type>zip</type>
 		</dependency>
 		<dependency>
