@@ -8,7 +8,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>
-				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss
+                target/files/safe-online-base-distribution-${safe-online.version}/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
@@ -30,7 +30,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss
+                target/files/safe-online-base-distribution-${safe-online.version}/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
@@ -40,7 +40,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-				target/files/safe-online-base-distribution-1.0-SNAPSHOT/scripts 
+                target/files/safe-online-base-distribution-${safe-online.version}/scripts 
 			</directory>
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>
@@ -61,7 +61,7 @@
 		</file>
 		<file>
 			<source>
-				target/files/safe-online-deploy-1.0-SNAPSHOT.ear
+                target/files/safe-online-deploy-${safe-online.version}.ear
 			</source>
 			<outputDirectory>
 				jboss/server/default/deploy

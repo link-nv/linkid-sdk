@@ -20,7 +20,7 @@
 	<artifactId>
 		safe-online-demo-notification-consumer-ws-impl
 	</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>${safe-online.version}</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -29,7 +29,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -37,23 +37,23 @@
 			<artifactId>
 				safe-online-notification-consumer-ws-abstract-impl
 			</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ws-model</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -97,7 +97,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>test</scope>
 		</dependency>
 

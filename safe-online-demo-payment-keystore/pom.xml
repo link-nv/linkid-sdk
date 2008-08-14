@@ -15,7 +15,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-payment-keystore</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>${safe-online.version}</version>
 	<packaging>jar</packaging>
 
 	<build>
@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 
 	</dependencies>

@@ -12,7 +12,7 @@
 	<includeBaseDirectory>true</includeBaseDirectory>
 	<files>
 		<file>
-			<source>${basedir}/src/files/performance-console</source>
+			<source>${basedir}/target/files/performance-console</source>
 			<fileMode>0500</fileMode>
 		</file>
 	</files>

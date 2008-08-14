@@ -453,6 +453,8 @@
 
 	<!-- DEFAULT PROPERTIES -->
 	<properties>
+        <safe-online.version>1.0-SNAPSHOT</safe-online.version>
+
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>

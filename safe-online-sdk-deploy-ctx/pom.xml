@@ -19,7 +19,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-sdk-deploy-ctx</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>${safe-online.version}</version>
 	<packaging>pom</packaging>
 
 	<build>
@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>compile</scope>
 			<exclusions>
 				<exclusion>

@@ -17,7 +17,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-lawyer-webapp</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>${safe-online.version}</version>
 	<packaging>war</packaging>
 
 	<build>
@@ -49,26 +49,26 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer</artifactId>
 			<type>ejb-client</type>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-keystore</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
