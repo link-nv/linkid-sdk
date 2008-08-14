@@ -71,6 +71,7 @@
         <dependency>
             <groupId>jboss.messaging</groupId>
             <artifactId>jboss-messaging</artifactId>
+            <scope>provided</scope>
         </dependency>
 
 	</dependencies>

@@ -510,13 +510,27 @@ select.label, select.label:hover {
 }
 input.submit {
     display:            inline !important;
-
+}
+a.submit {
+    display:            block;
+    float:              left;
+    padding-top:        2px;
+}
+a.submit:active {
+    padding-top:        3px;
+    padding-left:       1px;
+}
+a.submit:hover {
+    border-bottom:      none;
+}
+.submit {
     width:              125px;
     height:             25px;
     margin:             15px 25px 7px 0;
 
     border:             none;
     background:         url('../images/button.jpg') no-repeat;
+    color:              white !important;
 
     font-family:        bold 12px Verdana, Arial, Helvetica, sans-serif;
     text-align:         center;
