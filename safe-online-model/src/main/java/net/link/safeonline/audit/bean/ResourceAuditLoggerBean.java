@@ -42,11 +42,11 @@ public class ResourceAuditLoggerBean implements ResourceAuditLogger {
     @AroundInvoke
     public Object interceptor(InvocationContext context) throws Exception {
 
-        Object result;
         try {
-            result = context.proceed();
-            return result;
-        } catch (SafeOnlineResourceException e) {
+            return context.proceed();
+        }
+
+        catch (SafeOnlineResourceException e) {
             addResourceAudit(e.getResourceName(), e.getResourceLevel(), e.getSourceComponent(), e.getMessage());
             throw e;
         }
@@ -55,27 +55,28 @@ public class ResourceAuditLoggerBean implements ResourceAuditLogger {
     public void addResourceAudit(ResourceNameType resourceName, ResourceLevelType resourceLevel,
             String sourceComponent, String message) {
 
-        Long auditContextId;
         try {
-            auditContextId = (Long) PolicyContext.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
-        } catch (PolicyContextException e) {
+            Long auditContextId = (Long) PolicyContext.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
+            if (null == auditContextId) {
+                this.auditAuditDAO.addAuditAudit("no audit context available");
+                return;
+            }
+
+            try {
+                AuditContextEntity auditContext = this.auditContextDAO.getAuditContext(auditContextId);
+                
+                this.resourceAuditDAO.addResourceAudit(auditContext, resourceName, resourceLevel, sourceComponent,
+                        message);
+            }
+
+            catch (AuditContextNotFoundException e) {
+                this.auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
+            }
+        }
+
+        catch (PolicyContextException e) {
             this.auditAuditDAO.addAuditAudit("audit context policy context error: " + e.getMessage());
-            return;
         }
-        if (null == auditContextId) {
-            this.auditAuditDAO.addAuditAudit("no audit context available");
-            return;
-        }
-
-        AuditContextEntity auditContext;
-        try {
-            auditContext = this.auditContextDAO.getAuditContext(auditContextId);
-        } catch (AuditContextNotFoundException e) {
-            this.auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
-            return;
-        }
-
-        this.resourceAuditDAO.addResourceAudit(auditContext, resourceName, resourceLevel, sourceComponent, message);
     }
 
 }

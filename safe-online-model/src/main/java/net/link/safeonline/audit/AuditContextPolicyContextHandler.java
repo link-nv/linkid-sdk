@@ -18,9 +18,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * JACC policy context handler for audit context information.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
@@ -47,7 +47,6 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
         public AuditContextInfo(long auditContextId) {
 
             this.auditContextId = auditContextId;
-            this.counter = 1;
         }
 
         public void lock() {
@@ -55,6 +54,9 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
             this.counter++;
         }
 
+        /**
+         * @return <code>true</code>: Audit stack is completely unlocked (last entry was unlocked).
+         */
         public boolean unlock() {
 
             this.counter--;
@@ -65,18 +67,19 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
     public Object getContext(String key, @SuppressWarnings("unused") Object data) {
 
-        if (false == key.equalsIgnoreCase(AUDIT_CONTEXT_KEY))
+        if (!supports(key))
             return null;
+
         AuditContextInfo auditContextInfo = auditContextInfos.get();
         if (null == auditContextInfo)
             return null;
+
         return auditContextInfo.getAuditContextId();
     }
 
     public String[] getKeys() {
 
-        String[] keys = { AUDIT_CONTEXT_KEY };
-        return keys;
+        return new String[] { AUDIT_CONTEXT_KEY };
     }
 
     public boolean supports(String key) {
@@ -86,69 +89,80 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
     /**
      * Sets the audit context Id for the current thread.
-     *
+     * 
      * @param auditContextId
+     *            The ID of the audit context to assign to this thread.
      * @throws ExistingAuditContextException
      */
-    public static synchronized void setAuditContextId(long auditContextId) throws ExistingAuditContextException {
+    public static synchronized void setAndLockAuditContextId(long auditContextId) throws ExistingAuditContextException {
 
         AuditContextInfo previousAuditContextInfo = auditContextInfos.get();
         if (null != previousAuditContextInfo) {
             long previousAuditContextId = previousAuditContextInfo.getAuditContextId();
-            LOG.fatal("previous audit context found: " + previousAuditContextId);
+            LOG.fatal("Can't set audit context to ID: " + auditContextId + "; It's already set to ID: "
+                    + previousAuditContextId);
             throw new ExistingAuditContextException(previousAuditContextId);
         }
+
         AuditContextInfo auditContextInfo = new AuditContextInfo(auditContextId);
         auditContextInfos.set(auditContextInfo);
+        auditContextInfo.lock();
     }
 
     /**
      * Returns the audit context Id for the current thread
-     *
-     * @return auditContextId
+     * 
+     * @return auditContextId The ID of the audit context to assign to this thread.
      * @throws MissingAuditContextException
      */
     public static synchronized Long getAuditContextId() throws MissingAuditContextException {
 
         AuditContextInfo auditContextInfo = auditContextInfos.get();
         if (null == auditContextInfo) {
-            LOG.fatal("missing audit context");
+            LOG.fatal("Audit context was requested but it isn't set.");
             throw new MissingAuditContextException();
         }
+
         return auditContextInfo.getAuditContextId();
     }
 
     /**
-     * Locks the audit context associated with the current thread. If the current thread has no audit context this
-     * method will return <code>false</code>.
-     *
+     * Locks the audit context associated with the current thread.
+     * 
+     * @return <code>false</code>: The current thread has no audit context.
      */
     public static synchronized boolean lockAuditContext() {
 
         AuditContextInfo auditContextInfo = auditContextInfos.get();
-        if (null != auditContextInfo) {
-            auditContextInfo.lock();
-            return true;
-        }
-        return false;
+        if (null == auditContextInfo)
+            return false;
+
+        auditContextInfo.lock();
+        return true;
     }
 
     /**
-     * Removes the audit context for the current thread.
-     *
+     * Unlocks the audit context for the current call.
+     * 
+     * When the entire stack of audit contexts has been unlocked (the last call was completed) the audit context is
+     * removed from the thread.
+     * 
+     * @return <code>true</code>: The entire audit stack was unlocked (last entry was unlocked).
      * @throws MissingAuditContextException
      */
-    public static synchronized boolean removeAuditContext() throws MissingAuditContextException {
+    public static synchronized boolean unlockAuditContext() throws MissingAuditContextException {
 
         AuditContextInfo auditContextInfo = auditContextInfos.get();
         if (null == auditContextInfo) {
             LOG.fatal("missing audit context");
             throw new MissingAuditContextException();
         }
-        boolean isMainEntry = auditContextInfo.unlock();
-        if (isMainEntry) {
+
+        boolean stackUnlocked = auditContextInfo.unlock();
+        if (stackUnlocked) {
             auditContextInfos.remove();
         }
-        return isMainEntry;
+
+        return stackUnlocked;
     }
 }

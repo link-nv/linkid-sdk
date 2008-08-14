@@ -7,13 +7,7 @@
 
 package net.link.safeonline.audit;
 
-public class AuditConstants {
-
-    private AuditConstants() {
-
-        // empty
-    }
-
+public interface AuditConstants {
 
     /**
      * The audit queue where finalized audit contexts are published on.
@@ -23,5 +17,5 @@ public class AuditConstants {
     /**
      * The name of the connection factory used for publishing JMS messages.
      */
-    public static final String CONNECTION_FACTORY_NAME  = "java:/JmsXA";
+    public final static String CONNECTION_FACTORY_NAME  = "java:/JmsXA";
 }

@@ -30,11 +30,10 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Implementation of the audit context finalizer component. Important here is that this component runs within it's own
+ * Implementation of the audit context finalizer component. Important here is that this component runs within its own
  * transaction.
- *
+ * 
  * @author fcorneli
- *
  */
 @Stateless
 public class AuditContextFinalizerBean implements AuditContextFinalizer {
@@ -55,15 +54,16 @@ public class AuditContextFinalizerBean implements AuditContextFinalizer {
     public void finalizeAuditContext(Long auditContextId) {
 
         LOG.debug("finalizing audit context: " + auditContextId);
-        AuditMessage auditMessage = new AuditMessage(auditContextId);
         try {
             Connection connection = this.factory.createConnection();
             try {
                 Session session = connection.createSession(true, 0);
                 try {
+                    AuditMessage auditMessage = new AuditMessage(auditContextId);
+                    Message message = auditMessage.getJMSMessage(session);
+                    
                     MessageProducer producer = session.createProducer(this.auditBackendQueue);
                     try {
-                        Message message = auditMessage.getJMSMessage(session);
                         producer.send(message);
                     } finally {
                         producer.close();
@@ -74,7 +74,9 @@ public class AuditContextFinalizerBean implements AuditContextFinalizer {
             } finally {
                 connection.close();
             }
-        } catch (JMSException e) {
+        }
+
+        catch (JMSException e) {
             this.auditAuditDAO.addAuditAudit("unable to publish audit context " + auditContextId + " - reason: "
                     + e.getMessage() + " - errorCode: " + e.getErrorCode());
         }

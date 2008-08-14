@@ -28,7 +28,6 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author wvdhaute
  *
  */
-
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "AuditCleanerTaskBean")
@@ -45,11 +44,6 @@ public class AuditCleanerTaskBean implements Task {
     private Integer             configAgeInMinutes = 7 * 24 * 60;
 
 
-    public AuditCleanerTaskBean() {
-
-        // empty
-    }
-
     public String getName() {
 
         return name;
@@ -58,9 +52,7 @@ public class AuditCleanerTaskBean implements Task {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void perform() throws Exception {
 
-        long ageInMinutes = this.configAgeInMinutes;
-
-        this.auditContextDAO.cleanup(ageInMinutes);
+        this.auditContextDAO.cleanup(this.configAgeInMinutes);
     }
 
 }
