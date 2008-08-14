@@ -9,7 +9,7 @@
 	<inceptionYear>2006</inceptionYear>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0-p1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Lin.k N.V.</name>
@@ -453,7 +453,7 @@
 
 	<!-- DEFAULT PROPERTIES -->
 	<properties>
-        <safe-online.version>1.0</safe-online.version>
+        <safe-online.version>1.0-p1-SNAPSHOT</safe-online.version>
 
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
