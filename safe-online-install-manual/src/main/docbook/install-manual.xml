@@ -29,13 +29,7 @@
 		<releaseinfo>1.0.0</releaseinfo>
 		<productname>OLAS</productname>
 		<productnumber>1.0.0</productnumber>
-		<authorgroup>
-			<author>
-				<firstname>Frank</firstname>
-				<surname>Cornelis</surname>
-			</author>
-		</authorgroup>
-	</bookinfo>
+    </bookinfo>
 
 	<chapter id="introduction">
 		<title>Introduction</title>
@@ -46,46 +40,7 @@
 			identity data. It brings to users a central identity
 			management.
 		</para>
-		<para>
-			OLAS offers several services to applications:
-			<orderedlist>
-				<listitem>
-					<para>
-						Authentication service: if an application calls
-						this service the user is authenticated by OLAS
-						using one of his configured devices. Upon
-						success the application is informed and can
-						grant access to the user.
-					</para>
-				</listitem>
-				<listitem>
-					<para>
-						Attribute service: an application can query the
-						user’s attributes and use their values in its
-						business processes. Attributes can only be read
-						if the user has given explicit permission to do
-						so.
-					</para>
-				</listitem>
-				<listitem>
-					<para>
-						Data service: an application can push attributes
-						to the user’s profile. These attributes could
-						then be used by other applications (if allowed
-						by the user and the providing application).
-					</para>
-				</listitem>
-				<listitem>
-					<para>
-						Validation service: an application can use this
-						service to validate the authentication response
-						tokens received from the authentication web
-						application.
-					</para>
-				</listitem>
-			</orderedlist>
-		</para>
-		<section>
+        <section>
 			<title>Java</title>
 			<para>
 				OLAS was written in the Java programming language. This
@@ -333,6 +288,17 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 					]]>
 					</programlisting>
 				</para>
+                <para>
+                    If specific authentication device pages are deployed some additional paths need to be proxied, such as: 
+                    <programlisting><![CDATA[LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+
+ProxyPass /olas-beid/ ajp://localhost:8009/olas-beid/
+ProxyPass /olas-encap/ ajp://localhost:8009/olas-encap/
+ProxyPass /olas-digipass/ ajp://localhost:8009/olas-digipass/
+
+					]]>
+					</programlisting>
+                </para>
 			</section>
 		</section>
 	</chapter>
@@ -341,7 +307,7 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 		<title>OLAS Distribution Package</title>
 		<para>
 			The distribution ZIP contains a pre-configured JBoss
-			Application Server together with the OLAS JavaEE EAR file.
+			Application Server together with the OLAS JavaEE EAR files.
 		</para>
 		<section>
 			<title>Pre-configured JBoss Application Server</title>
@@ -382,19 +348,18 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 				</itemizedlist>
 				The exact customizations can be extracted by
 				investigating the difference between the OLAS JBoss AS
-				and a plain vanilla JBoss AS. Depending on your topology
-				requirements other OLAS packaging can be delivered.
+				and a plain vanilla JBoss AS.
 			</para>
 		</section>
 		<section>
 			<title>OLAS JavaEE EAR</title>
 			<para>
-				The OLAS services and web applications are bundled as an
-				EAR. This EAR file can be found at:
+				The OLAS services and web applications are bundled as
+				EAR files. These EAR files can be found at:
 				<code>
-					$JBOSS_HOME/server/default/deploy/SafeOnline.ear
+					$JBOSS_HOME/server/default/deploy/SafeOnline*.ear
 				</code>
-				The EAR contains:
+                The SafeOnline.ear contains:
 				<itemizedlist>
 					<listitem>
 						<para>The JavaEE application itself.</para>
@@ -406,6 +371,7 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 						</para>
 					</listitem>
 				</itemizedlist>
+                The other EAR files contain device specific web pages and logic. Be sure to check the EAR files in your deploy directory match the device support that was ordered. This is important as some devices merely serve as examples.
 			</para>
 		</section>
 	</chapter>
