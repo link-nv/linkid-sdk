@@ -33,7 +33,9 @@
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
 
-		<p><a href="authenticationexit">#{msgs.cancelaction}</a></p>
+		<form id="cancelForm" method="post" action="authenticationexit"><input
+			id="cancel" type="submit" value="#{msgs.cancelaction}"
+			class="submit" /></form>
 
 	</ui:define>
 

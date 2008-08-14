@@ -27,7 +27,9 @@
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
 
-		<p><a href="deviceexit">#{msgs.cancelaction}</a></p>
+		<form id="cancelForm" method="post" action="deviceexit"><input
+			id="cancel" type="submit" value="#{msgs.cancelaction}"
+			class="submit" /></form>
 
 	</ui:define>
 	<ui:define name="sidebar">
