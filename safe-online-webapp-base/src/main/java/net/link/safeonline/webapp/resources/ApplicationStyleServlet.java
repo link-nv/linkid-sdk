@@ -112,10 +112,8 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
                 PublicApplication application = this.publicApplicationService.findPublicApplication(applicationName);
 
                 if (application == null) {
-                    throw new IllegalStateException("Application not found: " + applicationName);
-                }
-
-                if (application.getColor() != null) {
+                    LOG.warn("There is no application named '" + applicationName + "', using default colors.");
+                } else if (application.getColor() != null) {
                     baseColor = application.getColor();
                 }
             } catch (Exception e) {
