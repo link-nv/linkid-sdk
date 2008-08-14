@@ -65,13 +65,10 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
         LOG.debug("add subject: " + login);
 
         String userId = this.idGenerator.generateId();
-
         SubjectEntity subject = this.subjectDAO.addSubject(userId);
-
-        this.subjectIdentifierDAO.addSubjectIdentifier(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login, subject);
-
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
 
+        this.subjectIdentifierDAO.addSubjectIdentifier(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login, subject);
         this.attributeDAO.addAttribute(attributeType, subject, login);
 
         return subject;
@@ -113,7 +110,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String getExceptionSubjectLogin(String userId) {
 
-        return this.getSubjectLogin(userId);
+        return getSubjectLogin(userId);
     }
 
     public String getSubjectLogin(String userId) {
@@ -122,14 +119,18 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
         SubjectEntity subject = this.subjectDAO.findSubject(userId);
         if (null == subject)
             return null;
-        AttributeEntity loginAttribute;
+
         try {
-            loginAttribute = this.attributeDAO.getAttribute(SafeOnlineConstants.LOGIN_ATTRIBTUE, subject);
-        } catch (AttributeNotFoundException e) {
-            LOG.debug("login attribute not found", e);
-            return null;
+            AttributeEntity loginAttribute = this.attributeDAO.getAttribute(SafeOnlineConstants.LOGIN_ATTRIBTUE,
+                    subject);
+            return loginAttribute.getStringValue();
         }
-        return loginAttribute.getStringValue();
+
+        catch (AttributeNotFoundException e) {
+            LOG.debug("login attribute not found", e);
+        }
+
+        return null;
     }
 
     public SubjectEntity getSubjectFromUserName(String login) throws SubjectNotFoundException {
@@ -139,22 +140,24 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
                 login);
         if (null == subject)
             throw new SubjectNotFoundException();
+
         return subject;
     }
 
     public List<String> listUsers(String prefix) throws AttributeTypeNotFoundException {
 
         List<String> userList = new LinkedList<String>();
-
         AttributeTypeEntity loginAttributeType = this.attributeTypeDAO
                 .getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
         List<AttributeEntity> loginAttributes = this.attributeDAO.listAttributes(prefix, loginAttributeType);
+        
         for (AttributeEntity loginAttribute : loginAttributes) {
             userList.add(loginAttribute.getStringValue());
         }
+        
         return userList;
     }
-
+ 
     public DeviceSubjectEntity findDeviceSubject(String deviceUserId) {
 
         LOG.debug("find device subject user ID: " + deviceUserId);
@@ -170,9 +173,9 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
     public DeviceSubjectEntity getDeviceSubject(String deviceUserId) throws SubjectNotFoundException {
 
         DeviceSubjectEntity deviceSubject = findDeviceSubject(deviceUserId);
-        if (null == deviceSubject) {
+        if (null == deviceSubject)
             throw new SubjectNotFoundException();
-        }
+         
         return deviceSubject;
     }
 }

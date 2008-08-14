@@ -51,6 +51,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
     public SystemInitializationStartableBean() {
 
+        // Load OLAS configuration.
         ResourceBundle properties = ResourceBundle.getBundle("config");
         String protocol = properties.getString("olas.host.protocol");
         String hostname = properties.getString("olas.host.name");
@@ -60,15 +61,17 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         String ownerWebappName = properties.getString("olas.owner.webapp.name");
         String helpdeskWebappName = properties.getString("olas.helpdesk.webapp.name");
 
+        // Initialize this OLAS node, common attributes and available devices.
         configureNode();
         configureAttributeTypes();
         configureDevices();
 
+        // Add some initial users.
         this.authorizedUsers.put("admin", new AuthenticationDevice("admin", null, null));
         this.authorizedUsers.put("owner", new AuthenticationDevice("secret", null, null));
-
         this.applicationOwnersAndLogin.put("owner", "owner");
 
+        // Add the core applications.
         X509Certificate userCert = (X509Certificate) UserKeyStoreUtils.getPrivateKeyEntry().getCertificate();
         X509Certificate operCert = (X509Certificate) OperKeyStoreUtils.getPrivateKeyEntry().getCertificate();
         X509Certificate ownerCert = (X509Certificate) OwnerKeyStoreUtils.getPrivateKeyEntry().getCertificate();
@@ -122,8 +125,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+
         this.node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, authIdentityServiceClient
                 .getCertificate(), identityServiceClient.getCertificate());
         this.trustedCertificates.put(authIdentityServiceClient.getCertificate(),

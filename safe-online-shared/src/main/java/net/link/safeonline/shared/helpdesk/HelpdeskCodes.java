@@ -7,7 +7,7 @@
 
 package net.link.safeonline.shared.helpdesk;
 
-public class HelpdeskCodes {
+public interface HelpdeskCodes {
 
     public static final String HELPDESK_START             = "HELPDESK_START";
 
@@ -24,10 +24,4 @@ public class HelpdeskCodes {
     public static final String HELPDESK_PERSIST_LOCATION  = "HELPDESK_PERSIST_LOCATION";
 
     public static final String HELPDESK_PERSIST_RETURN_ID = "HELPDESK_PERSIST_RETURN_ID";
-
-
-    private HelpdeskCodes() {
-
-        // empty
-    }
 }

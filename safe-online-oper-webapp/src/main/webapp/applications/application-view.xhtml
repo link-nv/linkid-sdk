@@ -221,15 +221,17 @@
 						value="#{selectedApplication.skipMessageIntegrityCheck}" /></td>
 				</tr>
 				<tr>
-					<th colspan="2"><h:outputText
-						value="#{msgs.certificateSubject}" /></th>
+                    <th colspan="2">
+                        <h:outputText value="#{msgs.certificateSubject}" />
+                    </th>
 				</tr>
 				<tr>
-					<td colspan="2" class="text block"><h:outputText
-						value="#{selectedApplication.certificateSubject}"
-						rendered="#{!empty selectedApplication.certificateSubject}" /> <h:outputText
-						value="#{msgs.noCertificate}"
-						rendered="#{empty selectedApplication.certificateSubject}" /></td>
+                    <td colspan="2">
+                        <h:outputText styleClass="text" value="#{selectedApplication.certificateSubject}"
+                            rendered="#{!empty selectedApplication.certificateSubject}" />
+                        <h:outputText styleClass="text" value="#{msgs.noCertificate}"
+                            rendered="#{empty selectedApplication.certificateSubject}" />
+                    </td>
 				</tr>
 			</table>
 		</rich:simpleTogglePanel>

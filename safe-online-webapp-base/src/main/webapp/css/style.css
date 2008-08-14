@@ -378,6 +378,9 @@ hr.float_fix {
 .padded {
     padding:            7px !important;
 }
+.indent {
+    margin-left:        2em;
+}
 .nospace, .nospace * {
     margin:             0;
     padding:            0;
@@ -395,6 +398,12 @@ hr.float_fix {
 .noborders, .noborders * {
     border:             none !important;
 }
+.noblock {
+    display:            inline !important; 
+
+    width:              auto;
+    height:             auto;
+}
 .rich-panel {
     width:              575px;
 }
@@ -403,8 +412,6 @@ hr.float_fix {
 .text.usage {
     height:             200px;
     padding:            10px;
-
-    border:             1px solid black;
 }
 .text {
     overflow:           auto;
@@ -579,12 +586,6 @@ table td a, table th a {
     width:              inherit;
     height:             inherit;
     padding-bottom:     1px;
-}
-table td a.noblock {
-    display:            inline;
-
-    width:              auto;
-    height:             auto;
 }
 table td a:hover, table th a:hover {
     border:             none;

@@ -47,11 +47,10 @@ public class HelpdeskManagerBean implements HelpdeskManager {
 
         for (HelpdeskEventEntity helpdeskEvent : helpdeskEventList) {
             helpdeskEvent.setHelpdeskContext(context);
-
         }
+
         this.helpdeskEventDAO.persist(helpdeskEventList);
         return context.getId();
-
     }
 
 

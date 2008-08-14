@@ -56,6 +56,6 @@ public interface HelpdeskService {
      *
      * @param logId
      */
-    boolean removeLog(Long logId) throws HelpdeskContextNotFoundException;
+    void removeLog(Long logId) throws HelpdeskContextNotFoundException;
 
 }
