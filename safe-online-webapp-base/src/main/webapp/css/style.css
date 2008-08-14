@@ -84,7 +84,7 @@ a:hover {
     display:            block;
 
     width:              900px;
-    height:             115px;
+    height:             115px;                      /* IE doesn't include padding in h/w. */
     margin:             0;
     padding:            25px 0 0;
 
@@ -214,7 +214,7 @@ a:hover {
 
 /******************************************************* SIDE BOX **/
 #sidebox {
-    width:              100%;
+    width:              100%;                       /* IE needs margin included in the width. */
     margin:             0 10%;
     margin-top:         -11px;
     padding:            0;
@@ -277,7 +277,7 @@ table.timeline[class] {
     height:             35px;
 }
 table.timeline td {
-    height:             70px;
+    height:             70px;                       /* IE doesn't include padding in h/w. */
     padding:            0;
     padding-top:        35px;
     padding-left:       5px;
@@ -451,7 +451,7 @@ label {
 
     font:               14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
     text-align:         right;
-    vertical-align:     top;
+    vertical-align:     bottom;
 }
 label[for] {
     display:            block;
@@ -485,7 +485,6 @@ input, select, textarea {
 }
 .af_inputFile, .label, .so-output {
     width:              300px;
-    margin:             0 0 15px 0;
 }
 table .af_inputFile, table .label, table .so-output {
     margin:             0;
@@ -638,6 +637,22 @@ table.rich-shuttle-body table {
     clear:              both;
     display:            block;
 }
+
+
+
+/* ==================================================================
+ * Section: Browser Hacks
+ *
+ * SAFARI
+    Expected:   [ float-block ] [ block ]
+    Bugged:     [ block ] [ float-block ] */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+.af_inputFile, .label, .so-output, .tinylabel {
+    margin-left:       150px;
+}
+}
+
+
 
 /* ==================================================================
  * Section: Debugging
