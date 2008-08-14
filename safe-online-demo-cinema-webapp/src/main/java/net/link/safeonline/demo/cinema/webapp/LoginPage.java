@@ -38,7 +38,7 @@ public class LoginPage extends LayoutPage {
         if (LoginManager.isAuthenticated(loginRequest)) {
             try {
                 UserEntity user = this.userService.getUser(LoginManager.getUsername(loginRequest));
-                this.userService.updateUser(user, loginRequest);
+                user = this.userService.updateUser(user, loginRequest);
                 CinemaSession.get().setUser(user);
 
                 setResponsePage(TicketPage.class);

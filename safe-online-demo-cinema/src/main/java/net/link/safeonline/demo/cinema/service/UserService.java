@@ -42,7 +42,7 @@ public interface UserService extends CinemaService {
     /**
      * Update the OLAS attributes for the given user.
      */
-    public void updateUser(UserEntity user, HttpServletRequest loginRequest);
+    public UserEntity updateUser(UserEntity user, HttpServletRequest loginRequest);
 
     /**
      * @return An attached entity for the given one.

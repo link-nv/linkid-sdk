@@ -65,7 +65,7 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
     /**
      * {@inheritDoc}
      */
-    public void updateUser(UserEntity user, HttpServletRequest loginRequest) {
+    public UserEntity updateUser(UserEntity user, HttpServletRequest loginRequest) {
 
         try {
             AttributeClientImpl attributeClient = getOLASAttributeService(loginRequest);
@@ -85,14 +85,19 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
             Boolean juniorValue = attributeClient.getAttributeValue(userEntity.getId(),
                     DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
             userEntity.setJunior(juniorValue != null && juniorValue.booleanValue() == true);
+            
+            return userEntity;
         }
 
         catch (AttributeNotFoundException e) {
             LOG.error("attribute not found: ", e);
+            throw new RuntimeException(e);
         } catch (RequestDeniedException e) {
             LOG.error("request denied: ", e);
+            throw new RuntimeException(e);
         } catch (WSClientTransportException e) {
             LOG.error("Connection error. Check your SSL setup.", e);
+            throw new RuntimeException(e);
         }
     }
 
