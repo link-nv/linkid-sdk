@@ -22,6 +22,17 @@
 				<configuration>
 					<webResources>
 						<resource>
+							<filtering>false</filtering>
+							<directory>${basedir}/src/main/java</directory>
+							<targetPath>WEB-INF/classes</targetPath>
+							<includes>
+								<include>**/*.html</include>
+							</includes>
+							<excludes>
+								<exclude>**/*.java</exclude>
+							</excludes>
+						</resource>
+						<resource>
 							<directory> ${basedir}/src/main/webapp/WEB-INF</directory>
 							<targetPath>WEB-INF</targetPath>
 							<filtering>true</filtering>
