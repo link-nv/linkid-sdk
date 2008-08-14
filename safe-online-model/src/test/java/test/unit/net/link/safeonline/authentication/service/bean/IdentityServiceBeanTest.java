@@ -512,7 +512,7 @@ public class IdentityServiceBeanTest {
      * for the record to be removed. Also checks whether we can remove all the member attribute values. Even if the
      * member attribute types are marked as non-user-editable it's possible for the user to remove the attribute record
      * if the compounded attribute type is marked as user-editable.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -628,7 +628,7 @@ public class IdentityServiceBeanTest {
             attributeTypeDAO.addAttributeType(requiredAttributeType);
 
             AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity(this.OPT_ATT_NAME, DatatypeType.STRING,
-                    true, true);
+                    true, false);
             attributeTypeDAO.addAttributeType(optionalAttributeType);
 
             AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(this.COMP_ATT_NAME,
@@ -649,12 +649,16 @@ public class IdentityServiceBeanTest {
 
             assertEquals(this.COMP_ATT_NAME, result.get(0).getName());
             assertTrue(result.get(0).isCompounded());
+            assertTrue(result.get(0).isEditable());
 
             assertEquals(this.REQ_ATT_NAME, result.get(1).getName());
             assertTrue(result.get(1).isMember());
+            assertTrue(result.get(1).isEditable());
 
             assertEquals(this.OPT_ATT_NAME, result.get(2).getName());
             assertTrue(result.get(2).isMember());
+            assertFalse(result.get(2).isEditable());
+
         }
     }
 
