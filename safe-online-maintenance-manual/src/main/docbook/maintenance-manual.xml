@@ -190,10 +190,11 @@
 			<para> During the authentication process, various events are logged
 				for the OLAS helpdesk. These events are only persisted to the
 				database if the user is creating a helpdesk ticket during his
-				authentication. Before that, they are stored on the HTTP session,
-				limited to a certain amount of events. The helpdesk events should
-				give the helpdesk a good view of the authentication flow that was
-				used.</para>
+				authentication. Before that, they are stored on the HTTP session.
+				This limit is configurable from the operator web application in the
+				general configuration section. The helpdesk events should give the
+				helpdesk a good view of the authentication flow that was used.
+			</para>
 		</section>
 		<section>
 			<title>Audit Logging</title>
