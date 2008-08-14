@@ -29,7 +29,7 @@
 				<label for="value"><so:outputAttributeName value="#{item}" /></label>
 				<s:decorate>
 					<so:inputAttribute id="value" value="#{item.value}" required="true"
-						textStyleClass="label" checkboxStyleClass="tinylabel" />
+						 textStyleClass="label" checkboxStyleClass="indent" />
 				</s:decorate>
 				<h:message for="value" styleClass="error" />
 			</ui:repeat>
@@ -38,9 +38,8 @@
 				<label for="value"><so:outputAttributeName value="#{item}"
 					optional="true" /></label>
 				<s:decorate>
-					<so:inputAttribute id="value" value="#{item.value}"
-						required="false" textStyleClass="label"
-						checkboxStyleClass="tinylabel" />
+					<so:inputAttribute id="value" value="#{item.value}" required="false"
+						 textStyleClass="label" checkboxStyleClass="tinylabel" />
 				</s:decorate>
 				<h:message for="value" styleClass="error" />
 			</ui:repeat>
