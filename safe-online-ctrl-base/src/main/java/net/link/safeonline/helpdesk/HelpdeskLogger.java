@@ -49,9 +49,10 @@ public class HelpdeskLogger {
 
     public static List<HelpdeskEventEntity> clear(HttpSession session) {
 
-        session.removeAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
         List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
+        session.removeAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
         session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT, helpdeskContext);
+        
         LOG.debug("new volatile helpdesk context created");
         return helpdeskContext;
     }
@@ -73,6 +74,7 @@ public class HelpdeskLogger {
             helpdeskContext = new LinkedList<HelpdeskEventEntity>();
             session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT, helpdeskContext);
         }
+        
         return helpdeskContext;
     }
 
@@ -93,17 +95,15 @@ public class HelpdeskLogger {
     private static String getPrincipal(HttpSession session) {
 
         String principal = (String) session.getAttribute("username");
-        if (null == principal) {
-            principal = UNKNOWN_USER;
-        } else {
+        if (principal != null) {
             SubjectService subjectService = EjbUtils
                     .getEJB("SafeOnline/SubjectServiceBean/local", SubjectService.class);
             principal = subjectService.getExceptionSubjectLogin(principal);
-            if (null == principal) {
-                principal = UNKNOWN_USER;
-            }
-
         }
+        if (principal == null) {
+            principal = UNKNOWN_USER;
+        }
+        
         LOG.debug("principal found: " + principal);
         return principal;
     }

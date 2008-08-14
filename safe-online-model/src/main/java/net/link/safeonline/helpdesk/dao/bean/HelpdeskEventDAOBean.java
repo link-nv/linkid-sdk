@@ -58,6 +58,7 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
     public void clearEvents(long ageInMinutes, LogLevelType logLevel) {
 
         Date ageLimit = new Date(System.currentTimeMillis() - ageInMinutes * 60 * 1000);
+        
         LOG.debug("clearing helpdesk " + logLevel.toString() + " events older than: " + ageLimit);
         this.queryObject.deleteEvents(ageLimit, logLevel);
     }

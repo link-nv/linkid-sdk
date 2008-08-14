@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
@@ -52,18 +53,16 @@ public class HelpdeskBaseBean implements HelpdeskBase {
     public String createTicket() {
 
         if (null == this.location) {
-
-            Map<?, ?> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-            this.location = (String) params.get("location");
+            Map<String, String> params = getFacesContext().getRequestParameterMap();
+            this.location = params.get("location");
             if (null == this.location) {
-                this.location = FacesContext.getCurrentInstance().getExternalContext().getRequestServletPath();
+                this.location = getFacesContext().getRequestServletPath();
             }
         }
-        this.LOG.debug("helpdesk location: " + this.location);
-
         this.LOG.debug("create helpdesk ticket");
-        this.id = HelpdeskLogger.persistContext(this.location, (HttpSession) FacesContext.getCurrentInstance()
-                .getExternalContext().getSession(false));
+        this.LOG.debug(" - location: " + this.location);
+        this.id = HelpdeskLogger.persistContext(this.location, (HttpSession) getFacesContext().getSession(false));
+
         return "create-ticket";
     }
 
@@ -91,10 +90,15 @@ public class HelpdeskBaseBean implements HelpdeskBase {
 
     public String getDummy() {
 
-        Map<?, ?> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        this.location = (String) params.get("location");
+        Map<String, String> params = getFacesContext().getRequestParameterMap();
+        this.location = params.get("location");
         this.LOG.debug("helpdesk location: " + this.location);
 
         return "";
+    }
+
+    private ExternalContext getFacesContext() {
+
+        return FacesContext.getCurrentInstance().getExternalContext();
     }
 }

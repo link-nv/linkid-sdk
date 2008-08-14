@@ -7,7 +7,7 @@
 
 package net.link.safeonline.shared;
 
-public class SharedConstants {
+public interface SharedConstants {
 
     public static final String SAFE_ONLINE_ERROR_HTTP_HEADER        = "Safe-Online-Error";
 
@@ -46,10 +46,4 @@ public class SharedConstants {
     public static final String PKI_SUSPENDED_ERROR                  = "PKI_SUSPENDED";
 
     public static final String PKI_INVALID_ERROR                    = "PKI_INVALID";
-
-
-    private SharedConstants() {
-
-        // empty
-    }
 }

@@ -56,10 +56,9 @@ public class HelpdeskServiceBean implements HelpdeskService, HelpdeskServiceRemo
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
-    public boolean removeLog(Long logId) throws HelpdeskContextNotFoundException {
+    public void removeLog(Long logId) throws HelpdeskContextNotFoundException {
 
         this.contexts.removeLog(logId);
-        return false;
     }
 
     @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
