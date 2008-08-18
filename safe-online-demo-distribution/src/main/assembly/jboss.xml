@@ -27,7 +27,7 @@
 	</fileSets>
 	<files>
 		<file>
-            <source> target/files/safe-online-deploy-${safe-online.version} </source>
+            <source> target/files/safe-online-deploy-${safe-online.version}.ear </source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnline.ear</destName>
 		</file>
