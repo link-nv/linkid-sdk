@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>${safe-online.version}</version>
 	</parent>
 	<name>SafeOnline Model</name>
 	<description> The SafeOnline Core EJB3 Model. </description>
