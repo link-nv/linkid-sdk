@@ -39,26 +39,25 @@
 
 	<dependencies>
 
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
-			<version>${safe-online.version}</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<type>ejb-client</type>
 			<version>${safe-online.version}</version>
-			<scope>provided</scope>
+			<type>ejb-client</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-beid</artifactId>
-			<type>ejb-client</type>
 			<version>${safe-online.version}</version>
-			<scope>provided</scope>
+			<type>ejb-client</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -75,6 +74,8 @@
 			<artifactId>safe-online-device-sdk</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
+
+        <!-- Specific Dependencies: External -->
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam</artifactId>
@@ -83,14 +84,13 @@
 			<groupId>com.google.code.kaptcha</groupId>
 			<artifactId>kaptcha</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 
 	</dependencies>
 

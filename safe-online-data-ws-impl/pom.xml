@@ -22,13 +22,14 @@
 
 	<dependencies>
 
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
-			<version>${safe-online.version}</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-data-ws</artifactId>
@@ -37,17 +38,17 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<type>ejb-client</type>
 			<version>${safe-online.version}</version>
+			<type>ejb-client</type>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>wss4j</groupId>
 			<artifactId>wss4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>xml-security</groupId>
 			<artifactId>xmlsec</artifactId>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
@@ -62,45 +63,22 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
 			<version>${safe-online.version}</version>
-			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>net.sourceforge</groupId>
 			<artifactId>shiftone-oocjndi</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge</groupId>
 			<artifactId>shiftone-arbor</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.stream.buffer</groupId>
-			<artifactId>streambuffer</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.net.httpserver</groupId>
-			<artifactId>http</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jvnet.staxex</groupId>
-			<artifactId>stax-ex</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-test-util</artifactId>
-			<version>${safe-online.version}</version>
-			<scope>test</scope>
-		</dependency>
+		</dependency-->
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 
 	</dependencies>
 

@@ -88,29 +88,30 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ws-runtime</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-user-webapp</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-helpdesk-webapp</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-oper-webapp</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -133,32 +134,6 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
 			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-tools</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId> hibernate-commons-annotations </artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-codec</groupId>
-					<artifactId>commons-codec</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>bouncycastle</groupId>
-					<artifactId>bcprov-jdk15</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-lang</groupId>
-					<artifactId>commons-lang</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 	</dependencies>

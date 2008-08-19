@@ -41,11 +41,11 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
 			<version>${safe-online.version}</version>
-			<scope>compile</scope>
 		</dependency>
 
 	</dependencies>

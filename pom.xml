@@ -1433,6 +1433,22 @@
                 <version>${safe-online.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-device-webapp-base</artifactId>
+                <type>war</type>
+
+                <version>${safe-online.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-webapp-base</artifactId>
+                <type>war</type>
+
+                <version>${safe-online.version}</version>
+                <scope>runtime</scope>
+            </dependency>
 
             <!-- External -->
 			<dependency>
@@ -1702,22 +1718,29 @@
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-			</dependency>
+			</dependency-->
 			<dependency>
 				<groupId>xalan</groupId>
-				<artifactId>xalan</artifactId>
+                <artifactId>xalan</artifactId>
+                <version>${xalan.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>commons-httpclient</groupId>
+				<artifactId>commons-httpclient</artifactId>
+                <version>${commons-httpclient.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-common-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<!--dependency>
 				<groupId>antlr</groupId>
 				<artifactId>antlr</artifactId>
 			</dependency>
 			<dependency>
 				<groupId>commons-collections</groupId>
 				<artifactId>commons-collections</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>commons-httpclient</groupId>
-				<artifactId>commons-httpclient</artifactId>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>

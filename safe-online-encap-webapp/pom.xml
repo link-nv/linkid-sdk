@@ -53,42 +53,39 @@
 
 	<dependencies>
 
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-jsf</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-saml</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap</artifactId>
+			<version>${safe-online.version}</version>
 			<type>ejb-client</type>
-			<version>${safe-online.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
-			<version>${safe-online.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-saml-authn-context</artifactId>
 			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.xml.bind</groupId>
-					<artifactId>jaxb-api</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-webapp-base</artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -98,46 +95,18 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<type>ejb-client</type>
 			<version>${safe-online.version}</version>
-			<scope>provided</scope>
+			<type>ejb-client</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-sdk</artifactId>
 			<version>${safe-online.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ctrl-base</artifactId>
 			<version>${safe-online.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.opensaml</groupId>
-			<artifactId>opensaml</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.opensaml</groupId>
-			<artifactId>xmltooling</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.opensaml</groupId>
-			<artifactId>openws</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>

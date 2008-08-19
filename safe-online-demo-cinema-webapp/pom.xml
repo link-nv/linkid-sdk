@@ -49,32 +49,39 @@
 
 	<dependencies>
 
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
+			<artifactId>safe-online-demo-cinema</artifactId>
 			<version>${safe-online.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-cinema 
-			</artifactId>
+			<artifactId>safe-online-sdk</artifactId>
 			<version>${safe-online.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-wicket-tools</artifactId>
+			<version>${safe-online.version}</version>
+		</dependency>
+
+        <!-- Specific Dependencies: External -->
+		<!--dependency>
 			<groupId>xpp3</groupId>
 			<artifactId>xpp3_min</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>xstream</groupId>
 			<artifactId>xstream</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket</artifactId>
@@ -113,39 +120,13 @@
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-contrib-javaee</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-wicket-tools 
-			</artifactId>
-			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-sdk</artifactId>
-			<version>${safe-online.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-test-util</artifactId>
-			<version>${safe-online.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 
 	</dependencies>
 

@@ -55,6 +55,30 @@
 			<groupId>org.easymock</groupId>
 			<artifactId>easymockclassextension</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.stream.buffer</groupId>
+			<artifactId>streambuffer</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.net.httpserver</groupId>
+			<artifactId>http</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jvnet.staxex</groupId>
+			<artifactId>stax-ex</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
 
     </dependencies>
 

@@ -50,8 +50,6 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-base</artifactId>
-			<version>${safe-online.version}</version>
-			<scope>runtime</scope>
 			<type>war</type>
 		</dependency>
     

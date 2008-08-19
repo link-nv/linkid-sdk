@@ -122,41 +122,42 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-base-distribution</artifactId>
-			<type>zip</type>
 			<version>${safe-online.version}</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-deploy</artifactId>
-			<type>ear</type>
 			<version>${safe-online.version}</version>
+			<type>ear</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-deploy</artifactId>
-			<type>ear</type>
 			<version>${safe-online.version}</version>
+			<type>ear</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-beid-deploy</artifactId>
-			<type>ear</type>
 			<version>${safe-online.version}</version>
+			<type>ear</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-deploy</artifactId>
-			<type>ear</type>
 			<version>${safe-online.version}</version>
+			<type>ear</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-digipass-deploy</artifactId>
-			<type>ear</type>
 			<version>${safe-online.version}</version>
+			<type>ear</type>
 		</dependency>
 
 	</dependencies>

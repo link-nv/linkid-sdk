@@ -154,173 +154,96 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-webapp</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-remote-service</artifactId>
+			<version>${safe-online.version}</version>
 			<type>sar</type>
-			<version>${safe-online.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-ticket</artifactId>
-			<type>ejb</type>
-			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model-demo</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket-webapp</artifactId>
+			<version>${safe-online.version}</version>
 			<type>war</type>
-			<version>${safe-online.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-cinema</artifactId>
-			<type>ejb</type>
-			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model-demo</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-cinema-webapp</artifactId>
+			<version>${safe-online.version}</version>
 			<type>war</type>
-			<version>${safe-online.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-payment</artifactId>
-			<type>ejb</type>
-			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model-demo</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment-webapp</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment-service</artifactId>
+			<version>${safe-online.version}</version>
 			<type>sar</type>
-			<version>${safe-online.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-lawyer</artifactId>
-			<type>ejb</type>
-			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model-demo</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-webapp</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-service</artifactId>
+			<version>${safe-online.version}</version>
 			<type>sar</type>
-			<version>${safe-online.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-prescription</artifactId>
-			<type>ejb</type>
-			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model-demo</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId> safe-online-demo-prescription-webapp </artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId> safe-online-demo-prescription-service </artifactId>
+			<version>${safe-online.version}</version>
 			<type>sar</type>
-			<version>${safe-online.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-mandate</artifactId>
-			<type>ejb</type>
-			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model-demo</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-webapp</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-service</artifactId>
-			<type>sar</type>
 			<version>${safe-online.version}</version>
+			<type>sar</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ws-runtime</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ws-model</artifactId>
-			<type>ejb</type>
 			<version>${safe-online.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model-demo</artifactId>
-				</exclusion>
-			</exclusions>
+			<type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-demo</artifactId>
-			<type>ejb</type>
 			<version>${safe-online.version}</version>
+			<type>ejb</type>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -335,8 +258,8 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-startup</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 
 	</dependencies>

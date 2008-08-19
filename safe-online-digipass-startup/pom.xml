@@ -60,8 +60,8 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup</artifactId>
-			<type>war</type>
 			<version>${safe-online.version}</version>
+			<type>war</type>
 		</dependency>
 
 	</dependencies>

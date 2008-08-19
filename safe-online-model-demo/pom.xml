@@ -40,13 +40,14 @@
 
 	<dependencies>
 
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
-			<version>${safe-online.version}</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
@@ -84,9 +85,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>
-				safe-online-demo-prescription-keystore
-			</artifactId>
+			<artifactId>safe-online-demo-prescription-keystore</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
@@ -94,25 +93,13 @@
 			<artifactId>safe-online-demo-mandate-keystore</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-test-util</artifactId>
-			<version>${safe-online.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-common-client</artifactId>
-			<scope>test</scope>
-		</dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 
 	</dependencies>
 
