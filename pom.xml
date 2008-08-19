@@ -123,6 +123,8 @@
 
 	<!-- COMPILATION PROFILES -->
 	<profiles>
+
+        <!-- Profile to build demo artifacts -->
 		<profile>
 			<id>demo</id>
 			<properties>
@@ -134,46 +136,60 @@
 				<safe-online.demo.mandate.webapp.name>demo-mandate</safe-online.demo.mandate.webapp.name>
 				<safe-online.demo.payment.webapp.name>demo-payment</safe-online.demo.payment.webapp.name>
 				<safe-online.demo.ticket.webapp.name>demo-ticket</safe-online.demo.ticket.webapp.name>
+
+				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
 			</properties>
 			<modules>
+                <!-- DEMO CORE -->
 				<module>safe-online-model-demo</module>
-				<module>safe-online-demo-keystore</module>
-				<module>safe-online-demo-ticket-keystore</module>
-				<module>safe-online-demo-payment-keystore</module>
-				<module>safe-online-demo-lawyer-keystore</module>
-				<module>safe-online-demo-prescription-keystore</module>
-				<module>safe-online-demo-mandate-keystore</module>
-				<module>safe-online-demo-cinema-keystore</module>
-				<module>safe-online-demo-startup</module>
 				<module>safe-online-demo-deploy</module>
+
+				<module>safe-online-demo-util</module>
+				<module>safe-online-demo-wicket-tools</module>
+
+				<module>safe-online-demo-applet</module>
 				<module>safe-online-demo-webapp</module>
 				<module>safe-online-demo-service</module>
+				<module>safe-online-demo-startup</module>
+				<module>safe-online-demo-keystore</module>
 				<module>safe-online-demo-remote-service</module>
-				<module>safe-online-demo-deploy</module>
-				<module>safe-online-demo-applet</module>
+				<module>safe-online-demo-notification-consumer-ws-impl</module>
+
+				<module>safe-online-demo-ws-runtime</module>
+				<module>safe-online-demo-ws-model</module>
+
+                <!-- DEMO APPLICATIONS -->
 				<module>safe-online-demo-ticket-webapp</module>
 				<module>safe-online-demo-ticket</module>
+				<module>safe-online-demo-ticket-keystore</module>
+
 				<module>safe-online-demo-payment</module>
-				<module>safe-online-demo-payment-service</module>
 				<module>safe-online-demo-payment-webapp</module>
+				<module>safe-online-demo-payment-service</module>
+				<module>safe-online-demo-payment-keystore</module>
+
 				<module>safe-online-demo-lawyer</module>
 				<module>safe-online-demo-lawyer-webapp</module>
 				<module>safe-online-demo-lawyer-service</module>
-				<module>safe-online-demo-wicket-tools</module>
-				<module>safe-online-demo-cinema</module>
-				<module>safe-online-demo-cinema-webapp</module>
-				<module>safe-online-demo-util</module>
+				<module>safe-online-demo-lawyer-keystore</module>
+
 				<module>safe-online-demo-prescription</module>
 				<module>safe-online-demo-prescription-webapp</module>
 				<module>safe-online-demo-prescription-service</module>
+				<module>safe-online-demo-prescription-keystore</module>
+
 				<module>safe-online-demo-mandate</module>
 				<module>safe-online-demo-mandate-webapp</module>
 				<module>safe-online-demo-mandate-service</module>
-				<module>safe-online-demo-notification-consumer-ws-impl</module>
-				<module>safe-online-demo-ws-runtime</module>
-				<module>safe-online-demo-ws-model</module>
+				<module>safe-online-demo-mandate-keystore</module>
+
+				<module>safe-online-demo-cinema</module>
+				<module>safe-online-demo-cinema-webapp</module>
+				<module>safe-online-demo-cinema-keystore</module>
 			</modules>
 		</profile>
+
+        <!-- Profile to build demo distributions; requires profile 'demo' -->
 		<profile>
 			<id>demo-distribution</id>
 			<modules>
@@ -181,6 +197,8 @@
 				<module>safe-online-demo-distribution</module>
 			</modules>
 		</profile>
+
+        <!-- Profile to build a pilot version -->
 		<profile>
 			<id>pilot-core</id>
 			<properties>
@@ -202,6 +220,8 @@
 				<module>safe-online-maintenance-manual</module>
 			</modules>
 		</profile>
+
+        <!-- Profile to build the pilot distribution that uses MySQL as DS -->
 		<profile>
 			<id>pilot-mysql</id>
 			<properties>
@@ -216,6 +236,8 @@
 				<module>safe-online-pilot-mysql-distribution</module>
 			</modules>
 		</profile>
+
+        <!-- Profile to build the pilot distribution that uses HSQL as DS -->
 		<profile>
 			<id>pilot-hsql</id>
 			<modules>
@@ -224,6 +246,8 @@
 				<module>safe-online-pilot-hsql-distribution</module>
 			</modules>
 		</profile>
+
+        <!-- Profile to build the pilot distribution that uses PostgreSQL as DS -->
 		<profile>
 			<id>pilot-postgres</id>
 			<properties>
@@ -239,6 +263,8 @@
 				<module>safe-online-pilot-postgres-distribution</module>
 			</modules>
 		</profile>
+
+        <!-- Profile to build the pilot distribution that uses Oracle as DS -->
 		<profile>
 			<id>pilot-oracle</id>
 			<properties>
@@ -256,7 +282,7 @@
 			</modules>
 		</profile>
 
-		<!--  PROFILE USED DURING DEVELOPMENT -->
+        <!-- Profile used to create a development version -->
 		<profile>
 			<id>development</id>
 			<properties>
@@ -264,6 +290,8 @@
 				<safe-online.show.sql>true</safe-online.show.sql>
 			</properties>
 		</profile>
+
+        <!-- Profile used by Hudson -->
 		<profile>
 			<id>hudson</id>
 			<distributionManagement>
@@ -283,7 +311,7 @@
 			</distributionManagement>
 		</profile>
 
-		<!-- PROFILE FOR WEBAPP TESTING -->
+        <!-- Profile used to perform Web Application tests -->
 		<profile>
 			<id>test</id>
 			<properties>
@@ -301,15 +329,7 @@
 			</modules>
 		</profile>
 
-		<!--  PROFILE FOR BUILDING THE DEMOS -->
-		<profile>
-			<id>demonstration</id>
-			<properties>
-				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
-			</properties>
-		</profile>
-
-		<!-- PROFILE FOR BUILDING REMOTE DEVICES -->
+		<!-- Profile used to build a distribution for remote devices -->
 		<profile>
 			<id>remote-device</id>
 			<properties>
@@ -321,7 +341,7 @@
 			</modules>
 		</profile>
 
-		<!-- PROFILE FOR BUILDING THE SDK PACKAGE -->
+		<!-- Profile that creates an SDK package -->
 		<profile>
 			<id>sdk</id>
 			<properties>
@@ -335,7 +355,7 @@
 			</modules>
 		</profile>
 
-		<!-- PROFILE FOR BUILDING THE PERFORMANCE TESTING TOOLSET -->
+		<!-- Profile that enables the performance testing framework -->
 		<profile>
 			<id>performance</id>
 			<properties>
@@ -408,19 +428,24 @@
 			</properties>
 			<modules>
 				<module>safe-online-model-performance</module>
-				<module>safe-online-performance-startup</module>
 				<module>safe-online-performance-deploy</module>
-				<module>safe-online-performance-keystore</module>
+
 				<module>safe-online-performance-entity</module>
+				<module>safe-online-performance-startup</module>
+				<module>safe-online-performance-keystore</module>
 				<module>safe-online-performance-agent-service</module>
-				<module>safe-online-performance-scenario-base</module>
+
 				<module>safe-online-performance-scenario</module>
+				<module>safe-online-performance-scenario-base</module>
 				<module>safe-online-performance-scenario-deploy</module>
+
 				<module>safe-online-performance-console-base</module>
 				<module>safe-online-performance-console-swing</module>
 				<module>safe-online-performance-console-package</module>
 			</modules>
 		</profile>
+
+		<!-- Profile used to create an OLAS distribution for performance testing; requires profile 'performance' -->
 		<profile>
 			<id>performance-distribution</id>
 			<modules>
@@ -429,18 +454,32 @@
 				<module>safe-online-performance-agent-distribution</module>
 			</modules>
 		</profile>
+
+		<!-- Profile for deploying on sebeco-test-10 -->
 		<profile>
 			<id>sebeco-test-10</id>
 			<properties>
 				<safe-online.host.name> sebeco-test-10 </safe-online.host.name>
 			</properties>
 		</profile>
+
+		<!-- Profile for deploying on sebeco-dev-13 -->
 		<profile>
 			<id>sebeco-dev-13</id>
 			<properties>
 				<safe-online.host.name> sebeco-dev-13 </safe-online.host.name>
 			</properties>
 		</profile>
+
+		<!-- Profile for deploying on Wim's Laptop -->
+		<profile>
+			<id>wim-laptop</id>
+			<properties>
+				<safe-online.host.name> 192.168.5.103 </safe-online.host.name>
+			</properties>
+		</profile>
+
+		<!-- Profile that creates a distribution for Encap -->
 		<profile>
 			<id>test.encap.no</id>
 			<properties>
@@ -452,12 +491,7 @@
 				</safe-online.jboss.host.port.ssl>
 			</properties>
 		</profile>
-		<profile>
-			<id>wim-laptop</id>
-			<properties>
-				<safe-online.host.name> 192.168.5.103 </safe-online.host.name>
-			</properties>
-		</profile>
+
 	</profiles>
 
 	<!-- DEFAULT PROPERTIES -->
@@ -467,10 +501,8 @@
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
-		<safe-online.dialect> org.hibernate.dialect.HSQLDialect 
-		</safe-online.dialect>
-		<safe-online.hibernate.hbm2ddl.auto> create-drop 
-		</safe-online.hibernate.hbm2ddl.auto>
+		<safe-online.dialect>org.hibernate.dialect.HSQLDialect</safe-online.dialect>
+		<safe-online.hibernate.hbm2ddl.auto>create-drop</safe-online.hibernate.hbm2ddl.auto>
 		<safe-online.show.sql>false</safe-online.show.sql>
 		<debug.mode>false</debug.mode>
 		<safe-online.node.name>olas</safe-online.node.name>
@@ -480,8 +512,7 @@
 		<safe-online.host.port>8080</safe-online.host.port>
 		<safe-online.host.port.ssl>8443</safe-online.host.port.ssl>
 		<safe-online.jboss.host.port>8080</safe-online.jboss.host.port>
-		<safe-online.jboss.host.port.ssl> 8443 
-		</safe-online.jboss.host.port.ssl>
+		<safe-online.jboss.host.port.ssl>8443</safe-online.jboss.host.port.ssl>
 		<safe-online.host.basename>
 			${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
 		</safe-online.host.basename>
@@ -501,7 +532,6 @@
 		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
-        <safe-online.version>${safe-online.version}</olas.version>
         <bcel.version>5.1</bcel.version>
         <bsf.version>2.4.0</bsf.version>
         <bsh.version>1.3.0</bsh.version>
