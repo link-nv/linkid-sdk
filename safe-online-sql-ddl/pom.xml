@@ -109,20 +109,6 @@
 		</plugins>
 	</build>
 
-    <dependencyManagement>
-        <dependencies>
-
-            <!-- Dependency Groups -->
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-container-as</artifactId>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
-
 	<dependencies>
 
         <!-- Dependency Groups -->
@@ -144,6 +130,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-tools</artifactId>
+            <optional>true</optional>
 		</dependency>
 
 	</dependencies>

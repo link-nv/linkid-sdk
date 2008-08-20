@@ -83,11 +83,13 @@
 			<artifactId>safe-online-ws-common</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
-		<!--dependency>
+
+        <!-- Specific Dependencies: External -->
+		<dependency>
 			<groupId>com.sun.xml.ws</groupId>
 			<artifactId>jaxws-tools</artifactId>
 			<optional>true</optional>
-		</dependency-->
+		</dependency>
 
         <!-- Test Dependencies -->
         <dependency>

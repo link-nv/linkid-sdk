@@ -46,6 +46,17 @@
     
 	<dependencies>
 
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>axis</groupId>
+                    <artifactId>axis-saaj</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
 	</dependencies>
 

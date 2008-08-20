@@ -102,6 +102,13 @@
 			<version>${safe-online.version}</version>
 		</dependency>
 
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons-logging.version}</version>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>

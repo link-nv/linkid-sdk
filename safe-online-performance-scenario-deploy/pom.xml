@@ -27,7 +27,7 @@
 				<artifactId>maven-ear-plugin</artifactId>
 				<configuration>
 					<version>1.4</version>
-					<modules>
+					<!--modules>
                         <jarModule>
                             <groupId>org.slf4j</groupId>
                             <artifactId>slf4j-api</artifactId>
@@ -122,7 +122,7 @@
 								safe-online-performance-scenario
 							</artifactId>
 						</ejbModule>
-					</modules>
+					</modules-->
 					<jboss>
 						<version>4</version>
 					</jboss>

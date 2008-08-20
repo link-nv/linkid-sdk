@@ -23,38 +23,11 @@
 	<dependencies>
 
         <!-- Specific Dependencies: External -->
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jnp-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-ejb3-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-common-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-aop-jdk50-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-aspect-jdk50-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-remoting</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-transaction-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>concurrent</groupId>
-            <artifactId>concurrent</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons-logging.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>jgroups</groupId>
 			<artifactId>jgroups</artifactId>

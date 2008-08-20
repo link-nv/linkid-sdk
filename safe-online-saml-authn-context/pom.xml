@@ -79,6 +79,13 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <optional>true</optional>
+        </dependency>
+        
         <!-- Test Dependencies -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>

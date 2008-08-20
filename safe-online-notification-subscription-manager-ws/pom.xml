@@ -73,6 +73,13 @@
 			<version>${safe-online.version}</version>
 		</dependency>
 
+        <!-- Specific Dependencies: External -->
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-tools</artifactId>
+			<optional>true</optional>
+		</dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>

@@ -18,7 +18,6 @@
 	<artifactId>safe-online-webapp-base</artifactId>
 	<version>${safe-online.version}</version>
 	<packaging>war</packaging>
-	<version>${safe-online.version}</version>
     
     <build>
 		<plugins>

@@ -78,6 +78,12 @@
 			<artifactId>jcommon</artifactId>
 		</dependency>
 
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>

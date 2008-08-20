@@ -27,18 +27,20 @@ cd "${0%/*}/.."
 
 
 # Setup and parse arguments.
-noMaven=0
+noMaven=
+offline=
 nonGnuSed=$(sed -i '' /dev/null >/dev/null 2>&1; [[ $? != 4 ]] && echo 1)
-for arg in $(getArgs M "$@"); do
+for arg in $(getArgs oM "$@"); do
     case $arg in
         M) noMaven=1    ;;
+        o) offline=1    ;;
     esac
 done
 
 
 # Run the maven2 eclipse plugin.
 if (( ! noMaven )); then
-    mvn eclipse:eclipse \
+    mvn ${offline:+-o} eclipse:eclipse \
         || report "Maven eclipse plugin failed." || exit
 fi
 

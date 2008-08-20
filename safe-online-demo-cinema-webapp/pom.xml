@@ -74,14 +74,10 @@
 		</dependency>
 
         <!-- Specific Dependencies: External -->
-		<!--dependency>
-			<groupId>xpp3</groupId>
-			<artifactId>xpp3_min</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>xstream</groupId>
 			<artifactId>xstream</artifactId>
-		</dependency-->
+		</dependency>
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket</artifactId>

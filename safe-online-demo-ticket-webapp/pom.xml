@@ -85,7 +85,7 @@
 		</dependency>
 
         <!-- Specific Dependencies: External -->
-		<dependency>
+		<!--dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 			<scope>provided</scope>
@@ -94,7 +94,7 @@
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<scope>provided</scope>
-		</dependency>
+		</dependency-->
 
 		<!--dependency>
 			<groupId>net.sourceforge</groupId>

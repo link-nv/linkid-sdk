@@ -42,11 +42,14 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-performance-console-base</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
+
+        <!-- Specific Dependencies: External -->
 		<dependency>
 			<groupId>com.jgoodies</groupId>
 			<artifactId>forms</artifactId>
@@ -58,10 +61,6 @@
         <dependency>
             <groupId>com.lowagie</groupId>
             <artifactId>itext</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jbossall-client</artifactId>
         </dependency>
 
 	</dependencies>
