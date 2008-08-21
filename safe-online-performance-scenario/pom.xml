@@ -81,6 +81,11 @@
 
         <!-- Specific Dependencies: External -->
         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+            <version>${jboss.version}</version>
+        </dependency>
+        <dependency>
             <groupId>jgroups</groupId>
             <artifactId>jgroups</artifactId>
         </dependency>

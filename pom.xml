@@ -537,6 +537,7 @@
         <bsh.version>1.3.0</bsh.version>
         <jaxen.version>1.1</jaxen.version>
         <hibernate3.version>3.2.4.SP1</hibernate3.version>
+        <mimepull.version>1.2</mimepull.version>
         <joesnmp.version>0.3.4</joesnmp.version>
 		<jboss-packaging-maven-plugin.version> 2.0-SNAPSHOT 
 		</jboss-packaging-maven-plugin.version>
@@ -544,7 +545,9 @@
 		<junit.version>4.4</junit.version>
 		<jaxb-xjc.version>2.1.5</jaxb-xjc.version>
 		<jaxb-impl.version>2.1.5</jaxb-impl.version>
+		<jsr173_api.version>1.0</jsr173_api.version>
 		<jsr181-api.version>1.0-MR1</jsr181-api.version>
+		<jsr250-api.version>2.1.1</jsr250-api.version>
 		<jaxb-api.version>2.1</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
 		<saaj-impl.version>1.3</saaj-impl.version>
@@ -553,7 +556,7 @@
 		<jaxws-api.version>2.1-safeonline</jaxws-api.version>
 		<commons-logging-api.version>1.1</commons-logging-api.version>
 		<jboss.version>4.2.2.GA</jboss.version>
-		<jboss-messaging-dist.version>1.4.0.SP3</jboss-messaging-dist.version>
+		<jboss-messaging.version>1.4.1.CR1</jboss-messaging.version>
 		<sjsxp.version>1.0</sjsxp.version>
 		<commons-logging.version>1.1.0.jboss</commons-logging.version>
 		<log4j.version>1.2.14</log4j.version>
@@ -576,7 +579,6 @@
 		<servlet-api.version>2.4</servlet-api.version>
 		<shiftone-oocjndi.version>1.2</shiftone-oocjndi.version>
 		<shiftone-arbor.version>1.4</shiftone-arbor.version>
-		<jsr173_api.version>1.0</jsr173_api.version>
 		<commons-lang.version>2.3</commons-lang.version>
 		<jstl.version>1.1.2</jstl.version>
 		<jboss-seam.version>2.1.0.A1</jboss-seam.version>
@@ -623,7 +625,7 @@
 		<joda-time.version>1.5.1</joda-time.version>
 		<bouncycastle.version>138</bouncycastle.version>
 		<jetty-servlet-tester.version> 6.1.7 </jetty-servlet-tester.version>
-		<commons-httpclient.version>3.1</commons-httpclient.version>
+		<commons-httpclient.version>3.0.1</commons-httpclient.version>
 		<getopt.version>1.0.13</getopt.version>
 		<jetty.version>6.1.7</jetty.version>
 		<trinidad-api.version>1.2.1</trinidad-api.version>
@@ -650,7 +652,7 @@
 		<maven-compiler-plugin.version> 2.0.2 </maven-compiler-plugin.version>
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
-		<javassist.version>3.0</javassist.version>
+		<javassist.version>3.6.0.GA</javassist.version>
 		<richfaces-api.version>3.1.3.GA</richfaces-api.version>
 		<richfaces-impl.version>3.1.3.GA</richfaces-impl.version>
 		<richfaces-ui.version>3.1.3.GA</richfaces-ui.version>
@@ -660,7 +662,7 @@
 		<jgroups.version>2.6.1</jgroups.version>
 		<gravel.version>1.0.2.GA</gravel.version>
 		<velocity.version>1.5</velocity.version>
-		<xercesImpl.version>2.8.1</xercesImpl.version>
+		<xercesImpl.version>2.7.1</xercesImpl.version>
 		<rxtx.version>2.1.7</rxtx.version>
 		<maven-eclipse-plugin.version> 2.5.1 </maven-eclipse-plugin.version>
 		<commons-net.version>1.4.1</commons-net.version>
@@ -690,7 +692,6 @@
 		<jboss-jsfunit-core.version> 1.0-beta-1 </jboss-jsfunit-core.version>
 		<jboss-jsfunit-richfaces.version> 1.0-beta-1 
 		</jboss-jsfunit-richfaces.version>
-		<jboss-messaging.version>1.4.1.CR1</jboss-messaging.version>
 		<itext.version>1.4.8</itext.version>
 		<xpp3.version>1.1.4c</xpp3.version>
 		<xstream.version>1.1.3</xstream.version>
@@ -1475,15 +1476,18 @@
                 <version>${log4j.version}</version>
 				<scope>test</scope>
 			</dependency>
-			<!--dependency>
+			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
+                <version>${commons-logging.version}</version>
+                <scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging-api</artifactId>
-			</dependency-->
-			<!--dependency>
+                <version>${commons-logging-api.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>javax.xml.soap</groupId>
 				<artifactId>saaj-api</artifactId>
 				<version>${saaj-api.version}</version>
@@ -1491,7 +1495,8 @@
 			<dependency>
 				<groupId>com.sun.xml.messaging.saaj</groupId>
 				<artifactId>saaj-impl</artifactId>
-			</dependency-->
+				<version>${saaj-impl.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.sun.xml.bind</groupId>
 				<artifactId>jaxb-impl</artifactId>
@@ -1502,6 +1507,11 @@
 				<artifactId>jaxb-api</artifactId>
 				<version>${jaxb-api.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>org.jvnet</groupId>
+                <artifactId>mimepull</artifactId>
+				<version>${mimepull.version}</version>
+            </dependency>
             <!--dependency>
                 <groupId>org.jboss</groupId>
                 <artifactId>jboss-jaxws</artifactId>
@@ -1751,20 +1761,10 @@
 				<artifactId>catalina</artifactId>
 			</dependency-->
 			<dependency>
-				<groupId>com.sun.xml.ws</groupId>
-				<artifactId>jaxws-rt</artifactId>
-				<version>${jaxws-rt.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>net.java.dev</groupId>
 				<artifactId>jaxws-ri</artifactId>
 				<type>zip</type>
 				<version>${jaxws-rt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.xml.ws</groupId>
-				<artifactId>jaxws-tools</artifactId>
-				<version>${jaxws-tools.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.xml.stream</groupId>
@@ -1782,9 +1782,14 @@
 				<version>${jaxws-api.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>javax.jws</groupId>
-				<artifactId>jsr181-api</artifactId>
-				<version>${jsr181-api.version}</version>
+				<groupId>com.sun.xml.ws</groupId>
+				<artifactId>jaxws-rt</artifactId>
+				<version>${jaxws-rt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.xml.ws</groupId>
+				<artifactId>jaxws-tools</artifactId>
+				<version>${jaxws-tools.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>jboss.messaging</groupId>
@@ -1828,6 +1833,16 @@
 				<artifactId>jsr173_api</artifactId>
 				<version>${jsr173_api.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>javax.jws</groupId>
+				<artifactId>jsr181-api</artifactId>
+				<version>${jsr181-api.version}</version>
+			</dependency>
+            <dependency>
+                <groupId>sun-jaxws</groupId>
+                <artifactId>jsr250-api</artifactId>
+				<version>${jsr250-api.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
@@ -2096,7 +2111,7 @@
 				<version>${jboss.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>jboss</groupId>
+				<groupId>javassist</groupId>
 				<artifactId>javassist</artifactId>
 				<version>${javassist.version}</version>
 			</dependency>
@@ -2205,13 +2220,13 @@
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-messaging-dist</artifactId>
 				<type>zip</type>
-				<version>${jboss-messaging-dist.version}</version>
+				<version>${jboss-messaging.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-messaging-sar</artifactId>
 				<type>zip</type>
-				<version>${jboss-messaging-dist.version}</version>
+				<version>${jboss-messaging.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>axis</groupId>

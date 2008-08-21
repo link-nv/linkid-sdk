@@ -52,6 +52,13 @@
             <type>pom</type>
         </dependency>
 
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+            <version>${jboss.version}</version>
+        </dependency>
+
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

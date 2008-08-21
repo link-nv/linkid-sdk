@@ -140,6 +140,11 @@
 
         <!-- Specific Dependencies: External -->
         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+            <version>${jboss.version}</version>
+        </dependency>
+        <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
         </dependency>
@@ -150,10 +155,6 @@
 		<dependency>
 			<groupId>quartz</groupId>
 			<artifactId>quartz</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>jboss</groupId>
-			<artifactId>javassist</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>

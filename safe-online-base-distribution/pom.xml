@@ -100,7 +100,7 @@
 							</outputDirectory>
 						</configuration>
 					</execution>
-					<execution>
+					<!--execution>
 						<id>copy</id>
 						<phase>package</phase>
 						<goals>
@@ -114,7 +114,7 @@
 								jboss-as,jboss-messaging-dist,jboss-messaging-sar,jaxws-ri 
 							</excludeArtifactIds>
 						</configuration>
-					</execution>
+					</execution-->
 				</executions>
 			</plugin>
 			<plugin>
@@ -138,31 +138,7 @@
 		</plugins>
 	</build>
 
-    <dependencyManagement>
-        <dependencies>
-
-            <!-- Dependency Groups -->
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-container-as</artifactId>
-                <version>${safe-online.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
-
 	<dependencies>
-
-        <!-- Dependency Groups -->
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-as</artifactId>
-            <version>${safe-online.version}</version>
-            <scope>provided</scope>
-            <type>pom</type>
-        </dependency>
 
         <!-- Specific Dependencies: OLAS -->
 		<dependency>

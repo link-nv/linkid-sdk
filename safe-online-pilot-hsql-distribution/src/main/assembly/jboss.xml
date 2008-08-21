@@ -6,17 +6,17 @@
 		<format>zip</format>
 	</formats>
 	<fileSets>
-                <fileSet>
-                        <directory>
-                            target/files/safe-online-base-distribution-${safe-online.version}/jboss
-                        </directory>
-                        <outputDirectory>jboss</outputDirectory>
+        <fileSet>
+            <directory>
+                target/files/safe-online-base-distribution-${safe-online.version}/jboss
+            </directory>
+            <outputDirectory>jboss</outputDirectory>
 			<includes>
-		                <include>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</include>
-                                <include>server/default/deploy/hsql-safe-online-ds.xml</include>
-                                <include>server/default/deploy/hsqldb-ds.xml</include>
-                                <include>server/default/lib/hsqldb.jar</include>
-                                <include>server/default/lib/hsqldb-plugin.jar</include>
+                <include>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</include>
+                <include>server/default/deploy/hsql-safe-online-ds.xml</include>
+                <include>server/default/deploy/hsqldb-ds.xml</include>
+                <include>server/default/lib/hsqldb.jar</include>
+                <include>server/default/lib/hsqldb-plugin.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>

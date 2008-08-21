@@ -46,10 +46,6 @@
 			<groupId>xml-security</groupId>
 			<artifactId>xmlsec</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.ws</groupId>
-			<artifactId>jaxws-rt</artifactId>
-		</dependency>
 
         <!-- Test Dependencies -->
         <dependency>

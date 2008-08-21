@@ -3,15 +3,35 @@
 <!--
      The JBoss Messaging service deployment descriptor.
 
-     $Id: messaging-service.xml 3337 2007-11-16 12:22:58Z timfox $
+     $Id: messaging-service.xml 3616 2008-01-23 05:28:28Z clebert.suconic@jboss.com $
  -->
 
 <server>
 
-   <!-- ServerPeer MBean configuration
-        ============================== -->
+   <!--  The SecurityStore mbean -->
+   <mbean code="org.jboss.jms.server.security.SecurityMetadataStore"
+             name="jboss.messaging:service=SecurityStore">
+             
+        <!-- The default security configuration to apply to destinations - this can be overridden on a per destination basis
+        -->
+        <attribute name="DefaultSecurityConfig">
+             <security>
+                  <role name="guest" read="true" write="true" create="true"/>
+             </security>
+        </attribute>
+        
+        <!-- The JAAS security domain to use for JBoss Messaging -->
+        <attribute name="SecurityDomain">java:/jaas/messaging</attribute>
+        
+        <!--
+        This attribute defines what's the SuckerPassword used on this SecurityStore
+        -->
+        <attribute name="SuckerPassword">23ec27e1f1dc57fd89ff19aca8e9ac53</attribute>  
+   </mbean>
 
-   <mbean code="org.jboss.jms.server.ServerPeer"
+     <!-- ServerPeer MBean configuration
+          ============================== -->
+     <mbean code="org.jboss.jms.server.ServerPeer"
       name="jboss.messaging:service=ServerPeer"
       xmbean-dd="xmdesc/ServerPeer-xmbean.xml">
 
@@ -29,18 +49,6 @@
 
 	  <attribute name="PostOffice">jboss.messaging:service=PostOffice</attribute>
 	  
-	  <!-- The JAAS security domain to use for JBoss Messaging -->
-	  
-      <attribute name="SecurityDomain">java:/jaas/messaging</attribute>
-      
-      <!-- The default security configuration to apply to destinations - this can be overridden on a per destination basis -->
-      
-      <attribute name="DefaultSecurityConfig">
-        <security>
-            <role name="guest" read="true" write="true" create="true"/>
-        </security>
-      </attribute>
-      
       <!-- The default Dead Letter Queue (DLQ) to use for destinations.
            This can be overridden on a per destinatin basis -->
       
@@ -91,7 +99,8 @@
       <attribute name="RecoverDeliveriesTimeout">300000</attribute>
       
       <!-- The password used by the message sucker connections to create connections.
-           THIS SHOULD ALWAYS BE CHANGED AT INSTALL TIME TO SECURE SYSTEM -->
+           THIS SHOULD ALWAYS BE CHANGED AT INSTALL TIME TO SECURE SYSTEM
+      -->
       <attribute name="SuckerPassword">23ec27e1f1dc57fd89ff19aca8e9ac53</attribute>
 
       <depends optional-attribute-name="PersistenceManager">jboss.messaging:service=PersistenceManager</depends>
@@ -99,7 +108,8 @@
       <depends optional-attribute-name="JMSUserManager">jboss.messaging:service=JMSUserManager</depends>
       
       <depends>jboss.messaging:service=Connector,transport=bisocket</depends>
-
+      <depends optional-attribute-name="SecurityStore" proxy-type="org.jboss.jms.server.SecurityStore">jboss.messaging:service=SecurityStore</depends>
+          
    </mbean>
 
 </server>
