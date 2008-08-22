@@ -9,7 +9,7 @@
 	<inceptionYear>2006</inceptionYear>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
-    <version>${safe-online.version}</version>
+	<version>${safe-online.version}</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Lin.k N.V.</name>
@@ -330,8 +330,7 @@
 		<profile>
 			<id>performance</id>
 			<properties>
-				<safe-online.data.source.uri>
-					jdbc:mysql://localhost:3306/safeonline 
+				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
 				</safe-online.data.source.uri>
 				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
 				</safe-online.dialect>
@@ -453,8 +452,7 @@
 
 	<!-- DEFAULT PROPERTIES -->
 	<properties>
-        <safe-online.version>1.1-SNAPSHOT</safe-online.version>
-
+		<safe-online.version>1.1-SNAPSHOT</safe-online.version>
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
@@ -625,7 +623,7 @@
 		<Filters.version>1531</Filters.version>
 		<swing-worker.version>1.1</swing-worker.version>
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
-        <kaptcha.version>2.3</kaptcha.version>
+		<kaptcha.version>2.3</kaptcha.version>
 		<mysql-connector-java.version> 5.1.5 </mysql-connector-java.version>
 		<postgresql.version>8.2-504.jdbc3</postgresql.version>
 		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
@@ -650,6 +648,10 @@
 		<xstream.version>1.1.3</xstream.version>
 		<keytool-maven-plugin.version>1.0</keytool-maven-plugin.version>
 		<poi.version>3.0.2-FINAL</poi.version>
+		<felix.main.version>1.0.4</felix.main.version>
+		<felix.fileinstall.version>0.9.0</felix.fileinstall.version>
+		<osgi.core.version>1.0.1</osgi.core.version>
+		<osgi.compendium.version>1.0.1</osgi.compendium.version>
 	</properties>
 
 	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
@@ -762,6 +764,7 @@
 		<module>safe-online-beid-webapp</module>
 		<module>safe-online-identity-applet</module>
 		<module>safe-online-identity-applet-package</module>
+		<module>safe-online-osgi-plugin</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
@@ -857,8 +860,8 @@
 					<wtpmanifest>false</wtpmanifest>
 					<wtpapplicationxml>false</wtpapplicationxml>
 					<wtpversion>2.0</wtpversion>
-                    <downloadSources>true</downloadSources>
-                    <downloadJavadocs>true</downloadJavadocs>
+					<downloadSources>false</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
@@ -2077,6 +2080,26 @@
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
 				<version>${poi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.main</artifactId>
+				<version>${felix.main.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.fileinstall</artifactId>
+				<version>${felix.fileinstall.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>${osgi.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.osgi.compendium</artifactId>
+				<version>${osgi.compendium.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

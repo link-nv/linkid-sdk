@@ -527,7 +527,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
             return null;
         }
         LOG.debug("get device registration attributes: " + deviceMapping.getDevice().getUserAttributeType().getName());
-        registeredDeviceAttributes = this.identityService.listAttributes(deviceMapping.getId(), deviceMapping
+        registeredDeviceAttributes = this.identityService.listDeviceAttributes(deviceMapping.getId(), deviceMapping
                 .getDevice().getUserAttributeType(), locale);
         if (null == registeredDeviceAttributes)
             return null;

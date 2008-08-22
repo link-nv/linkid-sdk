@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Utils to ease the working with EJBs.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class EjbUtils {
 
@@ -42,7 +42,7 @@ public class EjbUtils {
 
     /**
      * Lookup an EJB within JNDI.
-     *
+     * 
      * @param <Type>
      * @param initialContext
      * @param jndiName
@@ -164,4 +164,38 @@ public class EjbUtils {
         return getComponentNames(initialContext, jndiPrefix, type);
     }
 
+    public static void bindComponent(String jndiName, Object component) throws NamingException {
+
+        LOG.debug("bind component: " + jndiName);
+        InitialContext initialContext = new InitialContext();
+        String[] names = jndiName.split("/");
+        Context context = initialContext;
+        for (int idx = 0; idx < names.length - 1; idx++) {
+            String name = names[idx];
+            LOG.debug("name: " + name);
+            NamingEnumeration<NameClassPair> listContent = context.list("");
+            boolean subContextPresent = false;
+            while (listContent.hasMore()) {
+                NameClassPair nameClassPair = listContent.next();
+                if (false == name.equals(nameClassPair.getName())) {
+                    continue;
+                }
+                subContextPresent = true;
+            }
+            if (false == subContextPresent) {
+                context = context.createSubcontext(name);
+            } else {
+                context = (Context) context.lookup(name);
+            }
+        }
+        String name = names[names.length - 1];
+        context.rebind(name, component);
+    }
+
+    public static Object getComponent(String jndiName) throws NamingException {
+
+        InitialContext initialContext = new InitialContext();
+        return initialContext.lookup(jndiName);
+
+    }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<assembly xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
 	<formats>
 		<format>zip</format>
@@ -27,17 +26,16 @@
 				<exclude>server/default/lib/jboss-jaxws.jar</exclude>
 				<exclude>server/default/lib/jbossmq.jar</exclude>
 				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
-                <exclude>server/default/deploy/jms/**</exclude>
-				<exclude>
-					server/default/deploy/jbossws.sar/jboss-jaxws.jar
+				<exclude>server/default/deploy/jms/**</exclude>
+				<exclude> server/default/deploy/jbossws.sar/jboss-jaxws.jar 
 				</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>
-            <directory>target/files/jboss-4.2.2.GA/server/default/deploy/jms</directory>
-            <outputDirectory>jboss/server/default/deploy</outputDirectory>
+			<directory>target/files/jboss-4.2.2.GA/server/default/deploy/jms</directory>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
 			<includes>
-                <include>jms-ra.rar</include>
+				<include>jms-ra.rar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
@@ -66,20 +64,20 @@
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 		<fileSet>
-            <directory>target/files</directory>
-            <excludes>
-                <exclude>jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
-            </excludes>
-            <includes>
-                <include>jboss-messaging.sar/**</include>
-            </includes>
+			<directory>target/files</directory>
+			<excludes>
+				<exclude>jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
+			</excludes>
+			<includes>
+				<include>jboss-messaging.sar/**</include>
+			</includes>
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
 		</fileSet>
 		<fileSet>
-            <directory>target/files/jboss-messaging-1.4.0.SP3</directory>
-            <includes>
-                <include>jboss-messaging.jar</include>
-            </includes>
+			<directory>target/files/jboss-messaging-1.4.0.SP3</directory>
+			<includes>
+				<include>jboss-messaging.jar</include>
+			</includes>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 		<fileSet>
@@ -89,11 +87,25 @@
 		<fileSet>
 			<directory>target/dependency</directory>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
+			<excludes>
+				<exclude>org.apache.felix.fileinstall-*</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>target/dependency</directory>
+			<includes>
+				<include>org.apache.felix.fileinstall-*</include>
+			</includes>
+			<outputDirectory>jboss/osgi/autostart</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/classes/osgi</directory>
+			<outputDirectory>jboss/osgi</outputDirectory>
 		</fileSet>
 	</fileSets>
 	<files>
 		<file>
-            <source>target/files/resources/hsql-safe-online-ds.xml</source>
+			<source>target/files/resources/hsql-safe-online-ds.xml</source>
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
 		</file>
 		<file>

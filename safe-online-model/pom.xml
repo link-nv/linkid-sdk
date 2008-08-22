@@ -132,6 +132,11 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-osgi-plugin</artifactId>
+			<version>${safe-online.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-identity-applet</artifactId>
 			<version>${safe-online.version}</version>
 			<scope>test</scope>
@@ -235,6 +240,10 @@
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jfreechart</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.main</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>

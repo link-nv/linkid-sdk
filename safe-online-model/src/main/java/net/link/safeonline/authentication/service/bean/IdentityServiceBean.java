@@ -702,74 +702,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         return confirmedAttributes;
     }
 
-    /**
-     * Convert a single valued / non-compounded attribute to an Attribute View
-     * 
-     * @param value
-     * @param index
-     * @param attributeType
-     * @param locale
-     * @return
-     */
-    private AttributeDO convertSingleAttribute(Object value, int index, AttributeTypeEntity attributeType, Locale locale) {
-
-        String language;
-        if (null == locale) {
-            language = null;
-        } else {
-            language = locale.getLanguage();
-        }
-
-        boolean multivalued = attributeType.isMultivalued();
-        String name = attributeType.getName();
-        DatatypeType type = attributeType.getType();
-        boolean editable = attributeType.isUserEditable();
-        boolean dataMining = false;
-        String humanReabableName = null;
-        String description = null;
-        if (null != language) {
-            AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
-                    .findDescription(new AttributeTypeDescriptionPK(name, language));
-            if (null != attributeTypeDescription) {
-                humanReabableName = attributeTypeDescription.getName();
-                description = attributeTypeDescription.getDescription();
-            }
-        }
-        AttributeDO attributeView = new AttributeDO(name, type, multivalued, index, humanReabableName, description,
-                editable, dataMining, null, null);
-        attributeView.setValue(value);
-        return attributeView;
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<AttributeDO> convertAttribute(Object value, AttributeTypeEntity attributeType, Locale locale)
-            throws AttributeTypeNotFoundException {
-
-        List<AttributeDO> attributes = new LinkedList<AttributeDO>();
-        if (attributeType.isCompounded()) {
-            Object[] attributeValues = (Object[]) value;
-            for (int idx = 0; idx < attributeValues.length; idx++) {
-                Map<String, Object> compoundedAttributesMap = (Map<String, Object>) attributeValues[idx];
-                for (String memberAttributeTypeName : compoundedAttributesMap.keySet()) {
-                    AttributeTypeEntity memberAttributeType = this.attributeTypeDAO
-                            .getAttributeType(memberAttributeTypeName);
-                    attributes.add(convertSingleAttribute(compoundedAttributesMap.get(memberAttributeTypeName), idx,
-                            memberAttributeType, locale));
-                }
-            }
-        } else if (attributeType.isMultivalued()) {
-            Object[] attributeValues = (Object[]) value;
-            for (int idx = 0; idx < attributeValues.length; idx++) {
-                attributes.add(convertSingleAttribute(attributeValues[idx], idx, attributeType, locale));
-            }
-        } else {
-            attributes.add(convertSingleAttribute(value, 0, attributeType, locale));
-        }
-        return attributes;
-    }
-
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> listAttributes(@NonEmptyString String deviceMappingId,
+    public List<AttributeDO> listDeviceAttributes(@NonEmptyString String deviceMappingId,
             @NotNull AttributeTypeEntity attributeType, Locale locale) throws PermissionDeniedException,
             AttributeTypeNotFoundException {
 
@@ -777,7 +711,10 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         Object value = this.proxyAttributeService.findDeviceAttributeValue(deviceMappingId, attributeType.getName());
         if (null == value)
             return null;
-        return convertAttribute(value, attributeType, locale);
+
+        List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
+        addValueToView(value, attributeType, attributesView, locale);
+        return attributesView;
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)

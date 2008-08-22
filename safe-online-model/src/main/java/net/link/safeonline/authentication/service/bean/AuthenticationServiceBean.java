@@ -80,6 +80,9 @@ import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.osgi.OSGIStartable;
+import net.link.safeonline.osgi.plugin.PluginAttributeService;
+import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
@@ -209,6 +212,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     @EJB
     private UserIdMappingService             userIdMappingService;
 
+    @EJB
+    private OSGIStartable                    osgiStartable;
+
+
     public void initialize(@NotNull AuthnRequest samlAuthnRequest) throws AuthenticationInitializationException,
             ApplicationNotFoundException, TrustDomainNotFoundException {
 
@@ -225,8 +232,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 break;
             }
         }
-        if (!validSignature)
+        if (!validSignature) {
             throw new AuthenticationInitializationException("signature validation error");
+        }
 
         String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
         if (null == assertionConsumerService) {
@@ -300,8 +308,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
-        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED)
+        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED) {
             throw new IllegalStateException("call initialize first");
+        }
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -336,8 +345,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
         if (this.authenticationState != INITIALIZED && this.authenticationState != USER_AUTHENTICATED
-                && this.authenticationState != REDIRECTED)
+                && this.authenticationState != REDIRECTED) {
             throw new IllegalStateException("call initialize or authenticate first");
+        }
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -369,8 +379,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             ServletException, DeviceMappingNotFoundException {
 
         LOG.debug("authenticate");
-        if (this.authenticationState != REDIRECTED)
+        if (this.authenticationState != REDIRECTED) {
             throw new IllegalStateException("call redirect first");
+        }
 
         DateTime now = new DateTime();
 
@@ -403,13 +414,13 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Assertion assertion = samlResponse.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-        if (authStatements.isEmpty())
+        if (authStatements.isEmpty()) {
             throw new ServletException("missing authentication statement");
+        }
 
         AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext()) {
+        if (null == authStatement.getAuthnContext())
             throw new ServletException("missing authentication context in authentication statement");
-        }
 
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
@@ -458,8 +469,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             ServletException, DeviceMappingNotFoundException {
 
         LOG.debug("register");
-        if (this.authenticationState != REDIRECTED)
+        if (this.authenticationState != REDIRECTED) {
             throw new IllegalStateException("call redirect first");
+        }
 
         DateTime now = new DateTime();
 
@@ -490,13 +502,13 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Assertion assertion = samlResponse.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-        if (authStatements.isEmpty())
+        if (authStatements.isEmpty()) {
             throw new ServletException("missing authentication statement");
+        }
 
         AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext()) {
+        if (null == authStatement.getAuthnContext())
             throw new ServletException("missing authentication context in authentication statement");
-        }
 
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
@@ -530,8 +542,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             ApplicationNotFoundException {
 
         LOG.debug("finalize authentication");
-        if (this.authenticationState != COMMITTED)
+        if (this.authenticationState != COMMITTED) {
             throw new IllegalStateException("call commit first");
+        }
 
         OlasEntity node = this.nodeAuthenticationService.getLocalNode();
 
@@ -588,16 +601,18 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private void checkStateBeforeCommit() {
 
-        if (this.authenticationState != USER_AUTHENTICATED)
+        if (this.authenticationState != USER_AUTHENTICATED) {
             throw new IllegalStateException("bean is not in the correct state");
+        }
     }
 
     private void checkRequiredIdentity() throws SubscriptionNotFoundException, ApplicationNotFoundException,
             ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException {
 
         boolean confirmationRequired = this.identityService.isConfirmationRequired(this.expectedApplicationId);
-        if (true == confirmationRequired)
+        if (true == confirmationRequired) {
             throw new IdentityConfirmationRequiredException();
+        }
     }
 
     private void checkRequiredMissingAttributes() throws ApplicationNotFoundException,
@@ -605,8 +620,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             AttributeTypeNotFoundException {
 
         boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.expectedApplicationId);
-        if (true == hasMissingAttributes)
+        if (true == hasMissingAttributes) {
             throw new MissingAttributeException();
+        }
     }
 
     private void checkDevicePolicy() throws ApplicationNotFoundException, EmptyDevicePolicyException,
@@ -623,9 +639,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 break;
             }
         }
-        if (!found) {
+        if (!found)
             throw new DevicePolicyException();
-        }
     }
 
     private void checkRequiredUsageAgreement() throws ApplicationNotFoundException,
@@ -633,18 +648,16 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         boolean requiresUsageAgreementAcceptation = this.usageAgreementService
                 .requiresUsageAgreementAcceptation(this.expectedApplicationId);
-        if (true == requiresUsageAgreementAcceptation) {
+        if (true == requiresUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
-        }
     }
 
     private void checkRequiredGlobalUsageAgreement() throws UsageAgreementAcceptationRequiredException {
 
         boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService
                 .requiresGlobalUsageAgreementAcceptation();
-        if (true == requiresGlobalUsageAgreementAcceptation) {
+        if (true == requiresGlobalUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
-        }
     }
 
     public void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
@@ -667,9 +680,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         checkRequiredUsageAgreement();
 
         ApplicationEntity application = this.applicationDAO.findApplication(this.expectedApplicationId);
-        if (null == application)
+        if (null == application) {
             // TODO: add security audit
             throw new ApplicationNotFoundException();
+        }
 
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(this.authenticatedSubject, application);
         if (null == subscription)
@@ -687,13 +701,27 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          */
         this.authenticationState = COMMITTED;
 
+        // XXX: OSGI tryout
+        Object[] pluginServices = this.osgiStartable.getPluginServices();
+        for (int i = 0; pluginServices != null && i < pluginServices.length; i++) {
+            try {
+                LOG.debug("pluginservice.getAttribute");
+                ((PluginAttributeService) pluginServices[i]).getAttribute(this.authenticatedSubject.getUserId(),
+                        "test-attribute", "configuration=test");
+                ((PluginAttributeService) pluginServices[i]).getAttribute(this.authenticatedSubject.getUserId(),
+                        SafeOnlineConstants.LOGIN_ATTRIBTUE, "configuration=test");
+            } catch (UnsupportedDataTypeException e) {
+                LOG.error("[TODO]", e);
+            }
+        }
     }
 
     public String getUserId() {
 
         LOG.debug("getUserId");
-        if (this.authenticationState != USER_AUTHENTICATED && this.authenticationState != COMMITTED)
+        if (this.authenticationState != USER_AUTHENTICATED && this.authenticationState != COMMITTED) {
             throw new IllegalStateException("call authenticate first");
+        }
         String userId = this.authenticatedSubject.getUserId();
         return userId;
     }
@@ -715,29 +743,33 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     public String getExpectedApplicationId() {
 
-        if (this.authenticationState == INIT)
+        if (this.authenticationState == INIT) {
             throw new IllegalStateException("call initialize first");
+        }
         return this.expectedApplicationId;
     }
 
     public String getExpectedApplicationFriendlyName() {
 
-        if (this.authenticationState == INIT)
+        if (this.authenticationState == INIT) {
             throw new IllegalStateException("call initialize first");
+        }
         return this.expectedApplicationFriendlyName;
     }
 
     public String getExpectedTarget() {
 
-        if (this.authenticationState == INIT)
+        if (this.authenticationState == INIT) {
             throw new IllegalStateException("call initialize first");
+        }
         return this.expectedTarget;
     }
 
     public Set<DeviceEntity> getRequiredDevicePolicy() {
 
-        if (this.authenticationState == INIT)
+        if (this.authenticationState == INIT) {
             throw new IllegalStateException("call initialize first");
+        }
         return this.requiredDevicePolicy;
     }
 
