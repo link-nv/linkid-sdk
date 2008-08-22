@@ -81,8 +81,6 @@ import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.plugin.PluginAttributeService;
-import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
@@ -702,18 +700,16 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.authenticationState = COMMITTED;
 
         // XXX: OSGI tryout
-        Object[] pluginServices = this.osgiStartable.getPluginServices();
-        for (int i = 0; pluginServices != null && i < pluginServices.length; i++) {
-            try {
-                LOG.debug("pluginservice.getAttribute");
-                ((PluginAttributeService) pluginServices[i]).getAttribute(this.authenticatedSubject.getUserId(),
-                        "test-attribute", "configuration=test");
-                ((PluginAttributeService) pluginServices[i]).getAttribute(this.authenticatedSubject.getUserId(),
-                        SafeOnlineConstants.LOGIN_ATTRIBTUE, "configuration=test");
-            } catch (UnsupportedDataTypeException e) {
-                LOG.error("[TODO]", e);
-            }
-        }
+        /*
+         * Object[] pluginServices = this.osgiStartable.getPluginServices(); for (int i = 0; pluginServices != null && i <
+         * pluginServices.length; i++) { try { LOG.debug("pluginservice.getAttribute"); ((PluginAttributeService)
+         * pluginServices[i]).getAttribute(this.authenticatedSubject.getUserId(), "test-attribute",
+         * "configuration=test"); ((PluginAttributeService)
+         * pluginServices[i]).getAttribute(this.authenticatedSubject.getUserId(), SafeOnlineConstants.LOGIN_ATTRIBTUE,
+         * "configuration=test"); } catch (UnsupportedDataTypeException e) { LOG.error("[TODO]", e); } catch
+         * (AttributeNotFoundException e) { LOG.error("[TODO]", e); } catch
+         * (net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException e) { LOG.error("[TODO]", e); } }
+         */
     }
 
     public String getUserId() {
