@@ -21,8 +21,10 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.osgi.OSGIAttributeService;
+import net.link.safeonline.osgi.OlasAttributeServiceImpl;
 import net.link.safeonline.osgi.plugin.Attribute;
 import net.link.safeonline.osgi.plugin.DatatypeType;
+import net.link.safeonline.osgi.plugin.OlasAttributeService;
 import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
 import org.apache.commons.logging.Log;
@@ -32,10 +34,12 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 /**
  * <h2>{@link OSGIAttributeServiceBean}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>OLAS Attribute Service used by OSGi plugin bundles.</sub></h2>
  * 
  * <p>
- * [description / usage].
+ * This EJB is used by OSGi plugin bundles when retrieving attributes from OLAS. It is called from
+ * {@link OlasAttributeServiceImpl} which is an implementation of the OLAS attribute service (
+ * {@link OlasAttributeService} that external plugins use.
  * </p>
  * 
  * <p>
@@ -127,8 +131,8 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
             throws UnsupportedDataTypeException {
 
         LOG.debug("get attribute view for type: " + attributeType.getName() + " with value: " + value);
-        Attribute attributeView = new Attribute(attributeType.getName(), convertDataType(attributeType.getType()),
-                attributeType.isMultivalued(), idx, null, null);
+        Attribute attributeView = new Attribute(attributeType.getName(), convertDataType(attributeType.getType()), idx,
+                null, null);
 
         attributeView.setMember(attributeType.isCompoundMember());
         attributeView.setValue(value);

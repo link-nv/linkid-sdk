@@ -29,7 +29,7 @@ import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.attrib.AddAttribute;
 import net.link.safeonline.service.AttributeTypeService;
@@ -142,15 +142,15 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<SelectItem> nodeFactory() {
 
-        List<OlasEntity> nodeList = this.nodeService.listNodes();
+        List<NodeEntity> nodeList = this.nodeService.listNodes();
         List<SelectItem> nodes = ConvertorUtil.convert(nodeList, new OlasEntitySelectItemConvertor());
         return nodes;
     }
 
 
-    static class OlasEntitySelectItemConvertor implements Convertor<OlasEntity, SelectItem> {
+    static class OlasEntitySelectItemConvertor implements Convertor<NodeEntity, SelectItem> {
 
-        public SelectItem convert(OlasEntity input) {
+        public SelectItem convert(NodeEntity input) {
 
             SelectItem output = new SelectItem(input.getName());
             return output;
@@ -285,7 +285,7 @@ public class AddAttributeBean implements AddAttribute {
         attributeType.setUserVisible(this.userVisible);
         attributeType.setDeviceAttribute(this.deviceAttribute);
 
-        OlasEntity olasNode = this.nodeService.getNode(this.node);
+        NodeEntity olasNode = this.nodeService.getNode(this.node);
         attributeType.setLocation(olasNode);
 
         if (null != this.memberAccessControlAttributes) {

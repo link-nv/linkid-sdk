@@ -13,7 +13,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 
 
 /**
@@ -53,7 +53,7 @@ public interface NodeAuthenticationService {
      * @return the OLAS node entity
      * @throws NodeNotFoundException
      */
-    OlasEntity getNode(String nodeName) throws NodeNotFoundException;
+    NodeEntity getNode(String nodeName) throws NodeNotFoundException;
 
     /**
      * Gives back the node entity at this location.
@@ -61,5 +61,5 @@ public interface NodeAuthenticationService {
      * @return
      * @throws NodeNotFoundException
      */
-    OlasEntity getLocalNode() throws NodeNotFoundException;
+    NodeEntity getLocalNode() throws NodeNotFoundException;
 }

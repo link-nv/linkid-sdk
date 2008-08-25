@@ -26,7 +26,7 @@ import net.link.safeonline.authentication.service.NodeService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.node.Node;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
@@ -82,12 +82,12 @@ public class NodeBean implements Node {
 
     @SuppressWarnings("unused")
     @DataModel(OPER_NODE_LIST_NAME)
-    private List<OlasEntity>    operNodeList;
+    private List<NodeEntity>    operNodeList;
 
     @DataModelSelection(OPER_NODE_LIST_NAME)
     @Out(value = "selectedNode", required = false, scope = ScopeType.SESSION)
     @In(required = false)
-    private OlasEntity          selectedNode;
+    private NodeEntity          selectedNode;
 
 
     @Remove

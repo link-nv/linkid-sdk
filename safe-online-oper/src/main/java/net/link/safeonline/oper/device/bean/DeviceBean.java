@@ -37,7 +37,7 @@ import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.device.Device;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
@@ -186,15 +186,15 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<SelectItem> nodeFactory() {
 
-        List<OlasEntity> nodeList = this.nodeService.listNodes();
+        List<NodeEntity> nodeList = this.nodeService.listNodes();
         List<SelectItem> nodes = ConvertorUtil.convert(nodeList, new OlasEntitySelectItemConvertor());
         return nodes;
     }
 
 
-    static class OlasEntitySelectItemConvertor implements Convertor<OlasEntity, SelectItem> {
+    static class OlasEntitySelectItemConvertor implements Convertor<NodeEntity, SelectItem> {
 
-        public SelectItem convert(OlasEntity input) {
+        public SelectItem convert(NodeEntity input) {
 
             SelectItem output = new SelectItem(input.getName());
             return output;

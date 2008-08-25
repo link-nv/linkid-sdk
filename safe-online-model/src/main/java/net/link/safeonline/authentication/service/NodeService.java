@@ -14,7 +14,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ExistingNodeException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 
@@ -31,7 +31,7 @@ public interface NodeService {
      * Gives back all known olas nodes
      *
      */
-    List<OlasEntity> listNodes();
+    List<NodeEntity> listNodes();
 
     /**
      * Gives back the olas node entity for a given node name.
@@ -39,7 +39,7 @@ public interface NodeService {
      * @param nodeName
      * @throws NodeNotFoundException
      */
-    OlasEntity getNode(String nodeName) throws NodeNotFoundException;
+    NodeEntity getNode(String nodeName) throws NodeNotFoundException;
 
     /**
      * @param name

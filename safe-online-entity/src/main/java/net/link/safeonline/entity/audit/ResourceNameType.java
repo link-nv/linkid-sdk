@@ -9,11 +9,11 @@ package net.link.safeonline.entity.audit;
 
 /**
  * Resource type
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public enum ResourceNameType {
 
-    NTP, OCSP, WS;
+    NTP, OCSP, WS, OSGI;
 }

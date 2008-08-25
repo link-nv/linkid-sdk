@@ -128,7 +128,11 @@ public class AttributeTypeEntity implements Serializable {
 
     private List<CompoundedAttributeTypeMemberEntity>   members;
 
-    private OlasEntity                                  location;
+    private NodeEntity                                  location;
+
+    private String                                      pluginConfiguration;
+
+    private String                                      pluginName;
 
 
     public AttributeTypeEntity() {
@@ -237,7 +241,7 @@ public class AttributeTypeEntity implements Serializable {
 
     /**
      * Marks whether this attribute type allows for multivalued attributes.
-     *
+     * 
      */
     public boolean isMultivalued() {
 
@@ -253,7 +257,7 @@ public class AttributeTypeEntity implements Serializable {
      * Marks whether this attribute type is a member of a compounded attribute type. This field is used to have a
      * performant implementation of the restriction that an attribute type can only participate in one compounded
      * attribute type.
-     *
+     * 
      */
     public boolean isCompoundMember() {
 
@@ -279,16 +283,17 @@ public class AttributeTypeEntity implements Serializable {
 
     /**
      * Adds a member to this compounded attribute type. This method also marks the member attribute type as being such.
-     *
+     * 
      * @param memberAttributeType
      * @param memberSequence
      * @param required
      */
     public void addMember(AttributeTypeEntity memberAttributeType, int memberSequence, boolean required) {
 
-        if (memberAttributeType.isCompoundMember())
+        if (memberAttributeType.isCompoundMember()) {
             throw new EJBException("attribute type cannot be member of more than one compounded: "
                     + memberAttributeType.getName());
+        }
         CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(this, memberAttributeType,
                 memberSequence, required);
         getMembers().add(member);
@@ -315,15 +320,15 @@ public class AttributeTypeEntity implements Serializable {
 
     /**
      * Returns the OLAS node which holds the attribute values of this type.
-     *
+     * 
      */
     @ManyToOne
-    public OlasEntity getLocation() {
+    public NodeEntity getLocation() {
 
         return this.location;
     }
 
-    public void setLocation(OlasEntity location) {
+    public void setLocation(NodeEntity location) {
 
         this.location = location;
     }
@@ -343,6 +348,32 @@ public class AttributeTypeEntity implements Serializable {
         return false;
     }
 
+    public String getPluginConfiguration() {
+
+        return this.pluginConfiguration;
+    }
+
+    public void setPluginConfiguration(String pluginConfiguration) {
+
+        this.pluginConfiguration = pluginConfiguration;
+    }
+
+    public String getPluginName() {
+
+        return this.pluginName;
+    }
+
+    public void setPluginName(String pluginName) {
+
+        this.pluginName = pluginName;
+    }
+
+    @Transient
+    public boolean isExternal() {
+
+        return null != this.pluginName;
+    }
+
 
     public interface QueryInterface {
 
@@ -350,7 +381,7 @@ public class AttributeTypeEntity implements Serializable {
         List<AttributeTypeEntity> listAttributeTypes();
 
         @QueryMethod(QUERY_WHERE_NODE)
-        List<AttributeTypeEntity> listAttributeTypes(@QueryParam("location") OlasEntity node);
+        List<AttributeTypeEntity> listAttributeTypes(@QueryParam("location") NodeEntity node);
 
         @QueryMethod(QUERY_WHERE_VISIBLE)
         List<AttributeTypeEntity> listVisibleAttributeTypes();

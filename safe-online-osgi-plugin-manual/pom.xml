@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
+		<version>${safe-online.version}</version>
+	</parent>
+
+	<name>SafeOnline OSGi Plugin Manual</name>
+
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-osgi-plugin-manual</artifactId>
+	<version>${safe-online.version}</version>
+	<packaging>pom</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jboss.maven.plugins</groupId>
+				<artifactId>maven-jdocbook-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.jboss</groupId>
+						<artifactId>jbossorg-docbook-xslt</artifactId>
+						<version>1.0.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.jboss</groupId>
+						<artifactId>jbossorg-jdocbook-style</artifactId>
+						<version>1.0.0</version>
+						<type>jdocbook-style</type>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<formats>
+						<format>
+							<formatName>pdf</formatName>
+							<stylesheetResource>
+								classpath:/xslt/org/jboss/main-pdf.xsl
+							</stylesheetResource>
+						</format>
+					</formats>
+					<sourceDocumentName>
+						osgi-plugin-manual.xml
+					</sourceDocumentName>
+					<imageResource>
+						<directory>
+							${basedir}/src/main/images
+						</directory>
+					</imageResource>
+				</configuration>
+				<executions>
+					<execution>
+						<id>resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>
+							src/main/assembly/osgi-plugin-manual-assembly.xml
+						</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

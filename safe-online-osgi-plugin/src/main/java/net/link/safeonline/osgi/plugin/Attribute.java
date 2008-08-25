@@ -18,7 +18,7 @@ import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
  * 
  * <p>
  * Attribute Data Object. Used to transfer data between OLAS and OSGI plugin
- * bundles. OLAS Attribute Service API.
+ * bundles.
  * </p>
  * 
  * <p>
@@ -47,18 +47,15 @@ public class Attribute implements Serializable, Cloneable {
 
 	private Date dateValue;
 
-	private boolean multivalued;
-
 	private boolean compounded;
 
 	private boolean member;
 
-	public Attribute(String name, DatatypeType type, boolean multivalued,
-			long index, String stringValue, Boolean booleanValue) {
+	public Attribute(String name, DatatypeType type, long index,
+			String stringValue, Boolean booleanValue) {
 
 		this.name = name;
 		this.type = type;
-		this.multivalued = multivalued;
 		this.index = index;
 		this.stringValue = stringValue;
 		this.booleanValue = booleanValue;
@@ -144,21 +141,51 @@ public class Attribute implements Serializable, Cloneable {
 
 	public void setValue(Object value) throws UnsupportedDataTypeException {
 
-		if (value.getClass().equals(String.class)) {
+		switch (this.type) {
+		case STRING: {
 			this.setStringValue((String) value);
-		} else if (value.getClass().equals(Boolean.class)) {
+			break;
+		}
+		case BOOLEAN: {
 			this.setBooleanValue((Boolean) value);
-		} else if (value.getClass().equals(Integer.class)) {
+			break;
+		}
+		case INTEGER: {
 			this.setIntegerValue((Integer) value);
-		} else if (value.getClass().equals(Double.class)) {
+			break;
+		}
+		case DOUBLE: {
 			this.setDoubleValue((Double) value);
-		} else if (value.getClass().equals(Date.class)) {
+			break;
+		}
+		case DATE: {
 			this.setDateValue((Date) value);
-		} else {
+			break;
+		}
+		default: {
 			throw new UnsupportedDataTypeException("unsupported data type: "
 					+ value.getClass().getName());
 		}
+		}
+	}
 
+	public Object getValue() throws UnsupportedDataTypeException {
+
+		switch (this.type) {
+		case STRING:
+			return this.getStringValue();
+		case BOOLEAN:
+			return this.getBooleanValue();
+		case INTEGER:
+			return this.getIntegerValue();
+		case DOUBLE:
+			return this.getDoubleValue();
+		case DATE:
+			return this.getDateValue();
+		default:
+			throw new UnsupportedDataTypeException("unsupported data type: "
+					+ this.type);
+		}
 	}
 
 	public DatatypeType getType() {
@@ -185,21 +212,6 @@ public class Attribute implements Serializable, Cloneable {
 	public void setIndex(long index) {
 
 		this.index = index;
-	}
-
-	/**
-	 * Marks whether this attribute value is part of a multi-valued attribute or
-	 * not.
-	 * 
-	 */
-	public boolean isMultivalued() {
-
-		return this.multivalued;
-	}
-
-	public void setMultivalued(boolean multivalued) {
-
-		this.multivalued = multivalued;
 	}
 
 	/**
@@ -241,9 +253,8 @@ public class Attribute implements Serializable, Cloneable {
 	@Override
 	public Attribute clone() {
 
-		Attribute attribute = new Attribute(this.name, this.type,
-				this.multivalued, this.index, this.stringValue,
-				this.booleanValue);
+		Attribute attribute = new Attribute(this.name, this.type, this.index,
+				this.stringValue, this.booleanValue);
 		attribute.integerValue = this.integerValue;
 		attribute.doubleValue = this.doubleValue;
 		attribute.dateValue = this.dateValue;
@@ -253,8 +264,8 @@ public class Attribute implements Serializable, Cloneable {
 	@Override
 	public String toString() {
 
-		return "name = " + this.name + " multi-valued= " + this.multivalued
-				+ " index=" + this.index + " string-value=" + this.stringValue
-				+ " integer-value=" + this.integerValue;
+		return "name = " + this.name + " index=" + this.index
+				+ " string-value=" + this.stringValue + " integer-value="
+				+ this.integerValue;
 	}
 }

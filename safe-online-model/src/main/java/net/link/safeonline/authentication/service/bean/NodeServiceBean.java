@@ -27,9 +27,9 @@ import net.link.safeonline.authentication.service.NodeService;
 import net.link.safeonline.authentication.service.NodeServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.OlasDAO;
+import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
@@ -52,14 +52,14 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
     private static final Log LOG = LogFactory.getLog(NodeServiceBean.class);
 
     @EJB
-    private OlasDAO          olasDAO;
+    private NodeDAO          olasDAO;
 
     @EJB
     private AttributeTypeDAO attributeTypeDAO;
 
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<OlasEntity> listNodes() {
+    public List<NodeEntity> listNodes() {
 
         return this.olasDAO.listNodes();
     }
@@ -81,7 +81,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 
     private void checkExistingNode(String name) throws ExistingNodeException {
 
-        OlasEntity existingNode = this.olasDAO.findNode(name);
+        NodeEntity existingNode = this.olasDAO.findNode(name);
         if (null != existingNode) {
             throw new ExistingNodeException();
         }
@@ -92,7 +92,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
     public void removeNode(String name) throws NodeNotFoundException, PermissionDeniedException {
 
         LOG.debug("remove node: " + name);
-        OlasEntity node = this.olasDAO.getNode(name);
+        NodeEntity node = this.olasDAO.getNode(name);
 
         // check if present in an attribute type
         List<AttributeTypeEntity> nodeAttributeTypes = this.attributeTypeDAO.listAttributeTypes(node);
@@ -105,7 +105,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public OlasEntity getNode(String nodeName) throws NodeNotFoundException {
+    public NodeEntity getNode(String nodeName) throws NodeNotFoundException {
 
         return this.olasDAO.getNode(nodeName);
     }
@@ -117,7 +117,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
         LOG.debug("updating olas node authentication certificate for " + nodeName);
         X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
 
-        OlasEntity node = this.olasDAO.getNode(nodeName);
+        NodeEntity node = this.olasDAO.getNode(nodeName);
         node.setAuthnCertificate(certificate);
     }
 
@@ -128,7 +128,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
         LOG.debug("updating olas node certificate for " + nodeName);
         X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
 
-        OlasEntity node = this.olasDAO.getNode(nodeName);
+        NodeEntity node = this.olasDAO.getNode(nodeName);
         node.setSigningCertificate(certificate);
     }
 
@@ -137,7 +137,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
             throws NodeNotFoundException {
 
         LOG.debug("update olas node location for " + nodeName);
-        OlasEntity node = this.olasDAO.getNode(nodeName);
+        NodeEntity node = this.olasDAO.getNode(nodeName);
         node.setProtocol(protocol);
         node.setHostname(hostname);
         node.setPort(port);

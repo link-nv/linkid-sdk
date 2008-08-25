@@ -36,7 +36,7 @@ import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.HistoryEventType;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
@@ -115,7 +115,7 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         PublicKey publicKey = identityServiceClient.getPublicKey();
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
-        OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+        NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
         Challenge<String> challenge = new Challenge<String>();
 
@@ -144,7 +144,7 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         DateTime now = new DateTime();
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+        NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
         Response samlResponse = AuthnResponseUtil.validateResponse(now, request, this.expectedChallengeId,
                 this.expectedDeviceOperation.name(), node.getLocation(), authIdentityServiceClient.getCertificate(),

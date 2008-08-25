@@ -191,6 +191,7 @@
 				<module>safe-online-root-webapp</module>
 				<module>safe-online-install-manual</module>
 				<module>safe-online-maintenance-manual</module>
+				<module>safe-online-osgi-plugin-manual</module>
 			</modules>
 		</profile>
 		<profile>

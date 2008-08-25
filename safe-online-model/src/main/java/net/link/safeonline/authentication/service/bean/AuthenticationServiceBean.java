@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -75,11 +76,12 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.HistoryEventType;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.osgi.OSGIStartable;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
@@ -211,6 +213,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     private UserIdMappingService             userIdMappingService;
 
     @EJB
+    private SecurityAuditLogger              securityAuditLogger;
+
+    @EJB
     private OSGIStartable                    osgiStartable;
 
 
@@ -315,7 +320,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         PublicKey publicKey = identityServiceClient.getPublicKey();
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
-        OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+        NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
         Set<String> devices = Collections.singleton(device);
 
@@ -352,7 +357,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         PublicKey publicKey = identityServiceClient.getPublicKey();
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
-        OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+        NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
         Challenge<String> challenge = new Challenge<String>();
 
@@ -384,7 +389,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         DateTime now = new DateTime();
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+        NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
         Response samlResponse = AuthnResponseUtil.validateResponse(now, request, this.expectedDeviceChallengeId,
                 this.expectedApplicationId, node.getLocation(), authIdentityServiceClient.getCertificate(),
@@ -474,7 +479,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         DateTime now = new DateTime();
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+        NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
         Response samlResponse = AuthnResponseUtil.validateResponse(now, request, this.expectedDeviceChallengeId,
                 DeviceOperationType.NEW_ACCOUNT_REGISTER.name(), node.getLocation(), authIdentityServiceClient
@@ -544,7 +549,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new IllegalStateException("call commit first");
         }
 
-        OlasEntity node = this.nodeAuthenticationService.getLocalNode();
+        NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -679,14 +684,17 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         ApplicationEntity application = this.applicationDAO.findApplication(this.expectedApplicationId);
         if (null == application) {
-            // TODO: add security audit
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, this.authenticatedSubject
+                    .getUserId(), "unknown application " + this.expectedApplicationId);
             throw new ApplicationNotFoundException();
         }
 
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(this.authenticatedSubject, application);
-        if (null == subscription)
-            // TODO: add security audit
+        if (null == subscription) {
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, this.authenticatedSubject
+                    .getUserId(), "susbcription not found for " + this.expectedApplicationId);
             throw new SubscriptionNotFoundException();
+        }
 
         addHistoryEntry(this.authenticatedSubject, HistoryEventType.LOGIN_SUCCESS, this.expectedApplicationId,
                 this.authenticationDevice.getName());

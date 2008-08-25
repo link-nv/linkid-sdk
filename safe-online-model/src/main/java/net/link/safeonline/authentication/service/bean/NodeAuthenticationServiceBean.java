@@ -16,8 +16,8 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.dao.OlasDAO;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.dao.NodeDAO;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
@@ -38,7 +38,7 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
     private static final Log LOG = LogFactory.getLog(NodeAuthenticationServiceBean.class);
 
     @EJB
-    private OlasDAO          olasDAO;
+    private NodeDAO          olasDAO;
 
     @EJB
     private TrustPointDAO    trustPointDAO;
@@ -46,7 +46,7 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
 
     public String authenticate(X509Certificate authnCertificate) throws NodeNotFoundException {
 
-        OlasEntity node = this.olasDAO.getNodeFromAuthnCertificate(authnCertificate);
+        NodeEntity node = this.olasDAO.getNodeFromAuthnCertificate(authnCertificate);
         String nodeName = node.getName();
         LOG.debug("authenticated node: " + nodeName);
         return nodeName;
@@ -55,7 +55,7 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
     public List<X509Certificate> getSigningCertificates(String nodeName) throws NodeNotFoundException {
 
         LOG.debug("get signing certificate for node: " + nodeName);
-        OlasEntity node = this.olasDAO.getNode(nodeName);
+        NodeEntity node = this.olasDAO.getNode(nodeName);
         List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(node.getSigningCertificateSubject());
         List<X509Certificate> certificates = new LinkedList<X509Certificate>();
         for (TrustPointEntity trustPoint : trustPoints) {
@@ -65,12 +65,12 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
         return certificates;
     }
 
-    public OlasEntity getNode(String nodeName) throws NodeNotFoundException {
+    public NodeEntity getNode(String nodeName) throws NodeNotFoundException {
 
         return this.olasDAO.getNode(nodeName);
     }
 
-    public OlasEntity getLocalNode() throws NodeNotFoundException {
+    public NodeEntity getLocalNode() throws NodeNotFoundException {
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         return this.getNode(this.authenticate(authIdentityServiceClient.getCertificate()));

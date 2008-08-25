@@ -19,7 +19,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 
 
 /**
@@ -53,7 +53,7 @@ public interface AttributeTypeDAO {
      *
      * @param node
      */
-    List<AttributeTypeEntity> listAttributeTypes(OlasEntity node);
+    List<AttributeTypeEntity> listAttributeTypes(NodeEntity node);
 
     List<AttributeTypeDescriptionEntity> listDescriptions(AttributeTypeEntity attributeType);
 

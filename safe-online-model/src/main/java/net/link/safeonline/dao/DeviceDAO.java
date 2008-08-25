@@ -22,13 +22,13 @@ import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 
 
 @Local
 public interface DeviceDAO {
 
-    DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, OlasEntity node, String authenticationURL,
+    DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationURL,
             String registrationURL, String removalURL, String updateURL, X509Certificate certificate,
             AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType);
 

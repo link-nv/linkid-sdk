@@ -32,7 +32,7 @@ import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.DeviceMappingDAOBean;
 import net.link.safeonline.dao.bean.DeviceSubjectDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
-import net.link.safeonline.dao.bean.OlasDAOBean;
+import net.link.safeonline.dao.bean.NodeDAOBean;
 import net.link.safeonline.dao.bean.StatisticDAOBean;
 import net.link.safeonline.dao.bean.StatisticDataPointDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
@@ -63,7 +63,7 @@ import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.HistoryPropertyEntity;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -143,7 +143,7 @@ public class SafeOnlineTestContainer {
             ResourceAuditDAOBean.class, PasswordManagerBean.class, SubjectServiceBean.class, IdGeneratorBean.class,
             UsageAgreementDAOBean.class, UsageAgreementManagerBean.class, PasswordDeviceServiceBean.class,
             MobileManagerBean.class, SecurityAuditLoggerBean.class, DevicePolicyServiceBean.class, DevicesBean.class,
-            AccountServiceBean.class, DeviceMappingServiceBean.class, DeviceMappingDAOBean.class, OlasDAOBean.class,
+            AccountServiceBean.class, DeviceMappingServiceBean.class, DeviceMappingDAOBean.class, NodeDAOBean.class,
             ProxyAttributeServiceBean.class, StatisticDAOBean.class, StatisticDataPointDAOBean.class,
             NotificationProducerServiceBean.class, NotificationProducerDAOBean.class,
             NotificationConsumerServiceBean.class, EndpointReferenceDAOBean.class, DeviceSubjectDAOBean.class,
@@ -159,6 +159,6 @@ public class SafeOnlineTestContainer {
             DeviceMappingEntity.class, DeviceSubjectEntity.class, CompoundedAttributeTypeMemberEntity.class,
             HelpdeskContextEntity.class, HelpdeskEventEntity.class, HistoryEntity.class, HistoryPropertyEntity.class,
             SubjectIdentifierEntity.class, UsageAgreementEntity.class, UsageAgreementTextEntity.class,
-            GlobalUsageAgreementEntity.class, OlasEntity.class, StatisticEntity.class, StatisticDataPointEntity.class,
+            GlobalUsageAgreementEntity.class, NodeEntity.class, StatisticEntity.class, StatisticDataPointEntity.class,
             EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class, ApplicationScopeIdEntity.class };
 }

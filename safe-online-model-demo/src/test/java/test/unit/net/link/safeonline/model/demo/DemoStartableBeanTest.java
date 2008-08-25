@@ -35,7 +35,7 @@ import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.DeviceMappingDAOBean;
 import net.link.safeonline.dao.bean.DeviceSubjectDAOBean;
-import net.link.safeonline.dao.bean.OlasDAOBean;
+import net.link.safeonline.dao.bean.NodeDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
@@ -58,7 +58,7 @@ import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -115,7 +115,7 @@ public class DemoStartableBeanTest {
             ApplicationIdentityManagerBean.class, TrustPointDAOBean.class, AttributeProviderDAOBean.class,
             DeviceDAOBean.class, DeviceClassDAOBean.class, AllowedDeviceDAOBean.class, PasswordManagerBean.class,
             SubjectServiceBean.class, SubjectIdentifierDAOBean.class, IdGeneratorBean.class,
-            UsageAgreementDAOBean.class, UsageAgreementManagerBean.class, OlasDAOBean.class,
+            UsageAgreementDAOBean.class, UsageAgreementManagerBean.class, NodeDAOBean.class,
             DevicePolicyServiceBean.class, DeviceMappingServiceBean.class, DeviceMappingDAOBean.class,
             ResourceAuditLoggerBean.class, AuditAuditDAOBean.class, AuditContextDAOBean.class,
             AccessAuditDAOBean.class, SecurityAuditDAOBean.class, ResourceAuditDAOBean.class, DevicesBean.class,
@@ -136,7 +136,7 @@ public class DemoStartableBeanTest {
                 DeviceSubjectEntity.class, DeviceDescriptionEntity.class, DevicePropertyEntity.class,
                 DeviceClassDescriptionEntity.class, AllowedDeviceEntity.class,
                 CompoundedAttributeTypeMemberEntity.class, SubjectIdentifierEntity.class, UsageAgreementEntity.class,
-                UsageAgreementTextEntity.class, OlasEntity.class, EndpointReferenceEntity.class,
+                UsageAgreementTextEntity.class, NodeEntity.class, EndpointReferenceEntity.class,
                 NotificationProducerSubscriptionEntity.class, ApplicationScopeIdEntity.class);
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();

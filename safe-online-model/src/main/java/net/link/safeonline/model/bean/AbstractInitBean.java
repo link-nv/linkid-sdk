@@ -49,7 +49,7 @@ import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.dao.OlasDAO;
+import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.device.backend.PasswordManager;
@@ -71,7 +71,7 @@ import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.IdScopeType;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -686,7 +686,7 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initAttributeTypes() {
 
-        OlasEntity location;
+        NodeEntity location;
         try {
             location = this.olasDAO.getNode(this.node.name);
         } catch (NodeNotFoundException e) {
@@ -875,7 +875,7 @@ public abstract class AbstractInitBean implements Startable {
             DeviceEntity deviceEntity = this.deviceDAO.findDevice(device.deviceName);
             if (deviceEntity == null) {
                 DeviceClassEntity deviceClassEntity = this.deviceClassDAO.getDeviceClass(device.deviceClassName);
-                OlasEntity olasNode = null;
+                NodeEntity olasNode = null;
                 /*
                  * If no node, local device
                  */
@@ -963,7 +963,7 @@ public abstract class AbstractInitBean implements Startable {
 
 
     @EJB
-    private OlasDAO olasDAO;
+    private NodeDAO olasDAO;
 
 
     private void initNode() {
@@ -971,7 +971,7 @@ public abstract class AbstractInitBean implements Startable {
         if (null == this.node) {
             throw new EJBException("No Olas node specified");
         }
-        OlasEntity olasNode = this.olasDAO.findNode(this.node.name);
+        NodeEntity olasNode = this.olasDAO.findNode(this.node.name);
         if (null == olasNode) {
             this.olasDAO.addNode(this.node.name, this.node.protocol, this.node.hostname, this.node.port,
                     this.node.sslPort, this.node.authnCertificate, this.node.signingCertificate);

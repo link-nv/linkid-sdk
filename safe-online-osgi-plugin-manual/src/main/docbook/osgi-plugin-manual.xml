@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<book lang="en">
+	<bookinfo>
+		<title>OLAS OSGi Plugin Manual</title>
+		<copyright>
+			<year>2008</year>
+			<holder>LIN-K N.V.</holder>
+		</copyright>
+		<date>22/08/2008</date>
+		<abstract>
+			<para> This document contains information regarding the OSGi Plugin
+				functionality and integration in the OLAS product.</para>
+		</abstract>
+		<releaseinfo>1.0.0</releaseinfo>
+		<productname>OLAS</productname>
+		<productnumber>1.0.0</productnumber>
+	</bookinfo>
+	<chapter id="introduction">
+		<title>Introduction</title>
+		<para> OLAS provides an OSGi plugin attribute service API that can be
+			used to extend OLAS with exeternal attributes. During the creation of
+			attribute types in OLAS, the operator can select the plugin providing
+			the attribute. As implementation of the OSGi R4 Service Platform we
+			are using Apache Felix.</para>
+	</chapter>
+	<chapter id="services">
+		<title>Plugin Service API</title>
+		<para>
+			To create a new OSGi plugin bundle, you need to implement the
+			interface
+			<code>PluginAttributeService</code>
+			. This interface has one method:
+			<code>getAttribute(String userId, String
+				attributeName, String configuration)</code>
+			.
+		</para>
+	</chapter>
+</book>

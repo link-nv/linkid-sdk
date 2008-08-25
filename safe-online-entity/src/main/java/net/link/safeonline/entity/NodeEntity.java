@@ -6,9 +6,9 @@
  */
 package net.link.safeonline.entity;
 
-import static net.link.safeonline.entity.OlasEntity.QUERY_LIST_ALL;
-import static net.link.safeonline.entity.OlasEntity.QUERY_WHERE_AUTHN_CERT_SUBJECT;
-import static net.link.safeonline.entity.OlasEntity.QUERY_WHERE_SIGNING_CERT_SUBJECT;
+import static net.link.safeonline.entity.NodeEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.NodeEntity.QUERY_WHERE_AUTHN_CERT_SUBJECT;
+import static net.link.safeonline.entity.NodeEntity.QUERY_WHERE_SIGNING_CERT_SUBJECT;
 
 import java.io.Serializable;
 import java.security.cert.X509Certificate;
@@ -32,35 +32,35 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * This entity represents an OLAS node in the OLAS network.
- *
+ * 
  * An OLAS node has an authentication certificate used to authenticate against other OLAS node when using its web
  * services.
- *
+ * 
  * An OLAS node also has a signing certificate used for signing SAML tokens issued from this node.
- *
+ * 
  * This entity is for example used by remote attributes to identify the location of the actual attribute in the OLAS
  * network.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Entity
-@Table(name = "olas_entity")
+@Table(name = "node_entity")
 @NamedQueries( {
-        @NamedQuery(name = QUERY_LIST_ALL, query = "FROM OlasEntity o"),
-        @NamedQuery(name = QUERY_WHERE_AUTHN_CERT_SUBJECT, query = "SELECT olas " + "FROM OlasEntity AS olas "
+        @NamedQuery(name = QUERY_LIST_ALL, query = "FROM NodeEntity o"),
+        @NamedQuery(name = QUERY_WHERE_AUTHN_CERT_SUBJECT, query = "SELECT olas " + "FROM NodeEntity AS olas "
                 + "WHERE olas.authnCertificateSubject = :certificateSubject"),
-        @NamedQuery(name = QUERY_WHERE_SIGNING_CERT_SUBJECT, query = "SELECT olas " + "FROM OlasEntity AS olas "
+        @NamedQuery(name = QUERY_WHERE_SIGNING_CERT_SUBJECT, query = "SELECT olas " + "FROM NodeEntity AS olas "
                 + "WHERE olas.signingCertificateSubject = :certificateSubject") })
-public class OlasEntity implements Serializable {
+public class NodeEntity implements Serializable {
 
     private static final long  serialVersionUID                 = 1L;
 
-    public static final String QUERY_LIST_ALL                   = "olas.all";
+    public static final String QUERY_LIST_ALL                   = "node.all";
 
-    public static final String QUERY_WHERE_AUTHN_CERT_SUBJECT   = "olas.authn.cert.sub";
+    public static final String QUERY_WHERE_AUTHN_CERT_SUBJECT   = "node.authn.cert.sub";
 
-    public static final String QUERY_WHERE_SIGNING_CERT_SUBJECT = "olas.signing.cert.sub";
+    public static final String QUERY_WHERE_SIGNING_CERT_SUBJECT = "node.signing.cert.sub";
 
     private String             name;
 
@@ -77,12 +77,12 @@ public class OlasEntity implements Serializable {
     private String             signingCertificateSubject;
 
 
-    public OlasEntity() {
+    public NodeEntity() {
 
         // empty
     }
 
-    public OlasEntity(String name, String protocol, String hostname, int port, int sslPort,
+    public NodeEntity(String name, String protocol, String hostname, int port, int sslPort,
             X509Certificate authnCertificate, X509Certificate signingCertificate) {
 
         this.name = name;
@@ -186,7 +186,7 @@ public class OlasEntity implements Serializable {
     /**
      * Sets the authentication certificate subject. Do not use this method directly. Use
      * {@link #setAuthnCertificate(X509Certificate) setCertificate} instead. JPA requires this setter.
-     *
+     * 
      * @param authnCertificateSubject
      * @see #setAuthnCertificate(X509Certificate)
      */
@@ -198,7 +198,7 @@ public class OlasEntity implements Serializable {
     /**
      * Sets the X509 certificate of the application. Use this method to update the application certificate since this
      * method keeps the certificate identifier in sync with the certificate.
-     *
+     * 
      * @param authnCertificate
      */
     @Transient
@@ -216,7 +216,7 @@ public class OlasEntity implements Serializable {
     /**
      * Sets the signing certificate subject. Do not use this method directly. Use
      * {@link #setAuthnCertificate(X509Certificate) setCertificate} instead. JPA requires this setter.
-     *
+     * 
      * @param signingCertificateSubject
      * @see #setSigningCertificate(X509Certificate)
      */
@@ -228,7 +228,7 @@ public class OlasEntity implements Serializable {
     /**
      * Sets the X509 certificate of the application. Use this method to update the application certificate since this
      * method keeps the certificate identifier in sync with the certificate.
-     *
+     * 
      * @param signingCertificate
      */
     @Transient
@@ -244,9 +244,9 @@ public class OlasEntity implements Serializable {
             return true;
         if (null == obj)
             return false;
-        if (false == obj instanceof OlasEntity)
+        if (false == obj instanceof NodeEntity)
             return false;
-        OlasEntity rhs = (OlasEntity) obj;
+        NodeEntity rhs = (NodeEntity) obj;
         return new EqualsBuilder().append(this.name, rhs.name).isEquals();
     }
 
@@ -266,14 +266,14 @@ public class OlasEntity implements Serializable {
     public interface QueryInterface {
 
         @QueryMethod(QUERY_LIST_ALL)
-        List<OlasEntity> listOlasEntities();
+        List<NodeEntity> listNodeEntities();
 
         @QueryMethod(QUERY_WHERE_AUTHN_CERT_SUBJECT)
-        List<OlasEntity> listOlasEntitiesWhereAuthnCertificateSubject(
+        List<NodeEntity> listNodeEntitiesWhereAuthnCertificateSubject(
                 @QueryParam("certificateSubject") String certificateSubject);
 
         @QueryMethod(QUERY_WHERE_SIGNING_CERT_SUBJECT)
-        List<OlasEntity> listOlasEntitiesWhereSigningCertificateSubject(
+        List<NodeEntity> listNodeEntitiesWhereSigningCertificateSubject(
                 @QueryParam("certificateSubject") String certificateSubject);
     }
 }

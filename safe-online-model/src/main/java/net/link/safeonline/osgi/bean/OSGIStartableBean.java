@@ -15,8 +15,12 @@ import javax.ejb.Stateless;
 import javax.naming.NamingException;
 
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
+import net.link.safeonline.entity.audit.ResourceLevelType;
+import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.osgi.OSGIHostActivator;
 import net.link.safeonline.osgi.OSGIStartable;
+import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -145,4 +149,14 @@ public class OSGIStartableBean implements OSGIStartable {
 
     }
 
+    public PluginAttributeService getPluginService(String serviceName) throws SafeOnlineResourceException {
+
+        Object[] services = getPluginServices();
+        for (Object service : services) {
+            if (service.getClass().getName().equals(serviceName))
+                return (PluginAttributeService) service;
+        }
+        throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE,
+                serviceName);
+    }
 }

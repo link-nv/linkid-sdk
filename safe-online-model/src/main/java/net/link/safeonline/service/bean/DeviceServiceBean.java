@@ -41,7 +41,7 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.DeviceMappingDAO;
-import net.link.safeonline.dao.OlasDAO;
+import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.data.DeviceMappingDO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
@@ -57,7 +57,7 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
-import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
@@ -101,7 +101,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     private ApplicationDAO       applicationDAO;
 
     @EJB
-    private OlasDAO              olasDAO;
+    private NodeDAO              olasDAO;
 
     @EJB
     private EndpointReferenceDAO endpointReferenceDAO;
@@ -207,7 +207,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         DeviceClassEntity deviceClass = this.deviceClassDAO.getDeviceClass(deviceClassName);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
         AttributeTypeEntity userAttributeType = this.attributeTypeDAO.getAttributeType(userAttributeTypeName);
-        OlasEntity node = this.olasDAO.getNode(nodeName);
+        NodeEntity node = this.olasDAO.getNode(nodeName);
 
         this.deviceDAO.addDevice(name, deviceClass, node, authenticationPath, registrationPath, removalPath,
                 updatePath, certificate, attributeType, userAttributeType);

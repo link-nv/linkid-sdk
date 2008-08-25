@@ -62,7 +62,7 @@ public class DeviceEntity implements Serializable {
 
     private DeviceClassEntity                    deviceClass;
 
-    private OlasEntity                           location;
+    private NodeEntity                           location;
 
     private String                               authenticationPath;
 
@@ -88,7 +88,7 @@ public class DeviceEntity implements Serializable {
         // empty
     }
 
-    public DeviceEntity(String name, DeviceClassEntity deviceClass, OlasEntity location, String authenticationPath,
+    public DeviceEntity(String name, DeviceClassEntity deviceClass, NodeEntity location, String authenticationPath,
             String registrationPath, String removalPath, String updatePath, X509Certificate certificate) {
 
         this.name = name;
@@ -172,12 +172,12 @@ public class DeviceEntity implements Serializable {
      *
      */
     @ManyToOne
-    public OlasEntity getLocation() {
+    public NodeEntity getLocation() {
 
         return this.location;
     }
 
-    public void setLocation(OlasEntity location) {
+    public void setLocation(NodeEntity location) {
 
         this.location = location;
     }

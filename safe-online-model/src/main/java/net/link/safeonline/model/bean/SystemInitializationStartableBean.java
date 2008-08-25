@@ -37,12 +37,12 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 /**
  * This component will initialize the system at startup.
- *
+ * 
  * For now it creates initial users, applications and subscriptions. This to allow for admins to gain access to the
  * system and thus to bootstrap the SafeOnline core.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Stateless
 @Local(Startable.class)
@@ -152,6 +152,13 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
                 .getLanguage(), "Login name", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, "nl", "Login naam",
                 null));
+
+        // XXX: temp external OSGi attribute
+        AttributeTypeEntity osgiAttributeType = new AttributeTypeEntity(
+                "urn:net:lin-k:safe-online:attribute:osgi:test", DatatypeType.STRING, true, false);
+        osgiAttributeType.setPluginName("net.link.safeonline.osgi.plugin.template.TemplateAttributeService");
+        osgiAttributeType.setPluginConfiguration("configuration=test");
+        this.attributeTypes.add(osgiAttributeType);
     }
 
     private void configureDevices() {
