@@ -3,15 +3,16 @@
     "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <book lang="en">
 	<bookinfo>
-		<title>OLAS OSGi Plugin Manual</title>
+		<title>OLAS OSGi Attribute Plugin Manual</title>
 		<copyright>
 			<year>2008</year>
 			<holder>LIN-K N.V.</holder>
 		</copyright>
 		<date>22/08/2008</date>
 		<abstract>
-			<para> This document contains information regarding the OSGi Plugin
-				functionality and integration in the OLAS product.</para>
+			<para> This document contains information regarding the OSGi
+				Attribute Plugin functionality and integration in the OLAS product.
+			</para>
 		</abstract>
 		<releaseinfo>1.0.0</releaseinfo>
 		<productname>OLAS</productname>
@@ -19,22 +20,131 @@
 	</bookinfo>
 	<chapter id="introduction">
 		<title>Introduction</title>
-		<para> OLAS provides an OSGi plugin attribute service API that can be
-			used to extend OLAS with exeternal attributes. During the creation of
-			attribute types in OLAS, the operator can select the plugin providing
-			the attribute. As implementation of the OSGi R4 Service Platform we
-			are using Apache Felix.</para>
+		<para> OLAS has 2 types of attributes: OLAS attributes and external
+			attributes. OLAS attributes are attributes provided by OLAS nodes.
+			These also include attributes provided by OLAS authentication
+			devices. External attributes are attributes which are provided to
+			OLAS from the outside. To achieve the latter type of attributes, OLAS
+			provides an OSGi attribute plugin service API which can be
+			implemented to create specific OSGi attribute plugin bundles. In the
+			same way OLAS provides a service API to OSGi bundles so they can
+			retrieve attributes from OLAS. As OSGi R4 implentation OLAS is using
+			an embedded instance of Apache Felix.</para>
+		<para>During the creation of an attribute type in the operator
+			webapp of the OLAS product, the operator can configure an attribute
+			type to be external and select a plugin from the available list of
+			OSGi plugins implementing the plugin service. There is also a
+			possibility to add some additional configuration for each attribute
+			type.</para>
 	</chapter>
 	<chapter id="services">
-		<title>Plugin Service API</title>
-		<para>
-			To create a new OSGi plugin bundle, you need to implement the
-			interface
-			<code>PluginAttributeService</code>
-			. This interface has one method:
-			<code>getAttribute(String userId, String
-				attributeName, String configuration)</code>
-			.
-		</para>
+		<title>Service API</title>
+		<section>
+			<title>Plugin Attribute Service API</title>
+			<para>
+				To create a new OSGi attribute plugin bundle, you need to implement
+				the interface
+				<code>PluginAttributeService</code>
+				. This interface has one method:
+				<code>getAttribute(String userId, String
+					attributeName, String configuration)</code>
+				. The configuration string is optional for each external attribute
+				type configured in OLAS. This method has as return type a list of
+				<code>Attribute</code>
+				objects. These objects contain the name, type, index and value of
+				the attribute the plugin is returning. A list of these objects is
+				returned as besides single-valued attributes, there exist also
+				multi-valued and compounded attributes. Below is explained what OLAS
+				expects in these 3 cases :
+			</para>
+			<section>
+				<title>Single-valued</title>
+				<para>
+					For single-valued attributes plugins should return a singleton
+					list, whereas the index of the
+					<code>Attribute</code>
+					object in that list should be zero ( which is the default ).
+				</para>
+			</section>
+			<section>
+				<title>Multi-valued</title>
+				<para>
+					For multi-valued attributes plugins should return a list of
+					<code>Attribute</code>
+					objects, each object having the same name, and the index
+					incrementing, starting from 0.
+				</para>
+			</section>
+			<section>
+				<title>Compound</title>
+				<para>
+					For compound attributes plugins it is best explained what to return
+					with a simple example. Assume the plugin wants to return a compound
+					attribute named
+					<code>test-compound-attribute</code>
+					containing 2 member attributes. The first being a String attribute
+					named
+					<code>test-string-attribute</code>
+					, the second being a Boolean attribute named
+					<code>test-boolean-attribute</code>
+					. In this case OLAS will expect following list of
+					<code>Attribute</code>
+					objects :
+					<itemizedlist>
+						<listitem>
+							<code>Attribute("test-compound-attribute",COMPOUND,0)
+							</code>
+						</listitem>
+						<listitem>
+							<code>Attribute("test-string-attribute",STRING,0)
+							</code>
+						</listitem>
+						<listitem>
+							<code>Attribute("test-boolean-attribute",BOOLEAN,0)
+							</code>
+						</listitem>
+						<listitem>
+							<code>Attribute("test-compound-attribute",COMPOUND,1)
+							</code>
+						</listitem>
+						<listitem>
+							<code>Attribute("test-string-attribute",STRING,1)
+							</code>
+						</listitem>
+						<listitem>
+							<code>Attribute("test-boolean-attribute",BOOLEAN,1)
+							</code>
+						</listitem>
+						<listitem>
+							<code>...</code>
+						</listitem>
+					</itemizedlist>
+				</para>
+			</section>
+		</section>
+		<section>
+			<title>OLAS Attribute Service API</title>
+			<para>
+				To allow attribute plugins to retrieve OLAS attributes, OLAS
+				provides an implementation of the
+				<code>OlasAttributeService</code>
+				interface. This interface has one method:
+				<code>getAttribute(String userId, String
+					attributeName)</code>
+				. The OLAS attribute service can be used from within an attribute
+				OSGi plugin by first fetching the OSGi
+				<code>ServiceReference</code>
+				for this interface. Then retrieving the service implementation.
+				<programlisting>
+				ServiceReference serviceReference =
+					bundleContext.getServiceReference(
+						OlasAttributeService.class.getName());
+				OlasAttributeService attributeService = 
+					(OlasAttributeService) bundleContext.
+						getService(serviceReference);
+				return attributeService.getAttribute(userId, attributeName);	
+				</programlisting>
+			</para>
+		</section>
 	</chapter>
 </book>

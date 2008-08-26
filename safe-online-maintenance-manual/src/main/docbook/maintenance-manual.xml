@@ -240,4 +240,25 @@
 			</para>
 		</section>
 	</chapter>
+	<chapter id="attributes">
+		<title>OLAS attributes</title>
+		<para> OLAS has 2 types of attributes: OLAS attributes and external
+			attributes. OLAS attributes are attributes stored, maintained and
+			provided by OLAS nodes. This also includes attributes provided by
+			OLAS authentication devices running on OLAS nodes. External
+			attributes are attributes stored, maintained and provided by OSGi
+			attribute plugin bundles.</para>
+		<para> Creation of attribute types is a one-time step so be sure the
+			configuration is in order before starting to use it in application
+			identities. During the creation process you will be asked if your
+			attribute type is an OLAS attribute or an external attribute. If you
+			decide it is an OLAS attribute you will have to specify on which OLAS
+			node this attribute is located. If you decide it is an external
+			attribute you will have to specify which OSGi attribute plugin should
+			be used. Additionally you can specify a custom configuration string
+			per attribute type. This configuration string is passed on to the
+			attribute plugin. The configuration string can be edited afterwards,
+			but the rest can only be modified if you complete remove the
+			attribute type.</para>
+	</chapter>
 </book>

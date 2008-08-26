@@ -182,6 +182,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
                     }
+                    if (!attribute.getName().equals(attributeType.getName())) {
+                        throw new InvalidDataException("attribute name " + attribute.getName()
+                                + " not matching expected " + attributeType.getName());
+                    }
                     values[idx] = attributeView.get(idx).getStringValue();
                 }
                 return values;
@@ -195,6 +199,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                     if (!attribute.getType().equals(datatype)) {
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
+                    }
+                    if (!attribute.getName().equals(attributeType.getName())) {
+                        throw new InvalidDataException("attribute name " + attribute.getName()
+                                + " not matching expected " + attributeType.getName());
                     }
                     values[idx] = attributeView.get(idx).getBooleanValue();
                 }
@@ -210,6 +218,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
                     }
+                    if (!attribute.getName().equals(attributeType.getName())) {
+                        throw new InvalidDataException("attribute name " + attribute.getName()
+                                + " not matching expected " + attributeType.getName());
+                    }
                     values[idx] = attributeView.get(idx).getIntegerValue();
                 }
                 return values;
@@ -224,6 +236,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
                     }
+                    if (!attribute.getName().equals(attributeType.getName())) {
+                        throw new InvalidDataException("attribute name " + attribute.getName()
+                                + " not matching expected " + attributeType.getName());
+                    }
                     values[idx] = attributeView.get(idx).getDoubleValue();
                 }
                 return values;
@@ -237,6 +253,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                     if (!attribute.getType().equals(datatype)) {
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
+                    }
+                    if (!attribute.getName().equals(attributeType.getName())) {
+                        throw new InvalidDataException("attribute name " + attribute.getName()
+                                + " not matching expected " + attributeType.getName());
                     }
                     values[idx] = attributeView.get(idx).getDateValue();
                 }
@@ -255,6 +275,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
                     }
+                    if (!attribute.getName().equals(attributeType.getName()))
+                        throw new InvalidDataException("attribute name " + attribute.getName()
+                                + " not matching expected " + attributeType.getName());
                     Map<String, Object> memberMap = new HashMap<String, Object>();
                     values[idx] = memberMap;
                     memberIdx++;
@@ -265,6 +288,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                             throw new InvalidDataException("datatype " + memberAttribute.getType()
                                     + " not matching expected datatype " + memberAttributeType.getType());
                         }
+                        if (!memberAttribute.getName().equals(memberAttributeType.getName()))
+                            throw new InvalidDataException("attribute name " + memberAttribute.getName()
+                                    + " not matching expected " + memberAttributeType.getName());
                         memberMap.put(memberAttributeType.getName(), memberAttribute.getValue());
                         memberIdx++;
                     }
