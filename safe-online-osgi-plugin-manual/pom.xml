@@ -47,11 +47,6 @@
 					<sourceDocumentName>
 						osgi-plugin-manual.xml
 					</sourceDocumentName>
-					<imageResource>
-						<directory>
-							${basedir}/src/main/images
-						</directory>
-					</imageResource>
 				</configuration>
 				<executions>
 					<execution>
