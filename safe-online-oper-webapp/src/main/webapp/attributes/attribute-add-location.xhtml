@@ -15,34 +15,27 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.addAttribute}: #{msgs.accessControl}</h1>
+		<h1>#{msgs.addAttribute}: #{msgs.attributeLocation}</h1>
 	</ui:define>
 	<ui:define name="content">
 
 		<h:form>
 
-			<table>
-				<colgroup class="half" />
-				<colgroup />
+			<h:selectOneRadio value="#{addAttribute.locationOption}"
+				layout="pageDirection" required="true" id="location"
+				styleClass="tinylabel">
+				<f:selectItems value="#{locations}" />
+			</h:selectOneRadio>
 
-				<tr>
-					<th><h:outputText value="#{msgs.userVisible}" /></th>
-					<td><h:selectBooleanCheckbox id="userVisible"
-						value="#{addAttribute.userVisible}" /></td>
-				</tr>
-				<tr>
-					<th><h:outputText value="#{msgs.userEditable}" /></th>
-					<td><h:selectBooleanCheckbox id="userEditable"
-						value="#{addAttribute.userEditable}" /></td>
-				</tr>
-			</table>
+			<h:message styleClass="error" for="location" />
+
 			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:outputLabel for="previous" value="" />
 			<h:commandButton value="#{msgs.previous}" id="previous"
 				action="previous" immediate="true" styleClass="submit" />
 			<h:commandButton value="#{msgs.next}" id="next"
-				action="#{addAttribute.acNext}" styleClass="submit" />
+				action="#{addAttribute.locationNext}" styleClass="submit" />
 			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 

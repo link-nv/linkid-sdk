@@ -16,6 +16,7 @@ import net.link.safeonline.osgi.plugin.OlasAttributeService;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
 import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
 import org.osgi.framework.BundleContext;
@@ -40,6 +41,13 @@ import org.osgi.framework.ServiceReference;
  */
 public class TemplateAttributeService implements PluginAttributeService {
 
+	private static final String testStringAttributeName = "urn:net:lin-k:safe-online:attribute:osgi:test:string";
+	private static final String testDateAttributeName = "urn:net:lin-k:safe-online:attribute:osgi:test:date";
+	private static final String testBooleanAttributeName = "urn:net:lin-k:safe-online:attribute:osgi:test:boolean";
+	private static final String testDoubleAttributeName = "urn:net:lin-k:safe-online:attribute:osgi:test:double";
+	private static final String testIntegerAttributeName = "urn:net:lin-k:safe-online:attribute:osgi:test:integer";
+	private static final String testCompoundAttributeName = "urn:net:lin-k:safe-online:attribute:osgi:test:compound";
+
 	private BundleContext bundleContext;
 
 	public TemplateAttributeService(BundleContext bundleContext) {
@@ -48,12 +56,33 @@ public class TemplateAttributeService implements PluginAttributeService {
 
 	public List<Attribute> getAttribute(String userId, String attributeName,
 			String configuration) throws UnsupportedDataTypeException,
-			AttributeTypeNotFoundException, AttributeNotFoundException {
+			AttributeTypeNotFoundException, AttributeNotFoundException,
+			AttributeUnavailableException {
 		System.out.println("get attribute " + attributeName + " for user "
 				+ userId + " (configuration=" + configuration + ")");
 
-		if (attributeName.equals("test-attribute")) {
-			return getAttribute(attributeName);
+		if (attributeName.equals(testCompoundAttributeName)) {
+			return getCompoundAttribute();
+		} else if (attributeName.equals(testStringAttributeName)) {
+			List<Attribute> attribute = new LinkedList<Attribute>();
+			attribute.add(createStringAttribute(0));
+			attribute.add(createStringAttribute(1));
+			attribute.add(createStringAttribute(2));
+		} else if (attributeName.equals(testBooleanAttributeName)) {
+			List<Attribute> attribute = new LinkedList<Attribute>();
+			attribute.add(createBooleanAttribute(0));
+		} else if (attributeName.equals(testDateAttributeName)) {
+			List<Attribute> attribute = new LinkedList<Attribute>();
+			attribute.add(createDateAttribute(0));
+			attribute.add(createDateAttribute(1));
+		} else if (attributeName.equals(testDoubleAttributeName)) {
+			List<Attribute> attribute = new LinkedList<Attribute>();
+			attribute.add(createDoubleAttribute(0));
+			attribute.add(createDoubleAttribute(1));
+		} else if (attributeName.equals(testIntegerAttributeName)) {
+			List<Attribute> attribute = new LinkedList<Attribute>();
+			attribute.add(createIntegerAttribute(0));
+			attribute.add(createIntegerAttribute(1));
 		} else {
 			ServiceReference serviceReference = bundleContext
 					.getServiceReference(OlasAttributeService.class.getName());
@@ -72,11 +101,11 @@ public class TemplateAttributeService implements PluginAttributeService {
 	 * This method creates a compounded test attribute. This compounded
 	 * attribute will contain 1 member attribute for each attribute data type.
 	 */
-	private List<Attribute> getAttribute(String attributeName) {
+	private List<Attribute> getCompoundAttribute() {
 		List<Attribute> testAttribute = new LinkedList<Attribute>();
 
-		testAttribute.addAll(createCompoundAttribute(attributeName, 1));
-		testAttribute.addAll(createCompoundAttribute(attributeName, 2));
+		testAttribute.addAll(createCompoundAttribute(1));
+		testAttribute.addAll(createCompoundAttribute(2));
 
 		return testAttribute;
 	}
@@ -85,53 +114,86 @@ public class TemplateAttributeService implements PluginAttributeService {
 	 * Creates a compounded attribute, containing 1 member attribute for each
 	 * attribute data type
 	 */
-	private List<Attribute> createCompoundAttribute(String attributeName,
-			int index) {
+	private List<Attribute> createCompoundAttribute(int index) {
 		List<Attribute> attribute = new LinkedList<Attribute>();
 
 		// create first compounded attribute + its member attributes
-		Attribute compoundedAttribute1 = new Attribute("test-attribute",
-				DatatypeType.COMPOUNDED);
+		Attribute compoundedAttribute1 = new Attribute(
+				testCompoundAttributeName, DatatypeType.COMPOUNDED);
 		compoundedAttribute1.setIndex(index);
-		compoundedAttribute1.setMember(false);
-
-		Attribute stringMemberAttribute1 = new Attribute(
-				"test-attribute-string", DatatypeType.STRING);
-		stringMemberAttribute1.setIndex(index);
-		stringMemberAttribute1.setMember(true);
-		stringMemberAttribute1.setStringValue("string-value-" + index);
 
 		Attribute booleanMemberAttribute1 = new Attribute(
 				"test-attribute-boolean", DatatypeType.BOOLEAN);
 		booleanMemberAttribute1.setIndex(index);
-		booleanMemberAttribute1.setMember(true);
 		booleanMemberAttribute1.setBooleanValue(true);
 
 		Attribute dateMemberAttribute1 = new Attribute("test-attribute-date",
 				DatatypeType.DATE);
 		dateMemberAttribute1.setIndex(index);
-		dateMemberAttribute1.setMember(true);
 		dateMemberAttribute1.setDateValue(new Date());
 
 		Attribute doubleMemberAttribute1 = new Attribute(
 				"test-attribute-double", DatatypeType.DOUBLE);
 		doubleMemberAttribute1.setIndex(index);
-		doubleMemberAttribute1.setMember(true);
 		doubleMemberAttribute1.setDoubleValue(0.5 + index);
 
 		Attribute integerMemberAttribute1 = new Attribute(
 				"test-attribute-integer", DatatypeType.INTEGER);
 		integerMemberAttribute1.setIndex(index);
-		integerMemberAttribute1.setMember(true);
 		integerMemberAttribute1.setIntegerValue(index);
 
 		attribute.add(compoundedAttribute1);
-		attribute.add(stringMemberAttribute1);
-		attribute.add(booleanMemberAttribute1);
-		attribute.add(dateMemberAttribute1);
-		attribute.add(doubleMemberAttribute1);
-		attribute.add(integerMemberAttribute1);
+		attribute.add(createStringAttribute(index));
+		attribute.add(createBooleanAttribute(index));
+		attribute.add(createDateAttribute(index));
+		attribute.add(createDoubleAttribute(index));
+		attribute.add(createIntegerAttribute(index));
 
 		return attribute;
 	}
+
+	private Attribute createStringAttribute(int index) {
+		Attribute stringAttribute = new Attribute(testStringAttributeName,
+				DatatypeType.STRING);
+		stringAttribute.setIndex(index);
+		stringAttribute.setStringValue("string-value-" + index);
+		return stringAttribute;
+	}
+
+	private Attribute createBooleanAttribute(int index) {
+
+		Attribute booleanAttribute = new Attribute(testBooleanAttributeName,
+				net.link.safeonline.osgi.plugin.DatatypeType.BOOLEAN);
+		booleanAttribute.setIndex(index);
+		booleanAttribute.setBooleanValue(true);
+		return booleanAttribute;
+	}
+
+	private Attribute createDateAttribute(int index) {
+
+		Attribute dateAttribute = new Attribute(testDateAttributeName,
+				net.link.safeonline.osgi.plugin.DatatypeType.DATE);
+		dateAttribute.setIndex(index);
+		dateAttribute.setDateValue(new Date());
+		return dateAttribute;
+	}
+
+	private Attribute createDoubleAttribute(int index) {
+
+		Attribute doubleAttribute = new Attribute(testDoubleAttributeName,
+				net.link.safeonline.osgi.plugin.DatatypeType.DOUBLE);
+		doubleAttribute.setIndex(index);
+		doubleAttribute.setDoubleValue(0.5 + index);
+		return doubleAttribute;
+	}
+
+	private Attribute createIntegerAttribute(int index) {
+
+		Attribute integerAttribute = new Attribute(testIntegerAttributeName,
+				net.link.safeonline.osgi.plugin.DatatypeType.INTEGER);
+		integerAttribute.setIndex(index);
+		integerAttribute.setIntegerValue(index);
+		return integerAttribute;
+	}
+
 }

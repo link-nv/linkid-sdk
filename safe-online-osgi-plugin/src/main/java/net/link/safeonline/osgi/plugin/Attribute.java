@@ -47,10 +47,6 @@ public class Attribute implements Serializable, Cloneable {
 
 	private Date dateValue;
 
-	private boolean compounded;
-
-	private boolean member;
-
 	public Attribute(String name, DatatypeType type, long index,
 			String stringValue, Boolean booleanValue) {
 
@@ -59,16 +55,12 @@ public class Attribute implements Serializable, Cloneable {
 		this.index = index;
 		this.stringValue = stringValue;
 		this.booleanValue = booleanValue;
-
-		setCompounded();
 	}
 
 	public Attribute(String name, DatatypeType type) {
 
 		this.name = name;
 		this.type = type;
-
-		setCompounded();
 	}
 
 	/**
@@ -212,42 +204,6 @@ public class Attribute implements Serializable, Cloneable {
 	public void setIndex(long index) {
 
 		this.index = index;
-	}
-
-	/**
-	 * Marks that this attribute entry is the title entry of a compounded
-	 * attribute record. This flag will be used for visualization.
-	 * 
-	 */
-	public boolean isCompounded() {
-
-		return this.compounded;
-	}
-
-	private void setCompounded() {
-
-		if (null == this.type) {
-			return;
-		} else if (this.type.equals(DatatypeType.COMPOUNDED)) {
-			this.compounded = true;
-		} else {
-			this.compounded = false;
-		}
-	}
-
-	/**
-	 * Marks that this attribute entry is a member entry of a compounded
-	 * attribute record. This flag will be used for visualization.
-	 * 
-	 */
-	public boolean isMember() {
-
-		return this.member;
-	}
-
-	public void setMember(boolean member) {
-
-		this.member = member;
 	}
 
 	@Override

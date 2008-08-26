@@ -26,24 +26,24 @@ public interface AttributeTypeService {
     /**
      * Lists all attributes types within the system. This includes primitive attribute types, multi-valued attribute
      * types and compounded attribute types.
-     *
+     * 
      */
     List<AttributeTypeEntity> listAttributeTypes();
 
     /**
      * Lists attribute types that could participate as member in a compounded attribute type.
-     *
+     * 
      * <p>
      * Via this method we express the restriction that one cannot construct compounded attributes of other compounded
      * attributes. We also don't allow an attribute type to be member of more than one compounded attribute type.
      * </p>
-     *
+     * 
      */
     List<AttributeTypeEntity> listAvailableMemberAttributeTypes();
 
     /**
      * Adds a new attribute type using the given attribute type prototype.
-     *
+     * 
      * @param attributeType
      *            the attribute type prototype.
      * @throws ExistingAttributeTypeException
@@ -58,7 +58,7 @@ public interface AttributeTypeService {
     /**
      * Removes an attribute type using the given attribute type prototype. No existing application identities should be
      * using this type.
-     *
+     * 
      * @param attributeType
      * @throws AttributeTypeDescriptionNotFoundException
      * @throws PermissionDeniedException
@@ -73,7 +73,7 @@ public interface AttributeTypeService {
     /**
      * Adds a new attribute type description. The entity parameter is used as data object between the operator control
      * beans and the model service.
-     *
+     * 
      * @param newAttributeTypeDescription
      * @throws AttributeTypeNotFoundException
      */
@@ -84,4 +84,7 @@ public interface AttributeTypeService {
             throws AttributeTypeDescriptionNotFoundException;
 
     void saveDescription(AttributeTypeDescriptionEntity attributeTypeDescription);
+
+    void savePluginConfiguration(String attributeTypeName, String pluginConfiguration)
+            throws AttributeTypeNotFoundException;
 }

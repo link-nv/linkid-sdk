@@ -15,6 +15,7 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -61,7 +62,8 @@ public class GlobalUsageAgreementConfirmationBean implements GlobalUsageAgreemen
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public String confirm() throws ApplicationNotFoundException, SubscriptionNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
+            AttributeUnavailableException {
 
         this.log.debug("confirm global usage agreement");
         this.usageAgreementService.confirmGlobalUsageAgreementVersion();

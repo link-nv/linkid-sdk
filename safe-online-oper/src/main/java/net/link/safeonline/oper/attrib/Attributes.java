@@ -18,6 +18,13 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 public interface Attributes {
 
     /*
+     * Accessors
+     */
+    String getPluginConfiguration();
+
+    void setPluginConfiguration(String pluginConfiguration);
+
+    /*
      * Factory.
      */
     void attributeTypeListFactory();
@@ -31,6 +38,8 @@ public interface Attributes {
 
     String removeConfirm() throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException;
+
+    String savePlugin() throws AttributeTypeNotFoundException;
 
     /*
      * Lifecycle.

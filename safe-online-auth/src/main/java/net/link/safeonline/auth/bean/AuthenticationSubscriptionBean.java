@@ -24,6 +24,7 @@ import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -71,7 +72,7 @@ public class AuthenticationSubscriptionBean implements AuthenticationSubscriptio
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public String subscribe() throws ApplicationNotFoundException, AlreadySubscribedException,
             PermissionDeniedException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
-            AttributeTypeNotFoundException {
+            AttributeTypeNotFoundException, AttributeUnavailableException {
 
         if (!this.subscriptionService.isSubscribed(this.applicationId)) {
             this.log.debug("subscribe to application #0", this.applicationId);

@@ -27,6 +27,7 @@ import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
@@ -96,8 +97,10 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
     @ErrorHandling( {
             @Error(exceptionClass = ExistingUserException.class, messageId = "errorLoginTaken", fieldId = "login"),
             @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorLoginTaken", fieldId = "login"),
+            @Error(exceptionClass = AttributeUnavailableException.class, messageId = "errorLoginTaken", fieldId = "login"),
             @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorPermissionDenied", fieldId = "login") })
-    public String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException {
+    public String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException,
+            AttributeUnavailableException {
 
         this.log.debug("loginNext");
 

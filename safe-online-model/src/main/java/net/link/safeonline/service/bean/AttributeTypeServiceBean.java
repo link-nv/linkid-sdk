@@ -254,4 +254,13 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
             memberAttributeType.setCompoundMember(false);
         }
     }
+
+    @RolesAllowed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE)
+    public void savePluginConfiguration(String attributeTypeName, String pluginConfiguration)
+            throws AttributeTypeNotFoundException {
+
+        LOG.debug("set plugin configuration: " + pluginConfiguration + " for attribute type " + attributeTypeName);
+        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
+        attributeType.setPluginConfiguration(pluginConfiguration);
+    }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
 import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
 /**
@@ -30,6 +31,7 @@ public interface PluginAttributeService {
 
 	public List<Attribute> getAttribute(String userId, String attributeName,
 			String configuration) throws UnsupportedDataTypeException,
-			AttributeNotFoundException, AttributeTypeNotFoundException;
+			AttributeNotFoundException, AttributeTypeNotFoundException,
+			AttributeUnavailableException;
 
 }

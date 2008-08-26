@@ -15,34 +15,31 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.addAttribute}: #{msgs.accessControl}</h1>
+		<h1>#{msgs.addAttribute}: #{msgs.attributeLocation}: OLAS</h1>
 	</ui:define>
 	<ui:define name="content">
 
 		<h:form>
 
-			<table>
-				<colgroup class="half" />
-				<colgroup />
 
-				<tr>
-					<th><h:outputText value="#{msgs.userVisible}" /></th>
-					<td><h:selectBooleanCheckbox id="userVisible"
-						value="#{addAttribute.userVisible}" /></td>
-				</tr>
-				<tr>
-					<th><h:outputText value="#{msgs.userEditable}" /></th>
-					<td><h:selectBooleanCheckbox id="userEditable"
-						value="#{addAttribute.userEditable}" /></td>
-				</tr>
-			</table>
+			<h:outputLabel for="node" value="#{msgs.location}" />
+
+			<h:selectOneMenu id="node" value="#{addAttribute.node}"
+				styleClass="label">
+				<f:selectItems value="#{attributeNodes}" />
+			</h:selectOneMenu>
+
+			<h:outputLabel for="deviceAttribute" value="#{msgs.deviceAttribute}" />
+			<h:selectBooleanCheckbox id="deviceAttribute"
+				value="#{addAttribute.deviceAttribute}" styleClass="tinylabel" />
+
 			<h:messages styleClass="error" globalOnly="true" />
 
-			<h:outputLabel for="previous" value="" />
+			<h:outputLabel for="add" value="" />
 			<h:commandButton value="#{msgs.previous}" id="previous"
 				action="previous" immediate="true" styleClass="submit" />
-			<h:commandButton value="#{msgs.next}" id="next"
-				action="#{addAttribute.acNext}" styleClass="submit" />
+			<h:commandButton value="#{msgs.addaction}" id="add"
+				action="#{addAttribute.add}" styleClass="submit" />
 			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 

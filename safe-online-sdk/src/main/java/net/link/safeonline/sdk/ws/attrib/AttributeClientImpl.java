@@ -21,6 +21,7 @@ import javax.xml.ws.BindingProvider;
 
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
@@ -55,9 +56,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation of attribute client. This class is using JAX-WS, secured via WS-Security and server-side SSL.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AttributeClientImpl extends AbstractMessageAccessor implements AttributeClient {
 
@@ -70,7 +71,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
 
     /**
      * Main constructor.
-     *
+     * 
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -91,7 +92,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     }
 
     public <Type> Type getAttributeValue(String userId, String attributeName, Class<Type> valueClass)
-            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException {
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
+            AttributeUnavailableException {
 
         LOG.debug("get attribute value for subject " + userId + " attribute name " + attributeName);
 
@@ -110,23 +112,20 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     private <Type> Type getAttributeValue(ResponseType response, Class<Type> valueClass) {
 
         List<Object> assertions = response.getAssertionOrEncryptedAssertion();
-        if (assertions.isEmpty()) {
+        if (assertions.isEmpty())
             throw new RuntimeException("No assertions in response");
-        }
         AssertionType assertion = (AssertionType) assertions.get(0);
 
         List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-        if (statements.isEmpty()) {
+        if (statements.isEmpty())
             throw new RuntimeException("No statements in response assertion");
-        }
         AttributeStatementType attributeStatement = (AttributeStatementType) statements.get(0);
         List<Object> attributeObjects = attributeStatement.getAttributeOrEncryptedAttribute();
         AttributeType attribute = (AttributeType) attributeObjects.get(0);
 
         if (Boolean.valueOf(attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))
-                ^ valueClass.isArray()) {
+                ^ valueClass.isArray())
             throw new IllegalArgumentException("multivalued and [] type mismatch");
-        }
 
         List<Object> attributeValues = attribute.getAttributeValue();
 
@@ -169,10 +168,9 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         if (null == value)
             return null;
 
-        if (false == valueClass.isInstance(value)) {
+        if (false == valueClass.isInstance(value))
             throw new IllegalArgumentException("expected type: " + valueClass.getName() + "; actual type: "
                     + value.getClass().getName());
-        }
         Type attributeValue = valueClass.cast(value);
         return attributeValue;
 
@@ -191,7 +189,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         }
     }
 
-    private void checkStatus(ResponseType response) throws AttributeNotFoundException, RequestDeniedException {
+    private void checkStatus(ResponseType response) throws AttributeNotFoundException, RequestDeniedException,
+            AttributeUnavailableException {
 
         StatusType status = response.getStatus();
         StatusCodeType statusCode = status.getStatusCode();
@@ -206,10 +205,12 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
                 String secondLevelStatusCodeValue = secondLevelStatusCode.getValue();
                 SamlpSecondLevelErrorCode samlpSecondLevelErrorCode = SamlpSecondLevelErrorCode
                         .getSamlpTopLevelErrorCode(secondLevelStatusCodeValue);
-                if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode) {
+                if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode)
                     throw new AttributeNotFoundException();
-                } else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode) {
+                else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode)
                     throw new RequestDeniedException();
+                else if (SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE == samlpSecondLevelErrorCode) {
+                    throw new AttributeUnavailableException();
                 }
                 LOG.debug("second level status code: " + secondLevelStatusCode.getValue());
             }
@@ -258,7 +259,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     }
 
     public void getAttributeValues(String userId, Map<String, Object> attributes) throws AttributeNotFoundException,
-            RequestDeniedException, WSClientTransportException {
+            RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
         AttributeQueryType request = getAttributeQuery(userId, attributes);
         SafeOnlineTrustManager.configureSsl();
@@ -270,15 +271,13 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     private void getAttributeValues(ResponseType response, Map<String, Object> attributes) {
 
         List<Object> assertions = response.getAssertionOrEncryptedAssertion();
-        if (0 == assertions.size()) {
+        if (0 == assertions.size())
             throw new RuntimeException("No assertions in response");
-        }
         AssertionType assertion = (AssertionType) assertions.get(0);
 
         List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-        if (0 == statements.size()) {
+        if (0 == statements.size())
             throw new RuntimeException("No statements in response assertion");
-        }
         AttributeStatementType attributeStatement = (AttributeStatementType) statements.get(0);
         List<Object> attributeObjects = attributeStatement.getAttributeOrEncryptedAttribute();
         for (Object attributeObject : attributeObjects) {
@@ -301,7 +300,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
             } else {
                 /*
                  * Single-valued attribute.
-                 *
+                 * 
                  * Here we depend on the xsi:type typing.
                  */
                 attributeValue = attributeValues.get(0);
@@ -312,7 +311,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     }
 
     public Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException,
-            WSClientTransportException, AttributeNotFoundException {
+            WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException {
 
         Map<String, Object> attributes = new HashMap<String, Object>();
         AttributeQueryType request = getAttributeQuery(userId, attributes);
@@ -325,12 +324,12 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
 
     @SuppressWarnings("unchecked")
     public <Type> Type getIdentity(String subjectLogin, Class<Type> identityCardClass)
-            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException {
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
+            AttributeUnavailableException {
 
         IdentityCard identityCardAnnotation = identityCardClass.getAnnotation(IdentityCard.class);
-        if (null == identityCardAnnotation) {
+        if (null == identityCardAnnotation)
             throw new IllegalArgumentException("identity card class should be annotated with @IdentityCard");
-        }
         Type identityCard;
         try {
             identityCard = identityCardClass.newInstance();

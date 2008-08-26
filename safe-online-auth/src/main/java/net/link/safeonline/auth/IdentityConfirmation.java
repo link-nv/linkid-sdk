@@ -14,6 +14,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.data.AttributeDO;
@@ -26,7 +27,8 @@ public interface IdentityConfirmation {
      * Actions.
      */
     String agree() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException, SubscriptionNotFoundException;
+            PermissionDeniedException, AttributeTypeNotFoundException, SubscriptionNotFoundException,
+            AttributeUnavailableException;
 
     /*
      * Lifecycle.

@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
@@ -70,7 +71,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
 
     public Object findDeviceAttributeValue(String deviceMappingId, String attributeName)
-            throws AttributeTypeNotFoundException, PermissionDeniedException {
+            throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException {
 
         LOG.debug("find device attribute " + attributeName + " for " + deviceMappingId);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
@@ -95,7 +96,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     }
 
     public Object findAttributeValue(String userId, String attributeName) throws PermissionDeniedException,
-            AttributeTypeNotFoundException {
+            AttributeTypeNotFoundException, AttributeUnavailableException {
 
         LOG.debug("find attribute " + attributeName + " for " + userId);
 
@@ -119,8 +120,13 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
     /**
      * Find an external attribute value using OSGi plugin specified in the attribute type.
+     * 
+     * @throws AttributeUnavailableException
+     * @throws AttributeTypeNotFoundException
+     * @throws PermissionDeniedException
      */
-    private Object findExternalAttributeValue(String userId, AttributeTypeEntity attributeType) {
+    private Object findExternalAttributeValue(String userId, AttributeTypeEntity attributeType)
+            throws AttributeUnavailableException, AttributeTypeNotFoundException, PermissionDeniedException {
 
         LOG.debug("find external attribute " + attributeType.getName() + " for " + userId);
         try {
@@ -129,20 +135,21 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
             List<Attribute> attributeView = pluginAttributeService.getAttribute(userId, attributeType.getName(),
                     attributeType.getPluginConfiguration());
             return convertAttribute(attributeView, attributeType);
-        } catch (SafeOnlineResourceException e) {
-            // TODO: handle exceptions
-            LOG.error("[TODO]", e);
         } catch (UnsupportedDataTypeException e) {
-            LOG.error("[TODO]", e);
+            throw new PermissionDeniedException("Unsupported data type");
         } catch (AttributeNotFoundException e) {
-            LOG.error("[TODO]", e);
+            LOG.debug("external attribute " + attributeType.getName() + " not found for " + userId + " ( plugin="
+                    + attributeType.getPluginName() + " )");
+            return null;
         } catch (net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException e) {
-            LOG.error("[TODO]", e);
+            throw new AttributeTypeNotFoundException();
         } catch (InvalidDataException e) {
-            LOG.error("[TODO]", e);
+            throw new PermissionDeniedException("Invalid data");
+        } catch (SafeOnlineResourceException e) {
+            throw new AttributeUnavailableException();
+        } catch (net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException e) {
+            throw new AttributeUnavailableException();
         }
-
-        return null;
     }
 
     /**
@@ -234,19 +241,20 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 int size = attributeView.size() / (1 + attributeType.getMembers().size());
                 Map[] values = new Map[size];
                 int memberIdx = 0;
-                for (int idx = 0; idx < size; idx++, memberIdx++) {
-                    Attribute attribute = attributeView.get(idx);
+                for (int idx = 0; idx < size; idx++) {
+                    Attribute attribute = attributeView.get(memberIdx);
                     if (!attribute.getType().equals(datatype))
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
                     Map<String, Object> memberMap = new HashMap<String, Object>();
                     values[idx] = memberMap;
+                    memberIdx++;
                     for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                         AttributeTypeEntity memberAttributeType = member.getMember();
-                        Attribute memberAttribute = attributeView.get(idx);
-                        if (!sameType(attribute.getType(), memberAttributeType.getType()))
-                            throw new InvalidDataException("datatype " + attribute.getType()
-                                    + " not matching expected datatype " + datatype);
+                        Attribute memberAttribute = attributeView.get(memberIdx);
+                        if (!sameType(memberAttribute.getType(), memberAttributeType.getType()))
+                            throw new InvalidDataException("datatype " + memberAttribute.getType()
+                                    + " not matching expected datatype " + memberAttributeType.getType());
                         memberMap.put(memberAttributeType.getName(), memberAttribute.getValue());
                         memberIdx++;
                     }
@@ -369,9 +377,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
      * @param subjectId
      * @param attributeType
      * @return attribute value
+     * @throws SafeOnlineResourceException
      */
     private Object findRemoteAttribute(String subjectId, AttributeTypeEntity attributeType)
-            throws PermissionDeniedException {
+            throws PermissionDeniedException, AttributeUnavailableException {
 
         LOG.debug("find remote attribute " + attributeType.getName() + " for " + subjectId);
 
@@ -445,6 +454,8 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
             throw new PermissionDeniedException(e.getMessage());
         } catch (net.link.safeonline.sdk.exception.AttributeNotFoundException e) {
             return null;
+        } catch (net.link.safeonline.sdk.exception.AttributeUnavailableException e) {
+            throw new AttributeUnavailableException();
         }
     }
 

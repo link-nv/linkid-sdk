@@ -521,8 +521,8 @@
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-outcome>success</from-outcome>
-			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+			<from-outcome>next</from-outcome>
+			<to-view-id> /attributes/attribute-add-location.xhtml </to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -559,8 +559,8 @@
 	<navigation-rule>
 		<from-view-id> /attributes/attribute-add-comp-ac.xhtml </from-view-id>
 		<navigation-case>
-			<from-outcome>success</from-outcome>
-			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+			<from-outcome>next</from-outcome>
+			<to-view-id>/attributes/attribute-add-comp-location.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>canceled</from-outcome>
@@ -571,7 +571,116 @@
 			<to-view-id> /attributes/attribute-add-members.xhtml </to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
+	<navigation-rule>
+		<from-view-id> /attributes/attribute-add-location.xhtml 
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>previous</from-outcome>
+			<to-view-id> /attributes/attribute-add-ac.xhtml </to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>olas</from-outcome>
+			<to-view-id> /attributes/attribute-add-location-olas.xhtml 
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>external</from-outcome>
+			<to-view-id> /attributes/attribute-add-location-external.xhtml 
+			</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id> /attributes/attribute-add-location-olas.xhtml 
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>previous</from-outcome>
+			<to-view-id> /attributes/attribute-add-location.xhtml </to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id> /attributes/attribute-add-location-external.xhtml 
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>previous</from-outcome>
+			<to-view-id> /attributes/attribute-add-location.xhtml </to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id> /attributes/attribute-add-comp-location.xhtml 
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>previous</from-outcome>
+			<to-view-id> /attributes/attribute-add-comp-ac.xhtml </to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>olas</from-outcome>
+			<to-view-id> /attributes/attribute-add-comp-location-olas.xhtml 
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>external</from-outcome>
+			<to-view-id> /attributes/attribute-add-comp-location-external.xhtml 
+			</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id> /attributes/attribute-add-comp-location-olas.xhtml 
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>previous</from-outcome>
+			<to-view-id> /attributes/attribute-add-comp-location.xhtml 
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id> /attributes/attribute-add-comp-location-external.xhtml 
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>previous</from-outcome>
+			<to-view-id> /attributes/attribute-add-comp-location.xhtml 
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 	<!-- End attributes navigation rules -->
 
 	<!-- Begin configuration navigation rules -->

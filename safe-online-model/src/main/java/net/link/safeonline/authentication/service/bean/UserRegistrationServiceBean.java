@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
@@ -49,7 +50,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService, Use
 
 
     public SubjectEntity registerUser(String login) throws ExistingUserException, AttributeTypeNotFoundException,
-            PermissionDeniedException {
+            PermissionDeniedException, AttributeUnavailableException {
 
         SubjectEntity subject = this.subjectService.findSubjectFromUserName(login);
         if (null == subject)
@@ -65,9 +66,8 @@ public class UserRegistrationServiceBean implements UserRegistrationService, Use
         for (DeviceMappingEntity deviceMapping : deviceMappings) {
             Object deviceAttribute = this.proxyAttributeService.findDeviceAttributeValue(deviceMapping.getId(),
                     deviceMapping.getDevice().getAttributeType().getName());
-            if (null != deviceAttribute) {
+            if (null != deviceAttribute)
                 throw new ExistingUserException();
-            }
         }
         return subject;
     }

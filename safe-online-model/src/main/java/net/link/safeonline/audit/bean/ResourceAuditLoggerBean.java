@@ -9,8 +9,6 @@ package net.link.safeonline.audit.bean;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
 import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
 
@@ -20,7 +18,6 @@ import net.link.safeonline.audit.dao.AuditAuditDAO;
 import net.link.safeonline.audit.dao.AuditContextDAO;
 import net.link.safeonline.audit.dao.ResourceAuditDAO;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
-import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
@@ -39,19 +36,6 @@ public class ResourceAuditLoggerBean implements ResourceAuditLogger {
     private ResourceAuditDAO resourceAuditDAO;
 
 
-    @AroundInvoke
-    public Object interceptor(InvocationContext context) throws Exception {
-
-        try {
-            return context.proceed();
-        }
-
-        catch (SafeOnlineResourceException e) {
-            addResourceAudit(e.getResourceName(), e.getResourceLevel(), e.getSourceComponent(), e.getMessage());
-            throw e;
-        }
-    }
-
     public void addResourceAudit(ResourceNameType resourceName, ResourceLevelType resourceLevel,
             String sourceComponent, String message) {
 
@@ -64,7 +48,7 @@ public class ResourceAuditLoggerBean implements ResourceAuditLogger {
 
             try {
                 AuditContextEntity auditContext = this.auditContextDAO.getAuditContext(auditContextId);
-                
+
                 this.resourceAuditDAO.addResourceAudit(auditContext, resourceName, resourceLevel, sourceComponent,
                         message);
             }

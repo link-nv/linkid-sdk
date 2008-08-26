@@ -32,6 +32,7 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -333,34 +334,43 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 continue;
             }
             LOG.debug("find attribute value for type: " + attributeType.getName());
-            Object value = this.proxyAttributeService.findAttributeValue(subject.getUserId(), attributeType.getName());
-            // No value found so this must be an optional attribute, add a
-            // template attribute view.
-            if (null == value && addTemplate) {
-                addTemplateToView(attributeType, attributesView, locale, false);
-                continue;
-            } else if (null == value) {
-                continue;
+            Object value;
+            try {
+                value = this.proxyAttributeService.findAttributeValue(subject.getUserId(), attributeType.getName());
+                // No value found so this must be an optional attribute, add a
+                // template attribute view.
+                if (null == value && addTemplate) {
+                    addTemplateToView(attributeType, attributesView, locale, false, false);
+                    continue;
+                } else if (null == value) {
+                    continue;
+                }
+                addValueToView(value, attributeType, attributesView, locale);
+            } catch (AttributeUnavailableException e) {
+                // resource exception e.g. OSGi plugin not found, show "unavailable"
+                if (addTemplate) {
+                    addTemplateToView(attributeType, attributesView, locale, false, true);
+                    continue;
+                }
             }
-            addValueToView(value, attributeType, attributesView, locale);
         }
         return attributesView;
     }
 
     private void addTemplateToView(AttributeTypeEntity attributeType, List<AttributeDO> attributesView, Locale locale,
-            boolean missingAttribute) {
+            boolean missingAttribute, boolean unavailable) {
 
         LOG.debug("add template attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued() && !attributeType.isCompounded()) {
             // single or multi-valued but NOT compounded
-            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute));
+            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable));
         } else {
             // compounded
-            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute)); // parent
+            attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable)); // parent
             for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
                 LOG.debug("add compounded member attribute template: " + memberAttributeType.getMember().getName());
-                attributesView
-                        .add(getAttributeView(memberAttributeType.getMember(), null, 0, locale, missingAttribute));
+                attributesView.add(getAttributeView(memberAttributeType.getMember(), null, 0, locale, missingAttribute,
+                        unavailable));
             }
         }
     }
@@ -372,12 +382,12 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         LOG.debug("add attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued()) {
             // single-valued
-            attributesView.add(getAttributeView(attributeType, value, 0, locale, false));
+            attributesView.add(getAttributeView(attributeType, value, 0, locale, false, false));
         } else if (!attributeType.isCompounded()) {
             // multi-valued but NOT compounded
             int idx = 0;
             for (Object attributeValue : (Object[]) value) {
-                attributesView.add(getAttributeView(attributeType, attributeValue, idx, locale, false));
+                attributesView.add(getAttributeView(attributeType, attributeValue, idx, locale, false, false));
                 idx++;
             }
         } else {
@@ -388,11 +398,11 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 // first add an attribute view for the parent attribute
                 // type
                 LOG.debug("add compounded attribute: " + attributeType.getName());
-                attributesView.add(getAttributeView(attributeType, null, idx, locale, false));
+                attributesView.add(getAttributeView(attributeType, null, idx, locale, false, false));
                 for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
                     LOG.debug("add compounded member attribute: " + memberAttributeType.getMember().getName());
                     attributesView.add(getAttributeView(memberAttributeType.getMember(), memberMap
-                            .get(memberAttributeType.getMember().getName()), idx, locale, false));
+                            .get(memberAttributeType.getMember().getName()), idx, locale, false, false));
                 }
                 idx++;
             }
@@ -406,7 +416,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
      * should be editable or not.
      */
     private AttributeDO getAttributeView(AttributeTypeEntity attributeType, Object value, int idx, Locale locale,
-            boolean missingAttribute) {
+            boolean missingAttribute, boolean unavailable) {
 
         LOG.debug("get attribute view for type: " + attributeType.getName() + " with value: " + value);
         String humanReadableName = null;
@@ -422,6 +432,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
         attributeView.setCompounded(attributeType.isCompounded());
         attributeView.setMember(attributeType.isCompoundMember());
+        attributeView.setUnavailable(unavailable);
         /*
          * We mark compounded attribute members as non-editable when queries via the listAttributes method to ease
          * visualization. This is not the case if we are making a view for the missing attributes page, then the user
@@ -551,7 +562,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public boolean hasMissingAttributes(@NonEmptyString String applicationName) throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
+            AttributeUnavailableException {
 
         LOG.debug("hasMissingAttributes for application: " + applicationName);
         List<AttributeDO> missingAttributes = listMissingAttributes(applicationName, null);
@@ -644,7 +656,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listOptionalAttributes(@NonEmptyString String applicationName, Locale locale)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+            AttributeTypeNotFoundException, AttributeUnavailableException {
 
         LOG.debug("list optional missing attributes for application: " + applicationName);
         SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -657,7 +669,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listMissingAttributes(@NonEmptyString String applicationName, Locale locale)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+            AttributeTypeNotFoundException, AttributeUnavailableException {
 
         LOG.debug("list missing attributes for application: " + applicationName);
         SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -669,16 +681,18 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     /**
      * Returns list of attribute data objects given the subject and the list of attribute types.
+     * 
      */
     private List<AttributeDO> listMissingAttributes(SubjectEntity subject, List<AttributeTypeEntity> attributeTypes,
-            Locale locale) throws PermissionDeniedException, AttributeTypeNotFoundException {
+            Locale locale) throws PermissionDeniedException, AttributeTypeNotFoundException,
+            AttributeUnavailableException {
 
         List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
         for (AttributeTypeEntity attributeType : attributeTypes) {
             LOG.debug("find attribute value for type: " + attributeType.getName());
             Object value = this.proxyAttributeService.findAttributeValue(subject.getUserId(), attributeType.getName());
             if (null == value) {
-                addTemplateToView(attributeType, attributesView, locale, true);
+                addTemplateToView(attributeType, attributesView, locale, true, false);
             }
         }
         return attributesView;
@@ -708,13 +722,19 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             AttributeTypeNotFoundException {
 
         LOG.debug("list attributes for device: " + deviceMappingId);
-        Object value = this.proxyAttributeService.findDeviceAttributeValue(deviceMappingId, attributeType.getName());
-        if (null == value)
-            return null;
+        try {
+            Object value = this.proxyAttributeService
+                    .findDeviceAttributeValue(deviceMappingId, attributeType.getName());
+            if (null == value)
+                return null;
 
-        List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
-        addValueToView(value, attributeType, attributesView, locale);
-        return attributesView;
+            List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
+            addValueToView(value, attributeType, attributesView, locale);
+            return attributesView;
+        } catch (AttributeUnavailableException e) {
+            return null;
+        }
+
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)

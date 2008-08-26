@@ -15,6 +15,7 @@ import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
@@ -59,7 +60,8 @@ public interface AccountRegistration {
     /*
      * Actions.
      */
-    String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException;
+    String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException,
+            AttributeUnavailableException;
 
     String deviceNext() throws DeviceNotFoundException, IOException;
 }

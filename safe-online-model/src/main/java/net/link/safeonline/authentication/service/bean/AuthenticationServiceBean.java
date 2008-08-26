@@ -43,6 +43,7 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
@@ -82,7 +83,6 @@ import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.osgi.OSGIStartable;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
@@ -214,9 +214,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     @EJB
     private SecurityAuditLogger              securityAuditLogger;
-
-    @EJB
-    private OSGIStartable                    osgiStartable;
 
 
     public void initialize(@NotNull AuthnRequest samlAuthnRequest) throws AuthenticationInitializationException,
@@ -620,7 +617,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private void checkRequiredMissingAttributes() throws ApplicationNotFoundException,
             ApplicationIdentityNotFoundException, MissingAttributeException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+            AttributeTypeNotFoundException, AttributeUnavailableException {
 
         boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.expectedApplicationId);
         if (true == hasMissingAttributes) {
@@ -666,7 +663,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
             ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException, MissingAttributeException,
             EmptyDevicePolicyException, DevicePolicyException, UsageAgreementAcceptationRequiredException,
-            PermissionDeniedException, AttributeTypeNotFoundException {
+            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
         LOG.debug("commitAuthentication for application: " + this.expectedApplicationId);
 
@@ -706,18 +703,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Safe the state in this stateful session bean.
          */
         this.authenticationState = COMMITTED;
-
-        // XXX: OSGI tryout
-        /*
-         * Object[] pluginServices = this.osgiStartable.getPluginServices(); for (int i = 0; pluginServices != null && i <
-         * pluginServices.length; i++) { try { LOG.debug("pluginservice.getAttribute"); ((PluginAttributeService)
-         * pluginServices[i]).getAttribute(this.authenticatedSubject.getUserId(), "test-attribute",
-         * "configuration=test"); ((PluginAttributeService)
-         * pluginServices[i]).getAttribute(this.authenticatedSubject.getUserId(), SafeOnlineConstants.LOGIN_ATTRIBTUE,
-         * "configuration=test"); } catch (UnsupportedDataTypeException e) { LOG.error("[TODO]", e); } catch
-         * (AttributeNotFoundException e) { LOG.error("[TODO]", e); } catch
-         * (net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException e) { LOG.error("[TODO]", e); } }
-         */
     }
 
     public String getUserId() {

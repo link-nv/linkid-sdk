@@ -13,6 +13,7 @@ import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 
@@ -24,7 +25,8 @@ public interface AuthenticationSubscription {
      * Actions.
      */
     String subscribe() throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException,
-            SubscriptionNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException;
+            SubscriptionNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException,
+            AttributeUnavailableException;
 
     /*
      * Accessors

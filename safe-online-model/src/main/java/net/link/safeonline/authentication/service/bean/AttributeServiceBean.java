@@ -25,6 +25,7 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
@@ -48,9 +49,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Attribute Service Implementation for applications.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
@@ -78,7 +79,7 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public Object getConfirmedAttributeValue(String subjectLogin, String attributeName)
             throws AttributeNotFoundException, PermissionDeniedException, SubjectNotFoundException,
-            AttributeTypeNotFoundException {
+            AttributeTypeNotFoundException, AttributeUnavailableException {
 
         LOG.debug("get attribute " + attributeName + " for login " + subjectLogin);
         List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
@@ -145,7 +146,7 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public Map<String, Object> getConfirmedAttributeValues(String subjectLogin) throws SubjectNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException {
+            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
         LOG.debug("get confirmed attributes for subject: " + subjectLogin);
         List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);

@@ -99,6 +99,7 @@ import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationConsumerServiceBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
+import net.link.safeonline.osgi.bean.OSGIStartableBean;
 import net.link.safeonline.pkix.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;
@@ -115,9 +116,9 @@ import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
 
 /**
  * Represents the content of the SafeOnline container.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SafeOnlineTestContainer {
 
@@ -147,7 +148,7 @@ public class SafeOnlineTestContainer {
             ProxyAttributeServiceBean.class, StatisticDAOBean.class, StatisticDataPointDAOBean.class,
             NotificationProducerServiceBean.class, NotificationProducerDAOBean.class,
             NotificationConsumerServiceBean.class, EndpointReferenceDAOBean.class, DeviceSubjectDAOBean.class,
-            ApplicationScopeIdDAOBean.class    };
+            ApplicationScopeIdDAOBean.class, OSGIStartableBean.class };
 
     public static final Class<?>[] entities     = new Class[] { SubjectEntity.class, ApplicationEntity.class,
             ApplicationOwnerEntity.class, AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class,

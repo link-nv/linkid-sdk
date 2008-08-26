@@ -9,8 +9,8 @@ package net.link.safeonline.osgi.plugin.exception;
 import net.link.safeonline.osgi.plugin.Attribute;
 
 /**
- * <h2>{@link AttributeNotFoundException}<br>
- * <sub>Attribute not found Exception.</sub></h2>
+ * <h2>{@link AttributeUnavailableException}<br>
+ * <sub>Unsupported Data Type Exception.</sub></h2>
  * 
  * <p>
  * Exception thrown while trying to set an {@link Attribute} value with an
@@ -23,13 +23,13 @@ import net.link.safeonline.osgi.plugin.Attribute;
  * 
  * @author wvdhaute
  */
-public class AttributeNotFoundException extends Exception {
+public class AttributeUnavailableException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
 	private final String errorMessage;
 
-	public AttributeNotFoundException(String errorMessage) {
+	public AttributeUnavailableException(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 

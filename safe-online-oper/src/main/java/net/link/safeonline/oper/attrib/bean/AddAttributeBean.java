@@ -32,6 +32,7 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.attrib.AddAttribute;
+import net.link.safeonline.osgi.OSGIStartable;
 import net.link.safeonline.service.AttributeTypeService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -57,28 +58,62 @@ import org.jboss.seam.log.Log;
 @Interceptors(ErrorMessageInterceptor.class)
 public class AddAttributeBean implements AddAttribute {
 
+    private static final String       singleValuedType = "singleValued";
+    private static final String       multiValuedType  = "multiValued";
+    private static final String       compoundType     = "compounded";
+
+    private static final String       olasAttribute    = "olas";
+    private static final String       pluginAttribute  = "external";
+
+    @Logger
+    private Log                       log;
+
+    @EJB
+    private AttributeTypeService      attributeTypeService;
+
+    @EJB
+    private NodeService               nodeService;
+
+    @EJB
+    private OSGIStartable             osgiStartable;
+
+    @In(create = true)
+    FacesMessages                     facesMessages;
+
+    private String                    category;
+
+    private String                    name;
+
+    private String                    node;
+
+    private String                    locationOption;
+
+    private String                    plugin;
+
+    private String                    pluginConfiguration;
+
+    private String                    type;
+
+    private boolean                   userVisible;
+
+    private boolean                   userEditable;
+
+    private boolean                   deviceAttribute;
+
+    private List<AttributeTypeEntity> sourceMemberAttributes;
+
+    private List<AttributeTypeEntity> selectedMemberAttributes;
+
+    @SuppressWarnings("unused")
+    @DataModel
+    private List<AttributeTypeEntity> attributeTypeList;
+
+
     @Remove
     @Destroy
     public void destroyCallback() {
 
     }
-
-
-    @Logger
-    private Log         log;
-
-    @EJB
-    private NodeService nodeService;
-
-    private String      category;
-
-    private String      name;
-
-    private String      node;
-
-    @In(create = true)
-    FacesMessages       facesMessages;
-
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getCategory() {
@@ -123,6 +158,41 @@ public class AddAttributeBean implements AddAttribute {
         this.node = node;
     }
 
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getPlugin() {
+
+        return this.plugin;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setPlugin(String plugin) {
+
+        this.plugin = plugin;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getPluginConfiguration() {
+
+        return this.pluginConfiguration;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setPluginConfiguration(String pluginConfiguration) {
+
+        this.pluginConfiguration = pluginConfiguration;
+    }
+
+    @Factory("types")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> typesFactory() {
+
+        List<SelectItem> types = new LinkedList<SelectItem>();
+        types.add(new SelectItem(singleValuedType, "Single-valued"));
+        types.add(new SelectItem(multiValuedType, "Multi-valued"));
+        types.add(new SelectItem(compoundType, "Compounded"));
+        return types;
+    }
+
     @Factory("datatypes")
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<SelectItem> datatypesFactory() {
@@ -138,6 +208,16 @@ public class AddAttributeBean implements AddAttribute {
         return datatypes;
     }
 
+    @Factory("locations")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> locationTypesFactory() {
+
+        List<SelectItem> locations = new LinkedList<SelectItem>();
+        locations.add(new SelectItem(olasAttribute, "OLAS"));
+        locations.add(new SelectItem(pluginAttribute, "External"));
+        return locations;
+    }
+
     @Factory("attributeNodes")
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<SelectItem> nodeFactory() {
@@ -145,6 +225,20 @@ public class AddAttributeBean implements AddAttribute {
         List<NodeEntity> nodeList = this.nodeService.listNodes();
         List<SelectItem> nodes = ConvertorUtil.convert(nodeList, new OlasEntitySelectItemConvertor());
         return nodes;
+    }
+
+    @Factory("attributePlugins")
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> pluginFactory() {
+
+        List<SelectItem> plugins = new LinkedList<SelectItem>();
+        Object[] pluginServices = this.osgiStartable.getPluginServices();
+        if (null == pluginServices)
+            return plugins;
+        for (Object pluginService : pluginServices) {
+            plugins.add(new SelectItem(pluginService.getClass().getName()));
+        }
+        return plugins;
     }
 
 
@@ -156,9 +250,6 @@ public class AddAttributeBean implements AddAttribute {
             return output;
         }
     }
-
-
-    private String type;
 
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -180,10 +271,6 @@ public class AddAttributeBean implements AddAttribute {
         return "next";
     }
 
-
-    private boolean userVisible;
-
-
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public boolean isUserVisible() {
 
@@ -196,10 +283,6 @@ public class AddAttributeBean implements AddAttribute {
         this.userVisible = userVisible;
     }
 
-
-    private boolean userEditable;
-
-
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public boolean isUserEditable() {
 
@@ -211,15 +294,6 @@ public class AddAttributeBean implements AddAttribute {
 
         this.userEditable = userEditable;
     }
-
-
-    @EJB
-    private AttributeTypeService      attributeTypeService;
-
-    private List<AttributeTypeEntity> sourceMemberAttributes;
-
-    private List<AttributeTypeEntity> selectedMemberAttributes;
-
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<AttributeTypeEntity> getSourceMemberAttributes() {
@@ -252,12 +326,6 @@ public class AddAttributeBean implements AddAttribute {
         }
     }
 
-
-    @SuppressWarnings("unused")
-    @DataModel
-    private List<AttributeTypeEntity> attributeTypeList;
-
-
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @End
     @ErrorHandling( {
@@ -272,21 +340,26 @@ public class AddAttributeBean implements AddAttribute {
 
         AttributeTypeEntity attributeType = new AttributeTypeEntity();
         attributeType.setName(this.name);
-        if ("compounded".equals(this.category)) {
+        if (compoundType.equals(this.category)) {
             attributeType.setMultivalued(true);
             attributeType.setType(DatatypeType.COMPOUNDED);
         } else {
-            if ("multiValued".equals(this.category)) {
+            if (multiValuedType.equals(this.category)) {
                 attributeType.setMultivalued(true);
             }
             attributeType.setType(DatatypeType.valueOf(this.type));
         }
         attributeType.setUserEditable(this.userEditable);
         attributeType.setUserVisible(this.userVisible);
-        attributeType.setDeviceAttribute(this.deviceAttribute);
 
-        NodeEntity olasNode = this.nodeService.getNode(this.node);
-        attributeType.setLocation(olasNode);
+        if (this.locationOption.equals(olasAttribute)) {
+            attributeType.setDeviceAttribute(this.deviceAttribute);
+            NodeEntity olasNode = this.nodeService.getNode(this.node);
+            attributeType.setLocation(olasNode);
+        } else {
+            attributeType.setPluginName(this.plugin);
+            attributeType.setPluginConfiguration(this.pluginConfiguration);
+        }
 
         if (null != this.memberAccessControlAttributes) {
             int memberSequence = 0;
@@ -384,10 +457,6 @@ public class AddAttributeBean implements AddAttribute {
         return "next";
     }
 
-
-    private boolean deviceAttribute;
-
-
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public boolean isDeviceAttribute() {
 
@@ -399,4 +468,32 @@ public class AddAttributeBean implements AddAttribute {
 
         this.deviceAttribute = deviceAttribute;
     }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getLocationOption() {
+
+        return this.locationOption;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setLocationOption(String locationOption) {
+
+        this.locationOption = locationOption;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String acNext() {
+
+        this.log.debug("ac next");
+        return "next";
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String locationNext() {
+
+        this.log.debug("location next: " + this.locationOption);
+        pluginFactory();
+        return this.locationOption;
+    }
+
 }

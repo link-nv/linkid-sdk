@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
@@ -64,9 +65,9 @@ public interface AuthenticationService {
 
     /**
      * Commits the authentication.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #authenticate(HttpServletRequest)}.
-     *
+     * 
      * @throws SubscriptionNotFoundException
      *             in case the subject is not subscribed to the application.
      * @throws ApplicationNotFoundException
@@ -79,11 +80,12 @@ public interface AuthenticationService {
      * @throws UsageAgreementAcceptationRequiredException
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
+     * @throws AttributeUnavailableException
      */
     void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
             ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException, MissingAttributeException,
             EmptyDevicePolicyException, DevicePolicyException, UsageAgreementAcceptationRequiredException,
-            PermissionDeniedException, AttributeTypeNotFoundException;
+            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException;
 
     /**
      * Sets the password of a user. This method should be used in case the user did not yet had a password registered as

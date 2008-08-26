@@ -58,6 +58,18 @@ public interface AddAttribute {
 
     void setDeviceAttribute(boolean deviceAttribute);
 
+    String getLocationOption();
+
+    void setLocationOption(String locationOption);
+
+    String getPlugin();
+
+    void setPlugin(String plugin);
+
+    String getPluginConfiguration();
+
+    void setPluginConfiguration(String configuration);
+
     List<AttributeTypeEntity> getSourceMemberAttributes();
 
     void setSourceMemberAttributes(List<AttributeTypeEntity> sourceMemberAttributes);
@@ -82,12 +94,22 @@ public interface AddAttribute {
 
     String membersAccessControlNext();
 
+    String acNext();
+
+    String locationNext();
+
     /*
      * Factory.
      */
+    List<SelectItem> typesFactory();
+
     List<SelectItem> datatypesFactory();
 
     void memberAccessControlAttributesFactory();
 
     List<SelectItem> nodeFactory();
+
+    List<SelectItem> locationTypesFactory();
+
+    List<SelectItem> pluginFactory();
 }

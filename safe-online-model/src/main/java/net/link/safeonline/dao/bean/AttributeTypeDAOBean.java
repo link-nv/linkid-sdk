@@ -13,6 +13,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -105,8 +107,9 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         LOG.debug("get attribute type: " + name);
         AttributeTypeEntity attributeType = findAttributeType(name);
-        if (null == attributeType)
+        if (null == attributeType) {
             throw new AttributeTypeNotFoundException();
+        }
         return attributeType;
     }
 
@@ -153,11 +156,13 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(
                 AttributeTypeDescriptionEntity.class, attributeTypeDescriptionPK);
-        if (null == attributeTypeDescription)
+        if (null == attributeTypeDescription) {
             throw new AttributeTypeDescriptionNotFoundException();
+        }
         return attributeTypeDescription;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public AttributeTypeDescriptionEntity findDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK) {
 
         AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(
@@ -195,8 +200,9 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     public AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType) throws AttributeTypeNotFoundException {
 
         AttributeTypeEntity parent = this.compoundedQueryObject.findParentAttribute(memberAttributeType);
-        if (null == parent)
+        if (null == parent) {
             throw new AttributeTypeNotFoundException();
+        }
         return parent;
     }
 
@@ -205,8 +211,9 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         List<CompoundedAttributeTypeMemberEntity> memberEntries = this.compoundedQueryObject
                 .listMemberEntries(memberAttributeType);
-        if (memberEntries.isEmpty())
+        if (memberEntries.isEmpty()) {
             throw new AttributeTypeNotFoundException();
+        }
         CompoundedAttributeTypeMemberEntity memberEntry = memberEntries.get(0);
         return memberEntry;
     }

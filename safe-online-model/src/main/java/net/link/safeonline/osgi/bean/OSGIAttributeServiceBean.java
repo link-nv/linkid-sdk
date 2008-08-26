@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -65,7 +66,7 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
      * {@inheritDoc}
      */
     public List<Attribute> getAttribute(String userId, String attributeName) throws AttributeTypeNotFoundException,
-            AttributeNotFoundException, UnsupportedDataTypeException {
+            AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException {
 
         LOG.debug("get attribute " + attributeName + " for user " + userId);
         List<Attribute> attributeView = new LinkedList<Attribute>();
@@ -78,9 +79,8 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
             LOG.debug("permission denied retrieving attribute " + attributeName + " for user " + userId);
             throw new AttributeNotFoundException();
         }
-        if (null == value) {
+        if (null == value)
             throw new AttributeNotFoundException();
-        }
 
         // convert value to osgi attribute view
         addValueToView(value, attributeType, attributeView);
@@ -134,7 +134,6 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
         Attribute attributeView = new Attribute(attributeType.getName(), convertDataType(attributeType.getType()), idx,
                 null, null);
 
-        attributeView.setMember(attributeType.isCompoundMember());
         attributeView.setValue(value);
 
         return attributeView;
@@ -157,8 +156,7 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
             return DatatypeType.STRING;
         else if (dataType.equals(net.link.safeonline.entity.DatatypeType.STRING))
             return DatatypeType.STRING;
-        else {
+        else
             throw new UnsupportedDataTypeException("Unsupported datatype: " + dataType.getFriendlyName());
-        }
     }
 }

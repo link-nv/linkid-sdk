@@ -23,9 +23,9 @@ import net.link.safeonline.entity.DatatypeType;
 
 /**
  * JSF output component for {@link AttributeDO}.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AttributeOutputComponent extends UIOutput {
 
@@ -69,7 +69,11 @@ public class AttributeOutputComponent extends UIOutput {
         public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
 
             String value = attribute.getStringValue();
-            if (null == value) {
+            if (null == value && attribute.isUnavailable()) {
+                ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+                String noValueStr = messages.getString("unavailable");
+                value = "[" + noValueStr + "]";
+            } else if (null == value) {
                 ResourceBundle messages = TaglibUtil.getResourceBundle(context);
                 String noValueStr = messages.getString("noValue");
                 value = "[" + noValueStr + "]";
@@ -84,7 +88,11 @@ public class AttributeOutputComponent extends UIOutput {
         public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
 
             String value = attribute.getStringValue();
-            if (null == value) {
+            if (null == value && attribute.isUnavailable()) {
+                ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+                String noValueStr = messages.getString("unavailable");
+                value = "[" + noValueStr + "]";
+            } else if (null == value) {
                 ResourceBundle messages = TaglibUtil.getResourceBundle(context);
                 String noValueStr = messages.getString("noValue");
                 value = "[" + noValueStr + "]";
@@ -99,7 +107,12 @@ public class AttributeOutputComponent extends UIOutput {
         public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
 
             Boolean value = attribute.getBooleanValue();
-            if (null == value) {
+            if (null == value && attribute.isUnavailable()) {
+                ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+                String noValueStr = messages.getString("unavailable");
+                response.write("[" + noValueStr + "]");
+                return;
+            } else if (null == value) {
                 ResourceBundle messages = TaglibUtil.getResourceBundle(context);
                 String noValueStr = messages.getString("noValue");
                 response.write("[" + noValueStr + "]");
@@ -115,12 +128,18 @@ public class AttributeOutputComponent extends UIOutput {
         public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
 
             Integer value = attribute.getIntegerValue();
-            if (null == value) {
+            if (null == value && attribute.isUnavailable()) {
+                ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+                String noValueStr = messages.getString("unavailable");
+                response.write("[" + noValueStr + "]");
+                return;
+            } else if (null == value) {
                 ResourceBundle messages = TaglibUtil.getResourceBundle(context);
                 String noValueStr = messages.getString("noValue");
                 response.write("[" + noValueStr + "]");
                 return;
             }
+
             response.write(value.toString());
         }
     }
@@ -131,7 +150,12 @@ public class AttributeOutputComponent extends UIOutput {
         public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
 
             Double value = attribute.getDoubleValue();
-            if (null == value) {
+            if (null == value && attribute.isUnavailable()) {
+                ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+                String noValueStr = messages.getString("unavailable");
+                response.write("[" + noValueStr + "]");
+                return;
+            } else if (null == value) {
                 ResourceBundle messages = TaglibUtil.getResourceBundle(context);
                 String noValueStr = messages.getString("noValue");
                 response.write("[" + noValueStr + "]");
@@ -147,7 +171,12 @@ public class AttributeOutputComponent extends UIOutput {
         public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
 
             Date value = attribute.getDateValue();
-            if (null == value) {
+            if (null == value && attribute.isUnavailable()) {
+                ResourceBundle messages = TaglibUtil.getResourceBundle(context);
+                String noValueStr = messages.getString("unavailable");
+                response.write("[" + noValueStr + "]");
+                return;
+            } else if (null == value) {
                 ResourceBundle messages = TaglibUtil.getResourceBundle(context);
                 String noValueStr = messages.getString("noValue");
                 response.write("[" + noValueStr + "]");
@@ -204,7 +233,7 @@ public class AttributeOutputComponent extends UIOutput {
     /**
      * Gives back an instance of the requested attribute value encoder. There is a chance for a datarace here, but we
      * don't care.
-     *
+     * 
      * @param type
      */
     private static AttributeValueEncoder getAttributeValueEncoder(DatatypeType type) {

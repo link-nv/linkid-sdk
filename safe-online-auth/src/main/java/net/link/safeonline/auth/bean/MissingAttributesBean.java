@@ -25,6 +25,7 @@ import net.link.safeonline.auth.MissingAttributes;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
@@ -76,7 +77,8 @@ public class MissingAttributesBean implements MissingAttributes {
     @Factory(MISSING_ATTRIBUTE_LIST)
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public void missingAttributeListFactory() throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
+            AttributeUnavailableException {
 
         LOG.debug("missing attribute list factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -87,7 +89,8 @@ public class MissingAttributesBean implements MissingAttributes {
     @Factory(OPTIONAL_ATTRIBUTE_LIST)
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public void optionalAttributeListFactory() throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
+            AttributeUnavailableException {
 
         LOG.debug("optional attribute list factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();

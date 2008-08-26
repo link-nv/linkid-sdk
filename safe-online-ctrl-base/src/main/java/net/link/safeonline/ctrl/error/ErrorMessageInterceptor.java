@@ -25,6 +25,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
@@ -81,6 +82,7 @@ public class ErrorMessageInterceptor {
             new ErrorHandle(AttributeProviderNotFoundException.class, "errorAttributeProviderNotFound"),
             new ErrorHandle(AttributeTypeDescriptionNotFoundException.class, "errorAttributeTypeDescriptionNotFound"),
             new ErrorHandle(AttributeTypeNotFoundException.class, "errorAttributeTypeNotFound"),
+            new ErrorHandle(AttributeUnavailableException.class, "errorAttributeUnavailable"),
             new ErrorHandle(AuditContextNotFoundException.class, "errorAuditContextNotFound"),
             new ErrorHandle(CertificateEncodingException.class, "errorX509Encoding"),
             new ErrorHandle(DeviceClassDescriptionNotFoundException.class, "errorDeviceClassDescriptionNotFound"),

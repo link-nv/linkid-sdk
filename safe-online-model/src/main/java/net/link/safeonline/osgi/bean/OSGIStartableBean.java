@@ -12,9 +12,12 @@ import java.util.Map;
 
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.naming.NamingException;
 
 import net.link.safeonline.Startable;
+import net.link.safeonline.audit.AuditContextManager;
+import net.link.safeonline.audit.ResourceAuditLoggerInterceptor;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
@@ -54,6 +57,7 @@ import org.osgi.framework.Constants;
  */
 @Stateless
 @LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "OSGIStartableBean")
+@Interceptors( { AuditContextManager.class, ResourceAuditLoggerInterceptor.class })
 public class OSGIStartableBean implements OSGIStartable {
 
     private static final Log LOG = LogFactory.getLog(OSGIStartableBean.class);
@@ -152,6 +156,11 @@ public class OSGIStartableBean implements OSGIStartable {
     public PluginAttributeService getPluginService(String serviceName) throws SafeOnlineResourceException {
 
         Object[] services = getPluginServices();
+        if (null == services) {
+            throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE,
+                    serviceName);
+        }
+
         for (Object service : services) {
             if (service.getClass().getName().equals(serviceName))
                 return (PluginAttributeService) service;

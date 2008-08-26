@@ -21,6 +21,7 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -42,10 +43,10 @@ import org.apache.commons.logging.LogFactory;
  * The login servlet. A device (username-password or BeID) confirms successful login by setting the 'username' session
  * attribute. Then the device redirects to this login servlet. This login servlet will decide which is the next step in
  * the authentication process.
- *
- *
+ * 
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoginServlet extends AbstractInjectionServlet {
 
@@ -146,6 +147,8 @@ public class LoginServlet extends AbstractInjectionServlet {
             throw new ServletException("permission denied: " + e.getMessage());
         } catch (AttributeTypeNotFoundException e) {
             throw new ServletException("attribute type not found");
+        } catch (AttributeUnavailableException e) {
+            throw new ServletException("attribute unavailable");
         }
         return hasMissingAttributes;
     }
@@ -189,7 +192,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
     /**
      * Check whether the used authentication device is sufficient for the given application.
-     *
+     * 
      * @param session
      * @param applicationId
      * @param device

@@ -30,6 +30,7 @@ import javax.xml.ws.WebServiceContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
@@ -65,22 +66,22 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of SAML attribute web service using JAX-WS.
- *
+ * 
  * <p>
  * Specification: Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0.
  * </p>
- *
+ * 
  * <p>
  * OASIS Standard, 15 March 2005
  * </p>
- *
+ * 
  * <p>
  * SafeOnline extensions: we communicate the multivalued property of an attribute via the
  * AttributeServiceConstants#MULTIVALUED_ATTRIBUTE XML attribute on the SAML XML "Attribute" element.
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @WebService(endpointInterface = "oasis.names.tc.saml._2_0.protocol.SAMLAttributePort")
 @HandlerChain(file = "auth-ws-handlers.xml")
@@ -188,6 +189,9 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
             } catch (AttributeTypeNotFoundException e) {
                 ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(null);
                 return attributeNotFoundResponse;
+            } catch (AttributeUnavailableException e) {
+                ResponseType attributeUnavailableResponse = createAttributeUnavailableResponse(null);
+                return attributeUnavailableResponse;
             }
         } else {
             for (AttributeType attribute : attributes) {
@@ -209,6 +213,11 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
                     LOG.error("attribute not found: " + attributeName + " for subject " + subjectLogin);
                     ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(attributeName);
                     return attributeNotFoundResponse;
+                } catch (AttributeUnavailableException e) {
+                    LOG.error("attribute unavailable: " + attributeName + " for subject " + subjectLogin);
+                    ResponseType attributeUnavailableResponse = createAttributeUnavailableResponse(attributeName);
+                    return attributeUnavailableResponse;
+
                 }
             }
         }
@@ -222,7 +231,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
     }
 
     private Object getAttributeValue(String subjectLogin, String attributeName) throws SubjectNotFoundException,
-            AttributeNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
+            AttributeNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
+            AttributeUnavailableException {
 
         if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
             return this.attributeService.getConfirmedAttributeValue(subjectLogin, attributeName);
@@ -232,7 +242,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
     }
 
     private Map<String, Object> getAttributeValues(String subjectLogin) throws SubjectNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException {
+            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
         if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
             return this.attributeService.getConfirmedAttributeValues(subjectLogin);
@@ -268,6 +278,23 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
             detailMessage = "Attribute not found: " + attributeName;
         }
         ResponseType response = createRequesterErrorResponse(SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE,
+                detailMessage);
+        return response;
+    }
+
+    /**
+     * @param attributeName
+     *            the optional attribute name.
+     */
+    private ResponseType createAttributeUnavailableResponse(String attributeName) {
+
+        String detailMessage;
+        if (null == attributeName) {
+            detailMessage = "Attribute not found.";
+        } else {
+            detailMessage = "Attribute not found: " + attributeName;
+        }
+        ResponseType response = createRequesterErrorResponse(SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE,
                 detailMessage);
         return response;
     }

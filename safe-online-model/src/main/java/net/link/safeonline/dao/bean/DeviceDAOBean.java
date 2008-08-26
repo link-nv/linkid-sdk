@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -66,6 +68,7 @@ public class DeviceDAOBean implements DeviceDAO {
         return device;
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<DeviceEntity> listDevices() {
 
         List<DeviceEntity> result = this.queryObject.listDevices();
@@ -85,8 +88,9 @@ public class DeviceDAOBean implements DeviceDAO {
     public DeviceEntity getDevice(String name) throws DeviceNotFoundException {
 
         DeviceEntity device = this.entityManager.find(DeviceEntity.class, name);
-        if (null == device)
+        if (null == device) {
             throw new DeviceNotFoundException();
+        }
         return device;
     }
 
@@ -141,8 +145,9 @@ public class DeviceDAOBean implements DeviceDAO {
             throws DeviceDescriptionNotFoundException {
 
         DeviceDescriptionEntity description = this.entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
-        if (null == description)
+        if (null == description) {
             throw new DeviceDescriptionNotFoundException();
+        }
         return description;
     }
 
@@ -186,8 +191,9 @@ public class DeviceDAOBean implements DeviceDAO {
     public DevicePropertyEntity getProperty(DevicePropertyPK propertyPK) throws DevicePropertyNotFoundException {
 
         DevicePropertyEntity property = this.entityManager.find(DevicePropertyEntity.class, propertyPK);
-        if (null == property)
+        if (null == property) {
             throw new DevicePropertyNotFoundException();
+        }
         return property;
     }
 
@@ -206,9 +212,8 @@ public class DeviceDAOBean implements DeviceDAO {
 
         List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate
                 .getSubjectX500Principal().getName());
-        if (devices.isEmpty()) {
+        if (devices.isEmpty())
             throw new DeviceNotFoundException();
-        }
         DeviceEntity device = devices.get(0);
         return device;
     }

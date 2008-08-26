@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.ws.attrib;
 import java.util.Map;
 
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
@@ -32,13 +33,13 @@ public interface AttributeClient extends MessageAccessor {
     /**
      * Gives back the attribute value of a single attribute of the given subject. The type of the value returned depends
      * on the datatype of the corresponding attribute type.
-     *
+     * 
      * <p>
      * Compounded attributes are handled via annotated java classes. The annotations to be used for this are
      * {@link net.link.safeonline.sdk.ws.annotation.Compound} and
      * {@link net.link.safeonline.sdk.ws.annotation.CompoundMember}.
      * </p>
-     *
+     * 
      * @param <Type>
      * @param userId
      * @param attributeName
@@ -47,47 +48,52 @@ public interface AttributeClient extends MessageAccessor {
      * @throws RequestDeniedException
      * @throws WSClientTransportException
      *             in case the service could not be contacted. Can happen if the SSL was not setup correctly.
+     * @throws AttributeUnavailableException
      */
     <Type> Type getAttributeValue(String userId, String attributeName, Class<Type> valueClass)
-            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException;
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
+            AttributeUnavailableException;
 
     /**
      * Gives back attribute values via the map of attributes. The map should hold the requested attribute names as keys.
      * The method will fill in the corresponding values.
-     *
+     * 
      * @param userId
      * @param attributes
      * @throws AttributeNotFoundException
      * @throws RequestDeniedException
      * @throws WSClientTransportException
+     * @throws AttributeUnavailableException
      */
     void getAttributeValues(String userId, Map<String, Object> attributes) throws AttributeNotFoundException,
-            RequestDeniedException, WSClientTransportException;
+            RequestDeniedException, WSClientTransportException, AttributeUnavailableException;
 
     /**
      * Gives back a map of attributes for the given subject that this application is allowed to read.
-     *
+     * 
      * @param userId
      * @throws RequestDeniedException
      * @throws WSClientTransportException
      * @throws AttributeNotFoundException
+     * @throws AttributeUnavailableException
      */
     Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException, WSClientTransportException,
-            AttributeNotFoundException;
+            AttributeNotFoundException, AttributeUnavailableException;
 
     /**
      * Gives back the application identity for the given subject.
-     *
+     * 
      * The identity card class is a POJO annotated with
      * {@link net.link.safeonline.sdk.ws.attrib.annotation.IdentityCard}. It's properties should be annotated with
      * {@link net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute}.
-     *
+     * 
      * @param <Type>
      * @param userId
      * @throws AttributeNotFoundException
      * @throws RequestDeniedException
      * @throws WSClientTransportException
+     * @throws AttributeUnavailableException
      */
     <Type> Type getIdentity(String userId, Class<Type> identityCardClass) throws AttributeNotFoundException,
-            RequestDeniedException, WSClientTransportException;
+            RequestDeniedException, WSClientTransportException, AttributeUnavailableException;
 }

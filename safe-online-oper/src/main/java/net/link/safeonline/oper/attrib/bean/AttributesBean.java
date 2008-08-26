@@ -54,6 +54,8 @@ public class AttributesBean implements Attributes {
     @EJB
     private AttributeTypeService      attributeTypeService;
 
+    private String                    pluginConfiguration;
+
     @SuppressWarnings("unused")
     @DataModel("attributeTypeList")
     private List<AttributeTypeEntity> attributeTypeList;
@@ -85,6 +87,9 @@ public class AttributesBean implements Attributes {
     public String view() {
 
         LOG.debug("view: " + this.selectedAttributeType.getName());
+
+        this.pluginConfiguration = this.selectedAttributeType.getPluginConfiguration();
+
         return "view";
     }
 
@@ -103,4 +108,25 @@ public class AttributesBean implements Attributes {
         this.attributeTypeService.remove(this.selectedAttributeType);
         return "success";
     }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getPluginConfiguration() {
+
+        return this.pluginConfiguration;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setPluginConfiguration(String pluginConfiguration) {
+
+        this.pluginConfiguration = pluginConfiguration;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String savePlugin() throws AttributeTypeNotFoundException {
+
+        this.attributeTypeService.savePluginConfiguration(this.selectedAttributeType.getName(),
+                this.pluginConfiguration);
+        return null;
+    }
+
 }

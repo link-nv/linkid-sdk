@@ -24,6 +24,7 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -64,7 +65,8 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public String agree() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException, SubscriptionNotFoundException {
+            PermissionDeniedException, AttributeTypeNotFoundException, SubscriptionNotFoundException,
+            AttributeUnavailableException {
 
         LOG.debug("agree");
         this.identityService.confirmIdentity(this.application);
