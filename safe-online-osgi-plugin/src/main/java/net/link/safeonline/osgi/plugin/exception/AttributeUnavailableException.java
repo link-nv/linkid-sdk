@@ -6,15 +6,13 @@
  */
 package net.link.safeonline.osgi.plugin.exception;
 
-import net.link.safeonline.osgi.plugin.Attribute;
-
 /**
  * <h2>{@link AttributeUnavailableException}<br>
- * <sub>Unsupported Data Type Exception.</sub></h2>
+ * <sub>Attribute Unavailable Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown while trying to set an {@link Attribute} value with an
- * unknown data type.
+ * Exception thrown when a requested attribute is not available. Reasons can be
+ * that the OSGi plugin responsible for this type is not running.
  * </p>
  * 
  * <p>

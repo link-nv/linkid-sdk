@@ -24,6 +24,7 @@ import net.link.safeonline.demo.lawyer.LawyerStatus;
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -41,175 +42,185 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
-
 /**
- * Abstract class for data client beans. Inherit from this class if you need a {@link DataClient} component.
- *
+ * Abstract class for data client beans. Inherit from this class if you need a
+ * {@link DataClient} component.
+ * 
  * @author fcorneli
- *
+ * 
  */
-public abstract class AbstractLawyerDataClientBean implements AbstractLawyerDataClient {
+public abstract class AbstractLawyerDataClientBean implements
+		AbstractLawyerDataClient {
 
-    @Logger
-    private Log                                   log;
+	@Logger
+	private Log log;
 
-    @In(create = true)
-    FacesMessages                                 facesMessages;
+	@In(create = true)
+	FacesMessages facesMessages;
 
-    private transient DataClient                  dataClient;
+	private transient DataClient dataClient;
 
-    private transient AttributeClient             attributeClient;
+	private transient AttributeClient attributeClient;
 
-    private transient NameIdentifierMappingClient identifierMappingClient;
+	private transient NameIdentifierMappingClient identifierMappingClient;
 
-    private String                                wsLocation;
+	private String wsLocation;
 
-    private X509Certificate                       certificate;
+	private X509Certificate certificate;
 
-    private PrivateKey                            privateKey;
+	private PrivateKey privateKey;
 
+	@PostConstruct
+	public void postConstructCallback() {
 
-    @PostConstruct
-    public void postConstructCallback() {
+		this.log.debug("postConstruct");
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		this.wsLocation = externalContext.getInitParameter("WsLocation");
+		PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils
+				.getPrivateKeyEntry();
+		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
+		this.privateKey = privateKeyEntry.getPrivateKey();
+		postActivateCallback();
+	}
 
-        this.log.debug("postConstruct");
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        this.wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils.getPrivateKeyEntry();
-        this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        this.privateKey = privateKeyEntry.getPrivateKey();
-        postActivateCallback();
-    }
+	@PostActivate
+	public void postActivateCallback() {
 
-    @PostActivate
-    public void postActivateCallback() {
+		this.log.debug("postActivate: location=" + this.wsLocation);
+		this.dataClient = new DataClientImpl(this.wsLocation, this.certificate,
+				this.privateKey);
+		this.attributeClient = new AttributeClientImpl(this.wsLocation,
+				this.certificate, this.privateKey);
+		this.identifierMappingClient = new NameIdentifierMappingClientImpl(
+				this.wsLocation, this.certificate, this.privateKey);
+	}
 
-        this.log.debug("postActivate: location=" + this.wsLocation);
-        this.dataClient = new DataClientImpl(this.wsLocation, this.certificate, this.privateKey);
-        this.attributeClient = new AttributeClientImpl(this.wsLocation, this.certificate, this.privateKey);
-        this.identifierMappingClient = new NameIdentifierMappingClientImpl(this.wsLocation, this.certificate,
-                this.privateKey);
-    }
+	@PrePassivate
+	public void prePassivateCallback() {
 
-    @PrePassivate
-    public void prePassivateCallback() {
+		this.log.debug("prePassivate");
+		this.dataClient = null;
+		this.attributeClient = null;
+	}
 
-        this.log.debug("prePassivate");
-        this.dataClient = null;
-        this.attributeClient = null;
-    }
+	@Remove
+	@Destroy
+	public void destroyCallback() {
 
-    @Remove
-    @Destroy
-    public void destroyCallback() {
+		this.log.debug("destroy");
+		this.dataClient = null;
+		this.attributeClient = null;
+		this.wsLocation = null;
+		this.certificate = null;
+		this.privateKey = null;
+	}
 
-        this.log.debug("destroy");
-        this.dataClient = null;
-        this.attributeClient = null;
-        this.wsLocation = null;
-        this.certificate = null;
-        this.privateKey = null;
-    }
+	protected DataClient getDataClient() {
 
-    protected DataClient getDataClient() {
+		if (null == this.dataClient)
+			throw new EJBException("data client not yet initialized");
+		return this.dataClient;
+	}
 
-        if (null == this.dataClient)
-            throw new EJBException("data client not yet initialized");
-        return this.dataClient;
-    }
+	protected AttributeClient getAttributeClient() {
 
-    protected AttributeClient getAttributeClient() {
+		if (null == this.attributeClient)
+			throw new EJBException("attribute client not yet initialized");
+		return this.attributeClient;
+	}
 
-        if (null == this.attributeClient)
-            throw new EJBException("attribute client not yet initialized");
-        return this.attributeClient;
-    }
+	protected NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
-    protected NameIdentifierMappingClient getNameIdentifierMappingClient() {
+		if (null == this.identifierMappingClient)
+			throw new EJBException("name identifier client not yet initialized");
+		return this.identifierMappingClient;
+	}
 
-        if (null == this.identifierMappingClient)
-            throw new EJBException("name identifier client not yet initialized");
-        return this.identifierMappingClient;
-    }
+	/**
+	 * Gives back the lawyer status of a subject. This method also sets the
+	 * {@link FacesMessages} in case something goes wrong.
+	 * 
+	 * @param userId
+	 * @return the lawyer status or <code>null</code> in case of error.
+	 */
+	protected LawyerStatus getLawyerStatus(String userId) {
 
-    /**
-     * Gives back the lawyer status of a subject. This method also sets the {@link FacesMessages} in case something goes
-     * wrong.
-     *
-     * @param userId
-     * @return the lawyer status or <code>null</code> in case of error.
-     */
-    protected LawyerStatus getLawyerStatus(String userId) {
+		boolean lawyer = false;
+		boolean suspended = false;
+		String bar = null;
+		boolean barAdmin = false;
+		Attribute<Boolean> lawyerAttribute;
+		Attribute<Boolean> suspendedAttribute;
+		Attribute<String> barAttribute;
+		Attribute<Boolean> barAdminAttribute;
+		DataClient currentDataClient = getDataClient();
+		try {
+			lawyerAttribute = currentDataClient.getAttributeValue(userId,
+					DemoConstants.LAWYER_ATTRIBUTE_NAME, Boolean.class);
+			suspendedAttribute = currentDataClient.getAttributeValue(userId,
+					DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
+					Boolean.class);
+			barAttribute = currentDataClient.getAttributeValue(userId,
+					DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, String.class);
+			barAdminAttribute = currentDataClient.getAttributeValue(userId,
+					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
+					Boolean.class);
+		} catch (WSClientTransportException e) {
+			this.facesMessages.add("connection error: " + e.getMessage());
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.add("subject not found");
+			return null;
+		}
+		if (null != lawyerAttribute && null != lawyerAttribute.getValue()) {
+			lawyer = lawyerAttribute.getValue();
+		}
+		if (null != suspendedAttribute && null != suspendedAttribute.getValue()) {
+			suspended = suspendedAttribute.getValue();
+		}
+		if (null != barAttribute) {
+			bar = barAttribute.getValue();
+		}
+		if (null != barAdminAttribute && null != barAdminAttribute.getValue()) {
+			barAdmin = barAdminAttribute.getValue();
+		}
+		LawyerStatus lawyerStatus = new LawyerStatus(lawyer, suspended, bar,
+				barAdmin);
+		return lawyerStatus;
+	}
 
-        boolean lawyer = false;
-        boolean suspended = false;
-        String bar = null;
-        boolean barAdmin = false;
-        Attribute<Boolean> lawyerAttribute;
-        Attribute<Boolean> suspendedAttribute;
-        Attribute<String> barAttribute;
-        Attribute<Boolean> barAdminAttribute;
-        DataClient currentDataClient = getDataClient();
-        try {
-            lawyerAttribute = currentDataClient.getAttributeValue(userId, DemoConstants.LAWYER_ATTRIBUTE_NAME,
-                    Boolean.class);
-            suspendedAttribute = currentDataClient.getAttributeValue(userId,
-                    DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, Boolean.class);
-            barAttribute = currentDataClient.getAttributeValue(userId, DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME,
-                    String.class);
-            barAdminAttribute = currentDataClient.getAttributeValue(userId,
-                    DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
-        } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error: " + e.getMessage());
-            return null;
-        } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
-            return null;
-        } catch (SubjectNotFoundException e) {
-            this.facesMessages.add("subject not found");
-            return null;
-        }
-        if (null != lawyerAttribute && null != lawyerAttribute.getValue()) {
-            lawyer = lawyerAttribute.getValue();
-        }
-        if (null != suspendedAttribute && null != suspendedAttribute.getValue()) {
-            suspended = suspendedAttribute.getValue();
-        }
-        if (null != barAttribute) {
-            bar = barAttribute.getValue();
-        }
-        if (null != barAdminAttribute && null != barAdminAttribute.getValue()) {
-            barAdmin = barAdminAttribute.getValue();
-        }
-        LawyerStatus lawyerStatus = new LawyerStatus(lawyer, suspended, bar, barAdmin);
-        return lawyerStatus;
-    }
+	/**
+	 * Returns the username for this user Id. Sets {@link FacesMessages} in case
+	 * something goes wrong.
+	 * 
+	 * @param userId
+	 */
+	protected String getUsername(String userId) {
 
-    /**
-     * Returns the username for this user Id. Sets {@link FacesMessages} in case something goes wrong.
-     *
-     * @param userId
-     */
-    protected String getUsername(String userId) {
+		String username = null;
+		AttributeClient currentAttributeClient = getAttributeClient();
+		try {
+			username = currentAttributeClient.getAttributeValue(userId,
+					DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+		} catch (WSClientTransportException e) {
+			this.facesMessages.add("connection error: " + e.getMessage());
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		} catch (AttributeNotFoundException e) {
+			this.facesMessages.add("login attribute not found");
+			return null;
+		} catch (AttributeUnavailableException e) {
+			this.facesMessages.add("login attribute unavailable");
+			return null;
+		}
 
-        String username = null;
-        AttributeClient currentAttributeClient = getAttributeClient();
-        try {
-            username = currentAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
-                    String.class);
-        } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error: " + e.getMessage());
-            return null;
-        } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
-            return null;
-        } catch (AttributeNotFoundException e) {
-            this.facesMessages.add("login attribute not found");
-            return null;
-        }
-
-        this.log.debug("username = " + username);
-        return username;
-    }
+		this.log.debug("username = " + username);
+		return username;
+	}
 }

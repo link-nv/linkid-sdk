@@ -24,6 +24,7 @@ import net.link.safeonline.demo.payment.CustomerStatus;
 import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -209,6 +210,9 @@ public abstract class AbstractPaymentDataClientBean implements AbstractPaymentDa
             return null;
         } catch (AttributeNotFoundException e) {
             this.facesMessages.add("login attribute not found");
+            return null;
+        } catch (AttributeUnavailableException e) {
+            this.facesMessages.add("login attribute unavailable");
             return null;
         }
 

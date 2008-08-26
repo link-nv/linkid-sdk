@@ -18,7 +18,8 @@ import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
  * <sub>OLAS Attribute Service API.</sub></h2>
  * 
  * <p>
- * OLAS Attribute Service API.
+ * OLAS Attribute Service API. This service should be used if OSGi attribute
+ * plugins wish to retrieve OLAS attributes.
  * </p>
  * 
  * <p>

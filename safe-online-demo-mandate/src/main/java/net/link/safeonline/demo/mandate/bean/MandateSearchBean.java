@@ -32,118 +32,117 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 
-
 @Stateful
 @Name("mandateSearch")
 @LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateSearchBean/local")
 @SecurityDomain(MandateConstants.SECURITY_DOMAIN)
-public class MandateSearchBean extends AbstractMandateDataClientBean implements MandateSearch {
+public class MandateSearchBean extends AbstractMandateDataClientBean implements
+		MandateSearch {
 
-    @Logger
-    private Log       log;
+	@Logger
+	private Log log;
 
-    @SuppressWarnings("unused")
-    @DataModel
-    private Mandate[] mandates;
+	@SuppressWarnings("unused")
+	@DataModel
+	private Mandate[] mandates;
 
-    @DataModelSelection
-    private Mandate   selectedMandate;
+	@DataModelSelection
+	private Mandate selectedMandate;
 
-    @SuppressWarnings("unused")
-    @Out(required = false, scope = ScopeType.SESSION)
-    @In(required = false)
-    private String    mandateUser;
+	@Out(required = false, scope = ScopeType.SESSION)
+	@In(required = false)
+	private String mandateUser;
 
-    private String    name;
+	private String name;
 
+	public String getName() {
 
-    public String getName() {
+		return this.name;
+	}
 
-        return this.name;
-    }
+	public void setName(String name) {
 
-    public void setName(String name) {
+		this.name = name;
+	}
 
-        this.name = name;
-    }
+	@RolesAllowed(MandateConstants.ADMIN_ROLE)
+	public String search() {
 
-    @RolesAllowed(MandateConstants.ADMIN_ROLE)
-    public String search() {
+		this.log.debug("search for #0", this.name);
 
-        this.log.debug("search for #0", this.name);
+		NameIdentifierMappingClient mappingClient = getMappingClient();
+		String userId;
+		try {
+			userId = mappingClient.getUserId(this.name);
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControl("name", "subject not found");
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		} catch (WSClientTransportException e) {
+			this.facesMessages.add("connection failed");
+			return null;
+		}
 
-        NameIdentifierMappingClient mappingClient = getMappingClient();
-        String userId;
-        try {
-            userId = mappingClient.getUserId(this.name);
-        } catch (SubjectNotFoundException e) {
-            this.facesMessages.addToControl("name", "subject not found");
-            return null;
-        } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
-            return null;
-        } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection failed");
-            return null;
-        }
+		DataClient dataClient = getDataClient();
+		Attribute<Mandate[]> mandateAttribute;
+		try {
+			this.log.debug("get attribute value for user: " + userId);
+			mandateAttribute = dataClient.getAttributeValue(userId,
+					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
+		} catch (WSClientTransportException e) {
+			this.facesMessages.add("connection error: " + e.getMessage());
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControl("name", "subject not found");
+			return null;
+		}
 
-        DataClient dataClient = getDataClient();
-        Attribute<Mandate[]> mandateAttribute;
-        try {
-            this.log.debug("get attribute value for user: " + userId);
-            mandateAttribute = dataClient.getAttributeValue(userId, DemoConstants.MANDATE_ATTRIBUTE_NAME,
-                    Mandate[].class);
-        } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error: " + e.getMessage());
-            return null;
-        } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
-            return null;
-        } catch (SubjectNotFoundException e) {
-            this.facesMessages.addToControl("name", "subject not found");
-            return null;
-        }
+		if (null != mandateAttribute) {
+			this.mandates = mandateAttribute.getValue();
+		} else {
+			this.mandates = new Mandate[] {};
+		}
 
-        if (null != mandateAttribute) {
-            this.mandates = mandateAttribute.getValue();
-        } else {
-            this.mandates = new Mandate[] {};
-        }
+		this.mandateUser = this.name;
 
-        this.mandateUser = this.name;
+		return "success";
+	}
 
-        return "success";
-    }
+	@RolesAllowed(MandateConstants.ADMIN_ROLE)
+	public String removeMandate() {
 
-    @RolesAllowed(MandateConstants.ADMIN_ROLE)
-    public String removeMandate() {
+		this.log.debug("remove mandate : " + this.selectedMandate);
 
-        this.log.debug("remove mandate : " + this.selectedMandate);
+		NameIdentifierMappingClient mappingClient = getMappingClient();
+		String userId;
+		try {
+			userId = mappingClient.getUserId(this.mandateUser);
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControl("name", "subject not found");
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		} catch (WSClientTransportException e) {
+			this.facesMessages.add("connection failed");
+			return null;
+		}
 
-        NameIdentifierMappingClient mappingClient = getMappingClient();
-        String userId;
-        try {
-            userId = mappingClient.getUserId(this.mandateUser);
-        } catch (SubjectNotFoundException e) {
-            this.facesMessages.addToControl("name", "subject not found");
-            return null;
-        } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
-            return null;
-        } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection failed");
-            return null;
-        }
-
-        DataClient dataClient = getDataClient();
-        try {
-            dataClient.removeAttribute(userId, DemoConstants.MANDATE_ATTRIBUTE_NAME, this.selectedMandate
-                    .getAttributeId());
-        } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error: " + e.getMessage());
-            return null;
-        }
-        return "success";
-    }
+		DataClient dataClient = getDataClient();
+		try {
+			dataClient.removeAttribute(userId,
+					DemoConstants.MANDATE_ATTRIBUTE_NAME, this.selectedMandate
+							.getAttributeId());
+		} catch (WSClientTransportException e) {
+			this.facesMessages.add("connection error: " + e.getMessage());
+			return null;
+		}
+		return "success";
+	}
 
 }

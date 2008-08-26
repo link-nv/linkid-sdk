@@ -24,6 +24,7 @@ import net.link.safeonline.demo.payment.Transaction;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
@@ -111,7 +112,7 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements Tr
         String userId = getUserId();
         String[] values;
         try {
-            values = this.getAttributeClient().getAttributeValue(userId,
+            values = getAttributeClient().getAttributeValue(userId,
                     "urn:net:lin-k:safe-online:attribute:visaCardNumber", String[].class);
         } catch (AttributeNotFoundException e) {
             String msg = "attribute not found: " + e.getMessage();
@@ -125,6 +126,11 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements Tr
             return new LinkedList<SelectItem>();
         } catch (WSClientTransportException e) {
             String msg = "Connection error. Check your SSL setup.";
+            this.log.debug(msg);
+            this.facesMessages.add(msg);
+            return new LinkedList<SelectItem>();
+        } catch (AttributeUnavailableException e) {
+            String msg = "Visa Attribute unavailable error.";
             this.log.debug(msg);
             this.facesMessages.add(msg);
             return new LinkedList<SelectItem>();

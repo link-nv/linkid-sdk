@@ -23,6 +23,7 @@ import net.link.safeonline.demo.ticket.AbstractTicketDataClient;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
@@ -39,9 +40,9 @@ import org.jboss.seam.log.Log;
 
 /**
  * Abstract class for data client beans. Inherit from this class if you need a {@link DataClient} component.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public abstract class AbstractTicketDataClientBean implements AbstractTicketDataClient {
 
@@ -110,21 +111,23 @@ public abstract class AbstractTicketDataClientBean implements AbstractTicketData
 
     protected DataClient getDataClient() {
 
-        if (null == this.dataClient)
+        if (null == this.dataClient) {
             throw new EJBException("data client not yet initialized");
+        }
         return this.dataClient;
     }
 
     protected AttributeClient getAttributeClient() {
 
-        if (null == this.attributeClient)
+        if (null == this.attributeClient) {
             throw new EJBException("attribute client not yet initialized");
+        }
         return this.attributeClient;
     }
 
     /**
      * Returns the username for this user Id. Sets {@link FacesMessages} in case something goes wrong.
-     *
+     * 
      * @param userId
      */
     protected String getUsername(String userId) {
@@ -142,6 +145,9 @@ public abstract class AbstractTicketDataClientBean implements AbstractTicketData
             return null;
         } catch (AttributeNotFoundException e) {
             this.facesMessages.add("login attribute not found");
+            return null;
+        } catch (AttributeUnavailableException e) {
+            this.facesMessages.add("login attribute unavailable");
             return null;
         }
 

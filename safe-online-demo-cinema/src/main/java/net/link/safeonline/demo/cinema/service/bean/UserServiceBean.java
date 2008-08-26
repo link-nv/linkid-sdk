@@ -20,6 +20,7 @@ import net.link.safeonline.demo.cinema.service.UserService;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
@@ -30,11 +31,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link UserServiceBean}<br>
  * <sub>Service bean for {@link UserService}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jun 12, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless
@@ -85,7 +86,7 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
             Boolean juniorValue = attributeClient.getAttributeValue(userEntity.getId(),
                     DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
             userEntity.setJunior(juniorValue != null && juniorValue.booleanValue() == true);
-            
+
             return userEntity;
         }
 
@@ -97,6 +98,9 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
             throw new RuntimeException(e);
         } catch (WSClientTransportException e) {
             LOG.error("Connection error. Check your SSL setup.", e);
+            throw new RuntimeException(e);
+        } catch (AttributeUnavailableException e) {
+            LOG.error("Attribute unavailable", e);
             throw new RuntimeException(e);
         }
     }

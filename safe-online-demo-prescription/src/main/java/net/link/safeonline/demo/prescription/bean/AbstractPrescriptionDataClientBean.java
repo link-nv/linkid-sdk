@@ -23,6 +23,7 @@ import net.link.safeonline.demo.prescription.AbstractPrescriptionDataClient;
 import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
@@ -38,121 +39,129 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 
-
 /**
- * Abstract class for data client beans. Inherit from this class if you need a {@link DataClient} component.
- *
+ * Abstract class for data client beans. Inherit from this class if you need a
+ * {@link DataClient} component.
+ * 
  * @author fcorneli
- *
+ * 
  */
-public abstract class AbstractPrescriptionDataClientBean implements AbstractPrescriptionDataClient {
+public abstract class AbstractPrescriptionDataClientBean implements
+		AbstractPrescriptionDataClient {
 
-    @Logger
-    private Log                                   log;
+	@Logger
+	private Log log;
 
-    @In(create = true)
-    FacesMessages                                 facesMessages;
+	@In(create = true)
+	FacesMessages facesMessages;
 
-    private transient DataClient                  dataClient;
+	private transient DataClient dataClient;
 
-    private transient AttributeClient             attributeClient;
+	private transient AttributeClient attributeClient;
 
-    private transient NameIdentifierMappingClient mappingClient;
+	private transient NameIdentifierMappingClient mappingClient;
 
-    private String                                wsLocation;
+	private String wsLocation;
 
-    private X509Certificate                       certificate;
+	private X509Certificate certificate;
 
-    private PrivateKey                            privateKey;
+	private PrivateKey privateKey;
 
+	@PostConstruct
+	public void postConstructCallback() {
 
-    @PostConstruct
-    public void postConstructCallback() {
+		this.log.debug("postConstruct");
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		this.wsLocation = externalContext.getInitParameter("WsLocation");
+		PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStoreUtils
+				.getPrivateKeyEntry();
+		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
+		this.privateKey = privateKeyEntry.getPrivateKey();
+		postActivateCallback();
+	}
 
-        this.log.debug("postConstruct");
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = context.getExternalContext();
-        this.wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStoreUtils.getPrivateKeyEntry();
-        this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        this.privateKey = privateKeyEntry.getPrivateKey();
-        postActivateCallback();
-    }
+	@PostActivate
+	public void postActivateCallback() {
 
-    @PostActivate
-    public void postActivateCallback() {
+		this.log.debug("postActivate");
+		this.dataClient = new DataClientImpl(this.wsLocation, this.certificate,
+				this.privateKey);
+		this.attributeClient = new AttributeClientImpl(this.wsLocation,
+				this.certificate, this.privateKey);
+		this.mappingClient = new NameIdentifierMappingClientImpl(
+				this.wsLocation, this.certificate, this.privateKey);
+	}
 
-        this.log.debug("postActivate");
-        this.dataClient = new DataClientImpl(this.wsLocation, this.certificate, this.privateKey);
-        this.attributeClient = new AttributeClientImpl(this.wsLocation, this.certificate, this.privateKey);
-        this.mappingClient = new NameIdentifierMappingClientImpl(this.wsLocation, this.certificate, this.privateKey);
-    }
+	@PrePassivate
+	public void prePassivateCallback() {
 
-    @PrePassivate
-    public void prePassivateCallback() {
+		this.log.debug("prePassivate");
+		this.dataClient = null;
+		this.attributeClient = null;
+	}
 
-        this.log.debug("prePassivate");
-        this.dataClient = null;
-        this.attributeClient = null;
-    }
+	@Remove
+	@Destroy
+	public void destroyCallback() {
 
-    @Remove
-    @Destroy
-    public void destroyCallback() {
+		this.log.debug("destroy");
+		this.dataClient = null;
+		this.attributeClient = null;
+		this.wsLocation = null;
+		this.certificate = null;
+		this.privateKey = null;
+	}
 
-        this.log.debug("destroy");
-        this.dataClient = null;
-        this.attributeClient = null;
-        this.wsLocation = null;
-        this.certificate = null;
-        this.privateKey = null;
-    }
+	protected DataClient getDataClient() {
 
-    protected DataClient getDataClient() {
+		if (null == this.dataClient)
+			throw new EJBException("data client not yet initialized");
+		return this.dataClient;
+	}
 
-        if (null == this.dataClient)
-            throw new EJBException("data client not yet initialized");
-        return this.dataClient;
-    }
+	protected AttributeClient getAttributeClient() {
 
-    protected AttributeClient getAttributeClient() {
+		if (null == this.attributeClient)
+			throw new EJBException("attribute client not yet initialized");
+		return this.attributeClient;
+	}
 
-        if (null == this.attributeClient)
-            throw new EJBException("attribute client not yet initialized");
-        return this.attributeClient;
-    }
+	protected NameIdentifierMappingClient getMappingClient() {
 
-    protected NameIdentifierMappingClient getMappingClient() {
+		if (null == this.mappingClient)
+			throw new EJBException("mapping client not yet initialized");
+		return this.mappingClient;
+	}
 
-        if (null == this.mappingClient)
-            throw new EJBException("mapping client not yet initialized");
-        return this.mappingClient;
-    }
+	/**
+	 * Returns the username for this user Id. Sets {@link FacesMessages} in case
+	 * something goes wrong.
+	 * 
+	 * @param userId
+	 */
+	protected String getUsername(String userId) {
 
-    /**
-     * Returns the username for this user Id. Sets {@link FacesMessages} in case something goes wrong.
-     *
-     * @param userId
-     */
-    protected String getUsername(String userId) {
+		String username = null;
+		AttributeClient tempAttributeClient = getAttributeClient();
+		try {
+			username = tempAttributeClient.getAttributeValue(userId,
+					DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+		} catch (WSClientTransportException e) {
+			this.facesMessages.add("connection error: " + e.getMessage());
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		} catch (AttributeNotFoundException e) {
+			this.facesMessages.add("login attribute not found");
+			return null;
+		} catch (AttributeUnavailableException e) {
+			this.facesMessages.add("login attribute unavailable");
+			return null;
+		}
 
-        String username = null;
-        AttributeClient tempAttributeClient = getAttributeClient();
-        try {
-            username = tempAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
-                    String.class);
-        } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error: " + e.getMessage());
-            return null;
-        } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
-            return null;
-        } catch (AttributeNotFoundException e) {
-            this.facesMessages.add("login attribute not found");
-            return null;
-        }
-
-        this.log.debug("username = " + username);
-        return username;
-    }
+		this.log.debug("username = " + username);
+		return username;
+	}
 }

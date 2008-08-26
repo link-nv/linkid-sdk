@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.demo.model.NotificationConsumerService;
@@ -20,6 +21,7 @@ import net.link.safeonline.demo.ticket.entity.User;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
@@ -39,17 +41,20 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
     private static final String DEMO_PAYMENT_APPLICATION_NAME = "demo-payment";
 
-    /*
-     * Add XXX due to: http://jira.jboss.com/jira/browse/EJBTHREE-1252
-     */
-    @PersistenceContext(unitName = "XXXsafe-online-demo-ticket-1.0-SNAPSHOT.jar#DemoTicketEntityManager")
     private EntityManager       demoTicketEntityManager;
 
-    @PersistenceContext(unitName = "XXXsafe-online-demo-payment-1.0-SNAPSHOT.jar#DemoPaymentEntityManager")
     private EntityManager       demoPaymentEntityManager;
 
 
     public void handleMessage(String topic, String destination, List<String> message) {
+
+        try {
+            InitialContext context = new InitialContext();
+            this.demoTicketEntityManager = (EntityManager) context.lookup("java:/DemoTicketEntityManager");
+            this.demoPaymentEntityManager = (EntityManager) context.lookup("java:/DemoPaymentEntityManager");
+        } catch (NamingException e) {
+            LOG.error("Naming exception thrown: " + e.getMessage(), e);
+        }
 
         String userId = message.get(0);
         try {
@@ -66,19 +71,21 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
             LOG.debug("AttributeNotFoundException thrown: " + e.getMessage(), e);
         } catch (RequestDeniedException e) {
             LOG.debug("RequestDeniedException thrown: " + e.getMessage());
+        } catch (AttributeUnavailableException e) {
+            LOG.debug("AttributeUnavailableException thrown: " + e.getMessage(), e);
         }
     }
 
     private String getWsLocation() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("config");
+        ResourceBundle properties = ResourceBundle.getBundle("properties.config");
         String wsLocation = properties.getString("olas.ws.location");
         LOG.debug("wsLocation: " + wsLocation);
         return wsLocation;
     }
 
     private void removeDemoTicketUser(String userId) throws WSClientTransportException, AttributeNotFoundException,
-            RequestDeniedException {
+            RequestDeniedException, AttributeUnavailableException {
 
         LOG.debug("remove demo ticket user: " + userId);
 
@@ -102,7 +109,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
     }
 
     private void removeDemoPaymentUser(String userId) throws WSClientTransportException, AttributeNotFoundException,
-            RequestDeniedException {
+            RequestDeniedException, AttributeUnavailableException {
 
         LOG.debug("remove demo payment user: " + userId);
 

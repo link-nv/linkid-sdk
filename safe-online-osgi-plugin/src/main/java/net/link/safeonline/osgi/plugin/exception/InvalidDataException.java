@@ -6,15 +6,13 @@
  */
 package net.link.safeonline.osgi.plugin.exception;
 
-import net.link.safeonline.osgi.plugin.Attribute;
-
 /**
  * <h2>{@link InvalidDataException}<br>
  * <sub>Unsupported Data Type Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown while trying to set an {@link Attribute} value with an
- * unknown data type.
+ * Exception thrown by OLAS when an unexpected data type is found for a certain
+ * attribute type.
  * </p>
  * 
  * <p>

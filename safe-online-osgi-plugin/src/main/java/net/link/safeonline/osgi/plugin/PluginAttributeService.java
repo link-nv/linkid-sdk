@@ -18,7 +18,8 @@ import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
  * <sub>Plugin Attribute service API. </sub></h2>
  * 
  * <p>
- * Plugin Attribute service API.
+ * Plugin Attribute service API. OSGi attribute plugins should implement this
+ * interface.
  * </p>
  * 
  * <p>

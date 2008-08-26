@@ -7,6 +7,21 @@
 
 package net.link.safeonline.osgi.plugin;
 
+/**
+ * <h2>{@link Attribute}<br>
+ * <sub>Attibute Data types.</sub></h2>
+ * 
+ * <p>
+ * Attribute Data types. Representing the available attribute data types. Used
+ * by {@link Attribute}.
+ * </p>
+ * 
+ * <p>
+ * <i>Aug 21, 2008</i>
+ * </p>
+ * 
+ * @author wvdhaute
+ */
 public enum DatatypeType {
 
 	STRING("string", true), BOOLEAN("boolean", true), INTEGER("integer", true), DOUBLE(

@@ -17,8 +17,9 @@ import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
  * <sub>Attibute Data Object.</sub></h2>
  * 
  * <p>
- * Attribute Data Object. Used to transfer data between OLAS and OSGI plugin
- * bundles.
+ * Attribute Data Object. Used to transfer data between OLAS and the OSGI plugin
+ * bundles. The {{@link #index} field is used in case of multivalued or
+ * compound attributes.
  * </p>
  * 
  * <p>
@@ -47,16 +48,31 @@ public class Attribute implements Serializable, Cloneable {
 
 	private Date dateValue;
 
-	public Attribute(String name, DatatypeType type, long index,
-			String stringValue, Boolean booleanValue) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            attribute name
+	 * @param type
+	 *            attribute data type
+	 * @param index
+	 *            index used by multivalued attributes, counting starts from 0.
+	 */
+	public Attribute(String name, DatatypeType type, long index) {
 
 		this.name = name;
 		this.type = type;
 		this.index = index;
-		this.stringValue = stringValue;
-		this.booleanValue = booleanValue;
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param name
+	 *            attribute name
+	 * @param type
+	 *            attribute data type
+	 */
 	public Attribute(String name, DatatypeType type) {
 
 		this.name = name;
@@ -64,7 +80,7 @@ public class Attribute implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Gives back the URN name of the attribute type.
+	 * Gives back the URN name of the attribute.
 	 * 
 	 */
 	public String getName() {
@@ -72,45 +88,85 @@ public class Attribute implements Serializable, Cloneable {
 		return this.name;
 	}
 
+	/**
+	 * Sets the URN name of the attribute
+	 * 
+	 * @param name
+	 */
 	public void setName(String name) {
 
 		this.name = name;
 	}
 
+	/**
+	 * Returns the string value. Can be <code>null</code> if the {{@link #type}
+	 * is different
+	 * 
+	 * @return string value
+	 */
 	public String getStringValue() {
 
 		return this.stringValue;
 	}
 
-	public void setStringValue(String value) {
+	/**
+	 * Sets the string value.
+	 * 
+	 * @param stringValue
+	 */
+	public void setStringValue(String stringValue) {
 
-		this.stringValue = value;
+		this.stringValue = stringValue;
 	}
 
 	/**
-	 * Gets the boolean value. Can be <code>null</code>.
+	 * Returns the boolean value. Can be <code>null</code> if the {{@link #type}
+	 * is different
 	 * 
+	 * @return boolean value
 	 */
 	public Boolean getBooleanValue() {
 
 		return this.booleanValue;
 	}
 
+	/**
+	 * Sets the boolean value
+	 * 
+	 * @param booleanValue
+	 */
 	public void setBooleanValue(Boolean booleanValue) {
 
 		this.booleanValue = booleanValue;
 	}
 
+	/**
+	 * Returns the date value. Can be <code>null</code> if the {{@link #type}
+	 * is different
+	 * 
+	 * @return ate value
+	 */
 	public Date getDateValue() {
 
 		return this.dateValue;
 	}
 
+	/**
+	 * Sets the date value.
+	 * 
+	 * @param dateValue
+	 */
 	public void setDateValue(Date dateValue) {
 
 		this.dateValue = dateValue;
 	}
 
+	/**
+	 * Returns the double value. Can be <code>null</code> if the {{@link #type}
+	 * is different
+	 * 
+	 * @return double value
+	 */
 	public Double getDoubleValue() {
 
 		return this.doubleValue;
@@ -209,8 +265,9 @@ public class Attribute implements Serializable, Cloneable {
 	@Override
 	public Attribute clone() {
 
-		Attribute attribute = new Attribute(this.name, this.type, this.index,
-				this.stringValue, this.booleanValue);
+		Attribute attribute = new Attribute(this.name, this.type, this.index);
+		attribute.stringValue = this.stringValue;
+		attribute.booleanValue = this.booleanValue;
 		attribute.integerValue = this.integerValue;
 		attribute.doubleValue = this.doubleValue;
 		attribute.dateValue = this.dateValue;

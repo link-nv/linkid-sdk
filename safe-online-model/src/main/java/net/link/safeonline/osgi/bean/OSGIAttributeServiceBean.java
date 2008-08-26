@@ -79,8 +79,9 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
             LOG.debug("permission denied retrieving attribute " + attributeName + " for user " + userId);
             throw new AttributeNotFoundException();
         }
-        if (null == value)
+        if (null == value) {
             throw new AttributeNotFoundException();
+        }
 
         // convert value to osgi attribute view
         addValueToView(value, attributeType, attributeView);
@@ -131,8 +132,7 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
             throws UnsupportedDataTypeException {
 
         LOG.debug("get attribute view for type: " + attributeType.getName() + " with value: " + value);
-        Attribute attributeView = new Attribute(attributeType.getName(), convertDataType(attributeType.getType()), idx,
-                null, null);
+        Attribute attributeView = new Attribute(attributeType.getName(), convertDataType(attributeType.getType()), idx);
 
         attributeView.setValue(value);
 
@@ -156,7 +156,8 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
             return DatatypeType.STRING;
         else if (dataType.equals(net.link.safeonline.entity.DatatypeType.STRING))
             return DatatypeType.STRING;
-        else
+        else {
             throw new UnsupportedDataTypeException("Unsupported datatype: " + dataType.getFriendlyName());
+        }
     }
 }
