@@ -172,21 +172,44 @@ public class Attribute implements Serializable, Cloneable {
 		return this.doubleValue;
 	}
 
+	/**
+	 * Sets the double value
+	 * 
+	 * @param doubleValue
+	 */
 	public void setDoubleValue(Double doubleValue) {
 
 		this.doubleValue = doubleValue;
 	}
 
+	/**
+	 * Returns the integer value. Can be <code>null</code> if the {{@link #type}
+	 * is different
+	 * 
+	 * @return integer value
+	 */
 	public Integer getIntegerValue() {
 
 		return this.integerValue;
 	}
 
+	/**
+	 * Sets the integer value
+	 * 
+	 * @param integerValue
+	 */
 	public void setIntegerValue(Integer integerValue) {
 
 		this.integerValue = integerValue;
 	}
 
+	/**
+	 * Sets the value of this attribute. Object must be of the specified {{@link #type}.
+	 * Else an {@link UnsupportedDataTypeException} will be thrown.
+	 * 
+	 * @param value
+	 * @throws UnsupportedDataTypeException
+	 */
 	public void setValue(Object value) throws UnsupportedDataTypeException {
 
 		switch (this.type) {
@@ -217,6 +240,14 @@ public class Attribute implements Serializable, Cloneable {
 		}
 	}
 
+	/**
+	 * Returns the value of this attribute according to the attribute
+	 * {@link #type}. Throws an {@link UnsupportedDataTypeException} if the
+	 * {@link #type} is unsupported
+	 * 
+	 * @return attribute value
+	 * @throws UnsupportedDataTypeException
+	 */
 	public Object getValue() throws UnsupportedDataTypeException {
 
 		switch (this.type) {
@@ -236,11 +267,22 @@ public class Attribute implements Serializable, Cloneable {
 		}
 	}
 
+	/**
+	 * Returns the attribute's data type.
+	 * 
+	 * @return attribute data type
+	 */
 	public DatatypeType getType() {
 
 		return this.type;
 	}
 
+	/**
+	 * Sets the attribute's data type
+	 * 
+	 * @param type
+	 *            data type
+	 */
 	public void setType(DatatypeType type) {
 
 		this.type = type;
@@ -249,19 +291,30 @@ public class Attribute implements Serializable, Cloneable {
 	/**
 	 * Gives back the index of this attribute. This only really makes sense in
 	 * the event of multi-valued attributes. For single-valued attributes the
-	 * index defaults to zero.
+	 * index defaults to zero. Counting starts from zero/
 	 * 
+	 * @return index
 	 */
 	public long getIndex() {
 
 		return this.index;
 	}
 
+	/**
+	 * Sets the index of this attribute. This only really makes sense in the
+	 * event of multi-valued attributes. For single-valued attributes the index
+	 * defaults to zero. Counting starts from zero.
+	 * 
+	 * @param index
+	 */
 	public void setIndex(long index) {
 
 		this.index = index;
 	}
 
+	/**
+	 * Copies the attribute object.
+	 */
 	@Override
 	public Attribute clone() {
 

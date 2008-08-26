@@ -79,6 +79,18 @@
 
 				<h:form>
 					<table class="inner">
+						<tbody>
+							<tr>
+								<th>#{msgs.actions}</th>
+							</tr>
+							<tr class="center">
+								<td><h:commandLink action="#{attributes.savePlugin}"
+									id="save" value="#{msgs.saveaction}" /></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<table class="inner">
 						<colgroup class="half" />
 						<colgroup />
 
@@ -95,8 +107,6 @@
 							</tr>
 						</tbody>
 					</table>
-					<h:commandButton action="#{attributes.savePlugin}" id="save"
-						value="#{msgs.saveaction}" styleClass="submit" />
 				</h:form>
 			</rich:simpleTogglePanel>
 

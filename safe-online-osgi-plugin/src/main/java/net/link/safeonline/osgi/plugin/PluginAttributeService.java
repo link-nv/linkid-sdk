@@ -30,6 +30,20 @@ import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
  */
 public interface PluginAttributeService {
 
+	/**
+	 * Returns the attribute view for the specified attribute name from the
+	 * specified user with the implementing OSGi attribute plugin given the
+	 * specified configuration.
+	 * 
+	 * @param userId
+	 * @param attributeName
+	 * @param configuration
+	 * @return attribute view
+	 * @throws UnsupportedDataTypeException
+	 * @throws AttributeNotFoundException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws AttributeUnavailableException
+	 */
 	public List<Attribute> getAttribute(String userId, String attributeName,
 			String configuration) throws UnsupportedDataTypeException,
 			AttributeNotFoundException, AttributeTypeNotFoundException,

@@ -13,7 +13,8 @@ package net.link.safeonline.osgi.plugin;
  * 
  * <p>
  * Attribute Data types. Representing the available attribute data types. Used
- * by {@link Attribute}.
+ * by {@link Attribute}. The primitive property is to make a distinction
+ * between a compound attribute and primitive attributes.
  * </p>
  * 
  * <p>
@@ -31,23 +32,42 @@ public enum DatatypeType {
 
 	private final boolean primitive;
 
+	/**
+	 * Constructor
+	 */
 	private DatatypeType() {
 
 		this.friendlyName = this.name();
 		this.primitive = false;
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param friendlyName
+	 * @param primitive
+	 */
 	private DatatypeType(String friendlyName, boolean primitive) {
 
 		this.friendlyName = friendlyName;
 		this.primitive = primitive;
 	}
 
+	/**
+	 * Returns the data type's friendly name.
+	 * 
+	 * @return friendly name
+	 */
 	public String getFriendlyName() {
 
 		return this.friendlyName;
 	}
 
+	/**
+	 * Returns whether this data type is primitive or compounded
+	 * 
+	 * @return true if primitive
+	 */
 	public boolean isPrimitive() {
 
 		return this.primitive;

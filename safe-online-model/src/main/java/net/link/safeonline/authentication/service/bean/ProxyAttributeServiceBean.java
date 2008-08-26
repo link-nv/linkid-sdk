@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -70,6 +72,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     private ResourceAuditLogger resourceAuditLogger;
 
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object findDeviceAttributeValue(String deviceMappingId, String attributeName)
             throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException {
 
@@ -95,6 +98,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object findAttributeValue(String userId, String attributeName) throws PermissionDeniedException,
             AttributeTypeNotFoundException, AttributeUnavailableException {
 
@@ -174,9 +178,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 String[] values = new String[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
+                    if (!attribute.getType().equals(datatype)) {
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
+                    }
                     values[idx] = attributeView.get(idx).getStringValue();
                 }
                 return values;
@@ -187,9 +192,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 Boolean[] values = new Boolean[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
+                    if (!attribute.getType().equals(datatype)) {
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
+                    }
                     values[idx] = attributeView.get(idx).getBooleanValue();
                 }
                 return values;
@@ -200,9 +206,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 Integer[] values = new Integer[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
+                    if (!attribute.getType().equals(datatype)) {
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
+                    }
                     values[idx] = attributeView.get(idx).getIntegerValue();
                 }
                 return values;
@@ -213,9 +220,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 Double[] values = new Double[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
+                    if (!attribute.getType().equals(datatype)) {
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
+                    }
                     values[idx] = attributeView.get(idx).getDoubleValue();
                 }
                 return values;
@@ -226,35 +234,37 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 Date[] values = new Date[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
+                    if (!attribute.getType().equals(datatype)) {
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
+                    }
                     values[idx] = attributeView.get(idx).getDateValue();
                 }
                 return values;
             }
             case COMPOUNDED: {
-                if (attributeView.size() % (1 + attributeType.getMembers().size()) != 0) {
+                if (attributeView.size() % (1 + attributeType.getMembers().size()) != 0)
                     throw new InvalidDataException("invalid data for compounded attribute  " + attributeType.getName());
-                }
 
                 int size = attributeView.size() / (1 + attributeType.getMembers().size());
                 Map[] values = new Map[size];
                 int memberIdx = 0;
                 for (int idx = 0; idx < size; idx++) {
                     Attribute attribute = attributeView.get(memberIdx);
-                    if (!attribute.getType().equals(datatype))
+                    if (!attribute.getType().equals(datatype)) {
                         throw new InvalidDataException("datatype " + attribute.getType()
                                 + " not matching expected datatype " + datatype);
+                    }
                     Map<String, Object> memberMap = new HashMap<String, Object>();
                     values[idx] = memberMap;
                     memberIdx++;
                     for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                         AttributeTypeEntity memberAttributeType = member.getMember();
                         Attribute memberAttribute = attributeView.get(memberIdx);
-                        if (!sameType(memberAttribute.getType(), memberAttributeType.getType()))
+                        if (!sameType(memberAttribute.getType(), memberAttributeType.getType())) {
                             throw new InvalidDataException("datatype " + memberAttribute.getType()
                                     + " not matching expected datatype " + memberAttributeType.getType());
+                        }
                         memberMap.put(memberAttributeType.getName(), memberAttribute.getValue());
                         memberIdx++;
                     }
