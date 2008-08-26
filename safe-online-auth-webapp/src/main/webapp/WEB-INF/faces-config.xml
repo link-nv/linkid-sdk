@@ -62,6 +62,11 @@
 			<to-view-id>/missing-attributes.xhtml 
 			</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>identity-unavailable</from-outcome>
+			<to-view-id>/identity-unavailable.xhtml 
+			</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/password/username-password.xhtml 

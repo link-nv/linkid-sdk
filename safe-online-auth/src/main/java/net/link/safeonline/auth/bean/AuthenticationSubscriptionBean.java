@@ -48,7 +48,7 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "AuthenticationSubscriptionBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
-public class AuthenticationSubscriptionBean implements AuthenticationSubscription {
+public class AuthenticationSubscriptionBean extends AbstractExitBean implements AuthenticationSubscription {
 
     @Logger
     private Log                   log;
@@ -117,5 +117,11 @@ public class AuthenticationSubscriptionBean implements AuthenticationSubscriptio
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
             return null;
         }
+    }
+
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public String getApplicationUrl() {
+
+        return findApplicationUrl();
     }
 }

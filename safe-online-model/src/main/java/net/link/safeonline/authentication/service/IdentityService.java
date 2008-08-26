@@ -16,7 +16,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.data.AttributeDO;
@@ -162,11 +161,9 @@ public interface IdentityService {
      * @throws ApplicationIdentityNotFoundException
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
-     * @throws AttributeUnavailableException
      */
     boolean hasMissingAttributes(String applicationName) throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
-            AttributeUnavailableException;
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
     /**
      * Gives back a list of the user's missing attributes for the given application. This method also returns a list of
@@ -180,11 +177,9 @@ public interface IdentityService {
      * @throws ApplicationIdentityNotFoundException
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
-     * @throws AttributeUnavailableException
      */
     List<AttributeDO> listMissingAttributes(String applicationName, Locale locale) throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
-            AttributeUnavailableException;
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
     /**
      * Gives back a list of the user's optional attributes for the given application.This method also returns a list of
@@ -198,11 +193,9 @@ public interface IdentityService {
      * @throws PermissionDeniedException
      * @throws ApplicationIdentityNotFoundException
      * @throws ApplicationNotFoundException
-     * @throws AttributeUnavailableException
      */
     List<AttributeDO> listOptionalAttributes(String application, Locale local) throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
-            AttributeUnavailableException;
+            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
     /**
      * Removes an attribute. A user can only remove editable attributes. In case this attribute is part of a multivalued

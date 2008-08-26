@@ -43,7 +43,6 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
@@ -617,7 +616,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private void checkRequiredMissingAttributes() throws ApplicationNotFoundException,
             ApplicationIdentityNotFoundException, MissingAttributeException, PermissionDeniedException,
-            AttributeTypeNotFoundException, AttributeUnavailableException {
+            AttributeTypeNotFoundException {
 
         boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.expectedApplicationId);
         if (true == hasMissingAttributes) {
@@ -663,7 +662,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
             ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException, MissingAttributeException,
             EmptyDevicePolicyException, DevicePolicyException, UsageAgreementAcceptationRequiredException,
-            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
+            PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("commitAuthentication for application: " + this.expectedApplicationId);
 

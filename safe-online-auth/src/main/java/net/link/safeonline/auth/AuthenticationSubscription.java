@@ -32,4 +32,6 @@ public interface AuthenticationSubscription {
      * Accessors
      */
     String getUsageAgreement();
+    
+    String getApplicationUrl();
 }

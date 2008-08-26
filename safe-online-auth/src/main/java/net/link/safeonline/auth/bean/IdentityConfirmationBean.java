@@ -7,6 +7,7 @@
 
 package net.link.safeonline.auth.bean;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,7 +25,6 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -49,7 +49,7 @@ import org.jboss.seam.faces.FacesMessages;
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "IdentityConfirmationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
-public class IdentityConfirmationBean implements IdentityConfirmation {
+public class IdentityConfirmationBean extends AbstractExitBean implements IdentityConfirmation {
 
     private static final Log LOG = LogFactory.getLog(IdentityConfirmationBean.class);
 
@@ -65,16 +65,23 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public String agree() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException, SubscriptionNotFoundException,
-            AttributeUnavailableException {
+            PermissionDeniedException, AttributeTypeNotFoundException, SubscriptionNotFoundException {
 
         LOG.debug("agree");
         this.identityService.confirmIdentity(this.application);
-        boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.application);
         HelpdeskLogger.add("confirmed application identity for " + this.application, LogLevelType.INFO);
 
-        if (true == hasMissingAttributes)
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        List<AttributeDO> missingAttributes = this.identityService.listMissingAttributes(this.application, viewLocale);
+
+        if (false == missingAttributes.isEmpty()) {
+            for (AttributeDO missingAttribute : missingAttributes) {
+                if (!missingAttribute.isEditable())
+                    return "identity-unavailable";
+            }
             return "missing-attributes";
+        }
 
         AuthenticationUtils.commitAuthentication(this.facesMessages);
 
@@ -101,4 +108,31 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
         LOG.debug("confirmation list: " + confirmationList);
         return confirmationList;
     }
+
+    @Factory("identityUnavailableList")
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public List<AttributeDO> identityUnavailableListFactory() throws PermissionDeniedException,
+            AttributeTypeNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException {
+
+        LOG.debug("identityUnavailableList factory");
+        List<AttributeDO> unavailableList = new LinkedList<AttributeDO>();
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+        List<AttributeDO> missingAttributes = this.identityService.listMissingAttributes(this.application, viewLocale);
+        for (AttributeDO missingAttribute : missingAttributes) {
+            if (!missingAttribute.isEditable()) {
+                unavailableList.add(missingAttribute);
+            }
+        }
+        LOG.debug("unavailable list: " + unavailableList);
+        return unavailableList;
+    }
+
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public String getApplicationUrl() {
+
+        return findApplicationUrl();
+    }
+
 }

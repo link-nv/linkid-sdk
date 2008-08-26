@@ -21,7 +21,6 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -147,8 +146,6 @@ public class LoginServlet extends AbstractInjectionServlet {
             throw new ServletException("permission denied: " + e.getMessage());
         } catch (AttributeTypeNotFoundException e) {
             throw new ServletException("attribute type not found");
-        } catch (AttributeUnavailableException e) {
-            throw new ServletException("attribute unavailable");
         }
         return hasMissingAttributes;
     }

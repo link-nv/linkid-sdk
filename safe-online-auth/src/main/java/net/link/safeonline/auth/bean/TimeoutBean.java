@@ -7,45 +7,24 @@
 
 package net.link.safeonline.auth.bean;
 
-import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.Timeout;
-import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
-import net.link.safeonline.model.application.PublicApplication;
-import net.link.safeonline.service.PublicApplicationService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 
 
 @Stateful
 @Name("timeout")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "TimeoutBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
-public class TimeoutBean implements Timeout {
-
-    @In(create = true)
-    FacesMessages                    facesMessages;
-
-    @Logger
-    Log                              log;
-
-    @EJB
-    private PublicApplicationService publicApplicationService;
-
+public class TimeoutBean extends AbstractExitBean implements Timeout {
 
     @Remove
     @Destroy
@@ -55,34 +34,6 @@ public class TimeoutBean implements Timeout {
 
     public String getApplicationUrl() {
 
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        try {
-            Cookie applicationCookie = (Cookie) facesContext.getExternalContext().getRequestCookieMap().get(
-                    SafeOnlineCookies.APPLICATION_COOKIE);
-            PublicApplication application = this.publicApplicationService.findPublicApplication(applicationCookie
-                    .getValue());
-            if (null != application) {
-                if (null != application.getUrl()) {
-                    this.log.debug("found url: " + application.getUrl().toString());
-                    return application.getUrl().toString() + "?authenticationTimeout=true";
-                }
-            }
-            return null;
-        } finally {
-            this.log.debug("removing entry and timeout cookie");
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, response);
-            removeCookie(SafeOnlineCookies.ENTRY_COOKIE, response);
-            removeCookie(SafeOnlineCookies.APPLICATION_COOKIE, response);
-        }
-    }
-
-    private void removeCookie(String name, HttpServletResponse response) {
-
-        this.log.debug("remove cookie: " + name);
-        Cookie cookie = new Cookie(name, "");
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        return findApplicationUrl();
     }
 }

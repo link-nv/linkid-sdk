@@ -2,9 +2,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:t="http://myfaces.apache.org/tomahawk">
+	xmlns:c="http://java.sun.com/jstl/core">
 <body>
 <ui:composition template="/WEB-INF/template-auth-root.xhtml">
 	<ui:define name="top_content">
@@ -14,6 +12,11 @@
 	<ui:define name="content">
 
 		<p>#{msgs.subscriptionRejectionInfo}</p>
+
+		<c:if test="#{!empty authSubscription.applicationUrl}">
+			<p><a href="#{authSubscription.applicationUrl}">#{msgs.linkToMain}</a></p>
+		</c:if>
+
 	</ui:define>
 </ui:composition>
 </body>

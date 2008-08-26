@@ -25,4 +25,6 @@ public interface GlobalUsageAgreementConfirmation {
      */
     String getUsageAgreement();
 
+    String getApplicationUrl();
+
 }

@@ -39,7 +39,7 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "GlobalUsageAgreementConfirmationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
-public class GlobalUsageAgreementConfirmationBean implements GlobalUsageAgreementConfirmation {
+public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean implements GlobalUsageAgreementConfirmation {
 
     @Logger
     private Log                   log;
@@ -102,4 +102,11 @@ public class GlobalUsageAgreementConfirmationBean implements GlobalUsageAgreemen
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         return this.usageAgreementService.getGlobalUsageAgreementText(viewLocale.getLanguage());
     }
+
+    @RolesAllowed(AuthenticationConstants.USER_ROLE)
+    public String getApplicationUrl() {
+
+        return findApplicationUrl();
+    }
+
 }

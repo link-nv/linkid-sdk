@@ -24,6 +24,11 @@ import net.link.safeonline.data.AttributeDO;
 public interface IdentityConfirmation {
 
     /*
+     * Accessors
+     */
+    String getApplicationUrl();
+
+    /*
      * Actions.
      */
     String agree() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
@@ -40,4 +45,7 @@ public interface IdentityConfirmation {
      */
     List<AttributeDO> identityConfirmationListFactory() throws SubscriptionNotFoundException,
             ApplicationNotFoundException, ApplicationIdentityNotFoundException;
+
+    List<AttributeDO> identityUnavailableListFactory() throws PermissionDeniedException,
+            AttributeTypeNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException;
 }
