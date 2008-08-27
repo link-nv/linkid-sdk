@@ -84,6 +84,8 @@ public class TemplateAttributeService implements PluginAttributeService {
 			attribute.add(createIntegerAttribute(0));
 			attribute.add(createIntegerAttribute(1));
 		} else {
+			// Beware: this code makes an endless loop by getting the external
+			// attribute from OLAS which will again redirect to this plugin ...
 			ServiceReference serviceReference = bundleContext
 					.getServiceReference(OlasAttributeService.class.getName());
 			if (null != serviceReference) {
