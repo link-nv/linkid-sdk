@@ -8,7 +8,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss
+                target/files/safe-online-base-distribution-${project.version}/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
@@ -31,14 +31,14 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/scripts 
+                target/files/safe-online-base-distribution-${project.version}/scripts 
 			</directory>
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss
+                target/files/safe-online-base-distribution-${project.version}/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
@@ -63,7 +63,7 @@
 		</file>
 		<file>
 			<source>
-                target/files/safe-online-performance-agent-service-${safe-online.version}.sar
+                target/files/safe-online-performance-agent-service-${project.version}.sar
 			</source>
 			<outputDirectory>
 				jboss/server/default/deploy

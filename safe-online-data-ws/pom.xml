@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>${safe-online.version}</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Data Web Service Definition</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-data-ws</artifactId>
-	<version>${safe-online.version}</version>
+	<version>1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<build>
@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ws-common</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.ws</groupId>
