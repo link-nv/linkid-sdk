@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project>
+	<parent>
+		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k</groupId>
+		<version>1.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-serial</artifactId>
+	<name>SafeOnline Serial Communication Library</name>
+	<version>1.1-SNAPSHOT</version>
+	<dependencies>
+		<dependency>
+			<groupId>org.rxtx</groupId>
+			<artifactId>rxtx</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

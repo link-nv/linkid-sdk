@@ -766,6 +766,8 @@
 		<module>safe-online-identity-applet-package</module>
 		<module>safe-online-osgi-plugin</module>
 		<module>safe-online-osgi-plugin-template</module>
+		<module>safe-online-serial</module>
+		<module>safe-online-option-device</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
@@ -903,9 +905,11 @@
             <!-- NON-INHERITED PLUGIN SETTINGS -->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
-
-				<!-- Don't clean parent directory's target directory: it contains cache data
-					such as eclipse:eclipse -DdownloadSources=true repository statuses.  -->
+				<!--
+					Don't clean parent directory's target directory: it contains cache
+					data such as eclipse:eclipse -DdownloadSources=true repository
+					statuses.
+				-->
 				<inherited>false</inherited>
 				<configuration>
 					<skip>true</skip>
@@ -1241,18 +1245,13 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
-		<!--repository>
-			<id>org.wicketstuff</id> 
-			<name>Wicket Stuff Repo</name> 
-			<url>http://wicketstuff.org/maven/repository</url> 
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository-->
+		<!--
+			repository> <id>org.wicketstuff</id> <name>Wicket Stuff Repo</name>
+			<url>http://wicketstuff.org/maven/repository</url> <snapshots>
+			<enabled>false</enabled> </snapshots> <releases>
+			<enabled>true</enabled> <updatePolicy>never</updatePolicy>
+			</releases> </repository
+		-->
 	</repositories>
 
 	<!-- MAVEN PLUGIN REPOSITORIES -->
@@ -2051,6 +2050,11 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
 				<version>${slf4j-log4j12.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.jsfunit</groupId>

@@ -9,19 +9,19 @@ package net.link.safeonline.sms;
 
 import java.io.ByteArrayOutputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SMS {
 
-    static Log LOG     = LogFactory.getLog(SMS.class);
+    static Logger LOG     = LoggerFactory.getLogger(SMS.class);
 
-    String     from    = null;
+    String        from    = null;
 
-    String     to      = null;
+    String        to      = null;
 
-    String     message = null;
+    String        message = null;
 
 
     public SMS() {
@@ -80,16 +80,16 @@ public class SMS {
             ba.write(this.message.length()); // length of message
             ba.write(msgToBytes(this.message)); // message
         } catch (Exception e) {
-            LOG.debug("Exception while creating SMS encoding");
+            LOG.info("Exception while creating SMS encoding");
             LOG.debug(e.getMessage());
-            LOG.debug(e.getStackTrace());
+            LOG.debug(e.getStackTrace().toString());
         }
         return ba.toByteArray();
     }
 
     /**
      * strips all non-numbers from the telephone numbers
-     *
+     * 
      * @param telnr
      */
     public static String strip(String telnr) {
@@ -99,7 +99,7 @@ public class SMS {
 
     /**
      * converts a telephone number to the format needed in sms encoding communication
-     *
+     * 
      * @param telnummer
      */
     public static byte[] telToBytes(String telnummer) {
@@ -125,7 +125,7 @@ public class SMS {
 
     /**
      * converts a message to the sms encoding
-     *
+     * 
      * @param message
      * @throws Exception
      */
