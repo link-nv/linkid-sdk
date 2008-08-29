@@ -485,7 +485,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
         /**
          * Main constructor.
-         *
+         * 
          * @param smartCardPinCallback
          *            the optional smart card PIN call back.
          */

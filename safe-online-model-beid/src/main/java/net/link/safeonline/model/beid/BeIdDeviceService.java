@@ -33,13 +33,13 @@ public interface BeIdDeviceService {
             PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException,
             PkiInvalidException;
 
-    void register(String sessionId, String deviceUserId, String operation, byte[] identityStatementData)
+    void register(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws PermissionDeniedException, ArgumentIntegrityException, TrustDomainNotFoundException,
             AttributeTypeNotFoundException, DeviceNotFoundException, AttributeNotFoundException,
             AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
             PkiNotYetValidException, PkiInvalidException;
 
-    void remove(String sessionId, String deviceUserId, String operation, byte[] identityStatementData)
+    void remove(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
             AttributeTypeNotFoundException, SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException,
             PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException;

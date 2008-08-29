@@ -40,36 +40,30 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.dao.DeviceMappingDAO;
 import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.data.DeviceMappingDO;
+import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceClassDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassDescriptionPK;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
-import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.model.Devices;
-import net.link.safeonline.notification.dao.EndpointReferenceDAO;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.ApplicationOwnerAccessControlInterceptor;
-import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.DeviceService;
 import net.link.safeonline.service.DeviceServiceRemote;
-import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,40 +74,28 @@ import org.jboss.annotation.security.SecurityDomain;
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
-    private static final Log     LOG = LogFactory.getLog(DeviceServiceBean.class);
+    private static final Log LOG = LogFactory.getLog(DeviceServiceBean.class);
 
     @EJB
-    private Devices              devices;
+    private Devices          devices;
 
     @EJB
-    private DeviceDAO            deviceDAO;
+    private DeviceDAO        deviceDAO;
 
     @EJB
-    private DeviceClassDAO       deviceClassDAO;
+    private DeviceClassDAO   deviceClassDAO;
 
     @EJB
-    private DeviceMappingDAO     deviceMappingDAO;
+    private AttributeTypeDAO attributeTypeDAO;
 
     @EJB
-    private AttributeTypeDAO     attributeTypeDAO;
+    private ApplicationDAO   applicationDAO;
 
     @EJB
-    private ApplicationDAO       applicationDAO;
+    private NodeDAO          olasDAO;
 
     @EJB
-    private NodeDAO              olasDAO;
-
-    @EJB
-    private EndpointReferenceDAO endpointReferenceDAO;
-
-    @EJB
-    private SubjectService       subjectService;
-
-    @EJB
-    private DeviceMappingService deviceMappingService;
-
-    @EJB
-    private IdentityService      identityService;
+    private IdentityService  identityService;
 
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
@@ -170,9 +152,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         DeviceDescriptionEntity description = this.deviceDAO.findDescription(new DeviceDescriptionPK(deviceName,
                 language));
-        if (null != description) {
+        if (null != description)
             throw new ExistingDeviceDescriptionException();
-        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -187,9 +168,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     private void checkExistingDeviceProperty(String deviceName, String name) throws ExistingDevicePropertyException {
 
         DevicePropertyEntity property = this.deviceDAO.findProperty(new DevicePropertyPK(deviceName, name));
-        if (null != property) {
+        if (null != property)
             throw new ExistingDevicePropertyException();
-        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -197,7 +177,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
             String registrationPath, String removalPath, String updatePath, byte[] encodedCertificate,
             String attributeTypeName, String userAttributeTypeName) throws CertificateEncodingException,
             DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
-            NodeNotFoundException {
+            NodeNotFoundException, PermissionDeniedException {
 
         checkExistingDevice(name);
         LOG.debug("add device: " + name);
@@ -207,18 +187,52 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         DeviceClassEntity deviceClass = this.deviceClassDAO.getDeviceClass(deviceClassName);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
         AttributeTypeEntity userAttributeType = this.attributeTypeDAO.getAttributeType(userAttributeTypeName);
+
+        checkAttributeTypes(attributeType, userAttributeType);
+
         NodeEntity node = this.olasDAO.getNode(nodeName);
 
         this.deviceDAO.addDevice(name, deviceClass, node, authenticationPath, registrationPath, removalPath,
                 updatePath, certificate, attributeType, userAttributeType);
     }
 
+    /**
+     * Check if the user attribute type is or equal to or part of the device attribute type
+     * 
+     * @throws PermissionDeniedException
+     */
+    private void checkAttributeTypes(AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType)
+            throws PermissionDeniedException {
+
+        if (attributeType.equals(userAttributeType))
+            return;
+
+        if (!attributeType.isCompounded()) {
+            String message = "Attribute type " + attributeType.getName()
+                    + " must be compound and contain user attribute type " + userAttributeType
+                    + " if both types are not equal";
+            LOG.debug("Permission denied: " + message);
+            throw new PermissionDeniedException(message);
+        }
+
+        List<CompoundedAttributeTypeMemberEntity> memberAttributeTypes = attributeType.getMembers();
+        for (CompoundedAttributeTypeMemberEntity memberAttributeType : memberAttributeTypes) {
+            if (memberAttributeType.getMember().equals(userAttributeType))
+                return;
+        }
+
+        String message = "Attribute type " + attributeType.getName()
+                + " must be compound and contain user attribute type " + userAttributeType
+                + " if both types are not equal";
+        LOG.debug("Permission denied: " + message);
+        throw new PermissionDeniedException(message);
+    }
+
     private void checkExistingDevice(String name) throws ExistingDeviceException {
 
         DeviceEntity existingDevice = this.deviceDAO.findDevice(name);
-        if (null != existingDevice) {
+        if (null != existingDevice)
             throw new ExistingDeviceException();
-        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -232,19 +246,10 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         for (ApplicationEntity application : applications) {
             List<AllowedDeviceEntity> allowedDevices = this.devices.listAllowedDevices(application);
             for (AllowedDeviceEntity allowedDevice : allowedDevices) {
-                if (allowedDevice.getDevice().getName().equals(name)) {
+                if (allowedDevice.getDevice().getName().equals(name))
                     throw new PermissionDeniedException("Device still in device policy of " + application.getName(),
                             "errorPermissionDeviceInApplication", application.getName());
-                }
             }
-        }
-
-        checkDeviceMappings(device);
-
-        // remove all device notification subscriptions
-        List<EndpointReferenceEntity> endpoints = this.endpointReferenceDAO.listEndpoints(device);
-        for (EndpointReferenceEntity endpoint : endpoints) {
-            this.endpointReferenceDAO.remove(endpoint);
         }
 
         // remove all device descriptions
@@ -260,15 +265,6 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         }
 
         this.deviceDAO.removeDevice(name);
-    }
-
-    private void checkDeviceMappings(DeviceEntity device) throws PermissionDeniedException {
-
-        List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO.listDeviceMappings(device);
-        if (!deviceMappings.isEmpty()) {
-            throw new PermissionDeniedException("Device still has device registrations",
-                    "errorPermissionDeviceHasRegistrations");
-        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -291,9 +287,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     private void checkExistingDeviceClass(String name) throws ExistingDeviceClassException {
 
         DeviceClassEntity existingDeviceClass = this.deviceClassDAO.findDeviceClass(name);
-        if (null != existingDeviceClass) {
+        if (null != existingDeviceClass)
             throw new ExistingDeviceClassException();
-        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -307,10 +302,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         DeviceClassEntity deviceClass = this.deviceClassDAO.findDeviceClass(deviceClassName);
         List<DeviceEntity> deviceList = this.deviceDAO.listDevices(deviceClass);
-        if (null != deviceList && deviceList.size() > 0) {
+        if (null != deviceList && deviceList.size() > 0)
             throw new PermissionDeniedException("Device class in use by existing devices",
                     "errorPermissionDeviceClassHasDevices");
-        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -330,9 +324,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         LOG.debug("checkExistingDeviceClassDescription: " + deviceClassName + ", " + language);
         DeviceClassDescriptionEntity description = this.deviceClassDAO.findDescription(new DeviceClassDescriptionPK(
                 deviceClassName, language));
-        if (null != description) {
+        if (null != description)
             throw new ExistingDeviceClassDescriptionException();
-        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -375,19 +368,25 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void updateAttributeType(String deviceName, String attributeTypeName) throws DeviceNotFoundException,
-            AttributeTypeNotFoundException {
+            AttributeTypeNotFoundException, PermissionDeniedException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+
+        checkAttributeTypes(attributeType, device.getUserAttributeType());
+
         device.setAttributeType(attributeType);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void updateUserAttributeType(String deviceName, String userAttributeTypeName)
-            throws DeviceNotFoundException, AttributeTypeNotFoundException {
+            throws DeviceNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException {
 
         AttributeTypeEntity userAttributeType = this.attributeTypeDAO.getAttributeType(userAttributeTypeName);
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+
+        checkAttributeTypes(device.getAttributeType(), userAttributeType);
+
         device.setUserAttributeType(userAttributeType);
     }
 
@@ -462,11 +461,11 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public List<DeviceMappingDO> getDeviceRegistrations(SubjectEntity subject, Locale locale)
+    public List<DeviceRegistrationDO> getDeviceRegistrations(SubjectEntity subject, Locale locale)
             throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException {
 
-        List<DeviceMappingDO> deviceMappings = new LinkedList<DeviceMappingDO>();
+        List<DeviceRegistrationDO> deviceRegistrations = new LinkedList<DeviceRegistrationDO>();
         List<DeviceEntity> deviceList = this.deviceDAO.listDevices();
         for (DeviceEntity device : deviceList) {
             LOG.debug("device: " + device.getName());
@@ -477,15 +476,13 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
                 deviceDescription = deviceDescriptionEntity.getDescription();
             }
             LOG.debug("device description: " + deviceDescription);
-            DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(), device
-                    .getName());
-            List<AttributeDO> registrationAttributes = listRegistrations(deviceMapping, locale);
+            List<AttributeDO> registrationAttributes = listRegistrations(subject, device, locale);
             if (null == registrationAttributes) {
                 continue;
             }
             if (registrationAttributes.isEmpty()) {
                 // no user attribute for this device
-                deviceMappings.add(new DeviceMappingDO(deviceMapping, deviceDescription, null));
+                deviceRegistrations.add(new DeviceRegistrationDO(device, deviceDescription, null));
             }
             ListIterator<AttributeDO> iter = registrationAttributes.listIterator();
             while (iter.hasNext()) {
@@ -506,33 +503,38 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
                     registrationAttributeView.add(registrationAttribute);
 
                 }
-                deviceMappings.add(new DeviceMappingDO(deviceMapping, deviceDescription, registrationAttributeView));
+                deviceRegistrations.add(new DeviceRegistrationDO(device, deviceDescription, registrationAttributeView));
             }
 
         }
-        return deviceMappings;
+        return deviceRegistrations;
     }
 
-    private List<AttributeDO> listRegistrations(DeviceMappingEntity deviceMapping, Locale locale)
+    private List<AttributeDO> listRegistrations(SubjectEntity subject, DeviceEntity device, Locale locale)
             throws PermissionDeniedException, AttributeTypeNotFoundException {
 
-        List<AttributeDO> registeredDeviceAttributes;
-
-        if (null == deviceMapping.getDevice().getUserAttributeType()) {
-            DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceMapping.getId());
-            if (null != deviceSubject && deviceSubject.getRegistrations().size() > 0) {
-                List<AttributeDO> localRegistration = new LinkedList<AttributeDO>();
-                return localRegistration;
+        if (null == device.getUserAttributeType()) {
+            // might be that there still are registrations, check the device attribute type.
+            List<AttributeDO> attributes;
+            try {
+                attributes = this.identityService.listAttributes(subject, device.getAttributeType(), locale);
+            } catch (SubjectNotFoundException e) {
+                return null;
             }
+            if (null != attributes && !attributes.isEmpty())
+                return new LinkedList<AttributeDO>();
             return null;
         }
-        LOG.debug("get device registration attributes: " + deviceMapping.getDevice().getUserAttributeType().getName());
-        registeredDeviceAttributes = this.identityService.listDeviceAttributes(deviceMapping.getId(), deviceMapping
-                .getDevice().getUserAttributeType(), locale);
-        if (null == registeredDeviceAttributes)
+        List<AttributeDO> registeredDeviceAttributes;
+        try {
+            registeredDeviceAttributes = this.identityService.listAttributes(subject, device.getUserAttributeType(),
+                    locale);
+        } catch (SubjectNotFoundException e) {
             return null;
-        if (registeredDeviceAttributes.isEmpty())
+        }
+        if (null == registeredDeviceAttributes || registeredDeviceAttributes.isEmpty())
             return null;
+
         return registeredDeviceAttributes;
     }
 }

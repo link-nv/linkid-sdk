@@ -9,9 +9,11 @@ package net.link.safeonline.notification.service.bean;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.SafeOnlineNodeRoles;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.notification.message.MessageHandlerManager;
 import net.link.safeonline.notification.service.NotificationConsumerService;
@@ -28,6 +30,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
     private static final Log LOG = LogFactory.getLog(NotificationConsumerServiceBean.class);
 
 
+    @RolesAllowed(SafeOnlineNodeRoles.NODE_ROLE)
     public void handleMessage(String topic, String destination, List<String> message) {
 
         LOG.debug("handle message for topic: " + topic);

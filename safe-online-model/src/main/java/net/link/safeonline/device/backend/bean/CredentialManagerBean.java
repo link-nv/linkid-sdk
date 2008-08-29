@@ -36,11 +36,9 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.CredentialManager;
-import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
@@ -96,27 +94,30 @@ public class CredentialManagerBean implements CredentialManager {
             PkiInvalidException {
 
         X509Certificate certificate = authenticationStatement.verifyIntegrity();
-        if (null == certificate)
+        if (null == certificate) {
             throw new ArgumentIntegrityException();
+        }
 
         String statementSessionId = authenticationStatement.getSessionId();
         String statementApplicationId = authenticationStatement.getApplicationId();
 
         PkiProvider pkiProvider = this.pkiProviderManager.findPkiProvider(certificate);
-        if (null == pkiProvider)
+        if (null == pkiProvider) {
             throw new ArgumentIntegrityException();
+        }
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
         PkiResult validationResult = this.pkiValidator.validateCertificate(trustDomain, certificate);
-        if (PkiResult.REVOKED == validationResult)
+        if (PkiResult.REVOKED == validationResult) {
             throw new PkiRevokedException();
-        else if (PkiResult.SUSPENDED == validationResult)
+        } else if (PkiResult.SUSPENDED == validationResult) {
             throw new PkiSuspendedException();
-        else if (PkiResult.EXPIRED == validationResult)
+        } else if (PkiResult.EXPIRED == validationResult) {
             throw new PkiExpiredException();
-        else if (PkiResult.NOT_YET_VALID == validationResult)
+        } else if (PkiResult.NOT_YET_VALID == validationResult) {
             throw new PkiNotYetValidException();
-        else if (PkiResult.INVALID == validationResult)
+        } else if (PkiResult.INVALID == validationResult) {
             throw new PkiInvalidException();
+        }
 
         if (false == sessionId.equals(statementSessionId)) {
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
@@ -132,19 +133,19 @@ public class CredentialManagerBean implements CredentialManager {
 
         String identifierDomainName = pkiProvider.getIdentifierDomainName();
         String identifier = pkiProvider.getSubjectIdentifier(certificate);
-        SubjectEntity deviceRegistration = this.subjectIdentifierDAO.findSubject(identifierDomainName, identifier);
-        if (null == deviceRegistration)
+        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(identifierDomainName, identifier);
+        if (null == subject) {
             throw new SubjectNotFoundException();
-        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceRegistration);
-        return deviceSubject.getId();
+        }
+        return subject.getUserId();
 
     }
 
-    public void mergeIdentityStatement(String sessionId, String deviceUserId, String operation,
-            byte[] identityStatementData) throws TrustDomainNotFoundException, PermissionDeniedException,
-            ArgumentIntegrityException, AttributeTypeNotFoundException, DeviceNotFoundException,
-            AttributeNotFoundException, AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException,
-            PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
+    public void mergeIdentityStatement(String sessionId, String userId, String operation, byte[] identityStatementData)
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
+            AttributeTypeNotFoundException, DeviceNotFoundException, AttributeNotFoundException,
+            AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
+            PkiNotYetValidException, PkiInvalidException {
 
         /*
          * First check integrity of the received identity statement.
@@ -157,34 +158,37 @@ public class CredentialManagerBean implements CredentialManager {
         }
 
         X509Certificate certificate = identityStatement.verifyIntegrity();
-        if (null == certificate)
+        if (null == certificate) {
             throw new ArgumentIntegrityException();
+        }
 
         String statementSessionId = identityStatement.getSessionId();
         String statementOperation = identityStatement.getOperation();
         String statementUser = identityStatement.getUser();
 
         PkiProvider pkiProvider = this.pkiProviderManager.findPkiProvider(certificate);
-        if (null == pkiProvider)
+        if (null == pkiProvider) {
             throw new ArgumentIntegrityException();
+        }
 
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
         PkiResult validationResult = this.pkiValidator.validateCertificate(trustDomain, certificate);
-        if (PkiResult.REVOKED == validationResult)
+        if (PkiResult.REVOKED == validationResult) {
             throw new PkiRevokedException();
-        else if (PkiResult.SUSPENDED == validationResult)
+        } else if (PkiResult.SUSPENDED == validationResult) {
             throw new PkiSuspendedException();
-        else if (PkiResult.EXPIRED == validationResult)
+        } else if (PkiResult.EXPIRED == validationResult) {
             throw new PkiExpiredException();
-        else if (PkiResult.NOT_YET_VALID == validationResult)
+        } else if (PkiResult.NOT_YET_VALID == validationResult) {
             throw new PkiNotYetValidException();
-        else if (PkiResult.INVALID == validationResult)
+        } else if (PkiResult.INVALID == validationResult) {
             throw new PkiInvalidException();
+        }
 
         /*
          * Check whether the identity statement properties are ok.
          */
-        if (false == deviceUserId.equals(statementUser)) {
+        if (false == userId.equals(statementUser)) {
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_USER_MISMATCH);
             throw new PermissionDeniedException(SECURITY_MESSAGE_USER_MISMATCH);
         }
@@ -199,30 +203,23 @@ public class CredentialManagerBean implements CredentialManager {
             throw new ArgumentIntegrityException();
         }
 
-        SubjectEntity deviceRegistration;
+        SubjectEntity subject;
 
         String domain = pkiProvider.getIdentifierDomainName();
         String identifier = pkiProvider.getSubjectIdentifier(certificate);
         SubjectEntity existingMappedSubject = this.subjectIdentifierDAO.findSubject(domain, identifier);
         if (null == existingMappedSubject) {
             /*
-             * Create new device subject if needed
+             * Create new subject if needed
              */
-            DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceUserId);
-            if (null == deviceSubject) {
-                deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
+            subject = this.subjectService.findSubject(userId);
+            if (null == subject) {
+                subject = this.subjectService.addSubjectWithoutLogin(userId);
             }
-
-            /*
-             * Create new device registration subject
-             */
-            deviceRegistration = this.subjectService.addDeviceRegistration();
-            deviceSubject.getRegistrations().add(deviceRegistration);
-
             /*
              * In this case we register a new subject identifier within the system.
              */
-            this.subjectIdentifierDAO.addSubjectIdentifier(domain, identifier, deviceRegistration);
+            this.subjectIdentifierDAO.addSubjectIdentifier(domain, identifier, subject);
         } else {
             /*
              * The certificate is already linked to another user.
@@ -236,7 +233,7 @@ public class CredentialManagerBean implements CredentialManager {
          * subjects. Such a strategy of course only makes sense for authentication devices for which a subject can have
          * only one. This is for example the case for BeID identity cards.
          */
-        this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain, identifier, deviceRegistration);
+        this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain, identifier, subject);
 
         /*
          * Store some additional attributes retrieved from the identity statement.
@@ -244,14 +241,12 @@ public class CredentialManagerBean implements CredentialManager {
         String surname = identityStatement.getSurname();
         String givenName = identityStatement.getGivenName();
 
-        setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, deviceRegistration, surname, pkiProvider);
-        setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, deviceRegistration, givenName, pkiProvider);
+        setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, subject, surname, pkiProvider);
+        setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, subject, givenName, pkiProvider);
 
-        pkiProvider.storeAdditionalAttributes(deviceRegistration, certificate);
+        pkiProvider.storeAdditionalAttributes(subject, certificate);
 
-        pkiProvider.storeDeviceAttribute(deviceRegistration);
-
-        pkiProvider.storeDeviceUserAttribute(deviceRegistration);
+        pkiProvider.storeDeviceAttribute(subject);
     }
 
     private void setOrUpdateAttribute(IdentityStatementAttributes identityStatementAttribute, SubjectEntity subject,
@@ -262,12 +257,10 @@ public class CredentialManagerBean implements CredentialManager {
         this.attributeDAO.addOrUpdateAttribute(attributeType, subject, 0, value);
     }
 
-    public void removeIdentity(String sessionId, String deviceUserId, String operation, byte[] identityStatementData)
+    public void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
             AttributeTypeNotFoundException, SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException,
             PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
-
-        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceUserId);
 
         /*
          * First check integrity of the received identity statement.
@@ -280,34 +273,37 @@ public class CredentialManagerBean implements CredentialManager {
         }
 
         X509Certificate certificate = identityStatement.verifyIntegrity();
-        if (null == certificate)
+        if (null == certificate) {
             throw new ArgumentIntegrityException();
+        }
 
         String statementSessionId = identityStatement.getSessionId();
         String statementOperation = identityStatement.getOperation();
         String statementUser = identityStatement.getUser();
 
         PkiProvider pkiProvider = this.pkiProviderManager.findPkiProvider(certificate);
-        if (null == pkiProvider)
+        if (null == pkiProvider) {
             throw new ArgumentIntegrityException();
+        }
 
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
         PkiResult validationResult = this.pkiValidator.validateCertificate(trustDomain, certificate);
-        if (PkiResult.REVOKED == validationResult)
+        if (PkiResult.REVOKED == validationResult) {
             throw new PkiRevokedException();
-        else if (PkiResult.SUSPENDED == validationResult)
+        } else if (PkiResult.SUSPENDED == validationResult) {
             throw new PkiSuspendedException();
-        else if (PkiResult.EXPIRED == validationResult)
+        } else if (PkiResult.EXPIRED == validationResult) {
             throw new PkiExpiredException();
-        else if (PkiResult.NOT_YET_VALID == validationResult)
+        } else if (PkiResult.NOT_YET_VALID == validationResult) {
             throw new PkiNotYetValidException();
-        else if (PkiResult.INVALID == validationResult)
+        } else if (PkiResult.INVALID == validationResult) {
             throw new PkiInvalidException();
+        }
 
         /*
          * Check whether the identity statement properties are ok.
          */
-        if (false == deviceUserId.equals(statementUser)) {
+        if (false == userId.equals(statementUser)) {
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_USER_MISMATCH);
             throw new PermissionDeniedException(SECURITY_MESSAGE_USER_MISMATCH);
         }
@@ -325,28 +321,9 @@ public class CredentialManagerBean implements CredentialManager {
         String domain = pkiProvider.getIdentifierDomainName();
         String identifier = pkiProvider.getSubjectIdentifier(certificate);
         SubjectEntity existingMappedSubject = this.subjectIdentifierDAO.findSubject(domain, identifier);
-        if (deviceSubject.getRegistrations().contains(existingMappedSubject)) {
-            this.subjectIdentifierDAO.removeSubjectIdentifier(existingMappedSubject, domain, identifier);
-            deviceSubject.getRegistrations().remove(existingMappedSubject);
-        }
+        this.subjectIdentifierDAO.removeSubjectIdentifier(existingMappedSubject, domain, identifier);
 
-        removeAttribute(IdentityStatementAttributes.SURNAME, existingMappedSubject, pkiProvider);
-        removeAttribute(IdentityStatementAttributes.GIVEN_NAME, existingMappedSubject, pkiProvider);
-
-        pkiProvider.removeAdditionalAttributes(existingMappedSubject, certificate);
-
-        pkiProvider.removeDeviceAttribute(existingMappedSubject);
-
-        pkiProvider.removeDeviceUserAttribute(existingMappedSubject);
-    }
-
-    private void removeAttribute(IdentityStatementAttributes identityStatementAttribute, SubjectEntity subject,
-            PkiProvider pkiProvider) throws AttributeTypeNotFoundException {
-
-        String attributeName = pkiProvider.mapAttribute(identityStatementAttribute);
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-        AttributeEntity attribute = this.attributeDAO.findAttribute(attributeType, subject);
-        this.attributeDAO.removeAttribute(attribute);
-
+        // device attribute should contain as member all other device attributes so they are removed all at once.
+        pkiProvider.removeDeviceAttribute(existingMappedSubject, certificate);
     }
 }

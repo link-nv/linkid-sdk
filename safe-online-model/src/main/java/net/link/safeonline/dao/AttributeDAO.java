@@ -23,9 +23,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * attributes. Towards the user web application interface they behave as regular attributes. Towards the application web
  * service interface they behave as weak entities, i.e., they only make sense as part of the set of multi-valued
  * attributes for the given attribute type.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface AttributeDAO {
@@ -34,12 +34,12 @@ public interface AttributeDAO {
 
     /**
      * Adds a new attribute.
-     *
+     * 
      * <p>
-     * For multi-valued attributes a new attribute will be added with attribute index set to MAX(current attribute ids)
-     * + 1. Single-valued attributes will of course have an attribute attribute 0.
+     * For multi-valued attributes a new attribute will be added with attribute index set to MAX(current attribute ids) +
+     * 1. Single-valued attributes will of course have an attribute attribute 0.
      * </p>
-     *
+     * 
      * @param attributeType
      * @param subject
      */
@@ -47,7 +47,7 @@ public interface AttributeDAO {
 
     /**
      * Add or Update an attribute. The index is used for multi-valued attributes.
-     *
+     * 
      * @param attributeType
      * @param subject
      * @param index
@@ -60,7 +60,7 @@ public interface AttributeDAO {
     /**
      * Creates a new attribute with the given attribute index. This can be used to create new compounded attribute
      * records.
-     *
+     * 
      * @param attributeType
      * @param subject
      * @param index
@@ -72,7 +72,7 @@ public interface AttributeDAO {
     /**
      * Gives back an attribute. Use this method to retrieve a multi-valued attribute entry via the <code>index</code>
      * parameter. The attributes are ordered by attribute index.
-     *
+     * 
      * @param attributeType
      * @param subject
      * @param index
@@ -88,13 +88,15 @@ public interface AttributeDAO {
 
     AttributeEntity findAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, long index);
 
+    AttributeEntity findAttribute(SubjectEntity subject, String attributeTypeName, long index);
+
     AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject);
 
     AttributeEntity findAttribute(AttributeTypeEntity attributeType, SubjectEntity subject);
 
     /**
      * Lists all the attributes of a user. The returned attributes have already been sorted out per attribute type.
-     *
+     * 
      * @param subject
      */
     Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(SubjectEntity subject);
@@ -102,7 +104,7 @@ public interface AttributeDAO {
     /**
      * Lists all the user visible attributes of a user. The returned attributes have been sorted per attribute type and
      * per attribute index.
-     *
+     * 
      * @param subject
      */
     List<AttributeEntity> listVisibleAttributes(SubjectEntity subject);
@@ -110,7 +112,7 @@ public interface AttributeDAO {
     /**
      * Gives back all attributes of the given attribute type for a certain subject. In case of a multivalued attribute
      * multiple entries can be found in the returned list. These entries will be ordered by attribute index.
-     *
+     * 
      * @param subject
      * @param attributeType
      */
@@ -118,7 +120,7 @@ public interface AttributeDAO {
 
     /**
      * Gives back all attributes of the given attribute type which string value starts with the specified prefix.
-     *
+     * 
      * @param prefix
      * @param attributeType
      */
@@ -126,14 +128,14 @@ public interface AttributeDAO {
 
     /**
      * Removes all the attributes of the given subject.
-     *
+     * 
      * @param subject
      */
     void removeAttributes(SubjectEntity subject);
 
     /**
      * Removes all the attributes of the given attribue type.
-     *
+     * 
      * @param attributeType
      */
     void removeAttributes(AttributeTypeEntity attributeType);

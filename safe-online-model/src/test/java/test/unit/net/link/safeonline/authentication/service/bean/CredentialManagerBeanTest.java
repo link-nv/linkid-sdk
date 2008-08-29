@@ -33,7 +33,6 @@ import net.link.safeonline.device.backend.bean.CredentialManagerBean;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.identity.IdentityStatementFactory;
 import net.link.safeonline.pkix.model.PkiProvider;
@@ -154,11 +153,8 @@ public class CredentialManagerBeanTest extends TestCase {
         String identifierDomain = "test-identifier-domain";
         String identifier = "test-identifier";
 
-        String deviceMappingId = UUID.randomUUID().toString();
-        String deviceRegistrationId = UUID.randomUUID().toString();
-        DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(deviceMappingId);
-        SubjectEntity deviceRegistration = new SubjectEntity(deviceRegistrationId);
-        deviceSubject.getRegistrations().add(deviceRegistration);
+        String userId = UUID.randomUUID().toString();
+        SubjectEntity subject = new SubjectEntity(userId);
 
         byte[] authenticationStatementData = AuthenticationStatementFactory.createAuthenticationStatement(sessionId,
                 applicationId, this.signer);
@@ -170,19 +166,18 @@ public class CredentialManagerBeanTest extends TestCase {
         expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.VALID);
         expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
         expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate)).andStubReturn(identifier);
-        expect(this.mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(
-                deviceRegistration);
-        expect(this.mockSubjectService.getDeviceSubject(deviceRegistration)).andReturn(deviceSubject);
+        expect(this.mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(subject);
 
         // prepare
         replay(this.mockObjects);
 
         // operate
-        String resultDeviceUserId = this.testedInstance.authenticate(sessionId, applicationId, authenticationStatement);
+        String resultUserId = this.testedInstance.authenticate(sessionId, applicationId, authenticationStatement);
 
         // verify
         verify(this.mockObjects);
-        assertNotNull(resultDeviceUserId);
+        assertNotNull(resultUserId);
+        assertEquals(userId, resultUserId);
     }
 
     public void testUnparsableIdentityStatement() throws Exception {
@@ -214,14 +209,11 @@ public class CredentialManagerBeanTest extends TestCase {
         // setup
         String sessionId = UUID.randomUUID().toString();
         String operation = DeviceOperationType.REGISTER.name();
-        String deviceMappingId = UUID.randomUUID().toString();
-        String deviceRegistrationId = UUID.randomUUID().toString();
-        DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(deviceMappingId);
-        SubjectEntity deviceRegistration = new SubjectEntity(deviceRegistrationId);
-        deviceSubject.getRegistrations().add(deviceRegistration);
+        String userId = UUID.randomUUID().toString();
+        SubjectEntity subject = new SubjectEntity(userId);
 
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, deviceMappingId,
-                operation, this.signer, this.identityProvider);
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, operation,
+                this.signer, this.identityProvider);
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-trust-domain", true);
         String surnameAttribute = "test-surname-attribute";
         String givenNameAttribute = "test-given-name-attribute";
@@ -242,32 +234,30 @@ public class CredentialManagerBeanTest extends TestCase {
         expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
         expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate)).andStubReturn(identifier);
         expect(this.mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(null);
-        this.mockPkiProvider.storeAdditionalAttributes(deviceRegistration, this.certificate);
-        this.mockPkiProvider.storeDeviceAttribute(deviceRegistration);
-        this.mockPkiProvider.storeDeviceUserAttribute(deviceRegistration);
+        this.mockPkiProvider.storeAdditionalAttributes(subject, this.certificate);
+        this.mockPkiProvider.storeDeviceAttribute(subject);
 
         AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
         expect(this.mockAttributeTypeDAO.getAttributeType(surnameAttribute)).andStubReturn(surnameAttributeType);
         AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity();
         expect(this.mockAttributeTypeDAO.getAttributeType(givenNameAttribute)).andStubReturn(givenNameAttributeType);
 
-        expect(this.mockSubjectService.findDeviceSubject(deviceMappingId)).andReturn(null);
-        expect(this.mockSubjectService.addDeviceSubject(deviceMappingId)).andReturn(deviceSubject);
-        expect(this.mockSubjectService.addDeviceRegistration()).andReturn(deviceRegistration);
+        expect(this.mockSubjectService.findSubject(userId)).andReturn(null);
+        expect(this.mockSubjectService.addSubjectWithoutLogin(userId)).andReturn(subject);
 
         // expectations
-        this.mockAttributeDAO.addOrUpdateAttribute(surnameAttributeType, deviceRegistration, 0, this.identityProvider
-                .getSurname());
-        this.mockAttributeDAO.addOrUpdateAttribute(givenNameAttributeType, deviceRegistration, 0, this.identityProvider
+        this.mockAttributeDAO
+                .addOrUpdateAttribute(surnameAttributeType, subject, 0, this.identityProvider.getSurname());
+        this.mockAttributeDAO.addOrUpdateAttribute(givenNameAttributeType, subject, 0, this.identityProvider
                 .getGivenName());
-        this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain, identifier, deviceRegistration);
-        this.mockSubjectIdentifierDAO.removeOtherSubjectIdentifiers(identifierDomain, identifier, deviceRegistration);
+        this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain, identifier, subject);
+        this.mockSubjectIdentifierDAO.removeOtherSubjectIdentifiers(identifierDomain, identifier, subject);
 
         // prepare
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.mergeIdentityStatement(sessionId, deviceMappingId, operation, identityStatement);
+        this.testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
 
         // verify
         verify(this.mockObjects);
@@ -278,14 +268,10 @@ public class CredentialManagerBeanTest extends TestCase {
         // setup
         String sessionId = UUID.randomUUID().toString();
         String operation = DeviceOperationType.REGISTER.name();
-        String deviceMappingId = UUID.randomUUID().toString();
-        String deviceRegistrationId = UUID.randomUUID().toString();
-        DeviceSubjectEntity deviceSubject = new DeviceSubjectEntity(deviceMappingId);
-        SubjectEntity deviceRegistration = new SubjectEntity(deviceRegistrationId);
-        deviceSubject.getRegistrations().add(deviceRegistration);
+        String userId = UUID.randomUUID().toString();
 
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, deviceMappingId,
-                operation, this.signer, this.identityProvider);
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, operation,
+                this.signer, this.identityProvider);
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-trust-domain", true);
         String surnameAttribute = "test-surname-attribute";
         String givenNameAttribute = "test-given-name-attribute";
@@ -313,7 +299,7 @@ public class CredentialManagerBeanTest extends TestCase {
 
         // operate & verify
         try {
-            this.testedInstance.mergeIdentityStatement(sessionId, deviceMappingId, operation, identityStatement);
+            this.testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
             fail();
         } catch (AlreadyRegisteredException e) {
             // expected

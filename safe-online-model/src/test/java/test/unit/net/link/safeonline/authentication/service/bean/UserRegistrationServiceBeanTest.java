@@ -28,13 +28,9 @@ import net.link.safeonline.device.backend.bean.PasswordManagerBean;
 import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
-import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.service.bean.DeviceMappingServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
@@ -133,25 +129,13 @@ public class UserRegistrationServiceBeanTest extends TestCase {
         AttributeEntity loginAttribute = attributeDAO.getAttribute(loginAttributeType, resultSubject);
         assertEquals(testLogin, loginAttribute.getValue());
 
-        DeviceMappingService deviceMappingService = EJBTestUtils.newInstance(DeviceMappingServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
-        DeviceMappingEntity deviceMapping = deviceMappingService.getDeviceMapping(resultSubject.getUserId(),
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-        assertNotNull(deviceMapping);
-
-        DeviceSubjectEntity deviceSubject = subjectService.getDeviceSubject(deviceMapping.getId());
-        assertNotNull(deviceSubject);
-        assertEquals(1, deviceSubject.getRegistrations().size());
-
-        SubjectEntity deviceRegistration = deviceSubject.getRegistrations().get(0);
-
         PasswordManager passwordManager = EJBTestUtils.newInstance(PasswordManagerBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
 
-        boolean isPasswordConfigured = passwordManager.isPasswordConfigured(deviceRegistration);
+        boolean isPasswordConfigured = passwordManager.isPasswordConfigured(resultSubject);
         assertTrue(isPasswordConfigured);
 
-        boolean isPasswordCorrect = passwordManager.validatePassword(deviceRegistration, testPassword);
+        boolean isPasswordCorrect = passwordManager.validatePassword(resultSubject, testPassword);
 
         assertTrue(isPasswordCorrect);
 

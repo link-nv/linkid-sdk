@@ -13,6 +13,7 @@ import net.link.safeonline.osgi.plugin.OlasAttributeService;
 import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
+import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -37,7 +38,8 @@ public class OlasAttributeServiceImpl implements OlasAttributeService {
      * {@inheritDoc}
      */
     public List<Attribute> getAttribute(String userId, String attributeName) throws AttributeTypeNotFoundException,
-            AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException {
+            AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
+            SubjectNotFoundException {
 
         OSGIAttributeService attributeService = EjbUtils.getEJB(OSGIAttributeService.JNDI_BINDING,
                 OSGIAttributeService.class);
@@ -49,6 +51,8 @@ public class OlasAttributeServiceImpl implements OlasAttributeService {
             throw new AttributeNotFoundException(e.getMessage());
         } catch (net.link.safeonline.authentication.exception.AttributeUnavailableException e) {
             throw new AttributeUnavailableException(e.getMessage());
+        } catch (net.link.safeonline.authentication.exception.SubjectNotFoundException e) {
+            throw new SubjectNotFoundException(e.getMessage());
         }
     }
 

@@ -23,9 +23,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.notification.dao.NotificationProducerDAO;
@@ -54,7 +54,7 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
     private ApplicationDAO              applicationDAO;
 
     @EJB
-    private DeviceDAO                   deviceDAO;
+    private NodeDAO                     nodeDAO;
 
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -74,7 +74,7 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
                     .getApplication());
 
         } else {
-            this.notificationProducerService.unsubscribe(topic, subscription.getAddress(), subscription.getDevice());
+            this.notificationProducerService.unsubscribe(topic, subscription.getAddress(), subscription.getNode());
         }
     }
 
@@ -92,12 +92,12 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
         LOG.debug("add subscription for topic " + topic + " address=" + address + " consumer=" + consumer);
         ApplicationEntity application = this.applicationDAO.findApplication(consumer);
         if (null == application) {
-            DeviceEntity device = this.deviceDAO.findDevice(consumer);
-            if (null == device) {
+            NodeEntity node = this.nodeDAO.findNode(consumer);
+            if (null == node) {
                 LOG.debug("consumer not found: " + consumer);
                 throw new PermissionDeniedException("Consumer not found", "errorConsumerNotFound");
             }
-            this.notificationProducerService.subscribe(topic, address, device);
+            this.notificationProducerService.subscribe(topic, address, node);
         } else {
             this.notificationProducerService.subscribe(topic, address, application);
         }

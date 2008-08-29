@@ -16,7 +16,6 @@ import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.SubjectEntity;
 
 
 @Local
@@ -24,7 +23,7 @@ public interface EncapDeviceService {
 
     /**
      * Authenticate against the encap server and verifies with OLAS.
-     *
+     * 
      * @param mobile
      * @param challengeId
      * @param mobileOTP
@@ -39,7 +38,7 @@ public interface EncapDeviceService {
 
     /**
      * Authenticates against the encap server.
-     *
+     * 
      * @param challengeId
      * @param mobileOTP
      * @return true or false
@@ -50,7 +49,7 @@ public interface EncapDeviceService {
 
     /**
      * Activates the specified mobile at the encap server.
-     *
+     * 
      * @param mobile
      * @param sessionId
      * @return activationCode code to be used by the user on his mobile
@@ -64,23 +63,20 @@ public interface EncapDeviceService {
     /**
      * Commits the encap registration for OLAS, creates a device subject if necessary, creates a new device registration
      * for this mobile and attaches it to the device subject.
-     *
+     * 
      * @param deviceUserId
      * @param mobile
      * @throws SubjectNotFoundException
      */
-    void commitRegistration(String deviceUserId, String mobile) throws SubjectNotFoundException;
-
-    void update(SubjectEntity subject, String oldMobile, String newMobile);
+    void commitRegistration(String userId, String mobile) throws SubjectNotFoundException;
 
     void removeEncapMobile(String mobile) throws MalformedURLException, MobileException;
 
-    void remove(String deviceUserId, String mobile) throws MobileException, MalformedURLException,
-            SubjectNotFoundException;
+    void remove(String userId, String mobile) throws MobileException, MalformedURLException, SubjectNotFoundException;
 
     /**
      * Requests the encap server to send an OTP to the specified mobile.
-     *
+     * 
      * @param mobile
      * @throws MalformedURLException
      * @throws MobileException

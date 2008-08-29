@@ -16,7 +16,7 @@ import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundExc
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
 
@@ -31,11 +31,11 @@ public interface NotificationProducerService {
     public void unsubscribe(String topic, String address, X509Certificate certificate)
             throws SubscriptionNotFoundException, PermissionDeniedException, EndpointReferenceNotFoundException;
 
-    public void subscribe(String topic, String address, DeviceEntity device);
+    public void subscribe(String topic, String address, NodeEntity node);
 
     public void subscribe(String topic, String address, ApplicationEntity application);
 
-    public void unsubscribe(String topic, String address, DeviceEntity device) throws SubscriptionNotFoundException,
+    public void unsubscribe(String topic, String address, NodeEntity node) throws SubscriptionNotFoundException,
             EndpointReferenceNotFoundException;
 
     public void unsubscribe(String topic, String address, ApplicationEntity application)

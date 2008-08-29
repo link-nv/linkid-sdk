@@ -17,6 +17,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -85,16 +86,20 @@ public interface IdentityService {
             AttributeTypeNotFoundException;
 
     /**
-     * List the user visible attributes for the given device for all registrations.
+     * Gives back a list of all attributes of the specified type for the specified user.
      * 
-     * @param deviceId
+     * @param subject
+     * @param attributeType
      * @param locale
+     *            the optional locale that should be used to i18n the response
+     * 
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
+     * @throws SubjectNotFoundException
      * 
      */
-    List<AttributeDO> listDeviceAttributes(String deviceId, AttributeTypeEntity attributeType, Locale locale)
-            throws PermissionDeniedException, AttributeTypeNotFoundException;
+    List<AttributeDO> listAttributes(SubjectEntity subject, AttributeTypeEntity attributeType, Locale locale)
+            throws PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException;
 
     /**
      * Checks whether confirmation is required over the usage of the identity attributes use by the given application.

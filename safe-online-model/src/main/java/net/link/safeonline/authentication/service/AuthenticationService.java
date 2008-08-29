@@ -18,19 +18,18 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
-import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.opensaml.saml2.core.AuthnRequest;
@@ -43,7 +42,7 @@ import org.opensaml.saml2.core.AuthnRequest;
  * {@link #authenticate(HttpServletRequest)} must be invoked. After this the method {@link #commitAuthentication()} must
  * be invoked and finally {@link #finalizeAuthentication()}. In case the authentication process needs to be aborted one
  * should invoke {@link #abort()} .
- *
+ * 
  * @author fcorneli
  */
 @Local
@@ -52,7 +51,7 @@ public interface AuthenticationService {
     /**
      * Authenticates a user for a certain application. This method is used by the authentication web service. If
      * <code>true</code> is returned the authentication process can proceed, else {@link #abort()} should be invoked.
-     *
+     * 
      * @param applicationName
      * @param loginName
      * @param password
@@ -90,7 +89,7 @@ public interface AuthenticationService {
     /**
      * Sets the password of a user. This method should be used in case the user did not yet had a password registered as
      * authentication device.
-     *
+     * 
      * @param userId
      * @param password
      * @throws DeviceNotFoundException
@@ -105,14 +104,14 @@ public interface AuthenticationService {
     /**
      * Gives back the user Id of the user that we're trying to authenticate. Calling this method in only valid after a
      * call to {@link #authenticate(String, String)}.
-     *
+     * 
      */
     String getUserId();
 
     /**
      * Gives back the username of the user that we're trying to authenticate. Calling this method is only valid after a
      * call to {@link #authenticate(String, String)}.
-     *
+     * 
      */
     String getUsername();
 
@@ -120,18 +119,26 @@ public interface AuthenticationService {
      * Authenticates a user for a certain application. The method is used by the device landing servlet. The actual
      * device authentication is done by an external device provider in this case. We validate the return SAML response
      * message.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #redirectAuthentication(String, String, String)}.
-     *
-     * Returns the device mapping entity for the authenticated device and user.
+     * 
+     * Returns the user ID of the authenticated user.
+     * 
+     * 
+     * 
+     * @throws {@link DeviceNotFoundException}
+     * @throws {@link NodeMappingNotFoundException}
+     * @throws {@link ServletException}
+     * @throws {@link NodeNotFoundException}
+     * @throws {@link SubjectNotFoundException}
      */
-    DeviceMappingEntity authenticate(HttpServletRequest request) throws NodeNotFoundException, ServletException,
-            DeviceMappingNotFoundException;
+    String authenticate(HttpServletRequest request) throws NodeNotFoundException, ServletException,
+            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
 
     /**
      * Initializes an authentication process. Validates the incoming authentication request and stores the application,
      * device policy and assertion consumer service.
-     *
+     * 
      * @param samlAuthnRequest
      * @throws AuthenticationInitializationException
      * @throws ApplicationNotFoundException
@@ -142,9 +149,9 @@ public interface AuthenticationService {
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
-     *
+     * 
      * @param authenticationServiceUrl
      * @param encodedLandingUrl
      * @param device
@@ -155,56 +162,62 @@ public interface AuthenticationService {
 
     /**
      * Finalizes an authentication process by constructing an encoded SAML response to be sent to the application.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #commitAuthentication()}.
-     *
+     * 
      * @throws NodeNotFoundException
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
-     *
+     * 
      */
     String finalizeAuthentication() throws NodeNotFoundException, SubscriptionNotFoundException,
             ApplicationNotFoundException;
 
     /**
      * Gives back the application we are authenticating for.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
      */
     String getExpectedApplicationId();
 
     /**
      * Gives back the application friendly name we are authenticating for.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
      */
     String getExpectedApplicationFriendlyName();
 
     /**
      * Gives back the target to which to send the final authentication response.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
      */
     String getExpectedTarget();
 
     /**
      * Gives back the required device policy.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
      */
     Set<DeviceEntity> getRequiredDevicePolicy();
 
     /**
      * Gives back the current authentication state.
-     *
+     * 
      */
     AuthenticationState getAuthenticationState();
 
     /**
+     * Gives back the used authentication device.
+     * 
+     */
+    DeviceEntity getAuthenticationDevice();
+
+    /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
-     *
+     * 
      * @param registrationServiceUrl
      * @param targetUrl
      * @param device
@@ -221,14 +234,16 @@ public interface AuthenticationService {
      * Finalizes a remote device registration for a user. The method is used by the device registration landing servlet.
      * The device registration was done by an external device provider in this case. We validate the return SAML
      * response message.
-     *
+     * 
      * Calling this method is only valid after a call to {@link #redirectRegistration(String, String, String, String)}.
-     *
-     * @throws DeviceMappingNotFoundException
+     * 
+     * @throws NodeMappingNotFoundException
      * @throws ServletException
      * @throws NodeNotFoundException
-     *
+     * @throws DeviceNotFoundException
+     * @throws SubjectNotFoundException
+     * 
      */
-    DeviceMappingEntity register(HttpServletRequest request) throws NodeNotFoundException, ServletException,
-            DeviceMappingNotFoundException;
+    String register(HttpServletRequest request) throws NodeNotFoundException, ServletException,
+            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
 }

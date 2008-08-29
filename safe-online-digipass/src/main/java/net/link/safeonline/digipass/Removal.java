@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
@@ -30,14 +31,16 @@ public interface Removal {
     /*
      * Actions.
      */
-    String getRegistrations() throws SubjectNotFoundException, PermissionDeniedException;
+    String getRegistrations() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
-    String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException;
+    String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException,
+            DeviceNotFoundException;
 
     /*
      * Factories
      */
-    List<AttributeDO> digipassAttributesFactory() throws SubjectNotFoundException, PermissionDeniedException;
+    List<AttributeDO> digipassAttributesFactory() throws SubjectNotFoundException, PermissionDeniedException,
+            DeviceNotFoundException;
 
     /*
      * Lifecycle.

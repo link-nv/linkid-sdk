@@ -15,11 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
-import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
@@ -30,9 +31,9 @@ import net.link.safeonline.util.servlet.annotation.Init;
 
 /**
  * Device landing servlet. Landing page to finalize the authentication process between OLAS and a device provider.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class DeviceLandingServlet extends AbstractInjectionServlet {
 
@@ -74,20 +75,27 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
          */
         AuthenticationService authenticationService = AuthenticationServiceManager
                 .getAuthenticationService(requestWrapper.getSession());
-        DeviceMappingEntity deviceMapping;
+        String userId;
         try {
-            deviceMapping = authenticationService.authenticate(requestWrapper);
+            userId = authenticationService.authenticate(requestWrapper);
         } catch (NodeNotFoundException e) {
             redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
-        } catch (DeviceMappingNotFoundException e) {
+        } catch (NodeMappingNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
+            return;
+        } catch (DeviceNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            return;
+        } catch (SubjectNotFoundException e) {
             redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
             return;
         }
-        if (null == deviceMapping
-                && authenticationService.getAuthenticationState().equals(AuthenticationState.REDIRECTED)) {
+        if (null == userId && authenticationService.getAuthenticationState().equals(AuthenticationState.REDIRECTED)) {
             /*
              * Authentication failed but user requested to try another device
              */
@@ -95,7 +103,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
                     LogLevelType.ERROR);
 
             response.sendRedirect(this.tryAnotherDeviceUrl);
-        } else if (null == deviceMapping) {
+        } else if (null == userId) {
             /*
              * Authentication failed, redirect to start page
              */
@@ -105,11 +113,10 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
             /*
              * Authentication success, redirect to login servlet
              */
-            LoginManager.login(requestWrapper.getSession(), deviceMapping.getSubject().getUserId(), deviceMapping
-                    .getDevice());
+            LoginManager.login(requestWrapper.getSession(), userId, authenticationService.getAuthenticationDevice());
 
             HelpdeskLogger.add(requestWrapper.getSession(), "logged in successfully with device: "
-                    + deviceMapping.getDevice().getName(), LogLevelType.INFO);
+                    + authenticationService.getAuthenticationDevice().getName(), LogLevelType.INFO);
 
             response.sendRedirect(this.loginUrl);
         }

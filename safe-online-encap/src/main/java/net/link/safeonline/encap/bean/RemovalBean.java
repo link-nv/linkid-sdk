@@ -41,7 +41,6 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.service.SubjectService;
 
@@ -146,14 +145,10 @@ public class RemovalBean implements Removal {
         DeviceEntity device = this.deviceDAO.getDevice(deviceId);
         List<AttributeTypeEntity> deviceAttributeTypes = new LinkedList<AttributeTypeEntity>();
         deviceAttributeTypes.add(device.getAttributeType());
-        List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 
-        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(this.userId);
-        for (SubjectEntity deviceRegistration : deviceSubject.getRegistrations()) {
-            List<AttributeDO> mobileAttribute = listAttributes(deviceRegistration, deviceAttributeTypes, locale);
-            attributes.addAll(mobileAttribute);
-        }
-        return attributes;
+        SubjectEntity subject = this.subjectService.getSubject(this.userId);
+
+        return listAttributes(subject, deviceAttributeTypes, locale);
     }
 
     private List<AttributeDO> listAttributes(SubjectEntity deviceRegistration,

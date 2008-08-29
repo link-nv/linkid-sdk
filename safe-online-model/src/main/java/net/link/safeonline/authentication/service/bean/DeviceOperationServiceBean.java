@@ -25,24 +25,30 @@ import javax.servlet.http.HttpServletRequest;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
-import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
 import net.link.safeonline.authentication.service.DeviceOperationServiceRemote;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
-import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.NodeEntity;
+import net.link.safeonline.entity.NodeMappingEntity;
+import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
-import net.link.safeonline.service.DeviceMappingService;
+import net.link.safeonline.service.NodeMappingService;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.validation.InputValidation;
@@ -65,9 +71,9 @@ import org.opensaml.saml2.core.Subject;
 
 /**
  * Implementation of device operation service interface.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Stateful
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
@@ -80,7 +86,16 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
     private NodeAuthenticationService nodeAuthenticationService;
 
     @EJB
-    private DeviceMappingService      deviceMappingService;
+    private NodeMappingService        nodeMappingService;
+
+    @EJB
+    private DeviceDAO                 deviceDAO;
+
+    @EJB
+    private SubjectService            subjectService;
+
+    @EJB
+    private SecurityAuditLogger       securityAuditLogger;
 
     @EJB
     private HistoryDAO                historyDAO;
@@ -88,6 +103,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
     private String                    expectedChallengeId;
 
     private DeviceOperationType       expectedDeviceOperation;
+
+    private String                    expectedDevice;
 
 
     @PostConstruct
@@ -107,35 +124,47 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public String redirect(@NonEmptyString String serviceUrl, @NonEmptyString String targetUrl,
-            @NotNull DeviceOperationType deviceOperation, @NonEmptyString String device, @NonEmptyString String userId)
-            throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException {
+            @NotNull DeviceOperationType deviceOperation, @NonEmptyString String deviceName,
+            @NonEmptyString String userId) throws NodeNotFoundException, SubjectNotFoundException,
+            DeviceNotFoundException {
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
         PublicKey publicKey = identityServiceClient.getPublicKey();
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
-        NodeEntity node = this.nodeAuthenticationService.getLocalNode();
+        NodeEntity localNode = this.nodeAuthenticationService.getLocalNode();
+        /*
+         * If local node just pass on the userId, else go to node mapping
+         */
+        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        String nodeUserId;
+        if (localNode.equals(device.getLocation())) {
+            nodeUserId = userId;
+        } else {
+            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(userId, device.getLocation()
+                    .getName());
+            nodeUserId = nodeMapping.getId();
+        }
 
         Challenge<String> challenge = new Challenge<String>();
 
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(userId, device);
-
-        String samlRequestToken = AuthnRequestFactory.createDeviceOperationAuthnRequest(node.getName(), deviceMapping
-                .getId(), keyPair, serviceUrl, targetUrl, deviceOperation, challenge, device);
+        String samlRequestToken = AuthnRequestFactory.createDeviceOperationAuthnRequest(localNode.getName(),
+                nodeUserId, keyPair, serviceUrl, targetUrl, deviceOperation, challenge, deviceName);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
         this.expectedChallengeId = challenge.getValue();
         this.expectedDeviceOperation = deviceOperation;
+        this.expectedDevice = deviceName;
 
         return encodedSamlRequestToken;
     }
 
     @Remove
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public DeviceMappingEntity finalize(@NotNull HttpServletRequest request) throws NodeNotFoundException,
-            ServletException, DeviceMappingNotFoundException {
+    public String finalize(@NotNull HttpServletRequest request) throws NodeNotFoundException, ServletException,
+            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("finalize");
         LOG.debug("expected challenge id: " + this.expectedChallengeId);
@@ -159,10 +188,11 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
             this.expectedChallengeId = null;
             return null;
         } else if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
-            // TODO: add security audit
             /*
              * Registration not supported by this device, reset the state
              */
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Unsupported device operation "
+                    + this.expectedDeviceOperation + " attempted for device " + this.expectedDevice);
             this.expectedChallengeId = null;
             return null;
         }
@@ -180,28 +210,42 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
         LOG.debug("used device: " + authenticatedDevice);
+        DeviceEntity device = this.deviceDAO.getDevice(authenticatedDevice);
+        if (!device.getName().equals(this.expectedDevice)) {
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Device " + device.getName()
+                    + " returned after device operation " + this.expectedDeviceOperation
+                    + " not matching expected device " + this.expectedDevice);
+            throw new DeviceNotFoundException();
+        }
 
         Subject subject = assertion.getSubject();
         NameID subjectName = subject.getNameID();
         String subjectNameValue = subjectName.getValue();
         LOG.debug("subject name value: " + subjectNameValue);
 
-        /**
-         * Check if this device mapping truly exists.
-         */
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subjectNameValue);
-
-        if (this.expectedDeviceOperation.equals(DeviceOperationType.REGISTER)) {
-            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(), HistoryEventType.DEVICE_REGISTRATION,
-                    Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping.getDevice().getName()));
-        } else if (this.expectedDeviceOperation.equals(DeviceOperationType.UPDATE)) {
-            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(), HistoryEventType.DEVICE_UPDATE, Collections
-                    .singletonMap(SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping.getDevice().getName()));
-        } else if (this.expectedDeviceOperation.equals(DeviceOperationType.REMOVE)) {
-            this.historyDAO.addHistoryEntry(deviceMapping.getSubject(), HistoryEventType.DEVICE_REMOVAL, Collections
-                    .singletonMap(SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping.getDevice().getName()));
+        String userId;
+        SubjectEntity subjectEntity;
+        NodeEntity localNode = this.nodeAuthenticationService.getLocalNode();
+        if (localNode.equals(device.getLocation())) {
+            userId = subjectNameValue;
+            subjectEntity = this.subjectService.getSubject(userId);
+        } else {
+            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subjectNameValue);
+            userId = nodeMapping.getId();
+            subjectEntity = nodeMapping.getSubject();
         }
 
-        return deviceMapping;
+        if (this.expectedDeviceOperation.equals(DeviceOperationType.REGISTER)) {
+            this.historyDAO.addHistoryEntry(subjectEntity, HistoryEventType.DEVICE_REGISTRATION, Collections
+                    .singletonMap(SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
+        } else if (this.expectedDeviceOperation.equals(DeviceOperationType.UPDATE)) {
+            this.historyDAO.addHistoryEntry(subjectEntity, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
+        } else if (this.expectedDeviceOperation.equals(DeviceOperationType.REMOVE)) {
+            this.historyDAO.addHistoryEntry(subjectEntity, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
+        }
+
+        return userId;
     }
 }

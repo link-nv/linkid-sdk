@@ -49,22 +49,22 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
         return this.credentialManager.authenticate(sessionId, applicationId, authenticationStatement);
     }
 
-    public void register(String sessionId, String deviceUserId, String operation, byte[] identityStatementData)
+    public void register(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
             TrustDomainNotFoundException, DeviceNotFoundException, AttributeNotFoundException,
             AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
             PkiNotYetValidException, PkiInvalidException {
 
-        LOG.debug("register: sessionId=" + sessionId + " userId=" + deviceUserId + " operation=" + operation);
-        this.credentialManager.mergeIdentityStatement(sessionId, deviceUserId, operation, identityStatementData);
+        LOG.debug("register: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
+        this.credentialManager.mergeIdentityStatement(sessionId, userId, operation, identityStatementData);
     }
 
-    public void remove(String sessionId, String deviceUserId, String operation, byte[] identityStatementData)
+    public void remove(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
             AttributeTypeNotFoundException, SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException,
             PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
 
-        LOG.debug("remove: sessionId=" + sessionId + " userId=" + deviceUserId + " operation=" + operation);
-        this.credentialManager.removeIdentity(sessionId, deviceUserId, operation, identityStatementData);
+        LOG.debug("remove: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
+        this.credentialManager.removeIdentity(sessionId, userId, operation, identityStatementData);
     }
 }

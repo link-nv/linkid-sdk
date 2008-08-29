@@ -43,7 +43,7 @@ public class DigipassStartableBean extends AbstractInitBean {
         configureNode();
 
         AttributeTypeEntity digipassAttributeType = new AttributeTypeEntity(DigipassConstants.DIGIPASS_SN_ATTRIBUTE,
-                DatatypeType.STRING, true, false, true);
+                DatatypeType.STRING, true, false);
         digipassAttributeType.setMultivalued(true);
         this.attributeTypes.add(digipassAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassAttributeType, Locale.ENGLISH
@@ -64,27 +64,6 @@ public class DigipassStartableBean extends AbstractInitBean {
         this.deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH
                 .getLanguage(), "Digipass Bank X"));
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
-        /*
-         * WS-Notification subscriptions
-         */
-        configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER, certificate);
-    }
-
-    private void configSubscription(String topic, X509Certificate certificate) {
-
-        ResourceBundle properties = ResourceBundle.getBundle("config");
-        String protocol = properties.getString("olas.host.protocol");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
-        String address = protocol + "://" + hostname + ":";
-        if (protocol.equals("http")) {
-            address += hostport;
-        } else {
-            address += hostportssl;
-        }
-        address += "/safe-online-ws/consumer";
-        this.notificationSubcriptions.add(new NotificationSubscription(topic, address, certificate));
     }
 
     private void configureNode() {

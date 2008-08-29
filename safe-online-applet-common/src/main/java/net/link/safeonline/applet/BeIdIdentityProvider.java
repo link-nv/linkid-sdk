@@ -13,9 +13,9 @@ import net.link.safeonline.shared.statement.IdentityProvider;
 
 /**
  * Identity provider based on BeID PKCS11 component.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class BeIdIdentityProvider implements IdentityProvider {
 

@@ -21,9 +21,9 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
  * Interface for PKI providers. An example of a PKI provider could be the BeID PKIX provider.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface PkiProvider {
@@ -34,26 +34,26 @@ public interface PkiProvider {
     /**
      * Determines whether this PKI provider COULD process the given certificate. This method should not perform a
      * complete certificate validation, that's up to the PKI validator component.
-     *
+     * 
      * @param certificate
      */
     boolean accept(X509Certificate certificate);
 
     /**
      * Gives back the trust domain that this PKI provider requires for certificate validation.
-     *
+     * 
      */
     TrustDomainEntity getTrustDomain() throws TrustDomainNotFoundException;
 
     /**
      * Gives back a reference to this EJB session object.
-     *
+     * 
      */
     PkiProvider getReference();
 
     /**
      * Maps from an identity statement attribute to a core attribute type.
-     *
+     * 
      * @param identityStatementAttributes
      */
     String mapAttribute(IdentityStatementAttributes identityStatementAttributes);
@@ -61,7 +61,7 @@ public interface PkiProvider {
     /**
      * Stores additional attributes. This callback method allows for PKI providers to store additional attributes
      * related to their specific device.
-     *
+     * 
      * @param subject
      *            the subject for which to store additional attributes.
      * @param certificate
@@ -70,7 +70,7 @@ public interface PkiProvider {
 
     /**
      * Store the device attribute related to this PKI device.
-     *
+     * 
      * @param subject
      * @throws DeviceNotFoundException
      * @throws AttributeNotFoundException
@@ -78,49 +78,23 @@ public interface PkiProvider {
     void storeDeviceAttribute(SubjectEntity subject) throws DeviceNotFoundException, AttributeNotFoundException;
 
     /**
-     * Store the device usere attribute related to this PKI device. This attribute will be shown to the user for
-     * visualization of his registered PKI device.
-     *
-     * @param subject
-     * @throws DeviceNotFoundException
-     * @throws AttributeNotFoundException
-     */
-    void storeDeviceUserAttribute(SubjectEntity subject) throws DeviceNotFoundException, AttributeNotFoundException;
-
-    /**
      * Gives back the identifier domain name.
-     *
+     * 
      */
     String getIdentifierDomainName();
 
     /**
      * Gives back the subject identifier. This identifier should be unique within the identifier domain.
-     *
+     * 
      * @param certificate
      */
     String getSubjectIdentifier(X509Certificate certificate);
 
     /**
-     * Remove additional attributes.
-     *
-     * @param subject
-     * @param certificate
-     */
-    void removeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate);
-
-    /**
      * Remove the device attribute related to this PKI device.
-     *
+     * 
      * @param subject
      * @throws DeviceNotFoundException
      */
-    void removeDeviceAttribute(SubjectEntity subject) throws DeviceNotFoundException;
-
-    /**
-     * Remove the device user attribute related to this PKI device.
-     *
-     * @param subject
-     * @throws DeviceNotFoundException
-     */
-    void removeDeviceUserAttribute(SubjectEntity subject) throws DeviceNotFoundException;
+    void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException;
 }

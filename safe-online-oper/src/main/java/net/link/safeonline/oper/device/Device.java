@@ -20,6 +20,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
@@ -34,14 +35,14 @@ public interface Device {
     String view();
 
     String add() throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException,
-            AttributeTypeNotFoundException, NodeNotFoundException, IOException;
+            AttributeTypeNotFoundException, NodeNotFoundException, IOException, PermissionDeniedException;
 
     String remove() throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException;
 
     String edit();
 
     String save() throws DeviceNotFoundException, CertificateEncodingException, IOException,
-            AttributeTypeNotFoundException;
+            AttributeTypeNotFoundException, PermissionDeniedException;
 
     /*
      * Accessors

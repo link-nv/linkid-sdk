@@ -29,10 +29,9 @@ import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
-import net.link.safeonline.dao.bean.DeviceMappingDAOBean;
-import net.link.safeonline.dao.bean.DeviceSubjectDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.NodeDAOBean;
+import net.link.safeonline.dao.bean.NodeMappingDAOBean;
 import net.link.safeonline.dao.bean.StatisticDAOBean;
 import net.link.safeonline.dao.bean.StatisticDataPointDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
@@ -58,12 +57,12 @@ import net.link.safeonline.entity.DeviceClassDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.HistoryPropertyEntity;
 import net.link.safeonline.entity.NodeEntity;
+import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -73,7 +72,6 @@ import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
@@ -107,7 +105,7 @@ import net.link.safeonline.pkix.model.bean.CachedOcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.OcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.PkiProviderManagerBean;
 import net.link.safeonline.pkix.model.bean.PkiValidatorBean;
-import net.link.safeonline.service.bean.DeviceMappingServiceBean;
+import net.link.safeonline.service.bean.NodeMappingServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
@@ -144,11 +142,11 @@ public class SafeOnlineTestContainer {
             ResourceAuditDAOBean.class, PasswordManagerBean.class, SubjectServiceBean.class, IdGeneratorBean.class,
             UsageAgreementDAOBean.class, UsageAgreementManagerBean.class, PasswordDeviceServiceBean.class,
             MobileManagerBean.class, SecurityAuditLoggerBean.class, DevicePolicyServiceBean.class, DevicesBean.class,
-            AccountServiceBean.class, DeviceMappingServiceBean.class, DeviceMappingDAOBean.class, NodeDAOBean.class,
+            AccountServiceBean.class, NodeDAOBean.class, NodeMappingServiceBean.class, NodeMappingDAOBean.class,
             ProxyAttributeServiceBean.class, StatisticDAOBean.class, StatisticDataPointDAOBean.class,
             NotificationProducerServiceBean.class, NotificationProducerDAOBean.class,
-            NotificationConsumerServiceBean.class, EndpointReferenceDAOBean.class, DeviceSubjectDAOBean.class,
-            ApplicationScopeIdDAOBean.class, OSGIStartableBean.class };
+            NotificationConsumerServiceBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class,
+            OSGIStartableBean.class            };
 
     public static final Class<?>[] entities     = new Class[] { SubjectEntity.class, ApplicationEntity.class,
             ApplicationOwnerEntity.class, AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class,
@@ -157,9 +155,9 @@ public class SafeOnlineTestContainer {
             ApplicationIdentityAttributeEntity.class, TrustPointEntity.class, AttributeTypeDescriptionEntity.class,
             AttributeProviderEntity.class, DeviceEntity.class, AllowedDeviceEntity.class, DeviceClassEntity.class,
             DeviceDescriptionEntity.class, DeviceClassDescriptionEntity.class, DevicePropertyEntity.class,
-            DeviceMappingEntity.class, DeviceSubjectEntity.class, CompoundedAttributeTypeMemberEntity.class,
-            HelpdeskContextEntity.class, HelpdeskEventEntity.class, HistoryEntity.class, HistoryPropertyEntity.class,
-            SubjectIdentifierEntity.class, UsageAgreementEntity.class, UsageAgreementTextEntity.class,
-            GlobalUsageAgreementEntity.class, NodeEntity.class, StatisticEntity.class, StatisticDataPointEntity.class,
+            CompoundedAttributeTypeMemberEntity.class, HelpdeskContextEntity.class, HelpdeskEventEntity.class,
+            HistoryEntity.class, HistoryPropertyEntity.class, SubjectIdentifierEntity.class,
+            UsageAgreementEntity.class, UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class,
+            NodeEntity.class, NodeMappingEntity.class, StatisticEntity.class, StatisticDataPointEntity.class,
             EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class, ApplicationScopeIdEntity.class };
 }

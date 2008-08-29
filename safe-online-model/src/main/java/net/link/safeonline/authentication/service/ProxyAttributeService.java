@@ -5,28 +5,17 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 
 /**
- * Service that fetches that attribute values or locally or remotely.
+ * Service that fetches that attribute values or locally or remotely or externally.
  * 
  * @author wvdhaute
  * 
  */
 @Local
 public interface ProxyAttributeService {
-
-    /**
-     * Fetches the device attributes for all registrations associated with the specified device mapping ID.
-     * 
-     * @param deviceMappingId
-     * @param attributeName
-     * @throws AttributeTypeNotFoundException
-     * @throws PermissionDeniedException
-     * @throws AttributeUnavailableException
-     */
-    Object findDeviceAttributeValue(String deviceMappingId, String attributeName)
-            throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException;
 
     /**
      * Fetches an attribute from the specified subject ID.
@@ -36,7 +25,8 @@ public interface ProxyAttributeService {
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
      * @throws AttributeUnavailableException
+     * @throws SubjectNotFoundException
      */
     Object findAttributeValue(String userId, String attributeName) throws PermissionDeniedException,
-            AttributeTypeNotFoundException, AttributeUnavailableException;
+            AttributeTypeNotFoundException, AttributeUnavailableException, SubjectNotFoundException;
 }

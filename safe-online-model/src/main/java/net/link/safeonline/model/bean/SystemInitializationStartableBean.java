@@ -114,6 +114,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
                 SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
+
+        // add available notification topics
+        this.notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
     }
 
     private void configureNode() {
@@ -152,55 +155,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
                 .getLanguage(), "Login name", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, "nl", "Login naam",
                 null));
-
-        // XXX: temp external OSGi attribute
-        String templateAttributeService = "net.link.safeonline.osgi.plugin.template.TemplateAttributeService";
-        AttributeTypeEntity osgiStringAttributeType = new AttributeTypeEntity(
-                "urn:net:lin-k:safe-online:attribute:osgi:test:string", DatatypeType.STRING, true, false);
-        osgiStringAttributeType.setMultivalued(true);
-        osgiStringAttributeType.setPluginName(templateAttributeService);
-        osgiStringAttributeType.setPluginConfiguration("configuration=test");
-        this.attributeTypes.add(osgiStringAttributeType);
-
-        AttributeTypeEntity osgiBooleanAttributeType = new AttributeTypeEntity(
-                "urn:net:lin-k:safe-online:attribute:osgi:test:boolean", DatatypeType.BOOLEAN, true, false);
-        osgiBooleanAttributeType.setMultivalued(true);
-        osgiBooleanAttributeType.setPluginName(templateAttributeService);
-        osgiBooleanAttributeType.setPluginConfiguration("configuration=test");
-        this.attributeTypes.add(osgiBooleanAttributeType);
-
-        AttributeTypeEntity osgiDateAttributeType = new AttributeTypeEntity(
-                "urn:net:lin-k:safe-online:attribute:osgi:test:date", DatatypeType.DATE, true, false);
-        osgiDateAttributeType.setMultivalued(true);
-        osgiDateAttributeType.setPluginName(templateAttributeService);
-        osgiDateAttributeType.setPluginConfiguration("configuration=test");
-        this.attributeTypes.add(osgiDateAttributeType);
-
-        AttributeTypeEntity osgiDoubleAttributeType = new AttributeTypeEntity(
-                "urn:net:lin-k:safe-online:attribute:osgi:test:double", DatatypeType.DOUBLE, true, false);
-        osgiDoubleAttributeType.setMultivalued(true);
-        osgiDoubleAttributeType.setPluginName(templateAttributeService);
-        osgiDoubleAttributeType.setPluginConfiguration("configuration=test");
-        this.attributeTypes.add(osgiDoubleAttributeType);
-
-        AttributeTypeEntity osgiIntegerAttributeType = new AttributeTypeEntity(
-                "urn:net:lin-k:safe-online:attribute:osgi:test:integer", DatatypeType.INTEGER, true, false);
-        osgiIntegerAttributeType.setMultivalued(true);
-        osgiIntegerAttributeType.setPluginName(templateAttributeService);
-        osgiIntegerAttributeType.setPluginConfiguration("configuration=test");
-        this.attributeTypes.add(osgiIntegerAttributeType);
-
-        AttributeTypeEntity osgiCompoundAttributeType = new AttributeTypeEntity(
-                "urn:net:lin-k:safe-online:attribute:osgi:test:compound", DatatypeType.COMPOUNDED, true, false);
-        osgiCompoundAttributeType.setMultivalued(true);
-        osgiCompoundAttributeType.setPluginName(templateAttributeService);
-        osgiCompoundAttributeType.setPluginConfiguration("configuration=test");
-        osgiCompoundAttributeType.addMember(osgiStringAttributeType, 0, true);
-        osgiCompoundAttributeType.addMember(osgiBooleanAttributeType, 1, true);
-        osgiCompoundAttributeType.addMember(osgiDateAttributeType, 2, true);
-        osgiCompoundAttributeType.addMember(osgiDoubleAttributeType, 3, true);
-        osgiCompoundAttributeType.addMember(osgiIntegerAttributeType, 4, true);
-        this.attributeTypes.add(osgiCompoundAttributeType);
     }
 
     private void configureDevices() {
@@ -244,7 +198,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED, false, false);
         passwordDeviceAttributeType.setMultivalued(true);
-        passwordDeviceAttributeType.setDeviceAttribute(true);
         passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0, true);
         passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1, true);
         passwordDeviceAttributeType.addMember(passwordAlgorithmAttributeType, 2, true);

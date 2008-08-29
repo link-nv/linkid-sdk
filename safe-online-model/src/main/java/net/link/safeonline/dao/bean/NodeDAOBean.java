@@ -77,6 +77,16 @@ public class NodeDAOBean implements NodeDAO {
         return node;
     }
 
+    public NodeEntity findNodeFromAuthnCertificate(X509Certificate authnCertificate) {
+
+        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate
+                .getSubjectX500Principal().getName());
+        if (nodes.isEmpty())
+            return null;
+        NodeEntity node = nodes.get(0);
+        return node;
+    }
+
     public NodeEntity getNodeFromSigningCertificate(X509Certificate signingCertificate) throws NodeNotFoundException {
 
         List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
@@ -84,6 +94,16 @@ public class NodeDAOBean implements NodeDAO {
         if (nodes.isEmpty()) {
             throw new NodeNotFoundException();
         }
+        NodeEntity node = nodes.get(0);
+        return node;
+    }
+
+    public NodeEntity findNodeFromSigningCertificate(X509Certificate signingCertificate) {
+
+        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
+                .getSubjectX500Principal().getName());
+        if (nodes.isEmpty())
+            return null;
         NodeEntity node = nodes.get(0);
         return node;
     }

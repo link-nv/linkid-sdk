@@ -44,7 +44,7 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
 
 
     public enum CertificateDomain {
-        APPLICATION, DEVICE, OLAS
+        APPLICATION, DEVICE, NODE
     }
 
 
@@ -92,8 +92,9 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
 
         LOG.debug("login");
         X509Certificate certificate = WSSecurityServerHandler.getCertificate(context);
-        if (null == certificate)
+        if (null == certificate) {
             throw new RuntimeException("no client certificate found on JAX-WS context");
+        }
         PkiResult result;
         try {
             result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
@@ -115,14 +116,15 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
             try {
                 result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
                         certificate);
-                setCertificateDomain(CertificateDomain.OLAS, context);
+                setCertificateDomain(CertificateDomain.NODE, context);
             } catch (TrustDomainNotFoundException e) {
                 throw WSSecurityUtil.createSOAPFaultException("olas trust domain not found", "FailedAuthentication");
             }
         }
 
-        if (PkiResult.VALID != result)
+        if (PkiResult.VALID != result) {
             throw WSSecurityUtil.createSOAPFaultException("certificate not trusted", "FailedAuthentication");
+        }
     }
 
     @SuppressWarnings("unused")
@@ -140,8 +142,9 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
     private static CertificateDomain getCertificateDomain(SOAPMessageContext soapMessageContext) {
 
         CertificateDomain certificateDomain = (CertificateDomain) soapMessageContext.get(CERTIFICATE_DOMAIN_PROPERTY);
-        if (null == certificateDomain)
+        if (null == certificateDomain) {
             throw new RuntimeException("no certificate domain found on JAX-WS context");
+        }
         return certificateDomain;
     }
 
@@ -155,9 +158,8 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
 
         MessageContext messageContext = context.getMessageContext();
         CertificateDomain certificateDomain = (CertificateDomain) messageContext.get(CERTIFICATE_DOMAIN_PROPERTY);
-        if (null == certificateDomain) {
+        if (null == certificateDomain)
             throw new CertificateDomainException();
-        }
         return certificateDomain;
     }
 
@@ -173,6 +175,6 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
 
     public static boolean isOlasCertificate(SOAPMessageContext soapMessageContext) {
 
-        return getCertificateDomain(soapMessageContext).equals(CertificateDomain.OLAS);
+        return getCertificateDomain(soapMessageContext).equals(CertificateDomain.NODE);
     }
 }

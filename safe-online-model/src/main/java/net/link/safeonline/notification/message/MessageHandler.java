@@ -10,14 +10,14 @@ package net.link.safeonline.notification.message;
 import java.util.List;
 
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.NodeEntity;
 
 
 /**
  * Interface for WS-Notification messages.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public interface MessageHandler {
 
@@ -25,7 +25,7 @@ public interface MessageHandler {
 
     List<String> createApplicationMessage(List<String> message, ApplicationEntity application);
 
-    List<String> createDeviceMessage(List<String> message, DeviceEntity device);
+    List<String> createNodeMessage(List<String> message, NodeEntity node);
 
     void handleMessage(String destination, List<String> message);
 }

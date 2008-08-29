@@ -17,6 +17,7 @@ import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
+import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
 import org.osgi.framework.BundleContext;
@@ -57,7 +58,7 @@ public class TemplateAttributeService implements PluginAttributeService {
 	public List<Attribute> getAttribute(String userId, String attributeName,
 			String configuration) throws UnsupportedDataTypeException,
 			AttributeTypeNotFoundException, AttributeNotFoundException,
-			AttributeUnavailableException {
+			AttributeUnavailableException, SubjectNotFoundException {
 		System.out.println("get attribute " + attributeName + " for user "
 				+ userId + " (configuration=" + configuration + ")");
 
@@ -84,6 +85,8 @@ public class TemplateAttributeService implements PluginAttributeService {
 			attribute.add(createIntegerAttribute(0));
 			attribute.add(createIntegerAttribute(1));
 		} else {
+			// Beware: this code makes an endless loop by getting the external
+			// attribute from OLAS which will again redirect to this plugin ...
 			ServiceReference serviceReference = bundleContext
 					.getServiceReference(OlasAttributeService.class.getName());
 			if (null != serviceReference) {

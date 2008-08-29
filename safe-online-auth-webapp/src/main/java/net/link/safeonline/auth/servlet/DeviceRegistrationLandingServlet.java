@@ -14,11 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
-import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
@@ -32,12 +33,12 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Device registration landing page.
- *
+ * 
  * This landing page handles the SAML response returned by the remote device issuer to notify the success of the
  * registration.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
@@ -81,19 +82,27 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
         AuthenticationService authenticationService = AuthenticationServiceManager
                 .getAuthenticationService(requestWrapper.getSession());
-        DeviceMappingEntity deviceMapping;
+        String userId;
         try {
-            deviceMapping = authenticationService.register(requestWrapper);
+            userId = authenticationService.register(requestWrapper);
         } catch (NodeNotFoundException e) {
             redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
-        } catch (DeviceMappingNotFoundException e) {
+        } catch (NodeMappingNotFoundException e) {
             redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
             return;
+        } catch (DeviceNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            return;
+        } catch (SubjectNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            return;
         }
-        if (null == deviceMapping) {
+        if (null == userId) {
             /*
              * Registration failed, redirect to register-device or new-user-device
              */
@@ -108,9 +117,9 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
             /*
              * Registration ok, redirect to login servlet
              */
-            LoginManager.relogin(requestWrapper.getSession(), deviceMapping.getDevice());
+            LoginManager.relogin(requestWrapper.getSession(), authenticationService.getAuthenticationDevice());
             HelpdeskLogger.add(requestWrapper.getSession(), "successfully registered device: "
-                    + deviceMapping.getDevice(), LogLevelType.INFO);
+                    + authenticationService.getAuthenticationDevice(), LogLevelType.INFO);
 
             response.sendRedirect(this.loginUrl);
         }

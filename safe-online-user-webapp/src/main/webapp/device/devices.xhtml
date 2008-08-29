@@ -38,8 +38,8 @@
 		<h2>#{msgs.registeredDevices}</h2>
 
 		<a4j:form id="deviceMappingsForm">
-			<rich:dataTable id="deviceMappingsTable" value="#{deviceMappings}"
-				var="item">
+			<rich:dataTable id="deviceMappingsTable"
+				value="#{deviceRegistrations}" var="item">
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:outputText value="#{item.friendlyName}" />
@@ -54,12 +54,15 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.deviceActions}</f:facet>
-					<h:commandLink action="#{devicesBean.removeDevice}" id="remove" styleClass="noblock"
-						value="#{msgs.deviceRemove}" rendered="#{item.removable}" />
-                    <h:outputText rendered="#{item.removable and item.updatable}" value="," />
-                    <so:nbsp />
-					<h:commandLink action="#{devicesBean.updateDevice}" id="update" styleClass="noblock"
-						value="#{msgs.deviceUpdate}" rendered="#{item.updatable}" />
+					<h:commandLink action="#{devicesBean.removeDevice}" id="remove"
+						styleClass="noblock" value="#{msgs.deviceRemove}"
+						rendered="#{item.removable}" />
+					<h:outputText rendered="#{item.removable and item.updatable}"
+						value="," />
+					<so:nbsp />
+					<h:commandLink action="#{devicesBean.updateDevice}" id="update"
+						styleClass="noblock" value="#{msgs.deviceUpdate}"
+						rendered="#{item.updatable}" />
 				</h:column>
 			</rich:dataTable>
 		</a4j:form>

@@ -766,6 +766,7 @@
 		<module>safe-online-identity-applet</module>
 		<module>safe-online-identity-applet-package</module>
 		<module>safe-online-osgi-plugin</module>
+		<module>safe-online-osgi-plugin-template</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->

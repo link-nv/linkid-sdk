@@ -13,6 +13,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.osgi.plugin.Attribute;
 import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
@@ -43,8 +44,10 @@ public interface OSGIAttributeService {
      * 
      * @throws UnsupportedDataTypeException
      * @throws AttributeUnavailableException
+     * @throws SubjectNotFoundException
      */
     public List<Attribute> getAttribute(String userId, String attributeName) throws AttributeTypeNotFoundException,
-            AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException;
+            AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
+            SubjectNotFoundException;
 
 }

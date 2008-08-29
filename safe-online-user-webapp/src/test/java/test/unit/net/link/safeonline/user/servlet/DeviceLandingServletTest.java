@@ -22,11 +22,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
-import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
-import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.user.servlet.DeviceLandingServlet;
 
@@ -112,7 +109,7 @@ public class DeviceLandingServletTest {
 
         // expectations
         expect(this.mockDeviceOperationService.finalize((HttpServletRequest) EasyMock.anyObject())).andThrow(
-                new DeviceMappingNotFoundException());
+                new NodeMappingNotFoundException());
 
         // prepare
         replay(this.mockObjects);
@@ -134,16 +131,11 @@ public class DeviceLandingServletTest {
 
         // setup
         String userId = UUID.randomUUID().toString();
-        String deviceMappingId = UUID.randomUUID().toString();
-        SubjectEntity subject = new SubjectEntity(userId);
-        DeviceEntity device = new DeviceEntity();
-        DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject, deviceMappingId, device);
-
         PostMethod postMethod = new PostMethod(this.location);
 
         // expectations
         expect(this.mockDeviceOperationService.finalize((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
-                deviceMapping);
+                userId);
 
         // prepare
         replay(this.mockObjects);

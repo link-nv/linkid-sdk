@@ -62,7 +62,7 @@ public class BeIdStartableBean extends AbstractInitBean {
         configureNode();
 
         AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(BeIdConstants.GIVENNAME_ATTRIBUTE,
-                DatatypeType.STRING, true, false, true);
+                DatatypeType.STRING, true, false);
         givenNameAttributeType.setMultivalued(true);
         this.attributeTypes.add(givenNameAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(givenNameAttributeType, Locale.ENGLISH
@@ -71,7 +71,7 @@ public class BeIdStartableBean extends AbstractInitBean {
                 "Naam (BeID)", null));
 
         AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(BeIdConstants.SURNAME_ATTRIBUTE,
-                DatatypeType.STRING, true, false, true);
+                DatatypeType.STRING, true, false);
         surnameAttributeType.setMultivalued(true);
         this.attributeTypes.add(surnameAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(surnameAttributeType, Locale.ENGLISH
@@ -80,7 +80,7 @@ public class BeIdStartableBean extends AbstractInitBean {
                 "Achternaam (BeID)", null));
 
         AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(BeIdConstants.NRN_ATTRIBUTE,
-                DatatypeType.STRING, true, false, true);
+                DatatypeType.STRING, true, false);
         nrnAttributeType.setMultivalued(true);
         this.attributeTypes.add(nrnAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nrnAttributeType, Locale.ENGLISH
@@ -88,26 +88,27 @@ public class BeIdStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nrnAttributeType, "nl",
                 "Identificatienummer van het Rijksregister", null));
 
-        AttributeTypeEntity beidDeviceAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_DEVICE_ATTRIBUTE,
-                DatatypeType.COMPOUNDED, true, false, true);
-        beidDeviceAttributeType.setMultivalued(true);
-        beidDeviceAttributeType.addMember(givenNameAttributeType, 0, true);
-        beidDeviceAttributeType.addMember(surnameAttributeType, 1, true);
-        beidDeviceAttributeType.addMember(nrnAttributeType, 2, true);
-        this.attributeTypes.add(beidDeviceAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, Locale.ENGLISH
-                .getLanguage(), "BeID", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, "nl", "BeID",
-                null));
-
         AttributeTypeEntity beidDeviceUserAttributeType = new AttributeTypeEntity(
-                BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, DatatypeType.STRING, true, false, true);
+                BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, DatatypeType.STRING, true, false);
         beidDeviceUserAttributeType.setMultivalued(true);
         this.attributeTypes.add(beidDeviceUserAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceUserAttributeType,
                 Locale.ENGLISH.getLanguage(), "BeID Name", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceUserAttributeType, "nl",
                 "BeID Naam", null));
+
+        AttributeTypeEntity beidDeviceAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_DEVICE_ATTRIBUTE,
+                DatatypeType.COMPOUNDED, true, false);
+        beidDeviceAttributeType.setMultivalued(true);
+        beidDeviceAttributeType.addMember(givenNameAttributeType, 0, true);
+        beidDeviceAttributeType.addMember(surnameAttributeType, 1, true);
+        beidDeviceAttributeType.addMember(nrnAttributeType, 2, true);
+        beidDeviceAttributeType.addMember(beidDeviceUserAttributeType, 3, true);
+        this.attributeTypes.add(beidDeviceAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, Locale.ENGLISH
+                .getLanguage(), "BeID", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, "nl", "BeID",
+                null));
 
         X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils.getPrivateKeyEntry().getCertificate();
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
@@ -121,28 +122,6 @@ public class BeIdStartableBean extends AbstractInitBean {
         this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
         this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(),
                 "Belgian eID"));
-
-        /*
-         * WS-Notification subscriptions
-         */
-        configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER, certificate);
-    }
-
-    private void configSubscription(String topic, X509Certificate certificate) {
-
-        ResourceBundle properties = ResourceBundle.getBundle("config");
-        String protocol = properties.getString("olas.host.protocol");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
-        String address = protocol + "://" + hostname + ":";
-        if (protocol.equals("http")) {
-            address += hostport;
-        } else {
-            address += hostportssl;
-        }
-        address += "/safe-online-ws/consumer";
-        this.notificationSubcriptions.add(new NotificationSubscription(topic, address, certificate));
     }
 
     @Override

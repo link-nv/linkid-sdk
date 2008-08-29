@@ -44,12 +44,12 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
-import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -74,9 +74,9 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.NodeEntity;
+import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -91,7 +91,7 @@ import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
-import net.link.safeonline.service.DeviceMappingService;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
@@ -188,7 +188,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     private DevicePolicyService              devicePolicyService;
 
     @EJB
-    private DeviceMappingService             deviceMappingService;
+    private NodeMappingService               nodeMappingService;
 
     @EJB
     private UsageAgreementService            usageAgreementService;
@@ -337,16 +337,15 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     public String redirectRegistration(@NonEmptyString String registrationServiceUrl, @NonEmptyString String targetUrl,
-            @NonEmptyString String device, @NonEmptyString String username) throws NodeNotFoundException,
+            @NonEmptyString String deviceName, @NonEmptyString String userId) throws NodeNotFoundException,
             SubjectNotFoundException, DeviceNotFoundException {
 
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
         if (this.authenticationState != INITIALIZED && this.authenticationState != USER_AUTHENTICATED
-                && this.authenticationState != REDIRECTED) {
+                && this.authenticationState != REDIRECTED)
             throw new IllegalStateException("call initialize or authenticate first");
-        }
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -355,13 +354,24 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
+        /*
+         * If local node just pass on the userId, else go to node mapping
+         */
+        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        String nodeUserId;
+        if (node.equals(device.getLocation())) {
+            nodeUserId = userId;
+        } else {
+            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(userId, device.getLocation()
+                    .getName());
+            nodeUserId = nodeMapping.getId();
+        }
+
         Challenge<String> challenge = new Challenge<String>();
 
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(username, device);
-
-        String samlRequestToken = AuthnRequestFactory.createDeviceOperationAuthnRequest(node.getName(), deviceMapping
-                .getId(), keyPair, registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER,
-                challenge, device);
+        String samlRequestToken = AuthnRequestFactory.createDeviceOperationAuthnRequest(node.getName(), nodeUserId,
+                keyPair, registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER, challenge,
+                deviceName);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -374,8 +384,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return encodedSamlRequestToken;
     }
 
-    public DeviceMappingEntity authenticate(@NotNull HttpServletRequest request) throws NodeNotFoundException,
-            ServletException, DeviceMappingNotFoundException {
+    public String authenticate(@NotNull HttpServletRequest request) throws NodeNotFoundException, ServletException,
+            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("authenticate");
         if (this.authenticationState != REDIRECTED) {
@@ -424,23 +434,31 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
         LOG.debug("authenticated device: " + authenticatedDevice);
+        DeviceEntity device = this.deviceDAO.getDevice(authenticatedDevice);
 
         Subject subject = assertion.getSubject();
         NameID subjectName = subject.getNameID();
         String subjectNameValue = subjectName.getValue();
         LOG.debug("subject name value: " + subjectNameValue);
 
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subjectNameValue);
+        NodeEntity localNode = this.nodeAuthenticationService.getLocalNode();
+        SubjectEntity subjectEntity;
+        if (device.getLocation().equals(localNode)) {
+            subjectEntity = this.subjectService.getSubject(subjectNameValue);
+        } else {
+            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subjectNameValue);
+            subjectEntity = nodeMapping.getSubject();
+        }
 
         /*
          * Safe the state in this stateful session bean.
          */
         this.authenticationState = USER_AUTHENTICATED;
-        this.authenticatedSubject = deviceMapping.getSubject();
-        this.authenticationDevice = deviceMapping.getDevice();
+        this.authenticatedSubject = subjectEntity;
+        this.authenticationDevice = device;
         this.expectedDeviceChallengeId = null;
 
-        return deviceMapping;
+        return subjectEntity.getUserId();
     }
 
     public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password)
@@ -464,8 +482,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return true;
     }
 
-    public DeviceMappingEntity register(@NotNull HttpServletRequest request) throws NodeNotFoundException,
-            ServletException, DeviceMappingNotFoundException {
+    public String register(@NotNull HttpServletRequest request) throws NodeNotFoundException, ServletException,
+            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("register");
         if (this.authenticationState != REDIRECTED) {
@@ -512,28 +530,35 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
         LOG.debug("authenticated device: " + authenticatedDevice);
+        DeviceEntity device = this.deviceDAO.getDevice(authenticatedDevice);
 
         Subject subject = assertion.getSubject();
         NameID subjectName = subject.getNameID();
         String subjectNameValue = subjectName.getValue();
         LOG.debug("subject name value: " + subjectNameValue);
 
-        /**
-         * Check if this device mapping truly exists.
-         */
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subjectNameValue);
+        String userId;
+        SubjectEntity subjectEntity;
+        NodeEntity localNode = this.nodeAuthenticationService.getLocalNode();
+        if (device.getLocation().equals(localNode)) {
+            userId = subjectNameValue;
+            subjectEntity = this.subjectService.getSubject(userId);
+        } else {
+            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subjectNameValue);
+            userId = nodeMapping.getId();
+            subjectEntity = nodeMapping.getSubject();
+        }
 
         /*
          * Safe the state in this stateful session bean.
          */
         this.authenticationState = USER_AUTHENTICATED;
-        this.authenticatedSubject = deviceMapping.getSubject();
-        this.authenticationDevice = deviceMapping.getDevice();
+        this.authenticatedSubject = subjectEntity;
+        this.authenticationDevice = device;
 
-        addHistoryEntry(this.authenticatedSubject, HistoryEventType.DEVICE_REGISTRATION, null, deviceMapping
-                .getDevice().getName());
+        addHistoryEntry(this.authenticatedSubject, HistoryEventType.DEVICE_REGISTRATION, null, device.getName());
 
-        return deviceMapping;
+        return userId;
     }
 
     @Remove
@@ -764,6 +789,11 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public AuthenticationState getAuthenticationState() {
 
         return this.authenticationState;
+    }
+
+    public DeviceEntity getAuthenticationDevice() {
+
+        return this.authenticationDevice;
     }
 
 }

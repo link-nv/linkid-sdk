@@ -38,6 +38,15 @@
 							</s:decorate></td>
 						</tr>
 						<tr>
+							<th><h:outputText value="#{msgs.protocol}" /></th>
+							<td><s:decorate>
+								<h:selectOneMenu id="protocol" value="#{operNode.protocol}"
+									styleClass="label">
+									<f:selectItems value="#{operProtocolList}" />
+								</h:selectOneMenu>
+							</s:decorate></td>
+						</tr>
+						<tr>
 							<th><h:outputText value="#{msgs.port}" /></th>
 							<td><s:decorate>
 								<h:inputText id="port" value="#{operNode.port}"

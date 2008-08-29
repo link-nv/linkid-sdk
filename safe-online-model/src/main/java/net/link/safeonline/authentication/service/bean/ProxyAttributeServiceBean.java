@@ -13,24 +13,26 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.audit.ResourceAuditLogger;
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.ProxyAttributeServiceRemote;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.DeviceMappingDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.osgi.OSGIStartable;
 import net.link.safeonline.osgi.plugin.Attribute;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
@@ -41,6 +43,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
@@ -63,63 +66,44 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     private SubjectService      subjectService;
 
     @EJB
-    private DeviceMappingDAO    deviceMappingDAO;
-
-    @EJB
     private OSGIStartable       osgiStartable;
 
     @EJB
     private ResourceAuditLogger resourceAuditLogger;
 
+    @EJB
+    private SecurityAuditLogger securityAuditLogger;
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object findDeviceAttributeValue(String deviceMappingId, String attributeName)
-            throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException {
+    @EJB
+    private NodeMappingService  nodeMappingService;
 
-        LOG.debug("find device attribute " + attributeName + " for " + deviceMappingId);
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-
-        if (attributeType.isLocal()) {
-            DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceMappingId);
-            if (null == deviceSubject)
-                return null;
-            Object[] deviceRegistrationAttributes = new Object[deviceSubject.getRegistrations().size()];
-            int idx = 0;
-            for (SubjectEntity deviceRegistration : deviceSubject.getRegistrations()) {
-                Object[] deviceRegistrationAttribute = (Object[]) findLocalAttribute(deviceRegistration.getUserId(),
-                        attributeType);
-                deviceRegistrationAttributes[idx] = deviceRegistrationAttribute[0];
-                idx++;
-            }
-            return deviceRegistrationAttributes;
-        }
-
-        return findRemoteAttribute(deviceMappingId, attributeType);
-
-    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Object findAttributeValue(String userId, String attributeName) throws PermissionDeniedException,
-            AttributeTypeNotFoundException, AttributeUnavailableException {
+            AttributeTypeNotFoundException, AttributeUnavailableException, SubjectNotFoundException {
 
         LOG.debug("find attribute " + attributeName + " for " + userId);
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
 
-        SubjectEntity subject = this.subjectService.findSubject(userId);
-        if (null == subject)
-            return null;
-
-        if (attributeType.isDeviceAttribute())
-            return findDeviceAttributeValue(getDeviceId(subject, attributeType), attributeName);
+        SubjectEntity subject = this.subjectService.getSubject(userId);
 
         if (attributeType.isExternal())
-            return findExternalAttributeValue(userId, attributeType);
+            return findExternalAttributeValue(subject, attributeType);
 
         if (attributeType.isLocal())
-            return findLocalAttribute(userId, attributeType);
+            return findLocalAttribute(subject, attributeType);
 
-        return findRemoteAttribute(userId, attributeType);
+        try {
+            return findRemoteAttribute(subject, attributeType);
+        } catch (SubjectNotFoundException e) {
+            LOG.debug("subject not found");
+            return null;
+        } catch (NodeNotFoundException e) {
+            String message = "node " + attributeType.getName() + " not found attribute " + attributeName;
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, message);
+            throw new PermissionDeniedException(message);
+        }
     }
 
     /**
@@ -128,22 +112,24 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
      * @throws AttributeUnavailableException
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
+     * @throws SubjectNotFoundException
      */
-    private Object findExternalAttributeValue(String userId, AttributeTypeEntity attributeType)
-            throws AttributeUnavailableException, AttributeTypeNotFoundException, PermissionDeniedException {
+    private Object findExternalAttributeValue(SubjectEntity subject, AttributeTypeEntity attributeType)
+            throws AttributeUnavailableException, AttributeTypeNotFoundException, PermissionDeniedException,
+            SubjectNotFoundException {
 
-        LOG.debug("find external attribute " + attributeType.getName() + " for " + userId);
+        LOG.debug("find external attribute " + attributeType.getName() + " for " + subject.getUserId());
         try {
             PluginAttributeService pluginAttributeService = this.osgiStartable.getPluginService(attributeType
                     .getPluginName());
-            List<Attribute> attributeView = pluginAttributeService.getAttribute(userId, attributeType.getName(),
-                    attributeType.getPluginConfiguration());
+            List<Attribute> attributeView = pluginAttributeService.getAttribute(subject.getUserId(), attributeType
+                    .getName(), attributeType.getPluginConfiguration());
             return convertAttribute(attributeView, attributeType);
         } catch (UnsupportedDataTypeException e) {
             throw new PermissionDeniedException("Unsupported data type");
         } catch (AttributeNotFoundException e) {
-            LOG.debug("external attribute " + attributeType.getName() + " not found for " + userId + " ( plugin="
-                    + attributeType.getPluginName() + " )");
+            LOG.debug("external attribute " + attributeType.getName() + " not found for " + subject.getUserId()
+                    + " ( plugin=" + attributeType.getPluginName() + " )");
             return null;
         } catch (net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException e) {
             throw new AttributeTypeNotFoundException();
@@ -153,6 +139,8 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
             throw new AttributeUnavailableException();
         } catch (net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException e) {
             throw new AttributeUnavailableException();
+        } catch (net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException e) {
+            throw new SubjectNotFoundException();
         }
     }
 
@@ -330,64 +318,15 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     }
 
     /**
-     * Returns the device mapping id for this device attribute type and specified subject.
-     * 
-     * @param subject
-     * @param attributeType
-     * @return device mapping ID
-     */
-    private String getDeviceId(SubjectEntity subject, AttributeTypeEntity attributeType) {
-
-        List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO.listDeviceMappings(subject);
-
-        for (DeviceMappingEntity deviceMapping : deviceMappings) {
-            AttributeTypeEntity deviceAttributeType = deviceMapping.getDevice().getAttributeType();
-
-            if (deviceAttributeType.getName().equals(attributeType.getName()))
-                return deviceMapping.getId();
-
-            if (deviceAttributeType.isCompounded()) {
-                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
-                for (CompoundedAttributeTypeMemberEntity member : members) {
-                    if (member.getMember().getName().equals(attributeType.getName()))
-                        return deviceMapping.getId();
-                }
-            }
-
-            AttributeTypeEntity deviceUserAttributeType = deviceMapping.getDevice().getUserAttributeType();
-            if (null == deviceUserAttributeType) {
-                continue;
-            }
-
-            if (deviceUserAttributeType.getName().equals(attributeType.getName()))
-                return deviceMapping.getId();
-
-            if (deviceUserAttributeType.isCompounded()) {
-                List<CompoundedAttributeTypeMemberEntity> members = deviceUserAttributeType.getMembers();
-                for (CompoundedAttributeTypeMemberEntity member : members) {
-                    if (member.getMember().getName().equals(attributeType.getName()))
-                        return deviceMapping.getId();
-                }
-            }
-        }
-
-        return subject.getUserId();
-    }
-
-    /**
-     * Find local attribute. Subject ID can refer to a regular OLAS subject or an OLAS device registration subject.
+     * Find local attribute.
      * 
      * @param subjectId
      * @param attributeType
      * @return attribute value
      */
-    private Object findLocalAttribute(String subjectId, AttributeTypeEntity attributeType) {
+    private Object findLocalAttribute(SubjectEntity subject, AttributeTypeEntity attributeType) {
 
-        LOG.debug("find local attribute " + attributeType.getName() + " for " + subjectId);
-
-        SubjectEntity subject = this.subjectService.findSubject(subjectId);
-        if (null == subject)
-            return null;
+        LOG.debug("find local attribute " + attributeType.getName() + " for " + subject.getUserId());
 
         // filter out the empty attributes
         List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
@@ -408,17 +347,23 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     }
 
     /**
-     * Find remote attribute. Subject ID can refer to a regular OLAS subject or an OLAS device registration subject.
+     * Find remote attribute.
      * 
      * @param subjectId
      * @param attributeType
      * @return attribute value
+     * @throws NodeNotFoundException
+     * @throws SubjectNotFoundException
      * @throws SafeOnlineResourceException
      */
-    private Object findRemoteAttribute(String subjectId, AttributeTypeEntity attributeType)
-            throws PermissionDeniedException, AttributeUnavailableException {
+    private Object findRemoteAttribute(SubjectEntity subject, AttributeTypeEntity attributeType)
+            throws PermissionDeniedException, AttributeUnavailableException, SubjectNotFoundException,
+            NodeNotFoundException {
 
-        LOG.debug("find remote attribute " + attributeType.getName() + " for " + subjectId);
+        LOG.debug("find remote attribute " + attributeType.getName() + " for " + subject.getUserId());
+
+        NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subject.getUserId(), attributeType
+                .getLocation().getName());
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         AttributeClient attributeClient = new AttributeClientImpl(attributeType.getLocation().getLocation(),
@@ -478,13 +423,13 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         }
 
         try {
-            return attributeClient.getAttributeValue(subjectId, attributeType.getName(), attributeClass);
+            return attributeClient.getAttributeValue(nodeMapping.getId(), attributeType.getName(), attributeClass);
         }
 
         catch (WSClientTransportException e) {
             this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e
                     .getLocation(), "Failed to get attribute value of type " + attributeType.getName()
-                    + " for subject " + subjectId);
+                    + " for subject " + subject.getUserId());
             throw new PermissionDeniedException(e.getMessage());
         } catch (RequestDeniedException e) {
             throw new PermissionDeniedException(e.getMessage());

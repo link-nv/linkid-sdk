@@ -12,8 +12,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.authentication.exception.DeviceMappingNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
@@ -26,13 +28,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Device registration landing page.
- *
+ * 
  * This landing servlet handles the SAML requests sent out by an external device provider, and sends back a response
  * containing the UUID for the registrating OLAS subject for this device. This landing is used for registration,
  * updating and removal.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class DeviceLandingServlet extends AbstractInjectionServlet {
 
@@ -82,9 +84,17 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
             redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
-        } catch (DeviceMappingNotFoundException e) {
+        } catch (NodeMappingNotFoundException e) {
             redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
+            return;
+        } catch (DeviceNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
+            return;
+        } catch (SubjectNotFoundException e) {
+            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+                    DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         }
 

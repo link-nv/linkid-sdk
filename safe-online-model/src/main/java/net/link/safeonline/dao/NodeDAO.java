@@ -32,5 +32,9 @@ public interface NodeDAO {
 
     NodeEntity getNodeFromSigningCertificate(X509Certificate signingCertificate) throws NodeNotFoundException;
 
+    NodeEntity findNodeFromAuthnCertificate(X509Certificate authnCertificate);
+
+    NodeEntity findNodeFromSigningCertificate(X509Certificate signingCertificate);
+
     void removeNode(NodeEntity node);
 }
