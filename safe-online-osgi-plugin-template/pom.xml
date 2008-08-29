@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>${safe-online.version}</version>
 	</parent>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-osgi-plugin-template</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>${safe-online.version}</version>
 	<packaging>bundle</packaging>
 	<build>
 		<plugins>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-osgi-plugin</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

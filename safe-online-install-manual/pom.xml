@@ -7,14 +7,14 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>${safe-online.version}</version>
 	</parent>
 
 	<name>SafeOnline Installation Manual</name>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-install-manual</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>${safe-online.version}</version>
 	<packaging>pom</packaging>
 
 	<build>

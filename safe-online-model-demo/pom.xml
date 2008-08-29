@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>${safe-online.version}</version>
 	</parent>
 
 	<name>SafeOnline Model Demo</name>
@@ -17,7 +17,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-model-demo</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>${safe-online.version}</version>
 	<packaging>ejb</packaging>
 
 	<build>
@@ -44,60 +44,60 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-beid</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-keystore</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket-keystore</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-cinema-keystore</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment-keystore</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-keystore</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>
 				safe-online-demo-prescription-keystore
 			</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-keystore</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

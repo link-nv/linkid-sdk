@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>${safe-online.version}</version>
 	</parent>
 
 	<name>SafeOnline Authentication Web Application</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-auth-webapp</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>${safe-online.version}</version>
 	<packaging>war</packaging>
 
 	<build>
@@ -49,7 +49,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-saml-authn-context</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.xml.bind</groupId>
@@ -72,39 +72,39 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-webapp-base</artifactId>
 			<type>war</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-common</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
 			<type>ejb-client</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth</artifactId>
 			<type>ejb-client</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-sdk</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
 			<type>jar</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
@@ -165,14 +165,14 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-beid</artifactId>
 			<type>ejb-client</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

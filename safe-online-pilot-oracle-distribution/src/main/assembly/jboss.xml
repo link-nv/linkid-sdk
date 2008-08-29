@@ -8,13 +8,13 @@
 	<fileSets>
 		<fileSet>
 			<directory>
-                target/files/safe-online-pilot-distribution-${project.version}/jboss
+                target/files/safe-online-pilot-distribution-${safe-online.version}/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-pilot-distribution-${project.version}/jboss
+                target/files/safe-online-pilot-distribution-${safe-online.version}/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
@@ -24,7 +24,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-pilot-distribution-${project.version}/scripts 
+                target/files/safe-online-pilot-distribution-${safe-online.version}/scripts 
 			</directory>
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>

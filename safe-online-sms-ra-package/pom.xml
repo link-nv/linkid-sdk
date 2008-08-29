@@ -7,14 +7,14 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.1-SNAPSHOT</version>
+		<version>${safe-online.version}</version>
 	</parent>
 
 	<name>SafeOnline SMS Resource Adapter</name>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-sms-ra-package</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>${safe-online.version}</version>
 	<packaging>rar</packaging>
 
 	<dependencies>
@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sms-ra</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
