@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>${safe-online.version}</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Demo Payment Service</name>
@@ -18,7 +18,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-payment-service</artifactId>
-	<version>${safe-online.version}</version>
+	<version>1.1-SNAPSHOT</version>
 	<packaging>sar</packaging>
 
 	<build>
@@ -40,13 +40,13 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>${safe-online.version}</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Web Service Runtime</name>
@@ -17,7 +17,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-ws-runtime</artifactId>
-	<version>${safe-online.version}</version>
+	<version>1.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<build>
@@ -48,7 +48,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- 
@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-attrib-ws-impl</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -97,7 +97,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-data-ws-impl</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -117,7 +117,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-idmapping-ws-impl</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -137,7 +137,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sts-ws-impl</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -173,7 +173,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ping-ws-impl</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -193,7 +193,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId> safe-online-notification-consumer-ws-impl </artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -213,7 +213,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId> safe-online-notification-producer-ws-impl </artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -234,7 +234,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId> safe-online-notification-subscription-manager-ws-impl 
 			</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.1-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>

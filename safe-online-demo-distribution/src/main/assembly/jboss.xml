@@ -7,7 +7,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss 
+                target/files/safe-online-base-distribution-1.1-SNAPSHOT/jboss 
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
@@ -16,7 +16,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss 
+                target/files/safe-online-base-distribution-1.1-SNAPSHOT/jboss 
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
@@ -27,30 +27,30 @@
 	</fileSets>
 	<files>
 		<file>
-            <source> target/files/safe-online-deploy-${safe-online.version}.ear </source>
+            <source> target/files/safe-online-deploy-1.1-SNAPSHOT.ear </source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnline.ear</destName>
 		</file>
 		<file>
-            <source> target/files/safe-online-demo-deploy-${safe-online.version}.ear 
+            <source> target/files/safe-online-demo-deploy-1.1-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineDemo.ear</destName>
 		</file>
 		<file>
-            <source> target/files/safe-online-beid-deploy-${safe-online.version}.ear 
+            <source> target/files/safe-online-beid-deploy-1.1-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineBeid.ear</destName>
 		</file>
 		<file>
-            <source> target/files/safe-online-digipass-deploy-${safe-online.version}.ear 
+            <source> target/files/safe-online-digipass-deploy-1.1-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineDigipass.ear</destName>
 		</file>
 		<file>
-            <source> target/files/safe-online-encap-deploy-${safe-online.version}.ear 
+            <source> target/files/safe-online-encap-deploy-1.1-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineEncap.ear</destName>
