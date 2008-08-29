@@ -5,14 +5,14 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 	<name>SafeOnline Demo Cinema Web Application</name>
 	<description> SafeOnline Demo Cinema Web Application in Wicket. 
 	</description>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-cinema-webapp</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>war</packaging>
 	<build>
 		<plugins>
@@ -47,14 +47,14 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-cinema 
 			</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -120,7 +120,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-wicket-tools 
 			</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -131,13 +131,13 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

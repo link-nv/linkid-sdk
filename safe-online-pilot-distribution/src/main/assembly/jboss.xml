@@ -8,7 +8,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-1.1-SNAPSHOT/jboss
+                target/files/safe-online-base-distribution-1.1/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
@@ -46,7 +46,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-1.1-SNAPSHOT/jboss
+                target/files/safe-online-base-distribution-1.1/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
@@ -56,7 +56,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-1.1-SNAPSHOT/scripts 
+                target/files/safe-online-base-distribution-1.1/scripts 
 			</directory>
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>
@@ -69,7 +69,7 @@
 	<files>
 		<file>
 			<source>
-                target/files/safe-online-deploy-1.1-SNAPSHOT.ear
+                target/files/safe-online-deploy-1.1.ear
 			</source>
 			<outputDirectory>
 				jboss/server/default/deploy
@@ -78,7 +78,7 @@
 		</file>
 		<file>
 			<source>
-                target/files/safe-online-root-webapp-1.1-SNAPSHOT.war
+                target/files/safe-online-root-webapp-1.1.war
 			</source>
 			<outputDirectory>
 				jboss/server/default/deploy
@@ -94,7 +94,7 @@
 		</file>
 		<file>
 			<source>
-                target/files/safe-online-base-distribution-1.1-SNAPSHOT/jboss/readme.html
+                target/files/safe-online-base-distribution-1.1/jboss/readme.html
 			</source>
 			<outputDirectory>jboss/</outputDirectory>
 			<destName>jboss-readme.html</destName>

@@ -44,8 +44,8 @@ $ mvn -Denv=performance clean install
  <<<devel>>>'s home directory on the remote side:
 
 +---+
-$ rsync -P safe-online-performance-distribution/target/safe-online-performance-distribution-1.1-SNAPSHOT.zip devel@sebeco-dev-10:
-safe-online-performance-distribution-1.1-SNAPSHOT.zip
+$ rsync -P safe-online-performance-distribution/target/safe-online-performance-distribution-1.1.zip devel@sebeco-dev-10:
+safe-online-performance-distribution-1.1.zip
     79605462 100%  424.55kB/s    0:03:03 (xfer#1, to-check=0/1)
 
     sent 79615312 bytes  received 42 bytes  431519.53 bytes/sec
@@ -65,8 +65,8 @@ safe-online-performance-distribution-1.1-SNAPSHOT.zip
  to the host <<<sebeco-dev-11>>> using the <<<devel>>> user, again:
 
 +---+
-$ rsync -P safe-online-performance-agent-distribution/target/safe-online-performance-agent-distribution-1.1-SNAPSHOT.zip devel@sebeco-dev-11:
-safe-online-performance-agent-distribution-1.1-SNAPSHOT.zip
+$ rsync -P safe-online-performance-agent-distribution/target/safe-online-performance-agent-distribution-1.1.zip devel@sebeco-dev-11:
+safe-online-performance-agent-distribution-1.1.zip
     74598895 100%  433.03kB/s    0:02:48 (xfer#1, to-check=0/1)
 
     sent 74608139 bytes  received 42 bytes  440166.26 bytes/sec
@@ -144,10 +144,10 @@ Password:
 +---+
 $ ssh devel@sebeco-dev-10
 Last login: Mon Mar 10 09:51:25 2008 from 192.168.5.107devel
-$ unzip safe-online-performance-distribution-1.1-SNAPSHOT.zip
+$ unzip safe-online-performance-distribution-1.1.zip
 [...]
-  inflating: safe-online-performance-distribution-1.1-SNAPSHOT/jboss/server/default/deploy/mysql-safe-online-ds.xml
-$ cd safe-online-performance-distribution-1.1-SNAPSHOT
+  inflating: safe-online-performance-distribution-1.1/jboss/server/default/deploy/mysql-safe-online-ds.xml
+$ cd safe-online-performance-distribution-1.1
 $ mkdir -p jboss/server/default/log
 $ jboss/run.sh > jboss/server/default/log/jboss.log 2>&1 </dev/null &
 [1] 15628
@@ -178,10 +178,10 @@ $ logout
 +---+
 $ ssh devel@sebeco-dev-11
 Last login: Mon Mar 10 09:51:27 2008 from 192.168.5.107devel
-$ unzip safe-online-performance-agent-distribution-1.1-SNAPSHOT.zip
+$ unzip safe-online-performance-agent-distribution-1.1.zip
 [...]
-  inflating: safe-online-performance-agent-distribution-1.1-SNAPSHOT/jboss/server/default/deploy/mysql-safe-online-ds.xml
-$ cd safe-online-performance-agent-distribution-1.1-SNAPSHOT
+  inflating: safe-online-performance-agent-distribution-1.1/jboss/server/default/deploy/mysql-safe-online-ds.xml
+$ cd safe-online-performance-agent-distribution-1.1
 $ mkdir -p jboss/server/default/log
 $ jboss/bin/run.sh > jboss/server/default/log/jboss.log 2>&1 </dev/null &
 [1] 23550
@@ -216,10 +216,10 @@ $ mvn -Denv=performance clean install
 [INFO] Scanning for projects...
 [...]
 $ cd target
-$ unzip safe-online-performance-console-package-1.1-SNAPSHOT-package.zip
-Archive:  safe-online-performance-console-package-1.1-SNAPSHOT-package.zip
+$ unzip safe-online-performance-console-package-1.1-package.zip
+Archive:  safe-online-performance-console-package-1.1-package.zip
 [...]
-$ cd safe-online-performance-console-package-1.1-SNAPSHOT
+$ cd safe-online-performance-console-package-1.1
 $ ./performance-console.sh
 Starting the Performance Console ...
 [...]
