@@ -7,13 +7,13 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>${safe-online.version}</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Documentation</name>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-documentation</artifactId>
-	<version>${safe-online.version}</version>
+	<version>1.1-SNAPSHOT</version>
 
 </project>
