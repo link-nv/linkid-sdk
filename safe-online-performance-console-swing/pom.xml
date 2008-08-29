@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1</version>
+		<version>1.1-p1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Performance Console Swing</name>
@@ -18,7 +18,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-performance-console-swing</artifactId>
-	<version>1.1</version>
+	<version>1.1-p1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<build>
@@ -46,7 +46,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -54,7 +54,7 @@
 			<artifactId>
 				safe-online-performance-console-base
 			</artifactId>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>

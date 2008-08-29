@@ -90,7 +90,7 @@ java -jar JAXWS2.1.2-20070917.jar
  To enable SSL on Tomcat add the following to <<<$JBOSS_HOME/server/default/deploy/jboss-web.deployer/server.xml>>>:
 
 +---+
-<Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+<Connector port="8443" protocol="HTTP/1.1-p1-SNAPSHOT" SSLEnabled="true"
                maxThreads="150" scheme="https" secure="true"
                clientAuth="false" sslProtocol="TLS"
                keystoreFile="${jboss.server.home.dir}/conf/ssl.jks"

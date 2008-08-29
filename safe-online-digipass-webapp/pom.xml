@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1</version>
+		<version>1.1-p1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Digipass Device Web Application</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-digipass-webapp</artifactId>
-	<version>1.1</version>
+	<version>1.1-p1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<build>
@@ -50,14 +50,14 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-digipass</artifactId>
 			<type>ejb-client</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-saml-authn-context</artifactId>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.xml.bind</groupId>
@@ -80,31 +80,31 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-webapp-base</artifactId>
 			<type>war</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-common</artifactId>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
 			<type>ejb-client</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-sdk</artifactId>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ctrl-base</artifactId>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

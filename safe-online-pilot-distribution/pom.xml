@@ -7,14 +7,14 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.1</version>
+		<version>1.1-p1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Pilot Distribution</name>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-pilot-distribution</artifactId>
-	<version>1.1</version>
+	<version>1.1-p1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<build>
@@ -133,7 +133,7 @@
                         <patch>no_jmx_debug_urandom.patch</patch>
                       </patches>
                       <targetDirectory>
-                          target/files/safe-online-base-distribution-1.1
+                          target/files/safe-online-base-distribution-1.1-p1-SNAPSHOT
                       </targetDirectory>
                     </configuration>
                   </execution>
@@ -168,31 +168,31 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-base-distribution</artifactId>
 			<type>zip</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-deploy</artifactId>
 			<type>ear</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-root-webapp</artifactId>
 			<type>war</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-install-manual</artifactId>
 			<type>zip</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-maintenance-manual</artifactId>
 			<type>zip</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>

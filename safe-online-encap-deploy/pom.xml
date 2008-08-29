@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1</version>
+		<version>1.1-p1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Encap Deploy</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-encap-deploy</artifactId>
-	<version>1.1</version>
+	<version>1.1-p1-SNAPSHOT</version>
 	<packaging>ear</packaging>
 
 	<build>
@@ -79,7 +79,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-encap</artifactId>
 			<type>ejb</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -91,19 +91,19 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap</artifactId>
 			<type>ejb</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-startup</artifactId>
 			<type>war</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-webapp</artifactId>
 			<type>war</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>

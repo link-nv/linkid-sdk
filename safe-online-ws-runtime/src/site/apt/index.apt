@@ -2,6 +2,6 @@ SafeOnline Web Service Runtime
 
  This project creates the Sun JAX-WS RI runtime WAR that hosts all the SafeOnline JAX-WS web services.
  
- We're assuming the availability of a JAX-WS RI 2.1.1 runtime within the deploying J2EE container.
+ We're assuming the availability of a JAX-WS RI 2.1.1-p1-SNAPSHOT runtime within the deploying J2EE container.
  
  Add new web service endpoints to <<<WEB-INF/sun-jaxws.xml>>>.

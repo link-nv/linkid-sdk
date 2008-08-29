@@ -7,14 +7,14 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.1</version>
+		<version>1.1-p1-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Oracle Pilot Distribution</name>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-pilot-oracle-distribution</artifactId>
-	<version>1.1</version>
+	<version>1.1-p1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<build>
@@ -130,7 +130,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-pilot-distribution</artifactId>
 			<type>zip</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.oracle.jdbc</groupId>
@@ -140,7 +140,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
 			<type>jar</type>
-			<version>1.1</version>
+			<version>1.1-p1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.lin-k.safe-online</groupId>
