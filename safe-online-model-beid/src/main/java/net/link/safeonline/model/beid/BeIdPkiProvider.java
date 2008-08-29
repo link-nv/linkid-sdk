@@ -28,6 +28,7 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -158,8 +159,9 @@ public class BeIdPkiProvider implements PkiProvider {
     private String getAttributeFromSubjectName(String subjectName, String attributeName) {
 
         int attributeBegin = subjectName.indexOf(attributeName + "=");
-        if (-1 == attributeBegin)
+        if (-1 == attributeBegin) {
             throw new IllegalArgumentException("attribute name does not occur in subject: " + attributeName);
+        }
         attributeBegin += attributeName.length() + 1; // "attributeName="
         int attributeEnd = subjectName.indexOf(",", attributeBegin);
         if (-1 == attributeEnd) {
@@ -170,60 +172,58 @@ public class BeIdPkiProvider implements PkiProvider {
         return attributeValue;
     }
 
-    public void removeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate) {
-
-        removeAttribute(BeIdConstants.NRN_ATTRIBUTE, subject);
-    }
-
-    private void removeAttribute(String attributeName, SubjectEntity subject) {
-
-        AttributeEntity attribute = this.attributeDAO.findAttribute(attributeName, subject);
-        if (null != attribute) {
-            this.attributeDAO.removeAttribute(attribute);
-        }
-    }
-
     public void storeDeviceAttribute(SubjectEntity subject) throws DeviceNotFoundException, AttributeNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         AttributeTypeEntity deviceAttributeType = device.getAttributeType();
+        AttributeTypeEntity deviceUserAttributeType = device.getUserAttributeType();
+
+        AttributeEntity givenNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE, subject);
+        AttributeEntity surNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.SURNAME_ATTRIBUTE, subject);
+        AttributeEntity deviceUserAttribute = this.attributeDAO.findAttribute(deviceUserAttributeType, subject);
+        if (null == deviceUserAttribute) {
+            deviceUserAttribute = this.attributeDAO.addAttribute(deviceUserAttributeType, subject, surNameAttribute
+                    .getStringValue()
+                    + ", " + givenNameAttribute.getStringValue());
+        }
+
         AttributeEntity deviceAttribute = this.attributeDAO.findAttribute(deviceAttributeType, subject);
         if (null == deviceAttribute) {
             deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject);
             List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
-            deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE, subject));
+            deviceAttributeMembers.add(givenNameAttribute);
             deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.NRN_ATTRIBUTE, subject));
-            deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.SURNAME_ATTRIBUTE, subject));
+            deviceAttributeMembers.add(surNameAttribute);
+            deviceAttributeMembers.add(deviceUserAttribute);
             deviceAttribute.setMembers(deviceAttributeMembers);
         }
     }
 
-    public void storeDeviceUserAttribute(SubjectEntity subject) throws DeviceNotFoundException,
-            AttributeNotFoundException {
+    public void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
-        AttributeTypeEntity deviceUserAttributeType = device.getUserAttributeType();
-        AttributeEntity deviceUserAttribute = this.attributeDAO.findAttribute(deviceUserAttributeType, subject);
-        if (null == deviceUserAttribute) {
-            AttributeEntity givenNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE,
-                    subject);
-            AttributeEntity surNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.SURNAME_ATTRIBUTE, subject);
-            this.attributeDAO.addAttribute(deviceUserAttributeType, subject, surNameAttribute.getStringValue() + ", "
-                    + givenNameAttribute.getStringValue());
-        }
-    }
-
-    public void removeDeviceAttribute(SubjectEntity subject) throws DeviceNotFoundException {
-
-        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        String subjectName = getSubjectName(certificate);
+        String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
         AttributeTypeEntity deviceAttributeType = device.getAttributeType();
-        removeAttribute(deviceAttributeType.getName(), subject);
-    }
-
-    public void removeDeviceUserAttribute(SubjectEntity subject) throws DeviceNotFoundException {
-
-        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
-        AttributeTypeEntity deviceUserAttributeType = device.getUserAttributeType();
-        removeAttribute(deviceUserAttributeType.getName(), subject);
+        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
+        LOG.debug("remove device attribute: nrn=" + nrn);
+        for (AttributeEntity attribute : attributes) {
+            AttributeEntity nrnAttribute = this.attributeDAO.findAttribute(subject, BeIdConstants.NRN_ATTRIBUTE,
+                    attribute.getAttributeIndex());
+            if (nrnAttribute.getStringValue().equals(nrn)) {
+                LOG.debug("remove attribute");
+                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
+                for (CompoundedAttributeTypeMemberEntity member : members) {
+                    AttributeEntity memberAttribute = this.attributeDAO.findAttribute(subject, member.getMember(),
+                            attribute.getAttributeIndex());
+                    if (null != memberAttribute) {
+                        this.attributeDAO.removeAttribute(memberAttribute);
+                    }
+                }
+                this.attributeDAO.removeAttribute(attribute);
+                break;
+            }
+        }
     }
 }

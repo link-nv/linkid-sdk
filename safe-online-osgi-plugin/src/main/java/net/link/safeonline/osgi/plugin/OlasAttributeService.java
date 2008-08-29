@@ -11,6 +11,7 @@ import java.util.List;
 import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
+import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
 /**
@@ -41,9 +42,11 @@ public interface OlasAttributeService {
 	 * @throws AttributeNotFoundException
 	 * @throws UnsupportedDataTypeException
 	 * @throws AttributeUnavailableException
+	 * @throws SubjectNotFoundException
 	 */
 	public List<Attribute> getAttribute(String userId, String attributeName)
 			throws AttributeTypeNotFoundException, AttributeNotFoundException,
-			UnsupportedDataTypeException, AttributeUnavailableException;
+			UnsupportedDataTypeException, AttributeUnavailableException,
+			SubjectNotFoundException;
 
 }

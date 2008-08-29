@@ -30,6 +30,8 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.NodeEntity;
+import net.link.safeonline.entity.notification.EndpointReferenceEntity;
+import net.link.safeonline.notification.dao.EndpointReferenceDAO;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
@@ -40,22 +42,25 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Implementation of node service interface.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class NodeServiceBean implements NodeService, NodeServiceRemote {
 
-    private static final Log LOG = LogFactory.getLog(NodeServiceBean.class);
+    private static final Log     LOG = LogFactory.getLog(NodeServiceBean.class);
 
     @EJB
-    private NodeDAO          olasDAO;
+    private NodeDAO              olasDAO;
 
     @EJB
-    private AttributeTypeDAO attributeTypeDAO;
+    private AttributeTypeDAO     attributeTypeDAO;
+
+    @EJB
+    private EndpointReferenceDAO endpointReferenceDAO;
 
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -82,9 +87,8 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
     private void checkExistingNode(String name) throws ExistingNodeException {
 
         NodeEntity existingNode = this.olasDAO.findNode(name);
-        if (null != existingNode) {
+        if (null != existingNode)
             throw new ExistingNodeException();
-        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -94,12 +98,17 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
         LOG.debug("remove node: " + name);
         NodeEntity node = this.olasDAO.getNode(name);
 
+        // remove all node notification subscriptions
+        List<EndpointReferenceEntity> endpoints = this.endpointReferenceDAO.listEndpoints(node);
+        for (EndpointReferenceEntity endpoint : endpoints) {
+            this.endpointReferenceDAO.remove(endpoint);
+        }
+
         // check if present in an attribute type
         List<AttributeTypeEntity> nodeAttributeTypes = this.attributeTypeDAO.listAttributeTypes(node);
-        if (nodeAttributeTypes.size() > 0) {
+        if (nodeAttributeTypes.size() > 0)
             throw new PermissionDeniedException("Still attribute types attached to this node",
                     "errorPermissionNodeHasAttributes");
-        }
 
         this.olasDAO.removeNode(node);
     }

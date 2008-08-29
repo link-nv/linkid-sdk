@@ -106,13 +106,13 @@ public class AuthenticationBean implements Authentication {
         LOG.debug("login: " + this.mobile);
         HelpdeskLogger.add("login: " + this.mobile, LogLevelType.INFO);
         try {
-            String deviceUserId = this.encapDeviceService.authenticate(this.mobile, this.challengeId, this.mobileOTP);
-            if (null == deviceUserId) {
+            String userId = this.encapDeviceService.authenticate(this.mobile, this.challengeId, this.mobileOTP);
+            if (null == userId) {
                 this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
                 HelpdeskLogger.add("login failed: " + this.mobile, LogLevelType.ERROR);
                 return null;
             }
-            login(deviceUserId);
+            login(userId);
         } catch (SubjectNotFoundException e) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
             HelpdeskLogger.add("login: subject not found for " + this.mobile, LogLevelType.ERROR);
@@ -131,9 +131,9 @@ public class AuthenticationBean implements Authentication {
         return null;
     }
 
-    private void login(String deviceUserId) throws IOException {
+    private void login(String userId) throws IOException {
 
-        this.authenticationContext.setUserId(deviceUserId);
+        this.authenticationContext.setUserId(userId);
         this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
         this.authenticationContext.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
         this.authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);

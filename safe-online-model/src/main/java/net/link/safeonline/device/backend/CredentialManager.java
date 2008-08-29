@@ -33,13 +33,13 @@ public interface CredentialManager {
             PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException,
             PkiInvalidException;
 
-    void mergeIdentityStatement(String sessionId, String deviceUserId, String operation, byte[] identityStatementData)
+    void mergeIdentityStatement(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
             AttributeTypeNotFoundException, DeviceNotFoundException, AttributeNotFoundException,
             AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
             PkiNotYetValidException, PkiInvalidException;
 
-    void removeIdentity(String sessionId, String deviceUserId, String operation, byte[] identityStatementData)
+    void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
             AttributeTypeNotFoundException, SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException,
             PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException;

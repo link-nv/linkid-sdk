@@ -17,6 +17,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -64,9 +65,11 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
 
     /**
      * {@inheritDoc}
+     * 
      */
     public List<Attribute> getAttribute(String userId, String attributeName) throws AttributeTypeNotFoundException,
-            AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException {
+            AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
+            SubjectNotFoundException {
 
         LOG.debug("get attribute " + attributeName + " for user " + userId);
         List<Attribute> attributeView = new LinkedList<Attribute>();

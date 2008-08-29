@@ -23,7 +23,6 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -78,8 +77,8 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public Object getConfirmedAttributeValue(String subjectLogin, String attributeName)
-            throws AttributeNotFoundException, PermissionDeniedException, SubjectNotFoundException,
-            AttributeTypeNotFoundException, AttributeUnavailableException {
+            throws PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException,
+            AttributeUnavailableException {
 
         LOG.debug("get attribute " + attributeName + " for login " + subjectLogin);
         List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);

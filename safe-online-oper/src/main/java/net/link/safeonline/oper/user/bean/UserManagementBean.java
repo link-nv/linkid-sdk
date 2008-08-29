@@ -39,7 +39,7 @@ import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.data.DeviceMappingDO;
+import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -107,7 +107,7 @@ public class UserManagementBean implements UserManagement {
 
     private List<SubscriptionEntity>    subscriptionList;
 
-    private List<DeviceMappingDO>       deviceRegistrationList;
+    private List<DeviceRegistrationDO>       deviceRegistrationList;
 
     private List<AttributeDO>           attributeList;
 
@@ -277,7 +277,7 @@ public class UserManagementBean implements UserManagement {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public List<DeviceMappingDO> getDeviceRegistrationList() {
+    public List<DeviceRegistrationDO> getDeviceRegistrationList() {
 
         return this.deviceRegistrationList;
     }

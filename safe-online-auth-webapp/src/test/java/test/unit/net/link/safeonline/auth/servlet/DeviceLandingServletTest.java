@@ -27,8 +27,6 @@ import net.link.safeonline.auth.servlet.DeviceLandingServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
-import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -189,17 +187,15 @@ public class DeviceLandingServletTest {
 
         // setup
         String userId = UUID.randomUUID().toString();
-        String deviceMappingId = UUID.randomUUID().toString();
-        SubjectEntity subject = new SubjectEntity(userId);
         DeviceEntity device = new DeviceEntity();
-        DeviceMappingEntity deviceMapping = new DeviceMappingEntity(subject, deviceMappingId, device);
 
         PostMethod postMethod = new PostMethod(this.location);
 
         // expectations
         expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
         expect(this.mockAuthenticationService.authenticate((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
-                deviceMapping);
+                userId);
+        expect(this.mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
         expect(this.mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
 
         // prepare

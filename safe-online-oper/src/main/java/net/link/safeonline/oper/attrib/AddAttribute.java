@@ -54,10 +54,6 @@ public interface AddAttribute {
 
     void setUserEditable(boolean userEditable);
 
-    boolean isDeviceAttribute();
-
-    void setDeviceAttribute(boolean deviceAttribute);
-
     String getLocationOption();
 
     void setLocationOption(String locationOption);

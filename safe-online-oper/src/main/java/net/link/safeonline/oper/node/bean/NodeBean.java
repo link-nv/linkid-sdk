@@ -10,6 +10,7 @@ package net.link.safeonline.oper.node.bean;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -17,6 +18,7 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ExistingNodeException;
@@ -56,9 +58,11 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class NodeBean implements Node {
 
-    private static final Log    LOG                 = LogFactory.getLog(NodeBean.class);
+    private static final Log    LOG                     = LogFactory.getLog(NodeBean.class);
 
-    private static final String OPER_NODE_LIST_NAME = "operOlasNodeList";
+    private static final String OPER_NODE_LIST_NAME     = "operOlasNodeList";
+
+    private static final String OPER_PROTOCOL_LIST_NAME = "operProtocolList";
 
     private String              name;
 
@@ -107,6 +111,16 @@ public class NodeBean implements Node {
 
         LOG.debug("node list factory");
         this.operNodeList = this.nodeService.listNodes();
+    }
+
+    @Factory(OPER_PROTOCOL_LIST_NAME)
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public List<SelectItem> protocolListFactory() {
+
+        List<SelectItem> locations = new LinkedList<SelectItem>();
+        locations.add(new SelectItem("http"));
+        locations.add(new SelectItem("https"));
+        return locations;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -254,7 +268,7 @@ public class NodeBean implements Node {
             LOG.debug("updating node signing certificate");
             this.nodeService.updateSigningCertificate(nodeName, getUpFileContent(this.signingUpFile));
         }
-        this.nodeService.updateLocation(nodeName, this.hostname, this.protocol, this.port, this.sslPort);
+        this.nodeService.updateLocation(nodeName, this.protocol, this.hostname, this.port, this.sslPort);
 
         /*
          * Refresh the selected application.

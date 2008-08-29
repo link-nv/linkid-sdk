@@ -123,11 +123,16 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         List<Object> attributeObjects = attributeStatement.getAttributeOrEncryptedAttribute();
         AttributeType attribute = (AttributeType) attributeObjects.get(0);
 
+        /*
+         * Can be multi-valued returning null, causing extra multi-valued attribute not being set
+         */
+        List<Object> attributeValues = attribute.getAttributeValue();
+        if (null == attributeValues.get(0))
+            return null;
+
         if (Boolean.valueOf(attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))
                 ^ valueClass.isArray())
             throw new IllegalArgumentException("multivalued and [] type mismatch");
-
-        List<Object> attributeValues = attribute.getAttributeValue();
 
         if (valueClass.isArray()) {
             /*

@@ -16,7 +16,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.data.DeviceMappingDO;
+import net.link.safeonline.data.DeviceRegistrationDO;
 
 
 @Local
@@ -64,6 +64,6 @@ public interface Devices {
      */
     List<DeviceEntry> devicesFactory() throws SubjectNotFoundException, DeviceNotFoundException;
 
-    List<DeviceMappingDO> deviceRegistrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException,
+    List<DeviceRegistrationDO> deviceRegistrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException,
             PermissionDeniedException, AttributeTypeNotFoundException;
 }

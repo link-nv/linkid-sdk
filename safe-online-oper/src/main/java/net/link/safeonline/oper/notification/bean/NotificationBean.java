@@ -23,9 +23,10 @@ import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundExc
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.NodeService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.notification.service.NotificationSubscriptionService;
@@ -72,6 +73,9 @@ public class NotificationBean implements Notification {
 
     @EJB
     private ApplicationService                           applicationService;
+
+    @EJB
+    private NodeService                                  nodeService;
 
     @EJB
     private DeviceService                                deviceService;
@@ -132,9 +136,9 @@ public class NotificationBean implements Notification {
         for (ApplicationEntity application : applications) {
             consumerList.add(new SelectItem(application.getName()));
         }
-        List<DeviceEntity> devices = this.deviceService.listDevices();
-        for (DeviceEntity device : devices) {
-            consumerList.add(new SelectItem(device.getName()));
+        List<NodeEntity> nodes = this.nodeService.listNodes();
+        for (NodeEntity node : nodes) {
+            consumerList.add(new SelectItem(node.getName()));
         }
         return consumerList;
     }

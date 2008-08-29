@@ -132,7 +132,7 @@ public class ProxyAttributeServiceBeanTest {
         // expectations
         expect(this.mockAttributeTypeDAO.getAttributeType(testCompoundAttributeName)).andStubReturn(
                 compoundedAttributeType);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(testSubject);
+        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
 
         // prepare
@@ -175,7 +175,7 @@ public class ProxyAttributeServiceBeanTest {
 
         // expectations
         expect(this.mockAttributeTypeDAO.getAttributeType(testStringAttributeName)).andStubReturn(attributeType);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(testSubject);
+        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
 
         // prepare
@@ -211,7 +211,7 @@ public class ProxyAttributeServiceBeanTest {
 
         // expectations
         expect(this.mockAttributeTypeDAO.getAttributeType(testBooleanAttributeName)).andStubReturn(attributeType);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(testSubject);
+        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
 
         // prepare
@@ -247,7 +247,7 @@ public class ProxyAttributeServiceBeanTest {
 
         // expectations
         expect(this.mockAttributeTypeDAO.getAttributeType(testDateAttributeName)).andStubReturn(attributeType);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(testSubject);
+        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
 
         // prepare
@@ -283,7 +283,7 @@ public class ProxyAttributeServiceBeanTest {
 
         // expectations
         expect(this.mockAttributeTypeDAO.getAttributeType(testDoubleAttributeName)).andStubReturn(attributeType);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(testSubject);
+        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
 
         // prepare
@@ -319,7 +319,7 @@ public class ProxyAttributeServiceBeanTest {
 
         // expectations
         expect(this.mockAttributeTypeDAO.getAttributeType(testIntegerAttributeName)).andStubReturn(attributeType);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(testSubject);
+        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
 
         // prepare

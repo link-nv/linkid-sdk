@@ -19,7 +19,7 @@ import net.link.safeonline.authentication.exception.ExistingDevicePropertyExcept
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.data.DeviceMappingDO;
+import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceClassDescriptionEntity;
@@ -60,7 +60,7 @@ public interface DeviceService {
             String registrationPath, String removalPath, String updatePath, byte[] encodedCertificate,
             String attributeTypeName, String userAttributeTypeName) throws CertificateEncodingException,
             DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
-            NodeNotFoundException;
+            NodeNotFoundException, PermissionDeniedException;
 
     void removeDevice(String name) throws DeviceNotFoundException, DeviceDescriptionNotFoundException,
             DevicePropertyNotFoundException, PermissionDeniedException;
@@ -103,10 +103,10 @@ public interface DeviceService {
     void updateUpdatePath(String deviceName, String updatePath) throws DeviceNotFoundException;
 
     void updateAttributeType(String deviceName, String attributeType) throws DeviceNotFoundException,
-            AttributeTypeNotFoundException;
+            AttributeTypeNotFoundException, PermissionDeniedException;
 
     void updateUserAttributeType(String deviceName, String userAttributeType) throws DeviceNotFoundException,
-            AttributeTypeNotFoundException;
+            AttributeTypeNotFoundException, PermissionDeniedException;
 
     /**
      * Returns the list of device registrations for the specified subject.
@@ -119,7 +119,7 @@ public interface DeviceService {
      * @throws DeviceNotFoundException
      * @throws SubjectNotFoundException
      */
-    List<DeviceMappingDO> getDeviceRegistrations(SubjectEntity subject, Locale locale) throws SubjectNotFoundException,
+    List<DeviceRegistrationDO> getDeviceRegistrations(SubjectEntity subject, Locale locale) throws SubjectNotFoundException,
             DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
 }

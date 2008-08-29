@@ -21,12 +21,9 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.PasswordDeviceServiceRemote;
 import net.link.safeonline.device.backend.PasswordManager;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
-import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
@@ -36,22 +33,19 @@ import org.apache.commons.logging.LogFactory;
 @Stateless
 public class PasswordDeviceServiceBean implements PasswordDeviceService, PasswordDeviceServiceRemote {
 
-    private final static Log     LOG = LogFactory.getLog(PasswordDeviceServiceBean.class);
+    private final static Log    LOG = LogFactory.getLog(PasswordDeviceServiceBean.class);
 
     @EJB
-    private SubjectService       subjectService;
+    private SubjectService      subjectService;
 
     @EJB
-    private DeviceMappingService deviceMappingService;
+    private PasswordManager     passwordManager;
 
     @EJB
-    private PasswordManager      passwordManager;
+    private SecurityAuditLogger securityAuditLogger;
 
     @EJB
-    private SecurityAuditLogger  securityAuditLogger;
-
-    @EJB
-    private HistoryDAO           historyDAO;
+    private HistoryDAO          historyDAO;
 
 
     public SubjectEntity authenticate(String loginName, String password) throws DeviceNotFoundException,
@@ -60,20 +54,13 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         LOG.debug("authenticate \"" + loginName + "\"");
 
         SubjectEntity subject = this.subjectService.getSubjectFromUserName(loginName);
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(),
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceMapping.getId());
-        if (deviceSubject.getRegistrations().isEmpty()) {
-            throw new SubjectNotFoundException();
-        }
-
-        SubjectEntity deviceRegistration = deviceSubject.getRegistrations().get(0);
 
         boolean validationResult = false;
         try {
-            validationResult = this.passwordManager.validatePassword(deviceRegistration, password);
+            validationResult = this.passwordManager.validatePassword(subject, password);
         } catch (DeviceNotFoundException e) {
-            // TODO: add security audit
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(),
+                    "password device not found");
             throw e;
         }
 
@@ -94,31 +81,15 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     public void register(SubjectEntity subject, String password) throws SubjectNotFoundException,
             DeviceNotFoundException {
 
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(),
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-        /*
-         * Create new device subject
-         */
-        DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceMapping.getId());
-        if (null == deviceSubject) {
-            deviceSubject = this.subjectService.addDeviceSubject(deviceMapping.getId());
-        }
-
-        /*
-         * Create new device registration subject
-         */
-        SubjectEntity deviceRegistration = this.subjectService.addDeviceRegistration();
-        deviceSubject.getRegistrations().add(deviceRegistration);
-
-        LOG.debug("register \"" + deviceRegistration.getUserId() + "\"");
+        LOG.debug("register \"" + subject.getUserId() + "\"");
         try {
-            this.passwordManager.setPassword(deviceRegistration, password);
+            this.passwordManager.setPassword(subject, password);
         } catch (PermissionDeniedException e) {
             throw new EJBException("Not allowed to set password");
         }
 
         this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping.getDevice().getName()));
+                SafeOnlineConstants.DEVICE_PROPERTY, SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID));
 
     }
 
@@ -126,20 +97,11 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
             PermissionDeniedException, SubjectNotFoundException {
 
         LOG.debug("remove " + subject.getUserId());
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(),
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceMapping.getId());
-        if (deviceSubject.getRegistrations().isEmpty()) {
-            throw new SubjectNotFoundException();
-        }
 
-        SubjectEntity deviceRegistration = deviceSubject.getRegistrations().get(0);
-
-        this.passwordManager.removePassword(deviceRegistration, password);
-        deviceSubject.getRegistrations().remove(deviceRegistration);
+        this.passwordManager.removePassword(subject, password);
 
         this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping.getDevice().getName()));
+                SafeOnlineConstants.DEVICE_PROPERTY, SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID));
 
     }
 
@@ -148,32 +110,15 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         LOG.debug("update \"" + subject.getUserId() + "\"");
 
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(),
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceMapping.getId());
-        if (deviceSubject.getRegistrations().isEmpty()) {
-            throw new SubjectNotFoundException();
-        }
-
-        SubjectEntity deviceRegistration = deviceSubject.getRegistrations().get(0);
-        this.passwordManager.changePassword(deviceRegistration, oldPassword, newPassword);
+        this.passwordManager.changePassword(subject, oldPassword, newPassword);
 
         this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, deviceMapping.getDevice().getName()));
+                SafeOnlineConstants.DEVICE_PROPERTY, SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID));
 
     }
 
     public boolean isPasswordConfigured(SubjectEntity subject) throws SubjectNotFoundException, DeviceNotFoundException {
 
-        DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(),
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-        DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceMapping.getId());
-        if (null == deviceSubject)
-            return false;
-        if (deviceSubject.getRegistrations().isEmpty())
-            return false;
-
-        SubjectEntity deviceRegistration = deviceSubject.getRegistrations().get(0);
-        return this.passwordManager.isPasswordConfigured(deviceRegistration);
+        return this.passwordManager.isPasswordConfigured(subject);
     }
 }

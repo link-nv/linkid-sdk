@@ -20,9 +20,9 @@ import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundExc
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
@@ -40,9 +40,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Service bean used by the WS-Notification producer service.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Stateless
 @Interceptors( { AuditContextManager.class })
@@ -57,7 +57,7 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
     private ApplicationDAO          applicationDAO;
 
     @EJB
-    private DeviceDAO               deviceDAO;
+    private NodeDAO                 nodeDAO;
 
     @EJB
     private EndpointReferenceDAO    endpointReferenceDAO;
@@ -74,25 +74,26 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         if (null != application) {
             subscribe(topic, address, application);
         } else {
-            DeviceEntity device = this.deviceDAO.findDevice(certificate);
-            if (null != device) {
-                subscribe(topic, address, device);
-            } else
-                throw new PermissionDeniedException("application or device not found.");
+            NodeEntity node = this.nodeDAO.findNodeFromAuthnCertificate(certificate);
+            if (null != node) {
+                subscribe(topic, address, node);
+            } else {
+                throw new PermissionDeniedException("application or node not found.");
+            }
         }
     }
 
-    public void subscribe(String topic, String address, DeviceEntity device) {
+    public void subscribe(String topic, String address, NodeEntity node) {
 
-        LOG.debug("subscribe device " + device.getName() + " to topic: " + topic);
+        LOG.debug("subscribe node " + node.getName() + " to topic: " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.findSubscription(topic);
         if (null == subscription) {
             subscription = this.notificationProducerDAO.addSubscription(topic);
         }
 
-        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.findEndpointReference(address, device);
+        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.findEndpointReference(address, node);
         if (null == endpointReference) {
-            endpointReference = this.endpointReferenceDAO.addEndpointReference(address, device);
+            endpointReference = this.endpointReferenceDAO.addEndpointReference(address, node);
         }
         subscription.getConsumers().add(endpointReference);
     }
@@ -121,21 +122,22 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         if (null != application) {
             unsubscribe(topic, address, application);
         } else {
-            DeviceEntity device = this.deviceDAO.findDevice(certificate);
-            if (null != device) {
-                unsubscribe(topic, address, device);
-            } else
-                throw new PermissionDeniedException("application or device not found.");
+            NodeEntity node = this.nodeDAO.findNodeFromAuthnCertificate(certificate);
+            if (null != node) {
+                unsubscribe(topic, address, node);
+            } else {
+                throw new PermissionDeniedException("application or node not found.");
+            }
         }
     }
 
-    public void unsubscribe(String topic, String address, DeviceEntity device) throws SubscriptionNotFoundException,
+    public void unsubscribe(String topic, String address, NodeEntity node) throws SubscriptionNotFoundException,
             EndpointReferenceNotFoundException {
 
-        LOG.debug("unsubscribe device " + device.getName() + " from topic " + topic);
+        LOG.debug("unsubscribe node " + node.getName() + " from topic " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.getSubscription(topic);
 
-        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.getEndpointReference(address, device);
+        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.getEndpointReference(address, node);
         subscription.getConsumers().remove(endpointReference);
     }
 

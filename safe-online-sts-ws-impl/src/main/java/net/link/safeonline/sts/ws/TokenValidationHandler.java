@@ -116,7 +116,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
             throw createSOAPFaultException("No request type specified in token", "InvalidSecurityToken");
         }
         String requestType = requestTypeElement.getTextContent();
-        LOG.debug("request type: " + issuerName);
+        LOG.debug("request type: " + requestType);
         if (false == requestType.startsWith(WebServiceConstants.WS_TRUST_REQUEST_TYPE + "Validate")) {
             LOG.debug("Only supporting the validation binding");
             throw createSOAPFaultException("Only supporting the validation binding", "InvalidSecurityToken");

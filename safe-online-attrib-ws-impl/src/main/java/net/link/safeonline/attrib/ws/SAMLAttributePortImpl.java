@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -199,10 +198,6 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
                 try {
                     Object attributeValue = getAttributeValue(subjectLogin, attributeName);
                     attributeMap.put(attributeName, attributeValue);
-                } catch (AttributeNotFoundException e) {
-                    LOG.error("attribute not found: " + attributeName + " for subject " + subjectLogin);
-                    ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(attributeName);
-                    return attributeNotFoundResponse;
                 } catch (SubjectNotFoundException e) {
                     ResponseType subjectNotFoundResponse = createUnknownPrincipalResponse(subjectLogin);
                     return subjectNotFoundResponse;
@@ -231,12 +226,11 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
     }
 
     private Object getAttributeValue(String subjectLogin, String attributeName) throws SubjectNotFoundException,
-            AttributeNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
-            AttributeUnavailableException {
+            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
         if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
             return this.attributeService.getConfirmedAttributeValue(subjectLogin, attributeName);
-        if (this.certificateDomain.equals(CertificateDomain.OLAS))
+        if (this.certificateDomain.equals(CertificateDomain.NODE))
             return this.nodeAttributeService.getAttributeValue(subjectLogin, attributeName);
         return null;
     }

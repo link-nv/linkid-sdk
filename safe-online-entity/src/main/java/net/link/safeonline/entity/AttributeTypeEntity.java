@@ -122,8 +122,6 @@ public class AttributeTypeEntity implements Serializable {
 
     private boolean                                     compoundMember;
 
-    private boolean                                     deviceAttribute;
-
     private Map<String, AttributeTypeDescriptionEntity> descriptions;
 
     private List<CompoundedAttributeTypeMemberEntity>   members;
@@ -137,22 +135,15 @@ public class AttributeTypeEntity implements Serializable {
 
     public AttributeTypeEntity() {
 
-        this(null, null, false, false, false);
+        this(null, null, false, false);
     }
 
     public AttributeTypeEntity(String name, DatatypeType type, boolean userVisible, boolean userEditable) {
-
-        this(name, type, userVisible, userEditable, false);
-    }
-
-    public AttributeTypeEntity(String name, DatatypeType type, boolean userVisible, boolean userEditable,
-            boolean deviceAttribute) {
 
         this.name = name;
         this.type = type;
         this.userVisible = userVisible;
         this.userEditable = userEditable;
-        this.deviceAttribute = deviceAttribute;
         this.descriptions = new HashMap<String, AttributeTypeDescriptionEntity>();
         this.members = new LinkedList<CompoundedAttributeTypeMemberEntity>();
     }
@@ -227,19 +218,6 @@ public class AttributeTypeEntity implements Serializable {
     }
 
     /**
-     * Marks whether this attribute type belongs to a device or a user.
-     */
-    public boolean isDeviceAttribute() {
-
-        return this.deviceAttribute;
-    }
-
-    public void setDeviceAttribute(boolean deviceAttribute) {
-
-        this.deviceAttribute = deviceAttribute;
-    }
-
-    /**
      * Marks whether this attribute type allows for multivalued attributes.
      * 
      */
@@ -290,10 +268,9 @@ public class AttributeTypeEntity implements Serializable {
      */
     public void addMember(AttributeTypeEntity memberAttributeType, int memberSequence, boolean required) {
 
-        if (memberAttributeType.isCompoundMember()) {
+        if (memberAttributeType.isCompoundMember())
             throw new EJBException("attribute type cannot be member of more than one compounded: "
                     + memberAttributeType.getName());
-        }
         CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(this, memberAttributeType,
                 memberSequence, required);
         getMembers().add(member);

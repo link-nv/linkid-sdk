@@ -43,7 +43,7 @@ public class EncapStartableBean extends AbstractInitBean {
         configureNode();
 
         AttributeTypeEntity encapAttributeType = new AttributeTypeEntity(EncapConstants.MOBILE_ENCAP_ATTRIBUTE,
-                DatatypeType.STRING, true, false, true);
+                DatatypeType.STRING, true, false);
         encapAttributeType.setMultivalued(true);
         this.attributeTypes.add(encapAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapAttributeType, Locale.ENGLISH
@@ -63,27 +63,6 @@ public class EncapStartableBean extends AbstractInitBean {
         this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(),
                 "Mobile"));
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
-        /*
-         * WS-Notification subscriptions
-         */
-        configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER, certificate);
-    }
-
-    private void configSubscription(String topic, X509Certificate certificate) {
-
-        ResourceBundle properties = ResourceBundle.getBundle("config");
-        String protocol = properties.getString("olas.host.protocol");
-        String hostname = properties.getString("olas.host.name");
-        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
-        String address = protocol + "://" + hostname + ":";
-        if (protocol.equals("http")) {
-            address += hostport;
-        } else {
-            address += hostportssl;
-        }
-        address += "/safe-online-ws/consumer";
-        this.notificationSubcriptions.add(new NotificationSubscription(topic, address, certificate));
     }
 
     private void configureNode() {

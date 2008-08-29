@@ -114,6 +114,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
                 SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
+
+        // add available notification topics
+        this.notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
     }
 
     private void configureNode() {
@@ -195,7 +198,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED, false, false);
         passwordDeviceAttributeType.setMultivalued(true);
-        passwordDeviceAttributeType.setDeviceAttribute(true);
         passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0, true);
         passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1, true);
         passwordDeviceAttributeType.addMember(passwordAlgorithmAttributeType, 2, true);

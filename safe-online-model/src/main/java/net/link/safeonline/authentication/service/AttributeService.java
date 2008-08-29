@@ -11,7 +11,6 @@ import java.util.Map;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -46,15 +45,13 @@ public interface AttributeService {
      * 
      * @param subjectLogin
      * @param attributeName
-     * @throws AttributeNotFoundException
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
      * @throws SubjectNotFoundException
      * @throws AttributeUnavailableException
      */
-    Object getConfirmedAttributeValue(String subjectLogin, String attributeName) throws AttributeNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException,
-            AttributeUnavailableException;
+    Object getConfirmedAttributeValue(String subjectLogin, String attributeName) throws PermissionDeniedException,
+            AttributeTypeNotFoundException, SubjectNotFoundException, AttributeUnavailableException;
 
     /**
      * Returns a map of attributes with values of the given subject. Of course the subject needs to be subscribed onto

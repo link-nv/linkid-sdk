@@ -17,6 +17,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -88,13 +89,13 @@ public class AuthenticationBean implements Authentication {
         HelpdeskLogger.add("login: " + this.loginName, LogLevelType.INFO);
 
         try {
-            String deviceUserId = this.digipassDeviceService.authenticate(this.loginName, this.token);
-            if (null == deviceUserId) {
+            String userId = this.digipassDeviceService.authenticate(this.loginName, this.token);
+            if (null == userId) {
                 this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
                 HelpdeskLogger.add("login failed: " + this.loginName, LogLevelType.ERROR);
                 return null;
             }
-            login(deviceUserId);
+            login(userId);
         } catch (SubjectNotFoundException e) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "digipassNotRegistered");
             HelpdeskLogger.add("login: subject not found for " + this.loginName, LogLevelType.ERROR);
@@ -104,15 +105,20 @@ public class AuthenticationBean implements Authentication {
             HelpdeskLogger.add("Failed to contact OLAS to retrieve device mapping for " + this.loginName,
                     LogLevelType.ERROR);
             return null;
+        } catch (DeviceNotFoundException e) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "digipassAuthenticationFailed");
+            HelpdeskLogger.add("Digipass Device not found", LogLevelType.ERROR);
+            return null;
+
         }
         HelpdeskLogger.clear();
         destroyCallback();
         return null;
     }
 
-    private void login(String deviceUserId) throws IOException {
+    private void login(String userId) throws IOException {
 
-        this.authenticationContext.setUserId(deviceUserId);
+        this.authenticationContext.setUserId(userId);
         this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
         this.authenticationContext.setIssuer(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
         this.authenticationContext

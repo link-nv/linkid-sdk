@@ -9,7 +9,6 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -37,13 +36,11 @@ public interface NodeAttributeService {
      * 
      * @param subjectId
      * @param attributeName
-     * @throws AttributeNotFoundException
      * @throws PermissionDeniedException
      * @throws SubjectNotFoundException
      * @throws AttributeTypeNotFoundException
      * @throws AttributeUnavailableException
      */
-    Object getAttributeValue(String subjectId, String attributeName) throws AttributeNotFoundException,
-            PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeUnavailableException;
+    Object getAttributeValue(String subjectId, String attributeName) throws PermissionDeniedException,
+            SubjectNotFoundException, AttributeTypeNotFoundException, AttributeUnavailableException;
 }

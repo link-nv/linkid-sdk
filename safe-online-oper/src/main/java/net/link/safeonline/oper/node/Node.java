@@ -8,8 +8,10 @@
 package net.link.safeonline.oper.node;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.ejb.Local;
+import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
@@ -24,6 +26,8 @@ public interface Node {
      * Factory
      */
     void nodeListFactory();
+
+    List<SelectItem> protocolListFactory();
 
     /*
      * Lifecycle.
@@ -40,6 +44,10 @@ public interface Node {
     String getHostname();
 
     void setHostname(String hostname);
+
+    String getProtocol();
+
+    void setProtocol(String protocol);
 
     int getPort();
 

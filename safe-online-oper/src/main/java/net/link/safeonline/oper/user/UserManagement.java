@@ -20,7 +20,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.ctrl.HistoryMessage;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.data.DeviceMappingDO;
+import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
@@ -43,7 +43,7 @@ public interface UserManagement {
 
     List<SubscriptionEntity> getSubscriptionList();
 
-    List<DeviceMappingDO> getDeviceRegistrationList();
+    List<DeviceRegistrationDO> getDeviceRegistrationList();
 
     List<AttributeDO> getAttributeList();
 

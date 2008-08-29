@@ -23,12 +23,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.WebServiceContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
-import net.link.safeonline.authentication.service.DeviceIdentifierMappingService;
+import net.link.safeonline.authentication.service.NodeIdentifierMappingService;
 import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
 import net.link.safeonline.ws.common.SamlpTopLevelErrorCode;
 import net.link.safeonline.ws.util.CertificateDomainException;
@@ -49,13 +49,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of SAML Name Identifier Mapping Service.
- *
+ * 
  * <p>
  * Specification: Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0.
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @WebService(endpointInterface = "oasis.names.tc.saml._2_0.protocol.NameIdentifierMappingPort")
 @HandlerChain(file = "auth-ws-handlers.xml")
@@ -70,8 +70,8 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
     @EJB(mappedName = "SafeOnline/ApplicationIdentifierMappingServiceBean/local")
     private ApplicationIdentifierMappingService applicationIdentifierMappingService;
 
-    @EJB(mappedName = "SafeOnline/DeviceIdentifierMappingServiceBean/local")
-    private DeviceIdentifierMappingService      deviceIdentifierMappingService;
+    @EJB(mappedName = "SafeOnline/NodeIdentifierMappingServiceBean/local")
+    private NodeIdentifierMappingService        nodeIdentifierMappingService;
 
 
     public NameIDMappingResponseType nameIdentifierMappingQuery(NameIDMappingRequestType request) {
@@ -122,8 +122,8 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
         try {
             if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
                 userId = this.applicationIdentifierMappingService.getApplicationUserId(username);
-            } else if (certificateDomain.equals(CertificateDomain.DEVICE)) {
-                userId = this.deviceIdentifierMappingService.getDeviceMappingId(username);
+            } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                userId = this.nodeIdentifierMappingService.getNodeMappingId(username);
             } else {
                 LOG.debug("security domain not supported: " + certificateDomain.toString());
                 NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
@@ -145,8 +145,8 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
             LOG.debug("subject not found: " + username);
             NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
             return response;
-        } catch (DeviceNotFoundException e) {
-            LOG.debug("device not found");
+        } catch (NodeNotFoundException e) {
+            LOG.debug("node not found");
             NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
             return response;
         }

@@ -67,7 +67,6 @@ import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.IdScopeType;
@@ -77,15 +76,14 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementPK;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.model.UsageAgreementManager;
+import net.link.safeonline.notification.dao.NotificationProducerDAO;
 import net.link.safeonline.notification.service.NotificationProducerService;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
-import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
@@ -436,6 +434,8 @@ public abstract class AbstractInitBean implements Startable {
 
     protected List<DeviceProperty>           deviceProperties;
 
+    protected List<String>                   notificationTopics;
+
     protected List<NotificationSubscription> notificationSubcriptions;
 
     protected Node                           node;
@@ -460,6 +460,7 @@ public abstract class AbstractInitBean implements Startable {
         this.deviceDescriptions = new LinkedList<DeviceDescription>();
         this.deviceProperties = new LinkedList<DeviceProperty>();
         this.allowedDevices = new HashMap<String, List<String>>();
+        this.notificationTopics = new LinkedList<String>();
         this.notificationSubcriptions = new LinkedList<NotificationSubscription>();
     }
 
@@ -514,6 +515,7 @@ public abstract class AbstractInitBean implements Startable {
             initApplicationTrustPoints();
             initAttributeProviders();
             initAttributes();
+            initNotificationTopics();
             initNotifications();
         } catch (SafeOnlineException e) {
             this.LOG.fatal("safeonline exception", e);
@@ -571,9 +573,6 @@ public abstract class AbstractInitBean implements Startable {
 
     @EJB
     private PasswordManager        passwordManager;
-
-    @EJB
-    private DeviceMappingService   deviceMappingService;
 
 
     private void initApplicationTrustPoints() {
@@ -776,8 +775,7 @@ public abstract class AbstractInitBean implements Startable {
         }
     }
 
-    private void initSubjects() throws AttributeTypeNotFoundException, SubjectNotFoundException,
-            DeviceNotFoundException {
+    private void initSubjects() throws AttributeTypeNotFoundException {
 
         for (Map.Entry<String, AuthenticationDevice> authorizedUser : this.authorizedUsers.entrySet()) {
             String login = authorizedUser.getKey();
@@ -787,16 +785,10 @@ public abstract class AbstractInitBean implements Startable {
             }
             subject = this.subjectService.addSubject(login);
 
-            DeviceMappingEntity deviceMapping = this.deviceMappingService.getDeviceMapping(subject.getUserId(),
-                    SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-            DeviceSubjectEntity deviceSubject = this.subjectService.addDeviceSubject(deviceMapping.getId());
-            SubjectEntity deviceRegistration = this.subjectService.addDeviceRegistration();
-            deviceSubject.getRegistrations().add(deviceRegistration);
-
             AuthenticationDevice device = authorizedUser.getValue();
             String password = device.password;
             try {
-                this.passwordManager.setPassword(deviceRegistration, password);
+                this.passwordManager.setPassword(subject, password);
             } catch (PermissionDeniedException e) {
                 throw new EJBException("could not set password");
             }
@@ -944,6 +936,20 @@ public abstract class AbstractInitBean implements Startable {
                 if (null == allowedDevice) {
                     this.allowedDeviceDAO.addAllowedDevice(application, device, 0);
                 }
+            }
+        }
+    }
+
+
+    @EJB
+    private NotificationProducerDAO notificationProducerDAO;
+
+
+    private void initNotificationTopics() {
+
+        for (String topic : this.notificationTopics) {
+            if (null == this.notificationProducerDAO.findSubscription(topic)) {
+                this.notificationProducerDAO.addSubscription(topic);
             }
         }
     }

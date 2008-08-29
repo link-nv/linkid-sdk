@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Manager class for registered WS-Notification message handlers.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class MessageHandlerManager {
 
@@ -63,9 +63,8 @@ public class MessageHandlerManager {
             throws MessageHandlerNotFoundException, WSClientTransportException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
-        if (null == messageHandler) {
+        if (null == messageHandler)
             throw new MessageHandlerNotFoundException(topic);
-        }
         messageHandler.init();
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
@@ -77,10 +76,10 @@ public class MessageHandlerManager {
             LOG.debug("destination: " + consumer.getApplication().getName());
             destination = consumer.getApplication().getName();
             returnMessage = messageHandler.createApplicationMessage(message, consumer.getApplication());
-        } else if (null != consumer.getDevice()) {
-            LOG.debug("destination: " + consumer.getDevice().getName());
-            destination = consumer.getDevice().getName();
-            returnMessage = messageHandler.createDeviceMessage(message, consumer.getDevice());
+        } else if (null != consumer.getNode()) {
+            LOG.debug("destination: " + consumer.getNode().getName());
+            destination = consumer.getNode().getName();
+            returnMessage = messageHandler.createNodeMessage(message, consumer.getNode());
         }
         if (null != returnMessage) {
             consumerClient.sendNotification(topic, destination, returnMessage);
@@ -91,9 +90,8 @@ public class MessageHandlerManager {
             throws MessageHandlerNotFoundException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
-        if (null == messageHandler) {
+        if (null == messageHandler)
             throw new MessageHandlerNotFoundException(topic);
-        }
         messageHandler.init();
 
         messageHandler.handleMessage(destination, message);

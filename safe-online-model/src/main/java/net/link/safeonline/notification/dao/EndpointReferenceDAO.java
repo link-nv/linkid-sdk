@@ -13,7 +13,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 
 
@@ -22,21 +22,21 @@ public interface EndpointReferenceDAO {
 
     EndpointReferenceEntity addEndpointReference(String address, ApplicationEntity application);
 
-    EndpointReferenceEntity addEndpointReference(String address, DeviceEntity device);
+    EndpointReferenceEntity addEndpointReference(String address, NodeEntity node);
 
     EndpointReferenceEntity findEndpointReference(String address, ApplicationEntity application);
 
-    EndpointReferenceEntity findEndpointReference(String address, DeviceEntity device);
+    EndpointReferenceEntity findEndpointReference(String address, NodeEntity node);
 
     EndpointReferenceEntity getEndpointReference(String address, ApplicationEntity application)
             throws EndpointReferenceNotFoundException;
 
-    EndpointReferenceEntity getEndpointReference(String address, DeviceEntity device)
+    EndpointReferenceEntity getEndpointReference(String address, NodeEntity node)
             throws EndpointReferenceNotFoundException;
 
     List<EndpointReferenceEntity> listEndpoints();
 
-    List<EndpointReferenceEntity> listEndpoints(DeviceEntity device);
+    List<EndpointReferenceEntity> listEndpoints(NodeEntity node);
 
     List<EndpointReferenceEntity> listEndpoints(ApplicationEntity application);
 

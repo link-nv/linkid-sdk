@@ -9,22 +9,22 @@ package net.link.safeonline.shared.statement;
 
 /**
  * Interface for identity provider component.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface IdentityProvider {
 
     /**
      * Gives back the given name.
-     *
+     * 
      * @return
      */
     String getGivenName();
 
     /**
      * Gives back the surname.
-     *
+     * 
      * @return
      */
     String getSurname();

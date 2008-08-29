@@ -37,7 +37,7 @@ import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
-import net.link.safeonline.data.DeviceMappingDO;
+import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
@@ -69,29 +69,29 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class DevicesBean implements Devices {
 
-    private static final Log    LOG                       = LogFactory.getLog(DevicesBean.class);
+    private static final Log     LOG                            = LogFactory.getLog(DevicesBean.class);
 
-    private static final String DEVICES_LIST_NAME         = "devices";
+    private static final String  DEVICES_LIST_NAME              = "devices";
 
-    private static final String DEVICE_MAPPINGS_LIST_NAME = "deviceMappings";
+    private static final String  DEVICE_REGISTRATIONS_LIST_NAME = "deviceRegistrations";
 
-    private String              oldPassword;
+    private String               oldPassword;
 
-    private String              newPassword;
+    private String               newPassword;
 
-    private boolean             credentialCacheFlushRequired;
+    private boolean              credentialCacheFlushRequired;
 
     @DataModel(DEVICES_LIST_NAME)
-    List<DeviceEntry>           devices;
+    List<DeviceEntry>            devices;
 
     @DataModelSelection(DEVICES_LIST_NAME)
-    private DeviceEntry         selectedDevice;
+    private DeviceEntry          selectedDevice;
 
-    @DataModel(DEVICE_MAPPINGS_LIST_NAME)
-    List<DeviceMappingDO>       deviceMappings;
+    @DataModel(DEVICE_REGISTRATIONS_LIST_NAME)
+    List<DeviceRegistrationDO>   deviceRegistrations;
 
-    @DataModelSelection(DEVICE_MAPPINGS_LIST_NAME)
-    private DeviceMappingDO     selectedDeviceMapping;
+    @DataModelSelection(DEVICE_REGISTRATIONS_LIST_NAME)
+    private DeviceRegistrationDO selectedDeviceRegistration;
 
 
     @PostConstruct
@@ -222,15 +222,15 @@ public class DevicesBean implements Devices {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    @Factory(DEVICE_MAPPINGS_LIST_NAME)
-    public List<DeviceMappingDO> deviceRegistrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException {
+    @Factory(DEVICE_REGISTRATIONS_LIST_NAME)
+    public List<DeviceRegistrationDO> deviceRegistrationsFactory() throws SubjectNotFoundException,
+            DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         Locale locale = getViewLocale();
         LOG.debug("device registrations factory");
         SubjectEntity subject = this.subjectManager.getCallerSubject();
-        this.deviceMappings = this.deviceService.getDeviceRegistrations(subject, locale);
-        return this.deviceMappings;
+        this.deviceRegistrations = this.deviceService.getDeviceRegistrations(subject, locale);
+        return this.deviceRegistrations;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
@@ -276,13 +276,13 @@ public class DevicesBean implements Devices {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
             return null;
         }
-        LOG.debug("remove device: " + this.selectedDeviceMapping.getFriendlyName());
-        return redirectRemove(this.selectedDeviceMapping.getDeviceMapping().getDevice().getName());
+        LOG.debug("remove device: " + this.selectedDeviceRegistration.getFriendlyName());
+        return redirectRemove(this.selectedDeviceRegistration.getDevice().getName());
     }
 
     private boolean deviceRemovalAllowed() {
 
-        if (this.deviceMappings.size() == 1)
+        if (this.deviceRegistrations.size() == 1)
             return false;
         return true;
     }
@@ -312,8 +312,8 @@ public class DevicesBean implements Devices {
     @RolesAllowed(UserConstants.USER_ROLE)
     public String updateDevice() throws DeviceNotFoundException, IOException {
 
-        LOG.debug("update device: " + this.selectedDeviceMapping.getFriendlyName());
-        return redirectUpdate(this.selectedDeviceMapping.getDeviceMapping().getDevice().getName());
+        LOG.debug("update device: " + this.selectedDeviceRegistration.getFriendlyName());
+        return redirectUpdate(this.selectedDeviceRegistration.getDevice().getName());
 
     }
 

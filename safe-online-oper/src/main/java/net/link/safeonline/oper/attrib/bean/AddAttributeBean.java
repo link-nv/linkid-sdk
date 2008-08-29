@@ -98,8 +98,6 @@ public class AddAttributeBean implements AddAttribute {
 
     private boolean                   userEditable;
 
-    private boolean                   deviceAttribute;
-
     private List<AttributeTypeEntity> sourceMemberAttributes;
 
     private List<AttributeTypeEntity> selectedMemberAttributes;
@@ -353,7 +351,6 @@ public class AddAttributeBean implements AddAttribute {
         attributeType.setUserVisible(this.userVisible);
 
         if (this.locationOption.equals(olasAttribute)) {
-            attributeType.setDeviceAttribute(this.deviceAttribute);
             NodeEntity olasNode = this.nodeService.getNode(this.node);
             attributeType.setLocation(olasNode);
         } else {
@@ -455,18 +452,6 @@ public class AddAttributeBean implements AddAttribute {
 
         this.log.debug("members access control next");
         return "next";
-    }
-
-    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public boolean isDeviceAttribute() {
-
-        return this.deviceAttribute;
-    }
-
-    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void setDeviceAttribute(boolean deviceAttribute) {
-
-        this.deviceAttribute = deviceAttribute;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

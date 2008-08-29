@@ -27,15 +27,12 @@ import net.link.safeonline.authentication.service.AccountServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationScopeIdDAO;
 import net.link.safeonline.dao.AttributeDAO;
-import net.link.safeonline.dao.DeviceMappingDAO;
-import net.link.safeonline.dao.DeviceSubjectDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.dao.NodeMappingDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.notification.service.NotificationProducerService;
@@ -72,13 +69,10 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
     private SubjectDAO                  subjectDAO;
 
     @EJB
-    private DeviceSubjectDAO            deviceSubjectDAO;
-
-    @EJB
     private SubjectIdentifierDAO        subjectIdentifierDAO;
 
     @EJB
-    private DeviceMappingDAO            deviceMappingDAO;
+    private NodeMappingDAO              nodeMappingDAO;
 
     @EJB
     private SubjectService              subjectService;
@@ -124,38 +118,7 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
         this.applicationScopeIdDAO.removeApplicationScopeIds(subject);
         this.attributeDAO.removeAttributes(subject);
         this.subjectIdentifierDAO.removeSubjectIdentifiers(subject);
+        this.nodeMappingDAO.removeNodeMappings(subject);
         this.subjectDAO.removeSubject(subject);
-
-        removeDeviceRegistrations(subject);
-        this.deviceMappingDAO.removeDeviceMappings(subject);
-    }
-
-    /**
-     * Remove local device attributes and possible local device subjects
-     *
-     * @param subject
-     */
-    private void removeDeviceRegistrations(SubjectEntity subject) {
-
-        List<DeviceMappingEntity> deviceMappings = this.deviceMappingDAO.listDeviceMappings(subject);
-        for (DeviceMappingEntity deviceMapping : deviceMappings) {
-            if (deviceMapping.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-                DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceMapping.getId());
-                if (null == deviceSubject) {
-                    continue;
-                }
-                for (SubjectEntity deviceRegistration : deviceSubject.getRegistrations()) {
-                    removeDeviceRegistration(deviceRegistration);
-                }
-                this.deviceSubjectDAO.removeSubject(deviceSubject);
-            }
-        }
-    }
-
-    private void removeDeviceRegistration(SubjectEntity deviceRegistration) {
-
-        this.attributeDAO.removeAttributes(deviceRegistration);
-        this.subjectIdentifierDAO.removeSubjectIdentifiers(deviceRegistration);
-        this.subjectDAO.removeSubject(deviceRegistration);
     }
 }

@@ -7,7 +7,7 @@
 
 package net.link.safeonline.model.digipass.bean;
 
-import java.security.KeyStore.PrivateKeyEntry;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,22 +23,23 @@ import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.digipass.keystore.DigipassKeyStoreUtils;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.entity.device.DeviceSubjectEntity;
 import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.model.digipass.DigipassDeviceServiceRemote;
@@ -48,6 +49,7 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,6 +67,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     private SubjectIdentifierDAO subjectIdentifierDAO;
 
     @EJB
+    private DeviceDAO            deviceDAO;
+
+    @EJB
     private AttributeDAO         attributeDAO;
 
     @EJB
@@ -78,12 +83,12 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
 
 
     public String authenticate(String loginName, String token) throws SubjectNotFoundException,
-            PermissionDeniedException {
+            PermissionDeniedException, DeviceNotFoundException {
 
         NameIdentifierMappingClient idMappingClient = getIDMappingClient();
-        String deviceUserId;
+        String userId;
         try {
-            deviceUserId = idMappingClient.getUserId(loginName);
+            userId = idMappingClient.getUserId(loginName);
         } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
             LOG.debug("subject not found: " + loginName);
             throw new SubjectNotFoundException();
@@ -95,25 +100,27 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
                     .getLocation(), "Unable to contact id mapping WS");
             throw new PermissionDeniedException(e.getMessage());
         }
-        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceUserId);
-        if (0 == deviceSubject.getRegistrations().size())
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+        DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+
+        if (0 == attributes.size())
             return null;
         if (Integer.parseInt(token) % 2 != 0) {
             LOG.debug("Invalid token: " + token);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, deviceSubject.getRegistrations()
-                    .get(0).getUserId(), "incorrect digipass token");
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "incorrect digipass token");
             return null;
         }
-        return deviceUserId;
+        return userId;
     }
 
     public String register(String loginName, String serialNumber) throws SubjectNotFoundException,
             PermissionDeniedException, ArgumentIntegrityException {
 
         NameIdentifierMappingClient idMappingClient = getIDMappingClient();
-        String deviceUserId;
+        String userId;
         try {
-            deviceUserId = idMappingClient.getUserId(loginName);
+            userId = idMappingClient.getUserId(loginName);
         } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
             LOG.debug("subject not found: " + loginName);
             throw new SubjectNotFoundException();
@@ -132,17 +139,15 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             throw new ArgumentIntegrityException();
         }
 
-        DeviceSubjectEntity deviceSubject = this.subjectService.findDeviceSubject(deviceUserId);
-        if (null == deviceSubject) {
-            deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
+        SubjectEntity subject = this.subjectService.findSubject(userId);
+        if (null == subject) {
+            subject = this.subjectService.addSubjectWithoutLogin(userId);
         }
-        SubjectEntity deviceRegistration = this.subjectService.addDeviceRegistration();
-        deviceSubject.getRegistrations().add(deviceRegistration);
-        setSerialNumber(deviceRegistration, serialNumber);
+        setSerialNumber(subject, serialNumber);
 
         this.subjectIdentifierDAO.addSubjectIdentifier(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber,
-                deviceRegistration);
-        return deviceUserId;
+                subject);
+        return userId;
     }
 
     private void setSerialNumber(SubjectEntity subject, String serialNumber) {
@@ -154,61 +159,38 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             throw new EJBException("digipass serial number attribute type not found");
         }
         List<AttributeEntity> mobileAttributes = this.attributeDAO.listAttributes(subject, snAttributeType);
-        AttributeEntity mobileAttribute = this.attributeDAO.addAttribute(snAttributeType, subject, mobileAttributes
-                .size());
-        mobileAttribute.setStringValue(serialNumber);
+        AttributeEntity snAttribute = this.attributeDAO.addAttribute(snAttributeType, subject, mobileAttributes.size());
+        snAttribute.setStringValue(serialNumber);
     }
 
     public void remove(String loginName, String serialNumber) throws SubjectNotFoundException, DigipassException,
-            PermissionDeniedException {
+            PermissionDeniedException, DeviceNotFoundException {
 
-        NameIdentifierMappingClient idMappingClient = getIDMappingClient();
-        String deviceUserId;
-        try {
-            deviceUserId = idMappingClient.getUserId(loginName);
-        } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
-            LOG.debug("subject not found: " + loginName);
-            throw new SubjectNotFoundException();
-        } catch (RequestDeniedException e) {
-            LOG.debug("request denied: " + e.getMessage());
-            throw new PermissionDeniedException("Unable to retrieve login: " + loginName);
-        } catch (WSClientTransportException e) {
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e
-                    .getLocation(), "Unable to contact id mapping WS");
-            throw new PermissionDeniedException(e.getMessage());
-        }
-
-        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceUserId);
-        SubjectEntity deviceRegistration = this.subjectIdentifierDAO.findSubject(
-                DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
-        if (null == deviceRegistration)
+        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN,
+                serialNumber);
+        if (null == subject)
             throw new DigipassException("device registration not found");
+        this.subjectIdentifierDAO.removeSubjectIdentifier(subject, DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN,
+                serialNumber);
 
-        AttributeTypeEntity snAttributeType;
-        try {
-            snAttributeType = this.attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_SN_ATTRIBUTE);
-        } catch (AttributeTypeNotFoundException e) {
-            throw new EJBException("digipass serial number attribute type not found");
-        }
-        this.subjectIdentifierDAO.removeSubjectIdentifier(deviceRegistration,
-                DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
-        List<AttributeEntity> snAttributes = this.attributeDAO.listAttributes(deviceRegistration, snAttributeType);
-        for (AttributeEntity snAttribute : snAttributes) {
-            if (snAttribute.getStringValue().equals(serialNumber)) {
-                this.attributeDAO.removeAttribute(snAttribute);
+        DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+        AttributeTypeEntity deviceAttributeType = device.getAttributeType();
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            if (deviceAttribute.getStringValue().equals(serialNumber)) {
+                this.attributeDAO.removeAttribute(deviceAttribute);
             }
         }
-        deviceSubject.getRegistrations().remove(deviceRegistration);
     }
 
     public List<AttributeDO> getDigipasses(String loginName, Locale locale) throws SubjectNotFoundException,
-            PermissionDeniedException {
+            PermissionDeniedException, DeviceNotFoundException {
 
         LOG.debug("get digipasses for: " + loginName);
         NameIdentifierMappingClient idMappingClient = getIDMappingClient();
-        String deviceUserId;
+        String userId;
         try {
-            deviceUserId = idMappingClient.getUserId(loginName);
+            userId = idMappingClient.getUserId(loginName);
         } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
             LOG.debug("subject not found: " + loginName);
             throw new SubjectNotFoundException();
@@ -221,14 +203,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             throw new PermissionDeniedException(e.getMessage());
         }
 
-        AttributeTypeEntity snAttributeType;
-        try {
-            snAttributeType = this.attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_SN_ATTRIBUTE);
-        } catch (AttributeTypeNotFoundException e) {
-            throw new EJBException("digipass serial number attribute type not found");
-        }
-
-        AttributeTypeDescriptionEntity attributeTypeDescription = findAttributeTypeDescription(snAttributeType, locale);
+        DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+        AttributeTypeDescriptionEntity attributeTypeDescription = findAttributeTypeDescription(device
+                .getAttributeType(), locale);
         String humanReadableName = null;
         String description = null;
         if (null != attributeTypeDescription) {
@@ -236,19 +213,17 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             description = attributeTypeDescription.getDescription();
         }
 
-        List<AttributeDO> snList = new LinkedList<AttributeDO>();
-        DeviceSubjectEntity deviceSubject = this.subjectService.getDeviceSubject(deviceUserId);
-        for (SubjectEntity deviceRegistration : deviceSubject.getRegistrations()) {
-            List<AttributeEntity> attributes = this.attributeDAO.listAttributes(deviceRegistration, snAttributeType);
-            for (AttributeEntity attribute : attributes) {
-                AttributeDO attributeView = new AttributeDO(snAttributeType.getName(), snAttributeType.getType(),
-                        snAttributeType.isMultivalued(), attribute.getAttributeIndex(), humanReadableName, description,
-                        snAttributeType.isUserEditable(), false, attribute.getStringValue(), attribute
-                                .getBooleanValue());
-                snList.add(attributeView);
-            }
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+        List<AttributeDO> deviceAttributeList = new LinkedList<AttributeDO>();
+        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        for (AttributeEntity attribute : attributes) {
+            AttributeDO attributeView = new AttributeDO(device.getAttributeType().getName(), device.getAttributeType()
+                    .getType(), device.getAttributeType().isMultivalued(), attribute.getAttributeIndex(),
+                    humanReadableName, description, device.getAttributeType().isUserEditable(), false, attribute
+                            .getStringValue(), attribute.getBooleanValue());
+            deviceAttributeList.add(attributeView);
         }
-        return snList;
+        return deviceAttributeList;
     }
 
     private AttributeTypeDescriptionEntity findAttributeTypeDescription(AttributeTypeEntity attributeType, Locale locale) {
@@ -272,11 +247,12 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         String location = externalContext.getInitParameter("StsWsLocation");
-        PrivateKeyEntry privateKeyEntry = DigipassKeyStoreUtils.getPrivateKeyEntry();
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
 
-        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl(location, certificate, privateKeyEntry
-                .getPrivateKey());
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        PrivateKey privateKey = authIdentityServiceClient.getPrivateKey();
+        X509Certificate certificate = authIdentityServiceClient.getCertificate();
+
+        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl(location, certificate, privateKey);
         return client;
     }
 }

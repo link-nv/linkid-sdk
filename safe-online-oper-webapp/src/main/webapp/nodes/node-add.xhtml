@@ -47,6 +47,15 @@
 							</s:decorate></td>
 						</tr>
 						<tr>
+							<th><h:outputText value="#{msgs.protocol}" /></th>
+							<td><s:decorate>
+								<h:selectOneMenu id="protocol" value="#{operNode.protocol}"
+									styleClass="label">
+									<f:selectItems value="#{operProtocolList}" />
+								</h:selectOneMenu>
+							</s:decorate></td>
+						</tr>
+						<tr>
 							<th><h:outputText value="#{msgs.port}" /></th>
 							<td><s:decorate>
 								<h:inputText id="port" value="#{operNode.port}"
@@ -72,16 +81,14 @@
 
 					<tbody>
 						<tr>
-							<th><h:outputText
-								value="#{msgs.authenticationCertificate}" /></th>
+							<th><h:outputText value="#{msgs.authenticationCertificate}" /></th>
 							<td><s:decorate>
 								<t:inputFileUpload id="authnCertificate" styleClass="label"
 									value="#{operNode.authnUpFile}" />
 							</s:decorate> <h:message for="authnCertificate" styleClass="error" /></td>
 						</tr>
 						<tr>
-							<th><h:outputText
-								value="#{msgs.signingCertificate}" /></th>
+							<th><h:outputText value="#{msgs.signingCertificate}" /></th>
 							<td><s:decorate>
 								<t:inputFileUpload id="signingCertificate" styleClass="label"
 									value="#{operNode.signingUpFile}" />

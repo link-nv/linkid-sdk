@@ -9,9 +9,9 @@ package net.link.safeonline.entity.notification;
 
 import static net.link.safeonline.entity.notification.EndpointReferenceEntity.QUERY_LIST_ALL;
 import static net.link.safeonline.entity.notification.EndpointReferenceEntity.QUERY_WHERE_ADDRESS_APPLICATION;
-import static net.link.safeonline.entity.notification.EndpointReferenceEntity.QUERY_WHERE_ADDRESS_DEVICE;
+import static net.link.safeonline.entity.notification.EndpointReferenceEntity.QUERY_WHERE_ADDRESS_NODE;
 import static net.link.safeonline.entity.notification.EndpointReferenceEntity.QUERY_WHERE_APPLICATION;
-import static net.link.safeonline.entity.notification.EndpointReferenceEntity.QUERY_WHERE_DEVICE;
+import static net.link.safeonline.entity.notification.EndpointReferenceEntity.QUERY_WHERE_NODE;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,7 +28,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 
@@ -39,34 +39,34 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Entity representing a W3CEndpointReference.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Entity
 @Table(name = "endpoint_ref")
 @NamedQueries( {
         @NamedQuery(name = QUERY_LIST_ALL, query = "FROM EndpointReferenceEntity epr"),
-        @NamedQuery(name = QUERY_WHERE_ADDRESS_DEVICE, query = "SELECT epr " + "FROM EndpointReferenceEntity AS epr "
-                + "WHERE epr.address = :address AND epr.device = :device"),
+        @NamedQuery(name = QUERY_WHERE_ADDRESS_NODE, query = "SELECT epr FROM EndpointReferenceEntity AS epr "
+                + "WHERE epr.address = :address AND epr.node = :node"),
         @NamedQuery(name = QUERY_WHERE_ADDRESS_APPLICATION, query = "SELECT epr "
-                + "FROM EndpointReferenceEntity AS epr " + "WHERE epr.address = :address AND "
+                + "FROM EndpointReferenceEntity AS epr WHERE epr.address = :address AND "
                 + "epr.application = :application"),
-        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT epr " + "FROM EndpointReferenceEntity AS epr "
+        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT epr FROM EndpointReferenceEntity AS epr "
                 + "WHERE epr.application = :application"),
-        @NamedQuery(name = QUERY_WHERE_DEVICE, query = "SELECT epr " + "FROM EndpointReferenceEntity AS epr "
-                + "WHERE epr.device = :device") })
+        @NamedQuery(name = QUERY_WHERE_NODE, query = "SELECT epr FROM EndpointReferenceEntity AS epr "
+                + "WHERE epr.node = :node") })
 public class EndpointReferenceEntity implements Serializable {
 
     private static final long  serialVersionUID                = 1L;
 
     public static final String QUERY_LIST_ALL                  = "epr.list.all";
 
-    public static final String QUERY_WHERE_ADDRESS_DEVICE      = "epr.add.dev";
+    public static final String QUERY_WHERE_ADDRESS_NODE        = "epr.add.node";
 
     public static final String QUERY_WHERE_ADDRESS_APPLICATION = "epr.add.app";
 
-    public static final String QUERY_WHERE_DEVICE              = "epr.dev";
+    public static final String QUERY_WHERE_NODE                = "epr.node";
 
     public static final String QUERY_WHERE_APPLICATION         = "epr.app";
 
@@ -76,7 +76,7 @@ public class EndpointReferenceEntity implements Serializable {
 
     private ApplicationEntity  application;
 
-    private DeviceEntity       device;
+    private NodeEntity         node;
 
 
     public EndpointReferenceEntity() {
@@ -90,10 +90,10 @@ public class EndpointReferenceEntity implements Serializable {
         this.application = application;
     }
 
-    public EndpointReferenceEntity(String address, DeviceEntity device) {
+    public EndpointReferenceEntity(String address, NodeEntity node) {
 
         this.address = address;
-        this.device = device;
+        this.node = node;
     }
 
     @Id
@@ -132,14 +132,14 @@ public class EndpointReferenceEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(nullable = true)
-    public DeviceEntity getDevice() {
+    public NodeEntity getNode() {
 
-        return this.device;
+        return this.node;
     }
 
-    public void setDevice(DeviceEntity device) {
+    public void setNode(NodeEntity node) {
 
-        this.device = device;
+        this.node = node;
     }
 
     @Transient
@@ -147,7 +147,7 @@ public class EndpointReferenceEntity implements Serializable {
 
         if (null != this.application)
             return this.application.getName();
-        return this.device.getName();
+        return this.node.getName();
     }
 
     @Override
@@ -158,8 +158,8 @@ public class EndpointReferenceEntity implements Serializable {
         if (null != this.application) {
             builder.append("application", this.application.getName());
         }
-        if (null != this.device) {
-            builder.append("device", this.device.getName());
+        if (null != this.node) {
+            builder.append("node", this.node.getName());
         }
         return builder.toString();
     }
@@ -179,8 +179,8 @@ public class EndpointReferenceEntity implements Serializable {
         if (null != this.application) {
             builder.append(this.application, rhs.application);
         }
-        if (null != this.device) {
-            builder.append(this.device, rhs.device);
+        if (null != this.node) {
+            builder.append(this.node, rhs.node);
         }
         return builder.isEquals();
     }
@@ -193,8 +193,8 @@ public class EndpointReferenceEntity implements Serializable {
         if (null != this.application) {
             builder.append(this.application);
         }
-        if (null != this.device) {
-            builder.append(this.device);
+        if (null != this.node) {
+            builder.append(this.node);
         }
         return builder.toHashCode();
     }
@@ -205,15 +205,15 @@ public class EndpointReferenceEntity implements Serializable {
         @QueryMethod(value = QUERY_LIST_ALL)
         List<EndpointReferenceEntity> listEndpoints();
 
-        @QueryMethod(value = QUERY_WHERE_ADDRESS_DEVICE, nullable = true)
-        EndpointReferenceEntity find(@QueryParam("address") String address, @QueryParam("device") DeviceEntity device);
+        @QueryMethod(value = QUERY_WHERE_ADDRESS_NODE, nullable = true)
+        EndpointReferenceEntity find(@QueryParam("address") String address, @QueryParam("node") NodeEntity node);
 
         @QueryMethod(value = QUERY_WHERE_ADDRESS_APPLICATION, nullable = true)
         EndpointReferenceEntity find(@QueryParam("address") String address,
                 @QueryParam("application") ApplicationEntity application);
 
-        @QueryMethod(value = QUERY_WHERE_DEVICE)
-        List<EndpointReferenceEntity> listEndpoints(@QueryParam("device") DeviceEntity device);
+        @QueryMethod(value = QUERY_WHERE_NODE)
+        List<EndpointReferenceEntity> listEndpoints(@QueryParam("node") NodeEntity node);
 
         @QueryMethod(value = QUERY_WHERE_APPLICATION)
         List<EndpointReferenceEntity> listEndpoints(@QueryParam("application") ApplicationEntity application);
