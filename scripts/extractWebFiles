@@ -172,10 +172,10 @@ if (( apply )); then
             backHash=$(openssl md4 < "$file~")
 
             if (( force )) || [[ $fileHash != $backHash ]]; then
-                ddest="${repos[w]}/${file/-1.1-SNAPSHOT-exp.war//src/main/webapp}"
+                ddest="${repos[w]}/${file/-1.2-SNAPSHOT-exp.war//src/main/webapp}"
 
                 if ! [[ -e $ddest ]] || [[ $(openssl md4 < "$ddest") != $backHash ]]; then
-                    adest=( "${repos[w]}/"*"/src/main/webapp/${file/*-1.1-SNAPSHOT-exp.war/}" )
+                    adest=( "${repos[w]}/"*"/src/main/webapp/${file/*-1.2-SNAPSHOT-exp.war/}" )
                     for ad in ${!adest[@]}; do
                         for exclude in $excludes; do
                             [[ ${adest[ad]} = *$exclude* ]] && unset adest[ad]
