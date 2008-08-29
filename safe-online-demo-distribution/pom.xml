@@ -6,14 +6,14 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.1-p1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 
 	<name>SafeOnline Demo Distribution</name>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-distribution</artifactId>
-	<version>1.1-p1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>pom</packaging>
 
 	<build>
@@ -126,37 +126,37 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-base-distribution</artifactId>
 			<type>zip</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-deploy</artifactId>
 			<type>ear</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-deploy</artifactId>
 			<type>ear</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-beid-deploy</artifactId>
 			<type>ear</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-deploy</artifactId>
 			<type>ear</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-digipass-deploy</artifactId>
 			<type>ear</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 
 	</dependencies>

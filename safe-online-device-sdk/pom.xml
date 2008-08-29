@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.1-p1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 
 	<name>SafeOnline Device SDK</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-device-sdk</artifactId>
-	<version>1.1-p1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -25,19 +25,19 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

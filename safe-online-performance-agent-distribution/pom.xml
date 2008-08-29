@@ -7,14 +7,14 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.1-p1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 
 	<name>SafeOnline Performance Agent Distribution</name>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-performance-agent-distribution</artifactId>
-	<version>1.1-p1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>pom</packaging>
 
 	<build>
@@ -57,7 +57,7 @@
 									<artifactId>
 										safe-online-base-distribution
 									</artifactId>
-									<version>1.1-p1-SNAPSHOT</version>
+									<version>1.1</version>
 									<type>zip</type>
 								</artifactItem>
 							</artifactItems>
@@ -81,7 +81,7 @@
 									<artifactId>
 										safe-online-performance-agent-service
 									</artifactId>
-									<version>1.1-p1-SNAPSHOT</version>
+									<version>1.1</version>
 									<type>sar</type>
 								</artifactItem>
 								<artifactItem>
@@ -114,7 +114,7 @@
                         <patch>log4j.patch</patch>
                       </patches>
                       <targetDirectory>
-                          target/files/safe-online-base-distribution-1.1-p1-SNAPSHOT
+                          target/files/safe-online-base-distribution-1.1
                       </targetDirectory>
                     </configuration>
                   </execution>
@@ -149,7 +149,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-base-distribution</artifactId>
 			<type>zip</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.seam</groupId>
@@ -223,7 +223,7 @@
 				safe-online-performance-agent-service
 			</artifactId>
 			<type>sar</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1-p1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 
 	<name>SafeOnline Demo Prescription Beans</name>
@@ -18,7 +18,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-prescription</artifactId>
-	<version>1.1-p1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>ejb</packaging>
 
 	<build>
@@ -54,7 +54,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -81,18 +81,18 @@
 			<artifactId>
 				safe-online-demo-prescription-keystore
 			</artifactId>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-demo</artifactId>
 			<type>ejb-client</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

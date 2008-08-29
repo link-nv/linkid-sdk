@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1-p1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 	<name>SafeOnline OSGI Plugin bundle</name>
 	<description> SafeOnline OSGI Plugin bundle </description>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-osgi-plugin</artifactId>
-	<version>1.1-p1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>jar</packaging>
 	<build>
 		<plugins>

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1-p1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 
 	<name>SafeOnline Demo Cinema Beans</name>
@@ -17,7 +17,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-cinema</artifactId>
-	<version>1.1-p1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>ejb</packaging>
 
 	<build>
@@ -35,7 +35,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -56,17 +56,17 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-cinema-keystore</artifactId>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-demo</artifactId>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
-			<version>1.1-p1-SNAPSHOT</version>
+			<version>1.1</version>
 			<scope>test</scope>
 		</dependency>
 

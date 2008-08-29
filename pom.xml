@@ -9,7 +9,7 @@
 	<inceptionYear>2006</inceptionYear>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
-	<version>1.1-p1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Lin.k N.V.</name>
@@ -297,7 +297,7 @@
 		<profile>
 			<id>demonstration</id>
 			<properties>
-				<defaultCronExpression> 0 0 0 1.1-p1-SNAPSHOT 1 </defaultCronExpression>
+				<defaultCronExpression> 0 0 0 1.1 1 </defaultCronExpression>
 			</properties>
 		</profile>
 
@@ -496,21 +496,21 @@
 		<junit.version>4.4</junit.version>
 		<jaxb-xjc.version>2.1.5</jaxb-xjc.version>
 		<jaxb-impl.version>2.1.5</jaxb-impl.version>
-		<jsr1.1-p1-SNAPSHOT-api.version>1.0-MR1</jsr1.1-p1-SNAPSHOT-api.version>
+		<jsr1.1-api.version>1.0-MR1</jsr1.1-api.version>
 		<jaxb-api.version>2.1</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
 		<saaj-impl.version>1.3</saaj-impl.version>
 		<jaxws-tools.version>2.1.4</jaxws-tools.version>
 		<jaxws-rt.version>2.1.4</jaxws-rt.version>
 		<jaxws-api.version>2.1-safeonline</jaxws-api.version>
-		<commons-logging-api.version>1.1-p1-SNAPSHOT</commons-logging-api.version>
+		<commons-logging-api.version>1.1</commons-logging-api.version>
 		<jboss.version>4.2.2.GA</jboss.version>
 		<jboss-messaging-dist.version>1.4.0.SP3</jboss-messaging-dist.version>
 		<sjsxp.version>1.0</sjsxp.version>
-		<commons-logging.version>1.1-p1-SNAPSHOT</commons-logging.version>
+		<commons-logging.version>1.1</commons-logging.version>
 		<log4j.version>1.2.14</log4j.version>
-		<activation.version>1.1-p1-SNAPSHOT</activation.version>
-		<stax-ex.version>1.1-p1-SNAPSHOT</stax-ex.version>
+		<activation.version>1.1</activation.version>
+		<stax-ex.version>1.1</stax-ex.version>
 		<streambuffer.version>0.6-safe-online</streambuffer.version>
 		<easymock.version>2.3</easymock.version>
 		<maven-ear-plugin.version>2.3.1-safe-online</maven-ear-plugin.version>
@@ -530,23 +530,23 @@
 		<shiftone-arbor.version>1.4</shiftone-arbor.version>
 		<jsr173_api.version>1.0</jsr173_api.version>
 		<commons-lang.version>2.3</commons-lang.version>
-		<jstl.version>1.1-p1-SNAPSHOT.2</jstl.version>
+		<jstl.version>1.1.2</jstl.version>
 		<jboss-seam.version>2.1.0.A1</jboss-seam.version>
 		<jboss-seam-ui.version>2.1.0.A1</jboss-seam-ui.version>
 		<jboss-seam-debug.version>2.1.0.A1</jboss-seam-debug.version>
-		<standard.version>1.1-p1-SNAPSHOT.2</standard.version>
-		<!-- facelets 1.1-p1-SNAPSHOT.13 and 1.1-p1-SNAPSHOT.14 contains a rendering bug -->
-		<jsf-facelets.version>1.1-p1-SNAPSHOT.12</jsf-facelets.version>
+		<standard.version>1.1.2</standard.version>
+		<!-- facelets 1.1.13 and 1.1.14 contains a rendering bug -->
+		<jsf-facelets.version>1.1.12</jsf-facelets.version>
 		<el-api.version>1.0</el-api.version>
 		<el-impl.version>1.0</el-impl.version>
 		<jsp-api.version>2.1</jsp-api.version>
 		<jsf-api.version>1.2_08</jsf-api.version>
 		<jsf-impl.version>1.2_08</jsf-impl.version>
-		<myfaces-impl.version>1.1-p1-SNAPSHOT.4</myfaces-impl.version>
+		<myfaces-impl.version>1.1.4</myfaces-impl.version>
 		<el-ri.version>1.0</el-ri.version>
-		<tomahawk.version>1.1-p1-SNAPSHOT.6</tomahawk.version>
+		<tomahawk.version>1.1.6</tomahawk.version>
 		<tomahawk-facelets.version>1.0</tomahawk-facelets.version>
-		<myfaces-api.version>1.1-p1-SNAPSHOT.4</myfaces-api.version>
+		<myfaces-api.version>1.1.4</myfaces-api.version>
 		<jboss-sar-maven-plugin.version> 2.0-SNAPSHOT 
 		</jboss-sar-maven-plugin.version>
 		<maven-surefire-plugin.version> 2.3 </maven-surefire-plugin.version>
@@ -559,7 +559,7 @@
 		<concurrent.version>1.3.4</concurrent.version>
 		<opensaml.version>2.1.0</opensaml.version>
 		<xmltooling.version>1.0.1</xmltooling.version>
-		<openws.version>1.1-p1-SNAPSHOT.0</openws.version>
+		<openws.version>1.1.0</openws.version>
 		<xmlsec.version>1.4.1</xmlsec.version>
 		<commons-codec.version>1.3</commons-codec.version>
 		<cargo-maven2-plugin.version>0.3.1</cargo-maven2-plugin.version>
@@ -580,14 +580,14 @@
 		<jetty.version>6.1.7</jetty.version>
 		<trinidad-api.version>1.2.1</trinidad-api.version>
 		<trinidad-impl.version>1.2.1</trinidad-impl.version>
-		<maven-jaxb-plugin.version>1.1-p1-SNAPSHOT</maven-jaxb-plugin.version>
+		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>
 		<maven-jar-plugin.version>2.1</maven-jar-plugin.version>
 		<maven-assembly-plugin.version> 2.2-beta-1 
 		</maven-assembly-plugin.version>
 		<maven-dependency-plugin.version> 2.0 
 		</maven-dependency-plugin.version>
 		<http.version>20070405</http.version>
-		<maven-antrun-plugin.version>1.1-p1-SNAPSHOT</maven-antrun-plugin.version>
+		<maven-antrun-plugin.version>1.1</maven-antrun-plugin.version>
 		<wss4j.version>1.5.3-safe-online-2</wss4j.version>
 		<quartz.version>1.5.2</quartz.version>
 		<hsqldb.version>1.8.0.7</hsqldb.version>
@@ -621,18 +621,18 @@
 		<javafxrt.version>1531</javafxrt.version>
 		<swing-layout.version>1.0.2</swing-layout.version>
 		<Filters.version>1531</Filters.version>
-		<swing-worker.version>1.1-p1-SNAPSHOT</swing-worker.version>
+		<swing-worker.version>1.1</swing-worker.version>
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
 		<kaptcha.version>2.3</kaptcha.version>
 		<mysql-connector-java.version> 5.1.5 </mysql-connector-java.version>
 		<postgresql.version>8.2-504.jdbc3</postgresql.version>
-		<ojdbc5.version>11.1-p1-SNAPSHOT.0.6.0</ojdbc5.version>
-		<maven-jdocbook-plugin.version> 2.1.1-p1-SNAPSHOT </maven-jdocbook-plugin.version>
+		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
+		<maven-jdocbook-plugin.version> 2.1.1 </maven-jdocbook-plugin.version>
 		<maven-javadoc-plugin.version>2.4</maven-javadoc-plugin.version>
 		<axis.version>1.4</axis.version>
 		<axis-jaxrpc.version>1.3</axis-jaxrpc.version>
-		<axistools-maven-plugin.version> 1.1-p1-SNAPSHOT </axistools-maven-plugin.version>
-		<jgoodies-forms.version>1.1-p1-SNAPSHOT.0</jgoodies-forms.version>
+		<axistools-maven-plugin.version> 1.1 </axistools-maven-plugin.version>
+		<jgoodies-forms.version>1.1.0</jgoodies-forms.version>
 		<jgoodies-looks.version>2.1.4</jgoodies-looks.version>
 		<jtidy.version>r8-20060801</jtidy.version>
 		<jmimemagic.version>0.1.2</jmimemagic.version>
@@ -644,8 +644,8 @@
 		</jboss-jsfunit-richfaces.version>
 		<jboss-messaging.version>1.4.1.CR1</jboss-messaging.version>
 		<itext.version>1.4.8</itext.version>
-		<xpp3.version>1.1-p1-SNAPSHOT.4c</xpp3.version>
-		<xstream.version>1.1-p1-SNAPSHOT.3</xstream.version>
+		<xpp3.version>1.1.4c</xpp3.version>
+		<xstream.version>1.1.3</xstream.version>
 		<keytool-maven-plugin.version>1.0</keytool-maven-plugin.version>
 		<poi.version>3.0.2-FINAL</poi.version>
 		<felix.main.version>1.0.4</felix.main.version>
@@ -1442,8 +1442,8 @@
 			</dependency>
 			<dependency>
 				<groupId>javax.jws</groupId>
-				<artifactId>jsr1.1-p1-SNAPSHOT-api</artifactId>
-				<version>${jsr1.1-p1-SNAPSHOT-api.version}</version>
+				<artifactId>jsr1.1-api</artifactId>
+				<version>${jsr1.1-api.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
@@ -1862,7 +1862,7 @@
 			<dependency>
 				<groupId>org.apache.wicket</groupId>
 				<artifactId>wicket-contrib-javaee</artifactId>
-				<version>1.1-p1-SNAPSHOT</version>
+				<version>1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>dumbster</groupId>

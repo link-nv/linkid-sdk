@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.1-p1-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 
 	<name>SafeOnline Container</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-container</artifactId>
-	<version>1.1-p1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>pom</packaging>
 
 	<build>
@@ -77,7 +77,7 @@
 		</dependency>
 		<dependency>
 			<groupId>javax.jws</groupId>
-			<artifactId>jsr1.1-p1-SNAPSHOT-api</artifactId>
+			<artifactId>jsr1.1-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>

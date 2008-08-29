@@ -32,7 +32,7 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.attrib.ws.SAMLAttributePortImpl;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.AttributeService;
@@ -546,7 +546,7 @@ public class SAMLAttributePortImplTest {
 
         // expectations
         expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andThrow(
-                new AttributeNotFoundException());
+                new AttributeTypeNotFoundException());
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 this.testApplicationId);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
