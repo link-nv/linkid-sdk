@@ -4,17 +4,22 @@
 	<modelVersion>4.0.0</modelVersion>
 	<name>SafeOnline Template OSGI bundle</name>
 	<description> SafeOnline Temlate OSGI bundle </description>
-	<parent>
-		<groupId>net.lin-k</groupId>
-		<artifactId>safe-online</artifactId>
-		<version>1.1-SNAPSHOT</version>
-	</parent>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-osgi-plugin-template</artifactId>
 	<version>1.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<fork>true</fork>
+				</configuration>
+				<inherited>true</inherited>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
