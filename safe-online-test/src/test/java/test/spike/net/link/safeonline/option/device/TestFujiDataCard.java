@@ -35,7 +35,10 @@ public class TestFujiDataCard {
     @Test
     public void testIMEI() throws Exception {
 
-        new FujiDataCard("/dev/tty.GTM HSDPA Control");
+        FujiDataCard card = new FujiDataCard("/dev/tty.GTM HSDPA Control");
+        card.initialize();
+        logger.info("IMEI: " + card.getIMEI());
+
     }
 
 }
