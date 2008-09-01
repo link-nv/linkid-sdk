@@ -21,6 +21,33 @@
 				<inherited>true</inherited>
 			</plugin>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<configuration>
+					<catalogs>
+						<catalog>src/main/catalog/catalog.xml</catalog>
+					</catalogs>
+					<validationSets>
+						<validationSet>
+							<dir>.</dir>
+							<includes>
+								<include> target/classes/**/*.xhtml </include>
+								<include> target/classes/**/*.html </include>
+								<include> target/classes/**/*.xml </include>
+							</includes>
+						</validationSet>
+					</validationSets>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>validate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
