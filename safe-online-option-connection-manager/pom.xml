@@ -12,6 +12,23 @@
 	</artifactId>
 	<name>SafeOnline Option Connection Manager</name>
 	<version>1.2-SNAPSHOT</version>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass> net.link.safeonline.option.connection.manager.Main 
+							</mainClass>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
