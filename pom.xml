@@ -768,6 +768,8 @@
 		<module>safe-online-osgi-plugin-template</module>
 		<module>safe-online-serial</module>
 		<module>safe-online-option-device</module>
+		<module>safe-online-option-connection-manager-ws</module>
+		<module>safe-online-option-connection-manager</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
