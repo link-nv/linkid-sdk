@@ -19,9 +19,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * SafeOnline Application Console entry point.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class Main {
 

@@ -55,7 +55,7 @@ public class SubjectServiceBeanTest {
         EJBTestUtils.init(this.attributeTypeDAO);
 
         this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE,
-                DatatypeType.LOGIN, false, false));
+                DatatypeType.STRING, false, false));
     }
 
     @After

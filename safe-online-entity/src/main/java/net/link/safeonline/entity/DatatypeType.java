@@ -10,7 +10,7 @@ package net.link.safeonline.entity;
 public enum DatatypeType {
 
     STRING("string", true), BOOLEAN("boolean", true), INTEGER("integer", true), DOUBLE("double", true), DATE("date",
-            true), COMPOUNDED, LOGIN("login", true);
+            true), COMPOUNDED;
 
     private final String  friendlyName;
 
@@ -19,7 +19,7 @@ public enum DatatypeType {
 
     private DatatypeType() {
 
-        this.friendlyName = this.name();
+        this.friendlyName = name();
         this.primitive = false;
     }
 

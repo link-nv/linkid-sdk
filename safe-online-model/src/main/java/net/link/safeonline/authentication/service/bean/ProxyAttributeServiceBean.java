@@ -130,8 +130,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         DatatypeType datatype = attributeType.getType();
         if (attributeType.isMultivalued()) {
             switch (datatype) {
-                case STRING:
-                case LOGIN: {
+                case STRING: {
                     String[] values = (String[]) value;
                     for (int idx = 0; idx < values.length; idx++) {
                         AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject,
@@ -371,7 +370,6 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         if (attributeType.isMultivalued()) {
             switch (datatype) {
                 case STRING:
-                case LOGIN:
                     attributeClass = String[].class;
                 break;
                 case BOOLEAN:
@@ -395,7 +393,6 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         } else {
             switch (datatype) {
                 case STRING:
-                case LOGIN:
                     attributeClass = String.class;
                 break;
                 case BOOLEAN:
@@ -446,8 +443,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         DatatypeType datatype = attributeType.getType();
         if (attributeType.isMultivalued()) {
             switch (datatype) {
-                case STRING:
-                case LOGIN: {
+                case STRING: {
                     String[] values = new String[attributes.size()];
                     for (int idx = 0; idx < values.length; idx++) {
                         values[idx] = attributes.get(idx).getStringValue();
@@ -530,8 +526,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         DatatypeType datatype = attributeType.getType();
         if (attributeType.isMultivalued()) {
             switch (datatype) {
-                case STRING:
-                case LOGIN: {
+                case STRING: {
                     String[] values = new String[attributes.size()];
                     for (int idx = 0; idx < values.length; idx++) {
                         values[idx] = attributes.get(idx).getStringValue();

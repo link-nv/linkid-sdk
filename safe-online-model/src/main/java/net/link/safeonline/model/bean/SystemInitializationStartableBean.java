@@ -149,7 +149,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nameAttributeType, "nl", "Naam", null));
 
         AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE,
-                DatatypeType.LOGIN, false, false);
+                DatatypeType.STRING, false, false);
         this.attributeTypes.add(loginAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, Locale.ENGLISH
                 .getLanguage(), "Login name", null));

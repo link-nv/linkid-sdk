@@ -270,9 +270,10 @@ public class AttributeTypeEntity implements Serializable {
      */
     public void addMember(AttributeTypeEntity memberAttributeType, int memberSequence, boolean required) {
 
-        if (memberAttributeType.isCompoundMember())
+        if (memberAttributeType.isCompoundMember()) {
             throw new EJBException("attribute type cannot be member of more than one compounded: "
                     + memberAttributeType.getName());
+        }
         CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(this, memberAttributeType,
                 memberSequence, required);
         getMembers().add(member);
@@ -383,10 +384,6 @@ public class AttributeTypeEntity implements Serializable {
 
         @QueryMethod(QUERY_CATEGORIZE_STRING)
         Query createQueryCategorizeString(@QueryParam("application") ApplicationEntity application,
-                @QueryParam("attributeType") AttributeTypeEntity attributeType);
-
-        @QueryMethod(QUERY_CATEGORIZE_STRING)
-        Query createQueryCategorizeLogin(@QueryParam("application") ApplicationEntity application,
                 @QueryParam("attributeType") AttributeTypeEntity attributeType);
 
         @QueryMethod(QUERY_CATEGORIZE_BOOLEAN)

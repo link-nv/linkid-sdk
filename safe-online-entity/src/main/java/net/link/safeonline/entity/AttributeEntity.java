@@ -49,9 +49,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Attribute JPA Entity. Sits as many-to-many between {@link AttributeTypeEntity} and {@link SubjectEntity}.
  * Multi-valued attributes are implemented via {@link #getAttributeIndex()}.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Entity
 @Table(name = "attribute")
@@ -197,7 +197,7 @@ public class AttributeEntity implements Serializable {
     /**
      * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that
      * attribute index is zero.
-     *
+     * 
      */
     @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
     public long getAttributeIndex() {
@@ -268,7 +268,7 @@ public class AttributeEntity implements Serializable {
     /**
      * We don't manage the member attributes of a compounded attribute directly via the database because the
      * relationship is to complex to express. This field is filled in by the DAO layer upon request.
-     *
+     * 
      */
     @Transient
     public List<AttributeEntity> getMembers() {
@@ -286,7 +286,7 @@ public class AttributeEntity implements Serializable {
 
     /**
      * Generic data mapping can be done via {@link #getValue()} and {@link #setValue(Object)}.
-     *
+     * 
      */
     @Transient
     public Object getValue() {
@@ -294,16 +294,15 @@ public class AttributeEntity implements Serializable {
         DatatypeType datatype = this.attributeType.getType();
         switch (datatype) {
             case STRING:
-            case LOGIN:
-                return this.getStringValue();
+                return getStringValue();
             case BOOLEAN:
-                return this.getBooleanValue();
+                return getBooleanValue();
             case INTEGER:
-                return this.getIntegerValue();
+                return getIntegerValue();
             case DOUBLE:
-                return this.getDoubleValue();
+                return getDoubleValue();
             case DATE:
-                return this.getDateValue();
+                return getDateValue();
             default:
                 throw new EJBException("datatype not supported: " + datatype);
         }
@@ -315,20 +314,19 @@ public class AttributeEntity implements Serializable {
         DatatypeType datatype = this.attributeType.getType();
         switch (datatype) {
             case STRING:
-            case LOGIN:
-                this.setStringValue((String) value);
+                setStringValue((String) value);
             break;
             case BOOLEAN:
-                this.setBooleanValue((Boolean) value);
+                setBooleanValue((Boolean) value);
             break;
             case INTEGER:
-                this.setIntegerValue((Integer) value);
+                setIntegerValue((Integer) value);
             break;
             case DOUBLE:
-                this.setDoubleValue((Double) value);
+                setDoubleValue((Double) value);
             break;
             case DATE:
-                this.setDateValue((Date) value);
+                setDateValue((Date) value);
             break;
             default:
                 throw new EJBException("datatype not supported: " + datatype);
@@ -341,19 +339,18 @@ public class AttributeEntity implements Serializable {
         DatatypeType datatype = this.attributeType.getType();
         switch (datatype) {
             case STRING:
-            case LOGIN:
-                String value = this.getStringValue();
+                String value = getStringValue();
                 if (null == value)
                     return true;
                 return value.length() == 0;
             case BOOLEAN:
-                return null == this.getBooleanValue();
+                return null == getBooleanValue();
             case INTEGER:
-                return null == this.getIntegerValue();
+                return null == getIntegerValue();
             case DOUBLE:
-                return null == this.getDoubleValue();
+                return null == getDoubleValue();
             case DATE:
-                return null == this.getDateValue();
+                return null == getDateValue();
             default:
                 throw new EJBException("datatype not supported: " + datatype);
         }

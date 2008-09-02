@@ -254,7 +254,6 @@ public class AttributeDO implements Serializable, Cloneable {
         DatatypeType datatypeType = attributeType.getType();
         switch (datatypeType) {
             case STRING:
-            case LOGIN:
                 setStringValue(attribute.getStringValue());
             break;
             case BOOLEAN:
@@ -434,7 +433,6 @@ public class AttributeDO implements Serializable, Cloneable {
 
         switch (attributeType.getType()) {
             case STRING:
-            case LOGIN:
                 targetAttribute.setStringValue(this.stringValue);
             break;
             case BOOLEAN:

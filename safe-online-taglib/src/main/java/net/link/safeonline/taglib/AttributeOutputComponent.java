@@ -82,25 +82,6 @@ public class AttributeOutputComponent extends UIOutput {
         }
     }
 
-    @SupportedType(DatatypeType.LOGIN)
-    public static class LoginAttributeValueEncoder implements AttributeValueEncoder {
-
-        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
-
-            String value = attribute.getStringValue();
-            if (null == value && attribute.isUnavailable()) {
-                ResourceBundle messages = TaglibUtil.getResourceBundle(context);
-                String noValueStr = messages.getString("unavailable");
-                value = "[" + noValueStr + "]";
-            } else if (null == value) {
-                ResourceBundle messages = TaglibUtil.getResourceBundle(context);
-                String noValueStr = messages.getString("noValue");
-                value = "[" + noValueStr + "]";
-            }
-            response.write(value);
-        }
-    }
-
     @SupportedType(DatatypeType.BOOLEAN)
     public static class BooleanAttributeValueEncoder implements AttributeValueEncoder {
 
@@ -204,7 +185,6 @@ public class AttributeOutputComponent extends UIOutput {
          * It would be a little bit of overkill to use the JBoss Seam Scanner component over here.
          */
         registerAttributeValueEncoder(StringAttributeValueEncoder.class);
-        registerAttributeValueEncoder(LoginAttributeValueEncoder.class);
         registerAttributeValueEncoder(BooleanAttributeValueEncoder.class);
         registerAttributeValueEncoder(CompoundedAttributeValueEncoder.class);
         registerAttributeValueEncoder(IntegerAttributeValueEncoder.class);

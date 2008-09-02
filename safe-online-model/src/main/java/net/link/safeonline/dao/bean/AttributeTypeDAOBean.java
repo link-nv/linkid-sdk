@@ -107,9 +107,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         LOG.debug("get attribute type: " + name);
         AttributeTypeEntity attributeType = findAttributeType(name);
-        if (null == attributeType) {
+        if (null == attributeType)
             throw new AttributeTypeNotFoundException();
-        }
         return attributeType;
     }
 
@@ -156,9 +155,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(
                 AttributeTypeDescriptionEntity.class, attributeTypeDescriptionPK);
-        if (null == attributeTypeDescription) {
+        if (null == attributeTypeDescription)
             throw new AttributeTypeDescriptionNotFoundException();
-        }
         return attributeTypeDescription;
     }
 
@@ -176,8 +174,6 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
         Query query;
         if (attributeType.getType().equals(DatatypeType.STRING)) {
             query = this.queryObject.createQueryCategorizeString(application, attributeType);
-        } else if (attributeType.getType().equals(DatatypeType.LOGIN)) {
-            query = this.queryObject.createQueryCategorizeLogin(application, attributeType);
         } else if (attributeType.getType().equals(DatatypeType.BOOLEAN)) {
             query = this.queryObject.createQueryCategorizeBoolean(application, attributeType);
         } else if (attributeType.getType().equals(DatatypeType.INTEGER)) {
@@ -200,9 +196,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     public AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType) throws AttributeTypeNotFoundException {
 
         AttributeTypeEntity parent = this.compoundedQueryObject.findParentAttribute(memberAttributeType);
-        if (null == parent) {
+        if (null == parent)
             throw new AttributeTypeNotFoundException();
-        }
         return parent;
     }
 
@@ -211,9 +206,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         List<CompoundedAttributeTypeMemberEntity> memberEntries = this.compoundedQueryObject
                 .listMemberEntries(memberAttributeType);
-        if (memberEntries.isEmpty()) {
+        if (memberEntries.isEmpty())
             throw new AttributeTypeNotFoundException();
-        }
         CompoundedAttributeTypeMemberEntity memberEntry = memberEntries.get(0);
         return memberEntry;
     }

@@ -265,7 +265,6 @@ public class AttributeCacheEntity implements Serializable {
         DatatypeType datatype = this.attributeType.getType();
         switch (datatype) {
             case STRING:
-            case LOGIN:
                 return getStringValue();
             case BOOLEAN:
                 return getBooleanValue();
@@ -286,7 +285,6 @@ public class AttributeCacheEntity implements Serializable {
         DatatypeType datatype = this.attributeType.getType();
         switch (datatype) {
             case STRING:
-            case LOGIN:
                 setStringValue((String) value);
             break;
             case BOOLEAN:
@@ -312,7 +310,6 @@ public class AttributeCacheEntity implements Serializable {
         DatatypeType datatype = this.attributeType.getType();
         switch (datatype) {
             case STRING:
-            case LOGIN:
                 String value = getStringValue();
                 if (null == value)
                     return true;
