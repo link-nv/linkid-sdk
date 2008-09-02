@@ -80,7 +80,7 @@
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/applications/application-view.seam</to-view-id>
+			<to-view-id>/applications/applications.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>

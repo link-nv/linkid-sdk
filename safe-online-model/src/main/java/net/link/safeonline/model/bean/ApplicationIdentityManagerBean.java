@@ -65,12 +65,13 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
 
         List<AttributeTypeEntity> newAttributeTypes = new LinkedList<AttributeTypeEntity>();
         for (IdentityAttributeTypeDO newAttribute : newApplicationIdentityAttributes) {
-            LOG.debug("new identity attribute: " + newAttribute);
+            LOG.debug("new identity attribute: " + newAttribute.getName());
             AttributeTypeEntity newAttributeType = this.attributeTypeDAO.getAttributeType(newAttribute.getName());
             newAttributeTypes.add(newAttributeType);
         }
 
-        boolean requireNewIdentity = CollectionUtils.isProperSubCollection(currentAttributeTypes, newAttributeTypes);
+        boolean requireNewIdentity = CollectionUtils.isProperSubCollection(currentAttributeTypes, newAttributeTypes)
+                || CollectionUtils.intersection(currentAttributeTypes, newAttributeTypes).size() == 0;
 
         LOG.debug("require new identity: " + requireNewIdentity);
         if (true == requireNewIdentity) {

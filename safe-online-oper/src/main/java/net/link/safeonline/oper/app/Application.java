@@ -28,7 +28,7 @@ public interface Application {
     /*
      * Factory
      */
-    void applicationListFactory();
+    void applicationListFactory() throws ApplicationNotFoundException;
 
     void newIdentityAttributesFactory();
 

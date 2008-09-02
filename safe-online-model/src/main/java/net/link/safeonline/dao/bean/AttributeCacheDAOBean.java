@@ -78,7 +78,9 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
                     AttributeTypeEntity memberAttributeType = member.getMember();
                     AttributeCacheEntity memberAttribute = findAttribute(subject, memberAttributeType, attribute
                             .getAttributeIndex());
-                    this.entityManager.remove(memberAttribute);
+                    if (null != memberAttribute) {
+                        this.entityManager.remove(memberAttribute);
+                    }
                 }
             }
             this.entityManager.remove(attribute);
@@ -116,7 +118,9 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
                 AttributeTypeEntity memberAttributeType = member.getMember();
                 AttributeCacheEntity memberAttribute = findAttribute(attribute.getSubject(), memberAttributeType,
                         attribute.getAttributeIndex());
-                this.entityManager.remove(memberAttribute);
+                if (null != memberAttribute) {
+                    this.entityManager.remove(memberAttribute);
+                }
             }
         }
         this.entityManager.remove(attribute);

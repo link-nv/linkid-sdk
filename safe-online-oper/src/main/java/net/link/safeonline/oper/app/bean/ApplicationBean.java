@@ -218,7 +218,7 @@ public class ApplicationBean implements Application {
 
     @Factory(OPER_APPLICATION_LIST_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void applicationListFactory() {
+    public void applicationListFactory() throws ApplicationNotFoundException {
 
         LOG.debug("application list factory");
         this.operApplicationList = this.applicationService.listApplications();
