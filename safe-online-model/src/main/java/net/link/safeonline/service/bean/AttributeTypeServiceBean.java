@@ -263,4 +263,15 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
         attributeType.setPluginConfiguration(pluginConfiguration);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE)
+    public void saveCacheTimeout(String attributeTypeName, Long cacheTimeout) throws AttributeTypeNotFoundException {
+
+        LOG.debug("set attribute cache timeout: " + cacheTimeout + " for attribute type " + attributeTypeName);
+        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
+        attributeType.setAttributeCacheTimeoutMillis(cacheTimeout);
+    }
 }

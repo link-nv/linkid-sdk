@@ -30,6 +30,15 @@
 
 			<h:message styleClass="error" for="location" />
 
+			<h:outputLabel for="cache"
+				value="#{msgs.operatorAttributeCacheTimeout}" />
+			<s:decorate>
+				<h:inputText id="cache" value="#{addAttribute.cacheTimeout}"
+					styleClass="label" />
+			</s:decorate>
+
+			<h:message for="cache" styleClass="error" />
+
 			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:outputLabel for="previous" value="" />

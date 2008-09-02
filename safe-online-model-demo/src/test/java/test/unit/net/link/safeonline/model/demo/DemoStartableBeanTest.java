@@ -28,6 +28,7 @@ import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.ApplicationScopeIdDAOBean;
+import net.link.safeonline.dao.bean.AttributeCacheDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
@@ -45,6 +46,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.ApplicationScopeIdEntity;
+import net.link.safeonline.entity.AttributeCacheEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
@@ -114,7 +116,8 @@ public class DemoStartableBeanTest {
             DevicePolicyServiceBean.class, ResourceAuditLoggerBean.class, AuditAuditDAOBean.class,
             AuditContextDAOBean.class, AccessAuditDAOBean.class, SecurityAuditDAOBean.class,
             ResourceAuditDAOBean.class, DevicesBean.class, NotificationProducerServiceBean.class,
-            NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class };
+            NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class,
+            AttributeCacheDAOBean.class };
 
 
     @Before
@@ -131,7 +134,7 @@ public class DemoStartableBeanTest {
                 AllowedDeviceEntity.class, CompoundedAttributeTypeMemberEntity.class, SubjectIdentifierEntity.class,
                 UsageAgreementEntity.class, UsageAgreementTextEntity.class, NodeEntity.class,
                 EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class,
-                ApplicationScopeIdEntity.class);
+                ApplicationScopeIdEntity.class, AttributeCacheEntity.class);
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
 

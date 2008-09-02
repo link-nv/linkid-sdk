@@ -58,6 +58,10 @@ public interface AddAttribute {
 
     void setLocationOption(String locationOption);
 
+    Long getCacheTimeout();
+
+    void setCacheTimeout(Long cacheTimeout);
+
     String getPlugin();
 
     void setPlugin(String plugin);

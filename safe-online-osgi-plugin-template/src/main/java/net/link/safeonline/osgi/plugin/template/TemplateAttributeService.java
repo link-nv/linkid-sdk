@@ -69,21 +69,26 @@ public class TemplateAttributeService implements PluginAttributeService {
 			attribute.add(createStringAttribute(0));
 			attribute.add(createStringAttribute(1));
 			attribute.add(createStringAttribute(2));
+			return attribute;
 		} else if (attributeName.equals(testBooleanAttributeName)) {
 			List<Attribute> attribute = new LinkedList<Attribute>();
 			attribute.add(createBooleanAttribute(0));
+			return attribute;
 		} else if (attributeName.equals(testDateAttributeName)) {
 			List<Attribute> attribute = new LinkedList<Attribute>();
 			attribute.add(createDateAttribute(0));
 			attribute.add(createDateAttribute(1));
+			return attribute;
 		} else if (attributeName.equals(testDoubleAttributeName)) {
 			List<Attribute> attribute = new LinkedList<Attribute>();
 			attribute.add(createDoubleAttribute(0));
 			attribute.add(createDoubleAttribute(1));
+			return attribute;
 		} else if (attributeName.equals(testIntegerAttributeName)) {
 			List<Attribute> attribute = new LinkedList<Attribute>();
 			attribute.add(createIntegerAttribute(0));
 			attribute.add(createIntegerAttribute(1));
+			return attribute;
 		} else {
 			// Beware: this code makes an endless loop by getting the external
 			// attribute from OLAS which will again redirect to this plugin ...
@@ -107,8 +112,8 @@ public class TemplateAttributeService implements PluginAttributeService {
 	private List<Attribute> getCompoundAttribute() {
 		List<Attribute> testAttribute = new LinkedList<Attribute>();
 
+		testAttribute.addAll(createCompoundAttribute(0));
 		testAttribute.addAll(createCompoundAttribute(1));
-		testAttribute.addAll(createCompoundAttribute(2));
 
 		return testAttribute;
 	}

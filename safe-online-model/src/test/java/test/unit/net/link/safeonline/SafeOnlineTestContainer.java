@@ -24,6 +24,7 @@ import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.ApplicationScopeIdDAOBean;
+import net.link.safeonline.dao.bean.AttributeCacheDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
@@ -48,6 +49,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.ApplicationScopeIdEntity;
+import net.link.safeonline.entity.AttributeCacheEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
@@ -146,7 +148,7 @@ public class SafeOnlineTestContainer {
             ProxyAttributeServiceBean.class, StatisticDAOBean.class, StatisticDataPointDAOBean.class,
             NotificationProducerServiceBean.class, NotificationProducerDAOBean.class,
             NotificationConsumerServiceBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class,
-            OSGIStartableBean.class            };
+            OSGIStartableBean.class, AttributeCacheDAOBean.class };
 
     public static final Class<?>[] entities     = new Class[] { SubjectEntity.class, ApplicationEntity.class,
             ApplicationOwnerEntity.class, AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class,
@@ -159,5 +161,6 @@ public class SafeOnlineTestContainer {
             HistoryEntity.class, HistoryPropertyEntity.class, SubjectIdentifierEntity.class,
             UsageAgreementEntity.class, UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class,
             NodeEntity.class, NodeMappingEntity.class, StatisticEntity.class, StatisticDataPointEntity.class,
-            EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class, ApplicationScopeIdEntity.class };
+            EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class,
+            ApplicationScopeIdEntity.class, AttributeCacheEntity.class };
 }

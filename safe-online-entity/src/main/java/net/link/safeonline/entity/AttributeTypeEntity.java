@@ -132,6 +132,8 @@ public class AttributeTypeEntity implements Serializable {
 
     private String                                      pluginName;
 
+    private long                                        attributeCacheTimeoutMillis;
+
 
     public AttributeTypeEntity() {
 
@@ -313,11 +315,13 @@ public class AttributeTypeEntity implements Serializable {
     @Transient
     public boolean isLocal() {
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        if (isExternal())
+            return false;
 
         if (null == getLocation())
             return true;
 
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         if (authIdentityServiceClient.getCertificate().getSubjectX500Principal().getName().equals(
                 getLocation().getAuthnCertificateSubject()))
             return true;
@@ -349,6 +353,20 @@ public class AttributeTypeEntity implements Serializable {
     public boolean isExternal() {
 
         return null != this.pluginName;
+    }
+
+    /**
+     * Indicates how long an {@link AttributeCacheEntity} stays valid.
+     * 
+     */
+    public long getAttributeCacheTimeoutMillis() {
+
+        return this.attributeCacheTimeoutMillis;
+    }
+
+    public void setAttributeCacheTimeoutMillis(long attributeCacheTimeoutMillis) {
+
+        this.attributeCacheTimeoutMillis = attributeCacheTimeoutMillis;
     }
 
 

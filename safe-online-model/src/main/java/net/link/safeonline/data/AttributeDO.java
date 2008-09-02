@@ -276,15 +276,15 @@ public class AttributeDO implements Serializable, Cloneable {
 
     public void setValue(Object value) {
 
-        if (value.getClass().equals(String.class)) {
+        if (value instanceof String) {
             setStringValue((String) value);
-        } else if (value.getClass().equals(Boolean.class)) {
+        } else if (value instanceof Boolean) {
             setBooleanValue((Boolean) value);
-        } else if (value.getClass().equals(Integer.class)) {
+        } else if (value instanceof Integer) {
             setIntegerValue((Integer) value);
-        } else if (value.getClass().equals(Double.class)) {
+        } else if (value instanceof Double) {
             setDoubleValue((Double) value);
-        } else if (value.getClass().equals(Date.class)) {
+        } else if (value instanceof Date) {
             setDateValue((Date) value);
         } else {
             throw new EJBException("unsupported data type: " + value.getClass().getName());

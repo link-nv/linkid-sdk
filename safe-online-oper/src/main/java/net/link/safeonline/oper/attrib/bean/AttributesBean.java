@@ -56,6 +56,8 @@ public class AttributesBean implements Attributes {
 
     private String                    pluginConfiguration;
 
+    private Long                      cacheTimeout;
+
     @SuppressWarnings("unused")
     @DataModel("attributeTypeList")
     private List<AttributeTypeEntity> attributeTypeList;
@@ -89,6 +91,7 @@ public class AttributesBean implements Attributes {
         LOG.debug("view: " + this.selectedAttributeType.getName());
 
         this.pluginConfiguration = this.selectedAttributeType.getPluginConfiguration();
+        this.cacheTimeout = this.selectedAttributeType.getAttributeCacheTimeoutMillis();
 
         return "view";
     }
@@ -126,7 +129,33 @@ public class AttributesBean implements Attributes {
 
         this.attributeTypeService.savePluginConfiguration(this.selectedAttributeType.getName(),
                 this.pluginConfiguration);
+        this.attributeTypeService.saveCacheTimeout(this.selectedAttributeType.getName(), this.cacheTimeout);
         return null;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String saveOlas() throws AttributeTypeNotFoundException {
+
+        this.attributeTypeService.saveCacheTimeout(this.selectedAttributeType.getName(), this.cacheTimeout);
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public Long getCacheTimeout() {
+
+        return this.cacheTimeout;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setCacheTimeout(Long cacheTimeout) {
+
+        this.cacheTimeout = cacheTimeout;
     }
 
 }

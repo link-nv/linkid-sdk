@@ -53,18 +53,38 @@
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
 				opened="false" id="location-olas-tab" label="#{msgs.location}: OLAS"
 				rendered="#{!selectedAttributeType.external}">
-				<table class="inner">
-					<colgroup class="half" />
-					<colgroup />
 
-					<tbody>
-						<tr>
-							<th><h:outputText value="#{msgs.location}" /></th>
-							<td><h:outputText
-								value="#{selectedAttributeType.location.name}" /></td>
-						</tr>
-					</tbody>
-				</table>
+				<h:form>
+					<table class="inner">
+						<tbody>
+							<tr>
+								<th>#{msgs.actions}</th>
+							</tr>
+							<tr class="center">
+								<td><h:commandLink action="#{attributes.saveOlas}"
+									id="save" value="#{msgs.saveaction}" /></td>
+							</tr>
+						</tbody>
+					</table>
+					<table class="inner">
+						<colgroup class="half" />
+						<colgroup />
+
+						<tbody>
+							<tr>
+								<th><h:outputText value="#{msgs.location}" /></th>
+								<td><h:outputText
+									value="#{selectedAttributeType.location.name}" /></td>
+							</tr>
+							<tr>
+								<th><h:outputText
+									value="#{msgs.operatorAttributeCacheTimeout}" /></th>
+								<td><h:inputText id="cache"
+									value="#{attributes.cacheTimeout}" styleClass="label" /></td>
+							</tr>
+						</tbody>
+					</table>
+				</h:form>
 			</rich:simpleTogglePanel>
 
 			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
@@ -99,6 +119,12 @@
 								<th><h:outputText value="#{msgs.configuration}" /></th>
 								<td><h:inputText id="config"
 									value="#{attributes.pluginConfiguration}" styleClass="label" /></td>
+							</tr>
+							<tr>
+								<th><h:outputText
+									value="#{msgs.operatorAttributeCacheTimeout}" /></th>
+								<td><h:inputText id="cache"
+									value="#{attributes.cacheTimeout}" styleClass="label" /></td>
 							</tr>
 						</tbody>
 					</table>

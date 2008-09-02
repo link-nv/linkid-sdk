@@ -24,6 +24,10 @@ public interface Attributes {
 
     void setPluginConfiguration(String pluginConfiguration);
 
+    Long getCacheTimeout();
+
+    void setCacheTimeout(Long cacheTimeout);
+
     /*
      * Factory.
      */
@@ -40,6 +44,8 @@ public interface Attributes {
             AttributeTypeNotFoundException;
 
     String savePlugin() throws AttributeTypeNotFoundException;
+
+    String saveOlas() throws AttributeTypeNotFoundException;
 
     /*
      * Lifecycle.

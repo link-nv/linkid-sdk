@@ -88,6 +88,8 @@ public class AddAttributeBean implements AddAttribute {
 
     private String                    locationOption;
 
+    private Long                      cacheTimeout;
+
     private String                    plugin;
 
     private String                    pluginConfiguration;
@@ -357,6 +359,7 @@ public class AddAttributeBean implements AddAttribute {
             attributeType.setPluginName(this.plugin);
             attributeType.setPluginConfiguration(this.pluginConfiguration);
         }
+        attributeType.setAttributeCacheTimeoutMillis(this.cacheTimeout);
 
         if (null != this.memberAccessControlAttributes) {
             int memberSequence = 0;
@@ -479,6 +482,24 @@ public class AddAttributeBean implements AddAttribute {
         this.log.debug("location next: " + this.locationOption);
         pluginFactory();
         return this.locationOption;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public Long getCacheTimeout() {
+
+        return this.cacheTimeout;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setCacheTimeout(Long cacheTimeout) {
+
+        this.cacheTimeout = cacheTimeout;
     }
 
 }

@@ -22,8 +22,10 @@ import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.ProxyAttributeServiceRemote;
+import net.link.safeonline.dao.AttributeCacheDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.entity.AttributeCacheEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
@@ -63,6 +65,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     private AttributeDAO        attributeDAO;
 
     @EJB
+    private AttributeCacheDAO   attributeCacheDAO;
+
+    @EJB
     private SubjectService      subjectService;
 
     @EJB
@@ -88,17 +93,24 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         SubjectEntity subject = this.subjectService.getSubject(userId);
 
-        if (attributeType.isExternal())
-            return findExternalAttributeValue(subject, attributeType);
-
         if (attributeType.isLocal())
             return findLocalAttribute(subject, attributeType);
 
+        // Not local, check the attribute cache.
+        Object value = findCachedAttributeValue(subject, attributeType);
+        if (null != value)
+            return value;
+
+        if (attributeType.isExternal()) {
+            value = findExternalAttributeValue(subject, attributeType);
+            cacheAttributeValue(value, subject, attributeType);
+            return value;
+        }
+
         try {
-            return findRemoteAttribute(subject, attributeType);
-        } catch (SubjectNotFoundException e) {
-            LOG.debug("subject not found");
-            return null;
+            value = findRemoteAttribute(subject, attributeType);
+            cacheAttributeValue(value, subject, attributeType);
+            return value;
         } catch (NodeNotFoundException e) {
             String message = "node " + attributeType.getName() + " not found attribute " + attributeName;
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, message);
@@ -107,7 +119,104 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     }
 
     /**
-     * Find an external attribute value using OSGi plugin specified in the attribute type.
+     * Caches the attribute if a positive caching timeout is specified.
+     */
+    @SuppressWarnings("unchecked")
+    private void cacheAttributeValue(Object value, SubjectEntity subject, AttributeTypeEntity attributeType) {
+
+        if (attributeType.getAttributeCacheTimeoutMillis() <= 0)
+            return;
+
+        DatatypeType datatype = attributeType.getType();
+        if (attributeType.isMultivalued()) {
+            switch (datatype) {
+                case STRING:
+                case LOGIN: {
+                    String[] values = (String[]) value;
+                    for (int idx = 0; idx < values.length; idx++) {
+                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject,
+                                idx);
+                        attribute.setStringValue(values[idx]);
+                    }
+                    return;
+                }
+                case BOOLEAN: {
+                    Boolean[] values = (Boolean[]) value;
+                    for (int idx = 0; idx < values.length; idx++) {
+                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject,
+                                idx);
+                        attribute.setBooleanValue(values[idx]);
+                    }
+                    return;
+                }
+                case INTEGER: {
+                    Integer[] values = (Integer[]) value;
+                    for (int idx = 0; idx < values.length; idx++) {
+                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject,
+                                idx);
+                        attribute.setIntegerValue(values[idx]);
+                    }
+                    return;
+                }
+                case DOUBLE: {
+                    Double[] values = (Double[]) value;
+                    for (int idx = 0; idx < values.length; idx++) {
+                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject,
+                                idx);
+                        attribute.setDoubleValue(values[idx]);
+                    }
+                    return;
+                }
+                case DATE: {
+                    Date[] values = (Date[]) value;
+                    for (int idx = 0; idx < values.length; idx++) {
+                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject,
+                                idx);
+                        attribute.setDateValue(values[idx]);
+                    }
+                    return;
+                }
+                case COMPOUNDED: {
+                    Map[] values = (Map[]) value;
+                    for (int idx = 0; idx < values.length; idx++) {
+                        AttributeCacheEntity compoundAttribute = this.attributeCacheDAO.addAttribute(attributeType,
+                                subject, idx);
+                        List<AttributeCacheEntity> memberAttributes = new LinkedList<AttributeCacheEntity>();
+                        for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
+                            AttributeTypeEntity memberAttributeType = member.getMember();
+                            Object memberValue = values[idx].get(memberAttributeType.getName());
+                            // check member attribute cache entry present, if so update entry date
+                            AttributeCacheEntity memberAttribute = this.attributeCacheDAO.findAttribute(subject,
+                                    memberAttributeType, idx);
+                            if (null != memberAttribute) {
+                                memberAttribute.setEntryDate(new Date(System.currentTimeMillis()));
+                            } else {
+                                memberAttribute = this.attributeCacheDAO
+                                        .addAttribute(memberAttributeType, subject, idx);
+                            }
+                            if (null != memberValue) {
+                                memberAttribute.setValue(memberValue);
+                            }
+                            memberAttributes.add(memberAttribute);
+                        }
+                        compoundAttribute.setMembers(memberAttributes);
+                    }
+                    return;
+                }
+                default:
+                    throw new EJBException("datatype not supported: " + datatype);
+            }
+        }
+
+        /*
+         * Single-valued attribute.
+         */
+        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject, 0);
+        attribute.setValue(value);
+    }
+
+    /**
+     * Find an external attribute value using the OSGi plugin specified in the attribute type.
      * 
      * @throws AttributeUnavailableException
      * @throws AttributeTypeNotFoundException
@@ -124,7 +233,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                     .getPluginName());
             List<Attribute> attributeView = pluginAttributeService.getAttribute(subject.getUserId(), attributeType
                     .getName(), attributeType.getPluginConfiguration());
-            return convertAttribute(attributeView, attributeType);
+            return getValueFromPlugin(attributeView, attributeType);
         } catch (UnsupportedDataTypeException e) {
             throw new PermissionDeniedException("Unsupported data type");
         } catch (AttributeNotFoundException e) {
@@ -145,13 +254,365 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
     }
 
     /**
-     * Convert attribute view as used by the OSGi plugins
+     * Find local attribute.
+     * 
+     * @param subject
+     * @param attributeType
+     * @return attribute value
+     */
+    private Object findLocalAttribute(SubjectEntity subject, AttributeTypeEntity attributeType) {
+
+        LOG.debug("find local attribute " + attributeType.getName() + " for " + subject.getUserId());
+
+        // filter out the empty attributes
+        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
+        List<AttributeEntity> nonEmptyAttributes = new LinkedList<AttributeEntity>();
+        for (AttributeEntity attribute : attributes)
+            if (attribute.getAttributeType().isCompounded()) {
+                nonEmptyAttributes.add(attribute);
+            } else if (!attribute.isEmpty()) {
+                nonEmptyAttributes.add(attribute);
+            }
+
+        LOG.debug("found " + nonEmptyAttributes.size());
+
+        if (nonEmptyAttributes.isEmpty())
+            return null;
+
+        return getValueFromLocal(nonEmptyAttributes, attributeType, subject);
+    }
+
+    /**
+     * Find possible valid cached attribute, if not found or not valid anymore, returns null.
+     * 
+     * @param subject
+     * @param attributeType
+     * @return cached attribute value or null if not found or invalid.
+     */
+    private Object findCachedAttributeValue(SubjectEntity subject, AttributeTypeEntity attributeType) {
+
+        LOG.debug("find cached attribute " + attributeType.getName() + " for " + subject.getUserId());
+        long currentTime = System.currentTimeMillis();
+
+        List<AttributeCacheEntity> attributes = this.attributeCacheDAO.listAttributes(subject, attributeType);
+        if (null == attributes || attributes.isEmpty())
+            return null;
+
+        // check expiration date
+        for (int idx = 0; idx < attributes.size(); idx++) {
+            if (currentTime - attributes.get(idx).getEntryDate().getTime() > attributeType
+                    .getAttributeCacheTimeoutMillis()) {
+                // expired
+                this.attributeCacheDAO.removeAttributes(subject, attributeType);
+                return null;
+            }
+            if (attributeType.isCompounded()) {
+                for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
+                    AttributeTypeEntity memberAttributeType = member.getMember();
+                    AttributeCacheEntity memberAttribute = this.attributeCacheDAO.findAttribute(subject,
+                            memberAttributeType, idx);
+                    if (null == memberAttribute) {
+                        this.attributeCacheDAO.removeAttributes(subject, attributeType);
+                        return null;
+                    }
+                    if (currentTime - memberAttribute.getEntryDate().getTime() > memberAttributeType
+                            .getAttributeCacheTimeoutMillis()) {
+                        // expired
+                        this.attributeCacheDAO.removeAttributes(subject, attributeType);
+                        return null;
+                    }
+
+                }
+            }
+        }
+
+        List<AttributeCacheEntity> nonEmptyAttributes = new LinkedList<AttributeCacheEntity>();
+        for (AttributeCacheEntity attribute : attributes)
+            if (attribute.getAttributeType().isCompounded()) {
+                nonEmptyAttributes.add(attribute);
+            } else if (!attribute.isEmpty()) {
+                nonEmptyAttributes.add(attribute);
+            }
+
+        LOG.debug("found " + nonEmptyAttributes.size() + " cached attributes of type " + attributeType.getName());
+
+        if (nonEmptyAttributes.isEmpty())
+            return null;
+
+        return getValueFromCache(nonEmptyAttributes, attributeType, subject);
+    }
+
+    /**
+     * Find remote attribute.
+     * 
+     * @param subjectId
+     * @param attributeType
+     * @return attribute value
+     * @throws NodeNotFoundException
+     * @throws SubjectNotFoundException
+     * @throws SafeOnlineResourceException
+     */
+    private Object findRemoteAttribute(SubjectEntity subject, AttributeTypeEntity attributeType)
+            throws PermissionDeniedException, AttributeUnavailableException, SubjectNotFoundException,
+            NodeNotFoundException {
+
+        LOG.debug("find remote attribute " + attributeType.getName() + " for " + subject.getUserId());
+
+        NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subject.getUserId(), attributeType
+                .getLocation().getName());
+
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        AttributeClient attributeClient = new AttributeClientImpl(attributeType.getLocation().getLocation(),
+                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
+
+        DatatypeType datatype = attributeType.getType();
+        Class<?> attributeClass;
+
+        if (attributeType.isMultivalued()) {
+            switch (datatype) {
+                case STRING:
+                case LOGIN:
+                    attributeClass = String[].class;
+                break;
+                case BOOLEAN:
+                    attributeClass = Boolean[].class;
+                break;
+                case INTEGER:
+                    attributeClass = Integer[].class;
+                break;
+                case DOUBLE:
+                    attributeClass = Double[].class;
+                break;
+                case DATE:
+                    attributeClass = Date[].class;
+                break;
+                case COMPOUNDED:
+                    attributeClass = Map[].class;
+                break;
+                default:
+                    throw new EJBException("datatype not supported: " + datatype);
+            }
+        } else {
+            switch (datatype) {
+                case STRING:
+                case LOGIN:
+                    attributeClass = String.class;
+                break;
+                case BOOLEAN:
+                    attributeClass = Boolean.class;
+                break;
+                case INTEGER:
+                    attributeClass = Integer.class;
+                break;
+                case DOUBLE:
+                    attributeClass = Double.class;
+                break;
+                case DATE:
+                    attributeClass = Date.class;
+                break;
+                case COMPOUNDED:
+                    attributeClass = Map.class;
+                break;
+                default:
+                    throw new EJBException("datatype not supported: " + datatype);
+            }
+        }
+
+        try {
+            return attributeClient.getAttributeValue(nodeMapping.getId(), attributeType.getName(), attributeClass);
+        }
+
+        catch (WSClientTransportException e) {
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e
+                    .getLocation(), "Failed to get attribute value of type " + attributeType.getName()
+                    + " for subject " + subject.getUserId());
+            throw new PermissionDeniedException(e.getMessage());
+        } catch (RequestDeniedException e) {
+            throw new PermissionDeniedException(e.getMessage());
+        } catch (net.link.safeonline.sdk.exception.AttributeNotFoundException e) {
+            return null;
+        } catch (net.link.safeonline.sdk.exception.AttributeUnavailableException e) {
+            throw new AttributeUnavailableException();
+        }
+    }
+
+    /**
+     * Returns attribute value object for local attributes.
+     */
+    @SuppressWarnings("unchecked")
+    private Object getValueFromLocal(List<AttributeEntity> attributes, AttributeTypeEntity attributeType,
+            SubjectEntity subject) {
+
+        DatatypeType datatype = attributeType.getType();
+        if (attributeType.isMultivalued()) {
+            switch (datatype) {
+                case STRING:
+                case LOGIN: {
+                    String[] values = new String[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getStringValue();
+                    }
+                    return values;
+                }
+                case BOOLEAN: {
+                    Boolean[] values = new Boolean[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getBooleanValue();
+                    }
+                    return values;
+                }
+                case INTEGER: {
+                    Integer[] values = new Integer[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getIntegerValue();
+                    }
+                    return values;
+                }
+                case DOUBLE: {
+                    Double[] values = new Double[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getDoubleValue();
+                    }
+                    return values;
+                }
+                case DATE: {
+                    Date[] values = new Date[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getDateValue();
+                    }
+                    return values;
+                }
+                case COMPOUNDED: {
+                    Map[] values = new Map[attributes.size()];
+                    for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
+                        AttributeTypeEntity memberAttributeType = member.getMember();
+                        for (int idx = 0; idx < attributes.size(); idx++) {
+                            AttributeEntity attribute = this.attributeDAO.findAttribute(subject, memberAttributeType,
+                                    idx);
+                            Map<String, Object> memberMap = values[idx];
+                            if (null == memberMap) {
+                                memberMap = new HashMap<String, Object>();
+                                values[idx] = memberMap;
+                            }
+                            Object memberValue;
+                            if (null != attribute) {
+                                memberValue = attribute.getValue();
+                            } else {
+                                memberValue = null;
+                            }
+                            memberMap.put(memberAttributeType.getName(), memberValue);
+                        }
+                    }
+                    return values;
+                }
+                default:
+                    throw new EJBException("datatype not supported: " + datatype);
+            }
+        }
+
+        /*
+         * Single-valued attribute.
+         */
+        if (attributes.isEmpty())
+            return null;
+
+        AttributeEntity attribute = attributes.get(0);
+        return attribute.getValue();
+    }
+
+    /**
+     * Returns attribute value object for local cached attributes
+     */
+    @SuppressWarnings("unchecked")
+    private Object getValueFromCache(List<AttributeCacheEntity> attributes, AttributeTypeEntity attributeType,
+            SubjectEntity subject) {
+
+        DatatypeType datatype = attributeType.getType();
+        if (attributeType.isMultivalued()) {
+            switch (datatype) {
+                case STRING:
+                case LOGIN: {
+                    String[] values = new String[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getStringValue();
+                    }
+                    return values;
+                }
+                case BOOLEAN: {
+                    Boolean[] values = new Boolean[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getBooleanValue();
+                    }
+                    return values;
+                }
+                case INTEGER: {
+                    Integer[] values = new Integer[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getIntegerValue();
+                    }
+                    return values;
+                }
+                case DOUBLE: {
+                    Double[] values = new Double[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getDoubleValue();
+                    }
+                    return values;
+                }
+                case DATE: {
+                    Date[] values = new Date[attributes.size()];
+                    for (int idx = 0; idx < values.length; idx++) {
+                        values[idx] = attributes.get(idx).getDateValue();
+                    }
+                    return values;
+                }
+                case COMPOUNDED: {
+                    Map[] values = new Map[attributes.size()];
+                    for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
+                        AttributeTypeEntity memberAttributeType = member.getMember();
+                        for (int idx = 0; idx < attributes.size(); idx++) {
+                            AttributeCacheEntity attribute = this.attributeCacheDAO.findAttribute(subject,
+                                    memberAttributeType, idx);
+                            Map<String, Object> memberMap = values[idx];
+                            if (null == memberMap) {
+                                memberMap = new HashMap<String, Object>();
+                                values[idx] = memberMap;
+                            }
+                            Object memberValue;
+                            if (null != attribute) {
+                                memberValue = attribute.getValue();
+                            } else {
+                                memberValue = null;
+                            }
+                            memberMap.put(memberAttributeType.getName(), memberValue);
+                        }
+                    }
+                    return values;
+                }
+                default:
+                    throw new EJBException("datatype not supported: " + datatype);
+            }
+        }
+
+        /*
+         * Single-valued attribute.
+         */
+        if (attributes.isEmpty())
+            return null;
+
+        AttributeCacheEntity attribute = attributes.get(0);
+        return attribute.getValue();
+
+    }
+
+    /**
+     * Returns attribute value object from OSGi plugin attribute view.
      * 
      * @throws InvalidDataException
      * @throws UnsupportedDataTypeException
      */
     @SuppressWarnings("unchecked")
-    private Object convertAttribute(List<Attribute> attributeView, AttributeTypeEntity attributeType)
+    private Object getValueFromPlugin(List<Attribute> attributeView, AttributeTypeEntity attributeType)
             throws InvalidDataException, UnsupportedDataTypeException {
 
         if (null == attributeView || attributeView.isEmpty())
@@ -317,206 +778,4 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         }
     }
 
-    /**
-     * Find local attribute.
-     * 
-     * @param subjectId
-     * @param attributeType
-     * @return attribute value
-     */
-    private Object findLocalAttribute(SubjectEntity subject, AttributeTypeEntity attributeType) {
-
-        LOG.debug("find local attribute " + attributeType.getName() + " for " + subject.getUserId());
-
-        // filter out the empty attributes
-        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
-        List<AttributeEntity> nonEmptyAttributes = new LinkedList<AttributeEntity>();
-        for (AttributeEntity attribute : attributes)
-            if (attribute.getAttributeType().isCompounded()) {
-                nonEmptyAttributes.add(attribute);
-            } else if (!attribute.isEmpty()) {
-                nonEmptyAttributes.add(attribute);
-            }
-
-        LOG.debug("found " + nonEmptyAttributes.size());
-
-        if (nonEmptyAttributes.isEmpty())
-            return null;
-
-        return getValue(nonEmptyAttributes, attributeType, subject);
-    }
-
-    /**
-     * Find remote attribute.
-     * 
-     * @param subjectId
-     * @param attributeType
-     * @return attribute value
-     * @throws NodeNotFoundException
-     * @throws SubjectNotFoundException
-     * @throws SafeOnlineResourceException
-     */
-    private Object findRemoteAttribute(SubjectEntity subject, AttributeTypeEntity attributeType)
-            throws PermissionDeniedException, AttributeUnavailableException, SubjectNotFoundException,
-            NodeNotFoundException {
-
-        LOG.debug("find remote attribute " + attributeType.getName() + " for " + subject.getUserId());
-
-        NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subject.getUserId(), attributeType
-                .getLocation().getName());
-
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        AttributeClient attributeClient = new AttributeClientImpl(attributeType.getLocation().getLocation(),
-                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
-
-        DatatypeType datatype = attributeType.getType();
-        Class<?> attributeClass;
-
-        if (attributeType.isMultivalued()) {
-            switch (datatype) {
-                case STRING:
-                case LOGIN:
-                    attributeClass = String[].class;
-                break;
-                case BOOLEAN:
-                    attributeClass = Boolean[].class;
-                break;
-                case INTEGER:
-                    attributeClass = Integer[].class;
-                break;
-                case DOUBLE:
-                    attributeClass = Double[].class;
-                break;
-                case DATE:
-                    attributeClass = Date[].class;
-                break;
-                case COMPOUNDED:
-                    attributeClass = Map[].class;
-                break;
-                default:
-                    throw new EJBException("datatype not supported: " + datatype);
-            }
-        } else {
-            switch (datatype) {
-                case STRING:
-                case LOGIN:
-                    attributeClass = String.class;
-                break;
-                case BOOLEAN:
-                    attributeClass = Boolean.class;
-                break;
-                case INTEGER:
-                    attributeClass = Integer.class;
-                break;
-                case DOUBLE:
-                    attributeClass = Double.class;
-                break;
-                case DATE:
-                    attributeClass = Date.class;
-                break;
-                case COMPOUNDED:
-                    attributeClass = Map.class;
-                break;
-                default:
-                    throw new EJBException("datatype not supported: " + datatype);
-            }
-        }
-
-        try {
-            return attributeClient.getAttributeValue(nodeMapping.getId(), attributeType.getName(), attributeClass);
-        }
-
-        catch (WSClientTransportException e) {
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e
-                    .getLocation(), "Failed to get attribute value of type " + attributeType.getName()
-                    + " for subject " + subject.getUserId());
-            throw new PermissionDeniedException(e.getMessage());
-        } catch (RequestDeniedException e) {
-            throw new PermissionDeniedException(e.getMessage());
-        } catch (net.link.safeonline.sdk.exception.AttributeNotFoundException e) {
-            return null;
-        } catch (net.link.safeonline.sdk.exception.AttributeUnavailableException e) {
-            throw new AttributeUnavailableException();
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Object getValue(List<AttributeEntity> attributes, AttributeTypeEntity attributeType, SubjectEntity subject) {
-
-        DatatypeType datatype = attributeType.getType();
-        if (attributeType.isMultivalued()) {
-            switch (datatype) {
-                case STRING:
-                case LOGIN: {
-                    String[] values = new String[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++) {
-                        values[idx] = attributes.get(idx).getStringValue();
-                    }
-                    return values;
-                }
-                case BOOLEAN: {
-                    Boolean[] values = new Boolean[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++) {
-                        values[idx] = attributes.get(idx).getBooleanValue();
-                    }
-                    return values;
-                }
-                case INTEGER: {
-                    Integer[] values = new Integer[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++) {
-                        values[idx] = attributes.get(idx).getIntegerValue();
-                    }
-                    return values;
-                }
-                case DOUBLE: {
-                    Double[] values = new Double[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++) {
-                        values[idx] = attributes.get(idx).getDoubleValue();
-                    }
-                    return values;
-                }
-                case DATE: {
-                    Date[] values = new Date[attributes.size()];
-                    for (int idx = 0; idx < values.length; idx++) {
-                        values[idx] = attributes.get(idx).getDateValue();
-                    }
-                    return values;
-                }
-                case COMPOUNDED: {
-                    Map[] values = new Map[attributes.size()];
-                    for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
-                        AttributeTypeEntity memberAttributeType = member.getMember();
-                        for (int idx = 0; idx < attributes.size(); idx++) {
-                            AttributeEntity attribute = this.attributeDAO.findAttribute(subject, memberAttributeType,
-                                    idx);
-                            Map<String, Object> memberMap = values[idx];
-                            if (null == memberMap) {
-                                memberMap = new HashMap<String, Object>();
-                                values[idx] = memberMap;
-                            }
-                            Object memberValue;
-                            if (null != attribute) {
-                                memberValue = attribute.getValue();
-                            } else {
-                                memberValue = null;
-                            }
-                            memberMap.put(memberAttributeType.getName(), memberValue);
-                        }
-                    }
-                    return values;
-                }
-                default:
-                    throw new EJBException("datatype not supported: " + datatype);
-            }
-        }
-
-        /*
-         * Single-valued attribute.
-         */
-        if (attributes.isEmpty())
-            return null;
-
-        AttributeEntity attribute = attributes.get(0);
-        return attribute.getValue();
-    }
 }

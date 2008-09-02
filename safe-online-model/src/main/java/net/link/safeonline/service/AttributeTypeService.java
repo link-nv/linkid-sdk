@@ -87,4 +87,6 @@ public interface AttributeTypeService {
 
     void savePluginConfiguration(String attributeTypeName, String pluginConfiguration)
             throws AttributeTypeNotFoundException;
+
+    void saveCacheTimeout(String attributeTypeName, Long cacheTimeout) throws AttributeTypeNotFoundException;
 }
