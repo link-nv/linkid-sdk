@@ -88,6 +88,11 @@
 		</fileSet>
 		<fileSet>
 			<directory>target/dependency</directory>
+            <excludes>
+                <exclude>
+                    safe-online*
+                </exclude>
+            </excludes>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 	</fileSets>

@@ -26,8 +26,21 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
 				<configuration>
-					<version>1.4</version>
-					<!--modules>
+					<version>5</version>
+					<jboss>
+						<version>4</version>
+					</jboss>
+                    <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
+
+                    <!-- Exlude ZIPs.
+                         They only serve to force the deps of wars/sars to become transitive. -->
+                    <artifactTypeMappings>
+                        <artifactTypeMapping type="zip" mapping="jar"/>
+                    </artifactTypeMappings>
+                    <earSourceExcludes>*.zip,lib/*.zip</earSourceExcludes>
+
+					<!--version>1.4</version>
+					<modules>
                         <jarModule>
                             <groupId>org.slf4j</groupId>
                             <artifactId>slf4j-api</artifactId>
@@ -122,10 +135,10 @@
 								safe-online-performance-scenario
 							</artifactId>
 						</ejbModule>
-					</modules-->
+					</modules>
 					<jboss>
 						<version>4</version>
-					</jboss>
+					</jboss-->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -141,6 +154,24 @@
 						<type>remote</type>
 					</container>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

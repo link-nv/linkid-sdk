@@ -33,7 +33,10 @@
         <dependency>
             <groupId>tomcat</groupId>
             <artifactId>catalina</artifactId>
-            <version>${catalina.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>tomcat</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

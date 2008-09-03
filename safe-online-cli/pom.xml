@@ -39,16 +39,15 @@
 		</plugins>
 	</build>
 
-	<dependencies>
+	<!--dependencies>
 
-        <!-- Specific Dependencies: OLAS -->
+        <!- - Specific Dependencies: OLAS - ->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
-			<version>${safe-online.version}</version>
 		</dependency>
 
-	</dependencies>
+	</dependencies-->
 
 	<reporting>
 		<plugins>

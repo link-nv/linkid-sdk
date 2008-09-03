@@ -25,14 +25,7 @@
         <!-- Dependency Groups -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-as</artifactId>
-            <scope>compile</scope>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-jsf</artifactId>
-            <scope>compile</scope>
             <type>pom</type>
         </dependency>
 
@@ -44,6 +37,41 @@
 		</dependency>
 
         <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-ejb3x</artifactId>
+            <version>${jboss.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-j2ee</artifactId>
+            <version>${jboss.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-jaxrpc</artifactId>
+            <version>${jboss.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jbosssx-client</artifactId>
+            <version>${jboss.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>ejb3-persistence</artifactId>
+            <version>${jboss.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate-entitymanager.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-annotations-ejb3</artifactId>

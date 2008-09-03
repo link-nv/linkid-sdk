@@ -539,8 +539,6 @@
         <hibernate3.version>3.2.4.SP1</hibernate3.version>
         <mimepull.version>1.2</mimepull.version>
         <joesnmp.version>0.3.4</joesnmp.version>
-		<jboss-packaging-maven-plugin.version> 2.0-SNAPSHOT 
-		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
 		<junit.version>4.4</junit.version>
 		<jaxb-xjc.version>2.1.5</jaxb-xjc.version>
@@ -597,11 +595,11 @@
 		<tomahawk.version>1.1.6</tomahawk.version>
 		<tomahawk-facelets.version>1.0</tomahawk-facelets.version>
 		<myfaces-api.version>1.1.4</myfaces-api.version>
-		<jboss-sar-maven-plugin.version> 2.0-SNAPSHOT 
-		</jboss-sar-maven-plugin.version>
-		<maven-surefire-plugin.version> 2.3 </maven-surefire-plugin.version>
-		<easymockclassextension.version> 2.2.2 
-		</easymockclassextension.version>
+		<jboss-sar-maven-plugin.version>2.0-SNAPSHOT</jboss-sar-maven-plugin.version>
+		<jboss-packaging-maven-plugin.version>2.0-beta-1</jboss-packaging-maven-plugin.version>
+		<maven-surefire-plugin.version>2.3</maven-surefire-plugin.version>
+		<easymockclassextension.version>2.2.2</easymockclassextension.version>
+        <tomcat.version>3.3.2</tomcat.version>
 		<catalina.version>5.5.15</catalina.version>
 		<!-- http://jira.codehaus.org/browse/MWAR-18 -->
 		<maven-war-plugin.version> 2.1-alpha-1 </maven-war-plugin.version>
@@ -984,6 +982,12 @@
 					<artifactId>keytool-maven-plugin</artifactId>
 					<version>${keytool-maven-plugin.version}</version>
 				</plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>jboss-packaging-maven-plugin</artifactId>
+					<version>${jboss-packaging-maven-plugin.version}</version>
+                    <extensions>true</extensions>
+                </plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>jboss-sar-maven-plugin</artifactId>
@@ -1147,6 +1151,18 @@
 			</releases>
 		</repository>
 		<repository>
+			<id>ibiblio</id>
+			<name>IBibilio Repository</name>
+            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository>
+		<repository>
 			<!-- Keep Sun repository second for JAX-WS 2.1 API JAR -->
 			<id>java.net</id>
 			<name>java.net Maven Repository</name>
@@ -1259,7 +1275,7 @@
 		<repository>
 			<id>openqa</id>
 			<name>OpenQA Repository</name>
-			<url>http://maven.openqa.org</url>
+            <url>http://maven.openqa.org/repository/releases</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -1416,7 +1432,6 @@
                 <type>pom</type>
 
                 <version>${safe-online.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>net.lin-k.safe-online</groupId>
@@ -1424,7 +1439,6 @@
                 <type>pom</type>
 
                 <version>${safe-online.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>net.lin-k.safe-online</groupId>
@@ -1449,6 +1463,14 @@
 
                 <version>${safe-online.version}</version>
                 <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-sql-ddl</artifactId>
+                <type>jar</type>
+
+                <version>${safe-online.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <!-- External -->
@@ -1760,6 +1782,16 @@
 				<groupId>tomcat</groupId>
 				<artifactId>catalina</artifactId>
 			</dependency-->
+            <dependency>
+                <groupId>tomcat</groupId>
+                <artifactId>catalina</artifactId>
+                <version>${catalina.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tomcat</groupId>
+                <artifactId>tomcat</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>net.java.dev</groupId>
 				<artifactId>jaxws-ri</artifactId>

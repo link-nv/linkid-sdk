@@ -100,7 +100,7 @@
 							</outputDirectory>
 						</configuration>
 					</execution>
-					<!--execution>
+					<execution>
 						<id>copy</id>
 						<phase>package</phase>
 						<goals>
@@ -111,10 +111,10 @@
 							</outputDirectory>
                             <stripVersion>true</stripVersion>
 							<excludeArtifactIds>
-								jboss-as,jboss-messaging-dist,jboss-messaging-sar,jaxws-ri 
+								jboss-as,jboss-messaging-dist,jboss-messaging-sar,jaxws-ri
 							</excludeArtifactIds>
 						</configuration>
-					</execution-->
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

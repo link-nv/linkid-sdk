@@ -30,13 +30,13 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-                    <warSourceExcludes>WEB-INF/lib/*.jar</warSourceExcludes>
-                    <archive>
+                    <warSourceExcludes>WEB-INF/lib/*</warSourceExcludes>
+                    <!--archive>
                       <manifest>
                         <addClasspath>true</addClasspath>
                         <classpathPrefix>lib/</classpathPrefix>
                       </manifest>
-                    </archive>
+                    </archive-->
 
 					<dependentWarExcludes>
 						WEB-INF/web.xml
@@ -52,6 +52,24 @@
 					</webResources>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -64,12 +82,18 @@
             <type>pom</type>
         </dependency>
 
-        <!-- Specific Dependencies: OLAS -->
+        <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-base</artifactId>
 			<type>war</type>
 		</dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-webapp-base</artifactId>
+                <version>${safe-online.version}</version>
+                <type>zip</type>
+            </dependency>
 
 	</dependencies>
 
