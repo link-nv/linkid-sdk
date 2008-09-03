@@ -87,6 +87,14 @@
             <type>pom</type>
         </dependency>
 
+        <!-- Specific Dependencies: OLAS: Backing Beans -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-helpdesk</artifactId>
+			<version>${safe-online.version}</version>
+            <scope>runtime</scope>
+		</dependency>
+
         <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

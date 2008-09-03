@@ -191,6 +191,13 @@
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model</artifactId>
+			<version>${safe-online.version}</version>
+		</dependency>
+
+        <!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-cli</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>

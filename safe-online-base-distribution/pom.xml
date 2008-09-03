@@ -110,9 +110,9 @@
 							<outputDirectory> ${project.build.directory}/dependency 
 							</outputDirectory>
                             <stripVersion>true</stripVersion>
-							<excludeArtifactIds>
-								jboss-as,jboss-messaging-dist,jboss-messaging-sar,jaxws-ri
-							</excludeArtifactIds>
+                            <excludeScope>
+                                provided
+                            </excludeScope>
 						</configuration>
 					</execution>
 				</executions>
@@ -153,21 +153,25 @@
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-as</artifactId>
+            <scope>provided</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-messaging-dist</artifactId>
+            <scope>provided</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-messaging-sar</artifactId>
+            <scope>provided</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev</groupId>
 			<artifactId>jaxws-ri</artifactId>
+            <scope>provided</scope>
 			<type>zip</type>
 		</dependency>
 
