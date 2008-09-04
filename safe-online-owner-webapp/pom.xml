@@ -84,6 +84,7 @@
 			<artifactId>safe-online-owner</artifactId>
 			<version>${safe-online.version}</version>
             <scope>runtime</scope>
+            <type>ejb</type>
 		</dependency>
 
         <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
@@ -111,6 +112,12 @@
 			<artifactId>safe-online-owner</artifactId>
 			<version>${safe-online.version}</version>
 			<type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-taglib</artifactId>
+			<version>${safe-online.version}</version>
+            <scope>runtime</scope>
 		</dependency>
 
         <!-- Test Dependencies -->

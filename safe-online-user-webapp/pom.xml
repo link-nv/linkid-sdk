@@ -88,6 +88,7 @@
 			<artifactId>safe-online-user</artifactId>
 			<version>${safe-online.version}</version>
             <scope>runtime</scope>
+            <type>ejb</type>
 		</dependency>
 
         <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
