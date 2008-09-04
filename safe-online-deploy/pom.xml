@@ -26,17 +26,17 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
 				<configuration>
-					<archive>
-						<manifest>
-							<mainClass> net.link.safeonline.cli.Main </mainClass>
-						</manifest>
-					</archive>
-
 					<version>5</version>
 					<jboss>
 						<version>4</version>
 					</jboss>
+					<archive>
+						<manifest>
+							<mainClass>net.link.safeonline.cli.Main</mainClass>
+						</manifest>
+					</archive>
                     <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
+                    <applicationXml>src/main/resources/application.xml</applicationXml>
 
                     <!-- Exlude ZIPs.
                          They only serve to force the deps of wars/sars to become transitive. -->
@@ -191,13 +191,6 @@
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-model</artifactId>
-			<version>${safe-online.version}</version>
-		</dependency>
-
-        <!-- Specific Dependencies: OLAS -->
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-cli</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
@@ -205,6 +198,18 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model</artifactId>
+			<version>${safe-online.version}</version>
+            <type>ejb</type>
+		</dependency>
+
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
 
 	</dependencies>
 

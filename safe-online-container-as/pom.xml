@@ -35,54 +35,6 @@
 
     <dependencies>
 
-        <!-- extra: logging -->
-        <!--
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-api</artifactId>
-            <version>${commons-logging-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        -->
-
-        <!-- extra: application server -->
-        <!--
-        <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-annotations-ejb3</artifactId>
-            <version>${jboss.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>tomcat</groupId>
-            <artifactId>catalina</artifactId>
-            <version>${catalina.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>${jstl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>${hibernate-annotations.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-commons-annotations</artifactId>
-            <version>${hibernate-commons-annotations.version}</version>
-        </dependency>
-        -->
-
         <!-- NOTICE:
                 BELOW ARE ALL LIBRARIES THAT COME WITH THE JBOSS-AS.
                 YOU SHOULDN'T TOUCH THEM UNLESS YOU'RE UPGRADING THE AS. -->
@@ -91,7 +43,6 @@
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
-            <version>${activation.version}</version>
         </dependency>
 		<dependency>
 			<groupId>com.sun.net.httpserver</groupId>
@@ -162,12 +113,10 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>${commons-codec.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>${commons-httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -176,85 +125,66 @@
         <dependency>
             <groupId>concurrent</groupId>
             <artifactId>concurrent</artifactId>
-            <!-- JBoss packaged version not available in Maven repos -->
-            <version>${concurrent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jmx-client</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-system</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <!-- JBoss packaged version not available in Maven repos -->
-            <version>${log4j.version}</version>
         </dependency>
 
         <!-- jboss/lib/endorsed -->
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-            <version>${xalan.version}</version>
         </dependency>
         <dependency>
-            <groupId>xerces</groupId>
+            <groupId>org.apache.xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-            <version>${xercesImpl.version}</version>
         </dependency>
 
         <!-- jboss/server/default/lib -->
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
-            <version>${activation.version}</version>
         </dependency>
         <dependency>
             <groupId>antlr</groupId>
             <artifactId>antlr</artifactId>
-            <!-- JBoss packaged version not available in Maven repos -->
-            <version>${antlr.version}</version>
         </dependency>
         <dependency>
             <groupId>bcel</groupId>
             <artifactId>bcel</artifactId>
-            <version>${bcel.version}</version>
         </dependency>
         <dependency>
             <groupId>bsf</groupId>
             <artifactId>bsf</artifactId>
-            <version>${bsf.version}</version>
         </dependency>
         <dependency>
             <groupId>bsh</groupId>
             <artifactId>bsh</artifactId>
-            <version>${bsh.version}</version>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
-            <!-- JBoss packaged version not available in Maven repos -->
-            <version>${cglib.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>${commons-codec.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-            <version>${commons-collections.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>${commons-httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -263,119 +193,94 @@
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
-            <!-- JBoss packaged version not available in Maven repos -->
-            <version>${dom4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>ejb3-persistence</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>el-api</artifactId>
-            <!-- JBoss packaged version not available in Maven repos -->
-            <version>${el-api.version}</version>
         </dependency>
         <dependency>
             <groupId>hibernate</groupId>
             <artifactId>hibernate3</artifactId>
-            <version>${hibernate3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate-entitymanager.version}</version>
         </dependency>
         <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
         </dependency>
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
-            <version>${jaxen.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-ejb3x</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-hibernate</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-j2ee</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-jaxrpc</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-jaxws</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-jca</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-jsr77</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-jsr88</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-management</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-monitoring</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-remoting-int</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-serialization</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-srp</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-vfs</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossjta</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossjta-integration</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <!-- Disabled in favor of JBoss Messaging -->
         <!--dependency>
@@ -389,72 +294,58 @@
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossts-common</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossws-common</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossws-framework</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossws-jboss42</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossws-spi</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>joesnmp</artifactId>
-            <version>${joesnmp.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jpl-pattern</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jpl-util</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>log4j-snmp-appender</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>xmlentitymgr</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-remoting</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-transaction-client</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbosssx-client</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jmx-client</artifactId>
-            <version>${jboss.version}</version>
         </dependency>
 		<dependency>
 			<groupId>javassist</groupId>
@@ -463,14 +354,10 @@
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
-            <!-- JBoss packaged version not available in Maven repos -->
-            <version>${jsp-api.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <!-- JBoss packaged version not available in Maven repos -->
-            <version>${servlet-api.version}</version>
         </dependency>
 
     </dependencies>

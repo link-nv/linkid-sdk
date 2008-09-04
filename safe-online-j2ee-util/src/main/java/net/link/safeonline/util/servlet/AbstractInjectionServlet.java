@@ -67,6 +67,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
 
+        super.init(config);
+        
         initInitParameters(config);
         initContextParameters(config);
         injectEjbs();
