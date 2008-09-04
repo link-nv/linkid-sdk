@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>${safe-online.version}</version>
+		<version>1.0</version>
 	</parent>
 
 	<name>SafeOnline Demo Deploy</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-deploy</artifactId>
-	<version>${safe-online.version}</version>
+	<version>1.0</version>
 	<packaging>ear</packaging>
 
 	<build>
@@ -158,19 +158,19 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-webapp</artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-remote-service</artifactId>
 			<type>sar</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket</artifactId>
 			<type>ejb</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -182,13 +182,13 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket-webapp</artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-cinema</artifactId>
 			<type>ejb</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -200,13 +200,13 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-cinema-webapp</artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment</artifactId>
 			<type>ejb</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -218,19 +218,19 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment-webapp</artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment-service</artifactId>
 			<type>sar</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer</artifactId>
 			<type>ejb</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -242,19 +242,19 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-webapp</artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-service</artifactId>
 			<type>sar</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-prescription</artifactId>
 			<type>ejb</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -266,19 +266,19 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId> safe-online-demo-prescription-webapp </artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId> safe-online-demo-prescription-service </artifactId>
 			<type>sar</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate</artifactId>
 			<type>ejb</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -290,25 +290,25 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-webapp</artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-service</artifactId>
 			<type>sar</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ws-runtime</artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ws-model</artifactId>
 			<type>ejb</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -320,7 +320,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-demo</artifactId>
 			<type>ejb</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
@@ -336,7 +336,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-startup</artifactId>
 			<type>war</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 
 	</dependencies>

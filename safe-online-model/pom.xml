@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>${safe-online.version}</version>
+		<version>1.0</version>
 	</parent>
 	<name>SafeOnline Model</name>
 	<description> The SafeOnline Core EJB3 Model. </description>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-model</artifactId>
-	<version>${safe-online.version}</version>
+	<version>1.0</version>
 	<packaging>ejb</packaging>
 	<build>
 		<plugins>
@@ -54,69 +54,69 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-common</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-entity</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-jpa-util</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-shared</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-user-keystore</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-helpdesk-keystore</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-oper-keystore</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-owner-keystore</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-sdk</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -128,18 +128,18 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId> safe-online-notification-consumer-ws-abstract-impl 
 			</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-identity-applet</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth-applet</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

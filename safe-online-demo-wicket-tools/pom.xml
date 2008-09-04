@@ -5,24 +5,24 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>${safe-online.version}</version>
+		<version>1.0</version>
 	</parent>
 	<name>SafeOnline Demo Wicket Tools</name>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-wicket-tools</artifactId>
-	<version>${safe-online.version}</version>
+	<version>1.0</version>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container</artifactId>
 			<type>pom</type>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
