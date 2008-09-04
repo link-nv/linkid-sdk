@@ -50,7 +50,7 @@
         <!-- Specific Dependencies: OLAS -->
         <dependency>
    			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-startable</artifactId>
+			<artifactId>safe-online-demo-startup</artifactId>
 			<version>${safe-online.version}</version>
             <scope>runtime</scope>
         </dependency>
