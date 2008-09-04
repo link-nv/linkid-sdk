@@ -102,20 +102,6 @@
 
 	<dependencies>
 
-        <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-performance-startup</artifactId>
-			<version>${safe-online.version}</version>
-			<type>war</type>
-		</dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-performance-startup</artifactId>
-                <version>${safe-online.version}</version>
-                <type>zip</type>
-            </dependency>
-
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

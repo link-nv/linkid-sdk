@@ -78,6 +78,11 @@
         <!-- Specific Dependencies: OLAS -->
         <dependency>
    			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-startup</artifactId>
+			<version>${safe-online.version}</version>
+        </dependency>
+        <dependency>
+   			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-digipass-startup</artifactId>
 			<version>${safe-online.version}</version>
             <scope>runtime</scope>
