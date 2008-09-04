@@ -33,22 +33,22 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 /**
  * Interface to service for retrieving information about applications.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface ApplicationService {
 
     /**
      * Gives back all available applications.
-     *
+     * 
      */
     List<ApplicationEntity> listApplications();
 
     /**
      * Gives back the application entity for a given application name.
-     *
+     * 
      * @param applicationName
      * @throws ApplicationNotFoundException
      */
@@ -56,9 +56,9 @@ public interface ApplicationService {
 
     /**
      * Gives back the applications owned by the caller principal.
-     *
+     * 
      * @throws ApplicationOwnerNotFoundException
-     *
+     * 
      */
     List<ApplicationEntity> getOwnedApplications() throws ApplicationOwnerNotFoundException;
 
@@ -75,6 +75,8 @@ public interface ApplicationService {
      *            the optional attribute types that make up the initial application identity. Can be <code>null</code>.
      * @param skipMessageIntegrityCheck
      * @param deviceRestriction
+     * @param ssoEnabled
+     *            whether or not this application allows Single Sign-On
      * @throws ExistingApplicationException
      * @throws ApplicationOwnerNotFoundException
      * @throws CertificateEncodingException
@@ -84,19 +86,19 @@ public interface ApplicationService {
             boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo,
             Color applicationColor, byte[] encodedCertificate,
             List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
-            boolean deviceRestriction) throws ExistingApplicationException, ApplicationOwnerNotFoundException,
-            CertificateEncodingException, AttributeTypeNotFoundException;
+            boolean deviceRestriction, boolean ssoEnabled) throws ExistingApplicationException,
+            ApplicationOwnerNotFoundException, CertificateEncodingException, AttributeTypeNotFoundException;
 
     /**
      * Removes an application an all its subscriptions.
-     *
+     * 
      * @param name
      */
     void removeApplication(String name) throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Sets the application description.
-     *
+     * 
      * @param name
      *            the name of the application.
      * @param description
@@ -108,7 +110,7 @@ public interface ApplicationService {
 
     /**
      * Registers an application owner.
-     *
+     * 
      * @param ownerName
      *            the name of the application owner.
      * @param adminLogin
@@ -122,7 +124,7 @@ public interface ApplicationService {
 
     /**
      * Removes an application owner.
-     *
+     * 
      * @param ownerName
      *            the name of the application owner.
      * @param adminLogin
@@ -137,13 +139,13 @@ public interface ApplicationService {
 
     /**
      * Gives back a list of all application owners within the system.
-     *
+     * 
      */
     List<ApplicationOwnerEntity> listApplicationOwners();
 
     /**
      * Gives back a list of attribute types that make up the current application identity for the given application.
-     *
+     * 
      * @param applicationName
      *            the name of the application.
      * @throws ApplicationIdentityNotFoundException
@@ -156,7 +158,7 @@ public interface ApplicationService {
      * Updates the application identity for the given application using the given set of attribute type names. The
      * current application identity version will only be changed if the new set of attribute types is a superset of the
      * current attribute type set that makes up the application identity.
-     *
+     * 
      * @param applicationId
      * @param applicationIdentityAttributes
      * @throws ApplicationNotFoundException
@@ -168,7 +170,7 @@ public interface ApplicationService {
 
     /**
      * Updates the application URL for the given application.
-     *
+     * 
      * @param applicationId
      * @param applicationUrl
      * @throws ApplicationNotFoundException
@@ -177,7 +179,7 @@ public interface ApplicationService {
 
     /**
      * Updates the application Logo for the given application.
-     *
+     * 
      * @param applicationId
      * @param newApplicationLogo
      * @throws ApplicationNotFoundException
@@ -186,7 +188,7 @@ public interface ApplicationService {
 
     /**
      * Updates the application Color for the given application.
-     *
+     * 
      * @param applicationId
      * @param applicationColor
      * @throws ApplicationNotFoundException
@@ -195,7 +197,7 @@ public interface ApplicationService {
 
     /**
      * Updates the X509 certificate of the given application.
-     *
+     * 
      * @param applicationName
      * @param certificateData
      * @throws CertificateEncodingException
@@ -206,7 +208,7 @@ public interface ApplicationService {
 
     /**
      * Sets the application description.
-     *
+     * 
      * @param name
      *            the name of the application.
      * @param deviceRestriction
@@ -218,7 +220,7 @@ public interface ApplicationService {
 
     /**
      * Set the application's permission to use the id mapping ws.
-     *
+     * 
      * @param applicationName
      * @param access
      * @throws ApplicationNotFoundException
@@ -227,7 +229,7 @@ public interface ApplicationService {
 
     /**
      * Set the application's id generation scope
-     *
+     * 
      * @param applicationName
      * @param idScope
      * @throws ApplicationNotFoundException
@@ -236,10 +238,17 @@ public interface ApplicationService {
 
     /**
      * Sets the message integrity check requirement for the given application.
-     *
+     * 
      * @param skipMessageIntegrityCheck
      * @throws ApplicationNotFoundException
      */
     void setSkipMessageIntegrityCheck(String applicationName, boolean skipMessageIntegrityCheck)
             throws ApplicationNotFoundException;
+
+    /**
+     * Sets if the application is Single Sign-On enabled or not.
+     * 
+     * @throws ApplicationNotFoundException
+     */
+    void setSsoEnabled(String applicationId, boolean ssoEnabled) throws ApplicationNotFoundException;
 }

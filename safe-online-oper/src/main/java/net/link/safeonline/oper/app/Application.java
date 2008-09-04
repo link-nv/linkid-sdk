@@ -108,6 +108,10 @@ public interface Application {
 
     void setDeviceRestriction(boolean deviceRestriction);
 
+    boolean isSsoEnabled();
+
+    void setSsoEnabled(boolean ssoEnabled);
+
     /*
      * Actions.
      */

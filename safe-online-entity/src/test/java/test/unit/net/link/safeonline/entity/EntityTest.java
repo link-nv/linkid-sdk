@@ -33,6 +33,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
 import net.link.safeonline.entity.AttributeProviderEntity;
@@ -112,7 +113,7 @@ public class EntityTest {
                     AttributeProviderEntity.class, AuditContextEntity.class, AuditAuditEntity.class,
                     HelpdeskContextEntity.class, CompoundedAttributeTypeMemberEntity.class, AccessAuditEntity.class,
                     UsageAgreementEntity.class, UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class,
-                    NodeEntity.class);
+                    NodeEntity.class, ApplicationPoolEntity.class);
         } catch (Exception e) {
             LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
             throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);

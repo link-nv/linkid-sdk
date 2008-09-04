@@ -151,6 +151,8 @@ public class ApplicationBean implements Application {
 
     private boolean                    deviceRestriction;
 
+    private boolean                    ssoEnabled;
+
     @SuppressWarnings("unused")
     @Out
     private long                       numberOfSubscriptions;
@@ -265,9 +267,8 @@ public class ApplicationBean implements Application {
         if (null != this.applicationLogoFile) {
             try {
                 newApplicationLogo = getUpFileContent(this.applicationLogoFile);
-                if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/")) {
+                if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/"))
                     throw new MagicException("Application logo requires an image/* MIME type.");
-                }
             } catch (IOException e) {
                 LOG.debug("couldn't fetch uploaded data for application logo.");
                 this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
@@ -321,7 +322,7 @@ public class ApplicationBean implements Application {
             this.applicationService.addApplication(this.name, this.friendlyName, this.applicationOwner,
                     this.description, this.idmapping, IdScopeType.valueOf(this.applicationIdScope), newApplicationUrl,
                     newApplicationLogo, newApplicationColor, encodedCertificate, tempIdentityAttributes,
-                    this.skipMessageIntegrityCheck, this.deviceRestriction);
+                    this.skipMessageIntegrityCheck, this.deviceRestriction, this.ssoEnabled);
 
         } catch (ExistingApplicationException e) {
             LOG.debug("application already exists: " + this.name);
@@ -490,6 +491,16 @@ public class ApplicationBean implements Application {
         this.deviceRestriction = deviceRestriction;
     }
 
+    public boolean isSsoEnabled() {
+
+        return this.ssoEnabled;
+    }
+
+    public void setSsoEnabled(boolean ssoEnabled) {
+
+        this.ssoEnabled = ssoEnabled;
+    }
+
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String removeApplication() throws ApplicationNotFoundException {
 
@@ -649,6 +660,7 @@ public class ApplicationBean implements Application {
             this.applicationService.setIdScope(applicationId, IdScopeType.valueOf(this.applicationIdScope));
         }
         this.applicationService.setSkipMessageIntegrityCheck(applicationId, this.skipMessageIntegrityCheck);
+        this.applicationService.setSsoEnabled(applicationId, this.ssoEnabled);
 
         // device restriction
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
@@ -711,6 +723,8 @@ public class ApplicationBean implements Application {
         this.description = this.selectedApplication.getDescription();
 
         this.deviceRestriction = this.selectedApplication.isDeviceRestriction();
+
+        this.ssoEnabled = this.selectedApplication.isSsoEnabled();
 
         return "edit";
     }

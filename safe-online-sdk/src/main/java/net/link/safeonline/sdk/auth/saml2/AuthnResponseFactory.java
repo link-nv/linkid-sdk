@@ -100,14 +100,18 @@ public class AuthnResponseFactory {
     public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName,
             String subjectName, String samlName, KeyPair signerKeyPair, int validity, String target) {
 
-        if (null == signerKeyPair)
+        if (null == signerKeyPair) {
             throw new IllegalArgumentException("signer key pair should not be null");
-        if (null == issuerName)
+        }
+        if (null == issuerName) {
             throw new IllegalArgumentException("issuer name should not be null");
-        if (null == subjectName)
+        }
+        if (null == subjectName) {
             throw new IllegalArgumentException("subject name should not be null");
-        if (null == audienceName)
+        }
+        if (null == audienceName) {
             throw new IllegalArgumentException("audience name should not be null");
+        }
 
         Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
@@ -147,10 +151,12 @@ public class AuthnResponseFactory {
     public static String createAuthResponseFailed(String inResponseTo, String issuerName, KeyPair signerKeyPair,
             String target) {
 
-        if (null == signerKeyPair)
+        if (null == signerKeyPair) {
             throw new IllegalArgumentException("signer key pair should not be null");
-        if (null == issuerName)
+        }
+        if (null == issuerName) {
             throw new IllegalArgumentException("issuer name should not be null");
+        }
 
         Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
@@ -188,10 +194,12 @@ public class AuthnResponseFactory {
     public static String createAuthResponseRequestRegistration(String inResponseTo, String issuerName,
             KeyPair signerKeyPair, String target) {
 
-        if (null == signerKeyPair)
+        if (null == signerKeyPair) {
             throw new IllegalArgumentException("signer key pair should not be null");
-        if (null == issuerName)
+        }
+        if (null == issuerName) {
             throw new IllegalArgumentException("issuer name should not be null");
+        }
 
         Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
@@ -229,10 +237,12 @@ public class AuthnResponseFactory {
     public static String createAuthResponseUnsupported(String inResponseTo, String issuerName, KeyPair signerKeyPair,
             String target) {
 
-        if (null == signerKeyPair)
+        if (null == signerKeyPair) {
             throw new IllegalArgumentException("signer key pair should not be null");
-        if (null == issuerName)
+        }
+        if (null == issuerName) {
             throw new IllegalArgumentException("issuer name should not be null");
+        }
 
         Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
@@ -426,8 +436,9 @@ public class AuthnResponseFactory {
             QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
-        if (builder == null)
+        if (builder == null) {
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
+        }
         Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
                 .getPrefix());
         return object;

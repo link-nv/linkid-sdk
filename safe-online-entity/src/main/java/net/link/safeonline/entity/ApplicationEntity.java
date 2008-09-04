@@ -23,6 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -40,9 +41,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Application Entity.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Entity
 @Table(name = "application")
@@ -58,47 +59,51 @@ import org.apache.commons.lang.builder.ToStringStyle;
 @EntityListeners(SecurityApplicationEntityListener.class)
 public class ApplicationEntity implements Serializable {
 
-    private static final long      serialVersionUID         = 1L;
+    private static final long           serialVersionUID         = 1L;
 
-    public static final String     QUERY_WHERE_ALL          = "app.all";
+    public static final String          QUERY_WHERE_ALL          = "app.all";
 
-    public static final String     QUERY_WHERE_USER_ALL     = "app.user.all";
+    public static final String          QUERY_WHERE_USER_ALL     = "app.user.all";
 
-    public static final String     QUERY_WHERE_OWNER        = "app.owner";
+    public static final String          QUERY_WHERE_OWNER        = "app.owner";
 
-    public static final String     QUERY_WHERE_CERT_SUBJECT = "app.cert.sub";
+    public static final String          QUERY_WHERE_CERT_SUBJECT = "app.cert.sub";
 
-    protected String               name;
+    protected String                    name;
 
-    protected String               friendlyName;
+    protected String                    friendlyName;
 
-    protected String               description;
+    protected String                    description;
 
-    protected URL                  applicationUrl;
+    protected URL                       applicationUrl;
 
-    protected byte[]               applicationLogo;
+    protected byte[]                    applicationLogo;
 
-    protected Color                applicationColor;
+    protected Color                     applicationColor;
 
-    protected boolean              allowUserSubscription;
+    protected boolean                   allowUserSubscription;
 
-    protected boolean              removable;
+    protected boolean                   removable;
 
-    private ApplicationOwnerEntity applicationOwner;
+    private ApplicationOwnerEntity      applicationOwner;
 
-    private String                 certificateSubject;
+    private String                      certificateSubject;
 
-    private long                   currentApplicationIdentity;
+    private long                        currentApplicationIdentity;
 
-    private long                   currentApplicationUsageAgreement;
+    private long                        currentApplicationUsageAgreement;
 
-    private boolean                deviceRestriction;
+    private boolean                     deviceRestriction;
 
-    private boolean                identifierMappingAllowed;
+    private boolean                     identifierMappingAllowed;
 
-    private IdScopeType            idScope;
+    private IdScopeType                 idScope;
 
-    private boolean                skipMessageIntegrityCheck;
+    private boolean                     skipMessageIntegrityCheck;
+
+    private boolean                     ssoEnabled;
+
+    private List<ApplicationPoolEntity> applicationPools;
 
 
     public boolean isDeviceRestriction() {
@@ -167,7 +172,7 @@ public class ApplicationEntity implements Serializable {
 
     /**
      * The unique name of the application. This field is used as primary key on the application entity.
-     *
+     * 
      */
     @Id
     @Column(name = "name")
@@ -183,7 +188,7 @@ public class ApplicationEntity implements Serializable {
 
     /**
      * The optional user friendly name of the application
-     *
+     * 
      */
     @Column(name = "friendlyName")
     public String getFriendlyName() {
@@ -249,7 +254,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * Marks whether a user is allowed to subscribe himself onto this application. This field prevents users from
      * subscribing themselves onto the operator web application or the application owner web application.
-     *
+     * 
      */
     public boolean isAllowUserSubscription() {
 
@@ -265,7 +270,7 @@ public class ApplicationEntity implements Serializable {
      * Marks whether the operator can remove this application. This prevents the operator from removing critical
      * application like the SafeOnline user web application, the SafeOnline application owner web application, the
      * SafeOnline authentication web application and the SafeOnline operator web application.
-     *
+     * 
      */
     public boolean isRemovable() {
 
@@ -280,7 +285,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * Gives back the application owner of this application. Each application has an application owner. The application
      * owner is allowed to perform certain operations regarding this application.
-     *
+     * 
      */
     @ManyToOne(optional = false)
     public ApplicationOwnerEntity getApplicationOwner() {
@@ -297,7 +302,7 @@ public class ApplicationEntity implements Serializable {
      * Gives back the current application identity version number. Each application can have multiple application
      * identities. Each application identity has a version number. This field marks the currently active application
      * identity version.
-     *
+     * 
      */
     public long getCurrentApplicationIdentity() {
 
@@ -313,7 +318,7 @@ public class ApplicationEntity implements Serializable {
      * Gives back the current application usage agreement version number. Each application can have multiple usage
      * agreement identities. Each application usage agreement has a version number. This field marks the currently
      * active application usage agreement version.
-     *
+     * 
      */
     @Column(name = "currentUsageAg")
     public long getCurrentApplicationUsageAgreement() {
@@ -329,7 +334,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * The certificate subject is used during application authentication phase to associate a given certificate with
      * it's corresponding application.
-     *
+     * 
      */
     @Column(unique = true)
     public String getCertificateSubject() {
@@ -340,7 +345,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * Sets the certificate subject. Do not use this method directly. Use {@link #setCertificate(X509Certificate)
      * setCertificate} instead. JPA requires this setter.
-     *
+     * 
      * @param certificateSubject
      * @see #setCertificate(X509Certificate)
      */
@@ -352,7 +357,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * Sets the X509 certificate subject of the application. Use this method to update the certificate subject for this
      * application.
-     *
+     * 
      * @param certificate
      */
     @Transient
@@ -363,7 +368,7 @@ public class ApplicationEntity implements Serializable {
 
     /**
      * The identifier mapping allowed field use used for access control over the identifier mapping service.
-     *
+     * 
      */
     public boolean isIdentifierMappingAllowed() {
 
@@ -377,7 +382,7 @@ public class ApplicationEntity implements Serializable {
 
     /**
      * The id scope field is used to determine which type of id should be returned to the caller application.
-     *
+     * 
      */
     public IdScopeType getIdScope() {
 
@@ -390,9 +395,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * When set to <code>true</code> the WS-Security SOAP handlers will not check whether the SOAP body has been signed.
-     * This is required for compatability with .NET 3.0 WCF clients.
-     *
+     * When set to <code>true</code> the WS-Security SOAP handlers will not check whether the SOAP body has been
+     * signed. This is required for compatability with .NET 3.0 WCF clients.
+     * 
      */
     public boolean isSkipMessageIntegrityCheck() {
 
@@ -402,6 +407,31 @@ public class ApplicationEntity implements Serializable {
     public void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck) {
 
         this.skipMessageIntegrityCheck = skipMessageIntegrityCheck;
+    }
+
+    /**
+     * When set to <code>true</code> Single Sign-On will be enabled for this application. This can still be overridden
+     * by the webapp.
+     */
+    public boolean isSsoEnabled() {
+
+        return this.ssoEnabled;
+    }
+
+    public void setSsoEnabled(boolean ssoEnabled) {
+
+        this.ssoEnabled = ssoEnabled;
+    }
+
+    @ManyToMany(mappedBy = "applications")
+    public List<ApplicationPoolEntity> getApplicationPools() {
+
+        return this.applicationPools;
+    }
+
+    public void setApplicationPools(List<ApplicationPoolEntity> applicationPools) {
+
+        this.applicationPools = applicationPools;
     }
 
     @Override

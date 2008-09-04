@@ -66,6 +66,14 @@
 								<h:message for="applicationIdScope" styleClass="error" />
 							</s:decorate></td>
 						</tr>
+						<tr>
+
+							<th><h:outputText value="#{msgs.ssoEnabled}" /></th>
+							<td><h:selectBooleanCheckbox
+								value="#{operApplication.ssoEnabled}" id="ssoEnabled" /></td>
+
+						</tr>
+
 					</tbody>
 				</table>
 			</rich:simpleTogglePanel>

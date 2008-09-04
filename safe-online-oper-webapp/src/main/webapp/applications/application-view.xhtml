@@ -50,6 +50,10 @@
 						<td>#{selectedApplication.idScope}</td>
 					</tr>
 					<tr>
+						<th>#{msgs.ssoEnabled}</th>
+						<td>#{selectedApplication.ssoEnabled}</td>
+					</tr>
+					<tr>
 						<th>#{msgs.applicationLogo}</th>
 						<td class="center"><h:graphicImage
 							url="../logo?applicationName=${selectedApplication.name}"
@@ -221,17 +225,15 @@
 						value="#{selectedApplication.skipMessageIntegrityCheck}" /></td>
 				</tr>
 				<tr>
-                    <th colspan="2">
-                        <h:outputText value="#{msgs.certificateSubject}" />
-                    </th>
+					<th colspan="2"><h:outputText
+						value="#{msgs.certificateSubject}" /></th>
 				</tr>
 				<tr>
-                    <td colspan="2">
-                        <h:outputText styleClass="text" value="#{selectedApplication.certificateSubject}"
-                            rendered="#{!empty selectedApplication.certificateSubject}" />
-                        <h:outputText styleClass="text" value="#{msgs.noCertificate}"
-                            rendered="#{empty selectedApplication.certificateSubject}" />
-                    </td>
+					<td colspan="2"><h:outputText styleClass="text"
+						value="#{selectedApplication.certificateSubject}"
+						rendered="#{!empty selectedApplication.certificateSubject}" /> <h:outputText
+						styleClass="text" value="#{msgs.noCertificate}"
+						rendered="#{empty selectedApplication.certificateSubject}" /></td>
 				</tr>
 			</table>
 		</rich:simpleTogglePanel>
