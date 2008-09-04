@@ -96,6 +96,13 @@
             <scope>runtime</scope>
             <type>ejb</type>
 		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-auth-service</artifactId>
+			<version>${safe-online.version}</version>
+            <scope>runtime</scope>
+            <type>sar</type>
+		</dependency>
 
         <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>

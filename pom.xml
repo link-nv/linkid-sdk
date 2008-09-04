@@ -150,7 +150,7 @@
 				<module>safe-online-demo-applet</module>
 				<module>safe-online-demo-webapp</module>
 				<module>safe-online-demo-service</module>
-				<module>safe-online-demo-startup</module>
+				<module>safe-online-demo-startup-runtime</module>
 				<module>safe-online-demo-keystore</module>
 				<module>safe-online-demo-remote-service</module>
 				<module>safe-online-demo-notification-consumer-ws-impl</module>
@@ -431,7 +431,7 @@
 				<module>safe-online-performance-deploy</module>
 
 				<module>safe-online-performance-entity</module>
-				<module>safe-online-performance-startup</module>
+				<module>safe-online-performance-startup-runtime</module>
 				<module>safe-online-performance-keystore</module>
 				<module>safe-online-performance-agent-service</module>
 
@@ -713,6 +713,7 @@
 		<module>safe-online-model</module>
 		<module>safe-online-test-util</module>
 		<module>safe-online-startup</module>
+		<module>safe-online-startup-runtime</module>
 		<module>safe-online-documentation</module>
 		<module>safe-online-service</module>
 		<module>safe-online-j2ee-util</module>
@@ -790,10 +791,10 @@
 		<module>safe-online-encap-keystore</module>
 		<module>safe-online-encap-webapp</module>
 		<module>safe-online-encap</module>
-		<module>safe-online-encap-startup</module>
+		<module>safe-online-encap-startup-runtime</module>
 		<module>safe-online-encap-deploy</module>
 		<module>safe-online-digipass</module>
-		<module>safe-online-digipass-startup</module>
+		<module>safe-online-digipass-startup-runtime</module>
 		<module>safe-online-digipass-deploy</module>
 		<module>safe-online-digipass-keystore</module>
 		<module>safe-online-digipass-webapp</module>
@@ -805,7 +806,7 @@
 		<module>safe-online-auth-pcsc-applet</module>
 		<module>safe-online-auth-pcsc-applet-package</module>
 		<module>safe-online-beid</module>
-		<module>safe-online-beid-startup</module>
+		<module>safe-online-beid-startup-runtime</module>
 		<module>safe-online-beid-deploy</module>
 		<module>safe-online-beid-keystore</module>
 		<module>safe-online-beid-webapp</module>
@@ -2372,6 +2373,12 @@
 				<groupId>axis</groupId>
 				<artifactId>axis</artifactId>
 				<version>${axis.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>axis</groupId>

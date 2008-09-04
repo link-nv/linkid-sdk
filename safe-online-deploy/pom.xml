@@ -36,7 +36,7 @@
 						</manifest>
 					</archive>
                     <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
-                    <applicationXml>src/main/resources/application.xml</applicationXml>
+                    <applicationXml>${basedir}/src/main/resources/application.xml</applicationXml>
 
                     <!-- Exlude ZIPs.
                          They only serve to force the deps of wars/sars to become transitive. -->
@@ -204,6 +204,16 @@
 			<version>${safe-online.version}</version>
             <type>ejb</type>
 		</dependency>
+        <!-- FIXME: s-o-service should really be a dep of j2ee-util;
+                    but there it causes a cyclic dependency problem. -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-service</artifactId>
+            <version>${safe-online.version}</version>
+            <scope>runtime</scope>
+            <type>sar</type>
+        </dependency>
+
 
         <!-- Specific Dependencies: External -->
         <dependency>

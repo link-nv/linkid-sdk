@@ -10,7 +10,7 @@
   </module>
   <module>
     <web>
-        <web-uri>safe-online-startup-1.1-SNAPSHOT.war</web-uri>
+        <web-uri>safe-online-startup-runtime-1.1-SNAPSHOT.war</web-uri>
       <context-root>/safe-online-startup</context-root>
     </web>
   </module>

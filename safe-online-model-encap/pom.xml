@@ -79,9 +79,10 @@
         </dependency>
         <dependency>
    			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-encap-startup</artifactId>
+			<artifactId>safe-online-encap-startup-runtime</artifactId>
 			<version>${safe-online.version}</version>
             <scope>runtime</scope>
+            <type>war</type>
         </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

@@ -87,6 +87,7 @@
 			<artifactId>safe-online-startup-runtime</artifactId>
 			<version>${safe-online.version}</version>
             <scope>runtime</scope>
+            <type>war</type>
         </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
