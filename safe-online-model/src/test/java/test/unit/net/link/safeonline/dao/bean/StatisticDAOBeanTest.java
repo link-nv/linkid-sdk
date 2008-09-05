@@ -15,6 +15,7 @@ import net.link.safeonline.dao.bean.StatisticDataPointDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -46,7 +47,7 @@ public class StatisticDAOBeanTest extends TestCase {
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
         this.entityTestManager.setUp(StatisticEntity.class, StatisticDataPointEntity.class, ApplicationEntity.class,
-                ApplicationOwnerEntity.class, SubjectEntity.class);
+                ApplicationOwnerEntity.class, SubjectEntity.class, ApplicationPoolEntity.class);
         // StatisticDataPointEntity.class,
         this.testedInstance = new StatisticDAOBean();
         this.statisticDataPointDAO = new StatisticDataPointDAOBean();

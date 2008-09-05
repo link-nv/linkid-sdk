@@ -23,6 +23,7 @@ import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
+import net.link.safeonline.dao.bean.ApplicationPoolDAOBean;
 import net.link.safeonline.dao.bean.ApplicationScopeIdDAOBean;
 import net.link.safeonline.dao.bean.AttributeCacheDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
@@ -48,6 +49,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.ApplicationScopeIdEntity;
 import net.link.safeonline.entity.AttributeCacheEntity;
 import net.link.safeonline.entity.AttributeEntity;
@@ -148,7 +150,7 @@ public class SafeOnlineTestContainer {
             ProxyAttributeServiceBean.class, StatisticDAOBean.class, StatisticDataPointDAOBean.class,
             NotificationProducerServiceBean.class, NotificationProducerDAOBean.class,
             NotificationConsumerServiceBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class,
-            OSGIStartableBean.class, AttributeCacheDAOBean.class };
+            OSGIStartableBean.class, AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class };
 
     public static final Class<?>[] entities     = new Class[] { SubjectEntity.class, ApplicationEntity.class,
             ApplicationOwnerEntity.class, AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class,
@@ -162,5 +164,5 @@ public class SafeOnlineTestContainer {
             UsageAgreementEntity.class, UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class,
             NodeEntity.class, NodeMappingEntity.class, StatisticEntity.class, StatisticDataPointEntity.class,
             EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class,
-            ApplicationScopeIdEntity.class, AttributeCacheEntity.class };
+            ApplicationScopeIdEntity.class, AttributeCacheEntity.class, ApplicationPoolEntity.class };
 }
