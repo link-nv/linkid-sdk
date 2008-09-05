@@ -773,6 +773,7 @@
 		<module>safe-online-option-applet</module>
 		<module>safe-online-option-applet-package</module>
 		<module>safe-online-option-keystore</module>
+		<module>safe-online-option-startup</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
