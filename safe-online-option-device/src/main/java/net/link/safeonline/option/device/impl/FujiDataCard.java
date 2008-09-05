@@ -16,8 +16,9 @@ public class FujiDataCard implements OptionDevice {
 
 	SerialCommunication serial;
 
-	public FujiDataCard(String port) {
+	public FujiDataCard(String port) throws OptionDeviceException {
 		this.serial = new SerialCommunication(port);
+		initialize();
 	}
 
 	public void initialize() throws OptionDeviceException {
@@ -72,24 +73,35 @@ public class FujiDataCard implements OptionDevice {
 		synchronized (this.serial) {
 			try {
 				this.serial.write("AT+CGSN\r\n");
+
 				if (!this.serial.read().equals("AT+CGSN")) {
 					this.serial.close();
 					throw new OptionDeviceException(
 							"Unexpected behaviour from datacard");
 				}
+
 				if (!this.serial.read().equals("")) {
 					this.serial.close();
 					throw new OptionDeviceException(
 							"Unexpected behaviour from datacard");
 				}
 				String output = this.serial.read();
+				if (!this.serial.read().equals("")) {
+					this.serial.close();
+					throw new OptionDeviceException(
+							"Unexpected behaviour from datacard");
+				}
+				if (!this.serial.read().equals("OK")) {
+					this.serial.close();
+					throw new OptionDeviceException(
+							"Unexpected behaviour from datacard");
+				}
 				int comma = output.indexOf(',');
 				String IMEI = output.substring(0, comma);
 				logger.debug("found IMEI: " + IMEI);
 				return IMEI;
 
 			} catch (SerialCommunicationsException e) {
-				this.serial.close();
 				throw new OptionDeviceException("Serial communication error", e);
 			}
 		}

@@ -1,6 +1,7 @@
 package net.link.safeonline.option.connection.manager.ws.impl;
 
 import javax.jws.WebService;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import net.link.safeonline.option.connection.manager.ws.generated.ConnectionManager;
 import net.link.safeonline.option.device.OptionDevice;
@@ -17,6 +18,7 @@ public class ConnectionManagerServiceImpl implements ConnectionManager {
 
 	public String getIMEI() {
 		String IMEI;
+
 		try {
 			IMEI = this.optionDevice.getIMEI();
 		} catch (OptionDeviceException e) {

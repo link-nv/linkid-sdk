@@ -13,6 +13,7 @@ import java.security.cert.X509Certificate;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 
+import net.link.safeonline.applet.PinDialog;
 import net.link.safeonline.shared.Signer;
 
 
@@ -34,7 +35,7 @@ public class PcscSigner extends Pcsc implements Signer {
     public X509Certificate getCertificate() {
 
         try {
-            return this.getAuthenticationCertificate();
+            return getAuthenticationCertificate();
         } catch (Exception e) {
             this.logger.log("getCert error: " + e.getMessage());
             throw new RuntimeException("getCert error");

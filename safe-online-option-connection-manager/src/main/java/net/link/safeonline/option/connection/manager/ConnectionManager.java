@@ -17,7 +17,11 @@ public class ConnectionManager extends JFrame {
 	public ConnectionManager() {
 		super();
 
-		this.connectionManagerController = new ConnectionManagerController();
+		try {
+			this.connectionManagerController = new ConnectionManagerController();
+		} catch (Exception e) {
+			this.add(new JLabel("Exception occurred"));
+		}
 
 		this.add(label);
 

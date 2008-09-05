@@ -6,6 +6,7 @@ import javax.jws.WebService;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
 
+import net.link.safeonline.option.connection.manager.ws.ConnectionManagerConstants;
 import net.link.safeonline.option.connection.manager.ws.generated.ConnectionManager;
 import net.link.safeonline.option.connection.manager.ws.generated.ConnectionManagerService;
 
@@ -23,11 +24,11 @@ public class ConnectionManagerTest {
 		Endpoint.publish(URL, new ConnectionManagerImpl());
 
 		ConnectionManagerService service = new ConnectionManagerService(
-				new URL(URL + "?wsdl"),
-				new QName(
-						"http://ws.manager.connection.option.safeonline.link.net/",
-						"ConnectionManagerService"));
+				new URL(URL + "?wsdl"), new QName(
+						ConnectionManagerConstants.NAMESPACE,
+						ConnectionManagerConstants.LOCALPART));
 		ConnectionManager port = service.getConnectionManagerPort();
+		assertEquals(ConnectionManagerImpl.IMEI, port.getIMEI());
 		assertEquals(ConnectionManagerImpl.IMEI, port.getIMEI());
 	}
 

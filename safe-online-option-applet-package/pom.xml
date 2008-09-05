@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
+		<version>1.2-SNAPSHOT</version>
+	</parent>
+	<name>SafeOnline Option Applet Package</name>
+	<description> SafeOnline Option Applet Package. </description>
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-option-applet-package</artifactId>
+	<version>1.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven-dependency-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>unpack-keystore</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory> ${project.build.directory}/safe-online-keystore 
+							</outputDirectory>
+							<includeArtifactIds> safe-online-keystore </includeArtifactIds>
+						</configuration>
+					</execution>
+					<execution>
+						<id>unpack-deps</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory> ${project.build.directory}/classes 
+							</outputDirectory>
+							<excludeArtifactIds> safe-online-keystore </excludeArtifactIds>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<keystore>
+						${project.build.directory}/safe-online-keystore/safe-online-keystore.jks 
+					</keystore>
+					<alias>safe-online</alias>
+					<storepass>secret</storepass>
+					<keypass>secret</keypass>
+					<verify>true</verify>
+					<verbose>true</verbose>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-option-applet</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-keystore</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>
