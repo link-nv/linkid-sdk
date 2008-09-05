@@ -772,6 +772,7 @@
 		<module>safe-online-option-connection-manager</module>
 		<module>safe-online-option-applet</module>
 		<module>safe-online-option-applet-package</module>
+		<module>safe-online-option-keystore</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
