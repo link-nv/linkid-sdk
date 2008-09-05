@@ -31,6 +31,8 @@
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
+                    <!-- TODO:  See if we can somehow control which deps we pass to
+                                artifacts that depend on our -client artifact. -->
 					<generateClient>true</generateClient>
 				</configuration>
 			</plugin>
@@ -134,6 +136,7 @@
 			<artifactId>safe-online-owner-keystore</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
+        <!-- TODO: Does an encap dependency belong in s-o-model? -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-sdk</artifactId>

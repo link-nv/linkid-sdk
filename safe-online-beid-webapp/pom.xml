@@ -24,6 +24,31 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+                    <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <!--archive>
+                      <manifest>
+                        <addClasspath>true</addClasspath>
+                        <classpathPrefix>lib/</classpathPrefix>
+                      </manifest>
+                    </archive-->
+
+                    <overlays>
+                        <overlay>
+                            <groupId>net.lin-k.safe-online</groupId>
+                            <artifactId>safe-online-device-webapp-base</artifactId>
+                            <excludes>
+                                <exclude>WEB-INF/web.xml</exclude>
+                                <exclude>index.jsp</exclude>
+                            </excludes>
+                        </overlay>
+                    </overlays>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
@@ -96,32 +121,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-                    <warSourceExcludes>WEB-INF/lib/*</warSourceExcludes>
-                    <!--archive>
-                      <manifest>
-                        <addClasspath>true</addClasspath>
-                        <classpathPrefix>lib/</classpathPrefix>
-                      </manifest>
-                    </archive-->
-
-					<dependentWarExcludes>
-						WEB-INF/web.xml,index.jsp
-					</dependentWarExcludes>
-					<webResources>
-						<resource>
-							<directory>
-								${basedir}/src/main/webapp/WEB-INF
-							</directory>
-							<targetPath>WEB-INF</targetPath>
-							<filtering>true</filtering>
-						</resource>
-					</webResources>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jboss-maven-plugin</artifactId>
 			</plugin>
@@ -165,10 +164,20 @@
             <type>pom</type>
         </dependency>
 
+        <!-- Specific Dependencies: OLAS: Backing Beans -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-beid</artifactId>
+			<version>${safe-online.version}</version>
+            <scope>runtime</scope>
+            <type>ejb</type>
+		</dependency>
+
         <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-webapp-base</artifactId>
+            <scope>provided</scope>
 			<type>war</type>
 		</dependency>
             <dependency>
@@ -198,7 +207,6 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<version>${safe-online.version}</version>
 			<type>ejb-client</type>
 		</dependency>
 		<dependency>

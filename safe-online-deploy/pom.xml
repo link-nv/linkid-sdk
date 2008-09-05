@@ -36,7 +36,6 @@
 						</manifest>
 					</archive>
                     <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
-                    <applicationXml>${basedir}/src/main/resources/application.xml</applicationXml>
 
                     <!-- Exlude ZIPs.
                          They only serve to force the deps of wars/sars to become transitive. -->
@@ -115,6 +114,18 @@
 	<dependencies>
 
         <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-startup-runtime</artifactId>
+			<version>${safe-online.version}</version>
+			<type>war</type>
+		</dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-startup-runtime</artifactId>
+                <version>${safe-online.version}</version>
+                <type>zip</type>
+            </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ws-runtime</artifactId>
@@ -201,6 +212,14 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
+			<version>${safe-online.version}</version>
+            <type>ejb</type>
+		</dependency>
+        <!-- TODO:  Without an explicit dep on s-o-entity it *looks*
+                    like things get deployed in bad order. WTF? -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-entity</artifactId>
 			<version>${safe-online.version}</version>
             <type>ejb</type>
 		</dependency>

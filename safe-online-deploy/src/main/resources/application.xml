@@ -65,7 +65,7 @@
       <context-root>/olas-auth</context-root>
     </web>
   </module>
-  <module>
+  <!--module>
       <java>lib/safe-online-taglib-1.1-SNAPSHOT.jar</java>
-  </module>
+  </module-->
 </application>

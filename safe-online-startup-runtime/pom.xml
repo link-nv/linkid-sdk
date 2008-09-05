@@ -26,16 +26,15 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-                    <warSourceExcludes>WEB-INF/lib/*</warSourceExcludes>
+                    <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+
                     <!--archive>
                       <manifest>
                         <addClasspath>true</addClasspath>
                         <classpathPrefix>lib/</classpathPrefix>
                       </manifest>
                     </archive-->
-
-					<dependentWarExcludes> WEB-INF/web.xml,index.jsp 
-					</dependentWarExcludes>
 				</configuration>
 			</plugin>
 			<plugin>

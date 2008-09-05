@@ -22,29 +22,22 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jboss-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-                    <warSourceExcludes>WEB-INF/lib/*</warSourceExcludes>
+                    <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
                     <!--archive>
                       <manifest>
                         <addClasspath>true</addClasspath>
                         <classpathPrefix>lib/</classpathPrefix>
                       </manifest>
                     </archive-->
-
-					<webResources>
-						<resource>
-							<directory> ${basedir}/src/main/webapp/WEB-INF </directory>
-							<targetPath>WEB-INF</targetPath>
-							<filtering>true</filtering>
-						</resource>
-					</webResources>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jboss-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

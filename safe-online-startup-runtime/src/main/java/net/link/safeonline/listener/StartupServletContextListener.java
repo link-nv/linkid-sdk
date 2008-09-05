@@ -109,8 +109,8 @@ public class StartupServletContextListener implements ServletContextListener {
                 LOG.debug(objectName + ":" + nameClassPair.getClassName());
                 Object object = context.lookup(objectName);
                 if (!(object instanceof Startable)) {
-                    String message = "object \"" + startableJnidPrefix + "/" + objectName + "\" is not a "
-                            + Startable.class.getName();
+                    String message = "object \"" + startableJnidPrefix + "/" + objectName + "\" is not a:\n"
+                            + getClassInfo(Startable.class) + "\nit is:\n" + getClassInfo(object);
                     LOG.error(message);
                     throw new IllegalStateException(message);
                 }
@@ -122,5 +122,27 @@ public class StartupServletContextListener implements ServletContextListener {
         } catch (NamingException e) {
             throw new RuntimeException("naming error: " + e.getMessage(), e);
         }
+    }
+
+    private String getClassInfo(Object object) {
+
+        if (object == null)
+            return "null";
+
+        String info = object.getClass().getCanonicalName();
+        if (object.getClass().getSuperclass() != Object.class) {
+            info += " extends " + object.getClass().getSuperclass().getCanonicalName();
+        }
+        if (object.getClass().getInterfaces().length > 0) {
+            info += " implements ";
+            for (int i = 0; i < object.getClass().getInterfaces().length; ++i) {
+                info += object.getClass().getInterfaces()[i];
+                if (i < object.getClass().getInterfaces().length - 1) {
+                    info += ", ";
+                }
+            }
+        }
+        
+        return info;
     }
 }

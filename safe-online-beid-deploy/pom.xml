@@ -38,35 +38,6 @@
                         <artifactTypeMapping type="zip" mapping="jar"/>
                     </artifactTypeMappings>
                     <earSourceExcludes>*.zip,lib/*.zip</earSourceExcludes>
-
-                    <!--version>1.4</version>
-                    <modules>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-model-beid </artifactId>
-						</ejbModule>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-beid </artifactId>
-						</ejbModule>
-						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-beid-startup </artifactId>
-						</webModule>
-						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-beid-webapp </artifactId>
-							<contextRoot>/${safe-online.beid.webapp.name}</contextRoot>
-						</webModule>
-					</modules>
-					<excludes>
-						<exclude>
-							<groupId>(?!^net.lin-k).*</groupId>
-						</exclude>
-					</excludes>
-					<jboss>
-						<version>4</version>
-					</jboss-->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -124,18 +95,6 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-beid</artifactId>
-			<version>${safe-online.version}</version>
-			<type>ejb</type>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-beid</artifactId>
 			<version>${safe-online.version}</version>
 			<type>ejb</type>
 		</dependency>

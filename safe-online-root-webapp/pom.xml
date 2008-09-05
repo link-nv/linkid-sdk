@@ -23,6 +23,13 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.cargo</groupId>
 				<artifactId>cargo-maven2-plugin</artifactId>
 				<configuration>
