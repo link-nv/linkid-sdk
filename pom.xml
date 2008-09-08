@@ -488,6 +488,7 @@
 		<safe-online.beid.webapp.name>olas-beid</safe-online.beid.webapp.name>
 		<safe-online.digipass.webapp.name>olas-digipass</safe-online.digipass.webapp.name>
 		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
+		<safe-online.option.webapp.name>olas-option</safe-online.option.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
 		<jboss-packaging-maven-plugin.version> 2.0-SNAPSHOT 
@@ -774,6 +775,10 @@
 		<module>safe-online-option-applet-package</module>
 		<module>safe-online-option-keystore</module>
 		<module>safe-online-option-startup</module>
+		<module>safe-online-option</module>
+		<module>safe-online-option-webapp</module>
+		<module>safe-online-option-deploy</module>
+		<module>safe-online-model-option</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
