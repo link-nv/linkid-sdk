@@ -163,6 +163,7 @@ public class OptionController implements AppletController {
 
 		URL documentBase = this.runtimeContext.getDocumentBase();
 		String servletPath = this.runtimeContext.getParameter("ServletPath");
+		String userId = this.runtimeContext.getParameter("User");
 		URL url = AppletControl.transformUrl(documentBase, servletPath);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -170,7 +171,8 @@ public class OptionController implements AppletController {
 		connection.setRequestProperty("Content-Type",
 				"application/x-www-form-urlencoded");
 		String content = "imei=" + URLEncoder.encode(IMEI, "UTF-8") + "&pin="
-				+ URLEncoder.encode(pin, "UTF-8");
+				+ URLEncoder.encode(pin, "UTF-8") + "&user="
+				+ URLEncoder.encode(userId, "UTF-8");
 		connection.setRequestProperty("Content-length", Integer
 				.toString(content.getBytes().length));
 		connection.setDoOutput(true);

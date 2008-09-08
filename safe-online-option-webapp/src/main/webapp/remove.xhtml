@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="top_content">
+		<h1>#{msgs.removeOption}</h1>
+	</ui:define>
+	<ui:define name="content">
+		<applet name="OptionApplet"
+			code="net.link.safeonline.option.applet.OptionApplet.class"
+			archive="safe-online-option-applet-package.jar" width="400"
+			height="200">
+			<param name="ServletPath" value="identityremove" />
+			<param name="TargetPath" value="deviceexit" />
+			<param name="HelpdeskEventPath" value="helpdesk" />
+			<param name="HelpPath"
+				value="./help.seam?location=remove.seam" />
+			<param name="SessionId"
+				value="#{facesContext.externalContext.request.session.id}" />
+			<param name="User" value="#{userId}" />
+			<param name="Language" value="#{localeSelector.language}" />
+		</applet>
+
+		<form id="cancelForm" method="post" action="deviceexit"><input
+			id="cancel" type="submit" value="#{msgs.cancelaction}"
+			class="submit" /></form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpRemoveIdentity}</p>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

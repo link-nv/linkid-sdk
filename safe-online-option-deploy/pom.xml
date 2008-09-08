@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
+		<version>1.2-SNAPSHOT</version>
+	</parent>
+	<name>SafeOnline Option Deploy</name>
+	<description> SafeOnline Deployable Option Application Package . 
+	</description>
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-option-deploy</artifactId>
+	<version>1.2-SNAPSHOT</version>
+	<packaging>ear</packaging>
+	<build>
+		<finalName>SafeOnlineOption</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<configuration>
+					<version>1.4</version>
+					<modules>
+						<ejbModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId> safe-online-model-option </artifactId>
+						</ejbModule>
+						<ejbModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId> safe-online-option </artifactId>
+						</ejbModule>
+						<webModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId> safe-online-option-startup </artifactId>
+						</webModule>
+						<webModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId> safe-online-option-webapp </artifactId>
+							<contextRoot>/${safe-online.option.webapp.name}</contextRoot>
+						</webModule>
+					</modules>
+					<excludes>
+						<exclude>
+							<groupId>(?!^net.lin-k).*</groupId>
+						</exclude>
+					</excludes>
+					<jboss>
+						<version>4</version>
+					</jboss>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jboss-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<configuration>
+					<container>
+						<containerId>jboss4x</containerId>
+						<type>remote</type>
+					</container>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-option</artifactId>
+			<type>ejb</type>
+			<version>1.2-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-model</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-option</artifactId>
+			<type>ejb</type>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-option-startup</artifactId>
+			<type>war</type>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-option-webapp</artifactId>
+			<type>war</type>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>

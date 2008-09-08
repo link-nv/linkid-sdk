@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="top_content">
+		<h2>#{msgs.authenticateOption}</h2>
+	</ui:define>
+	<ui:define name="content">
+		<ui:include src="/WEB-INF/incl/progress-authentication.xhtml">
+			<ui:param name="stage" value="authenticate" />
+		</ui:include>
+
+		<h1>#{msgs.authenticatingFor}: #{applicationName}</h1>
+
+		<applet name="OptionApplet"
+			code="net.link.safeonline.option.applet.OptionApplet.class"
+			archive="safe-online-option-applet-package.jar" width="450"
+			height="200">
+			<param name="ServletPath" value="authentication" />
+			<param name="TargetPath" value="authenticationexit" />
+			<param name="HelpdeskEventPath" value="helpdesk" />
+			<param name="HelpPath"
+				value="./help_auth.seam?location=authenticate.seam" />
+			<param name="Language" value="#{localeSelector.language}" />
+		</applet>
+
+		<form id="cancelForm" method="post" action="authenticationexit"><input
+			id="cancel" type="submit" value="#{msgs.cancelaction}"
+			class="submit" /></form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpOption}</p>
+	</ui:define>
+</ui:composition>
+</body>
+</html>
