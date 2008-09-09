@@ -65,7 +65,6 @@
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-model-performance</artifactId>
-            <version>${safe-online.version}</version>
             <type>ejb-client</type>
         </dependency>
         <dependency>

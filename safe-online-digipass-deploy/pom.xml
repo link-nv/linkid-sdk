@@ -95,7 +95,6 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-digipass</artifactId>
-			<version>${safe-online.version}</version>
 			<type>ejb</type>
 		</dependency>
 

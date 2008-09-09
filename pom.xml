@@ -1498,6 +1498,71 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-model-beid</artifactId>
+                <type>ejb-client</type>
+
+                <version>${safe-online.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.lin-k.safe-online</groupId>
+                        <artifactId>safe-online-beid-startup-runtime</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-model-demo</artifactId>
+                <type>ejb-client</type>
+
+                <version>${safe-online.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.lin-k.safe-online</groupId>
+                        <artifactId>safe-online-demo-startup-runtime</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-model-digipass</artifactId>
+                <type>ejb-client</type>
+
+                <version>${safe-online.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.lin-k.safe-online</groupId>
+                        <artifactId>safe-online-digipass-startup-runtime</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-model-encap</artifactId>
+                <type>ejb-client</type>
+
+                <version>${safe-online.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.lin-k.safe-online</groupId>
+                        <artifactId>safe-online-encap-startup-runtime</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-model-performance</artifactId>
+                <type>ejb-client</type>
+
+                <version>${safe-online.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.lin-k.safe-online</groupId>
+                        <artifactId>safe-online-performance-startup-runtime</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
 			<!-- JBOSS-AS PROVIDED -->
 				<!-- jaxws-ri/lib -->
@@ -2401,7 +2466,11 @@
 					<exclusion>
 						<groupId>commons-logging</groupId>
 						<artifactId>commons-logging</artifactId>
-					</exclusion>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>axis</groupId>
+                        <artifactId>axis-saaj</artifactId>
+                    </exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
