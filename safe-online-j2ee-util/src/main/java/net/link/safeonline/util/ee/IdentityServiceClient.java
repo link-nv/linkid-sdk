@@ -11,6 +11,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
+import javax.crypto.SecretKey;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -23,9 +24,9 @@ import org.jboss.mx.util.MBeanServerLocator;
 /**
  * Client for SafeOnline Identity Service JMX bean. This service manages the key pair of the SafeOnline service itself.
  * See also: safe-online-service.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class IdentityServiceClient {
 
@@ -54,7 +55,7 @@ public class IdentityServiceClient {
 
     /**
      * Gives back the private key of the SafeOnline service entity.
-     *
+     * 
      */
     public PrivateKey getPrivateKey() {
 
@@ -71,7 +72,7 @@ public class IdentityServiceClient {
 
     /**
      * Gives back the public key of the SafeOnline service entity.
-     *
+     * 
      */
     public PublicKey getPublicKey() {
 
@@ -88,7 +89,7 @@ public class IdentityServiceClient {
 
     /**
      * Gives back the X509 certificate of the SafeOnline service entity.
-     *
+     * 
      */
     public X509Certificate getCertificate() {
 
@@ -102,5 +103,22 @@ public class IdentityServiceClient {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }
         return certificate;
+    }
+
+    /**
+     * Gives back the Single Sign-On SecretKey.
+     * 
+     */
+    public SecretKey getSsoKey() {
+
+        Object[] params = {};
+        String[] signature = {};
+        SecretKey secretKey;
+        try {
+            secretKey = (SecretKey) this.server.invoke(this.identityServiceName, "getSsoKey", params, signature);
+        } catch (Exception e) {
+            throw new RuntimeException("invoke error: " + e.getMessage(), e);
+        }
+        return secretKey;
     }
 }

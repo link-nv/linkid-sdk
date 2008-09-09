@@ -122,7 +122,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
         this.log.debug("passwordNext");
         this.authenticationService.setPassword(this.userId, this.password);
         this.authenticationService.authenticate(getUsername(), this.password);
-        super.relogin(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        super.relogin(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, this.authenticationService.getSsoCookie());
         return null;
     }
 

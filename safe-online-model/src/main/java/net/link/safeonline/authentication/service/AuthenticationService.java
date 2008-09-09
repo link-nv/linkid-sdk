@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.ejb.Local;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -22,6 +23,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
+import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -212,6 +214,23 @@ public interface AuthenticationService {
      * 
      */
     DeviceEntity getAuthenticationDevice();
+
+    /**
+     * Gives back the Single Sign-On Cookie.
+     * 
+     */
+    Cookie getSsoCookie();
+
+    /**
+     * Returns whether the specified cookie allows the user to use single sign-on for the current application.
+     * 
+     * @throws ApplicationNotFoundException
+     * @throws InvalidCookieException
+     * @throws DevicePolicyException
+     * @throws EmptyDevicePolicyException
+     */
+    boolean checkSso(Cookie ssoCookie) throws ApplicationNotFoundException, InvalidCookieException,
+            EmptyDevicePolicyException, DevicePolicyException;
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.

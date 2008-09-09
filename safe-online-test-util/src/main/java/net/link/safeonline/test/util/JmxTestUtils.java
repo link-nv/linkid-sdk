@@ -24,9 +24,9 @@ import javax.management.ObjectName;
 
 /**
  * Utility methods for JMX unit testing.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class JmxTestUtils {
 
@@ -45,7 +45,7 @@ public class JmxTestUtils {
 
     /**
      * Sets up a test JMX MBean with the given MBean name.
-     *
+     * 
      * @param mbeanName
      * @throws MalformedObjectNameException
      * @throws NullPointerException
@@ -82,7 +82,7 @@ public class JmxTestUtils {
 
     /**
      * Registers an action handler.
-     *
+     * 
      * @param actionName
      * @param actionHandler
      */

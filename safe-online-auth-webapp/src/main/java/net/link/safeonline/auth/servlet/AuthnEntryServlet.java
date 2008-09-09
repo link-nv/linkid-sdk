@@ -16,15 +16,24 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DevicePolicyException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
+import net.link.safeonline.authentication.exception.InvalidCookieException;
+import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -35,7 +44,7 @@ import net.link.safeonline.util.servlet.annotation.Init;
  * <li>need to be able to do some low-level GET or POST parameter parsing and processing.</li>
  * <li>we want the entry point to be UI technology independent.</li>
  * </ul>
- *
+ * 
  * <p>
  * The following servlet init parameters are required:
  * </p>
@@ -49,13 +58,15 @@ import net.link.safeonline.util.servlet.annotation.Init;
  * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is
  * encountered.</li>
  * </ul>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthnEntryServlet extends AbstractInjectionServlet {
 
     private static final long  serialVersionUID                 = 1L;
+
+    private static final Log   LOG                              = LogFactory.getLog(AuthnEntryServlet.class);
 
     public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
 
@@ -66,6 +77,9 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
     @Init(name = "FirstTimeUrl")
     private String             firstTimeUrl;
+
+    @Init(name = "LoginUrl")
+    private String             loginUrl;
 
     @Init(name = "ServletEndpointUrl")
     private String             servletEndpointUrl;
@@ -116,7 +130,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         }
 
         /*
-         * Set the locale if language was specified in the browser post
+         * Set the language cookie if language was specified in the browser post
          */
         if (null != protocolContext.getLanguage()) {
             Cookie authLanguageCookie = new Cookie(SafeOnlineCookies.AUTH_LANGUAGE_COOKIE, protocolContext
@@ -142,9 +156,52 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
         if (isFirstTime(request, response)) {
             response.sendRedirect(this.firstTimeUrl);
-        } else {
-            response.sendRedirect(this.startUrl);
+            return;
         }
+
+        /*
+         * Check Single Sign-On
+         */
+        AuthenticationService authenticationService = AuthenticationServiceManager
+                .getAuthenticationService(authnRequestWrapper.getSession());
+        Cookie[] cookies = authnRequestWrapper.getCookies();
+        if (null != cookies) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
+                    try {
+                        if (authenticationService.checkSso(cookie)) {
+                            // Valid Single Sign-On
+                            LoginManager.login(authnRequestWrapper.getSession(), authenticationService.getUserId(),
+                                    authenticationService.getAuthenticationDevice());
+                            response.sendRedirect(this.loginUrl);
+                            return;
+                        }
+                    } catch (ApplicationNotFoundException e) {
+                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
+                        removeCookie(cookie.getName(), response);
+                    } catch (InvalidCookieException e) {
+                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
+                        removeCookie(cookie.getName(), response);
+                    } catch (EmptyDevicePolicyException e) {
+                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
+                        removeCookie(cookie.getName(), response);
+                    } catch (DevicePolicyException e) {
+                        LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
+                        removeCookie(cookie.getName(), response);
+                    }
+                }
+            }
+        }
+
+        response.sendRedirect(this.startUrl);
+
+    }
+
+    private void removeCookie(String name, HttpServletResponse response) {
+
+        Cookie cookie = new Cookie(name, "");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
     private boolean isFirstTime(HttpServletRequest request, HttpServletResponse response) {
@@ -162,14 +219,10 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         return false;
     }
 
-
-    private final static String DEFLOWER_COOKIE_NAME = "deflowered";
-
-
     private Cookie findDefloweredCookie(Cookie[] cookies) {
 
         for (Cookie cookie : cookies) {
-            if (DEFLOWER_COOKIE_NAME.equals(cookie.getName()))
+            if (SafeOnlineCookies.DEFLOWERED_COOKIE.equals(cookie.getName()))
                 return cookie;
         }
         return null;
@@ -177,7 +230,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
     private void setDefloweredCookie(HttpServletResponse response) {
 
-        Cookie defloweredCookie = new Cookie(DEFLOWER_COOKIE_NAME, "true");
+        Cookie defloweredCookie = new Cookie(SafeOnlineCookies.DEFLOWERED_COOKIE, "true");
         defloweredCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
         response.addCookie(defloweredCookie);
     }

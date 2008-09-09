@@ -50,13 +50,13 @@ import org.w3c.dom.Element;
 
 /**
  * Factory class for SAML2 authentication requests.
- *
+ * 
  * <p>
  * We're using the OpenSAML2 Java library for construction of the XML SAML documents.
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthnRequestFactory {
 
@@ -84,7 +84,7 @@ public class AuthnRequestFactory {
      * Creates a SAML2 authentication request. For the moment we allow the Service Provider to pass on the Assertion
      * Consumer Service URL itself. Later on we could use the SAML Metadata service or a persistent server-side
      * application field to locate this service.
-     *
+     * 
      * @param issuerName
      * @param applicationName
      * @param applicationFriendlyName
@@ -101,7 +101,7 @@ public class AuthnRequestFactory {
      */
     public static String createAuthnRequest(String issuerName, String applicationName, String applicationFriendlyName,
             KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
-            Challenge<String> challenge, Set<String> devices) {
+            Challenge<String> challenge, Set<String> devices, boolean ssoEnabled) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -112,7 +112,7 @@ public class AuthnRequestFactory {
 
         AuthnRequest request = buildXMLObject(AuthnRequest.class, AuthnRequest.DEFAULT_ELEMENT_NAME);
 
-        request.setForceAuthn(true);
+        request.setForceAuthn(!ssoEnabled);
         SecureRandomIdentifierGenerator idGenerator;
         try {
             idGenerator = new SecureRandomIdentifierGenerator();
@@ -179,7 +179,7 @@ public class AuthnRequestFactory {
     /**
      * Creates a SAML2 device operation authentication request. This authentication request will contain a Subject
      * element, containing the device mapping id.
-     *
+     * 
      * @param issuerName
      * @param subjectName
      *            the subject name which wants to execute a device operation ( register/removal/update ). This is the
@@ -275,7 +275,7 @@ public class AuthnRequestFactory {
 
     /**
      * Signs the unsigned authentication request
-     *
+     * 
      * @return
      */
     private static String signAuthnRequest(AuthnRequest authnRequest, KeyPair signerKeyPair) {

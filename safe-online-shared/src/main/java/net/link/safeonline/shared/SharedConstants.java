@@ -46,4 +46,6 @@ public interface SharedConstants {
     public static final String PKI_SUSPENDED_ERROR                  = "PKI_SUSPENDED";
 
     public static final String PKI_INVALID_ERROR                    = "PKI_INVALID";
+
+    public static final String COOKIE_INVALID_ERROR                 = "COOKIE_INVALID";
 }

@@ -16,9 +16,13 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Date;
@@ -29,11 +33,19 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -48,6 +60,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
+import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -65,7 +78,9 @@ import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.ApplicationPoolDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
@@ -73,6 +88,7 @@ import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.NodeEntity;
@@ -101,8 +117,12 @@ import net.link.safeonline.validation.annotation.NotNull;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
@@ -129,11 +149,25 @@ import org.opensaml.xml.validation.ValidationException;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class AuthenticationServiceBean implements AuthenticationService, AuthenticationServiceRemote {
 
-    private static final Log    LOG = LogFactory.getLog(AuthenticationServiceBean.class);
+    private static final Log    LOG                                  = LogFactory
+                                                                             .getLog(AuthenticationServiceBean.class);
+
+    public static final String  SECURITY_MESSAGE_INVALID_COOKIE      = "Attempt to use an invalid SSO Cookie";
+
+    public static final String  SECURITY_MESSAGE_INVALID_APPLICATION = SECURITY_MESSAGE_INVALID_COOKIE
+                                                                             + ": Invalid application: ";
+
+    public static final String  SECURITY_MESSAGE_INVALID_DEVICE      = SECURITY_MESSAGE_INVALID_COOKIE
+                                                                             + ": Invalid device: ";
+
+    public static final String  SECURITY_MESSAGE_INVALID_USER        = SECURITY_MESSAGE_INVALID_COOKIE
+                                                                             + ": Invalid user: ";
 
     private SubjectEntity       authenticatedSubject;
 
     private DeviceEntity        authenticationDevice;
+
+    private DateTime            authenticationDate;
 
     private String              expectedApplicationId;
 
@@ -148,6 +182,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     private Set<DeviceEntity>   requiredDevicePolicy;
 
     private AuthenticationState authenticationState;
+
+    private boolean             ssoEnabled;
+
+    private Cookie              ssoCookie;
 
 
     @PostConstruct
@@ -165,6 +203,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     @EJB
     private ApplicationDAO                   applicationDAO;
+
+    @EJB
+    private ApplicationPoolDAO               applicationPoolDAO;
 
     @EJB
     private SubscriptionDAO                  subscriptionDAO;
@@ -231,9 +272,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 break;
             }
         }
-        if (!validSignature) {
+        if (!validSignature)
             throw new AuthenticationInitializationException("signature validation error");
-        }
 
         String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
         if (null == assertionConsumerService) {
@@ -249,6 +289,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         String samlAuthnRequestId = samlAuthnRequest.getID();
         LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
+
+        boolean forceAuthn = samlAuthnRequest.isForceAuthn();
+        LOG.debug("ForceAuthn: " + forceAuthn);
 
         RequestedAuthnContext requestedAuthnContext = samlAuthnRequest.getRequestedAuthnContext();
         Set<DeviceEntity> devices;
@@ -278,6 +321,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.requiredDevicePolicy = devices;
         this.expectedTarget = assertionConsumerService;
         this.expectedChallengeId = samlAuthnRequestId;
+        this.ssoEnabled = !forceAuthn;
 
     }
 
@@ -307,9 +351,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
-        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED) {
+        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED)
             throw new IllegalStateException("call initialize first");
-        }
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -323,7 +366,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         Challenge<String> challenge = new Challenge<String>();
 
         String samlRequestToken = AuthnRequestFactory.createAuthnRequest(node.getName(), this.expectedApplicationId,
-                this.expectedApplicationFriendlyName, keyPair, authenticationServiceUrl, targetUrl, challenge, devices);
+                this.expectedApplicationFriendlyName, keyPair, authenticationServiceUrl, targetUrl, challenge, devices,
+                false);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -344,8 +388,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
         if (this.authenticationState != INITIALIZED && this.authenticationState != USER_AUTHENTICATED
-                && this.authenticationState != REDIRECTED)
+                && this.authenticationState != REDIRECTED) {
             throw new IllegalStateException("call initialize or authenticate first");
+        }
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -388,9 +433,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("authenticate");
-        if (this.authenticationState != REDIRECTED) {
+        if (this.authenticationState != REDIRECTED)
             throw new IllegalStateException("call redirect first");
-        }
 
         DateTime now = new DateTime();
 
@@ -423,13 +467,13 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Assertion assertion = samlResponse.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-        if (authStatements.isEmpty()) {
+        if (authStatements.isEmpty())
             throw new ServletException("missing authentication statement");
-        }
 
         AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext())
+        if (null == authStatement.getAuthnContext()) {
             throw new ServletException("missing authentication context in authentication statement");
+        }
 
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
@@ -451,14 +495,229 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         }
 
         /*
+         * Create SSO Cookie for authentication webapp
+         */
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        createSsoCookie(identityServiceClient.getSsoKey());
+
+        /*
          * Safe the state in this stateful session bean.
          */
         this.authenticationState = USER_AUTHENTICATED;
         this.authenticatedSubject = subjectEntity;
         this.authenticationDevice = device;
+        this.authenticationDate = new DateTime();
         this.expectedDeviceChallengeId = null;
 
         return subjectEntity.getUserId();
+    }
+
+    private void createSsoCookie(SecretKey ssoKey) {
+
+        if (null == this.authenticatedSubject || null == this.authenticationDevice
+                || null == this.expectedApplicationId) {
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
+                    "Attempt to create SSO Cookie without authenticating");
+            throw new IllegalStateException("don't try to create a single sign-on cookie without authenticating");
+        }
+
+        DateTime now = new DateTime();
+        String value = "userId=" + this.authenticatedSubject.getUserId() + ";applicationId="
+                + this.expectedApplicationId + ";device=" + this.authenticationDevice.getName() + ";time="
+                + now.toString();
+
+        LOG.debug("cookie value: " + value);
+
+        BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
+        String encryptedValue;
+        try {
+            Cipher encryptCipher = Cipher.getInstance("AES", bcp);
+            encryptCipher.init(Cipher.ENCRYPT_MODE, ssoKey);
+            byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes());
+            encryptedValue = new String(Base64.encode(encryptedBytes));
+
+        } catch (InvalidKeyException e) {
+            LOG.debug("invalid key: " + e.getMessage());
+            return;
+        } catch (IllegalBlockSizeException e) {
+            LOG.debug("illegal block size: " + e.getMessage());
+            return;
+        } catch (BadPaddingException e) {
+            LOG.debug("bad padding: " + e.getMessage());
+            return;
+        } catch (NoSuchAlgorithmException e) {
+            LOG.debug("no such algorithm: " + e.getMessage());
+            return;
+        } catch (NoSuchPaddingException e) {
+            LOG.debug("no such padding: " + e.getMessage());
+            return;
+        }
+
+        this.ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + this.expectedApplicationId,
+                encryptedValue);
+        this.ssoCookie.setPath("/olas-auth/");
+        this.ssoCookie.setMaxAge(-1);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public boolean checkSso(Cookie cookie) throws ApplicationNotFoundException, InvalidCookieException,
+            EmptyDevicePolicyException {
+
+        LOG.debug("check single sign on cookie: " + cookie.getName());
+
+        ApplicationEntity application = this.applicationDAO.getApplication(this.expectedApplicationId);
+        if (!application.isSsoEnabled())
+            return false;
+
+        if (false == this.ssoEnabled)
+            return false;
+
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+
+        /*
+         * Decrypt SSO Cookie value
+         */
+        BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
+        String decryptedValue;
+        try {
+            Cipher decryptCipher = Cipher.getInstance("AES", bcp);
+            decryptCipher.init(Cipher.DECRYPT_MODE, identityServiceClient.getSsoKey());
+            byte[] decryptedBytes = decryptCipher.doFinal(Base64.decode(cookie.getValue().getBytes("UTF-8")));
+            decryptedValue = new String(decryptedBytes);
+        } catch (InvalidKeyException e) {
+            LOG.debug("invalid key: " + e.getMessage());
+            throw new InvalidCookieException(e.getMessage());
+        } catch (IllegalBlockSizeException e) {
+            LOG.debug("illegal block size: " + e.getMessage());
+            throw new InvalidCookieException(e.getMessage());
+        } catch (BadPaddingException e) {
+            LOG.debug("bad padding: " + e.getMessage());
+            throw new InvalidCookieException(e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            LOG.debug("no such algorithm: " + e.getMessage());
+            throw new InvalidCookieException(e.getMessage());
+        } catch (NoSuchPaddingException e) {
+            LOG.debug("no such padding: " + e.getMessage());
+            throw new InvalidCookieException(e.getMessage());
+        } catch (Base64DecodingException e) {
+            LOG.debug("base 64 encoding error: " + e.getMessage());
+            throw new InvalidCookieException(e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            LOG.debug("unsupported encoding error: " + e.getMessage());
+            throw new InvalidCookieException(e.getMessage());
+        }
+
+        LOG.debug("Decrypted cookie: " + decryptedValue);
+
+        /*
+         * Check SSO Cookie properties
+         */
+        String[] properties = decryptedValue.split(";");
+        if (null == properties || properties.length != 4) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+
+        // check user ID property
+        String[] userProperties = properties[0].split("=");
+        if (null == userProperties || userProperties.length != 2 || !userProperties[0].equals("userId")) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+        SubjectEntity subject = this.subjectService.findSubject(userProperties[1]);
+        if (null == subject) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_USER + userProperties[1]);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_USER
+                    + userProperties[1]);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+
+        // check application ID property
+        String[] applicationProperties = properties[1].split("=");
+        if (null == applicationProperties || applicationProperties.length != 2
+                || !applicationProperties[0].equals("applicationId")) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+        ApplicationEntity cookieApplication = this.applicationDAO.findApplication(applicationProperties[1]);
+        if (null == cookieApplication) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION + applicationProperties[1]);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
+                    SECURITY_MESSAGE_INVALID_APPLICATION + applicationProperties[1]);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+
+        List<ApplicationPoolEntity> commonApplicationPools = this.applicationPoolDAO.listCommonApplicationPools(
+                application, cookieApplication);
+        LOG.debug("common application pools: " + commonApplicationPools.size());
+        if (0 == commonApplicationPools.size()) {
+            LOG.debug("no common application pool");
+            return false;
+        }
+        long timeout = Long.MAX_VALUE;
+        for (ApplicationPoolEntity applicationPool : commonApplicationPools) {
+            if (applicationPool.getSsoTimeout() < timeout) {
+                timeout = applicationPool.getSsoTimeout();
+            }
+        }
+
+        // check device property
+        String[] deviceProperties = properties[2].split("=");
+        if (null == deviceProperties || deviceProperties.length != 2 || !deviceProperties[0].equals("device")) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+        DeviceEntity device;
+        try {
+            device = this.deviceDAO.getDevice(deviceProperties[1]);
+        } catch (DeviceNotFoundException e) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_DEVICE + deviceProperties[1]);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_DEVICE
+                    + deviceProperties[1]);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+
+        }
+
+        try {
+            checkDevicePolicy(deviceProperties[1]);
+        } catch (DevicePolicyException e) {
+            LOG.debug("device " + deviceProperties[1] + " not enough for application " + this.expectedApplicationId
+                    + " device policy");
+            return false;
+        }
+
+        // check time property
+        String[] timeProperties = properties[3].split("=");
+        if (null == timeProperties || timeProperties.length != 2 || !timeProperties[0].equals("time")) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+        DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTime();
+        DateTime cookieAuthenticationDate = dateFormatter.parseDateTime(timeProperties[1]);
+        DateTime notAfter = cookieAuthenticationDate.plus(timeout);
+        DateTime now = new DateTime();
+        if (now.isAfter(notAfter)) {
+            LOG.debug("SSO Cookie has expired");
+            throw new InvalidCookieException("Expired SSO Cookie");
+        }
+
+        /*
+         * Safe the state in this stateful session bean.
+         */
+        this.authenticationState = USER_AUTHENTICATED;
+        this.authenticatedSubject = subject;
+        this.authenticationDevice = device;
+        this.authenticationDate = cookieAuthenticationDate;
+
+        LOG.debug("single sign-on allowed for user " + this.authenticatedSubject.getUserId() + " using device: "
+                + this.authenticationDevice.getName());
+
+        return true;
     }
 
     public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password)
@@ -475,6 +734,13 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.authenticationState = USER_AUTHENTICATED;
         this.authenticatedSubject = subject;
         this.authenticationDevice = device;
+        this.authenticationDate = new DateTime();
+
+        /*
+         * Create SSO Cookie for authentication webapp
+         */
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        createSsoCookie(identityServiceClient.getSsoKey());
 
         /*
          * Communicate that the authentication process can continue.
@@ -486,9 +752,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("register");
-        if (this.authenticationState != REDIRECTED) {
+        if (this.authenticationState != REDIRECTED)
             throw new IllegalStateException("call redirect first");
-        }
 
         DateTime now = new DateTime();
 
@@ -519,13 +784,13 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Assertion assertion = samlResponse.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-        if (authStatements.isEmpty()) {
+        if (authStatements.isEmpty())
             throw new ServletException("missing authentication statement");
-        }
 
         AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext())
+        if (null == authStatement.getAuthnContext()) {
             throw new ServletException("missing authentication context in authentication statement");
+        }
 
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
@@ -550,11 +815,18 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         }
 
         /*
+         * Create SSO Cookie for authentication webapp
+         */
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        createSsoCookie(identityServiceClient.getSsoKey());
+
+        /*
          * Safe the state in this stateful session bean.
          */
         this.authenticationState = USER_AUTHENTICATED;
         this.authenticatedSubject = subjectEntity;
         this.authenticationDevice = device;
+        this.authenticationDate = new DateTime();
 
         addHistoryEntry(this.authenticatedSubject, HistoryEventType.DEVICE_REGISTRATION, null, device.getName());
 
@@ -566,9 +838,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             ApplicationNotFoundException {
 
         LOG.debug("finalize authentication");
-        if (this.authenticationState != COMMITTED) {
+        if (this.authenticationState != COMMITTED)
             throw new IllegalStateException("call commit first");
-        }
 
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
@@ -583,7 +854,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         String samlResponseToken = AuthnResponseFactory.createAuthResponse(this.expectedChallengeId,
                 this.expectedApplicationId, node.getName(), userId, this.authenticationDevice
-                        .getAuthenticationContextClass(), keyPair, validity, this.expectedTarget);
+                        .getAuthenticationContextClass(), keyPair, validity, this.expectedTarget,
+                this.authenticationDate);
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
         return encodedSamlResponseToken;
@@ -625,18 +897,16 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private void checkStateBeforeCommit() {
 
-        if (this.authenticationState != USER_AUTHENTICATED) {
+        if (this.authenticationState != USER_AUTHENTICATED)
             throw new IllegalStateException("bean is not in the correct state");
-        }
     }
 
     private void checkRequiredIdentity() throws SubscriptionNotFoundException, ApplicationNotFoundException,
             ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException {
 
         boolean confirmationRequired = this.identityService.isConfirmationRequired(this.expectedApplicationId);
-        if (true == confirmationRequired) {
+        if (true == confirmationRequired)
             throw new IdentityConfirmationRequiredException();
-        }
     }
 
     private void checkRequiredMissingAttributes() throws ApplicationNotFoundException,
@@ -644,27 +914,27 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             AttributeTypeNotFoundException {
 
         boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.expectedApplicationId);
-        if (true == hasMissingAttributes) {
+        if (true == hasMissingAttributes)
             throw new MissingAttributeException();
-        }
     }
 
-    private void checkDevicePolicy() throws ApplicationNotFoundException, EmptyDevicePolicyException,
+    private void checkDevicePolicy(String deviceName) throws ApplicationNotFoundException, EmptyDevicePolicyException,
             DevicePolicyException {
 
-        LOG.debug("authenticationDevice: " + this.authenticationDevice.getName());
+        LOG.debug("check device policy for device: " + deviceName);
         List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.expectedApplicationId,
                 this.requiredDevicePolicy);
         boolean found = false;
         for (DeviceEntity device : devicePolicy) {
             LOG.debug("devicePolicy: " + device.getName());
-            if (device.getName().equals(this.authenticationDevice.getName())) {
+            if (device.getName().equals(deviceName)) {
                 found = true;
                 break;
             }
         }
-        if (!found)
+        if (!found) {
             throw new DevicePolicyException();
+        }
     }
 
     private void checkRequiredUsageAgreement() throws ApplicationNotFoundException,
@@ -672,16 +942,18 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         boolean requiresUsageAgreementAcceptation = this.usageAgreementService
                 .requiresUsageAgreementAcceptation(this.expectedApplicationId);
-        if (true == requiresUsageAgreementAcceptation)
+        if (true == requiresUsageAgreementAcceptation) {
             throw new UsageAgreementAcceptationRequiredException();
+        }
     }
 
     private void checkRequiredGlobalUsageAgreement() throws UsageAgreementAcceptationRequiredException {
 
         boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService
                 .requiresGlobalUsageAgreementAcceptation();
-        if (true == requiresGlobalUsageAgreementAcceptation)
+        if (true == requiresGlobalUsageAgreementAcceptation) {
             throw new UsageAgreementAcceptationRequiredException();
+        }
     }
 
     public void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
@@ -697,7 +969,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         checkRequiredMissingAttributes();
 
-        checkDevicePolicy();
+        checkDevicePolicy(this.authenticationDevice.getName());
 
         checkRequiredGlobalUsageAgreement();
 
@@ -732,9 +1004,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public String getUserId() {
 
         LOG.debug("getUserId");
-        if (this.authenticationState != USER_AUTHENTICATED && this.authenticationState != COMMITTED) {
+        if (this.authenticationState != USER_AUTHENTICATED && this.authenticationState != COMMITTED)
             throw new IllegalStateException("call authenticate first");
-        }
         String userId = this.authenticatedSubject.getUserId();
         return userId;
     }
@@ -756,33 +1027,29 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     public String getExpectedApplicationId() {
 
-        if (this.authenticationState == INIT) {
+        if (this.authenticationState == INIT)
             throw new IllegalStateException("call initialize first");
-        }
         return this.expectedApplicationId;
     }
 
     public String getExpectedApplicationFriendlyName() {
 
-        if (this.authenticationState == INIT) {
+        if (this.authenticationState == INIT)
             throw new IllegalStateException("call initialize first");
-        }
         return this.expectedApplicationFriendlyName;
     }
 
     public String getExpectedTarget() {
 
-        if (this.authenticationState == INIT) {
+        if (this.authenticationState == INIT)
             throw new IllegalStateException("call initialize first");
-        }
         return this.expectedTarget;
     }
 
     public Set<DeviceEntity> getRequiredDevicePolicy() {
 
-        if (this.authenticationState == INIT) {
+        if (this.authenticationState == INIT)
             throw new IllegalStateException("call initialize first");
-        }
         return this.requiredDevicePolicy;
     }
 
@@ -794,6 +1061,11 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public DeviceEntity getAuthenticationDevice() {
 
         return this.authenticationDevice;
+    }
+
+    public Cookie getSsoCookie() {
+
+        return this.ssoCookie;
     }
 
 }

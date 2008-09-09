@@ -172,7 +172,7 @@ public class LandingServletTest {
         this.wantedDevices = Collections.singleton(this.deviceName);
         String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(this.applicationName, this.applicationName,
                 null, this.keyPair, "http://test.authn.service", this.servletEndpointUrl, new Challenge<String>(),
-                this.wantedDevices);
+                this.wantedDevices, false);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 

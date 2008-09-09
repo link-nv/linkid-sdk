@@ -81,19 +81,19 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
             this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
                     "owner", "The SafeOnline User Web Application.", new URL(protocol, hostname, hostport, "/"
                             + userWebappName), getLogo("/logo.jpg"), null, false, false, userCert, false,
-                    IdScopeType.USER));
+                    IdScopeType.USER, true));
             this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
                     "owner", "The SafeOnline Operator Web Application.", new URL(protocol, hostname, hostport, "/"
                             + operWebappName), getLogo("/logo.jpg"), Color.decode("#2c0075"), false, false, operCert,
-                    false, IdScopeType.USER));
+                    false, IdScopeType.USER, true));
             this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
                     "owner", "The SafeOnline Application Owner Web Application.", new URL(protocol, hostname, hostport,
                             "/" + ownerWebappName), getLogo("/logo.jpg"), Color.decode("#001975"), false, false,
-                    ownerCert, false, IdScopeType.USER));
+                    ownerCert, false, IdScopeType.USER, true));
             this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
                     "owner", "The SafeOnline Helpdesk Web Application.", new URL(protocol, hostname, hostport, "/"
                             + helpdeskWebappName), getLogo("/logo.jpg"), Color.decode("#006f73"), false, false,
-                    helpdeskCert, false, IdScopeType.USER));
+                    helpdeskCert, false, IdScopeType.USER, true));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed Application URL exception: " + e.getMessage());
         }
@@ -114,6 +114,13 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
                 SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
+
+        // add application pool
+        this.applicationPools.add(new ApplicationPool(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_POOL_NAME,
+                1000 * 60 * 60 * 8, new String[] { SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+                        SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
+                        SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
+                        SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME }));
 
         // add available notification topics
         this.notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);

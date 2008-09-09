@@ -35,9 +35,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Utility class for usage within a JBoss Seam JSF based web application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SafeOnlineLoginUtils {
 
@@ -53,6 +53,7 @@ public class SafeOnlineLoginUtils {
     public static final String                 KEY_STORE_FILE_INIT_PARAM            = "KeyStoreFile";
     public static final String                 KEY_STORE_TYPE_INIT_PARAM            = "KeyStoreType";
     public static final String                 KEY_STORE_PASSWORD_INIT_PARAM        = "KeyStorePassword";
+    public static final String                 SINGLE_SIGN_ON_INIT_PARAM            = "SingleSignOnEnabled";
 
     public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL               = AuthenticationProtocol.SAML2_BROWSER_POST;
 
@@ -64,54 +65,54 @@ public class SafeOnlineLoginUtils {
 
     /**
      * Performs a SafeOnline login using the SafeOnline authentication web application.
-     *
+     * 
      * <b>Note: This method is ONLY for logging in from an application that uses the JSF framework.</b>
-     *
+     * 
      * <p>
      * The method requires the <code>AuthenticationServiceUrl</code> context parameter defined in <code>web.xml</code>
      * pointing to the location of the SafeOnline authentication web application.
      * </p>
-     *
+     * 
      * <p>
      * The method also requires the <code>TargetBaseUrl</code> context parameter defined in <code>web.xml</code>
      * pointing to the base location to redirect to after successful authentication.
      * </p>
-     *
+     * 
      * <p>
      * The method also requires the <code>ApplicationName</code> context parameter defined in <code>web.xml</code>
      * containing the application name that will be communicated towards the SafeOnline authentication web application.
      * </p>
-     *
+     * 
      * <p>
      * The method also requires the <code>AuthenticationProtocol</code> context parameter defined in
      * <code>web.xml</code> containing the authentication protocol used between the application and the OLAS
      * authentication web application. This can be: SAML2_BROWSER_POST. Defaults to: SAML2_BROWSER_POST
      * </p>
-     *
+     * 
      * <p>
      * The optional keystore resource name <code>KeyStoreResource</code> context parameter. The key pair within this
      * keystore can be used by the authentication protocol handler to digitally sign the authentication request.
      * </p>
-     *
+     * 
      * <p>
      * The optional keystore file name <code>KeyStoreFile</code> context parameter. The key pair within this keystore
      * can be used by the authentication protocol handler to digitally sign the authentication request.
      * </p>
-     *
+     * 
      * <p>
-     * The optional <code>KeyStoreType</code> key store type context parameter. Accepted values are: <code>pkcs12</code>
-     * and <code>jks</code>.
+     * The optional <code>KeyStoreType</code> key store type context parameter. Accepted values are:
+     * <code>pkcs12</code> and <code>jks</code>.
      * </p>
-     *
+     * 
      * <p>
-     * The optional <code>KeyStorePassword</code> context parameter contains the password to unlock the keystore and key
-     * entry.
+     * The optional <code>KeyStorePassword</code> context parameter contains the password to unlock the keystore and
+     * key entry.
      * </p>
-     *
+     * 
      * @param target
      *            The target to which to redirect to after successful authentication. Don't put the full URL in here,
      *            the full URL is retrieved with the {@link #TARGET_BASE_URL_INIT_PARAM}.
-     *
+     * 
      */
     @SuppressWarnings("unchecked")
     public static String login(String target) {
@@ -136,15 +137,15 @@ public class SafeOnlineLoginUtils {
 
     /**
      * Performs a SafeOnline login using the SafeOnline authentication web application.
-     *
+     * 
      * <b>Note: This is a general purpose method that should work for any web application framework.</b>
-     *
+     * 
      * @see #login(String) For details about the init parameters that should be configured in the application's
      *      <code>web.xml</code>.
-     *
+     * 
      * @param target
      *            The target url to redirect to after successful authentication.
-     *
+     * 
      * @param request
      *            The {@link HttpServletRequest} object from the servlet making the login request.
      * @param response
@@ -179,6 +180,7 @@ public class SafeOnlineLoginUtils {
         String keyStoreFile = getInitParameter(config, KEY_STORE_FILE_INIT_PARAM, null);
         String keyStorePassword = getInitParameter(config, KEY_STORE_PASSWORD_INIT_PARAM, null);
         String keyStoreType = getInitParameter(config, KEY_STORE_TYPE_INIT_PARAM, null);
+        String ssoEnabledString = getInitParameter(config, SINGLE_SIGN_ON_INIT_PARAM, null);
         LOG.debug("redirecting to: " + authenticationServiceUrl);
 
         /* Figure out what protocol to use. */
@@ -189,6 +191,15 @@ public class SafeOnlineLoginUtils {
             throw new RuntimeException("could not parse authentication protocol: " + authenticationProtocolString);
         }
         LOG.debug("authentication protocol: " + authenticationProtocol);
+
+        /*
+         * Single Sign On Enabled or not
+         */
+        boolean ssoEnabled = true;
+        if (null != ssoEnabledString) {
+            ssoEnabled = Boolean.parseBoolean(ssoEnabledString);
+        }
+        LOG.debug("single sign-on enabled: " + ssoEnabled);
 
         /* Load key data if provided. */
         KeyPair keyPair = null;
@@ -211,8 +222,8 @@ public class SafeOnlineLoginUtils {
         /* Initialize and execute the authentication protocol. */
         try {
             AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol,
-                    authenticationServiceUrl, applicationName, applicationFriendlyName, keyPair, certificate, config,
-                    httpRequest);
+                    authenticationServiceUrl, applicationName, applicationFriendlyName, keyPair, certificate,
+                    ssoEnabled, config, httpRequest);
             LOG.debug("initialized protocol");
         } catch (ServletException e) {
             throw new RuntimeException("could not init authentication protocol handler: " + authenticationProtocol
@@ -230,7 +241,7 @@ public class SafeOnlineLoginUtils {
 
     /**
      * Load the application key from the given key store file OR resource (at least one must be <code>null</code>).
-     *
+     * 
      * @param keyStorePassword
      * @param keyStoreType
      */
@@ -241,16 +252,14 @@ public class SafeOnlineLoginUtils {
             return null;
 
         /* Can't have both resource and file defined. */
-        if (null != keyStoreResource && null != keyStoreFile) {
+        if (null != keyStoreResource && null != keyStoreFile)
             throw new RuntimeException("both KeyStoreResource and KeyStoreFile are defined");
-        }
 
         InputStream keyStoreInputStream;
         if (null != keyStoreResource) {
             keyStoreInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(keyStoreResource);
-            if (null == keyStoreInputStream) {
+            if (null == keyStoreInputStream)
                 throw new RuntimeException("resource not found: " + keyStoreResource);
-            }
         } else {
             try {
                 keyStoreInputStream = new FileInputStream(keyStoreFile);
@@ -264,9 +273,8 @@ public class SafeOnlineLoginUtils {
 
     private static String getInitParameter(Map<String, String> config, String parameterName) {
 
-        if (!config.containsKey(parameterName)) {
+        if (!config.containsKey(parameterName))
             throw new RuntimeException("missing context-param in web.xml: " + parameterName);
-        }
 
         return config.get(parameterName);
     }

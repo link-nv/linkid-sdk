@@ -97,7 +97,8 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements User
             return null;
         }
 
-        super.login(this.loginname, SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        super.login(this.loginname, SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, this.authenticationService
+                .getSsoCookie());
 
         return null;
     }
