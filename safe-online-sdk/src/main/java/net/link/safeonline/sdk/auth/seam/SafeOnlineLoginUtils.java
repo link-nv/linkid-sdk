@@ -109,6 +109,12 @@ public class SafeOnlineLoginUtils {
      * key entry.
      * </p>
      * 
+     * <p>
+     * The optional <code>SingleSignOnEnabled</code> init parameter specified whether single sign-on can be used or
+     * not. Accepted values are: <code>true</code> or <code>false</code>. If omitted, single sign-on will be
+     * enabled by default.
+     * </p>
+     * 
      * @param target
      *            The target to which to redirect to after successful authentication. Don't put the full URL in here,
      *            the full URL is retrieved with the {@link #TARGET_BASE_URL_INIT_PARAM}.
