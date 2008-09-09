@@ -61,14 +61,6 @@
 			<version>${safe-online.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		<!--dependency>
-			<groupId>net.sourceforge</groupId>
-			<artifactId>shiftone-oocjndi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge</groupId>
-			<artifactId>shiftone-arbor</artifactId>
-		</dependency-->
 
         <!-- Test Dependencies -->
         <dependency>

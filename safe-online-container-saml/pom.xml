@@ -35,6 +35,13 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: OLAS -->
+   		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-saml-authn-context</artifactId>
+			<version>${safe-online.version}</version>
+		</dependency>
+
         <!-- opensaml -->
         <dependency>
             <groupId>org.opensaml</groupId>

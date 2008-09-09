@@ -42,10 +42,10 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
     /*
      * Add XXX due to: http://jira.jboss.com/jira/browse/EJBTHREE-1252
      */
-    @PersistenceContext(unitName = "XXXsafe-online-demo-ticket-1.0-SNAPSHOT.jar#DemoTicketEntityManager")
+    @PersistenceContext(unitName = "XXXsafe-online-demo-ticket-1.1-SNAPSHOT.jar#DemoTicketEntityManager")
     private EntityManager       demoTicketEntityManager;
 
-    @PersistenceContext(unitName = "XXXsafe-online-demo-payment-1.0-SNAPSHOT.jar#DemoPaymentEntityManager")
+    @PersistenceContext(unitName = "XXXsafe-online-demo-payment-1.1-SNAPSHOT.jar#DemoPaymentEntityManager")
     private EntityManager       demoPaymentEntityManager;
 
 

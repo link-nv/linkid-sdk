@@ -57,14 +57,6 @@
 			<artifactId>safe-online-sdk</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
-		<!--dependency>
-			<groupId>net.sourceforge</groupId>
-			<artifactId>shiftone-oocjndi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge</groupId>
-			<artifactId>shiftone-arbor</artifactId>
-		</dependency-->
 
         <!-- Test Dependencies -->
         <dependency>

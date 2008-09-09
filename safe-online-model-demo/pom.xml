@@ -62,6 +62,11 @@
         </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-j2ee-util</artifactId>
+			<version>${safe-online.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
             <type>ejb-client</type>
 		</dependency>
@@ -69,6 +74,13 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-beid</artifactId>
 			<version>${safe-online.version}</version>
+            <type>ejb-client</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.lin-k.safe-online</groupId>
+                    <artifactId>safe-online-beid-startup-runtime</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

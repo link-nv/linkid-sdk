@@ -28,12 +28,6 @@
 				<configuration>
                     <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
                     <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-                    <!--archive>
-                      <manifest>
-                        <addClasspath>true</addClasspath>
-                        <classpathPrefix>lib/</classpathPrefix>
-                      </manifest>
-                    </archive-->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -63,6 +57,13 @@
 
 	<dependencies>
 
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+
         <!-- Specific Dependencies: OLAS: Backing Beans -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -73,6 +74,13 @@
 		</dependency>
 
         <!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-prescription-service</artifactId>
+			<version>${safe-online.version}</version>
+            <scope>runtime</scope>
+            <type>sar</type>
+		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
@@ -87,11 +95,6 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-prescription-keystore</artifactId>
-			<version>${safe-online.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-test-util</artifactId>
 			<version>${safe-online.version}</version>
 		</dependency>
         

@@ -32,28 +32,8 @@
 					</jboss>
                     <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
 
-                    <!-- FIXME: Find a cleaner and safer way to avoid
-                                non-direct dependency wars in the application.xml. -->
-                    <modules>
-                        <webModule>
-                            <groupId>net.lin-k.safe-online</groupId>
-                            <artifactId>safe-online-webapp-base</artifactId>
-                            <excluded>true</excluded>
-                        </webModule>
-                        <webModule>
-                            <groupId>net.lin-k.safe-online</groupId>
-                            <artifactId>safe-online-device-webapp-base</artifactId>
-                            <excluded>true</excluded>
-                        </webModule>
-                        <webModule>
-                            <groupId>net.lin-k.safe-online</groupId>
-                            <artifactId>safe-online-startup-runtime</artifactId>
-                            <excluded>true</excluded>
-                        </webModule>
-                    </modules>
-
                     <!-- Exlude ZIPs.
-                         They only serve to force the deps of wars/sars to become transitive. -->
+                         They only serve to force the deps of wars to become transitive. -->
                     <artifactTypeMappings>
                         <artifactTypeMapping type="zip" mapping="jar"/>
                     </artifactTypeMappings>
@@ -112,18 +92,6 @@
             </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-remote-service</artifactId>
-			<version>${safe-online.version}</version>
-			<type>sar</type>
-		</dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-demo-remote-service</artifactId>
-                <version>${safe-online.version}</version>
-                <type>zip</type>
-            </dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket-webapp</artifactId>
 			<version>${safe-online.version}</version>
 			<type>war</type>
@@ -160,18 +128,6 @@
             </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-payment-service</artifactId>
-			<version>${safe-online.version}</version>
-			<type>sar</type>
-		</dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-demo-payment-service</artifactId>
-                <version>${safe-online.version}</version>
-                <type>zip</type>
-            </dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-webapp</artifactId>
 			<version>${safe-online.version}</version>
 			<type>war</type>
@@ -179,18 +135,6 @@
             <dependency>
                 <groupId>net.lin-k.safe-online</groupId>
                 <artifactId>safe-online-demo-lawyer-webapp</artifactId>
-                <version>${safe-online.version}</version>
-                <type>zip</type>
-            </dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-lawyer-service</artifactId>
-			<version>${safe-online.version}</version>
-			<type>sar</type>
-		</dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-demo-lawyer-service</artifactId>
                 <version>${safe-online.version}</version>
                 <type>zip</type>
             </dependency>
@@ -208,18 +152,6 @@
             </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-prescription-service</artifactId>
-			<version>${safe-online.version}</version>
-			<type>sar</type>
-		</dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-demo-prescription-service</artifactId>
-                <version>${safe-online.version}</version>
-                <type>zip</type>
-            </dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-webapp</artifactId>
 			<version>${safe-online.version}</version>
 			<type>war</type>
@@ -227,18 +159,6 @@
             <dependency>
                 <groupId>net.lin-k.safe-online</groupId>
                 <artifactId>safe-online-demo-mandate-webapp</artifactId>
-                <version>${safe-online.version}</version>
-                <type>zip</type>
-            </dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-mandate-service</artifactId>
-			<version>${safe-online.version}</version>
-			<type>sar</type>
-		</dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-demo-mandate-service</artifactId>
                 <version>${safe-online.version}</version>
                 <type>zip</type>
             </dependency>
@@ -254,30 +174,6 @@
                 <version>${safe-online.version}</version>
                 <type>zip</type>
             </dependency>
-
-        <!-- Specific Dependencies: OLAS -->
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-ws-model</artifactId>
-			<version>${safe-online.version}</version>
-			<type>ejb</type>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-model-demo</artifactId>
-			<version>${safe-online.version}</version>
-			<type>ejb</type>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model-beid</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 
 	</dependencies>
 

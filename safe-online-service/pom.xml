@@ -44,9 +44,14 @@
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-sdk-deploy-ctx</artifactId>
+			<artifactId>safe-online-sdk</artifactId>
 			<version>${safe-online.version}</version>
 			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-j2ee-util</artifactId>
+			<version>${safe-online.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

@@ -31,9 +31,15 @@
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
-                    <!-- TODO:  See if we can somehow control which deps we pass to
-                                artifacts that depend on our -client artifact. -->
+
+                    <!-- Exclude all default excludes except for **/*Bean.class.
+                         We also want Abstract*Bean.class files in the client jar. -->
 					<generateClient>true</generateClient>
+                    <clientExcludes>
+                        <clientExclude>**/*CMP.class</clientExclude>
+                        <clientExclude>**/*Session.class</clientExclude>
+                        <clientExclude>**/package.html</clientExclude>
+                    </clientExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -83,13 +89,6 @@
    			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup</artifactId>
 			<version>${safe-online.version}</version>
-        </dependency>
-        <dependency>
-   			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-startup-runtime</artifactId>
-			<version>${safe-online.version}</version>
-            <scope>runtime</scope>
-            <type>war</type>
         </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -202,14 +201,6 @@
             <artifactId>safe-online-container-test</artifactId>
             <type>pom</type>
         </dependency>
-		<!--dependency>
-			<groupId>net.sourceforge</groupId>
-			<artifactId>shiftone-oocjndi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge</groupId>
-			<artifactId>shiftone-arbor</artifactId>
-		</dependency-->
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-common-client</artifactId>

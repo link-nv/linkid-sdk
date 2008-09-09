@@ -157,12 +157,14 @@
 			<artifactId>safe-online-performance-scenario</artifactId>
 			<version>${safe-online.version}</version>
 			<scope>test</scope>
+            <type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-performance-scenario-base</artifactId>
 			<version>${safe-online.version}</version>
 			<scope>test</scope>
+            <type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

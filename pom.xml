@@ -9,7 +9,7 @@
 	<inceptionYear>2006</inceptionYear>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
-    <version>${safe-online.version}</version>
+	<version>${safe-online.version}</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>Lin.k N.V.</name>
@@ -77,23 +77,23 @@
 
 	<!-- CODE MANAGEMENT -->
 	<scm>
-        <tag>HEAD</tag>
-        <url>http://buildserver/cgi-bin/gitweb.cgi?p=safe-online.git</url>
+		<tag>HEAD</tag>
+		<url>http://buildserver/cgi-bin/gitweb.cgi?p=safe-online.git</url>
 		<connection>
-            scm:git:ssh+git://buildserver/scm/git/safeonline.git 
+			scm:git:ssh+git://buildserver/scm/git/safeonline.git 
 		</connection>
 		<developerConnection>
-            scm:git:ssh+git://buildserver/scm/git/safeonline.git
+			scm:git:ssh+git://buildserver/scm/git/safeonline.git
 		</developerConnection>
 	</scm>
-    <issueManagement>
-        <system>JTrac</system>
-        <url>http://buildserver:7070/jtrac/app/</url>
-    </issueManagement>
-    <ciManagement>
-        <system>Hudson</system>
-        <url>http://buildserver:7070/hudson/</url>
-    </ciManagement>
+	<issueManagement>
+		<system>JTrac</system>
+		<url>http://buildserver:7070/jtrac/app/</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Hudson</system>
+		<url>http://buildserver:7070/hudson/</url>
+	</ciManagement>
 	<mailingLists>
 		<mailingList>
 			<name>safeonline-dev</name>
@@ -124,7 +124,7 @@
 	<!-- COMPILATION PROFILES -->
 	<profiles>
 
-        <!-- Profile to build demo artifacts -->
+		<!-- Profile to build demo artifacts -->
 		<profile>
 			<id>demo</id>
 			<properties>
@@ -140,7 +140,7 @@
 				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
 			</properties>
 			<modules>
-                <!-- DEMO CORE -->
+				<!-- DEMO CORE -->
 				<module>safe-online-model-demo</module>
 				<module>safe-online-demo-deploy</module>
 
@@ -158,7 +158,7 @@
 				<module>safe-online-demo-ws-runtime</module>
 				<module>safe-online-demo-ws-model</module>
 
-                <!-- DEMO APPLICATIONS -->
+				<!-- DEMO APPLICATIONS -->
 				<module>safe-online-demo-ticket-webapp</module>
 				<module>safe-online-demo-ticket</module>
 				<module>safe-online-demo-ticket-keystore</module>
@@ -189,7 +189,7 @@
 			</modules>
 		</profile>
 
-        <!-- Profile to build demo distributions; requires profile 'demo' -->
+		<!-- Profile to build demo distributions; requires profile 'demo' -->
 		<profile>
 			<id>demo-distribution</id>
 			<modules>
@@ -198,7 +198,7 @@
 			</modules>
 		</profile>
 
-        <!-- Profile to build a pilot version -->
+		<!-- Profile to build a pilot version -->
 		<profile>
 			<id>pilot-core</id>
 			<properties>
@@ -221,7 +221,7 @@
 			</modules>
 		</profile>
 
-        <!-- Profile to build the pilot distribution that uses MySQL as DS -->
+		<!-- Profile to build the pilot distribution that uses MySQL as DS -->
 		<profile>
 			<id>pilot-mysql</id>
 			<properties>
@@ -237,7 +237,7 @@
 			</modules>
 		</profile>
 
-        <!-- Profile to build the pilot distribution that uses HSQL as DS -->
+		<!-- Profile to build the pilot distribution that uses HSQL as DS -->
 		<profile>
 			<id>pilot-hsql</id>
 			<modules>
@@ -247,7 +247,7 @@
 			</modules>
 		</profile>
 
-        <!-- Profile to build the pilot distribution that uses PostgreSQL as DS -->
+		<!-- Profile to build the pilot distribution that uses PostgreSQL as DS -->
 		<profile>
 			<id>pilot-postgres</id>
 			<properties>
@@ -264,7 +264,7 @@
 			</modules>
 		</profile>
 
-        <!-- Profile to build the pilot distribution that uses Oracle as DS -->
+		<!-- Profile to build the pilot distribution that uses Oracle as DS -->
 		<profile>
 			<id>pilot-oracle</id>
 			<properties>
@@ -282,7 +282,7 @@
 			</modules>
 		</profile>
 
-        <!-- Profile used to create a development version -->
+		<!-- Profile used to create a development version -->
 		<profile>
 			<id>development</id>
 			<properties>
@@ -291,7 +291,7 @@
 			</properties>
 		</profile>
 
-        <!-- Profile used by Hudson -->
+		<!-- Profile used by Hudson -->
 		<profile>
 			<id>hudson</id>
 			<distributionManagement>
@@ -311,7 +311,7 @@
 			</distributionManagement>
 		</profile>
 
-        <!-- Profile used to perform Web Application tests -->
+		<!-- Profile used to perform Web Application tests -->
 		<profile>
 			<id>test</id>
 			<properties>
@@ -389,41 +389,41 @@
 					sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800] 
 				</safe-online.profiling.initial_hosts>
 				<safe-online.profiling.filter><![CDATA[-->
-                    <filter>
-                        <filter-name>ProfileFilter</filter-name>
-                        <filter-class>
-                            net.link.safeonline.util.filter.ProfileFilter
-                        </filter-class>
-                        <init-param>
-                            <param-name>ProfilingEnabled</param-name>
-                            <param-value>true</param-value>
-                        </init-param>
-                    </filter>
+					<filter>
+						<filter-name>ProfileFilter</filter-name>
+						<filter-class>
+							net.link.safeonline.util.filter.ProfileFilter
+						</filter-class>
+						<init-param>
+							<param-name>ProfilingEnabled</param-name>
+							<param-value>true</param-value>
+						</init-param>
+					</filter>
 
-                    <filter-mapping>
-                        <filter-name>ProfileFilter</filter-name>
-                        <url-pattern>/*</url-pattern>
-                    </filter-mapping>
-                <!--]]>
+					<filter-mapping>
+						<filter-name>ProfileFilter</filter-name>
+						<url-pattern>/*</url-pattern>
+					</filter-mapping>
+				<!--]]>
 				</safe-online.profiling.filter>
 				<safe-online.profiling.interceptor><![CDATA[-->
-                    <interceptors>
-                        <interceptor>
-                            <interceptor-class>
-                                net.link.safeonline.interceptor.ProfileInterceptor
-                            </interceptor-class>
-                        </interceptor>
-                    </interceptors>
+					<interceptors>
+						<interceptor>
+							<interceptor-class>
+								net.link.safeonline.interceptor.ProfileInterceptor
+							</interceptor-class>
+						</interceptor>
+					</interceptors>
 
-                    <assembly-descriptor>
-                        <interceptor-binding>
-                            <ejb-name>*</ejb-name>
-                            <interceptor-class>
-                                net.link.safeonline.interceptor.ProfileInterceptor
-                            </interceptor-class>
-                        </interceptor-binding>
-                    </assembly-descriptor>
-                <!--]]>
+					<assembly-descriptor>
+						<interceptor-binding>
+							<ejb-name>*</ejb-name>
+							<interceptor-class>
+								net.link.safeonline.interceptor.ProfileInterceptor
+							</interceptor-class>
+						</interceptor-binding>
+					</assembly-descriptor>
+				<!--]]>
 				</safe-online.profiling.interceptor>
 			</properties>
 			<modules>
@@ -496,7 +496,7 @@
 
 	<!-- DEFAULT PROPERTIES -->
 	<properties>
-        <safe-online.version>1.1-SNAPSHOT</safe-online.version>
+		<safe-online.version>1.1-SNAPSHOT</safe-online.version>
 
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
@@ -532,13 +532,13 @@
 		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
-        <bcel.version>5.1</bcel.version>
-        <bsf.version>2.4.0</bsf.version>
-        <bsh.version>1.3.0</bsh.version>
-        <jaxen.version>1.1</jaxen.version>
-        <hibernate3.version>3.2.4.SP1</hibernate3.version>
-        <mimepull.version>1.2</mimepull.version>
-        <joesnmp.version>0.3.4</joesnmp.version>
+		<bcel.version>5.1</bcel.version>
+		<bsf.version>2.4.0</bsf.version>
+		<bsh.version>1.3.0</bsh.version>
+		<jaxen.version>1.1</jaxen.version>
+		<hibernate3.version>3.2.4.SP1</hibernate3.version>
+		<mimepull.version>1.2</mimepull.version>
+		<joesnmp.version>0.3.4</joesnmp.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
 		<junit.version>4.4</junit.version>
 		<jaxb-xjc.version>2.1.5</jaxb-xjc.version>
@@ -600,7 +600,7 @@
 		<jboss-packaging-maven-plugin.version>2.0-beta-1</jboss-packaging-maven-plugin.version>
 		<maven-surefire-plugin.version>2.3</maven-surefire-plugin.version>
 		<easymockclassextension.version>2.2.2</easymockclassextension.version>
-        <tomcat.version>3.3.2</tomcat.version>
+		<tomcat.version>3.3.2</tomcat.version>
 		<catalina.version>5.5.15</catalina.version>
 		<!-- http://jira.codehaus.org/browse/MWAR-18 -->
 		<maven-war-plugin.version> 2.1-alpha-2 </maven-war-plugin.version>
@@ -672,7 +672,7 @@
 		<Filters.version>1531</Filters.version>
 		<swing-worker.version>1.1</swing-worker.version>
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
-        <kaptcha.version>2.3</kaptcha.version>
+		<kaptcha.version>2.3</kaptcha.version>
 		<mysql-connector-java.version> 5.1.5 </mysql-connector-java.version>
 		<postgresql.version>8.2-504.jdbc3</postgresql.version>
 		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
@@ -700,7 +700,7 @@
 
 	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
 	<modules>
-        <!-- CORE -->
+		<!-- CORE -->
 		<module>safe-online-container-as</module>
 		<module>safe-online-container-jsf</module>
 		<module>safe-online-container-saml</module>
@@ -710,8 +710,8 @@
 		<module>safe-online-ws-runtime</module>
 		<module>safe-online-entity</module>
 		<module>safe-online-deploy</module>
-		<module>safe-online-model</module>
 		<module>safe-online-test-util</module>
+		<module>safe-online-model</module>
 		<module>safe-online-startup</module>
 		<module>safe-online-startup-runtime</module>
 		<module>safe-online-documentation</module>
@@ -724,11 +724,10 @@
 		<module>safe-online-keystore</module>
 		<module>safe-online-app-console</module>
 		<module>safe-online-jpa-util</module>
-		<module>safe-online-sdk-deploy-ctx</module>
 		<module>safe-online-saml-authn-context</module>
 		<module>safe-online-node-keystore</module>
 
-        <!-- CORE WEB APPS -->
+		<!-- CORE WEB APPS -->
 		<module>safe-online-webapp-base</module>
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-taglib</module>
@@ -755,7 +754,7 @@
 		<module>safe-online-auth-applet-package</module>
 		<module>safe-online-applet-common</module>
 
-        <!-- CORE WEB SERVICES -->
+		<!-- CORE WEB SERVICES -->
 		<module>safe-online-ws-util</module>
 		<module>safe-online-ws-common</module>
 		<module>safe-online-attrib-ws</module>
@@ -776,7 +775,7 @@
 		<module>safe-online-notification-subscription-manager-ws</module>
 		<module>safe-online-notification-subscription-manager-ws-impl</module>
 
-        <!-- EXTERNAL DEVICES -->
+		<!-- EXTERNAL DEVICES -->
 		<module>safe-online-device-webapp-base</module>
 		<module>safe-online-model-beid</module>
 		<module>safe-online-model-encap</module>
@@ -883,12 +882,12 @@
 					<fork>true</fork>
 					<source>1.5</source>
 					<target>1.5</target>
-                    <meminitial>128m</meminitial>
-                    <maxmem>512m</maxmem>
-                    <encoding>UTF8</encoding>
-                    <optimize>true</optimize>
-                    <showWarnings>true</showWarnings>
-                    <showDeprecation>true</showDeprecation>
+					<meminitial>32m</meminitial>
+					<maxmem>512m</maxmem>
+					<encoding>UTF8</encoding>
+					<optimize>true</optimize>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
@@ -913,8 +912,8 @@
 					<wtpmanifest>false</wtpmanifest>
 					<wtpapplicationxml>false</wtpapplicationxml>
 					<wtpversion>2.0</wtpversion>
-                    <downloadSources>true</downloadSources>
-                    <downloadJavadocs>true</downloadJavadocs>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
@@ -952,7 +951,7 @@
 				</executions>
 			</plugin>
 
-            <!-- NON-INHERITED PLUGIN SETTINGS -->
+			<!-- NON-INHERITED PLUGIN SETTINGS -->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 
@@ -984,12 +983,12 @@
 					<artifactId>keytool-maven-plugin</artifactId>
 					<version>${keytool-maven-plugin.version}</version>
 				</plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>jboss-packaging-maven-plugin</artifactId>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>jboss-packaging-maven-plugin</artifactId>
 					<version>${jboss-packaging-maven-plugin.version}</version>
-                    <extensions>true</extensions>
-                </plugin>
+					<extensions>true</extensions>
+				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>jboss-sar-maven-plugin</artifactId>
@@ -1155,7 +1154,7 @@
 		<repository>
 			<id>ibiblio</id>
 			<name>IBibilio Repository</name>
-            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -1277,7 +1276,7 @@
 		<repository>
 			<id>openqa</id>
 			<name>OpenQA Repository</name>
-            <url>http://maven.openqa.org/repository/releases</url>
+			<url>http://maven.openqa.org/repository/releases</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -1420,98 +1419,94 @@
 	<dependencyManagement>
 		<dependencies>
 
-            <!-- OLAS -->
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-container-as</artifactId>
-                <type>pom</type>
+			<!-- OLAS -->
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-container-as</artifactId>
+				<type>pom</type>
 
-                <version>${safe-online.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-container-jsf</artifactId>
-                <type>pom</type>
+				<version>${safe-online.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-container-jsf</artifactId>
+				<type>pom</type>
 
-                <version>${safe-online.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-container-saml</artifactId>
-                <type>pom</type>
+				<version>${safe-online.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-container-saml</artifactId>
+				<type>pom</type>
 
-                <version>${safe-online.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-container-test</artifactId>
-                <type>pom</type>
+				<version>${safe-online.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-container-test</artifactId>
+				<type>pom</type>
 
-                <version>${safe-online.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-device-webapp-base</artifactId>
-                <type>war</type>
+				<version>${safe-online.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-device-webapp-base</artifactId>
+				<type>war</type>
 
-                <version>${safe-online.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-webapp-base</artifactId>
-                <type>war</type>
+				<version>${safe-online.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-webapp-base</artifactId>
+				<type>war</type>
 
-                <version>${safe-online.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-sql-ddl</artifactId>
-                <type>jar</type>
+				<version>${safe-online.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-sql-ddl</artifactId>
+				<type>jar</type>
 
-                <version>${safe-online.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-model</artifactId>
-                <type>ejb-client</type>
+				<version>${safe-online.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-model</artifactId>
+				<type>ejb-client</type>
 
-                <version>${safe-online.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-startup-runtime</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-common</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-jpa-util</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-encap-sdk</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-j2ee-util</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+				<version>${safe-online.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-common</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-jpa-util</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-encap-sdk</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-j2ee-util</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 
-            <!-- JBOSS-AS PROVIDED -->
-                <!-- jaxws-ri/lib -->
-            <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>activation</artifactId>
-                <version>${activation.version}</version>
-            </dependency>
+			<!-- JBOSS-AS PROVIDED -->
+				<!-- jaxws-ri/lib -->
+			<dependency>
+				<groupId>javax.activation</groupId>
+				<artifactId>activation</artifactId>
+				<version>${activation.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.sun.net.httpserver</groupId>
 				<artifactId>http</artifactId>
@@ -1557,16 +1552,16 @@
 				<artifactId>jsr181-api</artifactId>
 				<version>${jsr181-api.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>sun-jaxws</groupId>
-                <artifactId>jsr250-api</artifactId>
+			<dependency>
+				<groupId>sun-jaxws</groupId>
+				<artifactId>jsr250-api</artifactId>
 				<version>${jsr250-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jvnet</groupId>
-                <artifactId>mimepull</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.jvnet</groupId>
+				<artifactId>mimepull</artifactId>
 				<version>${mimepull.version}</version>
-            </dependency>
+			</dependency>
 			<dependency>
 				<groupId>javax.xml.soap</groupId>
 				<artifactId>saaj-api</artifactId>
@@ -1593,350 +1588,350 @@
 				<version>${streambuffer.version}</version>
 			</dependency>
 
-                <!-- jboss/lib -->
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons-codec.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>${commons-httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>${commons-logging.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>concurrent</groupId>
-                <artifactId>concurrent</artifactId>
-                <!-- JBoss packaged version not available in Maven repos -->
-                <version>${concurrent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jmx-client</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-system</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <!-- JBoss packaged version not available in Maven repos -->
-                <version>${log4j.version}</version>
-            </dependency>
-
-                <!-- jboss/lib/endorsed -->
-            <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>${xalan.version}</version>
-
-                <!-- We use org.apache.xerces:xml-apis instead -->
-                <exclusions>
-                    <exclusion>
-                        <artifactId>xml-apis</artifactId>
-                        <groupId>xml-apis</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.xerces</groupId>
-                <artifactId>xercesImpl</artifactId>
-                <version>${xercesImpl.version}</version>
-            </dependency>
-
-                <!-- jboss/server/default/lib -->
-            <dependency>
-                <groupId>javax.activation</groupId>
-                <artifactId>activation</artifactId>
-                <version>${activation.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>antlr</groupId>
-                <artifactId>antlr</artifactId>
-                <!-- JBoss packaged version not available in Maven repos -->
-                <version>${antlr.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>bcel</groupId>
-                <artifactId>bcel</artifactId>
-                <version>${bcel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>bsf</groupId>
-                <artifactId>bsf</artifactId>
-                <version>${bsf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>bsh</groupId>
-                <artifactId>bsh</artifactId>
-                <version>${bsh.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib</artifactId>
-                <!-- JBoss packaged version not available in Maven repos -->
-                <version>${cglib.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>${commons-codec.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>${commons-collections.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>${commons-httpclient.version}</version>
-            </dependency>
+				<!-- jboss/lib -->
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons-codec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-httpclient</groupId>
+				<artifactId>commons-httpclient</artifactId>
+				<version>${commons-httpclient.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
-                <version>${commons-logging.version}</version>
+				<version>${commons-logging.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>dom4j</groupId>
-                <artifactId>dom4j</artifactId>
-                <!-- JBoss packaged version not available in Maven repos -->
-                <version>${dom4j.version}</version>
+			<dependency>
+				<groupId>concurrent</groupId>
+				<artifactId>concurrent</artifactId>
+				<!-- JBoss packaged version not available in Maven repos -->
+				<version>${concurrent.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jmx-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-system</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<!-- JBoss packaged version not available in Maven repos -->
+				<version>${log4j.version}</version>
+			</dependency>
 
-                <!-- We use org.apache.xerces:xml-apis instead -->
-                <exclusions>
-                    <exclusion>
-                        <artifactId>xml-apis</artifactId>
-                        <groupId>xml-apis</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>ejb3-persistence</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>el-api</artifactId>
-                <!-- JBoss packaged version not available in Maven repos -->
-                <version>${el-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hibernate</groupId>
-                <artifactId>hibernate3</artifactId>
-                <version>${hibernate3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>${hibernate-entitymanager.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>${hsqldb.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>jaxen</groupId>
-                <artifactId>jaxen</artifactId>
-                <version>${jaxen.version}</version>
+				<!-- jboss/lib/endorsed -->
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+				<version>${xalan.version}</version>
 
-                <!-- We use org.apache.xerces:xml-apis instead -->
-                <exclusions>
-                    <exclusion>
-                        <artifactId>xml-apis</artifactId>
-                        <groupId>xml-apis</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-ejb3x</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-hibernate</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-j2ee</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-jaxrpc</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-jaxws</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-jca</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-jsr77</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-jsr88</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-management</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-monitoring</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-remoting-int</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-serialization</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-srp</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-vfs</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jbossjta</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jbossjta-integration</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <!-- Disabled in favor of JBoss Messaging -->
-            <!--dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jbossmq</artifactId>
-            </dependency-->
-            <dependency>
-                <groupId>jboss.messaging</groupId>
-                <artifactId>jboss-messaging</artifactId>
-                <version>${jboss-messaging.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jbossts-common</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jbossws-common</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jbossws-framework</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jbossws-jboss42</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jbossws-spi</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>joesnmp</artifactId>
-                <version>${joesnmp.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jpl-pattern</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jpl-util</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>log4j-snmp-appender</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>xmlentitymgr</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-remoting</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-transaction-client</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jbosssx-client</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jmx-client</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
+				<!-- We use org.apache.xerces:xml-apis instead -->
+				<exclusions>
+					<exclusion>
+						<artifactId>xml-apis</artifactId>
+						<groupId>xml-apis</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>${xercesImpl.version}</version>
+			</dependency>
+
+				<!-- jboss/server/default/lib -->
+			<dependency>
+				<groupId>javax.activation</groupId>
+				<artifactId>activation</artifactId>
+				<version>${activation.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>antlr</groupId>
+				<artifactId>antlr</artifactId>
+				<!-- JBoss packaged version not available in Maven repos -->
+				<version>${antlr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>bcel</groupId>
+				<artifactId>bcel</artifactId>
+				<version>${bcel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>bsf</groupId>
+				<artifactId>bsf</artifactId>
+				<version>${bsf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>bsh</groupId>
+				<artifactId>bsh</artifactId>
+				<version>${bsh.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<!-- JBoss packaged version not available in Maven repos -->
+				<version>${cglib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons-codec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>${commons-collections.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-httpclient</groupId>
+				<artifactId>commons-httpclient</artifactId>
+				<version>${commons-httpclient.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>${commons-logging.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<!-- JBoss packaged version not available in Maven repos -->
+				<version>${dom4j.version}</version>
+
+				<!-- We use org.apache.xerces:xml-apis instead -->
+				<exclusions>
+					<exclusion>
+						<artifactId>xml-apis</artifactId>
+						<groupId>xml-apis</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>ejb3-persistence</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.el</groupId>
+				<artifactId>el-api</artifactId>
+				<!-- JBoss packaged version not available in Maven repos -->
+				<version>${el-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>hibernate</groupId>
+				<artifactId>hibernate3</artifactId>
+				<version>${hibernate3.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate-entitymanager.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>${hsqldb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>jaxen</groupId>
+				<artifactId>jaxen</artifactId>
+				<version>${jaxen.version}</version>
+
+				<!-- We use org.apache.xerces:xml-apis instead -->
+				<exclusions>
+					<exclusion>
+						<artifactId>xml-apis</artifactId>
+						<groupId>xml-apis</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-ejb3x</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-hibernate</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-j2ee</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-jaxrpc</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-jaxws</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-jca</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-jsr77</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-jsr88</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-management</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-monitoring</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-remoting-int</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-serialization</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-srp</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-vfs</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbossjta</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbossjta-integration</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<!-- Disabled in favor of JBoss Messaging -->
+			<!--dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbossmq</artifactId>
+			</dependency-->
+			<dependency>
+				<groupId>jboss.messaging</groupId>
+				<artifactId>jboss-messaging</artifactId>
+				<version>${jboss-messaging.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbossts-common</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbossws-common</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbossws-framework</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbossws-jboss42</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbossws-spi</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>joesnmp</artifactId>
+				<version>${joesnmp.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jpl-pattern</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jpl-util</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>log4j-snmp-appender</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>xmlentitymgr</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-remoting</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-transaction-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbosssx-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jmx-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>javassist</groupId>
 				<artifactId>javassist</artifactId>
 				<version>${javassist.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>javax.servlet.jsp</groupId>
-                <artifactId>jsp-api</artifactId>
-                <!-- JBoss packaged version not available in Maven repos -->
-                <version>${jsp-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <!-- JBoss packaged version not available in Maven repos -->
-                <version>${servlet-api.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>javax.servlet.jsp</groupId>
+				<artifactId>jsp-api</artifactId>
+				<!-- JBoss packaged version not available in Maven repos -->
+				<version>${jsp-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<!-- JBoss packaged version not available in Maven repos -->
+				<version>${servlet-api.version}</version>
+			</dependency>
 
-            <!-- External -->
+			<!-- External -->
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -1958,44 +1953,44 @@
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
+				<version>${log4j.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging-api</artifactId>
-                <version>${commons-logging-api.version}</version>
+				<version>${commons-logging-api.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j-log4j12.version}</version>
+				<version>${slf4j-log4j12.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>${xalan.version}</version>
+				<artifactId>xalan</artifactId>
+				<version>${xalan.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
-                <version>${commons-httpclient.version}</version>
+				<version>${commons-httpclient.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-common-client</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>tomcat</groupId>
-                <artifactId>catalina</artifactId>
-                <version>${catalina.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>tomcat</groupId>
-                <artifactId>tomcat</artifactId>
-                <version>${tomcat.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>tomcat</groupId>
+				<artifactId>catalina</artifactId>
+				<version>${catalina.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>tomcat</groupId>
+				<artifactId>tomcat</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>net.java.dev</groupId>
 				<artifactId>jaxws-ri</artifactId>
@@ -2403,12 +2398,12 @@
 				<groupId>axis</groupId>
 				<artifactId>axis</artifactId>
 				<version>${axis.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>axis</groupId>
@@ -2430,31 +2425,31 @@
 				<artifactId>jmimemagic</artifactId>
 				<version>${jmimemagic.version}</version>
 
-                <!-- We use org.apache.xerces:{xercesImpl,xml-apis} instead -->
-                <exclusions>
-                    <exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xercesImpl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xml-apis</groupId>
-                        <artifactId>xml-apis</artifactId>
-                    </exclusion>
-                </exclusions>
+				<!-- We use org.apache.xerces:{xercesImpl,xml-apis} instead -->
+				<exclusions>
+					<exclusion>
+						<groupId>xerces</groupId>
+						<artifactId>xercesImpl</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>xml-apis</groupId>
+						<artifactId>xml-apis</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
-            <dependency>
+			<dependency>
 				<groupId>commons-modeler</groupId>
 				<artifactId>commons-modeler</artifactId>
 				<version>${commons-modeler.version}</version>
 
-                <!-- We use org.apache.xerces:xml-apis instead -->
-                <exclusions>
-                    <exclusion>
-                        <artifactId>xml-apis</artifactId>
-                        <groupId>xml-apis</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+				<!-- We use org.apache.xerces:xml-apis instead -->
+				<exclusions>
+					<exclusion>
+						<artifactId>xml-apis</artifactId>
+						<groupId>xml-apis</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 			<dependency>
 				<groupId>org.rxtx</groupId>
 				<artifactId>rxtx</artifactId>
@@ -2492,7 +2487,9 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
 	<prerequisites>
 		<maven>2.0.8</maven>
 	</prerequisites>
+
 </project>

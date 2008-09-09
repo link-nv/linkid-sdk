@@ -28,12 +28,6 @@
 				<configuration>
                     <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
                     <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-                    <!--archive>
-                      <manifest>
-                        <addClasspath>true</addClasspath>
-                        <classpathPrefix>lib/</classpathPrefix>
-                      </manifest>
-                    </archive-->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -80,6 +74,13 @@
 		</dependency>
 
         <!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-payment-service</artifactId>
+			<version>${safe-online.version}</version>
+            <scope>runtime</scope>
+            <type>sar</type>
+		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
