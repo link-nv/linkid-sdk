@@ -72,16 +72,13 @@
             <type>pom</type>
         </dependency>
 
-        <!-- Specific Dependencies: OLAS: Backing Beans -->
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-cinema</artifactId>
 			<version>${safe-online.version}</version>
-            <scope>runtime</scope>
             <type>ejb</type>
 		</dependency>
-
-        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>

@@ -149,7 +149,6 @@
 
 				<module>safe-online-demo-applet</module>
 				<module>safe-online-demo-webapp</module>
-				<module>safe-online-demo-service</module>
 				<module>safe-online-demo-startup-runtime</module>
 				<module>safe-online-demo-keystore</module>
 				<module>safe-online-demo-remote-service</module>
