@@ -38,6 +38,10 @@
 
         <!-- Specific Dependencies: External -->
         <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-ejb3x</artifactId>
             <version>${jboss.version}</version>
@@ -129,6 +133,11 @@
 			<artifactId>commons-httpclient</artifactId>
             <scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>test</scope>
+        </dependency>
 
 	</dependencies>
 

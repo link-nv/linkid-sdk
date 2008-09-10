@@ -100,6 +100,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-keystore</artifactId>
 			<version>${safe-online.version}</version>
+            <scope>provided</scope>
 		</dependency>
 
 	</dependencies>

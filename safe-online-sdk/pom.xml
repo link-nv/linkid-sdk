@@ -127,6 +127,11 @@
 			<artifactId>safe-online-container-test</artifactId>
             <type>pom</type>
 		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>jtidy</artifactId>
+            <scope>test</scope>
+        </dependency>
 
 	</dependencies>
 

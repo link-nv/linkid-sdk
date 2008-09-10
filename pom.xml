@@ -610,7 +610,9 @@
 		<xmlsec.version>1.4.1</xmlsec.version>
 		<commons-codec.version>1.3</commons-codec.version>
 		<cargo-maven2-plugin.version>0.3.1</cargo-maven2-plugin.version>
-		<xalan.version>2.7.0</xalan.version>
+		<xom.version>1.1</xom.version>
+		<serializer.version>2.7.1</serializer.version>
+		<xalan.version>2.7.1</xalan.version>
 		<antlr.version>2.7.7</antlr.version>
 		<!-- ajax4jsf requires commons-collections 3.1, not 3.2 -->
 		<commons-collections.version>3.1</commons-collections.version>
@@ -1693,17 +1695,9 @@
 
 				<!-- jboss/lib/endorsed -->
 			<dependency>
-				<groupId>xalan</groupId>
+				<groupId>org.apache.xalan</groupId>
 				<artifactId>xalan</artifactId>
-				<version>${xalan.version}</version>
-
-				<!-- We use org.apache.xerces:xml-apis instead -->
-				<exclusions>
-					<exclusion>
-						<artifactId>xml-apis</artifactId>
-						<groupId>xml-apis</groupId>
-					</exclusion>
-				</exclusions>
+                <version>${xalan.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.xerces</groupId>
@@ -1770,11 +1764,11 @@
 				<!-- JBoss packaged version not available in Maven repos -->
 				<version>${dom4j.version}</version>
 
-				<!-- We use org.apache.xerces:xml-apis instead -->
+				<!-- We use org.apache.* instead -->
 				<exclusions>
 					<exclusion>
-						<artifactId>xml-apis</artifactId>
 						<groupId>xml-apis</groupId>
+						<artifactId>xml-apis</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -1809,11 +1803,15 @@
 				<artifactId>jaxen</artifactId>
 				<version>${jaxen.version}</version>
 
-				<!-- We use org.apache.xerces:xml-apis instead -->
+				<!-- We use org.apache.* instead -->
 				<exclusions>
 					<exclusion>
-						<artifactId>xml-apis</artifactId>
+						<groupId>xerces</groupId>
+						<artifactId>xercesImpl</artifactId>
+					</exclusion>
+					<exclusion>
 						<groupId>xml-apis</groupId>
+						<artifactId>xml-apis</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -1995,30 +1993,49 @@
 				<version>${servlet-api.version}</version>
 			</dependency>
 
+            <!-- Disable these dependencies: They cause conflicts -->
+            <!-- We use org.apache.* instead -->
+			<dependency>
+				<groupId>xml-apis</groupId>
+				<artifactId>xml-apis</artifactId>
+                <version>-1</version>
+			</dependency>
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+                <version>-1</version>
+			</dependency>
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+                <version>-1</version>
+			</dependency>
+
 			<!-- External -->
+			<dependency>
+				<groupId>org.apache.xalan</groupId>
+				<artifactId>serializer</artifactId>
+                <version>${serializer.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
 				<version>${easymock.version}</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymockclassextension</artifactId>
 				<version>${easymockclassextension.version}</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>${log4j.version}</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
@@ -2029,11 +2046,6 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
 				<version>${slf4j-log4j12.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>xalan</groupId>
-				<artifactId>xalan</artifactId>
-				<version>${xalan.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-httpclient</groupId>
@@ -2065,13 +2077,11 @@
 				<groupId>net.sourceforge</groupId>
 				<artifactId>shiftone-oocjndi</artifactId>
 				<version>${shiftone-oocjndi.version}</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>net.sourceforge</groupId>
 				<artifactId>shiftone-arbor</artifactId>
 				<version>${shiftone-arbor.version}</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
@@ -2217,6 +2227,14 @@
 				<groupId>commons-digester</groupId>
 				<artifactId>commons-digester</artifactId>
 				<version>${commons-digester.version}</version>
+
+				<!-- We use org.apache.* instead -->
+				<exclusions>
+					<exclusion>
+						<groupId>xml-apis</groupId>
+						<artifactId>xml-apis</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-beanutils</groupId>
@@ -2242,7 +2260,16 @@
 				<groupId>junit-addons</groupId>
 				<artifactId>junit-addons</artifactId>
 				<version>${junit-addons.version}</version>
-				<scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>xerces</groupId>
+                        <artifactId>xercesImpl</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>xerces</groupId>
+                        <artifactId>xmlParserAPIs</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>joda-time</groupId>
@@ -2258,7 +2285,6 @@
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-servlet-tester</artifactId>
 				<version>${jetty-servlet-tester.version}</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
@@ -2489,11 +2515,24 @@
 				<version>${jgoodies-looks.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>xom</groupId>
+				<artifactId>xom</artifactId>
+                <version>${xom.version}</version>
+
+				<!-- We use org.apache.* instead -->
+				<exclusions>
+					<exclusion>
+						<groupId>xalan</groupId>
+						<artifactId>xalan</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
 				<groupId>jmimemagic</groupId>
 				<artifactId>jmimemagic</artifactId>
 				<version>${jmimemagic.version}</version>
 
-				<!-- We use org.apache.xerces:{xercesImpl,xml-apis} instead -->
+				<!-- We use org.apache.* instead -->
 				<exclusions>
 					<exclusion>
 						<groupId>xerces</groupId>
@@ -2510,11 +2549,11 @@
 				<artifactId>commons-modeler</artifactId>
 				<version>${commons-modeler.version}</version>
 
-				<!-- We use org.apache.xerces:xml-apis instead -->
+				<!-- We use org.apache.* instead -->
 				<exclusions>
 					<exclusion>
-						<artifactId>xml-apis</artifactId>
 						<groupId>xml-apis</groupId>
+						<artifactId>xml-apis</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
