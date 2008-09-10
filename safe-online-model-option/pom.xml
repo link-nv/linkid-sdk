@@ -7,8 +7,8 @@
 		<artifactId>safe-online</artifactId>
 		<version>1.2-SNAPSHOT</version>
 	</parent>
-	<name>SafeOnline Model Encap</name>
-	<description> The SafeOnline Model Encap. </description>
+	<name>SafeOnline Model Option</name>
+	<description> The SafeOnline Model Option. </description>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-model-option</artifactId>
 	<version>1.2-SNAPSHOT</version>

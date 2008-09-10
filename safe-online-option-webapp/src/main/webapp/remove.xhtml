@@ -17,17 +17,14 @@
 			<param name="ServletPath" value="identityremove" />
 			<param name="TargetPath" value="deviceexit" />
 			<param name="HelpdeskEventPath" value="helpdesk" />
-			<param name="HelpPath"
-				value="./help.seam?location=remove.seam" />
+			<param name="HelpPath" value="./help.seam?location=remove.seam" />
 			<param name="SessionId"
 				value="#{facesContext.externalContext.request.session.id}" />
-			<param name="User" value="#{userId}" />
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
 
 		<form id="cancelForm" method="post" action="deviceexit"><input
-			id="cancel" type="submit" value="#{msgs.cancelaction}"
-			class="submit" /></form>
+			id="cancel" type="submit" value="#{msgs.cancelaction}" class="submit" /></form>
 
 	</ui:define>
 	<ui:define name="sidebar">

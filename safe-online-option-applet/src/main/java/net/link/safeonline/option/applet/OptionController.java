@@ -9,6 +9,7 @@ package net.link.safeonline.option.applet;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Locale;
@@ -131,7 +132,7 @@ public class OptionController implements AppletController {
 		}
 
 		if (SharedConstants.PERMISSION_DENIED_ERROR.equals(result
-				.getResponseCode())) {
+				.getMessage())) {
 			this.appletView
 					.outputDetailMessage("PERMISSION DENIED. YOUR DATACARD MIGHT BE IN USE BY ANOTHER USER");
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
@@ -139,13 +140,13 @@ public class OptionController implements AppletController {
 			return;
 		}
 		if (SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR.equals(result
-				.getResponseCode())) {
+				.getMessage())) {
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString(KEY.NOT_SUBSCRIBED));
 			return;
 		}
 		if (SharedConstants.SUBJECT_NOT_FOUND_ERROR.equals(result
-				.getResponseCode())) {
+				.getMessage())) {
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString(KEY.DATACARD_NOT_REGISTERED));
 			this.appletView.outputDetailMessage(this.messages
@@ -157,13 +158,14 @@ public class OptionController implements AppletController {
 
 		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
 				.getString(KEY.DONE));
+
+		showDocument("TargetPath");
 	}
 
 	private PostResult postData(String IMEI, String pin) throws IOException {
 
 		URL documentBase = this.runtimeContext.getDocumentBase();
 		String servletPath = this.runtimeContext.getParameter("ServletPath");
-		String userId = this.runtimeContext.getParameter("User");
 		URL url = AppletControl.transformUrl(documentBase, servletPath);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -171,8 +173,7 @@ public class OptionController implements AppletController {
 		connection.setRequestProperty("Content-Type",
 				"application/x-www-form-urlencoded");
 		String content = "imei=" + URLEncoder.encode(IMEI, "UTF-8") + "&pin="
-				+ URLEncoder.encode(pin, "UTF-8") + "&user="
-				+ URLEncoder.encode(userId, "UTF-8");
+				+ URLEncoder.encode(pin, "UTF-8");
 		connection.setRequestProperty("Content-length", Integer
 				.toString(content.getBytes().length));
 		connection.setDoOutput(true);
@@ -185,6 +186,45 @@ public class OptionController implements AppletController {
 		output.flush();
 		output.close();
 		return new PostResult(connection);
+	}
+
+	private void showDocument(String runtimeParameter) {
+
+		URL documentBase = this.runtimeContext.getDocumentBase();
+		String path = this.runtimeContext.getParameter(runtimeParameter);
+		if (null == path) {
+			this.appletView.outputDetailMessage("runtime parameter not set: "
+					+ runtimeParameter);
+			return;
+		}
+
+		path += "?cacheid=" + Math.random() * 1000000;
+		this.appletView.outputDetailMessage("redirecting to: " + path);
+
+		URL url = transformUrl(documentBase, path);
+		this.runtimeContext.showDocument(url);
+	}
+
+	public static URL transformUrl(URL documentBase, String targetPath) {
+
+		if (targetPath.startsWith("http://")
+				|| targetPath.startsWith("https://")) {
+			try {
+				return new URL(targetPath);
+			} catch (MalformedURLException e) {
+				throw new RuntimeException("URL error: " + e.getMessage());
+			}
+		}
+
+		String documentBaseStr = documentBase.toString();
+		int idx = documentBaseStr.lastIndexOf("/");
+		String identityUrlStr = documentBaseStr.substring(0, idx + 1)
+				+ targetPath;
+		try {
+			return new URL(identityUrlStr);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("URL error: " + e.getMessage());
+		}
 	}
 
 	private class PostResult {

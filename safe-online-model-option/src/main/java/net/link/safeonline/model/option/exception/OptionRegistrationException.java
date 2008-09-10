@@ -9,7 +9,7 @@ package net.link.safeonline.model.option.exception;
 import javax.ejb.ApplicationException;
 
 import net.link.safeonline.authentication.exception.SafeOnlineException;
-
+import net.link.safeonline.shared.SharedConstants;
 
 /**
  * <h2>{@link OptionRegistrationException}<br>
@@ -28,5 +28,9 @@ import net.link.safeonline.authentication.exception.SafeOnlineException;
 @ApplicationException(rollback = true)
 public class OptionRegistrationException extends SafeOnlineException {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+
+	public OptionRegistrationException() {
+		super(null, SharedConstants.PERMISSION_DENIED_ERROR);
+	}
 }
