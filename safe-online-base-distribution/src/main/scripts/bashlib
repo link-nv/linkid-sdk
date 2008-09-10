@@ -179,7 +179,8 @@ emit() {
             G) textcolor=$green     ;;
             Y) textcolor=$yellow    ;;
             R) textcolor=$red       ;;
-            n) noeol=1              ;;
+            n) noeol=1
+               spinArgs+=(-n)       ;;
             o) spinArgs+=("-$arg")  ;;
         esac
     done
@@ -196,10 +197,10 @@ emit() {
     [[ $color = $textcolor && -z $style ]] && style=$bold
 
     # Get the text message.
-    local text=
-    for arg; do [[ $arg = -- ]] && break; text+="$arg "; done
-    text=${text%% }
-    (( noeol )) || text=$(eol "$text")$'\n'
+    local text= origtext=
+    for arg; do [[ $arg = -- ]] && break; origtext+="$arg "; done
+    origtext=${origtext%% }
+    (( noeol )) && text=$origtext || text=$(eol "$origtext")$'\n'
 
     
     # Trim off everything up to --
@@ -216,7 +217,7 @@ emit() {
 
         # Create the spinner in the background.
         spinPipe=$(mktemp -uq).$$ && mkfifo "$spinPipe" || unset spinPipe
-        { spinner "${spinArgs[@]}" "$text" -- "$style" "$color" "$textstyle" "$textcolor" < "${spinPipe:-/dev/null}" & } 2>/dev/null
+        { spinner "${spinArgs[@]}" "$origtext" -- "$style" "$color" "$textstyle" "$textcolor" < "${spinPipe:-/dev/null}" & } 2>/dev/null
         [[ $spinPipe ]] && echo > "$spinPipe"
         spinPid=$!
 
@@ -280,7 +281,8 @@ spinner() {
     local color=$green
     local textstyle=
     local textcolor=
-    local output=0
+    local output=
+    local noeol=
     unset spinPid
 
     # Any remaining options are the exit status of an existing spinner or spinner type.
@@ -299,6 +301,7 @@ spinner() {
                 r) graphics=( "${runner[@]}" )  ;;
                 s) graphics=( "${spinner[@]}" ) ;;
                 o) output=1                     ;;
+                n) noeol=1                      ;;
             esac
         elif [[ $pid ]]; then
             [[ $arg = 0 ]] \
@@ -313,9 +316,9 @@ spinner() {
     done
  
     # Read arguments.
-    local text=
-    for arg; do [[ $arg = -- ]] && break; text+="$arg "; done
-    text=${text%% }; text=${text%$'\n'}; text=${text%% }
+    local text= origtext=
+    for arg; do [[ $arg = -- ]] && break; origtext+="$arg "; done
+    origtext=${origtext% }
     local styles=$*; [[ $styles = *' -- '* ]] || styles=
     read -a styles <<< "${styles##* -- }"
     [[ ${styles[0]} ]] && style=${styles[0]}
@@ -337,7 +340,8 @@ spinner() {
 
     # Make reset codes restore the initial font.
     local font=$reset$textstyle$textcolor
-    text=$font${text//$reset/$font}
+    origtext=$font${origtext//$reset/$font}
+    (( noeol )) && text=$origtext || text=$(eol "$origtext")
 
     # Spinner initial status.
     printf "\r$save$eel$reset $style$color* %s$reset" "$text"       >&$fd
@@ -348,9 +352,14 @@ spinner() {
     local i=0
     while true; do
         IFS= read -r -d '' newtext
-        newtext=${newtext%%$'\n'}
-        [[ $newtext ]] \
-            && text=$(eol "$font${newtext//$reset/$font}")
+        newtext=${newtext%%$'\n'}; newtext=${newtext##*$'\n'}
+        if [[ $newtext = +* ]]; then
+            newtext="$origtext [${newtext#+}]"
+        fi
+        if [[ $newtext ]]; then
+            newtext="$font${newtext//$reset/$font}"
+            (( noeol )) && text=$newtext || text=$(eol "$newtext")
+        fi
 
         if (( output ))
         then printf "\r"                                            >&$fd
@@ -443,7 +452,6 @@ report() {
 
     # Pass on exit code.
     return $code
-
 } # _____________________________________________________________________
 
 

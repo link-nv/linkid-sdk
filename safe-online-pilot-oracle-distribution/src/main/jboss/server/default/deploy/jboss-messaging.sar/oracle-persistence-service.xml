@@ -236,7 +236,7 @@ LOAD_BINDINGS=SELECT QUEUE_NAME, COND, SELECTOR, CHANNEL_ID, CLUSTERED, ALL_NODE
                 <pbcast.FLUSH down_thread="false" up_thread="false" timeout="20000" auto_flush_conf="false"/>
             </config>
          </attribute>   
-      --!>
+      -->
    </mbean>
    
    <!-- Messaging JMS User Manager MBean config

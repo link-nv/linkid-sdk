@@ -7,56 +7,77 @@
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
 		<version>1.2-SNAPSHOT</version>
-	</parent>
+    </parent>
 
-	<name>SafeOnline Web Application Base</name>
+    <name>SafeOnline Web Application Base</name>
     <description>
-        Provides the base for SafeOnline web applications. 
-	</description>
+        Provides the base for SafeOnline web applications.
+    </description>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-webapp-base</artifactId>
 	<version>1.2-SNAPSHOT</version>
 	<packaging>war</packaging>
-
-	<build>
+    
+    <build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<webResources>
-						<resource>
-							<directory> ${basedir}/src/main/webapp/WEB-INF </directory>
-							<targetPath>WEB-INF</targetPath>
-							<filtering>true</filtering>
-						</resource>
-					</webResources>
+                    <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
+    
 	<dependencies>
 
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
-			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-jsf</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
 			<type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-common</artifactId>
 			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
-			<type>jar</type>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -64,109 +85,35 @@
 			<artifactId>safe-online-webapp-common</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-digester</groupId>
-			<artifactId>commons-digester</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<!-- tomcat5 -->
-			<groupId>commons-el</groupId>
-			<artifactId>commons-el</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>xml-apis</groupId>
-			<artifactId>xml-apis</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.faces</groupId>
-			<artifactId>jsf-impl</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.faces</groupId>
-			<artifactId>jsf-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+
+        <!-- Specific Dependencies: External -->
 		<dependency>
 			<groupId>jmimemagic</groupId>
 			<artifactId>jmimemagic</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jfreechart</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jcommon</artifactId>
-			<scope>provided</scope>
 		</dependency>
+        <dependency>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+        </dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymockclassextension</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-test-util</artifactId>
-			<version>1.2-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
-		</dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 
 	</dependencies>
 

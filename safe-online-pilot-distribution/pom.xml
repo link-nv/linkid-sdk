@@ -164,35 +164,36 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-base-distribution</artifactId>
-			<type>zip</type>
 			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-deploy</artifactId>
-			<type>ear</type>
 			<version>1.2-SNAPSHOT</version>
+			<type>ear</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-root-webapp</artifactId>
-			<type>war</type>
 			<version>1.2-SNAPSHOT</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-install-manual</artifactId>
-			<type>zip</type>
 			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-maintenance-manual</artifactId>
-			<type>zip</type>
 			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 
 	</dependencies>

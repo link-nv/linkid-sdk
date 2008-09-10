@@ -42,36 +42,14 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
-			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>
-				safe-online-performance-console-base
-			</artifactId>
+			<artifactId>safe-online-performance-console-base</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<exclusions>
-				<!-- http://jira.codehaus.org/browse/MNG-2686 -->
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
-            <scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
+
+        <!-- Specific Dependencies: External -->
 		<dependency>
 			<groupId>com.jgoodies</groupId>
 			<artifactId>forms</artifactId>
@@ -83,10 +61,6 @@
         <dependency>
             <groupId>com.lowagie</groupId>
             <artifactId>itext</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jbossall-client</artifactId>
         </dependency>
 
 	</dependencies>

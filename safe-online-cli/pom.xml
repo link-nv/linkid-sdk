@@ -39,17 +39,6 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-sql-ddl</artifactId>
-			<version>1.2-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-
-	</dependencies>
-
 	<reporting>
 		<plugins>
 			<plugin>

@@ -52,6 +52,10 @@
 									catalog="${basedir}/src/main/jaxb/catalog.xml">
 									<schema dir="${basedir}/src/main/resources" includes="liberty-idwsf-soap-binding-v2.0.xsd" />
 									<arg value="-debug" />
+									<produces
+										dir="${project.build.directory}/generated-sources/xjc">
+                                        <include name="**/*.java" />
+									</produces>
 								</xjc>
 								<mkdir dir="${project.build.directory}/generated-classes/jaxws" />
 								<wsimport debug="true" fork="true"
@@ -77,28 +81,26 @@
 
 	<dependencies>
 
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ws-common</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
+
+        <!-- Specific Dependencies: External -->
 		<dependency>
 			<groupId>com.sun.xml.ws</groupId>
 			<artifactId>jaxws-tools</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 
 	</dependencies>
 

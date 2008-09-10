@@ -4,6 +4,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+    <!--properties> FIXME: This unit test hangs on OSX.
+        <maven.test.skip>true</maven.test.skip>
+    </properties-->
+
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
@@ -24,13 +28,14 @@
 
 	<dependencies>
 
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
-			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-idmapping-ws</artifactId>
@@ -40,7 +45,6 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
 			<type>ejb-client</type>
-			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -103,6 +107,13 @@
 			<version>1.2-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 
 	</dependencies>
 

@@ -34,6 +34,7 @@ import net.link.safeonline.performance.service.bean.AbstractProfilingServiceBean
 import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 import net.link.safeonline.performance.service.bean.ProfileDataServiceBean;
+import net.link.safeonline.performance.service.bean.ScenarioTimingServiceBean;
 import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;
@@ -49,80 +50,91 @@ import org.junit.Test;
  */
 public class PerformanceDriverTest {
 
-    static final Log               LOG                 = LogFactory.getLog(PerformanceDriverTest.class);
+	static final Log LOG = LogFactory.getLog(PerformanceDriverTest.class);
 
-    private static final String    OLAS_HOSTNAME       = "sebeco-dev-10";
-    // private static final String OLAS_HOSTNAME = "localhost";
-    private static final String    OLAS_PORT           = "8080";
-    private static final boolean   OLAS_SSL            = false;
+	private static final String OLAS_HOSTNAME = "sebeco-dev-10";
+	// private static final String OLAS_HOSTNAME = "localhost";
+	private static final String OLAS_PORT = "8080";
+	private static final boolean OLAS_SSL = false;
 
-    private static final String    testApplicationName = "performance-application";
-    private static final String    testUsername        = "performance";
-    private static final String    testPassword        = "performance";
+	private static final String testApplicationName = "performance-application";
+	private static final String testUsername = "performance";
+	private static final String testPassword = "performance";
 
-    private static PrivateKeyEntry testApplicationKey;
+	private static PrivateKeyEntry testApplicationKey;
 
-    static {
+	static {
 
-        Hashtable<String, String> environment = new Hashtable<String, String>();
-        environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-        environment.put(Context.PROVIDER_URL, "jnp://" + OLAS_HOSTNAME + ":1099");
-        try {
-            PerformanceService service = (PerformanceService) new InitialContext(environment)
-                    .lookup(PerformanceService.BINDING);
-            testApplicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service
-                    .getCertificate() });
-        } catch (Exception e) {
-            LOG.error("application keys unavailable; will try local keystore.", e);
-            testApplicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
-        }
-    }
+		Hashtable<String, String> environment = new Hashtable<String, String>();
+		environment.put(Context.INITIAL_CONTEXT_FACTORY,
+				"org.jnp.interfaces.NamingContextFactory");
+		environment.put(Context.PROVIDER_URL, "jnp://" + OLAS_HOSTNAME
+				+ ":1099");
+		try {
+			PerformanceService service = (PerformanceService) new InitialContext(
+					environment).lookup(PerformanceService.BINDING);
+			testApplicationKey = new KeyStore.PrivateKeyEntry(service
+					.getPrivateKey(), new Certificate[] { service
+					.getCertificate() });
+		} catch (Exception e) {
+			LOG.error("application keys unavailable; will try local keystore.",
+					e);
+			testApplicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+		}
+	}
 
-    private AttribDriver           attribDriver;
-    private AuthDriver             authDriver;
-    private IdMappingDriver        idDriver;
+	private AttribDriver attribDriver;
+	private AuthDriver authDriver;
+	private IdMappingDriver idDriver;
 
-    private EntityTestManager      entityTestManager;
+	private EntityTestManager entityTestManager;
 
-    private ExecutionService       executionService;
-    private ProfileDataService     profileDataService;
-    private DriverExceptionService driverExceptionService;
+	private ExecutionService executionService;
+	private ProfileDataService profileDataService;
+	private ScenarioTimingServiceBean scenarioTimingService;
+	private DriverExceptionService driverExceptionService;
 
+	@Before
+	public void setUp() {
 
-    @Before
-    public void setUp() {
+		this.entityTestManager = new EntityTestManager();
 
-        this.entityTestManager = new EntityTestManager();
+		try {
+			this.entityTestManager.setUp(DriverExceptionEntity.class,
+					DriverProfileEntity.class, ExecutionEntity.class,
+					MeasurementEntity.class, ProfileDataEntity.class,
+					ScenarioTimingEntity.class);
 
-        try {
-            this.entityTestManager.setUp(DriverExceptionEntity.class, DriverProfileEntity.class, ExecutionEntity.class,
-                    MeasurementEntity.class, ProfileDataEntity.class, ScenarioTimingEntity.class);
+			AbstractProfilingServiceBean
+                    .setDefaultEntityManager(this.entityTestManager
+					.getEntityManager());
 
-            AbstractProfilingServiceBean.setDefaultEntityManager(this.entityTestManager.getEntityManager());
+			this.executionService = new ExecutionServiceBean();
+			this.profileDataService = new ProfileDataServiceBean();
+			this.scenarioTimingService = new ScenarioTimingServiceBean();
+			this.driverExceptionService = new DriverExceptionServiceBean();
 
-            this.executionService = new ExecutionServiceBean();
-            this.profileDataService = new ProfileDataServiceBean();
-            this.driverExceptionService = new DriverExceptionServiceBean();
+			ExecutionEntity execution = this.executionService.addExecution(
+					getClass().getName(), 1, 1, new Date(), 1l, OLAS_HOSTNAME
+							+ ":" + OLAS_PORT, OLAS_SSL);
+			ScenarioTimingEntity agentTime = this.executionService.start(execution);
 
-            ExecutionEntity execution = this.executionService.addExecution(getClass().getName(), 1, 1, new Date(), 1l,
-                    OLAS_HOSTNAME + ":" + OLAS_PORT, OLAS_SSL);
-            ScenarioTimingEntity agentTime = this.executionService.start(execution);
+			this.idDriver = new IdMappingDriver(execution, agentTime);
+			this.attribDriver = new AttribDriver(execution, agentTime);
+			this.authDriver = new AuthDriver(execution, agentTime);
+		}
 
-            this.idDriver = new IdMappingDriver(execution, agentTime);
-            this.attribDriver = new AttribDriver(execution, agentTime);
-            this.authDriver = new AuthDriver(execution, agentTime);
-        }
+		catch (Exception e) {
+			LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
+			throw new RuntimeException("JPA annotations incorrect: "
+					+ e.getMessage(), e);
+		}
+	}
 
-        catch (Exception e) {
-            LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
-            throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
-        }
-    }
+	@After
+	public void tearDown() throws Exception {
 
-    @After
-    public void tearDown() throws Exception {
-
-        if (this.entityTestManager.getEntityManager() != null) {
+		if (this.entityTestManager.getEntityManager() != null) {
             this.entityTestManager.tearDown();
         }
     }
@@ -210,10 +222,12 @@ public class PerformanceDriverTest {
                         .getMessage());
             }
 
-        assertTrue("Errors detected.  See stderr.", isEmptyOrOnlyNulls(errors));
-        assertFalse("No profiling data gathered.", isEmptyOrOnlyNulls(this.profileDataService
-                .getProfileData(profile, 1)));
-    }
+		assertTrue("Errors detected.  See stderr.", isEmptyOrOnlyNulls(errors));
+		assertFalse("No profiling data gathered.",
+				isEmptyOrOnlyNulls(this.profileDataService.getProfileData(
+						profile, this.scenarioTimingService
+                                .getExecutionTimings(profile.getExecution(), 1))));
+	}
 
     private static boolean isEmptyOrOnlyNulls(Collection<?> profileDataOrErrors) {
 

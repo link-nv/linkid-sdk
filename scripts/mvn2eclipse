@@ -27,18 +27,20 @@ cd "${0%/*}/.."
 
 
 # Setup and parse arguments.
-noMaven=0
+noMaven=
+offline=
 nonGnuSed=$(sed -i '' /dev/null >/dev/null 2>&1; [[ $? != 4 ]] && echo 1)
-for arg in $(getArgs M "$@"); do
+for arg in $(getArgs oM "$@"); do
     case $arg in
         M) noMaven=1    ;;
+        o) offline=1    ;;
     esac
 done
 
 
 # Run the maven2 eclipse plugin.
 if (( ! noMaven )); then
-    mvn eclipse:eclipse \
+    mvn ${offline:+-o} eclipse:eclipse \
         || report "Maven eclipse plugin failed." || exit
 fi
 
@@ -46,8 +48,13 @@ fi
 # Convert any JAR references of projects into source references.
 p=${PWD##*/}
 emit "Converting JAR dependencies on safe-online projects to source dependencies" --
+
+    echo +"ejb-clients" > "$spinPipe"
     sed -i ${nonGnuSed:+''} '/-client/ ! { /M2_REPO.*\/'"$p"'\// { s,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; } }' */.classpath
+
     for pp in */.classpath; do
+        echo +"${pp%/*}" > "$spinPipe"
+
         IFS=$'\n' srcs=($(grep -F 'kind="src"' "$pp" | cut -d'"' -f4)); unset IFS
         while read -r; do
             line=$REPLY
@@ -65,16 +72,16 @@ emit "Converting JAR dependencies on safe-online projects to source dependencies
         done <<< "$(<"$pp")" > "$pp~"
         mv -f "$pp~" "$pp"
     done
+
 emit -$?
 
 
 # Setup project-specific configurations such as Formatter, Clean-up, Compiler Errors and Warnings, etc.
-emit -o "Setting up project-specific configurations" --
-    echo -n "$save"
+emit "Setting up project-specific configurations" --
 
     result=0
     for p in */.settings; do
-        echo -n "$load${p%/*} ..$eel"
+        echo +"${p%/*}" > "$spinPipe"
 
         cp scripts/org.eclipse.jdt.* "$p" \
             || { result=$?; break; }
@@ -87,5 +94,4 @@ emit -o "Setting up project-specific configurations" --
         }
     done
 
-    echo
 emit -$result

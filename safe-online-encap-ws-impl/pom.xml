@@ -23,23 +23,26 @@
 
 	<dependencies>
 
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-ws</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging-api</artifactId>
-		</dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 
 	</dependencies>
 

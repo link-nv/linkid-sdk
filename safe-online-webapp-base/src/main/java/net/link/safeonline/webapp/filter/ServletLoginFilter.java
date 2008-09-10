@@ -17,7 +17,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -66,7 +65,7 @@ public class ServletLoginFilter implements Filter {
         }
 
         // TODO: cache roles in http request context
-        Set<String> roles = this.authorizationService.getRoles(username);
+        Set<String> roles = getAuthorizationService().getRoles(username);
 
         Principal userPrincipal = new SimplePrincipal(username);
         LoginHttpServletRequestWrapper loginHttpServletRequestWrapper = new LoginHttpServletRequestWrapper(
@@ -75,14 +74,25 @@ public class ServletLoginFilter implements Filter {
         chain.doFilter(loginHttpServletRequestWrapper, response);
     }
 
-    public void init(@SuppressWarnings("unused") FilterConfig config) throws ServletException {
+    public AuthorizationService getAuthorizationService() {
 
-        LOG.debug("init");
+        if (this.authorizationService != null)
+            return this.authorizationService;
+
+        LOG.debug("init authorizationService");
         try {
-            this.authorizationService = EjbUtils.getEJB("SafeOnline/AuthorizationServiceBean/local",
+            return this.authorizationService = EjbUtils.getEJB("SafeOnline/AuthorizationServiceBean/local",
                     AuthorizationService.class);
         } catch (RuntimeException e) {
-            throw new UnavailableException("authorization service lookup failure");
+            LOG.error("authorization service lookup failure", e);
+            throw e;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void init(FilterConfig filterConfig) throws ServletException {
+
     }
 }

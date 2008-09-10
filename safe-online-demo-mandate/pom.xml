@@ -50,32 +50,19 @@
 
 	<dependencies>
 
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
-			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-jsf</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-keystore</artifactId>
@@ -89,30 +76,22 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-demo</artifactId>
-			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-test-util</artifactId>
-			<version>1.2-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
+
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+            <version>${jboss.version}</version>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 
 	</dependencies>
 

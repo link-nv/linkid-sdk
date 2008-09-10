@@ -15,9 +15,10 @@
  */
 package net.link.safeonline.performance.service.bean;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
@@ -29,28 +30,58 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ScenarioTimingServiceBean}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless
 @LocalBinding(jndiBinding = ScenarioTimingService.BINDING)
-public class ScenarioTimingServiceBean extends AbstractProfilingServiceBean implements ScenarioTimingService {
+public class ScenarioTimingServiceBean extends AbstractProfilingServiceBean
+        implements ScenarioTimingService {
 
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public List<ScenarioTimingEntity> getExecutionTimings(ExecutionEntity execution) {
+    public LinkedList<ScenarioTimingEntity> getExecutionTimings(
+            ExecutionEntity execution, int dataPoints) {
 
-        return this.em.createNamedQuery(ScenarioTimingEntity.getTimings).setParameter("execution", execution)
-                .getResultList();
+        // Find the execution's profile data.
+        Long dataDuration = (Long) this.em.createNamedQuery(
+                ScenarioTimingEntity.getExecutionDuration).setParameter(
+                "execution", execution).getSingleResult();
+        Long dataStart = (Long) this.em.createNamedQuery(
+                ScenarioTimingEntity.getExecutionStart).setParameter(
+                "execution", execution).getSingleResult();
+
+        // Bail out of there is no data for this execution.
+        if (dataDuration == null || dataStart == null
+                || dataDuration + dataStart == 0) {
+            LOG.warn("No data for execution: " + execution.getStartTime());
+            return new LinkedList<ScenarioTimingEntity>();
+        }
+
+        int period = (int) Math.ceil((double) dataDuration / dataPoints);
+
+        LinkedList<ScenarioTimingEntity> pointData = new LinkedList<ScenarioTimingEntity>();
+        for (long point = 0; point * period < dataDuration; ++point) {
+            try {
+                pointData.add((ScenarioTimingEntity) this.em.createNamedQuery(
+                        ScenarioTimingEntity.createAverage).setParameter(
+                        "execution", execution).setParameter("start",
+                        dataStart + point * period).setParameter("stop",
+                        dataStart + (point + 1) * period).getSingleResult());
+            } catch (NoResultException e) {
+            }
+        }
+
+        return pointData;
     }
 }

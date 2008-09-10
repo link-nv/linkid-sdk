@@ -43,13 +43,14 @@
 
     <dependencies>
 
+        <!-- Dependency Groups -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <artifactId>safe-online-container-as</artifactId>
             <type>pom</type>
-            <scope>provided</scope>
         </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-performance-entity</artifactId>
@@ -59,33 +60,24 @@
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-performance-scenario-base</artifactId>
             <version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-model-performance</artifactId>
-            <version>1.2-SNAPSHOT</version>
             <type>ejb-client</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.lin-k.safe-online</groupId>
-                    <artifactId>safe-online-model</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-performance-keystore</artifactId>
             <version>1.2-SNAPSHOT</version>
         </dependency>
+
+        <!-- Specific Dependencies: External -->
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-api</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+            <version>${jboss.version}</version>
         </dependency>
         <dependency>
             <groupId>jgroups</groupId>

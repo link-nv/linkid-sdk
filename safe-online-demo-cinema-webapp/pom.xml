@@ -2,14 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
 		<version>1.2-SNAPSHOT</version>
 	</parent>
+
 	<name>SafeOnline Demo Cinema Web Application</name>
-	<description> SafeOnline Demo Cinema Web Application in Wicket. 
+    <description>
+        SafeOnline Demo Cinema Web Application in Wicket. 
 	</description>
+
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-cinema-webapp</artifactId>
 	<version>1.2-SNAPSHOT</version>
@@ -20,6 +24,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
+                    <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+
 					<webResources>
 						<resource>
 							<filtering>false</filtering>
@@ -32,127 +39,92 @@
 								<exclude>**/*.java</exclude>
 							</excludes>
 						</resource>
-						<resource>
-							<directory> ${basedir}/src/main/webapp/WEB-INF</directory>
-							<targetPath>WEB-INF</targetPath>
-							<filtering>true</filtering>
-						</resource>
 					</webResources>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
+
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
+			<artifactId>safe-online-demo-cinema-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-cinema 
-			</artifactId>
-			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>xpp3</groupId>
-			<artifactId>xpp3_min</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>xstream</groupId>
-			<artifactId>xstream</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-extensions</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-ioc</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-contrib-javaee</artifactId>
+            <scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-wicket-tools 
-			</artifactId>
+			<artifactId>safe-online-demo-cinema</artifactId>
 			<version>1.2-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
+            <type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
 			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-test-util</artifactId>
+			<artifactId>safe-online-demo-wicket-tools</artifactId>
 			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
+		</dependency>
+
+        <!-- Specific Dependencies: External -->
+		<dependency>
+			<groupId>xstream</groupId>
+			<artifactId>xstream</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<scope>test</scope>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-extensions</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-ioc</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-contrib-javaee</artifactId>
+		</dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
+
 	</dependencies>
+
 </project>
