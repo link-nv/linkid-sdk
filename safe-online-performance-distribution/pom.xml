@@ -127,7 +127,7 @@
                         <patch>log4j.patch</patch>
                       </patches>
                       <targetDirectory>
-                          target/files/safe-online-base-distribution-1.2-SNAPSHOT
+                          target/files/safe-online-base-distribution-${safe-online.version}
                       </targetDirectory>
                     </configuration>
                   </execution>

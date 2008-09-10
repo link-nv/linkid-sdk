@@ -87,14 +87,10 @@
 		<fileSet>
 			<directory>target/dependency</directory>
             <excludes>
-                <exclude>
-                    safe-online*
-                </exclude>
+                <exclude>safe-online*</exclude>
+				<exclude>org.apache.felix.fileinstall-*</exclude>
             </excludes>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
-			<excludes>
-				<exclude>org.apache.felix.fileinstall-*</exclude>
-			</excludes>
 		</fileSet>
 		<fileSet>
 			<directory>target/dependency</directory>
