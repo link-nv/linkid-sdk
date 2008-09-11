@@ -478,7 +478,7 @@
 			${safe-online.host.protocol.ssl}://${safe-online.host.name}:${safe-online.host.port.ssl} 
 		</safe-online.host.auth.basename>
 		<safe-online.commercial.name>OLAS</safe-online.commercial.name>
-		
+
 		<!-- WEBAPP NAMES -->
 		<safe-online.auth.webapp.name>olas-auth</safe-online.auth.webapp.name>
 		<safe-online.user.webapp.name>olas-user</safe-online.user.webapp.name>
@@ -653,11 +653,12 @@
 		<felix.fileinstall.version>0.9.0</felix.fileinstall.version>
 		<osgi.core.version>1.0.1</osgi.core.version>
 		<osgi.compendium.version>1.0.1</osgi.compendium.version>
+		<jaxws-maven-plugin.version>1.10</jaxws-maven-plugin.version>
 	</properties>
 
 	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
 	<modules>
-        <!-- CORE -->
+		<!-- CORE -->
 		<module>safe-online-container</module>
 		<module>safe-online-cli</module>
 		<module>safe-online-sdk</module>
@@ -681,7 +682,7 @@
 		<module>safe-online-saml-authn-context</module>
 		<module>safe-online-node-keystore</module>
 
-        <!-- CORE WEB APPS -->
+		<!-- CORE WEB APPS -->
 		<module>safe-online-webapp-base</module>
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-taglib</module>
@@ -708,7 +709,7 @@
 		<module>safe-online-auth-applet-package</module>
 		<module>safe-online-applet-common</module>
 
-        <!-- CORE WEB SERVICES -->
+		<!-- CORE WEB SERVICES -->
 		<module>safe-online-ws-util</module>
 		<module>safe-online-ws-common</module>
 		<module>safe-online-attrib-ws</module>
@@ -729,7 +730,7 @@
 		<module>safe-online-notification-subscription-manager-ws</module>
 		<module>safe-online-notification-subscription-manager-ws-impl</module>
 
-        <!-- EXTERNAL DEVICES -->
+		<!-- EXTERNAL DEVICES -->
 		<module>safe-online-device-webapp-base</module>
 		<module>safe-online-model-beid</module>
 		<module>safe-online-model-encap</module>
@@ -771,6 +772,7 @@
 		<module>safe-online-option-device</module>
 		<module>safe-online-option-connection-manager-ws</module>
 		<module>safe-online-option-connection-manager</module>
+		<module>safe-online-option-connection-manager-package</module>
 		<module>safe-online-option-applet</module>
 		<module>safe-online-option-applet-package</module>
 		<module>safe-online-option-keystore</module>
@@ -913,7 +915,7 @@
 				</executions>
 			</plugin>
 
-            <!-- NON-INHERITED PLUGIN SETTINGS -->
+			<!-- NON-INHERITED PLUGIN SETTINGS -->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<!--
@@ -1077,6 +1079,11 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>axistools-maven-plugin</artifactId>
 					<version>${axistools-maven-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>jaxws-maven-plugin</artifactId>
+					<version>${jaxws-maven-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
