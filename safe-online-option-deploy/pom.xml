@@ -15,7 +15,7 @@
 	<version>1.2-SNAPSHOT</version>
 	<packaging>ear</packaging>
 	<build>
-		<finalName>SafeOnlineOption</finalName>
+		<finalName>SafeOnline1Option</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

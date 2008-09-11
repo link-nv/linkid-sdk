@@ -31,7 +31,7 @@ public class OptionConstants {
     }
 
 
-    public static final String OPTION_STARTABLE_JNDI_PREFIX = "SafeOnlineOption/startup/";
+    public static final String OPTION_STARTABLE_JNDI_PREFIX = "SafeOnline1Option/startup/";
 
     public static final String OPTION_DEVICE_ID             = "option";
 

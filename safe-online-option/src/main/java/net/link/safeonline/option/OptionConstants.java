@@ -15,5 +15,5 @@ public class OptionConstants {
     }
 
 
-    public static final String JNDI_PREFIX = "SafeOnlineOption/";
+    public static final String JNDI_PREFIX = "SafeOnline1Option/";
 }
