@@ -18,22 +18,9 @@
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-performance-scenario-base</artifactId>
 	<version>1.2-SNAPSHOT</version>
-	<packaging>ejb</packaging>
+	<packaging>jar</packaging>
 
     <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-ejb-plugin</artifactId>
-            <configuration>
-              <ejbVersion>3.0</ejbVersion>
-              <archive>
-                <manifest>
-                  <addClasspath>true</addClasspath>
-                </manifest>
-              </archive>
-            </configuration>
-          </plugin>
-        </plugins>
     </build>
 
 	<dependencies>
