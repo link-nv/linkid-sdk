@@ -825,6 +825,19 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*</include>
+					<include>**/*.bmp</include>
+					<include>**/*.jpg</include>
+					<include>**/*.jpeg</include>
+					<include>**/*.gif</include>
+					<include>**/*.png</include>
+					<include>**/*.crt</include>
+				</includes>
+            </resource>
+			<resource>
+				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 				<excludes>
 					<exclude>**/*.bmp</exclude>
@@ -834,24 +847,25 @@
 					<exclude>**/*.png</exclude>
 					<exclude>**/*.crt</exclude>
 				</excludes>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>**/*.bmp</include>
-					<include>**/*.jpg</include>
-					<include>**/*.jpeg</include>
-					<include>**/*.gif</include>
-					<include>**/*.png</include>
-					<include>**/*.crt</include>
-				</includes>
 			</resource>
 		</resources>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<testResources>
 			<testResource>
 				<directory>src/test/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*</include>
+					<include>**/*.bmp</include>
+					<include>**/*.jpg</include>
+					<include>**/*.jpeg</include>
+					<include>**/*.gif</include>
+					<include>**/*.png</include>
+					<include>**/*.crt</include>
+				</includes>
+            </testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
 				<filtering>true</filtering>
 				<excludes>
 					<exclude>**/*.bmp</exclude>
@@ -861,18 +875,6 @@
 					<exclude>**/*.png</exclude>
 					<exclude>**/*.crt</exclude>
 				</excludes>
-			</testResource>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>**/*.bmp</include>
-					<include>**/*.jpg</include>
-					<include>**/*.jpeg</include>
-					<include>**/*.gif</include>
-					<include>**/*.png</include>
-					<include>**/*.crt</include>
-				</includes>
 			</testResource>
 		</testResources>
 		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
