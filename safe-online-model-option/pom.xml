@@ -76,6 +76,18 @@
 			<artifactId>safe-online-startup</artifactId>
 			<version>1.2-SNAPSHOT</version>
         </dependency>
+        <dependency>
+   			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-option-startup-runtime</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <scope>runtime</scope>
+            <type>war</type>
+        </dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-j2ee-util</artifactId>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
@@ -83,17 +95,17 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-entity</artifactId>
-			<version>1.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-option-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
 
-	</dependencies>
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+        </dependency>
 
+	</dependencies>
 	<reporting>
 		<plugins>
 			<plugin>

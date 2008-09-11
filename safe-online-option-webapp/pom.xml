@@ -56,19 +56,27 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-                    <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
-                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-
-                    <overlays>
-                        <overlay>
-                            <groupId>net.lin-k.safe-online</groupId>
-                            <artifactId>safe-online-device-webapp-base</artifactId>
-                            <excludes>
-                                <exclude>WEB-INF/web.xml</exclude>
-                                <exclude>index.jsp</exclude>
-                            </excludes>
-                        </overlay>
-                    </overlays>
+					<packagingExcludes>WEB-INF/lib/*</packagingExcludes>
+					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+					<webResources>
+						<resource>
+							<directory>
+								${basedir}/src/main/webapp/WEB-INF
+	                            </directory>
+							<targetPath>WEB-INF</targetPath>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
+					<overlays>
+						<overlay>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>safe-online-device-webapp-base</artifactId>
+							<excludes>
+								<exclude>WEB-INF/web.xml</exclude>
+								<exclude>index.jsp</exclude>
+							</excludes>
+						</overlay>
+					</overlays>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -98,24 +106,24 @@
 
 	<dependencies>
 
-        <!-- Dependency Groups -->
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-as</artifactId>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-jsf</artifactId>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-saml</artifactId>
-            <type>pom</type>
-        </dependency>
+		<!-- Dependency Groups -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-as</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-jsf</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-saml</artifactId>
+			<type>pom</type>
+		</dependency>
 
-        <!-- Specific Dependencies: OLAS: Backing Beans -->
+		<!-- Specific Dependencies: OLAS: Backing Beans -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-option</artifactId>
@@ -123,21 +131,21 @@
 			<type>ejb</type>
 		</dependency>
 
-        <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
+		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-webapp-base</artifactId>
-            <scope>provided</scope>
+			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-device-webapp-base</artifactId>
-                <version>1.2-SNAPSHOT</version>
-                <type>zip</type>
-            </dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-device-webapp-base</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
 
-        <!-- Specific Dependencies: OLAS -->
+		<!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-option</artifactId>
@@ -145,7 +153,7 @@
 			<type>ejb-client</type>
 		</dependency>
 
-        <!-- Specific Dependencies: External -->
+		<!-- Specific Dependencies: External -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-common</artifactId>
