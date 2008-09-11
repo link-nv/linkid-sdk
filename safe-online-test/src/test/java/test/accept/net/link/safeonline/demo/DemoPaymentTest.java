@@ -44,6 +44,7 @@ import net.link.safeonline.webapp.user.UserRemove;
  */
 public class DemoPaymentTest extends TestCase {
 
+    private static final String   DEMO_PAYMENT_APPLICATION_NAME = "ebank";
     private AcceptanceTestManager acceptanceTestManager;
 
 
@@ -127,7 +128,7 @@ public class DemoPaymentTest extends TestCase {
         // add new attribute type to demo payment identity
         OperApplicationsMain operApplicationsMain = operOverview.gotoApplicationsMain();
         OperApplications operApplications = operApplicationsMain.gotoApplications();
-        OperApplicationView operApplicationView = operApplications.viewApplication("demo-payment");
+        OperApplicationView operApplicationView = operApplications.viewApplication(DEMO_PAYMENT_APPLICATION_NAME);
         OperApplicationEdit operApplicationEdit = operApplicationView.edit();
         operApplicationEdit.setAttribute(testAttribute, true, true, true);
         operApplicationView = operApplicationEdit.save();
@@ -159,7 +160,7 @@ public class DemoPaymentTest extends TestCase {
         operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
         operApplicationsMain = operOverview.gotoApplicationsMain();
         operApplications = operApplicationsMain.gotoApplications();
-        operApplicationView = operApplications.viewApplication("demo-payment");
+        operApplicationView = operApplications.viewApplication(DEMO_PAYMENT_APPLICATION_NAME);
         operApplicationEdit = operApplicationView.edit();
         operApplicationEdit.setAttribute(testAttribute, false, false, false);
         operApplicationView = operApplicationEdit.save();
