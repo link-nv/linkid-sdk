@@ -60,9 +60,10 @@ public class DigipassStartableBean extends AbstractInitBean {
                 nodeName, "/olas-digipass/auth", null, null, null, certificate, digipassAttributeType,
                 digipassAttributeType));
         this.deviceDescriptions
-                .add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "Digipass Bank X"));
+                .add(new DeviceDescription(
+				DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "EBank Digipass"));
         this.deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH
-                .getLanguage(), "Digipass Bank X"));
+                .getLanguage(), "EBank Digipass"));
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
