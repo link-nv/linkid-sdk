@@ -39,7 +39,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
     private static final String DEMO_TICKET_APPLICATION_NAME  = "demo-ticket";
 
-    private static final String DEMO_PAYMENT_APPLICATION_NAME = "demo-payment";
+    private static final String DEMO_PAYMENT_APPLICATION_NAME = "ebank";
 
     private EntityManager       demoTicketEntityManager;
 
