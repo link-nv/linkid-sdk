@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.pcsc;
+package net.link.safeonline.applet;
 
 import java.awt.FlowLayout;
 import java.awt.Frame;

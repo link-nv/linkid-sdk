@@ -517,7 +517,7 @@
 			${safe-online.host.protocol.ssl}://${safe-online.host.name}:${safe-online.host.port.ssl} 
 		</safe-online.host.auth.basename>
 		<safe-online.commercial.name>OLAS</safe-online.commercial.name>
-		
+
 		<!-- WEBAPP NAMES -->
 		<safe-online.auth.webapp.name>olas-auth</safe-online.auth.webapp.name>
 		<safe-online.user.webapp.name>olas-user</safe-online.user.webapp.name>
@@ -527,6 +527,7 @@
 		<safe-online.beid.webapp.name>olas-beid</safe-online.beid.webapp.name>
 		<safe-online.digipass.webapp.name>olas-digipass</safe-online.digipass.webapp.name>
 		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
+		<safe-online.option.webapp.name>olas-option</safe-online.option.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
         <safe-online.version>1.2-SNAPSHOT</safe-online.version>
@@ -700,6 +701,7 @@
 		<felix.fileinstall.version>0.9.0</felix.fileinstall.version>
 		<osgi.core.version>1.0.1</osgi.core.version>
 		<osgi.compendium.version>1.0.1</osgi.compendium.version>
+		<jaxws-maven-plugin.version>1.10</jaxws-maven-plugin.version>
 	</properties>
 
 	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
@@ -817,6 +819,19 @@
 		<module>safe-online-identity-applet-package</module>
 		<module>safe-online-osgi-plugin</module>
 		<module>safe-online-osgi-plugin-template</module>
+		<module>safe-online-serial</module>
+		<module>safe-online-option-device</module>
+		<module>safe-online-option-connection-manager-ws</module>
+		<module>safe-online-option-connection-manager</module>
+		<module>safe-online-option-connection-manager-package</module>
+		<module>safe-online-option-applet</module>
+		<module>safe-online-option-applet-package</module>
+		<module>safe-online-option-keystore</module>
+		<module>safe-online-option-startup</module>
+		<module>safe-online-option</module>
+		<module>safe-online-option-webapp</module>
+		<module>safe-online-option-deploy</module>
+		<module>safe-online-model-option</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
@@ -962,9 +977,11 @@
 			<!-- NON-INHERITED PLUGIN SETTINGS -->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
-
-				<!-- Don't clean parent directory's target directory: it contains cache data
-					such as eclipse:eclipse -DdownloadSources=true repository statuses.  -->
+				<!--
+					Don't clean parent directory's target directory: it contains cache
+					data such as eclipse:eclipse -DdownloadSources=true repository
+					statuses.
+				-->
 				<inherited>false</inherited>
 				<configuration>
 					<skip>true</skip>
@@ -1127,6 +1144,11 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>axistools-maven-plugin</artifactId>
 					<version>${axistools-maven-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>jaxws-maven-plugin</artifactId>
+					<version>${jaxws-maven-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -1318,18 +1340,13 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
-		<!--repository>
-			<id>org.wicketstuff</id> 
-			<name>Wicket Stuff Repo</name> 
-			<url>http://wicketstuff.org/maven/repository</url> 
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository-->
+		<!--
+			repository> <id>org.wicketstuff</id> <name>Wicket Stuff Repo</name>
+			<url>http://wicketstuff.org/maven/repository</url> <snapshots>
+			<enabled>false</enabled> </snapshots> <releases>
+			<enabled>true</enabled> <updatePolicy>never</updatePolicy>
+			</releases> </repository
+		-->
 	</repositories>
 
 	<!-- MAVEN PLUGIN REPOSITORIES -->
@@ -1397,6 +1414,18 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 		</pluginRepository>
+		<pluginRepository>
+			<id>java.net-maven2</id>
+			<name>java.net Maven2 Repository</name>
+			<url>http://download.java.net/maven/2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+        </pluginRepository>
 		<pluginRepository>
 			<id>maven-snapshot</id>
 			<name>Apache Maven Snapshot Repository</name>
@@ -2573,6 +2602,11 @@
 				<groupId>org.rxtx</groupId>
 				<artifactId>rxtx</artifactId>
 				<version>${rxtx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.jsfunit</groupId>
