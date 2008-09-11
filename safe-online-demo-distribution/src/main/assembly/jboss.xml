@@ -54,7 +54,7 @@
             <source> target/files/safe-online-digipass-deploy-1.2-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnlineDigipass.ear</destName>
+			<destName>SafeOnline1Digipass.ear</destName>
 		</file>
 		<file>
             <source> target/files/safe-online-encap-deploy-1.2-SNAPSHOT.ear 

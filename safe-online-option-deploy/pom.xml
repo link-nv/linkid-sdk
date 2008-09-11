@@ -29,6 +29,13 @@
 					<jboss>
 						<version>4</version>
 					</jboss>
+                    <modules>
+                        <webModule>
+                            <groupId>net.lin-k.safe-online</groupId>
+                            <artifactId>safe-online-option-webapp</artifactId>
+                            <contextRoot>${safe-online.option.webapp.name}</contextRoot>
+                        </webModule>
+                    </modules>
 
                     <!-- Exlude ZIPs.
                          They only serve to force the deps of wars/sars to become transitive. -->
