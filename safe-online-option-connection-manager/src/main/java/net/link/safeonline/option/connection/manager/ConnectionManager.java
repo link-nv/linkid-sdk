@@ -1,5 +1,6 @@
 package net.link.safeonline.option.connection.manager;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -23,12 +24,27 @@ public class ConnectionManager extends JFrame {
 			this.add(new JLabel("Exception occurred"));
 		}
 
+		ImageIcon icon = createImageIcon("/net/link/safeonline/option/connection/manager/images/globetrotter.png",
+				"globetrotter screenshot");
+
+		label = new JLabel(icon);
+
 		this.add(label);
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(20, 10);
+		this.setSize(380, 250);
 		this.setLocation(50, 50);
 		this.setVisible(true);
+	}
+
+	protected ImageIcon createImageIcon(String path, String description) {
+		java.net.URL imgURL = getClass().getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL, description);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
 	}
 
 }
