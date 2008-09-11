@@ -1338,6 +1338,18 @@
 			</releases>
 		</pluginRepository>
 		<pluginRepository>
+			<id>java.net-maven2</id>
+			<name>java.net Maven2 Repository</name>
+			<url>http://download.java.net/maven/2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+        </pluginRepository>
+		<pluginRepository>
 			<id>maven-snapshot</id>
 			<name>Apache Maven Snapshot Repository</name>
 			<url> http://people.apache.org/maven-snapshot-repository </url>
