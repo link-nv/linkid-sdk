@@ -42,7 +42,6 @@
 							<artifactId>safe-online-webapp-base</artifactId>
 							<excludes>
 								<exclude>WEB-INF/web.xml</exclude>
-								<exclude>index.jsp</exclude>
 							</excludes>
 						</overlay>
 					</overlays>

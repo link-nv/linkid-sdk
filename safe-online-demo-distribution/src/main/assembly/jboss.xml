@@ -60,7 +60,7 @@
             <source> target/files/safe-online-encap-deploy-1.2-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnlineEncap.ear</destName>
+			<destName>SafeOnline1Encap.ear</destName>
 		</file>
 		<file>
             <source> target/files/safe-online-option-deploy-1.2-SNAPSHOT.ear 

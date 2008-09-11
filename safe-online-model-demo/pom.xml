@@ -89,6 +89,24 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-digipass</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-encap</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-option</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>

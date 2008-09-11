@@ -41,6 +41,9 @@ import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
+import net.link.safeonline.model.digipass.DigipassConstants;
+import net.link.safeonline.model.encap.EncapConstants;
+import net.link.safeonline.model.option.OptionConstants;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -64,7 +67,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
     public static final String  DEMO_MANDATE_APPLICATION_NAME      = "demo-mandate";
 
-    private static final String DEMO_CINEMA_APPLICATION_NAME       = "demo-cinema";
+    private static final String DEMO_CINEMA_APPLICATION_NAME       = "cinema";
 
     public static final String  LICENSE_AGREEMENT_CONFIRM_TEXT_EN  = "PLEASE READ THIS SOFTWARE LICENSE AGREEMENT (\"LICENSE\") CAREFULLY BEFORE USING THE SOFTWARE. \n BY USING THE SOFTWARE, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE. \n IF YOU ARE ACCESSING THE SOFTWARE ELECTRONICALLY, SIGNIFY YOUR AGREEMENT TO BE BOUND BY THE TERMS OF THIS LICENSE BY CLICKING THE \"AGREE/ACCEPT\" BUTTON. \n IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE, DO NOT USE THE SOFTWARE AND (IF APPLICABLE) RETURN THE APPLE SOFTWARE TO THE PLACE WHERE YOU OBTAINED IT FOR A REFUND OR, IF THE SOFTWARE WAS ACCESSED ELECTRONICALLY, CLICK \"DISAGREE/DECLINE\".";
 
@@ -307,9 +310,11 @@ public class DemoStartableBean extends AbstractInitBean {
                 new IdentityAttributeTypeDO(DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true, false) }));
 
         // Uncomment this to restrict cinema access through BeID device.
-        // List<String> tempAllowedDevices = new LinkedList<String>();
-        // tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
-        // this.allowedDevices.put(DEMO_CINEMA_APPLICATION_NAME, tempAllowedDevices);
+        List<String> tempAllowedDevices = new LinkedList<String>();
+        tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
+        tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
+        tempAllowedDevices.add(DigipassConstants.DIGIPASS_DEVICE_ID);
+        this.allowedDevices.put(DEMO_CINEMA_APPLICATION_NAME, tempAllowedDevices);
 
         /*
          * Application usage agreements
@@ -400,6 +405,15 @@ public class DemoStartableBean extends AbstractInitBean {
         paymentAdminAttribute.setBooleanValue(true);
         this.attributes.add(paymentAdminAttribute);
 
+        /*
+         * device restriction
+         */
+        List<String> tempAllowedDevices = new LinkedList<String>();
+        tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
+        tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
+        tempAllowedDevices.add(EncapConstants.ENCAP_DEVICE_ID);
+        this.allowedDevices.put(DEMO_PAYMENT_APPLICATION_NAME, tempAllowedDevices);
+        
         /*
          * Application usage agreements
          */

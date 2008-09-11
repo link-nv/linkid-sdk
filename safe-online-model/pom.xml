@@ -10,7 +10,7 @@
 	</parent>
 
 	<name>SafeOnline Model</name>
-    <description>
+	<description>
         The SafeOnline Core EJB3 Model.
     </description>
 
@@ -32,14 +32,16 @@
 						</manifest>
 					</archive>
 
-                    <!-- Exclude all default excludes except for **/*Bean.class.
-                         We also want Abstract*Bean.class files in the client jar. -->
+					<!--
+						Exclude all default excludes except for **/*Bean.class. We also
+						want Abstract*Bean.class files in the client jar.
+					-->
 					<generateClient>true</generateClient>
-                    <clientExcludes>
-                        <clientExclude>**/*CMP.class</clientExclude>
-                        <clientExclude>**/*Session.class</clientExclude>
-                        <clientExclude>**/package.html</clientExclude>
-                    </clientExcludes>
+					<clientExcludes>
+						<clientExclude>**/*CMP.class</clientExclude>
+						<clientExclude>**/*Session.class</clientExclude>
+						<clientExclude>**/package.html</clientExclude>
+					</clientExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -66,30 +68,46 @@
 
 	<dependencies>
 
-        <!-- Dependency Groups -->
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-as</artifactId>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-saml</artifactId>
-            <type>pom</type>
-        </dependency>
-        <!-- TODO: A dep on JSF does not belong here!  We should work it away! -->
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-jsf</artifactId>
-            <type>pom</type>
-        </dependency>
+		<!-- Dependency Groups -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-as</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-saml</artifactId>
+			<type>pom</type>
+		</dependency>
+		<!--
+			TODO: A dep on JSF does not belong here! We should work it away!
+		-->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-jsf</artifactId>
+			<type>pom</type>
+		</dependency>
 
-        <!-- Specific Dependencies: OLAS -->
-        <dependency>
-   			<groupId>net.lin-k.safe-online</groupId>
+		<!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup</artifactId>
 			<version>1.2-SNAPSHOT</version>
-        </dependency>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-startup-runtime</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<scope>runtime</scope>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-startup-runtime</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<scope>runtime</scope>
+			<type>zip</type>
+		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-common</artifactId>
@@ -135,7 +153,7 @@
 			<artifactId>safe-online-owner-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
-        <!-- TODO: Does an encap dependency belong in s-o-model? -->
+		<!-- TODO: Does an encap dependency belong in s-o-model? -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-sdk</artifactId>
@@ -151,25 +169,25 @@
 			<artifactId>safe-online-notification-consumer-ws-abstract-impl</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-osgi-plugin</artifactId>
-            <version>1.2-SNAPSHOT</version>
-        </dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-osgi-plugin</artifactId>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
 
-        <!-- Specific Dependencies: External -->
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.main</artifactId>
-        </dependency>        
-        <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-annotations-ejb3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-net</groupId>
-            <artifactId>commons-net</artifactId>
-        </dependency>
+		<!-- Specific Dependencies: External -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.main</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-annotations-ejb3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>bouncycastle</groupId>
 			<artifactId>bcprov-jdk15</artifactId>
@@ -191,7 +209,7 @@
 			<artifactId>jfreechart</artifactId>
 		</dependency>
 
-        <!-- Test Dependencies -->
+		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-identity-applet</artifactId>
@@ -204,11 +222,11 @@
 			<version>1.2-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-test</artifactId>
-            <type>pom</type>
-        </dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-test</artifactId>
+			<type>pom</type>
+		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-common-client</artifactId>

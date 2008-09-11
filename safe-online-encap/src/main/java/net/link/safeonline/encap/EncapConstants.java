@@ -15,5 +15,5 @@ public class EncapConstants {
     }
 
 
-    public static final String JNDI_PREFIX = "SafeOnlineEncap/";
+    public static final String JNDI_PREFIX = "SafeOnline1Encap/";
 }

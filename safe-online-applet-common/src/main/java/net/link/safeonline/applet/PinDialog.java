@@ -39,7 +39,7 @@ public class PinDialog extends JDialog implements ActionListener, DocumentListen
     private JButton           cancelButton;
 
 
-    public PinDialog() {
+    public PinDialog(String message) {
 
         super((Frame) null, "PIN", true);
         JLabel promptLabel = new JLabel("PIN:");
@@ -76,7 +76,7 @@ public class PinDialog extends JDialog implements ActionListener, DocumentListen
             }
         };
         contentPanel.setLayout(new GridLayout(3, 1));
-        contentPanel.add(new JLabel("Geef uw PIN in, om u te authentiseren."));
+        contentPanel.add(new JLabel(message));
         contentPanel.add(passwordPanel);
         contentPanel.add(buttonPanel);
 

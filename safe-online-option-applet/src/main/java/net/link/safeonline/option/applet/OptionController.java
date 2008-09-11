@@ -114,7 +114,8 @@ public class OptionController implements AppletController {
 				.getString(KEY.PIN));
 		this.appletView.outputDetailMessage("Reading PIN code");
 
-		PinDialog pinDialog = new PinDialog();
+		PinDialog pinDialog = new PinDialog(this.messages
+				.getString(KEY.ENTER_PIN));
 		String pin = pinDialog.getPin();
 
 		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
@@ -131,8 +132,7 @@ public class OptionController implements AppletController {
 			return;
 		}
 
-		if (SharedConstants.PERMISSION_DENIED_ERROR.equals(result
-				.getMessage())) {
+		if (SharedConstants.PERMISSION_DENIED_ERROR.equals(result.getMessage())) {
 			this.appletView
 					.outputDetailMessage("PERMISSION DENIED. YOUR DATACARD MIGHT BE IN USE BY ANOTHER USER");
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
@@ -145,8 +145,7 @@ public class OptionController implements AppletController {
 					.getString(KEY.NOT_SUBSCRIBED));
 			return;
 		}
-		if (SharedConstants.SUBJECT_NOT_FOUND_ERROR.equals(result
-				.getMessage())) {
+		if (SharedConstants.SUBJECT_NOT_FOUND_ERROR.equals(result.getMessage())) {
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString(KEY.DATACARD_NOT_REGISTERED));
 			this.appletView.outputDetailMessage(this.messages

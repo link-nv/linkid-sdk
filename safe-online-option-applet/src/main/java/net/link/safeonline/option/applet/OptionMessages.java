@@ -22,7 +22,7 @@ public class OptionMessages {
 		START("start"), ERROR("error"), NO_DATACARD("noDatacard"), DONE("done"), SENDING(
 				"sending"), PIN("pin"), PERMISSION_DENIED("permissionDenied"), NOT_SUBSCRIBED(
 				"notSubscribed"), DATACARD_NOT_REGISTERED(
-				"datacardNotRegistered");
+				"datacardNotRegistered"), ENTER_PIN("enterPin");
 
 		private final String key;
 
