@@ -92,6 +92,11 @@
 									<artifactId> safe-online-digipass-deploy </artifactId>
 									<type>ear</type>
 								</artifactItem>
+								<artifactItem>
+									<groupId> net.lin-k.safe-online </groupId>
+									<artifactId> safe-online-option-deploy </artifactId>
+									<type>ear</type>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory> ${project.build.directory}/files 
 							</outputDirectory>
@@ -159,7 +164,12 @@
 			<version>1.2-SNAPSHOT</version>
 			<type>ear</type>
 		</dependency>
-
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-option-deploy</artifactId>
+			<type>ear</type>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 </project>
