@@ -71,14 +71,6 @@
             <groupId>net.lin-k.safe-online</groupId>
             <artifactId>safe-online-container-as</artifactId>
             <type>pom</type>
-
-            <!-- We need to use org.apache.xerces:serializer instead. -->
-            <!--exclusions>
-                <exclusion>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-            </exclusions-->
         </dependency>
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>

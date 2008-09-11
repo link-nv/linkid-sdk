@@ -15,7 +15,7 @@
 			<source>${basedir}/src/files/README.txt</source>
 		</file>
 		<file>
-			<source>${basedir}/src/files/app-console.sh</source>
+			<source>${basedir}/src/files/app-console</source>
 			<fileMode>0500</fileMode>
 		</file>
 	</files>

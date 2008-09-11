@@ -90,16 +90,19 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-identity-applet</artifactId>
 			<version>1.2-SNAPSHOT</version>
+            <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-pkcs11-sc-beid</artifactId>
 			<version>1.2-SNAPSHOT</version>
+            <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
+            <scope>provided</scope>
 		</dependency>
 
 	</dependencies>

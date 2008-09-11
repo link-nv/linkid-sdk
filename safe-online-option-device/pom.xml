@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
 		<version>1.2-SNAPSHOT</version>
 	</parent>
+
+	<name>SafeOnline Option Devices</name>
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-option-device 
-	</artifactId>
-	<name>SafeOnline Option Devices</name>
+	<artifactId>safe-online-option-device</artifactId>
 	<version>1.2-SNAPSHOT</version>
+
 	<dependencies>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-serial</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
+
+        <!-- Specific Dependencies: External -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+
+    </dependencies>
+
 </project>

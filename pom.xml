@@ -827,7 +827,7 @@
 		<module>safe-online-option-applet</module>
 		<module>safe-online-option-applet-package</module>
 		<module>safe-online-option-keystore</module>
-		<module>safe-online-option-startup</module>
+		<module>safe-online-option-startup-runtime</module>
 		<module>safe-online-option</module>
 		<module>safe-online-option-webapp</module>
 		<module>safe-online-option-deploy</module>
@@ -1551,6 +1551,19 @@
             </dependency>
             <dependency>
                 <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-model-option</artifactId>
+                <type>ejb-client</type>
+
+                <version>1.2-SNAPSHOT</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.lin-k.safe-online</groupId>
+                        <artifactId>safe-online-option-startup-runtime</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
                 <artifactId>safe-online-model-demo</artifactId>
                 <type>ejb-client</type>
 
@@ -2048,6 +2061,11 @@
 			</dependency>
 
 			<!-- External -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.xalan</groupId>
 				<artifactId>serializer</artifactId>
