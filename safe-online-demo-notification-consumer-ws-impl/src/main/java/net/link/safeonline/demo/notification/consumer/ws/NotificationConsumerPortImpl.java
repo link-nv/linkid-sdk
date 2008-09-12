@@ -53,7 +53,7 @@ public class NotificationConsumerPortImpl implements NotificationConsumerPort {
 
     private void loadDependencies() {
 
-        this.notificationConsumerService = EjbUtils.getEJB("SafeOnlineDemo/NotificationConsumerServiceBean/local",
+        this.notificationConsumerService = EjbUtils.getEJB("SafeOnlineZDemo/NotificationConsumerServiceBean/local",
                 NotificationConsumerService.class);
     }
 

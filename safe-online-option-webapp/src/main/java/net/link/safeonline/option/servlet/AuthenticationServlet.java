@@ -40,7 +40,7 @@ public class AuthenticationServlet extends AbstractInjectionServlet {
 	private static final Log LOG = LogFactory
 			.getLog(AuthenticationServlet.class);
 
-	@EJB(mappedName = "SafeOnline1Option/OptionDeviceServiceBean/local")
+	@EJB(mappedName = "SafeOnlineOption/OptionDeviceServiceBean/local")
 	private OptionDeviceService optionDeviceService;
 
 	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")

@@ -42,7 +42,7 @@
             <source> target/files/safe-online-demo-deploy-1.2-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnlineDemo.ear</destName>
+			<destName>SafeOnlineZDemo.ear</destName>
 		</file>
 		<file>
             <source> target/files/safe-online-beid-deploy-1.2-SNAPSHOT.ear 
@@ -54,19 +54,19 @@
             <source> target/files/safe-online-digipass-deploy-1.2-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnline1Digipass.ear</destName>
+			<destName>SafeOnlineDigipass.ear</destName>
 		</file>
 		<file>
             <source> target/files/safe-online-encap-deploy-1.2-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnline1Encap.ear</destName>
+			<destName>SafeOnlineEncap.ear</destName>
 		</file>
 		<file>
             <source> target/files/safe-online-option-deploy-1.2-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnline1Option.ear</destName>
+			<destName>SafeOnlineOption.ear</destName>
 		</file>
 	</files>
 </assembly>

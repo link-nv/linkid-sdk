@@ -31,7 +31,7 @@
 		</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
 		<env-entry-value>
-			SafeOnlineDemo/WSSecurityConfigurationBean/local
+			SafeOnlineZDemo/WSSecurityConfigurationBean/local
 		</env-entry-value>
 	</env-entry>
 

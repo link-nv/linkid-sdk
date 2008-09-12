@@ -18,7 +18,7 @@ public class EncapConstants {
     }
 
 
-    public static final String ENCAP_STARTABLE_JNDI_PREFIX = "SafeOnline1Encap/startup/";
+    public static final String ENCAP_STARTABLE_JNDI_PREFIX = "SafeOnlineEncap/startup/";
 
     public static final String ENCAP_DEVICE_ID             = "encap";
 

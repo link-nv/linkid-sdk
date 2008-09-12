@@ -19,7 +19,7 @@
 	<packaging>ear</packaging>
 
 	<build>
-		<finalName>SafeOnline1Option</finalName>
+		<finalName>SafeOnlineOption</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

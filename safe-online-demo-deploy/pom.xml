@@ -20,7 +20,7 @@
 	<packaging>ear</packaging>
 
 	<build>
-		<finalName>SafeOnlineDemo</finalName>
+		<finalName>SafeOnlineZDemo</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

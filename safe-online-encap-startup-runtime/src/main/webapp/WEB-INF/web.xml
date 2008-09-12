@@ -17,7 +17,7 @@
 			The JNDI prefix used by startable components.
 		</description>
 		<param-name>StartableJndiPrefix</param-name>
-		<param-value>SafeOnline1Encap/startup</param-value>
+		<param-value>SafeOnlineEncap/startup</param-value>
 	</context-param>
 
 </web-app>
