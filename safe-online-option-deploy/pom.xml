@@ -33,7 +33,7 @@
                         <webModule>
                             <groupId>net.lin-k.safe-online</groupId>
                             <artifactId>safe-online-option-webapp</artifactId>
-                            <contextRoot>${safe-online.option.webapp.name}</contextRoot>
+                            <contextRoot>/${safe-online.option.webapp.name}</contextRoot>
                         </webModule>
                     </modules>
 

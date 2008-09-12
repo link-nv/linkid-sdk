@@ -136,6 +136,7 @@
 				<safe-online.demo.mandate.webapp.name>demo-mandate</safe-online.demo.mandate.webapp.name>
 				<safe-online.demo.payment.webapp.name>demo-payment</safe-online.demo.payment.webapp.name>
 				<safe-online.demo.ticket.webapp.name>demo-ticket</safe-online.demo.ticket.webapp.name>
+				<safe-online.demo.ticket.webapp.name>safe-online-demo-ws</safe-online.demo.ticket.webapp.name>
 
 				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
 			</properties>
@@ -524,6 +525,7 @@
 		<safe-online.helpdesk.webapp.name>olas-helpdesk</safe-online.helpdesk.webapp.name>
 		<safe-online.oper.webapp.name>olas-oper</safe-online.oper.webapp.name>
 		<safe-online.owner.webapp.name>olas-owner</safe-online.owner.webapp.name>
+		<safe-online.ws.webapp.name>safe-online-ws</safe-online.ws.webapp.name>
 
 		<safe-online.beid.webapp.name>olas-beid</safe-online.beid.webapp.name>
 		<safe-online.digipass.webapp.name>olas-digipass</safe-online.digipass.webapp.name>

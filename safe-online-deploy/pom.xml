@@ -34,32 +34,32 @@
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-ws-runtime </artifactId>
-							<contextRoot>/safe-online-ws</contextRoot>
+                            <contextRoot>/${safe-online.ws.webapp.name}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-auth-webapp</artifactId>
-							<contextRoot>${safe-online.auth.webapp.name}</contextRoot>
+                            <contextRoot>/${safe-online.auth.webapp.name}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-helpdesk-webapp</artifactId>
-							<contextRoot>${safe-online.helpdesk.webapp.name}</contextRoot>
+                            <contextRoot>/${safe-online.helpdesk.webapp.name}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-oper-webapp</artifactId>
-							<contextRoot>${safe-online.oper.webapp.name}</contextRoot>
+                            <contextRoot>/${safe-online.oper.webapp.name}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-owner-webapp</artifactId>
-							<contextRoot>${safe-online.owner.webapp.name}</contextRoot>
+                            <contextRoot>/${safe-online.owner.webapp.name}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-user-webapp</artifactId>
-							<contextRoot>${safe-online.user.webapp.name}</contextRoot>
+                            <contextRoot>/${safe-online.user.webapp.name}</contextRoot>
 						</webModule>
 					</modules>
 					<archive>
