@@ -20,6 +20,7 @@ import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import net.link.safeonline.demo.payment.PaymentConstants;
 import net.link.safeonline.demo.payment.Transaction;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
@@ -77,7 +78,7 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements Tr
         return username;
     }
 
-    @RolesAllowed("user")
+    @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public String confirm() {
 
         this.log.debug("confirm");
@@ -98,14 +99,14 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements Tr
     }
 
     @Factory(NEW_PAYMENT_NAME)
-    @RolesAllowed("user")
+    @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public PaymentEntity newPaymentEntityFactory() {
 
         return new PaymentEntity();
     }
 
     @Factory("visas")
-    @RolesAllowed("user")
+    @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public List<SelectItem> visasFactory() {
 
         this.log.debug("visas factory");

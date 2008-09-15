@@ -66,7 +66,7 @@ export yellow=$(    tput setaf 3  2>/dev/null )
 export blue=$(      tput setaf 4  2>/dev/null )
 export magenta=$(   tput setaf 5  2>/dev/null )
 export cyan=$(      tput setaf 6  2>/dev/null )
-export grey=$(      tput setaf 7  2>/dev/null )
+export white=$(     tput setaf 7  2>/dev/null )
 export default=$(   tput op       2>/dev/null )
 export eed=$(       tput ed       2>/dev/null )
 export eel=$(       tput el       2>/dev/null )
@@ -80,7 +80,7 @@ export draw=$(      tput enacs    2>/dev/null ;
 
 # Monochrome terminals don't need these.
 [[ $TERM = *-m ]] && {
-    red=; green=; yellow=; blue=; magenta=; cyan=; grey=
+    red=; green=; yellow=; blue=; magenta=; cyan=; white=
     bold=; italic=; blink=; default=; reset=
 }
 
@@ -92,6 +92,22 @@ export draw=$(      tput enacs    2>/dev/null ;
 # |                                                                      |
 # |                                        .:: FUNCTION DECLARATIONS ::. |
 # |______________________________________________________________________|
+
+
+#  ______________________________________________________________________
+# |__ Exists ____________________________________________________________|
+#
+#       exists application
+#
+# Returns successfully if the application is in PATH and is executable
+# by the current user.
+#
+exists() {
+
+    [[ -x $(type -P "$1" 2>/dev/null) ]]
+} # _____________________________________________________________________
+
+
 
 #  ______________________________________________________________________
 # |__ Eol _______________________________________________________________|
@@ -193,7 +209,6 @@ emit() {
     # Defaults.
     color=${color:-$textcolor}
     color=${color:-$green}
-    textcolor=${textcolor:-$white}
     [[ $color = $textcolor && -z $style ]] && style=$bold
 
     # Get the text message.

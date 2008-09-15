@@ -77,50 +77,8 @@ public class LoginServlet extends HttpServlet {
         String username = (String) session.getAttribute("username");
         LOG.debug("username: " + username);
 
-        Attribute<Boolean> paymentAdminAttribute;
-        try {
-            paymentAdminAttribute = this.dataClient.getAttributeValue(username,
-                    DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, Boolean.class);
-        } catch (RequestDeniedException e) {
-            throw new ServletException("count not retrieve payment admin attribute");
-        } catch (SubjectNotFoundException e) {
-            throw new ServletException("subject not found");
-        } catch (WSClientTransportException e) {
-            throw new ServletException("connection failed");
-        }
-
-        if (null == paymentAdminAttribute) {
-            redirectToOverviewPage(session, response);
-            return;
-        }
-
-        Boolean value = paymentAdminAttribute.getValue();
-        if (null == value) {
-            redirectToOverviewPage(session, response);
-            return;
-        }
-
-        if (false == value) {
-            redirectToOverviewPage(session, response);
-            return;
-        }
-
-        redirectToAdminPage(session, response);
-    }
-
-    private void redirectToOverviewPage(HttpSession session, HttpServletResponse response) throws IOException {
-
-        session.setAttribute("role", PaymentConstants.USER_ROLE);
-        /*
-         * The role attribute is used by the LawyerLoginModule for authorization.
-         */
+        session.setAttribute("role", PaymentConstants.AUTHENTICATED_ROLE);
         response.sendRedirect("./overview.seam");
-    }
-
-    private void redirectToAdminPage(HttpSession session, HttpServletResponse response) throws IOException {
-
-        session.setAttribute("role", PaymentConstants.ADMIN_ROLE);
-        response.sendRedirect("./search.seam");
     }
 
 }

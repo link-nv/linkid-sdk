@@ -48,7 +48,7 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements C
     private CustomerStatus customerStatus;
 
 
-    @RolesAllowed(PaymentConstants.ADMIN_ROLE)
+    @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public String persist() {
 
         this.log.debug("---------------------------------------- save #0 -----------------------------", this.name);
@@ -56,8 +56,6 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements C
         try {
             createOrUpdateAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.valueOf(this.customerStatus
                     .isJunior()));
-            createOrUpdateAttribute(DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(this.customerStatus
-                    .isPaymentAdmin()));
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error");
             return null;

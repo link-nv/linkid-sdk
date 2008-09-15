@@ -18,27 +18,15 @@ public class CustomerStatus implements Serializable {
 
     private boolean           junior;
 
-    private boolean           paymentAdmin;
-
 
     public boolean isJunior() {
 
         return this.junior;
     }
 
-    public boolean isPaymentAdmin() {
-
-        return this.paymentAdmin;
-    }
-
     public CustomerStatus() {
 
-        this(null, false, false);
-    }
-
-    public void setPaymentAdmin(boolean paymentAdmin) {
-
-        this.paymentAdmin = paymentAdmin;
+        this(null, false);
     }
 
     public void setJunior(boolean junior) {
@@ -46,12 +34,11 @@ public class CustomerStatus implements Serializable {
         this.junior = junior;
     }
 
-    public CustomerStatus(final String userId, final boolean junior, final boolean paymentAdmin) {
+    public CustomerStatus(final String userId, final boolean junior) {
 
         super();
         this.userId = userId;
         this.junior = junior;
-        this.paymentAdmin = paymentAdmin;
     }
 
     public String getUserId() {

@@ -39,8 +39,6 @@ public class DemoConstants {
 
     public static final String PAYMENT_JUNIOR_ATTRIBUTE_NAME             = "urn:net:lin-k:safe-online:attribute:payment:junior";
 
-    public static final String PAYMENT_ADMIN_ATTRIBUTE_NAME              = "urn:net:lin-k:safe-online:attribute:payment:admin";
-
     public static final String MANDATE_ATTRIBUTE_NAME                    = "urn:net:lin-k:safe-online:attribute:mandate";
 
     public static final String MANDATE_COMPANY_ATTRIBUTE_NAME            = "urn:net:lin-k:safe-online:attribute:mandate:company";

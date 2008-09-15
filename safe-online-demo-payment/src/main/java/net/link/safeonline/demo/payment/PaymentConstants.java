@@ -17,8 +17,6 @@ public class PaymentConstants {
 
     public static final String SECURITY_DOMAIN = "demo-payment";
 
-    public static final String USER_ROLE       = "user";
-
-    public static final String ADMIN_ROLE      = "admin";
+    public static final String AUTHENTICATED_ROLE = "auth";
 
 }

@@ -42,7 +42,7 @@ public class CustomerSearchBean extends AbstractPaymentDataClientBean implements
     private CustomerStatus customerStatus;
 
 
-    @RolesAllowed(PaymentConstants.ADMIN_ROLE)
+    @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public String search() {
 
         this.log.debug("search: " + this.name);

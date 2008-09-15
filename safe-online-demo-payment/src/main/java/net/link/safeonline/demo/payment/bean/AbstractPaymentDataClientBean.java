@@ -161,15 +161,11 @@ public abstract class AbstractPaymentDataClientBean implements AbstractPaymentDa
         }
 
         boolean junior = false;
-        boolean paymentAdmin = false;
         Attribute<Boolean> juniorAttribute;
-        Attribute<Boolean> paymentAdminAttribute;
         DataClient currentDataClient = getDataClient();
         try {
             juniorAttribute = currentDataClient.getAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
                     Boolean.class);
-            paymentAdminAttribute = currentDataClient.getAttributeValue(userId,
-                    DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, Boolean.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;
@@ -183,10 +179,7 @@ public abstract class AbstractPaymentDataClientBean implements AbstractPaymentDa
         if (null != juniorAttribute && null != juniorAttribute.getValue()) {
             junior = juniorAttribute.getValue();
         }
-        if (null != paymentAdminAttribute && null != paymentAdminAttribute.getValue()) {
-            paymentAdmin = paymentAdminAttribute.getValue();
-        }
-        CustomerStatus customerStatus = new CustomerStatus(userId, junior, paymentAdmin);
+        CustomerStatus customerStatus = new CustomerStatus(userId, junior);
         return customerStatus;
     }
 

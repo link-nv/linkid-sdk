@@ -38,7 +38,7 @@ public class PaymentServiceEntryBean implements PaymentServiceEntry {
     @Out(value = "target", scope = ScopeType.SESSION, required = false)
     private String  target;
 
-    @RequestParameter("user")
+    @RequestParameter(PaymentConstants.AUTHENTICATED_ROLE)
     @Out(value = "user", scope = ScopeType.SESSION, required = false)
     private String  user;
 
@@ -84,7 +84,7 @@ public class PaymentServiceEntryBean implements PaymentServiceEntry {
             this.facesMessages.add("amount request parameter is null");
         }
 
-        this.sessionContext.set("role", PaymentConstants.USER_ROLE);
+        this.sessionContext.set("role", PaymentConstants.AUTHENTICATED_ROLE);
 
     }
 }

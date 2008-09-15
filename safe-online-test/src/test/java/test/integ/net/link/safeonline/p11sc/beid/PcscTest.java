@@ -1,11 +1,14 @@
 package test.integ.net.link.safeonline.p11sc.beid;
 
+import java.util.Locale;
+
 import javax.smartcardio.Card;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.CardTerminals;
 import javax.smartcardio.TerminalFactory;
 
+import net.link.safeonline.auth.pcsc.AuthenticationMessages;
 import net.link.safeonline.auth.pcsc.IdentityFile;
 import net.link.safeonline.auth.pcsc.Pcsc;
 import net.link.safeonline.auth.pcsc.PcscSigner;
@@ -54,7 +57,8 @@ public class PcscTest {
         Card card = cardTerminal.connect("T=0");
         CardChannel channel = card.getBasicChannel();
 
-        PcscSigner pcscSigner = new PcscSigner(channel, new TestPcscSignerLogger());
+        PcscSigner pcscSigner = new PcscSigner(channel, new TestPcscSignerLogger(), new AuthenticationMessages(Locale
+                .getDefault()));
 
         pcscSigner.sign("hello world".getBytes());
     }
