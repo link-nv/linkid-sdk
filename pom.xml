@@ -79,11 +79,10 @@
 	<scm>
 		<tag>HEAD</tag>
 		<url>http://buildserver/cgi-bin/gitweb.cgi?p=safe-online.git</url>
-		<connection>
-			scm:git:ssh+git://buildserver/scm/git/safeonline.git 
+		<connection> scm:git:ssh+git://buildserver/scm/git/safeonline.git 
 		</connection>
 		<developerConnection>
-			scm:git:ssh+git://buildserver/scm/git/safeonline.git
+			scm:git:ssh+git://buildserver/scm/git/safeonline.git 
 		</developerConnection>
 	</scm>
 	<issueManagement>
@@ -137,24 +136,20 @@
 				<safe-online.demo.payment.webapp.name>demo-payment</safe-online.demo.payment.webapp.name>
 				<safe-online.demo.ticket.webapp.name>demo-ticket</safe-online.demo.ticket.webapp.name>
 				<safe-online.demo.ticket.webapp.name>safe-online-demo-ws</safe-online.demo.ticket.webapp.name>
-
 				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
 			</properties>
 			<modules>
 				<!-- DEMO CORE -->
 				<module>safe-online-model-demo</module>
 				<module>safe-online-demo-deploy</module>
-
 				<module>safe-online-demo-util</module>
 				<module>safe-online-demo-wicket-tools</module>
-
 				<module>safe-online-demo-applet</module>
 				<module>safe-online-demo-webapp</module>
 				<module>safe-online-demo-startup-runtime</module>
 				<module>safe-online-demo-keystore</module>
 				<module>safe-online-demo-remote-service</module>
 				<module>safe-online-demo-notification-consumer-ws-impl</module>
-
 				<module>safe-online-demo-ws-runtime</module>
 				<module>safe-online-demo-ws-model</module>
 
@@ -162,27 +157,22 @@
 				<module>safe-online-demo-ticket-webapp</module>
 				<module>safe-online-demo-ticket</module>
 				<module>safe-online-demo-ticket-keystore</module>
-
 				<module>safe-online-demo-payment</module>
 				<module>safe-online-demo-payment-webapp</module>
 				<module>safe-online-demo-payment-service</module>
 				<module>safe-online-demo-payment-keystore</module>
-
 				<module>safe-online-demo-lawyer</module>
 				<module>safe-online-demo-lawyer-webapp</module>
 				<module>safe-online-demo-lawyer-service</module>
 				<module>safe-online-demo-lawyer-keystore</module>
-
 				<module>safe-online-demo-prescription</module>
 				<module>safe-online-demo-prescription-webapp</module>
 				<module>safe-online-demo-prescription-service</module>
 				<module>safe-online-demo-prescription-keystore</module>
-
 				<module>safe-online-demo-mandate</module>
 				<module>safe-online-demo-mandate-webapp</module>
 				<module>safe-online-demo-mandate-service</module>
 				<module>safe-online-demo-mandate-keystore</module>
-
 				<module>safe-online-demo-cinema</module>
 				<module>safe-online-demo-cinema-webapp</module>
 				<module>safe-online-demo-cinema-keystore</module>
@@ -429,16 +419,13 @@
 			<modules>
 				<module>safe-online-model-performance</module>
 				<module>safe-online-performance-deploy</module>
-
 				<module>safe-online-performance-entity</module>
 				<module>safe-online-performance-startup-runtime</module>
 				<module>safe-online-performance-keystore</module>
 				<module>safe-online-performance-agent-service</module>
-
 				<module>safe-online-performance-scenario</module>
 				<module>safe-online-performance-scenario-base</module>
 				<module>safe-online-performance-scenario-deploy</module>
-
 				<module>safe-online-performance-console-base</module>
 				<module>safe-online-performance-console-swing</module>
 				<module>safe-online-performance-console-package</module>
@@ -491,7 +478,6 @@
 				</safe-online.jboss.host.port.ssl>
 			</properties>
 		</profile>
-
 	</profiles>
 
 	<!-- DEFAULT PROPERTIES -->
@@ -526,14 +512,13 @@
 		<safe-online.oper.webapp.name>olas-oper</safe-online.oper.webapp.name>
 		<safe-online.owner.webapp.name>olas-owner</safe-online.owner.webapp.name>
 		<safe-online.ws.webapp.name>safe-online-ws</safe-online.ws.webapp.name>
-
 		<safe-online.beid.webapp.name>olas-beid</safe-online.beid.webapp.name>
 		<safe-online.digipass.webapp.name>olas-digipass</safe-online.digipass.webapp.name>
 		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
 		<safe-online.option.webapp.name>olas-option</safe-online.option.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
-        <safe-online.version>1.2-SNAPSHOT</safe-online.version>
+		<safe-online.version>1.2-SNAPSHOT</safe-online.version>
 		<bcel.version>5.1</bcel.version>
 		<bsf.version>2.4.0</bsf.version>
 		<bsh.version>1.3.0</bsh.version>
@@ -853,7 +838,7 @@
 					<include>**/*.png</include>
 					<include>**/*.crt</include>
 				</includes>
-            </resource>
+			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
@@ -881,7 +866,7 @@
 					<include>**/*.png</include>
 					<include>**/*.crt</include>
 				</includes>
-            </testResource>
+			</testResource>
 			<testResource>
 				<directory>src/test/resources</directory>
 				<filtering>true</filtering>
@@ -1185,9 +1170,11 @@
 			</releases>
 		</repository>
 		<repository>
-			<id>ibiblio</id>
-			<name>IBibilio Repository</name>
-			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+			<!-- Keep Sun repository second for JAX-WS 2.1 API JAR -->
+			<id>java.net</id>
+			<name>java.net Maven Repository</name>
+			<url> https://maven-repository.dev.java.net/nonav/repository </url>
+			<layout>legacy</layout>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -1197,11 +1184,9 @@
 			</releases>
 		</repository>
 		<repository>
-			<!-- Keep Sun repository second for JAX-WS 2.1 API JAR -->
-			<id>java.net</id>
-			<name>java.net Maven Repository</name>
-			<url> https://maven-repository.dev.java.net/nonav/repository </url>
-			<layout>legacy</layout>
+			<id>ibiblio</id>
+			<name>IBibilio Repository</name>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -1428,7 +1413,7 @@
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
 			</releases>
-        </pluginRepository>
+		</pluginRepository>
 		<pluginRepository>
 			<id>maven-snapshot</id>
 			<name>Apache Maven Snapshot Repository</name>
@@ -1464,7 +1449,6 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-as</artifactId>
 				<type>pom</type>
-
 				<version>1.2-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
@@ -1472,21 +1456,18 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-jsf</artifactId>
 				<type>pom</type>
-
 				<version>1.2-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-saml</artifactId>
 				<type>pom</type>
-
 				<version>1.2-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-test</artifactId>
 				<type>pom</type>
-
 				<version>1.2-SNAPSHOT</version>
 				<scope>test</scope>
 			</dependency>
@@ -1494,7 +1475,6 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-device-webapp-base</artifactId>
 				<type>war</type>
-
 				<version>1.2-SNAPSHOT</version>
 				<scope>runtime</scope>
 			</dependency>
@@ -1502,7 +1482,6 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base</artifactId>
 				<type>war</type>
-
 				<version>1.2-SNAPSHOT</version>
 				<scope>runtime</scope>
 			</dependency>
@@ -1510,7 +1489,6 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-sql-ddl</artifactId>
 				<type>jar</type>
-
 				<version>1.2-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
@@ -1518,7 +1496,6 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-model</artifactId>
 				<type>ejb-client</type>
-
 				<version>1.2-SNAPSHOT</version>
 				<exclusions>
 					<exclusion>
@@ -1539,84 +1516,78 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-model-beid</artifactId>
-                <type>ejb-client</type>
-
-                <version>1.2-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-beid-startup-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-model-option</artifactId>
-                <type>ejb-client</type>
-
-                <version>1.2-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-option-startup-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-model-demo</artifactId>
-                <type>ejb-client</type>
-
-                <version>1.2-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-demo-startup-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-model-digipass</artifactId>
-                <type>ejb-client</type>
-
-                <version>1.2-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-digipass-startup-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-model-encap</artifactId>
-                <type>ejb-client</type>
-
-                <version>1.2-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-encap-startup-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-model-performance</artifactId>
-                <type>ejb-client</type>
-
-                <version>1.2-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.lin-k.safe-online</groupId>
-                        <artifactId>safe-online-performance-startup-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-model-beid</artifactId>
+				<type>ejb-client</type>
+				<version>1.2-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-beid-startup-runtime</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-model-option</artifactId>
+				<type>ejb-client</type>
+				<version>1.2-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-option-startup-runtime</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-model-demo</artifactId>
+				<type>ejb-client</type>
+				<version>1.2-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-demo-startup-runtime</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-model-digipass</artifactId>
+				<type>ejb-client</type>
+				<version>1.2-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-digipass-startup-runtime</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-model-encap</artifactId>
+				<type>ejb-client</type>
+				<version>1.2-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-encap-startup-runtime</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-model-performance</artifactId>
+				<type>ejb-client</type>
+				<version>1.2-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-performance-startup-runtime</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 
 			<!-- JBOSS-AS PROVIDED -->
 				<!-- jaxws-ri/lib -->
@@ -1749,7 +1720,7 @@
 			<dependency>
 				<groupId>org.apache.xalan</groupId>
 				<artifactId>xalan</artifactId>
-                <version>${xalan.version}</version>
+				<version>${xalan.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.xerces</groupId>
@@ -2050,17 +2021,17 @@
 			<dependency>
 				<groupId>xml-apis</groupId>
 				<artifactId>xml-apis</artifactId>
-                <version>-1</version>
+				<version>-1</version>
 			</dependency>
 			<dependency>
 				<groupId>xerces</groupId>
 				<artifactId>xercesImpl</artifactId>
-                <version>-1</version>
+				<version>-1</version>
 			</dependency>
 			<dependency>
 				<groupId>xalan</groupId>
 				<artifactId>xalan</artifactId>
-                <version>-1</version>
+				<version>-1</version>
 			</dependency>
 
 			<!-- External -->
@@ -2072,7 +2043,7 @@
 			<dependency>
 				<groupId>org.apache.xalan</groupId>
 				<artifactId>serializer</artifactId>
-                <version>${serializer.version}</version>
+				<version>${serializer.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -2235,11 +2206,11 @@
 				<artifactId>hibernate-validator</artifactId>
 				<version>${hibernate-validator.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>org.jboss</groupId>
-                <artifactId>jboss-annotations-ejb3</artifactId>
-                <version>${jboss.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-annotations-ejb3</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
 				<artifactId>jbosssx</artifactId>
@@ -2322,16 +2293,16 @@
 				<groupId>junit-addons</groupId>
 				<artifactId>junit-addons</artifactId>
 				<version>${junit-addons.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xercesImpl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xmlParserAPIs</artifactId>
-                    </exclusion>
-                </exclusions>
+				<exclusions>
+					<exclusion>
+						<groupId>xerces</groupId>
+						<artifactId>xercesImpl</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>xerces</groupId>
+						<artifactId>xmlParserAPIs</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>joda-time</groupId>
@@ -2554,11 +2525,11 @@
 					<exclusion>
 						<groupId>commons-logging</groupId>
 						<artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>axis</groupId>
-                        <artifactId>axis-saaj</artifactId>
-                    </exclusion>
+					</exclusion>
+					<exclusion>
+						<groupId>axis</groupId>
+						<artifactId>axis-saaj</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -2579,7 +2550,7 @@
 			<dependency>
 				<groupId>xom</groupId>
 				<artifactId>xom</artifactId>
-                <version>${xom.version}</version>
+				<version>${xom.version}</version>
 
 				<!-- We use org.apache.* instead -->
 				<exclusions>
@@ -2681,9 +2652,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<prerequisites>
 		<maven>2.0.8</maven>
 	</prerequisites>
-
 </project>
