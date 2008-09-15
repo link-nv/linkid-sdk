@@ -81,6 +81,9 @@ import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
 import net.link.safeonline.model.beid.bean.BeIdStartableBean;
 import net.link.safeonline.model.demo.DemoStartableBean;
+import net.link.safeonline.model.digipass.bean.DigipassStartableBean;
+import net.link.safeonline.model.encap.bean.EncapStartableBean;
+import net.link.safeonline.model.option.bean.OptionStartableBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
@@ -188,15 +191,24 @@ public class DemoStartableBeanTest {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(DemoStartableBean.class, container,
-                entityManager);
         BeIdStartableBean beIdStartableBean = EJBTestUtils.newInstance(BeIdStartableBean.class, container,
+                entityManager);
+        DigipassStartableBean digipassStartableBean = EJBTestUtils.newInstance(DigipassStartableBean.class, container,
+                entityManager);
+        EncapStartableBean encapStartableBean = EJBTestUtils.newInstance(EncapStartableBean.class, container,
+                entityManager);
+        OptionStartableBean optionStartableBean = EJBTestUtils.newInstance(OptionStartableBean.class, container,
+                entityManager);
+        DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(DemoStartableBean.class, container,
                 entityManager);
 
         EJBTestUtils.setJBossPrincipal("test-operator", "operator");
 
         // operate
         beIdStartableBean.postStart();
+        digipassStartableBean.postStart();
+        encapStartableBean.postStart();
+        optionStartableBean.postStart();
         demoStartableBean.postStart();
     }
 }
