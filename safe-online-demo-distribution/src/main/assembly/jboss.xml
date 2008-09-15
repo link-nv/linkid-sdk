@@ -7,7 +7,14 @@
 	<fileSets>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-1.2-SNAPSHOT/jboss 
+                target/files/safe-online-base-distribution-${safe-online.version}/scripts 
+			</directory>
+			<outputDirectory>scripts</outputDirectory>
+			<fileMode>0500</fileMode>
+		</fileSet>
+		<fileSet>
+			<directory>
+                target/files/safe-online-base-distribution-${safe-online.version}/jboss 
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
@@ -27,7 +34,7 @@
 	</fileSets>
 	<files>
 		<file>
-            <source> target/files/safe-online-deploy-1.2-SNAPSHOT.ear </source>
+            <source> target/files/safe-online-deploy-${safe-online.version}.ear </source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnline.ear</destName>
 		</file>
@@ -35,7 +42,7 @@
             <source> target/files/safe-online-demo-deploy-1.2-SNAPSHOT.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnlineDemo.ear</destName>
+			<destName>SafeOnlineZDemo.ear</destName>
 		</file>
 		<file>
             <source> target/files/safe-online-beid-deploy-1.2-SNAPSHOT.ear 
@@ -54,6 +61,12 @@
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineEncap.ear</destName>
+		</file>
+		<file>
+            <source> target/files/safe-online-option-deploy-1.2-SNAPSHOT.ear 
+			</source>
+			<outputDirectory> jboss/server/default/deploy </outputDirectory>
+			<destName>SafeOnlineOption.ear</destName>
 		</file>
 	</files>
 </assembly>

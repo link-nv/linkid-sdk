@@ -7,19 +7,20 @@
 
 package net.link.safeonline.sms;
 
+import net.link.safeonline.serial.SerialCommunication;
+import net.link.safeonline.serial.exception.SerialCommunicationsException;
 import net.link.safeonline.sms.exception.SMSException;
-import net.link.safeonline.sms.exception.SerialCommunicationsException;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class GSMModem implements SMSC {
 
-    private static final Log LOG = LogFactory.getLog(GSMModem.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GSMModem.class);
 
-    SerialCommunication      serialComm;
+    SerialCommunication         serialComm;
 
 
     public GSMModem(String serialPortName) {
@@ -64,7 +65,7 @@ public class GSMModem implements SMSC {
         } catch (Exception e) {
             LOG.debug("Exception while writing SMS to output stream");
             LOG.debug(e.getMessage());
-            LOG.debug(e.getStackTrace());
+            LOG.debug(e.getStackTrace().toString());
             throw new SMSException();
         }
         try {
@@ -72,7 +73,7 @@ public class GSMModem implements SMSC {
         } catch (Exception e) {
             LOG.debug("Exception while sleeping after writing SMS to output stream");
             LOG.debug(e.getMessage());
-            LOG.debug(e.getStackTrace());
+            LOG.debug(e.getStackTrace().toString());
         }
     }
 

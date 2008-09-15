@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.performance.service.bean;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,31 +70,21 @@ public class ProfileDataServiceBean extends AbstractProfilingServiceBean impleme
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile, int dataPoints) {
+    public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
+            LinkedList<ScenarioTimingEntity> scenarioTimings) {
 
-        // Find the driver profile's profile data.
-        Long dataDuration = (Long) this.em.createNamedQuery(ProfileDataEntity.getExecutionDuration).setParameter(
-                "profile", profile).getSingleResult();
-        Long dataStart = (Long) this.em.createNamedQuery(ProfileDataEntity.getExecutionStart).setParameter("profile",
-                profile).getSingleResult();
+        List<ProfileDataEntity> pointData = new LinkedList<ProfileDataEntity>();
 
-        // Bail out of there is no data for this profile.
-        if (dataDuration == null || dataStart == null || dataDuration + dataStart == 0) {
-            LOG.warn("No data for profile: " + profile.getDriverClassName());
-            return new ArrayList<ProfileDataEntity>();
-        }
-
-        int period = (int) Math.ceil((double) dataDuration / dataPoints);
-
-        List<ProfileDataEntity> pointData = new ArrayList<ProfileDataEntity>((int) (dataDuration / period) + 1);
-        for (long point = 0; point * period < dataDuration; ++point) {
+        long dataStart = scenarioTimings.getLast().getStart();
+        long dataDuration = dataStart - scenarioTimings.getFirst().getStart();
+        int dataPoints = scenarioTimings.size();
+        int period = (int) Math.ceil(dataDuration / (double) dataPoints);
+        int point = 0;
+        
+        for (ScenarioTimingEntity timing : scenarioTimings) {
             try {
-                ScenarioTimingEntity timing = (ScenarioTimingEntity) this.em.createNamedQuery(
-                        ProfileDataEntity.getScenarioTiming).setParameter("execution", profile.getExecution())
-                        .setParameter("start", dataStart + point * period).setParameter("stop",
-                                dataStart + (point + 1) * period).getSingleResult();
-
-                ProfileDataEntity profileDataEntity = new ProfileDataEntity(profile, timing);
+                ProfileDataEntity profileDataEntity = new ProfileDataEntity(
+                        profile, timing);
                 pointData.add(profileDataEntity);
 
                 List<MeasurementEntity> measurements = this.em.createNamedQuery(ProfileDataEntity.createAverage)
@@ -106,6 +96,8 @@ public class ProfileDataServiceBean extends AbstractProfilingServiceBean impleme
                 }
             } catch (NoResultException e) {
             }
+            
+            ++point;
         }
 
         return pointData;

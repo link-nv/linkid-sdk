@@ -4,6 +4,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+    <!--properties> FIXME: This unit test breaks on OSX.
+        <maven.test.skip>true</maven.test.skip>
+    </properties-->
+
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
@@ -40,22 +44,66 @@
 
 	<dependencies>
 
+        <!-- Dependency Groups -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-as</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
+        <dependency>
+   			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-startup</artifactId>
+			<version>1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+   			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-startup-runtime</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <scope>runtime</scope>
+            <type>war</type>
+        </dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-demo-startup-runtime</artifactId>
+                <version>1.2-SNAPSHOT</version>
+                <scope>runtime</scope>
+                <type>zip</type>
+            </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
+			<artifactId>safe-online-j2ee-util</artifactId>
 			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
-			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-beid</artifactId>
 			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-digipass</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-encap</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-option</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -84,9 +132,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>
-				safe-online-demo-prescription-keystore
-			</artifactId>
+			<artifactId>safe-online-demo-prescription-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -94,37 +140,30 @@
 			<artifactId>safe-online-demo-mandate-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
+
+        <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-test-util</artifactId>
+			<artifactId>safe-online-model-beid</artifactId>
 			<version>1.2-SNAPSHOT</version>
-			<scope>test</scope>
+            <type>ejb</type>
 		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-common-client</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-common-client</artifactId>
+            <scope>test</scope>
+        </dependency>
 
 	</dependencies>
 

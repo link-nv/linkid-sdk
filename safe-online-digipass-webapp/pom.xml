@@ -10,7 +10,7 @@
 	</parent>
 
 	<name>SafeOnline Digipass Device Web Application</name>
-    <description>
+	<description>
         SafeOnline Digipass Device Web Application.
     </description>
 
@@ -25,63 +25,107 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<dependentWarExcludes> WEB-INF/web.xml,index.jsp 
-					</dependentWarExcludes>
-					<!-- http://jira.codehaus.org/browse/MWAR-18 -->
+					<packagingExcludes>WEB-INF/lib/*</packagingExcludes>
+					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
 					<webResources>
 						<resource>
-							<directory> ${basedir}/src/main/webapp/WEB-INF </directory>
+							<directory>
+								${basedir}/src/main/webapp/WEB-INF
+	                            </directory>
 							<targetPath>WEB-INF</targetPath>
 							<filtering>true</filtering>
 						</resource>
 					</webResources>
+					<overlays>
+						<overlay>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>safe-online-device-webapp-base</artifactId>
+							<excludes>
+								<exclude>WEB-INF/web.xml</exclude>
+							</excludes>
+						</overlay>
+					</overlays>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jboss-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
 
+		<!-- Dependency Groups -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-as</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-jsf</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-saml</artifactId>
+			<type>pom</type>
+		</dependency>
+
+		<!-- Specific Dependencies: OLAS: Backing Beans -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-digipass</artifactId>
-			<type>ejb-client</type>
 			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
+			<scope>runtime</scope>
+			<type>ejb</type>
 		</dependency>
+
+		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container</artifactId>
-			<type>pom</type>
-			<version>1.2-SNAPSHOT</version>
+			<artifactId>safe-online-device-webapp-base</artifactId>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-saml-authn-context</artifactId>
-			<version>1.2-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.xml.bind</groupId>
-					<artifactId>jaxb-api</artifactId>
-				</exclusion>
-			</exclusions>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-webapp-base</artifactId>
-			<type>war</type>
+			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+
+		<!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-taglib</artifactId>
 			<version>1.2-SNAPSHOT</version>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-digipass</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<type>ejb-client</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -92,49 +136,16 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
 			<type>ejb-client</type>
-			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-sdk</artifactId>
 			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ctrl-base</artifactId>
 			<version>1.2-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.opensaml</groupId>
-			<artifactId>opensaml</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.opensaml</groupId>
-			<artifactId>xmltooling</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.opensaml</groupId>
-			<artifactId>openws</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
 		</dependency>
 
 	</dependencies>

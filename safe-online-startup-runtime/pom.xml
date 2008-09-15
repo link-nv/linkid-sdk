@@ -1,33 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>${safe-online.version}</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
-
 	<name>SafeOnline Startup Runtime</name>
-	<description>
-		Starts certain SafeOnline components up at runtime.
+	<description> Starts certain SafeOnline components up at runtime. 
 	</description>
-
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-startup-runtime</artifactId>
-	<version>${safe-online.version}</version>
+	<version>1.2-SNAPSHOT</version>
 	<packaging>war</packaging>
-
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-                    <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
-                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+					<packagingExcludes>WEB-INF/lib/*</packagingExcludes>
+					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -54,32 +48,29 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<dependencies>
 
         <!-- Dependency Groups -->
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-as</artifactId>
-            <type>pom</type>
-        </dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-as</artifactId>
+			<type>pom</type>
+		</dependency>
 
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup</artifactId>
-			<version>${safe-online.version}</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 
         <!-- Test Dependencies -->
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-test</artifactId>
-            <type>pom</type>
-        </dependency>
-
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-test</artifactId>
+			<type>pom</type>
+		</dependency>
 	</dependencies>
-
 	<reporting>
 		<plugins>
 			<plugin>
@@ -99,5 +90,4 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
 </project>

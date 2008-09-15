@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +26,7 @@ import org.jfree.chart.JFreeChart;
 
 
 public class ChartServlet extends AbstractInjectionServlet {
-
+ 
     private static final long serialVersionUID = 1L;
 
     private static final Log  LOG              = LogFactory.getLog(ChartServlet.class);
@@ -35,12 +34,6 @@ public class ChartServlet extends AbstractInjectionServlet {
     @EJB(mappedName = "SafeOnline/StatisticServiceBean/local")
     private StatisticService  statisticService;
 
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-
-        super.init(config);
-    }
 
     @Override
     public void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,

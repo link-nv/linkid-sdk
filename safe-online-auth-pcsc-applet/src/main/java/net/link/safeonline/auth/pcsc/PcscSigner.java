@@ -13,6 +13,8 @@ import java.security.cert.X509Certificate;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 
+import net.link.safeonline.applet.PinDialog;
+import net.link.safeonline.auth.pcsc.AuthenticationMessages.KEY;
 import net.link.safeonline.shared.Signer;
 
 
@@ -20,8 +22,10 @@ public class PcscSigner extends Pcsc implements Signer {
 
     private final PcscSignerLogger logger;
 
+    private AuthenticationMessages messages;
 
-    public PcscSigner(CardChannel cardChannel, PcscSignerLogger logger) {
+    public PcscSigner(CardChannel cardChannel, PcscSignerLogger logger,
+			AuthenticationMessages messages) {
 
         super(cardChannel);
         if (null == logger) {
@@ -29,12 +33,14 @@ public class PcscSigner extends Pcsc implements Signer {
         } else {
             this.logger = logger;
         }
+        
+        this.messages = messages;
     }
 
     public X509Certificate getCertificate() {
 
         try {
-            return this.getAuthenticationCertificate();
+            return getAuthenticationCertificate();
         } catch (Exception e) {
             this.logger.log("getCert error: " + e.getMessage());
             throw new RuntimeException("getCert error");
@@ -43,7 +49,8 @@ public class PcscSigner extends Pcsc implements Signer {
 
     public byte[] sign(byte[] data) {
 
-        PinDialog pinDialog = new PinDialog();
+        PinDialog pinDialog = new PinDialog(this.messages
+				.getString(KEY.ENTER_PIN));
         String pin = pinDialog.getPin();
         if (null == pin) {
             this.logger.log("PIN canceled");

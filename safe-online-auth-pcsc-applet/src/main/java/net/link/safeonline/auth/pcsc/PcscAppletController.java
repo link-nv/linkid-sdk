@@ -83,7 +83,7 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
             return;
         try {
             CardChannel channel = card.getBasicChannel();
-            Signer signer = new PcscSigner(channel, this);
+            Signer signer = new PcscSigner(channel, this, this.messages);
             IdentityProvider identityProvider = new PcscIdentityProvider(channel);
             byte[] statement = this.statementProvider.createStatement(signer, identityProvider);
             try {

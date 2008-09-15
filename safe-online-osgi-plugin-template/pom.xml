@@ -2,12 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<!-- this section needs to be removed when compiling outside the safeonline environment -->
+	<parent>
+		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k</groupId>
+		<version>1.2-SNAPSHOT</version>
+	</parent>
 	<name>SafeOnline Template OSGI bundle</name>
-	<description> SafeOnline Temlate OSGI bundle </description>
+	<description>
+        SafeOnline Template OSGI bundle
+    </description>
+
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-osgi-plugin-template</artifactId>
 	<version>1.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -63,17 +73,24 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
+
+		<!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-osgi-plugin</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
+
+		<!-- Specific Dependencies: External -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.0.1</version>
 			<scope>compile</scope>
 		</dependency>
+
 	</dependencies>
+
 </project>

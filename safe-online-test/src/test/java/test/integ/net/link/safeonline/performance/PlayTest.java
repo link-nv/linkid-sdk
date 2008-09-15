@@ -70,77 +70,92 @@ public class PlayTest extends AbstractDataTest {
         DriverProfileEntity profile = this.executionService.getProfiles(execution.getStartTime()).iterator().next();
 
         long start = System.currentTimeMillis();
-        long dataDuration = (Long) this.em.createNamedQuery(ProfileDataEntity.getExecutionDuration).setParameter(
-                "profile", profile).getSingleResult();
-        long dataStart = (Long) this.em.createNamedQuery(ProfileDataEntity.getExecutionStart).setParameter("profile",
-                profile).getSingleResult();
-        dataStart = 1204796453397l;
+		long dataDuration = (Long) this.em.createNamedQuery(
+				ProfileDataEntity.getExecutionDuration).setParameter("profile",
+				profile).getSingleResult();
+		long dataStart = (Long) this.em.createNamedQuery(
+				ProfileDataEntity.getExecutionStart).setParameter("profile",
+				profile).getSingleResult();
+		dataStart = 1204796453397l;
 
-        int period = (int) Math.ceil((double) dataDuration / DATA_POINTS);
+		int period = (int) Math.ceil((double) dataDuration / DATA_POINTS);
 
-        // System.err.println(" - 0: " + (System.currentTimeMillis() - start));
+		// System.err.println(" - 0: " + (System.currentTimeMillis() - start));
 
-        long point = 0;
-        System.out.println("duration: " + dataDuration);
-        System.out.println("period: " + period);
-        // for (long point = 0; point * period < dataDuration; ++point) {
-        // start = System.currentTimeMillis();
-        // System.out.format("checking %.2f%%...", 100d * point * period
-        // / dataDuration);
-        // System.out.println();
+		long point = 0;
+		System.out.println("duration: " + dataDuration);
+		System.out.println("period: " + period);
+		// for (long point = 0; point * period < dataDuration; ++point) {
+		// start = System.currentTimeMillis();
+		// System.out.format("checking %.2f%%...", 100d * point * period
+		// / dataDuration);
+		// System.out.println();
 
-        ScenarioTimingEntity timing;
+		ScenarioTimingEntity timing;
 
-        List<Object> ttt = this.em.createQuery(
-                "SELECT t.startTime, t.agentDuration, t.olasDuration" + "    FROM ProfileDataEntity d"
-                        + "        JOIN d.scenarioTiming t" + "        JOIN d.measurements m"
-                        + "    WHERE d.profile = :profile" + "        AND t.startTime >= :start"
-                        + "        AND t.startTime < :stop").setParameter("profile", profile).setParameter("start",
-                dataStart + point * period).setParameter("stop", dataStart + (point + 1) * period).getResultList();
+		List<Object> ttt = this.em.createQuery(
+				"SELECT t.startTime, t.agentDuration, t.olasDuration"
+						+ "    FROM ProfileDataEntity d"
+						+ "        JOIN d.scenarioTiming t"
+						+ "        JOIN d.measurements m"
+						+ "    WHERE d.profile = :profile"
+						+ "        AND t.startTime >= :start"
+						+ "        AND t.startTime < :stop").setParameter(
+				"profile", profile).setParameter("start",
+				dataStart + point * period).setParameter("stop",
+				dataStart + (point + 1) * period).getResultList();
 
-        QuickTest.printResults("Timings", ttt);
+		QuickTest.printResults("Timings", ttt);
 
-        try {
-            timing = (ScenarioTimingEntity) this.em.createNamedQuery(ProfileDataEntity.getScenarioTiming).setParameter(
-                    "execution", profile.getExecution()).setParameter("start", dataStart + point * period)
-                    .setParameter("stop", dataStart + (point + 1) * period).getSingleResult();
-        } catch (NoResultException e) {
-            return;
-        }
+		try {
+			timing = (ScenarioTimingEntity) this.em.createNamedQuery(
+					ScenarioTimingEntity.createAverage).setParameter(
+					"execution", profile.getExecution()).setParameter("start",
+					dataStart + point * period).setParameter("stop",
+					dataStart + (point + 1) * period).getSingleResult();
+		} catch (NoResultException e) {
+			return;
+		}
 
-        // System.out.print(" " + timing.getStart() + "...");
-        // System.err.println(" - 1: " + (System.currentTimeMillis() -
-        // start));
-        // start = System.currentTimeMillis();
+		// System.out.print(" " + timing.getStart() + "...");
+		// System.err.println(" - 1: " + (System.currentTimeMillis() -
+		// start));
+		// start = System.currentTimeMillis();
 
-        ttt = this.em
-                .createQuery(
-                        "SELECT d.scenarioTiming.startTime, d.scenarioTiming.agentDuration, d.scenarioTiming.olasDuration, m.measurement, m.duration"
-                                + "    FROM ProfileDataEntity d          "
-                                + "        JOIN d.measurements m         "
-                                + "    WHERE d.profile = :profile        "
-                                + "        AND d.scenarioTiming.startTime >= :start      "
-                                + "        AND d.scenarioTiming.startTime < :stop      "
-                                + "        AND m.measurement = :measurement").setParameter("profile", profile)
-                .setParameter("start", dataStart + point * period).setParameter("stop",
-                        dataStart + (point + 1) * period).setParameter("measurement", ProfileData.REQUEST_DELTA_TIME)
-                .getResultList();
+		ttt = this.em
+				.createQuery(
+						"SELECT d.scenarioTiming.startTime, d.scenarioTiming.agentDuration, d.scenarioTiming.olasDuration, m.measurement, m.duration"
+								+ "    FROM ProfileDataEntity d          "
+								+ "        JOIN d.measurements m         "
+								+ "    WHERE d.profile = :profile        "
+								+ "        AND d.scenarioTiming.startTime >= :start      "
+								+ "        AND d.scenarioTiming.startTime < :stop      "
+								+ "        AND m.measurement = :measurement")
+				.setParameter("profile", profile).setParameter("start",
+						dataStart + point * period).setParameter("stop",
+						dataStart + (point + 1) * period).setParameter(
+						"measurement", ProfileData.REQUEST_DELTA_TIME)
+				.getResultList();
 
-        QuickTest.printResults("Data", ttt);
+		QuickTest.printResults("Data", ttt);
 
-        List<MeasurementEntity> measurements = this.em.createNamedQuery(ProfileDataEntity.createAverage).setParameter(
-                "profile", profile).setParameter("start", dataStart + point * period).setParameter("stop",
-                dataStart + (point + 1) * period).getResultList();
+		List<MeasurementEntity> measurements = this.em.createNamedQuery(
+				ProfileDataEntity.createAverage).setParameter("profile",
+				profile).setParameter("start", dataStart + point * period)
+				.setParameter("stop", dataStart + (point + 1) * period)
+				.getResultList();
 
-        ProfileDataEntity profileDataEntity = new ProfileDataEntity(profile, timing);
+		ProfileDataEntity profileDataEntity = new ProfileDataEntity(profile,
+				timing);
 
-        for (MeasurementEntity measurement : measurements) {
-            measurement.setProfileData(profileDataEntity);
-            profileDataEntity.getMeasurements().add(measurement);
-            if (measurement.getMeasurement().equals(ProfileData.REQUEST_DELTA_TIME)) {
-                if (timing.getAgentDuration() < measurement.getDuration()) {
-                    System.err.print("  req (" + measurement.getDuration() + ") > agent (" + timing.getAgentDuration()
-                            + ")!");
+		for (MeasurementEntity measurement : measurements) {
+			measurement.setProfileData(profileDataEntity);
+			profileDataEntity.getMeasurements().add(measurement);
+			if (measurement.getMeasurement().equals(
+					ProfileData.REQUEST_DELTA_TIME)) {
+				if (timing.getAgentDuration() < measurement.getDuration()) {
+                    System.err.print("  req (" + measurement.getDuration()
+							+ ") > agent (" + timing.getAgentDuration() + ")!");
                 }
 
                 break;

@@ -10,7 +10,7 @@
 	</parent>
 
 	<name>SafeOnline Deploy</name>
-    <description>
+	<description>
         SafeOnline Deployable Application Package.
     </description>
 
@@ -26,120 +26,57 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
 				<configuration>
-					<version>1.4</version>
+					<version>5</version>
+					<jboss>
+						<version>4</version>
+					</jboss>
 					<modules>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-entity</artifactId>
-						</ejbModule>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-model</artifactId>
-						</ejbModule>
-						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-startup</artifactId>
-						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-ws-runtime </artifactId>
-							<contextRoot>/safe-online-ws</contextRoot>
+                            <contextRoot>/${safe-online.ws.webapp.name}</contextRoot>
 						</webModule>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-user</artifactId>
-						</ejbModule>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-auth</artifactId>
-						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-user-webapp </artifactId>
-							<contextRoot>/${safe-online.user.webapp.name}</contextRoot>
+							<artifactId>safe-online-auth-webapp</artifactId>
+                            <contextRoot>/${safe-online.auth.webapp.name}</contextRoot>
 						</webModule>
-						<sarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-user-service </artifactId>
-						</sarModule>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-helpdesk </artifactId>
-						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-helpdesk-webapp </artifactId>
-							<contextRoot>/${safe-online.helpdesk.webapp.name}</contextRoot>
+							<artifactId>safe-online-helpdesk-webapp</artifactId>
+                            <contextRoot>/${safe-online.helpdesk.webapp.name}</contextRoot>
 						</webModule>
-						<sarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-helpdesk-service </artifactId>
-						</sarModule>
-						<sarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-service</artifactId>
-						</sarModule>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-oper</artifactId>
-						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-oper-webapp </artifactId>
-							<contextRoot>/${safe-online.oper.webapp.name}</contextRoot>
+							<artifactId>safe-online-oper-webapp</artifactId>
+                            <contextRoot>/${safe-online.oper.webapp.name}</contextRoot>
 						</webModule>
-						<sarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-oper-service </artifactId>
-						</sarModule>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-owner</artifactId>
-						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-owner-webapp </artifactId>
-							<contextRoot>/${safe-online.owner.webapp.name}</contextRoot>
+							<artifactId>safe-online-owner-webapp</artifactId>
+                            <contextRoot>/${safe-online.owner.webapp.name}</contextRoot>
 						</webModule>
-						<sarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-owner-service </artifactId>
-						</sarModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-auth-webapp </artifactId>
-							<contextRoot>/${safe-online.auth.webapp.name}</contextRoot>
+							<artifactId>safe-online-user-webapp</artifactId>
+                            <contextRoot>/${safe-online.user.webapp.name}</contextRoot>
 						</webModule>
-						<sarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-auth-service </artifactId>
-						</sarModule>
-						<jarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-taglib </artifactId>
-							<includeInApplicationXml>true</includeInApplicationXml>
-						</jarModule>
 					</modules>
-					<jboss>
-						<version>4</version>
-						<!--
-							Need to apply the patch from:
-							http://jira.codehaus.org/browse/MEAR-50 to maven-ear-plugin.
-							<loader-repository> safeonline:loader=SafeOnline.ear
-							</loader-repository> This does not work because of class loading
-							issues in the web applications.
-						-->
-					</jboss>
-					<excludes>
-						<exclude>
-							<groupId>(?!^net.lin-k).*</groupId>
-						</exclude>
-					</excludes>
 					<archive>
 						<manifest>
-							<mainClass> net.link.safeonline.cli.Main </mainClass>
+							<mainClass>net.link.safeonline.cli.Main</mainClass>
 						</manifest>
 					</archive>
+					<defaultJavaBundleDir>lib/</defaultJavaBundleDir>
+
+					<!--
+						Exlude ZIPs. They only serve to force the deps of wars/sars to
+						become transitive.
+					-->
+					<artifactTypeMappings>
+						<artifactTypeMapping type="zip" mapping="jar" />
+					</artifactTypeMappings>
+					<earSourceExcludes>*.zip,lib/*.zip</earSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -187,131 +124,116 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
 
+		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-entity</artifactId>
-			<type>ejb</type>
+			<artifactId>safe-online-startup-runtime</artifactId>
 			<version>1.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-model</artifactId>
-			<type>ejb</type>
-			<version>1.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-startup</artifactId>
 			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-startup-runtime</artifactId>
 			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-ws-runtime</artifactId>
+			<version>1.2-SNAPSHOT</version>
 			<type>war</type>
-			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-user</artifactId>
-			<type>ejb</type>
+			<artifactId>safe-online-ws-runtime</artifactId>
 			<version>1.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-auth</artifactId>
-			<type>ejb</type>
-			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-user-webapp</artifactId>
-			<type>war</type>
 			<version>1.2-SNAPSHOT</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-user-service</artifactId>
-			<type>sar</type>
+			<artifactId>safe-online-user-webapp</artifactId>
 			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-helpdesk-webapp</artifactId>
+			<version>1.2-SNAPSHOT</version>
 			<type>war</type>
-			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-helpdesk-service</artifactId>
-			<type>sar</type>
+			<artifactId>safe-online-helpdesk-webapp</artifactId>
 			<version>1.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-helpdesk</artifactId>
-			<type>ejb</type>
-			<version>1.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-service</artifactId>
-			<type>sar</type>
-			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-oper-webapp</artifactId>
+			<version>1.2-SNAPSHOT</version>
 			<type>war</type>
-			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-oper</artifactId>
-			<type>ejb</type>
+			<artifactId>safe-online-oper-webapp</artifactId>
 			<version>1.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-oper-service</artifactId>
-			<type>sar</type>
-			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-owner-webapp</artifactId>
+			<version>1.2-SNAPSHOT</version>
 			<type>war</type>
-			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-owner</artifactId>
-			<type>ejb</type>
+			<artifactId>safe-online-owner-webapp</artifactId>
 			<version>1.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-owner-service</artifactId>
-			<type>sar</type>
-			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth-webapp</artifactId>
-			<type>war</type>
 			<version>1.2-SNAPSHOT</version>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-auth-service</artifactId>
-			<type>sar</type>
+			<artifactId>safe-online-auth-webapp</artifactId>
 			<version>1.2-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
+
+		<!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-cli</artifactId>
@@ -320,38 +242,40 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
-			<version>1.2-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-tools</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId> hibernate-commons-annotations </artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-codec</groupId>
-					<artifactId>commons-codec</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>bouncycastle</groupId>
-					<artifactId>bcprov-jdk15</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-lang</groupId>
-					<artifactId>commons-lang</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-taglib</artifactId>
+			<artifactId>safe-online-model</artifactId>
 			<version>1.2-SNAPSHOT</version>
+			<type>ejb</type>
+		</dependency>
+		<!--
+			TODO: Without an explicit dep on s-o-entity it *looks* like things
+			get deployed in bad order. WTF?
+		-->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-entity</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<type>ejb</type>
+		</dependency>
+		<!--
+			FIXME: s-o-service should really be a dep of j2ee-util; but there it
+			causes a cyclic dependency problem.
+		-->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-service</artifactId>
+			<version>1.2-SNAPSHOT</version>
+			<scope>runtime</scope>
+			<type>sar</type>
+		</dependency>
+
+
+		<!-- Specific Dependencies: External -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 
 	</dependencies>

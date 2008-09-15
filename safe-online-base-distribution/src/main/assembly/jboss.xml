@@ -6,7 +6,7 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>target/files/jboss-4.2.2.GA</directory>
+            <directory>target/files/jboss-${jboss.version}</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
 				<exclude>**/jboss-saaj.jar</exclude>
@@ -32,21 +32,21 @@
 			</excludes>
 		</fileSet>
 		<fileSet>
-			<directory>target/files/jboss-4.2.2.GA/server/default/deploy/jms</directory>
-			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+            <directory>target/files/jboss-${jboss.version}/server/default/deploy/jms</directory>
+            <outputDirectory>jboss/server/default/deploy</outputDirectory>
 			<includes>
 				<include>jms-ra.rar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>target/files/jboss-4.2.2.GA</directory>
+            <directory>target/files/jboss-${jboss.version}</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
 				<include>client/jbossall-client.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>target/files/jboss-4.2.2.GA</directory>
+            <directory>target/files/jboss-${jboss.version}</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
 				<include>bin/run.sh</include>
@@ -74,10 +74,10 @@
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>target/files/jboss-messaging-1.4.0.SP3</directory>
-			<includes>
-				<include>jboss-messaging.jar</include>
-			</includes>
+            <directory>target/files/jboss-messaging-${jboss-messaging.version}</directory>
+            <includes>
+                <include>jboss-messaging.jar</include>
+            </includes>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 		<fileSet>
@@ -86,10 +86,11 @@
 		</fileSet>
 		<fileSet>
 			<directory>target/dependency</directory>
-			<outputDirectory>jboss/server/default/lib</outputDirectory>
-			<excludes>
+            <excludes>
+                <exclude>safe-online*</exclude>
 				<exclude>org.apache.felix.fileinstall-*</exclude>
-			</excludes>
+            </excludes>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 		<fileSet>
 			<directory>target/dependency</directory>

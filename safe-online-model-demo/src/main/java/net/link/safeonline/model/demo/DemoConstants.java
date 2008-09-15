@@ -15,7 +15,7 @@ public class DemoConstants {
     }
 
 
-    public static final String DEMO_STARTABLE_JNDI_PREFIX                = "SafeOnlineDemo/startup/";
+    public static final String DEMO_STARTABLE_JNDI_PREFIX                = "SafeOnlineZDemo/startup/";
 
     public static final String DEMO_WS_RUNTIME                           = "/safe-online-demo-ws";
 

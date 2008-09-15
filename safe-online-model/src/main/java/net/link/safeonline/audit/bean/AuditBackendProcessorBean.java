@@ -155,7 +155,7 @@ public class AuditBackendProcessorBean implements MessageListener {
             Object object = context.lookup(objectName);
             if (!(object instanceof AuditBackend)) {
                 String message = "object \"" + AuditBackend.JNDI_CONTEXT + "/" + objectName + "\" is not a "
-                        + AuditBackend.class.getName();
+                        + AuditBackend.class.getName() + "; it is " + (object == null? "null": "a " + object.getClass().getName());
                 LOG.error(message);
                 throw new IllegalStateException(message);
             }

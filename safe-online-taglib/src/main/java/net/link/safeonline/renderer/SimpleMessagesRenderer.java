@@ -24,14 +24,12 @@ public class SimpleMessagesRenderer extends MessagesRenderer {
         FacesMessage curMessage = null;
         ResponseWriter writer = null;
 
-        if (context == null) {
+        if (context == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(
                     MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
-        }
-        if (component == null) {
+        if (component == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(
                     MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
-        }
 
         if (logger.isLoggable(Level.FINER)) {
             logger.log(Level.FINER, "End encoding component " + component.getId());

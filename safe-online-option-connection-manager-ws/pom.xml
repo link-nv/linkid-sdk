@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k</groupId>
+		<version>1.2-SNAPSHOT</version>
+	</parent>
+
+	<name>SafeOnline Connection Manager WS Interface</name>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-option-connection-manager-ws</artifactId>
+	<version>1.2-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxws-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsimport</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<packageName>net.link.safeonline.option.connection.manager.ws.generated</packageName>
+					<wsdlDirectory>${basedir}/src/main/resources</wsdlDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+        <dependency>
+            <groupId>javax.jws</groupId>
+            <artifactId>jsr181-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lin-k.safe-online</groupId>
+            <artifactId>safe-online-container-test</artifactId>
+            <type>pom</type>
+        </dependency>
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-rt</artifactId>
+            <scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>

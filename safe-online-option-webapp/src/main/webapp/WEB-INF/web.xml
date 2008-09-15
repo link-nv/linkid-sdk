@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
+	<display-name>Olas Option Device Web Application</display-name>
+	<security-constraint>
+		<display-name>Restrict Viewing XHTML Documents</display-name>
+		<web-resource-collection>
+			<web-resource-name>XHTML</web-resource-name>
+			<url-pattern>*.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+		</auth-constraint>
+	</security-constraint>
+	<listener>
+		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+	</listener>
+	<context-param>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>client</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+		<param-value>.xhtml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>facelets.DEVELOPMENT</param-name>
+		<param-value>${debug.mode}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>org.jboss.seam.core.init.debug</param-name>
+		<param-value>${debug.mode}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>CommercialName</param-name>
+		<param-value>${safe-online.commercial.name}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>ApplicationName</param-name>
+		<param-value>${safe-online.option.webapp.name}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>DeviceName</param-name>
+		<param-value>option</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStoreResource</param-name>
+		<param-value>safe-online-option-keystore.jks</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+	<context-param>
+		<param-name>StsWsLocation</param-name>
+		<param-value> ${safe-online.host.auth.basename} </param-value>
+	</context-param>
+	<filter>
+		<filter-name>JAASLoginFilter</filter-name>
+		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
+		<init-param>
+			<param-name>LoginContextName</param-name>
+			<param-value>client-login</param-value>
+		</init-param>
+	</filter>
+	<filter>
+		<filter-name>Seam Filter</filter-name>
+		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Seam Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.seam</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>LandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.auth.servlet.LandingServlet</servlet-class>
+		<init-param>
+			<param-name>AuthenticationUrl</param-name>
+			<param-value>authenticate.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.option.webapp.name}/auth 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LandingServlet</servlet-name>
+		<url-pattern>/auth</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<servlet-class> net.link.safeonline.option.servlet.AuthenticationServlet 
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<url-pattern>/authentication</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>ExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.auth.servlet.ExitServlet</servlet-class>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ExitServlet</servlet-name>
+		<url-pattern>/authenticationexit</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>DeviceLandingServlet</servlet-name>
+		<servlet-class>net.link.safeonline.device.sdk.servlet.LandingServlet</servlet-class>
+		<init-param>
+			<param-name>RegistrationUrl</param-name>
+			<param-value>register.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>RemovalUrl</param-name>
+			<param-value>remove.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.option.webapp.name}/device 
+			</param-value>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>RegistrationServlet</servlet-name>
+		<servlet-class> net.link.safeonline.option.servlet.RegistrationServlet 
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RegistrationServlet</servlet-name>
+		<url-pattern>/identity</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>RemovalServlet</servlet-name>
+		<servlet-class> net.link.safeonline.option.servlet.RemovalServlet 
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RemovalServlet</servlet-name>
+		<url-pattern>/identityremove</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DeviceLandingServlet</servlet-name>
+		<url-pattern>/device</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>DeviceExitServlet</servlet-name>
+		<servlet-class>net.link.safeonline.device.sdk.servlet.ExitServlet</servlet-class>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeviceExitServlet</servlet-name>
+		<url-pattern>/deviceexit</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Style Servlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Style Servlet</servlet-name>
+		<url-pattern>/theme.css</url-pattern>
+	</servlet-mapping>
+	<session-config>
+		<session-timeout>5</session-timeout>
+	</session-config>
+</web-app>

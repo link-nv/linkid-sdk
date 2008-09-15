@@ -26,34 +26,25 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
 				<configuration>
-					<version>1.4</version>
-					<modules>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-model-encap </artifactId>
-						</ejbModule>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-encap </artifactId>
-						</ejbModule>
-						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-encap-startup </artifactId>
-						</webModule>
-						<webModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId> safe-online-encap-webapp </artifactId>
-							<contextRoot>/${safe-online.encap.webapp.name}</contextRoot>
-						</webModule>
-					</modules>
-					<excludes>
-						<exclude>
-							<groupId>(?!^net.lin-k).*</groupId>
-						</exclude>
-					</excludes>
+					<version>5</version>
 					<jboss>
 						<version>4</version>
 					</jboss>
+                    <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
+                    <modules>
+                        <webModule>
+                            <groupId>net.lin-k.safe-online</groupId>
+                            <artifactId>safe-online-encap-webapp</artifactId>
+                            <contextRoot>/${safe-online.encap.webapp.name}</contextRoot>
+                        </webModule>
+                    </modules>
+
+                    <!-- Exlude ZIPs.
+                         They only serve to force the deps of wars/sars to become transitive. -->
+                    <artifactTypeMappings>
+                        <artifactTypeMapping type="zip" mapping="jar"/>
+                    </artifactTypeMappings>
+                    <earSourceExcludes>*.zip,lib/*.zip</earSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -70,40 +61,49 @@
 					</container>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
 
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-model-encap</artifactId>
-			<type>ejb</type>
-			<version>1.2-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lin-k.safe-online</groupId>
-					<artifactId>safe-online-model</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-encap</artifactId>
-			<type>ejb</type>
-			<version>1.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-encap-startup</artifactId>
-			<type>war</type>
-			<version>1.2-SNAPSHOT</version>
-		</dependency>
+        <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-webapp</artifactId>
-			<type>war</type>
 			<version>1.2-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-encap-webapp</artifactId>
+                <version>1.2-SNAPSHOT</version>
+                <type>zip</type>
+            </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-encap</artifactId>
+            <version>1.2-SNAPSHOT</version>
+			<type>ejb</type>
 		</dependency>
 
 	</dependencies>

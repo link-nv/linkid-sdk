@@ -21,7 +21,7 @@
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
-		<param-value>${safe-online.demo.payment.webapp.name}</param-value>
+		<param-value>ebank</param-value>
 	</context-param>
 	<context-param>
 		<param-name>AuthenticationProtocol</param-name>

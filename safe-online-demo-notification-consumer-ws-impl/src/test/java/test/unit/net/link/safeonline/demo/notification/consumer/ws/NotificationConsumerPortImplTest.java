@@ -76,16 +76,16 @@ public class NotificationConsumerPortImplTest {
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnlineDemo/WSSecurityConfigurationBean/local");
+                "SafeOnlineZDemo/WSSecurityConfigurationBean/local");
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
         this.mockNotificationConsumerService = createMock(net.link.safeonline.demo.model.NotificationConsumerService.class);
 
         this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockNotificationConsumerService };
 
-        this.jndiTestUtils.bindComponent("SafeOnlineDemo/WSSecurityConfigurationBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnlineZDemo/WSSecurityConfigurationBean/local",
                 this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils.bindComponent("SafeOnlineDemo/NotificationConsumerServiceBean/local",
+        this.jndiTestUtils.bindComponent("SafeOnlineZDemo/NotificationConsumerServiceBean/local",
                 this.mockNotificationConsumerService);
 
         // expectations
