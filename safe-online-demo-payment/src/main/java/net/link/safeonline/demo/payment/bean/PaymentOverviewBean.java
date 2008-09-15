@@ -17,6 +17,7 @@ import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import net.link.safeonline.demo.payment.PaymentConstants;
 import net.link.safeonline.demo.payment.PaymentOverview;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
@@ -53,7 +54,7 @@ public class PaymentOverviewBean extends AbstractPaymentDataClientBean implement
 
 
     @Factory(PAYMENT_LIST_NAME)
-    @RolesAllowed("user")
+    @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public void paymentListFactory() {
 
         UserEntity user = this.entityManager.find(UserEntity.class, getUsername());

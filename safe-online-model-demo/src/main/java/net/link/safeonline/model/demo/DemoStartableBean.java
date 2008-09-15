@@ -390,8 +390,6 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Attribute Types.
          */
-        configDemoAttribute(DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false,
-                DEMO_PAYMENT_APPLICATION_NAME, "Payment Admin", "Rekeningbeheerder", true, false);
         configDemoAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false,
                 DEMO_PAYMENT_APPLICATION_NAME, "Junior Account", "Jongerenrekening", true, false);
         configDemoAttribute(DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, DatatypeType.STRING, true, null, "VISA number",
@@ -401,18 +399,9 @@ public class DemoStartableBean extends AbstractInitBean {
          * Application Identities.
          */
         this.identities.add(new Identity(DEMO_PAYMENT_APPLICATION_NAME, new IdentityAttributeTypeDO[] {
-                new IdentityAttributeTypeDO(DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, false, false),
                 new IdentityAttributeTypeDO(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, false, false),
                 new IdentityAttributeTypeDO(DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, true, false),
                 new IdentityAttributeTypeDO(DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true, false) }));
-
-        /*
-         * Also make sure the admin is marked as such.
-         */
-        AttributeEntity paymentAdminAttribute = new AttributeEntity();
-        paymentAdminAttribute.setPk(new AttributePK(DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, paymentAdmin));
-        paymentAdminAttribute.setBooleanValue(true);
-        this.attributes.add(paymentAdminAttribute);
 
         /*
          * device restriction
