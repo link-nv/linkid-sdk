@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
+		<version>${safe-online.version}</version>
+	</parent>
+
+	<name>SafeOnline SAML Container</name>
+    <description>
+        Groups the dependencies required for SAML ticket management.
+    </description>
+
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-container-saml</artifactId>
+	<version>${safe-online.version}</version>
+	<packaging>pom</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<additionalProjectnatures>
+						<projectnature> org.eclipse.jdt.core.javanature </projectnature>
+					</additionalProjectnatures>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+        <!-- Specific Dependencies: OLAS -->
+   		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-saml-authn-context</artifactId>
+			<version>${safe-online.version}</version>
+		</dependency>
+
+        <!-- opensaml -->
+        <dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>opensaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>xmltooling</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>openws</artifactId>
+        </dependency>
+
+        <!-- ticket creation -->
+        <dependency>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
+	</dependencies>
+
+</project>
