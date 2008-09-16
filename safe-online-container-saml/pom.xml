@@ -2,23 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
 		<version>1.2-SNAPSHOT</version>
 	</parent>
-
 	<name>SafeOnline SAML Container</name>
-    <description>
-        Groups the dependencies required for SAML ticket management.
-    </description>
-
+	<description> Groups the dependencies required for SAML ticket
+		management. </description>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-container-saml</artifactId>
 	<version>1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -32,64 +27,61 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<dependencies>
 
         <!-- Specific Dependencies: OLAS -->
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-saml-authn-context</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
 
         <!-- opensaml -->
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>opensaml</artifactId>
+		<dependency>
+			<groupId>org.opensaml</groupId>
+			<artifactId>opensaml</artifactId>
 
             <!-- Don't let this dependency change xalan's scope to runtime -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>xmltooling</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.opensaml</groupId>
+			<artifactId>xmltooling</artifactId>
 
             <!-- Don't let this dependency change xalan's scope to runtime -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>openws</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.opensaml</groupId>
+			<artifactId>openws</artifactId>
 
             <!-- Don't let this dependency change xalan's scope to runtime -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
         <!-- ticket creation -->
-        <dependency>
-            <groupId>velocity</groupId>
-            <artifactId>velocity</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-        </dependency>
-
+		<dependency>
+			<groupId>velocity</groupId>
+			<artifactId>velocity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
 	</dependencies>
-
 </project>

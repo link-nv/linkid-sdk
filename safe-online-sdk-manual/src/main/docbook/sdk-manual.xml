@@ -127,6 +127,17 @@
 								application owner web application.</para>
 						</listitem>
 					</varlistentry>
+					<varlistentry>
+						<term>Application Pool</term>
+						<listitem>
+							<para> Every application can belong to one or more application
+								pools. Application pools specify the timeout of a single sign-on
+								authentication. If an authentication has taken place for an
+								application in the same pool of another application, and the
+								timeout has not exceeded, single sign-on can be used ( if
+								configured to be allowed to use ).</para>
+						</listitem>
+					</varlistentry>
 				</variablelist>
 				The SDK itself is bundled in the file
 				<code>safe-online-sdk-1.0.jar</code>
@@ -616,6 +627,10 @@ public static class MyCompounded {
 		<param-value>SAML2_BROWSER_POST</param-value>
 	</init-param>
 	<init-param>
+		<param-name>SingleSignOnEnabled</param-name>
+		<param-value>true</param-value>
+	</init-param>
+	<init-param>
 		<param-name>KeyStoreType</param-name>
 		<param-value>pkcs12</param-value>
 	</init-param>
@@ -651,7 +666,15 @@ public static class MyCompounded {
 				into the web application. The
 				<code>ApplicationFriendlyName</code>
 				init parameter is optional to provide a human readable name that can
-				be displayed by device providers.
+				be displayed by device providers. The
+				<code>SingleSignOnEnabled</code>
+				init parameter is optional to specify is single sign on is allowed
+				for this application ot not. If omitted it defaults to true.
+				Accepted values are
+				<code>true</code>
+				or
+				<code>false</code>
+				.
 			</para>
 		</section>
 		<section>

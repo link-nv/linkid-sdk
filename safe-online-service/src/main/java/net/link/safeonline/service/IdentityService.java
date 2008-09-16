@@ -10,10 +10,15 @@ package net.link.safeonline.service;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 import net.link.safeonline.sdk.KeyStoreUtils;
 
@@ -24,14 +29,14 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * JMX bean that manages the identity of the SafeOnline instance. This identity is used for signing of SAML tokens.
- *
+ * 
  * <p>
  * This identity service can be extended later on when other types of identity tokens must be supported. For example:
  * HSMs via PKCS#11 drivers.
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class IdentityService implements IdentityServiceMBean {
 
@@ -57,6 +62,8 @@ public class IdentityService implements IdentityServiceMBean {
     private PublicKey       publicKey;
 
     private X509Certificate certificate;
+
+    private SecretKey       ssoKey;
 
 
     public void loadKeyPair() {
@@ -95,6 +102,19 @@ public class IdentityService implements IdentityServiceMBean {
         this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
         this.publicKey = this.certificate.getPublicKey();
         this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
+    }
+
+    public void generateSsoKey() {
+
+        LOG.debug("generate single sign-on key");
+        try {
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+            keyGen.init(128, new SecureRandom());
+            this.ssoKey = keyGen.generateKey();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("algorithm not found: AES");
+        }
+
     }
 
     public void setKeyStorePassword(String keyStorePassword) {
@@ -161,5 +181,13 @@ public class IdentityService implements IdentityServiceMBean {
             loadKeyPair();
         }
         return this.certificate;
+    }
+
+    public SecretKey getSsoKey() {
+
+        if (null == this.ssoKey) {
+            generateSsoKey();
+        }
+        return this.ssoKey;
     }
 }

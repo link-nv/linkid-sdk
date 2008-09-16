@@ -43,6 +43,7 @@ import net.link.safeonline.dao.AllowedDeviceDAO;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
+import net.link.safeonline.dao.ApplicationPoolDAO;
 import net.link.safeonline.dao.ApplicationScopeIdDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
@@ -57,6 +58,7 @@ import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
@@ -174,10 +176,12 @@ public abstract class AbstractInitBean implements Startable {
 
         final IdScopeType     idScope;
 
+        final boolean         ssoEnabled;
+
 
         public Application(String name, String owner, String description, URL applicationUrl, byte[] applicationLogo,
                 Color applicationColor, boolean allowUserSubscription, boolean removable, X509Certificate certificate,
-                boolean idmappingAccess, IdScopeType idScope) {
+                boolean idmappingAccess, IdScopeType idScope, boolean ssoEnabled) {
 
             this.name = name;
             this.owner = owner;
@@ -190,23 +194,46 @@ public abstract class AbstractInitBean implements Startable {
             this.certificate = certificate;
             this.idmappingAccess = idmappingAccess;
             this.idScope = idScope;
+            this.ssoEnabled = ssoEnabled;
         }
 
         public Application(String name, String owner, String description, URL applicationUrl, byte[] applicationLogo,
                 Color applicationColor, boolean allowUserSubscription, boolean removable) {
 
             this(name, owner, description, applicationUrl, applicationLogo, applicationColor, allowUserSubscription,
-                    removable, null, false, IdScopeType.USER);
+                    removable, null, false, IdScopeType.USER, false);
         }
 
         public Application(String name, String owner, X509Certificate certificate, IdScopeType idScope) {
 
-            this(name, owner, null, null, null, null, true, true, certificate, false, idScope);
+            this(name, owner, null, null, null, null, true, true, certificate, false, idScope, false);
         }
     }
 
 
     protected List<Application> registeredApplications;
+
+
+    protected static class ApplicationPool {
+
+        final String   name;
+
+        final long     timeout;
+
+        final String[] applications;
+
+
+        public ApplicationPool(String name, long timeout, String[] applications) {
+
+            this.name = name;
+            this.timeout = timeout;
+            this.applications = applications;
+        }
+
+    }
+
+
+    protected List<ApplicationPool> applicationPools;
 
 
     protected static class Subscription {
@@ -447,6 +474,7 @@ public abstract class AbstractInitBean implements Startable {
         this.attributeTypes = new LinkedList<AttributeTypeEntity>();
         this.authorizedUsers = new HashMap<String, AuthenticationDevice>();
         this.registeredApplications = new LinkedList<Application>();
+        this.applicationPools = new LinkedList<ApplicationPool>();
         this.subscriptions = new LinkedList<Subscription>();
         this.identities = new LinkedList<Identity>();
         this.usageAgreements = new LinkedList<UsageAgreement>();
@@ -508,6 +536,7 @@ public abstract class AbstractInitBean implements Startable {
             initSubjects();
             initApplicationOwners();
             initApplications();
+            initApplicationPools();
             initSubscriptions();
             initIdentities();
             initUsageAgreements();
@@ -619,13 +648,11 @@ public abstract class AbstractInitBean implements Startable {
             String applicationName = attributeProvider.getApplicationName();
             String attributeName = attributeProvider.getAttributeTypeName();
             ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
-            if (null == application) {
+            if (null == application)
                 throw new EJBException("application not found: " + applicationName);
-            }
             AttributeTypeEntity attributeType = this.attributeTypeDAO.findAttributeType(attributeName);
-            if (null == attributeType) {
+            if (null == attributeType)
                 throw new EJBException("attribute type not found: " + attributeName);
-            }
             AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO.findAttributeProvider(
                     application, attributeType);
             if (null != existingAttributeProvider) {
@@ -770,8 +797,37 @@ public abstract class AbstractInitBean implements Startable {
                     application.applicationColor, application.certificate, identityVersion, usageAgreementVersion);
             newApplication.setIdentifierMappingAllowed(application.idmappingAccess);
             newApplication.setIdScope(application.idScope);
+            newApplication.setSsoEnabled(application.ssoEnabled);
 
             this.applicationIdentityDAO.addApplicationIdentity(newApplication, identityVersion);
+        }
+    }
+
+
+    @EJB
+    private ApplicationPoolDAO applicationPoolDAO;
+
+
+    private void initApplicationPools() {
+
+        for (ApplicationPool applicationPool : this.applicationPools) {
+            ApplicationPoolEntity existingApplicationPool = this.applicationPoolDAO
+                    .findApplicationPool(applicationPool.name);
+            if (null != existingApplicationPool) {
+                continue;
+            }
+            ApplicationPoolEntity newApplicationPool = this.applicationPoolDAO.addApplicationPool(applicationPool.name,
+                    applicationPool.timeout);
+            List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
+            for (String applicationName : applicationPool.applications) {
+                ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
+                if (null == application) {
+                    this.LOG.debug("Could not find application: " + applicationName);
+                    throw new RuntimeException("Could not find application: " + applicationName);
+                }
+                applications.add(application);
+            }
+            newApplicationPool.setApplications(applications);
         }
     }
 
@@ -974,9 +1030,8 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initNode() {
 
-        if (null == this.node) {
+        if (null == this.node)
             throw new EJBException("No Olas node specified");
-        }
         NodeEntity olasNode = this.olasDAO.findNode(this.node.name);
         if (null == olasNode) {
             this.olasDAO.addNode(this.node.name, this.node.protocol, this.node.hostname, this.node.port,

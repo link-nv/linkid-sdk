@@ -9,8 +9,7 @@
 		<description>The default constructor</description>
 		<name>IdentityService</name>
 	</constructor>
-	<attribute getMethod="getKeyStoreType"
-		setMethod="setKeyStoreType">
+	<attribute getMethod="getKeyStoreType" setMethod="setKeyStoreType">
 		<description>The key store type (pkcs12, jks)</description>
 		<name>KeyStoreType</name>
 		<type>java.lang.String</type>
@@ -18,10 +17,8 @@
 			<default>jks</default>
 		</descriptors>
 	</attribute>
-	<attribute getMethod="getKeyStoreResource"
-		setMethod="setKeyStoreResource">
-		<description>
-			The name of the Identity Key Store Resource
+	<attribute getMethod="getKeyStoreResource" setMethod="setKeyStoreResource">
+		<description> The name of the Identity Key Store Resource 
 		</description>
 		<name>KeyStoreResource</name>
 		<type>java.lang.String</type>
@@ -29,18 +26,13 @@
 			<default>safe-online-keystore.jks</default>
 		</descriptors>
 	</attribute>
-	<attribute getMethod="getKeyStoreFile"
-		setMethod="setKeyStoreFile">
-		<description>
-			The name of the Identity Key Store File
-		</description>
+	<attribute getMethod="getKeyStoreFile" setMethod="setKeyStoreFile">
+		<description> The name of the Identity Key Store File </description>
 		<name>KeyStoreFile</name>
 		<type>java.lang.String</type>
 	</attribute>
-	<attribute getMethod="getKeyStorePassword"
-		setMethod="setKeyStorePassword">
-		<description>
-			The password to unlock the Identity Key Store
+	<attribute getMethod="getKeyStorePassword" setMethod="setKeyStorePassword">
+		<description> The password to unlock the Identity Key Store 
 		</description>
 		<name>KeyStorePassword</name>
 		<type>java.lang.String</type>
@@ -63,10 +55,13 @@
 		<name>loadKeyPair</name>
 	</operation>
 	<operation>
-		<description>
-			Gives back the X509 Identity Certificate
-		</description>
+		<description> Gives back the X509 Identity Certificate </description>
 		<name>getCertificate</name>
 		<return-type>java.security.cert.X509Certificate</return-type>
+	</operation>
+	<operation>
+		<description> Gives back the Single Sign-On SecretKey </description>
+		<name>getSsoKey</name>
+		<return-type>javax.crypto.SecretKey</return-type>
 	</operation>
 </mbean>

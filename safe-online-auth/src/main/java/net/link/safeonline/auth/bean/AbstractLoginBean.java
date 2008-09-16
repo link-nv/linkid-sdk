@@ -13,6 +13,8 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.dao.DeviceDAO;
@@ -29,9 +31,9 @@ import org.jboss.seam.log.Log;
 
 /**
  * Abstract login bean. Encapsulates the common code for a Seam backing bean to login a given user.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AbstractLoginBean {
 
@@ -65,23 +67,28 @@ public class AbstractLoginBean {
     /**
      * Login the given user.
      */
-    protected void login(String inputUsername, String inputAuthenticationDevice) {
+    protected void login(String inputUsername, String inputAuthenticationDevice, Cookie ssoCookie) {
 
         this.log.debug("login using: " + inputUsername + " via device: " + inputAuthenticationDevice);
         this.userId = this.subjectService.findSubjectFromUserName(inputUsername).getUserId();
-        relogin(inputAuthenticationDevice);
+        relogin(inputAuthenticationDevice, ssoCookie);
     }
 
     /**
      * Re-login the current user. This will trigger the device restriction check again.
-     *
+     * 
      * @param inputAuthenticationDevice
      */
-    protected void relogin(String inputAuthenticationDevice) {
+    protected void relogin(String inputAuthenticationDevice, Cookie ssoCookie) {
 
         this.authenticationDevice = this.deviceDAO.findDevice(inputAuthenticationDevice);
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
+        if (null != ssoCookie) {
+            HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
+            response.addCookie(ssoCookie);
+        }
+
         String redirectUrl = "../login";
         this.log.debug("redirecting to: " + redirectUrl);
         try {

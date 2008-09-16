@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationPoolNotFoundException;
 import net.link.safeonline.dao.ApplicationPoolDAO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
@@ -60,16 +61,15 @@ public class ApplicationPoolDAOBean implements ApplicationPoolDAO {
 
     public List<ApplicationPoolEntity> listApplicationPools() {
 
-        List<ApplicationPoolEntity> applicationPools = this.queryObject.listSsoPools();
+        List<ApplicationPoolEntity> applicationPools = this.queryObject.listApplicationPools();
         return applicationPools;
     }
 
     public ApplicationPoolEntity getApplicationPool(String applicationPoolName) throws ApplicationPoolNotFoundException {
 
         ApplicationPoolEntity applicationPool = findApplicationPool(applicationPoolName);
-        if (null == applicationPool) {
+        if (null == applicationPool)
             throw new ApplicationPoolNotFoundException();
-        }
         return applicationPool;
     }
 
@@ -78,4 +78,13 @@ public class ApplicationPoolDAOBean implements ApplicationPoolDAO {
         LOG.debug("remove application pool (DAO): " + applicationPool.getName());
         this.entityManager.remove(applicationPool);
     }
+
+    public List<ApplicationPoolEntity> listCommonApplicationPools(ApplicationEntity application1,
+            ApplicationEntity application2) {
+
+        List<ApplicationPoolEntity> applicationPools = this.queryObject.listCommonApplicationPools(application1,
+                application2);
+        return applicationPools;
+    }
+
 }

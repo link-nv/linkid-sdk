@@ -40,26 +40,26 @@ import org.opensaml.xml.ConfigurationException;
 
 /**
  * Implementation class for the SAML2 browser POST authentication protocol.
- *
+ * 
  * <p>
  * Optional configuration parameters:
  * </p>
  * <ul>
  * <li><code>Saml2BrowserPostTemplate</code>: contains the path to the custom SAML2 Browser POST template resource.</li>
  * <li><code>Saml2Devices</code>: contains the list of allowed authentication devices, comma separated string</li>
- * <li><code>WsLocation</code>: contains the location of the OLAS web services. If present this handler will use the STS
- * web service for SAML authentication token validation.</li>
+ * <li><code>WsLocation</code>: contains the location of the OLAS web services. If present this handler will use the
+ * STS web service for SAML authentication token validation.</li>
  * </ul>
- *
+ * 
  * <p>
  * Optional session configuration attributes:
  * </p>
  * <ul>
  * <li><code>Saml2Devices</code>: contains the <code>Set&lt;String&gt;</code> of allowed authentication devices.</li>
  * </ul>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @SupportedAuthenticationProtocol(AuthenticationProtocol.SAML2_BROWSER_POST)
 public class Saml2BrowserPostAuthenticationProtocolHandler implements AuthenticationProtocolHandler {
@@ -106,9 +106,12 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
     private String              wsLocation;
 
+    private boolean             ssoEnabled;
+
 
     public void init(String inAuthnServiceUrl, String inApplicationName, String inApplicationFriendlyName,
-            KeyPair inApplicationKeyPair, X509Certificate inApplicationCertificate, Map<String, String> inConfigParams) {
+            KeyPair inApplicationKeyPair, X509Certificate inApplicationCertificate, boolean ssoEnabled,
+            Map<String, String> inConfigParams) {
 
         LOG.debug("init");
         this.authnServiceUrl = inAuthnServiceUrl;
@@ -118,9 +121,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         this.applicationCertificate = inApplicationCertificate;
         this.configParams = inConfigParams;
         this.challenge = new Challenge<String>();
+        this.ssoEnabled = ssoEnabled;
         this.wsLocation = inConfigParams.get("WsLocation");
-        if (null == this.wsLocation)
+        if (null == this.wsLocation) {
             throw new RuntimeException("Initialization param \"WsLocation\" not specified.");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -144,9 +149,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         if (null != staticDevices && null != runtimeDevices) {
             Set<String> intersection = new HashSet<String>(staticDevices);
             intersection.retainAll(runtimeDevices);
-            if (intersection.isEmpty()) {
+            if (intersection.isEmpty())
                 throw new RuntimeException("intersection of static and runtime device lists is empty");
-            }
             return intersection;
         }
         if (null != staticDevices)
@@ -163,7 +167,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         Set<String> devices = getDevices(httpRequest);
         String samlRequestToken = AuthnRequestFactory.createAuthnRequest(this.applicationName, this.applicationName,
                 this.applicationFriendlyName, this.applicationKeyPair, targetUrl, this.authnServiceUrl, this.challenge,
-                devices);
+                devices, this.ssoEnabled);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 

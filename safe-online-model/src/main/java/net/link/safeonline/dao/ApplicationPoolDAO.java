@@ -12,6 +12,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationPoolNotFoundException;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 
 
@@ -49,6 +50,13 @@ public interface ApplicationPoolDAO {
      * 
      */
     List<ApplicationPoolEntity> listApplicationPools();
+
+    /**
+     * Gives back a list of all common application pools between the 2 specified applications.
+     * 
+     */
+    List<ApplicationPoolEntity> listCommonApplicationPools(ApplicationEntity application1,
+            ApplicationEntity application2);
 
     void removeApplicationPool(ApplicationPoolEntity applicationPool);
 

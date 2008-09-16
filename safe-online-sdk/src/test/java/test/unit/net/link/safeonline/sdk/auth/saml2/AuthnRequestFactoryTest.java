@@ -43,9 +43,9 @@ import org.w3c.dom.NodeList;
 
 /**
  * Unit test for authentication request factory.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthnRequestFactoryTest {
 
@@ -67,7 +67,7 @@ public class AuthnRequestFactoryTest {
         long begin = System.currentTimeMillis();
         Set<String> devices = Collections.singleton(device);
         String result = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, keyPair,
-                assertionConsumerServiceURL, destinationURL, challenge, devices);
+                assertionConsumerServiceURL, destinationURL, challenge, devices, false);
         long end = System.currentTimeMillis();
 
         // verify
@@ -236,7 +236,7 @@ public class AuthnRequestFactoryTest {
 
         // operate
         String result = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, keyPair, null,
-                null, null, null);
+                null, null, null, false);
         LOG.debug("result: " + result);
     }
 

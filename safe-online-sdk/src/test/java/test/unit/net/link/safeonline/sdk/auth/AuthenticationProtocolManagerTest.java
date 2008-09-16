@@ -83,7 +83,7 @@ public class AuthenticationProtocolManagerTest {
         Map<String, String> configParams = Collections.singletonMap("WsLocation", "https://ws.location");
         AuthenticationProtocolHandler saml2AuthenticationProtocolHandler = AuthenticationProtocolManager
                 .createAuthenticationProtocolHandler(AuthenticationProtocol.SAML2_BROWSER_POST, "http://authn.service",
-                        "application-id", null, null, null, configParams, this.mockHttpServletRequest);
+                        "application-id", null, null, null, false, configParams, this.mockHttpServletRequest);
 
         // verify
         verify(this.mockObjects);

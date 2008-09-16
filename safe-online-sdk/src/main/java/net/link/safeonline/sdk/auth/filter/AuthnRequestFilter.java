@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -38,45 +39,52 @@ import org.apache.commons.logging.LogFactory;
  * SafeOnline Authentication Request Filter. This filter can be used by servlet container based web applications for
  * authentication via SafeOnline. This filter initiates the authentication request towards the SafeOnline authentication
  * web application. The handling of the authentication response is done via the {@link AuthnResponseFilter}.
- *
+ * 
  * <p>
  * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor.
  * </p>
- *
+ * 
  * <p>
  * The init parameter <code>AuthenticationServiceUrl</code> should point to the Authentication Web Application entry
  * point.
  * </p>
- *
+ * 
  * <p>
  * The init parameter <code>ApplicationName</code> should contain the application name of this service provider.
  * </p>
- *
+ * 
  * <p>
- * The optional init parameter <code>AuthenticationProtocol</code> should contain the name of the protocol used between
- * the SafeOnline authentication web application and this service provider. This can be: SAML2_BROWSER_POST. Defaults
- * to: SAML2_BROWSER_POST
+ * The optional init parameter <code>AuthenticationProtocol</code> should contain the name of the protocol used
+ * between the SafeOnline authentication web application and this service provider. This can be: SAML2_BROWSER_POST.
+ * Defaults to: SAML2_BROWSER_POST
  * </p>
- *
+ * 
  * <p>
  * The optional keystore resource name <code>KeyStoreResource</code> init parameter. The key pair within this keystore
  * can be used by the authentication protocol handler to digitally sign the authentication request.
  * </p>
- *
+ * 
  * <p>
  * The optional keystore file name <code>KeyStoreFile</code> init parameter. The key pair within this keystore can be
  * used by the authentication protocol handler to digitally sign the authentication request.
  * </p>
- *
+ * 
  * <p>
- * The optional <code>KeyStoreType</code> key store type init parameter. Accepted values are: <code>pkcs12</code> and
- * <code>jks</code>.
+ * The optional <code>KeyStoreType</code> key store type init parameter. Accepted values are: <code>pkcs12</code>
+ * and <code>jks</code>.
  * </p>
- *
+ * 
  * <p>
- * The optional <code>KeyStorePassword</code> init parameter contains the password to unlock the keystore and key entry.
+ * The optional <code>KeyStorePassword</code> init parameter contains the password to unlock the keystore and key
+ * entry.
  * </p>
- *
+ * 
+ * <p>
+ * The optional <code>SingleSignOnEnabled</code> init parameter specified whether single sign-on can be used or not.
+ * Accepted values are: <code>true</code> or <code>false</code>. If omitted, single sign-on will be enabled by
+ * default.
+ * </p>
+ * 
  * @author fcorneli
  * @see AuthnResponseFilter
  */
@@ -86,31 +94,36 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
     public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
 
-    @Init(name = "AuthenticationServiceUrl")
+    @Init(name = SafeOnlineLoginUtils.AUTH_SERVICE_URL_INIT_PARAM)
     private String                             authenticationServiceUrl;
 
-    @Init(name = "ApplicationName")
+    @Init(name = SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM)
     private String                             applicationName;
 
-    @Init(name = "ApplicationFriendlyName", optional = true)
+    @Init(name = SafeOnlineLoginUtils.APPLICATION_FRIENDLY_NAME_INIT_PARAM, optional = true)
     private String                             applicationFriendlyName;
 
-    @Init(name = "AuthenticationProtocol", optional = true)
+    @Init(name = SafeOnlineLoginUtils.AUTHN_PROTOCOL_INIT_PARAM, optional = true)
     private String                             authenticationProtocolString;
 
     private AuthenticationProtocol             authenticationProtocol;
 
-    @Init(name = "KeyStoreResource", optional = true)
+    @Init(name = SafeOnlineLoginUtils.KEY_STORE_RESOURCE_INIT_PARAM, optional = true)
     private String                             p12KeyStoreResourceName;
 
-    @Init(name = "KeyStoreFile", optional = true)
+    @Init(name = SafeOnlineLoginUtils.KEY_STORE_FILE_INIT_PARAM, optional = true)
     private String                             p12KeyStoreFileName;
 
-    @Init(name = "KeyStorePassword")
+    @Init(name = SafeOnlineLoginUtils.KEY_STORE_PASSWORD_INIT_PARAM)
     private String                             keyStorePassword;
 
-    @Init(name = "KeyStoreType", defaultValue = "pkcs12")
+    @Init(name = SafeOnlineLoginUtils.KEY_STORE_TYPE_INIT_PARAM, defaultValue = "pkcs12")
     private String                             keyStoreType;
+
+    @Init(name = SafeOnlineLoginUtils.SINGLE_SIGN_ON_INIT_PARAM, optional = true)
+    private String                             ssoEnabledString;
+
+    private boolean                            ssoEnabled;
 
     private KeyPair                            applicationKeyPair;
 
@@ -129,6 +142,14 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
                     .toAuthenticationProtocol(this.authenticationProtocolString);
         }
         LOG.debug("authentication protocol: " + this.authenticationProtocol);
+
+        if (null == this.ssoEnabledString) {
+            this.ssoEnabled = true;
+        } else {
+            this.ssoEnabled = Boolean.parseBoolean(this.ssoEnabledString);
+        }
+        LOG.debug("single sign-on enabled: " + this.ssoEnabled);
+
         InputStream keyStoreInputStream = null;
         if (null != this.p12KeyStoreResourceName) {
             Thread currentThread = Thread.currentThread();
@@ -172,7 +193,7 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
         AuthenticationProtocolManager.createAuthenticationProtocolHandler(this.authenticationProtocol,
                 this.authenticationServiceUrl, this.applicationName, this.applicationFriendlyName,
-                this.applicationKeyPair, this.applicationCertificate, this.configParams, httpRequest);
+                this.applicationKeyPair, this.applicationCertificate, this.ssoEnabled, this.configParams, httpRequest);
         AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse);
     }
 

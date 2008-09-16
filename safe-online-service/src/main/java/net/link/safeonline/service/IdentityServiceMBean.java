@@ -11,12 +11,14 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
+import javax.crypto.SecretKey;
+
 
 /**
  * Interface for Identity Service JMX bean.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface IdentityServiceMBean {
 
@@ -30,6 +32,10 @@ public interface IdentityServiceMBean {
     X509Certificate getCertificate();
 
     void loadKeyPair();
+
+    void generateSsoKey();
+
+    SecretKey getSsoKey();
 
     /*
      * Attributes.

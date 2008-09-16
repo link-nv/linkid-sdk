@@ -124,7 +124,7 @@ public class DemoStartableBean extends AbstractInitBean {
         try {
             this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoAppWebappName), getLogo(), null, true,
-                    true, demoCertificate, false, IdScopeType.USER));
+                    true, demoCertificate, false, IdScopeType.USER, true));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -132,7 +132,7 @@ public class DemoStartableBean extends AbstractInitBean {
         configDemoUsers();
 
         this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME, "owner", null, null, getLogo(), null,
-                true, true, demoCertificate, false, IdScopeType.USER));
+                true, true, demoCertificate, false, IdScopeType.USER, true));
 
         this.trustedCertificates.put(demoCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 
@@ -147,6 +147,14 @@ public class DemoStartableBean extends AbstractInitBean {
         configPrescriptionDemo();
 
         configMandateDemo();
+
+        // add application pool
+        this.applicationPools.add(new ApplicationPool(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_POOL_NAME,
+                1000 * 60 * 60 * 8, new String[] { SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+                        SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
+                        SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
+                        SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME }));
+
     }
 
     private byte[] getLogo() {
@@ -166,7 +174,7 @@ public class DemoStartableBean extends AbstractInitBean {
         try {
             this.registeredApplications.add(new Application(DEMO_MANDATE_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoMandateWebappName), getLogo(), null,
-                    true, true, demoMandateCertificate, true, IdScopeType.APPLICATION));
+                    true, true, demoMandateCertificate, true, IdScopeType.APPLICATION, true));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -257,7 +265,7 @@ public class DemoStartableBean extends AbstractInitBean {
             this.registeredApplications.add(new Application(DEMO_TICKET_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoTicketWebappName),
                     getLogo("/eticket-small.png"), null, true, true, demoTicketCertificate, false,
-                    IdScopeType.SUBSCRIPTION));
+                    IdScopeType.SUBSCRIPTION, true));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -299,7 +307,8 @@ public class DemoStartableBean extends AbstractInitBean {
         try {
             this.registeredApplications.add(new Application(DEMO_CINEMA_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoCinemaWebappName),
-                    getLogo("/cinema.png"), null, true, true, demoCinemaCertificate, false, IdScopeType.SUBSCRIPTION));
+                    getLogo("/cinema.png"), null, true, true, demoCinemaCertificate, false, IdScopeType.SUBSCRIPTION,
+                    true));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -350,7 +359,7 @@ public class DemoStartableBean extends AbstractInitBean {
             this.registeredApplications.add(new Application(DEMO_PAYMENT_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoPaymentWebappName),
                     getLogo("/ebank-small.png"), null, true, true, demoPaymentCertificate, true,
-                    IdScopeType.SUBSCRIPTION));
+                    IdScopeType.SUBSCRIPTION, true));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -435,7 +444,7 @@ public class DemoStartableBean extends AbstractInitBean {
         try {
             this.registeredApplications.add(new Application(DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoPrescriptionWebappName), getLogo(),
-                    null, true, true, demoPrescriptionCertificate, true, IdScopeType.SUBSCRIPTION));
+                    null, true, true, demoPrescriptionCertificate, true, IdScopeType.SUBSCRIPTION, true));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -512,7 +521,7 @@ public class DemoStartableBean extends AbstractInitBean {
         try {
             this.registeredApplications.add(new Application(DEMO_LAWYER_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoLawyerWebappName), getLogo(), null,
-                    true, true, demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION));
+                    true, true, demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION, true));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }

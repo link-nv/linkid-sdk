@@ -66,9 +66,9 @@ import org.w3c.dom.Element;
 
 /**
  * Factory for SAML2 authentication responses.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthnResponseFactory {
 
@@ -93,25 +93,29 @@ public class AuthnResponseFactory {
 
     /**
      * Creates a signed authentication response.
-     *
+     * 
      * @param audienceName
      *            This can be or the application name authenticated for, or the device operation executed
      */
     public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName,
             String subjectName, String samlName, KeyPair signerKeyPair, int validity, String target) {
 
-        if (null == signerKeyPair) {
+        return createAuthResponse(inResponseTo, audienceName, issuerName, subjectName, samlName, signerKeyPair,
+                validity, target, new DateTime());
+    }
+
+    public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName,
+            String subjectName, String samlName, KeyPair signerKeyPair, int validity, String target,
+            DateTime authenticationDate) {
+
+        if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        }
-        if (null == issuerName) {
+        if (null == issuerName)
             throw new IllegalArgumentException("issuer name should not be null");
-        }
-        if (null == subjectName) {
+        if (null == subjectName)
             throw new IllegalArgumentException("subject name should not be null");
-        }
-        if (null == audienceName) {
+        if (null == audienceName)
             throw new IllegalArgumentException("audience name should not be null");
-        }
 
         Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
@@ -140,7 +144,8 @@ public class AuthnResponseFactory {
         status.setStatusCode(statusCode);
         response.setStatus(status);
 
-        addAssertion(response, inResponseTo, audienceName, subjectName, issuerName, samlName, validity, target);
+        addAssertion(response, inResponseTo, audienceName, subjectName, issuerName, samlName, validity, target,
+                authenticationDate);
 
         return signAuthnResponse(response, signerKeyPair);
     }
@@ -151,12 +156,10 @@ public class AuthnResponseFactory {
     public static String createAuthResponseFailed(String inResponseTo, String issuerName, KeyPair signerKeyPair,
             String target) {
 
-        if (null == signerKeyPair) {
+        if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        }
-        if (null == issuerName) {
+        if (null == issuerName)
             throw new IllegalArgumentException("issuer name should not be null");
-        }
 
         Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
@@ -194,12 +197,10 @@ public class AuthnResponseFactory {
     public static String createAuthResponseRequestRegistration(String inResponseTo, String issuerName,
             KeyPair signerKeyPair, String target) {
 
-        if (null == signerKeyPair) {
+        if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        }
-        if (null == issuerName) {
+        if (null == issuerName)
             throw new IllegalArgumentException("issuer name should not be null");
-        }
 
         Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
@@ -237,12 +238,10 @@ public class AuthnResponseFactory {
     public static String createAuthResponseUnsupported(String inResponseTo, String issuerName, KeyPair signerKeyPair,
             String target) {
 
-        if (null == signerKeyPair) {
+        if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        }
-        if (null == issuerName) {
+        if (null == issuerName)
             throw new IllegalArgumentException("issuer name should not be null");
-        }
 
         Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
 
@@ -276,14 +275,14 @@ public class AuthnResponseFactory {
 
     /**
      * Adds an assertion to the unsigned response.
-     *
+     * 
      * @param response
      * @param subjectName
      * @param audienceName
      *            This can be or the application name authenticated for, or the device operation executed
      */
     private static void addAssertion(Response response, String inResponseTo, String audienceName, String subjectName,
-            String issuerName, String samlName, int validity, String target) {
+            String issuerName, String samlName, int validity, String target, DateTime authenticationDate) {
 
         DateTime now = new DateTime();
         DateTime notAfter = now.plusSeconds(validity);
@@ -339,7 +338,7 @@ public class AuthnResponseFactory {
 
         AuthnStatement authnStatement = buildXMLObject(AuthnStatement.class, AuthnStatement.DEFAULT_ELEMENT_NAME);
         assertion.getAuthnStatements().add(authnStatement);
-        authnStatement.setAuthnInstant(now);
+        authnStatement.setAuthnInstant(authenticationDate);
         AuthnContext authnContext = buildXMLObject(AuthnContext.class, AuthnContext.DEFAULT_ELEMENT_NAME);
         authnStatement.setAuthnContext(authnContext);
 
@@ -436,9 +435,8 @@ public class AuthnResponseFactory {
             QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
-        if (builder == null) {
+        if (builder == null)
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        }
         Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
                 .getPrefix());
         return object;

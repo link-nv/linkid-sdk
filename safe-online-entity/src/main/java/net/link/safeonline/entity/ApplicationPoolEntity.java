@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.ApplicationPoolEntity.QUERY_WHERE_ALL;
+import static net.link.safeonline.entity.ApplicationPoolEntity.QUERY_WHERE_APP1_APP2;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -23,6 +24,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -31,12 +33,17 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "application_pool")
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationPoolEntity") })
+@NamedQueries( {
+        @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationPoolEntity"),
+        @NamedQuery(name = QUERY_WHERE_APP1_APP2, query = "SELECT pool FROM ApplicationPoolEntity pool "
+                + "WHERE :application1 MEMBER OF pool.applications AND :application2 MEMBER OF pool.applications") })
 public class ApplicationPoolEntity implements Serializable {
 
-    public static final String      QUERY_WHERE_ALL  = "app.pool.all";
+    public static final String      QUERY_WHERE_ALL       = "app.pool.all";
 
-    private static final long       serialVersionUID = 1L;
+    public static final String      QUERY_WHERE_APP1_APP2 = "app.pool.app1.app2";
+
+    private static final long       serialVersionUID      = 1L;
 
     private String                  name;
 
@@ -122,6 +129,11 @@ public class ApplicationPoolEntity implements Serializable {
     public interface QueryInterface {
 
         @QueryMethod(QUERY_WHERE_ALL)
-        List<ApplicationPoolEntity> listSsoPools();
+        List<ApplicationPoolEntity> listApplicationPools();
+
+        @QueryMethod(QUERY_WHERE_APP1_APP2)
+        List<ApplicationPoolEntity> listCommonApplicationPools(
+                @QueryParam("application1") ApplicationEntity application1,
+                @QueryParam("application2") ApplicationEntity application2);
     }
 }

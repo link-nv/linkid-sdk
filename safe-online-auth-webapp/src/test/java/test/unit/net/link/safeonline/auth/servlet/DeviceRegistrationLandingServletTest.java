@@ -199,6 +199,7 @@ public class DeviceRegistrationLandingServletTest {
                 this.userId);
         expect(this.mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
         expect(this.mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
+        expect(this.mockAuthenticationService.getSsoCookie()).andStubReturn(null);
 
         // prepare
         replay(this.mockObjects);
