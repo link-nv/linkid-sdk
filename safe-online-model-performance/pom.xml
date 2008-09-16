@@ -62,6 +62,11 @@
         </dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-j2ee-util</artifactId>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model</artifactId>
             <type>ejb-client</type>
 		</dependency>

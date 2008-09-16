@@ -83,7 +83,7 @@ public class AuthenticationWebApplicationTest {
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
         String authnRequest = AuthnRequestFactory.createAuthnRequest("performance-application",
                 "performance-application", null, keyPair, "http://localhost:1234/performance-application", null, null,
-                null);
+                null, false);
         LOG.debug("authentication request: " + authnRequest);
         String encodedAuthnRequest = new String(Base64.encodeBase64(authnRequest.getBytes()));
 
@@ -214,14 +214,18 @@ public class AuthenticationWebApplicationTest {
 
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 
-            if (null == chain)
+            if (null == chain) {
                 throw new CertificateException("null certificate chain");
-            if (0 == chain.length)
+            }
+            if (0 == chain.length) {
                 throw new CertificateException("empty certificate chain");
-            if (null == authType)
+            }
+            if (null == authType) {
                 throw new CertificateException("null authentication type");
-            if (0 == authType.length())
+            }
+            if (0 == authType.length()) {
                 throw new CertificateException("empty authentication type");
+            }
             LOG.debug("server certificate: " + chain[0].getSubjectDN());
         }
 

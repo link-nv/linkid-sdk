@@ -113,10 +113,6 @@
             <artifactId>wss4j</artifactId>
         </dependency>
 		<dependency>
-			<groupId>xml-security</groupId>
-			<artifactId>xmlsec</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>bouncycastle</groupId>
 			<artifactId>bcprov-jdk15</artifactId>
 		</dependency>
