@@ -29,30 +29,31 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Servlet Filter that handles authentication browser timeout events.
- *
+ * 
  * This filter will set ( if not already ) a cookie containing the applicationId if the current session is valid. If the
  * session is invalid, it will check for such a cookie, fetch the {@link LoginManager#APPLICATION_ID_ATTRIBUTE} and
  * lookup the application URL. If such an url can be retrieved, it will display the timeout page as configured with the
  * <code>TimeoutPath</code> containing this URL. Else the URL will just be omitted.
- *
+ * 
  * <p>
  * The init parameters for this filter are:
  * </p>
  * <ul>
  * <li><code>TimeoutPath</code>: the path to the timeout page.</li>
  * </ul>
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class TimeoutFilter extends AbstractInjectionFilter {
 
-    private static final Log    LOG         = LogFactory.getLog(TimeoutFilter.class);
-
-    private static final String COOKIE_PATH = "/olas-auth/";
+    private static final Log LOG = LogFactory.getLog(TimeoutFilter.class);
 
     @Init(name = "TimeoutPath")
-    private String              timeoutPath;
+    private String           timeoutPath;
+
+    @Init(name = "CookiePath")
+    private String           cookiePath;
 
 
     public void destroy() {
@@ -89,17 +90,14 @@ public class TimeoutFilter extends AbstractInjectionFilter {
             HttpSession session = httpRequest.getSession();
             String applicationId = LoginManager.findApplication(session);
             if (null != applicationId) {
-                setCookie(SafeOnlineCookies.APPLICATION_COOKIE, applicationId,
-                        COOKIE_PATH, httpResponse);
+                setCookie(SafeOnlineCookies.APPLICATION_COOKIE, applicationId, this.cookiePath, httpResponse);
             }
             /*
              * Remove the possible timeout cookie, add entry cookie to prevent timing out again on first entry after a
              * previous timeout.
              */
-            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, COOKIE_PATH,
-                    httpRequest, httpResponse);
-            addCookie(SafeOnlineCookies.ENTRY_COOKIE, "", COOKIE_PATH,
-                    httpRequest, httpResponse);
+            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, this.cookiePath, httpRequest, httpResponse);
+            addCookie(SafeOnlineCookies.ENTRY_COOKIE, "", this.cookiePath, httpRequest, httpResponse);
             timeoutResponseWrapper.commit();
             return;
         }
@@ -119,10 +117,8 @@ public class TimeoutFilter extends AbstractInjectionFilter {
          */
         if (hasCookie(SafeOnlineCookies.ENTRY_COOKIE, httpRequest)) {
             LOG.debug("forwarding to timeout path: " + this.timeoutPath);
-            addCookie(SafeOnlineCookies.TIMEOUT_COOKIE, "", COOKIE_PATH,
-                    httpRequest, httpResponse);
-            removeCookie(SafeOnlineCookies.ENTRY_COOKIE, COOKIE_PATH,
-                    httpRequest, httpResponse);
+            addCookie(SafeOnlineCookies.TIMEOUT_COOKIE, "", this.cookiePath, httpRequest, httpResponse);
+            removeCookie(SafeOnlineCookies.ENTRY_COOKIE, this.cookiePath, httpRequest, httpResponse);
             httpResponse.sendRedirect(this.timeoutPath);
             return;
         }

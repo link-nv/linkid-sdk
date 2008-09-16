@@ -90,6 +90,9 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
     @Init(name = "ProtocolErrorUrl")
     private String             protocolErrorUrl;
 
+    @Init(name = "CookiePath")
+    private String             cookiePath;
+
 
     @Override
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
@@ -135,7 +138,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         if (null != protocolContext.getLanguage()) {
             Cookie authLanguageCookie = new Cookie(SafeOnlineCookies.AUTH_LANGUAGE_COOKIE, protocolContext
                     .getLanguage());
-            authLanguageCookie.setPath("/olas-auth/");
+            authLanguageCookie.setPath(this.cookiePath);
             authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(authLanguageCookie);
         }
@@ -201,6 +204,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
         Cookie cookie = new Cookie(name, "");
         cookie.setMaxAge(0);
+        cookie.setPath(this.cookiePath);
         response.addCookie(cookie);
     }
 
@@ -232,6 +236,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
         Cookie defloweredCookie = new Cookie(SafeOnlineCookies.DEFLOWERED_COOKIE, "true");
         defloweredCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+        defloweredCookie.setPath(this.cookiePath);
         response.addCookie(defloweredCookie);
     }
 }

@@ -79,6 +79,10 @@
 			<param-name>TimeoutPath</param-name>
 			<param-value>${safe-online.host.basename}/${safe-online.auth.webapp.name}/timeout.seam</param-value>
 		</init-param>
+		<init-param>
+			<param-name>CookiePath</param-name>
+			<param-value>/${safe-online.auth.webapp.name}/</param-value>
+		</init-param>
 	</filter>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
@@ -178,6 +182,10 @@
 		<init-param>
 			<param-name>ProtocolErrorUrl</param-name>
 			<param-value>protocol-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>CookiePath</param-name>
+			<param-value>/${safe-online.auth.webapp.name}/</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>

@@ -75,6 +75,8 @@ public class AuthnEntryServletTest {
 
     private String                           protocolErrorUrl       = "protocol-error";
 
+    private String                           cookiePath             = "/test-path/";
+
     private JndiTestUtils                    jndiTestUtils;
 
     private ApplicationAuthenticationService mockApplicationAuthenticationService;
@@ -120,6 +122,7 @@ public class AuthnEntryServletTest {
         initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
         initParams.put("UnsupportedProtocolUrl", this.unsupportedProtocolUrl);
         initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
+        initParams.put("CookiePath", this.cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
                 this.mockAuthenticationService);

@@ -105,10 +105,8 @@
 						<configuration>
 							<outputDirectory> ${project.build.directory}/dependency 
 							</outputDirectory>
-                            <stripVersion>true</stripVersion>
-                            <excludeScope>
-                                provided
-                            </excludeScope>
+							<stripVersion>true</stripVersion>
+							<excludeScope> provided </excludeScope>
 						</configuration>
 					</execution>
 				</executions>
@@ -140,7 +138,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
 			<version>1.2-SNAPSHOT</version>
-            <scope>provided</scope>
+			<scope>provided</scope>
 			<type>jar</type>
 		</dependency>
 
@@ -148,27 +146,30 @@
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-as</artifactId>
-            <scope>provided</scope>
+			<scope>provided</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-messaging-dist</artifactId>
-            <scope>provided</scope>
+			<scope>provided</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-messaging-sar</artifactId>
-            <scope>provided</scope>
+			<scope>provided</scope>
 			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev</groupId>
 			<artifactId>jaxws-ri</artifactId>
-            <scope>provided</scope>
+			<scope>provided</scope>
 			<type>zip</type>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.fileinstall</artifactId>
+		</dependency>
 	</dependencies>
 </project>
