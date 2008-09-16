@@ -30,8 +30,17 @@ cd "${0%/*}/.."
 noMaven=
 offline=
 nonGnuSed=$(sed -i '' /dev/null >/dev/null 2>&1; [[ $? != 4 ]] && echo 1)
-for arg in $(getArgs oM "$@"); do
+for arg in $(getArgs hoM "$@"); do
     case $arg in
+        h) showHelp \
+            'Maven To Eclipse' \
+            "Generate the Build Path for Eclipse projects from their Maven dependency configuration." \
+            'lhunath' \
+            \
+            '-M' "Don't run maven, just apply eclipse classpath fixes on existing eclipse configuration." \
+            '-o' "Run maven in offline mode; preventing it from checking for remote artifacts or javadoc/sources."
+
+            exit        ;;
         M) noMaven=1    ;;
         o) offline=1    ;;
     esac
@@ -51,6 +60,7 @@ emit "Converting JAR dependencies on safe-online projects to source dependencies
 
     echo +"ejb-clients" > "$spinPipe"
     sed -i ${nonGnuSed:+''} '/-client/ ! { /M2_REPO.*\/'"$p"'\// { s,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; } }' */.classpath
+    sed -i ${nonGnuSed:+''} '/-1.jar/d' */.classpath
 
     for pp in */.classpath; do
         echo +"${pp%/*}" > "$spinPipe"
