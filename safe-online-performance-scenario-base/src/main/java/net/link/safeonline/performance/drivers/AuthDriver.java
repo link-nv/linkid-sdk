@@ -150,8 +150,9 @@ public class AuthDriver extends ProfileDriver {
             LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort
                     + ", params: " + params);
 
-            if (null != params && params.getConnectionTimeout() != 0)
+            if (null != params && params.getConnectionTimeout() != 0) {
                 throw new IllegalArgumentException("Timeout is not supported.");
+            }
 
             return this.sslSocketFactory.createSocket(host, port, localAddress, localPort);
         }
@@ -166,14 +167,18 @@ public class AuthDriver extends ProfileDriver {
 
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 
-            if (null == chain)
+            if (null == chain) {
                 throw new CertificateException("null certificate chain");
-            if (0 == chain.length)
+            }
+            if (0 == chain.length) {
                 throw new CertificateException("empty certificate chain");
-            if (null == authType)
+            }
+            if (null == authType) {
                 throw new CertificateException("null authentication type");
-            if (0 == authType.length())
+            }
+            if (0 == authType.length()) {
                 throw new CertificateException("empty authentication type");
+            }
 
             LOG.debug("server certificate: " + chain[0].getSubjectDN());
         }
@@ -201,7 +206,7 @@ public class AuthDriver extends ProfileDriver {
             KeyPair keyPair = new KeyPair(publicKey, privateKey);
             String uri = getHost() + "/olas-auth/entry";
             String authnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                    keyPair, "http://www.lin-k.net/" + applicationName, uri, null, null);
+                    keyPair, "http://www.lin-k.net/" + applicationName, uri, null, null, false);
             String encodedAuthnRequest = new String(Base64.encodeBase64(authnRequest.getBytes()));
 
             // Request the JSessionID cookie.
@@ -327,8 +332,9 @@ public class AuthDriver extends ProfileDriver {
     private String redirectMethod(HttpMethod postMethod) throws DriverException {
 
         Header locationHeader = postMethod.getResponseHeader("Location");
-        if (null == locationHeader)
+        if (null == locationHeader) {
             throw new DriverException("Expected a redirect.");
+        }
 
         return locationHeader.getValue();
     }
@@ -435,8 +441,9 @@ public class AuthDriver extends ProfileDriver {
                     error = errorReport;
                 }
             }
-            if (error.length() != 0)
+            if (error.length() != 0) {
                 throw new DriverException(error);
+            }
 
             return resultDocument;
         }

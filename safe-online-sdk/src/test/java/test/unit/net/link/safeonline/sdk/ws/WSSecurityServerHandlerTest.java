@@ -316,7 +316,7 @@ public class WSSecurityServerHandlerTest {
             this.testedInstance.handleMessage(soapMessageContext);
             fail();
         } catch (RuntimeException e) {
-            LOG.debug("expected exception: " + e.getMessage());
+            LOG.debug("expected exception: ", e);
             assertEquals("Timestamp not signed", e.getMessage());
             // expected
             verify(this.mockObjects);

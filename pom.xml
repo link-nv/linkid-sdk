@@ -2033,6 +2033,11 @@
 				<artifactId>xalan</artifactId>
 				<version>-1</version>
 			</dependency>
+			<dependency>
+                <groupId>xml-security</groupId>
+                <artifactId>xmlsec</artifactId>
+				<version>-1</version>
+			</dependency>
 
 			<!-- External -->
 			<dependency>
@@ -2250,11 +2255,6 @@
 				<groupId>org.opensaml</groupId>
 				<artifactId>openws</artifactId>
 				<version>${openws.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>xml-security</groupId>
-				<artifactId>xmlsec</artifactId>
-				<version>${xmlsec.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-digester</groupId>
