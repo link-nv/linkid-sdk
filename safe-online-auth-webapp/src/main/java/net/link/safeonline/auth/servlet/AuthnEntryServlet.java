@@ -168,16 +168,17 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         AuthenticationService authenticationService = AuthenticationServiceManager
                 .getAuthenticationService(authnRequestWrapper.getSession());
         Cookie[] cookies = authnRequestWrapper.getCookies();
+        boolean validSso = false;
         if (null != cookies) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
                     try {
                         if (authenticationService.checkSso(cookie)) {
-                            // Valid Single Sign-On
-                            LoginManager.login(authnRequestWrapper.getSession(), authenticationService.getUserId(),
-                                    authenticationService.getAuthenticationDevice());
-                            response.sendRedirect(this.loginUrl);
-                            return;
+                            // Valid Single Sign-On, cookie needs update as this application is added to list of single
+                            // sign-on applications
+                            validSso = true;
+                            cookie.setValue(authenticationService.getSsoCookie().getValue());
+                            response.addCookie(cookie);
                         }
                     } catch (ApplicationNotFoundException e) {
                         LOG.debug("Invalid SSO Cookie " + cookie.getName() + ": removing...");
@@ -194,6 +195,12 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
                     }
                 }
             }
+        }
+        if (validSso) {
+            LoginManager.login(authnRequestWrapper.getSession(), authenticationService.getUserId(),
+                    authenticationService.getAuthenticationDevice());
+            response.sendRedirect(this.loginUrl);
+            return;
         }
 
         response.sendRedirect(this.startUrl);
