@@ -10,7 +10,6 @@ package net.link.safeonline.auth.servlet;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -122,9 +121,8 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
             /*
              * Set SSO Cookie
              */
-            Cookie ssoCookie = authenticationService.getSsoCookie();
-            if (null != ssoCookie) {
-                response.addCookie(ssoCookie);
+            if (null != authenticationService.getSsoCookie()) {
+                response.addCookie(authenticationService.getSsoCookie());
             }
 
             response.sendRedirect(this.loginUrl);

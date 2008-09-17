@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -194,7 +195,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     @PostConstruct
     public void postConstructCallback() {
 
-        // Load OLAS configuration.
         ResourceBundle properties = ResourceBundle.getBundle("config");
         this.cookiePath = "/" + properties.getString("olas.auth.webapp.name") + "/";
 
@@ -279,9 +279,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 break;
             }
         }
-        if (!validSignature) {
+        if (!validSignature)
             throw new AuthenticationInitializationException("signature validation error");
-        }
 
         String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
         if (null == assertionConsumerService) {
@@ -359,9 +358,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
-        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED) {
+        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED)
             throw new IllegalStateException("call initialize first");
-        }
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -397,8 +395,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
         if (this.authenticationState != INITIALIZED && this.authenticationState != USER_AUTHENTICATED
-                && this.authenticationState != REDIRECTED)
+                && this.authenticationState != REDIRECTED) {
             throw new IllegalStateException("call initialize or authenticate first");
+        }
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -441,9 +440,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("authenticate");
-        if (this.authenticationState != REDIRECTED) {
+        if (this.authenticationState != REDIRECTED)
             throw new IllegalStateException("call redirect first");
-        }
 
         DateTime now = new DateTime();
 
@@ -476,13 +474,13 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Assertion assertion = samlResponse.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-        if (authStatements.isEmpty()) {
+        if (authStatements.isEmpty())
             throw new ServletException("missing authentication statement");
-        }
 
         AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext())
+        if (null == authStatement.getAuthnContext()) {
             throw new ServletException("missing authentication context in authentication statement");
+        }
 
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
@@ -531,9 +529,14 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         }
 
         DateTime now = new DateTime();
-        String value = "userId=" + this.authenticatedSubject.getUserId() + ";applicationId="
-                + this.expectedApplicationId + ";device=" + this.authenticationDevice.getName() + ";time="
-                + now.toString();
+        ApplicationEntity application = this.applicationDAO.findApplication(this.expectedApplicationId);
+        SingleSignOn sso = new SingleSignOn(this.authenticatedSubject, application, this.authenticationDevice, now);
+        createSsoCookie(ssoKey, sso);
+    }
+
+    private void createSsoCookie(SecretKey ssoKey, SingleSignOn sso) {
+
+        String value = sso.getValue();
 
         LOG.debug("cookie value: " + value);
 
@@ -564,8 +567,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         this.ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + this.expectedApplicationId,
                 encryptedValue);
-        this.ssoCookie.setPath(this.cookiePath);
         this.ssoCookie.setMaxAge(-1);
+        this.ssoCookie.setPath(this.cookiePath);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -582,6 +585,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             return false;
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        SecretKey ssoKey = identityServiceClient.getSsoKey();
 
         /*
          * Decrypt SSO Cookie value
@@ -590,7 +594,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         String decryptedValue;
         try {
             Cipher decryptCipher = Cipher.getInstance("AES", bcp);
-            decryptCipher.init(Cipher.DECRYPT_MODE, identityServiceClient.getSsoKey());
+            decryptCipher.init(Cipher.DECRYPT_MODE, ssoKey);
             byte[] decryptedBytes = decryptCipher.doFinal(Base64.decode(cookie.getValue().getBytes("UTF-8")));
             decryptedValue = new String(decryptedBytes);
         } catch (InvalidKeyException e) {
@@ -618,49 +622,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         LOG.debug("Decrypted cookie: " + decryptedValue);
 
-        /*
-         * Check SSO Cookie properties
-         */
-        String[] properties = decryptedValue.split(";");
-        if (null == properties || properties.length != 4) {
-            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
-            throw new InvalidCookieException("Invalid SSO Cookie");
-        }
-
-        // check user ID property
-        String[] userProperties = properties[0].split("=");
-        if (null == userProperties || userProperties.length != 2 || !userProperties[0].equals("userId")) {
-            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
-            throw new InvalidCookieException("Invalid SSO Cookie");
-        }
-        SubjectEntity subject = this.subjectService.findSubject(userProperties[1]);
-        if (null == subject) {
-            LOG.debug(SECURITY_MESSAGE_INVALID_USER + userProperties[1]);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_USER
-                    + userProperties[1]);
-            throw new InvalidCookieException("Invalid SSO Cookie");
-        }
-
-        // check application ID property
-        String[] applicationProperties = properties[1].split("=");
-        if (null == applicationProperties || applicationProperties.length != 2
-                || !applicationProperties[0].equals("applicationId")) {
-            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
-            throw new InvalidCookieException("Invalid SSO Cookie");
-        }
-        ApplicationEntity cookieApplication = this.applicationDAO.findApplication(applicationProperties[1]);
-        if (null == cookieApplication) {
-            LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION + applicationProperties[1]);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                    SECURITY_MESSAGE_INVALID_APPLICATION + applicationProperties[1]);
-            throw new InvalidCookieException("Invalid SSO Cookie");
-        }
+        SingleSignOn sso = parseCookie(decryptedValue);
 
         List<ApplicationPoolEntity> commonApplicationPools = this.applicationPoolDAO.listCommonApplicationPools(
-                application, cookieApplication);
+                application, sso.application);
         LOG.debug("common application pools: " + commonApplicationPools.size());
         if (0 == commonApplicationPools.size()) {
             LOG.debug("no common application pool");
@@ -673,42 +638,15 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             }
         }
 
-        // check device property
-        String[] deviceProperties = properties[2].split("=");
-        if (null == deviceProperties || deviceProperties.length != 2 || !deviceProperties[0].equals("device")) {
-            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
-            throw new InvalidCookieException("Invalid SSO Cookie");
-        }
-        DeviceEntity device;
         try {
-            device = this.deviceDAO.getDevice(deviceProperties[1]);
-        } catch (DeviceNotFoundException e) {
-            LOG.debug(SECURITY_MESSAGE_INVALID_DEVICE + deviceProperties[1]);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_DEVICE
-                    + deviceProperties[1]);
-            throw new InvalidCookieException("Invalid SSO Cookie");
-
-        }
-
-        try {
-            checkDevicePolicy(deviceProperties[1]);
+            checkDevicePolicy(sso.device.getName());
         } catch (DevicePolicyException e) {
-            LOG.debug("device " + deviceProperties[1] + " not enough for application " + this.expectedApplicationId
+            LOG.debug("device " + sso.device.getName() + " not enough for application " + this.expectedApplicationId
                     + " device policy");
             return false;
         }
 
-        // check time property
-        String[] timeProperties = properties[3].split("=");
-        if (null == timeProperties || timeProperties.length != 2 || !timeProperties[0].equals("time")) {
-            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
-            throw new InvalidCookieException("Invalid SSO Cookie");
-        }
-        DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTime();
-        DateTime cookieAuthenticationDate = dateFormatter.parseDateTime(timeProperties[1]);
-        DateTime notAfter = cookieAuthenticationDate.plus(timeout);
+        DateTime notAfter = sso.time.plus(timeout);
         DateTime now = new DateTime();
         if (now.isAfter(notAfter)) {
             LOG.debug("SSO Cookie has expired");
@@ -716,17 +654,168 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         }
 
         /*
+         * Add application to cookie
+         */
+        sso.addSsoApplication(application);
+        createSsoCookie(ssoKey, sso);
+
+        /*
          * Safe the state in this stateful session bean.
          */
         this.authenticationState = USER_AUTHENTICATED;
-        this.authenticatedSubject = subject;
-        this.authenticationDevice = device;
-        this.authenticationDate = cookieAuthenticationDate;
+        this.authenticatedSubject = sso.subject;
+        this.authenticationDevice = sso.device;
+        this.authenticationDate = sso.time;
 
         LOG.debug("single sign-on allowed for user " + this.authenticatedSubject.getUserId() + " using device: "
                 + this.authenticationDevice.getName());
 
         return true;
+    }
+
+
+    public static class SingleSignOn {
+
+        public static final String     SUBJECT_FIELD          = "subject";
+        public static final String     APPLICATION_FIELD      = "application";
+        public static final String     DEVICE_FIELD           = "device";
+        public static final String     TIME_FIELD             = "time";
+        public static final String     SSO_APPLICATIONS_FIELD = "ssoApplications";
+
+        public SubjectEntity           subject;
+        public ApplicationEntity       application;
+        public DeviceEntity            device;
+        public DateTime                time;
+        public List<ApplicationEntity> ssoApplications;
+
+
+        public SingleSignOn(SubjectEntity subject, ApplicationEntity application, DeviceEntity device, DateTime time) {
+
+            this.subject = subject;
+            this.application = application;
+            this.device = device;
+            this.time = time;
+            this.ssoApplications = new LinkedList<ApplicationEntity>();
+        }
+
+        public String getValue() {
+
+            String ssoApplicationsValue = "";
+            for (ApplicationEntity ssoApplication : this.ssoApplications) {
+                ssoApplicationsValue += ssoApplication.getName() + ",";
+            }
+            if (ssoApplicationsValue.endsWith(",")) {
+                ssoApplicationsValue = ssoApplicationsValue.substring(0, ssoApplicationsValue.length() - 1);
+            }
+
+            return SUBJECT_FIELD + "=" + this.subject.getUserId() + ";" + APPLICATION_FIELD + "="
+                    + this.application.getName() + ";" + DEVICE_FIELD + "=" + this.device.getName() + ";" + TIME_FIELD
+                    + "=" + this.time.toString() + ";" + SSO_APPLICATIONS_FIELD + "=" + ssoApplicationsValue;
+        }
+
+        public void addSsoApplication(ApplicationEntity ssoApplication) {
+
+            if (!(this.ssoApplications.contains(ssoApplication) || ssoApplication.equals(this.application))) {
+                this.ssoApplications.add(ssoApplication);
+            }
+        }
+    }
+
+
+    private SingleSignOn parseCookie(String value) throws InvalidCookieException {
+
+        /*
+         * Check SSO Cookie properties
+         */
+        String[] properties = value.split(";");
+        if (null == properties || properties.length != 5) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+
+        // check subject property
+        String[] subjectProperty = properties[0].split("=");
+        if (null == subjectProperty || subjectProperty.length != 2
+                || !subjectProperty[0].equals(SingleSignOn.SUBJECT_FIELD)) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+        SubjectEntity subject = this.subjectService.findSubject(subjectProperty[1]);
+        if (null == subject) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_USER + subjectProperty[1]);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_USER
+                    + subjectProperty[1]);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+
+        // check application property
+        String[] applicationProperty = properties[1].split("=");
+        if (null == applicationProperty || applicationProperty.length != 2
+                || !applicationProperty[0].equals(SingleSignOn.APPLICATION_FIELD)) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+        ApplicationEntity application = this.applicationDAO.findApplication(applicationProperty[1]);
+        if (null == application) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION + applicationProperty[1]);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
+                    SECURITY_MESSAGE_INVALID_APPLICATION + applicationProperty[1]);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+
+        // check device property
+        String[] deviceProperty = properties[2].split("=");
+        if (null == deviceProperty || deviceProperty.length != 2
+                || !deviceProperty[0].equals(SingleSignOn.DEVICE_FIELD)) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+        DeviceEntity device = this.deviceDAO.findDevice(deviceProperty[1]);
+        if (null == device) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_DEVICE + deviceProperty[1]);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_DEVICE
+                    + deviceProperty[1]);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+
+        // check time property
+        String[] timeProperty = properties[3].split("=");
+        if (null == timeProperty || timeProperty.length != 2 || !timeProperty[0].equals(SingleSignOn.TIME_FIELD)) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+        DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTime();
+        DateTime time = dateFormatter.parseDateTime(timeProperty[1]);
+
+        SingleSignOn sso = new SingleSignOn(subject, application, device, time);
+
+        // check sso applications property
+        String[] ssoAppProperty = properties[4].split("=");
+        if (null == ssoAppProperty || !ssoAppProperty[0].equals(SingleSignOn.SSO_APPLICATIONS_FIELD)) {
+            LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
+            throw new InvalidCookieException("Invalid SSO Cookie");
+        }
+        if (2 == ssoAppProperty.length) {
+            String[] ssoApplications = ssoAppProperty[1].split(",");
+            for (String ssoApplicationName : ssoApplications) {
+                ApplicationEntity ssoApplication = this.applicationDAO.findApplication(ssoApplicationName);
+                if (null == ssoApplication) {
+                    LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION + ssoApplicationName);
+                    this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
+                            SECURITY_MESSAGE_INVALID_APPLICATION + ssoApplicationName);
+                    throw new InvalidCookieException("Invalid SSO Cookie");
+                }
+                sso.addSsoApplication(ssoApplication);
+            }
+        }
+
+        return sso;
     }
 
     public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password)
@@ -761,9 +850,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("register");
-        if (this.authenticationState != REDIRECTED) {
+        if (this.authenticationState != REDIRECTED)
             throw new IllegalStateException("call redirect first");
-        }
 
         DateTime now = new DateTime();
 
@@ -794,13 +882,13 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Assertion assertion = samlResponse.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-        if (authStatements.isEmpty()) {
+        if (authStatements.isEmpty())
             throw new ServletException("missing authentication statement");
-        }
 
         AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext())
+        if (null == authStatement.getAuthnContext()) {
             throw new ServletException("missing authentication context in authentication statement");
+        }
 
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
@@ -848,9 +936,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             ApplicationNotFoundException {
 
         LOG.debug("finalize authentication");
-        if (this.authenticationState != COMMITTED) {
+        if (this.authenticationState != COMMITTED)
             throw new IllegalStateException("call commit first");
-        }
 
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
@@ -908,18 +995,16 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private void checkStateBeforeCommit() {
 
-        if (this.authenticationState != USER_AUTHENTICATED) {
+        if (this.authenticationState != USER_AUTHENTICATED)
             throw new IllegalStateException("bean is not in the correct state");
-        }
     }
 
     private void checkRequiredIdentity() throws SubscriptionNotFoundException, ApplicationNotFoundException,
             ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException {
 
         boolean confirmationRequired = this.identityService.isConfirmationRequired(this.expectedApplicationId);
-        if (true == confirmationRequired) {
+        if (true == confirmationRequired)
             throw new IdentityConfirmationRequiredException();
-        }
     }
 
     private void checkRequiredMissingAttributes() throws ApplicationNotFoundException,
@@ -927,9 +1012,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             AttributeTypeNotFoundException {
 
         boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.expectedApplicationId);
-        if (true == hasMissingAttributes) {
+        if (true == hasMissingAttributes)
             throw new MissingAttributeException();
-        }
     }
 
     private void checkDevicePolicy(String deviceName) throws ApplicationNotFoundException, EmptyDevicePolicyException,
@@ -946,8 +1030,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 break;
             }
         }
-        if (!found)
+        if (!found) {
             throw new DevicePolicyException();
+        }
     }
 
     private void checkRequiredUsageAgreement() throws ApplicationNotFoundException,
@@ -955,16 +1040,18 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         boolean requiresUsageAgreementAcceptation = this.usageAgreementService
                 .requiresUsageAgreementAcceptation(this.expectedApplicationId);
-        if (true == requiresUsageAgreementAcceptation)
+        if (true == requiresUsageAgreementAcceptation) {
             throw new UsageAgreementAcceptationRequiredException();
+        }
     }
 
     private void checkRequiredGlobalUsageAgreement() throws UsageAgreementAcceptationRequiredException {
 
         boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService
                 .requiresGlobalUsageAgreementAcceptation();
-        if (true == requiresGlobalUsageAgreementAcceptation)
+        if (true == requiresGlobalUsageAgreementAcceptation) {
             throw new UsageAgreementAcceptationRequiredException();
+        }
     }
 
     public void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
@@ -1015,9 +1102,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public String getUserId() {
 
         LOG.debug("getUserId");
-        if (this.authenticationState != USER_AUTHENTICATED && this.authenticationState != COMMITTED) {
+        if (this.authenticationState != USER_AUTHENTICATED && this.authenticationState != COMMITTED)
             throw new IllegalStateException("call authenticate first");
-        }
         String userId = this.authenticatedSubject.getUserId();
         return userId;
     }
@@ -1039,33 +1125,29 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     public String getExpectedApplicationId() {
 
-        if (this.authenticationState == INIT) {
+        if (this.authenticationState == INIT)
             throw new IllegalStateException("call initialize first");
-        }
         return this.expectedApplicationId;
     }
 
     public String getExpectedApplicationFriendlyName() {
 
-        if (this.authenticationState == INIT) {
+        if (this.authenticationState == INIT)
             throw new IllegalStateException("call initialize first");
-        }
         return this.expectedApplicationFriendlyName;
     }
 
     public String getExpectedTarget() {
 
-        if (this.authenticationState == INIT) {
+        if (this.authenticationState == INIT)
             throw new IllegalStateException("call initialize first");
-        }
         return this.expectedTarget;
     }
 
     public Set<DeviceEntity> getRequiredDevicePolicy() {
 
-        if (this.authenticationState == INIT) {
+        if (this.authenticationState == INIT)
             throw new IllegalStateException("call initialize first");
-        }
         return this.requiredDevicePolicy;
     }
 
