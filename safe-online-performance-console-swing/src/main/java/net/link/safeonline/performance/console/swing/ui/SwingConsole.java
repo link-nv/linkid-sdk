@@ -48,7 +48,7 @@ import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
  * @author mbillemo
  */
 public class SwingConsole {
-
+    
     public SwingConsole() {
 
         initLnF();
@@ -137,7 +137,7 @@ public class SwingConsole {
         builder.nextRow();
 
         builder.append("Scenario Package:");
-        builder.nextColumn(2);
+        builder.nextColumn(4);
         builder.append("Scenario Name:");
         builder.nextLine(2);
 

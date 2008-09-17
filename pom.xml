@@ -2059,6 +2059,11 @@
 
 			<!-- External -->
 			<dependency>
+                <groupId>org.hibernate</groupId>
+				<artifactId>hibernate-annotations</artifactId>
+				<version>${hibernate-annotations.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>

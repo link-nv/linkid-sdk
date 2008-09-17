@@ -26,11 +26,14 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>${commons-logging.version}</version>
         </dependency>
 		<dependency>
 			<groupId>jgroups</groupId>
 			<artifactId>jgroups</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jbossall-client</artifactId>
 		</dependency>
 
 	</dependencies>

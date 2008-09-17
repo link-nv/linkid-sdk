@@ -296,6 +296,7 @@ public class ConsoleAgent implements Agent {
         }
 
         catch (IllegalStateException e) {
+            LOG.debug(e.getMessage());
             this.state = notifyOnChange(this.state, null);
             this.transit = notifyOnChange(this.transit, null);
             this.error = notifyOnChange(this.error, null);

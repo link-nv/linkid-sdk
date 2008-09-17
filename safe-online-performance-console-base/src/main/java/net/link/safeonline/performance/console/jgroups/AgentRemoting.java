@@ -6,6 +6,9 @@
  */
 package net.link.safeonline.performance.console.jgroups;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,15 +29,15 @@ import org.jgroups.View;
 /**
  * <h2>{@link AgentRemoting}<br>
  * <sub>Takes care of locating and maintaining a list of available agents.</sub></h2>
- *
+ * 
  * <p>
  * Utility class to locate performance testing agents using JGroups and monitor any changes in their availability.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class AgentRemoting implements Receiver, ChannelListener {
@@ -58,17 +61,32 @@ public class AgentRemoting implements Receiver, ChannelListener {
 
         this.agentStateListeners = new ArrayList<AgentStateListener>();
 
-        try {
             if (null == this.channel || !this.channel.isOpen()) {
-                this.channel = new JChannel(getClass().getResource("/jgroups.xml"));
-            }
-        }
+                URL jgroupsConfig = getClass().getResource("/jgroups.xml");
+                if (jgroupsConfig == null)
+                    throw new IllegalStateException("The JGroups configuration file cannot be found.");
 
-        catch (ChannelException e) {
-            String msg = "Couldn't establish the JGroups channel.";
-            LOG.fatal(msg, e);
-            throw new RuntimeException(msg, e);
-        }
+                // Give as much info on why this error happened.
+                try {
+                    this.channel = new JChannel(jgroupsConfig);
+                } catch (ChannelException e) {
+                    try {
+                        StringBuffer jgroupsConfigData = new StringBuffer();
+                        InputStream stream = jgroupsConfig.openStream();
+                        byte[] bytes = new byte[4092];
+                        int read = 0;
+                        while ((read = stream.read(bytes)) >= 0) {
+                            jgroupsConfigData.append(new String(bytes, 0, read));
+                        }
+                        
+                        LOG.debug("The following JGroups config caused the error:");
+                        LOG.debug(jgroupsConfigData.toString());
+                    } catch (IOException ee) {
+                    }
+                    
+                    throw new IllegalStateException("Channel configuration unusable.", e);
+                }
+            }
 
         this.channel.addChannelListener(AgentRemoting.this);
         this.channel.setReceiver(AgentRemoting.this);
