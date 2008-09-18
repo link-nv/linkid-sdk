@@ -173,7 +173,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().startsWith(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX)) {
                     try {
-                        if (authenticationService.checkSso(cookie)) {
+                        if (authenticationService.checkSsoCookie(cookie)) {
                             // Valid Single Sign-On, cookie needs update as this application is added to list of single
                             // sign-on applications
                             validSso = true;

@@ -10,9 +10,9 @@ package net.link.safeonline.authentication.service;
 /**
  * Authentication phases enumerate. This is used by the stateful {@link AuthenticationService} to keep track of its
  * current state.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public enum AuthenticationState {
     /**
@@ -20,8 +20,8 @@ public enum AuthenticationState {
      */
     INIT,
     /**
-     * The initialized state. At this point we have received an authentication request for a certain application,
-     * containing a possible device policy.
+     * The initialized state. At this point we have received an authentication or logout request for a certain
+     * application, containing a possible device policy in case it was an authentication request.
      */
     INITIALIZED,
     /**
@@ -37,5 +37,9 @@ public enum AuthenticationState {
     /**
      * This state marks that the user authentication has been committed to the core.
      */
-    COMMITTED
+    COMMITTED,
+    /**
+     * This state marks that a logout request is being sent to a single sign-on application.
+     */
+    LOGGING_OUT,
 }

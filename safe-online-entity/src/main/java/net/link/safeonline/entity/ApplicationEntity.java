@@ -103,6 +103,8 @@ public class ApplicationEntity implements Serializable {
 
     private boolean                     ssoEnabled;
 
+    private URL                         ssoLogoutUrl;
+
     private List<ApplicationPoolEntity> applicationPools;
 
 
@@ -432,6 +434,22 @@ public class ApplicationEntity implements Serializable {
     public void setApplicationPools(List<ApplicationPoolEntity> applicationPools) {
 
         this.applicationPools = applicationPools;
+    }
+
+    /**
+     * Retrieve the URL where the single sign on logout request will be sent to.
+     */
+    public URL getSsoLogoutUrl() {
+
+        return this.ssoLogoutUrl;
+    }
+
+    /**
+     * Set the URL where the single sign on logout request will be sent to.
+     */
+    public void setSsoLogoutUrl(URL ssoLogoutUrl) {
+
+        this.ssoLogoutUrl = ssoLogoutUrl;
     }
 
     @Override

@@ -461,7 +461,7 @@ public class AuthenticationServiceBeanTest {
 
         // operate
         this.testedInstance.initialize(authnRequest);
-        boolean result = this.testedInstance.checkSso(ssoCookie);
+        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
         verify(this.mockObjects);
@@ -523,7 +523,7 @@ public class AuthenticationServiceBeanTest {
 
         // operate
         this.testedInstance.initialize(authnRequest);
-        boolean result = this.testedInstance.checkSso(ssoCookie);
+        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
         verify(this.mockObjects);
@@ -581,7 +581,7 @@ public class AuthenticationServiceBeanTest {
 
         // operate
         this.testedInstance.initialize(authnRequest);
-        boolean result = this.testedInstance.checkSso(ssoCookie);
+        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
         verify(this.mockObjects);
@@ -636,7 +636,7 @@ public class AuthenticationServiceBeanTest {
         // operate
         this.testedInstance.initialize(authnRequest);
         try {
-            this.testedInstance.checkSso(ssoCookie);
+            this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
             verify(this.mockObjects);
@@ -692,7 +692,7 @@ public class AuthenticationServiceBeanTest {
         // operate
         this.testedInstance.initialize(authnRequest);
         try {
-            this.testedInstance.checkSso(ssoCookie);
+            this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
             verify(this.mockObjects);
@@ -753,7 +753,7 @@ public class AuthenticationServiceBeanTest {
         // operate
         this.testedInstance.initialize(authnRequest);
         try {
-            this.testedInstance.checkSso(ssoCookie);
+            this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
             verify(this.mockObjects);
@@ -813,7 +813,7 @@ public class AuthenticationServiceBeanTest {
 
         // operate
         this.testedInstance.initialize(authnRequest);
-        boolean result = this.testedInstance.checkSso(ssoCookie);
+        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
         verify(this.mockObjects);
@@ -881,7 +881,7 @@ public class AuthenticationServiceBeanTest {
         // operate
         this.testedInstance.initialize(authnRequest);
         try {
-            this.testedInstance.checkSso(ssoCookie);
+            this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
             verify(this.mockObjects);
@@ -940,7 +940,7 @@ public class AuthenticationServiceBeanTest {
 
         // operate
         this.testedInstance.initialize(authnRequest);
-        boolean result = this.testedInstance.checkSso(ssoCookie);
+        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
         verify(this.mockObjects);
@@ -1006,7 +1006,7 @@ public class AuthenticationServiceBeanTest {
         // operate
         this.testedInstance.initialize(authnRequest);
         try {
-            this.testedInstance.checkSso(ssoCookie);
+            this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
             verify(this.mockObjects);

@@ -110,7 +110,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
 
     public void init(String inAuthnServiceUrl, String inApplicationName, String inApplicationFriendlyName,
-            KeyPair inApplicationKeyPair, X509Certificate inApplicationCertificate, boolean ssoEnabled,
+            KeyPair inApplicationKeyPair, X509Certificate inApplicationCertificate, boolean inSsoEnabled,
             Map<String, String> inConfigParams) {
 
         LOG.debug("init");
@@ -121,7 +121,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         this.applicationCertificate = inApplicationCertificate;
         this.configParams = inConfigParams;
         this.challenge = new Challenge<String>();
-        this.ssoEnabled = ssoEnabled;
+        this.ssoEnabled = inSsoEnabled;
         this.wsLocation = inConfigParams.get("WsLocation");
         if (null == this.wsLocation) {
             throw new RuntimeException("Initialization param \"WsLocation\" not specified.");
@@ -183,8 +183,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             language = httpRequest.getLocale().getLanguage();
         }
 
-        AuthnRequestUtil.sendAuthnRequest(this.authnServiceUrl, encodedSamlRequestToken, language,
-                templateResourceName, httpResponse);
+        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, language, templateResourceName,
+                httpResponse);
     }
 
     private String getLanguage(HttpServletRequest httpRequest) {
@@ -204,7 +204,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         DateTime now = new DateTime();
 
-        Response samlResponse = AuthnResponseUtil.validateResponse(now, httpRequest, this.challenge.getValue(),
+        Response samlResponse = ResponseUtil.validateResponse(now, httpRequest, this.challenge.getValue(),
                 this.applicationName, this.wsLocation, this.applicationCertificate, this.applicationKeyPair
                         .getPrivate(), TrustDomainType.NODE);
         if (null == samlResponse)
@@ -216,5 +216,42 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         String subjectNameValue = subjectName.getValue();
         LOG.debug("subject name value: " + subjectNameValue);
         return subjectNameValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void initiateLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl,
+            String subjectName) throws IOException, ServletException {
+
+        LOG.debug("target url: " + targetUrl);
+        String samlRequestToken = LogoutRequestFactory.createLogoutRequest(subjectName, this.applicationName,
+                this.applicationKeyPair, this.authnServiceUrl, this.challenge);
+
+        String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
+
+        String templateResourceName;
+        if (this.configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+            templateResourceName = this.configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+        } else {
+            templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+        }
+
+        String language = getLanguage(httpRequest);
+        if (null == language) {
+            language = httpRequest.getLocale().getLanguage();
+        }
+
+        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, language, templateResourceName,
+                httpResponse);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void finalizeLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws ServletException {
+
     }
 }

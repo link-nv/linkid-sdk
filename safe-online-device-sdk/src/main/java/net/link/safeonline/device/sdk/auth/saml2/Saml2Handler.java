@@ -24,9 +24,9 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.exception.AuthenticationFinalizationException;
 import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
-import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
+import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
+import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
@@ -119,7 +119,7 @@ public class Saml2Handler implements Serializable {
 
         AuthnRequest samlAuthnRequest;
         try {
-            samlAuthnRequest = AuthnRequestUtil.validateAuthnRequest(request, this.stsWsLocation,
+            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, this.stsWsLocation,
                     this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new AuthenticationInitializationException(e.getMessage());
@@ -218,7 +218,7 @@ public class Saml2Handler implements Serializable {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken, templateResourceName, target, response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, target, response);
         } catch (ServletException e) {
             throw new AuthenticationFinalizationException(e.getMessage());
         } catch (IOException e) {

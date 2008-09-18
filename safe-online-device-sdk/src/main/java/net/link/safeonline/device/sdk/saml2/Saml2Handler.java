@@ -20,9 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
-import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
+import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
+import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
@@ -112,7 +112,7 @@ public class Saml2Handler implements Serializable {
 
         AuthnRequest samlAuthnRequest;
         try {
-            samlAuthnRequest = AuthnRequestUtil.validateAuthnRequest(request, this.stsWsLocation,
+            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, this.stsWsLocation,
                     this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new DeviceInitializationException(e.getMessage());
@@ -191,7 +191,7 @@ public class Saml2Handler implements Serializable {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken, templateResourceName, target, response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, target, response);
         } catch (ServletException e) {
             throw new DeviceFinalizationException(e.getMessage());
         } catch (IOException e) {
@@ -234,7 +234,7 @@ public class Saml2Handler implements Serializable {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            AuthnResponseUtil.sendAuthnResponse(encodedSamlResponseToken, templateResourceName, target, response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, target, response);
         } catch (ServletException e) {
             throw new DeviceFinalizationException(e.getMessage());
         } catch (IOException e) {

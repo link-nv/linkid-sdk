@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
-import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
+import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -100,7 +100,7 @@ public class DeviceOperationUtils {
         }
 
         try {
-            AuthnRequestUtil.sendAuthnRequest(encodedLandingUrl, encodedSamlRequestToken, templateResourceName,
+            RequestUtil.sendRequest(encodedLandingUrl, encodedSamlRequestToken, templateResourceName,
                     httpResponse);
         } catch (ServletException e) {
             throw new RuntimeException("could not initiate device operation: " + e.getMessage(), e);

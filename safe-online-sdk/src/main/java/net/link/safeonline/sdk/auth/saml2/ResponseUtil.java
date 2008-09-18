@@ -40,6 +40,7 @@ import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Audience;
 import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.Conditions;
+import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
@@ -54,30 +55,30 @@ import org.w3c.dom.Element;
 
 /**
  * Utility class for SAML2 authentication responses.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
-public class AuthnResponseUtil {
+public class ResponseUtil {
 
-    private static final Log LOG = LogFactory.getLog(AuthnResponseUtil.class);
+    private static final Log LOG = LogFactory.getLog(ResponseUtil.class);
 
 
-    private AuthnResponseUtil() {
+    private ResponseUtil() {
 
         // empty
     }
 
     /**
      * Sends out a SAML response message to the specified consumer URL.
-     *
+     * 
      * @param encodedSamlResponseToken
      * @param consumerUrl
      * @param httpResponse
      * @throws ServletException
      * @throws IOException
      */
-    public static void sendAuthnResponse(String encodedSamlResponseToken, String templateResourceName,
+    public static void sendResponse(String encodedSamlResponseToken, String templateResourceName,
             String consumerUrl, HttpServletResponse httpResponse) throws ServletException, IOException {
 
         /*
@@ -87,7 +88,7 @@ public class AuthnResponseUtil {
         Properties velocityProperties = new Properties();
         velocityProperties.put("resource.loader", "class");
         velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, Log4JLogChute.class.getName());
-        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, AuthnResponseUtil.class.getName());
+        velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, ResponseUtil.class.getName());
         velocityProperties.put("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         VelocityEngine velocityEngine;
@@ -122,7 +123,7 @@ public class AuthnResponseUtil {
      * <li>assertion subject</li>
      * <li>assertion conditions notOnOrAfter and notBefore
      * </ul>
-     *
+     * 
      * @param now
      * @param httpRequest
      * @param expectedInResponseTo
@@ -251,4 +252,99 @@ public class AuthnResponseUtil {
         }
         return samlResponse;
     }
+
+    /**
+     * Validates a SAML logout response in the specified HTTP request. Checks:
+     * <ul>
+     * <li>response ID</li>
+     * <li>response validated with STS WS location</li>
+     * </ul>
+     * 
+     * @param httpRequest
+     * @param expectedInResponseTo
+     * @param stsWsLocation
+     * @param applicationCertificate
+     * @param applicationPrivateKey
+     * @throws ServletException
+     */
+    public static LogoutResponse validateLogoutResponse(HttpServletRequest httpRequest, String expectedInResponseTo,
+            String stsWsLocation, X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
+            TrustDomainType trustDomain) throws ServletException {
+
+        if (false == "POST".equals(httpRequest.getMethod()))
+            return null;
+        LOG.debug("POST response");
+        String encodedSamlResponse = httpRequest.getParameter("SAMLResponse");
+        if (null == encodedSamlResponse) {
+            LOG.debug("no SAMLResponse parameter found");
+            return null;
+        }
+        LOG.debug("SAMLResponse parameter found");
+        LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
+
+        BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
+        messageContext.setInboundMessageTransport(new HttpServletRequestAdapter(httpRequest));
+
+        SecurityPolicyResolver securityPolicyResolver = new SamlResponseSecurityPolicyResolver();
+        messageContext.setSecurityPolicyResolver(securityPolicyResolver);
+
+        HTTPPostDecoder decoder = new HTTPPostDecoder();
+        try {
+            decoder.decode(messageContext);
+        } catch (MessageDecodingException e) {
+            LOG.debug("SAML message decoding error: " + e.getMessage(), e);
+            throw new ServletException("SAML message decoding error");
+        } catch (SecurityPolicyException e) {
+            LOG.debug("security policy error: " + e.getMessage(), e);
+            throw new ServletException("security policy error");
+        } catch (SecurityException e) {
+            LOG.debug("security error: " + e.getMessage(), e);
+            throw new ServletException("security error");
+        }
+
+        SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
+        if (false == samlMessage instanceof Response)
+            throw new ServletException("SAML message not an response message");
+        LogoutResponse logoutResponse = (LogoutResponse) samlMessage;
+
+        byte[] decodedSamlResponse;
+        try {
+            decodedSamlResponse = Base64.decode(encodedSamlResponse);
+        } catch (Base64DecodingException e) {
+            throw new ServletException("BASE64 decoding error");
+        }
+        Document samlDocument;
+        try {
+            samlDocument = DomUtils.parseDocument(new String(decodedSamlResponse));
+        } catch (Exception e) {
+            throw new ServletException("DOM parsing error");
+        }
+        Element samlElement = samlDocument.getDocumentElement();
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation,
+                applicationCertificate, applicationPrivateKey);
+        try {
+            stsClient.validate(samlElement, trustDomain);
+        } catch (RuntimeException e) {
+            throw new ServletException(e.getMessage());
+        } catch (WSClientTransportException e) {
+            throw new ServletException(e.getMessage());
+        }
+
+        /*
+         * Check whether the response is indeed a response to a previous request by comparing the InResponseTo fields
+         */
+        if (!logoutResponse.getInResponseTo().equals(expectedInResponseTo))
+            throw new ServletException("SAML logout response is not a response belonging to the original request.");
+
+        if (!logoutResponse.getStatus().getStatusCode().getValue().equals(StatusCode.SUCCESS_URI))
+            /**
+             * Logout failed but response ok.
+             * 
+             * TODO: pass one some info so we can send a partial logout response later on ...
+             */
+            return null;
+
+        return logoutResponse;
+    }
+
 }

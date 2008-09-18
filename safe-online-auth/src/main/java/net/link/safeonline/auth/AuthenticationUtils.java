@@ -20,7 +20,7 @@ import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
+import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -109,7 +109,7 @@ public class AuthenticationUtils {
         }
 
         try {
-            AuthnRequestUtil.sendAuthnRequest(encodedLandingUrl, encodedSamlRequestToken, templateResourceName,
+            RequestUtil.sendRequest(encodedLandingUrl, encodedSamlRequestToken, templateResourceName,
                     httpResponse);
         } catch (ServletException e) {
             throw new RuntimeException("could not initiate authentication: " + e.getMessage(), e);
@@ -179,7 +179,7 @@ public class AuthenticationUtils {
         }
 
         try {
-            AuthnRequestUtil.sendAuthnRequest(encodedLandingUrl, encodedSamlRequestToken, templateResourceName,
+            RequestUtil.sendRequest(encodedLandingUrl, encodedSamlRequestToken, templateResourceName,
                     httpResponse);
         } catch (ServletException e) {
             throw new RuntimeException("could not initiate device registration: " + e.getMessage(), e);

@@ -152,6 +152,35 @@ public class AuthenticationProtocolManager {
     }
 
     /**
+     * Initiates a logout request.
+     * 
+     * @param request
+     * @param response
+     * @param target
+     * @param subjectName
+     * @throws IOException
+     * @throws ServletException
+     */
+    public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target,
+            String subjectName) throws IOException, ServletException {
+
+        AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
+        if (null == protocolHandler) {
+            throw new IllegalStateException("no active protocol handler found");
+        }
+
+        String landingPage = request.getSession().getServletContext().getInitParameter(LANDING_PAGE_INIT_PARAM);
+        if (null != landingPage) {
+            LOG.debug("using landing page: " + landingPage);
+            storeTarget(target, request);
+            protocolHandler.initiateLogout(request, response, landingPage, subjectName);
+        } else {
+            clearTarget(request);
+            protocolHandler.initiateLogout(request, response, target, subjectName);
+        }
+    }
+
+    /**
      * Returns a new authentication protocol handler for the requested authentication protocol. The returned handler has
      * already been initialized. This method will fail if a previous protocol handler was already bound to the HTTP
      * session corresponding with the given HTTP servlet request.
