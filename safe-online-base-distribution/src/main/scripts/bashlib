@@ -821,7 +821,7 @@ showHelp() {
         printf "%s\n" "${optDesc//+( )/ }" | fmt -tw 70 | sed $'1!s/^/ \t/'
         printf "\n"
     done | column -t -s $'\t' \
-         | sed -r "s/^(    [^ ]*)/$bold$green\1$reset/"             >&$fd
+         | sed "s/^\(    [^ ]*\)/$bold$green\1$reset/"             >&$fd
     printf "\n"                                                     >&$fd
 } # _____________________________________________________________________
 
