@@ -5,45 +5,26 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
 		<version>1.2-SNAPSHOT</version>
 	</parent>
 
-	<name>SafeOnline Demo Lawyer Web Application in Wicket</name>
+	<name>SafeOnline Demo Bank Beans</name>
+	<description>
+        The entity beans for the Bank Demo.
+	</description>
 
 	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-demo-lawyer-webapp-wicket</artifactId>
+	<artifactId>safe-online-demo-bank</artifactId>
 	<version>1.2-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>ejb</packaging>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-                    <packagingExcludes>WEB-INF/lib/*</packagingExcludes>
-                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor> src/main/assembly/dependencies.xml </descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>package</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-					</execution>
-				</executions>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jboss-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
@@ -60,7 +41,7 @@
         <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-wicket-tools</artifactId>
+			<artifactId>safe-online-demo-bank-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -68,15 +49,20 @@
 			<artifactId>safe-online-sdk</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-demo</artifactId>
+            <type>ejb-client</type>
+		</dependency>
 
         <!-- Specific Dependencies: External -->
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+        </dependency>
 		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-extensions</artifactId>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 
         <!-- Test Dependencies -->

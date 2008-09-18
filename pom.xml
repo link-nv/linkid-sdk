@@ -130,6 +130,7 @@
 				<!-- WEBAPP NAMES -->
 				<safe-online.demo.app.webapp.name>demo</safe-online.demo.app.webapp.name>
 				<safe-online.demo.prescription.webapp.name>demo-prescription</safe-online.demo.prescription.webapp.name>
+				<safe-online.demo.bank.webapp.name>demo-bank</safe-online.demo.bank.webapp.name>
 				<safe-online.demo.cinema.webapp.name>demo-cinema</safe-online.demo.cinema.webapp.name>
 				<safe-online.demo.lawyer.webapp.name>demo-lawyer</safe-online.demo.lawyer.webapp.name>
 				<safe-online.demo.mandate.webapp.name>demo-mandate</safe-online.demo.mandate.webapp.name>
@@ -143,7 +144,6 @@
 				<module>safe-online-model-demo</module>
 				<module>safe-online-demo-deploy</module>
 				<module>safe-online-demo-util</module>
-				<module>safe-online-demo-wicket-tools</module>
 				<module>safe-online-demo-applet</module>
 				<module>safe-online-demo-webapp</module>
 				<module>safe-online-demo-startup-runtime</module>
@@ -173,6 +173,9 @@
 				<module>safe-online-demo-mandate-webapp</module>
 				<module>safe-online-demo-mandate-service</module>
 				<module>safe-online-demo-mandate-keystore</module>
+				<module>safe-online-demo-bank</module>
+				<module>safe-online-demo-bank-webapp</module>
+				<module>safe-online-demo-bank-keystore</module>
 				<module>safe-online-demo-cinema</module>
 				<module>safe-online-demo-cinema-webapp</module>
 				<module>safe-online-demo-cinema-keystore</module>
@@ -724,6 +727,7 @@
 		<!-- CORE WEB APPS -->
 		<module>safe-online-webapp-base</module>
 		<module>safe-online-webapp-common</module>
+        <module>safe-online-wicket-tools</module>
 		<module>safe-online-taglib</module>
 		<module>safe-online-user</module>
 		<module>safe-online-user-webapp</module>
@@ -2054,7 +2058,8 @@
 			<dependency>
                 <groupId>xml-security</groupId>
                 <artifactId>xmlsec</artifactId>
-				<version>-1</version>
+				<!--version>-1</version-->
+                <version>${xmlsec.version}</version>
 			</dependency>
 
 			<!-- External -->

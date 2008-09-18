@@ -9,13 +9,13 @@
 		<version>1.2-SNAPSHOT</version>
 	</parent>
 
-	<name>SafeOnline Demo Cinema Web Application</name>
+	<name>SafeOnline Demo Bank Web Application</name>
 	<description>
-        SafeOnline Demo Cinema Web Application in Wicket. 
+        SafeOnline Demo Bank Web Application in Wicket. 
 	</description>
 
 	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-demo-cinema-webapp</artifactId>
+	<artifactId>safe-online-demo-bank-webapp</artifactId>
 	<version>1.2-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<build>
@@ -81,13 +81,13 @@
 		<!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-cinema-keystore</artifactId>
+			<artifactId>safe-online-demo-bank-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-cinema</artifactId>
+			<artifactId>safe-online-demo-bank</artifactId>
 			<version>1.2-SNAPSHOT</version>
 			<type>ejb</type>
 		</dependency>
@@ -106,22 +106,6 @@
 		<dependency>
 			<groupId>xstream</groupId>
 			<artifactId>xstream</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-extensions</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-ioc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-contrib-javaee</artifactId>
 		</dependency>
 
 		<!-- Test Dependencies -->

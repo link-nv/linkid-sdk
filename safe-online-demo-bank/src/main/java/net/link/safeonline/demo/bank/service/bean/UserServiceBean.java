@@ -4,20 +4,21 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.demo.cinema.service.bean;
+package net.link.safeonline.demo.bank.service.bean;
 
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.demo.cinema.entity.UserEntity;
+import net.link.safeonline.demo.bank.entity.AccountEntity;
+import net.link.safeonline.demo.bank.entity.UserEntity;
+import net.link.safeonline.demo.bank.service.UserService;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
-import net.link.safeonline.demo.cinema.service.UserService;
-import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
@@ -40,7 +41,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = UserService.BINDING)
-public class UserServiceBean extends AbstractCinemaServiceBean implements UserService {
+public class UserServiceBean extends AbstractBankServiceBean implements UserService {
 
     private static final String WS_LOCATION = "WsLocation";
 
@@ -48,19 +49,32 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
     /**
      * {@inheritDoc}
      */
-    public UserEntity getUser(String id) {
+    public UserEntity getBankUser(String bankId) {
 
-        UserEntity user;
+        return (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("bankId", bankId)
+                .getSingleResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public UserEntity getOLASUser(String olasId) {
+
         try {
-            user = (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("id", id).getSingleResult();
-        }
+            return (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("olasId", olasId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
 
-        catch (NoResultException e) {
-            user = new UserEntity(id);
-            this.em.persist(user);
-        }
+            String bankId = olasId;
+            while (getBankUser(bankId) != null) {
+                bankId += "_";
+            }
+            
+            UserEntity userEntity = new UserEntity(bankId, olasId);
+            this.em.persist(userEntity);
 
-        return user;
+            return userEntity;
+        }
     }
 
     /**
@@ -72,22 +86,13 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
             AttributeClientImpl attributeClient = getOLASAttributeService(loginRequest);
             UserEntity userEntity = attach(user);
 
-            // National registry number of user.
-            String nrns[] = attributeClient.getAttributeValue(userEntity.getId(), BeIdConstants.NRN_ATTRIBUTE,
-                    String[].class);
-            if (nrns != null && nrns.length > 0) {
-                userEntity.setNrn(nrns[0]);
-            }
+            if (userEntity.getOlasId() == null)
+                return userEntity;
 
             // OLAS username of the user.
-            String name = attributeClient.getAttributeValue(userEntity.getId(),
+            String name = attributeClient.getAttributeValue(userEntity.getOlasId(),
                     DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
             userEntity.setName(name);
-
-            // Does user have a junior account?
-            Boolean juniorValue = attributeClient.getAttributeValue(userEntity.getId(),
-                    DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
-            userEntity.setJunior(juniorValue != null && juniorValue.booleanValue() == true);
 
             return userEntity;
         }
@@ -132,7 +137,16 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
         if (user == null)
             return null;
 
-        return (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("id", user.getId())
+        return (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("id", user.getBankId())
                 .getSingleResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public List<AccountEntity> getAccounts(UserEntity user) {
+
+        return this.em.createNamedQuery(AccountEntity.getByUser).setParameter("user", attach(user)).getResultList();
     }
 }

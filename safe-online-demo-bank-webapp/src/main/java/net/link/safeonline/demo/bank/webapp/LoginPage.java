@@ -1,12 +1,10 @@
-package net.link.safeonline.demo.cinema.webapp;
+package net.link.safeonline.demo.bank.webapp;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.demo.cinema.entity.UserEntity;
-import net.link.safeonline.demo.cinema.service.UserService;
+import net.link.safeonline.demo.bank.entity.UserEntity;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
@@ -22,33 +20,34 @@ public class LoginPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
 
-    @EJB
-    transient UserService     userService;
-
 
     /**
-     * If the user is logged in; continue to the ticket history page.
-     *
+     * If the user is logged in; continue to the account overview page.
+     * 
      * If not, show a link to the OLAS authentication service for logging the user in.
      */
     public LoginPage() {
 
-        // If logged in, send user to the ticket history page.
+        // If logged in using OLAS, create/obtain the bank user from the OLAS user.
         if (WicketUtil.isAuthenticated(getRequest())) {
             try {
-                UserEntity user = this.userService.getUser(WicketUtil.getUsername(getRequest()));
+                UserEntity user = this.userService.getOLASUser(WicketUtil.getUsername(getRequest()));
                 user = this.userService.updateUser(user, WicketUtil.toServletRequest(getRequest()));
-                CinemaSession.get().setUser(user);
-
-                setResponsePage(TicketPage.class);
-                return;
+                BankSession.get().setUser(user);
             }
 
             catch (ServletException e) {
-                this.LOG.error("LoginManager claimed we were logged in but no user id was available!", e);
+                this.LOG.error("[BUG] Not really logged in?!", e);
             }
         }
+        
+        // If logged in, send user to the ticket history page.
+        if (BankSession.get().getUser() != null) {
+            setResponsePage(AccountPage.class);
+            return;
+        }
 
+        // HTML Components.
         add(new Label<String>("headerTitle", "Login Page"));
         add(new Link<Object>("loginlink") {
 

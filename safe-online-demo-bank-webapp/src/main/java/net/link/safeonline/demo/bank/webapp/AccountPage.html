@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <body>
+        <wicket:extend>
+
+            <h2>Here's a list of all tickets you purchased.</h2>
+
+            <form wicket:id="accounts">
+                <table>
+                    <caption>User Accounts</caption>
+
+                    <colgroup />
+                    <colgroup class="small" />
+                    <colgroup class="tiny" />
+
+                    <tbody wicket:id="accountList">
+                        <tr>
+                            <th colspan="2" wicket:id="name" />
+                            <th wicket:id="amount" />
+                        </tr><tr wicket:id="transactionList">
+                            <td wicket:id="target" />
+                            <td wicket:id="date" />
+                            <td wicket:id="amount" />
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table>
+                    <caption>New Transaction</caption>
+
+                    <colgroup />
+                    <colgroup class="small" />
+
+                    <tr>
+                        <th />
+                        <th class="nopad"><a wicket:id="new">Create a new transaction &gt;</a></th>
+                    </tr>
+                </table>
+            </form>
+
+        </wicket:extend>
+    </body>
+
+</html>

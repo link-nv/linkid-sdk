@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <head>
+        <title wicket:id="pageTitle">
+            [Page Title]
+        </title>
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+    </head>
+
+    <body>
+        <div id="header">
+            <h1 wicket:id="headerTitle">
+                [Header Title]
+            </h1>
+        </div>
+
+        <div id="user" wicket:id="user">
+            <table>
+                <caption>Logged in as:</caption>
+
+                <colgroup />
+                <colgroup />
+                <colgroup class="small" />
+
+                <tr>
+                    <th>Name</th>
+                    <th>National Number</th>
+                    <th class="nopad"><a wicket:id="logout">Logout &gt;</a></th>
+                </tr>
+                <tr>
+                    <td wicket:id="name" />
+                    <td wicket:id="nrn" />
+                    <td wicket:id="junior" />
+                </tr>
+            </table>
+        </div>
+                
+        <div id="ticket" wicket:id="ticket">
+            <table>
+                <caption>Your Ticket</caption>
+
+                <colgroup />
+                <colgroup class="small" />
+
+                <tbody wicket:id="film">
+                    <tr>
+                        <th colspan="2">Film</th>
+                    </tr>
+                    <tr>
+                        <td wicket:id="name"></td>
+                        <td class="nopad"><a wicket:id="delete">Remove</a></td>
+                    </tr>
+                </tbody>
+                
+                <tbody wicket:id="theatre">
+                    <tr>
+                        <th colspan="2">Theatre</th>
+                    </tr>
+                    <tr>
+                        <td wicket:id="name"></td>
+                        <td class="nopad"><a wicket:id="delete">Remove</a></td>
+                    </tr>
+                </tbody>
+
+                <tbody wicket:id="time">
+                    <tr>
+                        <th colspan="2">Time</th>
+                    </tr>
+                    <tr>
+                        <td wicket:id="time"></td>
+                        <td class="nopad"><a wicket:id="delete">Remove</a></td>
+                    </tr>
+                </tbody>
+
+                <tbody wicket:id="room">
+                    <tr>
+                        <th colspan="2">Room</th>
+                    </tr>
+                    <tr>
+                        <td wicket:id="name"></td>
+                        <td class="nopad"><a wicket:id="delete">Remove</a></td>
+                    </tr>
+                </tbody>
+
+                <tfoot wicket:id="ticket">
+                    <tr>
+                        <th colspan="2">Price</th>
+                    </tr>
+                    <tr>
+                        <td wicket:id="price"></td>
+                        <td>
+                            <form wicket:id="pay">
+                                <input type="submit" value="Pay &gt;" />
+                            </form>
+                        </td>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+
+        <!--span wicket:id="navigation" /-->
+
+        <div id="content"><wicket:child /></div>
+
+        <div id="footer">Copyright 2006-2007 Lin.k N.V.</div>
+    </body>
+
+</html>

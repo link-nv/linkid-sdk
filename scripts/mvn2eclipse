@@ -23,7 +23,8 @@
 #   * Maarten Billemont.                                                      #
 #                                                                             #
 source "${0%/*}/bashlib"                                                      #
-cd "${0%/*}/.."
+shopt -s nullglob
+#cd "${0%/*}/.."
 
 
 # Setup and parse arguments.
@@ -55,15 +56,25 @@ fi
 
 
 # Convert any JAR references of projects into source references.
-p=${PWD##*/}
 emit "Converting JAR dependencies on safe-online projects to source dependencies" --
-
     echo +"ejb-clients" > "$spinPipe"
-    sed -i ${nonGnuSed:+''} '/-client/ ! { /M2_REPO.*\/'"$p"'\// { s,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; } }' */.classpath
-    sed -i ${nonGnuSed:+''} '/-1.jar/d' */.classpath
 
-    for pp in */.classpath; do
-        echo +"${pp%/*}" > "$spinPipe"
+    if [[ -e .classpath ]]; then
+        p=${PWD%/*}; p=${p##*/}
+        sed -i ${nonGnuSed:+''} '/-client/ ! { /M2_REPO.*\/'"$p"'\// { s,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; } }' .classpath
+        sed -i ${nonGnuSed:+''} '/-1.jar/d' .classpath
+    fi
+    cps=(*/.classpath)
+    if (( ${#cps[@]} )); then
+        p=${PWD##*/}
+        sed -i ${nonGnuSed:+''} '/-client/ ! { /M2_REPO.*\/'"$p"'\// { s,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; } }' "${cps[@]}"
+        sed -i ${nonGnuSed:+''} '/-1.jar/d' "${cps[@]}"
+    fi
+
+    for pp in .[c]lasspath "${cps[@]}"; do
+        [[ $pp = */* ]] \
+            && { echo +"${pp%/*}" > "$spinPipe";    p=${PWD##*/}; } \
+            || { echo +"${PWD##*/}" > "$spinPipe";  p=${PWD%/*}; p=${p##*/}; }
 
         IFS=$'\n' srcs=($(grep -F 'kind="src"' "$pp" | cut -d'"' -f4)); unset IFS
         while read -r; do
@@ -90,16 +101,18 @@ emit -$?
 emit "Setting up project-specific configurations" --
 
     result=0
-    for p in */.settings; do
-        echo +"${p%/*}" > "$spinPipe"
+    for p in .[s]ettings */.settings; do
+        [[ $pp = */* ]] \
+            && echo +"${p%/*}" > "$spinPipe" \
+            || echo +"${PWD##*/}" > "$spinPipe"
 
-        cp scripts/org.eclipse.jdt.* "$p" \
+        cp "${0%/*}"/org.eclipse.jdt.* "$p/" \
             || { result=$?; break; }
 
         # Special configuration for projects with generated sources.
-        [[ -e ${p%%/*}/target/generated-sources ]] && {
-            for f in scripts/ws~org.eclipse.*; do
-                cp "$f" "$p/${f#'scripts/ws~'}" || { result=$?; break 2; }
+        [[ -e $p/../target/generated-sources ]] && {
+            for f in "${0%/*}"/ws~org.eclipse.*; do
+                cp "$f" "$p/${f#*'ws~'}" || { result=$?; break 2; }
             done
         }
     done

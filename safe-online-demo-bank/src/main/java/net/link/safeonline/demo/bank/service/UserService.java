@@ -4,12 +4,15 @@
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.demo.cinema.service;
+package net.link.safeonline.demo.bank.service;
+
+import java.util.List;
 
 import javax.ejb.Local;
 import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.demo.cinema.entity.UserEntity;
+import net.link.safeonline.demo.bank.entity.AccountEntity;
+import net.link.safeonline.demo.bank.entity.UserEntity;
 
 
 /**
@@ -27,17 +30,22 @@ import net.link.safeonline.demo.cinema.entity.UserEntity;
  * @author mbillemo
  */
 @Local
-public interface UserService extends CinemaService {
+public interface UserService extends BankService {
 
     public static final String BINDING = JNDI_PREFIX + "UserServiceBean/local";
 
 
     /**
-     * If the given username does not yet exist; create a {@link UserEntity} for it.
-     *
-     * @return The {@link UserEntity} that maps the given username in the cinema database.
+     * @return The {@link UserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the bank.
      */
-    public UserEntity getUser(String username);
+    public UserEntity getBankUser(String bankId);
+
+    /**
+     * NOTE: If no {@link UserEntity} with the given OLAS ID exists yet, one will be created and returned.
+     * 
+     * @return The {@link UserEntity} with the given OLAS ID.
+     */
+    public UserEntity getOLASUser(String olasId);
 
     /**
      * Update the given user's attributes from OLAS.
@@ -48,4 +56,9 @@ public interface UserService extends CinemaService {
      * @return An attached entity for the given one.
      */
     public UserEntity attach(UserEntity user);
+
+    /**
+     * @return All accounts that the given user owns.
+     */
+    public List<AccountEntity> getAccounts(UserEntity user);
 }
