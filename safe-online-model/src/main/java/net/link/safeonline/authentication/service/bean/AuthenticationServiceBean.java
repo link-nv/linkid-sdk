@@ -502,12 +502,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         }
 
         /*
-         * Create SSO Cookie for authentication webapp
-         */
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        createSsoCookie(identityServiceClient.getSsoKey());
-
-        /*
          * Safe the state in this stateful session bean.
          */
         this.authenticationState = USER_AUTHENTICATED;
@@ -515,6 +509,12 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.authenticationDevice = device;
         this.authenticationDate = new DateTime();
         this.expectedDeviceChallengeId = null;
+
+        /*
+         * Create SSO Cookie for authentication webapp
+         */
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        createSsoCookie(identityServiceClient.getSsoKey());
 
         return subjectEntity.getUserId();
     }
@@ -530,8 +530,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         DateTime now = new DateTime();
         ApplicationEntity application = this.applicationDAO.findApplication(this.expectedApplicationId);
-        SingleSignOn sso = new SingleSignOn(this.authenticatedSubject, application, this.authenticationDevice, now);
-        createSsoCookie(ssoKey, sso);
+        if (application.isSsoEnabled()) {
+            SingleSignOn sso = new SingleSignOn(this.authenticatedSubject, application, this.authenticationDevice, now);
+            createSsoCookie(ssoKey, sso);
+        }
     }
 
     private void createSsoCookie(SecretKey ssoKey, SingleSignOn sso) {
@@ -913,18 +915,18 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         }
 
         /*
-         * Create SSO Cookie for authentication webapp
-         */
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        createSsoCookie(identityServiceClient.getSsoKey());
-
-        /*
          * Safe the state in this stateful session bean.
          */
         this.authenticationState = USER_AUTHENTICATED;
         this.authenticatedSubject = subjectEntity;
         this.authenticationDevice = device;
         this.authenticationDate = new DateTime();
+
+        /*
+         * Create SSO Cookie for authentication webapp
+         */
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        createSsoCookie(identityServiceClient.getSsoKey());
 
         addHistoryEntry(this.authenticatedSubject, HistoryEventType.DEVICE_REGISTRATION, null, device.getName());
 
