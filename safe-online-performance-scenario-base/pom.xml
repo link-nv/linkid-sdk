@@ -42,6 +42,12 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
 			<version>1.2-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.lin-k.safe-online</groupId>
+                    <artifactId>safe-online-container-jsf</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 
         <!-- Specific Dependencies: External -->

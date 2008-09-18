@@ -321,8 +321,8 @@ public class DemoStartableBean extends AbstractInitBean {
         // Uncomment this to restrict cinema access through BeID device.
         List<String> tempAllowedDevices = new LinkedList<String>();
         tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
+        tempAllowedDevices.add(EncapConstants.ENCAP_DEVICE_ID);
         tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
-        tempAllowedDevices.add(DigipassConstants.DIGIPASS_DEVICE_ID);
         this.allowedDevices.put(DEMO_CINEMA_APPLICATION_NAME, tempAllowedDevices);
 
         /*
@@ -408,8 +408,9 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         List<String> tempAllowedDevices = new LinkedList<String>();
         tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
-        tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
+        tempAllowedDevices.add(DigipassConstants.DIGIPASS_DEVICE_ID);
         tempAllowedDevices.add(EncapConstants.ENCAP_DEVICE_ID);
+        tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
         this.allowedDevices.put(DEMO_PAYMENT_APPLICATION_NAME, tempAllowedDevices);
         
         /*

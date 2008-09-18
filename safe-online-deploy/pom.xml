@@ -271,13 +271,6 @@
 			<type>sar</type>
 		</dependency>
 
-
-		<!-- Specific Dependencies: External -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-
 	</dependencies>
 
 	<reporting>

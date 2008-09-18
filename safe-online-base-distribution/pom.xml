@@ -167,9 +167,16 @@
 			<scope>provided</scope>
 			<type>zip</type>
 		</dependency>
+
+		<!-- Specific Dependencies: External -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.fileinstall</artifactId>
 		</dependency>
+
 	</dependencies>
 </project>
