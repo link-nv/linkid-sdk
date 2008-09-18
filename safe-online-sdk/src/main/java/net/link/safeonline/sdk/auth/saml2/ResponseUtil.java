@@ -78,8 +78,8 @@ public class ResponseUtil {
      * @throws ServletException
      * @throws IOException
      */
-    public static void sendResponse(String encodedSamlResponseToken, String templateResourceName,
-            String consumerUrl, HttpServletResponse httpResponse) throws ServletException, IOException {
+    public static void sendResponse(String encodedSamlResponseToken, String templateResourceName, String consumerUrl,
+            HttpServletResponse httpResponse) throws ServletException, IOException {
 
         /*
          * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just
@@ -303,7 +303,7 @@ public class ResponseUtil {
         }
 
         SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof Response)
+        if (false == samlMessage instanceof LogoutResponse)
             throw new ServletException("SAML message not an response message");
         LogoutResponse logoutResponse = (LogoutResponse) samlMessage;
 
@@ -335,14 +335,6 @@ public class ResponseUtil {
          */
         if (!logoutResponse.getInResponseTo().equals(expectedInResponseTo))
             throw new ServletException("SAML logout response is not a response belonging to the original request.");
-
-        if (!logoutResponse.getStatus().getStatusCode().getValue().equals(StatusCode.SUCCESS_URI))
-            /**
-             * Logout failed but response ok.
-             * 
-             * TODO: pass one some info so we can send a partial logout response later on ...
-             */
-            return null;
 
         return logoutResponse;
     }

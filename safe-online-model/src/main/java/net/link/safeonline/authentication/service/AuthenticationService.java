@@ -319,4 +319,15 @@ public interface AuthenticationService {
      * @throws NodeNotFoundException
      */
     String handleLogoutResponse(HttpServletRequest httpRequest) throws ServletException, NodeNotFoundException;
+
+    /**
+     * Finalizes a logout process by constructing an encoded SAML logout response to be sent to the application.
+     * 
+     * Calling this method is only valid after a call to {@link #initialize(LogoutRequest)}.
+     * 
+     * @param partialLogout
+     * 
+     * @throws NodeNotFoundException
+     */
+    String finalizeLogout(boolean partialLogout) throws NodeNotFoundException;
 }

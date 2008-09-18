@@ -120,6 +120,12 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
         }
 
         /*
+         * Store target to send LogoutResponse to later on
+         */
+        logoutRequestWrapper.getSession().setAttribute(LogoutExitServlet.LOGOUT_TARGET_ATTRIBUTE,
+                logoutProtocolContext.getTarget());
+
+        /*
          * Check Single Sign-On Cookies and send logout requests to the authenticated applications
          */
         AuthenticationService authenticationService = AuthenticationServiceManager

@@ -36,20 +36,22 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AuthenticationProtocolManager {
 
-    private static final Log                                                                         LOG                        = LogFactory
-                                                                                                                                        .getLog(AuthenticationProtocolManager.class);
+    private static final Log                                                                         LOG                            = LogFactory
+                                                                                                                                            .getLog(AuthenticationProtocolManager.class);
 
-    public static final String                                                                       PROTOCOL_HANDLER_ATTRIBUTE = AuthenticationProtocolManager.class
-                                                                                                                                        .getName()
-                                                                                                                                        + ".PROTOCOL_HANDLER";
+    public static final String                                                                       PROTOCOL_HANDLER_ATTRIBUTE     = AuthenticationProtocolManager.class
+                                                                                                                                            .getName()
+                                                                                                                                            + ".PROTOCOL_HANDLER";
 
-    public static final String                                                                       TARGET_ATTRIBUTE           = AuthenticationProtocolManager.class
-                                                                                                                                        .getName()
-                                                                                                                                        + ".TARGET";
+    public static final String                                                                       TARGET_ATTRIBUTE               = AuthenticationProtocolManager.class
+                                                                                                                                            .getName()
+                                                                                                                                            + ".TARGET";
 
-    public static final String                                                                       LANDING_PAGE_INIT_PARAM    = "LandingPage";
+    public static final String                                                                       LANDING_PAGE_INIT_PARAM        = "LandingPage";
 
-    private static final Map<AuthenticationProtocol, Class<? extends AuthenticationProtocolHandler>> handlerClasses             = new HashMap<AuthenticationProtocol, Class<? extends AuthenticationProtocolHandler>>();
+    public static final String                                                                       LOGOUT_LANDING_PAGE_INIT_PARAM = "LogoutLandingPage";
+
+    private static final Map<AuthenticationProtocol, Class<? extends AuthenticationProtocolHandler>> handlerClasses                 = new HashMap<AuthenticationProtocol, Class<? extends AuthenticationProtocolHandler>>();
 
 
     private AuthenticationProtocolManager() {
@@ -169,7 +171,7 @@ public class AuthenticationProtocolManager {
             throw new IllegalStateException("no active protocol handler found");
         }
 
-        String landingPage = request.getSession().getServletContext().getInitParameter(LANDING_PAGE_INIT_PARAM);
+        String landingPage = request.getSession().getServletContext().getInitParameter(LOGOUT_LANDING_PAGE_INIT_PARAM);
         if (null != landingPage) {
             LOG.debug("using landing page: " + landingPage);
             storeTarget(target, request);

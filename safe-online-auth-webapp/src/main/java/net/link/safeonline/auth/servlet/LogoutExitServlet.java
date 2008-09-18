@@ -23,6 +23,9 @@ import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;
 import net.link.safeonline.util.servlet.annotation.Init;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * Logout exit servlet. Used to send out logout requests and receive logout responses.
@@ -34,9 +37,15 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
 
     private static final long  serialVersionUID                 = 1L;
 
+    private static final Log   LOG                              = LogFactory.getLog(LogoutExitServlet.class);
+
     public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
 
     public static final String PROTOCOL_NAME_ATTRIBUTE          = "protocolName";
+
+    public static final String LOGOUT_PARTIAL_ATTRIBUTE         = "Logout.partial";
+
+    public static final String LOGOUT_TARGET_ATTRIBUTE          = "Logout.target";
 
     @Init(name = "ServletEndpointUrl")
     private String             servletEndpointUrl;
@@ -64,6 +73,7 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
         HttpServletRequestEndpointWrapper logoutRequestWrapper = new HttpServletRequestEndpointWrapper(request,
                 this.servletEndpointUrl);
 
+        LOG.debug("handle logout response");
         String loggedOutApplication;
         try {
             loggedOutApplication = ProtocolHandlerManager.handleLogoutResponse(logoutRequestWrapper);
@@ -74,11 +84,8 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
             return;
         }
 
-        /*
-         * Remove application from list of applications to logout from
-         */
         if (null == loggedOutApplication) {
-            // TODO: keep somewhere that not all apps were logged out ok so we can send a partial-logout response back
+            request.getSession().setAttribute(LOGOUT_PARTIAL_ATTRIBUTE, "true");
         }
 
         logoutNextSsoApplication(logoutRequestWrapper, response);
@@ -96,10 +103,29 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
         ApplicationEntity application = authenticationService.findSsoApplicationToLogout();
         if (null == application) {
 
-            // no more apps to logout: send LogoutResponse back to requesting app
+            // no more applications to logout: send LogoutResponse back to requesting application
+            boolean partialLogout = false;
+            if (null != request.getSession().getAttribute(LOGOUT_PARTIAL_ATTRIBUTE)) {
+                partialLogout = true;
+            }
+            String target = (String) request.getSession().getAttribute(LOGOUT_TARGET_ATTRIBUTE);
+            if (null == target)
+                throw new IllegalStateException(LOGOUT_TARGET_ATTRIBUTE + " session attribute not present");
+
+            LOG.debug("send logout response to " + target + " (partialLogout=" + partialLogout + ")");
+
+            try {
+                ProtocolHandlerManager.logoutResponse(partialLogout, target, request.getSession(), response);
+            } catch (ProtocolException e) {
+                redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(
+                        PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
+                        PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
+                return;
+            }
 
         } else {
 
+            LOG.debug("send logout request to: " + application.getName());
             try {
                 ProtocolHandlerManager.logoutRequest(application, request.getSession(), response);
             } catch (ProtocolException e) {
@@ -107,7 +133,6 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
                         PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(
                         PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
                 return;
-
             }
 
         }

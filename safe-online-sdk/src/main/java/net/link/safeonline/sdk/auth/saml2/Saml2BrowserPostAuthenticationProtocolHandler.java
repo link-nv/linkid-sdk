@@ -32,8 +32,10 @@ import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.ConfigurationException;
 
@@ -123,9 +125,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         this.challenge = new Challenge<String>();
         this.ssoEnabled = inSsoEnabled;
         this.wsLocation = inConfigParams.get("WsLocation");
-        if (null == this.wsLocation) {
+        if (null == this.wsLocation)
             throw new RuntimeException("Initialization param \"WsLocation\" not specified.");
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -149,8 +150,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         if (null != staticDevices && null != runtimeDevices) {
             Set<String> intersection = new HashSet<String>(staticDevices);
             intersection.retainAll(runtimeDevices);
-            if (intersection.isEmpty())
+            if (intersection.isEmpty()) {
                 throw new RuntimeException("intersection of static and runtime device lists is empty");
+            }
             return intersection;
         }
         if (null != staticDevices)
@@ -250,8 +252,19 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     /**
      * {@inheritDoc}
      */
-    public void finalizeLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    public boolean finalizeLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
             throws ServletException {
 
+        LogoutResponse samlLogoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, this.challenge.getValue(),
+                this.wsLocation, this.applicationCertificate, this.applicationKeyPair.getPrivate(),
+                TrustDomainType.NODE);
+
+        if (null == samlLogoutResponse)
+            return false;
+
+        if (!samlLogoutResponse.getStatus().getStatusCode().getValue().equals(StatusCode.SUCCESS_URI))
+            return false;
+
+        return true;
     }
 }

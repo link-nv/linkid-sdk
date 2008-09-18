@@ -94,6 +94,8 @@ public interface AuthenticationProtocolHandler extends Serializable {
     /**
      * Finalize the logout process.
      * 
+     * @return true if all all applications to need to be logged out due to the request were logged out.
+     * 
      */
-    void finalizeLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException;
+    boolean finalizeLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException;
 }

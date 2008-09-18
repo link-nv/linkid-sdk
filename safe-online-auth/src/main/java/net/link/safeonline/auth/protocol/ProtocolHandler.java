@@ -83,6 +83,18 @@ public interface ProtocolHandler {
             throws ProtocolException;
 
     /**
+     * Performs the logout response according to the protocol supported by the handler that implements this interface.
+     * 
+     * @param partialLogout
+     * @param target
+     * @param session
+     * @param logoutResponse
+     * @throws ProtocolException
+     */
+    void logoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse logoutResponse)
+            throws ProtocolException;
+
+    /**
      * Gives back the informal human-readable name of the authentication protocol that this protocol handler supports.
      * This name can be used on error pages.
      * 

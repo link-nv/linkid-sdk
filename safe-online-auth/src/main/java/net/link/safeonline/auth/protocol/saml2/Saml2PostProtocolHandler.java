@@ -273,4 +273,29 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void logoutResponse(boolean partialLogout, String target, HttpSession session,
+            HttpServletResponse logoutResponse) throws ProtocolException {
+
+        String encodedSamlLogoutResponseToken;
+        try {
+            encodedSamlLogoutResponseToken = AuthenticationServiceManager.finalizeLogout(partialLogout, session);
+        } catch (NodeNotFoundException e) {
+            throw new ProtocolException("Node not found: " + e.getMessage());
+        }
+
+        String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+
+        try {
+            ResponseUtil.sendResponse(encodedSamlLogoutResponseToken, templateResourceName, target, logoutResponse);
+        } catch (ServletException e) {
+            throw new ProtocolException(e.getMessage());
+        } catch (IOException e) {
+            throw new ProtocolException(e.getMessage());
+        }
+
+    }
+
 }

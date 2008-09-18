@@ -28,7 +28,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.web.Session;
 
 
 public class LoginBaseBean implements LoginBase {
@@ -82,10 +81,13 @@ public class LoginBaseBean implements LoginBase {
     public String logout() {
 
         this.log.debug("logout");
-        removeLoginCookie();
-        this.sessionContext.set("username", null);
-        Session.instance().invalidate();
-        return "logout-success";
+        String userId = (String) this.sessionContext.get("username");
+        // TODO: actual logout code for the webapp should only be executed upon receiving a valid logout response
+        /*
+         * removeLoginCookie(); this.sessionContext.set("username", null); Session.instance().invalidate();
+         */
+        SafeOnlineLoginUtils.logout(userId, "main.seam");
+        return "success";
     }
 
     private void addLoginCookie() {

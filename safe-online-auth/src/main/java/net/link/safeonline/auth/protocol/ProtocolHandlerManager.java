@@ -239,6 +239,37 @@ public class ProtocolHandlerManager {
             e.setProtocolName(protocolName);
             throw e;
         }
-
     }
+
+    /**
+     * Handles the logout response according to the authentication protocol by which the current logout procedure was
+     * initiated.
+     * 
+     * @param partialLogout
+     * @param target
+     * @param session
+     * @param response
+     * @throws ProtocolException
+     */
+    public static void logoutResponse(boolean partialLogout, String target, HttpSession session,
+            HttpServletResponse response) throws ProtocolException {
+
+        String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
+        if (null == protocolId) {
+            throw new ProtocolException("incorrect request handling detected");
+        }
+        ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
+        if (null == protocolHandler) {
+            throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
+        }
+
+        try {
+            protocolHandler.logoutResponse(partialLogout, target, session, response);
+        } catch (ProtocolException e) {
+            String protocolName = protocolHandler.getName();
+            e.setProtocolName(protocolName);
+            throw e;
+        }
+    }
+
 }

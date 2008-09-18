@@ -43,6 +43,7 @@ import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -160,6 +161,74 @@ public class LogoutExitServletTest {
         verify(this.mockObjects);
         LOG.debug("status code: " + statusCode);
         String responseBody = postMethod.getResponseBodyAsString();
+        LOG.debug("response body: " + responseBody);
+
+        Document responseDocument = DomTestUtils.parseDocument(responseBody);
+        LOG.debug("document element name: " + responseDocument.getDocumentElement().getNodeName());
+        Node valueNode = XPathAPI.selectSingleNode(responseDocument,
+                "/:html/:body/:form/:div/:input[@name='SAMLRequest']/@value");
+        assertNotNull(valueNode);
+        String samlRequestValue = valueNode.getTextContent();
+        LOG.debug("SAMLRequest value: " + samlRequestValue);
+        String samlRequest = new String(org.apache.commons.codec.binary.Base64
+                .decodeBase64(samlRequestValue.getBytes()));
+        LOG.debug("SAML Request: " + samlRequest);
+        File tmpFile = File.createTempFile("saml-request-", ".xml");
+        LOG.debug("tmp filename: " + tmpFile.getAbsolutePath());
+        IOUtils.write(samlRequest, new FileOutputStream(tmpFile));
+
+        String xmlFilename = tmpFile.getAbsolutePath();
+        String pubFilename = FilenameUtils.getFullPath(xmlFilename) + FilenameUtils.getBaseName(xmlFilename) + ".pem";
+        PEMWriter writer = new PEMWriter(new FileWriter(pubFilename));
+        writer.writeObject(applicationKeyPair.getPublic());
+        writer.close();
+
+        Document samlRequestDocument = DomTestUtils.parseDocument(samlRequest);
+        Element nsElement = samlRequestDocument.createElement("nsElement");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
+                "urn:oasis:names:tc:SAML:2.0:assertion");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
+                "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
+        assertNotNull(XPathAPI.selectSingleNode(samlRequestDocument, "/samlp:LogoutRequest/ds:Signature", nsElement));
+        assertNotNull(XPathAPI.selectSingleNode(samlRequestDocument, "/samlp:LogoutRequest/saml:NameID", nsElement));
+    }
+
+    @Test
+    public void sendLogoutRequest() throws Exception {
+
+        // setup
+        HttpClient httpClient = new HttpClient();
+        String servletLocation = this.logoutExitServletTestManager.getServletLocation();
+        GetMethod getMethod = new GetMethod(servletLocation);
+
+        KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+        String applicationName = "test-application-id";
+        URL applicationSsoLogoutUrl = new URL("http", "test.app", "/logout");
+        ApplicationEntity application = new ApplicationEntity();
+        application.setSsoLogoutUrl(applicationSsoLogoutUrl);
+
+        String userId = UUID.randomUUID().toString();
+
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName,
+                applicationKeyPair, this.servletEndpointUrl, null);
+        String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
+
+        // expectations
+        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
+        expect(this.mockAuthenticationService.findSsoApplicationToLogout()).andStubReturn(application);
+        expect(this.mockAuthenticationService.getLogoutRequest(application)).andStubReturn(encodedSamlLogoutRequest);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        int statusCode = httpClient.executeMethod(getMethod);
+
+        // verify
+        verify(this.mockObjects);
+        LOG.debug("status code: " + statusCode);
+        String responseBody = getMethod.getResponseBodyAsString();
         LOG.debug("response body: " + responseBody);
 
         Document responseDocument = DomTestUtils.parseDocument(responseBody);

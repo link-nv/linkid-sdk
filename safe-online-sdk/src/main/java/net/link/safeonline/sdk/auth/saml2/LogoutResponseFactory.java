@@ -69,6 +69,12 @@ public class LogoutResponseFactory {
     public static String createLogoutResponse(String inResponseTo, String issuerName, KeyPair signerKeyPair,
             String target) {
 
+        return createLogoutResponse(true, inResponseTo, issuerName, signerKeyPair, target);
+    }
+
+    public static String createLogoutResponse(boolean partialLogout, String inResponseTo, String issuerName,
+            KeyPair signerKeyPair, String target) {
+
         if (null == signerKeyPair) {
             throw new IllegalArgumentException("signer key pair should not be null");
         }
@@ -99,7 +105,11 @@ public class LogoutResponseFactory {
 
         Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
         StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
-        statusCode.setValue(StatusCode.SUCCESS_URI);
+        if (partialLogout) {
+            statusCode.setValue(StatusCode.PARTIAL_LOGOUT_URI);
+        } else {
+            statusCode.setValue(StatusCode.SUCCESS_URI);
+        }
         status.setStatusCode(statusCode);
         response.setStatus(status);
 
