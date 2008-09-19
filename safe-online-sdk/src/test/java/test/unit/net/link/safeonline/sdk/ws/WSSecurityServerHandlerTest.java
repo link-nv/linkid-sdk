@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Set;
-import java.util.UUID;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -33,6 +32,7 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import net.link.safeonline.sdk.ws.ClientCrypto;
 import net.link.safeonline.sdk.ws.ServerCrypto;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
@@ -43,17 +43,19 @@ import net.link.safeonline.test.util.TestSOAPMessageContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ws.security.WSConstants;
+import org.apache.ws.security.WSEncryptionPart;
 import org.apache.ws.security.WSSecurityEngine;
 import org.apache.ws.security.WSSecurityEngineResult;
+import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
+import org.apache.ws.security.message.WSSecHeader;
+import org.apache.ws.security.message.WSSecSignature;
+import org.apache.ws.security.message.WSSecTimestamp;
+import org.apache.ws.security.util.WSSecurityUtil;
 import org.apache.xml.security.Init;
-import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
-import org.bouncycastle.util.encoders.Base64;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -208,88 +210,47 @@ public class WSSecurityServerHandlerTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.newDocument();
+        Document document = documentBuilder.parse(WSSecurityServerHandlerTest.class
+                .getResourceAsStream("/test-soap-message.xml"));
 
-        Element envelopeElement = document
-                .createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "soap:Envelope");
-        envelopeElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
-                "http://schemas.xmlsoap.org/soap/envelope/");
-        document.appendChild(envelopeElement);
+        // use WSSecurityClientHandler to sign message
+        LOG.debug("adding WS-Security SOAP header");
+        WSSecSignature wsSecSignature = new WSSecSignature();
+        wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
+        Crypto crypto = new ClientCrypto(certificate, keyPair.getPrivate());
+        WSSecHeader wsSecHeader = new WSSecHeader();
+        wsSecHeader.insertSecurityHeader(document);
+        try {
+            wsSecSignature.prepare(document, crypto, wsSecHeader);
 
-        Element headerElement = document.createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "soap:Header");
-        envelopeElement.appendChild(headerElement);
+            org.apache.ws.security.SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(document
+                    .getDocumentElement());
 
-        Element securityElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "wsse:Security");
-        securityElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wsse",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-        securityElement.setAttributeNS("wsse", "mustUnderstand", "1");
-        headerElement.appendChild(securityElement);
-        Element binarySecurityTokenElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                "BinarySecurityToken");
-        securityElement.appendChild(binarySecurityTokenElement);
-        String certId = "id-" + UUID.randomUUID().toString();
-        binarySecurityTokenElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "wsu:Id", certId);
-        binarySecurityTokenElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wsu",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
-        binarySecurityTokenElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "ValueType",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3");
-        binarySecurityTokenElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "EncodingType",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary");
-        binarySecurityTokenElement.setTextContent(new String(Base64.encode(certificate.getEncoded())));
+            Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
+            WSEncryptionPart wsEncryptionPart = new WSEncryptionPart(soapConstants.getBodyQName().getLocalPart(),
+                    soapConstants.getEnvelopeURI(), "Content");
+            wsEncryptionParts.add(wsEncryptionPart);
 
-        Element timestampElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "wsu:Timestamp");
-        timestampElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wsu",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
-        String timestampId = "id-" + UUID.randomUUID().toString();
-        timestampElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "wsu:Id",
-                timestampId);
-        securityElement.appendChild(timestampElement);
-        Element createdElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "wsu:Created");
-        timestampElement.appendChild(createdElement);
-        timestampElement.setTextContent(new DateTime().toString());
+            WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
+            wsSecTimeStamp.setTimeToLive(0);
+            /*
+             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the
+             * service itself decide how long the message validity period is.
+             */
+            wsSecTimeStamp.prepare(document);
+            wsSecTimeStamp.prependToHeader(wsSecHeader);
 
-        Element bodyElement = document.createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "soap:Body");
-        String bodyId = "id-" + UUID.randomUUID().toString();
-        bodyElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "wsu:Id", bodyId);
-        envelopeElement.appendChild(bodyElement);
+            wsSecSignature.addReferencesToSign(wsEncryptionParts, wsSecHeader);
 
-        Element sampleElement = document.createElementNS("tns", "tns:test");
-        bodyElement.appendChild(sampleElement);
-        sampleElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:test", "urn:test");
+            wsSecSignature.prependToHeader(wsSecHeader);
 
-        XMLSignature signature = new XMLSignature(document, null, XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512,
-                Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS);
-        securityElement.appendChild(signature.getElement());
-        {
-            Transforms transforms = new Transforms(document);
-            transforms.addTransform(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS);
-            signature.addDocument("#" + bodyId, transforms, MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512);
+            wsSecSignature.prependBSTElementToHeader(wsSecHeader);
+
+            wsSecSignature.computeSignature();
+
+        } catch (WSSecurityException e) {
+            throw new RuntimeException("WSS4J error: " + e.getMessage(), e);
         }
-
-        Element securityTokenReferenceElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                "wsse:SecurityTokenReference");
-        signature.getKeyInfo().addUnknownElement(securityTokenReferenceElement);
-        Element referenceElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "wsse:Reference");
-        securityTokenReferenceElement.appendChild(referenceElement);
-        referenceElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "URI", "#"
-                        + certId);
-        referenceElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "ValueType",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3");
-
-        signature.sign(keyPair.getPrivate());
 
         LOG.debug("document: " + DomTestUtils.domToString(document));
 
@@ -323,8 +284,8 @@ public class WSSecurityServerHandlerTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Test
+    @SuppressWarnings("unchecked")
     public void wss4j() throws Exception {
 
         // setup
@@ -334,115 +295,67 @@ public class WSSecurityServerHandlerTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.newDocument();
+        Document document = documentBuilder.parse(WSSecurityServerHandlerTest.class
+                .getResourceAsStream("/test-soap-message.xml"));
 
-        Element envelopeElement = document
-                .createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "soap:Envelope");
-        envelopeElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
-                "http://schemas.xmlsoap.org/soap/envelope/");
-        document.appendChild(envelopeElement);
+        // use WSSecurityClientHandler to sign message
+        LOG.debug("adding WS-Security SOAP header");
+        WSSecSignature wsSecSignature = new WSSecSignature();
+        wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
+        Crypto clientCrypto = new ClientCrypto(certificate, keyPair.getPrivate());
+        WSSecHeader wsSecHeader = new WSSecHeader();
+        wsSecHeader.insertSecurityHeader(document);
+        try {
+            wsSecSignature.prepare(document, clientCrypto, wsSecHeader);
 
-        Element headerElement = document.createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "soap:Header");
-        envelopeElement.appendChild(headerElement);
+            String testId = "test-id";
+            Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
+            WSEncryptionPart wsBodyEncryptionPart = new WSEncryptionPart(testId);
+            wsEncryptionParts.add(wsBodyEncryptionPart);
 
-        Element securityElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "wsse:Security");
-        securityElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wsse",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-        securityElement.setAttributeNS("wsse", "mustUnderstand", "1");
-        headerElement.appendChild(securityElement);
-        Element binarySecurityTokenElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                "BinarySecurityToken");
-        securityElement.appendChild(binarySecurityTokenElement);
-        String certId = "id-" + UUID.randomUUID().toString();
-        binarySecurityTokenElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "wsu:Id", certId);
-        binarySecurityTokenElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wsu",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
-        binarySecurityTokenElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "ValueType",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3");
-        binarySecurityTokenElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "EncodingType",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary");
-        binarySecurityTokenElement.setTextContent(new String(Base64.encode(certificate.getEncoded())));
+            WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
+            wsSecTimeStamp.setTimeToLive(0);
+            /*
+             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the
+             * service itself decide how long the message validity period is.
+             */
+            wsSecTimeStamp.prepare(document);
+            wsSecTimeStamp.prependToHeader(wsSecHeader);
+            wsEncryptionParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
 
-        Element timestampElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "wsu:Timestamp");
-        timestampElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wsu",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
-        String timestampId = "id-" + UUID.randomUUID().toString();
-        timestampElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "wsu:Id",
-                timestampId);
-        securityElement.appendChild(timestampElement);
-        Element createdElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd", "wsu:Created");
-        timestampElement.appendChild(createdElement);
-        timestampElement.setTextContent(new DateTime().toString());
+            wsSecSignature.addReferencesToSign(wsEncryptionParts, wsSecHeader);
 
-        Element bodyElement = document.createElementNS("http://schemas.xmlsoap.org/soap/envelope/", "soap:Body");
-        String bodyId = "id-body-" + UUID.randomUUID().toString();
-        bodyElement.setAttributeNS(null, "Id", bodyId);
-        envelopeElement.appendChild(bodyElement);
+            wsSecSignature.prependToHeader(wsSecHeader);
 
-        Element sampleElement = document.createElementNS("tns", "tns:test");
-        bodyElement.appendChild(sampleElement);
-        sampleElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:test", "urn:test");
+            wsSecSignature.prependBSTElementToHeader(wsSecHeader);
 
-        XMLSignature signature = new XMLSignature(document, null, XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512,
-                Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS);
-        securityElement.appendChild(signature.getElement());
-        {
-            Transforms transforms = new Transforms(document);
-            transforms.addTransform(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS);
-            signature.addDocument("#" + bodyId, transforms, MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512);
-        }
-        {
-            Transforms transforms = new Transforms(document);
-            transforms.addTransform(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS);
-            signature.addDocument("#" + timestampId, transforms, MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512);
-        }
+            wsSecSignature.computeSignature();
 
-        Element securityTokenReferenceElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                "wsse:SecurityTokenReference");
-        signature.getKeyInfo().addUnknownElement(securityTokenReferenceElement);
-        Element referenceElement = document.createElementNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "wsse:Reference");
-        securityTokenReferenceElement.appendChild(referenceElement);
-        referenceElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "URI", "#"
-                        + certId);
-        referenceElement.setAttributeNS(
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "ValueType",
-                "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3");
+            LOG.debug("document: " + DomTestUtils.domToString(document));
 
-        signature.sign(keyPair.getPrivate());
+            // operate
+            MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
+            SOAPMessage message = messageFactory.createMessage();
+            DOMSource domSource = new DOMSource(document);
+            SOAPPart soapPart = message.getSOAPPart();
+            soapPart.setContent(domSource);
+            soapPart = message.getSOAPPart();
+            WSSecurityEngine securityEngine = WSSecurityEngine.getInstance();
+            Crypto serverCrypto = new ServerCrypto();
+            Vector<WSSecurityEngineResult> wsSecurityEngineResults;
+            wsSecurityEngineResults = securityEngine.processSecurityHeader(soapPart, null, null, serverCrypto);
 
-        LOG.debug("document: " + DomTestUtils.domToString(document));
-
-        // operate
-        MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
-        SOAPMessage message = messageFactory.createMessage();
-        DOMSource domSource = new DOMSource(document);
-        SOAPPart soapPart = message.getSOAPPart();
-        soapPart.setContent(domSource);
-        soapPart = message.getSOAPPart();
-        WSSecurityEngine securityEngine = WSSecurityEngine.getInstance();
-        Crypto crypto = new ServerCrypto();
-        Vector<WSSecurityEngineResult> wsSecurityEngineResults;
-        wsSecurityEngineResults = securityEngine.processSecurityHeader(soapPart, null, null, crypto);
-
-        assertNotNull(wsSecurityEngineResults);
-        for (WSSecurityEngineResult result : wsSecurityEngineResults) {
-            Set<String> signedElements = (Set<String>) result.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
-            if (null != signedElements) {
-                LOG.debug("signed elements: " + signedElements);
-                assertTrue(signedElements.contains(bodyId));
-                assertTrue(signedElements.contains(timestampId));
+            assertNotNull(wsSecurityEngineResults);
+            for (WSSecurityEngineResult result : wsSecurityEngineResults) {
+                Set<String> signedElements = (Set<String>) result.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
+                if (null != signedElements) {
+                    LOG.debug("signed elements: " + signedElements);
+                    assertTrue(signedElements.contains(testId));
+                    assertTrue(signedElements.contains(wsSecTimeStamp.getId()));
+                }
             }
+        } catch (WSSecurityException e) {
+            throw new RuntimeException("WSS4J error: " + e.getMessage(), e);
         }
     }
 
