@@ -64,10 +64,10 @@ public class OptionController implements AppletController {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(AppletView appletView, RuntimeContext runtimeContext,
+	public void init(AppletView av, RuntimeContext rc,
 			StatementProvider statementProvider) {
-		this.appletView = appletView;
-		this.runtimeContext = runtimeContext;
+		this.appletView = av;
+		this.runtimeContext = rc;
 		Locale locale = this.runtimeContext.getLocale();
 		this.messages = new OptionMessages(locale);
 	}
@@ -92,7 +92,7 @@ public class OptionController implements AppletController {
 				this.appletView.outputInfoMessage(InfoLevel.ERROR,
 						this.messages.getString(KEY.ERROR));
 				this.appletView
-						.outputDetailMessage("An error occured while contacting the connection manager");
+						.outputDetailMessage(e.getMessage());
 				return;
 			}
 		}
