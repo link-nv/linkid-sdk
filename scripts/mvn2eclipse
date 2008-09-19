@@ -71,20 +71,20 @@ emit "Converting JAR dependencies on safe-online projects to source dependencies
 
 	for pp in .[c]lasspath "${cps[@]}"; do
 		[[ $pp = */* ]] \
-			&& { echo +"${pp%/*}" > "$spinPipe";	p=${PWD##*/}; } \
-			|| { echo +"${PWD##*/}" > "$spinPipe";  p=${PWD%/*}; p=${p##*/}; }
+			&& echo +"${pp%/*}" > "$spinPipe" \
+			|| echo +"${PWD##*/}" > "$spinPipe"
 
 		IFS=$'\n' srcs=($(grep -F 'kind="src"' "$pp" | cut -d'"' -f4)); unset IFS
 		while read -r; do
 			line=$REPLY
 
 			if [[ $line = *'-client'* ]]; then
-				curSrc=$(sed 's,.*M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/.*,/\1,' <<< "$line")
+				curSrc=$(sed 's,.*M2_REPO/net/lin-k/safe-online/\([^/]*\)/.*,/\1,' <<< "$line")
 				for src in "${srcs[@]}"; do
 					[[ $src = $curSrc ]] && continue 2
 				done
 
-				line=$(sed 's,M2_REPO/net/lin-k/'"$p"'/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/' <<< "$line")
+				line=$(sed '/M2_REPO.net.lin-k.safe-online/ { s,M2_REPO/net/lin-k/safe-online/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/ }' <<< "$line")
 			fi
 
 			echo "$line"
