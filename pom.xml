@@ -130,7 +130,6 @@
 				<!-- WEBAPP NAMES -->
 				<safe-online.demo.app.webapp.name>demo</safe-online.demo.app.webapp.name>
 				<safe-online.demo.prescription.webapp.name>demo-prescription</safe-online.demo.prescription.webapp.name>
-				<safe-online.demo.bank.webapp.name>demo-bank</safe-online.demo.bank.webapp.name>
 				<safe-online.demo.cinema.webapp.name>demo-cinema</safe-online.demo.cinema.webapp.name>
 				<safe-online.demo.lawyer.webapp.name>demo-lawyer</safe-online.demo.lawyer.webapp.name>
 				<safe-online.demo.mandate.webapp.name>demo-mandate</safe-online.demo.mandate.webapp.name>
@@ -173,9 +172,6 @@
 				<module>safe-online-demo-mandate-webapp</module>
 				<module>safe-online-demo-mandate-service</module>
 				<module>safe-online-demo-mandate-keystore</module>
-				<module>safe-online-demo-bank</module>
-				<module>safe-online-demo-bank-webapp</module>
-				<module>safe-online-demo-bank-keystore</module>
 				<module>safe-online-demo-cinema</module>
 				<module>safe-online-demo-cinema-webapp</module>
 				<module>safe-online-demo-cinema-keystore</module>
