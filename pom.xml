@@ -929,7 +929,15 @@
 					<wtpversion>2.0</wtpversion>
 					<downloadSources>false</downloadSources>
 					<downloadJavadocs>false</downloadJavadocs>
-                    <excludes>xml-apis,xmlParserAPIs,xercesImpl,xalan,xmlsec,wss4j,xom</excludes>
+                    <excludes>
+                        <exclude>xml-apis</exclude>
+                        <exclude>xmlParserAPIs</exclude>
+                        <exclude>xercesImpl</exclude>
+                        <exclude>xalan</exclude>
+                        <exclude>xmlsec</exclude>
+                        <exclude>wss4j</exclude>
+                        <exclude>xom</exclude>
+                    </excludes>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>

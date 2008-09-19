@@ -231,7 +231,9 @@ emit() {
         trap : INT
 
         # Create the spinner in the background.
-        spinPipe=$(mktemp -uq).$$ && mkfifo "$spinPipe" || unset spinPipe
+        spinPipe=$TMPDIR/bashlib.$$
+        { touch "$spinPipe" && rm -f "$spinPipe" && mkfifo "$spinPipe"; } 2>/dev/null \
+            || unset spinPipe
         { spinner "${spinArgs[@]}" "$origtext" -- "$style" "$color" "$textstyle" "$textcolor" < "${spinPipe:-/dev/null}" & } 2>/dev/null
         [[ $spinPipe ]] && echo > "$spinPipe"
         spinPid=$!
@@ -821,7 +823,7 @@ showHelp() {
         printf "%s\n" "${optDesc//+( )/ }" | fmt -tw 70 | sed $'1!s/^/ \t/'
         printf "\n"
     done | column -t -s $'\t' \
-         | sed "s/^\(    [^ ]*\)/$bold$green\1$reset/"             >&$fd
+         | sed "s/^\(    [^ ]*\)/$bold$green\1$reset/"              >&$fd
     printf "\n"                                                     >&$fd
 } # _____________________________________________________________________
 
