@@ -115,7 +115,7 @@
 
         <!-- Specific Dependencies: External -->
 		<dependency>
-			<groupId>wss4j</groupId>
+			<groupId>org.apache.ws.security</groupId>
 			<artifactId>wss4j</artifactId>
 		</dependency>
 
