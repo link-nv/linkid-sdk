@@ -1,7 +1,6 @@
 package net.link.safeonline.option.connection.manager.ws.impl;
 
 import javax.jws.WebService;
-import javax.xml.ws.soap.SOAPFaultException;
 
 import net.link.safeonline.option.connection.manager.ws.generated.ConnectionManager;
 import net.link.safeonline.option.device.OptionDevice;
