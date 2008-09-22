@@ -86,12 +86,10 @@ public class LogoutRequestFactory {
     public static String createLogoutRequest(String subjectName, String issuerName, KeyPair signerKeyPair,
             String destinationURL, Challenge<String> challenge) {
 
-        if (null == signerKeyPair) {
+        if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        }
-        if (null == issuerName) {
+        if (null == issuerName)
             throw new IllegalArgumentException("application name should not be null");
-        }
 
         LogoutRequest request = buildXMLObject(LogoutRequest.class, LogoutRequest.DEFAULT_ELEMENT_NAME);
 
@@ -179,9 +177,8 @@ public class LogoutRequestFactory {
             QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
-        if (builder == null) {
+        if (builder == null)
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        }
         Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
                 .getPrefix());
         return object;

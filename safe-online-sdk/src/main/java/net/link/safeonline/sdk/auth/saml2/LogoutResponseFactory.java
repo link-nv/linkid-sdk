@@ -69,18 +69,16 @@ public class LogoutResponseFactory {
     public static String createLogoutResponse(String inResponseTo, String issuerName, KeyPair signerKeyPair,
             String target) {
 
-        return createLogoutResponse(true, inResponseTo, issuerName, signerKeyPair, target);
+        return createLogoutResponse(false, inResponseTo, issuerName, signerKeyPair, target);
     }
 
     public static String createLogoutResponse(boolean partialLogout, String inResponseTo, String issuerName,
             KeyPair signerKeyPair, String target) {
 
-        if (null == signerKeyPair) {
+        if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        }
-        if (null == issuerName) {
+        if (null == issuerName)
             throw new IllegalArgumentException("issuer name should not be null");
-        }
 
         LogoutResponse response = buildXMLObject(LogoutResponse.class, LogoutResponse.DEFAULT_ELEMENT_NAME);
 
@@ -168,9 +166,8 @@ public class LogoutResponseFactory {
             QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
-        if (builder == null) {
+        if (builder == null)
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        }
         Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
                 .getPrefix());
         return object;

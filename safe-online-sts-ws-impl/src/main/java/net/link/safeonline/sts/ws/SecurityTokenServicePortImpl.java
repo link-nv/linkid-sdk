@@ -33,6 +33,7 @@ import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.LogoutRequest;
 import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.RequestedAuthnContext;
@@ -147,9 +148,13 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
             RequestSecurityTokenResponseType response = validateSaml2LogoutResponse((LogoutResponse) tokenXmlObject);
             if (null != response)
                 return response;
+        } else if (tokenXmlObject instanceof LogoutRequest) {
+            RequestSecurityTokenResponseType response = validateSaml2LogoutRequest((LogoutRequest) tokenXmlObject);
+            if (null != response)
+                return response;
         } else {
             RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
-                    "token not a SAML2 Response, AuthnRequest or LogoutResponse");
+                    "token not a SAML2 Response, AuthnRequest, LogoutResponse or LogoutRequest");
             return response;
 
         }
@@ -276,6 +281,24 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         Issuer issuer = samlLogoutResponse.getIssuer();
         String issuerName = issuer.getValue();
         LOG.debug("issuer name: " + issuerName);
+
+        return null;
+    }
+
+    private RequestSecurityTokenResponseType validateSaml2LogoutRequest(LogoutRequest samlLogoutRequest) {
+
+        Issuer issuer = samlLogoutRequest.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer name: " + issuerName);
+
+        String subjectName = samlLogoutRequest.getNameID().getValue();
+        if (null == subjectName) {
+            LOG.debug("missing NameID field");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing NameID field");
+            return response;
+        }
+        LOG.debug("subject name: " + subjectName);
 
         return null;
     }

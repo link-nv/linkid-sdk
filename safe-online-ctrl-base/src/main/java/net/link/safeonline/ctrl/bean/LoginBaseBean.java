@@ -82,10 +82,7 @@ public class LoginBaseBean implements LoginBase {
 
         this.log.debug("logout");
         String userId = (String) this.sessionContext.get("username");
-        // TODO: actual logout code for the webapp should only be executed upon receiving a valid logout response
-        /*
-         * removeLoginCookie(); this.sessionContext.set("username", null); Session.instance().invalidate();
-         */
+        removeLoginCookie();
         SafeOnlineLoginUtils.logout(userId, "main.seam");
         return "success";
     }

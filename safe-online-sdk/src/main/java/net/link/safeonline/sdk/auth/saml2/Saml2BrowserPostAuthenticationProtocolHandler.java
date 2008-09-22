@@ -32,6 +32,7 @@ import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.LogoutRequest;
 import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
@@ -125,8 +126,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         this.challenge = new Challenge<String>();
         this.ssoEnabled = inSsoEnabled;
         this.wsLocation = inConfigParams.get("WsLocation");
-        if (null == this.wsLocation)
+        if (null == this.wsLocation) {
             throw new RuntimeException("Initialization param \"WsLocation\" not specified.");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -150,9 +152,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         if (null != staticDevices && null != runtimeDevices) {
             Set<String> intersection = new HashSet<String>(staticDevices);
             intersection.retainAll(runtimeDevices);
-            if (intersection.isEmpty()) {
+            if (intersection.isEmpty())
                 throw new RuntimeException("intersection of static and runtime device lists is empty");
-            }
             return intersection;
         }
         if (null != staticDevices)
@@ -239,14 +240,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        String language = getLanguage(httpRequest);
-        if (null == language) {
-            language = httpRequest.getLocale().getLanguage();
-        }
-
-        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, language, templateResourceName,
-                httpResponse);
-
+        RequestUtil
+                .sendRequest(this.authnServiceUrl, encodedSamlRequestToken, null, templateResourceName, httpResponse);
     }
 
     /**
@@ -266,5 +261,41 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             return false;
 
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+        LogoutRequest samlLogoutRequest = RequestUtil.validateLogoutRequest(request, this.wsLocation,
+                this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+        if (null == samlLogoutRequest)
+            return null;
+
+        this.challenge.setValue(samlLogoutRequest.getID());
+
+        return samlLogoutRequest.getNameID().getValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String samlResponseToken = LogoutResponseFactory.createLogoutResponse(this.challenge.getValue(),
+                this.applicationName, this.applicationKeyPair, this.authnServiceUrl);
+
+        String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
+
+        String templateResourceName;
+        if (this.configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+            templateResourceName = this.configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+        } else {
+            templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+        }
+
+        ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, this.authnServiceUrl, response);
     }
 }

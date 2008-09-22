@@ -25,12 +25,21 @@
 		</listener-class>
 	</listener>
 	<context-param>
+		<description>URL used to initiate a login process.</description>
 		<param-name>AuthenticationServiceUrl</param-name>
 		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
 	</context-param>
 	<context-param>
+		<description>URL used to initiate a single logout process.</description>
 		<param-name>LogoutServiceUrl</param-name>
 		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutentry</param-value>
+	</context-param>
+	<context-param>
+		<description>URL used to finalize a logout request sent by the
+			authenticaation webapp following a single logout process by another
+			application.</description>
+		<param-name>LogoutExitServiceUrl</param-name>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
 	</context-param>
 	<context-param>
 		<description>Point of return for the remote device operations.</description>
@@ -86,14 +95,14 @@
 		<param-value>${safe-online.host.auth.basename}</param-value>
 	</context-param>
 	<context-param>
-		<description>Page that handles the incoming SAML authn response</description>
+		<description>Landing page to finalize a login process.</description>
 		<param-name>LandingPage</param-name>
 		<param-value>
 			${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/login 
 		</param-value>
 	</context-param>
 	<context-param>
-		<description>Page that handles the incoming SAML logout response</description>
+		<description>Landing page to finalize a logout process.</description>
 		<param-name>LogoutLandingPage</param-name>
 		<param-value>
 			${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/logout 
@@ -159,7 +168,7 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>AuthnResponseFilter</filter-name>
@@ -217,6 +226,12 @@
 		<servlet-class> net.link.safeonline.sdk.auth.servlet.LogoutServlet 
 		</servlet-class>
 		<init-param>
+			<param-name>LogoutUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/userlogout 
+			</param-value>
+		</init-param>
+		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
@@ -225,6 +240,16 @@
 				verification of the receiving endpoint with the destination in the
 				saml response.</description>
 			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/logout 
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>UserLogoutServlet</servlet-name>
+		<servlet-class>net.link.safeonline.webapp.resources.LogoutServlet</servlet-class>
+		<init-param>
+			<param-name>LogoutExitUrl</param-name>
 			<param-value>
 				${safe-online.host.auth.basename}/${safe-online.user.webapp.name}/logout 
 			</param-value>
@@ -241,6 +266,10 @@
 	<servlet-mapping>
 		<servlet-name>LogoutServlet</servlet-name>
 		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>UserLogoutServlet</servlet-name>
+		<url-pattern>/userlogout</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>

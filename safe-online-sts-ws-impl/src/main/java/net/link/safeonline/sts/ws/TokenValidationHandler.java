@@ -34,8 +34,10 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
@@ -55,9 +57,9 @@ import org.w3c.dom.Node;
 
 /**
  * SOAP JAX-WS handler to verify the signature on the token to be validated.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -167,6 +169,24 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                     LOG.debug("unknown token issuer: " + issuerName);
                     throw createSOAPFaultException("unknown token issuer: " + issuerName, "InvalidSecurityToken");
                 }
+            } else if (trustDomain == TrustDomainType.APPLICATION) {
+                ApplicationAuthenticationService applicationAuthenticationService = EjbUtils
+                        .getEJB("SafeOnline/ApplicationAuthenticationServiceBean/local",
+                                ApplicationAuthenticationService.class);
+                try {
+                    List<X509Certificate> applicationCertificates = applicationAuthenticationService
+                            .getCertificates(issuerName);
+                    result = false;
+                    for (X509Certificate applicationCertificate : applicationCertificates) {
+                        result = xmlSignature.checkSignatureValue(applicationCertificate);
+                        if (result == true) {
+                            break;
+                        }
+                    }
+                } catch (ApplicationNotFoundException e) {
+                    LOG.debug("unknown token issuer: " + issuerName);
+                    throw createSOAPFaultException("unknown token issuer: " + issuerName, "InvalidSecurityToken");
+                }
             } else {
                 LOG.debug("unknown token issuer: " + issuerName);
                 throw createSOAPFaultException("unknown token issuer: " + issuerName, "InvalidSecurityToken");
@@ -207,6 +227,20 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                                 document,
                                 "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:AuthnRequest/ds:Signature",
                                 nsElement);
+                if (null == tokenSignatureElement) {
+                    tokenSignatureElement = (Element) XPathAPI
+                            .selectSingleNode(
+                                    document,
+                                    "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutResponse/ds:Signature",
+                                    nsElement);
+                    if (null == tokenSignatureElement) {
+                        tokenSignatureElement = (Element) XPathAPI
+                                .selectSingleNode(
+                                        document,
+                                        "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutRequest/ds:Signature",
+                                        nsElement);
+                    }
+                }
             }
             return tokenSignatureElement;
         } catch (TransformerException e) {
@@ -238,6 +272,20 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                                 document,
                                 "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:AuthnRequest/saml:Issuer",
                                 nsElement);
+                if (null == issuerElement) {
+                    issuerElement = (Element) XPathAPI
+                            .selectSingleNode(
+                                    document,
+                                    "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutResponse/saml:Issuer",
+                                    nsElement);
+                    if (null == issuerElement) {
+                        issuerElement = (Element) XPathAPI
+                                .selectSingleNode(
+                                        document,
+                                        "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutRequest/saml:Issuer",
+                                        nsElement);
+                    }
+                }
             }
             return issuerElement;
         } catch (TransformerException e) {
@@ -282,7 +330,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 
     /**
      * Gives back the result of the token signature validation.
-     *
+     * 
      * @param context
      */
     public static boolean getValidity(WebServiceContext context) {

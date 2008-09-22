@@ -28,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Login Servlet. This servlet contains the landing page to finalize the authentication process initiated by the web
  * application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoginServlet extends AbstractInjectionServlet {
 
@@ -97,9 +97,10 @@ public class LoginServlet extends AbstractInjectionServlet {
 
         LOG.debug("username: " + username);
         LoginManager.setUsername(username, requestWrapper);
-        AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);
         String target = AuthenticationProtocolManager.getTarget(requestWrapper);
         LOG.debug("target: " + target);
+        AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);
+
         response.sendRedirect(target);
     }
 }

@@ -65,9 +65,8 @@ public class ProtocolHandlerManager {
         try {
             ProtocolHandler protocolHandler = protocolHandlerClass.newInstance();
             String protocolId = protocolHandlerClass.getName();
-            if (protocolHandlerMap.containsKey(protocolId)) {
+            if (protocolHandlerMap.containsKey(protocolId))
                 throw new RuntimeException("protocol handler already registered for Id: " + protocolId);
-            }
             protocolHandlerMap.put(protocolId, protocolHandler);
             protocolHandlers.add(protocolHandler);
         } catch (Exception e) {
@@ -123,13 +122,11 @@ public class ProtocolHandlerManager {
     public static void authnResponse(HttpSession session, HttpServletResponse response) throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
-        if (null == protocolId) {
+        if (null == protocolId)
             throw new ProtocolException("incorrect request handling detected");
-        }
         ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
-        if (null == protocolHandler) {
+        if (null == protocolHandler)
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
-        }
 
         try {
             protocolHandler.authnResponse(session, response);
@@ -197,11 +194,13 @@ public class ProtocolHandlerManager {
 
         HttpSession session = request.getSession();
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
-        if (null == protocolId)
+        if (null == protocolId) {
             throw new ProtocolException("incorrect request handling detected");
+        }
         ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
-        if (null == protocolHandler)
+        if (null == protocolHandler) {
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
+        }
 
         try {
             return protocolHandler.handleLogoutResponse(request);
@@ -224,13 +223,11 @@ public class ProtocolHandlerManager {
             throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
-        if (null == protocolId) {
+        if (null == protocolId)
             throw new ProtocolException("incorrect request handling detected");
-        }
         ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
-        if (null == protocolHandler) {
+        if (null == protocolHandler)
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
-        }
 
         try {
             protocolHandler.logoutRequest(application, session, response);
@@ -255,13 +252,11 @@ public class ProtocolHandlerManager {
             HttpServletResponse response) throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
-        if (null == protocolId) {
+        if (null == protocolId)
             throw new ProtocolException("incorrect request handling detected");
-        }
         ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
-        if (null == protocolHandler) {
+        if (null == protocolHandler)
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
-        }
 
         try {
             protocolHandler.logoutResponse(partialLogout, target, session, response);
@@ -270,6 +265,13 @@ public class ProtocolHandlerManager {
             e.setProtocolName(protocolName);
             throw e;
         }
+
+        /*
+         * It's important to invalidate the session here. Else we spill resources and we prevent a user to login twice
+         * since the authentication service instance was already removed from the session context.
+         */
+        session.invalidate();
+
     }
 
 }

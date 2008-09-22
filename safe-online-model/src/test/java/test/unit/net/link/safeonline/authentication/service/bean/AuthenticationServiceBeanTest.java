@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.URL;
 import java.security.KeyPair;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -40,6 +41,7 @@ import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean.SingleSignOn;
 import net.link.safeonline.common.SafeOnlineCookies;
@@ -52,6 +54,7 @@ import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
@@ -61,6 +64,7 @@ import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.DomUtils;
+import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
@@ -75,6 +79,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.LogoutRequest;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallerFactory;
@@ -112,6 +117,8 @@ public class AuthenticationServiceBeanTest {
     private ApplicationPoolDAO               mockApplicationPoolDAO;
 
     private SecurityAuditLogger              mockSecurityAuditLogger;
+
+    private UserIdMappingService             mockUserIdMappingService;
 
     private static SecretKey                 ssoKey;
 
@@ -187,13 +194,16 @@ public class AuthenticationServiceBeanTest {
         this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
         EJBTestUtils.inject(this.testedInstance, this.mockSecurityAuditLogger);
 
+        this.mockUserIdMappingService = createMock(UserIdMappingService.class);
+        EJBTestUtils.inject(this.testedInstance, this.mockUserIdMappingService);
+
         EJBTestUtils.init(this.testedInstance);
 
         this.mockObjects = new Object[] { this.mockSubjectService, this.mockPasswordDeviceService,
                 this.mockApplicationDAO, this.mockSubscriptionDAO, this.mockHistoryDAO, this.mockStatisticDAO,
                 this.mockStatisticDataPointDAO, this.mockDeviceDAO, this.mockApplicationAuthenticationService,
                 this.mockPkiValidator, this.mockDevicePolicyService, this.mockApplicationPoolDAO,
-                this.mockSecurityAuditLogger };
+                this.mockSecurityAuditLogger, this.mockUserIdMappingService };
     }
 
     @After
@@ -1077,5 +1087,61 @@ public class AuthenticationServiceBeanTest {
         ssoCookie.setPath("/olas-auth/");
         ssoCookie.setMaxAge(-1);
         return ssoCookie;
+    }
+
+    @Test
+    public void initializeLogout() throws Exception {
+
+        // setup
+        String applicationName = "test-application-id";
+        KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
+                "CN=TestApplication");
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, new ApplicationOwnerEntity(),
+                null, null, null, null, applicationCert);
+        application.setSsoLogoutUrl(new URL("http", "test.host", "logout"));
+
+        String applicationUserId = UUID.randomUUID().toString();
+        String userId = UUID.randomUUID().toString();
+        SubjectEntity subject = new SubjectEntity(userId);
+
+        String destinationUrl = "http://test.destination.url";
+
+        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(applicationUserId, applicationName,
+                applicationKeyPair, destinationUrl, null);
+        LogoutRequest logoutRequest = getLogoutRequest(encodedLogoutRequest);
+
+        // expectations
+        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+                Collections.singletonList(applicationCert));
+        expect(
+                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockUserIdMappingService.findUserId(applicationName, applicationUserId)).andStubReturn(userId);
+        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(subject);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        this.testedInstance.initialize(logoutRequest);
+
+        // verify
+        verify(this.mockObjects);
+
+        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
+        assertEquals(applicationName, resultApplicationId);
+        String resultTarget = this.testedInstance.getExpectedTarget();
+        assertEquals(application.getSsoLogoutUrl().toString(), resultTarget);
+    }
+
+    private LogoutRequest getLogoutRequest(String encodedLogoutRequest) throws Exception {
+
+        Document doc = DomUtils.parseDocument(encodedLogoutRequest);
+        UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
+        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(doc.getDocumentElement());
+        LogoutRequest logoutRequest = (LogoutRequest) unmarshaller.unmarshall(doc.getDocumentElement());
+        return logoutRequest;
     }
 }

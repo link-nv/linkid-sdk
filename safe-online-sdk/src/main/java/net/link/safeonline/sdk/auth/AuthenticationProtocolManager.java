@@ -67,19 +67,16 @@ public class AuthenticationProtocolManager {
 
     private static void registerProtocolHandler(Class<? extends AuthenticationProtocolHandler> handlerClass) {
 
-        if (null == handlerClass) {
+        if (null == handlerClass)
             throw new RuntimeException("null for handler class");
-        }
         SupportedAuthenticationProtocol supportedAuthenticationProtocolAnnotation = handlerClass
                 .getAnnotation(SupportedAuthenticationProtocol.class);
-        if (null == supportedAuthenticationProtocolAnnotation) {
+        if (null == supportedAuthenticationProtocolAnnotation)
             throw new RuntimeException(
                     "missing @SupportedAuthenticationProtocol on protocol handler implementation class");
-        }
         AuthenticationProtocol authenticationProtocol = supportedAuthenticationProtocolAnnotation.value();
-        if (handlerClasses.containsKey(authenticationProtocol)) {
+        if (handlerClasses.containsKey(authenticationProtocol))
             throw new RuntimeException("already registered a protocol handler for " + authenticationProtocol);
-        }
         handlerClasses.put(authenticationProtocol, handlerClass);
     }
 
@@ -111,9 +108,8 @@ public class AuthenticationProtocolManager {
             throws IOException, ServletException {
 
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
-        if (null == protocolHandler) {
+        if (null == protocolHandler)
             throw new IllegalStateException("no active protocol handler found");
-        }
 
         String landingPage = request.getSession().getServletContext().getInitParameter(LANDING_PAGE_INIT_PARAM);
         if (null != landingPage) {
@@ -145,12 +141,23 @@ public class AuthenticationProtocolManager {
      */
     public static String getTarget(HttpServletRequest request) {
 
-        HttpSession session = request.getSession();
-        String target = (String) session.getAttribute(TARGET_ATTRIBUTE);
-        if (null == target) {
+        String target = findTarget(request);
+        if (null == target)
             throw new IllegalStateException("target attribute is null");
-        }
         return target;
+    }
+
+    /**
+     * Gives back the possible stored target attribute value.
+     * 
+     * Can return <code>null</code> in case this protocol manager was created due to an incoming logout request in a
+     * Single Logout process.
+     * 
+     */
+    public static String findTarget(HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+        return (String) session.getAttribute(TARGET_ATTRIBUTE);
     }
 
     /**
@@ -167,9 +174,8 @@ public class AuthenticationProtocolManager {
             String subjectName) throws IOException, ServletException {
 
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
-        if (null == protocolHandler) {
+        if (null == protocolHandler)
             throw new IllegalStateException("no active protocol handler found");
-        }
 
         String landingPage = request.getSession().getServletContext().getInitParameter(LOGOUT_LANDING_PAGE_INIT_PARAM);
         if (null != landingPage) {
@@ -209,15 +215,12 @@ public class AuthenticationProtocolManager {
 
         Class<? extends AuthenticationProtocolHandler> authnProtocolHandlerClass = handlerClasses
                 .get(authenticationProtocol);
-        if (null == authnProtocolHandlerClass) {
+        if (null == authnProtocolHandlerClass)
             throw new ServletException("no handler for authentication protocol: " + authenticationProtocol);
-        }
-        if (null == authnServiceUrl) {
+        if (null == authnServiceUrl)
             throw new ServletException("authenication service URL cannot be null");
-        }
-        if (null == applicationName) {
+        if (null == applicationName)
             throw new ServletException("application name cannot be null");
-        }
         Map<String, String> configParams = inConfigParams;
         if (null == configParams) {
             /*
@@ -269,10 +272,11 @@ public class AuthenticationProtocolManager {
         HttpSession session = httpRequest.getSession();
         AuthenticationProtocolHandler protocolHandler = (AuthenticationProtocolHandler) session
                 .getAttribute(PROTOCOL_HANDLER_ATTRIBUTE);
-        if (null == protocolHandler) {
+        if (null == protocolHandler)
             throw new ServletException("no protocol handler to cleanup");
-        }
         LOG.debug("cleanup authentication handler");
         session.removeAttribute(PROTOCOL_HANDLER_ATTRIBUTE);
+
+        session.removeAttribute(TARGET_ATTRIBUTE);
     }
 }
