@@ -70,7 +70,14 @@
 							<th><h:outputText value="#{msgs.ssoEnabled}" /></th>
 							<td><h:selectBooleanCheckbox
 								value="#{operApplication.ssoEnabled}" id="ssoEnabled" /></td>
-
+						</tr>
+						<tr>
+							<th><h:outputText value="#{msgs.ssoLogoutUrl}" /></th>
+							<td><s:decorate>
+								<h:inputText id="ssoLogoutUrl"
+									value="#{operApplication.ssoLogoutUrl}" styleClass="label" />
+								<h:message for="ssoLogoutUrl" styleClass="error" />
+							</s:decorate></td>
 						</tr>
 
 					</tbody>

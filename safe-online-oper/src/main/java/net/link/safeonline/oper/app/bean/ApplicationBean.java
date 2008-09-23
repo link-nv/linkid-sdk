@@ -153,6 +153,8 @@ public class ApplicationBean implements Application {
 
     private boolean                    ssoEnabled;
 
+    private String                     ssoLogoutUrl;
+
     @SuppressWarnings("unused")
     @Out
     private long                       numberOfSubscriptions;
@@ -197,6 +199,7 @@ public class ApplicationBean implements Application {
         this.applicationLogo = null;
         this.applicationColor = null;
         this.skipMessageIntegrityCheck = false;
+        this.ssoLogoutUrl = null;
     }
 
 
@@ -250,10 +253,14 @@ public class ApplicationBean implements Application {
         if (null != this.applicationUrl) {
             LOG.debug("application url: " + this.applicationUrl);
         }
+        if (null != this.ssoLogoutUrl) {
+            LOG.debug("sso logout url: " + this.ssoLogoutUrl);
+        }
 
         URL newApplicationUrl = null;
         Color newApplicationColor = null;
         byte[] newApplicationLogo = null;
+        URL newSsoLogoutUrl = null;
         if (null != this.applicationUrl && this.applicationUrl.length() != 0) {
             try {
                 newApplicationUrl = new URL(this.applicationUrl);
@@ -267,8 +274,9 @@ public class ApplicationBean implements Application {
         if (null != this.applicationLogoFile) {
             try {
                 newApplicationLogo = getUpFileContent(this.applicationLogoFile);
-                if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/"))
+                if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/")) {
                     throw new MagicException("Application logo requires an image/* MIME type.");
+                }
             } catch (IOException e) {
                 LOG.debug("couldn't fetch uploaded data for application logo.");
                 this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
@@ -301,7 +309,16 @@ public class ApplicationBean implements Application {
                 return null;
             }
         }
-
+        if (null != this.ssoLogoutUrl && this.ssoLogoutUrl.length() != 0) {
+            try {
+                newSsoLogoutUrl = new URL(this.ssoLogoutUrl);
+            } catch (MalformedURLException e) {
+                LOG.debug("illegal URL format: " + this.ssoLogoutUrl);
+                this.facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR,
+                        "errorIllegalUrl", this.ssoLogoutUrl);
+                return null;
+            }
+        }
         List<IdentityAttributeTypeDO> tempIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
         for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
             if (false == viewIdentityAttribute.isIncluded()) {
@@ -322,7 +339,7 @@ public class ApplicationBean implements Application {
             this.applicationService.addApplication(this.name, this.friendlyName, this.applicationOwner,
                     this.description, this.idmapping, IdScopeType.valueOf(this.applicationIdScope), newApplicationUrl,
                     newApplicationLogo, newApplicationColor, encodedCertificate, tempIdentityAttributes,
-                    this.skipMessageIntegrityCheck, this.deviceRestriction, this.ssoEnabled);
+                    this.skipMessageIntegrityCheck, this.deviceRestriction, this.ssoEnabled, newSsoLogoutUrl);
 
         } catch (ExistingApplicationException e) {
             LOG.debug("application already exists: " + this.name);
@@ -501,6 +518,16 @@ public class ApplicationBean implements Application {
         this.ssoEnabled = ssoEnabled;
     }
 
+    public String getSsoLogoutUrl() {
+
+        return this.ssoLogoutUrl;
+    }
+
+    public void setSsoLogoutUrl(String ssoLogoutUrl) {
+
+        this.ssoLogoutUrl = ssoLogoutUrl;
+    }
+
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String removeApplication() throws ApplicationNotFoundException {
 
@@ -603,6 +630,7 @@ public class ApplicationBean implements Application {
         URL newApplicationUrl = null;
         byte[] newApplicationLogo = null;
         Color newApplicationColor = null;
+        URL newSsoLogoutUrl = null;
         if (null != this.applicationUrl && this.applicationUrl.length() != 0) {
             try {
                 newApplicationUrl = new URL(this.applicationUrl);
@@ -630,6 +658,16 @@ public class ApplicationBean implements Application {
                 LOG.debug("illegal Color format: " + this.applicationColor);
                 this.facesMessages.addToControlFromResourceBundle("applicationColor", FacesMessage.SEVERITY_ERROR,
                         "errorIllegalColor", this.applicationColor);
+                return null;
+            }
+        }
+        if (null != this.ssoLogoutUrl && this.ssoLogoutUrl.length() != 0) {
+            try {
+                newSsoLogoutUrl = new URL(this.ssoLogoutUrl);
+            } catch (MalformedURLException e) {
+                LOG.debug("illegal URL format: " + this.ssoLogoutUrl);
+                this.facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR,
+                        "errorIllegalUrl", this.ssoLogoutUrl);
                 return null;
             }
         }
@@ -661,6 +699,7 @@ public class ApplicationBean implements Application {
         }
         this.applicationService.setSkipMessageIntegrityCheck(applicationId, this.skipMessageIntegrityCheck);
         this.applicationService.setSsoEnabled(applicationId, this.ssoEnabled);
+        this.applicationService.updateSsoLogoutUrl(applicationId, newSsoLogoutUrl);
 
         // device restriction
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
@@ -725,6 +764,10 @@ public class ApplicationBean implements Application {
         this.deviceRestriction = this.selectedApplication.isDeviceRestriction();
 
         this.ssoEnabled = this.selectedApplication.isSsoEnabled();
+
+        if (null != this.selectedApplication.getSsoLogoutUrl()) {
+            this.ssoLogoutUrl = this.selectedApplication.getSsoLogoutUrl().toExternalForm();
+        }
 
         return "edit";
     }

@@ -106,6 +106,15 @@
 								value="#{operApplication.ssoEnabled}" id="ssoEnabled" /></td>
 
 						</tr>
+						<tr>
+
+							<th><h:outputText value="#{msgs.ssoLogoutUrl}" /></th>
+							<td><s:decorate>
+								<h:inputText id="ssoLogoutUrl"
+									value="#{operApplication.ssoLogoutUrl}" styleClass="label" />
+							</s:decorate> <h:message for="ssoLogoutUrl" styleClass="error" /></td>
+
+						</tr>
 					</tbody>
 				</table>
 			</rich:simpleTogglePanel>
