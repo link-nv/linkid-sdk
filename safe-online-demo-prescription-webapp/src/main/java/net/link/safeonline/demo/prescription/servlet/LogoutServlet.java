@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -27,7 +28,7 @@ import org.jboss.seam.web.Session;
  * <sub>Logout servlet.</sub></h2>
  * 
  * <p>
- * Servlet that performs a logout for the Demo Prescription web applications.
+ * Servlet that performs a logout for the Demo Prescription web application.
  * </p>
  * 
  * <p>
@@ -52,7 +53,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
 
         LOG.debug("invoke get");
 
-        request.getSession().removeAttribute("username");
+        LoginManager.removeUserName(request);
+
         if (Contexts.isSessionContextActive()) {
             Session.getInstance().invalidate();
         }

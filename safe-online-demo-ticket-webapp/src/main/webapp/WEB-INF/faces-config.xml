@@ -21,11 +21,6 @@
 	</lifecycle>
 	<navigation-rule>
 		<navigation-case>
-			<from-outcome>logout-success</from-outcome>
-			<to-view-id>/main.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-		<navigation-case>
 			<from-outcome>add</from-outcome>
 			<to-view-id>/add.xhtml</to-view-id>
 		</navigation-case>

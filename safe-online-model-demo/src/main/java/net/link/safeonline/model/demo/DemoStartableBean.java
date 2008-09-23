@@ -41,7 +41,9 @@ import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
-import net.link.safeonline.sdk.ws.encap.EncapConstants;
+import net.link.safeonline.model.digipass.DigipassConstants;
+import net.link.safeonline.model.encap.EncapConstants;
+import net.link.safeonline.model.option.OptionConstants;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -143,14 +145,6 @@ public class DemoStartableBean extends AbstractInitBean {
         configPrescriptionDemo();
 
         configMandateDemo();
-
-        // add application pool
-        this.applicationPools.add(new ApplicationPool(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_POOL_NAME,
-                1000 * 60 * 60 * 8, new String[] { SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-                        SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-                        SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
-                        SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME }));
-
     }
 
     private byte[] getLogo() {
@@ -171,7 +165,7 @@ public class DemoStartableBean extends AbstractInitBean {
             this.registeredApplications.add(new Application(DEMO_MANDATE_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoMandateWebappName), getLogo(), null,
                     true, true, demoMandateCertificate, true, IdScopeType.APPLICATION, true, new URL(this.sslProtocol,
-                            this.hostname, this.hostportssl, "/" + this.demoMandateWebappName + "/logout")));
+                            this.hostname, this.hostportssl, "/" + this.demoMandateWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -359,7 +353,7 @@ public class DemoStartableBean extends AbstractInitBean {
                     this.protocol, this.hostname, this.hostport, "/" + this.demoPaymentWebappName),
                     getLogo("/ebank-small.png"), null, true, true, demoPaymentCertificate, true,
                     IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
-                            + this.demoPaymentWebappName + "/logout")));
+                            + this.demoPaymentWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -447,7 +441,7 @@ public class DemoStartableBean extends AbstractInitBean {
                     this.protocol, this.hostname, this.hostport, "/" + this.demoPrescriptionWebappName), getLogo(),
                     null, true, true, demoPrescriptionCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(
                             this.sslProtocol, this.hostname, this.hostportssl, "/" + this.demoPrescriptionWebappName
-                                    + "/logout")));
+                                    + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -525,7 +519,7 @@ public class DemoStartableBean extends AbstractInitBean {
             this.registeredApplications.add(new Application(DEMO_LAWYER_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoLawyerWebappName), getLogo(), null,
                     true, true, demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol,
-                            this.hostname, this.hostportssl, "/" + this.demoLawyerWebappName + "/logout")));
+                            this.hostname, this.hostportssl, "/" + this.demoLawyerWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }

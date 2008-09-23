@@ -18,7 +18,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.web.Session;
 
 
 @Stateful
@@ -43,9 +42,9 @@ public class MandateLogonBean extends AbstractMandateDataClientBean implements M
     public String logout() {
 
         this.log.debug("logout");
-        this.sessionContext.set("username", null);
-        Session.getInstance().invalidate();
-        return "logout-success";
+        String userId = (String) this.sessionContext.get("username");
+        SafeOnlineLoginUtils.logout(userId, "main.seam");
+        return "success";
     }
 
     public String getUsername() {

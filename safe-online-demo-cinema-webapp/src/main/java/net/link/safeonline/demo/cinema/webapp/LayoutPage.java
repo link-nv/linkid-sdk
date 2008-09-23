@@ -12,9 +12,12 @@ import net.link.safeonline.demo.cinema.CinemaConstants;
 import net.link.safeonline.demo.cinema.entity.TicketEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.IRequestTarget;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -39,7 +42,7 @@ public class LayoutPage extends WebPage<Object> {
 
     /**
      * Add components to the layout that are present on every page.
-     *
+     * 
      * This includes the title and the global ticket.
      */
     public LayoutPage() {
@@ -68,10 +71,27 @@ public class LayoutPage extends WebPage<Object> {
                 @Override
                 public void onClick() {
 
-                    getSession().invalidateNow();
+                    getRequestCycle().setRequestTarget(new IRequestTarget() {
 
-                    setRedirect(true);
-                    setResponsePage(LoginPage.class);
+                        public void detach(RequestCycle requestCycle) {
+
+                        }
+
+                        public void respond(RequestCycle requestCycle) {
+
+                            HttpServletRequest request = ((WebRequest) requestCycle.getRequest())
+                                    .getHttpServletRequest();
+                            HttpServletResponse response = ((WebResponse) requestCycle.getResponse())
+                                    .getHttpServletResponse();
+                            String target = request.getServletPath();
+                            String userId = CinemaSession.get().getUser().getId();
+
+                            // setRedirect(true);
+                            // setResponsePage(LoginPage.class);
+
+                            SafeOnlineLoginUtils.logout(userId, target, request, response);
+                        }
+                    });
                 }
             });
             Label<String> name = new Label<String>("name");

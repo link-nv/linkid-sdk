@@ -20,13 +20,6 @@
 		</phase-listener>
 	</lifecycle>
 	<navigation-rule>
-		<navigation-case>
-			<from-outcome>logout-success</from-outcome>
-			<to-view-id>/main.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
 		<from-view-id>/overview.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>search</from-outcome>

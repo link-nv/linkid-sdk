@@ -135,7 +135,7 @@
 				<safe-online.demo.mandate.webapp.name>demo-mandate</safe-online.demo.mandate.webapp.name>
 				<safe-online.demo.payment.webapp.name>demo-payment</safe-online.demo.payment.webapp.name>
 				<safe-online.demo.ticket.webapp.name>demo-ticket</safe-online.demo.ticket.webapp.name>
-				<safe-online.demo.ticket.webapp.name>safe-online-demo-ws</safe-online.demo.ticket.webapp.name>
+				<safe-online.demo.ws.webapp.name>safe-online-demo-ws</safe-online.demo.ws.webapp.name>
 				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
 			</properties>
 			<modules>
@@ -723,7 +723,7 @@
 		<!-- CORE WEB APPS -->
 		<module>safe-online-webapp-base</module>
 		<module>safe-online-webapp-common</module>
-        <module>safe-online-wicket-tools</module>
+		<module>safe-online-wicket-tools</module>
 		<module>safe-online-taglib</module>
 		<module>safe-online-user</module>
 		<module>safe-online-user-webapp</module>
@@ -925,15 +925,15 @@
 					<wtpversion>2.0</wtpversion>
 					<downloadSources>false</downloadSources>
 					<downloadJavadocs>false</downloadJavadocs>
-                    <excludes>
-                        <exclude>xml-apis</exclude>
-                        <exclude>xmlParserAPIs</exclude>
-                        <exclude>xercesImpl</exclude>
-                        <exclude>xalan</exclude>
-                        <exclude>xmlsec</exclude>
-                        <exclude>wss4j</exclude>
-                        <exclude>xom</exclude>
-                    </excludes>
+					<excludes>
+						<exclude>xml-apis</exclude>
+						<exclude>xmlParserAPIs</exclude>
+						<exclude>xercesImpl</exclude>
+						<exclude>xalan</exclude>
+						<exclude>xmlsec</exclude>
+						<exclude>wss4j</exclude>
+						<exclude>xom</exclude>
+					</excludes>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
@@ -1589,7 +1589,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-model-performance</artifactId>
 				<type>ejb-client</type>
-                <version>1.2-SNAPSHOT</version>
+				<version>1.2-SNAPSHOT</version>
 
                 <!-- model-performance client jar really only just provides interface for getPrivateKey & getCertificate -->
 				<exclusions>
@@ -2059,9 +2059,9 @@
 				<version>-1</version>
 			</dependency>
             <!-- org.apache.xerces:xml-apis supersedes xmlParserAPIs -->
-            <dependency>
-                <groupId>xerces</groupId>
-                <artifactId>xmlParserAPIs</artifactId>
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xmlParserAPIs</artifactId>
 				<version>-1</version>
 			</dependency>
 			<dependency>
@@ -2075,8 +2075,8 @@
 				<version>-1</version>
 			</dependency>
 			<dependency>
-                <groupId>xml-security</groupId>
-                <artifactId>xmlsec</artifactId>
+				<groupId>xml-security</groupId>
+				<artifactId>xmlsec</artifactId>
 				<version>-1</version>
 			</dependency>
 			<dependency>
@@ -2101,7 +2101,7 @@
 
 			<!-- External -->
 			<dependency>
-                <groupId>org.hibernate</groupId>
+				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-annotations</artifactId>
 				<version>${hibernate-annotations.version}</version>
 			</dependency>
@@ -2409,16 +2409,16 @@
 				<!-- We use org.apache.* instead -->
 				<exclusions>
 					<exclusion>
-                        <groupId>xalan</groupId>
-                        <artifactId>xalan</artifactId>
+						<groupId>xalan</groupId>
+						<artifactId>xalan</artifactId>
 					</exclusion>
 					<exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xercesImpl</artifactId>
+						<groupId>xerces</groupId>
+						<artifactId>xercesImpl</artifactId>
 					</exclusion>
 					<exclusion>
-                        <groupId>xml-security</groupId>
-                        <artifactId>xmlsec</artifactId>
+						<groupId>xml-security</groupId>
+						<artifactId>xmlsec</artifactId>
 					</exclusion>
 					<exclusion>
 						<groupId>xml-apis</groupId>
