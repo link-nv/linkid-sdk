@@ -36,7 +36,7 @@
 	</context-param>
 	<context-param>
 		<description>URL used to finalize a logout request sent by the
-			authenticaation webapp following a single logout process by another
+			authentication webapp following a single logout process by another
 			application.</description>
 		<param-name>LogoutExitServiceUrl</param-name>
 		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
