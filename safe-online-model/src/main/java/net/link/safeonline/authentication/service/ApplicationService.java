@@ -77,6 +77,8 @@ public interface ApplicationService {
      * @param deviceRestriction
      * @param ssoEnabled
      *            whether or not this application allows Single Sign-On
+     * @param ssoLogoutUrl
+     *            single sign-on logout URL, where logout requests will be sent to
      * @throws ExistingApplicationException
      * @throws ApplicationOwnerNotFoundException
      * @throws CertificateEncodingException
@@ -86,7 +88,7 @@ public interface ApplicationService {
             boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo,
             Color applicationColor, byte[] encodedCertificate,
             List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
-            boolean deviceRestriction, boolean ssoEnabled) throws ExistingApplicationException,
+            boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl) throws ExistingApplicationException,
             ApplicationOwnerNotFoundException, CertificateEncodingException, AttributeTypeNotFoundException;
 
     /**
@@ -251,4 +253,11 @@ public interface ApplicationService {
      * @throws ApplicationNotFoundException
      */
     void setSsoEnabled(String applicationId, boolean ssoEnabled) throws ApplicationNotFoundException;
+
+    /**
+     * Updates the application URL for the given application.
+     * 
+     * @throws ApplicationNotFoundException
+     */
+    void updateSsoLogoutUrl(String applicationId, URL ssoLogoutUrl) throws ApplicationNotFoundException;
 }

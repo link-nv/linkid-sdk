@@ -53,6 +53,15 @@
 						<td>#{selectedApplication.ssoEnabled}</td>
 					</tr>
 					<tr>
+						<th>#{msgs.ssoLogoutUrl}</th>
+						<td><h:outputLink value="#{selectedApplication.ssoLogoutUrl}"
+							rendered="#{!empty selectedApplication.ssoLogoutUrl}">
+                                #{selectedApplication.ssoLogoutUrl}
+                            </h:outputLink> <h:outputText
+							value="#{msgs.noSsoLogoutUrl}"
+							rendered="#{empty selectedApplication.ssoLogoutUrl}" /></td>
+					</tr>
+					<tr>
 						<th>#{msgs.applicationLogo}</th>
 						<td class="center"><h:graphicImage
 							url="../logo?applicationName=${selectedApplication.name}"

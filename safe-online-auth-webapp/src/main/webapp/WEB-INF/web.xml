@@ -81,7 +81,7 @@
 		</init-param>
 		<init-param>
 			<param-name>CookiePath</param-name>
-			<param-value>/${safe-online.auth.webapp.name}/</param-value>
+			<param-value>/${safe-online.auth.webapp.name}</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -185,7 +185,7 @@
 		</init-param>
 		<init-param>
 			<param-name>CookiePath</param-name>
-			<param-value>/${safe-online.auth.webapp.name}/</param-value>
+			<param-value>/${safe-online.auth.webapp.name}</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -204,6 +204,62 @@
 	<servlet-mapping>
 		<servlet-name>ExitServlet</servlet-name>
 		<url-pattern>/exit</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>LogoutEntryServlet</servlet-name>
+		<servlet-class> net.link.safeonline.auth.servlet.LogoutEntryServlet 
+		</servlet-class>
+		<init-param>
+			<param-name>LogoutExitUrl</param-name>
+			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
+		</init-param>
+		<init-param>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutentry 
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>UnsupportedProtocolUrl</param-name>
+			<param-value>unsupported-protocol.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ProtocolErrorUrl</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>CookiePath</param-name>
+			<param-value>/${safe-online.auth.webapp.name}</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutEntryServlet</servlet-name>
+		<url-pattern>/logoutentry</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>LogoutExitServlet</servlet-name>
+		<servlet-class> net.link.safeonline.auth.servlet.LogoutExitServlet 
+		</servlet-class>
+		<init-param>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml request.</description>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit 
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ProtocolErrorUrl</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutExitServlet</servlet-name>
+		<url-pattern>/logoutexit</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>Kaptcha</servlet-name>

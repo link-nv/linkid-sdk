@@ -32,8 +32,11 @@ import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.LogoutRequest;
+import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.ConfigurationException;
 
@@ -110,7 +113,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
 
     public void init(String inAuthnServiceUrl, String inApplicationName, String inApplicationFriendlyName,
-            KeyPair inApplicationKeyPair, X509Certificate inApplicationCertificate, boolean ssoEnabled,
+            KeyPair inApplicationKeyPair, X509Certificate inApplicationCertificate, boolean inSsoEnabled,
             Map<String, String> inConfigParams) {
 
         LOG.debug("init");
@@ -121,7 +124,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         this.applicationCertificate = inApplicationCertificate;
         this.configParams = inConfigParams;
         this.challenge = new Challenge<String>();
-        this.ssoEnabled = ssoEnabled;
+        this.ssoEnabled = inSsoEnabled;
         this.wsLocation = inConfigParams.get("WsLocation");
         if (null == this.wsLocation) {
             throw new RuntimeException("Initialization param \"WsLocation\" not specified.");
@@ -183,8 +186,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             language = httpRequest.getLocale().getLanguage();
         }
 
-        AuthnRequestUtil.sendAuthnRequest(this.authnServiceUrl, encodedSamlRequestToken, language,
-                templateResourceName, httpResponse);
+        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, language, templateResourceName,
+                httpResponse);
     }
 
     private String getLanguage(HttpServletRequest httpRequest) {
@@ -204,7 +207,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         DateTime now = new DateTime();
 
-        Response samlResponse = AuthnResponseUtil.validateResponse(now, httpRequest, this.challenge.getValue(),
+        Response samlResponse = ResponseUtil.validateResponse(now, httpRequest, this.challenge.getValue(),
                 this.applicationName, this.wsLocation, this.applicationCertificate, this.applicationKeyPair
                         .getPrivate(), TrustDomainType.NODE);
         if (null == samlResponse)
@@ -216,5 +219,83 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         String subjectNameValue = subjectName.getValue();
         LOG.debug("subject name value: " + subjectNameValue);
         return subjectNameValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void initiateLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl,
+            String subjectName) throws IOException, ServletException {
+
+        LOG.debug("target url: " + targetUrl);
+        String samlRequestToken = LogoutRequestFactory.createLogoutRequest(subjectName, this.applicationName,
+                this.applicationKeyPair, this.authnServiceUrl, this.challenge);
+
+        String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
+
+        String templateResourceName;
+        if (this.configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+            templateResourceName = this.configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+        } else {
+            templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+        }
+
+        RequestUtil
+                .sendRequest(this.authnServiceUrl, encodedSamlRequestToken, null, templateResourceName, httpResponse);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean finalizeLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws ServletException {
+
+        LogoutResponse samlLogoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, this.challenge.getValue(),
+                this.wsLocation, this.applicationCertificate, this.applicationKeyPair.getPrivate(),
+                TrustDomainType.NODE);
+
+        if (null == samlLogoutResponse)
+            return false;
+
+        if (!samlLogoutResponse.getStatus().getStatusCode().getValue().equals(StatusCode.SUCCESS_URI))
+            return false;
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+        LogoutRequest samlLogoutRequest = RequestUtil.validateLogoutRequest(request, this.wsLocation,
+                this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+        if (null == samlLogoutRequest)
+            return null;
+
+        this.challenge.setValue(samlLogoutRequest.getID());
+
+        return samlLogoutRequest.getNameID().getValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String samlResponseToken = LogoutResponseFactory.createLogoutResponse(this.challenge.getValue(),
+                this.applicationName, this.applicationKeyPair, this.authnServiceUrl);
+
+        String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
+
+        String templateResourceName;
+        if (this.configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+            templateResourceName = this.configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+        } else {
+            templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+        }
+
+        ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, this.authnServiceUrl, response);
     }
 }

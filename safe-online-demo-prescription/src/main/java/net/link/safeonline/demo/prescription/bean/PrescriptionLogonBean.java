@@ -20,61 +20,62 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.web.Session;
+
 
 @Stateful
 @Name("prescriptionLogon")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionLogonBean/local")
-public class PrescriptionLogonBean extends AbstractPrescriptionDataClientBean
-		implements PrescriptionLogon {
+public class PrescriptionLogonBean extends AbstractPrescriptionDataClientBean implements PrescriptionLogon {
 
-	@Logger
-	private Log log;
+    @Logger
+    private Log log;
 
-	@In
-	Context sessionContext;
+    @In
+    Context     sessionContext;
 
-	public String login() {
 
-		this.log.debug("login");
-		String result = SafeOnlineLoginUtils.login("login");
-		return result;
-	}
+    public String login() {
 
-	public String logout() {
+        this.log.debug("login");
+        String result = SafeOnlineLoginUtils.login("login");
+        return result;
+    }
 
-		this.log.debug("logout");
-		Session.getInstance().invalidate();
-		return "logout-success";
-	}
+    public String logout() {
 
-	public String getUsername() {
+        this.log.debug("logout");
+        String userId = (String) this.sessionContext.get("username");
+        SafeOnlineLoginUtils.logout(userId, "main.seam");
+        return "success";
+    }
 
-		String userId = (String) this.sessionContext.get("username");
-		return getUsername(userId);
-	}
+    public String getUsername() {
 
-	private void activateRole(String role) {
+        String userId = (String) this.sessionContext.get("username");
+        return getUsername(userId);
+    }
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().getSessionMap().put("role", role);
-	}
+    private void activateRole(String role) {
 
-	public String activateAdminRole() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getSessionMap().put("role", role);
+    }
 
-		activateRole(PrescriptionConstants.ADMIN_ROLE);
-		return "admin";
-	}
+    public String activateAdminRole() {
 
-	public String activateCareProviderRole() {
+        activateRole(PrescriptionConstants.ADMIN_ROLE);
+        return "admin";
+    }
 
-		activateRole(PrescriptionConstants.CARE_PROVIDER_ROLE);
-		return "careProvider";
-	}
+    public String activateCareProviderRole() {
 
-	public String activatePharmacistRole() {
+        activateRole(PrescriptionConstants.CARE_PROVIDER_ROLE);
+        return "careProvider";
+    }
 
-		activateRole(PrescriptionConstants.PHARMACIST_ROLE);
-		return "pharmacist";
-	}
+    public String activatePharmacistRole() {
+
+        activateRole(PrescriptionConstants.PHARMACIST_ROLE);
+        return "pharmacist";
+    }
 }

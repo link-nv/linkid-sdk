@@ -38,9 +38,9 @@ import org.w3c.dom.Element;
 
 /**
  * Test SOAP JAX-WS Handler to verify the different XML Signature of the STS request.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -101,6 +101,18 @@ public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessage
         Element nsElement = createNsElement(document);
         Element samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:Response/ds:Signature",
                 nsElement);
+        if (null == samlpSignature) {
+            samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:AuthnRequest/ds:Signature",
+                    nsElement);
+            if (null == samlpSignature) {
+                samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:LogoutRequest/ds:Signature",
+                        nsElement);
+                if (null == samlpSignature) {
+                    samlpSignature = (Element) XPathAPI.selectSingleNode(document,
+                            "//samlp:LogoutResponse/ds:Signature", nsElement);
+                }
+            }
+        }
         assertNotNull("SAMLp signature not found", samlpSignature);
         XMLSignature xmlSignature = new XMLSignature(samlpSignature, null);
         boolean signatureResult = xmlSignature.checkSignatureValue(certificate.getPublicKey());

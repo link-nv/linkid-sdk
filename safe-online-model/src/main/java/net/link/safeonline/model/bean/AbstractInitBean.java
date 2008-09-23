@@ -178,10 +178,12 @@ public abstract class AbstractInitBean implements Startable {
 
         final boolean         ssoEnabled;
 
+        final URL             ssoLogoutUrl;
+
 
         public Application(String name, String owner, String description, URL applicationUrl, byte[] applicationLogo,
                 Color applicationColor, boolean allowUserSubscription, boolean removable, X509Certificate certificate,
-                boolean idmappingAccess, IdScopeType idScope, boolean ssoEnabled) {
+                boolean idmappingAccess, IdScopeType idScope, boolean ssoEnabled, URL ssoLogoutUrl) {
 
             this.name = name;
             this.owner = owner;
@@ -195,18 +197,12 @@ public abstract class AbstractInitBean implements Startable {
             this.idmappingAccess = idmappingAccess;
             this.idScope = idScope;
             this.ssoEnabled = ssoEnabled;
-        }
-
-        public Application(String name, String owner, String description, URL applicationUrl, byte[] applicationLogo,
-                Color applicationColor, boolean allowUserSubscription, boolean removable) {
-
-            this(name, owner, description, applicationUrl, applicationLogo, applicationColor, allowUserSubscription,
-                    removable, null, false, IdScopeType.USER, false);
+            this.ssoLogoutUrl = ssoLogoutUrl;
         }
 
         public Application(String name, String owner, X509Certificate certificate, IdScopeType idScope) {
 
-            this(name, owner, null, null, null, null, true, true, certificate, false, idScope, false);
+            this(name, owner, null, null, null, null, true, true, certificate, false, idScope, false, null);
         }
     }
 
@@ -648,11 +644,13 @@ public abstract class AbstractInitBean implements Startable {
             String applicationName = attributeProvider.getApplicationName();
             String attributeName = attributeProvider.getAttributeTypeName();
             ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
-            if (null == application)
+            if (null == application) {
                 throw new EJBException("application not found: " + applicationName);
+            }
             AttributeTypeEntity attributeType = this.attributeTypeDAO.findAttributeType(attributeName);
-            if (null == attributeType)
+            if (null == attributeType) {
                 throw new EJBException("attribute type not found: " + attributeName);
+            }
             AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO.findAttributeProvider(
                     application, attributeType);
             if (null != existingAttributeProvider) {
@@ -798,6 +796,7 @@ public abstract class AbstractInitBean implements Startable {
             newApplication.setIdentifierMappingAllowed(application.idmappingAccess);
             newApplication.setIdScope(application.idScope);
             newApplication.setSsoEnabled(application.ssoEnabled);
+            newApplication.setSsoLogoutUrl(application.ssoLogoutUrl);
 
             this.applicationIdentityDAO.addApplicationIdentity(newApplication, identityVersion);
         }
@@ -1030,8 +1029,9 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initNode() {
 
-        if (null == this.node)
+        if (null == this.node) {
             throw new EJBException("No Olas node specified");
+        }
         NodeEntity olasNode = this.olasDAO.findNode(this.node.name);
         if (null == olasNode) {
             this.olasDAO.addNode(this.node.name, this.node.protocol, this.node.hostname, this.node.port,

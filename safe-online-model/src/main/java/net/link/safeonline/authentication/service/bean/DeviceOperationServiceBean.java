@@ -43,7 +43,7 @@ import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
+import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
@@ -175,7 +175,7 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
-        Response samlResponse = AuthnResponseUtil.validateResponse(now, request, this.expectedChallengeId,
+        Response samlResponse = ResponseUtil.validateResponse(now, request, this.expectedChallengeId,
                 this.expectedDeviceOperation.name(), node.getLocation(), authIdentityServiceClient.getCertificate(),
                 authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
         if (null == samlResponse)

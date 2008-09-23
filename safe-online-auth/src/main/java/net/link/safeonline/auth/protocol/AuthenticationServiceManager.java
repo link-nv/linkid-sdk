@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * This HTTP session listener manages the life-cycle of the authentication service instance used by the authentication
  * web application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthenticationServiceManager implements HttpSessionListener {
 
@@ -90,27 +90,29 @@ public class AuthenticationServiceManager implements HttpSessionListener {
      * be used to finalize the authentication service via {@link AuthenticationService#finalizeAuthentication()} or
      * {@link AuthenticationService#abort()}. These operations should be performed via this authentication service
      * manager class.
-     *
+     * 
      * @param session
      */
     public static AuthenticationService getAuthenticationService(HttpSession session) {
 
         AuthenticationService authenticationService = (AuthenticationService) session
                 .getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService)
+        if (null == authenticationService) {
             throw new IllegalStateException("authentication service instance not present");
-        if (authenticationService.getAuthenticationState().equals(AuthenticationState.COMMITTED))
+        }
+        if (authenticationService.getAuthenticationState().equals(AuthenticationState.COMMITTED)) {
             throw new IllegalStateException(
                     "authentication process is already committed, cannot use the authentication service directly anymore.");
+        }
         return authenticationService;
     }
 
     /**
      * Finalizes the authentication process.
-     *
+     * 
      * This method will return an encoded SAML response token which should be communicated to the application the user
      * is authenticating for.
-     *
+     * 
      * @param session
      * @throws NodeNotFoundException
      * @throws ApplicationNotFoundException
@@ -121,8 +123,9 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 
         AuthenticationService authenticationService = (AuthenticationService) session
                 .getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService)
+        if (null == authenticationService) {
             throw new IllegalStateException("authentication service instance not present");
+        }
         try {
             return authenticationService.finalizeAuthentication();
         } finally {
@@ -135,16 +138,45 @@ public class AuthenticationServiceManager implements HttpSessionListener {
     }
 
     /**
+     * Finalizes the logout process.
+     * 
+     * This method will return an encoded SAML logout response token which should be communicated to the application the
+     * user is logging out for.
+     * 
+     * @param partialLogout
+     * @param session
+     * @throws NodeNotFoundException
+     */
+    public static String finalizeLogout(boolean partialLogout, HttpSession session) throws NodeNotFoundException {
+
+        AuthenticationService authenticationService = (AuthenticationService) session
+                .getAttribute(AUTH_SERVICE_ATTRIBUTE);
+        if (null == authenticationService) {
+            throw new IllegalStateException("authentication service instance not present");
+        }
+        try {
+            return authenticationService.finalizeLogout(partialLogout);
+        } finally {
+            /*
+             * No matter what happens, we don't want the sessionDestroyed method to call abort on our finished
+             * authentication service instance.
+             */
+            session.removeAttribute(AUTH_SERVICE_ATTRIBUTE);
+        }
+    }
+
+    /**
      * Aborts the authentication process.
-     *
+     * 
      * @param session
      */
     public static void abort(HttpSession session) {
 
         AuthenticationService authenticationService = (AuthenticationService) session
                 .getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService)
+        if (null == authenticationService) {
             throw new IllegalStateException("authentication service instance not present");
+        }
         try {
             authenticationService.abort();
         } finally {

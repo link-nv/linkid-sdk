@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -28,9 +29,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Manager class for the protocol handlers registered within the authentication web application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class ProtocolHandlerManager {
 
@@ -76,9 +77,9 @@ public class ProtocolHandlerManager {
 
     /**
      * Handles the authentication protocol request. This method return a protocol context in case of a successful
-     * initiation of the authentication procedure. The method returns <code>null</code> if no appropriate authentication
-     * protocol handler has been found.
-     *
+     * initiation of the authentication procedure. The method returns <code>null</code> if no appropriate
+     * authentication protocol handler has been found.
+     * 
      * @param request
      * @return a protocol context or <code>null</code>.
      * @throws ProtocolException
@@ -113,7 +114,7 @@ public class ProtocolHandlerManager {
     /**
      * Handles the authentication response according to the authentication protocol by which the current authentication
      * procedure was initiated.
-     *
+     * 
      * @param session
      * @param response
      * @throws ProtocolException
@@ -143,4 +144,134 @@ public class ProtocolHandlerManager {
          */
         session.invalidate();
     }
+
+    /**
+     * Handles the logout request. This method returns a logout protocol context in case of a successful initiation of
+     * the single logout procedure. The method returns <code>null</code> if no appropriate logout protocol handler has
+     * been found.
+     * 
+     * @param request
+     * @return a logout protocol context or <code>null</code>.
+     * @throws ProtocolException
+     *             in case of a protocol error.
+     */
+    public static LogoutProtocolContext handleLogoutRequest(HttpServletRequest request) throws ProtocolException {
+
+        for (ProtocolHandler protocolHandler : protocolHandlers) {
+            LOG.debug("trying protocol handler: " + protocolHandler.getClass().getSimpleName());
+            LogoutProtocolContext logoutProtocolContext;
+            try {
+                logoutProtocolContext = protocolHandler.handleLogoutRequest(request);
+            } catch (ProtocolException e) {
+                String protocolName = protocolHandler.getName();
+                e.setProtocolName(protocolName);
+                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB("SafeOnline/SecurityAuditLoggerBean/local",
+                        SecurityAuditLogger.class);
+                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : "
+                        + e.getMessage());
+                throw e;
+            }
+            if (null != logoutProtocolContext) {
+                HttpSession session = request.getSession();
+                String protocolId = protocolHandler.getClass().getName();
+                session.setAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE, protocolId);
+                return logoutProtocolContext;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Handles the logout response. This method returns the application name in the response if logout was successful.
+     * Else the method returns <code>null</code>.
+     * 
+     * @param request
+     * @return application name or <code>null</code>.
+     * @throws ProtocolException
+     *             in case of a protocol error.
+     */
+    public static String handleLogoutResponse(HttpServletRequest request) throws ProtocolException {
+
+        HttpSession session = request.getSession();
+        String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
+        if (null == protocolId) {
+            throw new ProtocolException("incorrect request handling detected");
+        }
+        ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
+        if (null == protocolHandler) {
+            throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
+        }
+
+        try {
+            return protocolHandler.handleLogoutResponse(request);
+        } catch (ProtocolException e) {
+            String protocolName = protocolHandler.getName();
+            e.setProtocolName(protocolName);
+            throw e;
+        }
+    }
+
+    /**
+     * Send out a logout request to the specified application
+     * 
+     * @param application
+     * @param session
+     * @param response
+     * @throws ProtocolException
+     */
+    public static void logoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
+            throws ProtocolException {
+
+        String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
+        if (null == protocolId)
+            throw new ProtocolException("incorrect request handling detected");
+        ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
+        if (null == protocolHandler)
+            throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
+
+        try {
+            protocolHandler.logoutRequest(application, session, response);
+        } catch (ProtocolException e) {
+            String protocolName = protocolHandler.getName();
+            e.setProtocolName(protocolName);
+            throw e;
+        }
+    }
+
+    /**
+     * Handles the logout response according to the authentication protocol by which the current logout procedure was
+     * initiated.
+     * 
+     * @param partialLogout
+     * @param target
+     * @param session
+     * @param response
+     * @throws ProtocolException
+     */
+    public static void logoutResponse(boolean partialLogout, String target, HttpSession session,
+            HttpServletResponse response) throws ProtocolException {
+
+        String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
+        if (null == protocolId)
+            throw new ProtocolException("incorrect request handling detected");
+        ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
+        if (null == protocolHandler)
+            throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
+
+        try {
+            protocolHandler.logoutResponse(partialLogout, target, session, response);
+        } catch (ProtocolException e) {
+            String protocolName = protocolHandler.getName();
+            e.setProtocolName(protocolName);
+            throw e;
+        }
+
+        /*
+         * It's important to invalidate the session here. Else we spill resources and we prevent a user to login twice
+         * since the authentication service instance was already removed from the session context.
+         */
+        session.invalidate();
+
+    }
+
 }

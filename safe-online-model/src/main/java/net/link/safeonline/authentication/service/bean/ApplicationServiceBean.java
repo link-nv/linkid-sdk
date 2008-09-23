@@ -158,7 +158,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
             boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] applicationLogo,
             Color applicationColor, byte[] encodedCertificate,
             List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
-            boolean deviceRestriction, boolean ssoEnabled) throws ExistingApplicationException,
+            boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl) throws ExistingApplicationException,
             ApplicationOwnerNotFoundException, CertificateEncodingException, AttributeTypeNotFoundException {
 
         LOG.debug("add application: " + name);
@@ -180,6 +180,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         application.setDeviceRestriction(deviceRestriction);
 
         application.setSsoEnabled(ssoEnabled);
+
+        application.setSsoLogoutUrl(ssoLogoutUrl);
 
         setInitialApplicationIdentity(initialApplicationIdentityAttributes, application);
     }
@@ -210,8 +212,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     private void checkExistingApplication(String name) throws ExistingApplicationException {
 
         ApplicationEntity existingApplication = this.applicationDAO.findApplication(name);
-        if (null != existingApplication)
+        if (null != existingApplication) {
             throw new ExistingApplicationException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -221,8 +224,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         LOG.debug("remove application: " + name);
         ApplicationEntity application = this.applicationDAO.getApplication(name);
 
-        if (false == application.isRemovable())
+        if (false == application.isRemovable()) {
             throw new PermissionDeniedException("application not removable", "errorPermissionApplicationNotRemovable");
+        }
 
         List<SubscriptionEntity> subscriptions = this.subscriptionDAO.listSubscriptions(application);
 
@@ -275,8 +279,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
         SubjectEntity requiredSubject = applicationOwner.getAdmin();
         SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-        if (false == requiredSubject.equals(actualSubject))
+        if (false == requiredSubject.equals(actualSubject)) {
             throw new PermissionDeniedException("application owner admin mismatch");
+        }
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
@@ -305,8 +310,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         ApplicationEntity ownerApplication = this.applicationDAO
                 .findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
-        if (null == ownerApplication)
+        if (null == ownerApplication) {
             throw new EJBException("SafeOnline owner application not found");
+        }
 
         /*
          * Subscribe the new application owner to the SafeOnline owner web application so he can do it's job.
@@ -324,15 +330,17 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     private void checkExistingAdmin(SubjectEntity adminSubject) throws ExistingApplicationAdminException {
 
         ApplicationOwnerEntity existingApplicationOwner = this.applicationOwnerDAO.findApplicationOwner(adminSubject);
-        if (null != existingApplicationOwner)
+        if (null != existingApplicationOwner) {
             throw new ExistingApplicationAdminException();
+        }
     }
 
     private void checkExistingOwner(String name) throws ExistingApplicationOwnerException {
 
         ApplicationOwnerEntity existingApplicationOwner = this.applicationOwnerDAO.findApplicationOwner(name);
-        if (null != existingApplicationOwner)
+        if (null != existingApplicationOwner) {
             throw new ExistingApplicationOwnerException();
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -349,8 +357,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         ApplicationEntity ownerApplication = this.applicationDAO
                 .findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
-        if (null == ownerApplication)
+        if (null == ownerApplication) {
             throw new EJBException("SafeOnline owner application not found");
+        }
 
         /*
          * Remove the application owner's subscription to the SafeOnline Owner web application.
@@ -370,9 +379,10 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         ApplicationOwnerEntity owner = this.applicationOwnerDAO.getApplicationOwner(name);
         if (null == owner.getApplications())
             return;
-        if (!owner.getApplications().isEmpty())
+        if (!owner.getApplications().isEmpty()) {
             throw new PermissionDeniedException("application owner still owns " + owner.getApplications().size()
                     + " applications");
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -410,8 +420,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
         SubjectEntity expectedSubject = applicationOwner.getAdmin();
         SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-        if (false == expectedSubject.equals(actualSubject))
+        if (false == expectedSubject.equals(actualSubject)) {
             throw new PermissionDeniedException("application owner admin mismatch");
+        }
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -503,6 +514,16 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         application.setSsoEnabled(ssoEnabled);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateSsoLogoutUrl(String applicationId, URL ssoLogoutUrl) throws ApplicationNotFoundException {
+
+        getApplication(applicationId).setSsoLogoutUrl(ssoLogoutUrl);
 
     }
 }

@@ -33,6 +33,8 @@ import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.LogoutRequest;
+import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
@@ -49,7 +51,7 @@ import org.w3c.dom.Element;
  * Implementation of WS-Trust 1.3 STS JAX-WS web service endpoint. Beware that we validate both the WS-Security and SAML
  * token signature via SOAP handlers. The signature validation cannot be done within the endpoint implementation since
  * JAXB somehow breaks the signature digests.
- *
+ * 
  * @author fcorneli
  */
 @WebService(endpointInterface = "org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort")
@@ -92,10 +94,12 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
                 }
             }
         }
-        if (null == requestType)
+        if (null == requestType) {
             throw new RuntimeException("RequestType is required");
-        if (false == requestType.startsWith("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate"))
+        }
+        if (false == requestType.startsWith("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate")) {
             throw new RuntimeException("only supporting the validation binding");
+        }
         if (null != tokenType && false == SecurityTokenServiceConstants.TOKEN_TYPE_STATUS.equals(tokenType)) {
             RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
                     "optional TokenType should be Status");
@@ -140,9 +144,17 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
             RequestSecurityTokenResponseType response = validateSaml2AuthnRequest((AuthnRequest) tokenXmlObject);
             if (null != response)
                 return response;
+        } else if (tokenXmlObject instanceof LogoutResponse) {
+            RequestSecurityTokenResponseType response = validateSaml2LogoutResponse((LogoutResponse) tokenXmlObject);
+            if (null != response)
+                return response;
+        } else if (tokenXmlObject instanceof LogoutRequest) {
+            RequestSecurityTokenResponseType response = validateSaml2LogoutRequest((LogoutRequest) tokenXmlObject);
+            if (null != response)
+                return response;
         } else {
             RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
-                    "token not a SAML2 Response or AuthnRequest");
+                    "token not a SAML2 Response, AuthnRequest, LogoutResponse or LogoutRequest");
             return response;
 
         }
@@ -255,6 +267,40 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         LOG.debug("authentication device: " + authnDevice);
         return null;
 
+    }
+
+    private RequestSecurityTokenResponseType validateSaml2LogoutResponse(LogoutResponse samlLogoutResponse) {
+
+        String samlStatusCode = samlLogoutResponse.getStatus().getStatusCode().getValue();
+        if (!samlStatusCode.equals(StatusCode.SUCCESS_URI))
+            /**
+             * Logout failed but response was valid.
+             */
+            return null;
+
+        Issuer issuer = samlLogoutResponse.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer name: " + issuerName);
+
+        return null;
+    }
+
+    private RequestSecurityTokenResponseType validateSaml2LogoutRequest(LogoutRequest samlLogoutRequest) {
+
+        Issuer issuer = samlLogoutRequest.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer name: " + issuerName);
+
+        String subjectName = samlLogoutRequest.getNameID().getValue();
+        if (null == subjectName) {
+            LOG.debug("missing NameID field");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing NameID field");
+            return response;
+        }
+        LOG.debug("subject name: " + subjectName);
+
+        return null;
     }
 
     private RequestSecurityTokenResponseType createResponse(String statusCode, String reason) {

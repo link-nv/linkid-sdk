@@ -74,4 +74,51 @@ public interface AuthenticationProtocolHandler extends Serializable {
      */
     String finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
             throws ServletException;
+
+    /**
+     * Initiates the logout request towards the SafeOnline authentication web application.
+     * 
+     * @param request
+     * @param response
+     * @param targetUrl
+     *            the optional target URL. If omitted the request URL will be used as target URL.
+     * @param subjectName
+     *            the subject ID
+     * 
+     * @throws IOException
+     * @throws ServletException
+     */
+    void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName)
+            throws IOException, ServletException;
+
+    /**
+     * Finalize the logout process.
+     * 
+     * @return true if all all applications to need to be logged out due to the request were logged out.
+     * 
+     */
+    boolean finalizeLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException;
+
+    /**
+     * Handle an incoming logout request, sent from the authentication webapp due to a logout request from another
+     * application.
+     * 
+     * @return userId
+     * @throws ServletException
+     */
+    String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException;
+
+    /**
+     * Sends back a logout response towards the SafeOnline authentication web application.
+     * 
+     * @param userId
+     * @param success
+     * @param request
+     * @param response
+     * 
+     * @throws IOException
+     * @throws ServletException
+     */
+    void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException;
 }

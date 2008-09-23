@@ -55,6 +55,9 @@ public class SafeOnlineLoginUtils {
     public static final String                 KEY_STORE_PASSWORD_INIT_PARAM        = "KeyStorePassword";
     public static final String                 SINGLE_SIGN_ON_INIT_PARAM            = "SingleSignOnEnabled";
 
+    public static final String                 LOGOUT_SERVICE_URL_INIT_PARAM        = "LogoutServiceUrl";
+    public static final String                 LOGOUT_EXIT_SERVICE_URL_INIT_PARAM   = "LogoutExitServiceUrl";
+
     public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL               = AuthenticationProtocol.SAML2_BROWSER_POST;
 
 
@@ -243,6 +246,187 @@ public class SafeOnlineLoginUtils {
         }
 
         return null;
+    }
+
+    /**
+     * Performs a SafeOnline single logout using the SafeOnline authentication web application.
+     * 
+     * <b>Note: This method is ONLY for logging in from an application that uses the JSF framework.</b>
+     * 
+     * <p>
+     * The method requires the <code>LogoutServiceUrl</code> context parameter defined in <code>web.xml</code>
+     * pointing to the location of the SafeOnline authentication web application logout entry point.
+     * </p>
+     * 
+     * <p>
+     * The method also requires the <code>TargetBaseUrl</code> context parameter defined in <code>web.xml</code>
+     * pointing to the base location to redirect to after successful logout.
+     * </p>
+     * 
+     * <p>
+     * The method also requires the <code>ApplicationName</code> context parameter defined in <code>web.xml</code>
+     * containing the application name that will be communicated towards the SafeOnline authentication web application.
+     * </p>
+     * 
+     * <p>
+     * The method also requires the <code>AuthenticationProtocol</code> context parameter defined in
+     * <code>web.xml</code> containing the authentication protocol used between the application and the OLAS
+     * authentication web application. This can be: SAML2_BROWSER_POST. Defaults to: SAML2_BROWSER_POST
+     * </p>
+     * 
+     * <p>
+     * The optional keystore resource name <code>KeyStoreResource</code> context parameter. The key pair within this
+     * keystore can be used by the authentication protocol handler to digitally sign the authentication request.
+     * </p>
+     * 
+     * <p>
+     * The optional keystore file name <code>KeyStoreFile</code> context parameter. The key pair within this keystore
+     * can be used by the authentication protocol handler to digitally sign the authentication request.
+     * </p>
+     * 
+     * <p>
+     * The optional <code>KeyStoreType</code> key store type context parameter. Accepted values are:
+     * <code>pkcs12</code> and <code>jks</code>.
+     * </p>
+     * 
+     * <p>
+     * The optional <code>KeyStorePassword</code> context parameter contains the password to unlock the keystore and
+     * key entry.
+     * </p>
+     * 
+     * @param subjectName
+     *            the user ID of the subject logging out.
+     * 
+     * @param target
+     *            The target to which to redirect to after successful logout. Don't put the full URL in here, the full
+     *            URL is retrieved with the {@link #TARGET_BASE_URL_INIT_PARAM}.
+     * 
+     */
+
+    @SuppressWarnings("unchecked")
+    public static void logout(String subjectName, String target) {
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+
+        try {
+            logout(subjectName, target, externalContext.getInitParameterMap(), (HttpServletRequest) externalContext
+                    .getRequest(), (HttpServletResponse) externalContext.getResponse());
+        }
+
+        finally {
+            /*
+             * Signal the JavaServer Faces implementation that the HTTP response for this request has already been
+             * generated (such as an HTTP redirect), and that the request processing lifecycle should be terminated as
+             * soon as the current phase is completed.
+             */
+            context.responseComplete();
+        }
+    }
+
+    /**
+     * Performs a SafeOnline logout using the SafeOnline authentication web application.
+     * 
+     * <b>Note: This is a general purpose method that should work for any web application framework.</b>
+     * 
+     * @see #logout(String, String) For details about the init parameters that should be configured in the application's
+     *      <code>web.xml</code>.
+     * 
+     * @param subjectName
+     *            The subject ID logging out
+     * @param target
+     *            The target url to redirect to after successful authentication.
+     * @param request
+     *            The {@link HttpServletRequest} object from the servlet making the login request.
+     * @param response
+     *            The {@link HttpServletResponse} object from the servlet making the login request.
+     */
+    public static void logout(String subjectName, String target, HttpServletRequest request,
+            HttpServletResponse response) {
+
+        Map<String, String> config = new HashMap<String, String>();
+        ServletContext context = request.getSession().getServletContext();
+
+        @SuppressWarnings("unchecked")
+        Enumeration<String> names = context.getInitParameterNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            config.put(name, context.getInitParameter(name));
+        }
+
+        logout(subjectName, target, config, request, response);
+    }
+
+    private static void logout(String subjectName, String target, Map<String, String> config,
+            HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+
+        /* Initialize parameters from web.xml */
+        String logoutServiceUrl = getInitParameter(config, LOGOUT_SERVICE_URL_INIT_PARAM);
+        String targetBaseUrl = getInitParameter(config, TARGET_BASE_URL_INIT_PARAM);
+        String applicationName = getInitParameter(config, APPLICATION_NAME_INIT_PARAM);
+        String applicationFriendlyName = getInitParameter(config, APPLICATION_FRIENDLY_NAME_INIT_PARAM, null);
+        String authenticationProtocolString = getInitParameter(config, AUTHN_PROTOCOL_INIT_PARAM,
+                DEFAULT_AUTHN_PROTOCOL.name());
+        String keyStoreResource = getInitParameter(config, KEY_STORE_RESOURCE_INIT_PARAM, null);
+        String keyStoreFile = getInitParameter(config, KEY_STORE_FILE_INIT_PARAM, null);
+        String keyStorePassword = getInitParameter(config, KEY_STORE_PASSWORD_INIT_PARAM, null);
+        String keyStoreType = getInitParameter(config, KEY_STORE_TYPE_INIT_PARAM, null);
+        String ssoEnabledString = getInitParameter(config, SINGLE_SIGN_ON_INIT_PARAM, null);
+        LOG.debug("redirecting to: " + logoutServiceUrl);
+
+        /* Figure out what protocol to use. */
+        AuthenticationProtocol authenticationProtocol = null;
+        try {
+            authenticationProtocol = AuthenticationProtocol.toAuthenticationProtocol(authenticationProtocolString);
+        } catch (UnavailableException e) {
+            throw new RuntimeException("could not parse authentication protocol: " + authenticationProtocolString);
+        }
+        LOG.debug("authentication protocol: " + authenticationProtocol);
+
+        /*
+         * Single Sign On Enabled or not. If not, single logout does not make much sense.
+         */
+        boolean ssoEnabled = true;
+        if (null != ssoEnabledString) {
+            ssoEnabled = Boolean.parseBoolean(ssoEnabledString);
+        }
+        LOG.debug("single sign-on enabled: " + ssoEnabled);
+        if (false == ssoEnabled)
+            return;
+
+        /* Load key data if provided. */
+        KeyPair keyPair = null;
+        X509Certificate certificate = null;
+        PrivateKeyEntry privateKeyEntry = getApplicationKey(keyStoreFile, keyStoreResource, keyStoreType,
+                keyStorePassword);
+        if (privateKeyEntry != null) {
+            keyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
+            certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        }
+
+        /*
+         * Use encodeRedirectURL to add parameters to it that should help preserve the session upon return from
+         * SafeOnline auth should the browser not support cookies.
+         */
+        String targetUrl = targetBaseUrl + target;
+        targetUrl = httpResponse.encodeRedirectURL(targetUrl);
+        LOG.debug("target url: " + targetUrl);
+
+        /* Initialize and execute the authentication protocol. */
+        try {
+            AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, logoutServiceUrl,
+                    applicationName, applicationFriendlyName, keyPair, certificate, ssoEnabled, config, httpRequest);
+            LOG.debug("initialized protocol");
+        } catch (ServletException e) {
+            throw new RuntimeException("could not init authentication protocol handler: " + authenticationProtocol
+                    + "; original message: " + e.getMessage(), e);
+        }
+        try {
+            AuthenticationProtocolManager.initiateLogout(httpRequest, httpResponse, targetUrl, subjectName);
+            LOG.debug("executed protocol");
+        } catch (Exception e) {
+            throw new RuntimeException("could not initiate logout: " + e.getMessage(), e);
+        }
     }
 
     /**

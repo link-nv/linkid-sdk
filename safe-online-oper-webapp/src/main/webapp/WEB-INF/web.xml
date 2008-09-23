@@ -20,8 +20,21 @@
 		</listener-class>
 	</listener>
 	<context-param>
+		<description>URL used to initiate a login process.</description>
 		<param-name>AuthenticationServiceUrl</param-name>
 		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
+	</context-param>
+	<context-param>
+		<description>URL used to initiate a single logout process.</description>
+		<param-name>LogoutServiceUrl</param-name>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutentry</param-value>
+	</context-param>
+	<context-param>
+		<description>URL used to finalize a logout request sent by the
+			authentication webapp following a single logout process by another
+			application.</description>
+		<param-name>LogoutExitServiceUrl</param-name>
+		<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
 	</context-param>
 	<context-param>
 		<param-name>ApplicationName</param-name>
@@ -44,6 +57,10 @@
 		<param-value>secret</param-value>
 	</context-param>
 	<context-param>
+		<param-name>SingleSignOnEnabled</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
 	</context-param>
@@ -64,13 +81,22 @@
 		<param-value>${safe-online.commercial.name}</param-value>
 	</context-param>
 	<context-param>
+		<description>Landing page to finalize a login process.</description>
 		<param-name>LandingPage</param-name>
 		<param-value>
 			${safe-online.host.auth.basename}/${safe-online.oper.webapp.name}/login 
 		</param-value>
 	</context-param>
 	<context-param>
-		<description>Url to redirect to after successful authentication</description>
+		<description>Landing page to finalize a logout process.</description>
+		<param-name>LogoutLandingPage</param-name>
+		<param-value>
+			${safe-online.host.auth.basename}/${safe-online.oper.webapp.name}/logout 
+		</param-value>
+	</context-param>
+	<context-param>
+		<description>Base url to redirect to after successful
+			authentication</description>
 		<param-name>TargetBaseUrl</param-name>
 		<param-value>
 			${safe-online.host.basename}/${safe-online.oper.webapp.name}/ 
@@ -132,7 +158,7 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>Seam Filter</filter-name>
@@ -200,9 +226,51 @@
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
 	</servlet>
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class> net.link.safeonline.sdk.auth.servlet.LogoutServlet 
+		</servlet-class>
+		<init-param>
+			<param-name>LogoutUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.oper.webapp.name}/operlogout 
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml response.</description>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.oper.webapp.name}/logout 
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>OperLogoutServlet</servlet-name>
+		<servlet-class>net.link.safeonline.webapp.resources.LogoutServlet</servlet-class>
+		<init-param>
+			<param-name>LogoutExitUrl</param-name>
+			<param-value>
+				${safe-online.host.auth.basename}/${safe-online.oper.webapp.name}/logout 
+			</param-value>
+		</init-param>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OperLogoutServlet</servlet-name>
+		<url-pattern>/operlogout</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Logo Servlet</servlet-name>

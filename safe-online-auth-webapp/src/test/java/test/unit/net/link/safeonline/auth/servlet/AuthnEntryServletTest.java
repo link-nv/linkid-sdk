@@ -247,7 +247,7 @@ public class AuthnEntryServletTest {
         expect(this.mockAuthenticationService.getExpectedApplicationFriendlyName()).andStubReturn(applicationName);
         expect(this.mockAuthenticationService.getExpectedTarget()).andStubReturn(assertionConsumerService);
         expect(this.mockAuthenticationService.getRequiredDevicePolicy()).andStubReturn(null);
-        expect(this.mockAuthenticationService.checkSso((Cookie) EasyMock.anyObject())).andStubReturn(true);
+        expect(this.mockAuthenticationService.checkSsoCookie((Cookie) EasyMock.anyObject())).andStubReturn(true);
         expect(this.mockAuthenticationService.getSsoCookie()).andStubReturn(
                 new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName, "value"));
         expect(this.mockAuthenticationService.getUserId()).andStubReturn(userId);

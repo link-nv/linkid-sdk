@@ -112,6 +112,10 @@ public interface Application {
 
     void setSsoEnabled(boolean ssoEnabled);
 
+    String getSsoLogoutUrl();
+
+    void setSsoLogoutUrl(String ssoLogoutUrl);
+
     /*
      * Actions.
      */
