@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -23,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 
@@ -34,6 +32,12 @@ import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
+import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
+import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
+import net.link.safeonline.sdk.auth.saml2.Challenge;
+import net.link.safeonline.sdk.auth.saml2.DomUtils;
+import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
+import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
@@ -52,7 +56,6 @@ import net.link.safeonline.ws.util.LoggingHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -65,32 +68,8 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.ValidateTargetType;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.common.SAMLVersion;
-import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.AuthnContext;
-import org.opensaml.saml2.core.AuthnContextClassRef;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.Response;
-import org.opensaml.saml2.core.Status;
-import org.opensaml.saml2.core.StatusCode;
-import org.opensaml.saml2.core.Subject;
-import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.XMLObjectBuilder;
-import org.opensaml.xml.io.Marshaller;
-import org.opensaml.xml.io.MarshallerFactory;
-import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.security.SecurityHelper;
-import org.opensaml.xml.security.credential.BasicCredential;
-import org.opensaml.xml.signature.Signature;
-import org.opensaml.xml.signature.SignatureConstants;
-import org.opensaml.xml.signature.SignatureException;
-import org.opensaml.xml.signature.Signer;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
@@ -122,6 +101,8 @@ public class SecurityTokenServicePortImplTest {
 
     private JmxTestUtils                     jmxTestUtils;
 
+    KeyPair                                  keyPair;
+
 
     @Before
     public void setUp() throws Exception {
@@ -129,10 +110,10 @@ public class SecurityTokenServicePortImplTest {
         this.jmxTestUtils = new JmxTestUtils();
         this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-        KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.privateKey = keyPair.getPrivate();
-        this.publicKey = keyPair.getPublic();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=TestApplication");
+        this.keyPair = PkiTestUtils.generateKeyPair();
+        this.privateKey = this.keyPair.getPrivate();
+        this.publicKey = this.keyPair.getPublic();
+        this.certificate = PkiTestUtils.generateSelfSignedCertificate(this.keyPair, "CN=TestApplication");
 
         this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
                 new MBeanActionHandler() {
@@ -225,7 +206,7 @@ public class SecurityTokenServicePortImplTest {
 
     @SuppressWarnings( { "unchecked", "null" })
     @Test
-    public void testWS() throws Exception {
+    public void testWSAuthnRequest() throws Exception {
 
         // setup
         String testIssuer = "test-issuer";
@@ -257,7 +238,68 @@ public class SecurityTokenServicePortImplTest {
         request.getAny().add(tokenType);
         ValidateTargetType validateTarget = new ValidateTargetType();
 
-        Element responseToken = createAuthResponse("test-in-response-to", testIssuer, "test-subject", 60);
+        Element requestToken = createAuthnRequest(testIssuer, "test-application-id", "http://test.consumer/url",
+                "http://test.destination/url");
+        validateTarget.setAny(requestToken);
+        request.getAny().add(objectFactory.createValidateTarget(validateTarget));
+
+        RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+        StatusType status = null;
+        List<Object> results = response.getAny();
+        for (Object result : results) {
+            if (result instanceof JAXBElement) {
+                JAXBElement<?> resultElement = (JAXBElement<?>) result;
+                Object value = resultElement.getValue();
+                if (value instanceof StatusType) {
+                    status = (StatusType) value;
+                }
+            }
+        }
+        assertNotNull(status);
+        String statusCode = status.getCode();
+        assertEquals(SecurityTokenServiceConstants.STATUS_VALID, statusCode);
+    }
+
+    @SuppressWarnings( { "unchecked", "null" })
+    @Test
+    public void testWSAuthnResponse() throws Exception {
+
+        // setup
+        String testIssuer = "test-issuer";
+        SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
+        SecurityTokenServicePort port = service.getSecurityTokenServicePort();
+        BindingProvider bindingProvider = (BindingProvider) port;
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                this.webServiceTestUtils.getEndpointAddress());
+        List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
+        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
+        handlers.add(new LoggingHandler());
+        handlers.add(new SignatureVerificationTestHandler());
+
+        bindingProvider.getBinding().setHandlerChain(handlers);
+
+        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
+                Collections.singletonList(this.certificate));
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        ObjectFactory objectFactory = new ObjectFactory();
+        JAXBElement<String> requestType = objectFactory
+                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
+        RequestSecurityTokenType request = new RequestSecurityTokenType();
+        request.getAny().add(requestType);
+        JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
+        request.getAny().add(tokenType);
+        ValidateTargetType validateTarget = new ValidateTargetType();
+
+        Element responseToken = createAuthnResponse("test-in-response-to", testIssuer, "test-subject", 60,
+                "http://test.target/url");
         validateTarget.setAny(responseToken);
         request.getAny().add(objectFactory.createValidateTarget(validateTarget));
 
@@ -282,99 +324,158 @@ public class SecurityTokenServicePortImplTest {
         assertEquals(SecurityTokenServiceConstants.STATUS_VALID, statusCode);
     }
 
-    private Element createAuthResponse(String inResponseTo, String issuerName, String subjectName, int validity) {
+    @SuppressWarnings( { "unchecked", "null" })
+    @Test
+    public void testWSLogoutRequest() throws Exception {
 
-        Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
+        // setup
+        String testIssuer = "test-issuer";
+        SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
+        SecurityTokenServicePort port = service.getSecurityTokenServicePort();
+        BindingProvider bindingProvider = (BindingProvider) port;
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                this.webServiceTestUtils.getEndpointAddress());
+        List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
+        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
+        handlers.add(new LoggingHandler());
+        handlers.add(new SignatureVerificationTestHandler());
 
-        DateTime now = new DateTime();
+        bindingProvider.getBinding().setHandlerChain(handlers);
 
-        SecureRandomIdentifierGenerator idGenerator;
-        try {
-            idGenerator = new SecureRandomIdentifierGenerator();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
+        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
+                Collections.singletonList(this.certificate));
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        ObjectFactory objectFactory = new ObjectFactory();
+        JAXBElement<String> requestType = objectFactory
+                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
+        RequestSecurityTokenType request = new RequestSecurityTokenType();
+        request.getAny().add(requestType);
+        JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
+        request.getAny().add(tokenType);
+        ValidateTargetType validateTarget = new ValidateTargetType();
+
+        Element requestToken = createLogoutRequest("test-subject", testIssuer, "test-destination");
+        validateTarget.setAny(requestToken);
+        request.getAny().add(objectFactory.createValidateTarget(validateTarget));
+
+        RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+        StatusType status = null;
+        List<Object> results = response.getAny();
+        for (Object result : results) {
+            if (result instanceof JAXBElement) {
+                JAXBElement<?> resultElement = (JAXBElement<?>) result;
+                Object value = resultElement.getValue();
+                if (value instanceof StatusType) {
+                    status = (StatusType) value;
+                }
+            }
         }
-        response.setID(idGenerator.generateIdentifier());
-        response.setVersion(SAMLVersion.VERSION_20);
-        response.setInResponseTo(inResponseTo);
-        response.setIssueInstant(now);
-
-        Issuer responseIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
-        responseIssuer.setValue(issuerName);
-        response.setIssuer(responseIssuer);
-
-        Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
-        StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
-        statusCode.setValue(StatusCode.SUCCESS_URI);
-        status.setStatusCode(statusCode);
-        response.setStatus(status);
-
-        Assertion assertion = buildXMLObject(Assertion.class, Assertion.DEFAULT_ELEMENT_NAME);
-        assertion.setID(idGenerator.generateIdentifier());
-        assertion.setIssueInstant(now);
-        response.getAssertions().add(assertion);
-
-        Issuer assertionIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
-        assertionIssuer.setValue(issuerName);
-        assertion.setIssuer(assertionIssuer);
-
-        Subject subject = buildXMLObject(Subject.class, Subject.DEFAULT_ELEMENT_NAME);
-        NameID nameID = buildXMLObject(NameID.class, NameID.DEFAULT_ELEMENT_NAME);
-        nameID.setValue(subjectName);
-        subject.setNameID(nameID);
-        assertion.setSubject(subject);
-
-        Conditions conditions = buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
-        conditions.setNotBefore(now);
-        conditions.setNotOnOrAfter(now.plusSeconds(validity));
-        assertion.setConditions(conditions);
-
-        AuthnStatement authnStatement = buildXMLObject(AuthnStatement.class, AuthnStatement.DEFAULT_ELEMENT_NAME);
-        assertion.getAuthnStatements().add(authnStatement);
-        authnStatement.setAuthnInstant(now);
-        AuthnContext authnContext = buildXMLObject(AuthnContext.class, AuthnContext.DEFAULT_ELEMENT_NAME);
-        authnStatement.setAuthnContext(authnContext);
-
-        AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class,
-                AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
-        authnContext.setAuthnContextClassRef(authnContextClassRef);
-        authnContextClassRef.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI");
-
-        Signature signature = buildXMLObject(Signature.class, Signature.DEFAULT_ELEMENT_NAME);
-        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-        signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
-        response.setSignature(signature);
-        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(this.publicKey, this.privateKey);
-        signature.setSigningCredential(signingCredential);
-
-        MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
-        Marshaller marshaller = marshallerFactory.getMarshaller(response);
-        Element responseElement;
-        try {
-            responseElement = marshaller.marshall(response);
-        } catch (MarshallingException e) {
-            throw new RuntimeException("opensaml2 marshalling error: " + e.getMessage(), e);
-        }
-
-        // sign after marshalling of course
-        try {
-            Signer.signObject(signature);
-        } catch (SignatureException e) {
-            throw new RuntimeException("opensaml2 signing error: " + e.getMessage(), e);
-        }
-
-        return responseElement;
+        assertNotNull(status);
+        String statusCode = status.getCode();
+        assertEquals(SecurityTokenServiceConstants.STATUS_VALID, statusCode);
     }
 
-    @SuppressWarnings("unchecked")
-    private static <Type extends XMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz,
-            QName objectQName) {
+    @SuppressWarnings( { "unchecked", "null" })
+    @Test
+    public void testWSLogoutResponse() throws Exception {
 
-        XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
-        if (builder == null)
-            throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
-                .getPrefix());
-        return object;
+        // setup
+        String testIssuer = "test-issuer";
+        SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
+        SecurityTokenServicePort port = service.getSecurityTokenServicePort();
+        BindingProvider bindingProvider = (BindingProvider) port;
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                this.webServiceTestUtils.getEndpointAddress());
+        List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
+        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
+        handlers.add(new LoggingHandler());
+        handlers.add(new SignatureVerificationTestHandler());
+
+        bindingProvider.getBinding().setHandlerChain(handlers);
+
+        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
+                Collections.singletonList(this.certificate));
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        ObjectFactory objectFactory = new ObjectFactory();
+        JAXBElement<String> requestType = objectFactory
+                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
+        RequestSecurityTokenType request = new RequestSecurityTokenType();
+        request.getAny().add(requestType);
+        JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
+        request.getAny().add(tokenType);
+        ValidateTargetType validateTarget = new ValidateTargetType();
+
+        Element responseToken = createLogoutResponse("test-inresponse-to", testIssuer, "test-target");
+        validateTarget.setAny(responseToken);
+        request.getAny().add(objectFactory.createValidateTarget(validateTarget));
+
+        RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+        StatusType status = null;
+        List<Object> results = response.getAny();
+        for (Object result : results) {
+            if (result instanceof JAXBElement) {
+                JAXBElement<?> resultElement = (JAXBElement<?>) result;
+                Object value = resultElement.getValue();
+                if (value instanceof StatusType) {
+                    status = (StatusType) value;
+                }
+            }
+        }
+        assertNotNull(status);
+        String statusCode = status.getCode();
+        assertEquals(SecurityTokenServiceConstants.STATUS_VALID, statusCode);
+    }
+
+    private Element createAuthnRequest(String issuerName, String applicationName, String assertionConsumerServiceURL,
+            String destinationURL) throws Exception {
+
+        Challenge<String> challenge = new Challenge<String>();
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName,
+                applicationName, this.keyPair, assertionConsumerServiceURL, destinationURL, challenge, Collections
+                        .singleton(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID), false);
+        Document doc = DomUtils.parseDocument(encodedAuthnRequest);
+        return doc.getDocumentElement();
+    }
+
+    private Element createAuthnResponse(String inResponseTo, String issuerName, String subjectName, int validity,
+            String target) throws Exception {
+
+        String encodedAuthnResponse = AuthnResponseFactory.createAuthResponse(inResponseTo, issuerName, issuerName,
+                subjectName, SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS, this.keyPair, validity, target);
+        Document doc = DomUtils.parseDocument(encodedAuthnResponse);
+        return doc.getDocumentElement();
+    }
+
+    private Element createLogoutRequest(String subjectName, String issuerName, String destinationURL) throws Exception {
+
+        Challenge<String> challenge = new Challenge<String>();
+        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, this.keyPair,
+                destinationURL, challenge);
+        Document doc = DomUtils.parseDocument(encodedLogoutRequest);
+        return doc.getDocumentElement();
+    }
+
+    private Element createLogoutResponse(String inResponseTo, String issuerName, String target) throws Exception {
+
+        String encodedLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, issuerName,
+                this.keyPair, target);
+        Document doc = DomUtils.parseDocument(encodedLogoutResponse);
+        return doc.getDocumentElement();
     }
 }
