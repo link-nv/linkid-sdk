@@ -29,114 +29,99 @@ import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @Local(Startable.class)
-@LocalBinding(jndiBinding = PerformanceConstants.PERFORMANCE_STARTABLE_JNDI_PREFIX
-		+ "PerformanceStartableBean")
+@LocalBinding(jndiBinding = PerformanceConstants.PERFORMANCE_STARTABLE_JNDI_PREFIX + "PerformanceStartableBean")
 public class PerformanceStartableBean extends AbstractInitBean {
 
-	private static final String PERFORMANCE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:test";
-	public static final String PERFORMANCE_APPLICATION_NAME = "performance-application";
-	private static final String LICENSE_AGREEMENT_CONFIRM_TEXT_EN = "This software is for performance testing purposes only.";
-	private static final String LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "Deze software dient enkel voor performance testing gebruikt te worden.";
+    private static final String PERFORMANCE_ATTRIBUTE             = "urn:net:lin-k:safe-online:attribute:test";
+    public static final String  PERFORMANCE_APPLICATION_NAME      = "performance-application";
+    private static final String LICENSE_AGREEMENT_CONFIRM_TEXT_EN = "This software is for performance testing purposes only.";
+    private static final String LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "Deze software dient enkel voor performance testing gebruikt te worden.";
 
-	public PerformanceStartableBean() {
 
-		configureNode();
+    public PerformanceStartableBean() {
 
-		/*
-		 * Create the performance user.
-		 */
-		this.authorizedUsers.put("performance", new AuthenticationDevice(
-				"performance", null, null));
-		this.subscriptions.add(new Subscription(
-				SubscriptionOwnerType.APPLICATION, "performance",
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+        configureNode();
 
-		/*
-		 * Obtain the performance application identity.
-		 */
-		PrivateKeyEntry perfPrivateKeyEntry = PerformanceKeyStoreUtils
-				.getPrivateKeyEntry();
-		X509Certificate perfCertificate = (X509Certificate) perfPrivateKeyEntry
-				.getCertificate();
+        /*
+         * Create the performance user.
+         */
+        this.authorizedUsers.put("performance", new AuthenticationDevice("performance", null, null));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "performance",
+                SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
-		/*
-		 * Register the application and the application certificate.
-		 */
-		this.trustedCertificates.put(perfCertificate,
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-		this.registeredApplications.add(new Application(
-				PERFORMANCE_APPLICATION_NAME, "owner", null, null, getLogo(),
-				null, true, false, perfCertificate, true, IdScopeType.USER,
-				false));
+        /*
+         * Obtain the performance application identity.
+         */
+        PrivateKeyEntry perfPrivateKeyEntry = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+        X509Certificate perfCertificate = (X509Certificate) perfPrivateKeyEntry.getCertificate();
 
-		/*
-		 * Subscribe the performance user to the performance application.
-		 */
-		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
-				"performance", PERFORMANCE_APPLICATION_NAME));
+        /*
+         * Register the application and the application certificate.
+         */
+        this.trustedCertificates.put(perfCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        this.registeredApplications.add(new Application(PERFORMANCE_APPLICATION_NAME, "owner", null, null, getLogo(),
+                null, true, false, perfCertificate, true, IdScopeType.USER, false, null));
 
-		/*
-		 * Attribute Types.
-		 */
-		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				PERFORMANCE_ATTRIBUTE, DatatypeType.STRING, true, true);
-		this.attributeTypes.add(attributeType);
+        /*
+         * Subscribe the performance user to the performance application.
+         */
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "performance",
+                PERFORMANCE_APPLICATION_NAME));
 
-		/*
-		 * Application Identities
-		 */
-		this.identities.add(new Identity(PERFORMANCE_APPLICATION_NAME,
-				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-						PERFORMANCE_ATTRIBUTE, false, false) }));
+        /*
+         * Attribute Types.
+         */
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(PERFORMANCE_ATTRIBUTE, DatatypeType.STRING, true,
+                true);
+        this.attributeTypes.add(attributeType);
 
-		/*
-		 * Application usage agreements
-		 */
-		UsageAgreement usageAgreement = new UsageAgreement(
-				PERFORMANCE_APPLICATION_NAME);
-		usageAgreement.addUsageAgreementText(new UsageAgreementText(
-				Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV"
-						+ "\n" + "Software License Agreement for "
-						+ PERFORMANCE_APPLICATION_NAME + "\n\n"
-						+ LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
-		usageAgreement.addUsageAgreementText(new UsageAgreementText("nl",
-				"Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-						+ "Software Gebruikers Overeenkomst voor "
-						+ PERFORMANCE_APPLICATION_NAME + "\n\n"
-						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
-		this.usageAgreements.add(usageAgreement);
-	}
+        /*
+         * Application Identities
+         */
+        this.identities.add(new Identity(PERFORMANCE_APPLICATION_NAME,
+                new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(PERFORMANCE_ATTRIBUTE, false, false) }));
 
-	private byte[] getLogo() {
+        /*
+         * Application usage agreements
+         */
+        UsageAgreement usageAgreement = new UsageAgreement(PERFORMANCE_APPLICATION_NAME);
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
+                + "Lin-k NV" + "\n" + "Software License Agreement for " + PERFORMANCE_APPLICATION_NAME + "\n\n"
+                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software Gebruikers Overeenkomst voor " + PERFORMANCE_APPLICATION_NAME + "\n\n"
+                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+        this.usageAgreements.add(usageAgreement);
+    }
 
-		return getLogo("/logo.jpg");
-	}
+    private byte[] getLogo() {
 
-	private void configureNode() {
+        return getLogo("/logo.jpg");
+    }
 
-		ResourceBundle properties = ResourceBundle.getBundle("config");
-		String nodeName = properties.getString("olas.node.name");
-		String protocol = properties.getString("olas.host.protocol");
-		String hostname = properties.getString("olas.host.name");
-		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
-		int hostportssl = Integer.parseInt(properties
-				.getString("olas.host.port.ssl"));
+    private void configureNode() {
 
-		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-		this.node = new Node(nodeName, protocol, hostname, hostport,
-				hostportssl, authIdentityServiceClient.getCertificate(),
-				identityServiceClient.getCertificate());
-		this.trustedCertificates.put(
-				authIdentityServiceClient.getCertificate(),
-				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
-	}
+        ResourceBundle properties = ResourceBundle.getBundle("config");
+        String nodeName = properties.getString("olas.node.name");
+        String protocol = properties.getString("olas.host.protocol");
+        String hostname = properties.getString("olas.host.name");
+        int hostport = Integer.parseInt(properties.getString("olas.host.port"));
+        int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-	@Override
-	public int getPriority() {
+        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient
+                .getCertificate(), identityServiceClient.getCertificate());
+        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(),
+                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+    }
 
-		return Startable.PRIORITY_BOOTSTRAP - 1;
-	}
+    @Override
+    public int getPriority() {
+
+        return Startable.PRIORITY_BOOTSTRAP - 1;
+    }
 }
