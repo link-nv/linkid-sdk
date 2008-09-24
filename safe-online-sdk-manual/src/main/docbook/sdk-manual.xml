@@ -609,7 +609,7 @@ public static class MyCompounded {
 		net.link.safeonline.sdk.auth.filter.AuthnRequestFilter
 	</filter-class>
 	<init-param>
-		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
+		<param-name>AuthenticationServiceUrl</param-name>
 		<param-value>
 			https://olas.lin-k.net/olas-auth/
 		</param-value>
@@ -767,6 +767,194 @@ public static class MyCompounded {
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>]]></programlisting>
+			</para>
+		</section>
+		<section>
+			<title>Single Sign-On</title>
+			<para>OLAS provided configurable single sign-on functionality. It
+				is the OLAS operator that decides which applications will provide
+				single sign-on functionality to each other. The operator does this
+				by creating application pools, grouping applications for single
+				sign-on. Each such pool has a configurable single sign-on timeout,
+				defining the lifetime of the actual authentication. The operator
+				also configures for each application if single sign-on is allowed.
+			</para>
+			<para>
+				If you want to enable your application to use single sign-on you
+				simply have to add following context parameter to your webapp
+				configuration :
+				<programlisting><![CDATA[
+	<context-param>
+		<param-name>SingleSignOnEnabled</param-name>
+		<param-value>true</param-value>
+	</context-param>				
+				]]></programlisting>
+				This will let the OLAS authentication web application know that we
+				want to use single sign-on if we can. The authentication web
+				application will then firstly check if the application is allowed to
+				use single sign-on. If it finds a stored authentication for an
+				application in a common application pool as the application that is
+				trying to log in, and that stored authentication has not yet timed
+				out, single sign-on will be allowed. Off course the checks like
+				device policy, application identity will still be done. When no
+				stored authentication was found, the user will have to authenticate
+				and this authentication will be stored for use of other applications
+				in the same application pool as this application.
+			</para>
+		</section>
+		<section>
+			<title>Single Log-Out</title>
+			<para>As OLAS provides single sign-on, single logout is also
+				supported. The OLAS authentication web application supports
+				different single logout protocols that can be used. The most
+				important one is the SAML version 2.0 Single Logout profile with
+				HTTP Post binding.</para>
+			<para>
+				If an application initiates a single logout process, following will
+				happen:
+				<orderedlist>
+					<listitem>
+						<para> The application will issue a logout request to the OLAS
+							authentication web application.</para>
+					</listitem>
+					<listitem>
+						<para> The OLAS authentication web application will, for each
+							application pool the application is in, collect the applications
+							that are stored having authenticated or made use of single
+							sign-on for authentication.</para>
+					</listitem>
+					<listitem>
+						<para> For each application in this collection, the OLAS
+							authentication web application will issue a logout request to
+							that application.</para>
+					</listitem>
+					<listitem>
+						<para>That application will receive this request, do the
+							necessary logout steps for itself and return a logout response.
+						</para>
+					</listitem>
+					<listitem>
+						<para>After 2 previous steps have been repeated for each
+							application, the OLAS authentication web application will return
+							a logout response to the application that issued the initial
+							logout request.</para>
+					</listitem>
+					<listitem>
+						<para>Upon receiving this response, the application can do the
+							necessary logout steps for itself also and the single logout is
+							finished.</para>
+					</listitem>
+				</orderedlist>
+			</para>
+			<para>
+				If you want to enable your application to use single logout, you
+				have to directly initiate this process. This can be achieved using
+				the provided utility class
+				<code>SafeOnlineLoginUtils</code>
+				which will directly invocate the single logout protocol handler.
+				Also the landing servlet
+				<code>net.link.safeonline.sdk.auth.servlet.LogoutServlet
+				</code>
+				is provided by OLAS and needs to be configured to handle the logout
+				response returned by the OLAS authentication web application. This
+				servlet will also handle the logout request sent by the OLAS
+				authentication web application in case another application in the
+				same application as your application issued a single logout. In both
+				cases the servlet will redirect to the specified
+				<code>LogoutUrl</code>
+				which should point to your internal page to logout your application
+				( invalidate the session, ... ). If a logout request was sent to
+				your application, you can finalize this step by redirecting back to
+				the landing servlet, which will trigger a logout response being sent
+				to the authentication web. The location of this servlet should be
+				configured by the OLAS operator for your application so the OLAS
+				authentication web application knows where to send its logout
+				requests to. Below you will find an example of such a configuration.
+				<programlisting><![CDATA[
+	<context-param>
+		<description>URL used to initiate a single logout process.</description>
+		<param-name>LogoutServiceUrl</param-name>
+		<param-value>https://olas.lin-k.net/olas-auth/logoutentry</param-value>
+	</context-param>
+	<context-param>
+		<description>URL used to finalize a logout request sent by the
+			authentication webapp following a single logout process by another
+			application.</description>
+		<param-name>LogoutExitServiceUrl</param-name>
+		<param-value>https://olas.lin-k.net/olas-auth/logoutexit</param-value>
+	</context-param>
+		<context-param>
+		<param-name>ApplicationName</param-name>
+		<param-value>demo-application</param-value>
+	</context-param>
+	<context-param>
+		<param-name>AuthenticationProtocol</param-name>
+		<param-value>SAML2_BROWSER_POST</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeystoreFile</param-name>
+		<param-value>/etc/pki/demo-app.p12</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>pkcs12</param-value>
+	</context-param>
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+	<context-param>
+		<param-name>SingleSignOnEnabled</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<description>Landing page to finalize a logout process.</description>
+		<param-name>LogoutLandingPage</param-name>
+		<param-value>https://your.application.domain/your-application-context/logout</param-value>
+	</context-param>
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class> net.link.safeonline.sdk.auth.servlet.LogoutServlet 
+		</servlet-class>
+		<init-param>
+			<param-name>LogoutUrl</param-name>
+			<param-value>
+				https://your.application.domain/your-application-context/your-application-logout
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<description>Used to wrap the servlet request's request URL for
+				verification of the receiving endpoint with the destination in the
+				saml response.</description>
+			<param-name>ServletEndpointUrl</param-name>
+			<param-value>
+				https://your.application.domain/your-application-context/logout
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>DemoApplicationLogoutServlet</servlet-name>
+		<servlet-class>your.application.packahe.servlet.LogoutServlet</servlet-class>
+		<init-param>
+			<param-name>LogoutExitUrl</param-name>
+			<param-value>
+				https://your.application.domain/your-application-context/logout
+			</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DemoApplicationLogoutServlet</servlet-name>
+		<url-pattern>/your-application-logout</url-pattern>
+	</servlet-mapping>
+				]]></programlisting>
 			</para>
 		</section>
 	</chapter>

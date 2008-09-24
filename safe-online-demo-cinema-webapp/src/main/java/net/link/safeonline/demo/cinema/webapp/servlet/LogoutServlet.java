@@ -19,7 +19,6 @@ import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.Session;
 
 
 /**
@@ -53,12 +52,6 @@ public class LogoutServlet extends AbstractInjectionServlet {
         LOG.debug("invoke get");
 
         LoginManager.removeUserName(request);
-        if (Session.exists()) {
-            LOG.debug("invalidate wicket session");
-            Session.get().invalidateNow();
-            // CinemaSession.get().invalidateNow();
-        }
-
         response.sendRedirect(this.logoutExitUrl);
 
     }

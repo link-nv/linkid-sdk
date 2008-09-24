@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.demo.cinema.CinemaConstants;
 import net.link.safeonline.demo.cinema.entity.TicketEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
+import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
@@ -86,9 +87,6 @@ public class LayoutPage extends WebPage<Object> {
                             String target = request.getServletPath();
                             String userId = CinemaSession.get().getUser().getId();
 
-                            // setRedirect(true);
-                            // setResponsePage(LoginPage.class);
-
                             SafeOnlineLoginUtils.logout(userId, target, request, response);
                         }
                     });
@@ -121,7 +119,7 @@ public class LayoutPage extends WebPage<Object> {
             };
             add(junior);
 
-            if (CinemaSession.isUserSet()) {
+            if (CinemaSession.isUserSet() && LoginManager.isAuthenticated(WicketUtil.toServletRequest(getRequest()))) {
                 name.setModel(new Model<String>(CinemaSession.get().getUser().getName()));
                 nrn.setModel(new Model<String>(CinemaSession.get().getUser().getNrn()));
                 junior.setModel(new Model<Boolean>(CinemaSession.get().getUser().isJunior()));
