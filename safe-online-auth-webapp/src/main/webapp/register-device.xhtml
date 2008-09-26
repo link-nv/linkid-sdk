@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html">
 <body>
 <ui:composition template="/WEB-INF/template-auth.xhtml">
 	<ui:define name="top_content">
@@ -23,6 +23,8 @@
 			<h:messages styleClass="error" />
 
 			<h:outputLabel for="next" value="" />
+			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
+				immediate="true" styleClass="submit" />
 			<h:commandButton action="#{deviceRegistration.deviceNext}" id="next"
 				value="#{msgs.next}" styleClass="submit" />
 		</h:form>

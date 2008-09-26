@@ -127,4 +127,11 @@
 			</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/register-device.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/all-devices.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 </faces-config>

@@ -44,9 +44,9 @@ import org.w3c.dom.Document;
  * element as required by the SafeOnline web service authentication module. Per default this handler will sign the Body
  * element of the SOAP envelope. You can make this handler to sign additional XML elements via the
  * {@link #addToBeSignedId(String, SOAPMessageContext)} method.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -63,7 +63,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 
     /**
      * Main constructor.
-     *
+     * 
      * @param certificate
      *            the client X509 certificate.
      * @param privateKey
@@ -171,7 +171,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
     /**
      * When <code>true</code> the SOAP Body will not get signed by the WS-Security signature. This behavior is similar
      * to .NET WCF clients.
-     *
+     * 
      */
     public boolean isSkipBodySigning() {
 
@@ -185,7 +185,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 
     /**
      * Adds a new WS-Security client handler to the handler chain of the given JAX-WS port.
-     *
+     * 
      * @param port
      * @param certificate
      * @param privateKey
@@ -203,7 +203,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 
     /**
      * Add an XML Id that needs to be included in the WS-Security signature digest.
-     *
+     * 
      * @param id
      * @param context
      */

@@ -16,7 +16,7 @@ public class DeviceEntry {
 
     private String       friendlyName;
 
-    boolean              reigstrable = true;
+    boolean              registrable = true;
 
 
     public DeviceEntry(DeviceEntity device, String friendlyName) {
@@ -29,7 +29,7 @@ public class DeviceEntry {
 
         this.device = device;
         this.friendlyName = friendlyName;
-        this.reigstrable = registrable;
+        this.registrable = registrable;
     }
 
     public DeviceEntity getDevice() {
@@ -54,7 +54,7 @@ public class DeviceEntry {
 
     public boolean isRegistrable() {
 
-        return null != this.device.getRegistrationPath() && this.reigstrable;
+        return null != this.device.getRegistrationPath() && this.registrable;
     }
 
     public boolean isUpdatable() {

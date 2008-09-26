@@ -188,6 +188,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
         for (DeviceEntity deviceEntity : devices) {
             String deviceName = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
             SelectItem allDevice = new SelectItem(deviceEntity.getName(), deviceName);
+            allDevice.setDisabled(!deviceEntity.isRegistrable());
             allDevices.add(allDevice);
         }
         return allDevices;

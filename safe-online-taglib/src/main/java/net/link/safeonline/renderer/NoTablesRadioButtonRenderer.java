@@ -18,12 +18,14 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.model.SelectItem;
 import javax.faces.render.Renderer;
 
+import com.sun.faces.util.Util;
+
 
 /**
  * This renderer is based on Sun's RI for the radio button renderer
- *
+ * 
  * @author dhouthoo
- *
+ * 
  */
 public class NoTablesRadioButtonRenderer extends Renderer {
 
@@ -125,6 +127,14 @@ public class NoTablesRadioButtonRenderer extends Renderer {
         writer.writeAttribute("id", idString, "id");
 
         writer.writeAttribute("value", curItem.getValue().toString(), "value");
+
+        // Don't render the disabled attribute twice if the 'parent'
+        // component is already marked disabled.
+        if (!Util.componentIsDisabled(component)) {
+            if (curItem.isDisabled()) {
+                writer.writeAttribute("disabled", true, "disabled");
+            }
+        }
 
         writer.endElement("input");
 

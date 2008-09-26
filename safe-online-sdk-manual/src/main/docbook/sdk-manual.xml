@@ -908,6 +908,12 @@ public static class MyCompounded {
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
+		<param-name>TargetBaseUrl</param-name>
+		<param-value>
+			http://your.application.domain/your-application-context/
+		</param-value>
+	</context-param>
+	<context-param>
 		<description>Landing page to finalize a logout process.</description>
 		<param-name>LogoutLandingPage</param-name>
 		<param-value>https://your.application.domain/your-application-context/logout</param-value>

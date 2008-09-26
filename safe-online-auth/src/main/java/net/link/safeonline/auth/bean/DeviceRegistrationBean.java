@@ -152,6 +152,9 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
         for (DeviceEntity deviceEntity : devicePolicy) {
             String deviceName = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
             SelectItem applicationDevice = new SelectItem(deviceEntity.getName(), deviceName);
+            this.log.debug("device " + deviceName + ": " + deviceEntity.isRegistrable() + " (path="
+                    + deviceEntity.getRegistrationPath());
+            applicationDevice.setDisabled(!deviceEntity.isRegistrable());
             applicationDevices.add(applicationDevice);
         }
         return applicationDevices;
