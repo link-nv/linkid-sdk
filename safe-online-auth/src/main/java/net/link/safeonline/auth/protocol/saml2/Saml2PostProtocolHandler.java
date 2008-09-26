@@ -16,10 +16,10 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
-import net.link.safeonline.auth.protocol.LogoutProtocolContext;
-import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
+import net.link.safeonline.authentication.LogoutProtocolContext;
+import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -119,7 +119,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         AuthenticationService authenticationService = AuthenticationServiceManager
                 .getAuthenticationService(authnRequest.getSession());
         try {
-            authenticationService.initialize(samlAuthnRequest);
+            return authenticationService.initialize(language, samlAuthnRequest);
         } catch (TrustDomainNotFoundException e) {
             LOG.debug("trust domain not found: " + e.getMessage());
             throw new ProtocolException("Trust domain not found");
@@ -130,10 +130,6 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
             LOG.debug("application not found: " + e.getMessage());
             throw new ProtocolException("application not found");
         }
-
-        return new ProtocolContext(authenticationService.getExpectedApplicationId(), authenticationService
-                .getExpectedApplicationFriendlyName(), authenticationService.getExpectedTarget(), language,
-                authenticationService.getRequiredDevicePolicy());
     }
 
     public void authnResponse(HttpSession session, HttpServletResponse authnResponse) throws ProtocolException {
@@ -202,7 +198,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         AuthenticationService authenticationService = AuthenticationServiceManager
                 .getAuthenticationService(logoutRequest.getSession());
         try {
-            authenticationService.initialize(samlLogoutRequest);
+            return authenticationService.initialize(samlLogoutRequest);
         } catch (TrustDomainNotFoundException e) {
             LOG.debug("trust domain not found: " + e.getMessage());
             throw new ProtocolException("Trust domain not found");
@@ -217,9 +213,6 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
             throw new ProtocolException("subject not found");
 
         }
-
-        return new LogoutProtocolContext(authenticationService.getExpectedApplicationId(), authenticationService
-                .getExpectedTarget());
     }
 
     /**

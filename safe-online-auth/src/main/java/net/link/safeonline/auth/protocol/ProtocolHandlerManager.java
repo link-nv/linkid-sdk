@@ -18,6 +18,8 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
+import net.link.safeonline.authentication.LogoutProtocolContext;
+import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;

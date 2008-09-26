@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
-import net.link.safeonline.auth.protocol.LogoutProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.service.AuthenticationService;

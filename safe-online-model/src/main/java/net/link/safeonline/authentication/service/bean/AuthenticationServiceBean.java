@@ -55,6 +55,8 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.LogoutProtocolContext;
+import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -272,8 +274,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     private SecurityAuditLogger              securityAuditLogger;
 
 
-    public void initialize(@NotNull AuthnRequest samlAuthnRequest) throws AuthenticationInitializationException,
-            ApplicationNotFoundException, TrustDomainNotFoundException {
+    public ProtocolContext initialize(String language, @NotNull AuthnRequest samlAuthnRequest)
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException {
 
         Issuer issuer = samlAuthnRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -340,6 +342,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.expectedChallengeId = samlAuthnRequestId;
         this.ssoEnabled = !forceAuthn;
 
+        return new ProtocolContext(this.expectedApplicationId, this.expectedApplicationFriendlyName,
+                this.expectedTarget, language, this.requiredDevicePolicy);
     }
 
     private boolean validateSignature(X509Certificate certificate, AuthnRequest samlAuthnRequest)
@@ -1196,38 +1200,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.authenticationDevice = device;
     }
 
-    public String getExpectedApplicationId() {
-
-        if (this.authenticationState == INIT) {
-            throw new IllegalStateException("call initialize first");
-        }
-        return this.expectedApplicationId;
-    }
-
-    public String getExpectedApplicationFriendlyName() {
-
-        if (this.authenticationState == INIT) {
-            throw new IllegalStateException("call initialize first");
-        }
-        return this.expectedApplicationFriendlyName;
-    }
-
-    public String getExpectedTarget() {
-
-        if (this.authenticationState == INIT) {
-            throw new IllegalStateException("call initialize first");
-        }
-        return this.expectedTarget;
-    }
-
-    public Set<DeviceEntity> getRequiredDevicePolicy() {
-
-        if (this.authenticationState == INIT) {
-            throw new IllegalStateException("call initialize first");
-        }
-        return this.requiredDevicePolicy;
-    }
-
     public AuthenticationState getAuthenticationState() {
 
         return this.authenticationState;
@@ -1245,9 +1217,11 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     /**
      * {@inheritDoc}
+     * 
      */
-    public void initialize(@NotNull LogoutRequest samlLogoutRequest) throws AuthenticationInitializationException,
-            ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException {
+    public LogoutProtocolContext initialize(@NotNull LogoutRequest samlLogoutRequest)
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
+            SubjectNotFoundException {
 
         Issuer issuer = samlLogoutRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -1285,6 +1259,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.expectedChallengeId = samlAuthnRequestId;
         this.expectedTarget = application.getSsoLogoutUrl().toString();
         this.authenticatedSubject = subject;
+
+        return new LogoutProtocolContext(this.expectedApplicationId, this.expectedTarget);
+
     }
 
     private boolean validateSignature(X509Certificate certificate, LogoutRequest samlLogoutRequest)

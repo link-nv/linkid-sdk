@@ -36,6 +36,8 @@ import javax.servlet.http.Cookie;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.LogoutProtocolContext;
+import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
 import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
@@ -254,7 +256,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        this.testedInstance.initialize(null, authnRequest);
 
         boolean result = this.testedInstance.authenticate(login, password);
 
@@ -289,15 +291,13 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
 
         // verify
         verify(this.mockObjects);
 
-        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
-        assertEquals(applicationName, resultApplicationId);
-        String target = this.testedInstance.getExpectedTarget();
-        assertEquals(assertionConsumerService, target);
+        assertEquals(applicationName, protocolContext.getApplicationId());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
     }
 
     @Test
@@ -336,18 +336,15 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
 
         // verify
         verify(this.mockObjects);
 
-        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
-        assertEquals(applicationName, resultApplicationId);
-        String target = this.testedInstance.getExpectedTarget();
-        assertEquals(assertionConsumerService, target);
-        Set<DeviceEntity> resultRequiredDevices = this.testedInstance.getRequiredDevicePolicy();
-        assertNotNull(resultRequiredDevices);
-        assertTrue(resultRequiredDevices.contains(passwordDevice));
+        assertEquals(applicationName, protocolContext.getApplicationId());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
+        assertNotNull(protocolContext.getRequiredDevices());
+        assertTrue(protocolContext.getRequiredDevices().contains(passwordDevice));
     }
 
     @Test
@@ -378,7 +375,7 @@ public class AuthenticationServiceBeanTest {
 
         // operate
         try {
-            this.testedInstance.initialize(authnRequest);
+            this.testedInstance.initialize(null, authnRequest);
         } catch (AuthenticationInitializationException e) {
             // expected
             return;
@@ -413,7 +410,7 @@ public class AuthenticationServiceBeanTest {
 
         // operate
         try {
-            this.testedInstance.initialize(authnRequest);
+            this.testedInstance.initialize(null, authnRequest);
         } catch (AuthenticationInitializationException e) {
             // expected
             return;
@@ -470,7 +467,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -478,10 +475,8 @@ public class AuthenticationServiceBeanTest {
 
         assertTrue(result);
 
-        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
-        assertEquals(applicationName, resultApplicationId);
-        String target = this.testedInstance.getExpectedTarget();
-        assertEquals(assertionConsumerService, target);
+        assertEquals(applicationName, protocolContext.getApplicationId());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
         AuthenticationState resultState = this.testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.USER_AUTHENTICATED, resultState);
         String resultUserId = this.testedInstance.getUserId();
@@ -532,7 +527,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -540,10 +535,8 @@ public class AuthenticationServiceBeanTest {
 
         assertFalse(result);
 
-        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
-        assertEquals(applicationName, resultApplicationId);
-        String target = this.testedInstance.getExpectedTarget();
-        assertEquals(assertionConsumerService, target);
+        assertEquals(applicationName, protocolContext.getApplicationId());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
         AuthenticationState resultState = this.testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
@@ -590,18 +583,15 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
         verify(this.mockObjects);
 
         assertFalse(result);
-
-        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
-        assertEquals(applicationName, resultApplicationId);
-        String target = this.testedInstance.getExpectedTarget();
-        assertEquals(assertionConsumerService, target);
+        assertEquals(applicationName, protocolContext.getApplicationId());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
         AuthenticationState resultState = this.testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
@@ -644,7 +634,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        this.testedInstance.initialize(null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -700,7 +690,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        this.testedInstance.initialize(null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -761,7 +751,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        this.testedInstance.initialize(null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -822,7 +812,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -830,10 +820,8 @@ public class AuthenticationServiceBeanTest {
 
         assertFalse(result);
 
-        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
-        assertEquals(applicationName, resultApplicationId);
-        String target = this.testedInstance.getExpectedTarget();
-        assertEquals(assertionConsumerService, target);
+        assertEquals(applicationName, protocolContext.getApplicationId());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
         AuthenticationState resultState = this.testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
@@ -920,7 +908,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -928,10 +916,8 @@ public class AuthenticationServiceBeanTest {
 
         assertFalse(result);
 
-        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
-        assertEquals(application3Name, resultApplicationId);
-        String target = this.testedInstance.getExpectedTarget();
-        assertEquals(assertionConsumerService, target);
+        assertEquals(application3Name, protocolContext.getApplicationId());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
         AuthenticationState resultState = this.testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
@@ -987,7 +973,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        this.testedInstance.initialize(null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -1047,7 +1033,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -1055,10 +1041,8 @@ public class AuthenticationServiceBeanTest {
 
         assertFalse(result);
 
-        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
-        assertEquals(applicationName, resultApplicationId);
-        String target = this.testedInstance.getExpectedTarget();
-        assertEquals(assertionConsumerService, target);
+        assertEquals(applicationName, protocolContext.getApplicationId());
+        assertEquals(assertionConsumerService, protocolContext.getTarget());
         AuthenticationState resultState = this.testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
@@ -1112,7 +1096,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(authnRequest);
+        this.testedInstance.initialize(null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -1226,15 +1210,13 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(logoutRequest);
+        LogoutProtocolContext logoutProtocolContext = this.testedInstance.initialize(logoutRequest);
 
         // verify
         verify(this.mockObjects);
 
-        String resultApplicationId = this.testedInstance.getExpectedApplicationId();
-        assertEquals(applicationName, resultApplicationId);
-        String resultTarget = this.testedInstance.getExpectedTarget();
-        assertEquals(application.getSsoLogoutUrl().toString(), resultTarget);
+        assertEquals(applicationName, logoutProtocolContext.getApplicationId());
+        assertEquals(application.getSsoLogoutUrl().toString(), logoutProtocolContext.getTarget());
     }
 
     private LogoutRequest getLogoutRequest(String encodedLogoutRequest) throws Exception {

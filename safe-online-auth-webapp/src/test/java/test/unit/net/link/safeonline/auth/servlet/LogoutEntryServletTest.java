@@ -23,6 +23,7 @@ import javax.servlet.http.Cookie;
 
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.LogoutEntryServlet;
+import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.common.SafeOnlineCookies;
@@ -149,10 +150,9 @@ public class LogoutEntryServletTest {
                 + "=value");
 
         // expectations
-        this.mockAuthenticationService.initialize((LogoutRequest) EasyMock.anyObject());
+        expect(this.mockAuthenticationService.initialize((LogoutRequest) EasyMock.anyObject())).andStubReturn(
+                new LogoutProtocolContext(applicationName, this.servletEndpointUrl));
         expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INIT);
-        expect(this.mockAuthenticationService.getExpectedApplicationId()).andStubReturn(applicationName);
-        expect(this.mockAuthenticationService.getExpectedTarget()).andStubReturn(this.servletEndpointUrl);
         expect(this.mockAuthenticationService.checkSsoCookieForLogout((Cookie) EasyMock.anyObject())).andStubReturn(
                 true);
 

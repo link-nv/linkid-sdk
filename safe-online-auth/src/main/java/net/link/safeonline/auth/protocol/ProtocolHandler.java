@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.authentication.LogoutProtocolContext;
+import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.entity.ApplicationEntity;
 
 

@@ -17,9 +17,9 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
-import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;

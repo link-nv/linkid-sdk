@@ -7,13 +7,13 @@
 
 package net.link.safeonline.authentication.service;
 
-import java.util.Set;
-
 import javax.ejb.Local;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import net.link.safeonline.authentication.LogoutProtocolContext;
+import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -143,18 +143,19 @@ public interface AuthenticationService {
      * Initializes an authentication process. Validates the incoming authentication request and stores the application,
      * device policy and assertion consumer service.
      * 
+     * @param language
      * @param samlAuthnRequest
      * @throws AuthenticationInitializationException
      * @throws ApplicationNotFoundException
      * @throws TrustDomainNotFoundException
      */
-    void initialize(AuthnRequest samlAuthnRequest) throws AuthenticationInitializationException,
-            ApplicationNotFoundException, TrustDomainNotFoundException;
+    ProtocolContext initialize(String language, AuthnRequest samlAuthnRequest)
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException;
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
      * 
-     * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
+     * Calling this method is only valid after a call to {@link #initialize(String, AuthnRequest)}.
      * 
      * @param authenticationServiceUrl
      * @param encodedLandingUrl
@@ -176,34 +177,6 @@ public interface AuthenticationService {
      */
     String finalizeAuthentication() throws NodeNotFoundException, SubscriptionNotFoundException,
             ApplicationNotFoundException;
-
-    /**
-     * Gives back the application we are authenticating for.
-     * 
-     * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
-     */
-    String getExpectedApplicationId();
-
-    /**
-     * Gives back the application friendly name we are authenticating for.
-     * 
-     * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
-     */
-    String getExpectedApplicationFriendlyName();
-
-    /**
-     * Gives back the target to which to send the final authentication response.
-     * 
-     * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
-     */
-    String getExpectedTarget();
-
-    /**
-     * Gives back the required device policy.
-     * 
-     * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
-     */
-    Set<DeviceEntity> getRequiredDevicePolicy();
 
     /**
      * Gives back the current authentication state.
@@ -246,7 +219,7 @@ public interface AuthenticationService {
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
      * 
-     * Calling this method is only valid after a call to {@link #initialize(AuthnRequest)}.
+     * Calling this method is only valid after a call to {@link #initialize(String, AuthnRequest)}.
      * 
      * @param registrationServiceUrl
      * @param targetUrl
@@ -286,7 +259,7 @@ public interface AuthenticationService {
      * @throws AuthenticationInitializationException
      * @throws SubjectNotFoundException
      */
-    void initialize(LogoutRequest samlLogoutRequest) throws AuthenticationInitializationException,
+    LogoutProtocolContext initialize(LogoutRequest samlLogoutRequest) throws AuthenticationInitializationException,
             ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException;
 
     /**

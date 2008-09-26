@@ -25,6 +25,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.AuthnEntryServlet;
+import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
@@ -182,12 +183,11 @@ public class AuthnEntryServletTest {
         postMethod.setRequestBody(data);
 
         // expectations
-        this.mockAuthenticationService.initialize((AuthnRequest) EasyMock.anyObject());
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INIT);
-        expect(this.mockAuthenticationService.getExpectedApplicationId()).andStubReturn(applicationName);
-        expect(this.mockAuthenticationService.getExpectedApplicationFriendlyName()).andStubReturn(applicationName);
-        expect(this.mockAuthenticationService.getExpectedTarget()).andStubReturn(assertionConsumerService);
-        expect(this.mockAuthenticationService.getRequiredDevicePolicy()).andStubReturn(null);
+        expect(
+                this.mockAuthenticationService.initialize((String) EasyMock.anyObject(), (AuthnRequest) EasyMock
+                        .anyObject())).andStubReturn(
+                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null));
+        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
 
         // prepare
         replay(this.mockObjects);
@@ -241,17 +241,16 @@ public class AuthnEntryServletTest {
                 + "=value");
 
         // expectations
-        this.mockAuthenticationService.initialize((AuthnRequest) EasyMock.anyObject());
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INIT);
-        expect(this.mockAuthenticationService.getExpectedApplicationId()).andStubReturn(applicationName);
-        expect(this.mockAuthenticationService.getExpectedApplicationFriendlyName()).andStubReturn(applicationName);
-        expect(this.mockAuthenticationService.getExpectedTarget()).andStubReturn(assertionConsumerService);
-        expect(this.mockAuthenticationService.getRequiredDevicePolicy()).andStubReturn(null);
+        expect(
+                this.mockAuthenticationService.initialize((String) EasyMock.anyObject(), (AuthnRequest) EasyMock
+                        .anyObject())).andStubReturn(
+                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null));
         expect(this.mockAuthenticationService.checkSsoCookie((Cookie) EasyMock.anyObject())).andStubReturn(true);
         expect(this.mockAuthenticationService.getSsoCookie()).andStubReturn(
                 new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName, "value"));
         expect(this.mockAuthenticationService.getUserId()).andStubReturn(userId);
         expect(this.mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
+        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
 
         // prepare
         replay(this.mockObjects);
