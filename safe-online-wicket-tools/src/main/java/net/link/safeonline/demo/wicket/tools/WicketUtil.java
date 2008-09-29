@@ -12,6 +12,8 @@ import java.text.NumberFormat;
 import java.util.Date;
 
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,7 +53,7 @@ public abstract class WicketUtil {
      * @return A string that is the formatted representation of the given date according to the user's locale in short
      *         form.
      */
-    public static String formatDate(Session session, Date date) {
+    public static String format(Session session, Date date) {
 
         return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, session.getLocale()).format(date);
     }
@@ -60,7 +62,7 @@ public abstract class WicketUtil {
      * @return A string that is the formatted representation of the given amount of currency according to the user's
      *         locale.
      */
-    public static String formatCurrency(Session session, Number number) {
+    public static String format(Session session, Number number) {
 
         return NumberFormat.getCurrencyInstance(session.getLocale()).format(number);
     }
@@ -136,5 +138,32 @@ public abstract class WicketUtil {
     public static String getUsername(Request request) throws ServletException {
 
         return LoginManager.getUsername(toServletRequest(request));
+    }
+
+    /**
+     * Inject EJB proxies into fields annotated with the {@link EJB} annotation of the given object.
+     */
+    @SuppressWarnings("unchecked")
+    public static void inject(Object object) {
+
+        for (Field field : object.getClass().getDeclaredFields())
+            if (field.getAnnotation(EJB.class) != null) {
+                field.setAccessible(true);
+
+                try {
+                    field.set(object, new InitialContext().lookup(field.getType().getField("BINDING").get(null)
+                            .toString()));
+                } catch (IllegalArgumentException e) {
+                    LOG.error("[BUG] Object is not the right type.", e);
+                } catch (SecurityException e) {
+                    LOG.error("[BUG] Field injected not allowed.", e);
+                } catch (NamingException e) {
+                    LOG.error("[BUG] JNDI BINDING does not exist.", e);
+                } catch (IllegalAccessException e) {
+                    LOG.error("[BUG] Field injected not allowed.", e);
+                } catch (NoSuchFieldException e) {
+                    LOG.error("[BUG] BINDING field is not declared.", e);
+                }
+            }
     }
 }

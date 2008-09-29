@@ -18,15 +18,15 @@ import org.apache.wicket.authorization.IAuthorizationStrategy;
 
 public class SafeOnlineStrategy implements IAuthorizationStrategy {
 
-    private Class<? extends Page<?>> loginPageClass = null;
+    private Class<? extends Page> loginPageClass = null;
 
 
-    public SafeOnlineStrategy(Class<? extends Page<?>> loginPageClass) {
+    public SafeOnlineStrategy(Class<? extends Page> loginPageClass) {
 
         this.loginPageClass = loginPageClass;
     }
 
-    public boolean isActionAuthorized(Component<?> arg0, Action arg1) {
+    public boolean isActionAuthorized(Component arg0, Action arg1) {
 
         return true;
     }

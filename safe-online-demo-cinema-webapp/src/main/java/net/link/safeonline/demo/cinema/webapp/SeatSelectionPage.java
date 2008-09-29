@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.demo.cinema.entity.SeatEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatEntity;
 import net.link.safeonline.demo.cinema.service.RoomService;
 import net.link.safeonline.demo.cinema.service.SeatService;
 
@@ -51,7 +51,7 @@ public class SeatSelectionPage extends LayoutPage {
             return;
         }
 
-        add(new Label<String>("headerTitle", "Seat Selection"));
+        add(new Label("headerTitle", "Seat Selection"));
 
         add(new SeatsForm("seats"));
     }
@@ -77,19 +77,19 @@ public class SeatSelectionPage extends LayoutPage {
             super(id);
 
             // Room Name.
-            add(new Label<String>("name", CinemaSession.get().getRoom().getName()));
+            add(new Label("name", CinemaSession.get().getRoom().getName()));
 
             // Create a grid of seat occupations.
-            List<List<SeatEntity>> rows = new ArrayList<List<SeatEntity>>();
-            List<SeatEntity> seats = SeatSelectionPage.this.seatService.getSeatsFor(CinemaSession.get().getRoom());
-            for (SeatEntity seat : seats) {
+            List<List<CinemaSeatEntity>> rows = new ArrayList<List<CinemaSeatEntity>>();
+            List<CinemaSeatEntity> seats = SeatSelectionPage.this.seatService.getSeatsFor(CinemaSession.get().getRoom());
+            for (CinemaSeatEntity seat : seats) {
                 // Add empty rows.
                 while (rows.size() < seat.getY()) {
-                    rows.add(new ArrayList<SeatEntity>());
+                    rows.add(new ArrayList<CinemaSeatEntity>());
                 }
 
                 // Add empty seats.
-                List<SeatEntity> row = rows.get(seat.getY() - 1);
+                List<CinemaSeatEntity> row = rows.get(seat.getY() - 1);
                 while (row.size() < seat.getX()) {
                     row.add(null);
                 }
@@ -98,23 +98,23 @@ public class SeatSelectionPage extends LayoutPage {
                 row.set(seat.getX() - 1, seat);
             }
 
-            add(new ListView<List<SeatEntity>>("row", rows) {
+            add(new ListView<List<CinemaSeatEntity>>("row", rows) {
 
                 private static final long serialVersionUID = 1L;
 
 
                 @Override
-                protected void populateItem(ListItem<List<SeatEntity>> rowItem) {
+                protected void populateItem(ListItem<List<CinemaSeatEntity>> rowItem) {
 
-                    rowItem.add(new ListView<SeatEntity>("column", rowItem.getModelObject()) {
+                    rowItem.add(new ListView<CinemaSeatEntity>("column", rowItem.getModelObject()) {
 
                         private static final long serialVersionUID = 1L;
 
 
                         @Override
-                        protected void populateItem(final ListItem<SeatEntity> seatItem) {
+                        protected void populateItem(final ListItem<CinemaSeatEntity> seatItem) {
 
-                            final SeatEntity seat = seatItem.getModelObject();
+                            final CinemaSeatEntity seat = seatItem.getModelObject();
                             seatItem.add(new Link<String>("seat") {
 
                                 private static final long serialVersionUID = 1L;

@@ -4,6 +4,6 @@
 	"http://www.jboss.org/j2ee/dtd/jboss-web_4_0.dtd">
 <jboss-web>
 	<security-domain flushOnSessionInvalidation="true">
-		java:/jaas/demo-cinema </security-domain>
-	<context-root> /${safe-online.demo.cinema.webapp.name}</context-root>
+		java:/jaas/demo-bank </security-domain>
+	<context-root> /${safe-online.demo.bank.webapp.name}</context-root>
 </jboss-web>

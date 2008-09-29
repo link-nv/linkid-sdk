@@ -7,7 +7,7 @@
     <body>
         <wicket:extend>
 
-            <h2>Here's a list of all tickets you purchased.</h2>
+            <h2>Your accounts and recent transactions.</h2>
 
             <form wicket:id="accounts">
                 <table>
@@ -27,18 +27,21 @@
                             <td wicket:id="amount" />
                         </tr>
                     </tbody>
-                </table>
 
-                <table>
-                    <caption>New Transaction</caption>
-
-                    <colgroup />
-                    <colgroup class="small" />
-
-                    <tr>
-                        <th />
-                        <th class="nopad"><a wicket:id="new">Create a new transaction &gt;</a></th>
-                    </tr>
+                    <tfoot>
+	                    <tr>
+	                        <th />
+	                        <th colspan="2" class="nopad">
+	                           <a wicket:id="newAccount">New account &gt;</a>
+                           </th>
+	                    </tr>
+	                    <tr>
+	                        <th />
+	                        <th colspan="2" class="nopad">
+	                           <a wicket:id="newTransaction">New transaction &gt;</a>
+                           </th>
+	                    </tr>
+                    </tfoot>
                 </table>
             </form>
 

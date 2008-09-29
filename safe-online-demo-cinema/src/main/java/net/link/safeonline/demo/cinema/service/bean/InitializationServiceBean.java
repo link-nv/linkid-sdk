@@ -12,11 +12,11 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import net.link.safeonline.demo.cinema.entity.FilmEntity;
-import net.link.safeonline.demo.cinema.entity.RoomEntity;
-import net.link.safeonline.demo.cinema.entity.SeatEntity;
-import net.link.safeonline.demo.cinema.entity.ShowTimeEntity;
-import net.link.safeonline.demo.cinema.entity.TheatreEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaRoomEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaShowTimeEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 import net.link.safeonline.demo.cinema.service.InitializationService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -36,7 +36,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = InitializationService.BINDING)
 public class InitializationServiceBean extends AbstractCinemaServiceBean implements InitializationService {
 
-    private static List<List<RoomEntity>> theatreRoomEntities = new ArrayList<List<RoomEntity>>();
+    private static List<List<CinemaRoomEntity>> theatreRoomEntities = new ArrayList<List<CinemaRoomEntity>>();
 
 
     /**
@@ -55,10 +55,10 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
 
         // Gent
         for (int t = 0; t < theatreNames.length; ++t) {
-            TheatreEntity theatre = new TheatreEntity(theatreNames[t], theatreAdresses[t]);
+            CinemaTheatreEntity theatre = new CinemaTheatreEntity(theatreNames[t], theatreAdresses[t]);
             this.em.persist(theatre);
 
-            List<RoomEntity> currentTheatreRooms = new ArrayList<RoomEntity>();
+            List<CinemaRoomEntity> currentTheatreRooms = new ArrayList<CinemaRoomEntity>();
             theatreRoomEntities.add(currentTheatreRooms);
 
             for (int r = 0; r < theatreRooms[t].length; ++r) {
@@ -76,14 +76,14 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
         for (int f = 0; f < filmNames.length; ++f) {
 
             // Show times.
-            Collection<ShowTimeEntity> times = new ArrayList<ShowTimeEntity>();
-            for (ShowTimeEntity time : filmTimes[f]) {
+            Collection<CinemaShowTimeEntity> times = new ArrayList<CinemaShowTimeEntity>();
+            for (CinemaShowTimeEntity time : filmTimes[f]) {
                 this.em.persist(time);
                 times.add(time);
             }
 
             // Rooms.
-            Collection<RoomEntity> rooms = new ArrayList<RoomEntity>();
+            Collection<CinemaRoomEntity> rooms = new ArrayList<CinemaRoomEntity>();
             LOG.info("film: " + f);
             for (int t = 0; t < filmTheatres[f].length; ++t) {
                 LOG.info("film-theatre: " + t);
@@ -95,7 +95,7 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
                 }
             }
 
-            this.em.persist(new FilmEntity(filmNames[f], filmDescriptions[f], filmDurations[f], filmPrices[f], times,
+            this.em.persist(new CinemaFilmEntity(filmNames[f], filmDescriptions[f], filmDurations[f], filmPrices[f], times,
                     rooms));
         }
     }
@@ -103,14 +103,14 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
     /**
      * Create a room for the given theatre.
      */
-    private RoomEntity addRoom(TheatreEntity theatre, String name, int columns, int rows) {
+    private CinemaRoomEntity addRoom(CinemaTheatreEntity theatre, String name, int columns, int rows) {
 
-        RoomEntity room = new RoomEntity(name, theatre);
+        CinemaRoomEntity room = new CinemaRoomEntity(name, theatre);
         this.em.persist(room);
 
         for (int x = 1; x <= columns; ++x) {
             for (int y = 1; y <= rows; ++y) {
-                this.em.persist(new SeatEntity(room, x, y));
+                this.em.persist(new CinemaSeatEntity(room, x, y));
             }
         }
 

@@ -12,15 +12,15 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.demo.cinema.entity.FilmEntity;
-import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
-import net.link.safeonline.demo.cinema.entity.TicketEntity;
-import net.link.safeonline.demo.cinema.entity.UserEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatOccupationEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 
 
 /**
  * <h2>{@link TicketService}<br>
- * <sub>Service bean for {@link TicketEntity}.</sub></h2>
+ * <sub>Service bean for {@link CinemaTicketEntity}.</sub></h2>
  *
  * <p>
  * [description / usage].
@@ -43,17 +43,17 @@ public interface TicketService extends CinemaService {
      * @throws IllegalStateException
      *             When the occupation is already taken.
      */
-    public TicketEntity createTicket(UserEntity user, FilmEntity film, Date time, SeatOccupationEntity occupation);
+    public CinemaTicketEntity createTicket(CinemaUserEntity user, CinemaFilmEntity film, Date time, CinemaSeatOccupationEntity occupation);
 
     /**
      * Mark the given ticket as reserved. The user has completed the reservation process for it.
      */
-    public TicketEntity reserve(TicketEntity ticket);
+    public CinemaTicketEntity reserve(CinemaTicketEntity ticket);
 
     /**
      * @return The price for the given ticket with all modifiers applied.
      */
-    public double calculatePrice(TicketEntity ticket);
+    public double calculatePrice(CinemaTicketEntity ticket);
 
     /**
      * @param time
@@ -63,7 +63,7 @@ public interface TicketService extends CinemaService {
      * @return All tickets purchased by the subject with the given national registry number that are valid for the given
      *         time.
      */
-    public List<TicketEntity> getTickets(String nrn, Date time);
+    public List<CinemaTicketEntity> getTickets(String nrn, Date time);
 
     /**
      * @param time
@@ -73,7 +73,7 @@ public interface TicketService extends CinemaService {
      * @return All tickets purchased by the subject with the given national registry number that are valid for the given
      *         time.
      */
-    public List<TicketEntity> getTickets(String nrn, Date time, String theatreName);
+    public List<CinemaTicketEntity> getTickets(String nrn, Date time, String theatreName);
 
     /**
      * @param time
@@ -88,20 +88,20 @@ public interface TicketService extends CinemaService {
     /**
      * @return All tickets purchased by the given user.
      */
-    public List<TicketEntity> getTickets(UserEntity user);
+    public List<CinemaTicketEntity> getTickets(CinemaUserEntity user);
 
     /**
      * @return The name of the film this ticket is valid for.
      */
-    public String getFilmName(TicketEntity ticket);
+    public String getFilmName(CinemaTicketEntity ticket);
 
     /**
      * @return The name of the theatre in which this ticket is valid.
      */
-    public String getTheatreName(TicketEntity ticket);
+    public String getTheatreName(CinemaTicketEntity ticket);
 
     /**
      * @return The name of the film room for which this ticket is valid.
      */
-    public String getRoomName(TicketEntity ticket);
+    public String getRoomName(CinemaTicketEntity ticket);
 }

@@ -14,7 +14,7 @@ public class FindLawyer extends Layout {
 	private static final long serialVersionUID = 1L;
 
 	public FindLawyer() {
-		add(new Label<String>("headerTitle", "Find a Lawyer"));
+		add(new Label("headerTitle", "Find a Lawyer"));
 		add(new AdminNavigationBorder("navigation"));
 
 		final FeedbackPanel feedback = new FeedbackPanel("feedback");

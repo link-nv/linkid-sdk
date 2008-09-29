@@ -62,7 +62,7 @@ public class CinemaApplication extends WebApplication {
      * {@inheritDoc}
      */
     @Override
-    public Class<? extends Page<?>> getHomePage() {
+    public Class<? extends Page> getHomePage() {
 
         return LoginPage.class;
     }

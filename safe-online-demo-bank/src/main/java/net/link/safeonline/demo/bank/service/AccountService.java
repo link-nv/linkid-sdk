@@ -8,16 +8,16 @@ package net.link.safeonline.demo.bank.service;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.demo.bank.entity.AccountEntity;
-import net.link.safeonline.demo.bank.entity.UserEntity;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.entity.BankUserEntity;
 
 
 /**
  * <h2>{@link AccountService}<br>
- * <sub>Service bean for {@link UserEntity}.</sub></h2>
+ * <sub>Service bean for {@link BankUserEntity}.</sub></h2>
  * 
  * <p>
- * Obtain or create {@link AccountEntity}s from/for logged in users.
+ * Obtain or create {@link BankAccountEntity}s from/for logged in users.
  * </p>
  * 
  * <p>
@@ -35,12 +35,12 @@ public interface AccountService extends BankService {
     /**
      * Create a new account for the given user by the given name.
      * 
-     * @return The {@link AccountEntity} that was created for the user.
+     * @return The {@link BankAccountEntity} that was created for the user.
      */
-    public AccountEntity createAccount(UserEntity user, String name);
+    public BankAccountEntity createAccount(BankUserEntity user, String name);
 
     /**
      * @return The account with the given code, or <code>null</code> if no such account is owned by us.
      */
-    public AccountEntity getAccount(String code);
+    public BankAccountEntity getAccount(String code);
 }

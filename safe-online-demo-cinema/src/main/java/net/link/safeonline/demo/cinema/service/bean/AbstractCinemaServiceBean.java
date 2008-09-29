@@ -9,8 +9,7 @@ package net.link.safeonline.demo.cinema.service.bean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.link.safeonline.demo.wicket.service.AbstractWicketServiceBean;
 
 
 /**
@@ -27,22 +26,17 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author mbillemo
  */
-public abstract class AbstractCinemaServiceBean {
-
-    static final Log             LOG = LogFactory.getLog(AbstractCinemaServiceBean.class);
-
-    private static EntityManager defaultEntityManager;
+public abstract class AbstractCinemaServiceBean extends AbstractWicketServiceBean {
 
     @PersistenceContext(unitName = "DemoCinemaEntityManager")
     EntityManager                em  = defaultEntityManager;
-
-
+    
     /**
-     * Install a default entity manager which will be used for any new services. This is mostly useful for installing an
-     * entity manager in an environment where there is no enterprise container that provides one.
+     * {@inheritDoc}
      */
-    public static void setDefaultEntityManager(EntityManager entityManager) {
+    @Override
+    protected EntityManager getEntityManager() {
 
-        defaultEntityManager = entityManager;
+        return this.em;
     }
 }

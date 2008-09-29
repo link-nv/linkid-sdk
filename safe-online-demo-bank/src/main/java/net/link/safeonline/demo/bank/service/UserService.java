@@ -11,16 +11,16 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.demo.bank.entity.AccountEntity;
-import net.link.safeonline.demo.bank.entity.UserEntity;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.entity.BankUserEntity;
 
 
 /**
  * <h2>{@link UserService}<br>
- * <sub>Service bean for {@link UserEntity}.</sub></h2>
+ * <sub>Service bean for {@link BankUserEntity}.</sub></h2>
  *
  * <p>
- * Obtain or create {@link UserEntity}s for logged in users.
+ * Obtain or create {@link BankUserEntity}s for logged in users.
  * </p>
  *
  * <p>
@@ -36,29 +36,24 @@ public interface UserService extends BankService {
 
 
     /**
-     * @return The {@link UserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the bank.
+     * @return The {@link BankUserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the bank.
      */
-    public UserEntity getBankUser(String bankId);
+    public BankUserEntity getBankUser(String bankId);
 
     /**
-     * NOTE: If no {@link UserEntity} with the given OLAS ID exists yet, one will be created and returned.
+     * NOTE: If no {@link BankUserEntity} with the given OLAS ID exists yet, one will be created and returned.
      * 
-     * @return The {@link UserEntity} with the given OLAS ID.
+     * @return The {@link BankUserEntity} with the given OLAS ID.
      */
-    public UserEntity getOLASUser(String olasId);
+    public BankUserEntity getOLASUser(String olasId);
 
     /**
      * Update the given user's attributes from OLAS.
      */
-    public UserEntity updateUser(UserEntity user, HttpServletRequest loginRequest);
-
-    /**
-     * @return An attached entity for the given one.
-     */
-    public UserEntity attach(UserEntity user);
+    public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest loginRequest);
 
     /**
      * @return All accounts that the given user owns.
      */
-    public List<AccountEntity> getAccounts(UserEntity user);
+    public List<BankAccountEntity> getAccounts(BankUserEntity user);
 }

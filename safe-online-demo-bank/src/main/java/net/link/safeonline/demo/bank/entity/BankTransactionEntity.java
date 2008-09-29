@@ -21,14 +21,14 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries( {
-        @NamedQuery(name = TransactionEntity.getById, query = "SELECT t FROM TransactionEntity t WHERE t.id = :id"),
-        @NamedQuery(name = TransactionEntity.getByCode, query = "SELECT t FROM TransactionEntity t WHERE t.source.code = :code OR t.target = :code ORDER BY t.date DESC") })
-public class TransactionEntity implements Serializable, Comparable<TransactionEntity> {
+        @NamedQuery(name = BankTransactionEntity.getById, query = "SELECT t FROM BankTransactionEntity t WHERE t.id = :id"),
+        @NamedQuery(name = BankTransactionEntity.getByCode, query = "SELECT t FROM BankTransactionEntity t WHERE t.source.code = :code OR t.target = :code ORDER BY t.date DESC") })
+public class BankTransactionEntity implements Serializable, Comparable<BankTransactionEntity> {
 
     private static final long  serialVersionUID = 1L;
 
-    public static final String getById          = "TransactionEntity.getById";
-    public static final String getByCode        = "TransactionEntity.getByCode";
+    public static final String getById          = "BankTransactionEntity.getById";
+    public static final String getByCode        = "BankTransactionEntity.getByCode";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +37,7 @@ public class TransactionEntity implements Serializable, Comparable<TransactionEn
     private String             description;
 
     @ManyToOne
-    private AccountEntity      source;
+    private BankAccountEntity      source;
 
     private String             target;
 
@@ -46,11 +46,11 @@ public class TransactionEntity implements Serializable, Comparable<TransactionEn
     private Double             amount;
 
 
-    public TransactionEntity() {
+    public BankTransactionEntity() {
 
     }
 
-    public TransactionEntity(String description, AccountEntity source, String target, Date date, Double amount) {
+    public BankTransactionEntity(String description, BankAccountEntity source, String target, Date date, Double amount) {
 
         this();
 
@@ -70,7 +70,7 @@ public class TransactionEntity implements Serializable, Comparable<TransactionEn
     }
 
     /**
-     * @return The description of this {@link TransactionEntity}.
+     * @return The description of this {@link BankTransactionEntity}.
      */
     public String getDescription() {
 
@@ -78,15 +78,15 @@ public class TransactionEntity implements Serializable, Comparable<TransactionEn
     }
 
     /**
-     * @return The source of this {@link TransactionEntity}.
+     * @return The source of this {@link BankTransactionEntity}.
      */
-    public AccountEntity getSource() {
+    public BankAccountEntity getSource() {
 
         return this.source;
     }
 
     /**
-     * @return The target of this {@link TransactionEntity}.
+     * @return The target of this {@link BankTransactionEntity}.
      */
     public String getTarget() {
 
@@ -94,7 +94,7 @@ public class TransactionEntity implements Serializable, Comparable<TransactionEn
     }
 
     /**
-     * @return The date of this {@link TransactionEntity}.
+     * @return The date of this {@link BankTransactionEntity}.
      */
     public Date getDate() {
 
@@ -102,7 +102,7 @@ public class TransactionEntity implements Serializable, Comparable<TransactionEn
     }
 
     /**
-     * @return The amount of this {@link TransactionEntity}.
+     * @return The amount of this {@link BankTransactionEntity}.
      */
     public Double getAmount() {
 
@@ -114,7 +114,7 @@ public class TransactionEntity implements Serializable, Comparable<TransactionEn
     /**
      * {@inheritDoc}
      */
-    public int compareTo(TransactionEntity o) {
+    public int compareTo(BankTransactionEntity o) {
 
         return this.date.compareTo(o.date);
     }

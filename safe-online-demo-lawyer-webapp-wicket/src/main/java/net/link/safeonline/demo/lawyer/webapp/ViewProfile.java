@@ -10,7 +10,7 @@ public class ViewProfile extends Layout {
 	private static final long serialVersionUID = 1L;
 
 	public ViewProfile() {
-		add(new Label<String>("headerTitle", "Your Profile"));
+		add(new Label("headerTitle", "Your Profile"));
 	}
 
 }

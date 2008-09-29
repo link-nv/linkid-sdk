@@ -54,6 +54,11 @@
 			<artifactId>safe-online-model-demo</artifactId>
             <type>ejb-client</type>
 		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-wicket-tools</artifactId>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
 
         <!-- Specific Dependencies: External -->
         <dependency>

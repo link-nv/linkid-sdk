@@ -9,9 +9,10 @@ package net.link.safeonline.demo.bank.service.bean;
 import java.util.Random;
 
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 
-import net.link.safeonline.demo.bank.entity.AccountEntity;
-import net.link.safeonline.demo.bank.entity.UserEntity;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.entity.BankUserEntity;
 import net.link.safeonline.demo.bank.service.AccountService;
 import net.link.safeonline.demo.bank.service.UserService;
 
@@ -29,33 +30,40 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = UserService.BINDING)
+@LocalBinding(jndiBinding = AccountService.BINDING)
 public class AccountServiceBean extends AbstractBankServiceBean implements AccountService {
 
-    private static final Random random      = new Random();
+    private static final Random random = new Random();
+
 
     /**
      * {@inheritDoc}
      */
-    public AccountEntity createAccount(UserEntity user, String name) {
+    public BankAccountEntity createAccount(BankUserEntity user, String name) {
 
         String code;
-        do {
+        while (true) {
             code = String.format("%03d-%07d-%02d", random.nextInt(999), random.nextInt(9999999), random.nextInt(99));
-        } while (getAccount(code) == null);
-        
-        AccountEntity account = new AccountEntity(user, name, code);
+
+            try {
+                getAccount(code);
+            } catch (NoResultException e) {
+                break;
+            }
+        }
+
+        BankAccountEntity account = new BankAccountEntity(attach(user), name, code);
         this.em.persist(account);
-        
+
         return account;
     }
 
     /**
      * {@inheritDoc}
      */
-    public AccountEntity getAccount(String code) {
+    public BankAccountEntity getAccount(String code) {
 
-        return (AccountEntity) this.em.createNamedQuery(AccountEntity.getByCode).setParameter("code", code)
+        return (BankAccountEntity) this.em.createNamedQuery(BankAccountEntity.getByCode).setParameter("code", code)
                 .getSingleResult();
     }
 }

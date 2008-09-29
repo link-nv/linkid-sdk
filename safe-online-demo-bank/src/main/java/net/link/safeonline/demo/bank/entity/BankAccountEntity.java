@@ -18,32 +18,32 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries( {
-        @NamedQuery(name = AccountEntity.getByCode, query = "SELECT a FROM AccountEntity a WHERE a.code = :code"),
-        @NamedQuery(name = AccountEntity.getByUser, query = "SELECT a FROM AccountEntity a WHERE a.user = :user") })
-public class AccountEntity implements Serializable {
+        @NamedQuery(name = BankAccountEntity.getByCode, query = "SELECT a FROM BankAccountEntity a WHERE a.code = :code"),
+        @NamedQuery(name = BankAccountEntity.getByUser, query = "SELECT a FROM BankAccountEntity a WHERE a.user = :user") })
+public class BankAccountEntity implements Serializable {
 
     private static final long       serialVersionUID = 1L;
 
-    public static final String      getByCode        = "AccountEntity.getByCode";
+    public static final String      getByCode        = "BankAccountEntity.getByCode";
 
-    public static final String      getByUser        = "AccountEntity.getByUser";
+    public static final String      getByUser        = "BankAccountEntity.getByUser";
 
     @Id
     private String                  code;
 
     @ManyToOne
-    private UserEntity              user;
+    private BankUserEntity              user;
 
     private String                  name;
 
     private Double                  amount;
 
 
-    public AccountEntity() {
+    public BankAccountEntity() {
 
     }
 
-    public AccountEntity(UserEntity user, String name, String code) {
+    public BankAccountEntity(BankUserEntity user, String name, String code) {
 
         this();
 
@@ -53,9 +53,9 @@ public class AccountEntity implements Serializable {
     }
 
     /**
-     * @return The owner of this {@link AccountEntity}.
+     * @return The owner of this {@link BankAccountEntity}.
      */
-    public UserEntity getUser() {
+    public BankUserEntity getUser() {
 
         return this.user;
     }
@@ -86,11 +86,12 @@ public class AccountEntity implements Serializable {
     }
 
     /**
-     * @return The amount of currency in this account.
+     * @param amount
+     *            The amount of currency in this account.
      */
-    public Double setAmount() {
+    public void setAmount(double amount) {
 
-        return this.amount;
+        this.amount = amount;
     }
 
     /**
@@ -99,5 +100,16 @@ public class AccountEntity implements Serializable {
     public Double getAmount() {
 
         return this.amount;
+    }
+    
+    // UTILITY ------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+
+        return String.format("%s [%0.2f] (%s)", getName(), getAmount(), getCode());
     }
 }

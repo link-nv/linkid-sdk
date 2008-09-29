@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <body>
+        <wicket:extend>
+
+            <h2>Opening a new account.</h2>
+
+            <form wicket:id="newAccount">
+	            <table>
+	                <caption>Specify the details of your new account</caption>
+	
+	                <colgroup />
+	                <colgroup class="small" />
+	
+	                <tbody>
+		                <tr>
+		                    <th>Account Name:</th>
+		                    <td><input type="text" wicket:id="name" /></td>
+		                </tr>
+	                </tbody>
+	                
+	                <tfoot>
+		                <tr>
+	                        <th />
+		                    <th class="nopad">
+		                        <input type="submit" value="Open Account &gt;" />
+		                    </th>
+		                </tr>
+	                </tfoot>
+	            </table>
+            </form>
+            
+        </wicket:extend>
+    </body>
+
+</html>

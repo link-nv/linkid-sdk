@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.demo.bank.webapp;
 
-import net.link.safeonline.demo.bank.entity.UserEntity;
+import net.link.safeonline.demo.bank.entity.BankUserEntity;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
@@ -30,17 +30,17 @@ public class BankSession extends Session {
 
     private static final long serialVersionUID = 1L;
 
-    private UserEntity        user;
+    private BankUserEntity        user;
 
 
     // USER ---------------------------------------------------------
 
-    public void setUser(UserEntity user) {
+    public void setUser(BankUserEntity user) {
 
         this.user = user;
     }
 
-    public UserEntity getUser() {
+    public BankUserEntity getUser() {
 
         return this.user;
     }
@@ -48,7 +48,7 @@ public class BankSession extends Session {
     /**
      * Operates on the current session.
      * 
-     * @return <code>true</code> if there is a user logged in and has a {@link UserEntity} set.
+     * @return <code>true</code> if there is a user logged in and has a {@link BankUserEntity} set.
      */
     public static boolean isUserSet() {
 

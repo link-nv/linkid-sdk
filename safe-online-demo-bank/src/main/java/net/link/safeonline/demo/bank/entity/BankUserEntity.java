@@ -16,12 +16,15 @@ import javax.persistence.NamedQuery;
 
 
 @Entity
-@NamedQueries( { @NamedQuery(name = UserEntity.getById, query = "SELECT u FROM UserEntity u WHERE u.id = :id") })
-public class UserEntity implements Serializable {
+@NamedQueries( {
+        @NamedQuery(name = BankUserEntity.getByBankId, query = "SELECT u FROM BankUserEntity u WHERE u.bankId = :bankId"),
+        @NamedQuery(name = BankUserEntity.getByOlasId, query = "SELECT u FROM BankUserEntity u WHERE u.olasId = :olasId") })
+public class BankUserEntity implements Serializable {
 
     private static final long  serialVersionUID = 1L;
 
-    public static final String getById          = "UserEntity.getById";
+    public static final String getByBankId      = "BankUserEntity.getByBankId";
+    public static final String getByOlasId      = "BankUserEntity.getByOlasId";
 
     @Id
     private String             bankId;
@@ -31,18 +34,18 @@ public class UserEntity implements Serializable {
     private String             name;
 
 
-    public UserEntity() {
+    public BankUserEntity() {
 
     }
 
-    public UserEntity(String bankId) {
+    public BankUserEntity(String bankId) {
 
         this();
 
         this.bankId = bankId;
     }
 
-    public UserEntity(String bankId, String olasId) {
+    public BankUserEntity(String bankId, String olasId) {
 
         this(bankId);
 

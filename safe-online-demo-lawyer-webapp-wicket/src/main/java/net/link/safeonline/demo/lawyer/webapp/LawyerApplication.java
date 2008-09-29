@@ -27,7 +27,7 @@ public class LawyerApplication extends WebApplication {
      * {@inheritDoc}
      */
 	@Override
-	public Class<? extends Page<?>> getHomePage() {
+	public Class<? extends Page> getHomePage() {
 
         return HomePage.class;
 	}

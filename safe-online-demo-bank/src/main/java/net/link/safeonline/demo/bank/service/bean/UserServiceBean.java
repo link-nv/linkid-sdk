@@ -15,10 +15,10 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.demo.bank.entity.AccountEntity;
-import net.link.safeonline.demo.bank.entity.UserEntity;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.entity.BankUserEntity;
+import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
 import net.link.safeonline.demo.bank.service.UserService;
-import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
@@ -49,28 +49,33 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     /**
      * {@inheritDoc}
      */
-    public UserEntity getBankUser(String bankId) {
+    public BankUserEntity getBankUser(String bankId) {
 
-        return (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("bankId", bankId)
+        return (BankUserEntity) this.em.createNamedQuery(BankUserEntity.getByBankId).setParameter("bankId", bankId)
                 .getSingleResult();
     }
 
     /**
      * {@inheritDoc}
      */
-    public UserEntity getOLASUser(String olasId) {
+    public BankUserEntity getOLASUser(String olasId) {
 
         try {
-            return (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("olasId", olasId)
+            return (BankUserEntity) this.em.createNamedQuery(BankUserEntity.getByOlasId).setParameter("olasId", olasId)
                     .getSingleResult();
         } catch (NoResultException e) {
 
             String bankId = olasId;
-            while (getBankUser(bankId) != null) {
-                bankId += "_";
+            while (true) {
+                try {
+                    getBankUser(bankId);
+                    bankId += "_";
+                } catch (NoResultException ee) {
+                    break;
+                }
             }
-            
-            UserEntity userEntity = new UserEntity(bankId, olasId);
+
+            BankUserEntity userEntity = new BankUserEntity(bankId, olasId);
             this.em.persist(userEntity);
 
             return userEntity;
@@ -80,11 +85,11 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     /**
      * {@inheritDoc}
      */
-    public UserEntity updateUser(UserEntity user, HttpServletRequest loginRequest) {
+    public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest loginRequest) {
 
         try {
             AttributeClientImpl attributeClient = getOLASAttributeService(loginRequest);
-            UserEntity userEntity = attach(user);
+            BankUserEntity userEntity = attach(user);
 
             if (userEntity.getOlasId() == null)
                 return userEntity;
@@ -120,8 +125,8 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
         // Find the location of the OLAS web services to use.
         String wsLocation = loginRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
 
-        // Find the key and certificate of the cinema application.
-        PrivateKeyEntry privateKeyEntry = DemoCinemaKeyStoreUtils.getPrivateKeyEntry();
+        // Find the key and certificate of the bank application.
+        PrivateKeyEntry privateKeyEntry = DemoBankKeyStoreUtils.getPrivateKeyEntry();
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
@@ -132,21 +137,9 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     /**
      * {@inheritDoc}
      */
-    public UserEntity attach(UserEntity user) {
-
-        if (user == null)
-            return null;
-
-        return (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("id", user.getBankId())
-                .getSingleResult();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
-    public List<AccountEntity> getAccounts(UserEntity user) {
+    public List<BankAccountEntity> getAccounts(BankUserEntity user) {
 
-        return this.em.createNamedQuery(AccountEntity.getByUser).setParameter("user", attach(user)).getResultList();
+        return this.em.createNamedQuery(BankAccountEntity.getByUser).setParameter("user", attach(user)).getResultList();
     }
 }

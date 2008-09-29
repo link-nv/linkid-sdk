@@ -2,8 +2,8 @@ package net.link.safeonline.demo.bank.webapp;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.demo.bank.entity.AccountEntity;
-import net.link.safeonline.demo.bank.entity.UserEntity;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.entity.BankUserEntity;
 import net.link.safeonline.demo.bank.service.AccountService;
 import net.link.safeonline.demo.bank.service.TransactionService;
 import net.link.safeonline.demo.bank.service.UserService;
@@ -18,20 +18,44 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
 
-public class LayoutPage extends WebPage<Object> {
+public abstract class LayoutPage extends WebPage {
 
-    private static final long    serialVersionUID = 1L;
-    Log                          LOG              = LogFactory.getLog(getClass());
-
-    @EJB
-    transient UserService        userService;
+    private static final long serialVersionUID = 1L;
+    Log                       LOG              = LogFactory.getLog(getClass());
 
     @EJB
-    transient AccountService     accountService;
+    public UserService        userService;
 
     @EJB
-    transient TransactionService transactionService;
+    public AccountService     accountService;
 
+    @EJB
+    public TransactionService transactionService;
+
+
+    /**
+     * @return The userService of this {@link LayoutPage}.
+     */
+    UserService getUserService() {
+
+        return this.userService;
+    }
+
+    /**
+     * @return The accountService of this {@link LayoutPage}.
+     */
+    AccountService getAccountService() {
+
+        return this.accountService;
+    }
+
+    /**
+     * @return The transactionService of this {@link LayoutPage}.
+     */
+    TransactionService getTransactionService() {
+
+        return this.transactionService;
+    }
 
     /**
      * Add components to the layout that are present on every page.
@@ -40,19 +64,28 @@ public class LayoutPage extends WebPage<Object> {
      */
     public LayoutPage() {
 
-        add(new Label<String>("pageTitle", "Cinema Demo Application"));
+        add(new Label("pageTitle", "Bank Demo Application"));
+        add(new Label("headerTitle", getHeaderTitle()));
 
         add(new UserInfo("user"));
     }
 
+    /**
+     * @return The string to use as the title for this page.
+     */
+    protected abstract String getHeaderTitle();
 
-    class UserInfo extends WebMarkupContainer<String> {
+
+    class UserInfo extends WebMarkupContainer {
 
         private static final long serialVersionUID = 1L;
+        private Model<String>     name;
+        private Model<String>     amount;
 
         {
             setVisible(BankSession.isUserSet());
         }
+
 
         public UserInfo(String id) {
 
@@ -72,20 +105,18 @@ public class LayoutPage extends WebPage<Object> {
                     setResponsePage(LoginPage.class);
                 }
             });
-            Label<String> name = new Label<String>("name");
-            add(name);
-            Label<String> amount = new Label<String>("amount");
-            add(amount);
+            add(new Label("name", this.name = new Model<String>()));
+            add(new Label("amount", this.amount = new Model<String>()));
 
             if (BankSession.isUserSet()) {
                 double total = 0;
-                UserEntity user = BankSession.get().getUser();
-                for (AccountEntity account : LayoutPage.this.userService.getAccounts(user)) {
+                BankUserEntity user = BankSession.get().getUser();
+                for (BankAccountEntity account : getUserService().getAccounts(user)) {
                     total += account.getAmount();
                 }
 
-                name.setModel(new Model<String>(user.getName()));
-                amount.setModel(new Model<String>(WicketUtil.formatCurrency(getSession(), total)));
+                this.name.setObject(user.getName());
+                this.amount.setObject(WicketUtil.format(getSession(), total));
             }
         }
     }

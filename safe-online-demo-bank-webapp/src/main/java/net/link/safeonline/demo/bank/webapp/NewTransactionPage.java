@@ -1,8 +1,8 @@
 package net.link.safeonline.demo.bank.webapp;
 
-import net.link.safeonline.demo.bank.entity.AccountEntity;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.webapp.NewAccountPage.AccountForm;
 
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -41,14 +41,12 @@ public class NewTransactionPage extends LayoutPage {
             return;
         }
 
-        add(new Label<String>("headerTitle", "New Transaction"));
-
-        add(new TransactionForm("transaction"));
+        add(new TransactionForm("newTransaction"));
     }
 
 
     /**
-     * <h2>{@link TransactionForm}<br>
+     * <h2>{@link AccountForm}<br>
      * <sub>New Transaction Form.</sub></h2>
      * 
      * <p>
@@ -63,12 +61,12 @@ public class NewTransactionPage extends LayoutPage {
      */
     class TransactionForm extends Form<String> {
 
-        private static final long          serialVersionUID = 1L;
+        private static final long        serialVersionUID = 1L;
 
-        private Model<String>              description;
-        private Model<AccountEntity> source;
-        private Model<String>              target;
-        private Model<Double>              amount;
+        private Model<String>            description;
+        private Model<BankAccountEntity> source;
+        private Model<String>            target;
+        private Model<Double>            amount;
 
 
         public TransactionForm(String id) {
@@ -76,8 +74,8 @@ public class NewTransactionPage extends LayoutPage {
             super(id);
 
             add(new TextArea<String>("description", this.description = new Model<String>()));
-            add(new RadioChoice<AccountEntity>("source", this.source = new Model<AccountEntity>(),
-                    NewTransactionPage.this.userService.getAccounts(BankSession.get().getUser())));
+            add(new RadioChoice<BankAccountEntity>("source", this.source = new Model<BankAccountEntity>(),
+                    getUserService().getAccounts(BankSession.get().getUser())));
             add(new TextField<String>("target", this.target = new Model<String>()));
             add(new TextField<Double>("amount", this.amount = new Model<Double>()));
         }
@@ -85,8 +83,20 @@ public class NewTransactionPage extends LayoutPage {
         @Override
         protected void onSubmit() {
 
-            NewTransactionPage.this.transactionService.createTransaction(this.description.getObject(), this.source
-                    .getObject(), this.target.getObject(), this.amount.getObject());
+            if (getTransactionService().createTransaction(this.description.getObject(), this.source
+                    .getObject(), this.target.getObject(), this.amount.getObject()) != null) {
+                setResponsePage(AccountPage.class);
+            }
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getHeaderTitle() {
+
+        return "New Transaction";
     }
 }

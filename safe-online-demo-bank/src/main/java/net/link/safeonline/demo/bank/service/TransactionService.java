@@ -10,17 +10,17 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.demo.bank.entity.AccountEntity;
-import net.link.safeonline.demo.bank.entity.TransactionEntity;
-import net.link.safeonline.demo.bank.entity.UserEntity;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
+import net.link.safeonline.demo.bank.entity.BankUserEntity;
 
 
 /**
  * <h2>{@link TransactionService}<br>
- * <sub>Service bean for {@link UserEntity}.</sub></h2>
+ * <sub>Service bean for {@link BankUserEntity}.</sub></h2>
  * 
  * <p>
- * Obtain or create {@link AccountEntity}s from/for logged in users.
+ * Obtain or create {@link BankAccountEntity}s from/for logged in users.
  * </p>
  * 
  * <p>
@@ -38,14 +38,15 @@ public interface TransactionService extends BankService {
     /**
      * Create a new account for the given user by the given name.
      * 
-     * @return The {@link AccountEntity} that was created for the user.
+     * @return The {@link BankAccountEntity} that was created for the user.
      */
-    public TransactionEntity createTransaction(String description, AccountEntity source, String target, Double amount);
+    public BankTransactionEntity createTransaction(String description, BankAccountEntity source, String target,
+            double amount);
     
     /**
      * Return a sorted collection of transactions made from and to accounts owned by the given user.
      * 
      * The first element in the sorted collection is the most recent transaction.
      */
-    public List<TransactionEntity> getAllTransactions(AccountEntity user);
+    public List<BankTransactionEntity> getAllTransactions(BankAccountEntity user);
 }

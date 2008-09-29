@@ -117,6 +117,11 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-bank-keystore</artifactId>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-cinema-keystore</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>

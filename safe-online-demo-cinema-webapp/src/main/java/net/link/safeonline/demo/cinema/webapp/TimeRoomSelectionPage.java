@@ -8,8 +8,8 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.demo.cinema.entity.RoomEntity;
-import net.link.safeonline.demo.cinema.entity.ShowTimeEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaRoomEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaShowTimeEntity;
 import net.link.safeonline.demo.cinema.service.FilmService;
 import net.link.safeonline.demo.cinema.service.RoomService;
 
@@ -63,7 +63,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
             return;
         }
 
-        add(new Label<String>("headerTitle", "Time And Room Selection"));
+        add(new Label("headerTitle", "Time And Room Selection"));
 
         add(new TimesForm("times"));
         add(new RoomsForm("rooms"));
@@ -103,7 +103,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
             // Either get all times TODO: or just those for the selected room.
             List<Date> data = new LinkedList<Date>();
-            for (ShowTimeEntity showTime : CinemaSession.get().getFilm().getTimes()) {
+            for (CinemaShowTimeEntity showTime : CinemaSession.get().getFilm().getTimes()) {
                 addDate(data, Calendar.MONDAY, showTime.getMonStart());
                 addDate(data, Calendar.TUESDAY, showTime.getTueStart());
                 addDate(data, Calendar.WEDNESDAY, showTime.getWedStart());
@@ -128,7 +128,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
                         private static final long serialVersionUID = 1L;
 
                         {
-                            add(new Label<String>("time", CinemaSession.format(time)));
+                            add(new Label("time", CinemaSession.format(time)));
                         }
 
 
@@ -199,25 +199,25 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
             // Either get all rooms TODO: or just those that play the film at
             // the selected time.
-            List<RoomEntity> data = TimeRoomSelectionPage.this.roomService.getRoomsFor(
+            List<CinemaRoomEntity> data = TimeRoomSelectionPage.this.roomService.getRoomsFor(
                     CinemaSession.get().getTheatre(), CinemaSession.get().getFilm());
 
-            add(new ListView<RoomEntity>("list", data) {
+            add(new ListView<CinemaRoomEntity>("list", data) {
 
                 private static final long serialVersionUID = 1L;
 
 
                 @Override
-                protected void populateItem(ListItem<RoomEntity> item) {
+                protected void populateItem(ListItem<CinemaRoomEntity> item) {
 
-                    final RoomEntity room = item.getModelObject();
+                    final CinemaRoomEntity room = item.getModelObject();
 
                     item.add(new Link<String>("select") {
 
                         private static final long serialVersionUID = 1L;
 
                         {
-                            add(new Label<String>("name", room.getName()));
+                            add(new Label("name", room.getName()));
                         }
 
 

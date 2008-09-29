@@ -2,8 +2,8 @@ package net.link.safeonline.demo.bank.webapp;
 
 import java.util.List;
 
-import net.link.safeonline.demo.bank.entity.AccountEntity;
-import net.link.safeonline.demo.bank.entity.TransactionEntity;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -44,8 +44,6 @@ public class AccountPage extends LayoutPage {
             return;
         }
 
-        add(new Label<String>("headerTitle", "Ticket History"));
-
         add(new AccountsForm("accounts"));
     }
 
@@ -75,10 +73,10 @@ public class AccountPage extends LayoutPage {
 
             super(id);
 
-            final List<AccountEntity> accounts = AccountPage.this.userService.getAccounts(BankSession.get().getUser());
+            final List<BankAccountEntity> accounts = getUserService().getAccounts(BankSession.get().getUser());
 
             /* Accounts List. */
-            add(new ListView<AccountEntity>("accountList", accounts) {
+            add(new ListView<BankAccountEntity>("accountList", accounts) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -88,18 +86,18 @@ public class AccountPage extends LayoutPage {
 
 
                 @Override
-                protected void populateItem(ListItem<AccountEntity> accountItem) {
+                protected void populateItem(ListItem<BankAccountEntity> accountItem) {
 
-                    final AccountEntity account = accountItem.getModelObject();
+                    final BankAccountEntity account = accountItem.getModelObject();
 
                     /* Account Details. */
-                    accountItem.add(new Label<String>("name", account.getName()));
-                    accountItem.add(new Label<String>("amount", WicketUtil.formatCurrency(getSession(), account
-                            .getAmount())));
+                    accountItem.add(new Label("name", account.getName()));
+                    accountItem.add(new Label("amount", WicketUtil.format(getSession(), account.getAmount())));
 
                     /* Transactions List. */
-                    accountItem.add(new ListView<TransactionEntity>("transactionList",
-                            AccountPage.this.transactionService.getAllTransactions(account)) {
+                    accountItem.add(new ListView<BankTransactionEntity>("transactionList",
+                            getTransactionService()
+                            .getAllTransactions(account)) {
 
                         private static final long serialVersionUID = 1L;
 
@@ -109,22 +107,33 @@ public class AccountPage extends LayoutPage {
 
 
                         @Override
-                        protected void populateItem(ListItem<TransactionEntity> transactionItem) {
+                        protected void populateItem(ListItem<BankTransactionEntity> transactionItem) {
 
-                            final TransactionEntity transaction = transactionItem.getModelObject();
+                            final BankTransactionEntity transaction = transactionItem.getModelObject();
 
                             /* Transaction Details. */
-                            transactionItem.add(new Label<String>("target", transaction.getTarget()));
-                            transactionItem.add(new Label<String>("date", WicketUtil.formatDate(getSession(),
-                                    transaction.getDate())));
-                            transactionItem.add(new Label<String>("amount", WicketUtil.formatCurrency(getSession(),
-                                    transaction.getAmount())));
+                            transactionItem.add(new Label("target", transaction.getTarget()));
+                            transactionItem.add(new Label("date", WicketUtil
+                                    .format(getSession(), transaction.getDate())));
+                            transactionItem.add(new Label("amount", WicketUtil.format(getSession(), transaction
+                                    .getAmount())));
                         }
                     });
                 }
             });
 
-            add(new Link<String>("new") {
+            add(new Link<String>("newAccount") {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public void onClick() {
+
+                    setResponsePage(NewAccountPage.class);
+                }
+            });
+            add(new Link<String>("newTransaction") {
 
                 private static final long serialVersionUID = 1L;
 
@@ -141,5 +150,15 @@ public class AccountPage extends LayoutPage {
         protected void onSubmit() {
 
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getHeaderTitle() {
+
+        return "Account Overview";
     }
 }

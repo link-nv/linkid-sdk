@@ -23,6 +23,7 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
+import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtil;
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
@@ -69,6 +70,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private static final String DEMO_CINEMA_APPLICATION_NAME       = "cinema";
 
+    private static final String DEMO_BANK_APPLICATION_NAME         = "demo-bank";
+
     public static final String  LICENSE_AGREEMENT_CONFIRM_TEXT_EN  = "PLEASE READ THIS SOFTWARE LICENSE AGREEMENT (\"LICENSE\") CAREFULLY BEFORE USING THE SOFTWARE. \n BY USING THE SOFTWARE, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE. \n IF YOU ARE ACCESSING THE SOFTWARE ELECTRONICALLY, SIGNIFY YOUR AGREEMENT TO BE BOUND BY THE TERMS OF THIS LICENSE BY CLICKING THE \"AGREE/ACCEPT\" BUTTON. \n IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE, DO NOT USE THE SOFTWARE AND (IF APPLICABLE) RETURN THE APPLE SOFTWARE TO THE PLACE WHERE YOU OBTAINED IT FOR A REFUND OR, IF THE SOFTWARE WAS ACCESSED ELECTRONICALLY, CLICK \"DISAGREE/DECLINE\".";
 
     public static final String  LICENSE_AGREEMENT_CONFIRM_TEXT_NL  = "GELIEVE ZORGVULDIG DEZE OVEREENKOMST VAN DE VERGUNNING VAN SOFTWARE (\"LICENSE \") TE LEZEN ALVORENS DE SOFTWARE TE GEBRUIKEN.";
@@ -99,6 +102,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private String              demoCinemaWebappName;
 
+    private String              demoBankWebappName;
 
     public DemoStartableBean() {
 
@@ -116,6 +120,7 @@ public class DemoStartableBean extends AbstractInitBean {
         this.demoPrescriptionWebappName = properties.getString("olas.demo.prescription.webapp.name");
         this.demoMandateWebappName = properties.getString("olas.demo.mandate.webapp.name");
         this.demoCinemaWebappName = properties.getString("olas.demo.cinema.webapp.name");
+        this.demoBankWebappName = properties.getString("olas.demo.bank.webapp.name");
 
         configureNode();
 
@@ -138,6 +143,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
         configTicketDemo();
 
+        configBankDemo();
+        
         configCinemaDemo();
 
         configPaymentDemo();
@@ -298,6 +305,50 @@ public class DemoStartableBean extends AbstractInitBean {
 
     }
 
+    private void configBankDemo() {
+
+        PrivateKeyEntry demoBankPrivateKeyEntry = DemoBankKeyStoreUtils.getPrivateKeyEntry();
+        X509Certificate demoBankCertificate = (X509Certificate) demoBankPrivateKeyEntry.getCertificate();
+
+        this.trustedCertificates.put(demoBankCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        try {
+            this.registeredApplications.add(new Application(DEMO_BANK_APPLICATION_NAME, "owner", null, new URL(
+                    this.protocol, this.hostname, this.hostport, "/" + this.demoBankWebappName),
+                    getLogo("/ebank-small.png"),
+                    null, true, true, demoBankCertificate, false, IdScopeType.SUBSCRIPTION, true));
+        } catch (MalformedURLException e) {
+            throw new EJBException("Malformed URL Exception: " + e.getMessage());
+        }
+
+        this.identities.add(new Identity(DEMO_BANK_APPLICATION_NAME,
+                new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
+                        true, false) }));
+
+        // Uncomment these after demo-bank is done
+        // List<String> tempAllowedDevices = new LinkedList<String>();
+        // tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
+        // tempAllowedDevices.add(EncapConstants.ENCAP_DEVICE_ID);
+        // tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
+        // this.allowedDevices.put(DEMO_BANK_APPLICATION_NAME, tempAllowedDevices);
+
+        /*
+         * Application usage agreements
+         */
+        UsageAgreement usageAgreement = new UsageAgreement(DEMO_BANK_APPLICATION_NAME);
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
+                + "Lin-k NV" + "\n" + "Software License Agreement for " + DEMO_BANK_APPLICATION_NAME + "\n\n"
+                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software Gebruikers Overeenkomst voor " + DEMO_BANK_APPLICATION_NAME + "\n\n"
+                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+        this.usageAgreements.add(usageAgreement);
+
+        /*
+         * WS-Notification subscriptions
+         */
+        configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER, demoBankCertificate);
+    }
+    
     private void configCinemaDemo() {
 
         PrivateKeyEntry demoCinemaPrivateKeyEntry = DemoCinemaKeyStoreUtils.getPrivateKeyEntry();

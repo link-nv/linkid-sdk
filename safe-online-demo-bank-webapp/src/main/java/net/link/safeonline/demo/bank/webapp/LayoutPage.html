@@ -28,83 +28,17 @@
 
                 <tr>
                     <th>Name</th>
-                    <th>National Number</th>
+                    <th>Total</th>
                     <th class="nopad"><a wicket:id="logout">Logout &gt;</a></th>
                 </tr>
                 <tr>
                     <td wicket:id="name" />
-                    <td wicket:id="nrn" />
-                    <td wicket:id="junior" />
+                    <td wicket:id="amount" />
+                    <td />
                 </tr>
             </table>
         </div>
                 
-        <div id="ticket" wicket:id="ticket">
-            <table>
-                <caption>Your Ticket</caption>
-
-                <colgroup />
-                <colgroup class="small" />
-
-                <tbody wicket:id="film">
-                    <tr>
-                        <th colspan="2">Film</th>
-                    </tr>
-                    <tr>
-                        <td wicket:id="name"></td>
-                        <td class="nopad"><a wicket:id="delete">Remove</a></td>
-                    </tr>
-                </tbody>
-                
-                <tbody wicket:id="theatre">
-                    <tr>
-                        <th colspan="2">Theatre</th>
-                    </tr>
-                    <tr>
-                        <td wicket:id="name"></td>
-                        <td class="nopad"><a wicket:id="delete">Remove</a></td>
-                    </tr>
-                </tbody>
-
-                <tbody wicket:id="time">
-                    <tr>
-                        <th colspan="2">Time</th>
-                    </tr>
-                    <tr>
-                        <td wicket:id="time"></td>
-                        <td class="nopad"><a wicket:id="delete">Remove</a></td>
-                    </tr>
-                </tbody>
-
-                <tbody wicket:id="room">
-                    <tr>
-                        <th colspan="2">Room</th>
-                    </tr>
-                    <tr>
-                        <td wicket:id="name"></td>
-                        <td class="nopad"><a wicket:id="delete">Remove</a></td>
-                    </tr>
-                </tbody>
-
-                <tfoot wicket:id="ticket">
-                    <tr>
-                        <th colspan="2">Price</th>
-                    </tr>
-                    <tr>
-                        <td wicket:id="price"></td>
-                        <td>
-                            <form wicket:id="pay">
-                                <input type="submit" value="Pay &gt;" />
-                            </form>
-                        </td>
-                    </tr>
-                </tfoot>
-
-            </table>
-        </div>
-
-        <!--span wicket:id="navigation" /-->
-
         <div id="content"><wicket:child /></div>
 
         <div id="footer">Copyright 2006-2007 Lin.k N.V.</div>
