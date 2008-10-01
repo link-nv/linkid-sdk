@@ -22,7 +22,7 @@ public class LoginPage extends Layout {
 		} catch (Exception e) {
 			redirectUrl = null;
 		}
-		add(new Label<String>("headerTitle", "Login Page"));
+		add(new Label("headerTitle", "Login Page"));
 		add(new ExternalLink("loginlink", redirectUrl));
 	}
 

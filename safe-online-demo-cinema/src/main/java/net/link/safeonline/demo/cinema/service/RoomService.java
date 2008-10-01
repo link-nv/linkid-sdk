@@ -10,17 +10,17 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.demo.cinema.entity.FilmEntity;
-import net.link.safeonline.demo.cinema.entity.RoomEntity;
-import net.link.safeonline.demo.cinema.entity.TheatreEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaRoomEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 
 
 /**
  * <h2>{@link RoomService}<br>
- * <sub>Service bean for {@link RoomEntity}.</sub></h2>
+ * <sub>Service bean for {@link CinemaRoomEntity}.</sub></h2>
  *
  * <p>
- * Provide access to {@link RoomEntity}s based on which theatre you want to view which movie in.
+ * Provide access to {@link CinemaRoomEntity}s based on which theatre you want to view which movie in.
  * </p>
  *
  * <p>
@@ -38,20 +38,15 @@ public interface RoomService extends CinemaService {
     /**
      * @return All rooms from the given theatre that play the given film.
      */
-    public List<RoomEntity> getRoomsFor(TheatreEntity theatre, FilmEntity film);
+    public List<CinemaRoomEntity> getRoomsFor(CinemaTheatreEntity theatre, CinemaFilmEntity film);
 
     /**
      * @return The amount of rows of seats this room has.
      */
-    public int getRows(RoomEntity room);
+    public int getRows(CinemaRoomEntity room);
 
     /**
      * @return The amount of columns of seats this room has.
      */
-    public int getColumns(RoomEntity room);
-
-    /**
-     * @return An attached entity for the given one.
-     */
-    public RoomEntity attach(RoomEntity room);
+    public int getColumns(CinemaRoomEntity room);
 }

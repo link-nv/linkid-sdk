@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.demo.cinema.service;
 
+
 /**
  * <h2>{@link CinemaService}<br>
  * <sub>Interface for all cinema services that maintains the root JNDI prefix.</sub></h2>

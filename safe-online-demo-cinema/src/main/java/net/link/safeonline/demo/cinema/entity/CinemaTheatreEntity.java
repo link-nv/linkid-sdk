@@ -19,15 +19,15 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries( {
-        @NamedQuery(name = TheatreEntity.getAll, query = "SELECT t FROM TheatreEntity t"),
-        @NamedQuery(name = TheatreEntity.getById, query = "SELECT t FROM TheatreEntity t WHERE t.id = :id"),
-        @NamedQuery(name = TheatreEntity.getAllFor, query = "SELECT r.theatre FROM RoomEntity r WHERE :film MEMBER OF r.films") })
-public class TheatreEntity implements Serializable {
+        @NamedQuery(name = CinemaTheatreEntity.getAll, query = "SELECT t FROM CinemaTheatreEntity t"),
+        @NamedQuery(name = CinemaTheatreEntity.getById, query = "SELECT t FROM CinemaTheatreEntity t WHERE t.id = :id"),
+        @NamedQuery(name = CinemaTheatreEntity.getAllFor, query = "SELECT r.theatre FROM CinemaRoomEntity r WHERE :film MEMBER OF r.films") })
+public class CinemaTheatreEntity implements Serializable {
 
     private static final long  serialVersionUID = 1L;
-    public static final String getAll           = "TheatreEntity.getAll";
-    public static final String getById          = "TheatreEntity.getById";
-    public static final String getAllFor        = "TheatreEntity.getAllFor";
+    public static final String getAll           = "CinemaTheatreEntity.getAll";
+    public static final String getById          = "CinemaTheatreEntity.getById";
+    public static final String getAllFor        = "CinemaTheatreEntity.getAllFor";
 
     @Id
     @SuppressWarnings("unused")
@@ -38,18 +38,18 @@ public class TheatreEntity implements Serializable {
     private String             address;
 
 
-    public TheatreEntity() {
+    public CinemaTheatreEntity() {
 
     }
 
-    public TheatreEntity(String name, String address) {
+    public CinemaTheatreEntity(String name, String address) {
 
         this.name = name;
         this.address = address;
     }
 
     /**
-     * @return The name of this {@link TheatreEntity}
+     * @return The name of this {@link CinemaTheatreEntity}
      */
     public String getName() {
 
@@ -57,7 +57,7 @@ public class TheatreEntity implements Serializable {
     }
 
     /**
-     * @return The address of this {@link TheatreEntity}.
+     * @return The address of this {@link CinemaTheatreEntity}.
      */
     public String getAddress() {
 

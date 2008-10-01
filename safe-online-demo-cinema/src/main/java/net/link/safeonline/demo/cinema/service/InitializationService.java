@@ -8,7 +8,7 @@ package net.link.safeonline.demo.cinema.service;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.demo.cinema.entity.ShowTimeEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaShowTimeEntity;
 
 
 /**
@@ -62,22 +62,22 @@ public interface InitializationService extends CinemaService {
             // Hellboy
             "The mythical world starts a rebellion against humanity in order to rule "
                     + "the Earth, so Hellboy and his team must save the world from " + "the rebellious creatures.." };
-    public static final ShowTimeEntity[][] filmTimes        = {
+    public static final CinemaShowTimeEntity[][] filmTimes        = {
                                                             // Journey
-            { new ShowTimeEntity(14 * H, 14 * H, 15 * H, 14 * H, 14 * H + 30 * M, 16 * H, 16 * H),
-            new ShowTimeEntity(20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 20 * H, 22 * H, 22 * H) },
+            { new CinemaShowTimeEntity(14 * H, 14 * H, 15 * H, 14 * H, 14 * H + 30 * M, 16 * H, 16 * H),
+            new CinemaShowTimeEntity(20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 20 * H, 22 * H, 22 * H) },
             // Happening
-            { new ShowTimeEntity(14 * H, 14 * H, 15 * H, 14 * H, 14 * H + 30 * M, 16 * H, 16 * H),
-            new ShowTimeEntity(20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 20 * H, 22 * H, 22 * H) },
+            { new CinemaShowTimeEntity(14 * H, 14 * H, 15 * H, 14 * H, 14 * H + 30 * M, 16 * H, 16 * H),
+            new CinemaShowTimeEntity(20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 20 * H, 22 * H, 22 * H) },
             // Knight
-            { new ShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
-            new ShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) },
+            { new CinemaShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
+            new CinemaShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) },
             // Shaun
-            { new ShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
-            new ShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) },
+            { new CinemaShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
+            new CinemaShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) },
             // Hellboy
-            { new ShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
-            new ShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) } };
+            { new CinemaShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
+            new CinemaShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) } };
     public static final long[]             filmDurations    = { 92 * M, 91 * M, 97 * M, 99 * M, 90 * M };
     public static final int[]              filmPrices       = { 30, 30, 25, 20, 20 };
     public static final int[][]            filmTheatres     = {

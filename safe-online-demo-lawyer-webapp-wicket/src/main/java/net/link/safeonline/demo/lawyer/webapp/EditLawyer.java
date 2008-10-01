@@ -19,7 +19,7 @@ public class EditLawyer extends Layout {
 
 		add(new AdminNavigationBorder("navigation"));
 		add(new EditLawyerForm("editLawyerForm", lawyer));
-		add(new Label<String>("headerTitle", "Edit lawyer"));
+		add(new Label("headerTitle", "Edit lawyer"));
 		final FeedbackPanel feedback = new FeedbackPanel("feedback");
 		add(feedback);
 	}
@@ -33,8 +33,8 @@ public class EditLawyer extends Layout {
             super(id, new CompoundPropertyModel<Lawyer>(lawyer));
 
 			// Add text entry widget
-            add(new Label<String>("safeonlineId", lawyer.getSafeonlineId()));
-			add(new Label<String>("name", lawyer.getName()));
+            add(new Label("safeonlineId", lawyer.getSafeonlineId()));
+            add(new Label("name", lawyer.getName()));
             add(new RequiredTextField<String>("bar"));
 			add(new CheckBox("isLawyer"));
 			add(new CheckBox("isAdmin"));

@@ -6,26 +6,28 @@
  */
 package net.link.safeonline.demo.wicket.tools;
 
-import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import net.link.safeonline.demo.wicket.service.OlasNamingStrategy;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
+import org.apache.wicket.injection.ComponentInjector;
+import org.apache.wicket.injection.ConfigurableInjector;
+import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
-import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
-import org.wicketstuff.javaee.naming.IJndiNamingStrategy;
-import org.wicketstuff.javaee.naming.StandardJndiNamingStrategy;
+import org.wicketstuff.javaee.injection.AnnotJavaEEInjector;
 
 
 /**
@@ -44,71 +46,67 @@ import org.wicketstuff.javaee.naming.StandardJndiNamingStrategy;
  */
 public abstract class WicketUtil {
 
-    static final Log LOG = LogFactory.getLog(WicketUtil.class);
+    static final Log                  LOG      = LogFactory.getLog(WicketUtil.class);
+    static final ConfigurableInjector injector = new AnnotJavaEEInjector(new OlasNamingStrategy());
 
 
     /**
      * @return A string that is the formatted representation of the given date according to the user's locale in short
      *         form.
      */
-    public static String formatDate(Session session, Date date) {
+    public static String format(Session session, Date date) {
 
-        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, session.getLocale()).format(date);
+        return format(session.getLocale(), date);
     }
 
     /**
      * @return A string that is the formatted representation of the given amount of currency according to the user's
      *         locale.
      */
-    public static String formatCurrency(Session session, Number number) {
+    public static String format(Session session, Number number) {
 
-        return NumberFormat.getCurrencyInstance(session.getLocale()).format(number);
+        return format(session.getLocale(), number);
+    }
+
+    /**
+     * @return A string that is the formatted representation of the given date according to the user's locale in short
+     *         form.
+     */
+    public static String format(Locale locale, Date date) {
+
+        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale).format(date);
+    }
+
+    /**
+     * @return A string that is the formatted representation of the given amount of currency according to the user's
+     *         locale.
+     */
+    public static String format(Locale locale, Number number) {
+
+        return NumberFormat.getCurrencyInstance(locale).format(number);
     }
 
     /**
      * Add an injector to the given Wicket web application that will resolve fields with the {@link EJB} annotation.
      * 
-     * This injector assumes the field is of a type that is a bean interface with a publicly accessible BINDING constant
-     * field which points to the JNDI location of the bean that needs to be injected into the field.
+     * @see OlasNamingStrategy
      */
     public static void addInjector(WebApplication application) {
 
-        application.addComponentInstantiationListener(new JavaEEComponentInjector(application,
-                new IJndiNamingStrategy() {
+        application.addComponentInstantiationListener(new ComponentInjector() {
 
-                    private static final long                serialVersionUID = 1L;
-                    private final StandardJndiNamingStrategy defaultStrategy  = new StandardJndiNamingStrategy();
+            {
+                InjectorHolder.setInjector(injector);
+            }
+        });
+    }
 
+    /**
+     * Perform Java EE injections on the given objects.
+     */
+    public static void inject(Object injectee) {
 
-                    @SuppressWarnings("unchecked")
-                    public String calculateName(String ejbName, Class ejbType) {
-
-                        try {
-                            Field bindingField = ejbType.getDeclaredField("BINDING");
-                            Object binding = bindingField.get(null);
-
-                            LOG.debug("Resolved '" + ejbName + "' type '" + ejbType.getCanonicalName() + "' to: "
-                                    + binding);
-
-                            if (binding != null)
-                                return binding.toString();
-                        } catch (SecurityException e) {
-                            LOG.warn("No access to fields when trying to resolve '" + ejbName + "' type '"
-                                    + ejbType.getCanonicalName() + "'", e);
-                        } catch (NoSuchFieldException e) {
-                            LOG.warn("No field called 'BINDING' when trying to resolve '" + ejbName + "' type '"
-                                    + ejbType.getCanonicalName() + "'", e);
-                        } catch (IllegalArgumentException e) {
-                            LOG.warn("No valid instance of EJB when trying to resolve '" + ejbName + "' type '"
-                                    + ejbType.getCanonicalName() + "'", e);
-                        } catch (IllegalAccessException e) {
-                            LOG.warn("No access to 'BINDING' when trying to resolve '" + ejbName + "' type '"
-                                    + ejbType.getCanonicalName() + "'", e);
-                        }
-
-                        return this.defaultStrategy.calculateName(ejbName, ejbType);
-                    }
-                }));
+        injector.inject(injectee);
     }
 
     /**

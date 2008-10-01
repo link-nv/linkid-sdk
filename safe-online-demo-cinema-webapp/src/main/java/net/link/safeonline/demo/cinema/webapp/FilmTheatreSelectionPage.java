@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.demo.cinema.entity.FilmEntity;
-import net.link.safeonline.demo.cinema.entity.TheatreEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 import net.link.safeonline.demo.cinema.service.FilmService;
 import net.link.safeonline.demo.cinema.service.TheatreService;
 
@@ -57,7 +57,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
             return;
         }
 
-        add(new Label<String>("headerTitle", "Film And Theatre Selection"));
+        add(new Label("headerTitle", "Film And Theatre Selection"));
 
         add(new FilmsForm("films"));
         add(new TheatersForm("theatres"));
@@ -94,26 +94,26 @@ public class FilmTheatreSelectionPage extends LayoutPage {
             setVisible(!CinemaSession.isFilmSet());
 
             // Either get all films or just those that play in selected theatre.
-            List<FilmEntity> data;
+            List<CinemaFilmEntity> data;
             if (CinemaSession.isTheaterSet()) {
                 data = FilmTheatreSelectionPage.this.filmService.getFilmsThatPlayIn(CinemaSession.get().getTheatre());
             } else {
                 data = FilmTheatreSelectionPage.this.filmService.getAllFilms();
             }
 
-            add(new ListView<FilmEntity>("list", data) {
+            add(new ListView<CinemaFilmEntity>("list", data) {
 
                 private static final long serialVersionUID = 1L;
 
 
                 @Override
-                protected void populateItem(ListItem<FilmEntity> item) {
+                protected void populateItem(ListItem<CinemaFilmEntity> item) {
 
-                    final FilmEntity film = item.getModelObject();
+                    final CinemaFilmEntity film = item.getModelObject();
 
                     /* Film Details. */
-                    item.add(new Label<String>("price", CinemaSession.format(film.getPrice())));
-                    item.add(new Label<String>("description", film.getDescription()));
+                    item.add(new Label("price", CinemaSession.format(film.getPrice())));
+                    item.add(new Label("description", film.getDescription()));
 
                     /* Film Selection. */
                     item.add(new Link<String>("select") {
@@ -121,7 +121,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
                         private static final long serialVersionUID = 1L;
 
                         {
-                            add(new Label<String>("name", film.getName()));
+                            add(new Label("name", film.getName()));
                         }
 
 
@@ -171,25 +171,25 @@ public class FilmTheatreSelectionPage extends LayoutPage {
             setVisible(!CinemaSession.isTheaterSet());
 
             // Either get all theatres or just those that play selected film.
-            List<TheatreEntity> data;
+            List<CinemaTheatreEntity> data;
             if (CinemaSession.isFilmSet()) {
                 data = FilmTheatreSelectionPage.this.theatreService.getTheatresThatPlay(CinemaSession.get().getFilm());
             } else {
                 data = FilmTheatreSelectionPage.this.theatreService.getAllTheatres();
             }
 
-            add(new ListView<TheatreEntity>("list", data) {
+            add(new ListView<CinemaTheatreEntity>("list", data) {
 
                 private static final long serialVersionUID = 1L;
 
 
                 @Override
-                protected void populateItem(ListItem<TheatreEntity> item) {
+                protected void populateItem(ListItem<CinemaTheatreEntity> item) {
 
-                    final TheatreEntity theatre = item.getModelObject();
+                    final CinemaTheatreEntity theatre = item.getModelObject();
 
                     /* Theatre Location. */
-                    item.add(new Label<String>("address", theatre.getAddress()));
+                    item.add(new Label("address", theatre.getAddress()));
 
                     /* Theatre Selection. */
                     item.add(new Link<String>("select") {
@@ -197,7 +197,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
                         private static final long serialVersionUID = 1L;
 
                         {
-                            add(new Label<String>("name", theatre.getName()));
+                            add(new Label("name", theatre.getName()));
                         }
 
 

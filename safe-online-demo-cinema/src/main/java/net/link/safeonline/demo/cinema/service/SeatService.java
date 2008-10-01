@@ -11,17 +11,17 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.demo.cinema.entity.RoomEntity;
-import net.link.safeonline.demo.cinema.entity.SeatEntity;
-import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaRoomEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatOccupationEntity;
 
 
 /**
  * <h2>{@link SeatService}<br>
- * <sub>Service bean for {@link SeatEntity}.</sub></h2>
+ * <sub>Service bean for {@link CinemaSeatEntity}.</sub></h2>
  *
  * <p>
- * Provide access to {@link SeatEntity}s.
+ * Provide access to {@link CinemaSeatEntity}s.
  * </p>
  *
  * <p>
@@ -39,12 +39,12 @@ public interface SeatService extends CinemaService {
     /**
      * @return The seats in the given room.
      */
-    public List<SeatEntity> getSeatsFor(RoomEntity room);
+    public List<CinemaSeatEntity> getSeatsFor(CinemaRoomEntity room);
 
     /**
      * @return <code>true</code> If this seat has already been occupied.
      */
-    public boolean isOccupied(SeatEntity seat, Date start);
+    public boolean isOccupied(CinemaSeatEntity seat, Date start);
 
     /**
      * Verify that the given seat is not already occupied. If it is not, persist it.
@@ -53,5 +53,5 @@ public interface SeatService extends CinemaService {
      * @throws IllegalStateException
      *             When at least one of the given seats is not available.
      */
-    public SeatOccupationEntity validate(SeatOccupationEntity occupation) throws IllegalStateException;
+    public CinemaSeatOccupationEntity validate(CinemaSeatOccupationEntity occupation) throws IllegalStateException;
 }

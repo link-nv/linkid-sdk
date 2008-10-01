@@ -15,7 +15,7 @@ import javax.persistence.Id;
 
 
 /**
- * <h2>{@link ShowTimeEntity}<br>
+ * <h2>{@link CinemaShowTimeEntity}<br>
  * <sub>[in short] (TODO).</sub></h2>
  *
  * <p>
@@ -29,7 +29,7 @@ import javax.persistence.Id;
  * @author mbillemo
  */
 @Entity
-public class ShowTimeEntity implements Serializable {
+public class CinemaShowTimeEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,11 +47,11 @@ public class ShowTimeEntity implements Serializable {
     private Integer           sunStart;
 
 
-    public ShowTimeEntity() {
+    public CinemaShowTimeEntity() {
 
     }
 
-    public ShowTimeEntity(Integer monStart, Integer tueStart, Integer wedStart, Integer thuStart, Integer friStart,
+    public CinemaShowTimeEntity(Integer monStart, Integer tueStart, Integer wedStart, Integer thuStart, Integer friStart,
             Integer satStart, Integer sunStart) {
 
         this.monStart = monStart;

@@ -2,6 +2,9 @@
 /.com.apple.timemachine.supported
 /.fseventsd
 
+# Maven2 Relocated Local Repository for Lin.k artifacts.
+.m2-lin.k
+
 # Eclipse
 /*/.settings
 /*/.project

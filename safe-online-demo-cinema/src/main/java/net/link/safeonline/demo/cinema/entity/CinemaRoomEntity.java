@@ -22,13 +22,13 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries( {
-        @NamedQuery(name = RoomEntity.getById, query = "SELECT r FROM RoomEntity r WHERE r.id = :id"),
-        @NamedQuery(name = RoomEntity.getFor, query = "SELECT r FROM RoomEntity r WHERE r.theatre = :theatre AND :film MEMBER OF r.films") })
-public class RoomEntity implements Serializable {
+        @NamedQuery(name = CinemaRoomEntity.getById, query = "SELECT r FROM CinemaRoomEntity r WHERE r.id = :id"),
+        @NamedQuery(name = CinemaRoomEntity.getFor, query = "SELECT r FROM CinemaRoomEntity r WHERE r.theatre = :theatre AND :film MEMBER OF r.films") })
+public class CinemaRoomEntity implements Serializable {
 
     private static final long      serialVersionUID = 1L;
-    public static final String     getFor           = "RoomEntity.getFor";
-    public static final String     getById          = "RoomEntity.getById";
+    public static final String     getFor           = "CinemaRoomEntity.getFor";
+    public static final String     getById          = "CinemaRoomEntity.getById";
 
     @Id
     @SuppressWarnings("unused")
@@ -36,18 +36,18 @@ public class RoomEntity implements Serializable {
     private long                   id;
 
     @ManyToMany(mappedBy = "rooms")
-    private Collection<FilmEntity> films;
+    private Collection<CinemaFilmEntity> films;
 
     @ManyToOne
-    private TheatreEntity          theatre;
+    private CinemaTheatreEntity          theatre;
     private String                 name;
 
 
-    public RoomEntity() {
+    public CinemaRoomEntity() {
 
     }
 
-    public RoomEntity(String name, TheatreEntity theatre) {
+    public CinemaRoomEntity(String name, CinemaTheatreEntity theatre) {
 
         this.name = name;
         this.theatre = theatre;
@@ -56,13 +56,13 @@ public class RoomEntity implements Serializable {
     /**
      * @return The theatre this room is in.
      */
-    public TheatreEntity getTheatre() {
+    public CinemaTheatreEntity getTheatre() {
 
         return this.theatre;
     }
 
     /**
-     * @return The name of this {@link RoomEntity}.
+     * @return The name of this {@link CinemaRoomEntity}.
      */
     public String getName() {
 
@@ -70,9 +70,9 @@ public class RoomEntity implements Serializable {
     }
 
     /**
-     * @return The films of this {@link RoomEntity}.
+     * @return The films of this {@link CinemaRoomEntity}.
      */
-    public Collection<FilmEntity> getFilms() {
+    public Collection<CinemaFilmEntity> getFilms() {
 
         return this.films;
     }

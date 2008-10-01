@@ -21,13 +21,13 @@ import javax.persistence.NamedQuery;
 @Entity
 @NamedQueries( {
 
-@NamedQuery(name = SeatEntity.getById, query = "SELECT s FROM SeatEntity s WHERE s.id = :id"),
-        @NamedQuery(name = SeatEntity.getFor, query = "SELECT s FROM SeatEntity s WHERE s.room = :room") })
-public class SeatEntity implements Serializable {
+@NamedQuery(name = CinemaSeatEntity.getById, query = "SELECT s FROM CinemaSeatEntity s WHERE s.id = :id"),
+        @NamedQuery(name = CinemaSeatEntity.getFor, query = "SELECT s FROM CinemaSeatEntity s WHERE s.room = :room") })
+public class CinemaSeatEntity implements Serializable {
 
     private static final long  serialVersionUID = 1L;
-    public static final String getById          = "SeatEntity.getById";
-    public static final String getFor           = "SeatEntity.getFor";
+    public static final String getById          = "CinemaSeatEntity.getById";
+    public static final String getFor           = "CinemaSeatEntity.getFor";
 
     @Id
     @SuppressWarnings("unused")
@@ -35,16 +35,16 @@ public class SeatEntity implements Serializable {
     private long               id;
 
     @ManyToOne
-    private RoomEntity         room;
+    private CinemaRoomEntity         room;
     private int                x;
     private int                y;
 
 
-    public SeatEntity() {
+    public CinemaSeatEntity() {
 
     }
 
-    public SeatEntity(RoomEntity room, int x, int y) {
+    public CinemaSeatEntity(CinemaRoomEntity room, int x, int y) {
 
         this.room = room;
         this.x = x;
@@ -54,7 +54,7 @@ public class SeatEntity implements Serializable {
     /**
      * @return The room this seat is in.
      */
-    public RoomEntity getRoom() {
+    public CinemaRoomEntity getRoom() {
 
         return this.room;
     }
@@ -89,12 +89,12 @@ public class SeatEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
 
-        if (!(obj instanceof SeatEntity))
+        if (!(obj instanceof CinemaSeatEntity))
             return false;
         if (obj == this)
             return true;
 
-        SeatEntity other = (SeatEntity) obj;
+        CinemaSeatEntity other = (CinemaSeatEntity) obj;
         return this.x == other.x && this.y == other.y && this.room.getId() == other.room.getId();
     }
 

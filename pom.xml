@@ -594,7 +594,7 @@
 		<opensaml.version>2.1.0</opensaml.version>
 		<xmltooling.version>1.0.1</xmltooling.version>
 		<openws.version>1.1.0</openws.version>
-		<xmlsec.version>1.4.1</xmlsec.version>
+		<xmlsec.version>1.4.2</xmlsec.version>
 		<commons-codec.version>1.3</commons-codec.version>
 		<cargo-maven2-plugin.version>0.3.1</cargo-maven2-plugin.version>
 		<xom.version>1.1</xom.version>
@@ -635,7 +635,8 @@
 		<jcommon.version>1.0.9</jcommon.version>
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>
-		<wicket.version>1.4-m2</wicket.version>
+		<wicket.version>1.4-m3-safe-online</wicket.version>
+		<wicket-javaee.version>1.1</wicket-javaee.version>
 		<maven-compiler-plugin.version> 2.0.2 </maven-compiler-plugin.version>
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
@@ -925,15 +926,6 @@
 					<wtpversion>2.0</wtpversion>
 					<downloadSources>false</downloadSources>
 					<downloadJavadocs>false</downloadJavadocs>
-					<excludes>
-						<exclude>xml-apis</exclude>
-						<exclude>xmlParserAPIs</exclude>
-						<exclude>xercesImpl</exclude>
-						<exclude>xalan</exclude>
-						<exclude>xmlsec</exclude>
-						<exclude>wss4j</exclude>
-						<exclude>xom</exclude>
-					</excludes>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
@@ -1337,13 +1329,17 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
-		<!--
-			repository> <id>org.wicketstuff</id> <name>Wicket Stuff Repo</name>
-			<url>http://wicketstuff.org/maven/repository</url> <snapshots>
-			<enabled>false</enabled> </snapshots> <releases>
-			<enabled>true</enabled> <updatePolicy>never</updatePolicy>
-			</releases> </repository
-		-->
+        <repository>
+            <id>wicketstuff</id>
+            <url>http://wicketstuff.org/maven/repository</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
 	</repositories>
 
 	<!-- MAVEN PLUGIN REPOSITORIES -->
@@ -1756,6 +1752,11 @@
 			</dependency>
 
 				<!-- jboss/server/default/lib -->
+			<dependency>
+                <groupId>org.apache.santuario</groupId>
+				<artifactId>xmlsec</artifactId>
+				<version>${xmlsec.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>javax.activation</groupId>
 				<artifactId>activation</artifactId>
@@ -2406,8 +2407,13 @@
 				<artifactId>wss4j</artifactId>
 				<version>${wss4j.version}</version>
 
-				<!-- We use org.apache.* instead -->
 				<exclusions>
+                    <exclusion>
+                        <groupId>axis</groupId>
+                        <artifactId>axis-ant</artifactId>
+                    </exclusion>
+
+				<!-- We use org.apache.* instead -->
 					<exclusion>
 						<groupId>xalan</groupId>
 						<artifactId>xalan</artifactId>
@@ -2424,6 +2430,14 @@
 						<groupId>xml-apis</groupId>
 						<artifactId>xml-apis</artifactId>
 					</exclusion>
+
+                <!-- We don't use the OpenSAML features of WSS4J.
+                     And in any case, WSS4J uses discontinued OpenSAML 1.1 -->
+                <!-- FIXME: See SOS-274
+					<exclusion>
+						<groupId>opensaml</groupId>
+						<artifactId>opensaml</artifactId>
+					</exclusion-->
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -2464,7 +2478,7 @@
 			<dependency>
 				<groupId>org.apache.wicket</groupId>
 				<artifactId>wicket-contrib-javaee</artifactId>
-				<version>1.1</version>
+                <version>${wicket-javaee.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>dumbster</groupId>

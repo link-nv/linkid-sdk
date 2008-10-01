@@ -20,12 +20,14 @@ import javax.persistence.NamedQuery;
 
 
 @Entity
-@NamedQueries( { @NamedQuery(name = TicketEntity.findTicket, query = "SELECT t FROM TicketEntity t WHERE t.owner.nrn = :nrn") })
-public class TicketEntity implements Serializable {
+@NamedQueries( { @NamedQuery(name = CinemaTicketEntity.getById, query = "SELECT t FROM CinemaTicketEntity t WHERE t.id = :id"),
+        @NamedQuery(name = CinemaTicketEntity.getByNrn, query = "SELECT t FROM CinemaTicketEntity t WHERE t.owner.nrn = :nrn") })
+public class CinemaTicketEntity implements Serializable {
 
     private static final long    serialVersionUID = 1L;
 
-    public static final String   findTicket       = "TicketEntity.findTicket";
+    public static final String   getById          = "CinemaTicketEntity.getById";
+    public static final String   getByNrn         = "CinemaTicketEntity.getByNrn";
 
     @Id
     @SuppressWarnings("unused")
@@ -33,20 +35,20 @@ public class TicketEntity implements Serializable {
     private long                 id;
 
     @ManyToOne
-    private UserEntity           owner;
+    private CinemaUserEntity           owner;
 
     @ManyToOne
-    private FilmEntity           film;
-    private SeatOccupationEntity occupation;
+    private CinemaFilmEntity           film;
+    private CinemaSeatOccupationEntity occupation;
     private long                 time;
     private double               price;
 
 
-    public TicketEntity() {
+    public CinemaTicketEntity() {
 
     }
 
-    public TicketEntity(UserEntity owner, FilmEntity film, long time, SeatOccupationEntity occupation) {
+    public CinemaTicketEntity(CinemaUserEntity owner, CinemaFilmEntity film, long time, CinemaSeatOccupationEntity occupation) {
 
         this.owner = owner;
 
@@ -66,23 +68,31 @@ public class TicketEntity implements Serializable {
     }
 
     /**
-     * @return The {@link UserEntity} that this ticket is valid for.
+     * @return The id of this {@link CinemaTicketEntity}.
      */
-    public UserEntity getOwner() {
+    public long getId() {
+
+        return this.id;
+    }
+
+    /**
+     * @return The {@link CinemaUserEntity} that this ticket is valid for.
+     */
+    public CinemaUserEntity getOwner() {
 
         return this.owner;
     }
 
     /**
-     * @return The {@link FilmEntity} this ticket grants the owner access to.
+     * @return The {@link CinemaFilmEntity} this ticket grants the owner access to.
      */
-    public FilmEntity getFilm() {
+    public CinemaFilmEntity getFilm() {
 
         return this.film;
     }
 
     /**
-     * @return The {@link Date} of the showing of the {@link FilmEntity} that this ticket grants the owner access to.
+     * @return The {@link Date} of the showing of the {@link CinemaFilmEntity} that this ticket grants the owner access to.
      */
     public long getTime() {
 
@@ -90,16 +100,16 @@ public class TicketEntity implements Serializable {
     }
 
     /**
-     * @return The seat occupied by this {@link TicketEntity}.
+     * @return The seat occupied by this {@link CinemaTicketEntity}.
      */
-    public SeatOccupationEntity getOccupation() {
+    public CinemaSeatOccupationEntity getOccupation() {
 
         return this.occupation;
     }
 
     /**
      * @param price
-     *            The calculated price for this {@link TicketEntity} at the time of purchase.
+     *            The calculated price for this {@link CinemaTicketEntity} at the time of purchase.
      */
     public void setPrice(double price) {
 
@@ -107,7 +117,7 @@ public class TicketEntity implements Serializable {
     }
 
     /**
-     * @return The calculated price for this {@link TicketEntity} at the time of purchase.
+     * @return The calculated price for this {@link CinemaTicketEntity} at the time of purchase.
      */
     public double getPrice() {
 

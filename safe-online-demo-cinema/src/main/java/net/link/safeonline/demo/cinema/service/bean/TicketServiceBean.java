@@ -18,13 +18,12 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
 import net.link.safeonline.demo.cinema.CinemaConstants;
-import net.link.safeonline.demo.cinema.entity.FilmEntity;
-import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
-import net.link.safeonline.demo.cinema.entity.TicketEntity;
-import net.link.safeonline.demo.cinema.entity.UserEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatOccupationEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.service.SeatService;
 import net.link.safeonline.demo.cinema.service.TicketService;
-import net.link.safeonline.demo.cinema.service.UserService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -32,11 +31,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link TicketServiceBean}<br>
  * <sub>Service bean for {@link TicketService}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jun 25, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless
@@ -45,20 +44,19 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
 
     @EJB
     private transient SeatService seatService;
-    @EJB
-    private UserService           userService;
 
 
     /**
      * {@inheritDoc}
      */
-    public TicketEntity createTicket(UserEntity user, FilmEntity film, Date time, SeatOccupationEntity occupation) {
+    public CinemaTicketEntity createTicket(CinemaUserEntity user, CinemaFilmEntity film, Date time,
+            CinemaSeatOccupationEntity occupation) {
 
         // Occupy our seat.
-        SeatOccupationEntity ticketOccupation = this.seatService.validate(occupation);
+        CinemaSeatOccupationEntity ticketOccupation = this.seatService.validate(occupation);
 
         // Create a ticket for them.
-        TicketEntity ticket = new TicketEntity(user, film, time.getTime(), ticketOccupation);
+        CinemaTicketEntity ticket = new CinemaTicketEntity(user, film, time.getTime(), ticketOccupation);
         ticket.setPrice(calculatePrice(ticket));
 
         return ticket;
@@ -67,7 +65,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     /**
      * {@inheritDoc}
      */
-    public TicketEntity reserve(TicketEntity ticket) {
+    public CinemaTicketEntity reserve(CinemaTicketEntity ticket) {
 
         ticket.getOccupation().reserve();
         this.em.persist(ticket);
@@ -78,7 +76,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     /**
      * {@inheritDoc}
      */
-    public double calculatePrice(TicketEntity ticket) {
+    public double calculatePrice(CinemaTicketEntity ticket) {
 
         double modifier = 1;
         int basePrice = ticket.getFilm().getPrice();
@@ -92,26 +90,26 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     }
 
     @SuppressWarnings("unchecked")
-    public List<TicketEntity> getTickets(String nrn, Date time) {
+    public List<CinemaTicketEntity> getTickets(String nrn, Date time) {
 
         LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
         try {
             // NOTE: time parameter is not checked because this is a demo.
-            return this.em.createNamedQuery(TicketEntity.findTicket).setParameter("nrn", nrn).getResultList();
+            return this.em.createNamedQuery(CinemaTicketEntity.getByNrn).setParameter("nrn", nrn).getResultList();
         }
 
         catch (NoResultException e) {
-            return new ArrayList<TicketEntity>();
+            return new ArrayList<CinemaTicketEntity>();
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<TicketEntity> getTickets(String nrn, Date time, String theatreName) {
+    public List<CinemaTicketEntity> getTickets(String nrn, Date time, String theatreName) {
 
-        List<TicketEntity> tickets = getTickets(nrn, time);
-        for (Iterator<TicketEntity> it = tickets.iterator(); it.hasNext();)
+        List<CinemaTicketEntity> tickets = getTickets(nrn, time);
+        for (Iterator<CinemaTicketEntity> it = tickets.iterator(); it.hasNext();)
             if (!it.next().getOccupation().getSeat().getRoom().getTheatre().getName().equalsIgnoreCase(theatreName)) {
                 it.remove();
             }
@@ -119,7 +117,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
         // Feed the log.
         LOG.debug("----");
         LOG.debug("Found " + tickets.size() + " tickets:");
-        for (TicketEntity ticket : tickets) {
+        for (CinemaTicketEntity ticket : tickets) {
             LOG.debug(ticket);
         }
 
@@ -131,7 +129,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
      */
     public boolean isValid(String nrn, Date time, String theatreName, String filmName) {
 
-        for (TicketEntity ticket : getTickets(nrn, time, theatreName))
+        for (CinemaTicketEntity ticket : getTickets(nrn, time, theatreName))
             if (ticket.getFilm().getName().equalsIgnoreCase(filmName))
                 return true;
 
@@ -142,21 +140,21 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     /**
      * {@inheritDoc}
      */
-    public List<TicketEntity> getTickets(UserEntity user) {
+    public List<CinemaTicketEntity> getTickets(CinemaUserEntity user) {
 
         if (user != null) {
-            UserEntity attachedUser = this.userService.attach(user);
+            CinemaUserEntity attachedUser = attach(user);
             if (attachedUser != null)
-                return new LinkedList<TicketEntity>(attachedUser.getTickets());
+                return new LinkedList<CinemaTicketEntity>(attachedUser.getTickets());
         }
 
-        return new ArrayList<TicketEntity>();
+        return new ArrayList<CinemaTicketEntity>();
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getFilmName(TicketEntity ticket) {
+    public String getFilmName(CinemaTicketEntity ticket) {
 
         return ticket.getFilm().getName();
     }
@@ -164,7 +162,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     /**
      * {@inheritDoc}
      */
-    public String getRoomName(TicketEntity ticket) {
+    public String getRoomName(CinemaTicketEntity ticket) {
 
         return ticket.getOccupation().getSeat().getRoom().getName();
     }
@@ -172,7 +170,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     /**
      * {@inheritDoc}
      */
-    public String getTheatreName(TicketEntity ticket) {
+    public String getTheatreName(CinemaTicketEntity ticket) {
 
         return ticket.getOccupation().getSeat().getRoom().getTheatre().getName();
     }

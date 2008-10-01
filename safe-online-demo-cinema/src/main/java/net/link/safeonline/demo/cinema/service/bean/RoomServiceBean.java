@@ -11,10 +11,10 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.demo.cinema.entity.FilmEntity;
-import net.link.safeonline.demo.cinema.entity.RoomEntity;
-import net.link.safeonline.demo.cinema.entity.SeatEntity;
-import net.link.safeonline.demo.cinema.entity.TheatreEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaRoomEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 import net.link.safeonline.demo.cinema.service.RoomService;
 import net.link.safeonline.demo.cinema.service.SeatService;
 
@@ -47,19 +47,19 @@ public class RoomServiceBean extends AbstractCinemaServiceBean implements RoomSe
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public List<RoomEntity> getRoomsFor(TheatreEntity theatre, FilmEntity film) {
+    public List<CinemaRoomEntity> getRoomsFor(CinemaTheatreEntity theatre, CinemaFilmEntity film) {
 
-        return this.em.createNamedQuery(RoomEntity.getFor).setParameter("theatre", theatre).setParameter("film", film)
+        return this.em.createNamedQuery(CinemaRoomEntity.getFor).setParameter("theatre", theatre).setParameter("film", film)
                 .getResultList();
     }
 
     /**
      * {@inheritDoc}
      */
-    public int getColumns(RoomEntity room) {
+    public int getColumns(CinemaRoomEntity room) {
 
         int maxColumn = 0;
-        for (SeatEntity seat : this.seatService.getSeatsFor(room)) {
+        for (CinemaSeatEntity seat : this.seatService.getSeatsFor(room)) {
             maxColumn = Math.max(maxColumn, seat.getX());
         }
 
@@ -69,26 +69,13 @@ public class RoomServiceBean extends AbstractCinemaServiceBean implements RoomSe
     /**
      * {@inheritDoc}
      */
-    public int getRows(RoomEntity room) {
+    public int getRows(CinemaRoomEntity room) {
 
         int maxRow = 0;
-        for (SeatEntity seat : this.seatService.getSeatsFor(room)) {
+        for (CinemaSeatEntity seat : this.seatService.getSeatsFor(room)) {
             maxRow = Math.max(maxRow, seat.getY());
         }
 
         return maxRow;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public RoomEntity attach(RoomEntity room) {
-
-        if (room == null)
-            return null;
-
-        return (RoomEntity) this.em.createNamedQuery(RoomEntity.getById).setParameter("id", room.getId())
-                .getSingleResult();
-    }
-
 }

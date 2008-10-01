@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.demo.cinema.entity.TicketEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.service.UserService;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -49,7 +49,7 @@ public class TicketPage extends LayoutPage {
             return;
         }
 
-        add(new Label<String>("headerTitle", "Ticket History"));
+        add(new Label("headerTitle", "Ticket History"));
 
         add(new TicketForm("tickets"));
     }
@@ -80,9 +80,9 @@ public class TicketPage extends LayoutPage {
 
             super(id);
 
-            final List<TicketEntity> data = TicketPage.this.ticketService.getTickets(CinemaSession.get().getUser());
+            final List<CinemaTicketEntity> data = TicketPage.this.ticketService.getTickets(CinemaSession.get().getUser());
 
-            add(new ListView<TicketEntity>("list", data) {
+            add(new ListView<CinemaTicketEntity>("list", data) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -92,20 +92,20 @@ public class TicketPage extends LayoutPage {
 
 
                 @Override
-                protected void populateItem(ListItem<TicketEntity> item) {
+                protected void populateItem(ListItem<CinemaTicketEntity> item) {
 
-                    final TicketEntity ticket = item.getModelObject();
+                    final CinemaTicketEntity ticket = item.getModelObject();
 
                     /* Ticket Details. */
-                    item.add(new Label<String>("time", CinemaSession.format(new Date(ticket.getTime()))));
-                    item.add(new Label<String>("film", TicketPage.this.ticketService.getFilmName(ticket)));
-                    item.add(new Label<String>("theatre", TicketPage.this.ticketService.getTheatreName(ticket)));
-                    item.add(new Label<String>("room", TicketPage.this.ticketService.getRoomName(ticket)));
-                    item.add(new Label<String>("price", CinemaSession.format(ticket.getPrice())));
+                    item.add(new Label("time", CinemaSession.format(new Date(ticket.getTime()))));
+                    item.add(new Label("film", TicketPage.this.ticketService.getFilmName(ticket)));
+                    item.add(new Label("theatre", TicketPage.this.ticketService.getTheatreName(ticket)));
+                    item.add(new Label("room", TicketPage.this.ticketService.getRoomName(ticket)));
+                    item.add(new Label("price", CinemaSession.format(ticket.getPrice())));
                 }
             });
 
-            add(new Link<String>("new") {
+            add(new Link<FilmTheatreSelectionPage>("new") {
 
                 private static final long serialVersionUID = 1L;
 

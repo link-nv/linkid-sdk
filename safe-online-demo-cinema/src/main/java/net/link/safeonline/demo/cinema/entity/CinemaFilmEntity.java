@@ -25,15 +25,15 @@ import javax.persistence.OneToMany;
 
 @Entity
 @NamedQueries( {
-        @NamedQuery(name = FilmEntity.getAll, query = "SELECT f FROM FilmEntity f"),
-        @NamedQuery(name = FilmEntity.getById, query = "SELECT f FROM FilmEntity f WHERE f.id = :id"),
-        @NamedQuery(name = FilmEntity.getAllFrom, query = "SELECT r.films FROM RoomEntity r WHERE r.theatre = :theatre") })
-public class FilmEntity implements Serializable {
+        @NamedQuery(name = CinemaFilmEntity.getAll, query = "SELECT f FROM CinemaFilmEntity f"),
+        @NamedQuery(name = CinemaFilmEntity.getById, query = "SELECT f FROM CinemaFilmEntity f WHERE f.id = :id"),
+        @NamedQuery(name = CinemaFilmEntity.getAllFrom, query = "SELECT r.films FROM CinemaRoomEntity r WHERE r.theatre = :theatre") })
+public class CinemaFilmEntity implements Serializable {
 
     private static final long          serialVersionUID = 1L;
-    public static final String         getAll           = "FilmEntity.getAll";
-    public static final String         getById          = "FilmEntity.getById";
-    public static final String         getAllFrom       = "FilmEntity.getAllFrom";
+    public static final String         getAll           = "CinemaFilmEntity.getAll";
+    public static final String         getById          = "CinemaFilmEntity.getById";
+    public static final String         getAllFrom       = "CinemaFilmEntity.getAllFrom";
 
     @Id
     @SuppressWarnings("unused")
@@ -41,30 +41,30 @@ public class FilmEntity implements Serializable {
     private long                       id;
 
     @ManyToMany
-    private Collection<RoomEntity>     rooms;
+    private Collection<CinemaRoomEntity>     rooms;
     private String                     name;
     private String                     description;
     private long                       duration;
     private int                        price;
 
     @OneToMany(fetch = FetchType.EAGER)
-    private Collection<ShowTimeEntity> times;
+    private Collection<CinemaShowTimeEntity> times;
     private Date                       endTime;
     private Date                       startTime;
 
 
-    public FilmEntity() {
+    public CinemaFilmEntity() {
 
-        this.rooms = new HashSet<RoomEntity>();
-        this.times = new HashSet<ShowTimeEntity>();
+        this.rooms = new HashSet<CinemaRoomEntity>();
+        this.times = new HashSet<CinemaShowTimeEntity>();
     }
 
     /**
      * @param duration
      *            The duration of the film in seconds.
      */
-    public FilmEntity(String name, String description, long duration, int price, Collection<ShowTimeEntity> times,
-            Collection<RoomEntity> rooms) {
+    public CinemaFilmEntity(String name, String description, long duration, int price, Collection<CinemaShowTimeEntity> times,
+            Collection<CinemaRoomEntity> rooms) {
 
         this.name = name;
         this.description = description;
@@ -75,7 +75,7 @@ public class FilmEntity implements Serializable {
     }
 
     /**
-     * @return The name of this {@link FilmEntity}
+     * @return The name of this {@link CinemaFilmEntity}
      */
     public String getName() {
 
@@ -83,7 +83,7 @@ public class FilmEntity implements Serializable {
     }
 
     /**
-     * @return The description of this {@link FilmEntity}.
+     * @return The description of this {@link CinemaFilmEntity}.
      */
     public String getDescription() {
 
@@ -91,7 +91,7 @@ public class FilmEntity implements Serializable {
     }
 
     /**
-     * @return The duration of this {@link FilmEntity}.
+     * @return The duration of this {@link CinemaFilmEntity}.
      */
     public long getDuration() {
 
@@ -109,15 +109,15 @@ public class FilmEntity implements Serializable {
     /**
      * @return The rooms this film plays in.
      */
-    public Collection<RoomEntity> getRooms() {
+    public Collection<CinemaRoomEntity> getRooms() {
 
         return this.rooms;
     }
 
     /**
-     * @return The {@link ShowTimeEntity}s of this film.
+     * @return The {@link CinemaShowTimeEntity}s of this film.
      */
-    public Collection<ShowTimeEntity> getTimes() {
+    public Collection<CinemaShowTimeEntity> getTimes() {
 
         return this.times;
     }

@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <body>
+        <wicket:extend>
+
+            <h2>Your Digipass allows you to authenticate your identity to us.</h2>
+
+            <form wicket:id="otpForm">
+	            <table>
+	                <caption>Follow these instructions</caption>
+	
+                    <tbody>
+                        <tr>
+                            <th>Enter your user name:</th>
+                            <td><input type="text" wicket:id="bankId" /></td>
+                        </tr>
+                        <tr>
+                            <th>Hit <b class="key">I</b> and enter your <b>PIN code</b>.
+                                Then hit <b class="key">=</b>.</th>
+                        </tr>
+                        <tr>
+                            <th>Input the numbers on your display here:</th>
+                            <td><input type="text" wicket:id="otp" /></td>
+                        </tr>
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <th colspan="2" class="nopad">
+                                <input type="submit" value="Ready &gt;" />
+                            </th>
+                        </tr>
+                    </tfoot>
+	            </table>
+            </form>
+
+        </wicket:extend>
+    </body>
+
+</html>

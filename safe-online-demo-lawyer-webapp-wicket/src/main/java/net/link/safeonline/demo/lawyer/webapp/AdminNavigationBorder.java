@@ -6,15 +6,15 @@ import org.apache.wicket.markup.html.border.Border;
 import org.apache.wicket.markup.html.link.PageLink;
 
 @RolesAllowed("baradmin")
-public class AdminNavigationBorder extends Border<String> {
+public class AdminNavigationBorder extends Border {
 
 	private static final long serialVersionUID = 1L;
 
 	public AdminNavigationBorder(String componentName) {
 		super(componentName);
-		add(new PageLink<String>("homelink", HomePage.class));
-        add(new PageLink<String>("listlink", ListPage.class));
-        add(new PageLink<String>("editlink", FindLawyer.class));
+		add(new PageLink("homelink", HomePage.class));
+        add(new PageLink("listlink", ListPage.class));
+        add(new PageLink("editlink", FindLawyer.class));
 	}
 
 }
