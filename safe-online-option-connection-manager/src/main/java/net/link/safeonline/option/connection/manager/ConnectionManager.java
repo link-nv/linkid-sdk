@@ -3,6 +3,7 @@ package net.link.safeonline.option.connection.manager;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 
 public class ConnectionManager extends JFrame {
@@ -21,12 +22,6 @@ public class ConnectionManager extends JFrame {
 
         super();
 
-        try {
-            this.connectionManagerController = new ConnectionManagerController();
-        } catch (Exception e) {
-            this.add(new JLabel("Exception occurred"));
-        }
-
         ImageIcon icon = createImageIcon("/net/link/safeonline/option/connection/manager/images/globetrotter.png",
                 "globetrotter screenshot");
 
@@ -38,6 +33,16 @@ public class ConnectionManager extends JFrame {
         this.setSize(380, 250);
         this.setLocation(50, 50);
         setVisible(true);
+        
+        try {
+            String port = JOptionPane.showInputDialog(this,
+                    "The serial port of your Option device:",
+                    "Serial port for Option Device.", JOptionPane.QUESTION_MESSAGE, null, null,
+                    "/dev/tty.GTM HSDPA Control").toString();
+            this.connectionManagerController = new ConnectionManagerController(port);
+        } catch (Exception e) {
+            this.add(new JLabel("Exception occurred"));
+        }
     }
 
     protected ImageIcon createImageIcon(String path, String description) {

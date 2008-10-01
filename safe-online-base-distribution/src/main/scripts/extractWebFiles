@@ -30,15 +30,33 @@ source "$scripts/bashlib"
 shopt -s nullglob
 
 # Parse options.
-for arg in $(getArgs LRavf "$@"); do
+for arg in $(getArgs hdLRavf "$@"); do
     case $arg in
+		h) showHelp \
+			'Extract Web Files' \
+            "Extract Web Application source files (HTML/CSS) for easy runtime editing.
+             Can also apply their changes onto your source repository." \
+			'lhunath' \
+			\
+            '-L' "Don't hard-link the JBoss files to the work directory; make copies instead." \
+            '-R' "Reverse operation.  Instead of pulling files out of JBoss, apply the work dir onto the running JBoss deployment." \
+			'-a' "Apply work dir changes onto your source repository." \
+			'-v' "Verbose mode.  Give some more detail about non-trivial operations." \
+            '-d' "Debug mode; explain as much as possible about what's being done." \
+            '-f' "Forceful operation.  Overwrite your repository files with those from the work dir when applying, even when your
+                  files are of a newer version than the original work dir files."
+
+			exit		;;
         L) nolink=1     ;;
         R) reverse=1    ;;
         a) apply=1      ;;
         v) verbose=1    ;;
+        d) debug=1
+           verbose=1    ;;
         f) force=1      ;;
     esac
 done
+(( verbose + debug )) || quiet=1
 
 
 # Parse distribution and base paths.
@@ -80,6 +98,16 @@ fi
         exit 1
     }
 }
+
+
+# Some debug info.
+(( debug )) && (
+    IFS=,
+    emit "Base    : $(shorten "$base")"
+    emit "Pwd     : $(shorten "$pwd")"
+    emit "webapps : ${webapps[*]}"
+    emit "repos   : ${repos[*]}"
+)
 
 
 # Extraction work functions.
@@ -150,11 +178,11 @@ elif (( ! reverse )); then
 fi
 
 if (( reverse )); then
-    emit "Linking web files from $(shorten "$work") to $(shorten "$base")" --
+    emit "Linking web files from $(shorten "$work") to $(shorten "$base")" ${quiet:+--}
 elif (( apply )); then
-    emit "Applying web files from $(shorten "$work") to repository" --
+    emit "Applying web files from $(shorten "$work") to repository" ${quiet:+--}
 else
-    emit "Linking web files from $(shorten "$base") to $(shorten "$work")" --
+    emit "Linking web files from $(shorten "$base") to $(shorten "$work")" ${quiet:+--}
 fi
 
 if (( apply )); then
@@ -162,7 +190,10 @@ if (( apply )); then
         webapp=${webapps[w]}
         cd "$work/$webapp"
 
-        find . '(' -name '*.xhtml' -o -name '*.css' ')' -print0 | while read -d '' file; do
+        (( debug )) && \
+            emit -G "Working on $webapp($w) at $PWD"
+
+        find . '(' -name '*.html' -o -name '*.xhtml' -o -name '*.css' ')' -print0 | while read -d '' file; do
             [[ -e $file~ ]] || {
                 emit -y "Backup of $(shorten -p "$pwd" "$file") not found."
                 continue
@@ -171,25 +202,60 @@ if (( apply )); then
             fileHash=$(openssl md4 < "$file")
             backHash=$(openssl md4 < "$file~")
 
+            (( debug )) && \
+                emit " - Hashes of $(shorten "$file"): current: $fileHash <-> backup: $backHash${force:+ (forcing)}"
+
             if (( force )) || [[ $fileHash != $backHash ]]; then
                 ddest="${repos[w]}/${file/-1.2-SNAPSHOT-exp.war//src/main/webapp}"
+                ddest=${ddest//webapp\/WEB-INF\/classes/java}
+                destHash=$([[ -e $ddest ]] && openssl md4 < "$ddest")
 
-                if ! [[ -e $ddest ]] || [[ $(openssl md4 < "$ddest") != $backHash ]]; then
+                (( debug )) && \
+                    emit " - - First Destination candidate: $(shorten "$ddest") (hash: ${destHash:-${red}doesn\'t exist$reset})"
+
+                if [[ $destHash = $fileHash ]]; then
+                    emit "   - $(shorten -p "$pwd" "$ddest"): ${bold}${green}up to date${reset}."
+                    continue
+
+                elif [[ ! -e $ddest ]] || [[ $destHash != $backHash ]]; then
                     adest=( "${repos[w]}/"*"/src/main/webapp/${file/*-1.2-SNAPSHOT-exp.war/}" )
+
+                    (( debug )) && \
+                        emit " - - Additional Candidates:"
+
                     for ad in ${!adest[@]}; do
                         for exclude in $excludes; do
-                            [[ ${adest[ad]} = *$exclude* ]] && unset adest[ad]
+                            [[ ${adest[ad]} = *$exclude* ]] && {
+                                (( debug )) && \
+                                    emit " - - - $ad: $(shorten "${adest[ad]}") matches *$exclude* -> excluded."
+                                
+                                unset adest[ad]
+                            }
                         done
                     done
                     adest=("${adest[@]}")
                     uptodate=
                     mdest=()
+
                     for dest in "${adest[@]}"; do
                         destHash=$(openssl md4 < "$dest")
-                        [[ $destHash = $backHash ]] \
-                            && mdest+=( "$dest" )
-                        [[ $destHash = $fileHash ]] \
-                            && { uptodate=1; mdest=$dest; break; }
+
+                        if [[ $destHash = $backHash ]]; then
+                            mdest+=( "$dest" )
+
+                            (( debug )) && \
+                                emit " - - - $(shorten "$dest"): $destHash: Eligable."
+                        elif [[ $destHash = $fileHash ]]; then
+                            uptodate=1; mdest=$dest
+
+                            (( debug )) && \
+                                emit " - - - $(shorten "$dest"): $destHash: Already applied; skipping to next file."
+
+                            break
+                        else
+                            (( debug )) && \
+                                emit " - - - $(shorten "$dest"): $destHash: Discarted."
+                        fi
                     done
 
                     if [[ ! $uptodate && ( ! ${#mdest[@]} || ${#mdest[@]} > 1 || ! -e $mdest ) ]]; then
@@ -206,8 +272,10 @@ if (( apply )); then
                     fi
 
                     dest=$mdest
+
                 else
                     dest=$ddest
+
                 fi
 
                 (( verbose )) \
@@ -230,4 +298,4 @@ else
     done
 fi
 
-emit -$?
+(( quiet )) && emit -$?

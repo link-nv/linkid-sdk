@@ -9,15 +9,15 @@ package net.link.safeonline.demo.cinema.service;
 import javax.ejb.Local;
 import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.demo.cinema.entity.UserEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 
 
 /**
  * <h2>{@link UserService}<br>
- * <sub>Service bean for {@link UserEntity}.</sub></h2>
+ * <sub>Service bean for {@link CinemaUserEntity}.</sub></h2>
  *
  * <p>
- * Obtain or create {@link UserEntity}s for logged in users.
+ * Obtain or create {@link CinemaUserEntity}s for logged in users.
  * </p>
  *
  * <p>
@@ -33,19 +33,14 @@ public interface UserService extends CinemaService {
 
 
     /**
-     * If the given username does not yet exist; create a {@link UserEntity} for it.
+     * If the given username does not yet exist; create a {@link CinemaUserEntity} for it.
      *
-     * @return The {@link UserEntity} that maps the given username in the cinema database.
+     * @return The {@link CinemaUserEntity} that maps the given username in the cinema database.
      */
-    public UserEntity getUser(String username);
+    public CinemaUserEntity getUser(String username);
 
     /**
      * Update the given user's attributes from OLAS.
      */
-    public UserEntity updateUser(UserEntity user, HttpServletRequest loginRequest);
-
-    /**
-     * @return An attached entity for the given one.
-     */
-    public UserEntity attach(UserEntity user);
+    public CinemaUserEntity updateUser(CinemaUserEntity user, HttpServletRequest loginRequest);
 }

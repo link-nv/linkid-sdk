@@ -19,15 +19,15 @@ import javax.persistence.OneToMany;
 
 
 @Entity
-@NamedQueries( { @NamedQuery(name = UserEntity.getById, query = "SELECT u FROM UserEntity u WHERE u.id = :id") })
-public class UserEntity implements Serializable {
+@NamedQueries( { @NamedQuery(name = CinemaUserEntity.getById, query = "SELECT u FROM CinemaUserEntity u WHERE u.id = :id") })
+public class CinemaUserEntity implements Serializable {
 
     private static final long        serialVersionUID = 1L;
 
-    public static final String       getById          = "UserEntity.getById";
+    public static final String       getById          = "CinemaUserEntity.getById";
 
     @OneToMany(mappedBy = "owner")
-    private Collection<TicketEntity> tickets;
+    private Collection<CinemaTicketEntity> tickets;
 
     @Id
     private String                   id;
@@ -39,12 +39,12 @@ public class UserEntity implements Serializable {
     private String                   name;
 
 
-    public UserEntity() {
+    public CinemaUserEntity() {
 
-        this.tickets = new HashSet<TicketEntity>();
+        this.tickets = new HashSet<CinemaTicketEntity>();
     }
 
-    public UserEntity(String id) {
+    public CinemaUserEntity(String id) {
 
         this();
 
@@ -60,9 +60,9 @@ public class UserEntity implements Serializable {
     }
 
     /**
-     * @return The {@link TicketEntity}s this user has bought.
+     * @return The {@link CinemaTicketEntity}s this user has bought.
      */
-    public Collection<TicketEntity> getTickets() {
+    public Collection<CinemaTicketEntity> getTickets() {
 
         return this.tickets;
     }

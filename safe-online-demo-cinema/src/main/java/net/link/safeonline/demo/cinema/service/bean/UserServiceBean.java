@@ -14,7 +14,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.demo.cinema.entity.UserEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
 import net.link.safeonline.demo.cinema.service.UserService;
 import net.link.safeonline.model.beid.BeIdConstants;
@@ -48,15 +48,16 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
     /**
      * {@inheritDoc}
      */
-    public UserEntity getUser(String id) {
+    public CinemaUserEntity getUser(String id) {
 
-        UserEntity user;
+        CinemaUserEntity user;
         try {
-            user = (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("id", id).getSingleResult();
+            user = (CinemaUserEntity) this.em.createNamedQuery(CinemaUserEntity.getById).setParameter("id", id)
+                    .getSingleResult();
         }
 
         catch (NoResultException e) {
-            user = new UserEntity(id);
+            user = new CinemaUserEntity(id);
             this.em.persist(user);
         }
 
@@ -66,11 +67,11 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
     /**
      * {@inheritDoc}
      */
-    public UserEntity updateUser(UserEntity user, HttpServletRequest loginRequest) {
+    public CinemaUserEntity updateUser(CinemaUserEntity user, HttpServletRequest loginRequest) {
 
         try {
             AttributeClientImpl attributeClient = getOLASAttributeService(loginRequest);
-            UserEntity userEntity = attach(user);
+            CinemaUserEntity userEntity = attach(user);
 
             // National registry number of user.
             String nrns[] = attributeClient.getAttributeValue(userEntity.getId(), BeIdConstants.NRN_ATTRIBUTE,
@@ -122,17 +123,5 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
 
         // Create the attribute service client.
         return new AttributeClientImpl(wsLocation, certificate, privateKey);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public UserEntity attach(UserEntity user) {
-
-        if (user == null)
-            return null;
-
-        return (UserEntity) this.em.createNamedQuery(UserEntity.getById).setParameter("id", user.getId())
-                .getSingleResult();
     }
 }

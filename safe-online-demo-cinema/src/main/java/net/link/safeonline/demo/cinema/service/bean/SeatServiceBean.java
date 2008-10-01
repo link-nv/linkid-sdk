@@ -12,9 +12,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
-import net.link.safeonline.demo.cinema.entity.RoomEntity;
-import net.link.safeonline.demo.cinema.entity.SeatEntity;
-import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaRoomEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatOccupationEntity;
 import net.link.safeonline.demo.cinema.service.SeatService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -38,38 +38,37 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public List<SeatEntity> getSeatsFor(RoomEntity room) {
+    public List<CinemaSeatEntity> getSeatsFor(CinemaRoomEntity room) {
 
-        return this.em.createNamedQuery(SeatEntity.getFor).setParameter("room", room).getResultList();
+        return this.em.createNamedQuery(CinemaSeatEntity.getFor).setParameter("room", room).getResultList();
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isOccupied(SeatEntity seat, Date start) {
+    public boolean isOccupied(CinemaSeatEntity seat, Date start) {
 
-        return !this.em.createNamedQuery(SeatOccupationEntity.getFor).setParameter("seat", seat).setParameter("start",
+        return !this.em.createNamedQuery(CinemaSeatOccupationEntity.getFor).setParameter("seat", seat).setParameter("start",
                 start).getResultList().isEmpty();
     }
 
     /**
      * {@inheritDoc}
      */
-    public SeatOccupationEntity validate(SeatOccupationEntity occupation) throws IllegalStateException {
+    public CinemaSeatOccupationEntity validate(CinemaSeatOccupationEntity occupation) throws IllegalStateException {
 
-        SeatEntity seat = (SeatEntity) this.em.createNamedQuery(SeatEntity.getById).setParameter("id",
+        CinemaSeatEntity seat = (CinemaSeatEntity) this.em.createNamedQuery(CinemaSeatEntity.getById).setParameter("id",
                 occupation.getSeat().getId()).getSingleResult();
 
         // Check to see if this seat has already been occupied, and if so,
         // whether it was reserved or not.
         try {
-            SeatOccupationEntity existingOccupation = (SeatOccupationEntity) this.em.createNamedQuery(
-                    SeatOccupationEntity.getFor).setParameter("seat", seat)
+            CinemaSeatOccupationEntity existingOccupation = (CinemaSeatOccupationEntity) this.em.createNamedQuery(
+                    CinemaSeatOccupationEntity.getFor).setParameter("seat", seat)
                     .setParameter("start", occupation.getStart()).getSingleResult();
 
-            if (existingOccupation.isReserved()) {
+            if (existingOccupation.isReserved())
                 throw new IllegalStateException("Seat " + seat + " is already occupied.");
-            }
 
             // An existing occupation that is not yet reserved?
             // Must be a stale ticket registration; give the existing

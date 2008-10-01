@@ -5,7 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.demo.cinema.entity.UserEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.service.UserService;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
@@ -36,7 +36,7 @@ public class LoginPage extends LayoutPage {
         // If logged in, send user to the ticket history page.
         if (WicketUtil.isAuthenticated(getRequest())) {
             try {
-                UserEntity user = this.userService.getUser(WicketUtil.getUsername(getRequest()));
+                CinemaUserEntity user = this.userService.getUser(WicketUtil.getUsername(getRequest()));
                 user = this.userService.updateUser(user, WicketUtil.toServletRequest(getRequest()));
                 CinemaSession.get().setUser(user);
 
@@ -49,7 +49,7 @@ public class LoginPage extends LayoutPage {
             }
         }
 
-        add(new Label<String>("headerTitle", "Login Page"));
+        add(new Label("headerTitle", "Login Page"));
         add(new Link<Object>("loginlink") {
 
             private static final long serialVersionUID = 1L;

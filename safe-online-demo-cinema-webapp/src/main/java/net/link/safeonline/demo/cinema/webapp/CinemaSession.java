@@ -13,13 +13,13 @@ import java.util.Date;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import net.link.safeonline.demo.cinema.entity.FilmEntity;
-import net.link.safeonline.demo.cinema.entity.RoomEntity;
-import net.link.safeonline.demo.cinema.entity.SeatEntity;
-import net.link.safeonline.demo.cinema.entity.SeatOccupationEntity;
-import net.link.safeonline.demo.cinema.entity.TheatreEntity;
-import net.link.safeonline.demo.cinema.entity.TicketEntity;
-import net.link.safeonline.demo.cinema.entity.UserEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaRoomEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaSeatOccupationEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
 
 import org.apache.commons.logging.Log;
@@ -49,13 +49,13 @@ public class CinemaSession extends Session {
 
     private transient TicketService ticketService;
 
-    private UserEntity              user;
-    private FilmEntity              film;
-    private TheatreEntity           theatre;
+    private CinemaUserEntity              user;
+    private CinemaFilmEntity              film;
+    private CinemaTheatreEntity           theatre;
     private Date                    time;
-    private RoomEntity              room;
-    private SeatOccupationEntity    occupation;
-    private TicketEntity            ticket;
+    private CinemaRoomEntity              room;
+    private CinemaSeatOccupationEntity    occupation;
+    private CinemaTicketEntity            ticket;
 
 
     public CinemaSession(Request request) {
@@ -73,12 +73,12 @@ public class CinemaSession extends Session {
         }
     }
 
-    public void setUser(UserEntity user) {
+    public void setUser(CinemaUserEntity user) {
 
         this.user = user;
     }
 
-    public UserEntity getUser() {
+    public CinemaUserEntity getUser() {
 
         return this.user;
     }
@@ -87,7 +87,7 @@ public class CinemaSession extends Session {
      * @param film
      *            The film the user selected for viewing.
      */
-    public void setFilm(FilmEntity film) {
+    public void setFilm(CinemaFilmEntity film) {
 
         this.film = film;
     }
@@ -95,7 +95,7 @@ public class CinemaSession extends Session {
     /**
      * @return The film the user selected for viewing.
      */
-    public FilmEntity getFilm() {
+    public CinemaFilmEntity getFilm() {
 
         return this.film;
     }
@@ -104,7 +104,7 @@ public class CinemaSession extends Session {
      * @param theatre
      *            The theatre the user will view his film in.
      */
-    public void setTheatre(TheatreEntity theatre) {
+    public void setTheatre(CinemaTheatreEntity theatre) {
 
         this.theatre = theatre;
     }
@@ -112,7 +112,7 @@ public class CinemaSession extends Session {
     /**
      * @return The theatre the user will view his film in.
      */
-    public TheatreEntity getTheatre() {
+    public CinemaTheatreEntity getTheatre() {
 
         return this.theatre;
     }
@@ -130,7 +130,7 @@ public class CinemaSession extends Session {
      * @param room
      *            The room of the theatre the user will view the film in.
      */
-    public void setRoom(RoomEntity room) {
+    public void setRoom(CinemaRoomEntity room) {
 
         this.room = room;
     }
@@ -146,7 +146,7 @@ public class CinemaSession extends Session {
     /**
      * @return The room of the theatre the user will view the film in.
      */
-    public RoomEntity getRoom() {
+    public CinemaRoomEntity getRoom() {
 
         return this.room;
     }
@@ -154,7 +154,7 @@ public class CinemaSession extends Session {
     /**
      * @return The seat occupied by the user.
      */
-    public SeatOccupationEntity getOccupation() {
+    public CinemaSeatOccupationEntity getOccupation() {
 
         return this.occupation;
     }
@@ -163,7 +163,7 @@ public class CinemaSession extends Session {
      * @return The complete ticket for the selections made by the user or <code>null</code> if not all required
      *         selections have been made yet.
      */
-    public TicketEntity getTicket() {
+    public CinemaTicketEntity getTicket() {
 
         if (this.ticket == null) {
             if (getUser() != null && getFilm() != null && getTime() != null && getOccupation() != null) {
@@ -187,12 +187,12 @@ public class CinemaSession extends Session {
      * @param seat
      *            The seat to occupy or unoccupy.
      */
-    public void toggleSeat(SeatEntity seat) {
+    public void toggleSeat(CinemaSeatEntity seat) {
 
         if (this.occupation != null && this.occupation.getSeat().equals(seat)) {
             this.occupation = null;
         } else {
-            this.occupation = new SeatOccupationEntity(seat, this.time);
+            this.occupation = new CinemaSeatOccupationEntity(seat, this.time);
         }
     }
 
@@ -274,7 +274,7 @@ public class CinemaSession extends Session {
      * 
      * @return <code>true</code> when the given seat is occupied by the user in this session.
      */
-    public static boolean isOccupied(SeatEntity seat) {
+    public static boolean isOccupied(CinemaSeatEntity seat) {
 
         return isSeatSet() && get().getOccupation().getSeat().equals(seat);
     }
@@ -369,8 +369,8 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     * 
-     * @return <code>true</code> if there is a user logged in and has a {@link UserEntity} set.
+     *
+     * @return <code>true</code> if there is a user logged in and has a {@link CinemaUserEntity} set.
      */
     public static boolean isUserSet() {
 

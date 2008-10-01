@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.demo.cinema.entity.TicketEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -87,7 +87,7 @@ public class CinemaTicketServlet extends HttpServlet {
 
         // Retrieve all tickets for user at time (optionally, in theatre).
         if (film == null) {
-            List<TicketEntity> tickets;
+            List<CinemaTicketEntity> tickets;
             if (theatre == null) {
                 tickets = this.ticketService.getTickets(nrn, date);
             } else {

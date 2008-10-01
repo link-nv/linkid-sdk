@@ -10,7 +10,7 @@ public class ListPage extends Layout {
 	private static final long serialVersionUID = 1L;
 
 	public ListPage() {
-		add(new Label<String>("headerTitle", "List of lawyers"));
+		add(new Label("headerTitle", "List of lawyers"));
 		add(new AdminNavigationBorder("navigation"));
 	}
 

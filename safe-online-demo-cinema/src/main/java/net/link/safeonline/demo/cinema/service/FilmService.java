@@ -10,16 +10,16 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.demo.cinema.entity.FilmEntity;
-import net.link.safeonline.demo.cinema.entity.TheatreEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 
 
 /**
  * <h2>{@link FilmService}<br>
- * <sub>Service bean for {@link FilmEntity}.</sub></h2>
+ * <sub>Service bean for {@link CinemaFilmEntity}.</sub></h2>
  *
  * <p>
- * Provide access to either all {@link FilmEntity}s or those that play in a given theatre.
+ * Provide access to either all {@link CinemaFilmEntity}s or those that play in a given theatre.
  * </p>
  *
  * <p>
@@ -35,17 +35,12 @@ public interface FilmService extends CinemaService {
 
 
     /**
-     * @return All known {@link FilmEntity}s.
+     * @return All known {@link CinemaFilmEntity}s.
      */
-    public List<FilmEntity> getAllFilms();
+    public List<CinemaFilmEntity> getAllFilms();
 
     /**
      * @return All films that play in at least one room of the given theatre.
      */
-    public List<FilmEntity> getFilmsThatPlayIn(TheatreEntity theatre);
-
-    /**
-     * @return An attached entity for the given one.
-     */
-    public FilmEntity attach(FilmEntity film);
+    public List<CinemaFilmEntity> getFilmsThatPlayIn(CinemaTheatreEntity theatre);
 }

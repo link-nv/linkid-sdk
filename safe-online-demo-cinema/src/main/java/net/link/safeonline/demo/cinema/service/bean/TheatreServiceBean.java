@@ -10,8 +10,8 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import net.link.safeonline.demo.cinema.entity.FilmEntity;
-import net.link.safeonline.demo.cinema.entity.TheatreEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 import net.link.safeonline.demo.cinema.service.TheatreService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -36,29 +36,17 @@ public class TheatreServiceBean extends AbstractCinemaServiceBean implements The
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public List<TheatreEntity> getAllTheatres() {
+    public List<CinemaTheatreEntity> getAllTheatres() {
 
-        return this.em.createNamedQuery(TheatreEntity.getAll).getResultList();
+        return this.em.createNamedQuery(CinemaTheatreEntity.getAll).getResultList();
     }
 
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public List<TheatreEntity> getTheatresThatPlay(FilmEntity film) {
+    public List<CinemaTheatreEntity> getTheatresThatPlay(CinemaFilmEntity film) {
 
-        return this.em.createNamedQuery(TheatreEntity.getAllFor).setParameter("film", film).getResultList();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public TheatreEntity attach(TheatreEntity theatre) {
-
-        if (theatre == null)
-            return null;
-
-        return (TheatreEntity) this.em.createNamedQuery(TheatreEntity.getById).setParameter("id", theatre.getId())
-                .getSingleResult();
+        return this.em.createNamedQuery(CinemaTheatreEntity.getAllFor).setParameter("film", film).getResultList();
     }
 }

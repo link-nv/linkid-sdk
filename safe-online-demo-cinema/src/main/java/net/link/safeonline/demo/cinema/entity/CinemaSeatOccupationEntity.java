@@ -23,11 +23,11 @@ import javax.persistence.NamedQuery;
 @Entity
 // @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "seat", "start"
 // }))
-@NamedQueries( { @NamedQuery(name = SeatOccupationEntity.getFor, query = "SELECT o FROM SeatOccupationEntity o WHERE o.seat = :seat AND o.start = :start") })
-public class SeatOccupationEntity implements Serializable {
+@NamedQueries( { @NamedQuery(name = CinemaSeatOccupationEntity.getFor, query = "SELECT o FROM CinemaSeatOccupationEntity o WHERE o.seat = :seat AND o.start = :start") })
+public class CinemaSeatOccupationEntity implements Serializable {
 
     private static final long  serialVersionUID = 1L;
-    public static final String getFor           = "SeatOccupationEntity.getFor";
+    public static final String getFor           = "CinemaSeatOccupationEntity.getFor";
 
     @Id
     @SuppressWarnings("unused")
@@ -35,16 +35,16 @@ public class SeatOccupationEntity implements Serializable {
     private long               id;
 
     @ManyToOne
-    private SeatEntity         seat;
+    private CinemaSeatEntity         seat;
     private Date               start;
     private boolean            reserved;
 
 
-    public SeatOccupationEntity() {
+    public CinemaSeatOccupationEntity() {
 
     }
 
-    public SeatOccupationEntity(SeatEntity seat, Date start) {
+    public CinemaSeatOccupationEntity(CinemaSeatEntity seat, Date start) {
 
         this.seat = seat;
         this.start = start;
@@ -54,7 +54,7 @@ public class SeatOccupationEntity implements Serializable {
     /**
      * @return The seat that this entity occupies.
      */
-    public SeatEntity getSeat() {
+    public CinemaSeatEntity getSeat() {
 
         return this.seat;
     }
