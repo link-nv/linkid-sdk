@@ -449,6 +449,14 @@
 			</properties>
 		</profile>
 
+               <!-- Profile for deploying on sebeco-dev-11 -->
+		<profile>
+			<id>sebeco-dev-11</id>
+			<properties>
+				<safe-online.host.name> sebeco-dev-11 </safe-online.host.name>
+			</properties>
+		</profile>
+
 		<!-- Profile for deploying on sebeco-dev-13 -->
 		<profile>
 			<id>sebeco-dev-13</id>

@@ -18,27 +18,26 @@
 	<ui:define name="content">
 
 		<table>
-            <colgroup class="half" />
-            <colgroup />
+			<colgroup class="half" />
+			<colgroup />
 
-            <tbody>
-                <tr>
-                    <th><h:outputText value="#{msgs.name}" /></th>
-                    <td><h:outputText id="name"
-                        value="#{selectedApplicationOwner.entity.name}" /></td>
-                </tr>
-                <tr>
-                    <th><h:outputText value="#{msgs.admin}" /></th>
-                    <td><h:outputText id="admin"
-                        value="#{selectedApplicationOwner.adminName}" /></td>
-                </tr>
-            </tbody>
+			<tbody>
+				<tr>
+					<th><h:outputText value="#{msgs.name}" /></th>
+					<td><h:outputText id="name"
+						value="#{selectedApplicationOwner.entity.name}" /></td>
+				</tr>
+				<tr>
+					<th><h:outputText value="#{msgs.admin}" /></th>
+					<td><h:outputText id="admin"
+						value="#{selectedApplicationOwner.adminName}" /></td>
+				</tr>
+			</tbody>
 		</table>
 
 		<h:form id="appOwnerForm">
 			<rich:dataTable id="app-data" var="item" value="#{applicationList}"
-				rows="10"
-				rowClasses="listingTable_Row1,listingTable_Row2">
+				rows="10" rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column headerClass="half">
 					<f:facet name="header">#{msgs.application}</f:facet>
 					<h:commandLink id="view" value="#{item.name}"
@@ -83,7 +82,8 @@
 				</f:facet>
 			</rich:dataTable>
 
-			<rich:messages warnClass="error" errorClass="error" fatalClass="error" />
+			<rich:messages warnClass="error" errorClass="error"
+				fatalClass="error" />
 		</h:form>
 
 		<h:form>
@@ -97,6 +97,8 @@
 			<ul>
 				<li><h:commandLink action="/applications/applications.seam"
 					value="#{msgs.applications}" /></li>
+				<li><h:commandLink action="/pools/pools.seam"
+					value="#{msgs.applicationPools}" /></li>
 			</ul>
 		</h:form>
 	</ui:define>

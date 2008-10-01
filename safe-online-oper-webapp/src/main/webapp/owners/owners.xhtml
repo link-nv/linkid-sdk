@@ -70,7 +70,8 @@
 				</f:facet>
 			</rich:dataTable>
 
-			<rich:messages warnClass="error" errorClass="error" fatalClass="error" />
+			<rich:messages warnClass="error" errorClass="error"
+				fatalClass="error" />
 
 			<a4j:commandButton value="#{msgs.addaction}" id="add"
 				action="add-owner" styleClass="submit" />
@@ -82,6 +83,8 @@
 			<ul>
 				<li><h:commandLink action="/applications/applications.seam"
 					value="#{msgs.applications}" /></li>
+				<li><h:commandLink action="/pools/pools.seam"
+					value="#{msgs.applicationPools}" /></li>
 			</ul>
 		</h:form>
 	</ui:define>
