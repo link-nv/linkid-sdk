@@ -84,7 +84,7 @@ emit "Converting JAR dependencies on safe-online projects to source dependencies
 					[[ $src = $curSrc ]] && continue 2
 				done
 
-				line=$(sed '/M2_REPO.net.lin-k.safe-online/ { s,M2_REPO/net/lin-k/safe-online/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/ }' <<< "$line")
+				line=$(sed '/M2_REPO.net.lin-k.safe-online/ { s,M2_REPO/net/lin-k/safe-online/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; }' <<< "$line")
 			fi
 
 			echo "$line"

@@ -801,7 +801,7 @@ showHelp() {
 
     # Parse the options.
     local appName=$1; shift
-    local appDesc=$1; shift
+    local appDesc=${1//+([[:space:]])/ }; shift
     local appAuthor=$1; shift
 
     # Figure out what FD to use for our messages.
@@ -908,7 +908,11 @@ shorten() {
     elif [[ -d ${path%/*} ]]
     then path=$(cd "${path%/*}"; printf "%s" "$PWD/${path##*/}")
 
-    # If not, we'll use sed to clean out the mess.
+    # If not, we'll try readlink -m.
+    elif readlink -m / >/dev/null 2>&1; then
+        path=$(readlink -m "$path")
+
+    # If we don't have that - unleash the sed(1) madness.
     else
         local oldpath=/
         while [[ $oldpath != $path ]]; do
