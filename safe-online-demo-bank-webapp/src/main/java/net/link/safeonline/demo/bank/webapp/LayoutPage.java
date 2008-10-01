@@ -11,10 +11,13 @@ import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.link.PageLink;
 import org.apache.wicket.model.Model;
 
 
@@ -91,6 +94,7 @@ public abstract class LayoutPage extends WebPage {
 
             super(id);
 
+            add(getPageLink());
             add(new Link<String>("logout") {
 
                 private static final long serialVersionUID = 1L;
@@ -120,4 +124,15 @@ public abstract class LayoutPage extends WebPage {
             }
         }
     }
+
+
+    Component getPageLink() {
+
+        return new PageLink("pageLink", getPageLinkDestination());
+    }
+
+    /**
+     * @return The page that the page-link refers to.
+     */
+    abstract Class<? extends Page> getPageLinkDestination();
 }

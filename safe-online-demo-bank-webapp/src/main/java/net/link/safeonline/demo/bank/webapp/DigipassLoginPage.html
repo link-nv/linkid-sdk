@@ -13,26 +13,28 @@
 	            <table>
 	                <caption>Follow these instructions</caption>
 	
-	                <tr>
-	                    <td>
-	                        Enter your user number: <input type="text" wicket:id="bankId" />
-	                    </td>
-	                </tr>
-	                <tr>
-	                    <td>
-	                        Hit "<b>I</b>" and enter your <b>PIN code</b>.  Hit "<b>=</b>".
-	                    </td>
-	                </tr>
-	                <tr>
-	                    <td>
-	                        Input the numbers on your display here: <input type="text" wicket:id="otp" />
-	                    </td>
-	                </tr>
-	                <tr>
-	                    <th class="nopad">
-	                        <input type="submit" value="Ready &gt;" />
-	                    </th>
-	                </tr>
+                    <tbody>
+                        <tr>
+                            <th>Enter your user name:</th>
+                            <td><input type="text" wicket:id="bankId" /></td>
+                        </tr>
+                        <tr>
+                            <th>Hit <b class="key">I</b> and enter your <b>PIN code</b>.
+                                Then hit <b class="key">=</b>.</th>
+                        </tr>
+                        <tr>
+                            <th>Input the numbers on your display here:</th>
+                            <td><input type="text" wicket:id="otp" /></td>
+                        </tr>
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <th colspan="2" class="nopad">
+                                <input type="submit" value="Ready &gt;" />
+                            </th>
+                        </tr>
+                    </tfoot>
 	            </table>
             </form>
 

@@ -6,11 +6,11 @@ import net.link.safeonline.demo.bank.entity.BankUserEntity;
 import net.link.safeonline.demo.wicket.tools.OlasLoginLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.PageLink;
 
 
 public class LoginPage extends LayoutPage {
-
 
     private static final long serialVersionUID = 1L;
 
@@ -25,7 +25,14 @@ public class LoginPage extends LayoutPage {
         // If logged in using OLAS, create/obtain the bank user from the OLAS user.
         if (WicketUtil.isAuthenticated(getRequest())) {
             try {
-                BankUserEntity user = getUserService().getOLASUser(WicketUtil.getUsername(getRequest()));
+                BankUserEntity user = BankSession.get().getUser();
+                if (BankSession.isLinking()) {
+                    BankSession.get().setLinkingUser(null);
+                    user = getUserService().linkOLASUser(user, WicketUtil.getUsername(getRequest()));
+                } else {
+                    user = getUserService().getOLASUser(WicketUtil.getUsername(getRequest()));
+                }
+
                 user = getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest()));
                 BankSession.get().setUser(user);
             }
@@ -34,7 +41,7 @@ public class LoginPage extends LayoutPage {
                 this.LOG.error("[BUG] Not really logged in?!", e);
             }
         }
-        
+
         // If logged in, send user to the ticket history page.
         if (BankSession.isUserSet()) {
             setResponsePage(AccountPage.class);
@@ -46,7 +53,6 @@ public class LoginPage extends LayoutPage {
         add(new PageLink("digipassLoginLink", DigipassLoginPage.class));
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -54,5 +60,14 @@ public class LoginPage extends LayoutPage {
     protected String getHeaderTitle() {
 
         return "Login Page";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Class<? extends Page> getPageLinkDestination() {
+
+        return LoginPage.class;
     }
 }

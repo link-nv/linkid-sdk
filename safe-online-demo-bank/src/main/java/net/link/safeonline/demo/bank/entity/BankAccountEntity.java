@@ -22,25 +22,25 @@ import javax.persistence.NamedQuery;
         @NamedQuery(name = BankAccountEntity.getByUser, query = "SELECT a FROM BankAccountEntity a WHERE a.user = :user") })
 public class BankAccountEntity implements Serializable {
 
-    private static final long       serialVersionUID = 1L;
+    private static final long    serialVersionUID = 1L;
 
-    public static final String      getByCode        = "BankAccountEntity.getByCode";
-
-    public static final String      getByUser        = "BankAccountEntity.getByUser";
+    public static final String   getByCode        = "BankAccountEntity.getByCode";
+    public static final String   getByUser        = "BankAccountEntity.getByUser";
 
     @Id
-    private String                  code;
+    private String               code;
 
     @ManyToOne
-    private BankUserEntity              user;
+    private BankUserEntity       user;
 
-    private String                  name;
+    private String               name;
 
-    private Double                  amount;
+    private Double               amount;
 
 
     public BankAccountEntity() {
 
+        this.amount = 0d;
     }
 
     public BankAccountEntity(BankUserEntity user, String name, String code) {
@@ -100,16 +100,5 @@ public class BankAccountEntity implements Serializable {
     public Double getAmount() {
 
         return this.amount;
-    }
-    
-    // UTILITY ------------------------------------------------------
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-
-        return String.format("%s [%0.2f] (%s)", getName(), getAmount(), getCode());
     }
 }

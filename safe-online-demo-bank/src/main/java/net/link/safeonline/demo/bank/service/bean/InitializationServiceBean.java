@@ -49,14 +49,14 @@ public class InitializationServiceBean extends AbstractBankServiceBean implement
 
         
         // Pol.
-        user = new BankUserEntity("pol");
+        user = new BankUserEntity("pol", "Pol Van Acker");
         users.add(user);
 
         accounts.add(account = new BankAccountEntity(user, "persoon", "543-3246784-43"));
         account.setAmount(1200);
-        accounts.add(new BankAccountEntity(user, "kinderen", "897-2998431-32"));
+        accounts.add(account = new BankAccountEntity(user, "kinderen", "897-2998431-32"));
         account.setAmount(200);
-        accounts.add(new BankAccountEntity(user, "spaar", "521-9045853-09"));
+        accounts.add(account = new BankAccountEntity(user, "spaar", "521-9045853-09"));
         account.setAmount(28000);
         
         

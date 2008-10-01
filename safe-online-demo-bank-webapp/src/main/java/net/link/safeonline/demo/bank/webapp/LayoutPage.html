@@ -22,20 +22,23 @@
             <table>
                 <caption>Logged in as:</caption>
 
-                <colgroup />
-                <colgroup />
-                <colgroup class="small" />
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <th>Total</th>
+                    </tr>
+                    <tr>
+                        <td wicket:id="name" />
+                        <td wicket:id="amount" />
+                    </tr>
+                </tbody>
 
-                <tr>
-                    <th>Name</th>
-                    <th>Total</th>
-                    <th class="nopad"><a wicket:id="logout">Logout &gt;</a></th>
-                </tr>
-                <tr>
-                    <td wicket:id="name" />
-                    <td wicket:id="amount" />
-                    <td />
-                </tr>
+                <tfoot>
+                    <tr>
+                        <th class="nopad"><a wicket:id="pageLink" /></th>
+                        <th class="nopad"><a wicket:id="logout">Logout &gt;</a></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
                 

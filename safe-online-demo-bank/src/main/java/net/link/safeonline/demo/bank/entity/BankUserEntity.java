@@ -9,6 +9,7 @@ package net.link.safeonline.demo.bank.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -29,6 +30,7 @@ public class BankUserEntity implements Serializable {
     @Id
     private String             bankId;
 
+    @Column(unique = true)
     private String             olasId;
 
     private String             name;
@@ -38,16 +40,17 @@ public class BankUserEntity implements Serializable {
 
     }
 
-    public BankUserEntity(String bankId) {
+    public BankUserEntity(String bankId, String name) {
 
         this();
 
         this.bankId = bankId;
+        this.name = name;
     }
 
-    public BankUserEntity(String bankId, String olasId) {
+    public BankUserEntity(String bankId, String olasId, String name) {
 
-        this(bankId);
+        this(bankId, name);
 
         this.olasId = olasId;
     }
@@ -58,6 +61,15 @@ public class BankUserEntity implements Serializable {
     public String getBankId() {
 
         return this.bankId;
+    }
+
+    /**
+     * @param olasId
+     *            The OLAS id of the user for this application.
+     */
+    public void setOlasId(String olasId) {
+
+        this.olasId = olasId;
     }
 
     /**

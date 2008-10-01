@@ -4,8 +4,11 @@ import java.util.List;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
+import net.link.safeonline.demo.wicket.tools.OlasLoginLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -95,8 +98,7 @@ public class AccountPage extends LayoutPage {
                     accountItem.add(new Label("amount", WicketUtil.format(getSession(), account.getAmount())));
 
                     /* Transactions List. */
-                    accountItem.add(new ListView<BankTransactionEntity>("transactionList",
-                            getTransactionService()
+                    accountItem.add(new ListView<BankTransactionEntity>("transactionList", getTransactionService()
                             .getAllTransactions(account)) {
 
                         private static final long serialVersionUID = 1L;
@@ -160,5 +162,34 @@ public class AccountPage extends LayoutPage {
     protected String getHeaderTitle() {
 
         return "Account Overview";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Component getPageLink() {
+
+        return new OlasLoginLink("pageLink") {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void onClick() {
+
+                BankSession.get().setLinkingUser(BankSession.get().getUser());
+
+                super.onClick();
+            }
+        };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Class<? extends Page> getPageLinkDestination() {
+
+        throw new IllegalStateException("unused");
     }
 }

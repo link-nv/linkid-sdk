@@ -30,7 +30,9 @@ public class BankSession extends Session {
 
     private static final long serialVersionUID = 1L;
 
-    private BankUserEntity        user;
+    private BankUserEntity    user;
+
+    private String            linkingBankId;
 
 
     // USER ---------------------------------------------------------
@@ -46,6 +48,22 @@ public class BankSession extends Session {
     }
 
     /**
+     * @return The bankId of the user that is being linked to an OLAS account.
+     */
+    public String getLinkingUser() {
+
+        return this.linkingBankId;
+    }
+
+    /**
+     * Notify the session that the given user's bank account is being linked to an OLAS account.
+     */
+    public void setLinkingUser(BankUserEntity user) {
+
+        this.linkingBankId = user == null? null: user.getBankId();
+    }
+
+    /**
      * Operates on the current session.
      * 
      * @return <code>true</code> if there is a user logged in and has a {@link BankUserEntity} set.
@@ -53,6 +71,16 @@ public class BankSession extends Session {
     public static boolean isUserSet() {
 
         return get().getUser() != null;
+    }
+
+    /**
+     * Operates on the current session.
+     * 
+     * @return <code>true</code> if the currently logged in user has requested his account be linked to an OLAS account.
+     */
+    public static boolean isLinking() {
+
+        return isUserSet() && get().getLinkingUser().equals(get().getUser().getBankId());
     }
 
     // GLOBAL -------------------------------------------------------

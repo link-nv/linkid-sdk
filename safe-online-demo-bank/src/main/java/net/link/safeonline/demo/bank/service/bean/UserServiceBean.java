@@ -75,11 +75,22 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
                 }
             }
 
-            BankUserEntity userEntity = new BankUserEntity(bankId, olasId);
+            BankUserEntity userEntity = new BankUserEntity(bankId, olasId, olasId);
             this.em.persist(userEntity);
 
             return userEntity;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId) {
+
+        BankUserEntity userEntity = attach(user);
+        userEntity.setOlasId(olasId);
+
+        return userEntity;
     }
 
     /**

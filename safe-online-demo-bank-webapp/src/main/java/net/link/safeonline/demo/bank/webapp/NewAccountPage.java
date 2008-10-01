@@ -1,5 +1,6 @@
 package net.link.safeonline.demo.bank.webapp;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.Model;
@@ -91,5 +92,15 @@ public class NewAccountPage extends LayoutPage {
         if (getAccountService().createAccount(BankSession.get().getUser(), name) != null) {
             setResponsePage(AccountPage.class);
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Class<? extends Page> getPageLinkDestination() {
+
+        return AccountPage.class;
     }
 }

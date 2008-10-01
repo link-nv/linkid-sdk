@@ -18,15 +18,15 @@ import net.link.safeonline.demo.bank.entity.BankUserEntity;
 /**
  * <h2>{@link UserService}<br>
  * <sub>Service bean for {@link BankUserEntity}.</sub></h2>
- *
+ * 
  * <p>
  * Obtain or create {@link BankUserEntity}s for logged in users.
  * </p>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Local
@@ -36,7 +36,8 @@ public interface UserService extends BankService {
 
 
     /**
-     * @return The {@link BankUserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the bank.
+     * @return The {@link BankUserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the
+     *         bank.
      */
     public BankUserEntity getBankUser(String bankId);
 
@@ -46,6 +47,11 @@ public interface UserService extends BankService {
      * @return The {@link BankUserEntity} with the given OLAS ID.
      */
     public BankUserEntity getOLASUser(String olasId);
+
+    /**
+     * @return The {@link BankUserEntity} that has been linked to the OLAS account of the given OLAS id.
+     */
+    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId);
 
     /**
      * Update the given user's attributes from OLAS.

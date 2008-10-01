@@ -20,25 +20,26 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link BankStartupListener}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Sep 22, 2008</i>
  * </p>
- *
+ * 
  * @author lhunath
  */
 public class BankStartupListener implements ServletContextListener {
 
     private static final Log LOG = LogFactory.getLog(BankStartupListener.class);
 
+
     /**
      * {@inheritDoc}
      */
-    public void contextDestroyed(ServletContextEvent sce) {
+    public void contextInitialized(ServletContextEvent sce) {
 
         try {
             ((InitializationService) new InitialContext().lookup(InitializationService.BINDING)).buildEntities();
@@ -50,8 +51,7 @@ public class BankStartupListener implements ServletContextListener {
     /**
      * {@inheritDoc}
      */
-    public void contextInitialized(ServletContextEvent sce) {
+    public void contextDestroyed(ServletContextEvent sce) {
 
     }
-
 }

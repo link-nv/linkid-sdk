@@ -1,13 +1,16 @@
 package net.link.safeonline.demo.bank.webapp;
 
-import net.link.safeonline.demo.wicket.service.OlasNamingStrategy;
+import net.link.safeonline.demo.bank.converters.BankAccountConverter;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
+import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.wicketstuff.javaee.injection.JavaEEComponentInjector;
+import org.apache.wicket.util.convert.ConverterLocator;
 
 
 public class BankApplication extends WebApplication {
@@ -15,8 +18,19 @@ public class BankApplication extends WebApplication {
     @Override
     protected void init() {
 
-        addComponentInstantiationListener(new JavaEEComponentInjector(this, new OlasNamingStrategy()));
-        // WicketUtil.inject(this);
+        WicketUtil.addInjector(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IConverterLocator newConverterLocator() {
+
+        ConverterLocator converterLocator = new ConverterLocator();
+        converterLocator.set(BankAccountEntity.class, new BankAccountConverter());
+
+        return converterLocator;
     }
 
     /**

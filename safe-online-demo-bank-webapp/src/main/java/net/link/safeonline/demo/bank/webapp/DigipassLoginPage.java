@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 
 import net.link.safeonline.demo.bank.service.UserService;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
@@ -70,5 +71,14 @@ public class DigipassLoginPage extends LayoutPage {
     protected String getHeaderTitle() {
 
         return "Digipass Authentication";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Class<? extends Page> getPageLinkDestination() {
+
+        return LoginPage.class;
     }
 }

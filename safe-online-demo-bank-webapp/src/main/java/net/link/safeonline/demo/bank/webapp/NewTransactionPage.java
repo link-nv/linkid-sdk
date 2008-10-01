@@ -3,6 +3,7 @@ package net.link.safeonline.demo.bank.webapp;
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.webapp.NewAccountPage.AccountForm;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -66,7 +67,7 @@ public class NewTransactionPage extends LayoutPage {
         private Model<String>            description;
         private Model<BankAccountEntity> source;
         private Model<String>            target;
-        private Model<Double>            amount;
+        private Model<String>            amount;
 
 
         public TransactionForm(String id) {
@@ -77,14 +78,14 @@ public class NewTransactionPage extends LayoutPage {
             add(new RadioChoice<BankAccountEntity>("source", this.source = new Model<BankAccountEntity>(),
                     getUserService().getAccounts(BankSession.get().getUser())));
             add(new TextField<String>("target", this.target = new Model<String>()));
-            add(new TextField<Double>("amount", this.amount = new Model<Double>()));
+            add(new TextField<String>("amount", this.amount = new Model<String>()));
         }
 
         @Override
         protected void onSubmit() {
 
-            if (getTransactionService().createTransaction(this.description.getObject(), this.source
-                    .getObject(), this.target.getObject(), this.amount.getObject()) != null) {
+            if (getTransactionService().createTransaction(this.description.getObject(), this.source.getObject(),
+                    this.target.getObject(), Double.parseDouble(this.amount.getObject())) != null) {
                 setResponsePage(AccountPage.class);
             }
         }
@@ -98,5 +99,15 @@ public class NewTransactionPage extends LayoutPage {
     protected String getHeaderTitle() {
 
         return "New Transaction";
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Class<? extends Page> getPageLinkDestination() {
+
+        return AccountPage.class;
     }
 }
