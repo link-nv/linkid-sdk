@@ -11,9 +11,9 @@ public class ConnectionManagerController {
 
 	OptionDevice optionDevice;
 
-	public ConnectionManagerController() throws Exception {
+	public ConnectionManagerController(String port) throws Exception {
 
-		this.optionDevice = new FujiDataCard("/dev/tty.GTM HSDPA Control");
+		this.optionDevice = new FujiDataCard(port);
 
 		Endpoint.publish(ConnectionManagerConstants.URL,
 				new ConnectionManagerServiceImpl(this.optionDevice));
