@@ -104,6 +104,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private String              demoBankWebappName;
 
+
     public DemoStartableBean() {
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
@@ -142,7 +143,7 @@ public class DemoStartableBean extends AbstractInitBean {
         configTicketDemo();
 
         configBankDemo();
-        
+
         configCinemaDemo();
 
         configPaymentDemo();
@@ -306,8 +307,9 @@ public class DemoStartableBean extends AbstractInitBean {
         try {
             this.registeredApplications.add(new Application(DEMO_BANK_APPLICATION_NAME, "owner", null, new URL(
                     this.protocol, this.hostname, this.hostport, "/" + this.demoBankWebappName),
-                    getLogo("/ebank-small.png"),
-                    null, true, true, demoBankCertificate, false, IdScopeType.SUBSCRIPTION, true));
+                    getLogo("/ebank-small.png"), null, true, true, demoBankCertificate, false,
+                    IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
+                            + this.demoBankWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -340,7 +342,7 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER, demoBankCertificate);
     }
-    
+
     private void configCinemaDemo() {
 
         PrivateKeyEntry demoCinemaPrivateKeyEntry = DemoCinemaKeyStoreUtils.getPrivateKeyEntry();
