@@ -37,6 +37,7 @@
 					<dname> cn=${safe-online.host.name}, ou=Development,
 						L=SINT-MARTENS-LATEM, ST=VL, o=LIN.K_NV, c=BE </dname>
 					<keypass>secret</keypass>
+					<keyalg>RSA</keyalg>
 					<storepass>secret</storepass>
 					<alias>safe-online</alias>
 					<verbose>true</verbose>

@@ -124,13 +124,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         // add available notification topics
         this.notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
 
-        // TODO: remove this temp code
-        this.applicationPools.add(new ApplicationPool(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_POOL_NAME,
-                1000 * 60 * 60 * 8, new String[] { SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-                        SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-                        SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
-                        SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME }));
-
     }
 
     private void configureNode() {
