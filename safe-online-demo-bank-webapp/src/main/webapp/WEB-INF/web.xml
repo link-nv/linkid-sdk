@@ -54,7 +54,7 @@
         <description>Landing page to finalize a logout process.</description>
         <param-name>LogoutLandingPage</param-name>
         <param-value>
-            ${safe-online.host.auth.basename}/${safe-online.demo.cinema.webapp.name}/logout 
+            ${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.name}/logout 
         </param-value>
     </context-param>
     <context-param>
