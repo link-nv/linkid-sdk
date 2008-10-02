@@ -5,19 +5,8 @@
 <web-app>
 	<display-name>Demo Bank Application</display-name>
     <context-param>
-        <description>URL used to initiate a login process.</description>
         <param-name>AuthenticationServiceUrl</param-name>
         <param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/entry</param-value>
-    </context-param>
-    <context-param>
-        <description>URL used to initiate a single logout process.</description>
-        <param-name>LogoutServiceUrl</param-name>
-        <param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutentry</param-value>
-    </context-param>
-    <context-param>
-        <description>URL used to finalize a logout request sent by the authentication webapp following a single logout process by another application.</description>
-        <param-name>LogoutExitServiceUrl</param-name>
-        <param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
     </context-param>
     <context-param>
         <param-name>ApplicationName</param-name>
@@ -40,21 +29,9 @@
         <param-value>secret</param-value>
     </context-param>
     <context-param>
-        <param-name>SingleSignOnEnabled</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <description>Landing page to finalize a login process.</description>
         <param-name>LandingPage</param-name>
         <param-value>
             ${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.name}/login 
-        </param-value>
-    </context-param>
-    <context-param>
-        <description>Landing page to finalize a logout process.</description>
-        <param-name>LogoutLandingPage</param-name>
-        <param-value>
-            ${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.name}/logout 
         </param-value>
     </context-param>
     <context-param>
