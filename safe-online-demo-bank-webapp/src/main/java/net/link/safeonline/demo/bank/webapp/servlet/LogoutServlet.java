@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.demo.cinema.webapp.servlet;
+package net.link.safeonline.demo.bank.webapp.servlet;
 
 import java.io.IOException;
 

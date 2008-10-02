@@ -19,7 +19,7 @@ import org.apache.wicket.protocol.http.WebResponse;
 
 
 /**
- * <h2>{@link OlasLoginLink}<br>
+ * <h2>{@link OlasAuthLink}<br>
  * <sub>A link that uses the OLAS SDK to log a user in through the OLAS authentication services.</sub></h2>
  * 
  * <p>
@@ -28,14 +28,22 @@ import org.apache.wicket.protocol.http.WebResponse;
  * 
  * @author lhunath
  */
-public class OlasLoginLink extends Link<Object> {
+public class OlasAuthLink extends Link<Object> {
 
     private static final long serialVersionUID = 1L;
+    boolean                   login;
 
 
-    public OlasLoginLink(String id) {
+    /**
+     * @param login
+     *            <code>true</code>: Perform a <b>login</b> request.<br>
+     *            <code>false</code>: Perform a <b>logout</b> request.
+     */
+    public OlasAuthLink(String id, boolean login) {
 
         super(id);
+
+        this.login = login;
     }
 
     @Override
@@ -53,7 +61,11 @@ public class OlasLoginLink extends Link<Object> {
                 HttpServletResponse response = ((WebResponse) requestCycle.getResponse()).getHttpServletResponse();
                 String target = request.getServletPath();
 
-                SafeOnlineLoginUtils.login(target, request, response);
+                if (OlasAuthLink.this.login) {
+                    SafeOnlineLoginUtils.login(target, request, response);
+                } else {
+                    SafeOnlineLoginUtils.logout(target, request, response);
+                }
             }
         });
     }

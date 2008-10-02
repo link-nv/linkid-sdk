@@ -11,14 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.demo.cinema.CinemaConstants;
 import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.demo.wicket.tools.OlasAuthLink;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
-import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.IRequestTarget;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -67,34 +64,7 @@ public class LayoutPage extends WebPage {
 
             super(id);
 
-            add(new Link<String>("logout") {
-
-                private static final long serialVersionUID = 1L;
-
-
-                @Override
-                public void onClick() {
-
-                    getRequestCycle().setRequestTarget(new IRequestTarget() {
-
-                        public void detach(RequestCycle requestCycle) {
-
-                        }
-
-                        public void respond(RequestCycle requestCycle) {
-
-                            HttpServletRequest request = ((WebRequest) requestCycle.getRequest())
-                                    .getHttpServletRequest();
-                            HttpServletResponse response = ((WebResponse) requestCycle.getResponse())
-                                    .getHttpServletResponse();
-                            String target = request.getServletPath();
-                            String userId = CinemaSession.get().getUser().getId();
-
-                            SafeOnlineLoginUtils.logout(userId, target, request, response);
-                        }
-                    });
-                }
-            });
+            add(new OlasAuthLink("logout", false));
             add(new Label("name", this.name = new Model<String>()));
             add(new Label("nrn", this.nrn = new Model<String>()));
             add(new Label("junior", this.junior = new Model<Boolean>(false)) {

@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -103,19 +104,19 @@ public class SafeOnlineLoginUtils {
      * </p>
      * 
      * <p>
-     * The optional <code>KeyStoreType</code> key store type context parameter. Accepted values are:
-     * <code>pkcs12</code> and <code>jks</code>.
+     * The optional <code>KeyStoreType</code> key store type context parameter. Accepted values are: <code>pkcs12</code>
+     * and <code>jks</code>.
      * </p>
      * 
      * <p>
-     * The optional <code>KeyStorePassword</code> context parameter contains the password to unlock the keystore and
-     * key entry.
+     * The optional <code>KeyStorePassword</code> context parameter contains the password to unlock the keystore and key
+     * entry.
      * </p>
      * 
      * <p>
-     * The optional <code>SingleSignOnEnabled</code> init parameter specified whether single sign-on can be used or
-     * not. Accepted values are: <code>true</code> or <code>false</code>. If omitted, single sign-on will be
-     * enabled by default.
+     * The optional <code>SingleSignOnEnabled</code> init parameter specified whether single sign-on can be used or not.
+     * Accepted values are: <code>true</code> or <code>false</code>. If omitted, single sign-on will be enabled by
+     * default.
      * </p>
      * 
      * @param target
@@ -254,8 +255,8 @@ public class SafeOnlineLoginUtils {
      * <b>Note: This method is ONLY for logging in from an application that uses the JSF framework.</b>
      * 
      * <p>
-     * The method requires the <code>LogoutServiceUrl</code> context parameter defined in <code>web.xml</code>
-     * pointing to the location of the SafeOnline authentication web application logout entry point.
+     * The method requires the <code>LogoutServiceUrl</code> context parameter defined in <code>web.xml</code> pointing
+     * to the location of the SafeOnline authentication web application logout entry point.
      * </p>
      * 
      * <p>
@@ -285,13 +286,13 @@ public class SafeOnlineLoginUtils {
      * </p>
      * 
      * <p>
-     * The optional <code>KeyStoreType</code> key store type context parameter. Accepted values are:
-     * <code>pkcs12</code> and <code>jks</code>.
+     * The optional <code>KeyStoreType</code> key store type context parameter. Accepted values are: <code>pkcs12</code>
+     * and <code>jks</code>.
      * </p>
      * 
      * <p>
-     * The optional <code>KeyStorePassword</code> context parameter contains the password to unlock the keystore and
-     * key entry.
+     * The optional <code>KeyStorePassword</code> context parameter contains the password to unlock the keystore and key
+     * entry.
      * </p>
      * 
      * @param subjectName
@@ -332,8 +333,6 @@ public class SafeOnlineLoginUtils {
      * @see #logout(String, String) For details about the init parameters that should be configured in the application's
      *      <code>web.xml</code>.
      * 
-     * @param subjectName
-     *            The subject ID logging out
      * @param target
      *            The target url to redirect to after successful authentication.
      * @param request
@@ -341,8 +340,7 @@ public class SafeOnlineLoginUtils {
      * @param response
      *            The {@link HttpServletResponse} object from the servlet making the login request.
      */
-    public static void logout(String subjectName, String target, HttpServletRequest request,
-            HttpServletResponse response) {
+    public static void logout(String target, HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, String> config = new HashMap<String, String>();
         ServletContext context = request.getSession().getServletContext();
@@ -354,7 +352,11 @@ public class SafeOnlineLoginUtils {
             config.put(name, context.getInitParameter(name));
         }
 
-        logout(subjectName, target, config, request, response);
+        try {
+            logout(LoginManager.getUsername(request), target, config, request, response);
+        } catch (ServletException e) {
+            // Not logged in.
+        }
     }
 
     private static void logout(String subjectName, String target, Map<String, String> config,
