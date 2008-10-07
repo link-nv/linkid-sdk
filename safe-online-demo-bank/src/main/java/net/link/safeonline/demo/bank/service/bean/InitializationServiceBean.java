@@ -47,19 +47,16 @@ public class InitializationServiceBean extends AbstractBankServiceBean implement
         BankUserEntity user;
         BankAccountEntity account;
 
-        
         // Pol.
-        user = new BankUserEntity("pol", "Pol Van Acker");
+        user = new BankUserEntity(digipassUser_BankId, digipassUser_Name);
         users.add(user);
 
-        accounts.add(account = new BankAccountEntity(user, "persoon", "543-3246784-43"));
-        account.setAmount(1200);
-        accounts.add(account = new BankAccountEntity(user, "kinderen", "897-2998431-32"));
-        account.setAmount(200);
-        accounts.add(account = new BankAccountEntity(user, "spaar", "521-9045853-09"));
-        account.setAmount(28000);
-        
-        
+        for (int i = 0; i < digipassUser_AccountNames.length; ++i) {
+            accounts.add(account = new BankAccountEntity(user, digipassUser_AccountNames[i],
+                    digipassUser_AccountCodes[i]));
+            account.setAmount(digipassUser_AccountAmounts[i]);
+        }
+
         // Persist.
         for (BankUserEntity u : users) {
             this.em.persist(u);
