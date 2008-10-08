@@ -79,10 +79,10 @@
 	<scm>
 		<tag>HEAD</tag>
 		<url>http://buildserver/cgi-bin/gitweb.cgi?p=safe-online.git</url>
-		<connection> scm:git:ssh+git://buildserver/scm/git/safeonline.git 
+		<connection> scm:git:ssh://buildserver/scm/git/safeonline.git 
 		</connection>
 		<developerConnection>
-			scm:git:ssh+git://buildserver/scm/git/safeonline.git 
+			scm:git:ssh://buildserver/scm/git/safeonline.git 
 		</developerConnection>
 	</scm>
 	<issueManagement>
@@ -1315,7 +1315,7 @@
 		<repository>
 			<id>openqa</id>
 			<name>OpenQA Repository</name>
-			<url>http://maven.openqa.org/repository/releases</url>
+            <url>http://archiva.openqa.org/repository/releases/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>

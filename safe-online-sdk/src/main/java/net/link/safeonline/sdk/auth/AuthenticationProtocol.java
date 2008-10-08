@@ -18,7 +18,7 @@ import javax.servlet.UnavailableException;
  */
 public enum AuthenticationProtocol {
 
-    SAML2_BROWSER_POST;
+    SAML2_BROWSER_POST, UNIT_TEST;
 
     public static AuthenticationProtocol toAuthenticationProtocol(String value) throws UnavailableException {
 
@@ -26,7 +26,7 @@ public enum AuthenticationProtocol {
             AuthenticationProtocol authenticationProtocol = AuthenticationProtocol.valueOf(value);
             return authenticationProtocol;
         } catch (IllegalArgumentException e) {
-            throw new UnavailableException("unvalid authentication protocol: " + value);
+            throw new UnavailableException("invalid authentication protocol: " + value);
         }
     }
 }

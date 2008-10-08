@@ -65,7 +65,7 @@ public class AuthenticationProtocolManager {
     }
 
 
-    private static void registerProtocolHandler(Class<? extends AuthenticationProtocolHandler> handlerClass) {
+    public static void registerProtocolHandler(Class<? extends AuthenticationProtocolHandler> handlerClass) {
 
         if (null == handlerClass)
             throw new RuntimeException("null for handler class");

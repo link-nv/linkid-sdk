@@ -42,10 +42,10 @@ import org.apache.wicket.util.convert.IConverter;
  */
 public class BankAccountConverter implements IConverter<BankAccountEntity> {
 
-    private static final long serialVersionUID = 1L;
-    private static final Log  LOG              = LogFactory.getLog(BankAccountEntity.class);
+    private static final long   serialVersionUID = 1L;
+    private static final Log    LOG              = LogFactory.getLog(BankAccountEntity.class);
 
-    private final Pattern     parser           = Pattern.compile("([\\d-]*): (.*) \\[([^\\]]*)\\]");
+    private final Pattern       parser           = Pattern.compile("([\\d-]*): (.*) \\[([^\\]]*)\\]");
 
 
     /**
