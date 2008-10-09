@@ -30,7 +30,7 @@ shopt -s nullglob
 # Setup and parse arguments.
 noMaven=
 offline=
-for arg in $(getArgs hoM "$@"); do
+for arg in $(getArgs hoMs "$@"); do
 	case $arg in
 		h) showHelp \
 			'Maven To Eclipse' \
@@ -39,17 +39,19 @@ for arg in $(getArgs hoM "$@"); do
 			\
 			'-M' "Don't run maven, just apply eclipse classpath fixes on existing eclipse configuration." \
 			'-o' "Run maven in offline mode; preventing it from checking for remote artifacts or javadoc/sources."
+            '-s' "Tell maven to make an attempt to download Javadoc and Source artifacts for dependencies."
 
 			exit		;;
 		M) noMaven=1	;;
 		o) offline=1	;;
+		s) source=1	;;
 	esac
 done
 
 
 # Run the maven2 eclipse plugin.
 if (( ! noMaven )); then
-	mvn ${offline:+-o} eclipse:eclipse \
+	mvn ${offline:+-o} ${source:+-DdownloadJavadocs=true -DdownloadSources=true} eclipse:eclipse \
 		|| report "Maven eclipse plugin failed." || exit
 fi
 

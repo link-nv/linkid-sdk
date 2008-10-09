@@ -27,13 +27,13 @@ public abstract class LayoutPage extends WebPage {
     Log                       LOG              = LogFactory.getLog(getClass());
 
     @EJB
-    public UserService        userService;
+    private UserService        userService;
 
     @EJB
-    public AccountService     accountService;
+    private AccountService     accountService;
 
     @EJB
-    public TransactionService transactionService;
+    private TransactionService transactionService;
 
 
     /**

@@ -20,13 +20,13 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
  * Interface for attribute client. Via components implementing this interface applications can retrieve attributes for
  * subjects. Applications can only retrieve attribute values for which the user confirmed the corresponding application
  * identity.
- *
+ * 
  * <p>
  * The attribute value can be of type String, Boolean or an array of Object[] in case of a multivalued attribute.
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface AttributeClient extends MessageAccessor {
 
@@ -40,7 +40,7 @@ public interface AttributeClient extends MessageAccessor {
      * {@link net.link.safeonline.sdk.ws.annotation.CompoundMember}.
      * </p>
      * 
-     * @param <Type>
+     * @param <T>
      * @param userId
      * @param attributeName
      * @param valueClass
@@ -50,7 +50,7 @@ public interface AttributeClient extends MessageAccessor {
      *             in case the service could not be contacted. Can happen if the SSL was not setup correctly.
      * @throws AttributeUnavailableException
      */
-    <Type> Type getAttributeValue(String userId, String attributeName, Class<Type> valueClass)
+    <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass)
             throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
             AttributeUnavailableException;
 
@@ -87,13 +87,13 @@ public interface AttributeClient extends MessageAccessor {
      * {@link net.link.safeonline.sdk.ws.attrib.annotation.IdentityCard}. It's properties should be annotated with
      * {@link net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute}.
      * 
-     * @param <Type>
+     * @param <T>
      * @param userId
      * @throws AttributeNotFoundException
      * @throws RequestDeniedException
      * @throws WSClientTransportException
      * @throws AttributeUnavailableException
      */
-    <Type> Type getIdentity(String userId, Class<Type> identityCardClass) throws AttributeNotFoundException,
+    <T> T getIdentity(String userId, Class<T> identityCardClass) throws AttributeNotFoundException,
             RequestDeniedException, WSClientTransportException, AttributeUnavailableException;
 }

@@ -2,7 +2,7 @@ package net.link.safeonline.demo.bank.webapp;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
 
 
@@ -66,7 +66,7 @@ public class NewAccountPage extends LayoutPage {
 
             super(id);
 
-            add(new TextArea<String>("name", this.name = new Model<String>()));
+            add(new TextField<String>("name", this.name = new Model<String>()));
         }
 
         @Override

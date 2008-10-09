@@ -9,6 +9,7 @@ package net.link.safeonline.demo.wicket.test;
 import javax.persistence.EntityManager;
 
 import net.link.safeonline.demo.wicket.javaee.DummyJndi;
+import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
@@ -42,29 +43,20 @@ import org.junit.BeforeClass;
  */
 public abstract class WicketTests {
 
-    protected WicketTester    wicket;
-    protected final Log       LOG = LogFactory.getLog(getClass());
-
-    private EntityTestManager entityTestManager;
+    protected final Log         LOG = LogFactory.getLog(getClass());
+    protected EntityTestManager entityTestManager;
+    protected WicketTester      wicket;
 
 
     @BeforeClass
     public static void init() {
 
         AuthenticationProtocolManager.registerProtocolHandler(TestAuthenticationProtocolHandler.class);
+        WicketUtil.setUnitTesting(true);
     }
 
     @Before
     public void setup() {
-
-        // Initialize our dummy web container and set our dummy authentication protocol as the one to use.
-        this.wicket = new WicketTester(getApplication());
-        MockServletContext wicketContext = (MockServletContext) this.wicket.getServletSession().getServletContext();
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.TARGET_BASE_URL_INIT_PARAM, "");
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTH_SERVICE_URL_INIT_PARAM, "");
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, "");
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTHN_PROTOCOL_INIT_PARAM, AuthenticationProtocol.UNIT_TEST
-                .name());
 
         // Set up an HSQL entity manager.
         this.entityTestManager = new EntityTestManager();
@@ -81,6 +73,17 @@ public abstract class WicketTests {
         for (Class<?> beanClass : serviceBeans) {
             DummyJndi.register(beanClass, EJBTestUtils.newInstance(beanClass, serviceBeans, entityManager));
         }
+
+        // Initialize our dummy web container and set our dummy authentication protocol as the one to use.
+        this.wicket = new WicketTester(getApplication());
+        MockServletContext wicketContext = (MockServletContext) this.wicket.getServletSession().getServletContext();
+        wicketContext.addInitParameter(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM, "");
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.TARGET_BASE_URL_INIT_PARAM, "");
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTH_SERVICE_URL_INIT_PARAM, "");
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, "");
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTHN_PROTOCOL_INIT_PARAM, AuthenticationProtocol.UNIT_TEST
+                .name());
+        this.wicket.processRequestCycle();
     }
 
     @After

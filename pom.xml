@@ -2073,13 +2073,13 @@
 			</dependency>
 
             <!-- Disable these dependencies: They cause conflicts -->
+            <!-- org.apache.xerces:xml-apis supersedes xmlParserAPIs -->
             <!-- We use org.apache.* instead -->
-			<dependency>
+			<!--dependency>
 				<groupId>xml-apis</groupId>
 				<artifactId>xml-apis</artifactId>
 				<version>-1</version>
 			</dependency>
-            <!-- org.apache.xerces:xml-apis supersedes xmlParserAPIs -->
 			<dependency>
 				<groupId>xerces</groupId>
 				<artifactId>xmlParserAPIs</artifactId>
@@ -2109,16 +2109,7 @@
 				<groupId>xom</groupId>
 				<artifactId>xom</artifactId>
 				<version>-1</version>
-				<!--version>${xom.version}</version>
-
-				<!- - We use org.apache.* instead - ->
-				<exclusions>
-					<exclusion>
-						<groupId>xalan</groupId>
-						<artifactId>xalan</artifactId>
-					</exclusion>
-				</exclusions-->
-			</dependency>
+			</dependency-->
 
 			<!-- External -->
 			<dependency>

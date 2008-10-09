@@ -6,6 +6,9 @@
  */
 package net.link.safeonline.demo.wicket.tools;
 
+import java.security.PrivateKey;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
@@ -16,7 +19,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.wicket.service.OlasNamingStrategy;
+import net.link.safeonline.demo.wicket.tools.olas.DummyAttributeClient;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +54,7 @@ public abstract class WicketUtil {
 
     static final Log                  LOG      = LogFactory.getLog(WicketUtil.class);
     static final ConfigurableInjector injector = new AnnotJavaEEInjector(new OlasNamingStrategy());
+    private static boolean              isUnitTest;
 
 
     /**
@@ -84,6 +91,20 @@ public abstract class WicketUtil {
     public static String format(Locale locale, Number number) {
 
         return NumberFormat.getCurrencyInstance(locale).format(number);
+    }
+
+    static ConfigurableInjector getInjector() {
+
+        if (injector == null) {
+            if (!isUnitTest) {
+                injector = new AnnotJavaEEInjector(new OlasNamingStrategy());
+            } else {
+                // Inside Unit Test
+                injector = new DummyAnnotJavaEEInjector();
+            }
+        }
+
+        return injector;
     }
 
     /**
@@ -134,5 +155,35 @@ public abstract class WicketUtil {
     public static String getUserId(Request request) throws ServletException {
 
         return LoginManager.getUserId(toServletRequest(request));
+    }
+
+    /**
+     * Telling {@link WicketUtil} that we're unit testing will make it generate dummy services to emulate OLAS services
+     * that are not available in the unit testing framework.
+     */
+    public static void setUnitTesting(boolean unitTesting) {
+
+        isUnitTest = unitTesting;
+    }
+
+    /**
+     * Retrieve a proxy to the OLAS attribute web service.
+     */
+    public static AttributeClient getOLASAttributeService(HttpServletRequest loginRequest,
+            PrivateKeyEntry privateKeyEntry) {
+
+        if (!isUnitTest) {
+            // Find the location of the OLAS web services to use.
+            String wsLocation = loginRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+
+            // Find the key and certificate of the bank application.
+            X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
+            PrivateKey privateKey = privateKeyEntry.getPrivateKey();
+
+            // Create the attribute service client.
+            return new AttributeClientImpl(wsLocation, certificate, privateKey);
+        }
+        
+        return new DummyAttributeClient();
     }
 }
