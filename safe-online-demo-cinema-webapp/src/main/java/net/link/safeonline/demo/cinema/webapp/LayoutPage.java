@@ -3,6 +3,7 @@ package net.link.safeonline.demo.cinema.webapp;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
@@ -12,10 +13,12 @@ import net.link.safeonline.demo.cinema.CinemaConstants;
 import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.demo.wicket.tools.OlasAuthLink;
+import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Session;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -32,6 +35,8 @@ import org.apache.wicket.request.target.basic.RedirectRequestTarget;
 public class LayoutPage extends WebPage {
 
     private static final long serialVersionUID = 1L;
+    static final Locale       CURRENCY         = Locale.FRANCE;
+
     Log                       LOG              = LogFactory.getLog(getClass());
 
     @EJB
@@ -214,7 +219,7 @@ public class LayoutPage extends WebPage {
 
             // Put time in label (formatted) or hide if no time selected.
             if (CinemaSession.isTimeSet()) {
-                this.time.setObject(CinemaSession.format(CinemaSession.get().getTime()));
+                this.time.setObject(WicketUtil.format(Session.get(), CinemaSession.get().getTime()));
             } else {
                 setVisible(false);
             }
@@ -269,8 +274,8 @@ public class LayoutPage extends WebPage {
 
             // Put name of the room in label or hide if no room selected.
             if (CinemaSession.isTicketSet()) {
-                this.price.setObject(CinemaSession.format(LayoutPage.this.ticketService.calculatePrice(CinemaSession
-                        .get().getTicket())));
+                this.price.setObject(WicketUtil.format(CURRENCY, LayoutPage.this.ticketService
+                        .calculatePrice(CinemaSession.get().getTicket())));
             } else {
                 setVisible(false);
             }
@@ -304,7 +309,7 @@ public class LayoutPage extends WebPage {
                     CinemaTicketEntity ticket = CinemaSession.get().getTicket();
                     double paymentPrice = ticket.getPrice();
                     String paymentMessage = String.format("Viewing of %s at %s in %s.", LayoutPage.this.ticketService
-                            .getFilmName(ticket), CinemaSession.format(new Date(ticket.getTime())),
+                            .getFilmName(ticket), WicketUtil.format(Session.get(), new Date(ticket.getTime())),
                             LayoutPage.this.ticketService.getTheatreName(ticket));
 
                     String redirectUrl = String.format("%s/%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
