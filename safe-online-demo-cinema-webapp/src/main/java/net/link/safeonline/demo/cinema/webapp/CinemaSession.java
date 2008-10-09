@@ -6,8 +6,6 @@
  */
 package net.link.safeonline.demo.cinema.webapp;
 
-import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.util.Date;
 
 import javax.naming.InitialContext;
@@ -375,24 +373,6 @@ public class CinemaSession extends Session {
     public static boolean isUserSet() {
 
         return get().getUser() != null;
-    }
-
-    /**
-     * @return A string that is the formatted representation of the given date according to the user's locale in short
-     *         form.
-     */
-    public static String format(Date date) {
-
-        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, get().getLocale()).format(date);
-    }
-
-    /**
-     * @return A string that is the formatted representation of the given amount of currency according to the user's
-     *         locale.
-     */
-    public static String format(Number number) {
-
-        return NumberFormat.getCurrencyInstance(get().getLocale()).format(number);
     }
 
     /**

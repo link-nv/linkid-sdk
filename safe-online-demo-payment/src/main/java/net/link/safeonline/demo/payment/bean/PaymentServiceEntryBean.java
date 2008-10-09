@@ -38,7 +38,7 @@ public class PaymentServiceEntryBean implements PaymentServiceEntry {
     @Out(value = "target", scope = ScopeType.SESSION, required = false)
     private String  target;
 
-    @RequestParameter(PaymentConstants.AUTHENTICATED_ROLE)
+    @RequestParameter("user")
     @Out(value = "user", scope = ScopeType.SESSION, required = false)
     private String  user;
 

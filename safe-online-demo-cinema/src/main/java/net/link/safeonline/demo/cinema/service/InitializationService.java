@@ -14,26 +14,26 @@ import net.link.safeonline.demo.cinema.entity.CinemaShowTimeEntity;
 /**
  * <h2>{@link InitializationService}<br>
  * <sub>Service that executes after application deployment.</sub></h2>
- *
+ * 
  * <p>
  * Creates some initial dummy entities to fill up the database with theatres, films, rooms and seats.
  * </p>
- *
+ * 
  * <p>
  * <i>Jun 23, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Local
 public interface InitializationService extends CinemaService {
 
-    public static final String             BINDING          = JNDI_PREFIX + "InitializationServiceBean/local";
+    public static final String                   BINDING          = JNDI_PREFIX + "InitializationServiceBean/local";
 
-    static final int                       H                = 3600, M = 60;
+    static final int                             H                = 3600, M = 60;
 
-    public static final String[]           filmNames        = {
-                                                            // Journey
+    public static final String[]                 filmNames        = {
+                                                                  // Journey
             "Journey to the Center of the Earth",
             // Happening
             "The Happening",
@@ -42,9 +42,9 @@ public interface InitializationService extends CinemaService {
             // Shaun
             "Shaun Of The Dead",
             // Hellboy
-            "Hellboy II: The Golden Army"                  };
-    public static final String[]           filmDescriptions = {
-                                                            // Journey
+            "Hellboy II: The Golden Army"                        };
+    public static final String[]                 filmDescriptions = {
+                                                                  // Journey
             "On a quest to find out what happened to his missing brother, a scientist, "
                     + "his nephew and their mountain guide discover a fantastic and "
                     + "dangerous lost world in the center of the earth.",
@@ -63,7 +63,7 @@ public interface InitializationService extends CinemaService {
             "The mythical world starts a rebellion against humanity in order to rule "
                     + "the Earth, so Hellboy and his team must save the world from " + "the rebellious creatures.." };
     public static final CinemaShowTimeEntity[][] filmTimes        = {
-                                                            // Journey
+                                                                  // Journey
             { new CinemaShowTimeEntity(14 * H, 14 * H, 15 * H, 14 * H, 14 * H + 30 * M, 16 * H, 16 * H),
             new CinemaShowTimeEntity(20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 20 * H, 22 * H, 22 * H) },
             // Happening
@@ -78,10 +78,10 @@ public interface InitializationService extends CinemaService {
             // Hellboy
             { new CinemaShowTimeEntity(20 * H, 20 * H, 20 * H, 20 * H + 15 * M, 20 * H, 22 * H, 22 * H),
             new CinemaShowTimeEntity(23 * H, 23 * H, 23 * H, 23 * H, 23 * H, null, null) } };
-    public static final long[]             filmDurations    = { 92 * M, 91 * M, 97 * M, 99 * M, 90 * M };
-    public static final int[]              filmPrices       = { 30, 30, 25, 20, 20 };
-    public static final int[][]            filmTheatres     = {
-                                                            // Journey
+    public static final long[]                   filmDurations    = { 92 * M, 91 * M, 97 * M, 99 * M, 90 * M };
+    public static final int[]                    filmPrices       = { 7, 7, 5, 3, 3 };
+    public static final int[][]                  filmTheatres     = {
+                                                                  // Journey
             { 0, 2, 4 },
             // Happening
             { 0, 1, 4 },
@@ -90,9 +90,9 @@ public interface InitializationService extends CinemaService {
             // Shaun
             { 2, 3, 4 },
             // Hellboy
-            { 1, 3 }                                       };
-    public static final int[][][]          filmRooms        = {
-                                                            // Journey
+            { 1, 3 }                                             };
+    public static final int[][][]                filmRooms        = {
+                                                                  // Journey
             { { 0 }, { 1 }, { 2 } },
             // Happening
             { { 1 }, { 1 }, { 1 } },
@@ -101,10 +101,10 @@ public interface InitializationService extends CinemaService {
             // Shaun
             { { 3 }, { 3 }, { 0 } },
             // Hellboy
-            { { 0 }, { 3 } }                               };
+            { { 0 }, { 3 } }                                     };
 
-    public static final String[]           theatreNames     = {
-                                                            // Gent
+    public static final String[]                 theatreNames     = {
+                                                                  // Gent
             "Kinepolis Gent",
             // Kortrijk
             "Kinepolis Kortrijk",
@@ -113,9 +113,9 @@ public interface InitializationService extends CinemaService {
             // Brussel
             "Kinepolis Brussel",
             // Leuven
-            "Kinepolis Leuven"                             };
-    public static final String[]           theatreAdresses  = {
-                                                            // Gent
+            "Kinepolis Leuven"                                   };
+    public static final String[]                 theatreAdresses  = {
+                                                                  // Gent
             "Ter Platen 12\n9000 Gent",
             // Kortrijk
             "President Kennedylaan 100A\n8500 Kortrijk",
@@ -124,9 +124,9 @@ public interface InitializationService extends CinemaService {
             // Brussel
             "Eeuwfeestlaan 20\n1020 Brussel",
             // Leuven
-            "Bondgenotenlaan 145-149\n3000 Leuven"         };
-    public static final String[][]         theatreRooms     = {
-                                                            // Gent
+            "Bondgenotenlaan 145-149\n3000 Leuven"               };
+    public static final String[][]               theatreRooms     = {
+                                                                  // Gent
             { "A", "B", "C" },
             // Kortrijk
             { "A", "B" },
@@ -135,9 +135,9 @@ public interface InitializationService extends CinemaService {
             // Brussel
             { "A", "B", "C", "D" },
             // Leuven
-            { "A", "B", "C" }                              };
-    public static final int[][][]          theatreRoomSeats = {
-                                                            // Gent
+            { "A", "B", "C" }                                    };
+    public static final int[][][]                theatreRoomSeats = {
+                                                                  // Gent
             { { 10, 4 }, { 12, 5 }, { 8, 5 } },
             // Kortrijk
             { { 8, 4 }, { 8, 6 } },
@@ -146,7 +146,7 @@ public interface InitializationService extends CinemaService {
             // Brussel
             { { 8, 4 }, { 10, 5 }, { 12, 8 }, { 10, 8 } },
             // Leuven
-            { { 8, 8 }, { 10, 8 }, { 6, 4 } }              };
+            { { 8, 8 }, { 10, 8 }, { 6, 4 } }                    };
 
 
     public void buildEntities();
