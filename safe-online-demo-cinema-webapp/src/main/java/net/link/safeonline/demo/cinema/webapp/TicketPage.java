@@ -7,7 +7,9 @@ import javax.ejb.EJB;
 
 import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.service.UserService;
+import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -97,11 +99,11 @@ public class TicketPage extends LayoutPage {
                     final CinemaTicketEntity ticket = item.getModelObject();
 
                     /* Ticket Details. */
-                    item.add(new Label("time", CinemaSession.format(new Date(ticket.getTime()))));
+                    item.add(new Label("time", WicketUtil.format(Session.get(), new Date(ticket.getTime()))));
                     item.add(new Label("film", TicketPage.this.ticketService.getFilmName(ticket)));
                     item.add(new Label("theatre", TicketPage.this.ticketService.getTheatreName(ticket)));
                     item.add(new Label("room", TicketPage.this.ticketService.getRoomName(ticket)));
-                    item.add(new Label("price", CinemaSession.format(ticket.getPrice())));
+                    item.add(new Label("price", WicketUtil.format(CURRENCY, ticket.getPrice())));
                 }
             });
 

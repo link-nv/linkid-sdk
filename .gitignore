@@ -3,7 +3,7 @@
 /.fseventsd
 
 # Maven2 Relocated Local Repository for Lin.k artifacts.
-.m2-lin.k
+/.m2-repo
 
 # Eclipse
 /*/.settings

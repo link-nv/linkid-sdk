@@ -12,9 +12,14 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
+import javax.naming.NamingException;
+import javax.naming.NoInitialContextException;
+import javax.naming.spi.NamingManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import net.link.safeonline.demo.wicket.javaee.DummyAnnotJavaEEInjector;
 import net.link.safeonline.demo.wicket.service.OlasNamingStrategy;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 
@@ -46,8 +51,8 @@ import org.wicketstuff.javaee.injection.AnnotJavaEEInjector;
  */
 public abstract class WicketUtil {
 
-    static final Log                  LOG      = LogFactory.getLog(WicketUtil.class);
-    static final ConfigurableInjector injector = new AnnotJavaEEInjector(new OlasNamingStrategy());
+    private static ConfigurableInjector injector;
+    static final Log                    LOG = LogFactory.getLog(WicketUtil.class);
 
 
     /**
@@ -86,6 +91,22 @@ public abstract class WicketUtil {
         return NumberFormat.getCurrencyInstance(locale).format(number);
     }
 
+    static ConfigurableInjector getInjector() {
+
+        if (injector == null) {
+            try {
+                NamingManager.getInitialContext(null);
+                injector = new AnnotJavaEEInjector(new OlasNamingStrategy());
+            } catch (NoInitialContextException e) {
+                injector = new DummyAnnotJavaEEInjector();
+            } catch (NamingException e) {
+                throw new EJBException(e);
+            }
+        }
+
+        return injector;
+    }
+
     /**
      * Add an injector to the given Wicket web application that will resolve fields with the {@link EJB} annotation.
      * 
@@ -96,7 +117,7 @@ public abstract class WicketUtil {
         application.addComponentInstantiationListener(new ComponentInjector() {
 
             {
-                InjectorHolder.setInjector(injector);
+                InjectorHolder.setInjector(getInjector());
             }
         });
     }
@@ -106,7 +127,7 @@ public abstract class WicketUtil {
      */
     public static void inject(Object injectee) {
 
-        injector.inject(injectee);
+        getInjector().inject(injectee);
     }
 
     /**
