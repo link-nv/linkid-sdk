@@ -130,7 +130,7 @@
 				<!-- WEBAPP NAMES -->
 				<safe-online.demo.app.webapp.name>demo</safe-online.demo.app.webapp.name>
 				<safe-online.demo.prescription.webapp.name>demo-prescription</safe-online.demo.prescription.webapp.name>
-                <safe-online.demo.bank.webapp.name>demo-bank</safe-online.demo.bank.webapp.name>
+				<safe-online.demo.bank.webapp.name>demo-bank</safe-online.demo.bank.webapp.name>
 				<safe-online.demo.cinema.webapp.name>demo-cinema</safe-online.demo.cinema.webapp.name>
 				<safe-online.demo.lawyer.webapp.name>demo-lawyer</safe-online.demo.lawyer.webapp.name>
 				<safe-online.demo.mandate.webapp.name>demo-mandate</safe-online.demo.mandate.webapp.name>
@@ -176,9 +176,9 @@
 				<module>safe-online-demo-cinema</module>
 				<module>safe-online-demo-cinema-webapp</module>
 				<module>safe-online-demo-cinema-keystore</module>
-                <module>safe-online-demo-bank</module>
-                <module>safe-online-demo-bank-webapp</module>
-                <module>safe-online-demo-bank-keystore</module>
+				<module>safe-online-demo-bank</module>
+				<module>safe-online-demo-bank-webapp</module>
+				<module>safe-online-demo-bank-keystore</module>
 			</modules>
 		</profile>
 
@@ -970,7 +970,7 @@
 					<execution>
 						<phase>test</phase>
 						<goals>
-							<goal>validate</goal>
+							<!-->validate</goal-->
 						</goals>
 					</execution>
 				</executions>
@@ -1342,17 +1342,17 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
-        <repository>
-            <id>wicketstuff</id>
-            <url>http://wicketstuff.org/maven/repository</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
+		<repository>
+			<id>wicketstuff</id>
+			<url>http://wicketstuff.org/maven/repository</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
-            </releases>
-        </repository>
+			</releases>
+		</repository>
 	</repositories>
 
 	<!-- MAVEN PLUGIN REPOSITORIES -->
@@ -1766,7 +1766,7 @@
 
 				<!-- jboss/server/default/lib -->
 			<dependency>
-                <groupId>org.apache.santuario</groupId>
+				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
 				<version>${xmlsec.version}</version>
 			</dependency>
@@ -2419,12 +2419,11 @@
 				<groupId>org.apache.ws.security</groupId>
 				<artifactId>wss4j</artifactId>
 				<version>${wss4j.version}</version>
-
 				<exclusions>
-                    <exclusion>
-                        <groupId>axis</groupId>
-                        <artifactId>axis-ant</artifactId>
-                    </exclusion>
+					<exclusion>
+						<groupId>axis</groupId>
+						<artifactId>axis-ant</artifactId>
+					</exclusion>
 
 				<!-- We use org.apache.* instead -->
 					<exclusion>
@@ -2491,7 +2490,7 @@
 			<dependency>
 				<groupId>org.apache.wicket</groupId>
 				<artifactId>wicket-contrib-javaee</artifactId>
-                <version>${wicket-javaee.version}</version>
+				<version>${wicket-javaee.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>dumbster</groupId>

@@ -7,11 +7,15 @@
 
 package net.link.safeonline.data.ws;
 
+import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.naming.Context;
+import javax.naming.NamingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -29,6 +33,7 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
+import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.util.CertificateMapperHandler;
@@ -43,25 +48,50 @@ import org.apache.commons.logging.LogFactory;
 /**
  * SOAP Handler for TargetIdentity SOAP Header handling. This SOAP handler will check for the presence of the
  * TargetIdentity SOAP Header. If present it will push the found subject name onto the messaging context.
- *
+ * 
  * <p>
  * Specifications: Liberty ID-WSF SOAP Binding Specification 2.0
  * </p>
- *
+ * 
  * @author fcorneli
  */
 public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
-    private static final Log   LOG                         = LogFactory.getLog(TargetIdentityHandler.class);
+    private static final Log               LOG                         = LogFactory.getLog(TargetIdentityHandler.class);
 
-    public static final String TARGET_IDENTITY_CONTEXT_VAR = TargetIdentityHandler.class.getName() + ".TargetIdentity";
+    public static final String             TARGET_IDENTITY_CONTEXT_VAR = TargetIdentityHandler.class.getName()
+                                                                               + ".TargetIdentity";
 
-    public static final String WSU_NS                      = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
+    public static final String             WSU_NS                      = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
 
-    private static final QName TARGET_IDENTITY_NAME        = new QName(
-                                                                   DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
-                                                                   "TargetIdentity");
+    private static final QName             TARGET_IDENTITY_NAME        = new QName(
+                                                                               DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
+                                                                               "TargetIdentity");
 
+    private WSSecurityConfigurationService wsSecurityConfigurationService;
+
+    private String                         wsSecurityConfigurationServiceJndiName;
+
+
+    @PostConstruct
+    public void postConstructCallback() {
+
+        loadDependencies();
+        this.wsSecurityConfigurationService = EjbUtils.getEJB(this.wsSecurityConfigurationServiceJndiName,
+                WSSecurityConfigurationService.class);
+    }
+
+    private void loadDependencies() {
+
+        try {
+            Context ctx = new javax.naming.InitialContext();
+            Context env = (Context) ctx.lookup("java:comp/env");
+            this.wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
+        } catch (NamingException e) {
+            LOG.debug("naming exception: " + e.getMessage());
+            throw new RuntimeException("WS Security Configuration JNDI path not specified");
+        }
+    }
 
     public Set<QName> getHeaders() {
 
@@ -125,17 +155,25 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
         LOG.debug("processing TargetIdentity header");
 
-        /*
-         * First check whether the TargetIdentity SOAP header has been digested correctly by the WS-Security XML
-         * signature.
-         */
-        String id = targetIdentityHeaderElement.getAttributeNS(WSU_NS, "Id");
-        if (null == id)
-            throw new RuntimeException("wsu:Id attribute not found");
-        boolean signed = WSSecurityServerHandler.isSignedElement(id, soapContext);
-        if (false == signed)
-            throw new RuntimeException("TargetIdentity SOAP header not signed by WS-Security");
+        X509Certificate certificate = WSSecurityServerHandler.getCertificate(soapContext);
+        if (null == certificate)
+            throw new RuntimeException("no certificate found on JAX-WS context");
 
+        boolean skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
+
+        if (!skipMessageIntegrityCheck) {
+            /*
+             * First check whether the TargetIdentity SOAP header has been digested correctly by the WS-Security XML
+             * signature.
+             */
+            String id = targetIdentityHeaderElement.getAttributeNS(WSU_NS, "Id");
+            if (null == id)
+                throw new RuntimeException("wsu:Id attribute not found");
+            boolean signed = WSSecurityServerHandler.isSignedElement(id, soapContext);
+            if (false == signed)
+                throw new RuntimeException("TargetIdentity SOAP header not signed by WS-Security");
+        }
+        
         JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         JAXBElement<?> jaxbElement = (JAXBElement<?>) unmarshaller.unmarshal(targetIdentityHeaderElement
@@ -191,7 +229,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
     /**
      * Gives back the target identity. This target identity has been extracted before by this handler from the
      * TargetIdentity SOAP header.
-     *
+     * 
      * @param context
      * @throws TargetIdentityException
      *             in case of a missing TargetIdentity SOAP header.

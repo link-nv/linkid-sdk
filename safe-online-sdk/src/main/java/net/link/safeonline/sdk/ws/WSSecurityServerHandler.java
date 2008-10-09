@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws;
 
+import java.io.StringWriter;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -19,6 +20,14 @@ import javax.naming.NamingException;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.MessageContext.Scope;
@@ -29,15 +38,20 @@ import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ws.security.SOAPConstants;
+import org.apache.ws.security.WSConstants;
+import org.apache.ws.security.WSEncryptionPart;
 import org.apache.ws.security.WSSecurityEngine;
 import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.message.WSSecHeader;
+import org.apache.ws.security.message.WSSecSignature;
 import org.apache.ws.security.message.WSSecTimestamp;
 import org.apache.ws.security.message.token.Timestamp;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
+import org.w3c.dom.Node;
 
 
 /**
@@ -108,7 +122,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         SOAPPart soapPart = soapMessage.getSOAPPart();
 
         if (true == outboundProperty.booleanValue()) {
-            handleOutboundDocument(soapPart);
+            handleOutboundDocument(soapPart, soapMessageContext);
             return true;
         }
 
@@ -123,15 +137,83 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
      * 
      * @param document
      */
-    private void handleOutboundDocument(SOAPPart document) {
+    private void handleOutboundDocument(SOAPPart document, SOAPMessageContext soapMessageContext) {
 
         LOG.debug("handle outbound document");
-        WSSecHeader wsSecHeader = new WSSecHeader();
-        wsSecHeader.insertSecurityHeader(document);
-        WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
-        wsSecTimeStamp.setTimeToLive(0);
-        wsSecTimeStamp.prepare(document);
-        wsSecTimeStamp.prependToHeader(wsSecHeader);
+
+        X509Certificate certificate = getCertificate(soapMessageContext);
+        if (null == certificate)
+            throw new RuntimeException("no certificate found on JAX-WS context");
+
+        boolean skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
+
+        if (skipMessageIntegrityCheck) {
+            WSSecHeader wsSecHeader = new WSSecHeader();
+            wsSecHeader.insertSecurityHeader(document);
+            WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
+            wsSecTimeStamp.setTimeToLive(0);
+            wsSecTimeStamp.prepare(document);
+            wsSecTimeStamp.prependToHeader(wsSecHeader);
+        } else {
+            LOG.debug("adding WS-Security SOAP header");
+
+            WSSecHeader wsSecHeader = new WSSecHeader();
+            wsSecHeader.insertSecurityHeader(document);
+            WSSecSignature wsSecSignature = new WSSecSignature();
+            wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
+            Crypto crypto = new ClientCrypto(this.wsSecurityConfigurationService.getCertificate(),
+                    this.wsSecurityConfigurationService.getPrivateKey());
+            try {
+                wsSecSignature.prepare(document, crypto, wsSecHeader);
+
+                SOAPConstants soapConstants = org.apache.ws.security.util.WSSecurityUtil.getSOAPConstants(document
+                        .getDocumentElement());
+
+                Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
+                WSEncryptionPart wsEncryptionPart = new WSEncryptionPart(soapConstants.getBodyQName().getLocalPart(),
+                        soapConstants.getEnvelopeURI(), "Content");
+                wsEncryptionParts.add(wsEncryptionPart);
+
+                WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
+                wsSecTimeStamp.setTimeToLive(0);
+                /*
+                 * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let
+                 * the service itself decide how long the message validity period is.
+                 */
+                wsSecTimeStamp.prepare(document);
+                wsSecTimeStamp.prependToHeader(wsSecHeader);
+                wsEncryptionParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
+
+                wsSecSignature.addReferencesToSign(wsEncryptionParts, wsSecHeader);
+
+                wsSecSignature.prependToHeader(wsSecHeader);
+
+                wsSecSignature.prependBSTElementToHeader(wsSecHeader);
+
+                wsSecSignature.computeSignature();
+
+            } catch (WSSecurityException e) {
+                throw new RuntimeException("WSS4J error: " + e.getMessage(), e);
+            }
+
+            try {
+                LOG.debug("document: " + domToString(document));
+            } catch (TransformerException e1) {
+                LOG.debug("transformer exception");
+            }
+        }
+    }
+
+    private String domToString(Node domNode) throws TransformerException {
+
+        Source source = new DOMSource(domNode);
+        StringWriter stringWriter = new StringWriter();
+        Result result = new StreamResult(stringWriter);
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.transform(source, result);
+        return stringWriter.toString();
     }
 
     @SuppressWarnings("unchecked")

@@ -4,7 +4,7 @@
 	targetNamespace="urn:oasis:names:tc:SAML:2.0:protocol"
 	xmlns:tns="urn:oasis:names:tc:SAML:2.0:protocol"
 	xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
-	name="SafeOnlineAuthenticationWebService">
+	name="SafeOnlineAttributeWebService">
 	<types>
 		<schema xmlns="http://www.w3.org/2001/XMLSchema"
 			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">

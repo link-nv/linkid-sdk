@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-# SharpDevelop 2.2.1.2648
+# SharpDevelop 3.0.0.3437
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "safe-online-sdk-dotnet", "safe-online-sdk-dotnet.csproj", "{542A3854-44CB-4A14-8600-371E26A6B005}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "safe-online-sdk-dotnet-test", "safe-online-sdk-dotnet-test\safe-online-sdk-dotnet-test.csproj", "{ACAFCC78-FDEE-4285-8AEE-5662A345D5EB}"

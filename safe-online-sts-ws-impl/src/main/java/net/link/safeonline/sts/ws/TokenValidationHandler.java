@@ -214,9 +214,14 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wst",
                 "http://docs.oasis-open.org/ws-sx/ws-trust/200512/");
-        LOG.debug("document: " + document.toString());
+        try {
+            LOG.debug("document: " + domToString(document));
+        } catch (TransformerException e1) {
+            LOG.debug("transformer exception");
+        }
         try {
             Element tokenSignatureElement = (Element) XPathAPI.selectSingleNode(document,
                     "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:Response/ds:Signature",
@@ -241,6 +246,11 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                                         nsElement);
                     }
                 }
+            }
+            try {
+                LOG.debug("element: " + domToString(tokenSignatureElement));
+            } catch (TransformerException e1) {
+                LOG.debug("transformer exception");
             }
             return tokenSignatureElement;
         } catch (TransformerException e) {

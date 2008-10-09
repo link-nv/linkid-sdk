@@ -30,6 +30,8 @@ import javax.xml.soap.SOAPConstants;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.MessageContext.Scope;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.sdk.ws.ClientCrypto;
@@ -138,6 +140,9 @@ public class WSSecurityServerHandlerTest {
     public void testOutboundMessageHasTimestamp() throws Exception {
 
         // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
         InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class
                 .getResourceAsStream("/test-soap-message.xml");
@@ -146,6 +151,11 @@ public class WSSecurityServerHandlerTest {
         SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
 
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, true);
+        soapMessageContext.put(WSSecurityServerHandler.CERTIFICATE_PROPERTY, certificate);
+        soapMessageContext.setScope(WSSecurityServerHandler.CERTIFICATE_PROPERTY, Scope.APPLICATION);
+
+        // stubs
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andStubReturn(true);
 
         // prepare
         replay(this.mockObjects);
@@ -166,6 +176,59 @@ public class WSSecurityServerHandlerTest {
                 "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
         assertNotNull("missing WS-Security timestamp", XPathAPI.selectSingleNode(resultSoapPart,
                 "/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp/wsu:Created", nsElement));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testOutboundMessageSigned() throws Exception {
+
+        // setup
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+
+        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
+
+        MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
+        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class
+                .getResourceAsStream("/test-soap-message.xml");
+        assertNotNull(testSoapMessageInputStream);
+
+        SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
+
+        SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, true);
+        soapMessageContext.put(WSSecurityServerHandler.CERTIFICATE_PROPERTY, certificate);
+        soapMessageContext.setScope(WSSecurityServerHandler.CERTIFICATE_PROPERTY, Scope.APPLICATION);
+
+        // stubs
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andStubReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
+                Long.MAX_VALUE);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        this.testedInstance.handleMessage(soapMessageContext);
+
+        // verify signed message
+        SOAPMessage signedMessage = soapMessageContext.getMessage();
+        SOAPPart signedSoapPart = signedMessage.getSOAPPart();
+        LOG.debug("signed SOAP part:" + DomTestUtils.domToString(signedSoapPart));
+        soapMessageContext.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, false);
+
+        this.testedInstance.handleMessage(soapMessageContext);
+
+        // verify
+        verify(this.mockObjects);
+        X509Certificate resultCertificate = WSSecurityServerHandler.getCertificate(soapMessageContext);
+        assertNotNull(resultCertificate);
+        Set<String> signedElements = (Set<String>) soapMessageContext
+                .get(WSSecurityServerHandler.SIGNED_ELEMENTS_CONTEXT_KEY);
+        assertEquals(2, signedElements.size());
+        LOG.debug("signed elements: " + signedElements);
     }
 
     @Test
@@ -284,8 +347,8 @@ public class WSSecurityServerHandlerTest {
         }
     }
 
-    @Test
     @SuppressWarnings("unchecked")
+    @Test
     public void wss4j() throws Exception {
 
         // setup

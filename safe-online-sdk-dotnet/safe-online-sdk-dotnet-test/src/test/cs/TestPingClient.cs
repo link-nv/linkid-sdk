@@ -1,6 +1,13 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2008 	Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
+using safe_online_sdk_dotnet_test.test.cs;
 
 namespace safe_online_sdk_dotnet.test.cs
 {
@@ -8,9 +15,9 @@ namespace safe_online_sdk_dotnet.test.cs
 	public class TestPingClient
 	{
 		[Test]
-		public void TestMethod()
+		public void TestPing()
 		{
-			PingClient pingClient = new PingClientImpl("192.168.5.102:8080");
+			PingClient pingClient = new PingClientImpl(Constants.olasHost + ":8080");
 			pingClient.ping();
 		}
 	}

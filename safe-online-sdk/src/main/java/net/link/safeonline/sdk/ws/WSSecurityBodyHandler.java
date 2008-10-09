@@ -87,8 +87,9 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
             return true;
 
         X509Certificate certificate = WSSecurityServerHandler.getCertificate(soapMessageContext);
-        if (null == certificate)
+        if (null == certificate) {
             throw new RuntimeException("no certificate found on JAX-WS context");
+        }
 
         boolean skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
 
@@ -110,11 +111,13 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
             throw WSSecurityUtil.createSOAPFaultException("error retrieving SOAP Body", "FailedCheck");
         }
         String bodyId = soapBody.getAttributeNS(WSConstants.WSU_NS, "Id");
-        if (null == bodyId || 0 == bodyId.length())
+        if (null == bodyId || 0 == bodyId.length()) {
             throw WSSecurityUtil.createSOAPFaultException("SOAP Body should have a wsu:Id attribute", "FailedCheck");
+        }
         boolean isBodySigned = WSSecurityServerHandler.isSignedElement(bodyId, soapMessageContext);
-        if (false == isBodySigned)
+        if (false == isBodySigned) {
             throw WSSecurityUtil.createSOAPFaultException("SOAP Body was not signed", "FailedCheck");
+        }
 
         return true;
     }

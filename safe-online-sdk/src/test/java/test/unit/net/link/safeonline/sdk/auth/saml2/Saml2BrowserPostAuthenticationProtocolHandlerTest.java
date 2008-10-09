@@ -92,6 +92,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
                 mockWSSecurityConfigurationService);
         EasyMock.expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
                 Long.MAX_VALUE);
+        EasyMock.expect(
+                mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject()))
+                .andStubReturn(true);
         EasyMock.replay(mockWSSecurityConfigurationService);
 
         this.webServiceTestUtils = new WebServiceTestUtils();

@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.model.bean;
 
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
 import javax.ejb.EJB;
@@ -20,6 +21,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.sdk.ws.WSSecurityUtil;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 
 
 @Stateless
@@ -76,6 +78,22 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
             }
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public X509Certificate getCertificate() {
+
+        return new IdentityServiceClient().getCertificate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public PrivateKey getPrivateKey() {
+
+        return new IdentityServiceClient().getPrivateKey();
     }
 
 }

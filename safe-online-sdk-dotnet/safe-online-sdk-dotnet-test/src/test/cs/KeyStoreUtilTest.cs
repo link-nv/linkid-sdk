@@ -1,11 +1,19 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2008 	Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.X509;
 using System.IO;
 using System.Security.Cryptography;
+
+using safe_online_sdk_dotnet_test.test.cs;
 
 namespace safe_online_sdk_dotnet.test.cs
 {
@@ -13,7 +21,7 @@ namespace safe_online_sdk_dotnet.test.cs
 	public class KeyStoreUtilTest
 	{
 		[Test]
-		public void TestMethod()
+		public void TestCreateCertificate()
 		{
 			AsymmetricCipherKeyPair keyPair = KeyStoreUtil.GenerateKeyPair();
 			RsaPrivateCrtKeyParameters RSAprivKey = (RsaPrivateCrtKeyParameters) keyPair.Private;
@@ -22,11 +30,11 @@ namespace safe_online_sdk_dotnet.test.cs
 			X509Certificate cert = KeyStoreUtil.CreateCert(RSApubKey, RSAprivKey);
 			Console.WriteLine(cert.ToString());
 			
-			FileStream fs = new FileStream("C:\\work\\test.pfx", FileMode.CreateNew);
-			KeyStoreUtil.WritePkcs12(RSAprivKey, cert, "secret", fs);
+			FileStream fs = new FileStream(Constants.testPfxPath, FileMode.CreateNew);
+			KeyStoreUtil.WritePkcs12(RSAprivKey, cert, Constants.testPfxPassword, fs);
 			fs.Close();
 			
-			FileStream certFileStream = new FileStream("C:\\work\\test.crt", FileMode.CreateNew);
+			FileStream certFileStream = new FileStream(Constants.testCrtPath, FileMode.CreateNew);
 			byte[] encodedCert = cert.GetEncoded();
 			certFileStream.Write(encodedCert, 0, encodedCert.Length);
 			certFileStream.Close();
@@ -35,7 +43,7 @@ namespace safe_online_sdk_dotnet.test.cs
 		[Test]
 		public void TestLoadKey()
 		{
-			System.Security.Cryptography.X509Certificates.X509Certificate2 certificate = new System.Security.Cryptography.X509Certificates.X509Certificate2("C:\\work\\test.pfx", "secret");
+			System.Security.Cryptography.X509Certificates.X509Certificate2 certificate = new System.Security.Cryptography.X509Certificates.X509Certificate2(Constants.testPfxPath, Constants.testPfxPassword);
 			RSACryptoServiceProvider key = (RSACryptoServiceProvider) certificate.PrivateKey;
 		}
 	}

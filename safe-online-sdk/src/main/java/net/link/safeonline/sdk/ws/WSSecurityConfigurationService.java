@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws;
 
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
 
@@ -31,5 +32,9 @@ public interface WSSecurityConfigurationService {
      * @param certificate
      */
     public boolean skipMessageIntegrityCheck(X509Certificate certificate);
+    
+    public X509Certificate getCertificate();
+
+    public PrivateKey getPrivateKey();
 
 }

@@ -1,7 +1,12 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2008 	Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-
 using System.IdentityModel.Tokens;
 using System.Collections.Specialized;
 using System.Collections;
@@ -14,6 +19,9 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.X509;
 using System.Security.Cryptography;
+using IdMappingWSNamespace;
+
+using safe_online_sdk_dotnet_test.test.cs;
 
 namespace safe_online_sdk_dotnet.test.cs
 {
@@ -96,7 +104,7 @@ namespace safe_online_sdk_dotnet.test.cs
         	result = document.OuterXml;
         	Console.WriteLine("result: " + result);
         	
-        	XmlTextWriter xmltw = new XmlTextWriter("C:\\work\\test.xml", new UTF8Encoding(false));
+        	XmlTextWriter xmltw = new XmlTextWriter(Constants.workDir + "\\test.xml", new UTF8Encoding(false));
         	document.WriteTo(xmltw);
         	xmltw.Close();
 		}

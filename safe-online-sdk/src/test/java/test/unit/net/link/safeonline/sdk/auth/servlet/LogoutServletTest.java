@@ -108,6 +108,9 @@ public class LogoutServletTest {
                 mockWSSecurityConfigurationService);
         EasyMock.expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
                 Long.MAX_VALUE);
+        EasyMock.expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock
+                .anyObject()))
+                .andStubReturn(true);
         EasyMock.replay(mockWSSecurityConfigurationService);
 
         this.keyPair = PkiTestUtils.generateKeyPair();

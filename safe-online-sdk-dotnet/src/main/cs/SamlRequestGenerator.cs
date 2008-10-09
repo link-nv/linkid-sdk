@@ -1,16 +1,25 @@
-using System;
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2008 	Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
 
+using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using System.Xml;
 using System.Text;
+using IdMappingWSNamespace;
 
 namespace safe_online_sdk_dotnet
 {
 	/// <summary>
-	/// Description of SamlRequestGenerator.
+	/// SamlRequestGenerator
+	/// 
+	/// This utility class generates a SAML v2.0 AuthenticationRequest with HTTP Browser Post binding.
 	/// </summary>
 	public class SamlRequestGenerator
 	{
@@ -31,6 +40,7 @@ namespace safe_online_sdk_dotnet
 			authnRequest.ProtocolBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
 			authnRequest.Version = "2.0";
 			authnRequest.IssueInstant = DateTime.Now.ToUniversalTime();
+			authnRequest.ProviderName = applicationId;
 			
 			NameIDType issuer = new NameIDType();
 			issuer.Value = applicationId;
