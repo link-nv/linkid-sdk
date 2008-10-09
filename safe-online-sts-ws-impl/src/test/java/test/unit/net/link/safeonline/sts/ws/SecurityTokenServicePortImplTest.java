@@ -97,6 +97,10 @@ public class SecurityTokenServicePortImplTest {
 
     private X509Certificate                  certificate;
 
+    private X509Certificate                  olasCertificate;
+
+    private PrivateKey                       olasPrivateKey;
+
     PublicKey                                publicKey;
 
     private JmxTestUtils                     jmxTestUtils;
@@ -114,6 +118,10 @@ public class SecurityTokenServicePortImplTest {
         this.privateKey = this.keyPair.getPrivate();
         this.publicKey = this.keyPair.getPublic();
         this.certificate = PkiTestUtils.generateSelfSignedCertificate(this.keyPair, "CN=TestApplication");
+
+        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        this.olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
+        this.olasPrivateKey = olasKeyPair.getPrivate();
 
         this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
                 new MBeanActionHandler() {
@@ -178,6 +186,9 @@ public class SecurityTokenServicePortImplTest {
                         this.certificate)).andStubReturn(PkiResult.VALID);
         expect(this.mockNodeAuthenticationService.authenticate(this.certificate)).andStubReturn(testNodeName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
     }

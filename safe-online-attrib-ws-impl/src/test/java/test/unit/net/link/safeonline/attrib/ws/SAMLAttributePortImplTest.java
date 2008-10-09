@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.StringWriter;
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
@@ -109,6 +110,10 @@ public class SAMLAttributePortImplTest {
 
     private X509Certificate                     certificate;
 
+    private X509Certificate                     olasCertificate;
+
+    private PrivateKey                          olasPrivateKey;
+
     private String                              testSubjectLogin;
 
     private String                              testSubjectId;
@@ -192,6 +197,10 @@ public class SAMLAttributePortImplTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
+        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        this.olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
+        this.olasPrivateKey = olasKeyPair.getPrivate();
+
         BindingProvider bindingProvider = (BindingProvider) this.clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
@@ -240,6 +249,9 @@ public class SAMLAttributePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 "test-application-name");
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -319,6 +331,9 @@ public class SAMLAttributePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 this.testApplicationId);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -411,6 +426,9 @@ public class SAMLAttributePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 this.testApplicationId);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -486,6 +504,9 @@ public class SAMLAttributePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 this.testApplicationId);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -550,6 +571,9 @@ public class SAMLAttributePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 this.testApplicationId);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -81,6 +82,10 @@ public class NameIdentifierMappingPortImplTest {
 
     private X509Certificate                     certificate;
 
+    private X509Certificate                     olasCertificate;
+
+    private PrivateKey                          olasPrivateKey;
+
     private KeyPair                             keyPair;
 
 
@@ -130,6 +135,10 @@ public class NameIdentifierMappingPortImplTest {
         this.keyPair = PkiTestUtils.generateKeyPair();
         this.certificate = PkiTestUtils.generateSelfSignedCertificate(this.keyPair, "CN=Test");
 
+        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        this.olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
+        this.olasPrivateKey = olasKeyPair.getPrivate();
+
         BindingProvider bindingProvider = (BindingProvider) this.clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
@@ -148,6 +157,9 @@ public class NameIdentifierMappingPortImplTest {
                         .anyObject())).andStubReturn(PkiResult.VALID);
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(testApplicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
     }

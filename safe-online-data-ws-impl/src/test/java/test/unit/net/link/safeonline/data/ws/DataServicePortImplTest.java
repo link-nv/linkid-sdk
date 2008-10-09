@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
@@ -126,6 +127,10 @@ public class DataServicePortImplTest {
 
     private X509Certificate                     certificate;
 
+    private X509Certificate                     olasCertificate;
+
+    private PrivateKey                          olasPrivateKey;
+
     private String                              targetIdentity;
 
     private String                              applicationName;
@@ -198,6 +203,10 @@ public class DataServicePortImplTest {
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+
+        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        this.olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
+        this.olasPrivateKey = olasKeyPair.getPrivate();
 
         BindingProvider bindingProvider = (BindingProvider) this.dataServicePort;
         Binding binding = bindingProvider.getBinding();
@@ -294,6 +303,9 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -326,6 +338,9 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -361,6 +376,9 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -407,6 +425,9 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -459,6 +480,10 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         AttributeTypeEntity attributeType = new AttributeTypeEntity();
         attributeType.setName(attributeName);
@@ -534,6 +559,9 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -565,6 +593,9 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -597,6 +628,9 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -645,6 +679,10 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -697,6 +735,10 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -752,6 +794,10 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         this.mockAttributeProviderService.setAttribute(this.testSubjectId, attributeName, attributeValue);
 
@@ -806,6 +852,10 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         this.mockAttributeProviderService.setAttribute(this.testSubjectId, attributeName, attributeValue);
 
@@ -865,6 +915,10 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         this.mockAttributeProviderService.setAttribute(eq(this.testSubjectId), eq(attributeName), aryEq(new String[] {
                 attributeValue1, attributeValue2 }));
@@ -918,10 +972,13 @@ public class DataServicePortImplTest {
         expect(
                 this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
                         this.certificate)).andReturn(PkiResult.VALID);
-
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         this.mockAttributeProviderService.createAttribute(eq(this.testSubjectId), eq(attributeName),
                 aryEq(new String[] { attributeValue1, attributeValue2 }));
@@ -970,6 +1027,10 @@ public class DataServicePortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate))
                 .andReturn(this.applicationName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         this.mockAttributeProviderService.removeAttribute(this.testSubjectId, attributeName);
 
