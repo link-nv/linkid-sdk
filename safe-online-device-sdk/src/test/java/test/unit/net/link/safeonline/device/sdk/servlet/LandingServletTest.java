@@ -7,6 +7,9 @@
 
 package test.unit.net.link.safeonline.device.sdk.servlet;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -54,37 +57,39 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 
 public class LandingServletTest {
 
-    private static final Log    LOG                = LogFactory.getLog(LandingServletTest.class);
+    private static final Log               LOG                = LogFactory.getLog(LandingServletTest.class);
 
-    private ServletTestManager  servletTestManager;
+    private ServletTestManager             servletTestManager;
 
-    private WebServiceTestUtils webServiceTestUtils;
+    private WebServiceTestUtils            webServiceTestUtils;
 
-    private JndiTestUtils       jndiTestUtils;
+    private JndiTestUtils                  jndiTestUtils;
 
-    private ClassLoader         originalContextClassLoader;
+    private ClassLoader                    originalContextClassLoader;
 
-    private TestClassLoader     testClassLoader;
+    private TestClassLoader                testClassLoader;
 
-    private HttpClient          httpClient;
+    private HttpClient                     httpClient;
 
-    private String              location;
+    private String                         location;
 
-    private String              registrationUrl    = "registration";
+    private String                         registrationUrl    = "registration";
 
-    private String              removalUrl         = "removal";
+    private String                         removalUrl         = "removal";
 
-    private String              updateUrl          = "update";
+    private String                         updateUrl          = "update";
 
-    private String              deviceName         = "test-device";
+    private String                         deviceName         = "test-device";
 
-    private String              applicationName    = "test-application";
+    private String                         applicationName    = "test-application";
 
-    private String              servletEndpointUrl = "http://test.device/servlet";
+    private String                         servletEndpointUrl = "http://test.device/servlet";
 
-    private KeyPair             keyPair;
+    private KeyPair                        keyPair;
 
-    String                      userId             = UUID.randomUUID().toString();
+    String                                 userId             = UUID.randomUUID().toString();
+
+    private WSSecurityConfigurationService mockWSSecurityConfigurationService;
 
 
     @Before
@@ -99,13 +104,15 @@ public class LandingServletTest {
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
-        WSSecurityConfigurationService mockWSSecurityConfigurationService = EasyMock
-                .createMock(WSSecurityConfigurationService.class);
+        this.mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
         this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                mockWSSecurityConfigurationService);
-        EasyMock.expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
+                this.mockWSSecurityConfigurationService);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
                 Long.MAX_VALUE);
-        EasyMock.replay(mockWSSecurityConfigurationService);
+        expect(
+                this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock
+                        .anyObject())).andStubReturn(true);
+        replay(this.mockWSSecurityConfigurationService);
 
         this.webServiceTestUtils = new WebServiceTestUtils();
         SecurityTokenServicePort port = new SecurityTokenServicePortImpl();
@@ -187,6 +194,7 @@ public class LandingServletTest {
         int statusCode = this.httpClient.executeMethod(postMethod);
 
         // verify
+        verify(this.mockWSSecurityConfigurationService);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
@@ -220,6 +228,7 @@ public class LandingServletTest {
         int statusCode = this.httpClient.executeMethod(postMethod);
 
         // verify
+        verify(this.mockWSSecurityConfigurationService);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
@@ -253,6 +262,7 @@ public class LandingServletTest {
         int statusCode = this.httpClient.executeMethod(postMethod);
 
         // verify
+        verify(this.mockWSSecurityConfigurationService);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
