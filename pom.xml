@@ -930,7 +930,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
-					<buildOutputDirectory> ${project.build.directory}/eclipse 
+					<buildOutputDirectory> ${basedir}/eclipse 
 					</buildOutputDirectory>
 					<projectNameTemplate> [artifactId] </projectNameTemplate>
 					<manifest>false</manifest>
