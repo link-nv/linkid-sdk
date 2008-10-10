@@ -10,7 +10,6 @@ import net.link.safeonline.demo.bank.entity.BankUserEntity;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.WebSession;
 
 
 /**
@@ -27,7 +26,7 @@ import org.apache.wicket.protocol.http.WebSession;
  * 
  * @author mbillemo
  */
-public class BankSession extends WebSession {
+public class BankSession extends Session {
 
     private static final long serialVersionUID = 1L;
 

@@ -318,10 +318,12 @@ public class DemoStartableBean extends AbstractInitBean {
                 new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
                         true, false) }));
 
-        List<String> tempAllowedDevices = new LinkedList<String>();
-        tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
-        tempAllowedDevices.add(EncapConstants.ENCAP_DEVICE_ID);
-        this.allowedDevices.put(DEMO_BANK_APPLICATION_NAME, tempAllowedDevices);
+        // Uncomment these after demo-bank is done
+        // List<String> tempAllowedDevices = new LinkedList<String>();
+        // tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
+        // tempAllowedDevices.add(EncapConstants.ENCAP_DEVICE_ID);
+        // tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
+        // this.allowedDevices.put(DEMO_BANK_APPLICATION_NAME, tempAllowedDevices);
 
         /*
          * Application usage agreements

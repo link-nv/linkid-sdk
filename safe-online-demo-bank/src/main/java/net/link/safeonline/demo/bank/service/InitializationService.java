@@ -26,13 +26,9 @@ import javax.ejb.Local;
 @Local
 public interface InitializationService extends BankService {
 
-    public static final String BINDING                     = JNDI_PREFIX + "InitializationServiceBean/local";
+    public static final String       BINDING = JNDI_PREFIX + "InitializationServiceBean/local";
 
-    public String              digipassUser_BankId         = "pol";
-    public String              digipassUser_Name           = "Pol Van Acker";
-    public String[]            digipassUser_AccountNames   = { "Persoonlijk", "Kinderen", "Spaarrekening" };
-    public String[]            digipassUser_AccountCodes   = { "543-3246784-43", "433-2532784-34", "412-3524758-61" };
-    public double[]            digipassUser_AccountAmounts = { 972.54d, 468.40d, 24050.90d };
+    public static final String[] bankIds = { "pol", "maarten", "dieter", "wim" };
 
 
     public void buildEntities();

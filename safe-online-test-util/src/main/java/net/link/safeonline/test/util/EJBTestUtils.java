@@ -62,9 +62,9 @@ import org.jboss.security.SimplePrincipal;
 
 /**
  * Util class for EJB3 unit testing.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public final class EJBTestUtils {
 
@@ -78,33 +78,33 @@ public final class EJBTestUtils {
 
     /**
      * Injects a value into a given object.
-     * 
+     *
      * @param fieldName
      *            the name of the field to set.
-     * @param subject
-     *            the object in which to inject the value.
+     * @param object
+     *            the object on which to inject the value.
      * @param value
      *            the value to inject.
      * @throws Exception
      */
-    public static void inject(String fieldName, Object subject, Object value) throws Exception {
+    public static void inject(String fieldName, Object object, Object value) throws Exception {
 
         if (null == fieldName)
             throw new IllegalArgumentException("field name should not be null");
         if (null == value)
             throw new IllegalArgumentException("the value should not be null");
-        if (null == subject)
+        if (null == object)
             throw new IllegalArgumentException("the object should not be null");
-        Field field = subject.getClass().getDeclaredField(fieldName);
+        Field field = object.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
-        field.set(subject, value);
+        field.set(object, value);
     }
 
     /**
      * Injects a resource value into an object.
-     * 
+     *
      * @param bean
-     *            the bean object in which to inject a value.
+     *            the bean object on which to inject a value.
      * @param resourceName
      *            the source name.
      * @param value
@@ -136,21 +136,21 @@ public final class EJBTestUtils {
     }
 
     /**
-     * Injects a value into a object.
-     * 
-     * @param subject
-     *            the object in which to inject.
+     * Injects a value object into a given bean object.
+     *
+     * @param object
+     *            the bean object in which to inject.
      * @param value
      *            the value object to inject.
      * @throws Exception
      */
-    public static void inject(Object subject, Object value) throws Exception {
+    public static void inject(Object object, Object value) throws Exception {
 
         if (null == value)
             throw new IllegalArgumentException("the value should not be null");
-        if (null == subject)
+        if (null == object)
             throw new IllegalArgumentException("the object should not be null");
-        Field[] fields = subject.getClass().getDeclaredFields();
+        Field[] fields = object.getClass().getDeclaredFields();
         Field selectedField = null;
         for (Field field : fields) {
             if (field.getType().isInstance(value)) {
@@ -162,12 +162,12 @@ public final class EJBTestUtils {
         if (null == selectedField)
             throw new IllegalStateException("field of injection type not found");
         selectedField.setAccessible(true);
-        selectedField.set(subject, value);
+        selectedField.set(object, value);
     }
 
     /**
      * Initializes a bean.
-     * 
+     *
      * @param bean
      *            the bean to initialize.
      * @throws IllegalArgumentException
@@ -178,18 +178,21 @@ public final class EJBTestUtils {
     public static void init(Object bean) throws IllegalArgumentException, IllegalAccessException,
             InvocationTargetException {
 
-        init(bean.getClass(), bean);
+        Class clazz = bean.getClass();
+        init(clazz, bean);
     }
 
-    public static void init(Class<?> type, Object bean) throws IllegalArgumentException, IllegalAccessException,
+    public static void init(Class<?> clazz, Object bean) throws IllegalArgumentException, IllegalAccessException,
             InvocationTargetException {
 
         LOG.debug("Initializing: " + bean);
-        Method[] methods = type.getDeclaredMethods();
+        Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
-            if (method.isAnnotationPresent(PostConstruct.class)) {
-                method.invoke(bean, new Object[] {});
+            PostConstruct postConstruct = method.getAnnotation(PostConstruct.class);
+            if (null == postConstruct) {
+                continue;
             }
+            method.invoke(bean, new Object[] {});
         }
     }
 
@@ -197,73 +200,67 @@ public final class EJBTestUtils {
 
         Principal principal = new SimplePrincipal(principalName);
         SecurityAssociation.setPrincipal(principal);
-
-        SimpleGroup rolesGroup = new SimpleGroup("Roles");
-        rolesGroup.addMember(new SimplePrincipal(role));
-
         Subject subject = new Subject();
         subject.getPrincipals().add(principal);
+        SimpleGroup rolesGroup = new SimpleGroup("Roles");
+        rolesGroup.addMember(new SimplePrincipal(role));
         subject.getPrincipals().add(rolesGroup);
-
         SecurityAssociation.setSubject(subject);
     }
 
-    public static <B> B newInstance(Class<B> type, Class<?>[] container, EntityManager entityManager) {
+    public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager) {
 
-        return newInstance(type, container, entityManager, (String) null);
+        return newInstance(clazz, container, entityManager, (String) null);
     }
 
-    public static <B> B newInstance(Class<B> type, Class<?>[] container, EntityManager entityManager,
+    public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager,
             String callerPrincipalName, String... roles) {
 
         TestSessionContext testSessionContext = new TestSessionContext(callerPrincipalName, roles);
-        return newInstance(type, container, entityManager, testSessionContext);
+        return newInstance(clazz, container, entityManager, testSessionContext);
     }
 
-    public static <B> B newInstance(Class<B> type, Class<?>[] container, EntityManager entityManager,
+    public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager,
             String callerPrincipalName) {
 
         TestSessionContext testSessionContext = new TestSessionContext(callerPrincipalName, (String[]) null);
-        return newInstance(type, container, entityManager, testSessionContext);
+        return newInstance(clazz, container, entityManager, testSessionContext);
     }
 
-    public static <B> B newInstance(Class<B> type, Class<?>[] container, EntityManager entityManager,
+    @SuppressWarnings("unchecked")
+    public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager,
             SessionContext sessionContext) {
 
-        if (type.isInterface())
+        if (clazz.isInterface())
             throw new EJBException("cannot instantiate an interface");
-
+        Type instance;
         try {
-            B instance = type.newInstance();
-            TestContainerMethodInterceptor testContainerMethodInterceptor = new TestContainerMethodInterceptor(
-                    instance, container, entityManager, sessionContext);
-
-            Enhancer enhancer = new Enhancer();
-            enhancer.setSuperclass(type);
-            enhancer.setCallback(testContainerMethodInterceptor);
-            B enchancedInstance = type.cast(enhancer.create());
-
-            try {
-                init(type, enchancedInstance);
-            } catch (Exception e) {
-                throw new RuntimeException("init error: " + type.getName(), e);
-            }
-
-            return enchancedInstance;
-
+            instance = clazz.newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException("instantiation error");
         } catch (IllegalAccessException e) {
             throw new RuntimeException("illegal access error");
         }
+        TestContainerMethodInterceptor testContainerMethodInterceptor = new TestContainerMethodInterceptor(instance,
+                container, entityManager, sessionContext);
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(clazz);
+        enhancer.setCallback(testContainerMethodInterceptor);
+        Type object = (Type) enhancer.create();
+        try {
+            init(clazz, object);
+        } catch (Exception e) {
+            throw new RuntimeException("init error: " + clazz.getName(), e);
+        }
+        return object;
     }
 
 
     /**
      * Test EJB3 Container method interceptor. Be careful here not to start writing an entire EJB3 container.
-     * 
+     *
      * @author fcorneli
-     * 
+     *
      */
     static class TestContainerMethodInterceptor implements MethodInterceptor {
 
@@ -291,18 +288,17 @@ public final class EJBTestUtils {
                 @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
 
             checkSessionBean();
-
-            Class<?> type = this.object.getClass();
-            checkSecurity(type, method);
-            injectDependencies(type);
-            injectEntityManager(type);
-            injectResources(type);
-            injectSeamLogger(type);
+            Class<?> clazz = this.object.getClass();
+            checkSecurity(clazz, method);
+            injectDependencies(clazz);
+            injectEntityManager(clazz);
+            injectResources(clazz);
+            injectSeamLogger(clazz);
             manageTransaction(method);
-
             try {
                 method.setAccessible(true);
-                return method.invoke(this.object, args);
+                Object result = method.invoke(this.object, args);
+                return result;
             } catch (InvocationTargetException e) {
                 throw e.getTargetException();
             }
@@ -313,7 +309,6 @@ public final class EJBTestUtils {
             TransactionAttribute transactionAttributeAnnotation = method.getAnnotation(TransactionAttribute.class);
             if (null == transactionAttributeAnnotation)
                 return;
-
             TransactionAttributeType transactionAttributeType = transactionAttributeAnnotation.value();
             switch (transactionAttributeType) {
                 case REQUIRES_NEW:
@@ -331,30 +326,27 @@ public final class EJBTestUtils {
         }
 
         @SuppressWarnings("unchecked")
-        private void checkSecurity(Class type, Method method) {
+        private void checkSecurity(Class clazz, Method method) {
 
-            if (!type.isAnnotationPresent(SecurityDomain.class))
+            SecurityDomain securityDomainAnnotation = (SecurityDomain) clazz.getAnnotation(SecurityDomain.class);
+            if (null == securityDomainAnnotation)
                 return;
-
             // LOG.debug("security domain: " +
             // securityDomainAnnotation.value());
             Principal callerPrincipal = this.sessionContext.getCallerPrincipal();
             if (null == callerPrincipal)
                 throw new EJBException("caller principal should not be null");
-
             // LOG.debug("caller principal: " + callerPrincipal.getName());
             RolesAllowed rolesAllowedAnnotation = method.getAnnotation(RolesAllowed.class);
             if (rolesAllowedAnnotation == null)
                 return;
             String[] roles = rolesAllowedAnnotation.value();
-
             // LOG.debug("number of roles: " + roles.length);
             for (String role : roles) {
                 // LOG.debug("checking role: " + role);
                 if (true == this.sessionContext.isCallerInRole(role))
                     return;
             }
-
             StringBuffer message = new StringBuffer();
             message.append("user is not allowed to invoke the method. [allowed roles: ");
             for (String role : roles) {
@@ -367,124 +359,119 @@ public final class EJBTestUtils {
         @SuppressWarnings("unchecked")
         private void checkSessionBean() {
 
-            Class type = this.object.getClass();
-            if (!type.isAnnotationPresent(Stateless.class) && !type.isAnnotationPresent(Stateful.class))
+            Class clazz = this.object.getClass();
+            Stateless statelessAnnotation = (Stateless) clazz.getAnnotation(Stateless.class);
+            Stateful statefulAnnotation = (Stateful) clazz.getAnnotation(Stateful.class);
+            if (null == statelessAnnotation && statefulAnnotation == null)
                 throw new EJBException("no @Stateless nor @Stateful annotation found");
         }
 
-        private void injectResources(Class<?> type) {
+        private void injectResources(Class<?> clazz) {
 
-            if (false == type.equals(Object.class)) {
-                injectResources(type.getSuperclass());
+            if (false == clazz.equals(Object.class)) {
+                injectResources(clazz.getSuperclass());
             }
-
-            Field[] fields = type.getDeclaredFields();
+            Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
-                if (!field.isAnnotationPresent(Resource.class)) {
+                Resource resourceAnnotation = field.getAnnotation(Resource.class);
+                if (null == resourceAnnotation) {
                     continue;
                 }
-
                 Class<?> fieldType = field.getType();
-                if (SessionContext.class.isAssignableFrom(fieldType)) {
+                if (true == SessionContext.class.isAssignableFrom(fieldType)) {
                     setField(field, this.sessionContext);
                     continue;
                 }
-                if (TimerService.class.isAssignableFrom(fieldType)) {
+                if (true == TimerService.class.isAssignableFrom(fieldType)) {
                     TimerService testTimerService = new TestTimerService();
                     setField(field, testTimerService);
                     continue;
                 }
-                if (String.class.isAssignableFrom(fieldType)) {
+                if (true == String.class.isAssignableFrom(fieldType)) {
                     /*
                      * In this case we're probably dealing with an env-entry injection, which we can most of the time
                      * safely skip.
                      */
                     continue;
                 }
-
                 throw new EJBException("unsupported resource type: " + fieldType.getName());
             }
         }
 
-        private void injectSeamLogger(Class<?> type) {
+        private void injectSeamLogger(Class<?> clazz) {
 
-            if (!type.equals(Object.class)) {
-                injectSeamLogger(type.getSuperclass());
+            if (false == clazz.equals(Object.class)) {
+                injectSeamLogger(clazz.getSuperclass());
             }
-
-            Field[] fields = type.getDeclaredFields();
+            Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
-                if (!field.isAnnotationPresent(Logger.class)) {
+                Logger loggerAnnotation = field.getAnnotation(Logger.class);
+                if (null == loggerAnnotation) {
                     continue;
                 }
-
                 Class<?> fieldType = field.getType();
-                if (org.jboss.seam.log.Log.class.isAssignableFrom(fieldType)) {
-                    setField(field, new TestLog());
+                if (true == org.jboss.seam.log.Log.class.isAssignableFrom(fieldType)) {
+                    org.jboss.seam.log.Log log = new TestLog();
+                    setField(field, log);
                     continue;
                 }
             }
         }
 
         @SuppressWarnings("unchecked")
-        private void injectDependencies(Class type) {
+        private void injectDependencies(Class clazz) {
 
-            if (false == type.equals(Object.class)) {
-                injectDependencies(type.getSuperclass());
+            if (false == clazz.equals(Object.class)) {
+                injectDependencies(clazz.getSuperclass());
             }
-
-            Field[] fields = type.getDeclaredFields();
+            Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
-                if (!field.isAnnotationPresent(EJB.class)) {
+                EJB ejbAnnotation = field.getAnnotation(EJB.class);
+                if (null == ejbAnnotation) {
                     continue;
                 }
-
                 Class fieldType = field.getType();
-                if (!fieldType.isInterface())
+                if (false == fieldType.isInterface())
                     throw new EJBException("field is not an interface type");
-                if (!fieldType.isAnnotationPresent(Local.class))
+                Local localAnnotation = (Local) fieldType.getAnnotation(Local.class);
+                if (null == localAnnotation)
                     throw new EJBException("interface has no @Local annotation: " + fieldType.getName());
-                if (fieldType.isAnnotationPresent(Remote.class))
+                Remote remoteAnnotation = (Remote) fieldType.getAnnotation(Remote.class);
+                if (null != remoteAnnotation)
                     throw new EJBException("interface cannot have both @Local and @Remote annotation");
-
                 Class beanType = getBeanType(fieldType);
                 Object bean = EJBTestUtils.newInstance(beanType, this.container, this.entityManager,
                         this.sessionContext);
-
                 setField(field, bean);
             }
         }
 
         private void setField(Field field, Object value) {
 
+            field.setAccessible(true);
             try {
-                field.setAccessible(true);
                 field.set(this.object, value);
-            }
-
-            catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 throw new EJBException("illegal argument error");
             } catch (IllegalAccessException e) {
                 throw new EJBException("illegal access error");
             }
         }
 
-        private void injectEntityManager(Class<?> type) {
+        private void injectEntityManager(Class<?> clazz) {
 
-            if (!type.equals(Object.class)) {
-                injectEntityManager(type.getSuperclass());
+            if (false == clazz.equals(Object.class)) {
+                injectEntityManager(clazz.getSuperclass());
             }
-
-            Field[] fields = type.getDeclaredFields();
+            Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
-                if (!field.isAnnotationPresent(PersistenceContext.class)) {
+                PersistenceContext persistenceContextAnnotation = field.getAnnotation(PersistenceContext.class);
+                if (null == persistenceContextAnnotation) {
                     continue;
                 }
-
                 Class<?> fieldType = field.getType();
-                if (!EntityManager.class.isAssignableFrom(fieldType))
+                if (false == EntityManager.class.isAssignableFrom(fieldType))
                     throw new EJBException("field type not correct");
-
                 setField(field, this.entityManager);
             }
         }
@@ -493,10 +480,9 @@ public final class EJBTestUtils {
         private Class getBeanType(Class interfaceType) {
 
             for (Class containerClass : this.container) {
-                if (!interfaceType.isAssignableFrom(containerClass)) {
+                if (false == interfaceType.isAssignableFrom(containerClass)) {
                     continue;
                 }
-
                 return containerClass;
             }
             throw new EJBException("did not find a container class for type: " + interfaceType.getName());
@@ -516,7 +502,6 @@ public final class EJBTestUtils {
             if (null != principal) {
                 principals.add(principal);
             }
-
             if (null != roles) {
                 SimpleGroup rolesGroup = new SimpleGroup("Roles");
                 for (String role : roles) {
@@ -539,7 +524,9 @@ public final class EJBTestUtils {
 
         public boolean supports(String key) {
 
-            return "javax.security.auth.Subject.container".equals(key);
+            if ("javax.security.auth.Subject.container".equals(key))
+                return true;
+            return false;
         }
     }
 
@@ -598,7 +585,6 @@ public final class EJBTestUtils {
 
             if (null == this.principal)
                 throw new EJBException("caller principal not set");
-
             return this.principal;
         }
 
@@ -642,9 +628,8 @@ public final class EJBTestUtils {
 
             if (null == this.roles)
                 return false;
-
             for (String role : this.roles) {
-                if (role.equals(expectedRole))
+                if (true == role.equals(expectedRole))
                     return true;
             }
             return false;
@@ -709,7 +694,8 @@ public final class EJBTestUtils {
                 EJBException {
 
             serviceLOG.debug("createTimer");
-            return new TestTimer();
+            Timer testTimer = new TestTimer();
+            return testTimer;
         }
 
         @SuppressWarnings("unused")
