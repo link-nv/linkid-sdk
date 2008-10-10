@@ -45,9 +45,9 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 /**
  * Jetty servlet to load the application authentication page
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class AuthServletManager extends Observable {
 
@@ -150,12 +150,11 @@ public class AuthServletManager extends Observable {
 
             LOG.debug("doGet");
             HttpSession session = req.getSession();
-            String username = (String) session.getAttribute(LoginManager.USERNAME_SESSION_ATTRIBUTE);
-            LOG.debug("username: " + username);
-            resp.getWriter()
-                    .println("Success authenticating user " + username + ".\nYou may close this browser now...");
+            String userId = (String) session.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+            LOG.debug("userId: " + userId);
+            resp.getWriter().println("Success authenticating user " + userId + ".\nYou may close this browser now...");
             resp.flushBuffer();
-            if (null != username) {
+            if (null != userId) {
                 AuthServletManager.getInstance().shutDownJetty();
             }
         }

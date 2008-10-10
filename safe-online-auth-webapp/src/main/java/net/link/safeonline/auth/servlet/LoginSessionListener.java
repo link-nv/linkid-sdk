@@ -25,8 +25,8 @@ public class LoginSessionListener implements HttpSessionAttributeListener {
 
         String attributeName = event.getName();
         if (LoginManager.USERID_ATTRIBUTE.equals(attributeName)) {
-            String username = (String) event.getValue();
-            LOG.debug("attribute username added: " + username);
+            String userId = (String) event.getValue();
+            LOG.debug("attribute userId added: " + userId);
         }
     }
 
@@ -34,8 +34,8 @@ public class LoginSessionListener implements HttpSessionAttributeListener {
 
         String attributeName = event.getName();
         if (LoginManager.USERID_ATTRIBUTE.equals(attributeName)) {
-            String username = (String) event.getValue();
-            LOG.debug("attribute username removed: " + username);
+            String userId = (String) event.getValue();
+            LOG.debug("attribute userId removed: " + userId);
         }
     }
 
@@ -43,8 +43,8 @@ public class LoginSessionListener implements HttpSessionAttributeListener {
 
         String attributeName = event.getName();
         if (LoginManager.USERID_ATTRIBUTE.equals(attributeName)) {
-            String username = (String) event.getValue();
-            LOG.debug("attribute username replaced: " + username);
+            String userId = (String) event.getValue();
+            LOG.debug("attribute userId replaced: " + userId);
         }
     }
 }

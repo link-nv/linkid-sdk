@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.AuthnResponseFilter;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -112,10 +114,10 @@ public class AuthnResponseFilterTest {
         GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
 
         // expectations
-        String username = "test-username";
+        String userId = UUID.randomUUID().toString();
         expect(
                 this.mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(),
-                        (HttpServletResponse) anyObject())).andReturn(username);
+                        (HttpServletResponse) anyObject())).andReturn(userId);
 
         // prepare
         replay(this.mockProtocolHandler);
@@ -125,8 +127,9 @@ public class AuthnResponseFilterTest {
 
         // verify
         assertEquals(HttpStatus.SC_OK, statusCode);
-        String resultUsername = (String) this.servletTestManager.getSessionAttribute("username");
-        LOG.debug("result username: " + resultUsername);
-        assertEquals(username, resultUsername);
+        String resultUserId = (String) this.servletTestManager
+                .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        LOG.debug("result userId: " + resultUserId);
+        assertEquals(userId, resultUserId);
     }
 }

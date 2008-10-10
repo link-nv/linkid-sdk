@@ -27,9 +27,9 @@ import org.jboss.security.SimplePrincipal;
 /**
  * Tomcat Login Valve. This valve will set the Tomcat servlet container user principal based on a HTTP session context
  * attribute.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoginValve extends ValveBase {
 
@@ -51,10 +51,10 @@ public class LoginValve extends ValveBase {
         HttpSession httpSession = httpServletRequest.getSession(false);
         if (null != httpSession) {
             LOG.debug("http session present");
-            String username = (String) httpSession.getAttribute("username");
-            if (null != username) {
-                LOG.debug("setting user principal to " + username);
-                request.setUserPrincipal(new SimplePrincipal(username));
+            String userId = (String) httpSession.getAttribute("userId");
+            if (null != userId) {
+                LOG.debug("setting user principal to " + userId);
+                request.setUserPrincipal(new SimplePrincipal(userId));
             }
         }
 

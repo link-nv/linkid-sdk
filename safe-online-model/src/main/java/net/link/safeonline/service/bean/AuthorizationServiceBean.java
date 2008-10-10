@@ -56,13 +56,13 @@ public class AuthorizationServiceBean implements AuthorizationService, Authoriza
     private boolean          isGlobalOperator = false;
 
 
-    public Set<String> getRoles(String login) {
+    public Set<String> getRoles(String userId) {
 
         Set<String> roles = new HashSet<String>();
 
-        LOG.debug("get roles for login: " + login);
+        LOG.debug("get roles for userId: " + userId);
         try {
-            SubjectEntity subject = this.subjectService.getSubject(login);
+            SubjectEntity subject = this.subjectService.getSubject(userId);
 
             /*
              * For now we base the authorization on made subscriptions. Of course, later on we could let this decision
@@ -87,9 +87,9 @@ public class AuthorizationServiceBean implements AuthorizationService, Authoriza
         }
 
         catch (SubjectNotFoundException e) {
-            LOG.error("entity not found: " + login);
+            LOG.error("entity not found: " + userId);
         }
-        
+
         return roles;
     }
 
@@ -100,7 +100,7 @@ public class AuthorizationServiceBean implements AuthorizationService, Authoriza
             SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
             if (null == subscription)
                 return;
-            
+
             roles.add(roleToAdd);
         }
 

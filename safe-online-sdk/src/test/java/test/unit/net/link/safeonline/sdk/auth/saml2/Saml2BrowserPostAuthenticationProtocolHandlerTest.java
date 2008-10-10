@@ -30,11 +30,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.sdk.auth.saml2.Saml2BrowserPostAuthenticationProtocolHandler;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
@@ -227,13 +227,12 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
             } catch (Exception e) {
                 throw new ServletException("reflection error: " + e.getMessage(), e);
             }
-            String username = authenticationProtocolHandler.finalizeAuthentication(request, response);
-            if (null != username) {
-                HttpSession session = request.getSession();
-                session.setAttribute("username", username);
+            String userId = authenticationProtocolHandler.finalizeAuthentication(request, response);
+            if (null != userId) {
+                LoginManager.setUserId(userId, request);
             }
             Writer out = response.getWriter();
-            out.write("username: " + username);
+            out.write("userId: " + userId);
             out.flush();
         }
     }
@@ -302,9 +301,10 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         assertEquals(HttpStatus.SC_OK, statusCode);
         String responseBody = postMethod.getResponseBodyAsString();
         LOG.debug("response body: \"" + responseBody + "\"");
-        String username = (String) this.responseServletTestManager.getSessionAttribute("username");
-        LOG.debug("authenticated username: " + username);
-        assertNotNull(username);
+        String userId = (String) this.responseServletTestManager
+                .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        LOG.debug("authenticated userId: " + userId);
+        assertNotNull(userId);
     }
 
     private static String replaceAll(String oldStr, String newStr, String inString) {

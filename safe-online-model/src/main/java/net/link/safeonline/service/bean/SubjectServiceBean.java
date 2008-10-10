@@ -105,7 +105,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
 
     public String getSubjectLogin(String userId) {
 
-        LOG.debug("get subject user id: " + userId);
+        LOG.debug("get subject user login: " + userId);
         SubjectEntity subject = this.subjectDAO.findSubject(userId);
         if (null == subject)
             return null;
@@ -128,8 +128,9 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
         LOG.debug("get subject login: " + login);
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
                 login);
-        if (null == subject)
+        if (null == subject) {
             throw new SubjectNotFoundException();
+        }
 
         return subject;
     }

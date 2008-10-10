@@ -52,16 +52,16 @@ public class IntegrationTestUtils {
     /**
      * Performs a client-side JAAS login.
      *
-     * @param username
-     *            the username.
+     * @param userId
+     *            the userId.
      * @param password
      *            the password.
      * @return the client-side subject.
      * @throws Exception
      */
-    public static Subject login(String username, String password) throws Exception {
+    public static Subject login(String userId, String password) throws Exception {
 
-        LoginContext loginContext = new LoginContext("client-login", new UsernamePasswordHandler(username, password));
+        LoginContext loginContext = new LoginContext("client-login", new UsernamePasswordHandler(userId, password));
         loginContext.login();
         Subject subject = loginContext.getSubject();
         return subject;

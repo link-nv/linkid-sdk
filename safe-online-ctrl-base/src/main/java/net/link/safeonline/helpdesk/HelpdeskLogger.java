@@ -22,6 +22,7 @@ import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -32,9 +33,9 @@ import org.apache.commons.logging.LogFactory;
 
 public class HelpdeskLogger {
 
-    private static final Log    LOG                    = LogFactory.getLog(HelpdeskLogger.class);
+    private static final Log    LOG          = LogFactory.getLog(HelpdeskLogger.class);
 
-    private static final String UNKNOWN_USER           = "unknown";
+    private static final String UNKNOWN_USER = "unknown";
 
 
     private HelpdeskLogger() {
@@ -55,7 +56,7 @@ public class HelpdeskLogger {
         List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
         session.removeAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
         session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT, helpdeskContext);
-        
+
         LOG.debug("new volatile helpdesk context created");
         return helpdeskContext;
     }
@@ -77,7 +78,7 @@ public class HelpdeskLogger {
             helpdeskContext = new LinkedList<HelpdeskEventEntity>();
             session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT, helpdeskContext);
         }
-        
+
         return helpdeskContext;
     }
 
@@ -97,7 +98,7 @@ public class HelpdeskLogger {
 
     private static String getPrincipal(HttpSession session) {
 
-        String principal = (String) session.getAttribute("username");
+        String principal = (String) session.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         if (principal != null) {
             SubjectService subjectService = EjbUtils
                     .getEJB("SafeOnline/SubjectServiceBean/local", SubjectService.class);
@@ -106,7 +107,7 @@ public class HelpdeskLogger {
         if (principal == null) {
             principal = UNKNOWN_USER;
         }
-        
+
         LOG.debug("principal found: " + principal);
         return principal;
     }

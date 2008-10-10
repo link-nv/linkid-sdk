@@ -15,12 +15,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.webapp.filter.TimeoutFilter;
 
@@ -47,9 +49,9 @@ public class TimeoutFilterTest {
         this.servletTestManager = new ServletTestManager();
         Map<String, String> filterInitParameters = new HashMap<String, String>();
         filterInitParameters.put("TimeoutPath", "timeout");
-        filterInitParameters.put("LoginSessionAttribute", "username");
+        filterInitParameters.put("LoginSessionAttribute", LoginManager.USERID_SESSION_ATTRIBUTE);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put("username", "alice");
+        initialSessionAttributes.put(LoginManager.USERID_SESSION_ATTRIBUTE, UUID.randomUUID().toString());
         this.servletTestManager.setUp(TestServlet.class, TimeoutFilter.class, filterInitParameters,
                 initialSessionAttributes);
     }
@@ -74,11 +76,11 @@ public class TimeoutFilterTest {
             testServletLOG.debug("writing to print writer");
 
             HttpSession session = request.getSession();
-            String username = (String) session.getAttribute("username");
-            testServletLOG.debug("username: " + username);
+            String userId = (String) session.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+            testServletLOG.debug("userId: " + userId);
 
             PrintWriter out = response.getWriter();
-            out.println("hello world: " + username);
+            out.println("hello world: " + userId);
         }
     }
 
@@ -101,7 +103,7 @@ public class TimeoutFilterTest {
         logHeaders(getMethod);
         body = getMethod.getResponseBodyAsString();
         LOG.debug("body: " + body);
-        assertTrue(body.startsWith("hello world: alice"));
+        assertTrue(body.startsWith("hello world: "));
         // session cookie
         assertNotNull(getMethod.getResponseHeader("Set-Cookie"));
     }

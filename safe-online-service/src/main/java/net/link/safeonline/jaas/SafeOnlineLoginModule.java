@@ -33,7 +33,7 @@ import org.jboss.security.SimplePrincipal;
 
 /**
  * JAAS login module that performs authentication and authorization used by the SafeOnline core security domain.
- *
+ * 
  * @author fcorneli
  */
 public class SafeOnlineLoginModule implements LoginModule {
@@ -157,22 +157,22 @@ public class SafeOnlineLoginModule implements LoginModule {
             throw new LoginException(msg);
         }
 
-        String username = nameCallback.getName();
-        LOG.debug("username: " + username);
-        if (null == username) {
-            throw new LoginException("username is null");
+        String userId = nameCallback.getName();
+        LOG.debug("userId: " + userId);
+        if (null == userId) {
+            throw new LoginException("userId is null");
         }
 
         // authenticate
         // TODO: authenticate here again via SAML assertion
         LOG.debug("authenticated");
 
-        this.authenticatedPrincipal = new SimplePrincipal(username);
+        this.authenticatedPrincipal = new SimplePrincipal(userId);
 
         // authorize
         AuthorizationService authorizationService = getAuthorizationService();
 
-        this.roles = authorizationService.getRoles(username);
+        this.roles = authorizationService.getRoles(userId);
 
         return true;
     }

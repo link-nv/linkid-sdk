@@ -9,7 +9,7 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String            username;
+    private String            userId;
 
     private List<String>      roles            = new ArrayList<String>();
 
@@ -29,14 +29,14 @@ public class User implements Serializable {
         this.roles = roles;
     }
 
-    public String getUsername() {
+    public String getUserId() {
 
-        return this.username;
+        return this.userId;
     }
 
-    public void setUsername(String username) {
+    public void setUserId(String userId) {
 
-        this.username = username;
+        this.userId = userId;
     }
 
     public boolean hasOneOf(List<String> roleList) {

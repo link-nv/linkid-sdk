@@ -147,13 +147,13 @@ public abstract class WicketUtil {
     }
 
     /**
-     * @return The OLAS username that the current user has authenticated himself with.
+     * @return The OLAS userId that the current user has authenticated himself with.
      * 
      * @throws ServletException
      *             If the user has not yet authenticated.
      */
-    public static String getUsername(Request request) throws ServletException {
+    public static String getUserId(Request request) throws ServletException {
 
-        return LoginManager.getUsername(toServletRequest(request));
+        return LoginManager.getUserId(toServletRequest(request));
     }
 }

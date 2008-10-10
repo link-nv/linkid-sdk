@@ -9,65 +9,68 @@ import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.PageLink;
 
-
 public class LoginPage extends LayoutPage {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
+	/**
+	 * If the user is logged in; continue to the account overview page.
+	 * 
+	 * If not, show a link to the OLAS authentication service for logging the
+	 * user in.
+	 */
+	public LoginPage() {
 
-    /**
-     * If the user is logged in; continue to the account overview page.
-     * 
-     * If not, show a link to the OLAS authentication service for logging the user in.
-     */
-    public LoginPage() {
+		// If logged in using OLAS, create/obtain the bank user from the OLAS
+		// user.
+		if (WicketUtil.isAuthenticated(getRequest())) {
+			try {
+				BankUserEntity user = BankSession.get().getUser();
+				if (BankSession.isLinking()) {
+					BankSession.get().setLinkingUser(null);
+					user = getUserService().linkOLASUser(user,
+							WicketUtil.getUserId(getRequest()));
+				} else {
+					user = getUserService().getOLASUser(
+							WicketUtil.getUserId(getRequest()));
+				}
 
-        // If logged in using OLAS, create/obtain the bank user from the OLAS user.
-        if (WicketUtil.isAuthenticated(getRequest())) {
-            try {
-                BankUserEntity user = BankSession.get().getUser();
-                if (BankSession.isLinking()) {
-                    BankSession.get().setLinkingUser(null);
-                    user = getUserService().linkOLASUser(user, WicketUtil.getUsername(getRequest()));
-                } else {
-                    user = getUserService().getOLASUser(WicketUtil.getUsername(getRequest()));
-                }
+				user = getUserService().updateUser(user,
+						WicketUtil.toServletRequest(getRequest()));
+				BankSession.get().setUser(user);
+			}
 
-                user = getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest()));
-                BankSession.get().setUser(user);
-            }
+			catch (ServletException e) {
+				this.LOG.error("[BUG] Not really logged in?!", e);
+			}
+		}
 
-            catch (ServletException e) {
-                this.LOG.error("[BUG] Not really logged in?!", e);
-            }
-        }
+		// If logged in, send user to the ticket history page.
+		if (BankSession.isUserSet()) {
+			setResponsePage(AccountPage.class);
+			return;
+		}
 
-        // If logged in, send user to the ticket history page.
-        if (BankSession.isUserSet()) {
-            setResponsePage(AccountPage.class);
-            return;
-        }
+		// HTML Components.
+		add(new OlasAuthLink("olasLoginLink", true));
+		add(new PageLink("digipassLoginLink", DigipassLoginPage.class));
+	}
 
-        // HTML Components.
-        add(new OlasAuthLink("olasLoginLink", true));
-        add(new PageLink("digipassLoginLink", DigipassLoginPage.class));
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getHeaderTitle() {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getHeaderTitle() {
+		return "Login Page";
+	}
 
-        return "Login Page";
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	Class<? extends Page> getPageLinkDestination() {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    Class<? extends Page> getPageLinkDestination() {
-
-        return LoginPage.class;
-    }
+		return LoginPage.class;
+	}
 }

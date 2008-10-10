@@ -87,16 +87,16 @@ public class LoginServlet extends AbstractInjectionServlet {
             return;
         }
 
-        String username = protocolHandler.finalizeAuthentication(requestWrapper, response);
-        if (null == username) {
+        String userId = protocolHandler.finalizeAuthentication(requestWrapper, response);
+        if (null == userId) {
             String msg = "protocol handler could not finalize";
             LOG.error(msg);
             redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
             return;
         }
 
-        LOG.debug("username: " + username);
-        LoginManager.setUsername(username, requestWrapper);
+        LOG.debug("username: " + userId);
+        LoginManager.setUserId(userId, requestWrapper);
         String target = AuthenticationProtocolManager.getTarget(requestWrapper);
         LOG.debug("target: " + target);
         AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);

@@ -51,7 +51,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
 
         LOG.debug("invoke get");
 
-        LoginManager.removeUserName(request);
+        LoginManager.removeUserId(request);
         response.sendRedirect(this.logoutExitUrl);
 
     }

@@ -24,13 +24,13 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Servlet container filter that sets the servlet container user principal according to the SafeOnline authenticated
  * user.
- *
+ * 
  * <p>
  * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor.
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class ContainerLoginFilter implements Filter {
 
@@ -63,9 +63,9 @@ public class ContainerLoginFilter implements Filter {
         }
         request.setAttribute(ALREADY_PROCESSED, Boolean.TRUE);
 
-        String username = LoginManager.getUsername(httpServletRequest);
-        LOG.debug("setting servlet container user principal to " + username);
-        LoginHttpServletRequestWrapper wrapper = new LoginHttpServletRequestWrapper(httpServletRequest, username);
+        String userId = LoginManager.getUserId(httpServletRequest);
+        LOG.debug("setting servlet container user principal to " + userId);
+        LoginHttpServletRequestWrapper wrapper = new LoginHttpServletRequestWrapper(httpServletRequest, userId);
 
         chain.doFilter(wrapper, response);
     }
