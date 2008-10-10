@@ -88,8 +88,9 @@ public class EntityTestManager {
 
     public void tearDown() throws Exception {
 
-        if (null == this.entityManager)
+        if (null == this.entityManager) {
             throw new IllegalStateException("invoke setUp first");
+        }
 
         if (this.entityManager.isOpen()) {
             EntityTransaction entityTransaction = this.entityManager.getTransaction();
@@ -138,18 +139,18 @@ public class EntityTestManager {
     /**
      * Create a new instance of the given class that has the test transaction entity manager handler applied to it. The
      * transaction semantics are:
-     * 
+     *
      * <code>@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)</code>
-     * 
-     * @param <T>
-     * @param type
+     *
+     * @param <Type>
+     * @param clazz
      */
     @SuppressWarnings("unchecked")
-    public <T> T newInstance(Class<T> type) {
+    public <Type> Type newInstance(Class<Type> clazz) {
 
-        T instance;
+        Type instance;
         try {
-            instance = type.newInstance();
+            instance = clazz.newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException("instantiation error");
         } catch (IllegalAccessException e) {
@@ -158,22 +159,22 @@ public class EntityTestManager {
         TransactionMethodInterceptor transactionInvocationHandler = new TransactionMethodInterceptor(instance,
                 this.entityManagerFactory);
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(type);
+        enhancer.setSuperclass(clazz);
         enhancer.setCallback(transactionInvocationHandler);
-        T object = (T) enhancer.create();
+        Type object = (Type) enhancer.create();
         try {
-            init(type, object);
+            init(clazz, object);
         } catch (Exception e) {
             throw new RuntimeException("init error");
         }
         return object;
     }
 
-    public static void init(Class<?> type, Object bean) throws IllegalArgumentException, IllegalAccessException,
+    public static void init(Class<?> clazz, Object bean) throws IllegalArgumentException, IllegalAccessException,
             InvocationTargetException {
 
         LOG.debug("Initializing: " + bean);
-        Method[] methods = type.getDeclaredMethods();
+        Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
             PostConstruct postConstruct = method.getAnnotation(PostConstruct.class);
             if (null == postConstruct) {
@@ -202,19 +203,19 @@ public class EntityTestManager {
 
         private Field getEntityManagerField(Object target) {
 
-            Class<?> type = target.getClass();
-            Field[] fields = type.getDeclaredFields();
+            Class<?> clazz = target.getClass();
+            Field[] fields = clazz.getDeclaredFields();
             for (Field currentField : fields) {
-                if (!currentField.isAnnotationPresent(PersistenceContext.class)) {
+                PersistenceContext persistenceContextAnnotation = currentField.getAnnotation(PersistenceContext.class);
+                if (null == persistenceContextAnnotation) {
                     continue;
                 }
-                if (!EntityManager.class.isAssignableFrom(currentField.getType()))
+                if (false == EntityManager.class.isAssignableFrom(currentField.getType())) {
                     throw new RuntimeException("field type not correct");
-                
+                }
                 currentField.setAccessible(true);
                 return currentField;
             }
-
             throw new RuntimeException("no entity manager field found");
         }
 
@@ -231,23 +232,17 @@ public class EntityTestManager {
                 interceptorLOG.debug("begin transaction");
                 entityManager.getTransaction().begin();
                 Object result = method.invoke(this.object, args);
-                
                 interceptorLOG.debug("commit transaction");
                 entityManager.getTransaction().commit();
-                
                 return result;
-            }
-
-            catch (InvocationTargetException e) {
+            } catch (InvocationTargetException e) {
                 interceptorLOG.debug("rollback transaction");
                 entityManager.getTransaction().rollback();
                 throw e.getTargetException();
             } catch (Exception e) {
                 interceptorLOG.error("exception received");
                 throw e;
-            }
-
-            finally {
+            } finally {
                 entityManager.close();
             }
         }
