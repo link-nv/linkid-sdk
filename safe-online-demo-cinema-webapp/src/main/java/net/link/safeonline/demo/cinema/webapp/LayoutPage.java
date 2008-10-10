@@ -312,7 +312,7 @@ public class LayoutPage extends WebPage {
                             .getFilmName(ticket), WicketUtil.format(Session.get(), new Date(ticket.getTime())),
                             LayoutPage.this.ticketService.getTheatreName(ticket));
 
-                    String redirectUrl = String.format("%s/%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
+                    String redirectUrl = String.format("%s%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
 
                     // Demo-Payment Host. (same as ours)
                             paymentTarget.replaceFirst("[^/]*/$", ""),

@@ -201,9 +201,9 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
         this.juniorReduction = 0;
         String userId = getUserId();
         try {
-            this.nrn = this.getAttributeClient().getAttributeValue(userId,
+            this.nrn = getAttributeClient().getAttributeValue(userId,
                     "urn:net:lin-k:safe-online:attribute:beid:nrn", String[].class)[0];
-            Boolean juniorValue = this.getAttributeClient().getAttributeValue(userId,
+            Boolean juniorValue = getAttributeClient().getAttributeValue(userId,
                     DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
             if (juniorValue != null && juniorValue.booleanValue() == true) {
                 this.juniorReduction = 10;
