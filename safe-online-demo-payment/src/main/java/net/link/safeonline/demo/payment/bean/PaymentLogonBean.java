@@ -49,14 +49,14 @@ public class PaymentLogonBean extends AbstractPaymentDataClientBean implements P
     public String logout() {
 
         this.log.debug("logout");
-        String userId = (String) this.sessionContext.get("username");
+        String userId = (String) this.sessionContext.get("userId");
         SafeOnlineLoginUtils.logout(userId, "main.seam");
         return "success";
     }
 
     public String getUsername() {
 
-        String userId = (String) this.sessionContext.get("username");
+        String userId = (String) this.sessionContext.get("userId");
         return getUsername(userId);
     }
 }
