@@ -283,6 +283,7 @@
 			<properties>
 				<debug.mode>true</debug.mode>
 				<safe-online.show.sql>true</safe-online.show.sql>
+                <safe-online.batch.size>0</safe-online.batch.size>
 			</properties>
 		</profile>
 
@@ -370,6 +371,8 @@
 				</safe-online.profiling.agent.data.source.uri>
 				<safe-online.profiling.group> net.lin-k.safe-online.performance 
 				</safe-online.profiling.group>
+				<safe-online.profiling.agent.batch.size> 5 
+				</safe-online.profiling.agent.batch.size>
 				<safe-online.profiling.agent.show.sql> false 
 				</safe-online.profiling.agent.show.sql>
 				<safe-online.profiling.agent.dialect>
@@ -498,6 +501,7 @@
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<sessionTimeout>5</sessionTimeout>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
+		<safe-online.batch.size>5</safe-online.batch.size>
 		<safe-online.dialect>org.hibernate.dialect.HSQLDialect</safe-online.dialect>
 		<safe-online.hibernate.hbm2ddl.auto>create-drop</safe-online.hibernate.hbm2ddl.auto>
 		<safe-online.show.sql>false</safe-online.show.sql>

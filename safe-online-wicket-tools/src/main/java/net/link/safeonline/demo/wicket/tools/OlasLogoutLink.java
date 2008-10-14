@@ -6,9 +6,12 @@
  */
 package net.link.safeonline.demo.wicket.tools;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.apache.wicket.Page;
@@ -46,6 +49,20 @@ public class OlasLogoutLink extends OlasAuthLink {
     @Override
     protected void delegate(String target, HttpServletRequest request, HttpServletResponse response) {
 
-        SafeOnlineLoginUtils.logout(target, request, response);
+        if(LoginManager.isAuthenticated(request)) {
+            this.LOG.debug("Logout delegated to OLAS with target: " + target);
+            SafeOnlineLoginUtils.logout(target, request, response);
+        }
+        
+        else {
+            this.LOG.debug("Logout handeled locally; invalidating session.");
+            request.getSession().invalidate();
+
+            try {
+                response.sendRedirect(target);
+            } catch (IOException e) {
+                this.LOG.error("couldn't redirect to target after logout.", e);
+            }
+        }
     }
 }

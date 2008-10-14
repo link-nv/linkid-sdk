@@ -55,6 +55,7 @@ public abstract class OlasAuthLink extends Link<Object> {
     @Override
     public void onClick() {
 
+        this.LOG.debug("Logout clicked.");
         getRequestCycle().setRequestTarget(new IRequestTarget() {
 
             public void detach(RequestCycle requestCycle) {
@@ -63,6 +64,7 @@ public abstract class OlasAuthLink extends Link<Object> {
 
             public void respond(RequestCycle requestCycle) {
 
+                OlasAuthLink.this.LOG.debug("Logout responded.");
                 HttpServletRequest request = ((WebRequest) requestCycle.getRequest()).getHttpServletRequest();
                 HttpServletResponse response = ((WebResponse) requestCycle.getResponse()).getHttpServletResponse();
 

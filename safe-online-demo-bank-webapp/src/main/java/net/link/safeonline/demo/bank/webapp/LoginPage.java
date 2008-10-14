@@ -48,7 +48,7 @@ public class LoginPage extends LayoutPage {
         }
 
         // HTML Components.
-        add(new OlasLoginLink("olasLoginLink", AccountPage.class));
+        add(new OlasLoginLink("olasLoginLink"));
         add(new PageLink("digipassLoginLink", DigipassLoginPage.class));
     }
 
@@ -60,6 +60,15 @@ public class LoginPage extends LayoutPage {
 
 		return "Login Page";
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    String getPageLinkString() {
+
+        return null;
+    }
 
 	/**
 	 * {@inheritDoc}

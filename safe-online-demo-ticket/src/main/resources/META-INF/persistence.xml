@@ -15,15 +15,16 @@
 				value="${safe-online.show.sql}" />
 			<property name="hibernate.hbm2ddl.auto"
 				value="${safe-online.hibernate.hbm2ddl.auto}" />
-			<property name="hibernate.use_sql_comments"
-				value="true" />
-			<property name="hibernate.bytecode.use_reflection_optimizer"
-				value="true" />
+            <property name="hibernate.jdbc.batch_size"
+                value="${safe-online.batch.size}"/>
+            <property name="hibernate.use_sql_comments"
+                value="true" />
+            <property name="hibernate.bytecode.use_reflection_optimizer"
+                value="true" />
 			<property name="hibernate.cache.provider_class"
 				value="org.hibernate.cache.HashtableCacheProvider" />
-                        <property name="jboss.entity.manager.jndi.name"
-                                value="java:/DemoTicketEntityManager"/>
-
+            <property name="jboss.entity.manager.jndi.name"
+                value="java:/DemoTicketEntityManager"/>
 		</properties>
 	</persistence-unit>
 </persistence>

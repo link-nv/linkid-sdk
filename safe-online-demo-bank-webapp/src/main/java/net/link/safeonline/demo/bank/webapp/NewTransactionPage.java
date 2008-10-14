@@ -101,7 +101,6 @@ public class NewTransactionPage extends LayoutPage {
         return "New Transaction";
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -109,5 +108,14 @@ public class NewTransactionPage extends LayoutPage {
     Class<? extends Page> getPageLinkDestination() {
 
         return AccountPage.class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    String getPageLinkString() {
+
+        return "Account Overview";
     }
 }

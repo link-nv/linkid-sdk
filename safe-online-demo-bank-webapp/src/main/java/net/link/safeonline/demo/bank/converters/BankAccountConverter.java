@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.webapp.BankSession;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
@@ -61,8 +62,8 @@ public class BankAccountConverter implements IConverter<BankAccountEntity> {
             try {
                 entity.setAmount((Double) NumberFormat.getCurrencyInstance(locale).parse(amount));
             } catch (ParseException e) {
-                LOG.warn("Couldn't parse " + amount + " into a currency amount for bank account: " + code + " ("
-                        + name + ")");
+                LOG.warn("Couldn't parse " + amount + " into a currency amount for bank account: " + code + " (" + name
+                        + ")");
             }
 
             return entity;
@@ -76,7 +77,7 @@ public class BankAccountConverter implements IConverter<BankAccountEntity> {
      */
     public String convertToString(BankAccountEntity value, Locale locale) {
 
-        return String.format("%s: %s [%s]", value.getCode(), value.getName(), WicketUtil.format(locale, value
-                .getAmount()));
+        return String.format("%s: %s [%s]", value.getCode(), value.getName(), WicketUtil.format(BankSession.CURRENCY,
+                value.getAmount()));
     }
 }
