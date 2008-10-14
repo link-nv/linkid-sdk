@@ -124,12 +124,14 @@ public class AuthenticationProtocolManager {
 
     private static void storeTarget(String target, HttpServletRequest request) {
 
+        LOG.debug("storing target: " + target);
         HttpSession session = request.getSession();
         session.setAttribute(TARGET_ATTRIBUTE, target);
     }
 
     private static void clearTarget(HttpServletRequest request) {
 
+        LOG.debug("clearing target:");
         HttpSession session = request.getSession();
         session.removeAttribute(TARGET_ATTRIBUTE);
     }
@@ -144,6 +146,7 @@ public class AuthenticationProtocolManager {
         String target = findTarget(request);
         if (null == target)
             throw new IllegalStateException("target attribute is null");
+        
         return target;
     }
 
@@ -157,7 +160,10 @@ public class AuthenticationProtocolManager {
     public static String findTarget(HttpServletRequest request) {
 
         HttpSession session = request.getSession();
-        return (String) session.getAttribute(TARGET_ATTRIBUTE);
+        String target = (String) session.getAttribute(TARGET_ATTRIBUTE);
+
+        LOG.debug("found target: " + target);
+        return target;
     }
 
     /**

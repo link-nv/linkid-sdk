@@ -301,9 +301,7 @@ public class SafeOnlineLoginUtils {
      * @param target
      *            The target to which to redirect to after successful logout. Don't put the full URL in here, the full
      *            URL is retrieved with the {@link #TARGET_BASE_URL_INIT_PARAM}.
-     * 
      */
-
     @SuppressWarnings("unchecked")
     public static void logout(String subjectName, String target) {
 
@@ -334,7 +332,7 @@ public class SafeOnlineLoginUtils {
      *      <code>web.xml</code>.
      * 
      * @param target
-     *            The target url to redirect to after successful authentication.
+     *            The target url to redirect to after successful logout.
      * @param request
      *            The {@link HttpServletRequest} object from the servlet making the login request.
      * @param response

@@ -7,6 +7,7 @@ import net.link.safeonline.demo.bank.entity.BankUserEntity;
 import net.link.safeonline.demo.bank.service.AccountService;
 import net.link.safeonline.demo.bank.service.TransactionService;
 import net.link.safeonline.demo.bank.service.UserService;
+import net.link.safeonline.demo.wicket.tools.OlasLogoutLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
@@ -16,7 +17,6 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.PageLink;
 import org.apache.wicket.model.Model;
 
@@ -95,20 +95,7 @@ public abstract class LayoutPage extends WebPage {
             super(id);
 
             add(getPageLink());
-            add(new Link<String>("logout") {
-
-                private static final long serialVersionUID = 1L;
-
-
-                @Override
-                public void onClick() {
-
-                    getSession().invalidateNow();
-
-                    setRedirect(true);
-                    setResponsePage(LoginPage.class);
-                }
-            });
+            add(new OlasLogoutLink("logout", LoginPage.class));
             add(new Label("name", this.name = new Model<String>()));
             add(new Label("amount", this.amount = new Model<String>()));
 

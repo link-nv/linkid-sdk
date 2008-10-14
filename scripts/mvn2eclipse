@@ -64,7 +64,7 @@ emit "Converting JAR dependencies on safe-online projects to source dependencies
 			H
 			g/--1.jar/d
 			v/-client/\
-			s/kind="var" path="M2_REPO.net.lin-k.safe-online.\([^\/]*\).*"/kind="src" path="\/\1"/
+			s/kind="[^"]*" path=".*\/safe-online\/\([^\/]*\).*"/kind="src" path="\/\1"/
 			wq
 		END
 	done
@@ -79,12 +79,12 @@ emit "Converting JAR dependencies on safe-online projects to source dependencies
 			line=$REPLY
 
 			if [[ $line = *'-client'* ]]; then
-				curSrc=$(sed 's,.*M2_REPO/net/lin-k/safe-online/\([^/]*\)/.*,/\1,' <<< "$line")
+				curSrc=$(sed 's,"[^"]*/safe-online/\([^/]*\)/.*,"/\1,' <<< "$line")
 				for src in "${srcs[@]}"; do
 					[[ $src = $curSrc ]] && continue 2
 				done
 
-				line=$(sed '/M2_REPO.net.lin-k.safe-online/ { s,M2_REPO/net/lin-k/safe-online/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; }' <<< "$line")
+				line=$(sed '/\/safe-online\// { s,"[^"]*/safe-online/\([^/]*\)/[^"]*,"/\1,; s/kind="[^"]*"/kind="src"/; }' <<< "$line")
 			fi
 
 			echo "$line"

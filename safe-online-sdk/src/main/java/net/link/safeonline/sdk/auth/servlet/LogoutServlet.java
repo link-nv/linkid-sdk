@@ -57,6 +57,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
 
     public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
 
+    public static final String                 INVALIDATE_SESSION     = "OLAS:Invalidated";
+
     @Init(name = "LogoutUrl")
     private String                             logoutUrl;
 
@@ -152,6 +154,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
         /*
          * Finalize the logout process for this application following a single logout from another web application.
          */
+        try {
         String target = AuthenticationProtocolManager.findTarget(requestWrapper);
         if (null != target) {
             // this indicates the end of a single logout process, started by this web application
@@ -172,6 +175,11 @@ public class LogoutServlet extends AbstractInjectionServlet {
             protocolHandler.sendLogoutResponse(true, request, response);
 
             AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);
+        }
+        } finally {
+            if (requestWrapper.getSession().getAttribute(INVALIDATE_SESSION) != null) {
+                requestWrapper.getSession().invalidate();
+            }
         }
     }
 
