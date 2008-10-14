@@ -20,6 +20,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.service.AuthorizationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -32,11 +33,11 @@ import org.jboss.security.SimplePrincipal;
  * Servlet Container login filter. This filter provides perceived servlet container security. This means that the
  * servlet web application that is applying this filter will see meaningful values for the request.getUserPrincipal and
  * request.isUserInRole methods. This filter does not provide web resource protection itself.
- *
+ * 
  * @see <a href="http://securityfilter.sourceforge.net/test">SecurityFilter</a>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class ServletLoginFilter implements Filter {
 
@@ -58,16 +59,16 @@ public class ServletLoginFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
         HttpSession session = httpServletRequest.getSession();
-        String username = (String) session.getAttribute("username");
-        if (null == username) {
+        String userId = (String) session.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        if (null == userId) {
             chain.doFilter(request, response);
             return;
         }
 
         // TODO: cache roles in http request context
-        Set<String> roles = getAuthorizationService().getRoles(username);
+        Set<String> roles = getAuthorizationService().getRoles(userId);
 
-        Principal userPrincipal = new SimplePrincipal(username);
+        Principal userPrincipal = new SimplePrincipal(userId);
         LoginHttpServletRequestWrapper loginHttpServletRequestWrapper = new LoginHttpServletRequestWrapper(
                 httpServletRequest, userPrincipal, roles);
 

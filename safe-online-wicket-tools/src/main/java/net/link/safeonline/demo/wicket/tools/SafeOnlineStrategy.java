@@ -8,6 +8,8 @@ import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.sdk.auth.filter.LoginManager;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
@@ -48,15 +50,16 @@ public class SafeOnlineStrategy implements IAuthorizationStrategy {
             return false;
         }
         HttpSession session = httpServletRequest.getSession();
-        String username = (String) session.getAttribute("username");
-        if (username == null)
+        String userId = (String) session.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        if (userId == null) {
             throw new RestartResponseAtInterceptPageException(this.loginPageClass);
+        }
 
         // find user in session
         User user = getUser();
-        if (user == null || !user.getUsername().equals(username)) {
+        if (user == null || !user.getUserId().equals(userId)) {
             user = new User();
-            user.setUsername(username);
+            user.setUserId(userId);
             setUser(user);
         }
 

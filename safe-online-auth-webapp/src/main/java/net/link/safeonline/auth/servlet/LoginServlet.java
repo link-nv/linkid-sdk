@@ -65,9 +65,6 @@ public class LoginServlet extends AbstractInjectionServlet {
     @EJB(mappedName = "SafeOnline/UsageAgreementServiceBean/local")
     private UsageAgreementService usageAgreementService;
 
-    @In(LoginManager.USERID_ATTRIBUTE)
-    String                        username;
-
     @In(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE)
     DeviceEntity                  device;
 

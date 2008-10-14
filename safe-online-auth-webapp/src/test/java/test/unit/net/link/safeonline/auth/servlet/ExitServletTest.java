@@ -22,6 +22,7 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.xml.XMLConstants;
 
@@ -72,7 +73,7 @@ public class ExitServletTest {
 
     private ServletTestManager    exitServletTestManager;
 
-    private String                username         = "test-user-name";
+    private String                userid           = UUID.randomUUID().toString();
 
     private String                target           = "http://test.target";
 
@@ -158,7 +159,7 @@ public class ExitServletTest {
 
         initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE,
                 Saml2PostProtocolHandler.class.getName());
-        initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE, this.username);
+        initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE, this.userid);
         initialSessionAttributes.put(LoginManager.TARGET_ATTRIBUTE, this.target);
         initialSessionAttributes.put(LoginManager.APPLICATION_ID_ATTRIBUTE, this.applicationId);
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
@@ -168,7 +169,7 @@ public class ExitServletTest {
         this.exitServletTestManager.setUp(ExitServlet.class, servletInitParams, null, null, initialSessionAttributes);
 
         String samlResponseToken = AuthnResponseFactory.createAuthResponse(this.inResponseTo, this.applicationId,
-                this.applicationId, this.username, this.device.getAuthenticationContextClass(), keyPair, validity,
+                this.applicationId, this.userid, this.device.getAuthenticationContextClass(), keyPair, validity,
                 this.target);
         String encodedSamlResponseToken = org.apache.xml.security.utils.Base64.encode(samlResponseToken.getBytes());
         expect(this.mockAuthenticationService.finalizeAuthentication()).andStubReturn(encodedSamlResponseToken);

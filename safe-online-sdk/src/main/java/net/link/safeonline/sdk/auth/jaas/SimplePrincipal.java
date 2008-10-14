@@ -11,30 +11,30 @@ import java.security.Principal;
 
 
 /**
- * Simple username-based JAAS principal.
- *
+ * Simple userId-based JAAS principal.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SimplePrincipal implements Principal {
 
-    private final String username;
+    private final String userId;
 
 
     /**
      * Main constructor.
-     *
-     * @param username
-     *            the user name.
+     * 
+     * @param userId
+     *            the user ID.
      */
-    public SimplePrincipal(String username) {
+    public SimplePrincipal(String userId) {
 
-        this.username = username;
+        this.userId = userId;
     }
 
     public String getName() {
 
-        return this.username;
+        return this.userId;
     }
 
     @Override
@@ -48,12 +48,12 @@ public class SimplePrincipal implements Principal {
         if (!(obj instanceof Principal))
             return false;
         Principal rhs = (Principal) obj;
-        return this.username.equals(rhs.getName());
+        return this.userId.equals(rhs.getName());
     }
 
     @Override
     public String toString() {
 
-        return "Principal: " + this.username;
+        return "Principal: " + this.userId;
     }
 }

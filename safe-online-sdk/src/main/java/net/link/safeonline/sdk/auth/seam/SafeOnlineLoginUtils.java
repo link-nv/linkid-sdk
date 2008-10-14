@@ -351,7 +351,7 @@ public class SafeOnlineLoginUtils {
         }
 
         try {
-            logout(LoginManager.getUsername(request), target, config, request, response);
+            logout(LoginManager.getUserId(request), target, config, request, response);
         } catch (ServletException e) {
             // Not logged in.
         }
@@ -442,14 +442,16 @@ public class SafeOnlineLoginUtils {
             return null;
 
         /* Can't have both resource and file defined. */
-        if (null != keyStoreResource && null != keyStoreFile)
+        if (null != keyStoreResource && null != keyStoreFile) {
             throw new RuntimeException("both KeyStoreResource and KeyStoreFile are defined");
+        }
 
         InputStream keyStoreInputStream;
         if (null != keyStoreResource) {
             keyStoreInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(keyStoreResource);
-            if (null == keyStoreInputStream)
+            if (null == keyStoreInputStream) {
                 throw new RuntimeException("resource not found: " + keyStoreResource);
+            }
         } else {
             try {
                 keyStoreInputStream = new FileInputStream(keyStoreFile);
@@ -463,8 +465,9 @@ public class SafeOnlineLoginUtils {
 
     private static String getInitParameter(Map<String, String> config, String parameterName) {
 
-        if (!config.containsKey(parameterName))
+        if (!config.containsKey(parameterName)) {
             throw new RuntimeException("missing context-param in web.xml: " + parameterName);
+        }
 
         return config.get(parameterName);
     }

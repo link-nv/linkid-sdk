@@ -313,7 +313,7 @@
 		<url-pattern>*.xls</url-pattern>
 	</servlet-mapping>
 	<session-config>
-		<session-timeout>5</session-timeout>
+		<session-timeout>${sessionTimeout}</session-timeout>
 	</session-config>
 	<security-role>
 		<description>The Operator User Role</description>

@@ -53,7 +53,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
 
         LOG.debug("invoke get");
 
-        LoginManager.removeUserName(request);
+        LoginManager.removeUserId(request);
 
         if (Contexts.isSessionContextActive()) {
             Session.getInstance().invalidate();

@@ -29,7 +29,7 @@ public class LoginPage extends LayoutPage {
         // If logged in, send user to the ticket history page.
         if (WicketUtil.isAuthenticated(getRequest())) {
             try {
-                CinemaUserEntity user = this.userService.getUser(WicketUtil.getUsername(getRequest()));
+                CinemaUserEntity user = this.userService.getUser(WicketUtil.getUserId(getRequest()));
                 user = this.userService.updateUser(user, WicketUtil.toServletRequest(getRequest()));
                 CinemaSession.get().setUser(user);
 

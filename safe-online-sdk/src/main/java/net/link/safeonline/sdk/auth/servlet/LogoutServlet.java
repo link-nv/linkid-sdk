@@ -25,6 +25,7 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
@@ -38,8 +39,8 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Logout Servlet. This servlet contains the landing page to finalize the logout process initiated by the web
- * application. This servlet also removes the <code>username</code> attribute and redirects to the specified target
- * when the logout request was made.
+ * application. This servlet also removes the <code>userId</code> attribute and redirects to the specified target when
+ * the logout request was made.
  * 
  * This servlet also handles a logout request sent by the SafeOnline authentication web application due to a single
  * logout request sent by an OLAS application. After handling the request, it will redirect to <code>LogoutUrl</code>.
@@ -118,8 +119,9 @@ public class LogoutServlet extends AbstractInjectionServlet {
             ClassLoader classLoader = currentThread.getContextClassLoader();
             LOG.debug("classloader name: " + classLoader.getClass().getName());
             keyStoreInputStream = classLoader.getResourceAsStream(this.p12KeyStoreResourceName);
-            if (null == keyStoreInputStream)
+            if (null == keyStoreInputStream) {
                 throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreResourceName);
+            }
         } else if (null != this.p12KeyStoreFileName) {
             try {
                 keyStoreInputStream = new FileInputStream(this.p12KeyStoreFileName);
@@ -224,7 +226,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
                 return;
             }
 
-            String userId = (String) requestWrapper.getSession().getAttribute("username");
+            String userId = LoginManager.findUserId(requestWrapper);
             if (null == userId) {
                 LOG.debug("user already logged out in here");
                 protocolHandler.sendLogoutResponse(false, requestWrapper, response);

@@ -13,6 +13,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.webapp.resources.LogoutServlet;
 
@@ -40,8 +41,8 @@ public class LogoutServletTest extends TestCase {
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(LogoutServlet.class, Collections
-                .singletonMap("LogoutExitUrl", this.logoutExitUrl), null, null, Collections.singletonMap("username",
-                (Object) UUID.randomUUID().toString()));
+                .singletonMap("LogoutExitUrl", this.logoutExitUrl), null, null, Collections.singletonMap(
+                LoginManager.USERID_SESSION_ATTRIBUTE, (Object) UUID.randomUUID().toString()));
         this.servletLocation = this.servletTestManager.getServletLocation();
     }
 
@@ -70,7 +71,8 @@ public class LogoutServletTest extends TestCase {
         LOG.debug("location: " + resultLocation);
         assertTrue(resultLocation.endsWith(this.logoutExitUrl));
 
-        String resultUsername = (String) this.servletTestManager.getSessionAttribute("username");
-        assertNull(resultUsername);
+        String resultUserId = (String) this.servletTestManager
+                .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        assertNull(resultUserId);
     }
 }

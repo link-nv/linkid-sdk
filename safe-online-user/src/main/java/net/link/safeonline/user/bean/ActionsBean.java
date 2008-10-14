@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.user.Actions;
 import net.link.safeonline.user.UserConstants;
 
@@ -34,6 +35,7 @@ import org.jboss.seam.contexts.Context;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.web.Session;
+
 
 @Stateful
 @Name("actions")
@@ -62,15 +64,14 @@ public class ActionsBean implements Actions {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String removeAccount() throws SubscriptionNotFoundException,
-            MessageHandlerNotFoundException {
+    public String removeAccount() throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
         this.log.debug("remove account");
 
         this.accountService.removeAccount();
 
         removeLoginCookie();
-        this.sessionContext.set("username", null);
+        this.sessionContext.set(LoginManager.USERID_SESSION_ATTRIBUTE, null);
         Session.instance().invalidate();
         return "logout-success";
     }
@@ -79,12 +80,10 @@ public class ActionsBean implements Actions {
 
         this.log.debug("remove login cookie");
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        HttpServletResponse response = (HttpServletResponse) facesContext
-                .getExternalContext().getResponse();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
         Cookie loginCookie = new Cookie(SafeOnlineCookies.LOGIN_COOKIE, "");
-        loginCookie.setPath(facesContext.getExternalContext()
-                .getRequestContextPath());
+        loginCookie.setPath(facesContext.getExternalContext().getRequestContextPath());
         loginCookie.setMaxAge(0);
         response.addCookie(loginCookie);
     }

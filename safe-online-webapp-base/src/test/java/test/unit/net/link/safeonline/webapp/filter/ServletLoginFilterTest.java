@@ -16,12 +16,14 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.service.AuthorizationService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
@@ -42,7 +44,7 @@ public class ServletLoginFilterTest extends TestCase {
 
     private JndiTestUtils        jndiTestUtils;
 
-    private String               username;
+    private String               userId;
 
     private AuthorizationService mockAuthorizationService;
 
@@ -57,9 +59,9 @@ public class ServletLoginFilterTest extends TestCase {
         this.mockAuthorizationService = createMock(AuthorizationService.class);
         this.jndiTestUtils.bindComponent("SafeOnline/AuthorizationServiceBean/local", this.mockAuthorizationService);
 
-        this.username = "username-" + getName();
+        this.userId = UUID.randomUUID().toString();
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put("username", this.username);
+        initialSessionAttributes.put(LoginManager.USERID_SESSION_ATTRIBUTE, this.userId);
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(ServletLoginFilterTestServlet.class, ServletLoginFilter.class, null,
@@ -87,7 +89,7 @@ public class ServletLoginFilterTest extends TestCase {
         GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
 
         // stubs
-        expect(this.mockAuthorizationService.getRoles(this.username)).andStubReturn(
+        expect(this.mockAuthorizationService.getRoles(this.userId)).andStubReturn(
                 Collections.singleton(testExpectedRole));
         replay(this.mockAuthorizationService);
 
@@ -100,7 +102,7 @@ public class ServletLoginFilterTest extends TestCase {
         assertTrue(ServletLoginFilterTestServlet.isInvoked());
         LOG.debug("last user principal: " + ServletLoginFilterTestServlet.getLastUserPrincipal());
         assertNotNull(ServletLoginFilterTestServlet.getLastUserPrincipal());
-        assertEquals(this.username, ServletLoginFilterTestServlet.getLastUserPrincipal().getName());
+        assertEquals(this.userId, ServletLoginFilterTestServlet.getLastUserPrincipal().getName());
         assertTrue(ServletLoginFilterTestServlet.isExpectedRolePresent(testExpectedRole));
         assertFalse(ServletLoginFilterTestServlet.isExpectedRolePresent(testExpectedRole + "-not-expected"));
     }

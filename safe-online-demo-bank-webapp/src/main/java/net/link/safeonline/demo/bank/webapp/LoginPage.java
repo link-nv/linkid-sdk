@@ -9,7 +9,6 @@ import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.link.PageLink;
 
-
 public class LoginPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -28,9 +27,9 @@ public class LoginPage extends LayoutPage {
                 BankUserEntity user = BankSession.get().getUser();
                 if (BankSession.isLinking()) {
                     BankSession.get().setLinkingUser(null);
-                    user = getUserService().linkOLASUser(user, WicketUtil.getUsername(getRequest()));
+                    user = getUserService().linkOLASUser(user, WicketUtil.getUserId(getRequest()));
                 } else {
-                    user = getUserService().getOLASUser(WicketUtil.getUsername(getRequest()));
+                    user = getUserService().getOLASUser(WicketUtil.getUserId(getRequest()));
                 }
 
                 user = getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest()));
@@ -53,21 +52,21 @@ public class LoginPage extends LayoutPage {
         add(new PageLink("digipassLoginLink", DigipassLoginPage.class));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getHeaderTitle() {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getHeaderTitle() {
 
-        return "Login Page";
-    }
+		return "Login Page";
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    Class<? extends Page> getPageLinkDestination() {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	Class<? extends Page> getPageLinkDestination() {
 
-        return LoginPage.class;
-    }
+		return LoginPage.class;
+	}
 }

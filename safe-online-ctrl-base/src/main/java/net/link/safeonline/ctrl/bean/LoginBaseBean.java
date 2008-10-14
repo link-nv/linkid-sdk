@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.ctrl.LoginBase;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.service.SubjectService;
 
@@ -81,7 +82,7 @@ public class LoginBaseBean implements LoginBase {
     public String logout() {
 
         this.log.debug("logout");
-        String userId = (String) this.sessionContext.get("username");
+        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         removeLoginCookie();
         SafeOnlineLoginUtils.logout(userId, "main.seam");
         return "success";
@@ -113,7 +114,7 @@ public class LoginBaseBean implements LoginBase {
     public String getLoggedInUsername() {
 
         this.log.debug("get logged in username");
-        String userId = (String) this.sessionContext.get("username");
+        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         String username = this.subjectService.getSubjectLogin(userId);
         return username;
     }
@@ -121,8 +122,8 @@ public class LoginBaseBean implements LoginBase {
     public boolean isLoggedIn() {
 
         this.log.debug("is logged in");
-        String username = (String) this.sessionContext.get("username");
-        return null != username;
+        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
+        return null != userId;
     }
 
     @Remove

@@ -15,6 +15,7 @@ import static org.easymock.classextension.EasyMock.verify;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -42,9 +43,9 @@ import org.junit.Test;
 
 /**
  * Unit test for the generic JAAS login module. This unit test also demonstrates the JAAS login/logout workflow.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class JAASLoginFilterTest {
 
@@ -144,8 +145,8 @@ public class JAASLoginFilterTest {
         expect(this.mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_CONTEXT_PARAM)).andStubReturn(
                 "client-login");
 
-        expect(this.mockHttpSession.getAttribute(LoginManager.USERNAME_SESSION_ATTRIBUTE)).andStubReturn(
-                "test-username");
+        expect(this.mockHttpSession.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE)).andStubReturn(
+                UUID.randomUUID().toString());
         expect(this.mockHttpSession.getAttribute(testPasswordAttributeName)).andStubReturn("test-password");
 
         expect(this.mockHttpServletRequest.getRequestURL()).andStubReturn(new StringBuffer("test-url"));

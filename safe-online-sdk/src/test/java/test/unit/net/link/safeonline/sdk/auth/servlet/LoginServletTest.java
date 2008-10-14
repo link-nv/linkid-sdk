@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -129,12 +130,12 @@ public class LoginServletTest {
                 mockAuthenticationProtocolHandler);
         String target = "http://test.target";
         this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, target);
-        String username = "test-user-name";
+        String userId = UUID.randomUUID().toString();
 
         // expectations
         expect(
                 mockAuthenticationProtocolHandler.finalizeAuthentication((HttpServletRequest) EasyMock.anyObject(),
-                        (HttpServletResponse) EasyMock.anyObject())).andReturn(username);
+                        (HttpServletResponse) EasyMock.anyObject())).andReturn(userId);
 
         // prepare
         replay(mockAuthenticationProtocolHandler);
@@ -151,9 +152,9 @@ public class LoginServletTest {
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String responseBody = getMethod.getResponseBodyAsString();
         LOG.debug("response body: " + responseBody);
-        String resultUsername = (String) this.servletTestManager
-                .getSessionAttribute(LoginManager.USERNAME_SESSION_ATTRIBUTE);
-        assertEquals(username, resultUsername);
+        String resultUserId = (String) this.servletTestManager
+                .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        assertEquals(userId, resultUserId);
         String resultTarget = getMethod.getResponseHeader("Location").getValue();
         assertEquals(target, resultTarget);
     }

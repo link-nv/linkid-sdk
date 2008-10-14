@@ -30,9 +30,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LoginManager {
 
-    private static final Log   LOG                        = LogFactory.getLog(LoginManager.class);
+    private static final Log   LOG                      = LogFactory.getLog(LoginManager.class);
 
-    public static final String USERNAME_SESSION_ATTRIBUTE = "username";
+    public static final String USERID_SESSION_ATTRIBUTE = "userId";
 
 
     private LoginManager() {
@@ -47,7 +47,7 @@ public class LoginManager {
      */
     public static boolean isAuthenticated(HttpServletRequest request) {
 
-        return isAuthenticated(request, USERNAME_SESSION_ATTRIBUTE);
+        return isAuthenticated(request, USERID_SESSION_ATTRIBUTE);
     }
 
     /**
@@ -59,53 +59,53 @@ public class LoginManager {
      */
     public static boolean isAuthenticated(HttpServletRequest request, String paramName) {
 
-        String username = findUsername(request, paramName);
+        String userId = findUserId(request, paramName);
 
-        return null != username;
+        return null != userId;
     }
 
     /**
-     * Gives back the SafeOnline authenticated username, or <code>null</code> if the user was not yet authenticated.
+     * Gives back the SafeOnline authenticated userId, or <code>null</code> if the user was not yet authenticated.
      * 
      * @param request
      */
-    public static String findUsername(HttpServletRequest request) {
+    public static String findUserId(HttpServletRequest request) {
 
-        return findUsername(request, USERNAME_SESSION_ATTRIBUTE);
+        return findUserId(request, USERID_SESSION_ATTRIBUTE);
     }
 
     /**
-     * Gives back the SafeOnline authenticated username, or <code>null</code> if the user was not yet authenticated.
-     * It uses the specified parameter in the session.
+     * Gives back the SafeOnline authenticated userId, or <code>null</code> if the user was not yet authenticated. It
+     * uses the specified parameter in the session.
      * 
      * @param request
      * @param paramName
      */
-    public static String findUsername(HttpServletRequest request, String paramName) {
+    public static String findUserId(HttpServletRequest request, String paramName) {
 
         if (null == paramName)
-            throw new IllegalArgumentException("username session attribute name should not be null");
+            throw new IllegalArgumentException("userId session attribute name should not be null");
 
         HttpSession httpSession = request.getSession();
-        String username = (String) httpSession.getAttribute(paramName);
-        return username;
+        String userId = (String) httpSession.getAttribute(paramName);
+        return userId;
     }
 
     /**
-     * Gives back the SafeOnline authenticated username.
+     * Gives back the SafeOnline authenticated userId.
      * 
      * @param request
      *            the servlet request object.
      * @throws ServletException
      *             if the user was not yet authenticated via SafeOnline.
      */
-    public static String getUsername(HttpServletRequest request) throws ServletException {
+    public static String getUserId(HttpServletRequest request) throws ServletException {
 
-        return getUsername(request, USERNAME_SESSION_ATTRIBUTE);
+        return getUserId(request, USERID_SESSION_ATTRIBUTE);
     }
 
     /**
-     * Gives back the SafeOnline authenticated username. It uses the specified parameter in the session.
+     * Gives back the SafeOnline authenticated userId. It uses the specified parameter in the session.
      * 
      * @param request
      *            the servlet request object.
@@ -114,69 +114,71 @@ public class LoginManager {
      * @throws ServletException
      *             if the user was not yet authenticated via SafeOnline.
      */
-    public static String getUsername(HttpServletRequest request, String paramName) throws ServletException {
+    public static String getUserId(HttpServletRequest request, String paramName) throws ServletException {
 
-        String username = findUsername(request, paramName);
-        if (null == username)
+        String userId = findUserId(request, paramName);
+        if (null == userId)
             throw new ServletException("no user was authenticated");
-        return username;
+
+        return userId;
     }
 
     /**
-     * Sets the username. This method should only be invoked after the user has been properly authenticated via the
+     * Sets the userId. This method should only be invoked after the user has been properly authenticated via the
      * SafeOnline authentication web application.
      * 
-     * @param username
-     *            the username of the SafeOnline authenticated principal.
+     * @param userId
+     *            the userId of the SafeOnline authenticated principal.
      * @param httpRequest
      */
-    public static void setUsername(String username, HttpServletRequest httpRequest) {
+    public static void setUserId(String userId, HttpServletRequest httpRequest) {
 
-        setUsername(username, httpRequest, USERNAME_SESSION_ATTRIBUTE);
+        setUserId(userId, httpRequest, USERID_SESSION_ATTRIBUTE);
     }
 
     /**
-     * Sets the username. This method should only be invoked after the user has been properly authenticated via the
+     * Sets the userId. This method should only be invoked after the user has been properly authenticated via the
      * SafeOnline authentication web application.
      * 
-     * @param username
-     *            the username of the SafeOnline authenticated principal.
+     * @param userId
+     *            the userId of the SafeOnline authenticated principal.
      * @param httpRequest
      * @param paramName
      */
-    public static void setUsername(String username, HttpServletRequest httpRequest, String paramName) {
+    public static void setUserId(String userId, HttpServletRequest httpRequest, String paramName) {
 
-        LOG.debug("setting username: " + username);
+        LOG.debug("setting userId: " + userId);
         HttpSession session = httpRequest.getSession();
-        session.setAttribute(paramName, username);
+        session.setAttribute(paramName, userId);
     }
 
     /**
-     * Removes the username.
+     * Removes the userId.
      * 
      * @param httpRequest
      * 
      * @throws ServletException
      */
-    public static void removeUserName(HttpServletRequest httpRequest) throws ServletException {
+    public static void removeUserId(HttpServletRequest httpRequest) throws ServletException {
 
-        removeUsername(USERNAME_SESSION_ATTRIBUTE, httpRequest);
+        removeUserId(USERID_SESSION_ATTRIBUTE, httpRequest);
     }
 
     /**
-     * Removes the username.
+     * Removes the userId.
      * 
      * @param paramName
      * @param httpRequest
      * 
      * @throws ServletException
      */
-    public static void removeUsername(String paramName, HttpServletRequest httpRequest) throws ServletException {
+    public static void removeUserId(String paramName, HttpServletRequest httpRequest) throws ServletException {
 
-        String username = findUsername(httpRequest, paramName);
-        if (null == username)
+        String userId = findUserId(httpRequest, paramName);
+        if (null == userId) {
             throw new ServletException("no user was authenticated");
-        LOG.debug("removing username: " + username);
+        }
+        LOG.debug("removing userId: " + userId);
         HttpSession session = httpRequest.getSession();
         session.removeAttribute(paramName);
     }

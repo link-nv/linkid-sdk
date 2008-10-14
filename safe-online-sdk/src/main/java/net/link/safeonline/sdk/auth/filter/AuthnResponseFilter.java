@@ -28,15 +28,15 @@ import org.apache.commons.logging.LogFactory;
 /**
  * This filter performs the actual login using the identity as received from the SafeOnline authentication web
  * application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthnResponseFilter extends AbstractInjectionFilter {
 
     private static final Log LOG = LogFactory.getLog(AuthnResponseFilter.class);
 
-    @Init(name = "UsernameSessionParameter", defaultValue = LoginManager.USERNAME_SESSION_ATTRIBUTE)
+    @Init(name = "UsernameSessionParameter", defaultValue = LoginManager.USERID_SESSION_ATTRIBUTE)
     private String           sessionParameter;
 
 
@@ -72,9 +72,9 @@ public class AuthnResponseFilter extends AbstractInjectionFilter {
          */
 
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        String username = protocolHandler.finalizeAuthentication(httpRequest, httpResponse);
-        if (null != username) {
-            LoginManager.setUsername(username, httpRequest, this.sessionParameter);
+        String userId = protocolHandler.finalizeAuthentication(httpRequest, httpResponse);
+        if (null != userId) {
+            LoginManager.setUserId(userId, httpRequest, this.sessionParameter);
             AuthenticationProtocolManager.cleanupAuthenticationHandler(httpRequest);
             chain.doFilter(request, response);
             return;

@@ -19,17 +19,17 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * The login manager makes sure that both the 'username' and the 'authenticationDevice' are set at the same time to have
- * a consistent login approach. For Seam login components you can use {@link AbstractLoginBean}.
- *
+ * The login manager makes sure that both the 'userId' and the 'authenticationDevice' are set at the same time to have a
+ * consistent login approach. For Seam login components you can use {@link AbstractLoginBean}.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoginManager {
 
     private static final Log   LOG                                 = LogFactory.getLog(LoginManager.class);
 
-    public static final String USERID_ATTRIBUTE                    = "username";
+    public static final String USERID_ATTRIBUTE                    = "userId";
 
     public static final String AUTHENTICATION_DEVICE_ATTRIBUTE     = "LoginManager.authenticationDevice";
 
@@ -47,13 +47,15 @@ public class LoginManager {
         // empty
     }
 
-    public static void login(HttpSession session, String username, DeviceEntity device) {
+    public static void login(HttpSession session, String userId, DeviceEntity device) {
 
-        if (null == username)
-            throw new IllegalArgumentException("username is null");
-        if (null == device)
+        if (null == userId) {
+            throw new IllegalArgumentException("userId is null");
+        }
+        if (null == device) {
             throw new IllegalArgumentException("device is null");
-        session.setAttribute(USERID_ATTRIBUTE, username);
+        }
+        session.setAttribute(USERID_ATTRIBUTE, userId);
         setAuthenticationDevice(session, device);
     }
 
@@ -64,38 +66,40 @@ public class LoginManager {
 
     public static void relogin(HttpSession session, DeviceEntity device) {
 
-        String username = getUsername(session);
+        String userId = getUserId(session);
         // can be null, in case the device registration was combined with an
         // olas user registration
         DeviceEntity currentDevice = findAuthenticationDevice(session);
         if (null == currentDevice) {
-            LOG.debug("login for " + username + " with device " + device.getName());
+            LOG.debug("login for " + userId + " with device " + device.getName());
         } else {
-            LOG.debug("relogin for " + username + " from device " + currentDevice.getName() + " to device "
+            LOG.debug("relogin for " + userId + " from device " + currentDevice.getName() + " to device "
                     + device.getName());
         }
         setAuthenticationDevice(session, device);
     }
 
-    public static void setUsername(HttpSession session, String username) {
+    public static void setUserId(HttpSession session, String userId) {
 
-        LOG.debug("set username: " + username);
-        session.setAttribute(USERID_ATTRIBUTE, username);
+        LOG.debug("set userId: " + userId);
+        session.setAttribute(USERID_ATTRIBUTE, userId);
     }
 
-    public static String getUsername(HttpSession session) {
+    public static String getUserId(HttpSession session) {
 
-        String username = findUsername(session);
-        if (null == username)
-            throw new IllegalStateException("username session attribute is not present");
-        return username;
+        String userId = findUserId(session);
+        if (null == userId) {
+            throw new IllegalStateException("userId session attribute is not present");
+        }
+        return userId;
     }
 
     public static DeviceEntity getAuthenticationDevice(HttpSession session) {
 
         DeviceEntity authenticationDevice = findAuthenticationDevice(session);
-        if (null == authenticationDevice)
+        if (null == authenticationDevice) {
             throw new IllegalStateException("authenticationDevice session attribute is not present");
+        }
         return authenticationDevice;
     }
 
@@ -107,20 +111,21 @@ public class LoginManager {
 
     public static boolean isLoggedIn(HttpSession session) {
 
-        String username = findUsername(session);
-        return null != username;
+        String userId = findUserId(session);
+        return null != userId;
     }
 
-    public static String findUsername(HttpSession session) {
+    public static String findUserId(HttpSession session) {
 
-        String username = (String) session.getAttribute(USERID_ATTRIBUTE);
-        return username;
+        String userId = (String) session.getAttribute(USERID_ATTRIBUTE);
+        return userId;
     }
 
     public static void setApplication(HttpSession session, String applicationId) {
 
-        if (null == applicationId)
+        if (null == applicationId) {
             throw new IllegalArgumentException("application is null");
+        }
         session.setAttribute(APPLICATION_ID_ATTRIBUTE, applicationId);
     }
 
@@ -132,21 +137,23 @@ public class LoginManager {
 
     public static void setApplicationFriendlyName(HttpSession session, String applicationFriendlyName) {
 
-        if (null == applicationFriendlyName)
+        if (null == applicationFriendlyName) {
             throw new IllegalArgumentException("applicationFriendlyName is null");
+        }
         session.setAttribute(APPLICATION_FRIENDLY_NAME_ATTRIBUTE, applicationFriendlyName);
     }
 
     public static void setTarget(HttpSession session, String target) {
 
-        if (null == target)
+        if (null == target) {
             throw new IllegalArgumentException("target is null");
+        }
         session.setAttribute(TARGET_ATTRIBUTE, target);
     }
 
     /**
      * Sets the required devices within the session. The set of required devices can be null.
-     *
+     * 
      * @param session
      * @param requiredDevices
      */
@@ -159,7 +166,7 @@ public class LoginManager {
 
     /**
      * Gives back the set of required devices. The value returned can be null.
-     *
+     * 
      * @param session
      */
     @SuppressWarnings("unchecked")
@@ -172,8 +179,9 @@ public class LoginManager {
     public static String getTarget(HttpSession session) {
 
         String target = (String) session.getAttribute(TARGET_ATTRIBUTE);
-        if (null == target)
+        if (null == target) {
             throw new IllegalStateException(TARGET_ATTRIBUTE + " session attribute not present");
+        }
         return target;
     }
 }

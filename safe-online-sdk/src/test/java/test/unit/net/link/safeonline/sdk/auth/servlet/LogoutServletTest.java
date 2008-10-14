@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
@@ -108,8 +109,8 @@ public class LogoutServletTest {
                 mockWSSecurityConfigurationService);
         EasyMock.expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
                 Long.MAX_VALUE);
-        EasyMock.expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock
-                .anyObject()))
+        EasyMock.expect(
+                mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject()))
                 .andStubReturn(true);
         EasyMock.replay(mockWSSecurityConfigurationService);
 
@@ -267,7 +268,7 @@ public class LogoutServletTest {
                 this.servletEndpointUrl, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
-        this.servletTestManager.setSessionAttribute("username", userId);
+        this.servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, userId);
 
         PostMethod postMethod = new PostMethod(this.location);
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlLogoutRequest) };
@@ -294,7 +295,7 @@ public class LogoutServletTest {
                 this.servletEndpointUrl, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
-        this.servletTestManager.setSessionAttribute("username", fooUserId);
+        this.servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, fooUserId);
 
         PostMethod postMethod = new PostMethod(this.location);
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlLogoutRequest) };

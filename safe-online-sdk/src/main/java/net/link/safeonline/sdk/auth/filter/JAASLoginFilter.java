@@ -99,13 +99,13 @@ public class JAASLoginFilter implements Filter {
 
     private void login(HttpServletRequest request) {
 
-        String username = LoginManager.findUsername(request);
-        if (username == null)
+        String userId = LoginManager.findUserId(request);
+        if (userId == null)
             return;
-        UsernamePasswordHandler handler = new UsernamePasswordHandler(username, null);
+        UsernamePasswordHandler handler = new UsernamePasswordHandler(userId, null);
         try {
             LoginContext loginContext = new LoginContext(this.loginContextName, handler);
-            LOG.debug("login to " + this.loginContextName + " with " + username + " for " + request.getRequestURL());
+            LOG.debug("login to " + this.loginContextName + " with " + userId + " for " + request.getRequestURL());
             loginContext.login();
             request.setAttribute(JAAS_LOGIN_CONTEXT_SESSION_ATTRIB, loginContext);
         } catch (LoginException e) {
@@ -147,7 +147,7 @@ public class JAASLoginFilter implements Filter {
          */
         if (null == securityDomain)
             return;
-        String username = LoginManager.getUsername(request);
+        String username = LoginManager.getUserId(request);
         LOG.debug("trying to flush JBoss credential cache for " + username + " on security domain " + securityDomain);
         try {
             flushCredentialCache(username, securityDomain);
