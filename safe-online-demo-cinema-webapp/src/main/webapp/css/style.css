@@ -50,7 +50,7 @@ p {
     padding-bottom:     7px;
 }
 a, a:link, a:visited, input[type=submit] {
-    color:              #3a3aba;
+    color:              #8a8aea;
     font:               inherit;
     border:             none;
     background:         transparent;
@@ -66,12 +66,12 @@ table {
     width:              100%;
     margin:             1em auto 3em;
 
-    background:         #f3f3ff;
     border:             1px solid #eaeaea;
+    background:         #fbfbfb;
     border-collapse:    collapse;
 }
 table th {
-    background:         #e3e3ff;
+    background:         #f0f0f0;
 
     text-align:         center;
 }
@@ -96,10 +96,10 @@ table a:hover, input[type=submit]:hover {
     color:              #2a2aea;
 }
 table th a:hover, table th input[type=submit]:hover {
-    background:         #c0d0f0;
+    background:         #eaeaea;
 }
 table td a:hover, table td input[type=submit]:hover {
-    background:         #c0d0f0;
+    background:         #f6f6f6;
 }
 table tfoot tr {
     border-top:         1px solid #a6a6a6;
@@ -156,7 +156,7 @@ textarea, select {
     padding:            2em 5em 0;
     margin:             0 0 1em;
 
-    background:         #cfd9f0;
+    background:         #eaeaea;
     border-bottom:      1px solid #a6a6a6;
 
 	font-size:          36px;
