@@ -94,7 +94,7 @@ public class AccountPage extends LayoutPage {
 
                     /* Account Details. */
                     accountItem.add(new Label("name", account.getName()));
-                    accountItem.add(new Label("amount", WicketUtil.format(getSession(), account.getAmount())));
+                    accountItem.add(new Label("amount", WicketUtil.format(BankSession.CURRENCY, account.getAmount())));
 
                     /* Transactions List. */
                     accountItem.add(new ListView<BankTransactionEntity>("transactionList", getTransactionService()
