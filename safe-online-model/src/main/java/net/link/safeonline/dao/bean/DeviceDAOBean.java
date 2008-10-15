@@ -57,11 +57,12 @@ public class DeviceDAOBean implements DeviceDAO {
     }
 
     public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node,
-            String authenticationURL, String registrationURL, String removalURL, String updateURL,
-            X509Certificate certificate, AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType) {
+            String authenticationPath, String registrationPath, String removalPath, String updatePath,
+            String disablePath, String enablePath, X509Certificate certificate, AttributeTypeEntity attributeType,
+            AttributeTypeEntity userAttributeType) {
 
-        DeviceEntity device = new DeviceEntity(name, deviceClass, node, authenticationURL, registrationURL, removalURL,
-                updateURL, certificate);
+        DeviceEntity device = new DeviceEntity(name, deviceClass, node, authenticationPath, registrationPath,
+                removalPath, updatePath, disablePath, enablePath, certificate);
         device.setAttributeType(attributeType);
         device.setUserAttributeType(userAttributeType);
         this.entityManager.persist(device);
@@ -88,9 +89,8 @@ public class DeviceDAOBean implements DeviceDAO {
     public DeviceEntity getDevice(String name) throws DeviceNotFoundException {
 
         DeviceEntity device = this.entityManager.find(DeviceEntity.class, name);
-        if (null == device) {
+        if (null == device)
             throw new DeviceNotFoundException();
-        }
         return device;
     }
 
@@ -145,9 +145,8 @@ public class DeviceDAOBean implements DeviceDAO {
             throws DeviceDescriptionNotFoundException {
 
         DeviceDescriptionEntity description = this.entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
-        if (null == description) {
+        if (null == description)
             throw new DeviceDescriptionNotFoundException();
-        }
         return description;
     }
 
@@ -191,9 +190,8 @@ public class DeviceDAOBean implements DeviceDAO {
     public DevicePropertyEntity getProperty(DevicePropertyPK propertyPK) throws DevicePropertyNotFoundException {
 
         DevicePropertyEntity property = this.entityManager.find(DevicePropertyEntity.class, propertyPK);
-        if (null == property) {
+        if (null == property)
             throw new DevicePropertyNotFoundException();
-        }
         return property;
     }
 

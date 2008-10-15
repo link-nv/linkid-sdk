@@ -287,13 +287,6 @@ public class DevicesBean implements Devices {
         return true;
     }
 
-    @RolesAllowed(UserConstants.USER_ROLE)
-    public String remove() throws DeviceNotFoundException, IOException {
-
-        LOG.debug("remove device: " + this.selectedDevice.getFriendlyName());
-        return redirectRemove(this.selectedDevice.getDevice().getName());
-    }
-
     private String redirectRemove(String deviceName) throws DeviceNotFoundException, IOException {
 
         String userId = this.subjectManager.getCallerSubject().getUserId();
@@ -317,13 +310,6 @@ public class DevicesBean implements Devices {
 
     }
 
-    @RolesAllowed(UserConstants.USER_ROLE)
-    public String update() throws DeviceNotFoundException, IOException {
-
-        LOG.debug("update device: " + this.selectedDevice.getFriendlyName());
-        return redirectUpdate(this.selectedDevice.getDevice().getName());
-    }
-
     private String redirectUpdate(String deviceName) throws IOException, DeviceNotFoundException {
 
         String userId = this.subjectManager.getCallerSubject().getUserId();
@@ -336,6 +322,52 @@ public class DevicesBean implements Devices {
             return null;
         }
         DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, deviceName, userId);
+        return null;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String disableDevice() throws DeviceNotFoundException, IOException {
+
+        LOG.debug("disable device: " + this.selectedDeviceRegistration.getFriendlyName());
+        return redirectDisable(this.selectedDeviceRegistration.getDevice().getName());
+
+    }
+
+    private String redirectDisable(String deviceName) throws IOException, DeviceNotFoundException {
+
+        String userId = this.subjectManager.getCallerSubject().getUserId();
+
+        String disableURL = this.devicePolicyService.getDisableURL(deviceName);
+        if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(disableURL);
+            return null;
+        }
+        DeviceOperationUtils.redirect(disableURL, DeviceOperationType.UPDATE, deviceName, userId);
+        return null;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String enableDevice() throws DeviceNotFoundException, IOException {
+
+        LOG.debug("enable device: " + this.selectedDeviceRegistration.getFriendlyName());
+        return redirectEnable(this.selectedDeviceRegistration.getDevice().getName());
+
+    }
+
+    private String redirectEnable(String deviceName) throws IOException, DeviceNotFoundException {
+
+        String userId = this.subjectManager.getCallerSubject().getUserId();
+
+        String enableURL = this.devicePolicyService.getEnableURL(deviceName);
+        if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(enableURL);
+            return null;
+        }
+        DeviceOperationUtils.redirect(enableURL, DeviceOperationType.UPDATE, deviceName, userId);
         return null;
     }
 

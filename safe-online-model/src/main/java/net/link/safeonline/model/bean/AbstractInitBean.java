@@ -337,30 +337,37 @@ public abstract class AbstractInitBean implements Startable {
 
         final X509Certificate     certificate;
 
-        final String              authenticationURL;
+        final String              authenticationPath;
 
-        final String              registrationURL;
+        final String              registrationPath;
 
-        final String              removalURL;
+        final String              removalPath;
 
-        final String              updateURL;
+        final String              updatePath;
+
+        final String              disablePath;
+
+        final String              enablePath;
 
         final AttributeTypeEntity deviceAttribute;
 
         final AttributeTypeEntity deviceUserAttribute;
 
 
-        public Device(String deviceName, String deviceClassName, String nodeName, String authenticationURL,
-                String registrationURL, String removalURL, String updateURL, X509Certificate certificate,
-                AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute) {
+        public Device(String deviceName, String deviceClassName, String nodeName, String authenticationPath,
+                String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
+                X509Certificate certificate, AttributeTypeEntity deviceAttribute,
+                AttributeTypeEntity deviceUserAttribute) {
 
             this.deviceName = deviceName;
             this.deviceClassName = deviceClassName;
             this.nodeName = nodeName;
-            this.authenticationURL = authenticationURL;
-            this.registrationURL = registrationURL;
-            this.removalURL = removalURL;
-            this.updateURL = updateURL;
+            this.authenticationPath = authenticationPath;
+            this.registrationPath = registrationPath;
+            this.removalPath = removalPath;
+            this.updatePath = updatePath;
+            this.disablePath = disablePath;
+            this.enablePath = enablePath;
             this.certificate = certificate;
             this.deviceAttribute = deviceAttribute;
             this.deviceUserAttribute = deviceUserAttribute;
@@ -644,13 +651,11 @@ public abstract class AbstractInitBean implements Startable {
             String applicationName = attributeProvider.getApplicationName();
             String attributeName = attributeProvider.getAttributeTypeName();
             ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
-            if (null == application) {
+            if (null == application)
                 throw new EJBException("application not found: " + applicationName);
-            }
             AttributeTypeEntity attributeType = this.attributeTypeDAO.findAttributeType(attributeName);
-            if (null == attributeType) {
+            if (null == attributeType)
                 throw new EJBException("attribute type not found: " + attributeName);
-            }
             AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO.findAttributeProvider(
                     application, attributeType);
             if (null != existingAttributeProvider) {
@@ -930,8 +935,9 @@ public abstract class AbstractInitBean implements Startable {
                     olasNode = this.olasDAO.getNode(device.nodeName);
                 }
                 deviceEntity = this.deviceDAO.addDevice(device.deviceName, deviceClassEntity, olasNode,
-                        device.authenticationURL, device.registrationURL, device.removalURL, device.updateURL,
-                        device.certificate, device.deviceAttribute, device.deviceUserAttribute);
+                        device.authenticationPath, device.registrationPath, device.removalPath, device.updatePath,
+                        device.disablePath, device.enablePath, device.certificate, device.deviceAttribute,
+                        device.deviceUserAttribute);
             }
         }
     }
@@ -1029,9 +1035,8 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initNode() {
 
-        if (null == this.node) {
+        if (null == this.node)
             throw new EJBException("No Olas node specified");
-        }
         NodeEntity olasNode = this.olasDAO.findNode(this.node.name);
         if (null == olasNode) {
             this.olasDAO.addNode(this.node.name, this.node.protocol, this.node.hostname, this.node.port,

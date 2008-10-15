@@ -1,136 +1,190 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:rich="http://richfaces.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template-root.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="devices" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.operatorEditDevice}: #{selectedDevice.name}</h1>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/template-root.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="devices" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.operatorEditDevice}:
+					#{selectedDevice.name}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form enctype="multipart/form-data">
+				<h:form enctype="multipart/form-data">
 
-			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-				id="generic-tab" label="#{msgs.generic}">
+					<rich:simpleTogglePanel switchType="client"
+						styleClass="fullwidth" id="generic-tab" label="#{msgs.generic}">
 
-				<table class="inner">
-					<colgroup class="third" />
-					<colgroup />
+						<table class="inner">
+							<colgroup class="third" />
+							<colgroup />
 
-					<tbody>
-						<tr>
-							<th><h:outputText value="#{msgs.location}" /></th>
-							<td><h:selectOneMenu id="node" value="#{operDevice.node}"
-								styleClass="label">
-								<f:selectItems value="#{deviceNodes}" />
-							</h:selectOneMenu></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.authenticationPath}" /></th>
-							<td><s:decorate>
-								<h:inputText id="authenticationPath"
-									value="#{operDevice.authenticationPath}" styleClass="label" />
-								<h:message for="authenticationPath" styleClass="error" />
-							</s:decorate></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.registrationPath}" /></th>
-							<td><s:decorate>
-								<h:inputText id="registrationPath"
-									value="#{operDevice.registrationPath}" styleClass="label" />
-								<h:message for="registrationPath" styleClass="error" />
-							</s:decorate></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.removalPath}" /></th>
-							<td><s:decorate>
-								<h:inputText id="removalPath" value="#{operDevice.removalPath}"
-									styleClass="label" />
-								<h:message for="removalPath" styleClass="error" />
-							</s:decorate></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.updatePath}" /></th>
-							<td><s:decorate>
-								<h:inputText id="updatePath" value="#{operDevice.updatePath}"
-									styleClass="label" />
-								<h:message for="updatePath" styleClass="error" />
-							</s:decorate></td>
-						</tr>
-					</tbody>
-				</table>
-			</rich:simpleTogglePanel>
+							<tbody>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.location}" />
+									</th>
+									<td>
+										<h:selectOneMenu id="node" value="#{operDevice.node}"
+											styleClass="label">
+											<f:selectItems value="#{deviceNodes}" />
+										</h:selectOneMenu>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.authenticationPath}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="authenticationPath"
+												value="#{operDevice.authenticationPath}" styleClass="label" />
+											<h:message for="authenticationPath" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.registrationPath}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="registrationPath" value="#{operDevice.registrationPath}"
+												styleClass="label" />
+											<h:message for="registrationPath" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.removalPath}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="removalPath" value="#{operDevice.removalPath}"
+												styleClass="label" />
+											<h:message for="removalPath" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.updatePath}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="updatePath" value="#{operDevice.updatePath}"
+												styleClass="label" />
+											<h:message for="updatePath" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.disablePath}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="disablePath" value="#{operDevice.disablePath}"
+												styleClass="label" />
+											<h:message for="disablePath" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.enablePath}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="enablePath" value="#{operDevice.enablePath}"
+												styleClass="label" />
+											<h:message for="enablePath" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</rich:simpleTogglePanel>
 
-			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-				id="attrib-tab" label="#{msgs.attribute}">
+					<rich:simpleTogglePanel switchType="client"
+						styleClass="fullwidth" id="attrib-tab" label="#{msgs.attribute}">
 
-				<table class="inner">
-					<colgroup class="third" />
-					<colgroup />
+						<table class="inner">
+							<colgroup class="third" />
+							<colgroup />
 
-					<tbody>
-						<tr>
-							<th><h:outputText value="#{msgs.deviceAttribute}" /></th>
-							<td><h:selectOneMenu id="attribute-type"
-								value="#{operDevice.attributeType}" styleClass="label">
-								<f:selectItems value="#{attributeTypes}" />
-							</h:selectOneMenu></td>
-						</tr>
-						<tr>
-							<th><h:outputText value="#{msgs.deviceUserAttribute}" /></th>
-							<td><h:selectOneMenu id="user-attribute-type"
-								value="#{operDevice.userAttributeType}" styleClass="label">
-								<f:selectItems value="#{attributeTypes}" />
-							</h:selectOneMenu></td>
-						</tr>
-					</tbody>
-				</table>
-			</rich:simpleTogglePanel>
+							<tbody>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.deviceAttribute}" />
+									</th>
+									<td>
+										<h:selectOneMenu id="attribute-type"
+											value="#{operDevice.attributeType}" styleClass="label">
+											<f:selectItems value="#{attributeTypes}" />
+										</h:selectOneMenu>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.deviceUserAttribute}" />
+									</th>
+									<td>
+										<h:selectOneMenu id="user-attribute-type"
+											value="#{operDevice.userAttributeType}" styleClass="label">
+											<f:selectItems value="#{userAttributeTypes}" />
+										</h:selectOneMenu>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</rich:simpleTogglePanel>
 
-			<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-				id="cert-tab" label="#{msgs.certificate}">
+					<rich:simpleTogglePanel switchType="client"
+						styleClass="fullwidth" id="cert-tab" label="#{msgs.certificate}">
 
-				<table class="inner">
-					<colgroup class="third" />
-					<colgroup />
+						<table class="inner">
+							<colgroup class="third" />
+							<colgroup />
 
-					<tbody>
-						<tr>
-							<th><h:outputText value="#{msgs.certificate}" /></th>
-							<td><s:decorate>
-								<t:inputFileUpload id="certificate" styleClass="label"
-									value="#{operDevice.certificate}" />
-							</s:decorate></td>
-						</tr>
-					</tbody>
-				</table>
-			</rich:simpleTogglePanel>
+							<tbody>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.certificate}" />
+									</th>
+									<td>
+										<s:decorate>
+											<t:inputFileUpload id="certificate"
+												styleClass="label" value="#{operDevice.certificate}" />
+										</s:decorate>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</rich:simpleTogglePanel>
 
-			<h:messages styleClass="error" globalOnly="true" />
+					<h:messages styleClass="error" globalOnly="true" />
 
-			<h:commandButton action="#{operDevice.save}" id="save"
-				value="#{msgs.saveaction}" styleClass="submit" />
-			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+					<h:commandButton action="#{operDevice.save}" id="save"
+						value="#{msgs.saveaction}" styleClass="submit" />
+					<h:commandButton action="cancel" id="cancel"
+						value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 
-		</h:form>
+				</h:form>
 
-	</ui:define>
+			</ui:define>
 
-	<ui:define name="sidebar">
-	</ui:define>
-</ui:composition>
-</body>
+			<ui:define name="sidebar">
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

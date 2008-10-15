@@ -89,8 +89,24 @@ public interface DevicePolicyService {
     String getUpdateURL(String deviceName) throws DeviceNotFoundException;
 
     /**
+     * Returns the disable URL for the specified device.
+     * 
+     * @param deviceName
+     * @throws DeviceNotFoundException
+     */
+    String getDisableURL(String deviceName) throws DeviceNotFoundException;
+
+    /**
+     * Returns the enable URL for the specified device.
+     * 
+     * @param deviceName
+     * @throws DeviceNotFoundException
+     */
+    String getEnableURL(String deviceName) throws DeviceNotFoundException;
+
+    /**
      * Returns list of devices matching the specified authentication context class.
-     *
+     * 
      * @param authnContextClassRefValue
      */
     List<DeviceEntity> listDevices(String authenticationContextClass);

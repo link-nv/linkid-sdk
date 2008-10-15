@@ -35,18 +35,18 @@ import org.jboss.security.auth.callback.UsernamePasswordHandler;
 
 
 /**
- * JAAS login servlet filter. This servlet filter takes a username from the HTTP session and uses it to perform a JAAS
+ * JAAS login servlet filter. This servlet filter takes a userId from the HTTP session and uses it to perform a JAAS
  * login. It also takes care of proper JAAS logout.
- *
+ * 
  * <p>
  * When running within a JBoss Application Server, EJB components can set a session attribute called
  * {@link #FLUSH_JBOSS_CREDENTIAL_CACHE_ATTRIBUTE_NAME} to flush the security domain credentials of the caller
  * principal. The value of this attribute is the name of the security domain for which to flush the credential cache.
  * This can be useful for EJB components that make changes to the credentials of the caller principal.
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class JAASLoginFilter implements Filter {
 

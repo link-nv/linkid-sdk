@@ -217,7 +217,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         this.devices.add(new Device(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, null, "password/username-password.seam",
                 "password/register-password.seam", "password/remove-password.seam", "password/register-password.seam",
-                null, passwordDeviceAttributeType, null));
+                null, null, null, passwordDeviceAttributeType, null));
         this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, "nl",
                 "Paswoord"));
         this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,

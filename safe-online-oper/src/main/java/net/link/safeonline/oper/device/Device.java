@@ -75,6 +75,14 @@ public interface Device {
 
     void setUpdatePath(String updatePath);
 
+    String getDisablePath();
+
+    void setDisablePath(String disablePath);
+
+    String getEnablePath();
+
+    void setEnablePath(String enablePath);
+
     UploadedFile getCertificate();
 
     void setCertificate(UploadedFile certificate);
@@ -95,6 +103,8 @@ public interface Device {
     List<SelectItem> deviceClassesFactory();
 
     List<SelectItem> attributeTypesFactory();
+
+    List<SelectItem> userAttributeTypesFactory();
 
     List<SelectItem> nodeFactory();
 

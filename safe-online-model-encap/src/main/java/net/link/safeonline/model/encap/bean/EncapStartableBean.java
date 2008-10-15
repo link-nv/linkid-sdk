@@ -57,8 +57,8 @@ public class EncapStartableBean extends AbstractInitBean {
         String nodeName = properties.getString("olas.node.name");
 
         this.devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName,
-                "/olas-encap/auth", "/olas-encap/device", "/olas-encap/device", null, certificate, encapAttributeType,
-                encapAttributeType));
+                "/olas-encap/auth", "/olas-encap/device", "/olas-encap/device", null, null, null, certificate,
+                encapAttributeType, encapAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
         this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(),
                 "Mobile"));

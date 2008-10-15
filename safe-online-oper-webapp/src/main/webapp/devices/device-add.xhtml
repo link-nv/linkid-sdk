@@ -1,120 +1,130 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="devices" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.addDevice}</h1>
-	</ui:define>
-	<ui:define name="content">
+	<body>
+		<ui:composition template="/WEB-INF/template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="devices" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.addDevice}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<h:form id="deviceaddform" enctype="multipart/form-data">
+				<h:form id="deviceaddform" enctype="multipart/form-data">
 
-			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
-			</f:facet>
+					<f:facet name="aroundInvalidField">
+						<s:span styleClass="error" />
+					</f:facet>
 
-            <h2>#{msgs.generic}</h2>
+					<h2>#{msgs.generic}</h2>
 
-            <h:outputLabel for="name" value="#{msgs.name}" />
-            <s:decorate>
-                <h:inputText id="name" value="#{operDevice.name}" required="true"
-                    styleClass="label" />
-            </s:decorate>
-            <h:message for="name" styleClass="error" />
+					<h:outputLabel for="name" value="#{msgs.name}" />
+					<s:decorate>
+						<h:inputText id="name" value="#{operDevice.name}"
+							required="true" styleClass="label" />
+					</s:decorate>
+					<h:message for="name" styleClass="error" />
 
-            <h:outputLabel for="deviceClass" value="#{msgs.deviceClass}" />
-            <s:decorate>
-                <h:selectOneMenu id="deviceClass" value="#{operDevice.deviceClass}"
-                    required="true" styleClass="label">
-                    <f:selectItems value="#{deviceClasses}" />
-                </h:selectOneMenu>
-            </s:decorate>
-            <h:message for="deviceClass" styleClass="error" />
+					<h:outputLabel for="deviceClass" value="#{msgs.deviceClass}" />
+					<s:decorate>
+						<h:selectOneMenu id="deviceClass" value="#{operDevice.deviceClass}"
+							required="true" styleClass="label">
+							<f:selectItems value="#{deviceClasses}" />
+						</h:selectOneMenu>
+					</s:decorate>
+					<h:message for="deviceClass" styleClass="error" />
 
-            <h:outputLabel for="node" value="#{msgs.location}" />
+					<h:outputLabel for="node" value="#{msgs.location}" />
 
-            <h:selectOneMenu id="node" value="#{operDevice.node}"
-                styleClass="label">
-                <f:selectItems value="#{deviceNodes}" />
-            </h:selectOneMenu>
+					<h:selectOneMenu id="node" value="#{operDevice.node}"
+						styleClass="label">
+						<f:selectItems value="#{deviceNodes}" />
+					</h:selectOneMenu>
 
-            <h:outputLabel for="authPath" value="#{msgs.authenticationPath}" />
-            <h:inputText id="authPath" value="#{operDevice.authenticationPath}"
-                required="true" styleClass="label" />
-            <h:message for="authPath" styleClass="error" />
+					<h:outputLabel for="authPath" value="#{msgs.authenticationPath}" />
+					<h:inputText id="authPath" value="#{operDevice.authenticationPath}"
+						required="true" styleClass="label" />
+					<h:message for="authPath" styleClass="error" />
 
-            <h:outputLabel for="regPath" value="#{msgs.registrationPath}" />
-            <h:inputText id="regPath" value="#{operDevice.registrationPath}"
-                styleClass="label" />
-            <h:message for="regPath" styleClass="error" />
+					<h:outputLabel for="regPath" value="#{msgs.registrationPath}" />
+					<h:inputText id="regPath" value="#{operDevice.registrationPath}"
+						styleClass="label" />
+					<h:message for="regPath" styleClass="error" />
 
-            <h:outputLabel for="remPath" value="#{msgs.removalPath}" />
-            <h:inputText id="remPath" value="#{operDevice.removalPath}"
-                styleClass="label" />
-            <h:message for="remPath" styleClass="error" />
+					<h:outputLabel for="remPath" value="#{msgs.removalPath}" />
+					<h:inputText id="remPath" value="#{operDevice.removalPath}"
+						styleClass="label" />
+					<h:message for="remPath" styleClass="error" />
 
-            <h:outputLabel for="updatePath" value="#{msgs.updatePath}" />
-            <h:inputText id="updatePath" value="#{operDevice.updatePath}"
-                styleClass="label" />
-            <h:message for="updatePath" styleClass="error" />
+					<h:outputLabel for="updatePath" value="#{msgs.updatePath}" />
+					<h:inputText id="updatePath" value="#{operDevice.updatePath}"
+						styleClass="label" />
+					<h:message for="updatePath" styleClass="error" />
 
-            <h2>#{msgs.attribute}</h2>
+					<h:outputLabel for="disablePath" value="#{msgs.disablePath}" />
+					<h:inputText id="disablePath" value="#{operDevice.disablePath}"
+						styleClass="label" />
+					<h:message for="disablePath" styleClass="error" />
 
-            <h:outputLabel for="attribute-type" value="#{msgs.deviceAttribute}" />
-            <h:selectOneMenu id="attribute-type"
-                value="#{operDevice.attributeType}" styleClass="label">
-                <f:selectItems value="#{attributeTypes}" />
-            </h:selectOneMenu>
+					<h:outputLabel for="enablePath" value="#{msgs.enablePath}" />
+					<h:inputText id="enablePath" value="#{operDevice.enablePath}"
+						styleClass="label" />
+					<h:message for="enablePath" styleClass="error" />
 
-            <h:outputLabel for="user-attribute-type"
-                value="#{msgs.deviceUserAttribute}" />
-            <h:selectOneMenu id="user-attribute-type"
-                value="#{operDevice.userAttributeType}" styleClass="label">
-                <f:selectItems value="#{attributeTypes}" />
-            </h:selectOneMenu>
+					<h2>#{msgs.attribute}</h2>
 
-            <h2>#{msgs.certificate}</h2>
+					<h:outputLabel for="attribute-type" value="#{msgs.deviceAttribute}" />
+					<h:selectOneMenu id="attribute-type" value="#{operDevice.attributeType}"
+						styleClass="label">
+						<f:selectItems value="#{attributeTypes}" />
+					</h:selectOneMenu>
 
-            <h:outputLabel for="certificate" value="#{msgs.certificate}" />
-            <s:decorate>
-                <t:inputFileUpload id="certificate"
-                    value="#{operDevice.certificate}" />
-            </s:decorate>
-            <h:message for="certificate" styleClass="error" />
+					<h:outputLabel for="user-attribute-type" value="#{msgs.deviceUserAttribute}" />
+					<h:selectOneMenu id="user-attribute-type"
+						value="#{operDevice.userAttributeType}" styleClass="label">
+						<f:selectItems value="#{userAttributeTypes}" />
+					</h:selectOneMenu>
 
-			<rich:spacer height="10" />
+					<h2>#{msgs.certificate}</h2>
 
-            <h:outputLabel for="add" value="" />
-			<h:commandButton action="#{operDevice.add}" id="add"
-				value="#{msgs.addaction}" styleClass="submit" />
-			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+					<h:outputLabel for="certificate" value="#{msgs.certificate}" />
+					<s:decorate>
+						<t:inputFileUpload id="certificate"
+							value="#{operDevice.certificate}" />
+					</s:decorate>
+					<h:message for="certificate" styleClass="error" />
 
-		</h:form>
+					<rich:spacer height="10" />
 
-	</ui:define>
+					<h:messages styleClass="error" globalOnly="true" />
 
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/devices/classes.seam"
-					value="#{msgs.deviceClasses}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+					<h:outputLabel for="add" value="" />
+					<h:commandButton action="#{operDevice.add}" id="add"
+						value="#{msgs.addaction}" styleClass="submit" />
+					<h:commandButton action="cancel" id="cancel"
+						value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+
+				</h:form>
+
+			</ui:define>
+
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/devices/classes.seam"
+								value="#{msgs.deviceClasses}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

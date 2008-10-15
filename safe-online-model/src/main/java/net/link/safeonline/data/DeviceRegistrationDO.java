@@ -35,20 +35,4 @@ public class DeviceRegistrationDO {
 
         return this.attribute;
     }
-
-    public boolean isRegistrable() {
-
-        return null != this.device.getRegistrationPath() && this.device.getRegistrationPath().length() > 0;
-    }
-
-    public boolean isUpdatable() {
-
-        return null != this.device.getUpdatePath() && this.device.getUpdatePath().length() > 0;
-    }
-
-    public boolean isRemovable() {
-
-        return null != this.device.getRemovalPath() && this.device.getRemovalPath().length() > 0;
-    }
-
 }

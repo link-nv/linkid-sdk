@@ -72,6 +72,10 @@ public class DeviceEntity implements Serializable {
 
     private String                               updatePath;
 
+    private String                               disablePath;
+
+    private String                               enablePath;
+
     private String                               certificateSubject;
 
     private AttributeTypeEntity                  attributeType;
@@ -89,7 +93,8 @@ public class DeviceEntity implements Serializable {
     }
 
     public DeviceEntity(String name, DeviceClassEntity deviceClass, NodeEntity location, String authenticationPath,
-            String registrationPath, String removalPath, String updatePath, X509Certificate certificate) {
+            String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
+            X509Certificate certificate) {
 
         this.name = name;
         this.deviceClass = deviceClass;
@@ -98,6 +103,8 @@ public class DeviceEntity implements Serializable {
         this.registrationPath = registrationPath;
         this.removalPath = removalPath;
         this.updatePath = updatePath;
+        this.disablePath = disablePath;
+        this.enablePath = enablePath;
         this.properties = new HashMap<String, DevicePropertyEntity>();
         this.descriptions = new HashMap<String, DeviceDescriptionEntity>();
         if (null != certificate) {
@@ -118,7 +125,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * This device attribute holds all the information returned to OLAS.
-     *
+     * 
      */
     @ManyToOne
     public AttributeTypeEntity getAttributeType() {
@@ -133,7 +140,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * This device attribute holds the information for a user to recognize his device registration.
-     *
+     * 
      */
     @ManyToOne
     public AttributeTypeEntity getUserAttributeType() {
@@ -148,7 +155,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Gives back the device class.
-     *
+     * 
      */
     @ManyToOne
     public DeviceClassEntity getDeviceClass() {
@@ -169,7 +176,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Gives back the location of this device.
-     *
+     * 
      */
     @ManyToOne
     public NodeEntity getLocation() {
@@ -184,7 +191,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Retrieve the local path for authentication of this device.
-     *
+     * 
      */
     public String getAuthenticationPath() {
 
@@ -198,7 +205,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Returns the full URL for authentication of this device.
-     *
+     * 
      */
     @Transient
     public String getAuthenticationURL() {
@@ -210,7 +217,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Retrieves the local path for registration of this device.
-     *
+     * 
      */
     public String getRegistrationPath() {
 
@@ -224,7 +231,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Returns the full URL for registration of this device.
-     *
+     * 
      */
     @Transient
     public String getRegistrationURL() {
@@ -236,17 +243,17 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Returns whether or not a user is allowed to register this device himself.
-     *
+     * 
      */
     @Transient
     public boolean isRegistrable() {
 
-        return null != this.registrationPath;
+        return null != this.registrationPath && this.registrationPath.length() > 0;
     }
 
     /**
      * Retrieves the local path for removal of this device.
-     *
+     * 
      */
     public String getRemovalPath() {
 
@@ -260,7 +267,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Returns the full URL for removal of this device.
-     *
+     * 
      */
     @Transient
     public String getRemovalURL() {
@@ -272,17 +279,17 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Returns whether or not a user is allowed to remove this device himself.
-     *
+     * 
      */
     @Transient
     public boolean isRemovable() {
 
-        return null == this.removalPath;
+        return null != this.removalPath && this.removalPath.length() > 0;
     }
 
     /**
      * Retrieves the path for updating of this device.
-     *
+     * 
      */
     public String getUpdatePath() {
 
@@ -296,7 +303,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Returns the full URL for updating of this device.
-     *
+     * 
      */
     @Transient
     public String getUpdateURL() {
@@ -308,18 +315,90 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Returns whether or not a user is allowed to update this device himself.
-     *
+     * 
      */
     @Transient
     public boolean isUpdatable() {
 
-        return null == this.updatePath;
+        return null != this.updatePath && this.updatePath.length() > 0;
+    }
+
+    /**
+     * Retrieves the path for disabling this device.
+     * 
+     */
+    public String getDisablePath() {
+
+        return this.disablePath;
+    }
+
+    public void setDisablePath(String disablePath) {
+
+        this.disablePath = disablePath;
+    }
+
+    /**
+     * Returns the full URL for disabling this device.
+     * 
+     */
+    @Transient
+    public String getDisableURL() {
+
+        if (null == this.location)
+            return this.disablePath;
+        return this.location.getLocation() + this.disablePath;
+    }
+
+    /**
+     * Returns whether or not a user is allowed to disable this device himself.
+     * 
+     */
+    @Transient
+    public boolean isDisablable() {
+
+        return null != this.disablePath && this.disablePath.length() > 0;
+    }
+
+    /**
+     * Retrieves the path for enabling this device.
+     * 
+     */
+    public String getEnablePath() {
+
+        return this.enablePath;
+    }
+
+    public void setEnablePath(String enablePath) {
+
+        this.enablePath = enablePath;
+    }
+
+    /**
+     * Returns the full URL for enabling this device.
+     * 
+     */
+    @Transient
+    public String getEnableURL() {
+
+        if (null == this.location)
+            return this.enablePath;
+        return this.location.getLocation() + this.enablePath;
+    }
+
+    /**
+     * Returns whether or not a user is allowed to enable this device himself.
+     * 
+     */
+    @Transient
+    public boolean isEnablable() {
+
+        return null != this.enablePath && this.enablePath.length() > 0;
     }
 
     /**
      * The certificate subject is used during application authentication phase to associate a given certificate with
      * it's corresponding application.
-     *
+     * 
      */
     @Column(unique = true)
     public String getCertificateSubject() {
@@ -330,7 +409,7 @@ public class DeviceEntity implements Serializable {
     /**
      * Sets the certificate subject. Do not use this method directly. Use {@link #setCertificate(X509Certificate)
      * setCertificate} instead. JPA requires this setter.
-     *
+     * 
      * @param certificateSubject
      * @see #setCertificate(X509Certificate)
      */
@@ -342,7 +421,7 @@ public class DeviceEntity implements Serializable {
     /**
      * Sets the X509 certificate subject of the application. Use this method to update the certificate subject for this
      * application.
-     *
+     * 
      * @param certificate
      */
     @Transient
@@ -353,7 +432,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Returns map of device properties.
-     *
+     * 
      */
     @OneToMany(mappedBy = "device")
     @MapKey(name = "name")
@@ -369,7 +448,7 @@ public class DeviceEntity implements Serializable {
 
     /**
      * Returns map of i18n device descriptions.
-     *
+     * 
      */
     @OneToMany(mappedBy = "device")
     @MapKey(name = "language")

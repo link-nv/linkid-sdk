@@ -57,10 +57,10 @@ public interface DeviceService {
     void removeDeviceProperty(DevicePropertyEntity property) throws DevicePropertyNotFoundException;
 
     void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath,
-            String registrationPath, String removalPath, String updatePath, byte[] encodedCertificate,
-            String attributeTypeName, String userAttributeTypeName) throws CertificateEncodingException,
-            DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
-            NodeNotFoundException, PermissionDeniedException;
+            String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
+            byte[] encodedCertificate, String attributeTypeName, String userAttributeTypeName)
+            throws CertificateEncodingException, DeviceClassNotFoundException, ExistingDeviceException,
+            AttributeTypeNotFoundException, NodeNotFoundException, PermissionDeniedException;
 
     void removeDevice(String name) throws DeviceNotFoundException, DeviceDescriptionNotFoundException,
             DevicePropertyNotFoundException, PermissionDeniedException;
@@ -84,6 +84,12 @@ public interface DeviceService {
 
     void updateRemovalPath(String deviceName, String removalPath) throws DeviceNotFoundException;
 
+    void updateUpdatePath(String deviceName, String updatePath) throws DeviceNotFoundException;
+
+    void updateDisablePath(String deviceName, String disablePath) throws DeviceNotFoundException;
+
+    void updateEnablePath(String deviceName, String enablePath) throws DeviceNotFoundException;
+
     void updateDeviceCertificate(String deviceName, byte[] encodedCertificate) throws DeviceNotFoundException,
             CertificateEncodingException;
 
@@ -100,8 +106,6 @@ public interface DeviceService {
 
     DeviceClassEntity getDeviceClass(String deviceClassName) throws DeviceClassNotFoundException;
 
-    void updateUpdatePath(String deviceName, String updatePath) throws DeviceNotFoundException;
-
     void updateAttributeType(String deviceName, String attributeType) throws DeviceNotFoundException,
             AttributeTypeNotFoundException, PermissionDeniedException;
 
@@ -110,7 +114,7 @@ public interface DeviceService {
 
     /**
      * Returns the list of device registrations for the specified subject.
-     *
+     * 
      * @param subject
      * @param locale
      * @return list of device registration data objects.
@@ -119,7 +123,8 @@ public interface DeviceService {
      * @throws DeviceNotFoundException
      * @throws SubjectNotFoundException
      */
-    List<DeviceRegistrationDO> getDeviceRegistrations(SubjectEntity subject, Locale locale) throws SubjectNotFoundException,
-            DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
+    List<DeviceRegistrationDO> getDeviceRegistrations(SubjectEntity subject, Locale locale)
+            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException;
 
 }

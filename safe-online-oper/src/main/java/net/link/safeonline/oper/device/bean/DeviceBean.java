@@ -68,13 +68,15 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceBean implements Device {
 
-    private static final Log     LOG                                  = LogFactory.getLog(DeviceBean.class);
+    private static final Log     LOG                                       = LogFactory.getLog(DeviceBean.class);
 
-    public static final String   OPER_DEVICE_LIST_NAME                = "operDeviceList";
+    public static final String   OPER_DEVICE_LIST_NAME                     = "operDeviceList";
 
-    public static final String   OPER_DEVICE_CLASS_LIST_NAME          = "deviceClasses";
+    public static final String   OPER_DEVICE_CLASS_LIST_NAME               = "deviceClasses";
 
-    public static final String   OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME = "attributeTypes";
+    public static final String   OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME      = "attributeTypes";
+
+    public static final String   OPER_DEVICE_USER_ATTRIBUTE_TYPE_LIST_NAME = "userAttributeTypes";
 
     @In(create = true)
     FacesMessages                facesMessages;
@@ -101,6 +103,10 @@ public class DeviceBean implements Device {
     private String               removalPath;
 
     private String               updatePath;
+
+    private String               disablePath;
+
+    private String               enablePath;
 
     private UploadedFile         certificate;
 
@@ -171,6 +177,18 @@ public class DeviceBean implements Device {
         return attributeTypes;
     }
 
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(OPER_DEVICE_USER_ATTRIBUTE_TYPE_LIST_NAME)
+    public List<SelectItem> userAttributeTypesFactory() {
+
+        List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService.listAttributeTypes();
+        List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList,
+                new AttributeTypeSelectItemConvertor());
+        attributeTypes.add(0, new SelectItem(null, ""));
+        return attributeTypes;
+
+    }
+
 
     static class AttributeTypeSelectItemConvertor implements Convertor<AttributeTypeEntity, SelectItem> {
 
@@ -228,8 +246,8 @@ public class DeviceBean implements Device {
         }
 
         this.deviceService.addDevice(this.name, this.deviceClass, this.node, this.authenticationPath,
-                this.registrationPath, this.removalPath, this.updatePath, encodedCertificate, this.attributeType,
-                this.userAttributeType);
+                this.registrationPath, this.removalPath, this.updatePath, this.disablePath, this.enablePath,
+                encodedCertificate, this.attributeType, this.userAttributeType);
         return "success";
     }
 
@@ -284,6 +302,12 @@ public class DeviceBean implements Device {
         }
         if (null != this.updatePath) {
             this.deviceService.updateUpdatePath(deviceName, this.updatePath);
+        }
+        if (null != this.disablePath) {
+            this.deviceService.updateDisablePath(deviceName, this.disablePath);
+        }
+        if (null != this.enablePath) {
+            this.deviceService.updateEnablePath(deviceName, this.enablePath);
         }
 
         if (null != this.certificate) {
@@ -400,6 +424,30 @@ public class DeviceBean implements Device {
     public void setUpdatePath(String updatePath) {
 
         this.updatePath = updatePath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getDisablePath() {
+
+        return this.disablePath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setDisablePath(String disablePath) {
+
+        this.disablePath = disablePath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getEnablePath() {
+
+        return this.enablePath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setEnablePath(String enablePath) {
+
+        this.enablePath = enablePath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

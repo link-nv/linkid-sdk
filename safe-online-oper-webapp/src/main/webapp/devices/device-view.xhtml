@@ -1,207 +1,247 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:a4j="http://richfaces.org/a4j"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="devices" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{selectedDevice.name}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="devices" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{selectedDevice.name}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			id="generic-tab" label="#{msgs.generic}">
-			<table class="inner">
-				<colgroup class="half" />
-				<colgroup />
+				<rich:simpleTogglePanel switchType="client"
+					styleClass="fullwidth" id="generic-tab" label="#{msgs.generic}">
+					<table class="inner">
+						<colgroup class="half" />
+						<colgroup />
 
-				<tbody>
-					<tr>
-						<th><h:outputText for="name" value="#{msgs.name}" /></th>
-						<td><h:outputText id="name" value="#{selectedDevice.name}" /></td>
-					</tr>
-					<tr>
-						<th><h:outputText for="class" value="#{msgs.deviceClass}" /></th>
-						<td><h:outputText id="class"
-							value="#{selectedDevice.deviceClass.name}" /></td>
-					</tr>
-					<tr>
-						<th><h:outputText for="location" value="#{msgs.location}" /></th>
-						<td><h:outputText id="location"
-							value="#{selectedDevice.location.name}" /></td>
-					</tr>
-					<tr>
-						<th><h:outputText for="authPath"
-							value="#{msgs.authenticationPath}" /></th>
-						<td><h:outputText id="authPath"
-							value="#{selectedDevice.authenticationPath}" /></td>
-					</tr>
-					<tr>
-						<th><h:outputText for="regPath"
-							value="#{msgs.registrationPath}" /></th>
-						<td><h:outputText id="regPath"
-							value="#{selectedDevice.registrationPath}" /></td>
-					</tr>
-					<tr>
-						<th><h:outputText for="removePath"
-							value="#{msgs.removalPath}" /></th>
-						<td><h:outputText id="removePath"
-							value="#{selectedDevice.removalPath}" /></td>
-					</tr>
+						<tbody>
+							<tr>
+								<th>
+									<h:outputText for="name" value="#{msgs.name}" />
+								</th>
+								<td>
+									<h:outputText id="name" value="#{selectedDevice.name}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<h:outputText for="class" value="#{msgs.deviceClass}" />
+								</th>
+								<td>
+									<h:outputText id="class"
+										value="#{selectedDevice.deviceClass.name}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<h:outputText for="location" value="#{msgs.location}" />
+								</th>
+								<td>
+									<h:outputText id="location" value="#{selectedDevice.location.name}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<h:outputText for="authPath" value="#{msgs.authenticationPath}" />
+								</th>
+								<td>
+									<h:outputText id="authPath"
+										value="#{selectedDevice.authenticationPath}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<h:outputText for="regPath" value="#{msgs.registrationPath}" />
+								</th>
+								<td>
+									<h:outputText id="regPath"
+										value="#{selectedDevice.registrationPath}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<h:outputText for="removePath" value="#{msgs.removalPath}" />
+								</th>
+								<td>
+									<h:outputText id="removePath" value="#{selectedDevice.removalPath}" />
+								</td>
+							</tr>
 
-					<tr>
-						<th><h:outputText for="updatePath" value="#{msgs.updatePath}" /></th>
-						<td><h:outputText id="updatePath"
-							value="#{selectedDevice.updatePath}" /></td>
-					</tr>
-				</tbody>
-			</table>
-		</rich:simpleTogglePanel>
+							<tr>
+								<th>
+									<h:outputText for="updatePath" value="#{msgs.updatePath}" />
+								</th>
+								<td>
+									<h:outputText id="updatePath" value="#{selectedDevice.updatePath}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<h:outputText for="disablePath" value="#{msgs.disablePath}" />
+								</th>
+								<td>
+									<h:outputText id="disablePath" value="#{selectedDevice.disablePath}" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									<h:outputText for="enablePath" value="#{msgs.enablePath}" />
+								</th>
+								<td>
+									<h:outputText id="enablePath" value="#{selectedDevice.enablePath}" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</rich:simpleTogglePanel>
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			opened="false" id="description-tab" label="#{msgs.description}">
-			<h:form id="descrform">
-				<table class="inner">
-					<tr>
-						<th>#{msgs.action}</th>
-					</tr>
-					<tr class="center">
-						<td><h:commandLink action="add-descr" id="add-descr"
-							value="#{msgs.addaction}" /></td>
-					</tr>
-				</table>
+				<rich:simpleTogglePanel switchType="client"
+					styleClass="fullwidth" opened="false" id="description-tab" label="#{msgs.description}">
+					<h:form id="descrform">
+						<table class="inner">
+							<tr>
+								<th>#{msgs.action}</th>
+							</tr>
+							<tr class="center">
+								<td>
+									<h:commandLink action="add-descr" id="add-descr"
+										value="#{msgs.addaction}" />
+								</td>
+							</tr>
+						</table>
 
-				<rich:dataTable id="desc-data" var="item"
-					value="#{deviceDescriptions}" styleClass="inner "
-					rowClasses="listingTable_Row1,listingTable_Row2">
-					<h:column>
-						<f:facet name="header">#{msgs.language}</f:facet>
-						<h:commandLink value="#{item.language}"
-							action="#{deviceDesc.edit}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">#{msgs.description}</f:facet>
-						<h:outputText value="#{item.description}" />
-					</h:column>
-				</rich:dataTable>
-			</h:form>
-		</rich:simpleTogglePanel>
+						<rich:dataTable id="desc-data" var="item"
+							value="#{deviceDescriptions}" styleClass="inner "
+							rowClasses="listingTable_Row1,listingTable_Row2">
+							<h:column>
+								<f:facet name="header">#{msgs.language}</f:facet>
+								<h:commandLink value="#{item.language}" action="#{deviceDesc.edit}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">#{msgs.description}</f:facet>
+								<h:outputText value="#{item.description}" />
+							</h:column>
+						</rich:dataTable>
+					</h:form>
+				</rich:simpleTogglePanel>
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			opened="false" id="properties-tab" label="#{msgs.properties}">
-			<h:form id="propertiesform">
-				<table class="inner">
-					<tr>
-						<th>#{msgs.action}</th>
-					</tr>
-					<tr class="center">
-						<td><h:commandLink action="add-prop" id="add-prop"
-							value="#{msgs.addaction}" /></td>
-					</tr>
-				</table>
+				<rich:simpleTogglePanel switchType="client"
+					styleClass="fullwidth" opened="false" id="properties-tab" label="#{msgs.properties}">
+					<h:form id="propertiesform">
+						<table class="inner">
+							<tr>
+								<th>#{msgs.action}</th>
+							</tr>
+							<tr class="center">
+								<td>
+									<h:commandLink action="add-prop" id="add-prop"
+										value="#{msgs.addaction}" />
+								</td>
+							</tr>
+						</table>
 
-				<rich:dataTable id="prop-data" var="item"
-					value="#{deviceProperties}" styleClass="inner "
-					rowClasses="listingTable_Row1,listingTable_Row2">
-					<h:column>
-						<f:facet name="header">#{msgs.name}</f:facet>
-						<h:commandLink value="#{item.name}" action="#{deviceProp.edit}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">#{msgs.value}</f:facet>
-						<h:outputText value="#{item.value}" />
-					</h:column>
-				</rich:dataTable>
-			</h:form>
-		</rich:simpleTogglePanel>
+						<rich:dataTable id="prop-data" var="item"
+							value="#{deviceProperties}" styleClass="inner "
+							rowClasses="listingTable_Row1,listingTable_Row2">
+							<h:column>
+								<f:facet name="header">#{msgs.name}</f:facet>
+								<h:commandLink value="#{item.name}" action="#{deviceProp.edit}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">#{msgs.value}</f:facet>
+								<h:outputText value="#{item.value}" />
+							</h:column>
+						</rich:dataTable>
+					</h:form>
+				</rich:simpleTogglePanel>
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			opened="false" id="attribute-tab" label="#{msgs.deviceAttribute}">
+				<rich:simpleTogglePanel switchType="client"
+					styleClass="fullwidth" opened="false" id="attribute-tab" label="#{msgs.deviceAttribute}">
 
-			<table class="inner">
-				<tr>
-					<th>#{msgs.deviceAttribute}</th>
-				</tr>
-				<tr>
-					<td><h:outputText id="attribute-name"
-						value="#{selectedDevice.attributeType.name}" /></td>
-				</tr>
-			</table>
+					<table class="inner">
+						<tr>
+							<th>#{msgs.deviceAttribute}</th>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText id="attribute-name"
+									value="#{selectedDevice.attributeType.name}" />
+							</td>
+						</tr>
+					</table>
 
-			<rich:dataTable id="compounded-members" var="item"
-				value="#{selectedDevice.attributeType.members}"
-				rendered="#{selectedDevice.attributeType.compounded}"
-				styleClass="inner " rowClasses="listingTable_Row1,listingTable_Row2">
-				<h:column>
-					<f:facet name="header">#{msgs.memberAttributes}</f:facet>
-					<h:outputText value="#{item.member.name}" />
-				</h:column>
-			</rich:dataTable>
-		</rich:simpleTogglePanel>
+					<rich:dataTable id="compounded-members" var="item"
+						value="#{selectedDevice.attributeType.members}" rendered="#{selectedDevice.attributeType.compounded}"
+						styleClass="inner " rowClasses="listingTable_Row1,listingTable_Row2">
+						<h:column>
+							<f:facet name="header">#{msgs.memberAttributes}</f:facet>
+							<h:outputText value="#{item.member.name}" />
+						</h:column>
+					</rich:dataTable>
+				</rich:simpleTogglePanel>
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			rendered="#{selectedDevice.userAttributeType.name}" opened="false"
-			id="user-attribute-tab" label="#{msgs.deviceUserAttribute}">
+				<rich:simpleTogglePanel switchType="client"
+					styleClass="fullwidth" rendered="#{selectedDevice.userAttributeType.name}"
+					opened="false" id="user-attribute-tab" label="#{msgs.deviceUserAttribute}">
 
-			<table class="inner">
-				<tr>
-					<th>#{msgs.deviceUserAttribute}</th>
-				</tr>
-				<tr>
-					<td><h:outputText id="user-attribute-name"
-						value="#{selectedDevice.userAttributeType.name}" /></td>
-				</tr>
-			</table>
+					<table class="inner">
+						<tr>
+							<th>#{msgs.deviceUserAttribute}</th>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText id="user-attribute-name"
+									value="#{selectedDevice.userAttributeType.name}" />
+							</td>
+						</tr>
+					</table>
 
-			<h:dataTable id="user-compounded-members" var="item"
-				value="#{selectedDevice.userAttributeType.members}"
-				rendered="#{selectedDevice.userAttributeType.compounded}"
-				styleClass="inner " rowClasses="listingTable_Row1,listingTable_Row2">
-				<h:column>
-					<f:facet name="header">#{msgs.memberAttributes}</f:facet>
-					<h:outputText value="#{item.member.name}" />
-				</h:column>
-			</h:dataTable>
-		</rich:simpleTogglePanel>
+					<h:dataTable id="user-compounded-members" var="item"
+						value="#{selectedDevice.userAttributeType.members}" rendered="#{selectedDevice.userAttributeType.compounded}"
+						styleClass="inner " rowClasses="listingTable_Row1,listingTable_Row2">
+						<h:column>
+							<f:facet name="header">#{msgs.memberAttributes}</f:facet>
+							<h:outputText value="#{item.member.name}" />
+						</h:column>
+					</h:dataTable>
+				</rich:simpleTogglePanel>
 
-		<rich:simpleTogglePanel switchType="client" styleClass="fullwidth"
-			opened="false" id="certificate-tab"
-			label="#{msgs.certificateSubject}">
-			<h:outputText value="#{selectedDevice.certificateSubject}"
-				styleClass="text block"
-				rendered="#{!empty selectedDevice.certificateSubject}" />
-			<h:outputText value="#{msgs.noCertificate}"
-				rendered="#{empty selectedDevice.certificateSubject}" />
-		</rich:simpleTogglePanel>
+				<rich:simpleTogglePanel switchType="client"
+					styleClass="fullwidth" opened="false" id="certificate-tab"
+					label="#{msgs.certificateSubject}">
+					<h:outputText value="#{selectedDevice.certificateSubject}"
+						styleClass="text block" rendered="#{!empty selectedDevice.certificateSubject}" />
+					<h:outputText value="#{msgs.noCertificate}"
+						rendered="#{empty selectedDevice.certificateSubject}" />
+				</rich:simpleTogglePanel>
 
-		<h:form id="actionform">
-			<h:commandButton value="#{msgs.backaction}" id="back" action="back"
-				styleClass="submit" />
-			<h:commandButton action="#{operDevice.edit}" id="edit"
-				value="#{msgs.editaction}" styleClass="submit" />
-		</h:form>
+				<h:form id="actionform">
+					<h:commandButton value="#{msgs.backaction}" id="back"
+						action="back" styleClass="submit" />
+					<h:commandButton action="#{operDevice.edit}" id="edit"
+						value="#{msgs.editaction}" styleClass="submit" />
+				</h:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/devices/classes.seam"
-					value="#{msgs.deviceClasses}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/devices/classes.seam"
+								value="#{msgs.deviceClasses}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

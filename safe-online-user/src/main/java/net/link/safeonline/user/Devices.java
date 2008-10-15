@@ -40,13 +40,13 @@ public interface Devices {
      */
     String register() throws DeviceNotFoundException, IOException;
 
-    String remove() throws DeviceNotFoundException, IOException;
-
     String removeDevice() throws DeviceNotFoundException, IOException;
 
-    String update() throws DeviceNotFoundException, IOException;
-
     String updateDevice() throws DeviceNotFoundException, IOException;
+
+    String disableDevice() throws DeviceNotFoundException, IOException;
+
+    String enableDevice() throws DeviceNotFoundException, IOException;
 
     String changePassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
