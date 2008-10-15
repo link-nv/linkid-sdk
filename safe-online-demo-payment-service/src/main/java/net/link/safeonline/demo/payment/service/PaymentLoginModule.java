@@ -25,6 +25,8 @@ import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.sdk.auth.filter.LoginManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimpleGroup;
@@ -35,9 +37,9 @@ import org.jboss.security.SimplePrincipal;
  * Lawyer JAAS login module. This login module will retrieve the username and role attribute from the HTTP servlet
  * request using JACC. It uses these attribute values to populate the subject for usage within the JBoss Application
  * Server.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class PaymentLoginModule implements LoginModule {
 
@@ -70,8 +72,8 @@ public class PaymentLoginModule implements LoginModule {
         }
 
         HttpSession httpSession = httpServletRequest.getSession();
-        String sessionUsername = (String) httpSession.getAttribute("username");
-        LOG.debug("jacc http username: " + sessionUsername);
+        String sessionUserId = (String) httpSession.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        LOG.debug("jacc http userId: " + sessionUserId);
 
         NameCallback nameCallback = new NameCallback("username");
         Callback[] callbacks = new Callback[] { nameCallback };
@@ -87,11 +89,11 @@ public class PaymentLoginModule implements LoginModule {
         String jaasUsername = nameCallback.getName();
         LOG.debug("jaas username: " + jaasUsername);
 
-        if (false == jaasUsername.equals(sessionUsername))
-            throw new LoginException("JAAS login username should equal session username");
+        if (false == jaasUsername.equals(sessionUserId))
+            throw new LoginException("JAAS login userId should equal session userId");
 
         // authentication
-        this.authenticatedPrincipal = new SimplePrincipal(sessionUsername);
+        this.authenticatedPrincipal = new SimplePrincipal(sessionUserId);
 
         // authorization
         String inRole = (String) httpSession.getAttribute("role");
