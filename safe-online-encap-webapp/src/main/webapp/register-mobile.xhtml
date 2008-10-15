@@ -1,79 +1,74 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:a4j="http://richfaces.org/a4j">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="top_content">
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+	<body>
+		<ui:composition template="/WEB-INF/template.xhtml">
+			<ui:define name="top_content">
+			</ui:define>
+			<ui:define name="content">
 
-		<f:subview rendered="#{operation eq 'NEW_ACCOUNT_REGISTER'}">
-			<ui:include src="/WEB-INF/incl/progress-registration.xhtml">
-				<ui:param name="stage" value="register" />
-			</ui:include>
-		</f:subview>
+				<f:subview rendered="#{operation eq 'NEW_ACCOUNT_REGISTER'}">
+					<ui:include src="/WEB-INF/incl/progress-registration.xhtml">
+						<ui:param name="stage" value="register" />
+					</ui:include>
+				</f:subview>
 
-		<h2>#{msgs.registerANewDevice}</h2>
+				<h2>#{msgs.registerANewDevice}</h2>
 
-		<a4j:form id="mobile-register-form" ajaxSubmit="true"
-			reRender="mobile-register-form,mobile-confirm-form">
-			<f:facet name="aroundInvalidField">
-				<s:span />
-			</f:facet>
-			<h:outputLabel for="mobile" value="#{msgs.mobile}" />
-			<s:decorate>
-				<h:inputText id="mobile" value="#{registration.mobile}"
-					required="true"
-					readonly="#{!empty registration.mobileActivationCode}"
-					styleClass="label">
-					<f:validateLength minimum="9" maximum="12" />
-				</h:inputText>
-			</s:decorate>
-			<h:message for="mobile" styleClass="error" />
-			<h:outputLabel for="register" value="" />
-			<h:commandButton action="#{registration.mobileRegister}"
-				id="register" value="#{msgs.register}"
-				rendered="#{empty registration.mobileActivationCode}"
-				styleClass="submit" />
-			<h:commandButton action="#{registration.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true"
-				rendered="#{empty registration.mobileActivationCode}"
-				styleClass="submit" />
-			<h:messages globalOnly="true" styleClass="error"
-				rendered="#{empty registration.mobileActivationCode}" />
-		</a4j:form>
-
-		<br />
-
-		<a4j:form id="mobile-confirm-form" ajaxSubmit="true"
-			reRender="mobile-register-form,mobile-confirm-form">
-			<f:subview rendered="#{!empty registration.mobileActivationCode}">
-
-				<h:outputLabel for="activationCode" value="#{msgs.activationCode}" />
-				<h:outputLabel id="activationCode"
-					value="#{registration.mobileActivationCode}" />
+				<h:form id="mobile-register-form">
+					<f:facet name="aroundInvalidField">
+						<s:span />
+					</f:facet>
+					<h:outputLabel for="mobile" value="#{msgs.mobile}" />
+					<s:decorate>
+						<h:inputText id="mobile" value="#{registration.mobile}"
+							required="true" readonly="#{!empty registration.mobileActivationCode}"
+							styleClass="label">
+							<f:validateLength minimum="9" maximum="12" />
+						</h:inputText>
+					</s:decorate>
+					<h:message for="mobile" styleClass="error" />
+					<h:outputLabel for="register" value="" />
+					<h:commandButton action="#{registration.mobileRegister}"
+						id="register" value="#{msgs.register}" rendered="#{empty registration.mobileActivationCode}"
+						styleClass="submit" />
+					<h:commandButton action="#{registration.cancel}"
+						id="cancel" value="#{msgs.cancelaction}" immediate="true"
+						rendered="#{empty registration.mobileActivationCode}" styleClass="submit" />
+					<h:messages globalOnly="true" styleClass="error"
+						rendered="#{empty registration.mobileActivationCode}" />
+				</h:form>
 
 				<br />
 
-				<h:outputLabel for="activation-ok" />
-				<h:commandButton id="activation-ok"
-					action="#{registration.mobileActivationOk}" value="#{msgs.confirm}"
-					styleClass="submit" />
-				<h:commandButton id="activation-cancel"
-					action="#{registration.mobileActivationCancel}"
-					value="#{msgs.cancelaction}" styleClass="submit" />
-				<h:messages globalOnly="true" styleClass="error" />
-			</f:subview>
-		</a4j:form>
-	</ui:define>
-	<ui:define name="sidebar">
-		<p>#{msgs.helpRegisterMobile}</p>
-		<p>#{msgs.mobileClientLink} <h:outputLink
-			value="#{registration.mobileClientLink}" target="_blank"> #{msgs.clickHere} </h:outputLink></p>
-	</ui:define>
-</ui:composition>
-</body>
+				<h:form id="mobile-confirm-form">
+					<f:subview rendered="#{!empty registration.mobileActivationCode}">
+
+						<h:outputLabel for="activationCode" value="#{msgs.activationCode}" />
+						<h:outputLabel id="activationCode"
+							value="#{registration.mobileActivationCode}" />
+
+						<br />
+
+						<h:outputLabel for="activation-ok" />
+						<h:commandButton id="activation-ok"
+							action="#{registration.mobileActivationOk}" value="#{msgs.confirm}"
+							styleClass="submit" />
+						<h:commandButton id="activation-cancel" immediate="true"
+							action="#{registration.mobileActivationCancel}" value="#{msgs.cancelaction}"
+							styleClass="submit" />
+						<h:messages globalOnly="true" styleClass="error" />
+					</f:subview>
+				</h:form>
+			</ui:define>
+			<ui:define name="sidebar">
+				<p>#{msgs.helpRegisterMobile}</p>
+				<p>
+					#{msgs.mobileClientLink}
+					<h:outputLink value="#{registration.mobileClientLink}"
+						target="_blank"> #{msgs.clickHere} </h:outputLink>
+				</p>
+			</ui:define>
+		</ui:composition>
+	</body>
 </html>
