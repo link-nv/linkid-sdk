@@ -60,7 +60,7 @@ public class BankAccountConverter implements IConverter<BankAccountEntity> {
             String amount = matcher.group(3);
             BankAccountEntity entity = new BankAccountEntity(null, name, code);
             try {
-                entity.setAmount((Double) NumberFormat.getCurrencyInstance(locale).parse(amount));
+                entity.setAmount((Double) NumberFormat.getCurrencyInstance(BankSession.CURRENCY).parse(amount));
             } catch (ParseException e) {
                 LOG.warn("Couldn't parse " + amount + " into a currency amount for bank account: " + code + " (" + name
                         + ")");
