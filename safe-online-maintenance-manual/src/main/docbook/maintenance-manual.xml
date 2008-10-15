@@ -204,7 +204,8 @@
 					<varlistentry>
 						<term>Access audit</term>
 						<listitem>
-							Audit events logging unauthorized access to certain business
+							Audit events logging unauthorized access to certain
+							business
 							methods or more general exceptions thrown by them.
 						</listitem>
 					</varlistentry>
@@ -260,5 +261,10 @@
 			attribute plugin. The configuration string can be edited afterwards,
 			but the rest can only be modified if you complete remove the
 			attribute type.</para>
+		<para>OLAS Attributes and external attributes also have a "User
+			Invisible" option. This option does not mean the attribute will be
+			secret. It merely means that the attribute value makes no sense to
+			the user and is therefore not shown in the user's profile, nor is the
+			user asked for permission if the attribute needs to be shared.</para>
 	</chapter>
 </book>

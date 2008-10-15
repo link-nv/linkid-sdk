@@ -529,7 +529,7 @@ unitName=SafeOnlineEntityManager
 			<title>OLAS Authentication Identity Keystore</title>
 			<para>
 				OLAS also needs an authentication certificate of itself
-				which will be used to authentication against other OLAS
+				which will be used to authenticate against other OLAS
 				nodes. Per default the OLAS EAR comes bundled with a
 				test keystore under
 				<code>

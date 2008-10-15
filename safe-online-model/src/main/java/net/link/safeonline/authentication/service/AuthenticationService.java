@@ -42,7 +42,7 @@ import org.opensaml.saml2.core.LogoutRequest;
 /**
  * Authentication service interface. This service allows the authentication web application to authenticate users. The
  * bean behind this interface is stateful. This means that a certain method invocation pattern must be respected. First
- * the method {@link #initialize(AuthnRequest)} must be invoked. Then the method
+ * the method {@link #initialize(String, AuthnRequest)} must be invoked. Then the method
  * {@link #authenticate(HttpServletRequest)} must be invoked. After this the method {@link #commitAuthentication()} must
  * be invoked and finally {@link #finalizeAuthentication()}. In case the authentication process needs to be aborted one
  * should invoke {@link #abort()} .
