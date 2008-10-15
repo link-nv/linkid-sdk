@@ -7,7 +7,7 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
-	<c:when test="#{username == null}">
+	<c:when test="#{userId == null}">
 		<h:form>
 			<h:commandButton action="#{loginComp.login}" id="login"
 				value="#{msgs.loginaction}" class="submit"/>

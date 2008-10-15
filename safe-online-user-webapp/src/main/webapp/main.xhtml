@@ -19,7 +19,7 @@
 		<h:form>
 			<ul>
 				<c:choose>
-					<c:when test="#{username == null}">
+					<c:when test="#{userId == null}">
 						<li><h:commandLink action="#{login.login}" id="login"
 							value="#{msgs.loginaction}" /></li>
 					</c:when>
