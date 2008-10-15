@@ -98,6 +98,7 @@ public class DeviceDAOBean implements DeviceDAO {
 
         DeviceEntity device = findDevice(deviceName);
         this.entityManager.remove(device);
+        this.entityManager.flush();
     }
 
     public List<DeviceDescriptionEntity> listDescriptions(DeviceEntity device) {
