@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * <sub>Logout servlet.</sub></h2>
  * 
  * <p>
- * Servlet that performs a logout for the Demo Cinema web application.
+ * Servlet that performs a logout for this web application.
  * </p>
  * 
  * <p>
@@ -49,8 +49,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
 
 		LOG.debug("invoke get");
 
-		LoginManager.removeUserId(request);
-		response.sendRedirect(this.logoutExitUrl);
-
+        LoginManager.invalidateSession(request);
+        response.sendRedirect(this.logoutExitUrl);
 	}
 }

@@ -10,6 +10,7 @@ package net.link.safeonline.demo.model.bean;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -17,8 +18,13 @@ import javax.ejb.Stateless;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.demo.bank.entity.BankAccountEntity;
+import net.link.safeonline.demo.bank.entity.BankUserEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
+import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.model.NotificationConsumerService;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
@@ -44,12 +50,14 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
     private static final Log    LOG                           = LogFactory
                                                                       .getLog(NotificationConsumerServiceBean.class);
 
+    private static final String DEMO_BANK_APPLICATION_NAME    = "demo-bank";
+    private static final String DEMO_CINEMA_APPLICATION_NAME  = "cinema";
     private static final String DEMO_TICKET_APPLICATION_NAME  = "demo-ticket";
-
     private static final String DEMO_PAYMENT_APPLICATION_NAME = "ebank";
 
+    private EntityManager       demoBankEntityManager;
+    private EntityManager       demoCinemaEntityManager;
     private EntityManager       demoTicketEntityManager;
-
     private EntityManager       demoPaymentEntityManager;
 
 
@@ -57,6 +65,8 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
         try {
             InitialContext context = new InitialContext();
+            this.demoBankEntityManager = (EntityManager) context.lookup("java:/DemoBankEntityManager");
+            this.demoCinemaEntityManager = (EntityManager) context.lookup("java:/DemoCinemaEntityManager");
             this.demoTicketEntityManager = (EntityManager) context.lookup("java:/DemoTicketEntityManager");
             this.demoPaymentEntityManager = (EntityManager) context.lookup("java:/DemoPaymentEntityManager");
         } catch (NamingException e) {
@@ -66,7 +76,11 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
         String userId = message.get(0);
         try {
             if (topic.equals(SafeOnlineConstants.TOPIC_REMOVE_USER)) {
-                if (destination.equals(DEMO_TICKET_APPLICATION_NAME)) {
+                if (destination.equals(DEMO_BANK_APPLICATION_NAME)) {
+                    removeDemoBankUser(userId);
+                } else if (destination.equals(DEMO_CINEMA_APPLICATION_NAME)) {
+                    removeDemoCinemaUser(userId);
+                } else if (destination.equals(DEMO_TICKET_APPLICATION_NAME)) {
                     removeDemoTicketUser(userId);
                 } else if (destination.equals(DEMO_PAYMENT_APPLICATION_NAME)) {
                     removeDemoPaymentUser(userId);
@@ -91,10 +105,46 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
         return wsLocation;
     }
 
+    private void removeDemoBankUser(String userId) {
+
+        LOG.debug("remove demo bank user id: " + userId);
+
+        try {
+            BankUserEntity user = (BankUserEntity) this.demoBankEntityManager.createNamedQuery(
+                    BankUserEntity.getByOlasId).setParameter("olasId", userId).getSingleResult();
+            try {
+                @SuppressWarnings("unchecked")
+                List<BankAccountEntity> accounts = this.demoBankEntityManager.createNamedQuery(
+                        BankAccountEntity.getByUser).setParameter("user", user).getResultList();
+                for (BankAccountEntity account : accounts) {
+                    this.demoBankEntityManager.remove(account);
+                }
+            } catch (NoResultException e) {
+            }
+
+            this.demoBankEntityManager.remove(user);
+        } catch (NoResultException e) {
+        }
+    }
+
+    private void removeDemoCinemaUser(String userId) {
+
+        LOG.debug("remove demo cinema user id: " + userId);
+
+        CinemaUserEntity user = this.demoCinemaEntityManager.find(CinemaUserEntity.class, userId);
+        if (null != user) {
+            Collection<CinemaTicketEntity> tickets = user.getTickets();
+            for (CinemaTicketEntity ticket : tickets) {
+                this.demoTicketEntityManager.remove(ticket);
+            }
+            this.demoCinemaEntityManager.remove(user);
+        }
+    }
+
     private void removeDemoTicketUser(String userId) throws WSClientTransportException, AttributeNotFoundException,
             RequestDeniedException, AttributeUnavailableException {
 
-        LOG.debug("remove demo ticket user: " + userId);
+        LOG.debug("remove demo ticket user id: " + userId);
 
         PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils.getPrivateKeyEntry();
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
@@ -118,7 +168,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
     private void removeDemoPaymentUser(String userId) throws WSClientTransportException, AttributeNotFoundException,
             RequestDeniedException, AttributeUnavailableException {
 
-        LOG.debug("remove demo payment user: " + userId);
+        LOG.debug("remove demo payment user id: " + userId);
 
         PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils.getPrivateKeyEntry();
         X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();

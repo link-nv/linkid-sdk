@@ -11,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.sdk.auth.servlet.LogoutServlet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -117,6 +119,7 @@ public class LoginManager {
         String userId = findUserId(request, paramName);
         if (null == userId)
             throw new ServletException("no user was authenticated");
+
         return userId;
     }
 
@@ -178,5 +181,16 @@ public class LoginManager {
         LOG.debug("removing userId: " + userId);
         HttpSession session = httpRequest.getSession();
         session.removeAttribute(paramName);
+    }
+
+    /**
+     * Request this session be invalidated.<br>
+     * <br>
+     * This method does not invalidate the session immediately. It sets a parameter on the session that will be used by
+     * the SDK's LogoutServlet to invalidate the session at the end of the logout cycle.
+     */
+    public static void invalidateSession(HttpServletRequest request) {
+
+        request.getSession().setAttribute(LogoutServlet.INVALIDATE_SESSION, true);
     }
 }

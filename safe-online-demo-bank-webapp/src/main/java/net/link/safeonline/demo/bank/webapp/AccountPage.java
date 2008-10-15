@@ -4,10 +4,9 @@ import java.util.List;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
-import net.link.safeonline.demo.wicket.tools.OlasAuthLink;
+import net.link.safeonline.demo.wicket.tools.OlasLoginLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -115,9 +114,9 @@ public class AccountPage extends LayoutPage {
 
                             /* Transaction Details. */
                             transactionItem.add(new Label("target", transaction.getTarget()));
-                            transactionItem.add(new Label("date", WicketUtil
-                                    .format(getSession(), transaction.getDate())));
-                            transactionItem.add(new Label("amount", WicketUtil.format(getSession(), transaction
+                            transactionItem.add(new Label("date", WicketUtil.format(BankSession.CURRENCY, transaction
+                                    .getDate())));
+                            transactionItem.add(new Label("amount", WicketUtil.format(BankSession.CURRENCY, transaction
                                     .getAmount())));
                         }
                     });
@@ -168,11 +167,16 @@ public class AccountPage extends LayoutPage {
      * {@inheritDoc}
      */
     @Override
-    Component getPageLink() {
+    Link<?> getPageLink() {
 
-        return new OlasAuthLink("pageLink", true) {
+        return new OlasLoginLink("pageLink") {
 
             private static final long serialVersionUID = 1L;
+
+            {
+                setVisible(BankSession.get().getUser().getOlasId() == null);
+            }
+
 
             @Override
             public void onClick() {
@@ -182,6 +186,15 @@ public class AccountPage extends LayoutPage {
                 super.onClick();
             }
         };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    String getPageLinkString() {
+
+        return "Link To OLAS";
     }
 
     /**

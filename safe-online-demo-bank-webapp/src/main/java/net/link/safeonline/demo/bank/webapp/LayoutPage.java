@@ -7,11 +7,11 @@ import net.link.safeonline.demo.bank.entity.BankUserEntity;
 import net.link.safeonline.demo.bank.service.AccountService;
 import net.link.safeonline.demo.bank.service.TransactionService;
 import net.link.safeonline.demo.bank.service.UserService;
+import net.link.safeonline.demo.wicket.tools.OlasLogoutLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
@@ -94,21 +94,17 @@ public abstract class LayoutPage extends WebPage {
 
             super(id);
 
-            add(getPageLink());
-            add(new Link<String>("logout") {
+            // Page link.
+            Link<?> pageLink = getPageLink();
+            Label pageLinkString = new Label("pageLinkString", getPageLinkString());
+            if (pageLinkString.getDefaultModelObject() == null) {
+                pageLink.setVisible(false);
+            }
+            add(pageLink);
+            pageLink.add(pageLinkString);
 
-                private static final long serialVersionUID = 1L;
-
-
-                @Override
-                public void onClick() {
-
-                    getSession().invalidateNow();
-
-                    setRedirect(true);
-                    setResponsePage(LoginPage.class);
-                }
-            });
+            // User information.
+            add(new OlasLogoutLink("logout"));
             add(new Label("name", this.name = new Model<String>()));
             add(new Label("amount", this.amount = new Model<String>()));
 
@@ -120,16 +116,21 @@ public abstract class LayoutPage extends WebPage {
                 }
 
                 this.name.setObject(user.getName());
-                this.amount.setObject(WicketUtil.format(getSession(), total));
+                this.amount.setObject(WicketUtil.format(BankSession.CURRENCY, total));
             }
         }
     }
 
 
-    Component getPageLink() {
+    Link<?> getPageLink() {
 
         return new PageLink("pageLink", getPageLinkDestination());
     }
+
+    /**
+     * @return The string to display on the page link.
+     */
+    abstract String getPageLinkString();
 
     /**
      * @return The page that the page-link refers to.

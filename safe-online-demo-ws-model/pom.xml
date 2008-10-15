@@ -81,6 +81,18 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-bank</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-cinema</artifactId>
+			<version>1.2-SNAPSHOT</version>
+            <type>ejb-client</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket</artifactId>
 			<version>1.2-SNAPSHOT</version>
             <type>ejb-client</type>

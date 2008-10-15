@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.demo.bank.webapp;
 
+import java.util.Locale;
+
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
 
 import org.apache.wicket.Request;
@@ -28,11 +30,12 @@ import org.apache.wicket.Session;
  */
 public class BankSession extends Session {
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
+    public static final Locale CURRENCY         = Locale.FRANCE;
 
-    private BankUserEntity    user;
+    private BankUserEntity     user;
 
-    private String            linkingBankId;
+    private String             linkingBankId;
 
 
     // USER ---------------------------------------------------------
@@ -80,7 +83,7 @@ public class BankSession extends Session {
      */
     public static boolean isLinking() {
 
-        return isUserSet() && get().getLinkingUser().equals(get().getUser().getBankId());
+        return isUserSet() && get().getUser().getBankId().equals(get().getLinkingUser());
     }
 
     // GLOBAL -------------------------------------------------------

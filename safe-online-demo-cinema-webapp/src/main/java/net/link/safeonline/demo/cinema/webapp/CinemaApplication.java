@@ -19,6 +19,7 @@ public class CinemaApplication extends WebApplication {
     @Override
     protected void init() {
 
+        // Java EE annotations injector.
         WicketUtil.addInjector(this);
     }
 

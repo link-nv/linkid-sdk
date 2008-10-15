@@ -103,4 +103,13 @@ public class NewAccountPage extends LayoutPage {
 
         return AccountPage.class;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    String getPageLinkString() {
+
+        return "Account Overview";
+    }
 }

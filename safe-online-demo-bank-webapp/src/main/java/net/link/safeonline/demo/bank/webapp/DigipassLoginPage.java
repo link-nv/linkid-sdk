@@ -1,9 +1,5 @@
 package net.link.safeonline.demo.bank.webapp;
 
-import java.lang.reflect.Type;
-
-import net.link.safeonline.demo.bank.service.UserService;
-
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -50,13 +46,6 @@ public class DigipassLoginPage extends LayoutPage {
         protected void onSubmit() {
 
             if (Integer.parseInt(this.otp.getObject()) % 2 == 0) {
-                Class<? extends UserService> usClass = getUserService().getClass();
-                DigipassLoginPage.this.LOG.info("USER SERVICE IS: " + usClass.getCanonicalName());
-                DigipassLoginPage.this.LOG.info("USER SERVICE EXTENDS: " + usClass.getGenericSuperclass());
-                for (Type i : usClass.getGenericInterfaces()) {
-                    DigipassLoginPage.this.LOG.info("USER SERVICE IMPLEMENTS: " + i);
-                }
-                
                 BankSession.get().setUser(getUserService().getBankUser(this.bankId.getObject()));
                 setResponsePage(AccountPage.class);
                 setRedirect(true);
@@ -80,5 +69,14 @@ public class DigipassLoginPage extends LayoutPage {
     Class<? extends Page> getPageLinkDestination() {
 
         return LoginPage.class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    String getPageLinkString() {
+
+        return "Login Methods";
     }
 }

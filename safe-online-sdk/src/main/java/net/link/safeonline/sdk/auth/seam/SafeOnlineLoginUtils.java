@@ -301,9 +301,7 @@ public class SafeOnlineLoginUtils {
      * @param target
      *            The target to which to redirect to after successful logout. Don't put the full URL in here, the full
      *            URL is retrieved with the {@link #TARGET_BASE_URL_INIT_PARAM}.
-     * 
      */
-
     @SuppressWarnings("unchecked")
     public static void logout(String subjectName, String target) {
 
@@ -334,7 +332,7 @@ public class SafeOnlineLoginUtils {
      *      <code>web.xml</code>.
      * 
      * @param target
-     *            The target url to redirect to after successful authentication.
+     *            The target url to redirect to after successful logout.
      * @param request
      *            The {@link HttpServletRequest} object from the servlet making the login request.
      * @param response
@@ -355,7 +353,7 @@ public class SafeOnlineLoginUtils {
         try {
             logout(LoginManager.getUserId(request), target, config, request, response);
         } catch (ServletException e) {
-            // Not logged in.
+            LOG.warn("logout request failed; not logged in?", e);
         }
     }
 
@@ -444,16 +442,14 @@ public class SafeOnlineLoginUtils {
             return null;
 
         /* Can't have both resource and file defined. */
-        if (null != keyStoreResource && null != keyStoreFile) {
+        if (null != keyStoreResource && null != keyStoreFile)
             throw new RuntimeException("both KeyStoreResource and KeyStoreFile are defined");
-        }
 
         InputStream keyStoreInputStream;
         if (null != keyStoreResource) {
             keyStoreInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(keyStoreResource);
-            if (null == keyStoreInputStream) {
+            if (null == keyStoreInputStream)
                 throw new RuntimeException("resource not found: " + keyStoreResource);
-            }
         } else {
             try {
                 keyStoreInputStream = new FileInputStream(keyStoreFile);
@@ -467,9 +463,8 @@ public class SafeOnlineLoginUtils {
 
     private static String getInitParameter(Map<String, String> config, String parameterName) {
 
-        if (!config.containsKey(parameterName)) {
+        if (!config.containsKey(parameterName))
             throw new RuntimeException("missing context-param in web.xml: " + parameterName);
-        }
 
         return config.get(parameterName);
     }
