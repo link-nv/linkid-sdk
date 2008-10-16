@@ -344,30 +344,7 @@ public class DevicesBean implements Devices {
             externalContext.redirect(disableURL);
             return null;
         }
-        DeviceOperationUtils.redirect(disableURL, DeviceOperationType.UPDATE, deviceName, userId);
-        return null;
-    }
-
-    @RolesAllowed(UserConstants.USER_ROLE)
-    public String enableDevice() throws DeviceNotFoundException, IOException {
-
-        LOG.debug("enable device: " + this.selectedDeviceRegistration.getFriendlyName());
-        return redirectEnable(this.selectedDeviceRegistration.getDevice().getName());
-
-    }
-
-    private String redirectEnable(String deviceName) throws IOException, DeviceNotFoundException {
-
-        String userId = this.subjectManager.getCallerSubject().getUserId();
-
-        String enableURL = this.devicePolicyService.getEnableURL(deviceName);
-        if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = context.getExternalContext();
-            externalContext.redirect(enableURL);
-            return null;
-        }
-        DeviceOperationUtils.redirect(enableURL, DeviceOperationType.UPDATE, deviceName, userId);
+        DeviceOperationUtils.redirect(disableURL, DeviceOperationType.DISABLE, deviceName, userId);
         return null;
     }
 

@@ -35,6 +35,7 @@ import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.NodeEntity;
@@ -68,15 +69,17 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceBean implements Device {
 
-    private static final Log     LOG                                       = LogFactory.getLog(DeviceBean.class);
+    private static final Log     LOG                                          = LogFactory.getLog(DeviceBean.class);
 
-    public static final String   OPER_DEVICE_LIST_NAME                     = "operDeviceList";
+    public static final String   OPER_DEVICE_LIST_NAME                        = "operDeviceList";
 
-    public static final String   OPER_DEVICE_CLASS_LIST_NAME               = "deviceClasses";
+    public static final String   OPER_DEVICE_CLASS_LIST_NAME                  = "deviceClasses";
 
-    public static final String   OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME      = "attributeTypes";
+    public static final String   OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME         = "attributeTypes";
 
-    public static final String   OPER_DEVICE_USER_ATTRIBUTE_TYPE_LIST_NAME = "userAttributeTypes";
+    public static final String   OPER_DEVICE_USER_ATTRIBUTE_TYPE_LIST_NAME    = "userAttributeTypes";
+
+    public static final String   OPER_DEVICE_DISABLE_ATTRIBUTE_TYPE_LIST_NAME = "disableAttributeTypes";
 
     @In(create = true)
     FacesMessages                facesMessages;
@@ -106,13 +109,13 @@ public class DeviceBean implements Device {
 
     private String               disablePath;
 
-    private String               enablePath;
-
     private UploadedFile         certificate;
 
     private String               attributeType;
 
     private String               userAttributeType;
+
+    private String               disableAttributeType;
 
     /*
      * Seam Data models
@@ -189,6 +192,19 @@ public class DeviceBean implements Device {
 
     }
 
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    @Factory(OPER_DEVICE_DISABLE_ATTRIBUTE_TYPE_LIST_NAME)
+    public List<SelectItem> disableAttributeTypesFactory() {
+
+        List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService
+                .listAttributeTypes(DatatypeType.BOOLEAN);
+        List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList,
+                new AttributeTypeSelectItemConvertor());
+        attributeTypes.add(0, new SelectItem(null, ""));
+        return attributeTypes;
+
+    }
+
 
     static class AttributeTypeSelectItemConvertor implements Convertor<AttributeTypeEntity, SelectItem> {
 
@@ -246,8 +262,8 @@ public class DeviceBean implements Device {
         }
 
         this.deviceService.addDevice(this.name, this.deviceClass, this.node, this.authenticationPath,
-                this.registrationPath, this.removalPath, this.updatePath, this.disablePath, this.enablePath,
-                encodedCertificate, this.attributeType, this.userAttributeType);
+                this.registrationPath, this.removalPath, this.updatePath, this.disablePath, encodedCertificate,
+                this.attributeType, this.userAttributeType, this.disableAttributeType);
         return "success";
     }
 
@@ -282,6 +298,9 @@ public class DeviceBean implements Device {
         if (null != this.selectedDevice.getUserAttributeType()) {
             this.userAttributeType = this.selectedDevice.getUserAttributeType().getName();
         }
+        if (null != this.selectedDevice.getDisableAttributeType()) {
+            this.disableAttributeType = this.selectedDevice.getDisableAttributeType().getName();
+        }
 
         return "edit";
     }
@@ -306,9 +325,6 @@ public class DeviceBean implements Device {
         if (null != this.disablePath) {
             this.deviceService.updateDisablePath(deviceName, this.disablePath);
         }
-        if (null != this.enablePath) {
-            this.deviceService.updateEnablePath(deviceName, this.enablePath);
-        }
 
         if (null != this.certificate) {
             LOG.debug("updating device certificate");
@@ -323,6 +339,10 @@ public class DeviceBean implements Device {
         if (null != this.userAttributeType) {
             LOG.debug("updating user attribute type");
             this.deviceService.updateUserAttributeType(deviceName, this.userAttributeType);
+        }
+        if (null != this.disableAttributeType) {
+            LOG.debug("updating disable attribute type");
+            this.deviceService.updateDisableAttributeType(deviceName, this.disableAttributeType);
         }
 
         /*
@@ -439,18 +459,6 @@ public class DeviceBean implements Device {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String getEnablePath() {
-
-        return this.enablePath;
-    }
-
-    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void setEnablePath(String enablePath) {
-
-        this.enablePath = enablePath;
-    }
-
-    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public UploadedFile getCertificate() {
 
         return this.certificate;
@@ -484,5 +492,17 @@ public class DeviceBean implements Device {
     public void setUserAttributeType(String userAttributeType) {
 
         this.userAttributeType = userAttributeType;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getDisableAttributeType() {
+
+        return this.disableAttributeType;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setDisableAttributeType(String disableAttributeType) {
+
+        this.disableAttributeType = disableAttributeType;
     }
 }

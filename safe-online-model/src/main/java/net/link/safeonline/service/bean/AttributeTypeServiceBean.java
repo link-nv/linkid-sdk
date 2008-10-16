@@ -29,6 +29,7 @@ import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.AttributeTypeServiceRemote;
@@ -66,6 +67,13 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     public List<AttributeTypeEntity> listAttributeTypes() {
 
         List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO.listAttributeTypes();
+        return attributeTypes;
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public List<AttributeTypeEntity> listAttributeTypes(DatatypeType datatype) {
+
+        List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO.listAttributeTypes(datatype);
         return attributeTypes;
     }
 
@@ -216,30 +224,27 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
 
         List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO.listApplicationIdentities();
         for (ApplicationIdentityEntity applicationIdentity : applicationIdentities) {
-            if (applicationIdentity.getAttributeTypes().contains(attributeType)) {
+            if (applicationIdentity.getAttributeTypes().contains(attributeType))
                 throw new PermissionDeniedException("Attribute type still exists in application identity: "
                         + applicationIdentity.getApplication().getName(), "errorPermissionAttributeInIdentity",
                         applicationIdentity.getApplication().getName());
-            }
         }
     }
 
     private void checkCompounded(AttributeTypeEntity attributeType) throws PermissionDeniedException {
 
-        if (attributeType.isCompoundMember()) {
+        if (attributeType.isCompoundMember())
             throw new PermissionDeniedException("Cannot remove a compound member attribute type",
                     "errorPermissionCompoundMember");
-        }
     }
 
     private void checkDevices(AttributeTypeEntity attributeType) throws PermissionDeniedException {
 
         List<DeviceEntity> devices = this.deviceDAO.listDevices();
         for (DeviceEntity device : devices) {
-            if (device.getAttributeType().equals(attributeType)) {
+            if (device.getAttributeType().equals(attributeType))
                 throw new PermissionDeniedException("Attribute type exist in device: " + device.getName(),
                         "errorPermissionAttributeInDevice", device.getName());
-            }
         }
     }
 

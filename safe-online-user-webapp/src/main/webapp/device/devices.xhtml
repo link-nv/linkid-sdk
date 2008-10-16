@@ -62,9 +62,6 @@
 							<h:commandLink action="#{devicesBean.disableDevice}"
 								id="disable" styleClass="noblock" value=" #{msgs.deviceDisable}"
 								rendered="#{item.device.disablable}" />
-							<h:commandLink action="#{devicesBean.enableDevice}"
-								id="enable" styleClass="noblock" value=" #{msgs.deviceEnable}"
-								rendered="#{item.device.enablable}" />
 						</h:column>
 					</rich:dataTable>
 				</a4j:form>

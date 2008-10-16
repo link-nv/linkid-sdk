@@ -57,10 +57,10 @@ public interface DeviceService {
     void removeDeviceProperty(DevicePropertyEntity property) throws DevicePropertyNotFoundException;
 
     void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath,
-            String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
-            byte[] encodedCertificate, String attributeTypeName, String userAttributeTypeName)
-            throws CertificateEncodingException, DeviceClassNotFoundException, ExistingDeviceException,
-            AttributeTypeNotFoundException, NodeNotFoundException, PermissionDeniedException;
+            String registrationPath, String removalPath, String updatePath, String disablePath,
+            byte[] encodedCertificate, String attributeTypeName, String userAttributeTypeName,
+            String disableAttributeTypeName) throws CertificateEncodingException, DeviceClassNotFoundException,
+            ExistingDeviceException, AttributeTypeNotFoundException, NodeNotFoundException, PermissionDeniedException;
 
     void removeDevice(String name) throws DeviceNotFoundException, DeviceDescriptionNotFoundException,
             DevicePropertyNotFoundException, PermissionDeniedException;
@@ -88,8 +88,6 @@ public interface DeviceService {
 
     void updateDisablePath(String deviceName, String disablePath) throws DeviceNotFoundException;
 
-    void updateEnablePath(String deviceName, String enablePath) throws DeviceNotFoundException;
-
     void updateDeviceCertificate(String deviceName, byte[] encodedCertificate) throws DeviceNotFoundException,
             CertificateEncodingException;
 
@@ -110,6 +108,9 @@ public interface DeviceService {
             AttributeTypeNotFoundException, PermissionDeniedException;
 
     void updateUserAttributeType(String deviceName, String userAttributeType) throws DeviceNotFoundException,
+            AttributeTypeNotFoundException, PermissionDeniedException;
+
+    void updateDisableAttributeType(String deviceName, String disableAttributeType) throws DeviceNotFoundException,
             AttributeTypeNotFoundException, PermissionDeniedException;
 
     /**

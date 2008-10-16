@@ -32,7 +32,6 @@ import net.link.safeonline.entity.notification.NotificationProducerSubscriptionE
 import net.link.safeonline.notification.service.NotificationSubscriptionService;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.notification.Notification;
-import net.link.safeonline.service.DeviceService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -76,9 +75,6 @@ public class NotificationBean implements Notification {
 
     @EJB
     private NodeService                                  nodeService;
-
-    @EJB
-    private DeviceService                                deviceService;
 
     private String                                       address;
 

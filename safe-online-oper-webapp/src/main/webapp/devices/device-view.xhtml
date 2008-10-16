@@ -91,14 +91,6 @@
 									<h:outputText id="disablePath" value="#{selectedDevice.disablePath}" />
 								</td>
 							</tr>
-							<tr>
-								<th>
-									<h:outputText for="enablePath" value="#{msgs.enablePath}" />
-								</th>
-								<td>
-									<h:outputText id="enablePath" value="#{selectedDevice.enablePath}" />
-								</td>
-							</tr>
 						</tbody>
 					</table>
 				</rich:simpleTogglePanel>
@@ -212,6 +204,24 @@
 							<h:outputText value="#{item.member.name}" />
 						</h:column>
 					</h:dataTable>
+				</rich:simpleTogglePanel>
+
+				<rich:simpleTogglePanel switchType="client"
+					styleClass="fullwidth" rendered="#{selectedDevice.disableAttributeType.name}"
+					opened="false" id="disable-attribute-tab" label="#{msgs.deviceDisableAttribute}">
+
+					<table class="inner">
+						<tr>
+							<th>#{msgs.deviceDisableAttribute}
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText id="disable-attribute-name"
+									value="#{selectedDevice.disableAttributeType.name}" />
+							</td>
+						</tr>
+					</table>
 				</rich:simpleTogglePanel>
 
 				<rich:simpleTogglePanel switchType="client"

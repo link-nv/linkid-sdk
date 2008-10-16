@@ -98,18 +98,6 @@
 										</s:decorate>
 									</td>
 								</tr>
-								<tr>
-									<th>
-										<h:outputText value="#{msgs.enablePath}" />
-									</th>
-									<td>
-										<s:decorate>
-											<h:inputText id="enablePath" value="#{operDevice.enablePath}"
-												styleClass="label" />
-											<h:message for="enablePath" styleClass="error" />
-										</s:decorate>
-									</td>
-								</tr>
 							</tbody>
 						</table>
 					</rich:simpleTogglePanel>
@@ -141,6 +129,17 @@
 										<h:selectOneMenu id="user-attribute-type"
 											value="#{operDevice.userAttributeType}" styleClass="label">
 											<f:selectItems value="#{userAttributeTypes}" />
+										</h:selectOneMenu>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.deviceDisableAttribute}" />
+									</th>
+									<td>
+										<h:selectOneMenu id="disable-attribute-type"
+											value="#{operDevice.disableAttributeType}" styleClass="label">
+											<f:selectItems value="#{disableAttributeTypes}" />
 										</h:selectOneMenu>
 									</td>
 								</tr>

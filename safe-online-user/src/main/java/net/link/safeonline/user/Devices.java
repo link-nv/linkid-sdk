@@ -46,8 +46,6 @@ public interface Devices {
 
     String disableDevice() throws DeviceNotFoundException, IOException;
 
-    String enableDevice() throws DeviceNotFoundException, IOException;
-
     String changePassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
     String registerPassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;

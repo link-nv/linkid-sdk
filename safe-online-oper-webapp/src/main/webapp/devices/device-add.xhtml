@@ -72,11 +72,6 @@
 						styleClass="label" />
 					<h:message for="disablePath" styleClass="error" />
 
-					<h:outputLabel for="enablePath" value="#{msgs.enablePath}" />
-					<h:inputText id="enablePath" value="#{operDevice.enablePath}"
-						styleClass="label" />
-					<h:message for="enablePath" styleClass="error" />
-
 					<h2>#{msgs.attribute}</h2>
 
 					<h:outputLabel for="attribute-type" value="#{msgs.deviceAttribute}" />
@@ -89,6 +84,12 @@
 					<h:selectOneMenu id="user-attribute-type"
 						value="#{operDevice.userAttributeType}" styleClass="label">
 						<f:selectItems value="#{userAttributeTypes}" />
+					</h:selectOneMenu>
+
+					<h:outputLabel for="disable-attribute-type" value="#{msgs.deviceDisableAttribute}" />
+					<h:selectOneMenu id="disable-attribute-type"
+						value="#{operDevice.disableAttributeType}" styleClass="label">
+						<f:selectItems value="#{disableAttributeTypes}" />
 					</h:selectOneMenu>
 
 					<h2>#{msgs.certificate}</h2>

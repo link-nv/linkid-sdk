@@ -249,7 +249,7 @@ public class AuthenticationServiceBeanTest {
         DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass, null,
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null);
         expect(this.mockDeviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)).andReturn(device);
 
         // prepare
@@ -328,7 +328,7 @@ public class AuthenticationServiceBeanTest {
         DeviceEntity passwordDevice = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
                 new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                         SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null,
-                null, null);
+                null);
         authnDevices.add(passwordDevice);
         expect(this.mockDevicePolicyService.listDevices(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS))
                 .andReturn(authnDevices);
@@ -446,7 +446,7 @@ public class AuthenticationServiceBeanTest {
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
@@ -513,7 +513,7 @@ public class AuthenticationServiceBeanTest {
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
@@ -569,7 +569,7 @@ public class AuthenticationServiceBeanTest {
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
@@ -673,7 +673,7 @@ public class AuthenticationServiceBeanTest {
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(invalidSubject, application, device, null);
 
         // expectations
@@ -733,7 +733,7 @@ public class AuthenticationServiceBeanTest {
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, invalidApplication, device, null);
 
         // expectations
@@ -793,7 +793,7 @@ public class AuthenticationServiceBeanTest {
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, cookieApplication, device, null);
 
         // expectations
@@ -888,7 +888,7 @@ public class AuthenticationServiceBeanTest {
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application1, device, Collections.singletonList(application2));
 
         // expectations
@@ -951,7 +951,7 @@ public class AuthenticationServiceBeanTest {
         String invalidDeviceName = "foobar-device";
         DeviceEntity invalidDevice = new DeviceEntity(invalidDeviceName, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
 
         Cookie ssoCookie = getSsoCookie(subject, application, invalidDevice, null);
 
@@ -1012,7 +1012,7 @@ public class AuthenticationServiceBeanTest {
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
@@ -1075,7 +1075,7 @@ public class AuthenticationServiceBeanTest {
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         Cookie ssoCookie = getExpiredSsoCookie(subject, application, device);
 
         // expectations

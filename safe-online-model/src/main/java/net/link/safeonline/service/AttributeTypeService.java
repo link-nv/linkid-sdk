@@ -18,6 +18,7 @@ import net.link.safeonline.authentication.exception.ExistingAttributeTypeExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 
 
 @Local
@@ -29,6 +30,13 @@ public interface AttributeTypeService {
      * 
      */
     List<AttributeTypeEntity> listAttributeTypes();
+
+    /**
+     * Lists all attribute types within the system of specified datatype.
+     * 
+     * @param datatype
+     */
+    List<AttributeTypeEntity> listAttributeTypes(DatatypeType datatype);
 
     /**
      * Lists attribute types that could participate as member in a compounded attribute type.

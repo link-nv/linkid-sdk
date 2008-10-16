@@ -120,12 +120,6 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
         return device.getDisableURL();
     }
 
-    public String getEnableURL(String deviceName) throws DeviceNotFoundException {
-
-        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-        return device.getEnablePath();
-    }
-
     public List<DeviceEntity> listDevices(String authenticationContextClass) {
 
         List<DeviceEntity> authndevices = new LinkedList<DeviceEntity>();

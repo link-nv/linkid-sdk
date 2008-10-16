@@ -74,13 +74,13 @@ public class DeviceEntity implements Serializable {
 
     private String                               disablePath;
 
-    private String                               enablePath;
-
     private String                               certificateSubject;
 
     private AttributeTypeEntity                  attributeType;
 
     private AttributeTypeEntity                  userAttributeType;
+
+    private AttributeTypeEntity                  disableAttributeType;
 
     private Map<String, DevicePropertyEntity>    properties;
 
@@ -93,7 +93,7 @@ public class DeviceEntity implements Serializable {
     }
 
     public DeviceEntity(String name, DeviceClassEntity deviceClass, NodeEntity location, String authenticationPath,
-            String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
+            String registrationPath, String removalPath, String updatePath, String disablePath,
             X509Certificate certificate) {
 
         this.name = name;
@@ -104,7 +104,6 @@ public class DeviceEntity implements Serializable {
         this.removalPath = removalPath;
         this.updatePath = updatePath;
         this.disablePath = disablePath;
-        this.enablePath = enablePath;
         this.properties = new HashMap<String, DevicePropertyEntity>();
         this.descriptions = new HashMap<String, DeviceDescriptionEntity>();
         if (null != certificate) {
@@ -151,6 +150,21 @@ public class DeviceEntity implements Serializable {
     public void setUserAttributeType(AttributeTypeEntity userAttributeType) {
 
         this.userAttributeType = userAttributeType;
+    }
+
+    /**
+     * This device attribute holds the information for a user if this device registration is enabled or disabled.
+     * 
+     */
+    @ManyToOne
+    public AttributeTypeEntity getDisableAttributeType() {
+
+        return this.disableAttributeType;
+    }
+
+    public void setDisableAttributeType(AttributeTypeEntity disableAttributeType) {
+
+        this.disableAttributeType = disableAttributeType;
     }
 
     /**
@@ -357,42 +371,6 @@ public class DeviceEntity implements Serializable {
     public boolean isDisablable() {
 
         return null != this.disablePath && this.disablePath.length() > 0;
-    }
-
-    /**
-     * Retrieves the path for enabling this device.
-     * 
-     */
-    public String getEnablePath() {
-
-        return this.enablePath;
-    }
-
-    public void setEnablePath(String enablePath) {
-
-        this.enablePath = enablePath;
-    }
-
-    /**
-     * Returns the full URL for enabling this device.
-     * 
-     */
-    @Transient
-    public String getEnableURL() {
-
-        if (null == this.location)
-            return this.enablePath;
-        return this.location.getLocation() + this.enablePath;
-    }
-
-    /**
-     * Returns whether or not a user is allowed to enable this device himself.
-     * 
-     */
-    @Transient
-    public boolean isEnablable() {
-
-        return null != this.enablePath && this.enablePath.length() > 0;
     }
 
     /**

@@ -14,6 +14,7 @@ import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_IN
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_STRING;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_ALL;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_NODE;
+import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_TYPE;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_VISIBLE;
 
 import java.io.Serializable;
@@ -55,6 +56,7 @@ import org.hibernate.annotations.IndexColumn;
         @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM AttributeTypeEntity"),
         @NamedQuery(name = QUERY_WHERE_NODE, query = "FROM AttributeTypeEntity a WHERE a.location = :location"),
         @NamedQuery(name = QUERY_WHERE_VISIBLE, query = "FROM AttributeTypeEntity a WHERE a.userVisible = true"),
+        @NamedQuery(name = QUERY_WHERE_TYPE, query = "FROM AttributeTypeEntity a WHERE a.type = :type"),
         @NamedQuery(name = QUERY_CATEGORIZE_STRING, query = "SELECT a.stringValue, COUNT(a.stringValue) "
                 + "FROM AttributeEntity a, SubscriptionEntity s, "
                 + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
@@ -97,6 +99,8 @@ public class AttributeTypeEntity implements Serializable {
     public static final String                          QUERY_WHERE_NODE         = "at.node";
 
     public static final String                          QUERY_WHERE_VISIBLE      = "at.visible";
+
+    public static final String                          QUERY_WHERE_TYPE         = "at.type";
 
     public static final String                          QUERY_CATEGORIZE_STRING  = "at.cat.string";
 
@@ -270,10 +274,9 @@ public class AttributeTypeEntity implements Serializable {
      */
     public void addMember(AttributeTypeEntity memberAttributeType, int memberSequence, boolean required) {
 
-        if (memberAttributeType.isCompoundMember()) {
+        if (memberAttributeType.isCompoundMember())
             throw new EJBException("attribute type cannot be member of more than one compounded: "
                     + memberAttributeType.getName());
-        }
         CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(this, memberAttributeType,
                 memberSequence, required);
         getMembers().add(member);
@@ -381,6 +384,9 @@ public class AttributeTypeEntity implements Serializable {
 
         @QueryMethod(QUERY_WHERE_VISIBLE)
         List<AttributeTypeEntity> listVisibleAttributeTypes();
+
+        @QueryMethod(QUERY_WHERE_TYPE)
+        List<AttributeTypeEntity> listAttributeTypes(@QueryParam("type") DatatypeType datatype);
 
         @QueryMethod(QUERY_CATEGORIZE_STRING)
         Query createQueryCategorizeString(@QueryParam("application") ApplicationEntity application,

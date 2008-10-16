@@ -48,6 +48,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceClassDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassDescriptionPK;
 import net.link.safeonline.entity.DeviceClassEntity;
@@ -174,10 +175,10 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath,
-            String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
-            byte[] encodedCertificate, String attributeTypeName, String userAttributeTypeName)
-            throws CertificateEncodingException, DeviceClassNotFoundException, ExistingDeviceException,
-            AttributeTypeNotFoundException, NodeNotFoundException, PermissionDeniedException {
+            String registrationPath, String removalPath, String updatePath, String disablePath,
+            byte[] encodedCertificate, String attributeTypeName, String userAttributeTypeName,
+            String disableAttributeTypeName) throws CertificateEncodingException, DeviceClassNotFoundException,
+            ExistingDeviceException, AttributeTypeNotFoundException, NodeNotFoundException, PermissionDeniedException {
 
         checkExistingDevice(name);
         LOG.debug("add device: " + name);
@@ -192,32 +193,43 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         } else {
             userAttributeType = this.attributeTypeDAO.getAttributeType(userAttributeTypeName);
         }
-
         checkAttributeTypes(attributeType, userAttributeType);
+        AttributeTypeEntity disableAttributeType;
+        if (null == disableAttributeTypeName) {
+            disableAttributeType = null;
+        } else {
+            disableAttributeType = this.attributeTypeDAO.getAttributeType(disableAttributeTypeName);
+            if (!disableAttributeType.getType().equals(DatatypeType.BOOLEAN)) {
+                String message = "Device disable attribute type should be of type " + DatatypeType.BOOLEAN;
+                LOG.debug(message);
+                throw new PermissionDeniedException(message);
+            }
+        }
+        checkAttributeTypes(attributeType, disableAttributeType);
 
         NodeEntity node = this.olasDAO.getNode(nodeName);
 
         this.deviceDAO.addDevice(name, deviceClass, node, authenticationPath, registrationPath, removalPath,
-                updatePath, disablePath, enablePath, certificate, attributeType, userAttributeType);
+                updatePath, disablePath, certificate, attributeType, userAttributeType, disableAttributeType);
     }
 
     /**
-     * Check if the user attribute type is or equal to or part of the device attribute type
+     * Check if the user/disable attribute type is or null, or equal to or part of the device attribute type
      * 
      * @throws PermissionDeniedException
      */
-    private void checkAttributeTypes(AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType)
+    private void checkAttributeTypes(AttributeTypeEntity attributeType, AttributeTypeEntity userOrDisableAttributeType)
             throws PermissionDeniedException {
 
-        if (null == userAttributeType)
+        if (null == userOrDisableAttributeType)
             return;
 
-        if (attributeType.equals(userAttributeType))
+        if (attributeType.equals(userOrDisableAttributeType))
             return;
 
         if (!attributeType.isCompounded()) {
             String message = "Attribute type " + attributeType.getName()
-                    + " must be compound and contain user attribute type " + userAttributeType
+                    + " must be compound and contain user or disable attribute type " + userOrDisableAttributeType
                     + " if both types are not equal";
             LOG.debug("Permission denied: " + message);
             throw new PermissionDeniedException(message);
@@ -225,12 +237,12 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         List<CompoundedAttributeTypeMemberEntity> memberAttributeTypes = attributeType.getMembers();
         for (CompoundedAttributeTypeMemberEntity memberAttributeType : memberAttributeTypes) {
-            if (memberAttributeType.getMember().equals(userAttributeType))
+            if (memberAttributeType.getMember().equals(userOrDisableAttributeType))
                 return;
         }
 
         String message = "Attribute type " + attributeType.getName()
-                + " must be compound and contain user attribute type " + userAttributeType
+                + " must be compound and contain user or disable attribute type " + userOrDisableAttributeType
                 + " if both types are not equal";
         LOG.debug("Permission denied: " + message);
         throw new PermissionDeniedException(message);
@@ -372,13 +384,6 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateEnablePath(String deviceName, String enablePath) throws DeviceNotFoundException {
-
-        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-        device.setEnablePath(enablePath);
-    }
-
-    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void updateDeviceCertificate(String deviceName, byte[] encodedCertificate) throws DeviceNotFoundException,
             CertificateEncodingException {
 
@@ -396,6 +401,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
 
         checkAttributeTypes(attributeType, device.getUserAttributeType());
+        checkAttributeTypes(attributeType, device.getDisableAttributeType());
 
         device.setAttributeType(attributeType);
     }
@@ -410,6 +416,23 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         checkAttributeTypes(device.getAttributeType(), userAttributeType);
 
         device.setUserAttributeType(userAttributeType);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateDisableAttributeType(String deviceName, String disableAttributeTypeName)
+            throws DeviceNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException {
+
+        AttributeTypeEntity disableAttributeType = this.attributeTypeDAO.getAttributeType(disableAttributeTypeName);
+        if (!disableAttributeType.getType().equals(DatatypeType.BOOLEAN)) {
+            String message = "Device disable attribute type should be of type " + DatatypeType.BOOLEAN;
+            LOG.debug(message);
+            throw new PermissionDeniedException(message);
+        }
+        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+
+        checkAttributeTypes(device.getAttributeType(), disableAttributeType);
+
+        device.setDisableAttributeType(disableAttributeType);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
