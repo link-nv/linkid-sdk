@@ -39,19 +39,25 @@ import org.w3c.dom.Document;
  */
 public class DummyAttributeClient implements AttributeClient {
 
-    private final Map<String, Map<String, Object>> usersAttributes;
+    private static final Map<String, Map<String, Object>> usersAttributes = new HashMap<String, Map<String, Object>>();
 
 
-    public DummyAttributeClient() {
+    /**
+     * Set an attribute for a given user to the given value.
+     * 
+     * @return As per contract of {@link Map#put(Object, Object)}, this method returns the previous value of the given
+     *         attribute, if one was set. Otherwise it returns <code>null</code>.
+     */
+    public static Object setAttribute(String user, String attribute, Object value) {
 
-        this.usersAttributes = new HashMap<String, Map<String, Object>>();
-        Map<String, Object> userAttributes = new HashMap<String, Object>();
+        Map<String, Object> userAttributes = usersAttributes.get(user);
+        if (userAttributes == null) {
+            usersAttributes.put(user, userAttributes = new HashMap<String, Object>());
+        }
 
-        userAttributes.clear();
-        userAttributes.put("urn:net:lin-k:safe-online:attribute:login", "Administrator");
-        this.usersAttributes.put("admin", userAttributes);
+        return userAttributes.put(attribute, value);
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -59,7 +65,7 @@ public class DummyAttributeClient implements AttributeClient {
             throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
             AttributeUnavailableException {
 
-        return valueClass.cast(this.usersAttributes.get(userId).get(attributeName));
+        return valueClass.cast(DummyAttributeClient.usersAttributes.get(userId).get(attributeName));
     }
 
     /**
@@ -78,7 +84,7 @@ public class DummyAttributeClient implements AttributeClient {
     public Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException,
             WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException {
 
-        return this.usersAttributes.get(userId);
+        return DummyAttributeClient.usersAttributes.get(userId);
     }
 
     /**

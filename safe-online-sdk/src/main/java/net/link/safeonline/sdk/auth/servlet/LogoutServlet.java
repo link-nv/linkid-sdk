@@ -119,9 +119,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
             ClassLoader classLoader = currentThread.getContextClassLoader();
             LOG.debug("classloader name: " + classLoader.getClass().getName());
             keyStoreInputStream = classLoader.getResourceAsStream(this.p12KeyStoreResourceName);
-            if (null == keyStoreInputStream) {
+            if (null == keyStoreInputStream)
                 throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreResourceName);
-            }
         } else if (null != this.p12KeyStoreFileName) {
             try {
                 keyStoreInputStream = new FileInputStream(this.p12KeyStoreFileName);
@@ -157,30 +156,30 @@ public class LogoutServlet extends AbstractInjectionServlet {
          * Finalize the logout process for this application following a single logout from another web application.
          */
         try {
-        String target = AuthenticationProtocolManager.findTarget(requestWrapper);
-        if (null != target) {
-            // this indicates the end of a single logout process, started by this web application
-            AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);
+            String target = AuthenticationProtocolManager.findTarget(requestWrapper);
+            if (null != target) {
+                // this indicates the end of a single logout process, started by this web application
+                AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);
 
-            LOG.debug("target: " + target);
-            response.sendRedirect(target);
-        } else {
-            AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
-                    .findAuthenticationProtocolHandler(request);
-            if (null == protocolHandler) {
-                String msg = "no protocol handler active";
-                LOG.error(msg);
-                redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
-                return;
+                LOG.debug("target: " + target);
+                response.sendRedirect(target);
+            } else {
+                AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
+                        .findAuthenticationProtocolHandler(request);
+                if (null == protocolHandler) {
+                    String msg = "no protocol handler active";
+                    LOG.error(msg);
+                    redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
+                    return;
+                }
+
+                protocolHandler.sendLogoutResponse(true, request, response);
+
+                AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);
             }
-
-            protocolHandler.sendLogoutResponse(true, request, response);
-
-            AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);
-        }
         } finally {
             if (requestWrapper.getSession().getAttribute(INVALIDATE_SESSION) != null) {
-                requestWrapper.getSession().invalidate();
+                 requestWrapper.getSession().invalidate();
             }
         }
     }

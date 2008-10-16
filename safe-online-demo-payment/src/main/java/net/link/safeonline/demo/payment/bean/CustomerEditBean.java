@@ -7,7 +7,6 @@
 
 package net.link.safeonline.demo.payment.bean;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.payment.CustomerEdit;
@@ -48,7 +47,6 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements C
     private CustomerStatus customerStatus;
 
 
-    @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public String persist() {
 
         this.log.debug("---------------------------------------- save #0 -----------------------------", this.name);

@@ -18,6 +18,7 @@ import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import net.link.safeonline.demo.wicket.javaee.DummyAnnotJavaEEInjector;
 import net.link.safeonline.demo.wicket.service.OlasNamingStrategy;
 import net.link.safeonline.demo.wicket.tools.olas.DummyAttributeClient;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -27,7 +28,6 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Request;
-import org.apache.wicket.Session;
 import org.apache.wicket.injection.ComponentInjector;
 import org.apache.wicket.injection.ConfigurableInjector;
 import org.apache.wicket.injection.web.InjectorHolder;
@@ -52,28 +52,11 @@ import org.wicketstuff.javaee.injection.AnnotJavaEEInjector;
  */
 public abstract class WicketUtil {
 
-    static final Log                  LOG      = LogFactory.getLog(WicketUtil.class);
-    static final ConfigurableInjector injector = new AnnotJavaEEInjector(new OlasNamingStrategy());
-    private static boolean              isUnitTest;
+    static final Log            LOG         = LogFactory.getLog(WicketUtil.class);
+    static ConfigurableInjector injector;
 
-
-    /**
-     * @return A string that is the formatted representation of the given date according to the user's locale in short
-     *         form.
-     */
-    public static String format(Session session, Date date) {
-
-        return format(session.getLocale(), date);
-    }
-
-    /**
-     * @return A string that is the formatted representation of the given amount of currency according to the user's
-     *         locale.
-     */
-    public static String format(Session session, Number number) {
-
-        return format(session.getLocale(), number);
-    }
+    private static final String WS_LOCATION = "WsLocation";
+    private static boolean      isUnitTest;
 
     /**
      * @return A string that is the formatted representation of the given date according to the user's locale in short
@@ -117,7 +100,7 @@ public abstract class WicketUtil {
         application.addComponentInstantiationListener(new ComponentInjector() {
 
             {
-                InjectorHolder.setInjector(injector);
+                InjectorHolder.setInjector(getInjector());
             }
         });
     }
@@ -127,7 +110,7 @@ public abstract class WicketUtil {
      */
     public static void inject(Object injectee) {
 
-        injector.inject(injectee);
+        getInjector().inject(injectee);
     }
 
     /**
@@ -183,7 +166,7 @@ public abstract class WicketUtil {
             // Create the attribute service client.
             return new AttributeClientImpl(wsLocation, certificate, privateKey);
         }
-        
+
         return new DummyAttributeClient();
     }
 }

@@ -67,12 +67,11 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
         catch (NoResultException e) {
             String bankId = olasId;
             while (true) {
-                try {
-                    getBankUser(bankId);
-                    bankId += "_";
-                } catch (NoResultException ee) {
+                if (getBankUser(bankId) == null) {
                     break;
                 }
+
+                bankId += "_";
             }
 
             BankUserEntity userEntity = new BankUserEntity(bankId, olasId, olasId);

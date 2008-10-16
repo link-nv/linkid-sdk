@@ -228,29 +228,40 @@ public final class EJBTestUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager,
+    public static <Type> Type newInstance(Class<Type> type, Class<?>[] container, EntityManager entityManager,
             SessionContext sessionContext) {
 
-        if (clazz.isInterface())
-            throw new EJBException("cannot instantiate an interface");
+        Class<Type> beanType = type;
+        if (type.isInterface()) {
+            for (Class<?> beanClass : container)
+                if (type.isAssignableFrom(beanClass)) {
+                    beanType = (Class<Type>) beanClass;
+                    break;
+                }
+            
+            if (beanType.isInterface())
+                throw new EJBException("cannot instantiate interface: " + beanType
+                        + " (no instantiatable type found in container)");
+        }
+        
         Type instance;
         try {
-            instance = clazz.newInstance();
+            instance = beanType.newInstance();
         } catch (InstantiationException e) {
-            throw new RuntimeException("instantiation error");
+            throw new RuntimeException("instantiation error: " + beanType);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("illegal access error");
+            throw new RuntimeException("illegal access error: " + beanType);
         }
         TestContainerMethodInterceptor testContainerMethodInterceptor = new TestContainerMethodInterceptor(instance,
                 container, entityManager, sessionContext);
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(clazz);
+        enhancer.setSuperclass(beanType);
         enhancer.setCallback(testContainerMethodInterceptor);
         Type object = (Type) enhancer.create();
         try {
-            init(clazz, object);
+            init(beanType, object);
         } catch (Exception e) {
-            throw new RuntimeException("init error: " + clazz.getName(), e);
+            throw new RuntimeException("init error: " + beanType.getName(), e);
         }
         return object;
     }

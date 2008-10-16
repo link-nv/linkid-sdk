@@ -4,7 +4,7 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.sdk.auth.test;
+package net.link.safeonline.demo.wicket.test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,11 +39,23 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     private HttpServletRequest base;
     private String             requestURI;
+    private Method             method;
 
 
-    public MockHttpServletRequest(HttpServletRequest base, String requestURI) {
+    enum Method {
+        POST, GET
+    }
+
+
+    public MockHttpServletRequest(HttpServletRequest base, Method method) {
+
+        this(base, base.getRequestURI(), method);
+    }
+
+    public MockHttpServletRequest(HttpServletRequest base, String requestURI, Method method) {
 
         this.base = base;
+        this.method = method;
         this.requestURI = requestURI;
     }
 
@@ -118,7 +130,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getMethod() {
 
-        return "POST";
+        return this.method.name();
     }
 
     /**
