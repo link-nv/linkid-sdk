@@ -232,7 +232,7 @@ public class AuthnEntryServletTest {
         DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PKI_DEVICE_CLASS,
                 SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
         DeviceEntity device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null,
-                null);
+                null, null, null);
 
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
         postMethod.setRequestBody(data);
