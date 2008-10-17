@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -34,7 +35,7 @@ public interface Removal {
     String getRegistrations() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
     String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException,
-            DeviceNotFoundException;
+            DeviceNotFoundException, AttributeTypeNotFoundException;
 
     /*
      * Factories

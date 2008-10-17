@@ -12,6 +12,7 @@ import java.util.Locale;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -25,10 +26,10 @@ public interface DigipassDeviceService {
             DeviceNotFoundException;
 
     String register(String loginName, String serialNumber) throws ArgumentIntegrityException, SubjectNotFoundException,
-            PermissionDeniedException;
+            PermissionDeniedException, AttributeTypeNotFoundException;
 
     void remove(String loginName, String serialNumber) throws SubjectNotFoundException, DigipassException,
-            PermissionDeniedException, DeviceNotFoundException;
+            PermissionDeniedException, DeviceNotFoundException, AttributeTypeNotFoundException;
 
     List<AttributeDO> getDigipasses(String loginName, Locale locale) throws SubjectNotFoundException,
             PermissionDeniedException, DeviceNotFoundException;

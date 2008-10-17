@@ -19,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -164,7 +165,8 @@ public class RegistrationBean implements Registration {
     }
 
     @End
-    public String authenticate() throws IOException, MobileException, SubjectNotFoundException {
+    public String authenticate() throws IOException, MobileException, SubjectNotFoundException,
+            AttributeTypeNotFoundException {
 
         boolean result = this.encapDeviceService.authenicateEncap(this.challengeId, this.mobileOTP);
         if (false == result) {

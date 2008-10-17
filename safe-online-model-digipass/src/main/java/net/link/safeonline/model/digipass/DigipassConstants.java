@@ -18,13 +18,17 @@ public class DigipassConstants {
     }
 
 
-    public static final String DIGIPASS_STARTABLE_JNDI_PREFIX = "SafeOnlineDigipass/startup/";
+    public static final String DIGIPASS_STARTABLE_JNDI_PREFIX    = "SafeOnlineDigipass/startup/";
 
-    public static final String DIGIPASS_DEVICE_ID             = "digipass";
+    public static final String DIGIPASS_DEVICE_ID                = "digipass";
 
-    public static final String DIGIPASS_IDENTIFIER_DOMAIN     = "digipass";
+    public static final String DIGIPASS_IDENTIFIER_DOMAIN        = "digipass";
 
-    public static final String DIGIPASS_SN_ATTRIBUTE          = "urn:net:lin-k:safe-online:attribute:digipass:serial-number";
+    public static final String DIGIPASS_SN_ATTRIBUTE             = "urn:net:lin-k:safe-online:attribute:digipass:serial-number";
 
-    public static final int    DIGIPASS_BOOT_PRIORITY         = Startable.PRIORITY_BOOTSTRAP - 1;
+    public static final String DIGIPASS_DEVICE_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:device:digipass";
+
+    public static final String DIGIPASS_DEVICE_DISABLE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:device:digipass:disable";
+
+    public static final int    DIGIPASS_BOOT_PRIORITY            = Startable.PRIORITY_BOOTSTRAP - 1;
 }

@@ -18,6 +18,9 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -144,7 +147,21 @@ public class AuthenticationBean implements Authentication {
     @Begin
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
             @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
-    public String requestOTP() throws MalformedURLException, MobileException {
+    public String requestOTP() throws MalformedURLException, MobileException, AttributeTypeNotFoundException,
+            AttributeNotFoundException {
+
+        LOG.debug("check mobile: " + this.mobile);
+        try {
+            this.encapDeviceService.checkMobile(this.mobile);
+        } catch (SubjectNotFoundException e) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
+            HelpdeskLogger.add("login: subject not found for " + this.mobile, LogLevelType.ERROR);
+            return null;
+        } catch (DeviceDisabledException e) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileDisabled");
+            HelpdeskLogger.add("login: mobile " + this.mobile + " disabled", LogLevelType.ERROR);
+            return null;
+        }
 
         LOG.debug("request OTP: mobile=" + this.mobile);
         this.challengeId = this.encapDeviceService.requestOTP(this.mobile);

@@ -131,8 +131,8 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthenticationServlet</servlet-name>
-		<servlet-class> net.link.safeonline.option.servlet.AuthenticationServlet 
-		</servlet-class>
+		<servlet-class>
+			net.link.safeonline.option.servlet.AuthenticationServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AuthenticationServlet</servlet-name>
@@ -163,6 +163,10 @@
 			<param-value>remove.seam</param-value>
 		</init-param>
 		<init-param>
+			<param-name>DisableUrl</param-name>
+			<param-value>disable.seam</param-value>
+		</init-param>
+		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
 				${safe-online.host.auth.basename}/${safe-online.option.webapp.name}/device 
@@ -178,8 +182,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>RegistrationServlet</servlet-name>
-		<servlet-class> net.link.safeonline.option.servlet.RegistrationServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.option.servlet.RegistrationServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RegistrationServlet</servlet-name>
@@ -187,8 +190,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>RemovalServlet</servlet-name>
-		<servlet-class> net.link.safeonline.option.servlet.RemovalServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.option.servlet.RemovalServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RemovalServlet</servlet-name>

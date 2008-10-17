@@ -14,6 +14,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
@@ -27,6 +30,7 @@ import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * Authentication Servlet that accepts an imei and pin code.
  * 
@@ -35,49 +39,53 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AuthenticationServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long    serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthenticationServlet.class);
+    private static final Log     LOG              = LogFactory.getLog(AuthenticationServlet.class);
 
-	@EJB(mappedName = "SafeOnlineOption/OptionDeviceServiceBean/local")
-	private OptionDeviceService optionDeviceService;
+    @EJB(mappedName = "SafeOnlineOption/OptionDeviceServiceBean/local")
+    private OptionDeviceService  optionDeviceService;
 
-	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
-	private SamlAuthorityService samlAuthorityService;
+    @EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
+    private SamlAuthorityService samlAuthorityService;
 
-	@Override
-	protected void invokePost(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ServletException {
-		try {
-			AuthenticationContext authenticationContext = AuthenticationContext
-					.getAuthenticationContext(request.getSession());
-			authenticationContext
-					.setUsedDevice(OptionConstants.OPTION_DEVICE_ID);
 
-			String imei = request.getParameter("imei");
-			String pin = request.getParameter("pin");
+    @Override
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException,
+            ServletException {
 
-			LOG.debug("authenticating imei: " + imei + " with pin: " + pin);
-			String deviceUserId = this.optionDeviceService.authenticate(imei,
-					pin);
+        try {
+            AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request
+                    .getSession());
+            authenticationContext.setUsedDevice(OptionConstants.OPTION_DEVICE_ID);
 
-			authenticationContext.setUserId(deviceUserId);
-			authenticationContext.setValidity(this.samlAuthorityService
-					.getAuthnAssertionValidity());
+            String imei = request.getParameter("imei");
+            String pin = request.getParameter("pin");
 
-		} catch (SubjectNotFoundException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-		} catch (OptionAuthenticationException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-		} catch (OptionRegistrationException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-		}
-	}
+            LOG.debug("authenticating imei: " + imei + " with pin: " + pin);
+            String deviceUserId = this.optionDeviceService.authenticate(imei, pin);
+
+            authenticationContext.setUserId(deviceUserId);
+            authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+
+        } catch (SubjectNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        } catch (OptionAuthenticationException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        } catch (OptionRegistrationException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        } catch (AttributeTypeNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        } catch (AttributeNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        } catch (DeviceDisabledException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        }
+    }
 }

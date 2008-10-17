@@ -13,6 +13,7 @@ import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
@@ -63,7 +64,8 @@ public class RegistrationBean implements Registration {
     @ErrorHandling( {
             @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
             @Error(exceptionClass = ArgumentIntegrityException.class, messageId = "errorDigipassRegistered", fieldId = "serialNumber") })
-    public String register() throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException {
+    public String register() throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException,
+            AttributeTypeNotFoundException {
 
         this.log.debug("register digipas with sn=" + this.serialNumber + " for user: " + this.loginName);
         this.digipassDeviceService.register(this.loginName, this.serialNumber);

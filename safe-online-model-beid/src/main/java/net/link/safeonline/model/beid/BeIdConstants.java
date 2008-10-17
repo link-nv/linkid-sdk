@@ -32,9 +32,9 @@ public class BeIdConstants {
 
     public static final String BEID_DEVICE_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:device:beid";
 
-    public static final String BEID_DEVICE_USER_ATTRIBUTE    = "urn:net:lin-k:safe-online:attribute:device:user:beid";
+    public static final String BEID_DEVICE_USER_ATTRIBUTE    = "urn:net:lin-k:safe-online:attribute:device:beid:user";
 
-    public static final String BEID_DEVICE_DISABLE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:device:disable:beid";
+    public static final String BEID_DEVICE_DISABLE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:device:beid:disable";
 
     public static final int    BEID_BOOT_PRIORITY            = Startable.PRIORITY_BOOTSTRAP - 1;
 

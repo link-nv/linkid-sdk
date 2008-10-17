@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.beid.bean;
+package net.link.safeonline.option.bean;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -23,8 +23,6 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.beid.BeidConstants;
-import net.link.safeonline.beid.Disable;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -38,7 +36,8 @@ import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.model.beid.BeIdConstants;
+import net.link.safeonline.option.Disable;
+import net.link.safeonline.option.OptionConstants;
 import net.link.safeonline.service.SubjectService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -53,12 +52,12 @@ import org.jboss.seam.log.Log;
 
 
 @Stateful
-@Name("beidDisable")
-@LocalBinding(jndiBinding = BeidConstants.JNDI_PREFIX + "DisableBean/local")
+@Name("optionDisable")
+@LocalBinding(jndiBinding = OptionConstants.JNDI_PREFIX + "DisableBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class DisableBean implements Disable {
 
-    private static final String        REGISTRATIONS_LIST_NAME = "beidRegistrations";
+    private static final String        REGISTRATIONS_LIST_NAME = "optionRegistrations";
 
     @EJB
     private DeviceDAO                  deviceDAO;
@@ -139,7 +138,8 @@ public class DisableBean implements Disable {
     public List<DeviceRegistrationDO> registrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException {
 
         Locale locale = getViewLocale();
-        this.registrations = listRegistrations(BeIdConstants.BEID_DEVICE_ID, locale);
+        this.registrations = listRegistrations(net.link.safeonline.model.option.OptionConstants.OPTION_DEVICE_ID,
+                locale);
         return this.registrations;
     }
 

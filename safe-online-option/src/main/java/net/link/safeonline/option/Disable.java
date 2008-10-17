@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.beid;
+package net.link.safeonline.option;
 
 import java.io.IOException;
 import java.util.List;

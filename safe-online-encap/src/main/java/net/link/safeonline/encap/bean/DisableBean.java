@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.beid.bean;
+package net.link.safeonline.encap.bean;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -23,8 +23,6 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.beid.BeidConstants;
-import net.link.safeonline.beid.Disable;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -32,13 +30,14 @@ import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.device.sdk.ProtocolContext;
+import net.link.safeonline.encap.Disable;
+import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.service.SubjectService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -53,12 +52,12 @@ import org.jboss.seam.log.Log;
 
 
 @Stateful
-@Name("beidDisable")
-@LocalBinding(jndiBinding = BeidConstants.JNDI_PREFIX + "DisableBean/local")
+@Name("encapDisable")
+@LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "DisableBean/local")
 @Interceptors(ErrorMessageInterceptor.class)
 public class DisableBean implements Disable {
 
-    private static final String        REGISTRATIONS_LIST_NAME = "beidRegistrations";
+    private static final String        REGISTRATIONS_LIST_NAME = "encapRegistrations";
 
     @EJB
     private DeviceDAO                  deviceDAO;
@@ -139,7 +138,7 @@ public class DisableBean implements Disable {
     public List<DeviceRegistrationDO> registrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException {
 
         Locale locale = getViewLocale();
-        this.registrations = listRegistrations(BeIdConstants.BEID_DEVICE_ID, locale);
+        this.registrations = listRegistrations(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID, locale);
         return this.registrations;
     }
 
@@ -148,9 +147,6 @@ public class DisableBean implements Disable {
 
         this.log.debug("list registrations for device: " + deviceId);
         DeviceEntity device = this.deviceDAO.getDevice(deviceId);
-        List<AttributeTypeEntity> deviceAttributeTypes = new LinkedList<AttributeTypeEntity>();
-        deviceAttributeTypes.add(device.getAttributeType());
-
         SubjectEntity subject = this.subjectService.getSubject(this.userId);
 
         return listRegistrations(subject, device, locale);

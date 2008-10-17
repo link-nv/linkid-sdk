@@ -13,11 +13,10 @@
 		</auth-constraint>
 	</security-constraint>
 	<listener>
-		<listener-class> org.jboss.seam.servlet.SeamListener </listener-class>
+		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class> com.sun.faces.config.ConfigureListener 
-		</listener-class>
+		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
@@ -65,8 +64,7 @@
 	</context-param>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
-		</filter-class>
+		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
 		<init-param>
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
@@ -78,8 +76,7 @@
 	</filter>
 	<filter>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<filter-class> org.apache.myfaces.webapp.filter.ExtensionsFilter 
-		</filter-class>
+		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
@@ -109,8 +106,7 @@
 	<servlet>
 		<servlet-name>LandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.LandingServlet 
-		</servlet-class>
+			net.link.safeonline.device.sdk.auth.servlet.LandingServlet</servlet-class>
 		<init-param>
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>mobile.seam</param-value>
@@ -136,8 +132,7 @@
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.ExitServlet 
-		</servlet-class>
+			net.link.safeonline.device.sdk.auth.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
@@ -149,8 +144,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class> net.link.safeonline.device.sdk.servlet.LandingServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.device.sdk.servlet.LandingServlet</servlet-class>
 		<init-param>
 			<param-name>RegistrationUrl</param-name>
 			<param-value>register-mobile.seam</param-value>
@@ -158,6 +152,10 @@
 		<init-param>
 			<param-name>RemovalUrl</param-name>
 			<param-value>remove-mobile.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>DisableUrl</param-name>
+			<param-value>disable-mobile.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
@@ -179,8 +177,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class> net.link.safeonline.device.sdk.servlet.ExitServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.device.sdk.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
@@ -193,8 +190,7 @@
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationStyleServlet 
-		</servlet-class>
+			net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Style Servlet</servlet-name>

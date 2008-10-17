@@ -29,6 +29,7 @@ import net.link.safeonline.option.connection.manager.ws.generated.ConnectionMana
 import net.link.safeonline.option.connection.manager.ws.generated.ConnectionManagerService;
 import net.link.safeonline.shared.SharedConstants;
 
+
 /**
  * <h2>{@link OptionController}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -45,208 +46,191 @@ import net.link.safeonline.shared.SharedConstants;
  */
 public class OptionController implements AppletController {
 
-	private AppletView appletView;
+    private AppletView        appletView;
 
-	private RuntimeContext runtimeContext;
+    private RuntimeContext    runtimeContext;
 
-	private OptionMessages messages;
+    private OptionMessages    messages;
 
-	private ConnectionManager port = null;
+    private ConnectionManager port = null;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void abort() {
 
-		// empty
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void abort() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(AppletView av, RuntimeContext rc,
-			StatementProvider statementProvider) {
-		this.appletView = av;
-		this.runtimeContext = rc;
-		Locale locale = this.runtimeContext.getLocale();
-		this.messages = new OptionMessages(locale);
-	}
+        // empty
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void run() {
-		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
-				.getString(KEY.START));
+    /**
+     * {@inheritDoc}
+     */
+    public void init(AppletView av, RuntimeContext rc, StatementProvider statementProvider) {
 
-		if (null == this.port) {
-			try {
-				this.appletView
-						.outputDetailMessage("Contacting connection manager");
-				ConnectionManagerService service = new ConnectionManagerService(
-						new URL(ConnectionManagerConstants.URL + "?wsdl"),
-						new QName(ConnectionManagerConstants.NAMESPACE,
-								ConnectionManagerConstants.LOCALPART));
-				this.port = service.getConnectionManagerPort();
-			} catch (Throwable e) {
-				this.appletView.outputInfoMessage(InfoLevel.ERROR,
-						this.messages.getString(KEY.ERROR));
-				this.appletView
-						.outputDetailMessage(e.getMessage());
-				return;
-			}
-		}
+        this.appletView = av;
+        this.runtimeContext = rc;
+        Locale locale = this.runtimeContext.getLocale();
+        this.messages = new OptionMessages(locale);
+    }
 
-		String IMEI = this.port.getIMEI();
+    /**
+     * {@inheritDoc}
+     */
+    public void run() {
 
-		if (null == IMEI) {
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString(KEY.ERROR));
-			this.appletView
-					.outputDetailMessage("Could not read IMEI from connection manager");
-			return;
-		}
+        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.START));
 
-		this.appletView.outputDetailMessage("Found datacard  with IMEI: "
-				+ IMEI);
+        if (null == this.port) {
+            try {
+                this.appletView.outputDetailMessage("Contacting connection manager");
+                ConnectionManagerService service = new ConnectionManagerService(new URL(ConnectionManagerConstants.URL
+                        + "?wsdl"), new QName(ConnectionManagerConstants.NAMESPACE,
+                        ConnectionManagerConstants.LOCALPART));
+                this.port = service.getConnectionManagerPort();
+            } catch (Throwable e) {
+                this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
+                this.appletView.outputDetailMessage(e.getMessage());
+                return;
+            }
+        }
 
-		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
-				.getString(KEY.PIN));
-		this.appletView.outputDetailMessage("Reading PIN code");
+        String IMEI = this.port.getIMEI();
 
-		PinDialog pinDialog = new PinDialog(this.messages
-				.getString(KEY.ENTER_PIN));
-		String pin = pinDialog.getPin();
+        if (null == IMEI) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
+            this.appletView.outputDetailMessage("Could not read IMEI from connection manager");
+            return;
+        }
 
-		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
-				.getString(KEY.SENDING));
-		this.appletView.outputDetailMessage("Sending data");
-		PostResult result = null;
-		try {
-			result = postData(IMEI, pin);
-		} catch (Exception e) {
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString(KEY.ERROR));
-			this.appletView
-					.outputDetailMessage("Could not send login data to server");
-			return;
-		}
+        this.appletView.outputDetailMessage("Found datacard  with IMEI: " + IMEI);
 
-		if (SharedConstants.PERMISSION_DENIED_ERROR.equals(result.getMessage())) {
-			this.appletView
-					.outputDetailMessage("PERMISSION DENIED. YOUR DATACARD MIGHT BE IN USE BY ANOTHER USER");
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString(KEY.PERMISSION_DENIED));
-			return;
-		}
-		if (SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR.equals(result
-				.getMessage())) {
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString(KEY.NOT_SUBSCRIBED));
-			return;
-		}
-		if (SharedConstants.SUBJECT_NOT_FOUND_ERROR.equals(result.getMessage())) {
-			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
-					.getString(KEY.DATACARD_NOT_REGISTERED));
-			this.appletView.outputDetailMessage(this.messages
-					.getString(KEY.DATACARD_NOT_REGISTERED));
-			this.appletView
-					.outputDetailMessage("Please login with another authentication device first.");
-			return;
-		}
+        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.PIN));
+        this.appletView.outputDetailMessage("Reading PIN code");
 
-		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
-				.getString(KEY.DONE));
+        PinDialog pinDialog = new PinDialog(this.messages.getString(KEY.ENTER_PIN));
+        String pin = pinDialog.getPin();
 
-		showDocument("TargetPath");
-	}
+        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.SENDING));
+        this.appletView.outputDetailMessage("Sending data");
+        PostResult result = null;
+        try {
+            result = postData(IMEI, pin);
+        } catch (Exception e) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
+            this.appletView.outputDetailMessage("Could not send login data to server");
+            return;
+        }
 
-	private PostResult postData(String IMEI, String pin) throws IOException {
+        if (SharedConstants.PERMISSION_DENIED_ERROR.equals(result.getMessage())) {
+            this.appletView.outputDetailMessage("PERMISSION DENIED. YOUR DATACARD MIGHT BE IN USE BY ANOTHER USER");
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.PERMISSION_DENIED));
+            return;
+        }
+        if (SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR.equals(result.getMessage())) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.NOT_SUBSCRIBED));
+            return;
+        }
+        if (SharedConstants.SUBJECT_NOT_FOUND_ERROR.equals(result.getMessage())) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.DATACARD_NOT_REGISTERED));
+            this.appletView.outputDetailMessage(this.messages.getString(KEY.DATACARD_NOT_REGISTERED));
+            this.appletView.outputDetailMessage("Please login with another authentication device first.");
+            return;
+        }
+        if (SharedConstants.DEVICE_DISABLED_ERROR.equals(result.getMessage())) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.DATACARD_DISABLED));
+            this.appletView.outputDetailMessage(this.messages.getString(KEY.DATACARD_DISABLED));
+            this.appletView.outputDetailMessage("Your Option Data Card has been disabled");
+            return;
+        }
 
-		URL documentBase = this.runtimeContext.getDocumentBase();
-		String servletPath = this.runtimeContext.getParameter("ServletPath");
-		URL url = AppletControl.transformUrl(documentBase, servletPath);
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.DONE));
 
-		connection.setRequestMethod("POST");
-		connection.setRequestProperty("Content-Type",
-				"application/x-www-form-urlencoded");
-		String content = "imei=" + URLEncoder.encode(IMEI, "UTF-8") + "&pin="
-				+ URLEncoder.encode(pin, "UTF-8");
-		connection.setRequestProperty("Content-length", Integer
-				.toString(content.getBytes().length));
-		connection.setDoOutput(true);
-		connection.setDoInput(true);
-		connection.setAllowUserInteraction(false);
-		connection.setUseCaches(false);
-		DataOutputStream output = new DataOutputStream(connection
-				.getOutputStream());
-		output.writeBytes(content);
-		output.flush();
-		output.close();
-		return new PostResult(connection);
-	}
+        showDocument("TargetPath");
+    }
 
-	private void showDocument(String runtimeParameter) {
+    private PostResult postData(String IMEI, String pin) throws IOException {
 
-		URL documentBase = this.runtimeContext.getDocumentBase();
-		String path = this.runtimeContext.getParameter(runtimeParameter);
-		if (null == path) {
-			this.appletView.outputDetailMessage("runtime parameter not set: "
-					+ runtimeParameter);
-			return;
-		}
+        URL documentBase = this.runtimeContext.getDocumentBase();
+        String servletPath = this.runtimeContext.getParameter("ServletPath");
+        URL url = AppletControl.transformUrl(documentBase, servletPath);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-		path += "?cacheid=" + Math.random() * 1000000;
-		this.appletView.outputDetailMessage("redirecting to: " + path);
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        String content = "imei=" + URLEncoder.encode(IMEI, "UTF-8") + "&pin=" + URLEncoder.encode(pin, "UTF-8");
+        connection.setRequestProperty("Content-length", Integer.toString(content.getBytes().length));
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setAllowUserInteraction(false);
+        connection.setUseCaches(false);
+        DataOutputStream output = new DataOutputStream(connection.getOutputStream());
+        output.writeBytes(content);
+        output.flush();
+        output.close();
+        return new PostResult(connection);
+    }
 
-		URL url = transformUrl(documentBase, path);
-		this.runtimeContext.showDocument(url);
-	}
+    private void showDocument(String runtimeParameter) {
 
-	public static URL transformUrl(URL documentBase, String targetPath) {
+        URL documentBase = this.runtimeContext.getDocumentBase();
+        String path = this.runtimeContext.getParameter(runtimeParameter);
+        if (null == path) {
+            this.appletView.outputDetailMessage("runtime parameter not set: " + runtimeParameter);
+            return;
+        }
 
-		if (targetPath.startsWith("http://")
-				|| targetPath.startsWith("https://")) {
-			try {
-				return new URL(targetPath);
-			} catch (MalformedURLException e) {
-				throw new RuntimeException("URL error: " + e.getMessage());
-			}
-		}
+        path += "?cacheid=" + Math.random() * 1000000;
+        this.appletView.outputDetailMessage("redirecting to: " + path);
 
-		String documentBaseStr = documentBase.toString();
-		int idx = documentBaseStr.lastIndexOf("/");
-		String identityUrlStr = documentBaseStr.substring(0, idx + 1)
-				+ targetPath;
-		try {
-			return new URL(identityUrlStr);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("URL error: " + e.getMessage());
-		}
-	}
+        URL url = transformUrl(documentBase, path);
+        this.runtimeContext.showDocument(url);
+    }
 
-	private class PostResult {
-		private int responseCode;
-		private String message = null;
+    public static URL transformUrl(URL documentBase, String targetPath) {
 
-		public PostResult(HttpURLConnection connection) throws IOException {
-			this.responseCode = connection.getResponseCode();
-			if (200 != this.responseCode) {
-				this.message = connection
-						.getHeaderField(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER);
-			}
-		}
+        if (targetPath.startsWith("http://") || targetPath.startsWith("https://")) {
+            try {
+                return new URL(targetPath);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("URL error: " + e.getMessage());
+            }
+        }
 
-		public int getResponseCode() {
+        String documentBaseStr = documentBase.toString();
+        int idx = documentBaseStr.lastIndexOf("/");
+        String identityUrlStr = documentBaseStr.substring(0, idx + 1) + targetPath;
+        try {
+            return new URL(identityUrlStr);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("URL error: " + e.getMessage());
+        }
+    }
 
-			return this.responseCode;
-		}
 
-		public String getMessage() {
+    private class PostResult {
 
-			return this.message;
-		}
+        private int    responseCode;
+        private String message = null;
 
-	}
+
+        public PostResult(HttpURLConnection connection) throws IOException {
+
+            this.responseCode = connection.getResponseCode();
+            if (200 != this.responseCode) {
+                this.message = connection.getHeaderField(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER);
+            }
+        }
+
+        public int getResponseCode() {
+
+            return this.responseCode;
+        }
+
+        public String getMessage() {
+
+            return this.message;
+        }
+
+    }
 }

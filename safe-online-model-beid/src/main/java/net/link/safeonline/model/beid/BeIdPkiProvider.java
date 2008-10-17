@@ -11,6 +11,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -195,6 +196,7 @@ public class BeIdPkiProvider implements PkiProvider {
         AttributeEntity deviceAttribute = this.attributeDAO.findAttribute(deviceAttributeType, subject);
         if (null == deviceAttribute) {
             deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject);
+            deviceAttribute.setStringValue(UUID.randomUUID().toString());
             List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
             deviceAttributeMembers.add(givenNameAttribute);
             deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.NRN_ATTRIBUTE, subject));

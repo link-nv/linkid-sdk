@@ -66,14 +66,36 @@ public class OptionStartableBean extends AbstractInitBean {
                 .getLanguage(), "PIN", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttributeType, "nl", "PIN", null));
 
+        AttributeTypeEntity optionDeviceDisableAttributeType = new AttributeTypeEntity(
+                OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
+        optionDeviceDisableAttributeType.setMultivalued(true);
+        this.attributeTypes.add(optionDeviceDisableAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceDisableAttributeType,
+                Locale.ENGLISH.getLanguage(), "Option Disable Attribute", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceDisableAttributeType, "nl",
+                "Option Disable Attribuut", null));
+
+        AttributeTypeEntity optionDeviceAttributeType = new AttributeTypeEntity(
+                OptionConstants.OPTION_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED, true, false);
+        optionDeviceAttributeType.setMultivalued(true);
+        optionDeviceAttributeType.addMember(imeiAttributeType, 0, true);
+        optionDeviceAttributeType.addMember(pinAttributeType, 1, true);
+        optionDeviceAttributeType.addMember(optionDeviceDisableAttributeType, 2, true);
+        this.attributeTypes.add(optionDeviceAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, Locale.ENGLISH
+                .getLanguage(), "Option", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, "nl",
+                "Option", null));
+
         X509Certificate certificate = (X509Certificate) OptionKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
         String nodeName = properties.getString("olas.node.name");
 
         this.devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS,
-                nodeName, "/olas-option/auth", "/olas-option/device", "/olas-option/device", null, null, certificate,
-                imeiAttributeType, imeiAttributeType, null));
+                nodeName, "/olas-option/auth", "/olas-option/device", "/olas-option/device", null,
+                "/olas-option/device", certificate, optionDeviceAttributeType, imeiAttributeType,
+                optionDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
         this.deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH
                 .getLanguage(), "Option Data Card"));

@@ -13,6 +13,8 @@ public class DeviceRegistrationDO {
 
     private boolean      disabled;
 
+    private long         attributeIndex;
+
 
     public DeviceRegistrationDO(DeviceEntity device, String friendlyName, AttributeDO attribute, boolean disabled) {
 
@@ -20,6 +22,14 @@ public class DeviceRegistrationDO {
         this.friendlyName = friendlyName;
         this.attribute = attribute;
         this.disabled = disabled;
+    }
+
+    public DeviceRegistrationDO(DeviceEntity device, AttributeDO attribute, boolean disabled, long attributeIndex) {
+
+        this.device = device;
+        this.attribute = attribute;
+        this.disabled = disabled;
+        this.attributeIndex = attributeIndex;
     }
 
     public DeviceEntity getDevice() {
@@ -40,6 +50,16 @@ public class DeviceRegistrationDO {
     public boolean isDisabled() {
 
         return this.disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+
+        this.disabled = disabled;
+    }
+
+    public long getAttributeIndex() {
+
+        return this.attributeIndex;
     }
 
 }

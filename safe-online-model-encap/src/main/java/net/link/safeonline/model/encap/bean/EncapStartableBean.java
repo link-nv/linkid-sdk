@@ -42,13 +42,33 @@ public class EncapStartableBean extends AbstractInitBean {
 
         configureNode();
 
-        AttributeTypeEntity encapAttributeType = new AttributeTypeEntity(EncapConstants.MOBILE_ENCAP_ATTRIBUTE,
+        AttributeTypeEntity encapMobileAttributeType = new AttributeTypeEntity(EncapConstants.ENCAP_MOBILE_ATTRIBUTE,
                 DatatypeType.STRING, true, false);
-        encapAttributeType.setMultivalued(true);
-        this.attributeTypes.add(encapAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapAttributeType, Locale.ENGLISH
+        encapMobileAttributeType.setMultivalued(true);
+        this.attributeTypes.add(encapMobileAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, Locale.ENGLISH
                 .getLanguage(), "Mobile", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapAttributeType, "nl", "Gsm nummer",
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, "nl",
+                "Gsm nummer", null));
+
+        AttributeTypeEntity encapDeviceDisableAttributeType = new AttributeTypeEntity(
+                EncapConstants.ENCAP_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
+        encapDeviceDisableAttributeType.setMultivalued(true);
+        this.attributeTypes.add(encapDeviceDisableAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceDisableAttributeType,
+                Locale.ENGLISH.getLanguage(), "Encap Disable Attribute", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceDisableAttributeType, "nl",
+                "Encap Disable Attribuut", null));
+
+        AttributeTypeEntity encapDeviceAttributeType = new AttributeTypeEntity(EncapConstants.ENCAP_DEVICE_ATTRIBUTE,
+                DatatypeType.COMPOUNDED, true, false);
+        encapDeviceAttributeType.setMultivalued(true);
+        encapDeviceAttributeType.addMember(encapMobileAttributeType, 0, true);
+        encapDeviceAttributeType.addMember(encapDeviceDisableAttributeType, 1, true);
+        this.attributeTypes.add(encapDeviceAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, Locale.ENGLISH
+                .getLanguage(), "Encap", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, "nl", "Encap",
                 null));
 
         X509Certificate certificate = (X509Certificate) EncapKeyStoreUtils.getPrivateKeyEntry().getCertificate();
@@ -57,8 +77,8 @@ public class EncapStartableBean extends AbstractInitBean {
         String nodeName = properties.getString("olas.node.name");
 
         this.devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName,
-                "/olas-encap/auth", "/olas-encap/device", "/olas-encap/device", null, null, certificate,
-                encapAttributeType, encapAttributeType, null));
+                "/olas-encap/auth", "/olas-encap/device", "/olas-encap/device", null, "/olas-encap/device",
+                certificate, encapDeviceAttributeType, encapMobileAttributeType, encapDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
         this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(),
                 "Mobile"));

@@ -10,6 +10,7 @@ package net.link.safeonline.digipass;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
@@ -31,7 +32,8 @@ public interface Registration {
     /*
      * Actions.
      */
-    String register() throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException;
+    String register() throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException,
+            AttributeTypeNotFoundException;
 
     /*
      * Factories

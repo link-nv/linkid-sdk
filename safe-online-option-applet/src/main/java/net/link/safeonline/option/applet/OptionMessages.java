@@ -10,6 +10,7 @@ package net.link.safeonline.option.applet;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+
 /**
  * Class that manages the authentication messages.
  * 
@@ -18,43 +19,44 @@ import java.util.ResourceBundle;
  */
 public class OptionMessages {
 
-	public static enum KEY {
-		START("start"), ERROR("error"), NO_DATACARD("noDatacard"), DONE("done"), SENDING(
-				"sending"), PIN("pin"), PERMISSION_DENIED("permissionDenied"), NOT_SUBSCRIBED(
-				"notSubscribed"), DATACARD_NOT_REGISTERED(
-				"datacardNotRegistered"), ENTER_PIN("enterPin");
+    public static enum KEY {
+        START("start"), ERROR("error"), NO_DATACARD("noDatacard"), DONE("done"), SENDING("sending"), PIN("pin"), PERMISSION_DENIED(
+                "permissionDenied"), NOT_SUBSCRIBED("notSubscribed"), DATACARD_NOT_REGISTERED("datacardNotRegistered"), ENTER_PIN(
+                "enterPin"), DATACARD_DISABLED("datacardDisabled");
 
-		private final String key;
+        private final String key;
 
-		private KEY(String key) {
 
-			this.key = key;
-		}
+        private KEY(String key) {
 
-		public String getKey() {
+            this.key = key;
+        }
 
-			return this.key;
-		}
-	}
+        public String getKey() {
 
-	private ResourceBundle messages;
+            return this.key;
+        }
+    }
 
-	/**
-	 * Main constructor.
-	 * 
-	 * @param locale
-	 */
-	public OptionMessages(Locale locale) {
 
-		this.messages = ResourceBundle.getBundle(
-				"net.link.safeonline.option.applet.OptionMessages", locale);
-	}
+    private ResourceBundle messages;
 
-	/**
-	 * Gives back the message for the given key.
-	 */
-	public String getString(KEY key) {
 
-		return this.messages.getString(key.getKey());
-	}
+    /**
+     * Main constructor.
+     * 
+     * @param locale
+     */
+    public OptionMessages(Locale locale) {
+
+        this.messages = ResourceBundle.getBundle("net.link.safeonline.option.applet.OptionMessages", locale);
+    }
+
+    /**
+     * Gives back the message for the given key.
+     */
+    public String getString(KEY key) {
+
+        return this.messages.getString(key.getKey());
+    }
 }

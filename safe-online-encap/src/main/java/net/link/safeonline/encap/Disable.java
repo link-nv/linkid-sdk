@@ -8,20 +8,18 @@
 package net.link.safeonline.encap;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.data.DeviceRegistrationDO;
 
 
 @Local
-public interface Removal {
+public interface Disable {
 
     /*
      * Accessors.
@@ -29,15 +27,14 @@ public interface Removal {
     /*
      * Actions.
      */
-    String mobileRemove() throws SubjectNotFoundException, MobileException, MalformedURLException, IOException,
-            AttributeTypeNotFoundException;
+    String save() throws IOException, SubjectNotFoundException, AttributeNotFoundException;
 
-    String mobileCancel() throws IOException;
+    String cancel() throws IOException;
 
     /*
      * Factories
      */
-    List<AttributeDO> mobileAttributesFactory() throws SubjectNotFoundException, DeviceNotFoundException;
+    List<DeviceRegistrationDO> registrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException;
 
     /*
      * Lifecycle.

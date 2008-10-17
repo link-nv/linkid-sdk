@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 
@@ -32,7 +34,8 @@ public interface Authentication {
      */
     String login() throws MobileAuthenticationException, IOException;
 
-    String requestOTP() throws MalformedURLException, MobileException;
+    String requestOTP() throws MalformedURLException, MobileException, AttributeTypeNotFoundException,
+            AttributeNotFoundException;
 
     String requestNewOTP() throws MalformedURLException, MobileException;
 

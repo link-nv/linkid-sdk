@@ -6,6 +6,10 @@
  */
 package net.link.safeonline.model.option.bean;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -13,12 +17,16 @@ import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.option.OptionConstants;
@@ -69,11 +77,32 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
      * {@inheritDoc}
      */
     public String authenticate(String imei, String pin) throws SubjectNotFoundException, OptionAuthenticationException,
-            OptionRegistrationException {
+            OptionRegistrationException, AttributeTypeNotFoundException, AttributeNotFoundException,
+            DeviceDisabledException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         if (null == subject)
             throw new SubjectNotFoundException();
+
+        // check registration not disabled
+        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO
+                .getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
+        AttributeTypeEntity imeiAttributeType = this.attributeTypeDAO
+                .getAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
+        AttributeTypeEntity deviceDisableAttributeType = this.attributeTypeDAO
+                .getAttributeType(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
+
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject, imeiAttributeType, deviceAttribute
+                    .getAttributeIndex());
+            if (imeiAttribute.getStringValue().equals(imei)) {
+                AttributeEntity disableAttribute = this.attributeDAO.getAttribute(deviceDisableAttributeType, subject,
+                        deviceAttribute.getAttributeIndex());
+                if (true == disableAttribute.getBooleanValue())
+                    throw new DeviceDisabledException();
+            }
+        }
 
         authenticate(subject, imei, pin);
 
@@ -84,12 +113,12 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
      * {@inheritDoc}
      */
     public void register(String userId, String imei, String pin) throws OptionAuthenticationException,
-            OptionRegistrationException {
+            OptionRegistrationException, AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         if (null != subject) {
             authenticate(subject, imei, pin);
-            removeRegistration(subject);
+            removeRegistration(subject, imei);
             this.entityManager.flush();
             this.entityManager.clear();
         }
@@ -101,18 +130,36 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
 
         AttributeTypeEntity imeiType = this.attributeTypeDAO.findAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
         AttributeTypeEntity pinType = this.attributeTypeDAO.findAttributeType(OptionConstants.PIN_OPTION_ATTRIBUTE);
+        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO
+                .getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
+        AttributeTypeEntity deviceDisableAttributeType = this.attributeTypeDAO
+                .getAttributeType(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
 
-        AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(imeiType, subject);
+        int attributeIdx = this.attributeDAO.listAttributes(subject, deviceAttributeType).size();
+
+        AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject, imeiType, attributeIdx);
         if (null == imeiAttribute) {
-            imeiAttribute = this.attributeDAO.addAttribute(imeiType, subject);
+            imeiAttribute = this.attributeDAO.addAttribute(imeiType, subject, attributeIdx);
         }
         imeiAttribute.setStringValue(imei);
 
-        AttributeEntity pinAttribute = this.attributeDAO.findAttribute(pinType, subject);
+        AttributeEntity pinAttribute = this.attributeDAO.findAttribute(subject, pinType, attributeIdx);
         if (null == pinAttribute) {
-            pinAttribute = this.attributeDAO.addAttribute(pinType, subject);
+            pinAttribute = this.attributeDAO.addAttribute(pinType, subject, attributeIdx);
         }
         pinAttribute.setStringValue(pin);
+
+        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject,
+                attributeIdx);
+        deviceDisableAttribute.setBooleanValue(false);
+
+        AttributeEntity deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject);
+        deviceAttribute.setStringValue(UUID.randomUUID().toString());
+        List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
+        deviceAttributeMembers.add(imeiAttribute);
+        deviceAttributeMembers.add(pinAttribute);
+        deviceAttributeMembers.add(deviceDisableAttribute);
+        deviceAttribute.setMembers(deviceAttributeMembers);
 
         this.subjectIdentifierDAO.addSubjectIdentifier(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei, subject);
 
@@ -122,7 +169,8 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
      * {@inheritDoc}
      */
     public void remove(String userId, String imei, String pin) throws OptionAuthenticationException,
-            OptionRegistrationException, SubjectNotFoundException {
+            OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException, DeviceDisabledException {
 
         String assignedSubject = authenticate(imei, pin);
 
@@ -130,7 +178,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
             throw new OptionRegistrationException();
 
         SubjectEntity subject = this.subjectService.findSubject(userId);
-        removeRegistration(subject);
+        removeRegistration(subject, imei);
     }
 
     private void authenticate(SubjectEntity subject, String givenImei, String givenPin)
@@ -150,16 +198,32 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
         }
     }
 
-    private void removeRegistration(SubjectEntity subject) {
+    private void removeRegistration(SubjectEntity subject, String imei) throws AttributeTypeNotFoundException {
 
-        AttributeEntity storedImei = this.attributeDAO.findAttribute(OptionConstants.IMEI_OPTION_ATTRIBUTE, subject);
-        AttributeEntity storedPin = this.attributeDAO.findAttribute(OptionConstants.PIN_OPTION_ATTRIBUTE, subject);
+        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO
+                .getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
+        AttributeTypeEntity imeiAttributeType = this.attributeTypeDAO
+                .getAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
 
-        this.attributeDAO.removeAttribute(storedImei);
-        this.attributeDAO.removeAttribute(storedPin);
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject, imeiAttributeType, deviceAttribute
+                    .getAttributeIndex());
+            if (imeiAttribute.getStringValue().equals(imei)) {
+                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
+                for (CompoundedAttributeTypeMemberEntity member : members) {
+                    AttributeEntity memberAttribute = this.attributeDAO.findAttribute(subject, member.getMember(),
+                            deviceAttribute.getAttributeIndex());
+                    if (null != memberAttribute) {
+                        this.attributeDAO.removeAttribute(memberAttribute);
+                    }
+                }
+                this.attributeDAO.removeAttribute(deviceAttribute);
+                break;
+            }
+        }
 
-        this.subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, storedImei
-                .getStringValue());
+        this.subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
     }
 
 }

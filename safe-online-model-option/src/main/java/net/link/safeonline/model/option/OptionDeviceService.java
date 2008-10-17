@@ -8,6 +8,9 @@ package net.link.safeonline.model.option;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.model.option.exception.OptionAuthenticationException;
 import net.link.safeonline.model.option.exception.OptionRegistrationException;
@@ -31,12 +34,14 @@ import net.link.safeonline.model.option.exception.OptionRegistrationException;
 public interface OptionDeviceService {
 
     String authenticate(String imei, String pin) throws SubjectNotFoundException, OptionAuthenticationException,
-            OptionRegistrationException;
+            OptionRegistrationException, AttributeTypeNotFoundException, AttributeNotFoundException,
+            DeviceDisabledException;
 
     void register(String userId, String imei, String pin) throws OptionAuthenticationException,
-            OptionRegistrationException;
+            OptionRegistrationException, AttributeTypeNotFoundException;
 
     void remove(String userId, String imei, String pin) throws OptionAuthenticationException,
-            OptionRegistrationException, SubjectNotFoundException;
+            OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException, DeviceDisabledException;
 
 }

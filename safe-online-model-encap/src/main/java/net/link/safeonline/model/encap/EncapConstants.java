@@ -24,9 +24,11 @@ public class EncapConstants {
 
     public static final String ENCAP_IDENTIFIER_DOMAIN        = "encap";
 
-    public static final String MOBILE_ENCAP_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:mobile:encap";
+    public static final String ENCAP_MOBILE_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:encap:mobile";
 
-    public static final String MOBILE_ENCAP_DISABLE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:mobile:encap:disable";
+    public static final String ENCAP_DEVICE_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:device:encap";
+
+    public static final String ENCAP_DEVICE_DISABLE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:device:encap:disable";
 
     public static final int    ENCAP_BOOT_PRIORITY            = Startable.PRIORITY_BOOTSTRAP - 1;
 }
