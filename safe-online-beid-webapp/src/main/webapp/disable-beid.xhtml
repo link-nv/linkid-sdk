@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib" xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:c="http://java.sun.com/jstl/core">
+	<body>
+		<ui:composition template="/WEB-INF/template.xhtml">
+			<ui:define name="top_content">
+				<h1>#{msgs.disable}</h1>
+			</ui:define>
+			<ui:define name="content">
+
+				<h:form id="beidDisableForm">
+
+					<h:dataTable id="beid-data" var="item" value="#{registrations}"
+						preserveDataModel="false" rowClasses="listingTable_Row1,listingTable_Row2">
+						<h:column>
+							<f:facet name="header">#{msgs.beid}</f:facet>
+							<so:outputAttribute value="#{item.attribute}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.disable}</f:facet>
+							<h:selectBooleanCheckbox value="#{item.disabled}"
+								id="disable" />
+						</h:column>
+					</h:dataTable>
+					<h:messages styleClass="error" />
+
+					<h:commandButton action="#{disable.save}" id="save"
+						value="#{msgs.saveaction}" styleClass="submit" />
+					<h:commandButton action="#{disable.cancel}" id="cancel"
+						value="#{msgs.cancelaction}" styleClass="submit" />
+				</h:form>
+
+			</ui:define>
+			<ui:define name="sidebar">
+				<p>#{msgs.helpBeidDisable}</p>
+			</ui:define>
+		</ui:composition>
+	</body>
+
+</html>

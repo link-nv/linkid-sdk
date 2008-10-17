@@ -18,13 +18,15 @@ public class EncapConstants {
     }
 
 
-    public static final String ENCAP_STARTABLE_JNDI_PREFIX = "SafeOnlineEncap/startup/";
+    public static final String ENCAP_STARTABLE_JNDI_PREFIX    = "SafeOnlineEncap/startup/";
 
-    public static final String ENCAP_DEVICE_ID             = "encap";
+    public static final String ENCAP_DEVICE_ID                = "encap";
 
-    public static final String ENCAP_IDENTIFIER_DOMAIN     = "encap";
+    public static final String ENCAP_IDENTIFIER_DOMAIN        = "encap";
 
-    public static final String MOBILE_ENCAP_ATTRIBUTE      = "urn:net:lin-k:safe-online:attribute:mobile:encap";
+    public static final String MOBILE_ENCAP_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:mobile:encap";
 
-    public static final int    ENCAP_BOOT_PRIORITY         = Startable.PRIORITY_BOOTSTRAP - 1;
+    public static final String MOBILE_ENCAP_DISABLE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:mobile:encap:disable";
+
+    public static final int    ENCAP_BOOT_PRIORITY            = Startable.PRIORITY_BOOTSTRAP - 1;
 }

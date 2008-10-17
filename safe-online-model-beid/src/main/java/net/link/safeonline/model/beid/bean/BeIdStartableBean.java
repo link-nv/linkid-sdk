@@ -97,6 +97,15 @@ public class BeIdStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceUserAttributeType, "nl",
                 "BeID Naam", null));
 
+        AttributeTypeEntity beidDeviceDisableAttributeType = new AttributeTypeEntity(
+                BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
+        beidDeviceDisableAttributeType.setMultivalued(true);
+        this.attributeTypes.add(beidDeviceDisableAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceDisableAttributeType,
+                Locale.ENGLISH.getLanguage(), "BeID Disable Attribute", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceDisableAttributeType, "nl",
+                "BeID Disable Attribuut", null));
+
         AttributeTypeEntity beidDeviceAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_DEVICE_ATTRIBUTE,
                 DatatypeType.COMPOUNDED, true, false);
         beidDeviceAttributeType.setMultivalued(true);
@@ -104,6 +113,7 @@ public class BeIdStartableBean extends AbstractInitBean {
         beidDeviceAttributeType.addMember(surnameAttributeType, 1, true);
         beidDeviceAttributeType.addMember(nrnAttributeType, 2, true);
         beidDeviceAttributeType.addMember(beidDeviceUserAttributeType, 3, true);
+        beidDeviceAttributeType.addMember(beidDeviceDisableAttributeType, 4, true);
         this.attributeTypes.add(beidDeviceAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, Locale.ENGLISH
                 .getLanguage(), "BeID", null));
@@ -117,8 +127,8 @@ public class BeIdStartableBean extends AbstractInitBean {
         String nodeName = properties.getString("olas.node.name");
 
         this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName,
-                "/olas-beid/auth", "/olas-beid/device", "/olas-beid/device", null, null, certificate,
-                beidDeviceAttributeType, beidDeviceUserAttributeType, null));
+                "/olas-beid/auth", "/olas-beid/device", "/olas-beid/device", null, "/olas-beid/device", certificate,
+                beidDeviceAttributeType, beidDeviceUserAttributeType, beidDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
         this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(),
                 "Belgian eID"));

@@ -159,9 +159,8 @@ public class BeIdPkiProvider implements PkiProvider {
     private String getAttributeFromSubjectName(String subjectName, String attributeName) {
 
         int attributeBegin = subjectName.indexOf(attributeName + "=");
-        if (-1 == attributeBegin) {
+        if (-1 == attributeBegin)
             throw new IllegalArgumentException("attribute name does not occur in subject: " + attributeName);
-        }
         attributeBegin += attributeName.length() + 1; // "attributeName="
         int attributeEnd = subjectName.indexOf(",", attributeBegin);
         if (-1 == attributeEnd) {
@@ -177,6 +176,7 @@ public class BeIdPkiProvider implements PkiProvider {
         DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         AttributeTypeEntity deviceAttributeType = device.getAttributeType();
         AttributeTypeEntity deviceUserAttributeType = device.getUserAttributeType();
+        AttributeTypeEntity deviceDisableAttributeType = device.getDisableAttributeType();
 
         AttributeEntity givenNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE, subject);
         AttributeEntity surNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.SURNAME_ATTRIBUTE, subject);
@@ -185,6 +185,11 @@ public class BeIdPkiProvider implements PkiProvider {
             deviceUserAttribute = this.attributeDAO.addAttribute(deviceUserAttributeType, subject, surNameAttribute
                     .getStringValue()
                     + ", " + givenNameAttribute.getStringValue());
+        }
+        AttributeEntity deviceDisableAttribute = this.attributeDAO.findAttribute(deviceDisableAttributeType, subject);
+        if (null == deviceDisableAttribute) {
+            deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject);
+            deviceDisableAttribute.setBooleanValue(false);
         }
 
         AttributeEntity deviceAttribute = this.attributeDAO.findAttribute(deviceAttributeType, subject);
@@ -195,6 +200,7 @@ public class BeIdPkiProvider implements PkiProvider {
             deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.NRN_ATTRIBUTE, subject));
             deviceAttributeMembers.add(surNameAttribute);
             deviceAttributeMembers.add(deviceUserAttribute);
+            deviceAttributeMembers.add(deviceDisableAttribute);
             deviceAttribute.setMembers(deviceAttributeMembers);
         }
     }
@@ -225,5 +231,25 @@ public class BeIdPkiProvider implements PkiProvider {
                 break;
             }
         }
+    }
+
+    public boolean isDisabled(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        String subjectName = getSubjectName(certificate);
+        String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
+        AttributeTypeEntity deviceAttributeType = device.getAttributeType();
+        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
+        LOG.debug("check if device is enabled (nrn=" + nrn + ")");
+        for (AttributeEntity attribute : attributes) {
+            AttributeEntity nrnAttribute = this.attributeDAO.findAttribute(subject, BeIdConstants.NRN_ATTRIBUTE,
+                    attribute.getAttributeIndex());
+            if (nrnAttribute.getStringValue().equals(nrn)) {
+                AttributeEntity disabledAttribute = this.attributeDAO.findAttribute(subject,
+                        BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE, attribute.getAttributeIndex());
+                return disabledAttribute.getBooleanValue();
+            }
+        }
+        return false;
     }
 }

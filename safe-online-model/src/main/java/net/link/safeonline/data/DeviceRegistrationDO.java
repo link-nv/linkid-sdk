@@ -1,24 +1,25 @@
 package net.link.safeonline.data;
 
-import java.util.List;
-
 import net.link.safeonline.entity.DeviceEntity;
 
 
 public class DeviceRegistrationDO {
 
-    private DeviceEntity      device;
+    private DeviceEntity device;
 
-    private String            friendlyName;
+    private String       friendlyName;
 
-    private List<AttributeDO> attribute;
+    private AttributeDO  attribute;
+
+    private boolean      disabled;
 
 
-    public DeviceRegistrationDO(DeviceEntity device, String friendlyName, List<AttributeDO> attribute) {
+    public DeviceRegistrationDO(DeviceEntity device, String friendlyName, AttributeDO attribute, boolean disabled) {
 
         this.device = device;
         this.friendlyName = friendlyName;
         this.attribute = attribute;
+        this.disabled = disabled;
     }
 
     public DeviceEntity getDevice() {
@@ -31,8 +32,14 @@ public class DeviceRegistrationDO {
         return this.friendlyName;
     }
 
-    public List<AttributeDO> getAttribute() {
+    public AttributeDO getAttribute() {
 
         return this.attribute;
     }
+
+    public boolean isDisabled() {
+
+        return this.disabled;
+    }
+
 }

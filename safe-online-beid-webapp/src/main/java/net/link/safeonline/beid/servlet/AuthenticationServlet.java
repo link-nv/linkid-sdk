@@ -16,6 +16,8 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
 import net.link.safeonline.authentication.exception.PkiNotYetValidException;
@@ -37,9 +39,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Authentication Servlet that accepts authentication statements from the client-side browser applet.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthenticationServlet extends AbstractStatementServlet {
 
@@ -97,6 +99,12 @@ public class AuthenticationServlet extends AbstractStatementServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiInvalidException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        } catch (DeviceNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        } catch (DeviceDisabledException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         }

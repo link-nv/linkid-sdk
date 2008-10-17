@@ -13,6 +13,7 @@ import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
@@ -43,7 +44,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
     public String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
             throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException,
             PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException,
-            PkiInvalidException {
+            PkiInvalidException, DeviceNotFoundException, DeviceDisabledException {
 
         LOG.debug("authenticate: sessionId=" + sessionId + " applicaitonId=" + applicationId);
         return this.credentialManager.authenticate(sessionId, applicationId, authenticationStatement);

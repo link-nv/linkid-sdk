@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
@@ -91,33 +92,30 @@ public class CredentialManagerBean implements CredentialManager {
     public String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
             throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException,
             PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException,
-            PkiInvalidException {
+            PkiInvalidException, DeviceNotFoundException, DeviceDisabledException {
 
         X509Certificate certificate = authenticationStatement.verifyIntegrity();
-        if (null == certificate) {
+        if (null == certificate)
             throw new ArgumentIntegrityException();
-        }
 
         String statementSessionId = authenticationStatement.getSessionId();
         String statementApplicationId = authenticationStatement.getApplicationId();
 
         PkiProvider pkiProvider = this.pkiProviderManager.findPkiProvider(certificate);
-        if (null == pkiProvider) {
+        if (null == pkiProvider)
             throw new ArgumentIntegrityException();
-        }
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
         PkiResult validationResult = this.pkiValidator.validateCertificate(trustDomain, certificate);
-        if (PkiResult.REVOKED == validationResult) {
+        if (PkiResult.REVOKED == validationResult)
             throw new PkiRevokedException();
-        } else if (PkiResult.SUSPENDED == validationResult) {
+        else if (PkiResult.SUSPENDED == validationResult)
             throw new PkiSuspendedException();
-        } else if (PkiResult.EXPIRED == validationResult) {
+        else if (PkiResult.EXPIRED == validationResult)
             throw new PkiExpiredException();
-        } else if (PkiResult.NOT_YET_VALID == validationResult) {
+        else if (PkiResult.NOT_YET_VALID == validationResult)
             throw new PkiNotYetValidException();
-        } else if (PkiResult.INVALID == validationResult) {
+        else if (PkiResult.INVALID == validationResult)
             throw new PkiInvalidException();
-        }
 
         if (false == sessionId.equals(statementSessionId)) {
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
@@ -134,9 +132,11 @@ public class CredentialManagerBean implements CredentialManager {
         String identifierDomainName = pkiProvider.getIdentifierDomainName();
         String identifier = pkiProvider.getSubjectIdentifier(certificate);
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(identifierDomainName, identifier);
-        if (null == subject) {
+        if (null == subject)
             throw new SubjectNotFoundException();
-        }
+        if (pkiProvider.isDisabled(subject, certificate))
+            throw new DeviceDisabledException();
+
         return subject.getUserId();
 
     }
@@ -158,32 +158,29 @@ public class CredentialManagerBean implements CredentialManager {
         }
 
         X509Certificate certificate = identityStatement.verifyIntegrity();
-        if (null == certificate) {
+        if (null == certificate)
             throw new ArgumentIntegrityException();
-        }
 
         String statementSessionId = identityStatement.getSessionId();
         String statementOperation = identityStatement.getOperation();
         String statementUser = identityStatement.getUser();
 
         PkiProvider pkiProvider = this.pkiProviderManager.findPkiProvider(certificate);
-        if (null == pkiProvider) {
+        if (null == pkiProvider)
             throw new ArgumentIntegrityException();
-        }
 
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
         PkiResult validationResult = this.pkiValidator.validateCertificate(trustDomain, certificate);
-        if (PkiResult.REVOKED == validationResult) {
+        if (PkiResult.REVOKED == validationResult)
             throw new PkiRevokedException();
-        } else if (PkiResult.SUSPENDED == validationResult) {
+        else if (PkiResult.SUSPENDED == validationResult)
             throw new PkiSuspendedException();
-        } else if (PkiResult.EXPIRED == validationResult) {
+        else if (PkiResult.EXPIRED == validationResult)
             throw new PkiExpiredException();
-        } else if (PkiResult.NOT_YET_VALID == validationResult) {
+        else if (PkiResult.NOT_YET_VALID == validationResult)
             throw new PkiNotYetValidException();
-        } else if (PkiResult.INVALID == validationResult) {
+        else if (PkiResult.INVALID == validationResult)
             throw new PkiInvalidException();
-        }
 
         /*
          * Check whether the identity statement properties are ok.
@@ -273,32 +270,29 @@ public class CredentialManagerBean implements CredentialManager {
         }
 
         X509Certificate certificate = identityStatement.verifyIntegrity();
-        if (null == certificate) {
+        if (null == certificate)
             throw new ArgumentIntegrityException();
-        }
 
         String statementSessionId = identityStatement.getSessionId();
         String statementOperation = identityStatement.getOperation();
         String statementUser = identityStatement.getUser();
 
         PkiProvider pkiProvider = this.pkiProviderManager.findPkiProvider(certificate);
-        if (null == pkiProvider) {
+        if (null == pkiProvider)
             throw new ArgumentIntegrityException();
-        }
 
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
         PkiResult validationResult = this.pkiValidator.validateCertificate(trustDomain, certificate);
-        if (PkiResult.REVOKED == validationResult) {
+        if (PkiResult.REVOKED == validationResult)
             throw new PkiRevokedException();
-        } else if (PkiResult.SUSPENDED == validationResult) {
+        else if (PkiResult.SUSPENDED == validationResult)
             throw new PkiSuspendedException();
-        } else if (PkiResult.EXPIRED == validationResult) {
+        else if (PkiResult.EXPIRED == validationResult)
             throw new PkiExpiredException();
-        } else if (PkiResult.NOT_YET_VALID == validationResult) {
+        else if (PkiResult.NOT_YET_VALID == validationResult)
             throw new PkiNotYetValidException();
-        } else if (PkiResult.INVALID == validationResult) {
+        else if (PkiResult.INVALID == validationResult)
             throw new PkiInvalidException();
-        }
 
         /*
          * Check whether the identity statement properties are ok.

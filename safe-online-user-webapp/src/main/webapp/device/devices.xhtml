@@ -45,9 +45,7 @@
 						<h:column>
 							<f:facet name="header">#{msgs.information}
 							</f:facet>
-							<ui:repeat id="attributes" var="attribute" value="#{item.attribute}">
-								<so:outputAttribute value="#{attribute}" />
-							</ui:repeat>
+							<so:outputAttribute value="#{item.attribute}" />
 						</h:column>
 
 						<h:column>
@@ -61,7 +59,10 @@
 								rendered="#{item.device.updatable}" />
 							<h:commandLink action="#{devicesBean.disableDevice}"
 								id="disable" styleClass="noblock" value=" #{msgs.deviceDisable}"
-								rendered="#{item.device.disablable}" />
+								rendered="#{item.device.disablable and !item.disabled}" />
+							<h:commandLink action="#{devicesBean.disableDevice}"
+								id="enable" styleClass="noblock" value=" #{msgs.deviceEnable}"
+								rendered="#{item.device.disablable and item.disabled}" />
 						</h:column>
 					</rich:dataTable>
 				</a4j:form>

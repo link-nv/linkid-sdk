@@ -521,65 +521,50 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
                 deviceDescription = deviceDescriptionEntity.getDescription();
             }
             LOG.debug("device description: " + deviceDescription);
-            List<AttributeDO> registrationAttributes = listRegistrations(subject, device, locale);
-            if (null == registrationAttributes) {
-                continue;
-            }
-            if (registrationAttributes.isEmpty()) {
-                // no user attribute for this device
-                deviceRegistrations.add(new DeviceRegistrationDO(device, deviceDescription, null));
-            }
-            ListIterator<AttributeDO> iter = registrationAttributes.listIterator();
-            while (iter.hasNext()) {
-                List<AttributeDO> registrationAttributeView = new LinkedList<AttributeDO>();
-                AttributeDO registrationAttribute = iter.next();
-                if (registrationAttribute.isCompounded()) {
-                    registrationAttributeView.add(registrationAttribute);
-                    while (iter.hasNext()) {
-                        AttributeDO memberAttribute = iter.next();
-                        if (memberAttribute.isMember()) {
-                            registrationAttributeView.add(memberAttribute);
-                        } else {
-                            iter.previous();
-                            break;
-                        }
-                    }
-                } else {
-                    registrationAttributeView.add(registrationAttribute);
 
-                }
-                deviceRegistrations.add(new DeviceRegistrationDO(device, deviceDescription, registrationAttributeView));
-            }
-
+            addRegistrations(deviceRegistrations, subject, device, deviceDescription, locale);
         }
         return deviceRegistrations;
     }
 
-    private List<AttributeDO> listRegistrations(SubjectEntity subject, DeviceEntity device, Locale locale)
-            throws PermissionDeniedException, AttributeTypeNotFoundException {
+    private void addRegistrations(List<DeviceRegistrationDO> registrations, SubjectEntity subject, DeviceEntity device,
+            String deviceDescription, Locale locale) throws PermissionDeniedException, AttributeTypeNotFoundException {
 
-        if (null == device.getUserAttributeType()) {
-            // might be that there still are registrations, check the device attribute type.
-            List<AttributeDO> attributes;
-            try {
-                attributes = this.identityService.listAttributes(subject, device.getAttributeType(), locale);
-            } catch (SubjectNotFoundException e) {
-                return null;
-            }
-            if (null != attributes && !attributes.isEmpty())
-                return new LinkedList<AttributeDO>();
-            return null;
-        }
-        List<AttributeDO> registeredDeviceAttributes;
+        List<AttributeDO> attributes;
         try {
-            registeredDeviceAttributes = this.identityService.listAttributes(subject, device.getUserAttributeType(),
-                    locale);
+            attributes = this.identityService.listAttributes(subject, device.getAttributeType(), locale);
         } catch (SubjectNotFoundException e) {
-            return null;
+            // no registrations found
+            return;
         }
-        if (null == registeredDeviceAttributes || registeredDeviceAttributes.isEmpty())
-            return null;
+        if (null == attributes || attributes.isEmpty())
+            return;
 
-        return registeredDeviceAttributes;
+        AttributeDO userAttribute = new AttributeDO("empty", DatatypeType.STRING, false, 0, "empty", null, false,
+                false, "", false);
+        AttributeDO disableAttribute = null;
+        ListIterator<AttributeDO> iter = attributes.listIterator();
+        AttributeDO attribute = iter.next();
+        while (iter.hasNext()) {
+            attribute = iter.next();
+            if (null != device.getUserAttributeType()
+                    && attribute.getName().equals(device.getUserAttributeType().getName())) {
+                userAttribute = attribute;
+            } else if (null != device.getDisableAttributeType()
+                    && attribute.getName().equals(device.getDisableAttributeType().getName())) {
+                disableAttribute = attribute;
+            } else if (attribute.getName().equals(device.getAttributeType().getName())) {
+                boolean disabled = false;
+                if (null != disableAttribute) {
+                    disabled = disableAttribute.getBooleanValue();
+                }
+                registrations.add(new DeviceRegistrationDO(device, deviceDescription, userAttribute, disabled));
+            }
+        }
+        boolean disabled = false;
+        if (null != disableAttribute) {
+            disabled = disableAttribute.getBooleanValue();
+        }
+        registrations.add(new DeviceRegistrationDO(device, deviceDescription, userAttribute, disabled));
     }
 }

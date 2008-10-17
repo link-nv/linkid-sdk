@@ -43,9 +43,9 @@ import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 /**
  * Applet control component for PKCS#11 smart cards.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AppletControl implements AppletController, SmartCardPinCallback, SmartCardInteraction {
 
@@ -252,6 +252,10 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
         }
         if (SharedConstants.SUBJECT_NOT_FOUND_ERROR.equals(safeOnlineResultCode)) {
             this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString("eIdNotRegistered"));
+            return false;
+        }
+        if (SharedConstants.DEVICE_DISABLED_ERROR.equals(safeOnlineResultCode)) {
+            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString("eIdDisabled"));
             return false;
         }
         if (SharedConstants.ALREADY_REGISTERED_ERROR.equals(safeOnlineResultCode)) {

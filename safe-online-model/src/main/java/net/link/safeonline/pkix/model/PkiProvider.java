@@ -94,7 +94,17 @@ public interface PkiProvider {
      * Remove the device attribute related to this PKI device.
      * 
      * @param subject
+     * @param certificate
      * @throws DeviceNotFoundException
      */
     void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException;
+
+    /**
+     * Checks whether this device registration is disabled or not.
+     * 
+     * @param subject
+     * @param certificate
+     * @throws DeviceNotFoundException
+     */
+    boolean isDisabled(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException;
 }

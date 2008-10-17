@@ -13,17 +13,16 @@
 		</auth-constraint>
 	</security-constraint>
 	<listener>
-		<listener-class> org.jboss.seam.servlet.SeamListener </listener-class>
+		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class> com.sun.faces.config.ConfigureListener 
-		</listener-class>
+		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
-	<!-- 
-	<listener>
+	<!--
+		<listener>
 		<listener-class>net.link.safeonline.webapp.filter.LogHttpSessionListener</listener-class>
-	</listener>
-	 -->
+		</listener>
+	-->
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
@@ -70,8 +69,7 @@
 	</context-param>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
-		</filter-class>
+		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
 		<init-param>
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
@@ -83,8 +81,7 @@
 	</filter>
 	<filter>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<filter-class> org.apache.myfaces.webapp.filter.ExtensionsFilter 
-		</filter-class>
+		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
@@ -115,8 +112,7 @@
 		<description>Entry point for authentication.</description>
 		<servlet-name>AuthLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.LandingServlet 
-		</servlet-class>
+			net.link.safeonline.device.sdk.auth.servlet.LandingServlet</servlet-class>
 		<init-param>
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>beid.html</param-value>
@@ -143,8 +139,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthenticationServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.AuthenticationServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.AuthenticationServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AuthenticationServlet</servlet-name>
@@ -153,8 +148,7 @@
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.ExitServlet 
-		</servlet-class>
+			net.link.safeonline.device.sdk.auth.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
@@ -167,8 +161,7 @@
 	<servlet>
 		<description>Entry point for device operation service.</description>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class> net.link.safeonline.device.sdk.servlet.LandingServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.device.sdk.servlet.LandingServlet</servlet-class>
 		<init-param>
 			<param-name>RegistrationUrl</param-name>
 			<param-value>register</param-value>
@@ -176,6 +169,10 @@
 		<init-param>
 			<param-name>RemovalUrl</param-name>
 			<param-value>removeService</param-value>
+		</init-param>
+		<init-param>
+			<param-name>DisableUrl</param-name>
+			<param-value>disable-beid.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
@@ -197,8 +194,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentityServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.IdentityServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.IdentityServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentityServlet</servlet-name>
@@ -206,8 +202,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<servlet-class> net.link.safeonline.device.sdk.servlet.ExitServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.device.sdk.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
@@ -219,8 +214,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>JavaVersionServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.JavaVersionServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.JavaVersionServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>JavaVersionServlet</servlet-name>
@@ -228,8 +222,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>NoPkcs11Servlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.NoPkcs11Servlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.NoPkcs11Servlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>NoPkcs11Servlet</servlet-name>
@@ -237,8 +230,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentityRemoveServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.IdentityRemoveServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.IdentityRemoveServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentityRemoveServlet</servlet-name>
@@ -246,8 +238,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentificationServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.IdentificationServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.IdentificationServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentificationServlet</servlet-name>
@@ -256,8 +247,7 @@
 	<servlet>
 		<servlet-name>IdentificationDataServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.beid.servlet.IdentificationDataServlet 
-		</servlet-class>
+			net.link.safeonline.beid.servlet.IdentificationDataServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentificationDataServlet</servlet-name>
@@ -266,8 +256,7 @@
 	<servlet>
 		<servlet-name>IdentificationExitServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.beid.servlet.IdentificationExitServlet 
-		</servlet-class>
+			net.link.safeonline.beid.servlet.IdentificationExitServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentificationExitServlet</servlet-name>
@@ -275,8 +264,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>HelpdeskServlet</servlet-name>
-		<servlet-class> net.link.safeonline.servlet.HelpdeskServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.servlet.HelpdeskServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>HelpdeskServlet</servlet-name>
@@ -284,8 +272,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>RegisterServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.RegisterServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.RegisterServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RegisterServlet</servlet-name>
@@ -293,8 +280,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>RemoveServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.RemoveServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.RemoveServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RemoveServlet</servlet-name>
@@ -303,8 +289,7 @@
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationStyleServlet 
-		</servlet-class>
+			net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Style Servlet</servlet-name>

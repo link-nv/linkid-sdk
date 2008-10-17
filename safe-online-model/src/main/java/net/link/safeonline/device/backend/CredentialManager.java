@@ -13,6 +13,7 @@ import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
@@ -31,7 +32,7 @@ public interface CredentialManager {
     String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
             throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException,
             PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException,
-            PkiInvalidException;
+            PkiInvalidException, DeviceNotFoundException, DeviceDisabledException;
 
     void mergeIdentityStatement(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
