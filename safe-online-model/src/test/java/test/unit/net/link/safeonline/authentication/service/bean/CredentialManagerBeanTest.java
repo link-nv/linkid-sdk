@@ -167,6 +167,7 @@ public class CredentialManagerBeanTest extends TestCase {
         expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
         expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate)).andStubReturn(identifier);
         expect(this.mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(subject);
+        expect(this.mockPkiProvider.isDisabled(subject, this.certificate)).andStubReturn(false);
 
         // prepare
         replay(this.mockObjects);

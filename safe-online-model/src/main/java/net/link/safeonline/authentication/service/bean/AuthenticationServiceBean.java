@@ -61,6 +61,7 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
@@ -408,9 +409,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
         if (this.authenticationState != INITIALIZED && this.authenticationState != USER_AUTHENTICATED
-                && this.authenticationState != REDIRECTED) {
+                && this.authenticationState != REDIRECTED)
             throw new IllegalStateException("call initialize or authenticate first");
-        }
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -491,9 +491,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new ServletException("missing authentication statement");
 
         AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext()) {
+        if (null == authStatement.getAuthnContext())
             throw new ServletException("missing authentication context in authentication statement");
-        }
 
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
@@ -882,7 +881,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password)
-            throws SubjectNotFoundException, DeviceNotFoundException {
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
 
         SubjectEntity subject = this.passwordDeviceService.authenticate(loginName, password);
         if (null == subject)
@@ -958,9 +957,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new ServletException("missing authentication statement");
 
         AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext()) {
+        if (null == authStatement.getAuthnContext())
             throw new ServletException("missing authentication context in authentication statement");
-        }
 
         AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
         String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
@@ -1103,9 +1101,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 break;
             }
         }
-        if (!found) {
+        if (!found)
             throw new DevicePolicyException();
-        }
     }
 
     private void checkRequiredUsageAgreement() throws ApplicationNotFoundException,
@@ -1113,18 +1110,16 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         boolean requiresUsageAgreementAcceptation = this.usageAgreementService
                 .requiresUsageAgreementAcceptation(this.expectedApplicationId);
-        if (true == requiresUsageAgreementAcceptation) {
+        if (true == requiresUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
-        }
     }
 
     private void checkRequiredGlobalUsageAgreement() throws UsageAgreementAcceptationRequiredException {
 
         boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService
                 .requiresGlobalUsageAgreementAcceptation();
-        if (true == requiresGlobalUsageAgreementAcceptation) {
+        if (true == requiresGlobalUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
-        }
     }
 
     public void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
@@ -1242,9 +1237,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         String subjectName = samlLogoutRequest.getNameID().getValue();
         LOG.debug("subject name: " + subjectName);
         String userId = this.userIdMappingService.findUserId(issuerName, subjectName);
-        if (null == userId) {
+        if (null == userId)
             throw new SubjectNotFoundException();
-        }
         SubjectEntity subject = this.subjectService.getSubject(userId);
 
         /*

@@ -33,9 +33,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Implementation of the credential service interface.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -63,6 +63,7 @@ public class CredentialServiceBean implements CredentialService, CredentialServi
         SecurityManagerUtils.flushCredentialCache(subject.getUserId(), SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
     }
 
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public void registerPassword(String password) throws SubjectNotFoundException, DeviceNotFoundException {
 
         LOG.debug("register password");
@@ -90,5 +91,12 @@ public class CredentialServiceBean implements CredentialService, CredentialServi
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         return this.passwordDeviceService.isPasswordConfigured(subject);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public void disablePassword() throws DeviceNotFoundException {
+
+        SubjectEntity subject = this.subjectManager.getCallerSubject();
+        this.passwordDeviceService.disable(subject);
     }
 }

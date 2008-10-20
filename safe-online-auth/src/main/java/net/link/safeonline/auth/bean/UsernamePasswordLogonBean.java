@@ -15,6 +15,7 @@ import javax.faces.application.FacesMessage;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.UsernamePasswordLogon;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
@@ -94,6 +95,10 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements User
              */
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
             HelpdeskLogger.add("password device not configured", LogLevelType.ERROR);
+            return null;
+        } catch (DeviceDisabledException e) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorDeviceDisabled");
+            HelpdeskLogger.add("login: password device disabled for subject " + this.loginname, LogLevelType.ERROR);
             return null;
         }
 

@@ -326,25 +326,21 @@ public class DevicesBean implements Devices {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String disableDevice() throws DeviceNotFoundException, IOException {
+    public String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("disable device: " + this.selectedDeviceRegistration.getFriendlyName());
-        return redirectDisable(this.selectedDeviceRegistration.getDevice().getName());
-
-    }
-
-    private String redirectDisable(String deviceName) throws IOException, DeviceNotFoundException {
-
         String userId = this.subjectManager.getCallerSubject().getUserId();
 
-        String disableURL = this.devicePolicyService.getDisableURL(deviceName);
-        if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = context.getExternalContext();
-            externalContext.redirect(disableURL);
+        if (this.selectedDeviceRegistration.getDevice().getName().equals(
+                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+            this.credentialService.disablePassword();
+            deviceRegistrationsFactory();
             return null;
         }
-        DeviceOperationUtils.redirect(disableURL, DeviceOperationType.DISABLE, deviceName, userId);
+
+        DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getDisableURL(),
+                DeviceOperationType.DISABLE, this.selectedDeviceRegistration.getDevice().getName(), userId);
         return null;
     }
 

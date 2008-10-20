@@ -65,6 +65,8 @@ public class SafeOnlineConstants {
 
     public static final String PASSWORD_DEVICE_ATTRIBUTE               = "urn:net:lin-k:safe-online:attribute:device:password";
 
+    public static final String PASSWORD_DEVICE_DISABLE_ATTRIBUTE       = "urn:net:lin-k:safe-online:attribute:device:password:disable";
+
     /**
      * The PKI trust domain name for the SafeOnline devices.
      */

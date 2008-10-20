@@ -14,6 +14,7 @@ import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -40,7 +41,7 @@ public interface DeviceRegistration {
      */
     String deviceNext() throws IOException, DeviceNotFoundException;
 
-    String passwordNext() throws SubjectNotFoundException, DeviceNotFoundException;
+    String passwordNext() throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException;
 
     /*
      * Factories

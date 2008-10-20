@@ -202,12 +202,22 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, "nl",
                 "Wachtwoord hash algoritme", null));
 
+        AttributeTypeEntity passwordDeviceDisableAttributeType = new AttributeTypeEntity(
+                SafeOnlineConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
+        passwordDeviceDisableAttributeType.setMultivalued(true);
+        this.attributeTypes.add(passwordDeviceDisableAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceDisableAttributeType,
+                Locale.ENGLISH.getLanguage(), "Password Disable Attribute", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceDisableAttributeType, "nl",
+                "Paswoord Disable Attribuut", null));
+
         AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED, false, false);
         passwordDeviceAttributeType.setMultivalued(true);
         passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0, true);
         passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1, true);
         passwordDeviceAttributeType.addMember(passwordAlgorithmAttributeType, 2, true);
+        passwordDeviceAttributeType.addMember(passwordDeviceDisableAttributeType, 3, true);
         this.attributeTypes.add(passwordDeviceAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType,
                 Locale.ENGLISH.getLanguage(), "Password", null));
@@ -217,7 +227,8 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         this.devices.add(new Device(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, null, "password/username-password.seam",
                 "password/register-password.seam", "password/remove-password.seam", "password/register-password.seam",
-                null, null, passwordDeviceAttributeType, null, null));
+                "disable-dummy-path.seam", null,
+                        passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, "nl",
                 "Paswoord"));
         this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,

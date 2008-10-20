@@ -8,6 +8,7 @@ package net.link.safeonline.device;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -18,7 +19,7 @@ import net.link.safeonline.entity.SubjectEntity;
 public interface PasswordDeviceService {
 
     SubjectEntity authenticate(String loginName, String password) throws DeviceNotFoundException,
-            SubjectNotFoundException;
+            SubjectNotFoundException, DeviceDisabledException;
 
     void register(String userId, String password) throws SubjectNotFoundException, DeviceNotFoundException;
 
@@ -31,5 +32,7 @@ public interface PasswordDeviceService {
             SubjectNotFoundException;
 
     boolean isPasswordConfigured(SubjectEntity subject) throws SubjectNotFoundException, DeviceNotFoundException;
+
+    void disable(SubjectEntity subject) throws DeviceNotFoundException;
 
 }

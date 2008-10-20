@@ -50,9 +50,8 @@ public class PasswordManagerBean implements PasswordManager {
             throws PermissionDeniedException, DeviceNotFoundException {
 
         if (isPasswordConfigured(subject)) {
-            if (!validatePassword(subject, oldPassword)) {
+            if (!validatePassword(subject, oldPassword))
                 throw new PermissionDeniedException("password mismatch");
-            }
         }
 
         setPasswordWithForce(subject, newPassword);
@@ -60,9 +59,8 @@ public class PasswordManagerBean implements PasswordManager {
 
     public void setPassword(SubjectEntity subject, String password) throws PermissionDeniedException {
 
-        if (isPasswordConfigured(subject)) {
+        if (isPasswordConfigured(subject))
             throw new PermissionDeniedException("password already configured");
-        }
 
         setPasswordWithForce(subject, password);
     }
@@ -73,6 +71,7 @@ public class PasswordManagerBean implements PasswordManager {
         AttributeTypeEntity passwordSeedAttributeType;
         AttributeTypeEntity passwordAlgorithmAttributeType;
         AttributeTypeEntity passwordDeviceAttributeType;
+        AttributeTypeEntity passwordDeviceDisableAttributeType;
         try {
             passwordHashAttributeType = this.attributeTypeDAO
                     .getAttributeType(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE);
@@ -82,6 +81,8 @@ public class PasswordManagerBean implements PasswordManager {
                     .getAttributeType(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
             passwordDeviceAttributeType = this.attributeTypeDAO
                     .getAttributeType(SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE);
+            passwordDeviceDisableAttributeType = this.attributeTypeDAO
+                    .getAttributeType(SafeOnlineConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE);
         } catch (AttributeTypeNotFoundException e) {
             throw new EJBException("password attribute types not found");
         }
@@ -105,13 +106,23 @@ public class PasswordManagerBean implements PasswordManager {
             AttributeEntity seedAttribute = this.attributeDAO.addAttribute(passwordSeedAttributeType, subject, seed);
             AttributeEntity algorithmAttribute = this.attributeDAO.addAttribute(passwordAlgorithmAttributeType,
                     subject, defaultHashingAlgorithm);
+            AttributeEntity disableAttribute = this.attributeDAO.addAttribute(passwordDeviceDisableAttributeType,
+                    subject);
+            disableAttribute.setBooleanValue(false);
             List<AttributeEntity> members = new LinkedList<AttributeEntity>();
             members.add(hashAttribute);
             members.add(seedAttribute);
             members.add(algorithmAttribute);
+            members.add(disableAttribute);
             AttributeEntity parentAttribute = this.attributeDAO.addAttribute(passwordDeviceAttributeType, subject);
             parentAttribute.setMembers(members);
         }
+    }
+
+    public boolean isDisabled(SubjectEntity subject) throws DeviceNotFoundException {
+
+        Password password = getPasswordAttribute(subject);
+        return password.disabled.getBooleanValue();
     }
 
     public boolean validatePassword(SubjectEntity subject, String password) throws DeviceNotFoundException {
@@ -149,21 +160,21 @@ public class PasswordManagerBean implements PasswordManager {
                 SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE, subject);
         AttributeEntity passwordAlgorithmAttribute = this.attributeDAO.findAttribute(
                 SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE, subject);
+        AttributeEntity passwordDisableAttribute = this.attributeDAO.findAttribute(
+                SafeOnlineConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE, subject);
         AttributeEntity passwordParentAttribute = this.attributeDAO.findAttribute(
                 SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE, subject);
         if (null == passwordHashAttribute || null == passwordSeedAttribute || null == passwordAlgorithmAttribute
-                || null == passwordParentAttribute) {
+                || null == passwordParentAttribute || null == passwordDisableAttribute)
             throw new DeviceNotFoundException();
-        }
         String hash = passwordHashAttribute.getStringValue();
         String seed = passwordSeedAttribute.getStringValue();
         String algorithm = passwordAlgorithmAttribute.getStringValue();
-        if (null == hash || null == seed || null == algorithm) {
+        if (null == hash || null == seed || null == algorithm)
             throw new DeviceNotFoundException();
-        }
 
         return new Password(passwordHashAttribute, passwordSeedAttribute, passwordAlgorithmAttribute,
-                passwordParentAttribute);
+                passwordDisableAttribute, passwordParentAttribute);
     }
 
     public boolean isPasswordConfigured(SubjectEntity subject) {
@@ -189,20 +200,33 @@ public class PasswordManagerBean implements PasswordManager {
         this.attributeDAO.removeAttribute(currentPassword.parent);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void disablePassword(SubjectEntity subject, boolean disable) throws DeviceNotFoundException {
+
+        Password password = getPasswordAttribute(subject);
+        password.disabled.setBooleanValue(disable);
+
+    }
+
 
     private static class Password {
 
         public AttributeEntity hash;
         public AttributeEntity seed;
         public AttributeEntity algorithm;
+        public AttributeEntity disabled;
         public AttributeEntity parent;
 
 
-        public Password(AttributeEntity hash, AttributeEntity seed, AttributeEntity algorithm, AttributeEntity parent) {
+        public Password(AttributeEntity hash, AttributeEntity seed, AttributeEntity algorithm,
+                AttributeEntity disabled, AttributeEntity parent) {
 
             this.hash = hash;
             this.seed = seed;
             this.algorithm = algorithm;
+            this.disabled = disabled;
             this.parent = parent;
         }
     }

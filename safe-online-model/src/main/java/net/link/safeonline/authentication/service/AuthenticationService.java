@@ -19,6 +19,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.AuthenticationInitializationException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
@@ -63,8 +64,10 @@ public interface AuthenticationService {
      * @throws SubjectNotFoundException
      * @throws DeviceNotFoundException
      *             in case the user did not configure the password device.
+     * @throws DeviceDisabledException
      */
-    boolean authenticate(String loginName, String password) throws SubjectNotFoundException, DeviceNotFoundException;
+    boolean authenticate(String loginName, String password) throws SubjectNotFoundException, DeviceNotFoundException,
+            DeviceDisabledException;
 
     /**
      * Commits the authentication.

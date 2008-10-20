@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
@@ -46,16 +47,17 @@ public interface ReAuthenticationService {
 
     /**
      * Authenticates using a username-password device.
-     *
+     * 
      * @param login
      * @param password
      * @throws SubjectNotFoundException
      * @throws DeviceNotFoundException
      * @throws SubjectMismatchException
      * @throws PermissionDeniedException
+     * @throws DeviceDisabledException
      */
     boolean authenticate(String login, String password) throws SubjectNotFoundException, DeviceNotFoundException,
-            SubjectMismatchException, PermissionDeniedException;
+            SubjectMismatchException, PermissionDeniedException, DeviceDisabledException;
 
     /**
      * Aborts the current authentication procedure.

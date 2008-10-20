@@ -29,6 +29,7 @@ import net.link.safeonline.authentication.exception.AttributeUnavailableExceptio
 import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
@@ -88,6 +89,7 @@ public class ErrorMessageInterceptor {
             new ErrorHandle(DeviceClassDescriptionNotFoundException.class, "errorDeviceClassDescriptionNotFound"),
             new ErrorHandle(DeviceClassNotFoundException.class, "errorDeviceClassNotFound"),
             new ErrorHandle(DeviceDescriptionNotFoundException.class, "errorDeviceDescriptionNotFound"),
+            new ErrorHandle(DeviceDisabledException.class, "errorDeviceDisabled"),
             new ErrorHandle(DeviceNotFoundException.class, "errorDeviceNotFound"),
             new ErrorHandle(DevicePropertyNotFoundException.class, "errorDevicePropertyNotFound"),
             new ErrorHandle(EmptyDevicePolicyException.class, "errorEmptyDevicePolicy"),

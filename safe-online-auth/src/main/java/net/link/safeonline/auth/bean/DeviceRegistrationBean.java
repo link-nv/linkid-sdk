@@ -28,6 +28,7 @@ import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.DeviceRegistration;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -117,7 +118,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String passwordNext() throws SubjectNotFoundException, DeviceNotFoundException {
+    public String passwordNext() throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
 
         this.log.debug("passwordNext");
         this.authenticationService.setPassword(this.userId, this.password);

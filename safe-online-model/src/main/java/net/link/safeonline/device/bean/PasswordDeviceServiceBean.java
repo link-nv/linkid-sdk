@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -49,11 +50,14 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
 
     public SubjectEntity authenticate(String loginName, String password) throws DeviceNotFoundException,
-            SubjectNotFoundException {
+            SubjectNotFoundException, DeviceDisabledException {
 
         LOG.debug("authenticate \"" + loginName + "\"");
 
         SubjectEntity subject = this.subjectService.getSubjectFromUserName(loginName);
+
+        if (this.passwordManager.isDisabled(subject))
+            throw new DeviceDisabledException();
 
         boolean validationResult = false;
         try {
@@ -120,5 +124,24 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     public boolean isPasswordConfigured(SubjectEntity subject) throws SubjectNotFoundException, DeviceNotFoundException {
 
         return this.passwordManager.isPasswordConfigured(subject);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void disable(SubjectEntity subject) throws DeviceNotFoundException {
+
+        boolean disable = !this.passwordManager.isDisabled(subject);
+
+        LOG.debug("set password disable for \"" + subject.getUserId() + "\" to " + disable);
+        this.passwordManager.disablePassword(subject, disable);
+
+        if (disable) {
+            this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID));
+        } else {
+            this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID));
+        }
     }
 }

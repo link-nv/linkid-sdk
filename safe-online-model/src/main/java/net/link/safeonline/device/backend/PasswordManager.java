@@ -28,4 +28,14 @@ public interface PasswordManager {
     void removePassword(SubjectEntity subject, String password) throws DeviceNotFoundException,
             PermissionDeniedException;
 
+    boolean isDisabled(SubjectEntity subject) throws DeviceNotFoundException;
+
+    /**
+     * @param subject
+     * @param disable
+     * 
+     * @throws DeviceNotFoundException
+     */
+    void disablePassword(SubjectEntity subject, boolean disable) throws DeviceNotFoundException;
+
 }

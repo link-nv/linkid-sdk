@@ -44,7 +44,8 @@ public interface Devices {
 
     String updateDevice() throws DeviceNotFoundException, IOException;
 
-    String disableDevice() throws DeviceNotFoundException, IOException;
+    String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException;
 
     String changePassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 

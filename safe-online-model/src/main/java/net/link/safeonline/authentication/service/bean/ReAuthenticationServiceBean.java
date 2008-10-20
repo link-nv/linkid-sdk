@@ -19,6 +19,7 @@ import javax.interceptor.Interceptors;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
@@ -94,22 +95,20 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
         LOG.debug("set re-auth subject: " + subject.getUserId());
         SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
-        if (targetSubject.equals(subject)) {
+        if (targetSubject.equals(subject))
             throw new PermissionDeniedException("target subject is equals source subject");
-        }
         if (null == this.authenticatedSubject) {
             this.authenticatedSubject = subject;
             return;
         }
-        if (!this.authenticatedSubject.equals(subject)) {
+        if (!this.authenticatedSubject.equals(subject))
             throw new SubjectMismatchException();
-        }
     }
 
     @DenyAll
     public boolean authenticate(@NonEmptyString String login, @NonEmptyString String password)
             throws SubjectNotFoundException, DeviceNotFoundException, SubjectMismatchException,
-            PermissionDeniedException {
+            PermissionDeniedException, DeviceDisabledException {
 
         SubjectEntity subject = this.passwordDeviceService.authenticate(login, password);
         if (null == subject)
