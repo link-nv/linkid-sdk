@@ -15,6 +15,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -203,6 +205,7 @@ public class PasswordManagerBean implements PasswordManager {
     /**
      * {@inheritDoc}
      */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void disablePassword(SubjectEntity subject, boolean disable) throws DeviceNotFoundException {
 
         Password password = getPasswordAttribute(subject);
