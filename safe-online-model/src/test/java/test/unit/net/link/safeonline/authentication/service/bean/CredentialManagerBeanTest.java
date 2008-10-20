@@ -15,6 +15,7 @@ import static org.easymock.EasyMock.verify;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -30,6 +31,7 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.bean.CredentialManagerBean;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
@@ -226,6 +228,8 @@ public class CredentialManagerBeanTest extends TestCase {
 
         expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.VALID);
 
+        expect(this.mockPkiProvider.listDeviceAttributes(subject)).andStubReturn(new LinkedList<AttributeEntity>());
+
         expect(this.mockPkiProvider.mapAttribute(IdentityStatementAttributes.SURNAME)).andStubReturn(surnameAttribute);
         expect(this.mockAttributeDAO.findAttribute(surnameAttribute, this.testSubject)).andStubReturn(null);
 
@@ -235,8 +239,8 @@ public class CredentialManagerBeanTest extends TestCase {
         expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
         expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate)).andStubReturn(identifier);
         expect(this.mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(null);
-        this.mockPkiProvider.storeAdditionalAttributes(subject, this.certificate);
-        this.mockPkiProvider.storeDeviceAttribute(subject);
+        this.mockPkiProvider.storeAdditionalAttributes(subject, this.certificate, 0);
+        this.mockPkiProvider.storeDeviceAttribute(subject, 0);
 
         AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
         expect(this.mockAttributeTypeDAO.getAttributeType(surnameAttribute)).andStubReturn(surnameAttributeType);

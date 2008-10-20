@@ -197,7 +197,7 @@ public class AuthnRequestFactory {
     public static String createDeviceOperationAuthnRequest(String issuerName, String subjectName,
             KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
             DeviceOperationType deviceOperation, Challenge<String> challenge, String device) {
-
+        
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
         if (null == issuerName)
