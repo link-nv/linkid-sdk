@@ -64,7 +64,7 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
         // stubs
         SubjectEntity subject = new SubjectEntity(login);
         expect(this.mockSubjectService.getSubjectFromUserName(login)).andStubReturn(subject);
-
+        expect(this.mockPasswordManager.isDisabled(subject)).andStubReturn(false);
         expect(this.mockPasswordManager.validatePassword(subject, password)).andStubReturn(true);
 
         // prepare
@@ -88,7 +88,7 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
         // stubs
         SubjectEntity subject = new SubjectEntity(login);
         expect(this.mockSubjectService.getSubjectFromUserName(login)).andStubReturn(subject);
-
+        expect(this.mockPasswordManager.isDisabled(subject)).andStubReturn(false);
         expect(this.mockPasswordManager.validatePassword(subject, wrongPassword)).andStubReturn(false);
 
         // expectations

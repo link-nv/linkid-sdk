@@ -71,6 +71,8 @@ public class PasswordManagerBeanTest {
         this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
                 DatatypeType.STRING, false, false));
         this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(
+                SafeOnlineConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false));
+        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(
                 SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE, DatatypeType.STRING, false, false));
         this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE,
                 DatatypeType.COMPOUNDED, false, false));
