@@ -8,12 +8,14 @@
 package net.link.safeonline.pkix.model;
 
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -65,17 +67,20 @@ public interface PkiProvider {
      * @param subject
      *            the subject for which to store additional attributes.
      * @param certificate
+     * @param index
      */
-    void storeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate);
+    void storeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate, long index);
 
     /**
      * Store the device attribute related to this PKI device.
      * 
      * @param subject
+     * @param index
      * @throws DeviceNotFoundException
      * @throws AttributeNotFoundException
      */
-    void storeDeviceAttribute(SubjectEntity subject) throws DeviceNotFoundException, AttributeNotFoundException;
+    void storeDeviceAttribute(SubjectEntity subject, long index) throws DeviceNotFoundException,
+            AttributeNotFoundException;
 
     /**
      * Gives back the identifier domain name.
@@ -107,4 +112,12 @@ public interface PkiProvider {
      * @throws DeviceNotFoundException
      */
     boolean isDisabled(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException;
+
+    /**
+     * Returns the list of device attributes attached to the specified subjects.
+     * 
+     * @param subject
+     * @throws DeviceNotFoundException
+     */
+    List<AttributeEntity> listDeviceAttributes(SubjectEntity subject) throws DeviceNotFoundException;
 }

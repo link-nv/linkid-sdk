@@ -72,6 +72,15 @@ public class AttributeDAOBean implements AttributeDAO {
         return attribute;
     }
 
+    public AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject, long index) {
+
+        LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId() + " index = "
+                + index);
+        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName,
+                subject.getUserId(), index));
+        return attribute;
+    }
+
     public AttributeEntity findAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, long index) {
 
         LOG.debug("find attribute for type  " + attributeType.getName() + " and subject " + subject.getUserId());
@@ -128,6 +137,15 @@ public class AttributeDAOBean implements AttributeDAO {
             throws AttributeNotFoundException {
 
         AttributeEntity attribute = findAttribute(attributeTypeName, subject);
+        if (null == attribute)
+            throw new AttributeNotFoundException();
+        return attribute;
+    }
+
+    public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject, long index)
+            throws AttributeNotFoundException {
+
+        AttributeEntity attribute = findAttribute(attributeTypeName, subject, index);
         if (null == attribute)
             throw new AttributeNotFoundException();
         return attribute;

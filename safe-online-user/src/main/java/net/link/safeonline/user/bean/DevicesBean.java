@@ -336,7 +336,7 @@ public class DevicesBean implements Devices {
                 SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
             this.credentialService.disablePassword();
             deviceRegistrationsFactory();
-            return null;
+            return "success";
         }
 
         DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getDisableURL(),

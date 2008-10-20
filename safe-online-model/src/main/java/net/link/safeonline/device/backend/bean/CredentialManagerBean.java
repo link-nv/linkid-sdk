@@ -233,25 +233,27 @@ public class CredentialManagerBean implements CredentialManager {
         this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain, identifier, subject);
 
         /*
-         * Store some additional attributes retrieved from the identity statement.
+         * Store the attributes retrieved from the identity statement.
          */
+        long index = pkiProvider.listDeviceAttributes(subject).size();
+
         String surname = identityStatement.getSurname();
         String givenName = identityStatement.getGivenName();
 
-        setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, subject, surname, pkiProvider);
-        setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, subject, givenName, pkiProvider);
+        setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, subject, surname, pkiProvider, index);
+        setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, subject, givenName, pkiProvider, index);
 
-        pkiProvider.storeAdditionalAttributes(subject, certificate);
+        pkiProvider.storeAdditionalAttributes(subject, certificate, index);
 
-        pkiProvider.storeDeviceAttribute(subject);
+        pkiProvider.storeDeviceAttribute(subject, index);
     }
 
     private void setOrUpdateAttribute(IdentityStatementAttributes identityStatementAttribute, SubjectEntity subject,
-            String value, PkiProvider pkiProvider) throws AttributeTypeNotFoundException {
+            String value, PkiProvider pkiProvider, long index) throws AttributeTypeNotFoundException {
 
         String attributeName = pkiProvider.mapAttribute(identityStatementAttribute);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-        this.attributeDAO.addOrUpdateAttribute(attributeType, subject, 0, value);
+        this.attributeDAO.addOrUpdateAttribute(attributeType, subject, index, value);
     }
 
     public void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)

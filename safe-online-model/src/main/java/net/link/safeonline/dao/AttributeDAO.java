@@ -36,8 +36,8 @@ public interface AttributeDAO {
      * Adds a new attribute.
      * 
      * <p>
-     * For multi-valued attributes a new attribute will be added with attribute index set to MAX(current attribute ids) +
-     * 1. Single-valued attributes will of course have an attribute attribute 0.
+     * For multi-valued attributes a new attribute will be added with attribute index set to MAX(current attribute ids)
+     * + 1. Single-valued attributes will of course have an attribute attribute 0.
      * </p>
      * 
      * @param attributeType
@@ -86,11 +86,16 @@ public interface AttributeDAO {
 
     AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject) throws AttributeNotFoundException;
 
+    AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject, long index)
+            throws AttributeNotFoundException;
+
     AttributeEntity findAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, long index);
 
     AttributeEntity findAttribute(SubjectEntity subject, String attributeTypeName, long index);
 
     AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject);
+    
+    AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject, long index);
 
     AttributeEntity findAttribute(AttributeTypeEntity attributeType, SubjectEntity subject);
 
