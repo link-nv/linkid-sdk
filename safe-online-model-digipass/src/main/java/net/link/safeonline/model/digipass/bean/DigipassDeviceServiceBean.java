@@ -23,6 +23,7 @@ import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -84,7 +85,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
 
 
     public String authenticate(String loginName, String token) throws SubjectNotFoundException,
-            PermissionDeniedException, DeviceNotFoundException {
+            PermissionDeniedException, DeviceNotFoundException, DeviceDisabledException {
 
         NameIdentifierMappingClient idMappingClient = getIDMappingClient();
         String userId;
@@ -104,9 +105,15 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         SubjectEntity subject = this.subjectService.getSubject(userId);
         DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
         List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        List<AttributeEntity> disableAttributes = this.attributeDAO.listAttributes(subject, device
+                .getDisableAttributeType());
 
         if (0 == attributes.size())
             return null;
+        if (true == disableAttributes.get(0).getBooleanValue()) {
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "device is disabled");
+            throw new DeviceDisabledException();
+        }
         if (Integer.parseInt(token) % 2 != 0) {
             LOG.debug("Invalid token: " + token);
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "incorrect digipass token");

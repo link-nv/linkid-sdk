@@ -17,6 +17,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -109,7 +110,10 @@ public class AuthenticationBean implements Authentication {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "digipassAuthenticationFailed");
             HelpdeskLogger.add("Digipass Device not found", LogLevelType.ERROR);
             return null;
-
+        } catch (DeviceDisabledException e) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "digipassDisabled");
+            HelpdeskLogger.add("Digipass Device is disabled", LogLevelType.ERROR);
+            return null;
         }
         HelpdeskLogger.clear();
         destroyCallback();

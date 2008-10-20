@@ -13,6 +13,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -23,7 +24,7 @@ import net.link.safeonline.data.AttributeDO;
 public interface DigipassDeviceService {
 
     String authenticate(String loginName, String token) throws SubjectNotFoundException, PermissionDeniedException,
-            DeviceNotFoundException;
+            DeviceNotFoundException, DeviceDisabledException;
 
     String register(String loginName, String serialNumber) throws ArgumentIntegrityException, SubjectNotFoundException,
             PermissionDeniedException, AttributeTypeNotFoundException;
