@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.RequestUtils;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.request.target.component.BookmarkablePageRequestTarget;
 
@@ -311,17 +312,14 @@ public class LayoutPage extends WebPage {
                     String paymentMessage = String.format("Viewing of %s at %s in %s.", LayoutPage.this.ticketService
                             .getFilmName(ticket), WicketUtil.format(getLocale(), new Date(ticket.getTime())),
                             LayoutPage.this.ticketService.getTheatreName(ticket));
-                    String paymentTargetUrl = RequestCycle.get().urlFor(
-                            new BookmarkablePageRequestTarget(TicketPage.class)).toString();
+                    String paymentTargetUrl = RequestUtils.toAbsolutePath(RequestCycle.get().urlFor(
+                            new BookmarkablePageRequestTarget(TicketPage.class)).toString());
 
                     try {
-                        String redirectUrl = String.format("/%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
+                        String redirectUrl = String.format("%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
 
-                        // Request base (same as ours).
-                                // request.getProtocol(), request.getServerName(), request.getServerPort(),
-
-                                // Demo-Payment application.
-                                "demo-payment/entry.seam",
+                        // Demo-Payment application.
+                                RequestUtils.toAbsolutePath("../demo-payment/entry.seam"),
 
                                 // Paying user's OLAS name.
                                 URLEncoder.encode(paymentUsername, "UTF-8"),
