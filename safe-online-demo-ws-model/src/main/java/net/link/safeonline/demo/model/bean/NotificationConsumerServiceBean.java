@@ -25,6 +25,7 @@ import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
 import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
+import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.demo.model.NotificationConsumerService;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
@@ -60,6 +61,8 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
     private EntityManager       demoTicketEntityManager;
     private EntityManager       demoPaymentEntityManager;
 
+    private TicketService       demoCinemaTicketService;
+
 
     public void handleMessage(String topic, String destination, List<String> message) {
 
@@ -69,6 +72,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
             this.demoCinemaEntityManager = (EntityManager) context.lookup("java:/DemoCinemaEntityManager");
             this.demoTicketEntityManager = (EntityManager) context.lookup("java:/DemoTicketEntityManager");
             this.demoPaymentEntityManager = (EntityManager) context.lookup("java:/DemoPaymentEntityManager");
+            this.demoCinemaTicketService = (TicketService) context.lookup(TicketService.BINDING);
         } catch (NamingException e) {
             LOG.error("Naming exception thrown: " + e.getMessage(), e);
         }
@@ -133,7 +137,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
         CinemaUserEntity user = this.demoCinemaEntityManager.find(CinemaUserEntity.class, userId);
         if (null != user) {
-            Collection<CinemaTicketEntity> tickets = user.getTickets();
+            Collection<CinemaTicketEntity> tickets = this.demoCinemaTicketService.getTickets(user);
             for (CinemaTicketEntity ticket : tickets) {
                 this.demoTicketEntityManager.remove(ticket);
             }
