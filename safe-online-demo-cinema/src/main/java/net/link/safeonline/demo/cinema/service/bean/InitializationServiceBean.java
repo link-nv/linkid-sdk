@@ -25,24 +25,26 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link InitializationServiceBean}<br>
  * <sub>Service bean for {@link InitializationService}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jun 23, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless
 @LocalBinding(jndiBinding = InitializationService.BINDING)
 public class InitializationServiceBean extends AbstractCinemaServiceBean implements InitializationService {
 
-    private static List<List<CinemaRoomEntity>> theatreRoomEntities = new ArrayList<List<CinemaRoomEntity>>();
+    private List<List<CinemaRoomEntity>> theatreRoomEntities;
 
 
     /**
      * {@inheritDoc}
      */
     public void buildEntities() {
+
+        this.theatreRoomEntities = new ArrayList<List<CinemaRoomEntity>>();
 
         createTheatres();
         createFilms();
@@ -53,13 +55,12 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
      */
     private void createTheatres() {
 
-        // Gent
         for (int t = 0; t < theatreNames.length; ++t) {
             CinemaTheatreEntity theatre = new CinemaTheatreEntity(theatreNames[t], theatreAdresses[t]);
             this.em.persist(theatre);
 
             List<CinemaRoomEntity> currentTheatreRooms = new ArrayList<CinemaRoomEntity>();
-            theatreRoomEntities.add(currentTheatreRooms);
+            this.theatreRoomEntities.add(currentTheatreRooms);
 
             for (int r = 0; r < theatreRooms[t].length; ++r) {
                 currentTheatreRooms.add(addRoom(theatre, theatreRooms[t][r], theatreRoomSeats[t][r][0],
@@ -78,25 +79,23 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
             // Show times.
             Collection<CinemaShowTimeEntity> times = new ArrayList<CinemaShowTimeEntity>();
             for (CinemaShowTimeEntity time : filmTimes[f]) {
-                this.em.persist(time);
-                times.add(time);
+                CinemaShowTimeEntity timeEntity = time.clone();
+
+                this.em.persist(timeEntity);
+                times.add(timeEntity);
             }
+
+            CinemaFilmEntity filmEntity = new CinemaFilmEntity(filmNames[f], filmDescriptions[f], filmDurations[f],
+                    filmPrices[f], times);
+            this.em.persist(filmEntity);
 
             // Rooms.
-            Collection<CinemaRoomEntity> rooms = new ArrayList<CinemaRoomEntity>();
-            LOG.info("film: " + f);
             for (int t = 0; t < filmTheatres[f].length; ++t) {
-                LOG.info("film-theatre: " + t);
                 for (int r : filmRooms[f][t]) {
-                    LOG.info("room: " + r);
-                    LOG.info("room theatres: " + theatreRoomEntities.size());
-                    LOG.info("theatre rooms: " + theatreRoomEntities.get(filmTheatres[f][t]).size());
-                    rooms.add(theatreRoomEntities.get(filmTheatres[f][t]).get(r));
+                    CinemaRoomEntity roomEntity = this.theatreRoomEntities.get(filmTheatres[f][t]).get(r);
+                    roomEntity.getFilms().add(filmEntity);
                 }
             }
-
-            this.em.persist(new CinemaFilmEntity(filmNames[f], filmDescriptions[f], filmDurations[f], filmPrices[f], times,
-                    rooms));
         }
     }
 

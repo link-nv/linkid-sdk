@@ -1,4 +1,4 @@
-package net.link.safeonline.demo.bank.test;
+package net.link.safeonline.demo.bank.webapp;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,13 +17,6 @@ import net.link.safeonline.demo.bank.service.bean.AccountServiceBean;
 import net.link.safeonline.demo.bank.service.bean.InitializationServiceBean;
 import net.link.safeonline.demo.bank.service.bean.TransactionServiceBean;
 import net.link.safeonline.demo.bank.service.bean.UserServiceBean;
-import net.link.safeonline.demo.bank.webapp.AccountPage;
-import net.link.safeonline.demo.bank.webapp.BankApplication;
-import net.link.safeonline.demo.bank.webapp.BankSession;
-import net.link.safeonline.demo.bank.webapp.DigipassLoginPage;
-import net.link.safeonline.demo.bank.webapp.LoginPage;
-import net.link.safeonline.demo.bank.webapp.NewAccountPage;
-import net.link.safeonline.demo.bank.webapp.NewTransactionPage;
 import net.link.safeonline.demo.bank.webapp.servlet.LogoutServlet;
 import net.link.safeonline.demo.wicket.javaee.DummyJndi;
 import net.link.safeonline.demo.wicket.test.AbstractWicketTests;
@@ -41,7 +34,7 @@ import org.apache.wicket.util.tester.FormTester;
 import org.junit.Test;
 
 
-public class BankTests extends AbstractWicketTests {
+public class BankWebTests extends AbstractWicketTests {
 
     @Override
     public void setup() {
@@ -137,7 +130,13 @@ public class BankTests extends AbstractWicketTests {
     /**
      * Log the user in using (dummy) OLAS services.<br>
      * <br>
-     * We end up on the {@link AccountPage}.
+     * Log the user out.<br>
+     * <br>
+     * Log the user in using digipass.<br>
+     * <br>
+     * Log the user out.<br>
+     * <br>
+     * We end up on the {@link LoginPage}.
      */
     @Test
     public void testLogout() {

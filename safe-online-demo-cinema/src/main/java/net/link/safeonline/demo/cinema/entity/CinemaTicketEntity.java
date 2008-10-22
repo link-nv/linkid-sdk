@@ -20,19 +20,22 @@ import javax.persistence.NamedQuery;
 
 
 @Entity
-@NamedQueries( { @NamedQuery(name = CinemaTicketEntity.getById, query = "SELECT t FROM CinemaTicketEntity t WHERE t.id = :id"),
+@NamedQueries( {
+        @NamedQuery(name = CinemaTicketEntity.getById, query = "SELECT t FROM CinemaTicketEntity t WHERE t.id = :id"),
+        @NamedQuery(name = CinemaTicketEntity.getByUser, query = "SELECT t FROM CinemaTicketEntity t WHERE t.owner = :user"),
         @NamedQuery(name = CinemaTicketEntity.getByNrn, query = "SELECT t FROM CinemaTicketEntity t WHERE t.owner.nrn = :nrn") })
 public class CinemaTicketEntity implements Serializable {
 
-    private static final long    serialVersionUID = 1L;
+    private static final long          serialVersionUID = 1L;
 
-    public static final String   getById          = "CinemaTicketEntity.getById";
-    public static final String   getByNrn         = "CinemaTicketEntity.getByNrn";
+    public static final String         getById          = "CinemaTicketEntity.getById";
+    public static final String         getByUser        = "CinemaTicketEntity.getByUser";
+    public static final String         getByNrn         = "CinemaTicketEntity.getByNrn";
 
     @Id
     @SuppressWarnings("unused")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long                 id;
+    private long                       id;
 
     @ManyToOne
     private CinemaUserEntity           owner;
@@ -40,15 +43,16 @@ public class CinemaTicketEntity implements Serializable {
     @ManyToOne
     private CinemaFilmEntity           film;
     private CinemaSeatOccupationEntity occupation;
-    private long                 time;
-    private double               price;
+    private long                       time;
+    private double                     price;
 
 
     public CinemaTicketEntity() {
 
     }
 
-    public CinemaTicketEntity(CinemaUserEntity owner, CinemaFilmEntity film, long time, CinemaSeatOccupationEntity occupation) {
+    public CinemaTicketEntity(CinemaUserEntity owner, CinemaFilmEntity film, long time,
+            CinemaSeatOccupationEntity occupation) {
 
         this.owner = owner;
 
@@ -92,7 +96,8 @@ public class CinemaTicketEntity implements Serializable {
     }
 
     /**
-     * @return The {@link Date} of the showing of the {@link CinemaFilmEntity} that this ticket grants the owner access to.
+     * @return The {@link Date} of the showing of the {@link CinemaFilmEntity} that this ticket grants the owner access
+     *         to.
      */
     public long getTime() {
 

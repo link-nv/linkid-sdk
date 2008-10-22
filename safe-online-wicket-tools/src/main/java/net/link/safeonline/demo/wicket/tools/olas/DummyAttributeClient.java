@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -57,7 +57,7 @@ public class DummyAttributeClient implements AttributeClient {
 
         return userAttributes.put(attribute, value);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -65,7 +65,13 @@ public class DummyAttributeClient implements AttributeClient {
             throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
             AttributeUnavailableException {
 
-        return valueClass.cast(DummyAttributeClient.usersAttributes.get(userId).get(attributeName));
+        Object attributeValue = DummyAttributeClient.usersAttributes.get(userId).get(attributeName);
+        if (attributeValue == null || valueClass.isAssignableFrom(attributeValue.getClass()))
+            return valueClass.cast(attributeValue);
+
+        throw new IllegalArgumentException("Attribute '" + attributeName + "' of user id '" + userId
+                + "' is not assignable to '" + valueClass + "'.  It is: " + attributeValue.getClass() + ": "
+                + attributeValue);
     }
 
     /**
@@ -99,7 +105,7 @@ public class DummyAttributeClient implements AttributeClient {
         try {
             T identityCard = identityCardClass.newInstance();
             Method[] methods = identityCardClass.getMethods();
-            
+
             for (Method method : methods) {
                 if (!method.isAnnotationPresent(IdentityAttribute.class)) {
                     continue;
@@ -109,14 +115,14 @@ public class DummyAttributeClient implements AttributeClient {
                 Class<?> valueClass = method.getReturnType();
                 Object attributeValue = getAttributeValue(userId, attributeName, valueClass);
                 Method setMethod = CompoundUtil.getSetMethod(identityCardClass, method);
-                
+
                 try {
                     setMethod.invoke(identityCard, new Object[] { attributeValue });
                 } catch (Exception e) {
                     throw new RuntimeException("error: " + e.getMessage());
                 }
             }
-            
+
             return identityCard;
         }
 

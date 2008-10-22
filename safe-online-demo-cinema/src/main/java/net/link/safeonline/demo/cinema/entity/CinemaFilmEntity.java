@@ -17,7 +17,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -30,32 +29,29 @@ import javax.persistence.OneToMany;
         @NamedQuery(name = CinemaFilmEntity.getAllFrom, query = "SELECT r.films FROM CinemaRoomEntity r WHERE r.theatre = :theatre") })
 public class CinemaFilmEntity implements Serializable {
 
-    private static final long          serialVersionUID = 1L;
-    public static final String         getAll           = "CinemaFilmEntity.getAll";
-    public static final String         getById          = "CinemaFilmEntity.getById";
-    public static final String         getAllFrom       = "CinemaFilmEntity.getAllFrom";
+    private static final long                serialVersionUID = 1L;
+    public static final String               getAll           = "CinemaFilmEntity.getAll";
+    public static final String               getById          = "CinemaFilmEntity.getById";
+    public static final String               getAllFrom       = "CinemaFilmEntity.getAllFrom";
 
     @Id
     @SuppressWarnings("unused")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long                       id;
+    private long                             id;
 
-    @ManyToMany
-    private Collection<CinemaRoomEntity>     rooms;
-    private String                     name;
-    private String                     description;
-    private long                       duration;
-    private int                        price;
+    private String                           name;
+    private String                           description;
+    private long                             duration;
+    private long                             price;
 
     @OneToMany(fetch = FetchType.EAGER)
     private Collection<CinemaShowTimeEntity> times;
-    private Date                       endTime;
-    private Date                       startTime;
+    private Date                             endTime;
+    private Date                             startTime;
 
 
     public CinemaFilmEntity() {
 
-        this.rooms = new HashSet<CinemaRoomEntity>();
         this.times = new HashSet<CinemaShowTimeEntity>();
     }
 
@@ -63,15 +59,14 @@ public class CinemaFilmEntity implements Serializable {
      * @param duration
      *            The duration of the film in seconds.
      */
-    public CinemaFilmEntity(String name, String description, long duration, int price, Collection<CinemaShowTimeEntity> times,
-            Collection<CinemaRoomEntity> rooms) {
+    public CinemaFilmEntity(String name, String description, long duration, long price,
+            Collection<CinemaShowTimeEntity> times) {
 
         this.name = name;
         this.description = description;
         this.duration = duration * 1000;
         this.price = price;
         this.times = times;
-        this.rooms = rooms;
     }
 
     /**
@@ -101,17 +96,9 @@ public class CinemaFilmEntity implements Serializable {
     /**
      * @return The base price for one viewing of this film.
      */
-    public int getPrice() {
+    public long getPrice() {
 
         return this.price;
-    }
-
-    /**
-     * @return The rooms this film plays in.
-     */
-    public Collection<CinemaRoomEntity> getRooms() {
-
-        return this.rooms;
     }
 
     /**

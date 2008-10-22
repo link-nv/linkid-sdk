@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  * <h2>{@link AccountServiceTest}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>Unit tests for {@link AccountService}.</sub></h2>
  * 
  * <p>
  * [description / usage].
@@ -56,6 +56,9 @@ public class AccountServiceTest extends AbstractBankServiceTest {
         this.initializationService.buildEntities();
     }
 
+    /**
+     * @see AccountService#createAccount(BankUserEntity, String)
+     */
     @Test
     public void testCreateAccount() {
 

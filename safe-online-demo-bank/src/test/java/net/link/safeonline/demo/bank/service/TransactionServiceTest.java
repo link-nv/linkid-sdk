@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  * <h2>{@link TransactionServiceTest}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>Unit tests for {@link TransactionService}.</sub></h2>
  * 
  * <p>
  * [description / usage].
@@ -55,6 +55,9 @@ public class TransactionServiceTest extends AbstractBankServiceTest {
         this.initializationService.buildEntities();
     }
 
+    /**
+     * @see TransactionService#createTransaction(String, BankAccountEntity, String, double)
+     */
     @Test
     public void testCreateTransaction() {
 
@@ -74,7 +77,7 @@ public class TransactionServiceTest extends AbstractBankServiceTest {
                 .getAllTransactions(testTransactionSourceAccount);
         assertTrue(transactions.size() == 1);
         BankTransactionEntity transaction = transactions.get(0);
-        
+
         // - Collect sample data.
         String sampleDescription = transaction.getDescription();
         Double sampleAmount = transaction.getAmount();

@@ -88,9 +88,8 @@ public class EntityTestManager {
 
     public void tearDown() throws Exception {
 
-        if (null == this.entityManager) {
+        if (null == this.entityManager)
             throw new IllegalStateException("invoke setUp first");
-        }
 
         if (this.entityManager.isOpen()) {
             EntityTransaction entityTransaction = this.entityManager.getTransaction();
@@ -210,9 +209,8 @@ public class EntityTestManager {
                 if (null == persistenceContextAnnotation) {
                     continue;
                 }
-                if (false == EntityManager.class.isAssignableFrom(currentField.getType())) {
+                if (false == EntityManager.class.isAssignableFrom(currentField.getType()))
                     throw new RuntimeException("field type not correct");
-                }
                 currentField.setAccessible(true);
                 return currentField;
             }

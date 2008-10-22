@@ -10,6 +10,7 @@ import net.link.safeonline.demo.cinema.service.FilmService;
 import net.link.safeonline.demo.cinema.service.TheatreService;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -50,13 +51,9 @@ public class FilmTheatreSelectionPage extends LayoutPage {
      */
     public FilmTheatreSelectionPage() {
 
-        CinemaSession.get();
-        // If theatre and film selected, send user to the time and room
-        // selection page.
-        if (CinemaSession.isFilmAndTheaterSet()) {
-            setResponsePage(TimeRoomSelectionPage.class);
-            return;
-        }
+        // If theatre and film selected, send user to the time and room selection page.
+        if (CinemaSession.isFilmAndTheaterSet())
+            throw new RestartResponseException(TimeRoomSelectionPage.class);
 
         add(new Label("headerTitle", "Film And Theatre Selection"));
 
@@ -113,7 +110,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
                     final CinemaFilmEntity film = item.getModelObject();
 
                     /* Film Details. */
-                    item.add(new Label("price", WicketUtil.format(CURRENCY, film.getPrice())));
+                    item.add(new Label("price", WicketUtil.format(CinemaSession.CURRENCY, film.getPrice())));
                     item.add(new Label("description", film.getDescription()));
 
                     /* Film Selection. */

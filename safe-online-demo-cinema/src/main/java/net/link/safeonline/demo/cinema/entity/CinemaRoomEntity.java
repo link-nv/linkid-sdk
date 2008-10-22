@@ -9,6 +9,7 @@ package net.link.safeonline.demo.cinema.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,28 +27,31 @@ import javax.persistence.NamedQuery;
         @NamedQuery(name = CinemaRoomEntity.getFor, query = "SELECT r FROM CinemaRoomEntity r WHERE r.theatre = :theatre AND :film MEMBER OF r.films") })
 public class CinemaRoomEntity implements Serializable {
 
-    private static final long      serialVersionUID = 1L;
-    public static final String     getFor           = "CinemaRoomEntity.getFor";
-    public static final String     getById          = "CinemaRoomEntity.getById";
+    private static final long            serialVersionUID = 1L;
+    public static final String           getFor           = "CinemaRoomEntity.getFor";
+    public static final String           getById          = "CinemaRoomEntity.getById";
 
     @Id
     @SuppressWarnings("unused")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long                   id;
+    private long                         id;
 
-    @ManyToMany(mappedBy = "rooms")
+    @ManyToMany
     private Collection<CinemaFilmEntity> films;
 
     @ManyToOne
     private CinemaTheatreEntity          theatre;
-    private String                 name;
+    private String                       name;
 
 
     public CinemaRoomEntity() {
 
+        this.films = new HashSet<CinemaFilmEntity>();
     }
 
     public CinemaRoomEntity(String name, CinemaTheatreEntity theatre) {
+
+        this();
 
         this.name = name;
         this.theatre = theatre;

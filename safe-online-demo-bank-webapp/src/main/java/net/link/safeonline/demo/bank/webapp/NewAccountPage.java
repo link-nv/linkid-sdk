@@ -1,6 +1,7 @@
 package net.link.safeonline.demo.bank.webapp;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
@@ -32,10 +33,8 @@ public class NewAccountPage extends LayoutPage {
      */
     public NewAccountPage() {
 
-        if (!BankSession.isUserSet()) {
-            setResponsePage(LoginPage.class);
-            return;
-        }
+        if (!BankSession.isUserSet())
+            throw new RestartResponseException(LoginPage.class);
 
         add(new AccountForm("newAccount"));
     }

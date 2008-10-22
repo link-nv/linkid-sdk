@@ -6,10 +6,6 @@
  */
 package net.link.safeonline.demo.cinema.service.bean;
 
-import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
-
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,12 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
 import net.link.safeonline.demo.cinema.service.UserService;
+import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -42,22 +39,19 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = UserService.BINDING)
 public class UserServiceBean extends AbstractCinemaServiceBean implements UserService {
 
-    private static final String WS_LOCATION = "WsLocation";
-
-
     /**
      * {@inheritDoc}
      */
-    public CinemaUserEntity getUser(String id) {
+    public CinemaUserEntity getUser(String olasId) {
 
         CinemaUserEntity user;
         try {
-            user = (CinemaUserEntity) this.em.createNamedQuery(CinemaUserEntity.getById).setParameter("id", id)
-                    .getSingleResult();
+            user = (CinemaUserEntity) this.em.createNamedQuery(CinemaUserEntity.getByOlasId).setParameter("olasId",
+                    olasId).getSingleResult();
         }
 
         catch (NoResultException e) {
-            user = new CinemaUserEntity(id);
+            user = new CinemaUserEntity(olasId);
             this.em.persist(user);
         }
 
@@ -70,23 +64,24 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
     public CinemaUserEntity updateUser(CinemaUserEntity user, HttpServletRequest loginRequest) {
 
         try {
-            AttributeClientImpl attributeClient = getOLASAttributeService(loginRequest);
+            AttributeClient attributeClient = WicketUtil.getOLASAttributeService(loginRequest, DemoCinemaKeyStoreUtils
+                    .getPrivateKeyEntry());
             CinemaUserEntity userEntity = attach(user);
 
             // National registry number of user.
-            String nrns[] = attributeClient.getAttributeValue(userEntity.getId(), BeIdConstants.NRN_ATTRIBUTE,
+            String nrns[] = attributeClient.getAttributeValue(userEntity.getOlasId(), BeIdConstants.NRN_ATTRIBUTE,
                     String[].class);
             if (nrns != null && nrns.length > 0) {
                 userEntity.setNrn(nrns[0]);
             }
 
             // OLAS username of the user.
-            String name = attributeClient.getAttributeValue(userEntity.getId(),
+            String name = attributeClient.getAttributeValue(userEntity.getOlasId(),
                     DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
             userEntity.setName(name);
 
             // Does user have a junior account?
-            Boolean juniorValue = attributeClient.getAttributeValue(userEntity.getId(),
+            Boolean juniorValue = attributeClient.getAttributeValue(userEntity.getOlasId(),
                     DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
             userEntity.setJunior(juniorValue != null && juniorValue.booleanValue() == true);
 
@@ -94,34 +89,17 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
         }
 
         catch (AttributeNotFoundException e) {
-            LOG.error("attribute not found: ", e);
+            this.LOG.error("attribute not found: ", e);
             throw new RuntimeException(e);
         } catch (RequestDeniedException e) {
-            LOG.error("request denied: ", e);
+            this.LOG.error("request denied: ", e);
             throw new RuntimeException(e);
         } catch (WSClientTransportException e) {
-            LOG.error("Connection error. Check your SSL setup.", e);
+            this.LOG.error("Connection error. Check your SSL setup.", e);
             throw new RuntimeException(e);
         } catch (AttributeUnavailableException e) {
-            LOG.error("Attribute unavailable", e);
+            this.LOG.error("Attribute unavailable", e);
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Retrieve a proxy to the OLAS attribute web service.
-     */
-    private AttributeClientImpl getOLASAttributeService(HttpServletRequest loginRequest) {
-
-        // Find the location of the OLAS web services to use.
-        String wsLocation = loginRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
-
-        // Find the key and certificate of the cinema application.
-        PrivateKeyEntry privateKeyEntry = DemoCinemaKeyStoreUtils.getPrivateKeyEntry();
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-
-        // Create the attribute service client.
-        return new AttributeClientImpl(wsLocation, certificate, privateKey);
     }
 }

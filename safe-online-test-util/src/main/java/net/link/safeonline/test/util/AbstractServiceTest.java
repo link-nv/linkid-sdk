@@ -1,18 +1,15 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.demo.bank.service;
+package net.link.safeonline.test.util;
 
 import java.lang.reflect.Field;
 
 import javax.ejb.EJB;
 import javax.persistence.EntityManager;
-
-import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.EntityTestManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +31,7 @@ import org.junit.Before;
  */
 public abstract class AbstractServiceTest {
 
-    private EntityManager     em;
+    protected EntityManager   em;
     private EntityTestManager testEntityManager;
 
     @Before
@@ -43,7 +40,7 @@ public abstract class AbstractServiceTest {
         this.testEntityManager = new EntityTestManager();
         this.testEntityManager.setUp(getEntities());
         this.em = this.testEntityManager.getEntityManager();
-        
+
         for (Field field : getClass().getDeclaredFields())
             if (field.isAnnotationPresent(EJB.class)) {
                 field.setAccessible(true);
@@ -56,7 +53,7 @@ public abstract class AbstractServiceTest {
 
         this.testEntityManager.tearDown();
     }
-    
+
     /**
      * @return All entity classes that are part of the test.
      */

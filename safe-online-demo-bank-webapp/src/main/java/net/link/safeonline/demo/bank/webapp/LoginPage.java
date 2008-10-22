@@ -7,6 +7,7 @@ import net.link.safeonline.demo.wicket.tools.OlasLoginLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.PageLink;
 
 public class LoginPage extends LayoutPage {
@@ -42,10 +43,8 @@ public class LoginPage extends LayoutPage {
         }
 
         // If logged in, send user to the ticket history page.
-        if (BankSession.isUserSet()) {
-            setResponsePage(AccountPage.class);
-            return;
-        }
+        if (BankSession.isUserSet())
+            throw new RestartResponseException(AccountPage.class);
 
         // HTML Components.
         add(new OlasLoginLink("olasLoginLink"));

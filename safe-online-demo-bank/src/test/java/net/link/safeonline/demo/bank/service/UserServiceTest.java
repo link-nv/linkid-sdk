@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * <h2>{@link UserServiceTest}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>Unit tests for {@link UserService}.</sub></h2>
  * 
  * <p>
  * [description / usage].
@@ -54,6 +54,9 @@ public class UserServiceTest extends AbstractBankServiceTest {
         this.initializationService.buildEntities();
     }
 
+    /**
+     * @see UserService#getAccounts(BankUserEntity)
+     */
     @Test
     public void testGetAccounts() {
 
@@ -71,10 +74,10 @@ public class UserServiceTest extends AbstractBankServiceTest {
         List<String> sampleAccountCodes = new LinkedList<String>();
         for (BankAccountEntity account : accounts) {
             String sampleBankId = account.getUser().getBankId();
-            
+
             assertTrue(String.format("account owner mismatch: test: %s - sample: %s", testBankId, sampleBankId), //
                     sampleBankId.equals(testBankId));
-            
+
             sampleAccountCodes.add(account.getCode());
         }
 

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -58,22 +58,39 @@ public abstract class WicketUtil {
     private static final String WS_LOCATION = "WsLocation";
     private static boolean      isUnitTest;
 
+
     /**
-     * @return A string that is the formatted representation of the given date according to the user's locale in short
+     * @return A formatter according to the given locale in short form.
+     */
+    public static DateFormat getDateFormat(Locale locale) {
+
+        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
+    }
+
+    /**
+     * @return A string that is the formatted representation of the given date according to the given locale in short
      *         form.
      */
     public static String format(Locale locale, Date date) {
 
-        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale).format(date);
+        return getDateFormat(locale).format(date);
     }
 
     /**
-     * @return A string that is the formatted representation of the given amount of currency according to the user's
+     * @return A formatter according to the given locale's currency.
+     */
+    public static NumberFormat getCurrencyFormat(Locale locale) {
+
+        return NumberFormat.getCurrencyInstance(locale);
+    }
+
+    /**
+     * @return A string that is the formatted representation of the given amount of currency according to the given
      *         locale.
      */
     public static String format(Locale locale, Number number) {
 
-        return NumberFormat.getCurrencyInstance(locale).format(number);
+        return getCurrencyFormat(locale).format(number);
     }
 
     static ConfigurableInjector getInjector() {
@@ -151,6 +168,11 @@ public abstract class WicketUtil {
 
     /**
      * Retrieve a proxy to the OLAS attribute web service.
+     * 
+     * @param loginRequest
+     *            The request that contains a session with a servlet context that has the WsLocation init parameter set.<br>
+     *            Note: This can be <code>null</code> for unit tests - it is not used. {@link DummyAttributeClient} is
+     *            used instead, provided you called {@link #setUnitTesting(boolean)}.
      */
     public static AttributeClient getOLASAttributeService(HttpServletRequest loginRequest,
             PrivateKeyEntry privateKeyEntry) {
