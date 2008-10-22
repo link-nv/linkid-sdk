@@ -20,13 +20,17 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.option.OptionConstants;
@@ -62,6 +66,9 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
 
     @EJB
     private AttributeTypeDAO     attributeTypeDAO;
+    
+    @EJB
+    private DeviceDAO            deviceDAO;
 
     @EJB
     private SecurityAuditLogger  securityAuditLogger;
@@ -224,6 +231,31 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
         }
 
         this.subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void disable(String userId, String imei) throws DeviceNotFoundException, SubjectNotFoundException,
+            DeviceRegistrationNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(OptionConstants.OPTION_DEVICE_ID);
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject,
+                    OptionConstants.IMEI_OPTION_ATTRIBUTE, deviceAttribute.getAttributeIndex());
+            if (imeiAttribute.getStringValue().equals(imei)) {
+                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device
+                        .getDisableAttributeType(), deviceAttribute.getAttributeIndex());
+                disableAttribute.setBooleanValue(!disableAttribute.getBooleanValue());
+                return;
+            }
+        }
+
+        throw new DeviceRegistrationNotFoundException();
+
     }
 
 }

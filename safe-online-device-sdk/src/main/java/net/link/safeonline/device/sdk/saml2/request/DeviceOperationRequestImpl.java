@@ -10,11 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.saml2.core.impl.RequestAbstractTypeImpl;
 import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.util.XMLObjectChildrenList;
 
 
 /**
@@ -33,19 +31,19 @@ import org.opensaml.xml.util.XMLObjectChildrenList;
  */
 public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implements DeviceOperationRequest {
 
-    private String                                 deviceOperation;
+    private String  deviceOperation;
 
-    private String                                 device;
+    private String  device;
 
-    private String                                 authenticatedDevice;
+    private String  authenticatedDevice;
 
-    private String                                 protocolBinding;
+    private String  protocolBinding;
 
-    private String                                 serviceURL;
+    private String  serviceURL;
 
-    private Subject                                subject;
+    private Subject subject;
 
-    private final XMLObjectChildrenList<Attribute> attributes;
+    private String  attribute;
 
 
     /**
@@ -61,7 +59,6 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
     protected DeviceOperationRequestImpl(String namespaceURI, String elementLocalName, String namespacePrefix) {
 
         super(namespaceURI, elementLocalName, namespacePrefix);
-        this.attributes = new XMLObjectChildrenList<Attribute>(this);
 
     }
 
@@ -164,9 +161,14 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
     /**
      * {@inheritDoc}
      */
-    public List<Attribute> getAttributes() {
+    public String getAttribute() {
 
-        return this.attributes;
+        return this.attribute;
+    }
+
+    public void setAttribute(String attribute) {
+
+        this.attribute = prepareForAssignment(this.attribute, attribute);
     }
 
     /**
@@ -184,8 +186,6 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
         if (this.subject != null) {
             children.add(this.subject);
         }
-
-        children.addAll(this.attributes);
 
         if (children.size() == 0)
             return null;

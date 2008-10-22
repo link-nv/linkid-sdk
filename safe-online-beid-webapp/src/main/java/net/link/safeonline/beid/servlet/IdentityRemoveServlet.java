@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.device.sdk.ProtocolContext;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
@@ -29,18 +30,18 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * The identity servlet implementation. This servlet receives its data from the BeID via the IdentityApplet.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class IdentityRemoveServlet extends AbstractStatementServlet {
 
-    private static final long    serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-    private static final Log     LOG              = LogFactory.getLog(IdentityRemoveServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(IdentityRemoveServlet.class);
 
     @EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
-    private BeIdDeviceService    beIdDeviceService;
+    private BeIdDeviceService beIdDeviceService;
 
 
     @Override
@@ -53,8 +54,8 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
         PrintWriter writer = response.getWriter();
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(session);
         try {
-            String userId = (String) session.getAttribute("userId");
-            String operation = (String) session.getAttribute("operation");
+            String userId = DeviceOperationManager.getUserId(session);
+            String operation = DeviceOperationManager.getOperation(session);
             this.beIdDeviceService.remove(sessionId, userId, operation, statementData);
             response.setStatus(HttpServletResponse.SC_OK);
             protocolContext.setSuccess(true);

@@ -70,7 +70,7 @@ public class DeviceOperationRequestFactoryTest {
         // operate
         long begin = System.currentTimeMillis();
         String result = DeviceOperationRequestFactory.createDeviceOperationRequest(nodeName, subject, keyPair,
-                serviceURL, destinationURL, deviceOperation, challenge, device, authenticatedDevice);
+                serviceURL, destinationURL, deviceOperation, challenge, device, authenticatedDevice, null);
         long end = System.currentTimeMillis();
 
         // verify

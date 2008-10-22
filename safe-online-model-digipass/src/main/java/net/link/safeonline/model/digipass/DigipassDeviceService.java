@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
@@ -34,4 +35,7 @@ public interface DigipassDeviceService {
 
     List<AttributeDO> getDigipasses(String loginName, Locale locale) throws SubjectNotFoundException,
             PermissionDeniedException, DeviceNotFoundException;
+
+    void disable(String userId, String serialNumber) throws SubjectNotFoundException, DeviceNotFoundException,
+            DeviceRegistrationNotFoundException;
 }

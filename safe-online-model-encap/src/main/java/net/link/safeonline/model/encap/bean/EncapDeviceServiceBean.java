@@ -24,6 +24,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
@@ -191,7 +192,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         this.mobileManager.remove(mobile);
     }
 
-    public void remove(String deviceUserId, String mobile) throws MobileException, MalformedURLException,
+    public void remove(String userId, String mobile) throws MobileException, MalformedURLException,
             SubjectNotFoundException, AttributeTypeNotFoundException {
 
         removeEncapMobile(mobile);
@@ -275,6 +276,33 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
                 .findDescription(new AttributeTypeDescriptionPK(attributeType.getName(), language));
         return attributeTypeDescription;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void disable(String userId, String mobile) throws SubjectNotFoundException, DeviceNotFoundException,
+            DeviceRegistrationNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(EncapConstants.ENCAP_DEVICE_ID);
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(subject,
+                    EncapConstants.ENCAP_MOBILE_ATTRIBUTE,
+                    deviceAttribute.getAttributeIndex());
+            if (mobileAttribute.getStringValue().equals(mobile)) {
+                LOG.debug("disable mobile " + mobile);
+                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device
+                        .getDisableAttributeType(), deviceAttribute.getAttributeIndex());
+                disableAttribute.setBooleanValue(!disableAttribute.getBooleanValue());
+                return;
+            }
+        }
+        
+        throw new DeviceRegistrationNotFoundException();
+
     }
 
 }

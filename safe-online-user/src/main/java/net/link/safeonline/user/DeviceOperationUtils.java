@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -59,9 +60,10 @@ public class DeviceOperationUtils {
      * @param device
      * @param userId
      *            the OLAS user ID.
+     * @param attribute
      */
     public static String redirect(String landingUrl, DeviceOperationType deviceOperation, String device,
-            String authenticatedDevice, String userId) {
+            String authenticatedDevice, String userId, AttributeDO attribute) {
 
         LOG.debug("redirecting to: " + landingUrl);
         FacesContext context = FacesContext.getCurrentInstance();
@@ -95,7 +97,7 @@ public class DeviceOperationUtils {
         String encodedSamlRequestToken;
         try {
             encodedSamlRequestToken = deviceOperationService.redirect(serviceUrl, encodedLandingUrl, deviceOperation,
-                    device, authenticatedDevice, userId);
+                    device, authenticatedDevice, userId, attribute);
         } catch (SafeOnlineException e) {
             throw new RuntimeException("could not initiate device operation: " + e.getMessage(), e);
         }

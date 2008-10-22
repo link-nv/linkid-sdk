@@ -24,6 +24,8 @@ public class ProtocolContext implements Serializable {
 
     private String              subject;
 
+    private String              attribute;
+
     private DeviceOperationType deviceOperation;
 
     private String              issuer;
@@ -42,7 +44,7 @@ public class ProtocolContext implements Serializable {
 
 
     private ProtocolContext() {
-        
+
     }
 
     public static ProtocolContext getProtocolContext(HttpSession session) {
@@ -153,5 +155,15 @@ public class ProtocolContext implements Serializable {
     public void setValidity(int validity) {
 
         this.validity = validity;
+    }
+
+    public String getAttribute() {
+
+        return this.attribute;
+    }
+
+    public void setAttribute(String attribute) {
+
+        this.attribute = attribute;
     }
 }

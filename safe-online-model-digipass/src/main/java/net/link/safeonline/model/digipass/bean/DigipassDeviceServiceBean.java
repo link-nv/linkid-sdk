@@ -25,6 +25,7 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
@@ -285,4 +286,31 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl(location, certificate, privateKey);
         return client;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void disable(String userId, String serialNumber) throws SubjectNotFoundException, DeviceNotFoundException,
+            DeviceRegistrationNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity snAttribute = this.attributeDAO.findAttribute(subject,
+                    DigipassConstants.DIGIPASS_SN_ATTRIBUTE, deviceAttribute.getAttributeIndex());
+            if (snAttribute.getStringValue().equals(serialNumber)) {
+                LOG.debug("disable digipass " + serialNumber);
+                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device
+                        .getDisableAttributeType(), deviceAttribute.getAttributeIndex());
+                disableAttribute.setBooleanValue(!disableAttribute.getBooleanValue());
+                return;
+            }
+        }
+
+        throw new DeviceRegistrationNotFoundException();
+
+    }
+
 }

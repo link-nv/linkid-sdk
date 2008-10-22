@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
@@ -44,4 +45,7 @@ public interface BeIdDeviceService {
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
             AttributeTypeNotFoundException, SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException,
             PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException;
+
+    void disable(String userId, String attribute) throws DeviceNotFoundException, SubjectNotFoundException,
+            DeviceRegistrationNotFoundException;
 }

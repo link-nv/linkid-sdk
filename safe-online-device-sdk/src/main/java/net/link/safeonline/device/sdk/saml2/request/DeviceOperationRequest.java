@@ -6,12 +6,9 @@
  */
 package net.link.safeonline.device.sdk.saml2.request;
 
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.RequestAbstractType;
 import org.opensaml.saml2.core.Subject;
 
@@ -54,6 +51,9 @@ public interface DeviceOperationRequest extends RequestAbstractType {
 
     /** Authenticated device attribute name. */
     public static final String AUTHENTICATED_DEVICE_ATTRIB_NAME = "AuthenticatedDevice";
+
+    /** User attribute of device registration attribute name. */
+    public static final String ATTRIBUTE_ATTRIB_NAME            = "Attribute";
 
 
     /**
@@ -147,10 +147,19 @@ public interface DeviceOperationRequest extends RequestAbstractType {
     public void setSubject(Subject subject);
 
     /**
-     * Gets the Attributes of this request.
+     * Gets the optional attribute of this request. This attribute represents the OLAS user attribute that can be used
+     * to specify a specific device registration.
      * 
-     * @return the list of Attributes of this request
+     * @return the attribute of the request
      */
-    public List<Attribute> getAttributes();
+    public String getAttribute();
 
+    /**
+     * Sets the optional attribute of the request
+     * 
+     * @param attribute
+     *            the new value of the optional attribute of the request. This attribute represents the OLAS user
+     *            attribute specifying a specific device registration.
+     */
+    public void setAttribute(String attribute);
 }

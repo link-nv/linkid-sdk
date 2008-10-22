@@ -10,6 +10,7 @@ package net.link.safeonline.beid.servlet;
 import java.io.IOException;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -26,6 +27,7 @@ import net.link.safeonline.authentication.exception.PkiRevokedException;
 import net.link.safeonline.authentication.exception.PkiSuspendedException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
@@ -56,7 +58,7 @@ public class IdentityServlet extends AbstractStatementServlet {
 
     @Override
     protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
 
         String sessionId = session.getId();
         LOG.debug("session Id: " + sessionId);
@@ -66,8 +68,8 @@ public class IdentityServlet extends AbstractStatementServlet {
             protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
             protocolContext.setSuccess(false);
 
-            String userId = (String) session.getAttribute("userId");
-            String operation = (String) session.getAttribute("operation");
+            String userId = DeviceOperationManager.getUserId(session);
+            String operation = DeviceOperationManager.getOperation(session);
             this.beIdDeviceService.register(sessionId, userId, operation, statementData);
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that registration was successful.

@@ -23,6 +23,8 @@ import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -36,6 +38,7 @@ import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
+import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
@@ -67,6 +70,9 @@ public class BeIdPkiProvider implements PkiProvider {
 
     @EJB
     private DeviceDAO          deviceDAO;
+
+    @EJB
+    private SubjectService     subjectService;
 
 
     public boolean accept(X509Certificate certificate) {
@@ -185,7 +191,7 @@ public class BeIdPkiProvider implements PkiProvider {
                 index);
         AttributeEntity deviceUserAttribute = this.attributeDAO.findAttribute(subject, deviceUserAttributeType, index);
         if (null == deviceUserAttribute) {
-            String userAttributeValue = surNameAttribute.getStringValue() + ", " + givenNameAttribute.getStringValue();
+            String userAttributeValue = getUserAttributeValue(givenNameAttribute, surNameAttribute);
             deviceUserAttribute = this.attributeDAO.addAttribute(deviceUserAttributeType, subject, index);
             deviceUserAttribute.setStringValue(userAttributeValue);
         }
@@ -264,4 +270,36 @@ public class BeIdPkiProvider implements PkiProvider {
         return this.attributeDAO.listAttributes(subject, device.getAttributeType());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void disable(String userId, String attribute) throws DeviceNotFoundException, SubjectNotFoundException,
+            DeviceRegistrationNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity givenNameAttribute = this.attributeDAO.findAttribute(subject,
+                    BeIdConstants.GIVENNAME_ATTRIBUTE, deviceAttribute.getAttributeIndex());
+            AttributeEntity surNameAttribute = this.attributeDAO.findAttribute(subject,
+                    BeIdConstants.SURNAME_ATTRIBUTE, deviceAttribute.getAttributeIndex());
+            String deviceUserAttribute = getUserAttributeValue(givenNameAttribute, surNameAttribute);
+            if (deviceUserAttribute.equals(attribute)) {
+                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device
+                        .getDisableAttributeType(), deviceAttribute.getAttributeIndex());
+                disableAttribute.setBooleanValue(!disableAttribute.getBooleanValue());
+                return;
+            }
+        }
+
+        throw new DeviceRegistrationNotFoundException();
+
+    }
+
+    private String getUserAttributeValue(AttributeEntity givenNameAttribute, AttributeEntity surNameAttribute) {
+
+        return surNameAttribute.getStringValue() + ", " + givenNameAttribute.getStringValue();
+    }
 }

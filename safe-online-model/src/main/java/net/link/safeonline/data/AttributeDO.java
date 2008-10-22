@@ -235,6 +235,28 @@ public class AttributeDO implements Serializable, Cloneable {
     }
 
     /**
+     * Returns the attribute value as a string, no matter what type.
+     */
+    public String getValueAsString() {
+
+        switch (this.type) {
+            case BOOLEAN:
+                return this.booleanValue.toString();
+            case DATE:
+                return this.dateValue.toString();
+            case DOUBLE:
+                return this.doubleValue.toString();
+            case INTEGER:
+                return this.integerValue.toString();
+            case STRING:
+            case COMPOUNDED:
+                return this.stringValue;
+            default:
+                throw new EJBException("unsupported data type: " + this.type);
+        }
+    }
+
+    /**
      * Sets the value. Here we do a deep-copy of the values.
      * 
      * @param value

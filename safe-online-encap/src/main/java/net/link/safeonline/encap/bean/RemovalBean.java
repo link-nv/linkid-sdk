@@ -50,28 +50,25 @@ import org.jboss.seam.log.Log;
 @Interceptors(ErrorMessageInterceptor.class)
 public class RemovalBean implements Removal {
 
-    private static final String  MOBILE_ATTRIBUTE_LIST_NAME = "mobileAttributes";
+    private static final String MOBILE_ATTRIBUTE_LIST_NAME = "mobileAttributes";
 
     @EJB
-    private EncapDeviceService   encapDeviceService;
+    private EncapDeviceService  encapDeviceService;
 
     @Logger
-    private Log                  log;
+    private Log                 log;
 
     @In(create = true)
-    FacesMessages                facesMessages;
-
-    @In
-    private String               userId;
+    FacesMessages               facesMessages;
 
     @In(value = ProtocolContext.PROTOCOL_CONTEXT)
-    private ProtocolContext      protocolContext;
+    private ProtocolContext     protocolContext;
 
     @DataModel(MOBILE_ATTRIBUTE_LIST_NAME)
-    List<AttributeDO>            mobileAttributes;
+    List<AttributeDO>           mobileAttributes;
 
     @DataModelSelection(MOBILE_ATTRIBUTE_LIST_NAME)
-    private AttributeDO          selectedMobile;
+    private AttributeDO         selectedMobile;
 
 
     @Remove
@@ -106,7 +103,7 @@ public class RemovalBean implements Removal {
     public List<AttributeDO> mobileAttributesFactory() throws SubjectNotFoundException, DeviceNotFoundException {
 
         Locale locale = getViewLocale();
-        this.mobileAttributes = this.encapDeviceService.getMobiles(this.userId, locale);
+        this.mobileAttributes = this.encapDeviceService.getMobiles(this.protocolContext.getSubject(), locale);
         return this.mobileAttributes;
     }
 
@@ -114,7 +111,7 @@ public class RemovalBean implements Removal {
     public String mobileRemove() throws SubjectNotFoundException, MobileException, IOException,
             AttributeTypeNotFoundException {
 
-        this.encapDeviceService.remove(this.userId, this.selectedMobile.getStringValue());
+        this.encapDeviceService.remove(this.protocolContext.getSubject(), this.selectedMobile.getStringValue());
         this.protocolContext.setSuccess(true);
         exit();
         return null;

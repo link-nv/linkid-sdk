@@ -45,21 +45,21 @@ import org.opensaml.xml.ConfigurationException;
  */
 public class Saml2Handler implements Serializable {
 
-    private static final long  serialVersionUID               = 1L;
+    private static final long   serialVersionUID               = 1L;
 
-    private static final Log   LOG                            = LogFactory.getLog(Saml2Handler.class);
+    private static final Log    LOG                            = LogFactory.getLog(Saml2Handler.class);
+    
+    private static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
 
-    public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
+    private String              stsWsLocation;
 
-    private String             stsWsLocation;
+    private String              issuer;
 
-    private String             issuer;
+    private KeyPair             applicationKeyPair;
 
-    private KeyPair            applicationKeyPair;
+    private X509Certificate     applicationCertificate;
 
-    private X509Certificate    applicationCertificate;
-
-    public static final String SAML2_HANDLER                  = Saml2Handler.class.getName() + ".SAML2_HANDLER";
+    private static final String SAML2_HANDLER                  = Saml2Handler.class.getName() + ".SAML2_HANDLER";
 
     static {
         /*
@@ -135,6 +135,9 @@ public class Saml2Handler implements Serializable {
         DeviceOperationType deviceOperation = DeviceOperationType.valueOf(deviceOperationRequest.getDeviceOperation());
         LOG.debug("device operation: " + deviceOperation);
 
+        String attribute = deviceOperationRequest.getAttribute();
+        LOG.debug("attribute: " + attribute);
+
         if (null == deviceOperationRequest.getSubject())
             throw new DeviceInitializationException("missing subject");
         if (null == deviceOperationRequest.getSubject().getNameID())
@@ -151,10 +154,13 @@ public class Saml2Handler implements Serializable {
         protocolContext.setSubject(userId);
         protocolContext.setNodeName(nodeName);
         protocolContext.setDeviceOperation(deviceOperation);
+        protocolContext.setAttribute(attribute);
 
-        request.getSession().setAttribute("userId", userId);
-        request.getSession().setAttribute("operation", deviceOperation.name());
-        request.getSession().setAttribute("authenticatedDevice", authenticatedDevice);
+        DeviceOperationManager.setUserId(userId, request);
+        DeviceOperationManager.setOperation(deviceOperation.name(), request);
+        DeviceOperationManager.setAuthenticatedDevice(authenticatedDevice, request);
+        DeviceOperationManager.setAttribute(attribute, request);
+        
         return deviceOperation;
     }
 
