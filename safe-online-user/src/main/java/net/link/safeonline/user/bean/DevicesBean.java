@@ -328,6 +328,11 @@ public class DevicesBean implements Devices {
     public String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException,
             PermissionDeniedException, AttributeTypeNotFoundException {
 
+        if (!deviceRemovalAllowed()) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+            return null;
+        }
+
         LOG.debug("disable device: " + this.selectedDeviceRegistration.getFriendlyName());
         String userId = this.subjectManager.getCallerSubject().getUserId();
 
