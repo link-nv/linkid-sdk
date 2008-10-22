@@ -48,8 +48,8 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
      */
     public boolean isOccupied(CinemaSeatEntity seat, Date start) {
 
-        return !this.em.createNamedQuery(CinemaSeatOccupationEntity.getFor).setParameter("seat", seat).setParameter("start",
-                start).getResultList().isEmpty();
+        return !this.em.createNamedQuery(CinemaSeatOccupationEntity.getFor).setParameter("seat", seat).setParameter(
+                "start", start).getResultList().isEmpty();
     }
 
     /**
@@ -57,18 +57,25 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
      */
     public CinemaSeatOccupationEntity validate(CinemaSeatOccupationEntity occupation) throws IllegalStateException {
 
-        CinemaSeatEntity seat = (CinemaSeatEntity) this.em.createNamedQuery(CinemaSeatEntity.getById).setParameter("id",
-                occupation.getSeat().getId()).getSingleResult();
+        return validate(occupation.getSeat(), occupation.getStart());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public CinemaSeatOccupationEntity validate(CinemaSeatEntity seat, Date start) throws IllegalStateException {
+
+        CinemaSeatEntity seatEntity = attach(seat);
 
         // Check to see if this seat has already been occupied, and if so,
         // whether it was reserved or not.
         try {
             CinemaSeatOccupationEntity existingOccupation = (CinemaSeatOccupationEntity) this.em.createNamedQuery(
-                    CinemaSeatOccupationEntity.getFor).setParameter("seat", seat)
-                    .setParameter("start", occupation.getStart()).getSingleResult();
+                    CinemaSeatOccupationEntity.getFor).setParameter("seat", seatEntity).setParameter("start", start)
+                    .getSingleResult();
 
             if (existingOccupation.isReserved())
-                throw new IllegalStateException("Seat " + seat + " is already occupied.");
+                throw new IllegalStateException("Seat " + seatEntity + " has already been reserved for a customer.");
 
             // An existing occupation that is not yet reserved?
             // Must be a stale ticket registration; give the existing
@@ -76,8 +83,9 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
             return existingOccupation;
         }
 
-        // Seat not yet occupied; occupy (but not yet reserve) it.
+        // Seat not yet occupied; occupy (but do not yet reserve) it.
         catch (NoResultException e) {
+            CinemaSeatOccupationEntity occupation = new CinemaSeatOccupationEntity(seat, start);
             this.em.persist(occupation);
 
             return occupation;

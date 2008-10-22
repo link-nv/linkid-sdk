@@ -7,7 +7,6 @@
 
 package net.link.safeonline.demo.payment.bean;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.payment.CustomerSearch;
@@ -42,7 +41,6 @@ public class CustomerSearchBean extends AbstractPaymentDataClientBean implements
     private CustomerStatus customerStatus;
 
 
-    @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public String search() {
 
         this.log.debug("search: " + this.name);

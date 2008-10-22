@@ -35,11 +35,10 @@ public class OlasNamingStrategy implements IJndiNamingStrategy {
     public String calculateName(String ejbName, Class ejbType) {
 
         try {
-            String binding = ejbType.getDeclaredField("BINDING").get(null).toString();
-            System.out.println("OLAS NAMING STRATEGY: CALCULATING NAME FOR " + ejbType + " (name : '" + ejbName
-                    + "') = " + binding);
-            return binding;
-        } catch (IllegalArgumentException e) {
+            return ejbType.getDeclaredField("BINDING").get(null).toString();
+        }
+
+        catch (IllegalArgumentException e) {
             getLog().error("[BUG] Object is not the right type.", e);
         } catch (SecurityException e) {
             getLog().error("[BUG] Field injected not allowed.", e);

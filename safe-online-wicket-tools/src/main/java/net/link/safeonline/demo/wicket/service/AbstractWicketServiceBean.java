@@ -39,9 +39,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractWicketServiceBean {
 
-    protected static final Log     LOG = LogFactory.getLog(AbstractWicketServiceBean.class);
-
     protected static EntityManager defaultEntityManager;
+
+    protected final Log            LOG = LogFactory.getLog(getClass());
 
 
     /**
@@ -67,15 +67,14 @@ public abstract class AbstractWicketServiceBean {
                     primaryKey = field.get(entity);
                 } catch (IllegalArgumentException e) {
                 } catch (IllegalAccessException e) {
-                    LOG.error("No access to Id annotation of entity.", e);
+                    this.LOG.error("No access to Id annotation of entity.", e);
                 }
             }
         }
 
-        if (primaryKey == null) {
+        if (primaryKey == null)
             throw new IllegalArgumentException(
                     "Tried to attach an object that is either not an entity or has no primary key annotation.");
-        }
 
         // Create a real entity by searching for the primary key.
         @SuppressWarnings("unchecked")

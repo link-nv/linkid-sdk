@@ -14,7 +14,7 @@ import net.link.safeonline.demo.cinema.service.FilmService;
 import net.link.safeonline.demo.cinema.service.RoomService;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
-import org.apache.wicket.Session;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -55,15 +55,11 @@ public class TimeRoomSelectionPage extends LayoutPage {
     public TimeRoomSelectionPage() {
 
         // If theatre and film are not yet set; go back.
-        if (!CinemaSession.isFilmAndTheaterSet()) {
-            setResponsePage(FilmTheatreSelectionPage.class);
-            return;
-        }
+        if (!CinemaSession.isFilmAndTheaterSet())
+            throw new RestartResponseException( FilmTheatreSelectionPage.class);
         // If room and time selected, send user to the seat selection page.
-        if (CinemaSession.isTimeAndRoomSet()) {
-            setResponsePage(SeatSelectionPage.class);
-            return;
-        }
+        if (CinemaSession.isTimeAndRoomSet())
+            throw new RestartResponseException(SeatSelectionPage.class);
 
         add(new Label("headerTitle", "Time And Room Selection"));
 
@@ -103,7 +99,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
             super(id);
             setVisible(!CinemaSession.isTimeSet());
 
-            // Either get all times TODO: or just those for the selected room.
+            // TODO: Either get all times or just those for the selected room.
             List<Date> data = new LinkedList<Date>();
             for (CinemaShowTimeEntity showTime : CinemaSession.get().getFilm().getTimes()) {
                 addDate(data, Calendar.MONDAY, showTime.getMonStart());
@@ -130,7 +126,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
                         private static final long serialVersionUID = 1L;
 
                         {
-                            add(new Label("time", WicketUtil.format(Session.get(), time)));
+                            add(new Label("time", WicketUtil.format(getLocale(), time)));
                         }
 
 
@@ -154,7 +150,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
                 return;
 
             GregorianCalendar calendar = new GregorianCalendar();
-
+            calendar.setTimeInMillis(0);
             calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
             calendar.set(Calendar.HOUR_OF_DAY, timeOfDay / 3600);
             calendar.set(Calendar.MINUTE, timeOfDay % 3600 / 60);

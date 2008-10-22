@@ -10,7 +10,6 @@ package net.link.safeonline.demo.cinema.service.bean;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -79,7 +78,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     public double calculatePrice(CinemaTicketEntity ticket) {
 
         double modifier = 1;
-        int basePrice = ticket.getFilm().getPrice();
+        long basePrice = ticket.getFilm().getPrice();
 
         // Discount for Junior users.
         if (ticket.getOwner().isJunior()) {
@@ -92,7 +91,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     @SuppressWarnings("unchecked")
     public List<CinemaTicketEntity> getTickets(String nrn, Date time) {
 
-        LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
+        this.LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
         try {
             // NOTE: time parameter is not checked because this is a demo.
             return this.em.createNamedQuery(CinemaTicketEntity.getByNrn).setParameter("nrn", nrn).getResultList();
@@ -114,13 +113,6 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
                 it.remove();
             }
 
-        // Feed the log.
-        LOG.debug("----");
-        LOG.debug("Found " + tickets.size() + " tickets:");
-        for (CinemaTicketEntity ticket : tickets) {
-            LOG.debug(ticket);
-        }
-
         return tickets;
     }
 
@@ -133,22 +125,19 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
             if (ticket.getFilm().getName().equalsIgnoreCase(filmName))
                 return true;
 
-        LOG.debug("None for film " + filmName);
+        this.LOG.debug("None for film " + filmName);
         return false;
     }
 
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public List<CinemaTicketEntity> getTickets(CinemaUserEntity user) {
 
-        if (user != null) {
-            CinemaUserEntity attachedUser = attach(user);
-            if (attachedUser != null)
-                return new LinkedList<CinemaTicketEntity>(attachedUser.getTickets());
-        }
-
-        return new ArrayList<CinemaTicketEntity>();
+        CinemaUserEntity attachedUser = attach(user);
+        return this.em.createNamedQuery(CinemaTicketEntity.getByUser).setParameter("user", attachedUser)
+                .getResultList();
     }
 
     /**

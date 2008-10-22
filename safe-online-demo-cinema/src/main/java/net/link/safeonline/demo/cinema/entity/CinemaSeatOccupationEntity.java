@@ -21,8 +21,7 @@ import javax.persistence.NamedQuery;
 
 
 @Entity
-// @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "seat", "start"
-// }))
+// @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "seat", "start" }))
 @NamedQueries( { @NamedQuery(name = CinemaSeatOccupationEntity.getFor, query = "SELECT o FROM CinemaSeatOccupationEntity o WHERE o.seat = :seat AND o.start = :start") })
 public class CinemaSeatOccupationEntity implements Serializable {
 
@@ -35,7 +34,7 @@ public class CinemaSeatOccupationEntity implements Serializable {
     private long               id;
 
     @ManyToOne
-    private CinemaSeatEntity         seat;
+    private CinemaSeatEntity   seat;
     private Date               start;
     private boolean            reserved;
 
@@ -83,9 +82,8 @@ public class CinemaSeatOccupationEntity implements Serializable {
      */
     public void reserve() throws IllegalStateException {
 
-        if (this.reserved) {
+        if (this.reserved)
             throw new IllegalStateException("Seat " + this.seat + " is already reserved!");
-        }
 
         this.reserved = true;
     }

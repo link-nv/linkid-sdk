@@ -8,9 +8,11 @@ import net.link.safeonline.demo.wicket.tools.OlasLoginLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.link.PageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 
@@ -41,10 +43,8 @@ public class AccountPage extends LayoutPage {
      */
     public AccountPage() {
 
-        if (!BankSession.isUserSet()) {
-            setResponsePage(LoginPage.class);
-            return;
-        }
+        if (!BankSession.isUserSet())
+            throw new RestartResponseException(LoginPage.class);
 
         add(new AccountsForm("accounts"));
     }
@@ -114,8 +114,8 @@ public class AccountPage extends LayoutPage {
 
                             /* Transaction Details. */
                             transactionItem.add(new Label("target", transaction.getTarget()));
-                            transactionItem.add(new Label("date", WicketUtil.format(BankSession.CURRENCY, transaction
-                                    .getDate())));
+                            transactionItem
+                                    .add(new Label("date", WicketUtil.format(getLocale(), transaction.getDate())));
                             transactionItem.add(new Label("amount", WicketUtil.format(BankSession.CURRENCY, transaction
                                     .getAmount())));
                         }
@@ -123,28 +123,8 @@ public class AccountPage extends LayoutPage {
                 }
             });
 
-            add(new Link<String>("newAccount") {
-
-                private static final long serialVersionUID = 1L;
-
-
-                @Override
-                public void onClick() {
-
-                    setResponsePage(NewAccountPage.class);
-                }
-            });
-            add(new Link<String>("newTransaction") {
-
-                private static final long serialVersionUID = 1L;
-
-
-                @Override
-                public void onClick() {
-
-                    setResponsePage(NewTransactionPage.class);
-                }
-            });
+            add(new PageLink("newAccount", NewAccountPage.class));
+            add(new PageLink("newTransaction", NewTransactionPage.class));
         }
 
         @Override

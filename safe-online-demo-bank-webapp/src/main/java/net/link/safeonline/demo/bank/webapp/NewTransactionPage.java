@@ -4,6 +4,7 @@ import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.webapp.NewAccountPage.AccountForm;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -37,10 +38,8 @@ public class NewTransactionPage extends LayoutPage {
      */
     public NewTransactionPage() {
 
-        if (!BankSession.isUserSet()) {
-            setResponsePage(LoginPage.class);
-            return;
-        }
+        if (!BankSession.isUserSet())
+            throw new RestartResponseException(LoginPage.class);
 
         add(new TransactionForm("newTransaction"));
     }

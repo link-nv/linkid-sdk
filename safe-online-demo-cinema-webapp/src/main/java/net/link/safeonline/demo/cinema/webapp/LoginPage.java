@@ -8,6 +8,7 @@ import net.link.safeonline.demo.cinema.service.UserService;
 import net.link.safeonline.demo.wicket.tools.OlasLoginLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 
 
@@ -33,8 +34,7 @@ public class LoginPage extends LayoutPage {
                 user = this.userService.updateUser(user, WicketUtil.toServletRequest(getRequest()));
                 CinemaSession.get().setUser(user);
 
-                setResponsePage(TicketPage.class);
-                return;
+                throw new RestartResponseException(TicketPage.class);
             }
 
             catch (ServletException e) {
@@ -43,6 +43,6 @@ public class LoginPage extends LayoutPage {
         }
 
         add(new Label("headerTitle", "Login Page"));
-        add(new OlasLoginLink("loginlink"));
+        add(new OlasLoginLink("loginLink"));
     }
 }
