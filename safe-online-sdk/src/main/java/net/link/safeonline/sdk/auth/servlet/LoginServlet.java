@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.sdk.auth.AuthenticationProtocolContext;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -87,16 +88,19 @@ public class LoginServlet extends AbstractInjectionServlet {
             return;
         }
 
-        String userId = protocolHandler.finalizeAuthentication(requestWrapper, response);
-        if (null == userId) {
+        AuthenticationProtocolContext authenticationProtocolContext = protocolHandler.finalizeAuthentication(
+                requestWrapper, response);
+        if (null == authenticationProtocolContext) {
             String msg = "protocol handler could not finalize";
             LOG.error(msg);
             redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
             return;
         }
 
-        LOG.debug("username: " + userId);
-        LoginManager.setUserId(userId, requestWrapper);
+        LOG.debug("username: " + authenticationProtocolContext.getUserId());
+        LoginManager.setUserId(authenticationProtocolContext.getUserId(), requestWrapper);
+        LOG.debug("authenticated device: " + authenticationProtocolContext.getAuthenticatedDevice());
+        LoginManager.setAuthenticatedDevice(authenticationProtocolContext.getAuthenticatedDevice(), requestWrapper);
         String target = AuthenticationProtocolManager.getTarget(requestWrapper);
         LOG.debug("target: " + target);
         AuthenticationProtocolManager.cleanupAuthenticationHandler(requestWrapper);

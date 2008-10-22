@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -43,9 +42,6 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
     @EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
     private BeIdDeviceService    beIdDeviceService;
 
-    @EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
-    private SamlAuthorityService samlAuthorityService;
-
 
     @Override
     protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
@@ -57,7 +53,6 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
         PrintWriter writer = response.getWriter();
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(session);
         try {
-            protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
             String userId = (String) session.getAttribute("userId");
             String operation = (String) session.getAttribute("operation");
             this.beIdDeviceService.remove(sessionId, userId, operation, statementData);

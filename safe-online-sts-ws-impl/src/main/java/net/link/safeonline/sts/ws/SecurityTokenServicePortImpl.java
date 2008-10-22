@@ -16,6 +16,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 
+import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequest;
+import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
 import net.link.safeonline.ws.util.ri.Injection;
 
 import org.apache.commons.logging.Log;
@@ -94,12 +96,10 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
                 }
             }
         }
-        if (null == requestType) {
+        if (null == requestType)
             throw new RuntimeException("RequestType is required");
-        }
-        if (false == requestType.startsWith("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate")) {
+        if (false == requestType.startsWith("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate"))
             throw new RuntimeException("only supporting the validation binding");
-        }
         if (null != tokenType && false == SecurityTokenServiceConstants.TOKEN_TYPE_STATUS.equals(tokenType)) {
             RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
                     "optional TokenType should be Status");
@@ -152,9 +152,18 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
             RequestSecurityTokenResponseType response = validateSaml2LogoutRequest((LogoutRequest) tokenXmlObject);
             if (null != response)
                 return response;
+        } else if (tokenXmlObject instanceof DeviceOperationResponse) {
+            RequestSecurityTokenResponseType response = validateDeviceOperationResponse((DeviceOperationResponse) tokenXmlObject);
+            if (null != response)
+                return response;
+        } else if (tokenXmlObject instanceof DeviceOperationRequest) {
+            RequestSecurityTokenResponseType response = validateDeviceOperationRequest((DeviceOperationRequest) tokenXmlObject);
+            if (null != response)
+                return response;
         } else {
             RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
-                    "token not a SAML2 Response, AuthnRequest, LogoutResponse or LogoutRequest");
+                    "token not a SAML2 Response, AuthnRequest, LogoutResponse, LogoutRequest, "
+                            + "DeviceOperationResponse or DeviceOperationRequest");
             return response;
 
         }
@@ -210,11 +219,6 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
              * Authentication failed, response valid, user requested to try another device.
              */
             return null;
-        else if (samlStatusCode.equals(StatusCode.REQUEST_UNSUPPORTED_URI))
-            /**
-             * Unsupported device operation authentication request but response was valid.
-             */
-            return null;
         else if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
             LOG.debug("SAML status code: " + samlStatusCode);
             RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
@@ -266,7 +270,6 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         }
         LOG.debug("authentication device: " + authnDevice);
         return null;
-
     }
 
     private RequestSecurityTokenResponseType validateSaml2LogoutResponse(LogoutResponse samlLogoutResponse) {
@@ -300,6 +303,109 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         }
         LOG.debug("subject name: " + subjectName);
 
+        return null;
+    }
+
+    private RequestSecurityTokenResponseType validateDeviceOperationRequest(
+            DeviceOperationRequest deviceOperationRequest) {
+
+        Issuer issuer = deviceOperationRequest.getIssuer();
+        String issuerName = issuer.getValue();
+        LOG.debug("issuer name: " + issuerName);
+
+        String serviceURL = deviceOperationRequest.getServiceURL();
+        if (null == serviceURL) {
+            LOG.debug("missing service URL");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing service URL");
+            return response;
+        }
+        LOG.debug("serviceURL: " + serviceURL);
+
+        String deviceOperation = deviceOperationRequest.getDeviceOperation();
+        if (null == deviceOperation) {
+            LOG.debug("missing device operation");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing device operation");
+            return response;
+        }
+        LOG.debug("deviceOperation: " + deviceOperation);
+
+        String device = deviceOperationRequest.getDevice();
+        if (null == device) {
+            LOG.debug("missing device");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing device");
+            return response;
+        }
+        LOG.debug("device: " + device);
+
+        return null;
+    }
+
+    private RequestSecurityTokenResponseType validateDeviceOperationResponse(
+            DeviceOperationResponse deviceOperationResponse) {
+
+        String samlStatusCode = deviceOperationResponse.getStatus().getStatusCode().getValue();
+        if (samlStatusCode.equals(DeviceOperationResponse.FAILED_URI))
+            /**
+             * Device operation failed but response was valid.
+             */
+            return null;
+        else if (samlStatusCode.equals(StatusCode.REQUEST_UNSUPPORTED_URI))
+            /**
+             * Device operation failed, response valid, request was unsupported.
+             */
+            return null;
+        else if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
+            LOG.debug("SAML status code: " + samlStatusCode);
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "invalid SAML2 token status code");
+            return response;
+        }
+
+        // Device operation does not necessarily have assertions attached
+        List<Assertion> assertions = deviceOperationResponse.getAssertions();
+        if (assertions.isEmpty())
+            return null;
+
+        Assertion assertion = assertions.get(0);
+
+        Conditions conditions = assertion.getConditions();
+        DateTime notBefore = conditions.getNotBefore();
+        DateTime notOnOrAfter = conditions.getNotOnOrAfter();
+        DateTime now = new DateTime();
+        if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "invalid SAML message timeframe");
+            return response;
+        }
+
+        Subject subject = assertion.getSubject();
+        if (null == subject) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "missing Assertion Subject");
+            return response;
+        }
+        NameID subjectName = subject.getNameID();
+        String subjectNameValue = subjectName.getValue();
+        LOG.debug("subject name value: " + subjectNameValue);
+
+        List<AuthnStatement> authnStatements = assertion.getAuthnStatements();
+        if (authnStatements.isEmpty()) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "no authentication statement present");
+            return response;
+        }
+        AuthnStatement authnStatement = authnStatements.get(0);
+        AuthnContextClassRef authnContextClassRef = authnStatement.getAuthnContext().getAuthnContextClassRef();
+        String authnDevice = authnContextClassRef.getAuthnContextClassRef();
+        if (null == authnDevice) {
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
+                    "authentication device cannot be null");
+            return response;
+        }
+        LOG.debug("authentication device: " + authnDevice);
         return null;
     }
 

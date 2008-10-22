@@ -38,10 +38,11 @@ import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.data.DeviceRegistrationDO;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.service.DeviceService;
 import net.link.safeonline.user.DeviceEntry;
 import net.link.safeonline.user.DeviceOperationUtils;
@@ -118,6 +119,9 @@ public class DevicesBean implements Devices {
 
     @In(create = true)
     FacesMessages               facesMessages;
+
+    @In(value = LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE)
+    String                      authenticatedDevice;
 
 
     public String getNewPassword() {
@@ -265,7 +269,7 @@ public class DevicesBean implements Devices {
             return null;
         }
         DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
-                .getName(), userId);
+                .getName(), this.authenticatedDevice, userId);
         return null;
     }
 
@@ -298,7 +302,8 @@ public class DevicesBean implements Devices {
             externalContext.redirect(removalURL);
             return null;
         }
-        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, deviceName, userId);
+        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, deviceName, this.authenticatedDevice,
+                userId);
         return null;
     }
 
@@ -321,7 +326,8 @@ public class DevicesBean implements Devices {
             externalContext.redirect(updateURL);
             return null;
         }
-        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, deviceName, userId);
+        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, deviceName, this.authenticatedDevice,
+                userId);
         return null;
     }
 
@@ -340,7 +346,8 @@ public class DevicesBean implements Devices {
         }
 
         DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getDisableURL(),
-                DeviceOperationType.DISABLE, this.selectedDeviceRegistration.getDevice().getName(), userId);
+                DeviceOperationType.DISABLE, this.selectedDeviceRegistration.getDevice().getName(),
+                this.authenticatedDevice, userId);
         return null;
     }
 

@@ -30,9 +30,11 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LoginManager {
 
-    private static final Log   LOG                      = LogFactory.getLog(LoginManager.class);
+    private static final Log   LOG                                    = LogFactory.getLog(LoginManager.class);
 
-    public static final String USERID_SESSION_ATTRIBUTE = "userId";
+    public static final String USERID_SESSION_ATTRIBUTE               = "userId";
+
+    public static final String AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE = "authenticatedDevice";
 
 
     private LoginManager() {
@@ -175,10 +177,129 @@ public class LoginManager {
     public static void removeUserId(String paramName, HttpServletRequest httpRequest) throws ServletException {
 
         String userId = findUserId(httpRequest, paramName);
-        if (null == userId) {
+        if (null == userId)
             throw new ServletException("no user was authenticated");
-        }
         LOG.debug("removing userId: " + userId);
+        HttpSession session = httpRequest.getSession();
+        session.removeAttribute(paramName);
+    }
+
+    /**
+     * Gives back the SafeOnline authenticated device, or <code>null</code> if the user was not yet authenticated.
+     * 
+     * @param request
+     */
+    public static String findAuthenticatedDevice(HttpServletRequest request) {
+
+        return findAuthenticatedDevice(request, AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+    }
+
+    /**
+     * Gives back the SafeOnline authenticated device, or <code>null</code> if the user was not yet authenticated. It
+     * uses the specified parameter in the session.
+     * 
+     * @param request
+     * @param paramName
+     */
+    public static String findAuthenticatedDevice(HttpServletRequest request, String paramName) {
+
+        if (null == paramName)
+            throw new IllegalArgumentException("authenticatedDevice session attribute name should not be null");
+
+        HttpSession httpSession = request.getSession();
+        String userId = (String) httpSession.getAttribute(paramName);
+        return userId;
+    }
+
+    /**
+     * Gives back the SafeOnline authenticated device.
+     * 
+     * @param request
+     *            the servlet request object.
+     * @throws ServletException
+     *             if the user was not yet authenticated via SafeOnline.
+     */
+    public static String getAuthenticatedDevice(HttpServletRequest request) throws ServletException {
+
+        return getAuthenticatedDevice(request, AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+    }
+
+    /**
+     * Gives back the SafeOnline authenticated device. It uses the specified parameter in the session.
+     * 
+     * @param request
+     *            the servlet request object.
+     * @param paramName
+     *            the parameter name that is used to store login info
+     * @throws ServletException
+     *             if the user was not yet authenticated via SafeOnline.
+     */
+    public static String getAuthenticatedDevice(HttpServletRequest request, String paramName) throws ServletException {
+
+        String userId = findAuthenticatedDevice(request, paramName);
+        if (null == userId)
+            throw new ServletException("no user was authenticated");
+
+        return userId;
+    }
+
+    /**
+     * Sets the authenticatedDevice. This method should only be invoked after the user has been properly authenticated
+     * via the SafeOnline authentication web application.
+     * 
+     * @param authenticatedDevice
+     *            the device the SafeOnline authenticated principal used to authenticate with.
+     * @param httpRequest
+     */
+    public static void setAuthenticatedDevice(String authenticatedDevice, HttpServletRequest httpRequest) {
+
+        setAuthenticatedDevice(authenticatedDevice, httpRequest, AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+    }
+
+    /**
+     * Sets the userId. This method should only be invoked after the user has been properly authenticated via the
+     * SafeOnline authentication web application.
+     * 
+     * @param authenticatedDevice
+     *            the device the SafeOnline authenticated principal used to authenticate with.
+     * @param httpRequest
+     * @param paramName
+     */
+    public static void setAuthenticatedDevice(String authenticatedDevice, HttpServletRequest httpRequest,
+            String paramName) {
+
+        LOG.debug("setting authenticatedDevice: " + authenticatedDevice);
+        HttpSession session = httpRequest.getSession();
+        session.setAttribute(paramName, authenticatedDevice);
+    }
+
+    /**
+     * Removes the authenticatedDevice.
+     * 
+     * @param httpRequest
+     * 
+     * @throws ServletException
+     */
+    public static void removeAuthenticatedDevice(HttpServletRequest httpRequest) throws ServletException {
+
+        removeAuthenticatedDevice(AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE, httpRequest);
+    }
+
+    /**
+     * Removes the authenticatedDevice.
+     * 
+     * @param paramName
+     * @param httpRequest
+     * 
+     * @throws ServletException
+     */
+    public static void removeAuthenticatedDevice(String paramName, HttpServletRequest httpRequest)
+            throws ServletException {
+
+        String authenticatedDevice = findAuthenticatedDevice(httpRequest, paramName);
+        if (null == authenticatedDevice)
+            throw new ServletException("no user was authenticated");
+        LOG.debug("removing authenticatedDevice: " + authenticatedDevice);
         HttpSession session = httpRequest.getSession();
         session.removeAttribute(paramName);
     }

@@ -11,14 +11,16 @@ import java.io.Serializable;
 
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 
 
 public class ProtocolContext implements Serializable {
 
     private static final long   serialVersionUID = 1L;
 
-    private String              wantedDevice;
+    private String              device;
+
+    private String              authenticatedDevice;
 
     private String              subject;
 
@@ -40,7 +42,7 @@ public class ProtocolContext implements Serializable {
 
 
     private ProtocolContext() {
-
+        
     }
 
     public static ProtocolContext getProtocolContext(HttpSession session) {
@@ -63,14 +65,14 @@ public class ProtocolContext implements Serializable {
         this.subject = subject;
     }
 
-    public String getWantedDevice() {
+    public String getDevice() {
 
-        return this.wantedDevice;
+        return this.device;
     }
 
-    public void setWantedDevice(String wantedDevice) {
+    public void setDevice(String device) {
 
-        this.wantedDevice = wantedDevice;
+        this.device = device;
     }
 
     public String getIssuer() {
@@ -113,16 +115,6 @@ public class ProtocolContext implements Serializable {
         this.nodeName = nodeName;
     }
 
-    public int getValidity() {
-
-        return this.validity;
-    }
-
-    public void setValidity(int validity) {
-
-        this.validity = validity;
-    }
-
     public void setDeviceOperation(DeviceOperationType deviceOperation) {
 
         this.deviceOperation = deviceOperation;
@@ -141,5 +133,25 @@ public class ProtocolContext implements Serializable {
     public void setSuccess(boolean success) {
 
         this.success = success;
+    }
+
+    public String getAuthenticatedDevice() {
+
+        return this.authenticatedDevice;
+    }
+
+    public void setAuthenticatedDevice(String authenticatedDevice) {
+
+        this.authenticatedDevice = authenticatedDevice;
+    }
+
+    public int getValidity() {
+
+        return this.validity;
+    }
+
+    public void setValidity(int validity) {
+
+        this.validity = validity;
     }
 }

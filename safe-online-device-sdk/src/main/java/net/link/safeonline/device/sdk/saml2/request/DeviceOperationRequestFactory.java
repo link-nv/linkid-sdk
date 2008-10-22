@@ -5,15 +5,17 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.auth.saml2;
+package net.link.safeonline.device.sdk.saml2.request;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
+
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.sdk.auth.saml2.Challenge;
+import net.link.safeonline.sdk.auth.saml2.DomUtils;
 
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
@@ -21,14 +23,9 @@ import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.Audience;
-import org.opensaml.saml2.core.AudienceRestriction;
-import org.opensaml.saml2.core.AuthnContextClassRef;
-import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.NameIDPolicy;
-import org.opensaml.saml2.core.RequestedAuthnContext;
+import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObjectBuilder;
@@ -47,18 +44,18 @@ import org.w3c.dom.Element;
 
 
 /**
- * Factory class for SAML2 authentication requests.
+ * Factory class for Device Operation requests.
  * 
  * <p>
  * We're using the OpenSAML2 Java library for construction of the XML SAML documents.
  * </p>
  * 
- * @author fcorneli
+ * @author wvdhaute
  * 
  */
-public class AuthnRequestFactory {
+public class DeviceOperationRequestFactory {
 
-    private AuthnRequestFactory() {
+    private DeviceOperationRequestFactory() {
 
         // empty
     }
@@ -72,6 +69,9 @@ public class AuthnRequestFactory {
                 "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
         try {
             DefaultBootstrap.bootstrap();
+            Configuration.registerObjectProvider(DeviceOperationRequest.DEFAULT_ELEMENT_NAME,
+                    new DeviceOperationRequestBuilder(), new DeviceOperationRequestMarshaller(),
+                    new DeviceOperationRequestUnmarshaller(), null);
         } catch (ConfigurationException e) {
             throw new RuntimeException("could not bootstrap the OpenSAML2 library");
         }
@@ -79,38 +79,49 @@ public class AuthnRequestFactory {
 
 
     /**
-     * Creates a SAML2 authentication request. For the moment we allow the Service Provider to pass on the Assertion
-     * Consumer Service URL itself. Later on we could use the SAML Metadata service or a persistent server-side
-     * application field to locate this service.
+     * Creates a SAML2 device operation request. This request will contain a Subject element, containing the OLAS user
+     * ID on the destination device node. It will also contain the device with which the user has authenticated before
+     * issuing this device operation request.
+     * 
+     * The request can also optionally contain the device user attribute to specify the specific device registration for
+     * this device operation.
+     * 
      * 
      * @param issuerName
-     * @param applicationName
-     * @param applicationFriendlyName
+     * @param subjectName
+     *            the subject name which wants to execute a device operation ( register/removal/update/disable ). This
+     *            is OLAS user ID on the destination device node.
      * @param signerKeyPair
-     * @param assertionConsumerServiceURL
-     *            the optional location of the assertion consumer service. This location can be used by the IdP to send
-     *            back the SAML response message.
+     * @param serviceURL
+     *            the location of the service that will handle the response message.
      * @param destinationURL
-     *            the optional location of the destination IdP.
+     *            the location of the destination IdP.
+     * @param deviceOperation
+     *            the requested device operation.
      * @param challenge
-     *            the optional challenge (output variable).
-     * @param devices
-     *            the optional list of allowed authentication devices.
+     *            the challenge (output variable).
+     * @param device
      */
-    public static String createAuthnRequest(String issuerName, String applicationName, String applicationFriendlyName,
-            KeyPair signerKeyPair, String assertionConsumerServiceURL, String destinationURL,
-            Challenge<String> challenge, Set<String> devices, boolean ssoEnabled) {
+    public static String createDeviceOperationRequest(String issuerName, String subjectName, KeyPair signerKeyPair,
+            String serviceURL, String destinationURL, DeviceOperationType deviceOperation, Challenge<String> challenge,
+            String device, String authenticatedDevice) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
-        if (null == applicationName)
-            throw new IllegalArgumentException("application name should not be null");
         if (null == issuerName)
             throw new IllegalArgumentException("application name should not be null");
+        if (null == destinationURL)
+            throw new IllegalArgumentException("destination url should not be null");
+        if (null == deviceOperation)
+            throw new IllegalArgumentException("device operation should not be null");
+        if (null == serviceURL)
+            throw new IllegalArgumentException("service url should not be null");
+        if (null == device)
+            throw new IllegalArgumentException("device should not be null");
 
-        AuthnRequest request = buildXMLObject(AuthnRequest.class, AuthnRequest.DEFAULT_ELEMENT_NAME);
+        DeviceOperationRequest request = buildXMLObject(DeviceOperationRequest.class,
+                DeviceOperationRequest.DEFAULT_ELEMENT_NAME);
 
-        request.setForceAuthn(!ssoEnabled);
         SecureRandomIdentifierGenerator idGenerator;
         try {
             idGenerator = new SecureRandomIdentifierGenerator();
@@ -128,58 +139,29 @@ public class AuthnRequestFactory {
         issuer.setValue(issuerName);
         request.setIssuer(issuer);
 
-        if (null != assertionConsumerServiceURL) {
-            request.setAssertionConsumerServiceURL(assertionConsumerServiceURL);
-            request.setProtocolBinding(SAMLConstants.SAML2_POST_BINDING_URI);
-        }
+        Subject subject = buildXMLObject(Subject.class, Subject.DEFAULT_ELEMENT_NAME);
+        NameID nameID = buildXMLObject(NameID.class, NameID.DEFAULT_ELEMENT_NAME);
+        nameID.setValue(subjectName);
+        nameID.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent");
+        subject.setNameID(nameID);
+        request.setSubject(subject);
 
-        if (null != destinationURL) {
-            request.setDestination(destinationURL);
-        }
+        request.setServiceURL(serviceURL);
+        request.setProtocolBinding(SAMLConstants.SAML2_POST_BINDING_URI);
+        request.setDestination(destinationURL);
+        request.setDeviceOperation(deviceOperation.name());
+        request.setDevice(device);
+        request.setAuthenticatedDevice(authenticatedDevice);
 
-        if (null == applicationFriendlyName) {
-            request.setProviderName(applicationName);
-        } else {
-            request.setProviderName(applicationFriendlyName);
-        }
-
-        NameIDPolicy nameIdPolicy = buildXMLObject(NameIDPolicy.class, NameIDPolicy.DEFAULT_ELEMENT_NAME);
-        nameIdPolicy.setAllowCreate(true);
-        request.setNameIDPolicy(nameIdPolicy);
-
-        if (null != devices) {
-            RequestedAuthnContext requestedAuthnContext = buildXMLObject(RequestedAuthnContext.class,
-                    RequestedAuthnContext.DEFAULT_ELEMENT_NAME);
-            List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
-            for (String device : devices) {
-                AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class,
-                        AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
-                authnContextClassRef.setAuthnContextClassRef(device);
-                authnContextClassRefs.add(authnContextClassRef);
-            }
-            request.setRequestedAuthnContext(requestedAuthnContext);
-        }
-
-        Conditions conditions = buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
-        List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
-        AudienceRestriction audienceRestriction = buildXMLObject(AudienceRestriction.class,
-                AudienceRestriction.DEFAULT_ELEMENT_NAME);
-        audienceRestrictions.add(audienceRestriction);
-        List<Audience> audiences = audienceRestriction.getAudiences();
-        Audience audience = buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
-        audiences.add(audience);
-        audience.setAudienceURI(applicationName);
-        request.setConditions(conditions);
-
-        return signAuthnRequest(request, signerKeyPair);
+        return signRequest(request, signerKeyPair);
     }
 
     /**
-     * Signs the unsigned authentication request
+     * Signs the unsigned device operation request
      * 
      * @return
      */
-    private static String signAuthnRequest(AuthnRequest authnRequest, KeyPair signerKeyPair) {
+    private static String signRequest(DeviceOperationRequest request, KeyPair signerKeyPair) {
 
         XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
         SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
@@ -192,17 +174,17 @@ public class AuthnRequestFactory {
         } else if ("DSA".equals(algorithm)) {
             signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
         }
-        authnRequest.setSignature(signature);
+        request.setSignature(signature);
         BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair
                 .getPrivate());
         signature.setSigningCredential(signingCredential);
 
         // marshalling
         MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
-        Marshaller marshaller = marshallerFactory.getMarshaller(authnRequest);
+        Marshaller marshaller = marshallerFactory.getMarshaller(request);
         Element requestElement;
         try {
-            requestElement = marshaller.marshall(authnRequest);
+            requestElement = marshaller.marshall(request);
         } catch (MarshallingException e) {
             throw new RuntimeException("opensaml2 marshalling error: " + e.getMessage(), e);
         }

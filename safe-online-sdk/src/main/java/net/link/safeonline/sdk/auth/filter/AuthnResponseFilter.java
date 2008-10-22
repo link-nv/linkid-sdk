@@ -16,6 +16,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.sdk.auth.AuthenticationProtocolContext;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
@@ -36,8 +37,11 @@ public class AuthnResponseFilter extends AbstractInjectionFilter {
 
     private static final Log LOG = LogFactory.getLog(AuthnResponseFilter.class);
 
-    @Init(name = "UsernameSessionParameter", defaultValue = LoginManager.USERID_SESSION_ATTRIBUTE)
-    private String           sessionParameter;
+    @Init(name = "UserIdSessionParameter", defaultValue = LoginManager.USERID_SESSION_ATTRIBUTE)
+    private String           userIdSessionParameter;
+
+    @Init(name = "AuthenticatedDeviceSessionParameter", defaultValue = LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE)
+    private String           authenticatedDeviceSessionParameter;
 
 
     public void destroy() {
@@ -72,9 +76,12 @@ public class AuthnResponseFilter extends AbstractInjectionFilter {
          */
 
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        String userId = protocolHandler.finalizeAuthentication(httpRequest, httpResponse);
-        if (null != userId) {
-            LoginManager.setUserId(userId, httpRequest, this.sessionParameter);
+        AuthenticationProtocolContext authenticationProtocolContext = protocolHandler.finalizeAuthentication(
+                httpRequest, httpResponse);
+        if (null != authenticationProtocolContext) {
+            LoginManager.setUserId(authenticationProtocolContext.getUserId(), httpRequest, this.userIdSessionParameter);
+            LoginManager.setAuthenticatedDevice(authenticationProtocolContext.getAuthenticatedDevice(), httpRequest,
+                    this.authenticatedDeviceSessionParameter);
             AuthenticationProtocolManager.cleanupAuthenticationHandler(httpRequest);
             chain.doFilter(request, response);
             return;

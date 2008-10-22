@@ -20,6 +20,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.sdk.auth.AuthenticationProtocolContext;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -131,11 +132,14 @@ public class LoginServletTest {
         String target = "http://test.target";
         this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, target);
         String userId = UUID.randomUUID().toString();
+        String authenticatedDevice = "test-device";
+        AuthenticationProtocolContext authenticationProtocolContext = new AuthenticationProtocolContext(userId,
+                authenticatedDevice);
 
         // expectations
         expect(
                 mockAuthenticationProtocolHandler.finalizeAuthentication((HttpServletRequest) EasyMock.anyObject(),
-                        (HttpServletResponse) EasyMock.anyObject())).andReturn(userId);
+                        (HttpServletResponse) EasyMock.anyObject())).andReturn(authenticationProtocolContext);
 
         // prepare
         replay(mockAuthenticationProtocolHandler);
@@ -155,6 +159,9 @@ public class LoginServletTest {
         String resultUserId = (String) this.servletTestManager
                 .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         assertEquals(userId, resultUserId);
+        String resultAuthenticatedDevice = (String) this.servletTestManager
+                .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+        assertEquals(authenticatedDevice, resultAuthenticatedDevice);
         String resultTarget = getMethod.getResponseHeader("Location").getValue();
         assertEquals(target, resultTarget);
     }

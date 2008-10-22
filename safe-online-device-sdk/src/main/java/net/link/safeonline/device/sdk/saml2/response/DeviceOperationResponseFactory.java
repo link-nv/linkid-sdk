@@ -5,26 +5,17 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.auth.saml2;
+package net.link.safeonline.device.sdk.saml2.response;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthenticatorBaseType;
-import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthenticatorTransportProtocolType;
-import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthnContextDeclarationBaseType;
-import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthnMethodBaseType;
-import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ExtensionOnlyType;
-import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ObjectFactory;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.sdk.auth.saml2.DomUtils;
 
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
@@ -32,15 +23,12 @@ import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Audience;
-import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.AuthnContext;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Status;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
@@ -60,7 +48,6 @@ import org.opensaml.xml.signature.SignatureConstants;
 import org.opensaml.xml.signature.SignatureException;
 import org.opensaml.xml.signature.Signer;
 import org.opensaml.xml.signature.impl.SignatureBuilder;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
@@ -70,7 +57,7 @@ import org.w3c.dom.Element;
  * @author fcorneli
  * 
  */
-public class AuthnResponseFactory {
+public class DeviceOperationResponseFactory {
 
     static {
         /*
@@ -80,88 +67,71 @@ public class AuthnResponseFactory {
                 "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
         try {
             DefaultBootstrap.bootstrap();
+            Configuration.registerObjectProvider(DeviceOperationResponse.DEFAULT_ELEMENT_NAME,
+                    new DeviceOperationResponseBuilder(), new DeviceOperationResponseMarshaller(),
+                    new DeviceOperationResponseUnmarshaller(), null);
         } catch (ConfigurationException e) {
             throw new RuntimeException("could not bootstrap the OpenSAML2 library");
         }
     }
 
 
-    private AuthnResponseFactory() {
+    private DeviceOperationResponseFactory() {
 
         // empty
     }
 
     /**
-     * Creates a signed authentication response.
+     * Creates a signed device operation response with status SUCCESS.
      * 
-     * @param audienceName
-     *            This can be or the application name authenticated for, or the device operation executed
+     * @param deviceOperation
+     *            The device operation executed
      */
-    public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName,
-            String subjectName, String samlName, KeyPair signerKeyPair, int validity, String target) {
+    public static String createDeviceOperationResponse(String inResponseTo, DeviceOperationType deviceOperation,
+            String issuerName, String subjectName, String device, KeyPair signerKeyPair, int validity, String target) {
 
-        return createAuthResponse(inResponseTo, audienceName, issuerName, subjectName, samlName, signerKeyPair,
-                validity, target, new DateTime());
+        return createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName, subjectName, device,
+                signerKeyPair, validity, target, StatusCode.SUCCESS_URI);
     }
 
-    public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName,
-            String subjectName, String samlName, KeyPair signerKeyPair, int validity, String target,
-            DateTime authenticationDate) {
+    /**
+     * Creates a signed device operation response with status failed.
+     */
+    public static String createDeviceOperationResponseFailed(String inResponseTo, DeviceOperationType deviceOperation,
+            String issuerName, String subjectName, String device, KeyPair signerKeyPair, int validity, String target) {
+
+        return createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName, subjectName, device,
+                signerKeyPair, validity, target, DeviceOperationResponse.FAILED_URI);
+    }
+
+    /**
+     * Creates a signed authentication response with status unsupported.
+     */
+    public static String createDeviceOperationResponseUnsupported(String inResponseTo,
+            DeviceOperationType deviceOperation, String issuerName, String subjectName, String device,
+            KeyPair signerKeyPair, int validity, String target) {
+
+        return createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName, subjectName, device,
+                signerKeyPair, validity, target, StatusCode.REQUEST_UNSUPPORTED_URI);
+    }
+
+    private static String createDeviceOperationResponse(String inResponseTo, DeviceOperationType deviceOperation,
+            String issuerName, String subjectName, String device, KeyPair signerKeyPair, int validity, String target,
+            String statusCodeURI) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
         if (null == issuerName)
             throw new IllegalArgumentException("issuer name should not be null");
+        if (null == deviceOperation)
+            throw new IllegalArgumentException("deviceOperation should not be null");
+        if (null == device)
+            throw new IllegalArgumentException("device should not be null");
         if (null == subjectName)
-            throw new IllegalArgumentException("subject name should not be null");
-        if (null == audienceName)
-            throw new IllegalArgumentException("audience name should not be null");
+            throw new IllegalArgumentException("subjectName should not be null");
 
-        Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
-
-        DateTime now = new DateTime();
-
-        SecureRandomIdentifierGenerator idGenerator;
-        try {
-            idGenerator = new SecureRandomIdentifierGenerator();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
-        }
-        response.setID(idGenerator.generateIdentifier());
-        response.setVersion(SAMLVersion.VERSION_20);
-        response.setInResponseTo(inResponseTo);
-        response.setIssueInstant(now);
-
-        Issuer responseIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
-        responseIssuer.setValue(issuerName);
-        response.setIssuer(responseIssuer);
-
-        response.setDestination(target);
-
-        Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
-        StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
-        statusCode.setValue(StatusCode.SUCCESS_URI);
-        status.setStatusCode(statusCode);
-        response.setStatus(status);
-
-        addAssertion(response, inResponseTo, audienceName, subjectName, issuerName, samlName, validity, target,
-                authenticationDate);
-
-        return signAuthnResponse(response, signerKeyPair);
-    }
-
-    /**
-     * Creates a signed authentication response with status failed.
-     */
-    public static String createAuthResponseFailed(String inResponseTo, String issuerName, KeyPair signerKeyPair,
-            String target) {
-
-        if (null == signerKeyPair)
-            throw new IllegalArgumentException("signer key pair should not be null");
-        if (null == issuerName)
-            throw new IllegalArgumentException("issuer name should not be null");
-
-        Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
+        DeviceOperationResponse response = buildXMLObject(DeviceOperationResponse.class,
+                DeviceOperationResponse.DEFAULT_ELEMENT_NAME);
 
         DateTime now = new DateTime();
 
@@ -181,55 +151,22 @@ public class AuthnResponseFactory {
         response.setIssuer(responseIssuer);
 
         response.setDestination(target);
+        response.setDeviceOperation(deviceOperation.name());
+        response.setDevice(device);
+        response.setSubjectName(subjectName);
 
         Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
         StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
-        statusCode.setValue(StatusCode.AUTHN_FAILED_URI);
+        statusCode.setValue(statusCodeURI);
         status.setStatusCode(statusCode);
         response.setStatus(status);
 
-        return signAuthnResponse(response, signerKeyPair);
-    }
-
-    /**
-     * Creates a signed authentication response with status unknown principal, indicating user requests a registration.
-     */
-    public static String createAuthResponseRequestRegistration(String inResponseTo, String issuerName,
-            KeyPair signerKeyPair, String target) {
-
-        if (null == signerKeyPair)
-            throw new IllegalArgumentException("signer key pair should not be null");
-        if (null == issuerName)
-            throw new IllegalArgumentException("issuer name should not be null");
-
-        Response response = buildXMLObject(Response.class, Response.DEFAULT_ELEMENT_NAME);
-
-        DateTime now = new DateTime();
-
-        SecureRandomIdentifierGenerator idGenerator;
-        try {
-            idGenerator = new SecureRandomIdentifierGenerator();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
+        if (statusCodeURI.equals(StatusCode.SUCCESS_URI)
+                && deviceOperation.equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
+            addAssertion(response, inResponseTo, subjectName, issuerName, device, validity, target, new DateTime());
         }
-        response.setID(idGenerator.generateIdentifier());
-        response.setVersion(SAMLVersion.VERSION_20);
-        response.setInResponseTo(inResponseTo);
-        response.setIssueInstant(now);
 
-        Issuer responseIssuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
-        responseIssuer.setValue(issuerName);
-        response.setIssuer(responseIssuer);
-
-        response.setDestination(target);
-
-        Status status = buildXMLObject(Status.class, Status.DEFAULT_ELEMENT_NAME);
-        StatusCode statusCode = buildXMLObject(StatusCode.class, StatusCode.DEFAULT_ELEMENT_NAME);
-        statusCode.setValue(StatusCode.UNKNOWN_PRINCIPAL_URI);
-        status.setStatusCode(statusCode);
-        response.setStatus(status);
-
-        return signAuthnResponse(response, signerKeyPair);
+        return signResponse(response, signerKeyPair);
     }
 
     /**
@@ -240,7 +177,7 @@ public class AuthnResponseFactory {
      * @param audienceName
      *            This can be or the application name authenticated for, or the device operation executed
      */
-    private static void addAssertion(Response response, String inResponseTo, String audienceName, String subjectName,
+    private static void addAssertion(DeviceOperationResponse response, String inResponseTo, String subjectName,
             String issuerName, String samlName, int validity, String target, DateTime authenticationDate) {
 
         DateTime now = new DateTime();
@@ -272,14 +209,6 @@ public class AuthnResponseFactory {
         Conditions conditions = buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
         conditions.setNotBefore(now);
         conditions.setNotOnOrAfter(notAfter);
-        List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
-        AudienceRestriction audienceRestriction = buildXMLObject(AudienceRestriction.class,
-                AudienceRestriction.DEFAULT_ELEMENT_NAME);
-        audienceRestrictions.add(audienceRestriction);
-        List<Audience> audiences = audienceRestriction.getAudiences();
-        Audience audience = buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
-        audiences.add(audience);
-        audience.setAudienceURI(audienceName);
         assertion.setConditions(conditions);
 
         List<SubjectConfirmation> subjectConfirmations = subject.getSubjectConfirmations();
@@ -308,9 +237,9 @@ public class AuthnResponseFactory {
     }
 
     /**
-     * Sign the unsigned authentication response.
+     * Sign the unsigned device operation response.
      */
-    private static String signAuthnResponse(Response response, KeyPair signerKeyPair) {
+    private static String signResponse(DeviceOperationResponse response, KeyPair signerKeyPair) {
 
         XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
         SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
@@ -352,41 +281,6 @@ public class AuthnResponseFactory {
             throw new RuntimeException("DOM to string error: " + e.getMessage(), e);
         }
         return result;
-    }
-
-    @SuppressWarnings("unused")
-    private static Document createPasswordDeclaration() {
-
-        ObjectFactory objectFactory = new ObjectFactory();
-        AuthnContextDeclarationBaseType authnContextDeclaration = objectFactory.createAuthnContextDeclarationBaseType();
-        AuthnMethodBaseType authnMethod = objectFactory.createAuthnMethodBaseType();
-        AuthenticatorBaseType authenticator = objectFactory.createAuthenticatorBaseType();
-        authnMethod.setAuthenticator(authenticator);
-        AuthenticatorTransportProtocolType authenticatorTransportProtocol = objectFactory
-                .createAuthenticatorTransportProtocolType();
-        ExtensionOnlyType ssl = objectFactory.createExtensionOnlyType();
-        authenticatorTransportProtocol.setSSL(ssl);
-        authnMethod.setAuthenticatorTransportProtocol(authenticatorTransportProtocol);
-        authnContextDeclaration.setAuthnMethod(authnMethod);
-
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder;
-        try {
-            documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException("DOM error");
-        }
-        Document document = documentBuilder.newDocument();
-
-        try {
-            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-            javax.xml.bind.Marshaller marshaller = context.createMarshaller();
-            marshaller.marshal(objectFactory.createAuthenticationContextDeclaration(authnContextDeclaration), document);
-            return document;
-        } catch (JAXBException e) {
-            throw new RuntimeException("JAXB error: " + e.getMessage(), e);
-        }
     }
 
     @SuppressWarnings("unchecked")

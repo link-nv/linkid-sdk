@@ -110,6 +110,14 @@ public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessage
                 if (null == samlpSignature) {
                     samlpSignature = (Element) XPathAPI.selectSingleNode(document,
                             "//samlp:LogoutResponse/ds:Signature", nsElement);
+                    if (null == samlpSignature) {
+                        samlpSignature = (Element) XPathAPI.selectSingleNode(document,
+                                "//samlp:DeviceOperationRequest/ds:Signature", nsElement);
+                        if (null == samlpSignature) {
+                            samlpSignature = (Element) XPathAPI.selectSingleNode(document,
+                                    "//samlp:DeviceOperationResponse/ds:Signature", nsElement);
+                        }
+                    }
                 }
             }
         }

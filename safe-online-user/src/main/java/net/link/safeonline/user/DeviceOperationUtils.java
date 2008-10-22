@@ -17,8 +17,8 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.service.DeviceOperationService;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.auth.saml2.RequestUtil;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -52,15 +52,16 @@ public class DeviceOperationUtils {
      * An optional initialization parameter <code>Saml2BrowserPostTemplate</code> can be defnied in web.xml, specifying
      * a custom SAML2 browser post velocity template.
      * </p>
-     *
-     *
+     * 
+     * 
      * @param landingUrl
      *            the location at the remote device issuer where to post the authentication request to
      * @param device
      * @param userId
      *            the OLAS user ID.
      */
-    public static String redirect(String landingUrl, DeviceOperationType deviceOperation, String device, String userId) {
+    public static String redirect(String landingUrl, DeviceOperationType deviceOperation, String device,
+            String authenticatedDevice, String userId) {
 
         LOG.debug("redirecting to: " + landingUrl);
         FacesContext context = FacesContext.getCurrentInstance();
@@ -94,14 +95,13 @@ public class DeviceOperationUtils {
         String encodedSamlRequestToken;
         try {
             encodedSamlRequestToken = deviceOperationService.redirect(serviceUrl, encodedLandingUrl, deviceOperation,
-                    device, userId);
+                    device, authenticatedDevice, userId);
         } catch (SafeOnlineException e) {
             throw new RuntimeException("could not initiate device operation: " + e.getMessage(), e);
         }
 
         try {
-            RequestUtil.sendRequest(encodedLandingUrl, encodedSamlRequestToken, templateResourceName,
-                    httpResponse);
+            RequestUtil.sendRequest(encodedLandingUrl, encodedSamlRequestToken, templateResourceName, httpResponse);
         } catch (ServletException e) {
             throw new RuntimeException("could not initiate device operation: " + e.getMessage(), e);
         } catch (IOException e) {
@@ -120,9 +120,8 @@ public class DeviceOperationUtils {
     private static String getInitParameter(ExternalContext context, String parameterName) {
 
         String initParameter = context.getInitParameter(parameterName);
-        if (null == initParameter) {
+        if (null == initParameter)
             throw new RuntimeException("missing context-param in web.xml: " + parameterName);
-        }
         return initParameter;
     }
 

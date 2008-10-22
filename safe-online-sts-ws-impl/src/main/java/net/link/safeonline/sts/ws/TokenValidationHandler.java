@@ -244,6 +244,20 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                                         document,
                                         "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutRequest/ds:Signature",
                                         nsElement);
+                        if (null == tokenSignatureElement) {
+                            tokenSignatureElement = (Element) XPathAPI
+                                    .selectSingleNode(
+                                            document,
+                                            "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationRequest/ds:Signature",
+                                            nsElement);
+                            if (null == tokenSignatureElement) {
+                                tokenSignatureElement = (Element) XPathAPI
+                                        .selectSingleNode(
+                                                document,
+                                                "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationResponse/ds:Signature",
+                                                nsElement);
+                            }
+                        }
                     }
                 }
             }
@@ -294,6 +308,20 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                                         document,
                                         "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutRequest/saml:Issuer",
                                         nsElement);
+                        if (null == issuerElement) {
+                            issuerElement = (Element) XPathAPI
+                                    .selectSingleNode(
+                                            document,
+                                            "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationResponse/saml:Issuer",
+                                            nsElement);
+                            if (null == issuerElement) {
+                                issuerElement = (Element) XPathAPI
+                                        .selectSingleNode(
+                                                document,
+                                                "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationRequest/saml:Issuer",
+                                                nsElement);
+                            }
+                        }
                     }
                 }
             }

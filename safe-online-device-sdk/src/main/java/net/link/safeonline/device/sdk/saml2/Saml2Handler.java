@@ -20,30 +20,28 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
-import net.link.safeonline.sdk.auth.saml2.RequestUtil;
-import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
+import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequest;
+import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestUtil;
+import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.xml.ConfigurationException;
 
 
 /**
  * SAML handler used by remote device issuers to handle an incoming SAML authentication request used for registration,
  * updating or removal and store the retrieved information on the session into {@link ProtocolContext}.
- *
+ * 
  * After registrating, updating or removing it will post a SAML authentication response containing the necessary
  * assertions or a SAML authentication response telling the authentication has failed.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class Saml2Handler implements Serializable {
 
@@ -110,66 +108,53 @@ public class Saml2Handler implements Serializable {
 
     public DeviceOperationType initDeviceOperation(HttpServletRequest request) throws DeviceInitializationException {
 
-        AuthnRequest samlAuthnRequest;
+        DeviceOperationRequest deviceOperationRequest;
         try {
-            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, this.stsWsLocation,
+            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, this.stsWsLocation,
                     this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new DeviceInitializationException(e.getMessage());
         }
 
-        String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
-        if (null == assertionConsumerService)
-            throw new DeviceInitializationException("missing AssertionConsumerServiceURL");
-        LOG.debug("assertion consumer: " + assertionConsumerService);
+        String serviceURL = deviceOperationRequest.getServiceURL();
+        if (null == serviceURL)
+            throw new DeviceInitializationException("missing ServiceURL");
+        LOG.debug("serviceURL: " + serviceURL);
 
-        if (null == samlAuthnRequest.getConditions())
-            throw new DeviceInitializationException("missing condition");
-        if (samlAuthnRequest.getConditions().getAudienceRestrictions().isEmpty()) {
-            throw new DeviceInitializationException("missing audience restriction");
-        }
-
-        String nodeName = samlAuthnRequest.getIssuer().getValue();
+        String nodeName = deviceOperationRequest.getIssuer().getValue();
         LOG.debug("node name: " + nodeName);
 
-        String samlAuthnRequestId = samlAuthnRequest.getID();
+        String deviceOperationRequestId = deviceOperationRequest.getID();
 
-        RequestedAuthnContext requestedAuthnContext = samlAuthnRequest.getRequestedAuthnContext();
-        if (null == requestedAuthnContext)
-            throw new DeviceInitializationException("missing requested authentication context");
-        if (requestedAuthnContext.getAuthnContextClassRefs().size() != 1)
-            throw new DeviceInitializationException("authentication context should contain exactly 1 reference");
-        String device = requestedAuthnContext.getAuthnContextClassRefs().get(0).getAuthnContextClassRef();
+        String device = deviceOperationRequest.getDevice();
         LOG.debug("device: " + device);
 
-        if (null == samlAuthnRequest.getSubject())
-            throw new DeviceInitializationException("missing subject");
-        if (null == samlAuthnRequest.getSubject().getNameID())
-            throw new DeviceInitializationException("missing subject name ID");
-        String deviceUserId = samlAuthnRequest.getSubject().getNameID().getValue();
-        LOG.debug("device user id: " + deviceUserId);
+        String authenticatedDevice = deviceOperationRequest.getAuthenticatedDevice();
+        LOG.debug("authenticated device: " + authenticatedDevice);
 
-        if (samlAuthnRequest.getConditions().getAudienceRestrictions().size() != 1)
-            throw new DeviceInitializationException(
-                    "authentication request should contain exactly 1 audience restriction");
-        if (samlAuthnRequest.getConditions().getAudienceRestrictions().get(0).getAudiences().size() != 1)
-            throw new DeviceInitializationException("authentication request should contain exactly 1 audience");
-
-        DeviceOperationType deviceOperation = DeviceOperationType.valueOf(samlAuthnRequest.getConditions()
-                .getAudienceRestrictions().get(0).getAudiences().get(0).getAudienceURI());
+        DeviceOperationType deviceOperation = DeviceOperationType.valueOf(deviceOperationRequest.getDeviceOperation());
         LOG.debug("device operation: " + deviceOperation);
+
+        if (null == deviceOperationRequest.getSubject())
+            throw new DeviceInitializationException("missing subject");
+        if (null == deviceOperationRequest.getSubject().getNameID())
+            throw new DeviceInitializationException("missing subject name ID");
+        String userId = deviceOperationRequest.getSubject().getNameID().getValue();
+        LOG.debug("user id: " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setIssuer(this.issuer);
-        protocolContext.setTargetUrl(assertionConsumerService);
-        protocolContext.setInResponseTo(samlAuthnRequestId);
-        protocolContext.setWantedDevice(device);
-        protocolContext.setSubject(deviceUserId);
+        protocolContext.setTargetUrl(serviceURL);
+        protocolContext.setInResponseTo(deviceOperationRequestId);
+        protocolContext.setDevice(device);
+        protocolContext.setAuthenticatedDevice(authenticatedDevice);
+        protocolContext.setSubject(userId);
         protocolContext.setNodeName(nodeName);
         protocolContext.setDeviceOperation(deviceOperation);
 
-        request.getSession().setAttribute("userId", deviceUserId);
+        request.getSession().setAttribute("userId", userId);
         request.getSession().setAttribute("operation", deviceOperation.name());
+        request.getSession().setAttribute("authenticatedDevice", authenticatedDevice);
         return deviceOperation;
     }
 
@@ -177,21 +162,22 @@ public class Saml2Handler implements Serializable {
             throws DeviceFinalizationException {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
-        String issuerName = protocolContext.getIssuer();
-        String target = protocolContext.getTargetUrl();
         String inResponseTo = protocolContext.getInResponseTo();
         if (null == inResponseTo)
             throw new DeviceFinalizationException("missing IN_RESPONSE_TO session attribute");
 
-        String samlResponseToken = AuthnResponseFactory.createAuthResponseUnsupported(inResponseTo, issuerName,
-                this.applicationKeyPair, target);
+        String samlResponseToken = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo,
+                protocolContext.getDeviceOperation(), protocolContext.getIssuer(), protocolContext.getSubject(),
+                protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(), protocolContext
+                        .getTargetUrl());
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
 
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, target, response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(),
+                    response);
         } catch (ServletException e) {
             throw new DeviceFinalizationException(e.getMessage());
         } catch (IOException e) {
@@ -203,13 +189,7 @@ public class Saml2Handler implements Serializable {
             throws DeviceFinalizationException {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
-        String usedDevice = protocolContext.getWantedDevice();
-        String userId = protocolContext.getSubject();
-        String target = protocolContext.getTargetUrl();
-        String issuerName = protocolContext.getIssuer();
-        int validity = protocolContext.getValidity();
         boolean deviceOperationSuccess = protocolContext.getSuccess();
-        DeviceOperationType deviceOperation = protocolContext.getDeviceOperation();
         String inResponseTo = protocolContext.getInResponseTo();
         if (null == inResponseTo)
             throw new DeviceFinalizationException("missing IN_RESPONSE_TO session attribute");
@@ -219,14 +199,18 @@ public class Saml2Handler implements Serializable {
             /*
              * Device operation have failed
              */
-            samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(inResponseTo, issuerName,
-                    this.applicationKeyPair, target);
+            samlResponseToken = DeviceOperationResponseFactory.createDeviceOperationResponseFailed(inResponseTo,
+                    protocolContext.getDeviceOperation(), protocolContext.getIssuer(), protocolContext.getSubject(),
+                    protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(),
+                    protocolContext.getTargetUrl());
         } else {
             /*
              * Device operation was successful
              */
-            samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, deviceOperation.name(),
-                    issuerName, userId, usedDevice, this.applicationKeyPair, validity, target);
+            samlResponseToken = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo,
+                    protocolContext.getDeviceOperation(), protocolContext.getIssuer(), protocolContext.getSubject(),
+                    protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(),
+                    protocolContext.getTargetUrl());
         }
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
@@ -234,7 +218,8 @@ public class Saml2Handler implements Serializable {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, target, response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(),
+                    response);
         } catch (ServletException e) {
             throw new DeviceFinalizationException(e.getMessage());
         } catch (IOException e) {

@@ -36,16 +36,17 @@ import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
+import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
+import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponseUtil;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
@@ -64,7 +65,6 @@ import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 
@@ -125,8 +125,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public String redirect(@NonEmptyString String serviceUrl, @NonEmptyString String targetUrl,
             @NotNull DeviceOperationType deviceOperation, @NonEmptyString String deviceName,
-            @NonEmptyString String userId) throws NodeNotFoundException, SubjectNotFoundException,
-            DeviceNotFoundException {
+            String authenticatedDeviceName, @NonEmptyString String userId) throws NodeNotFoundException,
+            SubjectNotFoundException, DeviceNotFoundException {
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -149,8 +149,9 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
         Challenge<String> challenge = new Challenge<String>();
 
-        String samlRequestToken = AuthnRequestFactory.createDeviceOperationAuthnRequest(localNode.getName(),
-                nodeUserId, keyPair, serviceUrl, targetUrl, deviceOperation, challenge, deviceName);
+        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(),
+                nodeUserId, keyPair, serviceUrl, targetUrl, deviceOperation, challenge, deviceName,
+                authenticatedDeviceName);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -175,19 +176,19 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
-        Response samlResponse = ResponseUtil.validateResponse(now, request, this.expectedChallengeId,
-                this.expectedDeviceOperation.name(), node.getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
-        if (null == samlResponse)
+        DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request,
+                this.expectedChallengeId, this.expectedDeviceOperation, node.getLocation(), authIdentityServiceClient
+                        .getCertificate(), authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
+        if (null == response)
             return null;
 
-        if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)) {
+        if (response.getStatus().getStatusCode().getValue().equals(DeviceOperationResponse.FAILED_URI)) {
             /*
              * Registration failed, reset the state
              */
             this.expectedChallengeId = null;
             return null;
-        } else if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
+        } else if (response.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
             /*
              * Registration not supported by this device, reset the state
              */
@@ -197,20 +198,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
             return null;
         }
 
-        Assertion assertion = samlResponse.getAssertions().get(0);
-        List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-        if (authStatements.isEmpty())
-            throw new ServletException("missing authentication statement");
-
-        AuthnStatement authStatement = authStatements.get(0);
-        if (null == authStatement.getAuthnContext()) {
-            throw new ServletException("missing authentication context in authentication statement");
-        }
-
-        AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
-        String authenticatedDevice = authnContextClassRef.getAuthnContextClassRef();
-        LOG.debug("used device: " + authenticatedDevice);
-        DeviceEntity device = this.deviceDAO.getDevice(authenticatedDevice);
+        String userId = response.getSubjectName();
+        DeviceEntity device = this.deviceDAO.getDevice(response.getDevice());
         if (!device.getName().equals(this.expectedDevice)) {
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Device " + device.getName()
                     + " returned after device operation " + this.expectedDeviceOperation
@@ -218,20 +207,44 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
             throw new DeviceNotFoundException();
         }
 
-        Subject subject = assertion.getSubject();
-        NameID subjectName = subject.getNameID();
-        String subjectNameValue = subjectName.getValue();
-        LOG.debug("subject name value: " + subjectNameValue);
+        if (response.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
+            Assertion assertion = response.getAssertions().get(0);
+            List<AuthnStatement> authStatements = assertion.getAuthnStatements();
+            if (authStatements.isEmpty())
+                throw new ServletException("missing authentication statement");
 
-        String userId;
+            AuthnStatement authStatement = authStatements.get(0);
+            if (null == authStatement.getAuthnContext())
+                throw new ServletException("missing authentication context in authentication statement");
+
+            AuthnContextClassRef authnContextClassRef = authStatement.getAuthnContext().getAuthnContextClassRef();
+            String authenticatedDeviceName = authnContextClassRef.getAuthnContextClassRef();
+            LOG.debug("used device: " + authenticatedDeviceName);
+            DeviceEntity authenticatedDevice = this.deviceDAO.getDevice(authenticatedDeviceName);
+            if (!authenticatedDevice.getName().equals(this.expectedDevice)) {
+                this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Device "
+                        + authenticatedDevice.getName() + " returned after device operation "
+                        + this.expectedDeviceOperation + " not matching expected device " + this.expectedDevice);
+                throw new DeviceNotFoundException();
+            }
+
+            Subject subject = assertion.getSubject();
+            NameID subjectName = subject.getNameID();
+            String subjectNameValue = subjectName.getValue();
+            LOG.debug("subject name value: " + subjectNameValue);
+            if (!subjectNameValue.equals(userId)) {
+                this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Subject " + subjectNameValue
+                        + " in assertion does not match subject " + userId + " in response");
+                throw new ServletException("subject in assertion does not match subject in response");
+            }
+        }
+
         SubjectEntity subjectEntity;
         NodeEntity localNode = this.nodeAuthenticationService.getLocalNode();
         if (localNode.equals(device.getLocation())) {
-            userId = subjectNameValue;
             subjectEntity = this.subjectService.getSubject(userId);
         } else {
-            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subjectNameValue);
-            userId = nodeMapping.getId();
+            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(userId);
             subjectEntity = nodeMapping.getSubject();
         }
 
@@ -246,6 +259,6 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
                     SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
         }
 
-        return userId;
+        return subjectEntity.getUserId();
     }
 }

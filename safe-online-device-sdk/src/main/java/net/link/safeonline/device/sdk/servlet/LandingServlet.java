@@ -23,9 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.device.sdk.exception.DeviceFinalizationException;
 import net.link.safeonline.device.sdk.exception.DeviceInitializationException;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.saml2.Saml2Handler;
 import net.link.safeonline.sdk.KeyStoreUtils;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.ErrorMessage;

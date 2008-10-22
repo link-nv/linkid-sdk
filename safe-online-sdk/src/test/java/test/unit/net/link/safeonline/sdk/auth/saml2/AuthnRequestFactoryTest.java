@@ -16,7 +16,6 @@ import java.io.FileOutputStream;
 import java.security.KeyPair;
 import java.util.Collections;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
@@ -24,7 +23,6 @@ import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -115,96 +113,6 @@ public class AuthnRequestFactoryTest {
                 "/samlp2:AuthnRequest/samlp2:NameIDPolicy/@AllowCreate", nsElement);
         assertNotNull(allowCreateNode);
         assertEquals("true", allowCreateNode.getTextContent());
-
-        // verify signature
-        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS,
-                "Signature");
-        assertEquals(1, signatureNodeList.getLength());
-
-        DOMValidateContext validateContext = new DOMValidateContext(keyPair.getPublic(), signatureNodeList.item(0));
-        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM",
-                new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
-
-        XMLSignature signature = signatureFactory.unmarshalXMLSignature(validateContext);
-        boolean resultValidity = signature.validate(validateContext);
-        assertTrue(resultValidity);
-
-        Element dsNsElement = resultDocument.createElement("nsElement");
-        dsNsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
-        XObject xObject = XPathAPI.eval(resultDocument, "count(//ds:Reference)", dsNsElement);
-        LOG.debug("count: " + xObject.num());
-        assertEquals(1.0, xObject.num(), 0);
-    }
-
-    @Test
-    public void createDeviceOperationAuthnRequest() throws Exception {
-
-        // setup
-        String nodeName = "test-node-name";
-        String subject = UUID.randomUUID().toString();
-        KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
-        Challenge<String> challenge = new Challenge<String>();
-        String destinationURL = "https://test.idp.com/entry";
-        String device = "device";
-        DeviceOperationType deviceOperation = DeviceOperationType.REGISTER;
-
-        // operate
-        long begin = System.currentTimeMillis();
-        String result = AuthnRequestFactory.createDeviceOperationAuthnRequest(nodeName, subject, keyPair,
-                assertionConsumerServiceURL, destinationURL, deviceOperation, challenge, device);
-        long end = System.currentTimeMillis();
-
-        // verify
-        assertNotNull(result);
-        LOG.debug("duration: " + (end - begin) + " ms");
-        LOG.debug("result message: " + result);
-        File tmpFile = File.createTempFile("saml-device-operation-authn-request-", ".xml");
-        FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
-        IOUtils.write(result, tmpOutput);
-        IOUtils.closeQuietly(tmpOutput);
-
-        String challengeValue = challenge.getValue();
-        LOG.debug("challenge value: " + challengeValue);
-        assertNotNull(challengeValue);
-
-        Document resultDocument = DomTestUtils.parseDocument(result);
-
-        Element nsElement = createNsElement(resultDocument);
-        Element authnRequestElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/samlp2:AuthnRequest",
-                nsElement);
-        assertNotNull(authnRequestElement);
-
-        Element issuerElement = (Element) XPathAPI.selectSingleNode(resultDocument,
-                "/samlp2:AuthnRequest/saml2:Issuer", nsElement);
-        assertNotNull(issuerElement);
-        assertEquals(nodeName, issuerElement.getTextContent());
-
-        Node resultAssertionConsumerServiceURLNode = XPathAPI.selectSingleNode(resultDocument,
-                "/samlp2:AuthnRequest/@AssertionConsumerServiceURL", nsElement);
-        assertNotNull(resultAssertionConsumerServiceURLNode);
-        assertEquals(assertionConsumerServiceURL, resultAssertionConsumerServiceURLNode.getTextContent());
-
-        Node protocolBindingNode = XPathAPI.selectSingleNode(resultDocument, "/samlp2:AuthnRequest/@ProtocolBinding",
-                nsElement);
-        assertNotNull(protocolBindingNode);
-        LOG.debug("protocol binding: " + protocolBindingNode.getTextContent());
-        assertEquals("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST", protocolBindingNode.getTextContent());
-
-        Node destinationNode = XPathAPI
-                .selectSingleNode(resultDocument, "/samlp2:AuthnRequest/@Destination", nsElement);
-        assertNotNull(destinationNode);
-        assertEquals(destinationURL, destinationNode.getTextContent());
-
-        Node allowCreateNode = XPathAPI.selectSingleNode(resultDocument,
-                "/samlp2:AuthnRequest/samlp2:NameIDPolicy/@AllowCreate", nsElement);
-        assertNotNull(allowCreateNode);
-        assertEquals("true", allowCreateNode.getTextContent());
-
-        Node audienceNode = XPathAPI.selectSingleNode(resultDocument,
-                "/samlp2:AuthnRequest/saml2:Conditions/saml2:AudienceRestriction/saml2:Audience", nsElement);
-        assertNotNull(audienceNode);
-        assertEquals(deviceOperation.name(), audienceNode.getTextContent());
 
         // verify signature
         NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS,

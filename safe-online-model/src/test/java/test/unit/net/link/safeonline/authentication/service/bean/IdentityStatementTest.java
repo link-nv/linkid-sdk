@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.authentication.service.bean.IdentityStatement;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.shared.JceSigner;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.IdentityProvider;

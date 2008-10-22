@@ -23,7 +23,6 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
@@ -55,9 +54,6 @@ public class RemovalBean implements Removal {
 
     @EJB
     private EncapDeviceService   encapDeviceService;
-
-    @EJB
-    private SamlAuthorityService samlAuthorityService;
 
     @Logger
     private Log                  log;
@@ -97,7 +93,6 @@ public class RemovalBean implements Removal {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
         externalContext.redirect("./deviceexit");
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
     }
 
     private Locale getViewLocale() {

@@ -18,7 +18,6 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.model.option.OptionDeviceService;
 import net.link.safeonline.model.option.exception.OptionAuthenticationException;
@@ -53,9 +52,6 @@ public class RemovalServlet extends AbstractInjectionServlet {
     @EJB(mappedName = "SafeOnlineOption/OptionDeviceServiceBean/local")
     private OptionDeviceService  optionDeviceService;
 
-    @EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
-    private SamlAuthorityService samlAuthorityService;
-
 
     @Override
     protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException,
@@ -65,8 +61,6 @@ public class RemovalServlet extends AbstractInjectionServlet {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(session);
         try {
-
-            protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
             protocolContext.setSuccess(false);
 
             String imei = request.getParameter("imei");

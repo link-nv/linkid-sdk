@@ -72,8 +72,8 @@ public interface AuthenticationProtocolHandler extends Serializable {
      *         authentication.
      * @throws ServletException
      */
-    String finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-            throws ServletException;
+    AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse) throws ServletException;
 
     /**
      * Initiates the logout request towards the SafeOnline authentication web application.

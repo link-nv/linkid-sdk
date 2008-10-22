@@ -25,10 +25,10 @@ import javax.jws.HandlerChain;
 import javax.jws.WebService;
 
 import net.link.safeonline.device.sdk.ProtocolContext;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.device.sdk.servlet.LandingServlet;
-import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -57,7 +57,7 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 
 public class LandingServletTest {
 
-    private static final Log               LOG                = LogFactory.getLog(LandingServletTest.class);
+    private static final Log               LOG                     = LogFactory.getLog(LandingServletTest.class);
 
     private ServletTestManager             servletTestManager;
 
@@ -73,21 +73,23 @@ public class LandingServletTest {
 
     private String                         location;
 
-    private String                         registrationUrl    = "registration";
+    private String                         registrationUrl         = "registration";
 
-    private String                         removalUrl         = "removal";
+    private String                         removalUrl              = "removal";
 
-    private String                         updateUrl          = "update";
+    private String                         updateUrl               = "update";
 
-    private String                         deviceName         = "test-device";
+    private String                         deviceName              = "test-device";
 
-    private String                         applicationName    = "test-application";
+    private String                         authenticatedDeviceName = "test-authenticated-device";
 
-    private String                         servletEndpointUrl = "http://test.device/servlet";
+    private String                         applicationName         = "test-application";
+
+    private String                         servletEndpointUrl      = "http://test.device/servlet";
 
     private KeyPair                        keyPair;
 
-    String                                 userId             = UUID.randomUUID().toString();
+    String                                 userId                  = UUID.randomUUID().toString();
 
     private WSSecurityConfigurationService mockWSSecurityConfigurationService;
 
@@ -182,10 +184,10 @@ public class LandingServletTest {
     public void testRegistration() throws Exception {
 
         // setup
-        String samlAuthnRequest = AuthnRequestFactory.createDeviceOperationAuthnRequest(this.applicationName,
+        String deviceOperationRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName,
                 this.userId, this.keyPair, "http://test.authn.service", this.servletEndpointUrl,
-                DeviceOperationType.REGISTER, new Challenge<String>(), this.deviceName);
-        String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
+                DeviceOperationType.REGISTER, new Challenge<String>(), this.deviceName, this.authenticatedDeviceName);
+        String encodedSamlAuthnRequest = Base64.encode(deviceOperationRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
         // operate
@@ -208,7 +210,8 @@ public class LandingServletTest {
                 .getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
         assertNotNull(protocolContext);
         assertEquals(DeviceOperationType.REGISTER, protocolContext.getDeviceOperation());
-        assertEquals(this.deviceName, protocolContext.getWantedDevice());
+        assertEquals(this.deviceName, protocolContext.getDevice());
+        assertEquals(this.authenticatedDeviceName, protocolContext.getAuthenticatedDevice());
         assertEquals(this.userId, protocolContext.getSubject());
     }
 
@@ -216,9 +219,9 @@ public class LandingServletTest {
     public void testRemoval() throws Exception {
 
         // setup
-        String samlAuthnRequest = AuthnRequestFactory.createDeviceOperationAuthnRequest(this.applicationName,
+        String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName,
                 this.userId, this.keyPair, "http://test.authn.service", this.servletEndpointUrl,
-                DeviceOperationType.REMOVE, new Challenge<String>(), this.deviceName);
+                DeviceOperationType.REMOVE, new Challenge<String>(), this.deviceName, this.authenticatedDeviceName);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -242,7 +245,8 @@ public class LandingServletTest {
                 .getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
         assertNotNull(protocolContext);
         assertEquals(DeviceOperationType.REMOVE, protocolContext.getDeviceOperation());
-        assertEquals(this.deviceName, protocolContext.getWantedDevice());
+        assertEquals(this.deviceName, protocolContext.getDevice());
+        assertEquals(this.authenticatedDeviceName, protocolContext.getAuthenticatedDevice());
         assertEquals(this.userId, protocolContext.getSubject());
     }
 
@@ -250,9 +254,9 @@ public class LandingServletTest {
     public void testUpdate() throws Exception {
 
         // setup
-        String samlAuthnRequest = AuthnRequestFactory.createDeviceOperationAuthnRequest(this.applicationName,
+        String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName,
                 this.userId, this.keyPair, "http://test.authn.service", this.servletEndpointUrl,
-                DeviceOperationType.UPDATE, new Challenge<String>(), this.deviceName);
+                DeviceOperationType.UPDATE, new Challenge<String>(), this.deviceName, this.authenticatedDeviceName);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -276,7 +280,8 @@ public class LandingServletTest {
                 .getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
         assertNotNull(protocolContext);
         assertEquals(DeviceOperationType.UPDATE, protocolContext.getDeviceOperation());
-        assertEquals(this.deviceName, protocolContext.getWantedDevice());
+        assertEquals(this.deviceName, protocolContext.getDevice());
+        assertEquals(this.authenticatedDeviceName, protocolContext.getAuthenticatedDevice());
         assertEquals(this.userId, protocolContext.getSubject());
     }
 }

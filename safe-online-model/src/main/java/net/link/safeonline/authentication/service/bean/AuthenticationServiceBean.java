@@ -93,6 +93,10 @@ import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.device.PasswordDeviceService;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
+import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
+import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponseUtil;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
 import net.link.safeonline.entity.DeviceEntity;
@@ -110,7 +114,6 @@ import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.Challenge;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
@@ -434,9 +437,14 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         Challenge<String> challenge = new Challenge<String>();
 
-        String samlRequestToken = AuthnRequestFactory.createDeviceOperationAuthnRequest(node.getName(), nodeUserId,
-                keyPair, registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER, challenge,
-                deviceName);
+        String authenticatedDevice = null;
+        if (null != this.authenticationDevice) {
+            authenticatedDevice = this.authenticationDevice.getName();
+        }
+
+        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(node.getName(),
+                nodeUserId, keyPair, registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER,
+                challenge, deviceName, authenticatedDevice);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -920,13 +928,14 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
-        Response samlResponse = ResponseUtil.validateResponse(now, request, this.expectedDeviceChallengeId,
-                DeviceOperationType.NEW_ACCOUNT_REGISTER.name(), node.getLocation(), authIdentityServiceClient
-                        .getCertificate(), authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
-        if (null == samlResponse)
+        DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request,
+                this.expectedDeviceChallengeId, DeviceOperationType.NEW_ACCOUNT_REGISTER, node.getLocation(),
+                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey(),
+                TrustDomainType.DEVICE);
+        if (null == response)
             return null;
 
-        if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)) {
+        if (response.getStatus().getStatusCode().getValue().equals(DeviceOperationResponse.FAILED_URI)) {
             /*
              * Registration failed, reset the state
              */
@@ -937,7 +946,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             }
             this.expectedDeviceChallengeId = null;
             return null;
-        } else if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
+        } else if (response.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)) {
             /*
              * Registration not supported by this device, reset the state
              */
@@ -951,7 +960,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             return null;
         }
 
-        Assertion assertion = samlResponse.getAssertions().get(0);
+        Assertion assertion = response.getAssertions().get(0);
         List<AuthnStatement> authStatements = assertion.getAuthnStatements();
         if (authStatements.isEmpty())
             throw new ServletException("missing authentication statement");

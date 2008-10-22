@@ -203,7 +203,6 @@ public class ResponseUtil {
             throw new ServletException("SAML response is not a response belonging to the original request.");
 
         if (samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.AUTHN_FAILED_URI)
-                || samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.REQUEST_UNSUPPORTED_URI)
                 || samlResponse.getStatus().getStatusCode().getValue().equals(StatusCode.UNKNOWN_PRINCIPAL_URI))
             /**
              * Authentication failed but response ok.

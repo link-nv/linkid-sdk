@@ -15,7 +15,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.sdk.auth.saml2.DeviceOperationType;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 
 
 /**
@@ -37,7 +37,8 @@ public interface DeviceOperationService {
     void abort();
 
     String redirect(String serviceUrl, String targetUrl, DeviceOperationType deviceOperation, String device,
-            String userId) throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException;
+            String authenticatedDevice, String userId) throws NodeNotFoundException, SubjectNotFoundException,
+            DeviceNotFoundException;
 
     String finalize(HttpServletRequest request) throws NodeNotFoundException, ServletException,
             NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;

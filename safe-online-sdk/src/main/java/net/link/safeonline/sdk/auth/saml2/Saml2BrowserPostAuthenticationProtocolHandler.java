@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
+import net.link.safeonline.sdk.auth.AuthenticationProtocolContext;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.SupportedAuthenticationProtocol;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
@@ -32,6 +33,7 @@ import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.LogoutRequest;
 import org.opensaml.saml2.core.LogoutResponse;
 import org.opensaml.saml2.core.NameID;
@@ -50,8 +52,8 @@ import org.opensaml.xml.ConfigurationException;
  * <ul>
  * <li><code>Saml2BrowserPostTemplate</code>: contains the path to the custom SAML2 Browser POST template resource.</li>
  * <li><code>Saml2Devices</code>: contains the list of allowed authentication devices, comma separated string</li>
- * <li><code>WsLocation</code>: contains the location of the OLAS web services. If present this handler will use the
- * STS web service for SAML authentication token validation.</li>
+ * <li><code>WsLocation</code>: contains the location of the OLAS web services. If present this handler will use the STS
+ * web service for SAML authentication token validation.</li>
  * </ul>
  * 
  * <p>
@@ -126,9 +128,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         this.challenge = new Challenge<String>();
         this.ssoEnabled = inSsoEnabled;
         this.wsLocation = inConfigParams.get("WsLocation");
-        if (null == this.wsLocation) {
+        if (null == this.wsLocation)
             throw new RuntimeException("Initialization param \"WsLocation\" not specified.");
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -202,8 +203,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         return null;
     }
 
-    public String finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-            throws ServletException {
+    public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse) throws ServletException {
 
         DateTime now = new DateTime();
 
@@ -218,7 +219,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         NameID subjectName = subject.getNameID();
         String subjectNameValue = subjectName.getValue();
         LOG.debug("subject name value: " + subjectNameValue);
-        return subjectNameValue;
+
+        AuthnStatement statement = assertion.getAuthnStatements().get(0);
+        String authenticatedDevice = statement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef();
+
+        return new AuthenticationProtocolContext(subjectNameValue, authenticatedDevice);
     }
 
     /**

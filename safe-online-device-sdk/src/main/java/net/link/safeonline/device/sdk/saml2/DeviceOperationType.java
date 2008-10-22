@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.auth.saml2;
+package net.link.safeonline.device.sdk.saml2;
 
 public enum DeviceOperationType {
 

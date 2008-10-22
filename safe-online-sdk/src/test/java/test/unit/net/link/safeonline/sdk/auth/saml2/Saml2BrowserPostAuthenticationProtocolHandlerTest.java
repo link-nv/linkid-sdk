@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
+import net.link.safeonline.sdk.auth.AuthenticationProtocolContext;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -227,12 +228,14 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
             } catch (Exception e) {
                 throw new ServletException("reflection error: " + e.getMessage(), e);
             }
-            String userId = authenticationProtocolHandler.finalizeAuthentication(request, response);
-            if (null != userId) {
-                LoginManager.setUserId(userId, request);
-            }
             Writer out = response.getWriter();
-            out.write("userId: " + userId);
+            AuthenticationProtocolContext authenticationProtocolContext = authenticationProtocolHandler
+                    .finalizeAuthentication(request, response);
+            if (null != authenticationProtocolContext) {
+                LoginManager.setUserId(authenticationProtocolContext.getUserId(), request);
+                LoginManager.setAuthenticatedDevice(authenticationProtocolContext.getAuthenticatedDevice(), request);
+                out.write("userId: " + authenticationProtocolContext.getUserId());
+            }
             out.flush();
         }
     }
@@ -305,6 +308,10 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
                 .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         LOG.debug("authenticated userId: " + userId);
         assertNotNull(userId);
+        String authenticatedDevice = (String) this.responseServletTestManager
+                .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+        LOG.debug("authenticated device: " + authenticatedDevice);
+        assertNotNull(authenticatedDevice);
     }
 
     private static String replaceAll(String oldStr, String newStr, String inString) {

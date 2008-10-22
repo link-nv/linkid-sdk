@@ -22,7 +22,6 @@ import javax.interceptor.Interceptors;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.beid.BeidConstants;
 import net.link.safeonline.beid.Disable;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
@@ -71,9 +70,6 @@ public class DisableBean implements Disable {
 
     @EJB
     private SubjectService             subjectService;
-
-    @EJB
-    private SamlAuthorityService       samlAuthorityService;
 
     @Logger
     private Log                        log;
@@ -125,7 +121,6 @@ public class DisableBean implements Disable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
         externalContext.redirect("./deviceexit");
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
     }
 
     private Locale getViewLocale() {
