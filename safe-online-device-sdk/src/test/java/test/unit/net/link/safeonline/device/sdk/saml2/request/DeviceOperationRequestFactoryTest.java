@@ -43,9 +43,9 @@ import org.w3c.dom.NodeList;
 
 
 /**
- * Unit test for authentication request factory.
+ * Unit test for device operation request factory.
  * 
- * @author fcorneli
+ * @author wvdhaute
  * 
  */
 public class DeviceOperationRequestFactoryTest {

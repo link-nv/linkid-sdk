@@ -26,8 +26,8 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.spi.LoginModule;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.filter.JAASLoginFilter;
@@ -49,17 +49,17 @@ import org.junit.Test;
  */
 public class JAASLoginFilterTest {
 
-    private JAASLoginFilter    testedInstance;
+    private JAASLoginFilter     testedInstance;
 
-    private HttpServletRequest mockHttpServletRequest;
+    private HttpServletRequest  mockHttpServletRequest;
 
-    private ServletResponse    mockServletResponse;
+    private HttpServletResponse mockHttpServletResponse;
 
-    private FilterChain        mockFilterChain;
+    private FilterChain         mockFilterChain;
 
-    private HttpSession        mockHttpSession;
+    private HttpSession         mockHttpSession;
 
-    private FilterConfig       mockFilterConfig;
+    private FilterConfig        mockFilterConfig;
 
 
     @Before
@@ -68,7 +68,7 @@ public class JAASLoginFilterTest {
         this.testedInstance = new JAASLoginFilter();
 
         this.mockHttpServletRequest = createMock(HttpServletRequest.class);
-        this.mockServletResponse = createMock(ServletResponse.class);
+        this.mockHttpServletResponse = createMock(HttpServletResponse.class);
         this.mockFilterChain = createMock(FilterChain.class);
         this.mockHttpSession = createMock(HttpSession.class);
         expect(this.mockHttpServletRequest.getSession()).andStubReturn(this.mockHttpSession);
@@ -145,6 +145,8 @@ public class JAASLoginFilterTest {
         expect(this.mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_CONTEXT_PARAM)).andStubReturn(
                 "client-login");
 
+        expect(this.mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_PATH_PARAM)).andStubReturn(null);
+
         expect(this.mockHttpSession.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE)).andStubReturn(
                 UUID.randomUUID().toString());
         expect(this.mockHttpSession.getAttribute(testPasswordAttributeName)).andStubReturn("test-password");
@@ -164,20 +166,20 @@ public class JAASLoginFilterTest {
 
         mockLoginContext.logout();
 
-        this.mockFilterChain.doFilter(this.mockHttpServletRequest, this.mockServletResponse);
+        this.mockFilterChain.doFilter(this.mockHttpServletRequest, this.mockHttpServletResponse);
 
         // prepare
-        replay(this.mockHttpServletRequest, this.mockServletResponse, this.mockFilterChain, this.mockHttpSession,
+        replay(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain, this.mockHttpSession,
                 this.mockFilterConfig);
         replay(mockLoginContext);
 
         // operate
         this.testedInstance.init(this.mockFilterConfig);
-        this.testedInstance.doFilter(this.mockHttpServletRequest, this.mockServletResponse, this.mockFilterChain);
+        this.testedInstance.doFilter(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain);
         this.testedInstance.destroy();
 
         // verify
-        verify(this.mockHttpServletRequest, this.mockServletResponse, this.mockFilterChain, this.mockHttpSession,
+        verify(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain, this.mockHttpSession,
                 this.mockFilterConfig);
         verify(mockLoginContext);
     }

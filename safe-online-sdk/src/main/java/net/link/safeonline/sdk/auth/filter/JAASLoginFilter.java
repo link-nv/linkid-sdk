@@ -25,6 +25,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
@@ -52,9 +53,13 @@ public class JAASLoginFilter implements Filter {
 
     private static final Log    LOG                               = LogFactory.getLog(JAASLoginFilter.class);
 
+    private static final String REDIRECTED_SESSION_ATTRIBUTE      = JAASLoginFilter.class.getName() + ".redirected";
+
     public static final String  JAAS_LOGIN_CONTEXT_SESSION_ATTRIB = JAASLoginFilter.class.getName() + ".LOGIN_CONTEXT";
 
     public static final String  LOGIN_CONTEXT_PARAM               = "LoginContextName";
+
+    public static final String  LOGIN_PATH_PARAM                  = "LoginPath";
 
     /**
      * The default JAAS login context is 'client-login'. This is what JBoss AS expects of EJB clients to use for login.
@@ -63,10 +68,12 @@ public class JAASLoginFilter implements Filter {
 
     private String              loginContextName;
 
+    private String              loginPath;
 
     public void init(FilterConfig config) {
 
         this.loginContextName = getInitParameter(config, LOGIN_CONTEXT_PARAM, DEFAULT_LOGIN_CONTEXT);
+        this.loginPath = getInitParameter(config, LOGIN_PATH_PARAM, null);
         LOG.debug("JAAS login context: " + this.loginContextName);
     }
 
@@ -88,7 +95,9 @@ public class JAASLoginFilter implements Filter {
             ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        login(httpServletRequest);
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        if (!login(httpServletRequest, httpServletResponse))
+            return;
         try {
             chain.doFilter(request, response);
         } finally {
@@ -97,11 +106,25 @@ public class JAASLoginFilter implements Filter {
         }
     }
 
-    private void login(HttpServletRequest request) {
+    private boolean login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        LOG.debug("login");
         String userId = LoginManager.findUserId(request);
-        if (userId == null)
-            return;
+        if (userId == null) {
+            HttpSession session = request.getSession();
+            if (session.getAttribute(REDIRECTED_SESSION_ATTRIBUTE) != null) {
+                session.removeAttribute(REDIRECTED_SESSION_ATTRIBUTE);
+                LOG.debug("already redirected");
+                return true;
+            }
+            if (null != this.loginPath && !this.loginPath.equals(request.getRequestURL().toString())) {
+                LOG.debug("redirect to " + this.loginPath);
+                session.setAttribute(REDIRECTED_SESSION_ATTRIBUTE, true);
+                response.sendRedirect(this.loginPath);
+                return false;
+            }
+            return true;
+        }
         UsernamePasswordHandler handler = new UsernamePasswordHandler(userId, null);
         try {
             LoginContext loginContext = new LoginContext(this.loginContextName, handler);
@@ -111,6 +134,7 @@ public class JAASLoginFilter implements Filter {
         } catch (LoginException e) {
             LOG.error("login error: " + e.getMessage(), e);
         }
+        return true;
     }
 
     private void logout(ServletRequest request) {
@@ -136,7 +160,7 @@ public class JAASLoginFilter implements Filter {
         /*
          * We could trigger here an java.lang.IllegalStateException: Cannot create a session after the response has been
          * committed.
-         *
+         * 
          * So be careful when retrieving the session.
          */
         if (null == session)
@@ -188,5 +212,10 @@ public class JAASLoginFilter implements Filter {
             LOG.error(msg);
             throw new RuntimeException(msg, e);
         }
+    }
+
+    public static void setRedirected(HttpSession session) {
+
+        session.setAttribute(REDIRECTED_SESSION_ATTRIBUTE, true);
     }
 }
