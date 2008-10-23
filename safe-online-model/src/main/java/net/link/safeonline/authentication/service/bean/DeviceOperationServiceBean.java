@@ -36,6 +36,7 @@ import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
@@ -125,8 +126,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public String redirect(@NonEmptyString String serviceUrl, @NonEmptyString String targetUrl,
             @NotNull DeviceOperationType deviceOperation, @NonEmptyString String deviceName,
-            String authenticatedDeviceName, @NonEmptyString String userId) throws NodeNotFoundException,
-            SubjectNotFoundException, DeviceNotFoundException {
+            String authenticatedDeviceName, @NonEmptyString String userId, AttributeDO attribute)
+            throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException {
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -147,11 +148,16 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
             nodeUserId = nodeMapping.getId();
         }
 
+        String attributeValue = null;
+        if (null != attribute) {
+            attributeValue = attribute.getValueAsString();
+        }
+
         Challenge<String> challenge = new Challenge<String>();
 
         String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(),
                 nodeUserId, keyPair, serviceUrl, targetUrl, deviceOperation, challenge, deviceName,
-                authenticatedDeviceName);
+                authenticatedDeviceName, attributeValue);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 

@@ -11,6 +11,8 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.model.option.exception.OptionAuthenticationException;
 import net.link.safeonline.model.option.exception.OptionRegistrationException;
@@ -43,5 +45,8 @@ public interface OptionDeviceService {
     void remove(String userId, String imei, String pin) throws OptionAuthenticationException,
             OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
             AttributeNotFoundException, DeviceDisabledException;
+
+    void disable(String userId, String imei) throws DeviceNotFoundException, SubjectNotFoundException,
+            DeviceRegistrationNotFoundException;
 
 }

@@ -14,6 +14,8 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -112,6 +114,17 @@ public interface PkiProvider {
      * @throws DeviceNotFoundException
      */
     boolean isDisabled(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException;
+
+    /**
+     * Disables the device registration associated with the specified user attribute.
+     * 
+     * @param attribute
+     * @throws DeviceNotFoundException
+     * @throws SubjectNotFoundException
+     * @throws DeviceRegistrationNotFoundException
+     */
+    void disable(String userId, String attribute) throws DeviceNotFoundException, SubjectNotFoundException,
+            DeviceRegistrationNotFoundException;
 
     /**
      * Returns the list of device attributes attached to the specified subjects.

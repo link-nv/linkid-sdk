@@ -16,6 +16,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
@@ -112,4 +113,16 @@ public interface EncapDeviceService {
      * @throws DeviceNotFoundException
      */
     List<AttributeDO> getMobiles(String userId, Locale locale) throws SubjectNotFoundException, DeviceNotFoundException;
+
+    /**
+     * Disables the encap device registration.
+     * 
+     * @param userId
+     * @param mobile
+     * @throws SubjectNotFoundException
+     * @throws DeviceNotFoundException
+     * @throws DeviceRegistrationNotFoundException
+     */
+    void disable(String userId, String mobile) throws SubjectNotFoundException, DeviceNotFoundException,
+            DeviceRegistrationNotFoundException;
 }

@@ -56,6 +56,10 @@ public class DeviceOperationRequestMarshaller extends RequestAbstractTypeMarshal
                     .getAuthenticatedDevice());
         }
 
+        if (req.getAttribute() != null) {
+            domElement.setAttributeNS(null, DeviceOperationRequest.ATTRIBUTE_ATTRIB_NAME, req.getAttribute());
+        }
+
         super.marshallAttributes(samlObject, domElement);
     }
 }

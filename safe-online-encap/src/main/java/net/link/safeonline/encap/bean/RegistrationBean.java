@@ -64,9 +64,6 @@ public class RegistrationBean implements Registration {
 
     private String               challengeId;
 
-    @In
-    private String               userId;
-
     @In(value = ProtocolContext.PROTOCOL_CONTEXT)
     private ProtocolContext      protocolContext;
 
@@ -176,7 +173,7 @@ public class RegistrationBean implements Registration {
 
         // encap registration and authentication was successful, commit this
         // registration to OLAS.
-        this.encapDeviceService.commitRegistration(this.userId, this.mobile);
+        this.encapDeviceService.commitRegistration(this.protocolContext.getSubject(), this.mobile);
 
         this.protocolContext.setSuccess(true);
         exit();

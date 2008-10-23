@@ -172,7 +172,7 @@
 		</init-param>
 		<init-param>
 			<param-name>DisableUrl</param-name>
-			<param-value>disable-beid.seam</param-value>
+			<param-value>disable</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
@@ -285,6 +285,22 @@
 	<servlet-mapping>
 		<servlet-name>RemoveServlet</servlet-name>
 		<url-pattern>/removeService</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>DisableServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.DisableServlet</servlet-class>
+		<init-param>
+			<param-name>DisablePath</param-name>
+			<param-value>disable-beid.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>DeviceExitPath</param-name>
+			<param-value>deviceexit</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DisableServlet</servlet-name>
+		<url-pattern>/disable</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>

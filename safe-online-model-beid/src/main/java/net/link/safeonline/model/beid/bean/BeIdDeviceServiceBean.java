@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
@@ -27,6 +28,7 @@ import net.link.safeonline.device.backend.CredentialManager;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.model.beid.BeIdDeviceServiceRemote;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.model.PkiProvider;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +41,9 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
 
     @EJB
     private CredentialManager credentialManager;
+
+    @EJB(mappedName = PkiProvider.PKI_PROVIDER_JNDI + "/beid")
+    private PkiProvider       beIdPkiProvider;
 
 
     public String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
@@ -67,5 +72,13 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
 
         LOG.debug("remove: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
         this.credentialManager.removeIdentity(sessionId, userId, operation, identityStatementData);
+    }
+
+    public void disable(String userId, String attribute) throws DeviceNotFoundException, SubjectNotFoundException,
+            DeviceRegistrationNotFoundException {
+
+        LOG.debug("disable: userId=" + userId + " attribute=" + attribute);
+        this.beIdPkiProvider.disable(userId, attribute);
+
     }
 }

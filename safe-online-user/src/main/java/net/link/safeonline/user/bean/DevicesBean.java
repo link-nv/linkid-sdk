@@ -269,71 +269,69 @@ public class DevicesBean implements Devices {
             return null;
         }
         DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
-                .getName(), this.authenticatedDevice, userId);
+                .getName(), this.authenticatedDevice, userId, null);
         return null;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
     public String removeDevice() throws DeviceNotFoundException, IOException {
 
-        if (!deviceRemovalAllowed()) {
+        if (!deviceRemovalDisablingAllowed()) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
             return null;
         }
         LOG.debug("remove device: " + this.selectedDeviceRegistration.getFriendlyName());
-        return redirectRemove(this.selectedDeviceRegistration.getDevice().getName());
+        String userId = this.subjectManager.getCallerSubject().getUserId();
+        String removalURL = this.selectedDeviceRegistration.getDevice().getRemovalURL();
+
+        if (this.selectedDeviceRegistration.getDevice().getName().equals(
+                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(removalURL);
+            return null;
+        }
+        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, this.selectedDeviceRegistration
+                .getDevice().getName(), this.authenticatedDevice, userId, this.selectedDeviceRegistration
+                .getAttribute());
+        return null;
     }
 
-    private boolean deviceRemovalAllowed() {
+    private boolean deviceRemovalDisablingAllowed() {
 
         if (this.deviceRegistrations.size() == 1)
             return false;
         return true;
     }
 
-    private String redirectRemove(String deviceName) throws DeviceNotFoundException, IOException {
-
-        String userId = this.subjectManager.getCallerSubject().getUserId();
-
-        String removalURL = this.devicePolicyService.getRemovalURL(deviceName);
-        if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = context.getExternalContext();
-            externalContext.redirect(removalURL);
-            return null;
-        }
-        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, deviceName, this.authenticatedDevice,
-                userId);
-        return null;
-    }
-
     @RolesAllowed(UserConstants.USER_ROLE)
     public String updateDevice() throws DeviceNotFoundException, IOException {
 
         LOG.debug("update device: " + this.selectedDeviceRegistration.getFriendlyName());
-        return redirectUpdate(this.selectedDeviceRegistration.getDevice().getName());
-
-    }
-
-    private String redirectUpdate(String deviceName) throws IOException, DeviceNotFoundException {
-
         String userId = this.subjectManager.getCallerSubject().getUserId();
+        String updateURL = this.selectedDeviceRegistration.getDevice().getUpdateURL();
 
-        String updateURL = this.devicePolicyService.getUpdateURL(deviceName);
-        if (deviceName.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+        if (this.selectedDeviceRegistration.getDevice().getName().equals(
+                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
             FacesContext context = FacesContext.getCurrentInstance();
             ExternalContext externalContext = context.getExternalContext();
             externalContext.redirect(updateURL);
             return null;
         }
-        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, deviceName, this.authenticatedDevice,
-                userId);
+        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, this.selectedDeviceRegistration
+                .getDevice().getName(), this.authenticatedDevice, userId, this.selectedDeviceRegistration
+                .getAttribute());
         return null;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
     public String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException,
             PermissionDeniedException, AttributeTypeNotFoundException {
+
+        if (!deviceRemovalDisablingAllowed()) {
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+            return null;
+        }
 
         LOG.debug("disable device: " + this.selectedDeviceRegistration.getFriendlyName());
         String userId = this.subjectManager.getCallerSubject().getUserId();
@@ -347,7 +345,7 @@ public class DevicesBean implements Devices {
 
         DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getDisableURL(),
                 DeviceOperationType.DISABLE, this.selectedDeviceRegistration.getDevice().getName(),
-                this.authenticatedDevice, userId);
+                this.authenticatedDevice, userId, this.selectedDeviceRegistration.getAttribute());
         return null;
     }
 

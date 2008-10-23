@@ -76,9 +76,6 @@ public class DisableBean implements Disable {
     @In(create = true)
     FacesMessages                      facesMessages;
 
-    @In
-    private String                     userId;
-
     @In(value = ProtocolContext.PROTOCOL_CONTEXT)
     private ProtocolContext            protocolContext;
 
@@ -102,7 +99,7 @@ public class DisableBean implements Disable {
 
     public String save() throws IOException, SubjectNotFoundException, AttributeNotFoundException {
 
-        SubjectEntity subject = this.subjectService.getSubject(this.userId);
+        SubjectEntity subject = this.subjectService.getSubject(this.protocolContext.getSubject());
 
         for (DeviceRegistrationDO registration : this.registrations) {
             AttributeEntity disableAttribute = this.attributeDAO.getAttribute(registration.getDevice()
@@ -142,7 +139,7 @@ public class DisableBean implements Disable {
 
         this.log.debug("list registrations for device: " + deviceId);
         DeviceEntity device = this.deviceDAO.getDevice(deviceId);
-        SubjectEntity subject = this.subjectService.getSubject(this.userId);
+        SubjectEntity subject = this.subjectService.getSubject(this.protocolContext.getSubject());
 
         return listRegistrations(subject, device, locale);
     }

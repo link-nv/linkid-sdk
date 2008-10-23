@@ -24,8 +24,8 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.exception.AuthenticationFinalizationException;
 import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
-import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
+import net.link.safeonline.sdk.auth.saml2.RequestUtil;
 import net.link.safeonline.sdk.auth.saml2.ResponseUtil;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 
@@ -42,12 +42,12 @@ import org.opensaml.xml.ConfigurationException;
 /**
  * SAML handler used by remote device issuers to handle an incoming SAML authentication request and store the retrieved
  * information on the session into {@link AuthenticationContext}.
- *
+ * 
  * After authenticating it will post a SAML authentication response containing the necessary assertions or a SAML
  * authentication response telling the authentication has failed.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class Saml2Handler implements Serializable {
 
@@ -127,13 +127,11 @@ public class Saml2Handler implements Serializable {
 
         String assertionConsumerService = samlAuthnRequest.getAssertionConsumerServiceURL();
 
-        if (null == assertionConsumerService) {
+        if (null == assertionConsumerService)
             throw new AuthenticationInitializationException("missing AssertionConsumerServiceURL");
-        }
 
-        if (samlAuthnRequest.getConditions().getAudienceRestrictions().isEmpty()) {
+        if (samlAuthnRequest.getConditions().getAudienceRestrictions().isEmpty())
             throw new AuthenticationInitializationException("missing audience restriction");
-        }
 
         String application = samlAuthnRequest.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0)
                 .getAudienceURI();
@@ -161,9 +159,6 @@ public class Saml2Handler implements Serializable {
             devices = null;
         }
 
-        this.session.setAttribute("applicationId", application);
-        this.session.setAttribute("applicationName", applicationFriendlyName);
-
         AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request
                 .getSession());
         authenticationContext.setWantedDevices(devices);
@@ -173,6 +168,9 @@ public class Saml2Handler implements Serializable {
         authenticationContext.setInResponseTo(samlAuthnRequestId);
         authenticationContext.setTargetUrl(assertionConsumerService);
         authenticationContext.setIssuer(this.issuer);
+
+        DeviceManager.setApplicationId(application, request);
+        DeviceManager.setApplicationName(applicationFriendlyName, request);
     }
 
     public void finalizeAuthentication(HttpServletRequest request, HttpServletResponse response)

@@ -15,11 +15,14 @@ import static org.junit.Assert.assertEquals;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.beid.servlet.IdentityServlet;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
@@ -69,6 +72,10 @@ public class IdentityServletTest {
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(IdentityServlet.class);
+        this.servletTestManager.setSessionAttribute(DeviceOperationManager.USERID_SESSION_ATTRIBUTE, UUID.randomUUID()
+                .toString());
+        this.servletTestManager.setSessionAttribute(DeviceOperationManager.DEVICE_OPERATION_SESSION_ATTRIBUTE,
+                DeviceOperationType.REGISTER.name());
         this.location = this.servletTestManager.getServletLocation();
 
         this.httpClient = new HttpClient();
